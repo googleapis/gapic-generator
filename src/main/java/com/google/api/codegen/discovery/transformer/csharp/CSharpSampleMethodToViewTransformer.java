@@ -211,8 +211,8 @@ public class CSharpSampleMethodToViewTransformer implements SampleMethodToViewTr
     SampleTypeTable typeTable = context.getSampleTypeTable();
     TypeInfo typeInfo = field.type();
 
-    String defaultValue = "";
-    String typeName = "";
+    String defaultValue;
+    String typeName;
     // TODO(saicheems): Ugly hack to get around enum naming in C# for the time being.
     // Longer explanation in CSharpSampleTypeNameConverter.
     if (typeInfo.kind() == Field.Kind.TYPE_ENUM) {
@@ -223,9 +223,10 @@ public class CSharpSampleMethodToViewTransformer implements SampleMethodToViewTr
       typeName = typedValue.getTypeName().getNickname();
       defaultValue = String.format(typedValue.getValuePattern(), typeName);
     } else {
-      defaultValue = typeTable.getZeroValueAndSaveNicknameFor(typeInfo);
       if (!Strings.isNullOrEmpty(field.defaultValue())) {
         defaultValue = field.defaultValue();
+      } else {
+        defaultValue = typeTable.getZeroValueAndSaveNicknameFor(typeInfo);
       }
       typeName = typeTable.getAndSaveNicknameFor(typeInfo);
     }

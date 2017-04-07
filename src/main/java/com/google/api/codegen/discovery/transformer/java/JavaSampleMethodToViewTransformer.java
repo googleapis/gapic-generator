@@ -199,9 +199,11 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
     SampleTypeTable typeTable = context.getSampleTypeTable();
 
     TypeInfo typeInfo = field.type();
-    String defaultValue = typeTable.getZeroValueAndSaveNicknameFor(typeInfo);
+    String defaultValue;
     if (!Strings.isNullOrEmpty(field.defaultValue())) {
       defaultValue = field.defaultValue();
+    } else {
+      defaultValue = typeTable.getZeroValueAndSaveNicknameFor(typeInfo);
     }
     return SampleFieldView.newBuilder()
         .name(symbolTable.getNewSymbol(field.name()))

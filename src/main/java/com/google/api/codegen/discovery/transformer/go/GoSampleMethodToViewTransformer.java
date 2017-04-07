@@ -216,9 +216,11 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
     SampleNamer namer = context.getSampleNamer();
     SampleTypeTable typeTable = context.getSampleTypeTable();
 
-    String defaultValue = typeTable.getZeroValueAndSaveNicknameFor(field.type());
+    String defaultValue;
     if (!Strings.isNullOrEmpty(field.defaultValue())) {
       defaultValue = field.defaultValue();
+    } else {
+      defaultValue = typeTable.getZeroValueAndSaveNicknameFor(field.type());
     }
     return SampleFieldView.newBuilder()
         .name(symbolTable.getNewSymbol(field.name()))

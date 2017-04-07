@@ -212,9 +212,11 @@ public class PythonSampleMethodToViewTransformer implements SampleMethodToViewTr
     if (disambiguateName) {
       name = symbolTable.getNewSymbol(name);
     }
-    String defaultValue = typeTable.getZeroValueAndSaveNicknameFor(field.type());
+    String defaultValue;
     if (!Strings.isNullOrEmpty(field.defaultValue())) {
       defaultValue = field.defaultValue();
+    } else {
+      defaultValue = typeTable.getZeroValueAndSaveNicknameFor(field.type());
     }
     return SampleFieldView.newBuilder()
         .name(name)
