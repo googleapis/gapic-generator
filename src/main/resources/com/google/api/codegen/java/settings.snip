@@ -54,19 +54,6 @@
 @end
 
 @private constants(xsettingsClass)
-  @if xsettingsClass.hasDefaultServiceAddress
-    /**
-     * The default address of the service.
-     */
-    private static final String DEFAULT_SERVICE_ADDRESS = "{@xsettingsClass.serviceAddress}";
-    {@""}
-  @end
-
-  /**
-   * The default port of the service.
-   */
-  private static final int DEFAULT_SERVICE_PORT = {@xsettingsClass.servicePort};
-
   @if xsettingsClass.hasDefaultServiceScopes
     /**
      * The default scopes of the service.
@@ -102,19 +89,13 @@
 
   @if xsettingsClass.hasDefaultServiceAddress
     /**
-     * Returns the default service address.
+     * Returns the default service endpoint.
      */
-    public static String getDefaultServiceAddress() {
-      return DEFAULT_SERVICE_ADDRESS;
+    public static String getDefaultEndpoint() {
+      return "{@xsettingsClass.serviceAddress}:{@xsettingsClass.servicePort}";
     }
 
   @end
-  /**
-   * Returns the default service port.
-   */
-  public static int getDefaultServicePort() {
-    return DEFAULT_SERVICE_PORT;
-  }
 
   @if xsettingsClass.hasDefaultServiceScopes
     /**
@@ -141,9 +122,8 @@
   public static InstantiatingChannelProvider.Builder defaultChannelProviderBuilder() {
     return InstantiatingChannelProvider.newBuilder()
         @if xsettingsClass.hasDefaultServiceAddress
-            .setServiceAddress(DEFAULT_SERVICE_ADDRESS)
+            .setEndpoint(getDefaultEndpoint())
         @end
-        .setPort(DEFAULT_SERVICE_PORT)
         .setGeneratorHeader(DEFAULT_GAPIC_NAME, getGapicVersion())
         .setCredentialsProvider(defaultCredentialsProviderBuilder().build());
   }
