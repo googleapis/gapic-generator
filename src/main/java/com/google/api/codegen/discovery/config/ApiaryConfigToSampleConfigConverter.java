@@ -15,6 +15,7 @@
 package com.google.api.codegen.discovery.config;
 
 import com.google.api.codegen.ApiaryConfig;
+import com.google.api.codegen.ApiaryConfig.Location;
 import com.google.api.codegen.DiscoveryImporter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -204,11 +205,11 @@ public class ApiaryConfigToSampleConfigConverter {
       String fieldPattern =
           apiaryConfig.getFieldPattern().get(containerType.getName(), field.getName());
       String stringFormat = apiaryConfig.getStringFormat(containerType.getName(), field.getName());
-      String location =
+      Location location =
           apiaryConfig.getFieldLocation().get(containerType.getName(), field.getName());
-      boolean inPath = Strings.nullToEmpty(location).equals("path");
       defaultValue =
-          typeNameGenerator.getStringFieldPlaceholder(field.getName(), fieldPattern, inPath);
+          typeNameGenerator.getStringFieldPlaceholder(
+              field.getName(), fieldPattern, location == Location.PATH);
       example = typeNameGenerator.getStringFormatExample(stringFormat);
     }
     return FieldInfo.newBuilder()

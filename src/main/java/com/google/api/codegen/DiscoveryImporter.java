@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.Documentation;
 import com.google.api.Service;
+import com.google.api.codegen.ApiaryConfig.Location;
 import com.google.common.base.CaseFormat;
 import com.google.common.collect.ImmutableTable;
 import com.google.protobuf.Api;
@@ -480,7 +481,16 @@ public class DiscoveryImporter {
       format = formatNode.asText();
     }
     if (locationNode != null) {
-      config.getFieldLocation().put(type, field, locationNode.asText());
+      Location location = null;
+      if (locationNode.asText().equals("path")) {
+        location = Location.PATH;
+      } else if (locationNode.asText().equals("query")) {
+        location = Location.QUERY;
+      } else {
+        throw new IllegalArgumentException(
+            String.format("unknown location: %s", locationNode.asText()));
+      }
+      config.getFieldLocation().put(type, field, location);
     }
     if (kindName.equals("string")) {
       if (formatNode != null) {
