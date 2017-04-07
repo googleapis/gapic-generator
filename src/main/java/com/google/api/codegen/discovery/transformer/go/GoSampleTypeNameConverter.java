@@ -20,6 +20,7 @@ import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypedValue;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Field;
+import com.google.protobuf.Field.Kind;
 
 public class GoSampleTypeNameConverter implements SampleTypeNameConverter {
 

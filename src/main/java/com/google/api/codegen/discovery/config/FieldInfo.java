@@ -18,6 +18,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 import com.google.protobuf.Field.Cardinality;
+import javax.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_FieldInfo.Builder.class)
@@ -39,7 +40,12 @@ public abstract class FieldInfo {
   @JsonProperty("cardinality")
   public abstract Cardinality cardinality();
 
-  /** Returns the example value of the field, or empty string if none. */
+  /** Returns the default value of the field, or empty string if none. */
+  @JsonProperty("defaultValue")
+  @Nullable
+  public abstract String defaultValue();
+
+  /** Returns an example for the field, or empty string if none. */
   @JsonProperty("example")
   public abstract String example();
 
@@ -66,6 +72,9 @@ public abstract class FieldInfo {
 
     @JsonProperty("cardinality")
     public abstract Builder cardinality(Cardinality cardinality);
+
+    @JsonProperty("defaultValue")
+    public abstract Builder defaultValue(String val);
 
     @JsonProperty("example")
     public abstract Builder example(String val);

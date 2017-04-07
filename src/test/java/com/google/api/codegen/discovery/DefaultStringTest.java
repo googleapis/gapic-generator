@@ -22,25 +22,20 @@ import org.junit.Test;
 public class DefaultStringTest {
   @Test
   public void testOf() {
-    String def = DefaultString.getPlaceholder("zone", "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?");
-    String def2 = DefaultString.getNonTrivialPlaceholder("[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?");
+    String def =
+        DefaultString.getNonTrivialPlaceholder("[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?", "my-%s");
     String sample = DefaultString.getSample("compute", "zone", "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?");
-    Truth.assertThat(def).isEqualTo("{MY-ZONE}");
-    Truth.assertThat(def2).isEqualTo("");
+    Truth.assertThat(def).isEqualTo("");
     Truth.assertThat(sample).isEqualTo("us-central1-f");
 
-    def = DefaultString.getPlaceholder("project", "^projects/[^/]*$");
-    def2 = DefaultString.getNonTrivialPlaceholder("^projects/[^/]*$");
+    def = DefaultString.getNonTrivialPlaceholder("^projects/[^/]*$", "my-%s");
     sample = DefaultString.getSample("pubsub", "project", "^projects/[^/]*$");
-    Truth.assertThat(def).isEqualTo("projects/{MY-PROJECT}");
-    Truth.assertThat(def2).isEqualTo("projects/my-project");
+    Truth.assertThat(def).isEqualTo("projects/my-project");
     Truth.assertThat(sample).isEqualTo("");
 
-    def = DefaultString.getPlaceholder("bar", null);
-    def2 = DefaultString.getNonTrivialPlaceholder(null);
+    def = DefaultString.getNonTrivialPlaceholder("bar", "my-%s");
     sample = DefaultString.getSample("foo", "bar", null);
-    Truth.assertThat(def).isEqualTo("{MY-BAR}");
-    Truth.assertThat(def2).isEqualTo("");
+    Truth.assertThat(def).isEqualTo("");
     Truth.assertThat(sample).isEqualTo("");
   }
 
@@ -56,7 +51,7 @@ public class DefaultStringTest {
         };
 
     for (String s : invalid) {
-      Truth.assertThat(DefaultString.forPattern(s, "{MY-%s}", true)).isNull();
+      Truth.assertThat(DefaultString.forPattern(s, "my-%s")).isNull();
     }
   }
 
@@ -64,15 +59,15 @@ public class DefaultStringTest {
   public void testDefault() {
     ImmutableMap<String, String> tests =
         ImmutableMap.<String, String>builder()
-            .put("^projects/[^/]*$", "projects/{MY-PROJECT}")
-            .put("^projects/[^/]*/topics/[^/]*$", "projects/{MY-PROJECT}/topics/{MY-TOPIC}")
+            .put("^billingAccounts/[^/]*$", "billingAccounts/my-billing-account")
+            .put("^projects/[^/]*/topics/[^/]*$", "projects/my-project/topics/my-topic")
             .put(
                 "^projects/[^/]*/regions/[^/]*/operations/[^/]*$",
-                "projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}")
+                "projects/my-project/regions/my-region/operations/my-operation")
             .build();
 
     for (Map.Entry<String, String> entry : tests.entrySet()) {
-      Truth.assertThat(DefaultString.forPattern(entry.getKey(), "{MY-%s}", true))
+      Truth.assertThat(DefaultString.forPattern(entry.getKey(), "my-%s"))
           .isEqualTo(entry.getValue());
     }
   }

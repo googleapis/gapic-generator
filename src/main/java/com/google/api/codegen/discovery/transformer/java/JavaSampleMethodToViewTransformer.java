@@ -34,6 +34,7 @@ import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.common.base.Strings;
 import com.google.protobuf.Field.Cardinality;
 import com.google.protobuf.Method;
 import java.util.ArrayList;
@@ -198,7 +199,12 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
     SampleTypeTable typeTable = context.getSampleTypeTable();
 
     TypeInfo typeInfo = field.type();
-    String defaultValue = typeTable.getZeroValueAndSaveNicknameFor(typeInfo);
+    String defaultValue;
+    if (!Strings.isNullOrEmpty(field.defaultValue())) {
+      defaultValue = field.defaultValue();
+    } else {
+      defaultValue = typeTable.getZeroValueAndSaveNicknameFor(typeInfo);
+    }
     return SampleFieldView.newBuilder()
         .name(symbolTable.getNewSymbol(field.name()))
         .typeName(typeTable.getAndSaveNicknameFor(typeInfo))
