@@ -26,17 +26,19 @@
   require_once __DIR__ . '/vendor/autoload.php';
 
   @switch class.auth.type
-  @case "APPLICATION_DEFAULT_CREDENTIALS"
-    ${@class.clientVarName} = new Google_Client();
-    ${@class.clientVarName}->setApplicationName('{@class.appName}');
-    ${@class.clientVarName}->useApplicationDefaultCredentials();
-    ${@class.clientVarName}->addScope('https://www.googleapis.com/auth/cloud-platform');
   @case "OAUTH_3L"
     ${@class.clientVarName} = getClient();
   @default
     ${@class.clientVarName} = new Google_Client();
     ${@class.clientVarName}->setApplicationName('{@class.appName}');
+  @end
+  @switch class.auth.type
+  @case "APPLICATION_DEFAULT_CREDENTIALS"
+    ${@class.clientVarName}->useApplicationDefaultCredentials();
+    ${@class.clientVarName}->addScope('https://www.googleapis.com/auth/cloud-platform');
+  @case "API_KEY"
     ${@class.clientVarName}->setDeveloperKey('');  // TODO: Update placeholder with desired API key.
+  @default
   @end
 
   ${@class.serviceVarName} = new {@class.serviceTypeName}(${@class.clientVarName});

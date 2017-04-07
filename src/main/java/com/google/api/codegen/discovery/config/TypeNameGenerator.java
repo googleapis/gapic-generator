@@ -169,4 +169,9 @@ public class TypeNameGenerator {
     val = String.format(format, fieldName.replace('_', '-'));
     return stringLiteral(val);
   }
+
+  /** Returns the URL of the discovery doc. */
+  public String getDiscoveryDocUrl(String apiName, String apiVersion) {
+    return "";
+  }
 }

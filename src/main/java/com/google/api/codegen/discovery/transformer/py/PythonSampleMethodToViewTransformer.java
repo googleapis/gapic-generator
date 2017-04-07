@@ -65,6 +65,9 @@ public class PythonSampleMethodToViewTransformer implements SampleMethodToViewTr
     String serviceVarName = symbolTable.getNewSymbol(namer.getServiceVarName(config.apiTypeName()));
 
     // Created before the fields in case there are naming conflicts in the symbol table.
+    String credentialsVarName =
+        symbolTable.getNewSymbol(
+            config.authType() == AuthType.API_KEY ? "developerKey" : "credentials");
     SampleAuthView sampleAuthView = createSampleAuthView(context);
 
     List<SampleFieldView> requiredFields = new ArrayList<>();
@@ -109,8 +112,23 @@ public class PythonSampleMethodToViewTransformer implements SampleMethodToViewTr
       builder.responseVarName(symbolTable.getNewSymbol(namer.getResponseVarName()));
     }
 
-    String credentialsVarName =
-        config.authType() == AuthType.API_KEY ? "developerKey" : "credentials";
+    List<String> discoveryBuildParams = new ArrayList<>();
+    discoveryBuildParams.add(String.format("'%s'", config.apiName()));
+    discoveryBuildParams.add(String.format("'%s'", config.apiVersion()));
+    switch (config.authType()) {
+      case NONE:
+        break;
+      case API_KEY:
+        discoveryBuildParams.add("developerKey=" + credentialsVarName);
+        break;
+      default:
+        discoveryBuildParams.add("credentials=" + credentialsVarName);
+        break;
+    }
+    String discoveryDocUrl = config.discoveryDocUrl();
+    if (!Strings.isNullOrEmpty(discoveryDocUrl)) {
+      discoveryBuildParams.add(String.format("discoveryServiceUrl='%s'", discoveryDocUrl));
+    }
 
     return builder
         .templateFileName(TEMPLATE_FILENAME)
@@ -132,6 +150,7 @@ public class PythonSampleMethodToViewTransformer implements SampleMethodToViewTr
         .hasMediaUpload(methodInfo.hasMediaUpload())
         .hasMediaDownload(methodInfo.hasMediaDownload())
         .credentialsVarName(credentialsVarName)
+        .discoveryBuildParams(discoveryBuildParams)
         .lastMethodNameComponent(Iterables.getLast(methodInfo.nameComponents()))
         .methodParamAssigments(methodParamAssignments)
         .build();

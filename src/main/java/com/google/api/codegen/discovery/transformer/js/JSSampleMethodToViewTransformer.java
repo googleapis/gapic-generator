@@ -120,6 +120,7 @@ public class JSSampleMethodToViewTransformer implements SampleMethodToViewTransf
         .apiTitle(config.apiTitle())
         .apiName(config.apiName())
         .apiVersion(config.apiVersion())
+        .discoveryDocUrl(config.discoveryDocUrl())
         .auth(createSampleAuthView(context))
         .methodVerb(methodInfo.verb())
         .methodNameComponents(methodInfo.nameComponents())

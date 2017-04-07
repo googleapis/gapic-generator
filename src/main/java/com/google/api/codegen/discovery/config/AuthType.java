@@ -16,6 +16,7 @@ package com.google.api.codegen.discovery.config;
 
 /** Contains the set of supported authentication formats. */
 public enum AuthType {
+  NONE,
   APPLICATION_DEFAULT_CREDENTIALS,
   OAUTH_3L,
   API_KEY

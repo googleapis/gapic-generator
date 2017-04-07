@@ -242,5 +242,6 @@ public class CSharpSampleMethodToViewTransformer implements SampleMethodToViewTr
 
   private void addStaticImports(SampleTransformerContext context) {
     context.getSampleTypeTable().saveNicknameFor("Google.Apis.Services.BaseClientService");
+    context.getSampleTypeTable().saveNicknameFor("Newtonsoft.Json.JsonConvert");
   }
 }

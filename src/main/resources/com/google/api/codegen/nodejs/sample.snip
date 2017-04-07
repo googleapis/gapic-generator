@@ -23,18 +23,20 @@
   var {@class.serviceVarName} = {@class.googleImportVarName}.{@class.serviceTypeName}('{@class.apiVersion}');
 
   @switch class.auth.type
+  @case "NONE"
+    {@mainFuncBody(class)}
+  @case "APPLICATION_DEFAULT_CREDENTIALS"
+    {@mainFunc(class)}
+
+    {@authFunc_ADC(class)}
   @case "OAUTH_3L"
     {@mainFunc(class)}
 
-    {@oAuth3LAuthFunc(class)}
+    {@authFunc_OAuth3L(class)}
   @case "API_KEY"
     var {@class.auth.authVarName} = '';  // TODO: Update placeholder with desired API key.
 
     {@mainFuncBody(class)}
-  @default
-    {@mainFunc(class)}
-
-    {@adcAuthFunc(class)}
   @end
 @end
 
@@ -81,7 +83,7 @@
         // TODO: Add desired media content for upload. See
         // https://github.com/google/google-api-nodejs-client#media-uploads
         mimeType: '',  // See https://www.w3.org/Protocols/rfc1341/4_Content-Type.html
-        body: {}
+        body: {},
       },
 
     @end
@@ -91,13 +93,15 @@
       // alt: 'media',
 
     @end
-    auth: {@class.auth.authVarName}
+    @if class.auth.type != "NONE"
+      auth: {@class.auth.authVarName},
+    @end
   };
 
   @if class.isPageStreaming
     var {@class.pageStreaming.handlePageVarName} = function(err, {@class.responseVarName}) {
       if (err) {
-        console.log(err);
+        console.error(err);
         return;
       }
 
@@ -133,7 +137,7 @@
     @if class.hasResponse
       {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@class.requestVarName}, function(err, {@class.responseVarName}) {
         if (err) {
-          console.log(err);
+          console.error(err);
           return;
         }
 
@@ -143,7 +147,7 @@
     @else
       {@class.serviceVarName}.{@callChain(class.methodNameComponents)}({@class.requestVarName}, function(err) {
         if (err) {
-          console.log(err);
+          console.error(err);
           return;
         }
       });
@@ -159,11 +163,11 @@
   @end
 @end
 
-@private adcAuthFunc(class)
+@private authFunc_ADC(class)
   function {@class.auth.authFuncName}(callback) {
     google.auth.getApplicationDefault(function(err, authClient)) {
       if (err) {
-        console.log('authentication failed: ', err);
+        console.error('authentication failed: ', err);
         return;
       }
       if ({@class.auth.authVarName}.createScopedRequired && authClient.createScopedRequired()) {
@@ -175,7 +179,7 @@
   }
 @end
 
-@private oAuth3LAuthFunc(class)
+@private authFunc_OAuth3L(class)
   function {@class.auth.authFuncName}(callback) {
     // TODO: Change placeholder below to generate authentication credentials. See
     // {@class.auth.instructionsUrl}
