@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.discovery.transformer.csharp;
 
-import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.codegen.discovery.config.AuthType;
 import com.google.api.codegen.discovery.config.FieldInfo;
 import com.google.api.codegen.discovery.config.MethodInfo;
@@ -36,6 +35,7 @@ import com.google.api.codegen.util.csharp.CSharpNameFormatter;
 import com.google.api.codegen.util.csharp.CSharpTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
 import com.google.protobuf.Field;
 import com.google.protobuf.Field.Cardinality;
 import com.google.protobuf.Method;
@@ -224,8 +224,8 @@ public class CSharpSampleMethodToViewTransformer implements SampleMethodToViewTr
       defaultValue = String.format(typedValue.getValuePattern(), typeName);
     } else {
       defaultValue = typeTable.getZeroValueAndSaveNicknameFor(typeInfo);
-      if (DefaultString.shouldReplace(field)) {
-        defaultValue = String.format("\"%s\"", DefaultString.getPlaceholder(field.name()));
+      if (!Strings.isNullOrEmpty(field.defaultValue())) {
+        defaultValue = field.defaultValue();
       }
       typeName = typeTable.getAndSaveNicknameFor(typeInfo);
     }

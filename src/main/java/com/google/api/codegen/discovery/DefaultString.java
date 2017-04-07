@@ -16,13 +16,10 @@ package com.google.api.codegen.discovery;
 
 import com.google.api.codegen.Inflector;
 import com.google.api.codegen.LanguageUtil;
-import com.google.api.codegen.discovery.config.FieldInfo;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.protobuf.Field.Kind;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -82,14 +79,16 @@ public class DefaultString {
   }
 
   /**
-   * Returns a placeholder for pattern with a no-brace and lower-case format style. An empty string
-   * is returned for unrecognized patterns.
+   * Returns a non-trivial placeholder for pattern with a no-brace and lower-case format style. An
+   * empty string is returned for unrecognized patterns.
    *
-   * <p>For example: "projects/my-project/logs/my-log"
+   * <p>Variables are formatted according to format (ex: "my-%s").
+   *
+   * <p>For example: "projects/my-project/logs/my-log" or "my-project"
    */
-  public static String getNonTrivialPlaceholder(String pattern) {
+  public static String getNonTrivialPlaceholder(String pattern, String format) {
     if (pattern != null) {
-      String def = forPattern(pattern, "my-%s", false);
+      String def = forPattern(pattern, format);
       if (def != null) {
         return def;
       }
@@ -97,22 +96,11 @@ public class DefaultString {
     return "";
   }
 
-  /** Returns true if field is a string and a path parameter. */
-  public static boolean shouldReplace(FieldInfo field) {
-    return field.type().kind() == Kind.TYPE_STRING
-        && Strings.nullToEmpty(field.location()).equals("path");
-  }
-
-  public static String getPlaceholder(String fieldName) {
-    return String.format(
-        "my-%s", LanguageUtil.lowerCamelToLowerUnderscore(fieldName).replace('_', '-'));
-  }
-
   private static final String WILDCARD_PATTERN = "[^/]*";
 
   /** Returns a default string from `pattern`, or null if the pattern is not supported. */
   @VisibleForTesting
-  static String forPattern(String pattern, String placeholderFormat, boolean placeholderUpperCase) {
+  static String forPattern(String pattern, String placeholderFormat) {
     // We only care about patterns that have alternating literal and wildcard like
     //  ^foo/[^/]*/bar/[^/]*$
     // Ignore if what we get looks nothing like this.
@@ -129,9 +117,7 @@ public class DefaultString {
     for (int i = 0; i < elems.size(); i += 2) {
       String literal = elems.get(i).getLiteral();
       String placeholder = Inflector.singularize(literal);
-      if (placeholderUpperCase) {
-        placeholder = placeholder.toUpperCase();
-      }
+      placeholder = LanguageUtil.lowerCamelToLowerUnderscore(placeholder).replace('_', '-');
       ret.append('/')
           .append(literal)
           .append("/")

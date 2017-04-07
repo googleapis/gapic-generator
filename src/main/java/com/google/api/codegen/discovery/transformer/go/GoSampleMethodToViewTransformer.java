@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.discovery.transformer.go;
 
-import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.codegen.discovery.config.AuthType;
 import com.google.api.codegen.discovery.config.FieldInfo;
 import com.google.api.codegen.discovery.config.MethodInfo;
@@ -34,6 +33,7 @@ import com.google.api.codegen.util.go.GoNameFormatter;
 import com.google.api.codegen.util.go.GoTypeTable;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.common.base.Strings;
 import com.google.protobuf.Field.Cardinality;
 import com.google.protobuf.Method;
 import java.util.ArrayList;
@@ -217,8 +217,8 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
     SampleTypeTable typeTable = context.getSampleTypeTable();
 
     String defaultValue = typeTable.getZeroValueAndSaveNicknameFor(field.type());
-    if (DefaultString.shouldReplace(field)) {
-      defaultValue = String.format("\"%s\"", DefaultString.getPlaceholder(field.name()));
+    if (!Strings.isNullOrEmpty(field.defaultValue())) {
+      defaultValue = field.defaultValue();
     }
     return SampleFieldView.newBuilder()
         .name(symbolTable.getNewSymbol(field.name()))

@@ -40,7 +40,12 @@ public abstract class FieldInfo {
   @JsonProperty("cardinality")
   public abstract Cardinality cardinality();
 
-  /** Returns the example value of the field, or empty string if none. */
+  /** Returns the default value of the field, or empty string if none. */
+  @JsonProperty("defaultValue")
+  @Nullable
+  public abstract String defaultValue();
+
+  /** Returns an example for the field, or empty string if none. */
   @JsonProperty("example")
   public abstract String example();
 
@@ -51,11 +56,6 @@ public abstract class FieldInfo {
   /** Whether or not the field is required. */
   @JsonProperty("required")
   public abstract Boolean required();
-
-  /** Returns the location of the field, or null if none. */
-  @JsonProperty("location")
-  @Nullable
-  public abstract String location();
 
   public static Builder newBuilder() {
     return new AutoValue_FieldInfo.Builder();
@@ -73,6 +73,9 @@ public abstract class FieldInfo {
     @JsonProperty("cardinality")
     public abstract Builder cardinality(Cardinality cardinality);
 
+    @JsonProperty("defaultValue")
+    public abstract Builder defaultValue(String val);
+
     @JsonProperty("example")
     public abstract Builder example(String val);
 
@@ -81,9 +84,6 @@ public abstract class FieldInfo {
 
     @JsonProperty("required")
     public abstract Builder required(Boolean val);
-
-    @JsonProperty("location")
-    public abstract Builder location(String val);
 
     public abstract FieldInfo build();
   }

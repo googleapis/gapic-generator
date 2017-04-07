@@ -197,30 +197,30 @@ public class ApiaryConfigToSampleConfigConverter {
 
   /** Creates a field. */
   private FieldInfo createFieldInfo(Field field, Type containerType, Method method) {
+    String defaultValue = "";
     String example = "";
     TypeInfo typeInfo = createTypeInfo(field, method);
     if (typeInfo.kind() == Field.Kind.TYPE_STRING) {
       String fieldPattern =
           apiaryConfig.getFieldPattern().get(containerType.getName(), field.getName());
       String stringFormat = apiaryConfig.getStringFormat(containerType.getName(), field.getName());
-      example = typeNameGenerator.getFieldPatternExample(fieldPattern);
-      if (!Strings.isNullOrEmpty(example)) {
-        // Generates an example of the format: `ex: "projects/my-project/logs/my-log"`
-        example = "ex: " + example;
-      } else {
-        example = typeNameGenerator.getStringFormatExample(stringFormat);
-      }
+      String location =
+          apiaryConfig.getFieldLocation().get(containerType.getName(), field.getName());
+      boolean inPath = Strings.nullToEmpty(location).equals("path");
+      defaultValue =
+          typeNameGenerator.getStringFieldPlaceholder(field.getName(), fieldPattern, inPath);
+      example = typeNameGenerator.getStringFormatExample(stringFormat);
     }
     return FieldInfo.newBuilder()
         .name(field.getName())
         .type(typeInfo)
         .cardinality(field.getCardinality())
+        .defaultValue(defaultValue)
         .example(example)
         .description(
             Strings.nullToEmpty(
                 apiaryConfig.getDescription(method.getRequestTypeUrl(), field.getName())))
         .required(true)
-        .location(apiaryConfig.getFieldLocation().get(containerType.getName(), field.getName()))
         .build();
   }
 
