@@ -137,23 +137,12 @@ import org.joda.time.Duration;
 @Generated("by GAPIC v0.0.5")
 public class LibrarySettings extends ClientSettings {
   /**
-   * The default address of the service.
-   */
-  private static final String DEFAULT_SERVICE_ADDRESS = "library-example.googleapis.com";
-
-  /**
-   * The default port of the service.
-   */
-  private static final int DEFAULT_SERVICE_PORT = 443;
-
-  /**
    * The default scopes of the service.
    */
   private static final ImmutableList<String> DEFAULT_SERVICE_SCOPES = ImmutableList.<String>builder()
       .add("https://www.googleapis.com/auth/cloud-platform")
       .add("https://www.googleapis.com/auth/library")
       .build();
-
 
   private static final String DEFAULT_GAPIC_NAME = "gapic";
   private static final String DEFAULT_GAPIC_VERSION = "";
@@ -389,18 +378,12 @@ public class LibrarySettings extends ClientSettings {
   }
 
   /**
-   * Returns the default service address.
+   * Returns the default service endpoint.
    */
-  public static String getDefaultServiceAddress() {
-    return DEFAULT_SERVICE_ADDRESS;
+  public static String getDefaultEndpoint() {
+    return "library-example.googleapis.com:443";
   }
 
-  /**
-   * Returns the default service port.
-   */
-  public static int getDefaultServicePort() {
-    return DEFAULT_SERVICE_PORT;
-  }
 
   /**
    * Returns the default service scopes.
@@ -422,7 +405,7 @@ public class LibrarySettings extends ClientSettings {
   /** Returns a builder for the default ChannelProvider for this service. */
   public static InstantiatingChannelProvider.Builder defaultChannelProviderBuilder() {
     return InstantiatingChannelProvider.newBuilder()
-        .setEndpoint(DEFAULT_SERVICE_ADDRESS + ':' + DEFAULT_SERVICE_PORT)
+        .setEndpoint(getDefaultEndpoint())
         .setGeneratorHeader(DEFAULT_GAPIC_NAME, getGapicVersion())
         .setCredentialsProvider(defaultCredentialsProviderBuilder().build());
   }
