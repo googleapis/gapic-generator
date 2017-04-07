@@ -23,9 +23,7 @@ import com.google.api.gax.grpc.AbstractFixedSizeCollection;
 import com.google.api.gax.grpc.AbstractPage;
 import com.google.api.gax.grpc.AbstractPagedListResponse;
 import com.google.api.gax.grpc.ApiExceptions;
-import com.google.api.gax.grpc.CallContext;
-import com.google.api.gax.grpc.PagedListDescriptor;
-import com.google.api.gax.grpc.UnaryCallable;
+import com.google.api.gax.grpc.PageContext;
 import com.google.api.resourcenames.ResourceName;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
@@ -55,280 +53,160 @@ import javax.annotation.Generated;
 @ExperimentalApi
 public class PagedResponseWrappers {
 
-  public static class ListShelvesPagedResponse extends AbstractPagedListResponse<ListShelvesRequest, ListShelvesResponse, Shelf> {
+  public static class ListShelvesPagedResponse extends AbstractPagedListResponse<
+      ListShelvesRequest,
+      ListShelvesResponse,
+      Shelf,
+      ListShelvesPage,
+      ListShelvesFixedSizeCollection> {
 
-    private final ListShelvesPage page;
-
-    public static ListShelvesPagedResponse callApiAndCreate(
-        UnaryCallable<ListShelvesRequest, ListShelvesResponse> callable,
-        PagedListDescriptor<ListShelvesRequest, ListShelvesResponse, Shelf> pageDescriptor,
-        ListShelvesRequest request,
-        CallContext callContext) {
-      return new ListShelvesPagedResponse(ListShelvesPage.callApiAndCreate(callable, pageDescriptor, request, callContext));
+    public static ListShelvesPagedResponse create(
+        PageContext<ListShelvesRequest, ListShelvesResponse, Shelf> context,
+        ListShelvesResponse response) {
+      ListShelvesPage page = new ListShelvesPage(context, response);
+      return new ListShelvesPagedResponse(page);
     }
 
     private ListShelvesPagedResponse(ListShelvesPage page) {
-      this.page = page;
-    }
-
-    @Override
-    public ListShelvesPage getPage() {
-      return page;
-    }
-
-    @Override
-    public Iterable<ListShelvesPage> iteratePages() {
-      return page.iteratePages();
-    }
-
-    @Override
-    public ListShelvesFixedSizeCollection expandToFixedSizeCollection(int collectionSize) {
-      return ListShelvesFixedSizeCollection.expandPage(page, collectionSize);
-    }
-
-    @Override
-    public Iterable<ListShelvesFixedSizeCollection> iterateFixedSizeCollections(final int collectionSize) {
-      return expandToFixedSizeCollection(collectionSize).iterateCollections();
+      super(page, ListShelvesFixedSizeCollection.createEmptyCollection());
     }
 
 
   }
 
-  public static class ListShelvesPage extends AbstractPage<ListShelvesRequest, ListShelvesResponse, Shelf> {
-
-    private static final PageFactory<ListShelvesRequest, ListShelvesResponse, Shelf, ListShelvesPage> PAGE_FACTORY =
-      new PageFactory<ListShelvesRequest, ListShelvesResponse, Shelf, ListShelvesPage>() {
-        @Override
-        public ListShelvesPage createPage(
-            UnaryCallable<ListShelvesRequest, ListShelvesResponse> callable,
-            PagedListDescriptor<ListShelvesRequest, ListShelvesResponse, Shelf> pageDescriptor,
-            ListShelvesRequest request,
-            CallContext context,
-            ListShelvesResponse response) {
-          return new ListShelvesPage(callable, pageDescriptor, request, context, response);
-        }
-      };
-
-    public static ListShelvesPage callApiAndCreate(UnaryCallable<ListShelvesRequest, ListShelvesResponse> callable,
-        PagedListDescriptor<ListShelvesRequest, ListShelvesResponse, Shelf> pageDescriptor,
-        ListShelvesRequest request,
-        CallContext context) {
-      return callApiAndCreate(PAGE_FACTORY, callable, pageDescriptor, request, context);
-    }
+  public static class ListShelvesPage extends AbstractPage<
+      ListShelvesRequest,
+      ListShelvesResponse,
+      Shelf,
+      ListShelvesPage> {
 
     private ListShelvesPage(
-        UnaryCallable<ListShelvesRequest, ListShelvesResponse> callable,
-        PagedListDescriptor<ListShelvesRequest, ListShelvesResponse, Shelf> pageDescriptor,
-        ListShelvesRequest request,
-        CallContext context,
+        PageContext<ListShelvesRequest, ListShelvesResponse, Shelf> context,
         ListShelvesResponse response) {
-      super(callable, pageDescriptor, request, context, response);
+      super(context, response);
     }
 
     @Override
-    public ListShelvesPage getNextPage() {
-      return getNextPage(PAGE_FACTORY);
-    }
-
-    @Override
-    public ListShelvesPage getNextPage(int pageSize) {
-      return getNextPage(PAGE_FACTORY, pageSize);
-    }
-
-    private Iterable<ListShelvesPage> iteratePages() {
-      return iterate(PAGE_FACTORY, this);
+    protected ListShelvesPage createPage(
+        PageContext<ListShelvesRequest, ListShelvesResponse, Shelf> context,
+        ListShelvesResponse response) {
+      return new ListShelvesPage(context, response);
     }
 
 
   }
 
-  public static class ListShelvesFixedSizeCollection
-      extends AbstractFixedSizeCollection<ListShelvesRequest, ListShelvesResponse, Shelf> {
-
-    private static final CollectionFactory<ListShelvesFixedSizeCollection, ListShelvesPage> SIZED_COLLECTION_FACTORY =
-      new CollectionFactory<ListShelvesFixedSizeCollection, ListShelvesPage>() {
-        @Override
-        public ListShelvesFixedSizeCollection createCollection(
-            final ListShelvesPage page, final int collectionSize) {
-          List<ListShelvesPage> pages =
-              getPages(ListShelvesPage.PAGE_FACTORY, page, collectionSize);
-          return new ListShelvesFixedSizeCollection(pages, collectionSize);
-        }
-      };
-
-    private static ListShelvesFixedSizeCollection expandPage(
-        final ListShelvesPage firstPage, final int collectionSize) {
-      return expandPage(SIZED_COLLECTION_FACTORY, firstPage, collectionSize);
-    }
+  public static class ListShelvesFixedSizeCollection extends AbstractFixedSizeCollection<
+      ListShelvesRequest,
+      ListShelvesResponse,
+      Shelf,
+      ListShelvesPage,
+      ListShelvesFixedSizeCollection> {
 
     private ListShelvesFixedSizeCollection(List<ListShelvesPage> pages, int collectionSize) {
       super(pages, collectionSize);
     }
 
-    @Override
-    public ListShelvesFixedSizeCollection getNextCollection() {
-      return getNextCollection(SIZED_COLLECTION_FACTORY, ListShelvesPage.PAGE_FACTORY);
+    private ListShelvesFixedSizeCollection() {
+      super();
     }
 
-    private Iterable<ListOperationsFixedSizeCollection> iterateCollections() {
-      return iterate(SIZED_COLLECTION_FACTORY, ListShelvesPage.PAGE_FACTORY, this);
+    private static ListShelvesFixedSizeCollection createEmptyCollection() {
+      return new ListShelvesFixedSizeCollection();
+    }
+
+    @Override
+    protected ListShelvesFixedSizeCollection createCollection(
+        List<ListShelvesPage> pages, int collectionSize) {
+      return new ListShelvesFixedSizeCollection(pages, collectionSize);
     }
   }
 
-  public static class ListBooksPagedResponse extends AbstractPagedListResponse<ListBooksRequest, ListBooksResponse, Book> {
+  public static class ListBooksPagedResponse extends AbstractPagedListResponse<
+      ListBooksRequest,
+      ListBooksResponse,
+      Book,
+      ListBooksPage,
+      ListBooksFixedSizeCollection> {
 
-    private final ListBooksPage page;
-
-    public static ListBooksPagedResponse callApiAndCreate(
-        UnaryCallable<ListBooksRequest, ListBooksResponse> callable,
-        PagedListDescriptor<ListBooksRequest, ListBooksResponse, Book> pageDescriptor,
-        ListBooksRequest request,
-        CallContext callContext) {
-      return new ListBooksPagedResponse(ListBooksPage.callApiAndCreate(callable, pageDescriptor, request, callContext));
+    public static ListBooksPagedResponse create(
+        PageContext<ListBooksRequest, ListBooksResponse, Book> context,
+        ListBooksResponse response) {
+      ListBooksPage page = new ListBooksPage(context, response);
+      return new ListBooksPagedResponse(page);
     }
 
     private ListBooksPagedResponse(ListBooksPage page) {
-      this.page = page;
-    }
-
-    @Override
-    public ListBooksPage getPage() {
-      return page;
-    }
-
-    @Override
-    public Iterable<ListBooksPage> iteratePages() {
-      return page.iteratePages();
-    }
-
-    @Override
-    public ListBooksFixedSizeCollection expandToFixedSizeCollection(int collectionSize) {
-      return ListBooksFixedSizeCollection.expandPage(page, collectionSize);
-    }
-
-    @Override
-    public Iterable<ListBooksFixedSizeCollection> iterateFixedSizeCollections(final int collectionSize) {
-      return expandToFixedSizeCollection(collectionSize).iterateCollections();
+      super(page, ListBooksFixedSizeCollection.createEmptyCollection());
     }
 
 
   }
 
-  public static class ListBooksPage extends AbstractPage<ListBooksRequest, ListBooksResponse, Book> {
-
-    private static final PageFactory<ListBooksRequest, ListBooksResponse, Book, ListBooksPage> PAGE_FACTORY =
-      new PageFactory<ListBooksRequest, ListBooksResponse, Book, ListBooksPage>() {
-        @Override
-        public ListBooksPage createPage(
-            UnaryCallable<ListBooksRequest, ListBooksResponse> callable,
-            PagedListDescriptor<ListBooksRequest, ListBooksResponse, Book> pageDescriptor,
-            ListBooksRequest request,
-            CallContext context,
-            ListBooksResponse response) {
-          return new ListBooksPage(callable, pageDescriptor, request, context, response);
-        }
-      };
-
-    public static ListBooksPage callApiAndCreate(UnaryCallable<ListBooksRequest, ListBooksResponse> callable,
-        PagedListDescriptor<ListBooksRequest, ListBooksResponse, Book> pageDescriptor,
-        ListBooksRequest request,
-        CallContext context) {
-      return callApiAndCreate(PAGE_FACTORY, callable, pageDescriptor, request, context);
-    }
+  public static class ListBooksPage extends AbstractPage<
+      ListBooksRequest,
+      ListBooksResponse,
+      Book,
+      ListBooksPage> {
 
     private ListBooksPage(
-        UnaryCallable<ListBooksRequest, ListBooksResponse> callable,
-        PagedListDescriptor<ListBooksRequest, ListBooksResponse, Book> pageDescriptor,
-        ListBooksRequest request,
-        CallContext context,
+        PageContext<ListBooksRequest, ListBooksResponse, Book> context,
         ListBooksResponse response) {
-      super(callable, pageDescriptor, request, context, response);
+      super(context, response);
     }
 
     @Override
-    public ListBooksPage getNextPage() {
-      return getNextPage(PAGE_FACTORY);
-    }
-
-    @Override
-    public ListBooksPage getNextPage(int pageSize) {
-      return getNextPage(PAGE_FACTORY, pageSize);
-    }
-
-    private Iterable<ListBooksPage> iteratePages() {
-      return iterate(PAGE_FACTORY, this);
+    protected ListBooksPage createPage(
+        PageContext<ListBooksRequest, ListBooksResponse, Book> context,
+        ListBooksResponse response) {
+      return new ListBooksPage(context, response);
     }
 
 
   }
 
-  public static class ListBooksFixedSizeCollection
-      extends AbstractFixedSizeCollection<ListBooksRequest, ListBooksResponse, Book> {
-
-    private static final CollectionFactory<ListBooksFixedSizeCollection, ListBooksPage> SIZED_COLLECTION_FACTORY =
-      new CollectionFactory<ListBooksFixedSizeCollection, ListBooksPage>() {
-        @Override
-        public ListBooksFixedSizeCollection createCollection(
-            final ListBooksPage page, final int collectionSize) {
-          List<ListBooksPage> pages =
-              getPages(ListBooksPage.PAGE_FACTORY, page, collectionSize);
-          return new ListBooksFixedSizeCollection(pages, collectionSize);
-        }
-      };
-
-    private static ListBooksFixedSizeCollection expandPage(
-        final ListBooksPage firstPage, final int collectionSize) {
-      return expandPage(SIZED_COLLECTION_FACTORY, firstPage, collectionSize);
-    }
+  public static class ListBooksFixedSizeCollection extends AbstractFixedSizeCollection<
+      ListBooksRequest,
+      ListBooksResponse,
+      Book,
+      ListBooksPage,
+      ListBooksFixedSizeCollection> {
 
     private ListBooksFixedSizeCollection(List<ListBooksPage> pages, int collectionSize) {
       super(pages, collectionSize);
     }
 
-    @Override
-    public ListBooksFixedSizeCollection getNextCollection() {
-      return getNextCollection(SIZED_COLLECTION_FACTORY, ListBooksPage.PAGE_FACTORY);
+    private ListBooksFixedSizeCollection() {
+      super();
     }
 
-    private Iterable<ListOperationsFixedSizeCollection> iterateCollections() {
-      return iterate(SIZED_COLLECTION_FACTORY, ListBooksPage.PAGE_FACTORY, this);
+    private static ListBooksFixedSizeCollection createEmptyCollection() {
+      return new ListBooksFixedSizeCollection();
+    }
+
+    @Override
+    protected ListBooksFixedSizeCollection createCollection(
+        List<ListBooksPage> pages, int collectionSize) {
+      return new ListBooksFixedSizeCollection(pages, collectionSize);
     }
   }
 
-  public static class ListStringsPagedResponse extends AbstractPagedListResponse<ListStringsRequest, ListStringsResponse, String> {
+  public static class ListStringsPagedResponse extends AbstractPagedListResponse<
+      ListStringsRequest,
+      ListStringsResponse,
+      String,
+      ListStringsPage,
+      ListStringsFixedSizeCollection> {
 
-    private final ListStringsPage page;
-
-    public static ListStringsPagedResponse callApiAndCreate(
-        UnaryCallable<ListStringsRequest, ListStringsResponse> callable,
-        PagedListDescriptor<ListStringsRequest, ListStringsResponse, String> pageDescriptor,
-        ListStringsRequest request,
-        CallContext callContext) {
-      return new ListStringsPagedResponse(ListStringsPage.callApiAndCreate(callable, pageDescriptor, request, callContext));
+    public static ListStringsPagedResponse create(
+        PageContext<ListStringsRequest, ListStringsResponse, String> context,
+        ListStringsResponse response) {
+      ListStringsPage page = new ListStringsPage(context, response);
+      return new ListStringsPagedResponse(page);
     }
 
     private ListStringsPagedResponse(ListStringsPage page) {
-      this.page = page;
-    }
-
-    @Override
-    public ListStringsPage getPage() {
-      return page;
-    }
-
-    @Override
-    public Iterable<ListStringsPage> iteratePages() {
-      return page.iteratePages();
-    }
-
-    @Override
-    public ListStringsFixedSizeCollection expandToFixedSizeCollection(int collectionSize) {
-      return ListStringsFixedSizeCollection.expandPage(page, collectionSize);
-    }
-
-    @Override
-    public Iterable<ListStringsFixedSizeCollection> iterateFixedSizeCollections(final int collectionSize) {
-      return expandToFixedSizeCollection(collectionSize).iterateCollections();
+      super(page, ListStringsFixedSizeCollection.createEmptyCollection());
     }
     public Iterable<ResourceName> iterateAllAsResourceName() {
       return Iterables.transform(iterateAll(), new Function<String, ResourceName>() {
@@ -342,49 +220,23 @@ public class PagedResponseWrappers {
 
   }
 
-  public static class ListStringsPage extends AbstractPage<ListStringsRequest, ListStringsResponse, String> {
-
-    private static final PageFactory<ListStringsRequest, ListStringsResponse, String, ListStringsPage> PAGE_FACTORY =
-      new PageFactory<ListStringsRequest, ListStringsResponse, String, ListStringsPage>() {
-        @Override
-        public ListStringsPage createPage(
-            UnaryCallable<ListStringsRequest, ListStringsResponse> callable,
-            PagedListDescriptor<ListStringsRequest, ListStringsResponse, String> pageDescriptor,
-            ListStringsRequest request,
-            CallContext context,
-            ListStringsResponse response) {
-          return new ListStringsPage(callable, pageDescriptor, request, context, response);
-        }
-      };
-
-    public static ListStringsPage callApiAndCreate(UnaryCallable<ListStringsRequest, ListStringsResponse> callable,
-        PagedListDescriptor<ListStringsRequest, ListStringsResponse, String> pageDescriptor,
-        ListStringsRequest request,
-        CallContext context) {
-      return callApiAndCreate(PAGE_FACTORY, callable, pageDescriptor, request, context);
-    }
+  public static class ListStringsPage extends AbstractPage<
+      ListStringsRequest,
+      ListStringsResponse,
+      String,
+      ListStringsPage> {
 
     private ListStringsPage(
-        UnaryCallable<ListStringsRequest, ListStringsResponse> callable,
-        PagedListDescriptor<ListStringsRequest, ListStringsResponse, String> pageDescriptor,
-        ListStringsRequest request,
-        CallContext context,
+        PageContext<ListStringsRequest, ListStringsResponse, String> context,
         ListStringsResponse response) {
-      super(callable, pageDescriptor, request, context, response);
+      super(context, response);
     }
 
     @Override
-    public ListStringsPage getNextPage() {
-      return getNextPage(PAGE_FACTORY);
-    }
-
-    @Override
-    public ListStringsPage getNextPage(int pageSize) {
-      return getNextPage(PAGE_FACTORY, pageSize);
-    }
-
-    private Iterable<ListStringsPage> iteratePages() {
-      return iterate(PAGE_FACTORY, this);
+    protected ListStringsPage createPage(
+        PageContext<ListStringsRequest, ListStringsResponse, String> context,
+        ListStringsResponse response) {
+      return new ListStringsPage(context, response);
     }
     public Iterable<ResourceName> iterateAllAsResourceName() {
       return Iterables.transform(iterateAll(), new Function<String, ResourceName>() {
@@ -398,73 +250,48 @@ public class PagedResponseWrappers {
 
   }
 
-  public static class ListStringsFixedSizeCollection
-      extends AbstractFixedSizeCollection<ListStringsRequest, ListStringsResponse, String> {
-
-    private static final CollectionFactory<ListStringsFixedSizeCollection, ListStringsPage> SIZED_COLLECTION_FACTORY =
-      new CollectionFactory<ListStringsFixedSizeCollection, ListStringsPage>() {
-        @Override
-        public ListStringsFixedSizeCollection createCollection(
-            final ListStringsPage page, final int collectionSize) {
-          List<ListStringsPage> pages =
-              getPages(ListStringsPage.PAGE_FACTORY, page, collectionSize);
-          return new ListStringsFixedSizeCollection(pages, collectionSize);
-        }
-      };
-
-    private static ListStringsFixedSizeCollection expandPage(
-        final ListStringsPage firstPage, final int collectionSize) {
-      return expandPage(SIZED_COLLECTION_FACTORY, firstPage, collectionSize);
-    }
+  public static class ListStringsFixedSizeCollection extends AbstractFixedSizeCollection<
+      ListStringsRequest,
+      ListStringsResponse,
+      String,
+      ListStringsPage,
+      ListStringsFixedSizeCollection> {
 
     private ListStringsFixedSizeCollection(List<ListStringsPage> pages, int collectionSize) {
       super(pages, collectionSize);
     }
 
-    @Override
-    public ListStringsFixedSizeCollection getNextCollection() {
-      return getNextCollection(SIZED_COLLECTION_FACTORY, ListStringsPage.PAGE_FACTORY);
+    private ListStringsFixedSizeCollection() {
+      super();
     }
 
-    private Iterable<ListOperationsFixedSizeCollection> iterateCollections() {
-      return iterate(SIZED_COLLECTION_FACTORY, ListStringsPage.PAGE_FACTORY, this);
+    private static ListStringsFixedSizeCollection createEmptyCollection() {
+      return new ListStringsFixedSizeCollection();
+    }
+
+    @Override
+    protected ListStringsFixedSizeCollection createCollection(
+        List<ListStringsPage> pages, int collectionSize) {
+      return new ListStringsFixedSizeCollection(pages, collectionSize);
     }
   }
 
-  public static class FindRelatedBooksPagedResponse extends AbstractPagedListResponse<FindRelatedBooksRequest, FindRelatedBooksResponse, String> {
+  public static class FindRelatedBooksPagedResponse extends AbstractPagedListResponse<
+      FindRelatedBooksRequest,
+      FindRelatedBooksResponse,
+      String,
+      FindRelatedBooksPage,
+      FindRelatedBooksFixedSizeCollection> {
 
-    private final FindRelatedBooksPage page;
-
-    public static FindRelatedBooksPagedResponse callApiAndCreate(
-        UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> callable,
-        PagedListDescriptor<FindRelatedBooksRequest, FindRelatedBooksResponse, String> pageDescriptor,
-        FindRelatedBooksRequest request,
-        CallContext callContext) {
-      return new FindRelatedBooksPagedResponse(FindRelatedBooksPage.callApiAndCreate(callable, pageDescriptor, request, callContext));
+    public static FindRelatedBooksPagedResponse create(
+        PageContext<FindRelatedBooksRequest, FindRelatedBooksResponse, String> context,
+        FindRelatedBooksResponse response) {
+      FindRelatedBooksPage page = new FindRelatedBooksPage(context, response);
+      return new FindRelatedBooksPagedResponse(page);
     }
 
     private FindRelatedBooksPagedResponse(FindRelatedBooksPage page) {
-      this.page = page;
-    }
-
-    @Override
-    public FindRelatedBooksPage getPage() {
-      return page;
-    }
-
-    @Override
-    public Iterable<FindRelatedBooksPage> iteratePages() {
-      return page.iteratePages();
-    }
-
-    @Override
-    public FindRelatedBooksFixedSizeCollection expandToFixedSizeCollection(int collectionSize) {
-      return FindRelatedBooksFixedSizeCollection.expandPage(page, collectionSize);
-    }
-
-    @Override
-    public Iterable<FindRelatedBooksFixedSizeCollection> iterateFixedSizeCollections(final int collectionSize) {
-      return expandToFixedSizeCollection(collectionSize).iterateCollections();
+      super(page, FindRelatedBooksFixedSizeCollection.createEmptyCollection());
     }
     public Iterable<BookName> iterateAllAsBookName() {
       return Iterables.transform(iterateAll(), new Function<String, BookName>() {
@@ -478,49 +305,23 @@ public class PagedResponseWrappers {
 
   }
 
-  public static class FindRelatedBooksPage extends AbstractPage<FindRelatedBooksRequest, FindRelatedBooksResponse, String> {
-
-    private static final PageFactory<FindRelatedBooksRequest, FindRelatedBooksResponse, String, FindRelatedBooksPage> PAGE_FACTORY =
-      new PageFactory<FindRelatedBooksRequest, FindRelatedBooksResponse, String, FindRelatedBooksPage>() {
-        @Override
-        public FindRelatedBooksPage createPage(
-            UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> callable,
-            PagedListDescriptor<FindRelatedBooksRequest, FindRelatedBooksResponse, String> pageDescriptor,
-            FindRelatedBooksRequest request,
-            CallContext context,
-            FindRelatedBooksResponse response) {
-          return new FindRelatedBooksPage(callable, pageDescriptor, request, context, response);
-        }
-      };
-
-    public static FindRelatedBooksPage callApiAndCreate(UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> callable,
-        PagedListDescriptor<FindRelatedBooksRequest, FindRelatedBooksResponse, String> pageDescriptor,
-        FindRelatedBooksRequest request,
-        CallContext context) {
-      return callApiAndCreate(PAGE_FACTORY, callable, pageDescriptor, request, context);
-    }
+  public static class FindRelatedBooksPage extends AbstractPage<
+      FindRelatedBooksRequest,
+      FindRelatedBooksResponse,
+      String,
+      FindRelatedBooksPage> {
 
     private FindRelatedBooksPage(
-        UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> callable,
-        PagedListDescriptor<FindRelatedBooksRequest, FindRelatedBooksResponse, String> pageDescriptor,
-        FindRelatedBooksRequest request,
-        CallContext context,
+        PageContext<FindRelatedBooksRequest, FindRelatedBooksResponse, String> context,
         FindRelatedBooksResponse response) {
-      super(callable, pageDescriptor, request, context, response);
+      super(context, response);
     }
 
     @Override
-    public FindRelatedBooksPage getNextPage() {
-      return getNextPage(PAGE_FACTORY);
-    }
-
-    @Override
-    public FindRelatedBooksPage getNextPage(int pageSize) {
-      return getNextPage(PAGE_FACTORY, pageSize);
-    }
-
-    private Iterable<FindRelatedBooksPage> iteratePages() {
-      return iterate(PAGE_FACTORY, this);
+    protected FindRelatedBooksPage createPage(
+        PageContext<FindRelatedBooksRequest, FindRelatedBooksResponse, String> context,
+        FindRelatedBooksResponse response) {
+      return new FindRelatedBooksPage(context, response);
     }
     public Iterable<BookName> iterateAllAsBookName() {
       return Iterables.transform(iterateAll(), new Function<String, BookName>() {
@@ -534,36 +335,29 @@ public class PagedResponseWrappers {
 
   }
 
-  public static class FindRelatedBooksFixedSizeCollection
-      extends AbstractFixedSizeCollection<FindRelatedBooksRequest, FindRelatedBooksResponse, String> {
-
-    private static final CollectionFactory<FindRelatedBooksFixedSizeCollection, FindRelatedBooksPage> SIZED_COLLECTION_FACTORY =
-      new CollectionFactory<FindRelatedBooksFixedSizeCollection, FindRelatedBooksPage>() {
-        @Override
-        public FindRelatedBooksFixedSizeCollection createCollection(
-            final FindRelatedBooksPage page, final int collectionSize) {
-          List<FindRelatedBooksPage> pages =
-              getPages(FindRelatedBooksPage.PAGE_FACTORY, page, collectionSize);
-          return new FindRelatedBooksFixedSizeCollection(pages, collectionSize);
-        }
-      };
-
-    private static FindRelatedBooksFixedSizeCollection expandPage(
-        final FindRelatedBooksPage firstPage, final int collectionSize) {
-      return expandPage(SIZED_COLLECTION_FACTORY, firstPage, collectionSize);
-    }
+  public static class FindRelatedBooksFixedSizeCollection extends AbstractFixedSizeCollection<
+      FindRelatedBooksRequest,
+      FindRelatedBooksResponse,
+      String,
+      FindRelatedBooksPage,
+      FindRelatedBooksFixedSizeCollection> {
 
     private FindRelatedBooksFixedSizeCollection(List<FindRelatedBooksPage> pages, int collectionSize) {
       super(pages, collectionSize);
     }
 
-    @Override
-    public FindRelatedBooksFixedSizeCollection getNextCollection() {
-      return getNextCollection(SIZED_COLLECTION_FACTORY, FindRelatedBooksPage.PAGE_FACTORY);
+    private FindRelatedBooksFixedSizeCollection() {
+      super();
     }
 
-    private Iterable<ListOperationsFixedSizeCollection> iterateCollections() {
-      return iterate(SIZED_COLLECTION_FACTORY, FindRelatedBooksPage.PAGE_FACTORY, this);
+    private static FindRelatedBooksFixedSizeCollection createEmptyCollection() {
+      return new FindRelatedBooksFixedSizeCollection();
+    }
+
+    @Override
+    protected FindRelatedBooksFixedSizeCollection createCollection(
+        List<FindRelatedBooksPage> pages, int collectionSize) {
+      return new FindRelatedBooksFixedSizeCollection(pages, collectionSize);
     }
   }
 

@@ -432,11 +432,13 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("com.google.api.gax.core.GoogleCredentialsProvider");
     typeTable.saveNicknameFor("com.google.api.gax.core.RetrySettings");
     typeTable.saveNicknameFor("com.google.api.gax.core.PropertiesProvider");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.ApiExceptions");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.ChannelProvider");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.ClientSettings");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.ExecutorProvider");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.InstantiatingChannelProvider");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.InstantiatingExecutorProvider");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.PageContext");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.SimpleCallSettings");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryCallSettings");
     typeTable.saveNicknameFor("com.google.auth.Credentials");
@@ -487,13 +489,11 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("com.google.api.gax.core.FixedSizeCollection");
     typeTable.saveNicknameFor("com.google.api.gax.core.Page");
     typeTable.saveNicknameFor("com.google.api.gax.core.PagedListResponse");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.CallContext");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedListDescriptor");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.AbstractPage");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.AbstractPagedListResponse");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.AbstractFixedSizeCollection");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.ApiExceptions");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryCallable");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.PageContext");
     typeTable.saveNicknameFor("com.google.common.base.Function");
     typeTable.saveNicknameFor("com.google.common.collect.Iterables");
     typeTable.saveNicknameFor("com.google.protobuf.ExperimentalApi");

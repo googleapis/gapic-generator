@@ -14,121 +14,70 @@
   public class {@pagedResponseClasses.name} {
 
     @join pagedResponseClass : pagedResponseClasses.pagedResponseWrapperList
-      public static class {@pagedResponseClass.name} extends AbstractPagedListResponse<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}, {@pagedResponseClass.resourceTypeName}> {
+      public static class {@pagedResponseClass.name} extends AbstractPagedListResponse<
+          {@pagedResponseClass.requestTypeName},
+          {@pagedResponseClass.responseTypeName},
+          {@pagedResponseClass.resourceTypeName},
+          {@pagedResponseClass.pageName},
+          {@pagedResponseClass.fixedSizeCollectionName}> {
 
-        private final {@pagedResponseClass.pageName} page;
-
-        public static {@pagedResponseClass.name} callApiAndCreate(
-            UnaryCallable<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}> callable,
-            PagedListDescriptor<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}, {@pagedResponseClass.resourceTypeName}> pageDescriptor,
-            {@pagedResponseClass.requestTypeName} request,
-            CallContext callContext) {
-          return new {@pagedResponseClass.name}({@pagedResponseClass.pageName}.callApiAndCreate(callable, pageDescriptor, request, callContext));
+        public static {@pagedResponseClass.name} create(
+            PageContext<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}, {@pagedResponseClass.resourceTypeName}> context,
+            {@pagedResponseClass.responseTypeName} response) {
+          {@pagedResponseClass.pageName} page = new {@pagedResponseClass.pageName}(context, response);
+          return new {@pagedResponseClass.name}(page);
         }
 
         private {@pagedResponseClass.name}({@pagedResponseClass.pageName} page) {
-          this.page = page;
-        }
-
-        @@Override
-        public {@pagedResponseClass.pageName} getPage() {
-          return page;
-        }
-
-        @@Override
-        public Iterable<{@pagedResponseClass.pageName}> iteratePages() {
-          return page.iteratePages();
-        }
-
-        @@Override
-        public {@pagedResponseClass.fixedSizeCollectionName} expandToFixedSizeCollection(int collectionSize) {
-          return {@pagedResponseClass.fixedSizeCollectionName}.expandPage(page, collectionSize);
-        }
-
-        @@Override
-        public Iterable<{@pagedResponseClass.fixedSizeCollectionName}> iterateFixedSizeCollections(final int collectionSize) {
-          return expandToFixedSizeCollection(collectionSize).iterateCollections();
+          super(page, {@pagedResponseClass.fixedSizeCollectionName}.createEmptyCollection());
         }
         {@iterateMethods(pagedResponseClass)}
       }
 
-      public static class {@pagedResponseClass.pageName} extends AbstractPage<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}, {@pagedResponseClass.resourceTypeName}> {
-
-        private static final PageFactory<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}, {@pagedResponseClass.resourceTypeName}, {@pagedResponseClass.pageName}> PAGE_FACTORY =
-          new PageFactory<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}, {@pagedResponseClass.resourceTypeName}, {@pagedResponseClass.pageName}>() {
-            @@Override
-            public {@pagedResponseClass.pageName} createPage(
-                UnaryCallable<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}> callable,
-                PagedListDescriptor<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}, {@pagedResponseClass.resourceTypeName}> pageDescriptor,
-                {@pagedResponseClass.requestTypeName} request,
-                CallContext context,
-                {@pagedResponseClass.responseTypeName} response) {
-              return new {@pagedResponseClass.pageName}(callable, pageDescriptor, request, context, response);
-            }
-          };
-
-        public static {@pagedResponseClass.pageName} callApiAndCreate(UnaryCallable<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}> callable,
-            PagedListDescriptor<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}, {@pagedResponseClass.resourceTypeName}> pageDescriptor,
-            {@pagedResponseClass.requestTypeName} request,
-            CallContext context) {
-          return callApiAndCreate(PAGE_FACTORY, callable, pageDescriptor, request, context);
-        }
+      public static class {@pagedResponseClass.pageName} extends AbstractPage<
+          {@pagedResponseClass.requestTypeName},
+          {@pagedResponseClass.responseTypeName},
+          {@pagedResponseClass.resourceTypeName},
+          {@pagedResponseClass.pageName}> {
 
         private {@pagedResponseClass.pageName}(
-            UnaryCallable<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}> callable,
-            PagedListDescriptor<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}, {@pagedResponseClass.resourceTypeName}> pageDescriptor,
-            {@pagedResponseClass.requestTypeName} request,
-            CallContext context,
+            PageContext<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}, {@pagedResponseClass.resourceTypeName}> context,
             {@pagedResponseClass.responseTypeName} response) {
-          super(callable, pageDescriptor, request, context, response);
+          super(context, response);
         }
 
         @@Override
-        public {@pagedResponseClass.pageName} getNextPage() {
-          return getNextPage(PAGE_FACTORY);
-        }
-
-        @@Override
-        public {@pagedResponseClass.pageName} getNextPage(int pageSize) {
-          return getNextPage(PAGE_FACTORY, pageSize);
-        }
-
-        private Iterable<{@pagedResponseClass.pageName}> iteratePages() {
-          return iterate(PAGE_FACTORY, this);
+        protected {@pagedResponseClass.pageName} createPage(
+            PageContext<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}, {@pagedResponseClass.resourceTypeName}> context,
+            {@pagedResponseClass.responseTypeName} response) {
+          return new {@pagedResponseClass.pageName}(context, response);
         }
         {@iterateMethods(pagedResponseClass)}
       }
 
-      public static class {@pagedResponseClass.fixedSizeCollectionName}
-          extends AbstractFixedSizeCollection<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}, {@pagedResponseClass.resourceTypeName}> {
-
-        private static final CollectionFactory<{@pagedResponseClass.fixedSizeCollectionName}, {@pagedResponseClass.pageName}> SIZED_COLLECTION_FACTORY =
-          new CollectionFactory<{@pagedResponseClass.fixedSizeCollectionName}, {@pagedResponseClass.pageName}>() {
-            @@Override
-            public {@pagedResponseClass.fixedSizeCollectionName} createCollection(
-                final {@pagedResponseClass.pageName} page, final int collectionSize) {
-              List<{@pagedResponseClass.pageName}> pages =
-                  getPages({@pagedResponseClass.pageName}.PAGE_FACTORY, page, collectionSize);
-              return new {@pagedResponseClass.fixedSizeCollectionName}(pages, collectionSize);
-            }
-          };
-
-        private static {@pagedResponseClass.fixedSizeCollectionName} expandPage(
-            final {@pagedResponseClass.pageName} firstPage, final int collectionSize) {
-          return expandPage(SIZED_COLLECTION_FACTORY, firstPage, collectionSize);
-        }
+      public static class {@pagedResponseClass.fixedSizeCollectionName} extends AbstractFixedSizeCollection<
+          {@pagedResponseClass.requestTypeName},
+          {@pagedResponseClass.responseTypeName},
+          {@pagedResponseClass.resourceTypeName},
+          {@pagedResponseClass.pageName},
+          {@pagedResponseClass.fixedSizeCollectionName}> {
 
         private {@pagedResponseClass.fixedSizeCollectionName}(List<{@pagedResponseClass.pageName}> pages, int collectionSize) {
           super(pages, collectionSize);
         }
 
-        @@Override
-        public {@pagedResponseClass.fixedSizeCollectionName} getNextCollection() {
-          return getNextCollection(SIZED_COLLECTION_FACTORY, {@pagedResponseClass.pageName}.PAGE_FACTORY);
+        private {@pagedResponseClass.fixedSizeCollectionName}() {
+          super();
         }
 
-        private Iterable<ListOperationsFixedSizeCollection> iterateCollections() {
-          return iterate(SIZED_COLLECTION_FACTORY, {@pagedResponseClass.pageName}.PAGE_FACTORY, this);
+        private static {@pagedResponseClass.fixedSizeCollectionName} createEmptyCollection() {
+          return new {@pagedResponseClass.fixedSizeCollectionName}();
+        }
+
+        @@Override
+        protected {@pagedResponseClass.fixedSizeCollectionName} createCollection(
+            List<{@pagedResponseClass.pageName}> pages, int collectionSize) {
+          return new {@pagedResponseClass.fixedSizeCollectionName}(pages, collectionSize);
         }
       }
 

@@ -313,11 +313,15 @@
     private static final PagedListResponseFactory<{@factory.requestTypeName}, {@factory.responseTypeName}, {@factory.pagedListResponseTypeName}> {@factory.name} =
         new PagedListResponseFactory<{@factory.requestTypeName}, {@factory.responseTypeName}, {@factory.pagedListResponseTypeName}>() {
           @@Override
-          public {@factory.pagedListResponseTypeName} createPagedListResponse(
+          public {@factory.pagedListResponseTypeName} callAndCreateResponse(
               UnaryCallable<{@factory.requestTypeName}, {@factory.responseTypeName}> callable,
               {@factory.requestTypeName} request,
               CallContext context) {
-            return {@factory.pagedListResponseTypeName}.callApiAndCreate(callable, {@factory.pageStreamingDescriptorName}, request, context);
+            PageContext<{@factory.requestTypeName}, {@factory.responseTypeName}, {@factory.resourceTypeName}> pageContext =
+                PageContext.create(callable, {@factory.pageStreamingDescriptorName}, request, context);
+            {@factory.responseTypeName} response =
+                ApiExceptions.callAndTranslateApiException(callable.futureCall(request, context));
+            return {@factory.pagedListResponseTypeName}.create(pageContext, response);
           }
         };
     {@""}

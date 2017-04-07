@@ -25,6 +25,7 @@ import com.google.api.gax.core.FlowController.LimitExceededBehavior;
 import com.google.api.gax.core.GoogleCredentialsProvider;
 import com.google.api.gax.core.PropertiesProvider;
 import com.google.api.gax.core.RetrySettings;
+import com.google.api.gax.grpc.ApiExceptions;
 import com.google.api.gax.grpc.BatchedRequestIssuer;
 import com.google.api.gax.grpc.BatchingCallSettings;
 import com.google.api.gax.grpc.BatchingDescriptor;
@@ -35,6 +36,7 @@ import com.google.api.gax.grpc.ExecutorProvider;
 import com.google.api.gax.grpc.InstantiatingChannelProvider;
 import com.google.api.gax.grpc.InstantiatingExecutorProvider;
 import com.google.api.gax.grpc.OperationCallSettings;
+import com.google.api.gax.grpc.PageContext;
 import com.google.api.gax.grpc.PagedCallSettings;
 import com.google.api.gax.grpc.PagedListDescriptor;
 import com.google.api.gax.grpc.PagedListResponseFactory;
@@ -627,44 +629,60 @@ public class LibrarySettings extends ClientSettings {
   private static final PagedListResponseFactory<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse> LIST_SHELVES_PAGE_STR_FACT =
       new PagedListResponseFactory<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse>() {
         @Override
-        public ListShelvesPagedResponse createPagedListResponse(
+        public ListShelvesPagedResponse callAndCreateResponse(
             UnaryCallable<ListShelvesRequest, ListShelvesResponse> callable,
             ListShelvesRequest request,
             CallContext context) {
-          return ListShelvesPagedResponse.callApiAndCreate(callable, LIST_SHELVES_PAGE_STR_DESC, request, context);
+          PageContext<ListShelvesRequest, ListShelvesResponse, Shelf> pageContext =
+              PageContext.create(callable, LIST_SHELVES_PAGE_STR_DESC, request, context);
+          ListShelvesResponse response =
+              ApiExceptions.callAndTranslateApiException(callable.futureCall(request, context));
+          return ListShelvesPagedResponse.create(pageContext, response);
         }
       };
 
   private static final PagedListResponseFactory<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse> LIST_BOOKS_PAGE_STR_FACT =
       new PagedListResponseFactory<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse>() {
         @Override
-        public ListBooksPagedResponse createPagedListResponse(
+        public ListBooksPagedResponse callAndCreateResponse(
             UnaryCallable<ListBooksRequest, ListBooksResponse> callable,
             ListBooksRequest request,
             CallContext context) {
-          return ListBooksPagedResponse.callApiAndCreate(callable, LIST_BOOKS_PAGE_STR_DESC, request, context);
+          PageContext<ListBooksRequest, ListBooksResponse, Book> pageContext =
+              PageContext.create(callable, LIST_BOOKS_PAGE_STR_DESC, request, context);
+          ListBooksResponse response =
+              ApiExceptions.callAndTranslateApiException(callable.futureCall(request, context));
+          return ListBooksPagedResponse.create(pageContext, response);
         }
       };
 
   private static final PagedListResponseFactory<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse> LIST_STRINGS_PAGE_STR_FACT =
       new PagedListResponseFactory<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse>() {
         @Override
-        public ListStringsPagedResponse createPagedListResponse(
+        public ListStringsPagedResponse callAndCreateResponse(
             UnaryCallable<ListStringsRequest, ListStringsResponse> callable,
             ListStringsRequest request,
             CallContext context) {
-          return ListStringsPagedResponse.callApiAndCreate(callable, LIST_STRINGS_PAGE_STR_DESC, request, context);
+          PageContext<ListStringsRequest, ListStringsResponse, String> pageContext =
+              PageContext.create(callable, LIST_STRINGS_PAGE_STR_DESC, request, context);
+          ListStringsResponse response =
+              ApiExceptions.callAndTranslateApiException(callable.futureCall(request, context));
+          return ListStringsPagedResponse.create(pageContext, response);
         }
       };
 
   private static final PagedListResponseFactory<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> FIND_RELATED_BOOKS_PAGE_STR_FACT =
       new PagedListResponseFactory<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse>() {
         @Override
-        public FindRelatedBooksPagedResponse createPagedListResponse(
+        public FindRelatedBooksPagedResponse callAndCreateResponse(
             UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> callable,
             FindRelatedBooksRequest request,
             CallContext context) {
-          return FindRelatedBooksPagedResponse.callApiAndCreate(callable, FIND_RELATED_BOOKS_PAGE_STR_DESC, request, context);
+          PageContext<FindRelatedBooksRequest, FindRelatedBooksResponse, String> pageContext =
+              PageContext.create(callable, FIND_RELATED_BOOKS_PAGE_STR_DESC, request, context);
+          FindRelatedBooksResponse response =
+              ApiExceptions.callAndTranslateApiException(callable.futureCall(request, context));
+          return FindRelatedBooksPagedResponse.create(pageContext, response);
         }
       };
 
