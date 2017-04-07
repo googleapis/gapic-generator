@@ -162,6 +162,15 @@
     tasks.uploadArchives.dependsOn(failUploadArchives)
   }
 
+  task checkOutGhPages {
+    if (!new File('tmp_gh-pages').exists()) {
+      exec {
+        commandLine 'git', 'clone', '--branch', 'gh-pages',
+            '--single-branch', 'https://github.com/googleapis/googleapis/', 'tmp_gh-pages'
+      }
+    }
+  }
+
   task copyFilesToGhPages {
     dependsOn 'checkOutGhPages'
     dependsOn 'javadoc'

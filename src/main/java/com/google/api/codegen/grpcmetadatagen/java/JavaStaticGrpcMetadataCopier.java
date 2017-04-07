@@ -20,7 +20,7 @@ import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -35,7 +35,8 @@ public class JavaStaticGrpcMetadataCopier {
           "gradle/wrapper/gradle-wrapper.jar",
           "gradle/wrapper/gradle-wrapper.properties",
           "gradlew.bat",
-          "PUBLISHING.md");
+          "PUBLISHING.md",
+          "templates/apidocs_index.html.template");
 
   private final String outputDir;
 
@@ -47,11 +48,17 @@ public class JavaStaticGrpcMetadataCopier {
     ImmutableMap.Builder<String, Doc> docBuilder = new ImmutableMap.Builder<String, Doc>();
     for (String staticFile : GRPC_STATIC_FILES) {
       Path staticFilePath = Paths.get(staticFile);
-      InputStream input =
+      URL input =
           JavaStaticGrpcMetadataCopier.class
-              .getResourceAsStream(Paths.get(RESOURCE_DIR, staticFile).toString());
+              .getResource(Paths.get(RESOURCE_DIR, staticFile).toString());
       createDirectoryIfNecessary(staticFilePath, outputDir);
-      Files.copy(input, Paths.get(outputDir, staticFile), StandardCopyOption.REPLACE_EXISTING);
+
+      Path output = Paths.get(outputDir, staticFile);
+      Files.copy(
+          Paths.get(input.getPath()),
+          output,
+          StandardCopyOption.REPLACE_EXISTING,
+          StandardCopyOption.COPY_ATTRIBUTES);
     }
     return docBuilder.build();
   }
