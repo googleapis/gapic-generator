@@ -151,7 +151,7 @@ public class TypeNameGenerator {
    *
    * <p>If pattern is valid, a path template style string is returned ("foo/my-bar"). If pattern is
    * invalid, and inPath is false, an empty string is returned. If pattern is invalid, and inPath is
-   * true, a
+   * true, a "my-bar" style string is returned.
    *
    * <p>If not the empty string, the returned value will be enclosed within the correct
    * language-specific quotes.
