@@ -1,0 +1,972 @@
+============== file: tests/library/v1/library_service_client_test.rb ==============
+# Copyright 2016 Google Inc. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+require "minitest/autorun"
+require "library/v1/library_service_client"
+include Library::V1
+
+describe LibraryServiceClient do
+
+  def stub_grpc_client
+    mock_client = Minitest::Mock.new
+
+    # Implement "method" method for the mock.
+    def mock_client.method(name_symbol)
+      # We return a lambda (an instance of Proc) instead of a Method, because
+      # the latter can't be easily constructed on the fly. In practice, most
+      # operations performed on Methods work on Procs. The differences are:
+      # Proc implements: :yield, :lambda?, :binding
+      # Method implements: :receiver, :name, :original_name, :owner, :unbind,
+      #                    and :super_method
+      lambda { |*args| public_send(name_symbol, *args) }
+    end
+
+    LibraryService::Stub.stub(:new, mock_client) { yield(mock_client) }
+  end
+
+  describe "#create_shelf" do
+    it "forwards calls to LibraryService::Stub" do
+      stub_grpc_client do |mock_client|
+        LibraryServiceClient = Library::V1::LibraryServiceClient
+        Shelf = Google::Example::Library::V1::Shelf
+
+        shelf = Shelf.new
+        expected_request = CreateShelfRequest.new(
+          shelf: shelf,
+        )
+
+        mocked_response = Shelf.new
+
+        mock_client.expect(
+          :create_shelf,
+          mocked_response,
+          [expected_request, Hash],
+        )
+
+        process_response = ->(response) {
+          # Verification.
+          response.must_equal mocked_response
+        }
+
+        library_service_client = LibraryServiceClient.new
+        response = library_service_client.create_shelf(shelf)
+        # Process the response.
+        process_response response
+      end
+    end
+  end
+
+  describe "#get_shelf" do
+    it "forwards calls to LibraryService::Stub" do
+      stub_grpc_client do |mock_client|
+        LibraryServiceClient = Library::V1::LibraryServiceClient
+
+        formatted_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
+        options_ = ''
+        expected_request = GetShelfRequest.new(
+          formatted_name: formatted_name,
+          options_: options_,
+        )
+
+        mocked_response = Shelf.new
+
+        mock_client.expect(
+          :get_shelf,
+          mocked_response,
+          [expected_request, Hash],
+        )
+
+        process_response = ->(response) {
+          # Verification.
+          response.must_equal mocked_response
+        }
+
+        library_service_client = LibraryServiceClient.new
+        response = library_service_client.get_shelf(formatted_name, options_)
+        # Process the response.
+        process_response response
+      end
+    end
+  end
+
+  describe "#list_shelves" do
+    it "forwards calls to LibraryService::Stub" do
+      stub_grpc_client do |mock_client|
+        LibraryServiceClient = Library::V1::LibraryServiceClient
+
+
+        expected_request = ListShelvesRequest.new(
+        )
+
+        mocked_response = ListShelvesResponse.new
+
+        mock_client.expect(
+          :list_shelves,
+          mocked_response,
+          [expected_request, Hash],
+        )
+
+        process_element = ->(element) {
+          # TODO(jcanizales): verify a mocked element.
+        }
+
+        library_service_client = LibraryServiceClient.new
+
+        # Iterate over all results.
+        library_service_client.list_shelves.each do |element|
+          # Process element.
+          process_element element
+        end
+
+        # Or iterate over results one page at a time.
+        library_service_client.list_shelves.each_page do |page|
+          # Process each page at a time.
+          page.each do |element|
+            # Process element.
+            process_element element
+          end
+        end
+      end
+    end
+  end
+
+  describe "#delete_shelf" do
+    it "forwards calls to LibraryService::Stub" do
+      stub_grpc_client do |mock_client|
+        LibraryServiceClient = Library::V1::LibraryServiceClient
+
+        formatted_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
+        expected_request = DeleteShelfRequest.new(
+          formatted_name: formatted_name,
+        )
+
+        mocked_response = Empty.new
+
+        mock_client.expect(
+          :delete_shelf,
+          mocked_response,
+          [expected_request, Hash],
+        )
+
+        library_service_client = LibraryServiceClient.new
+        library_service_client.delete_shelf(formatted_name)
+      end
+    end
+  end
+
+  describe "#merge_shelves" do
+    it "forwards calls to LibraryService::Stub" do
+      stub_grpc_client do |mock_client|
+        LibraryServiceClient = Library::V1::LibraryServiceClient
+
+        formatted_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
+        formatted_other_shelf_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
+        expected_request = MergeShelvesRequest.new(
+          formatted_name: formatted_name,
+          formatted_other_shelf_name: formatted_other_shelf_name,
+        )
+
+        mocked_response = Shelf.new
+
+        mock_client.expect(
+          :merge_shelves,
+          mocked_response,
+          [expected_request, Hash],
+        )
+
+        process_response = ->(response) {
+          # Verification.
+          response.must_equal mocked_response
+        }
+
+        library_service_client = LibraryServiceClient.new
+        response = library_service_client.merge_shelves(formatted_name, formatted_other_shelf_name)
+        # Process the response.
+        process_response response
+      end
+    end
+  end
+
+  describe "#create_book" do
+    it "forwards calls to LibraryService::Stub" do
+      stub_grpc_client do |mock_client|
+        Book = Google::Example::Library::V1::Book
+        LibraryServiceClient = Library::V1::LibraryServiceClient
+
+        formatted_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
+        book = Book.new
+        expected_request = CreateBookRequest.new(
+          formatted_name: formatted_name,
+          book: book,
+        )
+
+        mocked_response = Book.new
+
+        mock_client.expect(
+          :create_book,
+          mocked_response,
+          [expected_request, Hash],
+        )
+
+        process_response = ->(response) {
+          # Verification.
+          response.must_equal mocked_response
+        }
+
+        library_service_client = LibraryServiceClient.new
+        response = library_service_client.create_book(formatted_name, book)
+        # Process the response.
+        process_response response
+      end
+    end
+  end
+
+  describe "#publish_series" do
+    it "forwards calls to LibraryService::Stub" do
+      stub_grpc_client do |mock_client|
+        LibraryServiceClient = Library::V1::LibraryServiceClient
+        SeriesUuid = Google::Example::Library::V1::SeriesUuid
+        Shelf = Google::Example::Library::V1::Shelf
+
+        shelf = Shelf.new
+        books = []
+        series_string = "foobar"
+        series_uuid = SeriesUuid.new
+        series_uuid.series_string = series_string
+        expected_request = PublishSeriesRequest.new(
+          shelf: shelf,
+          books: books,
+          series_uuid: series_uuid,
+        )
+
+        mocked_response = PublishSeriesResponse.new
+
+        mock_client.expect(
+          :publish_series,
+          mocked_response,
+          [expected_request, Hash],
+        )
+
+        process_response = ->(response) {
+          # Verification.
+          response.must_equal mocked_response
+        }
+
+        library_service_client = LibraryServiceClient.new
+        response = library_service_client.publish_series(shelf, books, series_uuid)
+        # Process the response.
+        process_response response
+      end
+    end
+  end
+
+  describe "#get_book" do
+    it "forwards calls to LibraryService::Stub" do
+      stub_grpc_client do |mock_client|
+        LibraryServiceClient = Library::V1::LibraryServiceClient
+
+        formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+        expected_request = GetBookRequest.new(
+          formatted_name: formatted_name,
+        )
+
+        mocked_response = Book.new
+
+        mock_client.expect(
+          :get_book,
+          mocked_response,
+          [expected_request, Hash],
+        )
+
+        process_response = ->(response) {
+          # Verification.
+          response.must_equal mocked_response
+        }
+
+        library_service_client = LibraryServiceClient.new
+        response = library_service_client.get_book(formatted_name)
+        # Process the response.
+        process_response response
+      end
+    end
+  end
+
+  describe "#list_books" do
+    it "forwards calls to LibraryService::Stub" do
+      stub_grpc_client do |mock_client|
+        LibraryServiceClient = Library::V1::LibraryServiceClient
+
+        formatted_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
+        expected_request = ListBooksRequest.new(
+          formatted_name: formatted_name,
+        )
+
+        mocked_response = ListBooksResponse.new
+
+        mock_client.expect(
+          :list_books,
+          mocked_response,
+          [expected_request, Hash],
+        )
+
+        process_element = ->(element) {
+          # TODO(jcanizales): verify a mocked element.
+        }
+
+        library_service_client = LibraryServiceClient.new
+
+        # Iterate over all results.
+        library_service_client.list_books(formatted_name).each do |element|
+          # Process element.
+          process_element element
+        end
+
+        # Or iterate over results one page at a time.
+        library_service_client.list_books(formatted_name).each_page do |page|
+          # Process each page at a time.
+          page.each do |element|
+            # Process element.
+            process_element element
+          end
+        end
+      end
+    end
+  end
+
+  describe "#delete_book" do
+    it "forwards calls to LibraryService::Stub" do
+      stub_grpc_client do |mock_client|
+        LibraryServiceClient = Library::V1::LibraryServiceClient
+
+        formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+        expected_request = DeleteBookRequest.new(
+          formatted_name: formatted_name,
+        )
+
+        mocked_response = Empty.new
+
+        mock_client.expect(
+          :delete_book,
+          mocked_response,
+          [expected_request, Hash],
+        )
+
+        library_service_client = LibraryServiceClient.new
+        library_service_client.delete_book(formatted_name)
+      end
+    end
+  end
+
+  describe "#update_book" do
+    it "forwards calls to LibraryService::Stub" do
+      stub_grpc_client do |mock_client|
+        Book = Google::Example::Library::V1::Book
+        LibraryServiceClient = Library::V1::LibraryServiceClient
+
+        formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+        book = Book.new
+        expected_request = UpdateBookRequest.new(
+          formatted_name: formatted_name,
+          book: book,
+        )
+
+        mocked_response = Book.new
+
+        mock_client.expect(
+          :update_book,
+          mocked_response,
+          [expected_request, Hash],
+        )
+
+        process_response = ->(response) {
+          # Verification.
+          response.must_equal mocked_response
+        }
+
+        library_service_client = LibraryServiceClient.new
+        response = library_service_client.update_book(formatted_name, book)
+        # Process the response.
+        process_response response
+      end
+    end
+  end
+
+  describe "#move_book" do
+    it "forwards calls to LibraryService::Stub" do
+      stub_grpc_client do |mock_client|
+        LibraryServiceClient = Library::V1::LibraryServiceClient
+
+        formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+        formatted_other_shelf_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
+        expected_request = MoveBookRequest.new(
+          formatted_name: formatted_name,
+          formatted_other_shelf_name: formatted_other_shelf_name,
+        )
+
+        mocked_response = Book.new
+
+        mock_client.expect(
+          :move_book,
+          mocked_response,
+          [expected_request, Hash],
+        )
+
+        process_response = ->(response) {
+          # Verification.
+          response.must_equal mocked_response
+        }
+
+        library_service_client = LibraryServiceClient.new
+        response = library_service_client.move_book(formatted_name, formatted_other_shelf_name)
+        # Process the response.
+        process_response response
+      end
+    end
+  end
+
+  describe "#list_strings" do
+    it "forwards calls to LibraryService::Stub" do
+      stub_grpc_client do |mock_client|
+        LibraryServiceClient = Library::V1::LibraryServiceClient
+
+
+        expected_request = ListStringsRequest.new(
+        )
+
+        mocked_response = ListStringsResponse.new
+
+        mock_client.expect(
+          :list_strings,
+          mocked_response,
+          [expected_request, Hash],
+        )
+
+        process_element = ->(element) {
+          # TODO(jcanizales): verify a mocked element.
+        }
+
+        library_service_client = LibraryServiceClient.new
+
+        # Iterate over all results.
+        library_service_client.list_strings.each do |element|
+          # Process element.
+          process_element element
+        end
+
+        # Or iterate over results one page at a time.
+        library_service_client.list_strings.each_page do |page|
+          # Process each page at a time.
+          page.each do |element|
+            # Process element.
+            process_element element
+          end
+        end
+      end
+    end
+  end
+
+  describe "#add_comments" do
+    it "forwards calls to LibraryService::Stub" do
+      stub_grpc_client do |mock_client|
+        Alignment = Google::Example::Library::V1::SomeMessage2::SomeMessage3::Alignment
+        Comment = Google::Example::Library::V1::Comment
+        LibraryServiceClient = Library::V1::LibraryServiceClient
+        Stage = Google::Example::Library::V1::Comment::Stage
+
+        formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+        comment = ''
+        stage = Stage::UNSET
+        alignment = Alignment::CHAR
+        comments_element = Comment.new
+        comments_element.comment = comment
+        comments_element.stage = stage
+        comments_element.alignment = alignment
+        comments = [comments_element]
+        expected_request = AddCommentsRequest.new(
+          formatted_name: formatted_name,
+          comments: comments,
+        )
+
+        mocked_response = Empty.new
+
+        mock_client.expect(
+          :add_comments,
+          mocked_response,
+          [expected_request, Hash],
+        )
+
+        library_service_client = LibraryServiceClient.new
+        library_service_client.add_comments(formatted_name, comments)
+      end
+    end
+  end
+
+  describe "#get_book_from_archive" do
+    it "forwards calls to LibraryService::Stub" do
+      stub_grpc_client do |mock_client|
+        LibraryServiceClient = Library::V1::LibraryServiceClient
+
+        formatted_name = LibraryServiceClient.archived_book_path("[ARCHIVE_PATH]", "[BOOK_ID]")
+        expected_request = GetBookFromArchiveRequest.new(
+          formatted_name: formatted_name,
+        )
+
+        mocked_response = BookFromArchive.new
+
+        mock_client.expect(
+          :get_book_from_archive,
+          mocked_response,
+          [expected_request, Hash],
+        )
+
+        process_response = ->(response) {
+          # Verification.
+          response.must_equal mocked_response
+        }
+
+        library_service_client = LibraryServiceClient.new
+        response = library_service_client.get_book_from_archive(formatted_name)
+        # Process the response.
+        process_response response
+      end
+    end
+  end
+
+  describe "#get_book_from_anywhere" do
+    it "forwards calls to LibraryService::Stub" do
+      stub_grpc_client do |mock_client|
+        LibraryServiceClient = Library::V1::LibraryServiceClient
+
+        formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+        formatted_alt_book_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+        expected_request = GetBookFromAnywhereRequest.new(
+          formatted_name: formatted_name,
+          formatted_alt_book_name: formatted_alt_book_name,
+        )
+
+        mocked_response = BookFromAnywhere.new
+
+        mock_client.expect(
+          :get_book_from_anywhere,
+          mocked_response,
+          [expected_request, Hash],
+        )
+
+        process_response = ->(response) {
+          # Verification.
+          response.must_equal mocked_response
+        }
+
+        library_service_client = LibraryServiceClient.new
+        response = library_service_client.get_book_from_anywhere(formatted_name, formatted_alt_book_name)
+        # Process the response.
+        process_response response
+      end
+    end
+  end
+
+  describe "#update_book_index" do
+    it "forwards calls to LibraryService::Stub" do
+      stub_grpc_client do |mock_client|
+        LibraryServiceClient = Library::V1::LibraryServiceClient
+
+        formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+        index_name = "default index"
+        index_map_item = ''
+        index_map = { "default_key" => index_map_item }
+        expected_request = UpdateBookIndexRequest.new(
+          formatted_name: formatted_name,
+          index_name: index_name,
+          index_map: index_map,
+        )
+
+        mocked_response = Empty.new
+
+        mock_client.expect(
+          :update_book_index,
+          mocked_response,
+          [expected_request, Hash],
+        )
+
+        library_service_client = LibraryServiceClient.new
+        library_service_client.update_book_index(formatted_name, index_name, index_map)
+      end
+    end
+  end
+
+  describe "#stream_shelves" do
+    it "forwards calls to LibraryService::Stub" do
+      stub_grpc_client do |mock_client|
+        LibraryServiceClient = Library::V1::LibraryServiceClient
+
+
+        expected_request = StreamShelvesRequest.new(
+        )
+
+        mocked_response = StreamShelvesResponse.new
+
+        mock_client.expect(
+          :stream_shelves,
+          mocked_response,
+          [expected_request, Hash],
+        )
+
+        process_element = ->(element) {
+          # TODO(jcanizales): verify a mocked element.
+        }
+
+        library_service_client = LibraryServiceClient.new
+        library_service_client.stream_shelves.each do |element|
+          # Process element.
+          process_element element
+        end
+      end
+    end
+  end
+
+  describe "#stream_books" do
+    it "forwards calls to LibraryService::Stub" do
+      stub_grpc_client do |mock_client|
+        LibraryServiceClient = Library::V1::LibraryServiceClient
+
+        name = ''
+        expected_request = StreamBooksRequest.new(
+          name: name,
+        )
+
+        mocked_response = Book.new
+
+        mock_client.expect(
+          :stream_books,
+          mocked_response,
+          [expected_request, Hash],
+        )
+
+        process_element = ->(element) {
+          # TODO(jcanizales): verify a mocked element.
+        }
+
+        library_service_client = LibraryServiceClient.new
+        library_service_client.stream_books(name).each do |element|
+          # Process element.
+          process_element element
+        end
+      end
+    end
+  end
+
+  describe "#discuss_book" do
+    it "forwards calls to LibraryService::Stub" do
+      stub_grpc_client do |mock_client|
+        DiscussBookRequest = Google::Example::Library::V1::DiscussBookRequest
+        LibraryServiceClient = Library::V1::LibraryServiceClient
+
+        name = ''
+        request = DiscussBookRequest.new
+        request.name = name
+        expected_request = request
+
+        mocked_response = Comment.new
+
+        mock_client.expect(
+          :discuss_book,
+          mocked_response,
+          [expected_request, Hash],
+        )
+
+        process_element = ->(element) {
+          # TODO(jcanizales): verify a mocked element.
+        }
+
+        library_service_client = LibraryServiceClient.new
+        requests = [request]
+        library_service_client.discuss_book(requests).each do |element|
+          # Process element.
+          process_element element
+        end
+      end
+    end
+  end
+
+  describe "#monolog_about_book" do
+    it "forwards calls to LibraryService::Stub" do
+      stub_grpc_client do |mock_client|
+        DiscussBookRequest = Google::Example::Library::V1::DiscussBookRequest
+        LibraryServiceClient = Library::V1::LibraryServiceClient
+
+        name = ''
+        request = DiscussBookRequest.new
+        request.name = name
+        expected_request = request
+
+        mocked_response = Comment.new
+
+        mock_client.expect(
+          :monolog_about_book,
+          mocked_response,
+          [expected_request, Hash],
+        )
+
+        process_response = ->(response) {
+          # Verification.
+          response.must_equal mocked_response
+        }
+
+        library_service_client = LibraryServiceClient.new
+        requests = [request]
+        response = library_service_client.monolog_about_book(requests)
+        # Process the response.
+        process_response response
+      end
+    end
+  end
+
+  describe "#find_related_books" do
+    it "forwards calls to LibraryService::Stub" do
+      stub_grpc_client do |mock_client|
+        LibraryServiceClient = Library::V1::LibraryServiceClient
+
+        names_element = ''
+        names = [names_element]
+        shelves = []
+        expected_request = FindRelatedBooksRequest.new(
+          names: names,
+          shelves: shelves,
+        )
+
+        mocked_response = FindRelatedBooksResponse.new
+
+        mock_client.expect(
+          :find_related_books,
+          mocked_response,
+          [expected_request, Hash],
+        )
+
+        process_element = ->(element) {
+          # TODO(jcanizales): verify a mocked element.
+        }
+
+        library_service_client = LibraryServiceClient.new
+
+        # Iterate over all results.
+        library_service_client.find_related_books(names, shelves).each do |element|
+          # Process element.
+          process_element element
+        end
+
+        # Or iterate over results one page at a time.
+        library_service_client.find_related_books(names, shelves).each_page do |page|
+          # Process each page at a time.
+          page.each do |element|
+            # Process element.
+            process_element element
+          end
+        end
+      end
+    end
+  end
+
+  describe "#add_tag" do
+    it "forwards calls to LibraryService::Stub" do
+      stub_grpc_client do |mock_client|
+        LibraryServiceClient = Library::V1::LibraryServiceClient
+
+        formatted_resource = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+        tag = ''
+        expected_request = AddTagRequest.new(
+          formatted_resource: formatted_resource,
+          tag: tag,
+        )
+
+        mocked_response = AddTagResponse.new
+
+        mock_client.expect(
+          :add_tag,
+          mocked_response,
+          [expected_request, Hash],
+        )
+
+        process_response = ->(response) {
+          # Verification.
+          response.must_equal mocked_response
+        }
+
+        library_service_client = LibraryServiceClient.new
+        response = library_service_client.add_tag(formatted_resource, tag)
+        # Process the response.
+        process_response response
+      end
+    end
+  end
+
+  describe "#add_label" do
+    it "forwards calls to LibraryService::Stub" do
+      stub_grpc_client do |mock_client|
+        LibraryServiceClient = Library::V1::LibraryServiceClient
+
+        formatted_resource = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+        label = ''
+        expected_request = AddLabelRequest.new(
+          formatted_resource: formatted_resource,
+          label: label,
+        )
+
+        mocked_response = AddLabelResponse.new
+
+        mock_client.expect(
+          :add_label,
+          mocked_response,
+          [expected_request, Hash],
+        )
+
+        process_response = ->(response) {
+          # Verification.
+          response.must_equal mocked_response
+        }
+
+        library_service_client = LibraryServiceClient.new
+        response = library_service_client.add_label(formatted_resource, label)
+        # Process the response.
+        process_response response
+      end
+    end
+  end
+
+  describe "#get_big_book" do
+    it "forwards calls to LibraryService::Stub" do
+      stub_grpc_client do |mock_client|
+        LibraryServiceClient = Library::V1::LibraryServiceClient
+
+        formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+        expected_request = GetBookRequest.new(
+          formatted_name: formatted_name,
+        )
+
+        mocked_response = Operation.new
+
+        mock_client.expect(
+          :get_big_book,
+          mocked_response,
+          [expected_request, Hash],
+        )
+
+        process_results = ->(results) {
+          # TODO(jcanizales): Verify mocked results.
+        }
+
+        process_metadata = ->(metadata) {
+          # TODO(jcanizales): Verify mocked metadata.
+        }
+
+        library_service_client = LibraryServiceClient.new
+
+        # Register a callback during the method call.
+        operation = library_service_client.get_big_book(formatted_name) do |op|
+          raise op.results.message if op.error?
+          op_results = op.results
+          # Process the results.
+          process_results op_results
+
+          metadata = op.metadata
+          # Process the metadata.
+          process_metadata metadata
+        end
+
+        # Or use the return value to register a callback.
+        operation.on_done do |op|
+          raise op.results.message if op.error?
+          op_results = op.results
+          # Process the results.
+          process_results op_results
+
+          metadata = op.metadata
+          # Process the metadata.
+          process_metadata metadata
+        end
+
+        # Manually reload the operation.
+        operation.reload!
+
+        # Or block until the operation completes, triggering callbacks on
+        # completion.
+        operation.wait_until_done!
+      end
+    end
+  end
+
+  describe "#get_big_nothing" do
+    it "forwards calls to LibraryService::Stub" do
+      stub_grpc_client do |mock_client|
+        LibraryServiceClient = Library::V1::LibraryServiceClient
+
+        formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+        expected_request = GetBookRequest.new(
+          formatted_name: formatted_name,
+        )
+
+        mocked_response = Operation.new
+
+        mock_client.expect(
+          :get_big_nothing,
+          mocked_response,
+          [expected_request, Hash],
+        )
+
+        process_results = ->(results) {
+          # TODO(jcanizales): Verify mocked results.
+        }
+
+        process_metadata = ->(metadata) {
+          # TODO(jcanizales): Verify mocked metadata.
+        }
+
+        library_service_client = LibraryServiceClient.new
+
+        # Register a callback during the method call.
+        operation = library_service_client.get_big_nothing(formatted_name) do |op|
+          raise op.results.message if op.error?
+          op_results = op.results
+          # Process the results.
+          process_results op_results
+
+          metadata = op.metadata
+          # Process the metadata.
+          process_metadata metadata
+        end
+
+        # Or use the return value to register a callback.
+        operation.on_done do |op|
+          raise op.results.message if op.error?
+          op_results = op.results
+          # Process the results.
+          process_results op_results
+
+          metadata = op.metadata
+          # Process the metadata.
+          process_metadata metadata
+        end
+
+        # Manually reload the operation.
+        operation.reload!
+
+        # Or block until the operation completes, triggering callbacks on
+        # completion.
+        operation.wait_until_done!
+      end
+    end
+  end
+
+end
+

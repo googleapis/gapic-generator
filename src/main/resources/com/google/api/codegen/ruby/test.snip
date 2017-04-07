@@ -1,0 +1,125 @@
+@extends "common.snip"
+@extends "ruby/method_sample.snip"
+
+@snippet generate(testViewModel)
+  # TODO: Use testViewModel.fileHeader here and in main.snip.
+  @# Copyright 2016 Google Inc. All rights reserved.
+  @#
+  @# Licensed under the Apache License, Version 2.0 (the "License");
+  @# you may not use this file except in compliance with the License.
+  @# You may obtain a copy of the License at
+  @#
+  @#     http://www.apache.org/licenses/LICENSE-2.0
+  @#
+  @# Unless required by applicable law or agreed to in writing, software
+  @# distributed under the License is distributed on an "AS IS" BASIS,
+  @# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  @# See the License for the specific language governing permissions and
+  @# limitations under the License.
+
+  require "minitest/autorun"
+  require "{@testViewModel.libraryUnderTest.outputFile}"
+  include {@testViewModel.libraryUnderTest.namespace}
+
+  describe {@testViewModel.libraryUnderTest.apiClassName} do
+
+    @let gRPCClass = testViewModel.libraryUnderTest.grpcClientTypeName
+      def stub_grpc_client
+        mock_client = Minitest::Mock.new
+
+        @# Implement "method" method for the mock.
+        def mock_client.method(name_symbol)
+          @# We return a lambda (an instance of Proc) instead of a Method, because
+          @# the latter can't be easily constructed on the fly. In practice, most
+          @# operations performed on Methods work on Procs. The differences are:
+          @# Proc implements: :yield, :lambda?, :binding
+          @# Method implements: :receiver, :name, :original_name, :owner, :unbind,
+          @#                    and :super_method
+          lambda { |*args| public_send(name_symbol, *args) }
+        end
+
+        # TODO(jcanizales): Instead of mock_client, pass a block that verifies
+        # the host string and that the 2nd argument isn't
+        # :this_channel_is_insecure.
+        {@gRPCClass}::Stub.stub(:new, mock_client) { yield(mock_client) }
+      end
+
+      @join testCase : testViewModel.testCases
+        @let methodView = testCase.methodView, \
+             methodName = methodView.name
+          describe "#{@methodName}" do
+            it "forwards calls to {@gRPCClass}::Stub" do
+              stub_grpc_client do |mock_client|
+                # TODO(jcanizales): Initialize enums with the second value, strings
+                # with "sample", arrays with 1 element, etc. Do the same with the
+                # mocked response.
+                # TODO(jcanizales): Instead of aliasing all used types,
+                # include Google::Cloud::Language::V1beta1 in the sample.
+                {@sampleCodeAliases(methodView)}
+
+                {@initCode(methodView.initCode)}
+                # Initialize the protobuf request expected by the mock gRPC client,
+                # using the same values that will be passed to the generated method
+                # in the sample code.
+                # RPCs with request streaming are an exception here: the sample
+                # code initializes an array of one protobuf request; we just reuse
+                # that request directly.
+                @if or(methodView.grpcStreamingType.toString == "NonStreaming", \
+                       methodView.grpcStreamingType.toString == "ServerStreaming")
+                  expected_request = {@testCase.requestTypeName}.new(
+                    @join field : methodView.initCode.fieldSettings
+                      {@field.identifier}: {@field.identifier},
+                    @end
+                  )
+                @else
+                  expected_request = request
+                @end
+
+                mocked_response = {@testCase.responseTypeName}.new
+                # TODO(jcanizales): testCase.mockResponse.initCode
+
+                mock_client.expect(
+                  :{@methodName},
+                  mocked_response,
+                  [expected_request, Hash],
+                )
+                @switch testCase.sampleResponseName.toString
+                @case "Empty"
+                  # No response verifier to declare.
+                @case "Response"
+
+                  process_response = ->(response) {
+                    @# Verification.
+                    response.must_equal mocked_response
+                  }
+                @case "Element"
+
+                  process_element = ->(element) {
+                    @# TODO(jcanizales): verify a mocked element.
+                  }
+                @case "ResultsAndMetadata"
+
+                  process_results = ->(results) {
+                    @# TODO(jcanizales): Verify mocked results.
+                  }
+
+                  process_metadata = ->(metadata) {
+                    @# TODO(jcanizales): Verify mocked metadata.
+                  }
+                @default
+
+                  $unhandledCase: {@methodView.sampleResponseName.toString}$
+                @end
+
+                {@sampleCodeClientInit(methodView)}
+                {@sampleCodeCall(methodView)}
+              end
+            end
+          end
+          
+        @end
+      @end
+    @end    
+  end
+
+@end

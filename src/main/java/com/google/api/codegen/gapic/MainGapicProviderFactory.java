@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.gapic;
 
+import com.google.api.codegen.GapicContext;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.ProtoFileView;
 import com.google.api.codegen.SnippetSetRunner;
@@ -47,6 +48,7 @@ import com.google.api.codegen.transformer.ruby.RubyGapicSurfaceDocTransformer;
 import com.google.api.codegen.transformer.ruby.RubyGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.ruby.RubyGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.ruby.RubyPackageMetadataTransformer;
+import com.google.api.codegen.transformer.ruby.RubyTestsTransformer;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.csharp.CSharpNameFormatter;
 import com.google.api.codegen.util.csharp.CSharpRenderingUtil;
@@ -380,6 +382,9 @@ public class MainGapicProviderFactory
       }
 
     } else if (id.equals(RUBY) || id.equals(RUBY_DOC)) {
+      // Object with utility methods for the main and test snippets.
+      GapicContext snippetContext = new GapicContext(model, apiConfig) {}; // FIXME: Undo this hack.
+
       if (generatorConfig.enableSurfaceGenerator()) {
         GapicCodePathMapper rubyPathMapper =
             CommonGapicCodePathMapper.newBuilder()
@@ -387,6 +392,7 @@ public class MainGapicProviderFactory
                 .setShouldAppendPackage(true)
                 .setPackageFilePathNameFormatter(new RubyNameFormatter())
                 .build();
+
         GapicProvider<? extends Object> mainProvider =
             ViewModelGapicProvider.newBuilder()
                 .setModel(model)
@@ -436,7 +442,8 @@ public class MainGapicProviderFactory
                   .setShouldAppendPackage(true)
                   .setPackageFilePathNameFormatter(new RubyNameFormatter())
                   .build();
-          GapicProvider<? extends Object> testProvider =
+
+          GapicProvider<?> smokeTestsProvider =
               ViewModelGapicProvider.newBuilder()
                   .setModel(model)
                   .setApiConfig(apiConfig)
@@ -444,7 +451,16 @@ public class MainGapicProviderFactory
                   .setModelToViewTransformer(
                       new RubyGapicSurfaceTestTransformer(rubyTestPathMapper))
                   .build();
-          providers.add(testProvider);
+          providers.add(smokeTestsProvider);
+
+          GapicProvider<?> unitTestsProvider =
+              ViewModelGapicProvider.newBuilder()
+                  .setModel(model)
+                  .setApiConfig(apiConfig)
+                  .setSnippetSetRunner(new CommonSnippetSetRunner(snippetContext))
+                  .setModelToViewTransformer(new RubyTestsTransformer())
+                  .build();
+          providers.add(unitTestsProvider);
         }
       }
 
