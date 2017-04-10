@@ -15,21 +15,21 @@
 package com.google.api.codegen.transformer.py;
 
 import com.google.api.codegen.InterfaceView;
-import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
+import com.google.api.codegen.transformer.GapicInterfaceContext;
+import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.InitCodeTransformer;
-import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.MockServiceTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.transformer.TestCaseTransformer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
@@ -78,16 +78,16 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
   }
 
   @Override
-  public List<ViewModel> transform(Model model, ApiConfig apiConfig) {
+  public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ViewModel> models = ImmutableList.builder();
-    SurfaceNamer surfacePackageNamer = new PythonSurfaceNamer(apiConfig.getPackageName());
+    SurfaceNamer surfacePackageNamer = new PythonSurfaceNamer(productConfig.getPackageName());
     SurfaceNamer testPackageNamer =
         new PythonSurfaceNamer(surfacePackageNamer.getTestPackageName());
-    for (Interface service : new InterfaceView().getElementIterable(model)) {
+    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
       ModelTypeTable typeTable = createTypeTable(surfacePackageNamer.getTestPackageName());
-      SurfaceTransformerContext context =
-          SurfaceTransformerContext.create(
-              service, apiConfig, typeTable, surfacePackageNamer, featureConfig);
+      GapicInterfaceContext context =
+          GapicInterfaceContext.create(
+              apiInterface, productConfig, typeTable, surfacePackageNamer, featureConfig);
       String testClassName = surfacePackageNamer.getUnitTestClassName(context.getInterfaceConfig());
       ClientTestClassView testClassView =
           ClientTestClassView.newBuilder()
@@ -101,13 +101,13 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
               .name(testClassName)
               .apiName(
                   surfacePackageNamer.publicClassName(
-                      Name.upperCamelKeepUpperAcronyms(service.getSimpleName())))
+                      Name.upperCamelKeepUpperAcronyms(apiInterface.getSimpleName())))
               .testCases(createTestCaseViews(context))
               .apiHasLongRunningMethods(context.getInterfaceConfig().hasLongRunningOperations())
               .mockServices(ImmutableList.<MockServiceUsageView>of())
               .build();
 
-      String outputPath = pathMapper.getOutputPath(context.getInterface(), apiConfig);
+      String outputPath = pathMapper.getOutputPath(context.getInterface(), productConfig);
       ImportSectionView importSection = importSectionTransformer.generateTestImportSection(context);
       models.add(
           ClientTestFileView.newBuilder()
@@ -116,7 +116,7 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
               .testClass(testClassView)
               .fileHeader(
                   fileHeaderTransformer.generateFileHeader(
-                      apiConfig, importSection, testPackageNamer))
+                      productConfig, importSection, testPackageNamer))
               .build());
     }
     return models.build();
@@ -127,11 +127,11 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
         new PythonTypeTable(packageName), new PythonModelTypeNameConverter(packageName));
   }
 
-  private List<TestCaseView> createTestCaseViews(SurfaceTransformerContext context) {
+  private List<TestCaseView> createTestCaseViews(GapicInterfaceContext context) {
     ImmutableList.Builder<TestCaseView> testCaseViews = ImmutableList.builder();
     SymbolTable testNameTable = new SymbolTable();
     for (Method method : context.getSupportedMethods()) {
-      MethodTransformerContext methodContext = context.asRequestMethodContext(method);
+      GapicMethodContext methodContext = context.asRequestMethodContext(method);
 
       if (methodContext.getMethodConfig().isGrpcStreaming()) {
         // TODO(eoogbe): Remove this check once grpc streaming is supported by test

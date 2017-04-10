@@ -15,7 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.BatchingConfig;
-import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.BatchingConfigView;
 import com.google.api.codegen.viewmodel.BatchingDescriptorClassView;
@@ -32,7 +32,7 @@ import java.util.List;
 
 public class BatchingTransformer {
 
-  public List<BatchingDescriptorView> generateDescriptors(SurfaceTransformerContext context) {
+  public List<BatchingDescriptorView> generateDescriptors(GapicInterfaceContext context) {
     SurfaceNamer namer = context.getNamer();
     ImmutableList.Builder<BatchingDescriptorView> descriptors = ImmutableList.builder();
     for (Method method : context.getBatchingMethods()) {
@@ -54,11 +54,11 @@ public class BatchingTransformer {
   }
 
   public List<BatchingDescriptorClassView> generateDescriptorClasses(
-      SurfaceTransformerContext context) {
+      GapicInterfaceContext context) {
     List<BatchingDescriptorClassView> descriptors = new ArrayList<>();
 
     for (Method method : context.getInterface().getMethods()) {
-      MethodConfig methodConfig = context.getMethodConfig(method);
+      GapicMethodConfig methodConfig = context.getMethodConfig(method);
       if (!methodConfig.isBatching()) {
         continue;
       }
@@ -68,7 +68,7 @@ public class BatchingTransformer {
     return descriptors;
   }
 
-  public BatchingConfigView generateBatchingConfig(MethodTransformerContext context) {
+  public BatchingConfigView generateBatchingConfig(GapicMethodContext context) {
     BatchingConfig batchingConfig = context.getMethodConfig().getBatching();
     BatchingConfigView.Builder batchingConfigView = BatchingConfigView.newBuilder();
 
@@ -93,7 +93,7 @@ public class BatchingTransformer {
     return fieldNames.build();
   }
 
-  private BatchingDescriptorClassView generateDescriptorClass(MethodTransformerContext context) {
+  private BatchingDescriptorClassView generateDescriptorClass(GapicMethodContext context) {
     SurfaceNamer namer = context.getNamer();
     ModelTypeTable typeTable = context.getTypeTable();
     Method method = context.getMethod();
@@ -131,7 +131,7 @@ public class BatchingTransformer {
     return desc.build();
   }
 
-  private List<BatchingPartitionKeyView> generatePartitionKeys(MethodTransformerContext context) {
+  private List<BatchingPartitionKeyView> generatePartitionKeys(GapicMethodContext context) {
     List<BatchingPartitionKeyView> keys = new ArrayList<>();
     BatchingConfig batching = context.getMethodConfig().getBatching();
     for (FieldSelector fieldSelector : batching.getDiscriminatorFields()) {
@@ -147,7 +147,7 @@ public class BatchingTransformer {
     return keys;
   }
 
-  private List<FieldCopyView> generateDiscriminatorFieldCopies(MethodTransformerContext context) {
+  private List<FieldCopyView> generateDiscriminatorFieldCopies(GapicMethodContext context) {
     List<FieldCopyView> fieldCopies = new ArrayList<>();
     BatchingConfig batching = context.getMethodConfig().getBatching();
     for (FieldSelector fieldSelector : batching.getDiscriminatorFields()) {

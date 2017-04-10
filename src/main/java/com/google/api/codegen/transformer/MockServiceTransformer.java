@@ -15,9 +15,9 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.InterfaceView;
-import com.google.api.codegen.config.ApiConfig;
-import com.google.api.codegen.config.InterfaceConfig;
-import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.GapicInterfaceConfig;
+import com.google.api.codegen.config.GapicMethodConfig;
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.viewmodel.testing.MockGrpcMethodView;
 import com.google.api.codegen.viewmodel.testing.MockServiceUsageView;
@@ -32,25 +32,25 @@ import java.util.Map;
 
 /** MockServiceTransformer contains helper methods useful for creating mock views. */
 public class MockServiceTransformer {
-  public List<Interface> getGrpcInterfacesToMock(Model model, ApiConfig apiConfig) {
+  public List<Interface> getGrpcInterfacesToMock(Model model, GapicProductConfig productConfig) {
     Map<String, Interface> interfaces = new LinkedHashMap<>();
 
-    for (Interface service : new InterfaceView().getElementIterable(model)) {
-      if (!service.isReachable()) {
+    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+      if (!apiInterface.isReachable()) {
         continue;
       }
-      interfaces.putAll(getGrpcInterfacesForService(model, apiConfig, service));
+      interfaces.putAll(getGrpcInterfacesForService(model, productConfig, apiInterface));
     }
 
     return new ArrayList<Interface>(interfaces.values());
   }
 
   public Map<String, Interface> getGrpcInterfacesForService(
-      Model model, ApiConfig apiConfig, Interface service) {
+      Model model, GapicProductConfig productConfig, Interface apiInterface) {
     Map<String, Interface> interfaces = new LinkedHashMap<>();
-    interfaces.put(service.getFullName(), service);
-    InterfaceConfig interfaceConfig = apiConfig.getInterfaceConfig(service);
-    for (MethodConfig methodConfig : interfaceConfig.getMethodConfigs()) {
+    interfaces.put(apiInterface.getFullName(), apiInterface);
+    GapicInterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
+    for (GapicMethodConfig methodConfig : interfaceConfig.getMethodConfigs()) {
       String reroute = methodConfig.getRerouteToGrpcInterface();
       if (!Strings.isNullOrEmpty(reroute)) {
         Interface targetInterface = model.getSymbolTable().lookupInterface(reroute);
@@ -60,16 +60,16 @@ public class MockServiceTransformer {
     return interfaces;
   }
 
-  public List<MockGrpcMethodView> createMockGrpcMethodViews(SurfaceTransformerContext context) {
+  public List<MockGrpcMethodView> createMockGrpcMethodViews(GapicInterfaceContext context) {
     List<Method> methods = context.getInterface().getMethods();
     ArrayList<MockGrpcMethodView> mocks = new ArrayList<>(methods.size());
     for (Method method : methods) {
-      MethodTransformerContext methodContext = context.asRequestMethodContext(method);
+      GapicMethodContext methodContext = context.asRequestMethodContext(method);
       String requestTypeName =
           methodContext.getTypeTable().getAndSaveNicknameFor(method.getInputType());
       String responseTypeName =
           methodContext.getTypeTable().getAndSaveNicknameFor(method.getOutputType());
-      MethodConfig methodConfig = methodContext.getMethodConfig();
+      GapicMethodConfig methodConfig = methodContext.getMethodConfig();
       mocks.add(
           MockGrpcMethodView.newBuilder()
               .name(methodContext.getNamer().getApiMethodName(method, VisibilityConfig.PUBLIC))
@@ -83,16 +83,16 @@ public class MockServiceTransformer {
   }
 
   public List<MockServiceUsageView> createMockServices(
-      SurfaceNamer namer, Model model, ApiConfig apiConfig) {
+      SurfaceNamer namer, Model model, GapicProductConfig productConfig) {
     List<MockServiceUsageView> mockServices = new ArrayList<>();
 
-    for (Interface service : getGrpcInterfacesToMock(model, apiConfig)) {
+    for (Interface apiInterface : getGrpcInterfacesToMock(model, productConfig)) {
       MockServiceUsageView mockService =
           MockServiceUsageView.newBuilder()
-              .className(namer.getMockServiceClassName(service))
-              .varName(namer.getMockServiceVarName(service))
-              .implName(namer.getMockGrpcServiceImplName(service))
-              .registerFunctionName(namer.getServerRegisterFunctionName(service))
+              .className(namer.getMockServiceClassName(apiInterface))
+              .varName(namer.getMockServiceVarName(apiInterface))
+              .implName(namer.getMockGrpcServiceImplName(apiInterface))
+              .registerFunctionName(namer.getServerRegisterFunctionName(apiInterface))
               .build();
       mockServices.add(mockService);
     }

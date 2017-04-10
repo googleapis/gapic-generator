@@ -15,7 +15,7 @@
 package com.google.api.codegen.transformer.nodejs;
 
 import com.google.api.codegen.ProtoFileView;
-import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.nodejs.NodeJSUtils;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GrpcElementDocTransformer;
@@ -45,29 +45,29 @@ public class NodeJSGapicSurfaceDocTransformer implements ModelToViewTransformer 
   }
 
   @Override
-  public List<ViewModel> transform(Model model, ApiConfig apiConfig) {
+  public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ViewModel> surfaceDocs = ImmutableList.builder();
     for (ProtoFile file : new ProtoFileView().getElementIterable(model)) {
-      surfaceDocs.add(generateDoc(file, apiConfig));
+      surfaceDocs.add(generateDoc(file, productConfig));
     }
     return surfaceDocs.build();
   }
 
-  private ViewModel generateDoc(ProtoFile file, ApiConfig apiConfig) {
+  private ViewModel generateDoc(ProtoFile file, GapicProductConfig productConfig) {
     ModelTypeTable typeTable =
         new ModelTypeTable(
-            new JSTypeTable(apiConfig.getPackageName()),
-            new NodeJSModelTypeNameConverter(apiConfig.getPackageName()));
+            new JSTypeTable(productConfig.getPackageName()),
+            new NodeJSModelTypeNameConverter(productConfig.getPackageName()));
     // Use file path for package name to get file-specific package instead of package for the API.
     SurfaceNamer namer =
-        new NodeJSSurfaceNamer(apiConfig.getPackageName(), NodeJSUtils.isGcloud(apiConfig));
+        new NodeJSSurfaceNamer(productConfig.getPackageName(), NodeJSUtils.isGcloud(productConfig));
     JSCommentReformatter commentReformatter = new JSCommentReformatter();
     GrpcDocView.Builder doc = GrpcDocView.newBuilder();
     doc.templateFileName(DOC_TEMPLATE_FILENAME);
     doc.outputPath("src/doc_" + namer.getProtoFileName(file));
     doc.fileHeader(
         fileHeaderTransformer.generateFileHeader(
-            apiConfig, ImportSectionView.newBuilder().build(), namer));
+            productConfig, ImportSectionView.newBuilder().build(), namer));
     doc.elementDocs(grpcElementDocTransformer.generateElementDocs(typeTable, namer, file));
     doc.isExternalFile(commentReformatter.isExternalFile(file));
     return doc.build();

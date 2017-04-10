@@ -28,7 +28,7 @@ import java.util.Map.Entry;
 public class RetryDefinitionsTransformer {
 
   public List<RetryCodesDefinitionView> generateRetryCodesDefinitions(
-      SurfaceTransformerContext context) {
+      GapicInterfaceContext context) {
     List<RetryCodesDefinitionView> definitions = new ArrayList<>();
 
     final SurfaceNamer namer = context.getNamer();
@@ -52,7 +52,7 @@ public class RetryDefinitionsTransformer {
   }
 
   public List<RetryParamsDefinitionView> generateRetryParamsDefinitions(
-      SurfaceTransformerContext context) {
+      GapicInterfaceContext context) {
     List<RetryParamsDefinitionView> definitions = new ArrayList<>();
 
     SurfaceNamer namer = context.getNamer();

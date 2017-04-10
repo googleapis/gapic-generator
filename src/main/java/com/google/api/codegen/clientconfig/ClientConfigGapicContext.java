@@ -15,8 +15,8 @@
 package com.google.api.codegen.clientconfig;
 
 import com.google.api.codegen.GapicContext;
-import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.BatchingConfig;
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
@@ -27,7 +27,7 @@ import java.util.Map;
 public class ClientConfigGapicContext extends GapicContext {
 
   /** Constructs the client config codegen context. */
-  public ClientConfigGapicContext(Model model, ApiConfig config) {
+  public ClientConfigGapicContext(Model model, GapicProductConfig config) {
     super(model, config);
   }
 
@@ -57,7 +57,7 @@ public class ClientConfigGapicContext extends GapicContext {
   }
 
   @Override
-  public List<Method> getSupportedMethods(Interface service) {
-    return getSupportedMethodsV2(service);
+  public List<Method> getSupportedMethods(Interface apiInterface) {
+    return getSupportedMethodsV2(apiInterface);
   }
 }

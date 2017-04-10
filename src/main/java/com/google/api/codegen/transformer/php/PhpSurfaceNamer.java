@@ -15,8 +15,8 @@
 package com.google.api.codegen.transformer.php;
 
 import com.google.api.codegen.ServiceMessages;
-import com.google.api.codegen.config.InterfaceConfig;
-import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.GapicInterfaceConfig;
+import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
@@ -63,14 +63,14 @@ public class PhpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getPathTemplateName(
-      Interface service, SingleResourceNameConfig resourceNameConfig) {
+      Interface apiInterface, SingleResourceNameConfig resourceNameConfig) {
     return inittedConstantName(Name.from(resourceNameConfig.getEntityName(), "name", "template"));
   }
 
   @Override
-  public String getClientConfigPath(Interface service) {
+  public String getClientConfigPath(Interface apiInterface) {
     return "resources/"
-        + Name.upperCamel(service.getSimpleName()).join("client_config").toLowerUnderscore()
+        + Name.upperCamel(apiInterface.getSimpleName()).join("client_config").toLowerUnderscore()
         + ".json";
   }
 
@@ -90,7 +90,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getDynamicLangReturnTypeName(Method method, MethodConfig methodConfig) {
+  public String getDynamicLangReturnTypeName(Method method, GapicMethodConfig methodConfig) {
     if (new ServiceMessages().isEmptyType(method.getOutputType())) {
       return "";
     }
@@ -114,18 +114,18 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFullyQualifiedApiWrapperClassName(InterfaceConfig interfaceConfig) {
+  public String getFullyQualifiedApiWrapperClassName(GapicInterfaceConfig interfaceConfig) {
     return getPackageName() + "\\" + getApiWrapperClassName(interfaceConfig);
   }
 
   @Override
-  public String getGrpcClientTypeName(Interface service) {
-    return qualifiedName(getGrpcClientTypeName(service, "GrpcClient"));
+  public String getGrpcClientTypeName(Interface apiInterface) {
+    return qualifiedName(getGrpcClientTypeName(apiInterface, "GrpcClient"));
   }
 
-  private NamePath getGrpcClientTypeName(Interface service, String suffix) {
+  private NamePath getGrpcClientTypeName(Interface apiInterface, String suffix) {
     NamePath namePath =
-        getTypeNameConverter().getNamePath(getModelTypeFormatter().getFullNameFor(service));
+        getTypeNameConverter().getNamePath(getModelTypeFormatter().getFullNameFor(apiInterface));
     String publicClassName =
         publicClassName(Name.upperCamelKeepUpperAcronyms(namePath.getHead(), suffix));
     return namePath.withHead(publicClassName);
@@ -142,8 +142,8 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getGrpcStubCallString(Interface service, Method method) {
-    return '/' + service.getFullName() + '/' + getGrpcMethodName(method);
+  public String getGrpcStubCallString(Interface apiInterface, Method method) {
+    return '/' + apiInterface.getFullName() + '/' + getGrpcMethodName(method);
   }
 
   @Override
@@ -176,7 +176,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public boolean methodHasRetrySettings(MethodConfig methodConfig) {
+  public boolean methodHasRetrySettings(GapicMethodConfig methodConfig) {
     return !methodConfig.isGrpcStreaming();
   }
 

@@ -16,13 +16,13 @@ package com.google.api.codegen.transformer.ruby;
 
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.TargetLanguage;
-import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
+import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PackageMetadataTransformer;
-import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -54,11 +54,11 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(Model model, ApiConfig apiConfig) {
-    RubyPackageMetadataNamer namer = new RubyPackageMetadataNamer(apiConfig.getPackageName());
+  public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
+    RubyPackageMetadataNamer namer = new RubyPackageMetadataNamer(productConfig.getPackageName());
     return ImmutableList.<ViewModel>builder()
         .add(generateGemspecView(model, namer))
-        .addAll(generateMetadataViews(model, apiConfig, namer))
+        .addAll(generateMetadataViews(model, productConfig, namer))
         .build();
   }
 
@@ -71,24 +71,27 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
   }
 
   private List<ViewModel> generateMetadataViews(
-      Model model, ApiConfig apiConfig, RubyPackageMetadataNamer namer) {
+      Model model, GapicProductConfig productConfig, RubyPackageMetadataNamer namer) {
     ImmutableList.Builder<ViewModel> views = ImmutableList.builder();
     for (String template : TOP_LEVEL_FILES) {
-      views.add(generateMetadataView(model, apiConfig, template, namer));
+      views.add(generateMetadataView(model, productConfig, template, namer));
     }
     return views.build();
   }
 
   private ViewModel generateMetadataView(
-      Model model, ApiConfig apiConfig, String template, RubyPackageMetadataNamer namer) {
+      Model model,
+      GapicProductConfig productConfig,
+      String template,
+      RubyPackageMetadataNamer namer) {
     String noLeadingRubyDir =
         template.startsWith(RUBY_PREFIX) ? template.substring(RUBY_PREFIX.length()) : template;
     int extensionIndex = noLeadingRubyDir.lastIndexOf(".");
     String outputPath = noLeadingRubyDir.substring(0, extensionIndex);
 
     boolean hasSmokeTests = false;
-    for (Interface service : new InterfaceView().getElementIterable(model)) {
-      SurfaceTransformerContext context = createContext(service, apiConfig);
+    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+      GapicInterfaceContext context = createContext(apiInterface, productConfig);
       if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
         hasSmokeTests = true;
         break;
@@ -100,21 +103,22 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
         .identifier(namer.getMetadataIdentifier())
         .fileHeader(
             fileHeaderTransformer.generateFileHeader(
-                apiConfig,
+                productConfig,
                 ImportSectionView.newBuilder().build(),
-                new RubySurfaceNamer(apiConfig.getPackageName())))
+                new RubySurfaceNamer(productConfig.getPackageName())))
         .hasSmokeTests(hasSmokeTests)
         .build();
   }
 
-  private SurfaceTransformerContext createContext(Interface service, ApiConfig apiConfig) {
-    return SurfaceTransformerContext.create(
-        service,
-        apiConfig,
+  private GapicInterfaceContext createContext(
+      Interface apiInterface, GapicProductConfig productConfig) {
+    return GapicInterfaceContext.create(
+        apiInterface,
+        productConfig,
         new ModelTypeTable(
-            new RubyTypeTable(apiConfig.getPackageName()),
-            new RubyModelTypeNameConverter(apiConfig.getPackageName())),
-        new RubySurfaceNamer(apiConfig.getPackageName()),
+            new RubyTypeTable(productConfig.getPackageName()),
+            new RubyModelTypeNameConverter(productConfig.getPackageName())),
+        new RubySurfaceNamer(productConfig.getPackageName()),
         new RubyFeatureConfig());
   }
 }

@@ -17,8 +17,8 @@ package com.google.api.codegen.transformer.java;
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.InterfaceConfig;
-import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.GapicInterfaceConfig;
+import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
@@ -54,8 +54,8 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getApiSnippetsClassName(Interface interfaze) {
-    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "ClientSnippets"));
+  public String getApiSnippetsClassName(Interface apiInterface) {
+    return publicClassName(Name.upperCamel(apiInterface.getSimpleName(), "ClientSnippets"));
   }
 
   @Override
@@ -78,12 +78,12 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public List<String> getThrowsDocLines(MethodConfig methodConfig) {
+  public List<String> getThrowsDocLines(GapicMethodConfig methodConfig) {
     return Arrays.asList("@throws com.google.api.gax.grpc.ApiException if the remote call fails");
   }
 
   @Override
-  public String getStaticLangReturnTypeName(Method method, MethodConfig methodConfig) {
+  public String getStaticLangReturnTypeName(Method method, GapicMethodConfig methodConfig) {
     if (ServiceMessages.s_isEmptyType(method.getOutputType())) {
       return "void";
     }
@@ -92,7 +92,7 @@ public class JavaSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getAndSaveOperationResponseTypeName(
-      Method method, ModelTypeTable typeTable, MethodConfig methodConfig) {
+      Method method, ModelTypeTable typeTable, GapicMethodConfig methodConfig) {
     String responseTypeName =
         typeTable.getFullNameFor(methodConfig.getLongRunningConfig().getReturnType());
     return typeTable.getAndSaveNicknameForContainer(
@@ -140,7 +140,7 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFullyQualifiedApiWrapperClassName(InterfaceConfig interfaceConfig) {
+  public String getFullyQualifiedApiWrapperClassName(GapicInterfaceConfig interfaceConfig) {
     return getPackageName() + "." + getApiWrapperClassName(interfaceConfig);
   }
 

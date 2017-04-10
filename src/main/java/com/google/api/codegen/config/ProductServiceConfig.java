@@ -23,11 +23,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-/** Utility class that provides service configuration data from an Interface. */
-public class ServiceConfig {
+/**
+ * Utility class that provides data from "service config", as defined in a service yaml file.
+ *
+ * <p>The scope of this configuration is at the product level, and covers multiple API interfaces.
+ */
+public class ProductServiceConfig {
   /** Return the service address. */
-  public String getServiceAddress(Interface service) {
-    return service.getModel().getServiceConfig().getName();
+  public String getServiceAddress(Interface apiInterface) {
+    return apiInterface.getModel().getServiceConfig().getName();
   }
 
   /** Return the service port. TODO(cbao): Read the port from config. */
@@ -35,14 +39,14 @@ public class ServiceConfig {
     return 443;
   }
 
-  public String getTitle(Interface service) {
-    return service.getModel().getServiceConfig().getTitle();
+  public String getTitle(Interface apiInterface) {
+    return apiInterface.getModel().getServiceConfig().getTitle();
   }
 
   /** Return a list of scopes for authentication. */
-  public Iterable<String> getAuthScopes(Interface service) {
+  public Iterable<String> getAuthScopes(Interface apiInterface) {
     Set<String> result = new TreeSet<>();
-    Service config = service.getModel().getServiceConfig();
+    Service config = apiInterface.getModel().getServiceConfig();
     Authentication auth = config.getAuthentication();
     for (AuthenticationRule rule : auth.getRulesList()) {
       // Scopes form a union and the union is used for down-scoping, so adding more scopes that
