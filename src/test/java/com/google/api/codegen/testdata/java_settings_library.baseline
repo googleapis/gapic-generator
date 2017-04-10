@@ -18,6 +18,7 @@ package com.google.gcloud.pubsub.spi;
 
 import com.google.api.gax.batching.BatchingSettings;
 import com.google.api.gax.batching.RequestBuilder;
+import com.google.api.gax.core.ApiFuture;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.FlowControlSettings;
 import com.google.api.gax.core.FlowController;
@@ -629,60 +630,56 @@ public class LibrarySettings extends ClientSettings {
   private static final PagedListResponseFactory<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse> LIST_SHELVES_PAGE_STR_FACT =
       new PagedListResponseFactory<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse>() {
         @Override
-        public ListShelvesPagedResponse callAndCreateResponse(
+        public ApiFuture<ListShelvesPagedResponse> getFuturePagedResponse(
             UnaryCallable<ListShelvesRequest, ListShelvesResponse> callable,
             ListShelvesRequest request,
-            CallContext context) {
+            CallContext context,
+            ApiFuture<ListShelvesResponse> futureResponse) {
           PageContext<ListShelvesRequest, ListShelvesResponse, Shelf> pageContext =
               PageContext.create(callable, LIST_SHELVES_PAGE_STR_DESC, request, context);
-          ListShelvesResponse response =
-              ApiExceptions.callAndTranslateApiException(callable.futureCall(request, context));
-          return ListShelvesPagedResponse.create(pageContext, response);
+          return ListShelvesPagedResponse.createAsync(pageContext, futureResponse);
         }
       };
 
   private static final PagedListResponseFactory<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse> LIST_BOOKS_PAGE_STR_FACT =
       new PagedListResponseFactory<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse>() {
         @Override
-        public ListBooksPagedResponse callAndCreateResponse(
+        public ApiFuture<ListBooksPagedResponse> getFuturePagedResponse(
             UnaryCallable<ListBooksRequest, ListBooksResponse> callable,
             ListBooksRequest request,
-            CallContext context) {
+            CallContext context,
+            ApiFuture<ListBooksResponse> futureResponse) {
           PageContext<ListBooksRequest, ListBooksResponse, Book> pageContext =
               PageContext.create(callable, LIST_BOOKS_PAGE_STR_DESC, request, context);
-          ListBooksResponse response =
-              ApiExceptions.callAndTranslateApiException(callable.futureCall(request, context));
-          return ListBooksPagedResponse.create(pageContext, response);
+          return ListBooksPagedResponse.createAsync(pageContext, futureResponse);
         }
       };
 
   private static final PagedListResponseFactory<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse> LIST_STRINGS_PAGE_STR_FACT =
       new PagedListResponseFactory<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse>() {
         @Override
-        public ListStringsPagedResponse callAndCreateResponse(
+        public ApiFuture<ListStringsPagedResponse> getFuturePagedResponse(
             UnaryCallable<ListStringsRequest, ListStringsResponse> callable,
             ListStringsRequest request,
-            CallContext context) {
+            CallContext context,
+            ApiFuture<ListStringsResponse> futureResponse) {
           PageContext<ListStringsRequest, ListStringsResponse, String> pageContext =
               PageContext.create(callable, LIST_STRINGS_PAGE_STR_DESC, request, context);
-          ListStringsResponse response =
-              ApiExceptions.callAndTranslateApiException(callable.futureCall(request, context));
-          return ListStringsPagedResponse.create(pageContext, response);
+          return ListStringsPagedResponse.createAsync(pageContext, futureResponse);
         }
       };
 
   private static final PagedListResponseFactory<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> FIND_RELATED_BOOKS_PAGE_STR_FACT =
       new PagedListResponseFactory<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse>() {
         @Override
-        public FindRelatedBooksPagedResponse callAndCreateResponse(
+        public ApiFuture<FindRelatedBooksPagedResponse> getFuturePagedResponse(
             UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> callable,
             FindRelatedBooksRequest request,
-            CallContext context) {
+            CallContext context,
+            ApiFuture<FindRelatedBooksResponse> futureResponse) {
           PageContext<FindRelatedBooksRequest, FindRelatedBooksResponse, String> pageContext =
               PageContext.create(callable, FIND_RELATED_BOOKS_PAGE_STR_DESC, request, context);
-          FindRelatedBooksResponse response =
-              ApiExceptions.callAndTranslateApiException(callable.futureCall(request, context));
-          return FindRelatedBooksPagedResponse.create(pageContext, response);
+          return FindRelatedBooksPagedResponse.createAsync(pageContext, futureResponse);
         }
       };
 
