@@ -1464,6 +1464,40 @@ public class LibraryClientTest {
     TestOptionalRequiredFlatteningParamsResponse expectedResponse = TestOptionalRequiredFlatteningParamsResponse.newBuilder().build();
     mockLibraryService.addResponse(expectedResponse);
 
+
+
+    TestOptionalRequiredFlatteningParamsResponse actualResponse =
+        client.testOptionalRequiredFlatteningParams();
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    TestOptionalRequiredFlatteningParamsRequest actualRequest = (TestOptionalRequiredFlatteningParamsRequest)actualRequests.get(0);
+
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void testOptionalRequiredFlatteningParamsExceptionTest() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockLibraryService.addException(exception);
+
+    try {
+
+
+      client.testOptionalRequiredFlatteningParams();
+      Assert.fail("No exception raised");
+    } catch (ApiException e) {
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void testOptionalRequiredFlatteningParamsTest2() {
+    TestOptionalRequiredFlatteningParamsResponse expectedResponse = TestOptionalRequiredFlatteningParamsResponse.newBuilder().build();
+    mockLibraryService.addResponse(expectedResponse);
+
     int requiredSingularInt32 = -72313594;
     long requiredSingularInt64 = -72313499L;
     float requiredSingularFloat = -7514705.0F;
@@ -1569,7 +1603,7 @@ public class LibraryClientTest {
 
   @Test
   @SuppressWarnings("all")
-  public void testOptionalRequiredFlatteningParamsExceptionTest() throws Exception {
+  public void testOptionalRequiredFlatteningParamsExceptionTest2() throws Exception {
     StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
     mockLibraryService.addException(exception);
 
