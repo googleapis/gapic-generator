@@ -262,10 +262,10 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
 
     String pagedResponseTypeName =
         context.getNamer().getPagedResponseTypeInnerName(method, typeTable, resourceField);
-    pagedResponseWrapper.name(pagedResponseTypeName);
-    pagedResponseWrapper.pageName(
+    pagedResponseWrapper.pagedResponseTypeName(pagedResponseTypeName);
+    pagedResponseWrapper.pageTypeName(
         context.getNamer().getPageTypeInnerName(method, typeTable, resourceField));
-    pagedResponseWrapper.fixedSizeCollectionName(
+    pagedResponseWrapper.fixedSizeCollectionTypeName(
         context.getNamer().getFixedSizeCollectionTypeInnerName(method, typeTable, resourceField));
     pagedResponseWrapper.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
     pagedResponseWrapper.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));

@@ -14,59 +14,59 @@
   public class {@pagedResponseClasses.name} {
 
     @join pagedResponseClass : pagedResponseClasses.pagedResponseWrapperList
-      public static class {@pagedResponseClass.name} extends AbstractPagedListResponse<
+      public static class {@pagedResponseClass.pagedResponseTypeName} extends AbstractPagedListResponse<
           {@pagedResponseClass.requestTypeName},
           {@pagedResponseClass.responseTypeName},
           {@pagedResponseClass.resourceTypeName},
-          {@pagedResponseClass.pageName},
-          {@pagedResponseClass.fixedSizeCollectionName}> {
+          {@pagedResponseClass.pageTypeName},
+          {@pagedResponseClass.fixedSizeCollectionTypeName}> {
 
-        public static ApiFuture<{@pagedResponseClass.name}> createAsync(
+        public static ApiFuture<{@pagedResponseClass.pagedResponseTypeName}> createAsync(
             PageContext<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}, {@pagedResponseClass.resourceTypeName}> context,
             ApiFuture<{@pagedResponseClass.responseTypeName}> futureResponse) {
-          ApiFuture<{@pagedResponseClass.pageName}> futurePage =
-              {@pagedResponseClass.pageName}.createEmptyPage().createPageAsync(context, futureResponse);
+          ApiFuture<{@pagedResponseClass.pageTypeName}> futurePage =
+              {@pagedResponseClass.pageTypeName}.createEmptyPage().createPageAsync(context, futureResponse);
           return ApiFutures.transform(
               futurePage,
-              new ApiFunction<{@pagedResponseClass.pageName}, {@pagedResponseClass.name}>() {
+              new ApiFunction<{@pagedResponseClass.pageTypeName}, {@pagedResponseClass.pagedResponseTypeName}>() {
                 @@Override
-                public {@pagedResponseClass.name} apply({@pagedResponseClass.pageName} input) {
-                  return new {@pagedResponseClass.name}(input);
+                public {@pagedResponseClass.pagedResponseTypeName} apply({@pagedResponseClass.pageTypeName} input) {
+                  return new {@pagedResponseClass.pagedResponseTypeName}(input);
                 }
               });
         }
 
-        private {@pagedResponseClass.name}({@pagedResponseClass.pageName} page) {
-          super(page, {@pagedResponseClass.fixedSizeCollectionName}.createEmptyCollection());
+        private {@pagedResponseClass.pagedResponseTypeName}({@pagedResponseClass.pageTypeName} page) {
+          super(page, {@pagedResponseClass.fixedSizeCollectionTypeName}.createEmptyCollection());
         }
         {@iterateAllResourceMethods(pagedResponseClass)}
       }
 
-      public static class {@pagedResponseClass.pageName} extends AbstractPage<
+      public static class {@pagedResponseClass.pageTypeName} extends AbstractPage<
           {@pagedResponseClass.requestTypeName},
           {@pagedResponseClass.responseTypeName},
           {@pagedResponseClass.resourceTypeName},
-          {@pagedResponseClass.pageName}> {
+          {@pagedResponseClass.pageTypeName}> {
 
-        private {@pagedResponseClass.pageName}(
+        private {@pagedResponseClass.pageTypeName}(
             PageContext<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}, {@pagedResponseClass.resourceTypeName}> context,
             {@pagedResponseClass.responseTypeName} response) {
           super(context, response);
         }
 
-        private static {@pagedResponseClass.pageName} createEmptyPage() {
-          return new {@pagedResponseClass.pageName}(null, null);
+        private static {@pagedResponseClass.pageTypeName} createEmptyPage() {
+          return new {@pagedResponseClass.pageTypeName}(null, null);
         }
 
         @@Override
-        protected {@pagedResponseClass.pageName} createPage(
+        protected {@pagedResponseClass.pageTypeName} createPage(
             PageContext<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}, {@pagedResponseClass.resourceTypeName}> context,
             {@pagedResponseClass.responseTypeName} response) {
-          return new {@pagedResponseClass.pageName}(context, response);
+          return new {@pagedResponseClass.pageTypeName}(context, response);
         }
 
         @@Override
-        protected ApiFuture<{@pagedResponseClass.pageName}> createPageAsync(
+        protected ApiFuture<{@pagedResponseClass.pageTypeName}> createPageAsync(
             PageContext<{@pagedResponseClass.requestTypeName}, {@pagedResponseClass.responseTypeName}, {@pagedResponseClass.resourceTypeName}> context,
             ApiFuture<{@pagedResponseClass.responseTypeName}> futureResponse) {
           return super.createPageAsync(context, futureResponse);
@@ -75,25 +75,25 @@
         {@getValuesResourceMethods(pagedResponseClass)}
       }
 
-      public static class {@pagedResponseClass.fixedSizeCollectionName} extends AbstractFixedSizeCollection<
+      public static class {@pagedResponseClass.fixedSizeCollectionTypeName} extends AbstractFixedSizeCollection<
           {@pagedResponseClass.requestTypeName},
           {@pagedResponseClass.responseTypeName},
           {@pagedResponseClass.resourceTypeName},
-          {@pagedResponseClass.pageName},
-          {@pagedResponseClass.fixedSizeCollectionName}> {
+          {@pagedResponseClass.pageTypeName},
+          {@pagedResponseClass.fixedSizeCollectionTypeName}> {
 
-        private {@pagedResponseClass.fixedSizeCollectionName}(List<{@pagedResponseClass.pageName}> pages, int collectionSize) {
+        private {@pagedResponseClass.fixedSizeCollectionTypeName}(List<{@pagedResponseClass.pageTypeName}> pages, int collectionSize) {
           super(pages, collectionSize);
         }
 
-        private static {@pagedResponseClass.fixedSizeCollectionName} createEmptyCollection() {
-          return new {@pagedResponseClass.fixedSizeCollectionName}(null, 0);
+        private static {@pagedResponseClass.fixedSizeCollectionTypeName} createEmptyCollection() {
+          return new {@pagedResponseClass.fixedSizeCollectionTypeName}(null, 0);
         }
 
         @@Override
-        protected {@pagedResponseClass.fixedSizeCollectionName} createCollection(
-            List<{@pagedResponseClass.pageName}> pages, int collectionSize) {
-          return new {@pagedResponseClass.fixedSizeCollectionName}(pages, collectionSize);
+        protected {@pagedResponseClass.fixedSizeCollectionTypeName} createCollection(
+            List<{@pagedResponseClass.pageTypeName}> pages, int collectionSize) {
+          return new {@pagedResponseClass.fixedSizeCollectionTypeName}(pages, collectionSize);
         }
         {@getValuesResourceMethods(pagedResponseClass)}
       }
