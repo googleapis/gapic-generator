@@ -483,7 +483,9 @@
     @else
         public virtual {@method.responseTypeName} {@method.name}(
             {@objectParams(method.methodParams)}) => {@method.name}(
-                {@objectArgs(method.forwardingMethodParams)},
+                @if method.forwardingMethodParams.size
+                    {@objectArgs(method.forwardingMethodParams)},
+                @end
                 CallSettings.FromCancellationToken(cancellationToken));
     @end
 @end
@@ -790,7 +792,9 @@
     @else
         public virtual Task<{@method.operationMethod.clientReturnTypeName}> {@method.name}(
             {@objectParams(method.methodParams)}) => {@method.name}(
-                {@objectArgs(method.forwardingMethodParams)},
+                @if method.forwardingMethodParams.size
+                    {@objectArgs(method.forwardingMethodParams)},
+                @end
                 CallSettings.FromCancellationToken(cancellationToken));
     @end
 @end
@@ -810,7 +814,9 @@
     {@""}    {@objectParams(method.methodParams)}) => {@method.name}(
         {@""}    new {@method.serviceRequestTypeName}
             {
-                {@requestProperties(method.forwardingMethodParams)}
+                @if method.forwardingMethodParams.size
+                    {@requestProperties(method.forwardingMethodParams)}
+                @end
                 @if isPaged
                     PageToken = pageToken ?? "",
                     PageSize = pageSize ?? 0,
