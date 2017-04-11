@@ -26,7 +26,7 @@ public class DefaultStringTest {
         DefaultString.getNonTrivialPlaceholder("[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?", "my-%s");
     Truth.assertThat(def).isEqualTo("");
 
-    def = DefaultString.getNonTrivialPlaceholder("^projects/[^/]*$", "my-%s");
+    def = DefaultString.getNonTrivialPlaceholder("^projects/[^/]+$", "my-%s");
     Truth.assertThat(def).isEqualTo("projects/my-project");
 
     def = DefaultString.getNonTrivialPlaceholder("bar", "my-%s");
@@ -53,10 +53,10 @@ public class DefaultStringTest {
   public void testDefault() {
     ImmutableMap<String, String> tests =
         ImmutableMap.<String, String>builder()
-            .put("^billingAccounts/[^/]*$", "billingAccounts/my-billing-account")
-            .put("^projects/[^/]*/topics/[^/]*$", "projects/my-project/topics/my-topic")
+            .put("^billingAccounts/[^/]+$", "billingAccounts/my-billing-account")
+            .put("^projects/[^/]+/topics/[^/]+$", "projects/my-project/topics/my-topic")
             .put(
-                "^projects/[^/]*/regions/[^/]*/operations/[^/]*$",
+                "^projects/[^/]+/regions/.*/operations/.+$",
                 "projects/my-project/regions/my-region/operations/my-operation")
             .build();
 
