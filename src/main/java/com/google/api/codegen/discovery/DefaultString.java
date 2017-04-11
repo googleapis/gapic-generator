@@ -19,9 +19,10 @@ import com.google.api.codegen.LanguageUtil;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import javax.annotation.Nullable;
 
 /** Creates default string from path patterns. */
@@ -56,28 +57,6 @@ public class DefaultString {
     return comment;
   }
 
-  private static final ImmutableMap<SampleKey, String> SAMPLE_STRINGS =
-      ImmutableMap.<SampleKey, String>builder()
-          .put(
-              SampleKey.create("compute", "zone", "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?"),
-              "us-central1-f")
-          .put(
-              SampleKey.create("autoscaler", "zone", "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?"),
-              "us-central1-f")
-          .put(
-              SampleKey.create("clouduseraccounts", "zone", "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?"),
-              "us-central1-f")
-          .build();
-
-  public static String getSample(String apiName, String fieldName, String pattern) {
-    String sample = null;
-    if (pattern != null) {
-      // If the pattern has a specially-recognized sample, use the sample.
-      sample = SAMPLE_STRINGS.get(SampleKey.create(apiName, fieldName, pattern));
-    }
-    return sample == null ? "" : sample;
-  }
-
   /**
    * Returns a non-trivial placeholder for pattern with a no-brace and lower-case format style. An
    * empty string is returned for unrecognized patterns.
@@ -96,7 +75,7 @@ public class DefaultString {
     return "";
   }
 
-  private static final String WILDCARD_PATTERN = "[^/]*";
+  private static final Set<String> WILDCARD_PATTERNS = ImmutableSet.of("[^/]+", ".+", ".*");
 
   /** Returns a default string from `pattern`, or null if the pattern is not supported. */
   @VisibleForTesting
@@ -134,9 +113,15 @@ public class DefaultString {
     List<Elem> elems = new ArrayList<>();
     while (pattern.length() > 0) {
       int slash;
-      if (pattern.startsWith(WILDCARD_PATTERN)) {
+      String wildcardPattern = "";
+      for (String w : WILDCARD_PATTERNS) {
+        if (pattern.startsWith(w)) {
+          wildcardPattern = w;
+        }
+      }
+      if (wildcardPattern.length() > 0) {
         elems.add(Elem.WILDCARD);
-        pattern = pattern.substring(WILDCARD_PATTERN.length());
+        pattern = pattern.substring(wildcardPattern.length());
       } else if ((slash = pattern.indexOf("/")) >= 0) {
         elems.add(Elem.createLiteral(pattern.substring(0, slash)));
         pattern = pattern.substring(slash);

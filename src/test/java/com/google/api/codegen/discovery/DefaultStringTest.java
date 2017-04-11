@@ -24,19 +24,13 @@ public class DefaultStringTest {
   public void testOf() {
     String def =
         DefaultString.getNonTrivialPlaceholder("[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?", "my-%s");
-    String sample = DefaultString.getSample("compute", "zone", "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?");
     Truth.assertThat(def).isEqualTo("");
-    Truth.assertThat(sample).isEqualTo("us-central1-f");
 
     def = DefaultString.getNonTrivialPlaceholder("^projects/[^/]*$", "my-%s");
-    sample = DefaultString.getSample("pubsub", "project", "^projects/[^/]*$");
     Truth.assertThat(def).isEqualTo("projects/my-project");
-    Truth.assertThat(sample).isEqualTo("");
 
     def = DefaultString.getNonTrivialPlaceholder("bar", "my-%s");
-    sample = DefaultString.getSample("foo", "bar", null);
     Truth.assertThat(def).isEqualTo("");
-    Truth.assertThat(sample).isEqualTo("");
   }
 
   @Test
