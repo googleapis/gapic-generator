@@ -248,14 +248,14 @@
     private static final PagedListDescriptor<{@desc.requestTypeName}, {@desc.responseTypeName}, {@desc.resourceTypeName}> {@desc.name} =
         new PagedListDescriptor<{@desc.requestTypeName}, {@desc.responseTypeName}, {@desc.resourceTypeName}>() {
           @@Override
-          public Object emptyToken() {
+          public String emptyToken() {
             return {@desc.defaultTokenValue};
           }
           @@Override
-          public {@desc.requestTypeName} injectToken({@desc.requestTypeName} payload, Object token) {
+          public {@desc.requestTypeName} injectToken({@desc.requestTypeName} payload, String token) {
             return {@desc.requestTypeName}
               .newBuilder(payload)
-              .{@desc.requestTokenSetFunction}(({@desc.tokenTypeName}) token)
+              .{@desc.requestTokenSetFunction}(token)
               .build();
           }
           @@Override
@@ -278,7 +278,7 @@
             @end
           }
           @@Override
-          public Object extractNextToken({@desc.responseTypeName} payload) {
+          public String extractNextToken({@desc.responseTypeName} payload) {
             return payload.{@desc.responseTokenGetFunction}();
           }
           @@Override
@@ -295,11 +295,14 @@
     private static final PagedListResponseFactory<{@factory.requestTypeName}, {@factory.responseTypeName}, {@factory.pagedListResponseTypeName}> {@factory.name} =
         new PagedListResponseFactory<{@factory.requestTypeName}, {@factory.responseTypeName}, {@factory.pagedListResponseTypeName}>() {
           @@Override
-          public {@factory.pagedListResponseTypeName} createPagedListResponse(
+          public ApiFuture<{@factory.pagedListResponseTypeName}> getFuturePagedResponse(
               UnaryCallable<{@factory.requestTypeName}, {@factory.responseTypeName}> callable,
               {@factory.requestTypeName} request,
-              CallContext context) {
-            return new {@factory.pagedListResponseTypeName}(callable, {@factory.pageStreamingDescriptorName}, request, context);
+              CallContext context,
+              ApiFuture<{@factory.responseTypeName}> futureResponse) {
+            PageContext<{@factory.requestTypeName}, {@factory.responseTypeName}, {@factory.resourceTypeName}> pageContext =
+                PageContext.create(callable, {@factory.pageStreamingDescriptorName}, request, context);
+            return {@factory.pagedListResponseTypeName}.createAsync(pageContext, futureResponse);
           }
         };
     {@""}

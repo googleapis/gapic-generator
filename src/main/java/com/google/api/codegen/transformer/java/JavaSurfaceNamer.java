@@ -109,6 +109,11 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getPagedResponseIterateMethod() {
+    return publicMethodName(Name.from("iterate_all"));
+  }
+
+  @Override
   public String getResourceTypeParseMethodName(
       ModelTypeTable typeTable, FieldConfig resourceFieldConfig) {
     String resourceTypeName = getAndSaveElementResourceTypeName(typeTable, resourceFieldConfig);
@@ -137,6 +142,17 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   public String getPagedResponseTypeInnerName(
       Method method, ModelTypeTable typeTable, Field resourceField) {
     return publicClassName(Name.upperCamel(method.getSimpleName(), "PagedResponse"));
+  }
+
+  @Override
+  public String getPageTypeInnerName(Method method, ModelTypeTable typeTable, Field resourceField) {
+    return publicClassName(Name.upperCamel(method.getSimpleName(), "Page"));
+  }
+
+  @Override
+  public String getFixedSizeCollectionTypeInnerName(
+      Method method, ModelTypeTable typeTable, Field resourceField) {
+    return publicClassName(Name.upperCamel(method.getSimpleName(), "FixedSizeCollection"));
   }
 
   @Override

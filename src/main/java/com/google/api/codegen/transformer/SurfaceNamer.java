@@ -332,6 +332,24 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return publicMethodName(Name.from("iterate_all_elements"));
   }
 
+  /**
+   * The name of the get values method of the Page type for a field, returning the resource type get
+   * values method if available
+   */
+  public String getPageGetValuesMethod(FeatureConfig featureConfig, FieldConfig fieldConfig) {
+    if (featureConfig.useResourceNameFormatOption(fieldConfig)) {
+      Name resourceName = getResourceTypeNameObject(fieldConfig.getResourceNameConfig());
+      return publicMethodName(Name.from("get_values_as").join(resourceName));
+    } else {
+      return getPageGetValuesMethod();
+    }
+  }
+
+  /** The name of the get values method of the Page type for a field */
+  public String getPageGetValuesMethod() {
+    return publicMethodName(Name.from("get_values"));
+  }
+
   public String getResourceTypeParseMethodName(
       ModelTypeTable typeTable, FieldConfig resourceFieldConfig) {
     return getNotImplementedString("SurfaceNamer.getResourceTypeParseMethodName");
@@ -765,6 +783,19 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getPagedResponseTypeInnerName(
       Method method, ModelTypeTable typeTable, Field resourcesField) {
     return getNotImplementedString("SurfaceNamer.getAndSavePagedResponseTypeInnerName");
+  }
+
+  /** The inner type name of the page type for the given method and resources field. */
+  public String getPageTypeInnerName(Method method, ModelTypeTable typeTable, Field resourceField) {
+    return getNotImplementedString("SurfaceNamer.getPageTypeInnerName");
+  }
+
+  /**
+   * The inner type name of the fixed size collection type for the given method and resources field.
+   */
+  public String getFixedSizeCollectionTypeInnerName(
+      Method method, ModelTypeTable typeTable, Field resourceField) {
+    return getNotImplementedString("SurfaceNamer.getPageTypeInnerName");
   }
 
   /**

@@ -264,7 +264,11 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
 
     String pagedResponseTypeName =
         context.getNamer().getPagedResponseTypeInnerName(method, typeTable, resourceField);
-    pagedResponseWrapper.name(pagedResponseTypeName);
+    pagedResponseWrapper.pagedResponseTypeName(pagedResponseTypeName);
+    pagedResponseWrapper.pageTypeName(
+        context.getNamer().getPageTypeInnerName(method, typeTable, resourceField));
+    pagedResponseWrapper.fixedSizeCollectionTypeName(
+        context.getNamer().getFixedSizeCollectionTypeInnerName(method, typeTable, resourceField));
     pagedResponseWrapper.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
     pagedResponseWrapper.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));
     pagedResponseWrapper.resourceTypeName(
@@ -289,6 +293,8 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
           namer.getAndSaveElementResourceTypeName(context.getTypeTable(), resourceFieldConfig);
       String resourceTypeIterateMethodName =
           namer.getPagedResponseIterateMethod(context.getFeatureConfig(), resourceFieldConfig);
+      String resourceTypeGetValuesMethodName =
+          namer.getPageGetValuesMethod(context.getFeatureConfig(), resourceFieldConfig);
       String parseMethodName =
           namer.getResourceTypeParseMethodName(context.getTypeTable(), resourceFieldConfig);
 
@@ -297,7 +303,9 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
               .overloadResourceTypeName(resourceTypeName)
               .overloadResourceTypeParseFunctionName(parseMethodName)
               .overloadResourceTypeIterateMethodName(resourceTypeIterateMethodName)
-              .iterateMethodName(namer.getPagedResponseIterateMethod());
+              .overloadResourceTypeGetValuesMethodName(resourceTypeGetValuesMethodName)
+              .iterateMethodName(namer.getPagedResponseIterateMethod())
+              .getValuesMethodName(namer.getPageGetValuesMethod());
 
       iterateMethods.add(iterateMethod.build());
     }
@@ -432,6 +440,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("com.google.api.gax.core.GoogleCredentialsProvider");
     typeTable.saveNicknameFor("com.google.api.gax.core.RetrySettings");
     typeTable.saveNicknameFor("com.google.api.gax.core.PropertiesProvider");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.ApiExceptions");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.ChannelProvider");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.ClientSettings");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.ExecutorProvider");
@@ -456,7 +465,9 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
 
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
     if (interfaceConfig.hasPageStreamingMethods()) {
+      typeTable.saveNicknameFor("com.google.api.gax.core.ApiFuture");
       typeTable.saveNicknameFor("com.google.api.gax.grpc.CallContext");
+      typeTable.saveNicknameFor("com.google.api.gax.grpc.PageContext");
       typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedCallSettings");
       typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedListDescriptor");
       typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedListResponseFactory");
@@ -485,14 +496,23 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private void addPagedResponseWrapperImports(ModelTypeTable typeTable) {
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.CallContext");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedListDescriptor");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedListResponseImpl");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryCallable");
+    typeTable.saveNicknameFor("com.google.api.gax.core.ApiFunction");
+    typeTable.saveNicknameFor("com.google.api.gax.core.ApiFuture");
+    typeTable.saveNicknameFor("com.google.api.gax.core.ApiFutures");
+    typeTable.saveNicknameFor("com.google.api.gax.core.FixedSizeCollection");
+    typeTable.saveNicknameFor("com.google.api.gax.core.Page");
+    typeTable.saveNicknameFor("com.google.api.gax.core.PagedListResponse");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.AbstractPage");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.AbstractPagedListResponse");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.AbstractFixedSizeCollection");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.ApiExceptions");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.PageContext");
     typeTable.saveNicknameFor("com.google.common.base.Function");
     typeTable.saveNicknameFor("com.google.common.collect.Iterables");
     typeTable.saveNicknameFor("com.google.protobuf.ExperimentalApi");
     typeTable.saveNicknameFor("javax.annotation.Generated");
+    typeTable.saveNicknameFor("java.util.Iterator");
+    typeTable.saveNicknameFor("java.util.List");
   }
 
   public SettingsDocView generateSettingsDoc(
