@@ -90,7 +90,8 @@ public class GoGapicSurfaceTransformerTest {
     transformer.addXApiImports(context, Collections.singletonList(method));
     transformer.generateRetryConfigDefinitions(context, Collections.singletonList(method));
     Truth.assertThat(context.getTypeTable().getImports()).doesNotContainKey("time");
-    Truth.assertThat(context.getTypeTable().getImports()).doesNotContainKey("longrunning");
+    Truth.assertThat(context.getTypeTable().getImports())
+        .doesNotContainKey("cloud.google.com/go/longrunning");
   }
 
   @Test
@@ -99,7 +100,8 @@ public class GoGapicSurfaceTransformerTest {
     transformer.addXApiImports(context, Collections.singletonList(method));
     transformer.generateRetryConfigDefinitions(context, Collections.singletonList(method));
     Truth.assertThat(context.getTypeTable().getImports()).containsKey("time");
-    Truth.assertThat(context.getTypeTable().getImports()).doesNotContainKey("longrunning");
+    Truth.assertThat(context.getTypeTable().getImports())
+        .doesNotContainKey("cloud.google.com/go/longrunning");
   }
 
   @Test
@@ -108,7 +110,8 @@ public class GoGapicSurfaceTransformerTest {
     transformer.addXApiImports(context, Collections.singletonList(method));
     transformer.generateRetryConfigDefinitions(context, Collections.singletonList(method));
     Truth.assertThat(context.getTypeTable().getImports()).containsKey("math");
-    Truth.assertThat(context.getTypeTable().getImports()).doesNotContainKey("longrunning");
+    Truth.assertThat(context.getTypeTable().getImports())
+        .doesNotContainKey("cloud.google.com/go/longrunning");
   }
 
   @Test
@@ -119,6 +122,13 @@ public class GoGapicSurfaceTransformerTest {
     Truth.assertThat(context.getTypeTable().getImports()).doesNotContainKey("math");
     Truth.assertThat(context.getTypeTable().getImports())
         .containsKey("cloud.google.com/go/longrunning");
+  }
+
+  @Test
+  public void testGetImportsNotLro() {
+    Method method = getMethod(context.getInterface(), "NotLroMethod");
+    Truth.assertThat(context.getTypeTable().getImports())
+        .doesNotContainKey("cloud.google.com/go/longrunning");
   }
 
   @Test
