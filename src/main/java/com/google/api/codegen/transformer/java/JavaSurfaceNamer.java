@@ -203,10 +203,12 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   @Override
   public String getPackagePath() {
     List<String> packagePath = Splitter.on(".").splitToList(getPackageName());
-    if (packagePath.size() > 3) {
+    int spiIndex = packagePath.indexOf("spi");
+    if (spiIndex != -1) {
       // Remove the "spi.{version}" suffix
-      return Joiner.on("/").join(packagePath.subList(0, packagePath.size() - 2));
+      return Joiner.on("/").join(packagePath.subList(0, spiIndex));
+    } else {
+      return Joiner.on("/").join(packagePath);
     }
-    return null;
   }
 }
