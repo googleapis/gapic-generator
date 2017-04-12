@@ -358,10 +358,11 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
       if (method.getResponseStreaming()) {
         kinds.add(ImportKind.SERVER_STREAM);
       }
-      if (serviceMessages.isLongRunningOperationType(method.getOutputType())) {
+      MethodConfig methodConfig = serviceConfig.getMethodConfig(method);
+      if (methodConfig.isLongRunningOperation()) {
         kinds.add(ImportKind.LRO);
       }
-      if (serviceConfig.getMethodConfig(method).isPageStreaming()) {
+      if (methodConfig.isPageStreaming()) {
         kinds.add(ImportKind.PAGE_STREAM);
       }
     }
