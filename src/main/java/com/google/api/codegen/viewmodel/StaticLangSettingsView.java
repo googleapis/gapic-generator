@@ -34,7 +34,7 @@ public abstract class StaticLangSettingsView {
   public abstract Integer servicePort();
 
   @Nullable
-  public abstract String artifactId();
+  public abstract String packagePath();
 
   public abstract Iterable<String> authScopes();
 
@@ -93,7 +93,7 @@ public abstract class StaticLangSettingsView {
 
     public abstract Builder servicePort(Integer val);
 
-    public abstract Builder artifactId(String val);
+    public abstract Builder packagePath(String val);
 
     public abstract Builder authScopes(Iterable<String> val);
 

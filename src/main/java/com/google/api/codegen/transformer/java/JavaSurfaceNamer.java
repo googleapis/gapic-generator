@@ -36,6 +36,7 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -197,5 +198,15 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   @Override
   public String getBatchingDescriptorConstName(Method method) {
     return inittedConstantName(Name.upperCamel(method.getSimpleName()).join("batching_desc"));
+  }
+
+  @Override
+  public String getPackagePath() {
+    List<String> packagePath = Splitter.on(".").splitToList(getPackageName());
+    if (packagePath.size() > 3) {
+      // Remove the "spi.{version}" suffix
+      return Joiner.on("/").join(packagePath.subList(0, packagePath.size() - 2));
+    }
+    return null;
   }
 }

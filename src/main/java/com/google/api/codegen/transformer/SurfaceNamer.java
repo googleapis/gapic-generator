@@ -43,7 +43,6 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
-import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import io.grpc.Status;
 import java.util.ArrayList;
@@ -112,13 +111,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** Human-friendly name of this service */
   public String getServicePhraseName(Interface service) {
     return Name.upperCamel(service.getSimpleName()).toPhrase();
-  }
-
-  /** Artifact ID of the service */
-  public String getArtifactId(Interface service) {
-    List<String> tokens =
-        Splitter.on('.').splitToList(service.getModel().getServiceConfig().getName());
-    return tokens.size() > 0 ? "google-cloud-" + tokens.get(0) : null;
   }
 
   /////////////////////////////////////// Constructors /////////////////////////////////////////////
@@ -1019,6 +1011,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The string used to identify the method in the gRPC stub. Not all languages will use this. */
   public String getGrpcStubCallString(Interface service, Method method) {
     return getNotImplementedString("SurfaceNamer.getGrpcStubCallString");
+  }
+
+  /** The string of the package path */
+  public String getPackagePath() {
+    return getNotImplementedString("SurfaceNamer.getPackagePath");
   }
 
   ///////////////////////////////////////// Imports ///////////////////////////////////////////////

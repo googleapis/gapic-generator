@@ -379,7 +379,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     xsettingsClass.hasDefaultServiceAddress(interfaceConfig.hasDefaultServiceAddress());
     xsettingsClass.hasDefaultServiceScopes(interfaceConfig.hasDefaultServiceScopes());
     xsettingsClass.hasDefaultInstance(interfaceConfig.hasDefaultInstance());
-    xsettingsClass.artifactId(namer.getArtifactId(context.getInterface()));
+    xsettingsClass.packagePath(namer.getPackagePath());
 
     return xsettingsClass.build();
   }
