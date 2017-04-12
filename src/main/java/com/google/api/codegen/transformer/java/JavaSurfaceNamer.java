@@ -36,6 +36,7 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -109,6 +110,11 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getPagedResponseIterateMethod() {
+    return publicMethodName(Name.from("iterate_all"));
+  }
+
+  @Override
   public String getResourceTypeParseMethodName(
       ModelTypeTable typeTable, FieldConfig resourceFieldConfig) {
     String resourceTypeName = getAndSaveElementResourceTypeName(typeTable, resourceFieldConfig);
@@ -137,6 +143,17 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   public String getPagedResponseTypeInnerName(
       Method method, ModelTypeTable typeTable, Field resourceField) {
     return publicClassName(Name.upperCamel(method.getSimpleName(), "PagedResponse"));
+  }
+
+  @Override
+  public String getPageTypeInnerName(Method method, ModelTypeTable typeTable, Field resourceField) {
+    return publicClassName(Name.upperCamel(method.getSimpleName(), "Page"));
+  }
+
+  @Override
+  public String getFixedSizeCollectionTypeInnerName(
+      Method method, ModelTypeTable typeTable, Field resourceField) {
+    return publicClassName(Name.upperCamel(method.getSimpleName(), "FixedSizeCollection"));
   }
 
   @Override
@@ -197,5 +214,17 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   @Override
   public String getBatchingDescriptorConstName(Method method) {
     return inittedConstantName(Name.upperCamel(method.getSimpleName()).join("batching_desc"));
+  }
+
+  @Override
+  public String getPackagePath() {
+    List<String> packagePath = Splitter.on(".").splitToList(getPackageName());
+    int spiIndex = packagePath.indexOf("spi");
+    if (spiIndex != -1) {
+      // Remove the "spi.{version}" suffix
+      return Joiner.on("/").join(packagePath.subList(0, spiIndex));
+    } else {
+      return Joiner.on("/").join(packagePath);
+    }
   }
 }

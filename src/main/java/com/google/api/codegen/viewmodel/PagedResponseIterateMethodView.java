@@ -25,7 +25,11 @@ public abstract class PagedResponseIterateMethodView {
 
   public abstract String overloadResourceTypeIterateMethodName();
 
+  public abstract String overloadResourceTypeGetValuesMethodName();
+
   public abstract String iterateMethodName();
+
+  public abstract String getValuesMethodName();
 
   public static Builder newBuilder() {
     return new AutoValue_PagedResponseIterateMethodView.Builder();
@@ -40,7 +44,11 @@ public abstract class PagedResponseIterateMethodView {
 
     public abstract Builder overloadResourceTypeIterateMethodName(String val);
 
+    public abstract Builder overloadResourceTypeGetValuesMethodName(String val);
+
     public abstract Builder iterateMethodName(String val);
+
+    public abstract Builder getValuesMethodName(String val);
 
     public abstract PagedResponseIterateMethodView build();
   }

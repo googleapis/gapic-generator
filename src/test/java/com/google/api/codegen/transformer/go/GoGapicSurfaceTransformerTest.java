@@ -90,7 +90,8 @@ public class GoGapicSurfaceTransformerTest {
     transformer.addXApiImports(context, Collections.singletonList(method));
     transformer.generateRetryConfigDefinitions(context, Collections.singletonList(method));
     Truth.assertThat(context.getModelTypeTable().getImports()).doesNotContainKey("time");
-    Truth.assertThat(context.getModelTypeTable().getImports()).doesNotContainKey("longrunning");
+    Truth.assertThat(context.getModelTypeTable().getImports())
+        .doesNotContainKey("cloud.google.com/go/longrunning");
   }
 
   @Test
@@ -99,7 +100,8 @@ public class GoGapicSurfaceTransformerTest {
     transformer.addXApiImports(context, Collections.singletonList(method));
     transformer.generateRetryConfigDefinitions(context, Collections.singletonList(method));
     Truth.assertThat(context.getModelTypeTable().getImports()).containsKey("time");
-    Truth.assertThat(context.getModelTypeTable().getImports()).doesNotContainKey("longrunning");
+    Truth.assertThat(context.getModelTypeTable().getImports())
+        .doesNotContainKey("cloud.google.com/go/longrunning");
   }
 
   @Test
@@ -108,7 +110,8 @@ public class GoGapicSurfaceTransformerTest {
     transformer.addXApiImports(context, Collections.singletonList(method));
     transformer.generateRetryConfigDefinitions(context, Collections.singletonList(method));
     Truth.assertThat(context.getModelTypeTable().getImports()).containsKey("math");
-    Truth.assertThat(context.getModelTypeTable().getImports()).doesNotContainKey("longrunning");
+    Truth.assertThat(context.getModelTypeTable().getImports())
+        .doesNotContainKey("cloud.google.com/go/longrunning");
   }
 
   @Test
@@ -119,6 +122,14 @@ public class GoGapicSurfaceTransformerTest {
     Truth.assertThat(context.getModelTypeTable().getImports()).doesNotContainKey("math");
     Truth.assertThat(context.getModelTypeTable().getImports())
         .containsKey("cloud.google.com/go/longrunning");
+  }
+
+  @Test
+  public void testGetImportsNotLro() {
+    Method method = getMethod(context.getInterface(), "NotLroMethod");
+    transformer.addXApiImports(context, Collections.singletonList(method));
+    Truth.assertThat(context.getTypeTable().getImports())
+        .doesNotContainKey("cloud.google.com/go/longrunning");
   }
 
   @Test
