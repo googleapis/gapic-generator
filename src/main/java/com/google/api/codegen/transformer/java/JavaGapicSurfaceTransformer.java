@@ -359,11 +359,12 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
       SurfaceTransformerContext context, StaticLangApiMethodView exampleApiMethod) {
     addSettingsImports(context);
 
+    SurfaceNamer namer = context.getNamer();
     StaticLangSettingsView.Builder xsettingsClass = StaticLangSettingsView.newBuilder();
     xsettingsClass.releaseLevelAnnotation(
         context.getNamer().getReleaseAnnotation(context.getApiConfig().getReleaseLevel()));
     xsettingsClass.doc(generateSettingsDoc(context, exampleApiMethod));
-    String name = context.getNamer().getApiSettingsClassName(context.getInterfaceConfig());
+    String name = namer.getApiSettingsClassName(context.getInterfaceConfig());
     xsettingsClass.name(name);
     ServiceConfig serviceConfig = new ServiceConfig();
     xsettingsClass.serviceAddress(serviceConfig.getServiceAddress(context.getInterface()));
@@ -386,6 +387,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     xsettingsClass.hasDefaultServiceAddress(interfaceConfig.hasDefaultServiceAddress());
     xsettingsClass.hasDefaultServiceScopes(interfaceConfig.hasDefaultServiceScopes());
     xsettingsClass.hasDefaultInstance(interfaceConfig.hasDefaultInstance());
+    xsettingsClass.packagePath(namer.getPackagePath());
 
     return xsettingsClass.build();
   }

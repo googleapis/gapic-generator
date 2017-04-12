@@ -1044,6 +1044,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getGrpcStubCallString");
   }
 
+  /** The string of the package path */
+  public String getPackagePath() {
+    return getNotImplementedString("SurfaceNamer.getPackagePath");
+  }
+
   ///////////////////////////////////////// Imports ///////////////////////////////////////////////
 
   /** Returns true if the request object param type for the given field should be imported. */
