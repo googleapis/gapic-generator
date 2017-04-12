@@ -25,9 +25,6 @@ public abstract class ClientTestClassView {
 
   public abstract String apiClassName();
 
-  @Nullable
-  public abstract String fullyQualifiedApiClassName();
-
   public abstract String apiSettingsClassName();
 
   @Nullable
@@ -52,8 +49,6 @@ public abstract class ClientTestClassView {
     public abstract Builder name(String val);
 
     public abstract Builder apiClassName(String val);
-
-    public abstract Builder fullyQualifiedApiClassName(String val);
 
     public abstract Builder apiSettingsClassName(String val);
 

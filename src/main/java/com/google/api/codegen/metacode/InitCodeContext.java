@@ -30,7 +30,7 @@ import javax.annotation.Nullable;
 public abstract class InitCodeContext {
   public enum InitCodeOutputType {
     SingleObject,
-    FieldList
+    FieldList,
   }
 
   /** The type of the output object. */

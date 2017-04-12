@@ -119,6 +119,8 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
     for (Interface service : new InterfaceView().getElementIterable(model)) {
       imports.add(createImport(namer.getServiceFileName(apiConfig.getInterfaceConfig(service))));
     }
+
+    // The protobuf imports need to be loaded before the client is initialized.
     for (Interface service : new InterfaceView().getElementIterable(model)) {
       imports.add(
           createImport(

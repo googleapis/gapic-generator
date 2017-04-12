@@ -29,7 +29,7 @@ class MockGrpcStub
 
   def method(symbol)
     return @mock_method if symbol === @expected_symbol
-    return proc do
+    proc do
       raise "The method #{symbol} was unexpectedly called."
     end
   end

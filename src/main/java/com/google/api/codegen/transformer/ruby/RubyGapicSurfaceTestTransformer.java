@@ -124,8 +124,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
       ClientTestClassView testClass =
           ClientTestClassView.newBuilder()
               .apiSettingsClassName(apiSettingsClassName)
-              .apiClassName(namer.getApiWrapperClassName(serviceConfig))
-              .fullyQualifiedApiClassName(namer.getFullyQualifiedApiWrapperClassName(serviceConfig))
+              .apiClassName(namer.getFullyQualifiedApiWrapperClassName(serviceConfig))
               .name(testClassName)
               .testCases(createTestCaseViews(context))
               .apiHasLongRunningMethods(serviceConfig.hasLongRunningOperations())

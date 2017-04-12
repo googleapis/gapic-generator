@@ -70,13 +70,10 @@ public class InitCodeTransformer {
   public InitCodeView generateInitCode(
       GapicMethodContext methodContext, InitCodeContext initCodeContext) {
     InitCodeNode rootNode = InitCodeNode.createTree(initCodeContext);
-    switch (initCodeContext.outputType()) {
-      case FieldList:
-        return buildInitCodeViewFlattened(methodContext, rootNode);
-      case SingleObject:
-        return buildInitCodeViewRequestObject(methodContext, rootNode);
-      default:
-        throw new IllegalArgumentException();
+    if (initCodeContext.outputType() == InitCodeOutputType.FieldList) {
+      return buildInitCodeViewFlattened(methodContext, rootNode);
+    } else {
+      return buildInitCodeViewRequestObject(methodContext, rootNode);
     }
   }
 
