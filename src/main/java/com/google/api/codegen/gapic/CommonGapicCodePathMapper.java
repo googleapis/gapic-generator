@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.gapic;
 
-import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.ProductConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NameFormatter;
 import com.google.api.tools.framework.model.ProtoElement;
@@ -41,7 +41,7 @@ public class CommonGapicCodePathMapper implements GapicCodePathMapper {
   }
 
   @Override
-  public String getOutputPath(ProtoElement element, ApiConfig config) {
+  public String getOutputPath(ProtoElement element, ProductConfig config) {
     ArrayList<String> dirs = new ArrayList<>();
     if (!Strings.isNullOrEmpty(prefix)) {
       dirs.add(prefix);

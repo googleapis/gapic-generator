@@ -14,14 +14,18 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.viewmodel.DynamicLangDefaultableParamView;
-import com.google.api.codegen.viewmodel.ParamDocView;
-import java.util.List;
+import com.google.api.codegen.config.ProductConfig;
+import com.google.api.codegen.util.TypeTable;
 
-public interface ApiMethodParamTransformer {
-  /** Creates the views for the parameters in the API method definition. */
-  List<DynamicLangDefaultableParamView> generateMethodParams(GapicMethodContext context);
+/**
+ * The context for transforming an API interface, in an input-agnostic way, into a view model to use
+ * for client library generation.
+ */
+public interface InterfaceContext {
 
-  /** Creates the views for the documentation of the API method parameters. */
-  List<ParamDocView> generateParamDocs(GapicMethodContext context);
+  ProductConfig getProductConfig();
+
+  TypeTable getTypeTable();
+
+  SurfaceNamer getNamer();
 }

@@ -17,14 +17,15 @@ package com.google.api.codegen.transformer.ruby;
 import com.google.api.codegen.GeneratorVersionProvider;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.TargetLanguage;
-import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.config.ServiceConfig;
+import com.google.api.codegen.config.ProductServiceConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.BatchingTransformer;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
+import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -32,7 +33,6 @@ import com.google.api.codegen.transformer.PageStreamingTransformer;
 import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.ServiceTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.DynamicLangXApiView;
@@ -78,33 +78,33 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(Model model, ApiConfig apiConfig) {
+  public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ViewModel> views = ImmutableList.builder();
-    views.add(generateVersionIndexView(model, apiConfig));
-    views.addAll(generateApiClasses(model, apiConfig));
+    views.add(generateVersionIndexView(model, productConfig));
+    views.addAll(generateApiClasses(model, productConfig));
     return views.build();
   }
 
-  private List<ViewModel> generateApiClasses(Model model, ApiConfig apiConfig) {
-    SurfaceNamer namer = new RubySurfaceNamer(apiConfig.getPackageName());
+  private List<ViewModel> generateApiClasses(Model model, GapicProductConfig productConfig) {
+    SurfaceNamer namer = new RubySurfaceNamer(productConfig.getPackageName());
     FeatureConfig featureConfig = new RubyFeatureConfig();
     ImmutableList.Builder<ViewModel> serviceSurfaces = ImmutableList.builder();
-    for (Interface service : new InterfaceView().getElementIterable(model)) {
+    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
       ModelTypeTable modelTypeTable =
           new ModelTypeTable(
-              new RubyTypeTable(apiConfig.getPackageName()),
-              new RubyModelTypeNameConverter(apiConfig.getPackageName()));
-      SurfaceTransformerContext context =
-          SurfaceTransformerContext.create(
-              service, apiConfig, modelTypeTable, namer, featureConfig);
+              new RubyTypeTable(productConfig.getPackageName()),
+              new RubyModelTypeNameConverter(productConfig.getPackageName()));
+      GapicInterfaceContext context =
+          GapicInterfaceContext.create(
+              apiInterface, productConfig, modelTypeTable, namer, featureConfig);
       serviceSurfaces.add(generateApiClass(context));
     }
     return serviceSurfaces.build();
   }
 
-  private ViewModel generateApiClass(SurfaceTransformerContext context) {
+  private ViewModel generateApiClass(GapicInterfaceContext context) {
     SurfaceNamer namer = context.getNamer();
-    String subPath = pathMapper.getOutputPath(context.getInterface(), context.getApiConfig());
+    String subPath = pathMapper.getOutputPath(context.getInterface(), context.getProductConfig());
     String name = namer.getApiWrapperClassName(context.getInterfaceConfig());
     List<ApiMethodView> methods = generateApiMethods(context);
 
@@ -119,11 +119,11 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.doc(serviceTransformer.generateServiceDoc(context, methods.get(0)));
     xapiClass.stubs(grpcStubTransformer.generateGrpcStubs(context));
 
-    ServiceConfig serviceConfig = new ServiceConfig();
-    xapiClass.serviceAddress(serviceConfig.getServiceAddress(context.getInterface()));
-    xapiClass.servicePort(serviceConfig.getServicePort());
-    xapiClass.serviceTitle(serviceConfig.getTitle(context.getInterface()));
-    xapiClass.authScopes(serviceConfig.getAuthScopes(context.getInterface()));
+    ProductServiceConfig productServiceConfig = new ProductServiceConfig();
+    xapiClass.serviceAddress(productServiceConfig.getServiceAddress(context.getInterface()));
+    xapiClass.servicePort(productServiceConfig.getServicePort());
+    xapiClass.serviceTitle(productServiceConfig.getTitle(context.getInterface()));
+    xapiClass.authScopes(productServiceConfig.getAuthScopes(context.getInterface()));
     xapiClass.hasDefaultServiceAddress(context.getInterfaceConfig().hasDefaultServiceAddress());
     xapiClass.hasDefaultServiceScopes(context.getInterfaceConfig().hasDefaultServiceScopes());
 
@@ -147,7 +147,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.clientConfigPath(namer.getClientConfigPath(context.getInterface()));
     xapiClass.grpcClientTypeName(
         namer.getAndSaveNicknameForGrpcClientTypeName(
-            context.getTypeTable(), context.getInterface()));
+            context.getModelTypeTable(), context.getInterface()));
 
     xapiClass.apiMethods(methods);
 
@@ -158,7 +158,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
     return xapiClass.build();
   }
 
-  private List<ApiMethodView> generateApiMethods(SurfaceTransformerContext context) {
+  private List<ApiMethodView> generateApiMethods(GapicInterfaceContext context) {
     ImmutableList.Builder<ApiMethodView> apiMethods = ImmutableList.builder();
     for (Method method : context.getSupportedMethods()) {
       apiMethods.add(apiMethodTransformer.generateMethod(context.asDynamicMethodContext(method)));
@@ -166,28 +166,28 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
     return apiMethods.build();
   }
 
-  private ViewModel generateVersionIndexView(Model model, ApiConfig apiConfig) {
-    SurfaceNamer namer = new RubySurfaceNamer(apiConfig.getPackageName());
+  private ViewModel generateVersionIndexView(Model model, GapicProductConfig productConfig) {
+    SurfaceNamer namer = new RubySurfaceNamer(productConfig.getPackageName());
     ImmutableList.Builder<VersionIndexRequireView> requireViews = ImmutableList.builder();
     Iterable<Interface> interfaces = new InterfaceView().getElementIterable(model);
-    for (Interface service : interfaces) {
+    for (Interface apiInterface : interfaces) {
       requireViews.add(
           VersionIndexRequireView.newBuilder()
               .clientName(namer.getNotImplementedString("VersionIndexRequireView.clientName"))
-              .fileName(namer.getServiceFileName(apiConfig.getInterfaceConfig(service)))
+              .fileName(namer.getServiceFileName(productConfig.getInterfaceConfig(apiInterface)))
               .build());
     }
 
     return VersionIndexView.newBuilder()
         .apiVersion(namer.getApiWrapperModuleVersion())
-        // The following assumes that all generated services are generated to the same output path.
-        .outputPath(pathMapper.getOutputPath(interfaces.iterator().next(), apiConfig) + ".rb")
+        // The following assumes that all generated interfaces are generated to the same output path.
+        .outputPath(pathMapper.getOutputPath(interfaces.iterator().next(), productConfig) + ".rb")
         .requireViews(requireViews.build())
         .templateFileName(VERSION_INDEX_TEMPLATE_FILE)
         .packageVersion(packageConfig.generatedPackageVersionBound(TargetLanguage.RUBY).lower())
         .fileHeader(
             fileHeaderTransformer.generateFileHeader(
-                apiConfig, ImportSectionView.newBuilder().build(), namer))
+                productConfig, ImportSectionView.newBuilder().build(), namer))
         .build();
   }
 }

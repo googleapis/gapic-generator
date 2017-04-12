@@ -33,9 +33,11 @@ public abstract class SmokeTestConfig {
   public abstract String getFlatteningName();
 
   public static SmokeTestConfig createSmokeTestConfig(
-      Interface service, SmokeTestConfigProto smokeTestConfigProto, DiagCollector diagCollector) {
+      Interface apiInterface,
+      SmokeTestConfigProto smokeTestConfigProto,
+      DiagCollector diagCollector) {
     Method testedMethod = null;
-    for (Method method : service.getMethods()) {
+    for (Method method : apiInterface.getMethods()) {
       if (method.getSimpleName().equals(smokeTestConfigProto.getMethod())) {
         testedMethod = method;
         break;

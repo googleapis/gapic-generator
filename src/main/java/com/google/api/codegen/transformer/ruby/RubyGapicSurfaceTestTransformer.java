@@ -15,22 +15,22 @@
 package com.google.api.codegen.transformer.ruby;
 
 import com.google.api.codegen.InterfaceView;
-import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
-import com.google.api.codegen.config.InterfaceConfig;
-import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.GapicInterfaceConfig;
+import com.google.api.codegen.config.GapicMethodConfig;
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
+import com.google.api.codegen.transformer.GapicInterfaceContext;
+import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.InitCodeTransformer;
-import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.transformer.TestCaseTransformer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
@@ -80,11 +80,11 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(Model model, ApiConfig apiConfig) {
+  public List<ViewModel> transform(Model model, GapicProductConfig apiConfig) {
     ImmutableList.Builder<ViewModel> views = ImmutableList.builder();
     views.add(createUnitTestView(model, apiConfig));
     for (Interface service : new InterfaceView().getElementIterable(model)) {
-      SurfaceTransformerContext context = createContext(service, apiConfig);
+      GapicInterfaceContext context = createContext(service, apiConfig);
       if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
         views.add(createSmokeTestClassView(context));
       }
@@ -95,7 +95,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
   ///////////////////////////////////// Unit Test ///////////////////////////////////////
 
-  private MockCombinedView createUnitTestView(Model model, ApiConfig apiConfig) {
+  private MockCombinedView createUnitTestView(Model model, GapicProductConfig apiConfig) {
     SurfaceNamer namer = new RubySurfaceNamer(apiConfig.getPackageName());
     ImportSectionView importSection =
         importSectionTransformer.generateTestImportSection(model, apiConfig);
@@ -110,7 +110,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
   }
 
   private List<ClientTestClassView> generateTestClasses(
-      Model model, ApiConfig apiConfig, SurfaceNamer namer) {
+      Model model, GapicProductConfig apiConfig, SurfaceNamer namer) {
     ImmutableList.Builder<ClientTestClassView> testClasses = ImmutableList.builder();
     String apiSettingsClassName =
         namer.getNotImplementedString(
@@ -119,8 +119,8 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
         namer.getNotImplementedString("RubyGapicSurfaceTestTransformer.generateTestView - name");
 
     for (Interface service : new InterfaceView().getElementIterable(model)) {
-      SurfaceTransformerContext context = createContext(service, apiConfig);
-      InterfaceConfig serviceConfig = context.getInterfaceConfig();
+      GapicInterfaceContext context = createContext(service, apiConfig);
+      GapicInterfaceConfig serviceConfig = context.getInterfaceConfig();
       ClientTestClassView testClass =
           ClientTestClassView.newBuilder()
               .apiSettingsClassName(apiSettingsClassName)
@@ -136,13 +136,13 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
     return testClasses.build();
   }
 
-  private List<TestCaseView> createTestCaseViews(SurfaceTransformerContext context) {
+  private List<TestCaseView> createTestCaseViews(GapicInterfaceContext context) {
     ImmutableList.Builder<TestCaseView> testCases = ImmutableList.builder();
     List<Method> methods = getTestedMethods(context);
     for (Method method : methods) {
-      MethodTransformerContext requestMethodContext =
+      GapicMethodContext requestMethodContext =
           context.withNewTypeTable().asRequestMethodContext(method);
-      MethodConfig methodConfig = requestMethodContext.getMethodConfig();
+      GapicMethodConfig methodConfig = requestMethodContext.getMethodConfig();
       TestCaseView testCase =
           testCaseTransformer.createTestCaseView(
               requestMethodContext,
@@ -155,11 +155,11 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
   }
 
   // TODO(landrito): Remove this function when all test types are supported.
-  private List<Method> getTestedMethods(SurfaceTransformerContext context) {
+  private List<Method> getTestedMethods(GapicInterfaceContext context) {
     ImmutableList.Builder<Method> methods = ImmutableList.builder();
     for (Method method : context.getSupportedMethods()) {
-      MethodTransformerContext requestMethodContext = context.asRequestMethodContext(method);
-      MethodConfig methodConfig = requestMethodContext.getMethodConfig();
+      GapicMethodContext requestMethodContext = context.asRequestMethodContext(method);
+      GapicMethodConfig methodConfig = requestMethodContext.getMethodConfig();
       if (methodConfig.isPageStreaming()
           || methodConfig.isGrpcStreaming()
           || methodConfig.isLongRunningOperation()) {
@@ -171,10 +171,10 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
   }
 
   private InitCodeContext createTestCaseInitCodeContext(
-      SurfaceTransformerContext context, Method method) {
-    MethodTransformerContext requestMethodContext = context.asRequestMethodContext(method);
-    MethodTransformerContext dynamicMethodContext = context.asDynamicMethodContext(method);
-    MethodConfig methodConfig = requestMethodContext.getMethodConfig();
+      GapicInterfaceContext context, Method method) {
+    GapicMethodContext requestMethodContext = context.asRequestMethodContext(method);
+    GapicMethodContext dynamicMethodContext = context.asDynamicMethodContext(method);
+    GapicMethodConfig methodConfig = requestMethodContext.getMethodConfig();
     Iterable<FieldConfig> fieldConfigs = methodConfig.getRequiredFieldConfigs();
 
     return InitCodeContext.newBuilder()
@@ -189,7 +189,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
         .build();
   }
 
-  private ClientMethodType getMethodType(MethodConfig config) {
+  private ClientMethodType getMethodType(GapicMethodConfig config) {
     ClientMethodType clientMethodType = ClientMethodType.RequestObjectMethod;
     if (config.isPageStreaming()) {
       clientMethodType = ClientMethodType.PagedRequestObjectMethod;
@@ -203,8 +203,9 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
   ///////////////////////////////////// Smoke Test ///////////////////////////////////////
 
-  private SmokeTestClassView createSmokeTestClassView(SurfaceTransformerContext context) {
-    String outputPath = pathMapper.getOutputPath(context.getInterface(), context.getApiConfig());
+  private SmokeTestClassView createSmokeTestClassView(GapicInterfaceContext context) {
+    String outputPath =
+        pathMapper.getOutputPath(context.getInterface(), context.getProductConfig());
     SurfaceNamer namer = context.getNamer();
     String name = namer.getSmokeTestClassName(context.getInterfaceConfig());
 
@@ -212,7 +213,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
     FlatteningConfig flatteningGroup =
         testCaseTransformer.getSmokeTestFlatteningGroup(
             context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
-    MethodTransformerContext flattenedMethodContext =
+    GapicMethodContext flattenedMethodContext =
         context.asFlattenedMethodContext(method, flatteningGroup);
 
     SmokeTestClassView.Builder testClass = SmokeTestClassView.newBuilder();
@@ -239,8 +240,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
     return testClass.build();
   }
 
-  private OptionalArrayMethodView createSmokeTestCaseApiMethodView(
-      MethodTransformerContext context) {
+  private OptionalArrayMethodView createSmokeTestCaseApiMethodView(GapicMethodContext context) {
     OptionalArrayMethodView initialApiMethodView =
         new DynamicLangApiMethodTransformer(new RubyApiMethodParamTransformer())
             .generateMethod(context);
@@ -258,8 +258,8 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
   /////////////////////////////////// General Helpers //////////////////////////////////////
 
-  private SurfaceTransformerContext createContext(Interface service, ApiConfig apiConfig) {
-    return SurfaceTransformerContext.create(
+  private GapicInterfaceContext createContext(Interface service, GapicProductConfig apiConfig) {
+    return GapicInterfaceContext.create(
         service,
         apiConfig,
         new ModelTypeTable(

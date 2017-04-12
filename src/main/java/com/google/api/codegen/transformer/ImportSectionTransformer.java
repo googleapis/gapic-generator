@@ -20,9 +20,9 @@ import com.google.api.codegen.viewmodel.ImportSectionView;
 /** Generates import sections. */
 public interface ImportSectionTransformer {
   /** Generates an ImportSectionView for a file header. */
-  ImportSectionView generateImportSection(SurfaceTransformerContext context);
+  ImportSectionView generateImportSection(InterfaceContext context);
 
   /** Generates an ImportSectionView for the InitCodeTransformer. */
   ImportSectionView generateImportSection(
-      MethodTransformerContext context, Iterable<InitCodeNode> specItemNodes);
+      GapicMethodContext context, Iterable<InitCodeNode> specItemNodes);
 }

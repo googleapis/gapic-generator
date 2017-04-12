@@ -14,9 +14,9 @@
  */
 package com.google.api.codegen.transformer.ruby;
 
-import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.transformer.ApiMethodParamTransformer;
-import com.google.api.codegen.transformer.MethodTransformerContext;
+import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.viewmodel.DynamicLangDefaultableParamView;
 import com.google.api.codegen.viewmodel.ParamDocView;
@@ -27,8 +27,7 @@ import java.util.List;
 
 public class RubyApiMethodParamTransformer implements ApiMethodParamTransformer {
   @Override
-  public List<DynamicLangDefaultableParamView> generateMethodParams(
-      MethodTransformerContext context) {
+  public List<DynamicLangDefaultableParamView> generateMethodParams(GapicMethodContext context) {
     ImmutableList.Builder<DynamicLangDefaultableParamView> methodParams = ImmutableList.builder();
     if (context.getMethod().getRequestStreaming()) {
       DynamicLangDefaultableParamView.Builder param = DynamicLangDefaultableParamView.newBuilder();
@@ -36,7 +35,7 @@ public class RubyApiMethodParamTransformer implements ApiMethodParamTransformer 
       param.defaultValue("");
       methodParams.add(param.build());
     } else {
-      MethodConfig methodConfig = context.getMethodConfig();
+      GapicMethodConfig methodConfig = context.getMethodConfig();
       for (Field field : methodConfig.getRequiredFields()) {
         DynamicLangDefaultableParamView.Builder param =
             DynamicLangDefaultableParamView.newBuilder();
@@ -66,7 +65,7 @@ public class RubyApiMethodParamTransformer implements ApiMethodParamTransformer 
   }
 
   @Override
-  public List<ParamDocView> generateParamDocs(MethodTransformerContext context) {
+  public List<ParamDocView> generateParamDocs(GapicMethodContext context) {
     ImmutableList.Builder<ParamDocView> docs = ImmutableList.builder();
     if (context.getMethod().getRequestStreaming()) {
       docs.add(generateRequestStreamingParamDoc(context));
@@ -78,7 +77,7 @@ public class RubyApiMethodParamTransformer implements ApiMethodParamTransformer 
     return docs.build();
   }
 
-  private ParamDocView generateRequestStreamingParamDoc(MethodTransformerContext context) {
+  private ParamDocView generateRequestStreamingParamDoc(GapicMethodContext context) {
     SimpleParamDocView.Builder paramDoc = SimpleParamDocView.newBuilder();
     paramDoc.paramName(context.getNamer().getRequestVariableName(context.getMethod()));
     paramDoc.lines(ImmutableList.of("The input requests."));
@@ -92,9 +91,9 @@ public class RubyApiMethodParamTransformer implements ApiMethodParamTransformer 
   }
 
   private List<ParamDocView> generateMethodParamDocs(
-      MethodTransformerContext context, Iterable<Field> fields) {
+      GapicMethodContext context, Iterable<Field> fields) {
     SurfaceNamer namer = context.getNamer();
-    MethodConfig methodConfig = context.getMethodConfig();
+    GapicMethodConfig methodConfig = context.getMethodConfig();
     ImmutableList.Builder<ParamDocView> docs = ImmutableList.builder();
     for (Field field : fields) {
       if (isRequestTokenParam(methodConfig, field)) {
@@ -121,13 +120,13 @@ public class RubyApiMethodParamTransformer implements ApiMethodParamTransformer 
     return docs.build();
   }
 
-  private boolean isPageSizeParam(MethodConfig methodConfig, Field field) {
+  private boolean isPageSizeParam(GapicMethodConfig methodConfig, Field field) {
     return methodConfig.isPageStreaming()
         && methodConfig.getPageStreaming().hasPageSizeField()
         && field.equals(methodConfig.getPageStreaming().getPageSizeField());
   }
 
-  private boolean isRequestTokenParam(MethodConfig methodConfig, Field field) {
+  private boolean isRequestTokenParam(GapicMethodConfig methodConfig, Field field) {
     return methodConfig.isPageStreaming()
         && field.equals(methodConfig.getPageStreaming().getRequestTokenField());
   }

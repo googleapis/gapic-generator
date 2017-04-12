@@ -15,8 +15,8 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.ServiceMessages;
+import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.LongRunningConfig;
-import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
 import com.google.api.tools.framework.model.Method;
@@ -24,8 +24,7 @@ import com.google.common.collect.ImmutableList;
 import java.util.List;
 
 public class LongRunningTransformer {
-  public List<LongRunningOperationDetailView> generateDetailViews(
-      SurfaceTransformerContext context) {
+  public List<LongRunningOperationDetailView> generateDetailViews(GapicInterfaceContext context) {
     ImmutableList.Builder<LongRunningOperationDetailView> views = ImmutableList.builder();
     for (Method method : context.getLongRunningMethods()) {
       views.add(generateDetailView(context.asDynamicMethodContext(method)));
@@ -33,8 +32,8 @@ public class LongRunningTransformer {
     return views.build();
   }
 
-  public LongRunningOperationDetailView generateDetailView(MethodTransformerContext context) {
-    MethodConfig methodConfig = context.getMethodConfig();
+  public LongRunningOperationDetailView generateDetailView(GapicMethodContext context) {
+    GapicMethodConfig methodConfig = context.getMethodConfig();
     LongRunningConfig lroConfig = methodConfig.getLongRunningConfig();
     SurfaceNamer namer = context.getNamer();
 

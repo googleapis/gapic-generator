@@ -15,10 +15,11 @@
 package com.google.api.codegen.transformer.py;
 
 import com.google.api.codegen.metacode.InitCodeNode;
+import com.google.api.codegen.transformer.GapicInterfaceContext;
+import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.ImportSectionTransformer;
-import com.google.api.codegen.transformer.MethodTransformerContext;
+import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.ModelTypeTable;
-import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
@@ -34,20 +35,20 @@ import java.util.TreeSet;
 
 public class PythonImportSectionTransformer implements ImportSectionTransformer {
   @Override
-  public ImportSectionView generateImportSection(SurfaceTransformerContext context) {
+  public ImportSectionView generateImportSection(InterfaceContext context) {
     // TODO(eoogbe): implement when migrating to MVVM
     return ImportSectionView.newBuilder().build();
   }
 
   @Override
   public ImportSectionView generateImportSection(
-      MethodTransformerContext context, Iterable<InitCodeNode> specItemNodes) {
+      GapicMethodContext context, Iterable<InitCodeNode> specItemNodes) {
     return ImportSectionView.newBuilder()
         .appImports(generateInitCodeAppImports(context, specItemNodes))
         .build();
   }
 
-  public ImportSectionView generateTestImportSection(SurfaceTransformerContext context) {
+  public ImportSectionView generateTestImportSection(GapicInterfaceContext context) {
     return ImportSectionView.newBuilder()
         .standardImports(generateTestStandardImports())
         .externalImports(generateTestExternalImports(context))
@@ -56,7 +57,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
   }
 
   private List<ImportFileView> generateInitCodeAppImports(
-      MethodTransformerContext context, Iterable<InitCodeNode> specItemNodes) {
+      GapicMethodContext context, Iterable<InitCodeNode> specItemNodes) {
     return ImmutableList.<ImportFileView>builder()
         .add(generateApiImport(context))
         .addAll(generateProtoImports(context, specItemNodes))
@@ -64,15 +65,15 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
         .build();
   }
 
-  private ImportFileView generateApiImport(MethodTransformerContext context) {
-    String moduleName = context.getApiConfig().getPackageName();
+  private ImportFileView generateApiImport(GapicMethodContext context) {
+    String moduleName = context.getProductConfig().getPackageName();
     String attributeName =
         context.getNamer().getApiWrapperVariableName(context.getInterfaceConfig());
     return createImport(moduleName, attributeName);
   }
 
   private List<ImportFileView> generateProtoImports(
-      MethodTransformerContext context, Iterable<InitCodeNode> specItemNodes) {
+      GapicMethodContext context, Iterable<InitCodeNode> specItemNodes) {
     ModelTypeTable typeTable = context.getTypeTable();
     Set<ImportFileView> protoImports = new TreeSet<>(importFileViewComparator());
     for (InitCodeNode item : specItemNodes) {
@@ -83,13 +84,13 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
         String nickname = typeTable.getNicknameFor(type);
         protoImports.add(generateAppImport(fullName, nickname));
       } else if (type.isEnum()) {
-        protoImports.add(createImport(context.getApiConfig().getPackageName(), "enums"));
+        protoImports.add(createImport(context.getProductConfig().getPackageName(), "enums"));
       }
     }
     return new ArrayList<>(protoImports);
   }
 
-  private List<ImportFileView> generatePageStreamingImports(MethodTransformerContext context) {
+  private List<ImportFileView> generatePageStreamingImports(GapicMethodContext context) {
     ImmutableList.Builder<ImportFileView> pageStreamingImports = ImmutableList.builder();
     if (context.getMethodConfig().isPageStreaming()) {
       ImportTypeView callOptionsImport =
@@ -110,7 +111,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
     return ImmutableList.of(createImport("mock"), createImport("unittest2"));
   }
 
-  private List<ImportFileView> generateTestExternalImports(SurfaceTransformerContext context) {
+  private List<ImportFileView> generateTestExternalImports(GapicInterfaceContext context) {
     ImmutableList.Builder<ImportFileView> externalImports = ImmutableList.builder();
     externalImports.add(createImport("google.gax", "errors"));
     if (context.getInterfaceConfig().hasLongRunningOperations()) {
@@ -119,12 +120,12 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
     return externalImports.build();
   }
 
-  private List<ImportFileView> generateTestAppImports(SurfaceTransformerContext context) {
+  private List<ImportFileView> generateTestAppImports(GapicInterfaceContext context) {
     Set<ImportFileView> appImports = new TreeSet<>(importFileViewComparator());
-    for (Map.Entry<String, TypeAlias> entry : context.getTypeTable().getImports().entrySet()) {
+    for (Map.Entry<String, TypeAlias> entry : context.getModelTypeTable().getImports().entrySet()) {
       String fullName = entry.getKey();
       if (fullName.startsWith(context.getNamer().getTestPackageName() + ".enums")) {
-        appImports.add(createImport(context.getApiConfig().getPackageName(), "enums"));
+        appImports.add(createImport(context.getProductConfig().getPackageName(), "enums"));
       } else {
         appImports.add(generateAppImport(entry.getKey(), entry.getValue().getNickname()));
       }

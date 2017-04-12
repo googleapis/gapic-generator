@@ -15,7 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.viewmodel.PageStreamingDescriptorClassView;
 import com.google.api.codegen.viewmodel.PageStreamingDescriptorView;
@@ -29,11 +29,11 @@ import java.util.List;
 /** PageStreamingTransformer generates view objects for page streaming from a service model. */
 public class PageStreamingTransformer {
 
-  public List<PageStreamingDescriptorView> generateDescriptors(SurfaceTransformerContext context) {
+  public List<PageStreamingDescriptorView> generateDescriptors(GapicInterfaceContext context) {
     List<PageStreamingDescriptorView> descriptors = new ArrayList<>();
 
     for (Method method : context.getPageStreamingMethods()) {
-      MethodConfig methodConfig = context.getMethodConfig(method);
+      GapicMethodConfig methodConfig = context.getMethodConfig(method);
       PageStreamingConfig pageStreaming = methodConfig.getPageStreaming();
 
       PageStreamingDescriptorView.Builder descriptor = PageStreamingDescriptorView.newBuilder();
@@ -54,7 +54,7 @@ public class PageStreamingTransformer {
   }
 
   public List<PageStreamingDescriptorClassView> generateDescriptorClasses(
-      SurfaceTransformerContext context) {
+      GapicInterfaceContext context) {
     List<PageStreamingDescriptorClassView> descriptors = new ArrayList<>();
 
     for (Method method : context.getPageStreamingMethods()) {
@@ -64,8 +64,7 @@ public class PageStreamingTransformer {
     return descriptors;
   }
 
-  private PageStreamingDescriptorClassView generateDescriptorClass(
-      MethodTransformerContext context) {
+  private PageStreamingDescriptorClassView generateDescriptorClass(GapicMethodContext context) {
     SurfaceNamer namer = context.getNamer();
     ModelTypeTable typeTable = context.getTypeTable();
     Method method = context.getMethod();
@@ -104,7 +103,7 @@ public class PageStreamingTransformer {
   }
 
   public List<PagedListResponseFactoryClassView> generateFactoryClasses(
-      SurfaceTransformerContext context) {
+      GapicInterfaceContext context) {
     List<PagedListResponseFactoryClassView> factories = new ArrayList<>();
 
     for (Method method : context.getPageStreamingMethods()) {
@@ -114,7 +113,7 @@ public class PageStreamingTransformer {
     return factories;
   }
 
-  private PagedListResponseFactoryClassView generateFactoryClass(MethodTransformerContext context) {
+  private PagedListResponseFactoryClassView generateFactoryClass(GapicMethodContext context) {
     SurfaceNamer namer = context.getNamer();
     ModelTypeTable typeTable = context.getTypeTable();
     Method method = context.getMethod();

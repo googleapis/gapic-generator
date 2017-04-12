@@ -19,6 +19,7 @@ package com.google.gcloud.pubsub.spi;
 import com.google.api.gax.batching.BatchingSettings;
 import com.google.api.gax.batching.PartitionKey;
 import com.google.api.gax.batching.RequestBuilder;
+import com.google.api.gax.core.ApiFuture;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.FlowControlSettings;
 import com.google.api.gax.core.FlowController;
@@ -26,6 +27,7 @@ import com.google.api.gax.core.FlowController.LimitExceededBehavior;
 import com.google.api.gax.core.GoogleCredentialsProvider;
 import com.google.api.gax.core.PropertiesProvider;
 import com.google.api.gax.core.RetrySettings;
+import com.google.api.gax.grpc.ApiExceptions;
 import com.google.api.gax.grpc.BatchedRequestIssuer;
 import com.google.api.gax.grpc.BatchingCallSettings;
 import com.google.api.gax.grpc.BatchingDescriptor;
@@ -36,6 +38,7 @@ import com.google.api.gax.grpc.ExecutorProvider;
 import com.google.api.gax.grpc.InstantiatingChannelProvider;
 import com.google.api.gax.grpc.InstantiatingExecutorProvider;
 import com.google.api.gax.grpc.OperationCallSettings;
+import com.google.api.gax.grpc.PageContext;
 import com.google.api.gax.grpc.PagedCallSettings;
 import com.google.api.gax.grpc.PagedListDescriptor;
 import com.google.api.gax.grpc.PagedListResponseFactory;
@@ -147,7 +150,7 @@ public class LibrarySettings extends ClientSettings {
   private static final String DEFAULT_GAPIC_NAME = "gapic";
   private static final String DEFAULT_GAPIC_VERSION = "";
 
-  private static final String PROPERTIES_FILE = "/project.properties";
+  private static final String PROPERTIES_FILE = "/com/google/gcloud/pubsub/project.properties";
   private static final String META_VERSION_KEY = "artifact.version";
 
   private static String gapicVersion;
@@ -476,14 +479,14 @@ public class LibrarySettings extends ClientSettings {
   private static final PagedListDescriptor<ListShelvesRequest, ListShelvesResponse, Shelf> LIST_SHELVES_PAGE_STR_DESC =
       new PagedListDescriptor<ListShelvesRequest, ListShelvesResponse, Shelf>() {
         @Override
-        public Object emptyToken() {
+        public String emptyToken() {
           return "";
         }
         @Override
-        public ListShelvesRequest injectToken(ListShelvesRequest payload, Object token) {
+        public ListShelvesRequest injectToken(ListShelvesRequest payload, String token) {
           return ListShelvesRequest
             .newBuilder(payload)
-            .setPageToken((String) token)
+            .setPageToken(token)
             .build();
         }
         @Override
@@ -495,7 +498,7 @@ public class LibrarySettings extends ClientSettings {
           throw new UnsupportedOperationException("page size is not supported by this API method");
         }
         @Override
-        public Object extractNextToken(ListShelvesResponse payload) {
+        public String extractNextToken(ListShelvesResponse payload) {
           return payload.getNextPageToken();
         }
         @Override
@@ -507,14 +510,14 @@ public class LibrarySettings extends ClientSettings {
   private static final PagedListDescriptor<ListBooksRequest, ListBooksResponse, Book> LIST_BOOKS_PAGE_STR_DESC =
       new PagedListDescriptor<ListBooksRequest, ListBooksResponse, Book>() {
         @Override
-        public Object emptyToken() {
+        public String emptyToken() {
           return "";
         }
         @Override
-        public ListBooksRequest injectToken(ListBooksRequest payload, Object token) {
+        public ListBooksRequest injectToken(ListBooksRequest payload, String token) {
           return ListBooksRequest
             .newBuilder(payload)
-            .setPageToken((String) token)
+            .setPageToken(token)
             .build();
         }
         @Override
@@ -529,7 +532,7 @@ public class LibrarySettings extends ClientSettings {
           return payload.getPageSize();
         }
         @Override
-        public Object extractNextToken(ListBooksResponse payload) {
+        public String extractNextToken(ListBooksResponse payload) {
           return payload.getNextPageToken();
         }
         @Override
@@ -541,14 +544,14 @@ public class LibrarySettings extends ClientSettings {
   private static final PagedListDescriptor<ListStringsRequest, ListStringsResponse, String> LIST_STRINGS_PAGE_STR_DESC =
       new PagedListDescriptor<ListStringsRequest, ListStringsResponse, String>() {
         @Override
-        public Object emptyToken() {
+        public String emptyToken() {
           return "";
         }
         @Override
-        public ListStringsRequest injectToken(ListStringsRequest payload, Object token) {
+        public ListStringsRequest injectToken(ListStringsRequest payload, String token) {
           return ListStringsRequest
             .newBuilder(payload)
-            .setPageToken((String) token)
+            .setPageToken(token)
             .build();
         }
         @Override
@@ -563,7 +566,7 @@ public class LibrarySettings extends ClientSettings {
           return payload.getPageSize();
         }
         @Override
-        public Object extractNextToken(ListStringsResponse payload) {
+        public String extractNextToken(ListStringsResponse payload) {
           return payload.getNextPageToken();
         }
         @Override
@@ -575,14 +578,14 @@ public class LibrarySettings extends ClientSettings {
   private static final PagedListDescriptor<FindRelatedBooksRequest, FindRelatedBooksResponse, String> FIND_RELATED_BOOKS_PAGE_STR_DESC =
       new PagedListDescriptor<FindRelatedBooksRequest, FindRelatedBooksResponse, String>() {
         @Override
-        public Object emptyToken() {
+        public String emptyToken() {
           return "";
         }
         @Override
-        public FindRelatedBooksRequest injectToken(FindRelatedBooksRequest payload, Object token) {
+        public FindRelatedBooksRequest injectToken(FindRelatedBooksRequest payload, String token) {
           return FindRelatedBooksRequest
             .newBuilder(payload)
-            .setPageToken((String) token)
+            .setPageToken(token)
             .build();
         }
         @Override
@@ -597,7 +600,7 @@ public class LibrarySettings extends ClientSettings {
           return payload.getPageSize();
         }
         @Override
-        public Object extractNextToken(FindRelatedBooksResponse payload) {
+        public String extractNextToken(FindRelatedBooksResponse payload) {
           return payload.getNextPageToken();
         }
         @Override
@@ -609,44 +612,56 @@ public class LibrarySettings extends ClientSettings {
   private static final PagedListResponseFactory<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse> LIST_SHELVES_PAGE_STR_FACT =
       new PagedListResponseFactory<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse>() {
         @Override
-        public ListShelvesPagedResponse createPagedListResponse(
+        public ApiFuture<ListShelvesPagedResponse> getFuturePagedResponse(
             UnaryCallable<ListShelvesRequest, ListShelvesResponse> callable,
             ListShelvesRequest request,
-            CallContext context) {
-          return new ListShelvesPagedResponse(callable, LIST_SHELVES_PAGE_STR_DESC, request, context);
+            CallContext context,
+            ApiFuture<ListShelvesResponse> futureResponse) {
+          PageContext<ListShelvesRequest, ListShelvesResponse, Shelf> pageContext =
+              PageContext.create(callable, LIST_SHELVES_PAGE_STR_DESC, request, context);
+          return ListShelvesPagedResponse.createAsync(pageContext, futureResponse);
         }
       };
 
   private static final PagedListResponseFactory<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse> LIST_BOOKS_PAGE_STR_FACT =
       new PagedListResponseFactory<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse>() {
         @Override
-        public ListBooksPagedResponse createPagedListResponse(
+        public ApiFuture<ListBooksPagedResponse> getFuturePagedResponse(
             UnaryCallable<ListBooksRequest, ListBooksResponse> callable,
             ListBooksRequest request,
-            CallContext context) {
-          return new ListBooksPagedResponse(callable, LIST_BOOKS_PAGE_STR_DESC, request, context);
+            CallContext context,
+            ApiFuture<ListBooksResponse> futureResponse) {
+          PageContext<ListBooksRequest, ListBooksResponse, Book> pageContext =
+              PageContext.create(callable, LIST_BOOKS_PAGE_STR_DESC, request, context);
+          return ListBooksPagedResponse.createAsync(pageContext, futureResponse);
         }
       };
 
   private static final PagedListResponseFactory<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse> LIST_STRINGS_PAGE_STR_FACT =
       new PagedListResponseFactory<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse>() {
         @Override
-        public ListStringsPagedResponse createPagedListResponse(
+        public ApiFuture<ListStringsPagedResponse> getFuturePagedResponse(
             UnaryCallable<ListStringsRequest, ListStringsResponse> callable,
             ListStringsRequest request,
-            CallContext context) {
-          return new ListStringsPagedResponse(callable, LIST_STRINGS_PAGE_STR_DESC, request, context);
+            CallContext context,
+            ApiFuture<ListStringsResponse> futureResponse) {
+          PageContext<ListStringsRequest, ListStringsResponse, String> pageContext =
+              PageContext.create(callable, LIST_STRINGS_PAGE_STR_DESC, request, context);
+          return ListStringsPagedResponse.createAsync(pageContext, futureResponse);
         }
       };
 
   private static final PagedListResponseFactory<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> FIND_RELATED_BOOKS_PAGE_STR_FACT =
       new PagedListResponseFactory<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse>() {
         @Override
-        public FindRelatedBooksPagedResponse createPagedListResponse(
+        public ApiFuture<FindRelatedBooksPagedResponse> getFuturePagedResponse(
             UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> callable,
             FindRelatedBooksRequest request,
-            CallContext context) {
-          return new FindRelatedBooksPagedResponse(callable, FIND_RELATED_BOOKS_PAGE_STR_DESC, request, context);
+            CallContext context,
+            ApiFuture<FindRelatedBooksResponse> futureResponse) {
+          PageContext<FindRelatedBooksRequest, FindRelatedBooksResponse, String> pageContext =
+              PageContext.create(callable, FIND_RELATED_BOOKS_PAGE_STR_DESC, request, context);
+          return FindRelatedBooksPagedResponse.createAsync(pageContext, futureResponse);
         }
       };
 

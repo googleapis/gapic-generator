@@ -16,8 +16,8 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
-import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.util.Name;
@@ -53,7 +53,7 @@ public class DynamicLangApiMethodTransformer {
     this.initCodeTransformer = initCodeTransformer;
   }
 
-  public OptionalArrayMethodView generateMethod(MethodTransformerContext context) {
+  public OptionalArrayMethodView generateMethod(GapicMethodContext context) {
     SurfaceNamer namer = context.getNamer();
     OptionalArrayMethodView.Builder apiMethod = OptionalArrayMethodView.newBuilder();
 
@@ -119,11 +119,11 @@ public class DynamicLangApiMethodTransformer {
     return apiMethod.build();
   }
 
-  private ApiMethodDocView generateMethodDoc(MethodTransformerContext context) {
+  private ApiMethodDocView generateMethodDoc(GapicMethodContext context) {
     ApiMethodDocView.Builder docBuilder = ApiMethodDocView.newBuilder();
     SurfaceNamer surfaceNamer = context.getNamer();
     Method method = context.getMethod();
-    MethodConfig methodConfig = context.getMethodConfig();
+    GapicMethodConfig methodConfig = context.getMethodConfig();
 
     docBuilder.mainDocLines(surfaceNamer.getDocLines(method, methodConfig));
     docBuilder.paramDocs(apiMethodParamTransformer.generateParamDocs(context));
@@ -143,7 +143,7 @@ public class DynamicLangApiMethodTransformer {
   }
 
   private List<RequestObjectParamView> generateRequestObjectParams(
-      MethodTransformerContext context, Iterable<FieldConfig> fieldConfigs) {
+      GapicMethodContext context, Iterable<FieldConfig> fieldConfigs) {
     List<RequestObjectParamView> params = new ArrayList<>();
     for (FieldConfig fieldConfig : fieldConfigs) {
       params.add(generateRequestObjectParam(context, fieldConfig));
@@ -152,8 +152,8 @@ public class DynamicLangApiMethodTransformer {
   }
 
   private Iterable<FieldConfig> removePageTokenFieldConfig(
-      MethodTransformerContext context, Iterable<FieldConfig> fieldConfigs) {
-    MethodConfig methodConfig = context.getMethodConfig();
+      GapicMethodContext context, Iterable<FieldConfig> fieldConfigs) {
+    GapicMethodConfig methodConfig = context.getMethodConfig();
     if (methodConfig == null || !methodConfig.isPageStreaming()) {
       return fieldConfigs;
     }
@@ -169,7 +169,7 @@ public class DynamicLangApiMethodTransformer {
   }
 
   private RequestObjectParamView generateRequestObjectParam(
-      MethodTransformerContext context, FieldConfig fieldConfig) {
+      GapicMethodContext context, FieldConfig fieldConfig) {
     SurfaceNamer namer = context.getNamer();
     FeatureConfig featureConfig = context.getFeatureConfig();
     ModelTypeTable typeTable = context.getTypeTable();
@@ -202,7 +202,7 @@ public class DynamicLangApiMethodTransformer {
   }
 
   private InitCodeContext createInitCodeContext(
-      MethodTransformerContext context,
+      GapicMethodContext context,
       Iterable<FieldConfig> fieldConfigs,
       InitCodeOutputType initCodeOutputType) {
     return InitCodeContext.newBuilder()

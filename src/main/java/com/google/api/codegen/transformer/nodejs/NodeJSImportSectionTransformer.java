@@ -15,11 +15,12 @@
 package com.google.api.codegen.transformer.nodejs;
 
 import com.google.api.codegen.metacode.InitCodeNode;
+import com.google.api.codegen.transformer.GapicInterfaceContext;
+import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.ImportSectionTransformer;
-import com.google.api.codegen.transformer.MethodTransformerContext;
+import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
-import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ImportTypeView;
@@ -30,22 +31,23 @@ import java.util.List;
 
 public class NodeJSImportSectionTransformer implements ImportSectionTransformer {
   @Override
-  public ImportSectionView generateImportSection(SurfaceTransformerContext context) {
+  public ImportSectionView generateImportSection(InterfaceContext context) {
     ImportSectionView.Builder importSection = ImportSectionView.newBuilder();
-    importSection.externalImports(generateExternalImports(context));
+    // TODO support non-Gapic inputs
+    importSection.externalImports(generateExternalImports((GapicInterfaceContext) context));
     return importSection.build();
   }
 
   @Override
   public ImportSectionView generateImportSection(
-      MethodTransformerContext context, Iterable<InitCodeNode> specItemNodes) {
+      GapicMethodContext context, Iterable<InitCodeNode> specItemNodes) {
     return new StandardImportSectionTransformer().generateImportSection(context, specItemNodes);
   }
 
-  private List<ImportFileView> generateExternalImports(SurfaceTransformerContext context) {
+  private List<ImportFileView> generateExternalImports(GapicInterfaceContext context) {
     ImmutableList.Builder<ImportFileView> imports = ImmutableList.builder();
-    Interface service = context.getInterface();
-    String configModule = context.getNamer().getClientConfigPath(service);
+    Interface apiInterface = context.getInterface();
+    String configModule = context.getNamer().getClientConfigPath(apiInterface);
     imports.add(createImport("configData", "./" + configModule));
     imports.add(createImport("extend", "extend"));
     imports.add(createImport("gax", "google-gax"));

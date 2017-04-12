@@ -37,8 +37,8 @@ public class ProtoFileView implements InputElementView<ProtoFile> {
   @Override
   public Iterable<ProtoFile> getElementIterable(Model model) {
     Set<ProtoFile> files = new HashSet<>();
-    for (Interface iface : new InterfaceView().getElementIterable(model)) {
-      for (Method method : iface.getMethods()) {
+    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+      for (Method method : apiInterface.getMethods()) {
         if (!method.isReachable()) {
           continue;
         }
