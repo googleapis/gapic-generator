@@ -94,6 +94,7 @@ public class TestCaseTransformer {
         .asserts(initCodeTransformer.generateRequestAssertViews(methodContext, initCodeContext))
         .clientMethodType(clientMethodType)
         .grpcStreamingType(methodConfig.getGrpcStreamingType())
+        .grpcStubTypeName(namer.getFullyQualifiedStubType(methodContext.getInterface()))
         .hasRequestParameters(hasRequestParameters)
         .hasReturnValue(hasReturnValue)
         .initCode(initCode)

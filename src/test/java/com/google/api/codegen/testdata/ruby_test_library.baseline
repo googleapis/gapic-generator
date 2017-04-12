@@ -17,8 +17,23 @@ require "minitest/autorun"
 require "minitest/spec"
 
 require "library/v1/library_service_client"
+require "library_services_pb"
 
 class CustomError < StandardError; end
+
+class MockGrpcStub
+  def initialize(expected_symbol, mock_method)
+    @expected_symbol = expected_symbol
+    @mock_method = mock_method
+  end
+
+  def method(symbol)
+    return @mock_method if symbol === @expected_symbol
+    return proc do
+      raise "The method #{symbol} was unexpectedly called."
+    end
+  end
+end
 
 describe Library::V1::LibraryServiceClient do
   error = CustomError.new "Test error"
@@ -42,20 +57,21 @@ describe Library::V1::LibraryServiceClient do
       expected_response.internal_theme = internal_theme
 
       # Mock Grpc layer
-      client = LibraryServiceClient.new
-      client.instance_variable_set(
-        "@create_shelf",
-        proc do |request|
-          assert_equal(shelf, request.shelf)
-          expected_response
-        end
-      )
+      mock_method = proc do |request|
+        assert_equal(shelf, request.shelf)
+        expected_response
+      end
+      mock_stub = MockGrpcStub.new(:create_shelf, mock_method)
 
-      # Call method
-      response = client.create_shelf(shelf)
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
 
-      # Verify the response
-      assert_equal(expected_response, response)
+        # Call method
+        response = client.create_shelf(shelf)
+
+        # Verify the response
+        assert_equal(expected_response, response)
+      end
     end
 
     it 'invokes create_shelf with error' do
@@ -63,18 +79,22 @@ describe Library::V1::LibraryServiceClient do
       shelf = Shelf.new
 
       # Mock Grpc layer
-      client = LibraryServiceClient.new
-      client.instance_variable_set(
-        "@create_shelf",
-        proc do |request|
-          assert_equal(shelf, request.shelf)
-          raise error
-        end
-      )
+      mock_method = proc do |request|
+        assert_equal(shelf, request.shelf)
+        raise error
+      end
+      mock_stub = MockGrpcStub.new(:create_shelf, mock_method)
 
-      # Call method
-      assert_raises CustomError do
-        client.create_shelf(shelf)
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
+
+        # Call method
+        err = assert_raises Google::Gax::GaxError do
+          client.create_shelf(shelf)
+        end
+
+        # Verify the GaxError wrapped the error raised.
+        assert_match(error.message, err.message)
       end
     end
   end
@@ -99,21 +119,22 @@ describe Library::V1::LibraryServiceClient do
       expected_response.internal_theme = internal_theme
 
       # Mock Grpc layer
-      client = LibraryServiceClient.new
-      client.instance_variable_set(
-        "@get_shelf",
-        proc do |request|
-          assert_equal(formatted_name, request.name)
-          assert_equal(options_, request.options)
-          expected_response
-        end
-      )
+      mock_method = proc do |request|
+        assert_equal(formatted_name, request.name)
+        assert_equal(options_, request.options)
+        expected_response
+      end
+      mock_stub = MockGrpcStub.new(:get_shelf, mock_method)
 
-      # Call method
-      response = client.get_shelf(formatted_name, options_)
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
 
-      # Verify the response
-      assert_equal(expected_response, response)
+        # Call method
+        response = client.get_shelf(formatted_name, options_)
+
+        # Verify the response
+        assert_equal(expected_response, response)
+      end
     end
 
     it 'invokes get_shelf with error' do
@@ -122,19 +143,23 @@ describe Library::V1::LibraryServiceClient do
       options_ = ''
 
       # Mock Grpc layer
-      client = LibraryServiceClient.new
-      client.instance_variable_set(
-        "@get_shelf",
-        proc do |request|
-          assert_equal(formatted_name, request.name)
-          assert_equal(options_, request.options)
-          raise error
-        end
-      )
+      mock_method = proc do |request|
+        assert_equal(formatted_name, request.name)
+        assert_equal(options_, request.options)
+        raise error
+      end
+      mock_stub = MockGrpcStub.new(:get_shelf, mock_method)
 
-      # Call method
-      assert_raises CustomError do
-        client.get_shelf(formatted_name, options_)
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
+
+        # Call method
+        err = assert_raises Google::Gax::GaxError do
+          client.get_shelf(formatted_name, options_)
+        end
+
+        # Verify the GaxError wrapped the error raised.
+        assert_match(error.message, err.message)
       end
     end
   end
@@ -149,20 +174,21 @@ describe Library::V1::LibraryServiceClient do
       formatted_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
 
       # Mock Grpc layer
-      client = LibraryServiceClient.new
-      client.instance_variable_set(
-        "@delete_shelf",
-        proc do |request|
-          assert_equal(formatted_name, request.name)
-          nil
-        end
-      )
+      mock_method = proc do |request|
+        assert_equal(formatted_name, request.name)
+        nil
+      end
+      mock_stub = MockGrpcStub.new(:delete_shelf, mock_method)
 
-      # Call method
-      response = client.delete_shelf(formatted_name)
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
 
-      # Verify the response
-      assert_nil(response)
+        # Call method
+        response = client.delete_shelf(formatted_name)
+
+        # Verify the response
+        assert_nil(response)
+      end
     end
 
     it 'invokes delete_shelf with error' do
@@ -170,18 +196,22 @@ describe Library::V1::LibraryServiceClient do
       formatted_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
 
       # Mock Grpc layer
-      client = LibraryServiceClient.new
-      client.instance_variable_set(
-        "@delete_shelf",
-        proc do |request|
-          assert_equal(formatted_name, request.name)
-          raise error
-        end
-      )
+      mock_method = proc do |request|
+        assert_equal(formatted_name, request.name)
+        raise error
+      end
+      mock_stub = MockGrpcStub.new(:delete_shelf, mock_method)
 
-      # Call method
-      assert_raises CustomError do
-        client.delete_shelf(formatted_name)
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
+
+        # Call method
+        err = assert_raises Google::Gax::GaxError do
+          client.delete_shelf(formatted_name)
+        end
+
+        # Verify the GaxError wrapped the error raised.
+        assert_match(error.message, err.message)
       end
     end
   end
@@ -206,21 +236,22 @@ describe Library::V1::LibraryServiceClient do
       expected_response.internal_theme = internal_theme
 
       # Mock Grpc layer
-      client = LibraryServiceClient.new
-      client.instance_variable_set(
-        "@merge_shelves",
-        proc do |request|
-          assert_equal(formatted_name, request.name)
-          assert_equal(formatted_other_shelf_name, request.other_shelf_name)
-          expected_response
-        end
-      )
+      mock_method = proc do |request|
+        assert_equal(formatted_name, request.name)
+        assert_equal(formatted_other_shelf_name, request.other_shelf_name)
+        expected_response
+      end
+      mock_stub = MockGrpcStub.new(:merge_shelves, mock_method)
 
-      # Call method
-      response = client.merge_shelves(formatted_name, formatted_other_shelf_name)
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
 
-      # Verify the response
-      assert_equal(expected_response, response)
+        # Call method
+        response = client.merge_shelves(formatted_name, formatted_other_shelf_name)
+
+        # Verify the response
+        assert_equal(expected_response, response)
+      end
     end
 
     it 'invokes merge_shelves with error' do
@@ -229,19 +260,23 @@ describe Library::V1::LibraryServiceClient do
       formatted_other_shelf_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
 
       # Mock Grpc layer
-      client = LibraryServiceClient.new
-      client.instance_variable_set(
-        "@merge_shelves",
-        proc do |request|
-          assert_equal(formatted_name, request.name)
-          assert_equal(formatted_other_shelf_name, request.other_shelf_name)
-          raise error
-        end
-      )
+      mock_method = proc do |request|
+        assert_equal(formatted_name, request.name)
+        assert_equal(formatted_other_shelf_name, request.other_shelf_name)
+        raise error
+      end
+      mock_stub = MockGrpcStub.new(:merge_shelves, mock_method)
 
-      # Call method
-      assert_raises CustomError do
-        client.merge_shelves(formatted_name, formatted_other_shelf_name)
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
+
+        # Call method
+        err = assert_raises Google::Gax::GaxError do
+          client.merge_shelves(formatted_name, formatted_other_shelf_name)
+        end
+
+        # Verify the GaxError wrapped the error raised.
+        assert_match(error.message, err.message)
       end
     end
   end
@@ -268,21 +303,22 @@ describe Library::V1::LibraryServiceClient do
       expected_response.read = read
 
       # Mock Grpc layer
-      client = LibraryServiceClient.new
-      client.instance_variable_set(
-        "@create_book",
-        proc do |request|
-          assert_equal(formatted_name, request.name)
-          assert_equal(book, request.book)
-          expected_response
-        end
-      )
+      mock_method = proc do |request|
+        assert_equal(formatted_name, request.name)
+        assert_equal(book, request.book)
+        expected_response
+      end
+      mock_stub = MockGrpcStub.new(:create_book, mock_method)
 
-      # Call method
-      response = client.create_book(formatted_name, book)
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
 
-      # Verify the response
-      assert_equal(expected_response, response)
+        # Call method
+        response = client.create_book(formatted_name, book)
+
+        # Verify the response
+        assert_equal(expected_response, response)
+      end
     end
 
     it 'invokes create_book with error' do
@@ -291,19 +327,23 @@ describe Library::V1::LibraryServiceClient do
       book = Book.new
 
       # Mock Grpc layer
-      client = LibraryServiceClient.new
-      client.instance_variable_set(
-        "@create_book",
-        proc do |request|
-          assert_equal(formatted_name, request.name)
-          assert_equal(book, request.book)
-          raise error
-        end
-      )
+      mock_method = proc do |request|
+        assert_equal(formatted_name, request.name)
+        assert_equal(book, request.book)
+        raise error
+      end
+      mock_stub = MockGrpcStub.new(:create_book, mock_method)
 
-      # Call method
-      assert_raises CustomError do
-        client.create_book(formatted_name, book)
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
+
+        # Call method
+        err = assert_raises Google::Gax::GaxError do
+          client.create_book(formatted_name, book)
+        end
+
+        # Verify the GaxError wrapped the error raised.
+        assert_match(error.message, err.message)
       end
     end
   end
@@ -330,26 +370,27 @@ describe Library::V1::LibraryServiceClient do
       expected_response.book_names += book_names unless book_names.empty?
 
       # Mock Grpc layer
-      client = LibraryServiceClient.new
-      client.instance_variable_set(
-        "@publish_series",
-        proc do |request|
-          assert_equal(shelf, request.shelf)
-          assert_equal(books, request.books)
-          assert_equal(series_uuid, request.series_uuid)
-          expected_response
-        end
-      )
+      mock_method = proc do |request|
+        assert_equal(shelf, request.shelf)
+        assert_equal(books, request.books)
+        assert_equal(series_uuid, request.series_uuid)
+        expected_response
+      end
+      mock_stub = MockGrpcStub.new(:publish_series, mock_method)
 
-      # Call method
-      response = client.publish_series(
-        shelf,
-        books,
-        series_uuid
-      )
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
 
-      # Verify the response
-      assert_equal(expected_response, response)
+        # Call method
+        response = client.publish_series(
+          shelf,
+          books,
+          series_uuid
+        )
+
+        # Verify the response
+        assert_equal(expected_response, response)
+      end
     end
 
     it 'invokes publish_series with error' do
@@ -361,24 +402,28 @@ describe Library::V1::LibraryServiceClient do
       series_uuid.series_string = series_string
 
       # Mock Grpc layer
-      client = LibraryServiceClient.new
-      client.instance_variable_set(
-        "@publish_series",
-        proc do |request|
-          assert_equal(shelf, request.shelf)
-          assert_equal(books, request.books)
-          assert_equal(series_uuid, request.series_uuid)
-          raise error
-        end
-      )
+      mock_method = proc do |request|
+        assert_equal(shelf, request.shelf)
+        assert_equal(books, request.books)
+        assert_equal(series_uuid, request.series_uuid)
+        raise error
+      end
+      mock_stub = MockGrpcStub.new(:publish_series, mock_method)
 
-      # Call method
-      assert_raises CustomError do
-        client.publish_series(
-          shelf,
-          books,
-          series_uuid
-        )
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
+
+        # Call method
+        err = assert_raises Google::Gax::GaxError do
+          client.publish_series(
+            shelf,
+            books,
+            series_uuid
+          )
+        end
+
+        # Verify the GaxError wrapped the error raised.
+        assert_match(error.message, err.message)
       end
     end
   end
@@ -404,20 +449,21 @@ describe Library::V1::LibraryServiceClient do
       expected_response.read = read
 
       # Mock Grpc layer
-      client = LibraryServiceClient.new
-      client.instance_variable_set(
-        "@get_book",
-        proc do |request|
-          assert_equal(formatted_name, request.name)
-          expected_response
-        end
-      )
+      mock_method = proc do |request|
+        assert_equal(formatted_name, request.name)
+        expected_response
+      end
+      mock_stub = MockGrpcStub.new(:get_book, mock_method)
 
-      # Call method
-      response = client.get_book(formatted_name)
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
 
-      # Verify the response
-      assert_equal(expected_response, response)
+        # Call method
+        response = client.get_book(formatted_name)
+
+        # Verify the response
+        assert_equal(expected_response, response)
+      end
     end
 
     it 'invokes get_book with error' do
@@ -425,18 +471,22 @@ describe Library::V1::LibraryServiceClient do
       formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
 
       # Mock Grpc layer
-      client = LibraryServiceClient.new
-      client.instance_variable_set(
-        "@get_book",
-        proc do |request|
-          assert_equal(formatted_name, request.name)
-          raise error
-        end
-      )
+      mock_method = proc do |request|
+        assert_equal(formatted_name, request.name)
+        raise error
+      end
+      mock_stub = MockGrpcStub.new(:get_book, mock_method)
 
-      # Call method
-      assert_raises CustomError do
-        client.get_book(formatted_name)
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
+
+        # Call method
+        err = assert_raises Google::Gax::GaxError do
+          client.get_book(formatted_name)
+        end
+
+        # Verify the GaxError wrapped the error raised.
+        assert_match(error.message, err.message)
       end
     end
   end
@@ -451,20 +501,21 @@ describe Library::V1::LibraryServiceClient do
       formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
 
       # Mock Grpc layer
-      client = LibraryServiceClient.new
-      client.instance_variable_set(
-        "@delete_book",
-        proc do |request|
-          assert_equal(formatted_name, request.name)
-          nil
-        end
-      )
+      mock_method = proc do |request|
+        assert_equal(formatted_name, request.name)
+        nil
+      end
+      mock_stub = MockGrpcStub.new(:delete_book, mock_method)
 
-      # Call method
-      response = client.delete_book(formatted_name)
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
 
-      # Verify the response
-      assert_nil(response)
+        # Call method
+        response = client.delete_book(formatted_name)
+
+        # Verify the response
+        assert_nil(response)
+      end
     end
 
     it 'invokes delete_book with error' do
@@ -472,18 +523,22 @@ describe Library::V1::LibraryServiceClient do
       formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
 
       # Mock Grpc layer
-      client = LibraryServiceClient.new
-      client.instance_variable_set(
-        "@delete_book",
-        proc do |request|
-          assert_equal(formatted_name, request.name)
-          raise error
-        end
-      )
+      mock_method = proc do |request|
+        assert_equal(formatted_name, request.name)
+        raise error
+      end
+      mock_stub = MockGrpcStub.new(:delete_book, mock_method)
 
-      # Call method
-      assert_raises CustomError do
-        client.delete_book(formatted_name)
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
+
+        # Call method
+        err = assert_raises Google::Gax::GaxError do
+          client.delete_book(formatted_name)
+        end
+
+        # Verify the GaxError wrapped the error raised.
+        assert_match(error.message, err.message)
       end
     end
   end
@@ -510,21 +565,22 @@ describe Library::V1::LibraryServiceClient do
       expected_response.read = read
 
       # Mock Grpc layer
-      client = LibraryServiceClient.new
-      client.instance_variable_set(
-        "@update_book",
-        proc do |request|
-          assert_equal(formatted_name, request.name)
-          assert_equal(book, request.book)
-          expected_response
-        end
-      )
+      mock_method = proc do |request|
+        assert_equal(formatted_name, request.name)
+        assert_equal(book, request.book)
+        expected_response
+      end
+      mock_stub = MockGrpcStub.new(:update_book, mock_method)
 
-      # Call method
-      response = client.update_book(formatted_name, book)
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
 
-      # Verify the response
-      assert_equal(expected_response, response)
+        # Call method
+        response = client.update_book(formatted_name, book)
+
+        # Verify the response
+        assert_equal(expected_response, response)
+      end
     end
 
     it 'invokes update_book with error' do
@@ -533,19 +589,23 @@ describe Library::V1::LibraryServiceClient do
       book = Book.new
 
       # Mock Grpc layer
-      client = LibraryServiceClient.new
-      client.instance_variable_set(
-        "@update_book",
-        proc do |request|
-          assert_equal(formatted_name, request.name)
-          assert_equal(book, request.book)
-          raise error
-        end
-      )
+      mock_method = proc do |request|
+        assert_equal(formatted_name, request.name)
+        assert_equal(book, request.book)
+        raise error
+      end
+      mock_stub = MockGrpcStub.new(:update_book, mock_method)
 
-      # Call method
-      assert_raises CustomError do
-        client.update_book(formatted_name, book)
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
+
+        # Call method
+        err = assert_raises Google::Gax::GaxError do
+          client.update_book(formatted_name, book)
+        end
+
+        # Verify the GaxError wrapped the error raised.
+        assert_match(error.message, err.message)
       end
     end
   end
@@ -572,21 +632,22 @@ describe Library::V1::LibraryServiceClient do
       expected_response.read = read
 
       # Mock Grpc layer
-      client = LibraryServiceClient.new
-      client.instance_variable_set(
-        "@move_book",
-        proc do |request|
-          assert_equal(formatted_name, request.name)
-          assert_equal(formatted_other_shelf_name, request.other_shelf_name)
-          expected_response
-        end
-      )
+      mock_method = proc do |request|
+        assert_equal(formatted_name, request.name)
+        assert_equal(formatted_other_shelf_name, request.other_shelf_name)
+        expected_response
+      end
+      mock_stub = MockGrpcStub.new(:move_book, mock_method)
 
-      # Call method
-      response = client.move_book(formatted_name, formatted_other_shelf_name)
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
 
-      # Verify the response
-      assert_equal(expected_response, response)
+        # Call method
+        response = client.move_book(formatted_name, formatted_other_shelf_name)
+
+        # Verify the response
+        assert_equal(expected_response, response)
+      end
     end
 
     it 'invokes move_book with error' do
@@ -595,19 +656,23 @@ describe Library::V1::LibraryServiceClient do
       formatted_other_shelf_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
 
       # Mock Grpc layer
-      client = LibraryServiceClient.new
-      client.instance_variable_set(
-        "@move_book",
-        proc do |request|
-          assert_equal(formatted_name, request.name)
-          assert_equal(formatted_other_shelf_name, request.other_shelf_name)
-          raise error
-        end
-      )
+      mock_method = proc do |request|
+        assert_equal(formatted_name, request.name)
+        assert_equal(formatted_other_shelf_name, request.other_shelf_name)
+        raise error
+      end
+      mock_stub = MockGrpcStub.new(:move_book, mock_method)
 
-      # Call method
-      assert_raises CustomError do
-        client.move_book(formatted_name, formatted_other_shelf_name)
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
+
+        # Call method
+        err = assert_raises Google::Gax::GaxError do
+          client.move_book(formatted_name, formatted_other_shelf_name)
+        end
+
+        # Verify the GaxError wrapped the error raised.
+        assert_match(error.message, err.message)
       end
     end
   end
@@ -633,21 +698,22 @@ describe Library::V1::LibraryServiceClient do
       comments = [comments_element]
 
       # Mock Grpc layer
-      client = LibraryServiceClient.new
-      client.instance_variable_set(
-        "@add_comments",
-        proc do |request|
-          assert_equal(formatted_name, request.name)
-          assert_equal(comments, request.comments)
-          nil
-        end
-      )
+      mock_method = proc do |request|
+        assert_equal(formatted_name, request.name)
+        assert_equal(comments, request.comments)
+        nil
+      end
+      mock_stub = MockGrpcStub.new(:add_comments, mock_method)
 
-      # Call method
-      response = client.add_comments(formatted_name, comments)
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
 
-      # Verify the response
-      assert_nil(response)
+        # Call method
+        response = client.add_comments(formatted_name, comments)
+
+        # Verify the response
+        assert_nil(response)
+      end
     end
 
     it 'invokes add_comments with error' do
@@ -663,19 +729,23 @@ describe Library::V1::LibraryServiceClient do
       comments = [comments_element]
 
       # Mock Grpc layer
-      client = LibraryServiceClient.new
-      client.instance_variable_set(
-        "@add_comments",
-        proc do |request|
-          assert_equal(formatted_name, request.name)
-          assert_equal(comments, request.comments)
-          raise error
-        end
-      )
+      mock_method = proc do |request|
+        assert_equal(formatted_name, request.name)
+        assert_equal(comments, request.comments)
+        raise error
+      end
+      mock_stub = MockGrpcStub.new(:add_comments, mock_method)
 
-      # Call method
-      assert_raises CustomError do
-        client.add_comments(formatted_name, comments)
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
+
+        # Call method
+        err = assert_raises Google::Gax::GaxError do
+          client.add_comments(formatted_name, comments)
+        end
+
+        # Verify the GaxError wrapped the error raised.
+        assert_match(error.message, err.message)
       end
     end
   end
@@ -701,20 +771,21 @@ describe Library::V1::LibraryServiceClient do
       expected_response.read = read
 
       # Mock Grpc layer
-      client = LibraryServiceClient.new
-      client.instance_variable_set(
-        "@get_book_from_archive",
-        proc do |request|
-          assert_equal(formatted_name, request.name)
-          expected_response
-        end
-      )
+      mock_method = proc do |request|
+        assert_equal(formatted_name, request.name)
+        expected_response
+      end
+      mock_stub = MockGrpcStub.new(:get_book_from_archive, mock_method)
 
-      # Call method
-      response = client.get_book_from_archive(formatted_name)
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
 
-      # Verify the response
-      assert_equal(expected_response, response)
+        # Call method
+        response = client.get_book_from_archive(formatted_name)
+
+        # Verify the response
+        assert_equal(expected_response, response)
+      end
     end
 
     it 'invokes get_book_from_archive with error' do
@@ -722,18 +793,22 @@ describe Library::V1::LibraryServiceClient do
       formatted_name = LibraryServiceClient.archived_book_path("[ARCHIVE_PATH]", "[BOOK_ID]")
 
       # Mock Grpc layer
-      client = LibraryServiceClient.new
-      client.instance_variable_set(
-        "@get_book_from_archive",
-        proc do |request|
-          assert_equal(formatted_name, request.name)
-          raise error
-        end
-      )
+      mock_method = proc do |request|
+        assert_equal(formatted_name, request.name)
+        raise error
+      end
+      mock_stub = MockGrpcStub.new(:get_book_from_archive, mock_method)
 
-      # Call method
-      assert_raises CustomError do
-        client.get_book_from_archive(formatted_name)
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
+
+        # Call method
+        err = assert_raises Google::Gax::GaxError do
+          client.get_book_from_archive(formatted_name)
+        end
+
+        # Verify the GaxError wrapped the error raised.
+        assert_match(error.message, err.message)
       end
     end
   end
@@ -760,21 +835,22 @@ describe Library::V1::LibraryServiceClient do
       expected_response.read = read
 
       # Mock Grpc layer
-      client = LibraryServiceClient.new
-      client.instance_variable_set(
-        "@get_book_from_anywhere",
-        proc do |request|
-          assert_equal(formatted_name, request.name)
-          assert_equal(formatted_alt_book_name, request.alt_book_name)
-          expected_response
-        end
-      )
+      mock_method = proc do |request|
+        assert_equal(formatted_name, request.name)
+        assert_equal(formatted_alt_book_name, request.alt_book_name)
+        expected_response
+      end
+      mock_stub = MockGrpcStub.new(:get_book_from_anywhere, mock_method)
 
-      # Call method
-      response = client.get_book_from_anywhere(formatted_name, formatted_alt_book_name)
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
 
-      # Verify the response
-      assert_equal(expected_response, response)
+        # Call method
+        response = client.get_book_from_anywhere(formatted_name, formatted_alt_book_name)
+
+        # Verify the response
+        assert_equal(expected_response, response)
+      end
     end
 
     it 'invokes get_book_from_anywhere with error' do
@@ -783,19 +859,23 @@ describe Library::V1::LibraryServiceClient do
       formatted_alt_book_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
 
       # Mock Grpc layer
-      client = LibraryServiceClient.new
-      client.instance_variable_set(
-        "@get_book_from_anywhere",
-        proc do |request|
-          assert_equal(formatted_name, request.name)
-          assert_equal(formatted_alt_book_name, request.alt_book_name)
-          raise error
-        end
-      )
+      mock_method = proc do |request|
+        assert_equal(formatted_name, request.name)
+        assert_equal(formatted_alt_book_name, request.alt_book_name)
+        raise error
+      end
+      mock_stub = MockGrpcStub.new(:get_book_from_anywhere, mock_method)
 
-      # Call method
-      assert_raises CustomError do
-        client.get_book_from_anywhere(formatted_name, formatted_alt_book_name)
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
+
+        # Call method
+        err = assert_raises Google::Gax::GaxError do
+          client.get_book_from_anywhere(formatted_name, formatted_alt_book_name)
+        end
+
+        # Verify the GaxError wrapped the error raised.
+        assert_match(error.message, err.message)
       end
     end
   end
@@ -813,26 +893,27 @@ describe Library::V1::LibraryServiceClient do
       index_map = { "default_key" => index_map_item }
 
       # Mock Grpc layer
-      client = LibraryServiceClient.new
-      client.instance_variable_set(
-        "@update_book_index",
-        proc do |request|
-          assert_equal(formatted_name, request.name)
-          assert_equal(index_name, request.index_name)
-          assert_equal(index_map, request.index_map)
-          nil
-        end
-      )
+      mock_method = proc do |request|
+        assert_equal(formatted_name, request.name)
+        assert_equal(index_name, request.index_name)
+        assert_equal(index_map, request.index_map)
+        nil
+      end
+      mock_stub = MockGrpcStub.new(:update_book_index, mock_method)
 
-      # Call method
-      response = client.update_book_index(
-        formatted_name,
-        index_name,
-        index_map
-      )
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
 
-      # Verify the response
-      assert_nil(response)
+        # Call method
+        response = client.update_book_index(
+          formatted_name,
+          index_name,
+          index_map
+        )
+
+        # Verify the response
+        assert_nil(response)
+      end
     end
 
     it 'invokes update_book_index with error' do
@@ -843,24 +924,28 @@ describe Library::V1::LibraryServiceClient do
       index_map = { "default_key" => index_map_item }
 
       # Mock Grpc layer
-      client = LibraryServiceClient.new
-      client.instance_variable_set(
-        "@update_book_index",
-        proc do |request|
-          assert_equal(formatted_name, request.name)
-          assert_equal(index_name, request.index_name)
-          assert_equal(index_map, request.index_map)
-          raise error
-        end
-      )
+      mock_method = proc do |request|
+        assert_equal(formatted_name, request.name)
+        assert_equal(index_name, request.index_name)
+        assert_equal(index_map, request.index_map)
+        raise error
+      end
+      mock_stub = MockGrpcStub.new(:update_book_index, mock_method)
 
-      # Call method
-      assert_raises CustomError do
-        client.update_book_index(
-          formatted_name,
-          index_name,
-          index_map
-        )
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
+
+        # Call method
+        err = assert_raises Google::Gax::GaxError do
+          client.update_book_index(
+            formatted_name,
+            index_name,
+            index_map
+          )
+        end
+
+        # Verify the GaxError wrapped the error raised.
+        assert_match(error.message, err.message)
       end
     end
   end
@@ -879,21 +964,22 @@ describe Library::V1::LibraryServiceClient do
       expected_response = AddTagResponse.new
 
       # Mock Grpc layer
-      client = LibraryServiceClient.new
-      client.instance_variable_set(
-        "@add_tag",
-        proc do |request|
-          assert_equal(formatted_resource, request.resource)
-          assert_equal(tag, request.tag)
-          expected_response
-        end
-      )
+      mock_method = proc do |request|
+        assert_equal(formatted_resource, request.resource)
+        assert_equal(tag, request.tag)
+        expected_response
+      end
+      mock_stub = MockGrpcStub.new(:add_tag, mock_method)
 
-      # Call method
-      response = client.add_tag(formatted_resource, tag)
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
 
-      # Verify the response
-      assert_equal(expected_response, response)
+        # Call method
+        response = client.add_tag(formatted_resource, tag)
+
+        # Verify the response
+        assert_equal(expected_response, response)
+      end
     end
 
     it 'invokes add_tag with error' do
@@ -902,19 +988,23 @@ describe Library::V1::LibraryServiceClient do
       tag = ''
 
       # Mock Grpc layer
-      client = LibraryServiceClient.new
-      client.instance_variable_set(
-        "@add_tag",
-        proc do |request|
-          assert_equal(formatted_resource, request.resource)
-          assert_equal(tag, request.tag)
-          raise error
-        end
-      )
+      mock_method = proc do |request|
+        assert_equal(formatted_resource, request.resource)
+        assert_equal(tag, request.tag)
+        raise error
+      end
+      mock_stub = MockGrpcStub.new(:add_tag, mock_method)
 
-      # Call method
-      assert_raises CustomError do
-        client.add_tag(formatted_resource, tag)
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
+
+        # Call method
+        err = assert_raises Google::Gax::GaxError do
+          client.add_tag(formatted_resource, tag)
+        end
+
+        # Verify the GaxError wrapped the error raised.
+        assert_match(error.message, err.message)
       end
     end
   end
@@ -933,21 +1023,22 @@ describe Library::V1::LibraryServiceClient do
       expected_response = AddLabelResponse.new
 
       # Mock Grpc layer
-      client = LibraryServiceClient.new
-      client.instance_variable_set(
-        "@add_label",
-        proc do |request|
-          assert_equal(formatted_resource, request.resource)
-          assert_equal(label, request.label)
-          expected_response
-        end
-      )
+      mock_method = proc do |request|
+        assert_equal(formatted_resource, request.resource)
+        assert_equal(label, request.label)
+        expected_response
+      end
+      mock_stub = MockGrpcStub.new(:add_label, mock_method)
 
-      # Call method
-      response = client.add_label(formatted_resource, label)
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
 
-      # Verify the response
-      assert_equal(expected_response, response)
+        # Call method
+        response = client.add_label(formatted_resource, label)
+
+        # Verify the response
+        assert_equal(expected_response, response)
+      end
     end
 
     it 'invokes add_label with error' do
@@ -956,19 +1047,23 @@ describe Library::V1::LibraryServiceClient do
       label = ''
 
       # Mock Grpc layer
-      client = LibraryServiceClient.new
-      client.instance_variable_set(
-        "@add_label",
-        proc do |request|
-          assert_equal(formatted_resource, request.resource)
-          assert_equal(label, request.label)
-          raise error
-        end
-      )
+      mock_method = proc do |request|
+        assert_equal(formatted_resource, request.resource)
+        assert_equal(label, request.label)
+        raise error
+      end
+      mock_stub = MockGrpcStub.new(:add_label, mock_method)
 
-      # Call method
-      assert_raises CustomError do
-        client.add_label(formatted_resource, label)
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
+
+        # Call method
+        err = assert_raises Google::Gax::GaxError do
+          client.add_label(formatted_resource, label)
+        end
+
+        # Verify the GaxError wrapped the error raised.
+        assert_match(error.message, err.message)
       end
     end
   end
@@ -1014,74 +1109,75 @@ describe Library::V1::LibraryServiceClient do
       expected_response = TestOptionalRequiredFlatteningParamsResponse.new
 
       # Mock Grpc layer
-      client = LibraryServiceClient.new
-      client.instance_variable_set(
-        "@test_optional_required_flattening_params",
-        proc do |request|
-          assert_equal(required_singular_int32, request.required_singular_int32)
-          assert_equal(required_singular_int64, request.required_singular_int64)
-          assert_equal(required_singular_float, request.required_singular_float)
-          assert_equal(required_singular_double, request.required_singular_double)
-          assert_equal(required_singular_bool, request.required_singular_bool)
-          assert_equal(required_singular_enum, request.required_singular_enum)
-          assert_equal(required_singular_string, request.required_singular_string)
-          assert_equal(required_singular_bytes, request.required_singular_bytes)
-          assert_equal(required_singular_message, request.required_singular_message)
-          assert_equal(required_singular_resource_name, request.required_singular_resource_name)
-          assert_equal(required_singular_resource_name_oneof, request.required_singular_resource_name_oneof)
-          assert_equal(required_singular_fixed32, request.required_singular_fixed32)
-          assert_equal(required_singular_fixed64, request.required_singular_fixed64)
-          assert_equal(required_repeated_int32, request.required_repeated_int32)
-          assert_equal(required_repeated_int64, request.required_repeated_int64)
-          assert_equal(required_repeated_float, request.required_repeated_float)
-          assert_equal(required_repeated_double, request.required_repeated_double)
-          assert_equal(required_repeated_bool, request.required_repeated_bool)
-          assert_equal(required_repeated_enum, request.required_repeated_enum)
-          assert_equal(required_repeated_string, request.required_repeated_string)
-          assert_equal(required_repeated_bytes, request.required_repeated_bytes)
-          assert_equal(required_repeated_message, request.required_repeated_message)
-          assert_equal(formatted_required_repeated_resource_name, request.required_repeated_resource_name)
-          assert_equal(formatted_required_repeated_resource_name_oneof, request.required_repeated_resource_name_oneof)
-          assert_equal(required_repeated_fixed32, request.required_repeated_fixed32)
-          assert_equal(required_repeated_fixed64, request.required_repeated_fixed64)
-          assert_equal(required_map, request.required_map)
-          expected_response
-        end
-      )
+      mock_method = proc do |request|
+        assert_equal(required_singular_int32, request.required_singular_int32)
+        assert_equal(required_singular_int64, request.required_singular_int64)
+        assert_equal(required_singular_float, request.required_singular_float)
+        assert_equal(required_singular_double, request.required_singular_double)
+        assert_equal(required_singular_bool, request.required_singular_bool)
+        assert_equal(required_singular_enum, request.required_singular_enum)
+        assert_equal(required_singular_string, request.required_singular_string)
+        assert_equal(required_singular_bytes, request.required_singular_bytes)
+        assert_equal(required_singular_message, request.required_singular_message)
+        assert_equal(required_singular_resource_name, request.required_singular_resource_name)
+        assert_equal(required_singular_resource_name_oneof, request.required_singular_resource_name_oneof)
+        assert_equal(required_singular_fixed32, request.required_singular_fixed32)
+        assert_equal(required_singular_fixed64, request.required_singular_fixed64)
+        assert_equal(required_repeated_int32, request.required_repeated_int32)
+        assert_equal(required_repeated_int64, request.required_repeated_int64)
+        assert_equal(required_repeated_float, request.required_repeated_float)
+        assert_equal(required_repeated_double, request.required_repeated_double)
+        assert_equal(required_repeated_bool, request.required_repeated_bool)
+        assert_equal(required_repeated_enum, request.required_repeated_enum)
+        assert_equal(required_repeated_string, request.required_repeated_string)
+        assert_equal(required_repeated_bytes, request.required_repeated_bytes)
+        assert_equal(required_repeated_message, request.required_repeated_message)
+        assert_equal(formatted_required_repeated_resource_name, request.required_repeated_resource_name)
+        assert_equal(formatted_required_repeated_resource_name_oneof, request.required_repeated_resource_name_oneof)
+        assert_equal(required_repeated_fixed32, request.required_repeated_fixed32)
+        assert_equal(required_repeated_fixed64, request.required_repeated_fixed64)
+        assert_equal(required_map, request.required_map)
+        expected_response
+      end
+      mock_stub = MockGrpcStub.new(:test_optional_required_flattening_params, mock_method)
 
-      # Call method
-      response = client.test_optional_required_flattening_params(
-        required_singular_int32,
-        required_singular_int64,
-        required_singular_float,
-        required_singular_double,
-        required_singular_bool,
-        required_singular_enum,
-        required_singular_string,
-        required_singular_bytes,
-        required_singular_message,
-        required_singular_resource_name,
-        required_singular_resource_name_oneof,
-        required_singular_fixed32,
-        required_singular_fixed64,
-        required_repeated_int32,
-        required_repeated_int64,
-        required_repeated_float,
-        required_repeated_double,
-        required_repeated_bool,
-        required_repeated_enum,
-        required_repeated_string,
-        required_repeated_bytes,
-        required_repeated_message,
-        formatted_required_repeated_resource_name,
-        formatted_required_repeated_resource_name_oneof,
-        required_repeated_fixed32,
-        required_repeated_fixed64,
-        required_map
-      )
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
 
-      # Verify the response
-      assert_equal(expected_response, response)
+        # Call method
+        response = client.test_optional_required_flattening_params(
+          required_singular_int32,
+          required_singular_int64,
+          required_singular_float,
+          required_singular_double,
+          required_singular_bool,
+          required_singular_enum,
+          required_singular_string,
+          required_singular_bytes,
+          required_singular_message,
+          required_singular_resource_name,
+          required_singular_resource_name_oneof,
+          required_singular_fixed32,
+          required_singular_fixed64,
+          required_repeated_int32,
+          required_repeated_int64,
+          required_repeated_float,
+          required_repeated_double,
+          required_repeated_bool,
+          required_repeated_enum,
+          required_repeated_string,
+          required_repeated_bytes,
+          required_repeated_message,
+          formatted_required_repeated_resource_name,
+          formatted_required_repeated_resource_name_oneof,
+          required_repeated_fixed32,
+          required_repeated_fixed64,
+          required_map
+        )
+
+        # Verify the response
+        assert_equal(expected_response, response)
+      end
     end
 
     it 'invokes test_optional_required_flattening_params with error' do
@@ -1115,72 +1211,76 @@ describe Library::V1::LibraryServiceClient do
       required_map = {}
 
       # Mock Grpc layer
-      client = LibraryServiceClient.new
-      client.instance_variable_set(
-        "@test_optional_required_flattening_params",
-        proc do |request|
-          assert_equal(required_singular_int32, request.required_singular_int32)
-          assert_equal(required_singular_int64, request.required_singular_int64)
-          assert_equal(required_singular_float, request.required_singular_float)
-          assert_equal(required_singular_double, request.required_singular_double)
-          assert_equal(required_singular_bool, request.required_singular_bool)
-          assert_equal(required_singular_enum, request.required_singular_enum)
-          assert_equal(required_singular_string, request.required_singular_string)
-          assert_equal(required_singular_bytes, request.required_singular_bytes)
-          assert_equal(required_singular_message, request.required_singular_message)
-          assert_equal(required_singular_resource_name, request.required_singular_resource_name)
-          assert_equal(required_singular_resource_name_oneof, request.required_singular_resource_name_oneof)
-          assert_equal(required_singular_fixed32, request.required_singular_fixed32)
-          assert_equal(required_singular_fixed64, request.required_singular_fixed64)
-          assert_equal(required_repeated_int32, request.required_repeated_int32)
-          assert_equal(required_repeated_int64, request.required_repeated_int64)
-          assert_equal(required_repeated_float, request.required_repeated_float)
-          assert_equal(required_repeated_double, request.required_repeated_double)
-          assert_equal(required_repeated_bool, request.required_repeated_bool)
-          assert_equal(required_repeated_enum, request.required_repeated_enum)
-          assert_equal(required_repeated_string, request.required_repeated_string)
-          assert_equal(required_repeated_bytes, request.required_repeated_bytes)
-          assert_equal(required_repeated_message, request.required_repeated_message)
-          assert_equal(formatted_required_repeated_resource_name, request.required_repeated_resource_name)
-          assert_equal(formatted_required_repeated_resource_name_oneof, request.required_repeated_resource_name_oneof)
-          assert_equal(required_repeated_fixed32, request.required_repeated_fixed32)
-          assert_equal(required_repeated_fixed64, request.required_repeated_fixed64)
-          assert_equal(required_map, request.required_map)
-          raise error
-        end
-      )
+      mock_method = proc do |request|
+        assert_equal(required_singular_int32, request.required_singular_int32)
+        assert_equal(required_singular_int64, request.required_singular_int64)
+        assert_equal(required_singular_float, request.required_singular_float)
+        assert_equal(required_singular_double, request.required_singular_double)
+        assert_equal(required_singular_bool, request.required_singular_bool)
+        assert_equal(required_singular_enum, request.required_singular_enum)
+        assert_equal(required_singular_string, request.required_singular_string)
+        assert_equal(required_singular_bytes, request.required_singular_bytes)
+        assert_equal(required_singular_message, request.required_singular_message)
+        assert_equal(required_singular_resource_name, request.required_singular_resource_name)
+        assert_equal(required_singular_resource_name_oneof, request.required_singular_resource_name_oneof)
+        assert_equal(required_singular_fixed32, request.required_singular_fixed32)
+        assert_equal(required_singular_fixed64, request.required_singular_fixed64)
+        assert_equal(required_repeated_int32, request.required_repeated_int32)
+        assert_equal(required_repeated_int64, request.required_repeated_int64)
+        assert_equal(required_repeated_float, request.required_repeated_float)
+        assert_equal(required_repeated_double, request.required_repeated_double)
+        assert_equal(required_repeated_bool, request.required_repeated_bool)
+        assert_equal(required_repeated_enum, request.required_repeated_enum)
+        assert_equal(required_repeated_string, request.required_repeated_string)
+        assert_equal(required_repeated_bytes, request.required_repeated_bytes)
+        assert_equal(required_repeated_message, request.required_repeated_message)
+        assert_equal(formatted_required_repeated_resource_name, request.required_repeated_resource_name)
+        assert_equal(formatted_required_repeated_resource_name_oneof, request.required_repeated_resource_name_oneof)
+        assert_equal(required_repeated_fixed32, request.required_repeated_fixed32)
+        assert_equal(required_repeated_fixed64, request.required_repeated_fixed64)
+        assert_equal(required_map, request.required_map)
+        raise error
+      end
+      mock_stub = MockGrpcStub.new(:test_optional_required_flattening_params, mock_method)
 
-      # Call method
-      assert_raises CustomError do
-        client.test_optional_required_flattening_params(
-          required_singular_int32,
-          required_singular_int64,
-          required_singular_float,
-          required_singular_double,
-          required_singular_bool,
-          required_singular_enum,
-          required_singular_string,
-          required_singular_bytes,
-          required_singular_message,
-          required_singular_resource_name,
-          required_singular_resource_name_oneof,
-          required_singular_fixed32,
-          required_singular_fixed64,
-          required_repeated_int32,
-          required_repeated_int64,
-          required_repeated_float,
-          required_repeated_double,
-          required_repeated_bool,
-          required_repeated_enum,
-          required_repeated_string,
-          required_repeated_bytes,
-          required_repeated_message,
-          formatted_required_repeated_resource_name,
-          formatted_required_repeated_resource_name_oneof,
-          required_repeated_fixed32,
-          required_repeated_fixed64,
-          required_map
-        )
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
+
+        # Call method
+        err = assert_raises Google::Gax::GaxError do
+          client.test_optional_required_flattening_params(
+            required_singular_int32,
+            required_singular_int64,
+            required_singular_float,
+            required_singular_double,
+            required_singular_bool,
+            required_singular_enum,
+            required_singular_string,
+            required_singular_bytes,
+            required_singular_message,
+            required_singular_resource_name,
+            required_singular_resource_name_oneof,
+            required_singular_fixed32,
+            required_singular_fixed64,
+            required_repeated_int32,
+            required_repeated_int64,
+            required_repeated_float,
+            required_repeated_double,
+            required_repeated_bool,
+            required_repeated_enum,
+            required_repeated_string,
+            required_repeated_bytes,
+            required_repeated_message,
+            formatted_required_repeated_resource_name,
+            formatted_required_repeated_resource_name_oneof,
+            required_repeated_fixed32,
+            required_repeated_fixed64,
+            required_map
+          )
+        end
+
+        # Verify the GaxError wrapped the error raised.
+        assert_match(error.message, err.message)
       end
     end
   end

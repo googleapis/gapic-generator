@@ -30,6 +30,20 @@
 
 @private helpers()
   class CustomError < StandardError; end
+
+  class MockGrpcStub
+    def initialize(expected_symbol, mock_method)
+      @@expected_symbol = expected_symbol
+      @@mock_method = mock_method
+    end
+
+    def method(symbol)
+      return @@mock_method if symbol === @@expected_symbol
+      return proc do
+        raise "The method #{symbol} was unexpectedly called."
+      end
+    end
+  end
 @end
 
 @private testCase(test)
@@ -67,18 +81,22 @@
       @end
 
       @# Mock Grpc layer
-      client = {@test.serviceConstructorName}.new
       {@mockUnaryRequest(test)}
+      mock_stub = MockGrpcStub.new(:{@test.clientMethodName}, mock_method)
 
-      @# Call method
-      {@methodCallWithResponse(test)}
+      {@test.grpcStubTypeName}.stub(:new, mock_stub) do
+        client = {@test.serviceConstructorName}.new
 
-      @# Verify the response
-      @if test.hasReturnValue
-        assert_equal(expected_response, response)
-      @else
-        assert_nil(response)
-      @end
+        @# Call method
+        {@methodCallWithResponse(test)}
+
+        @# Verify the response
+        @if test.hasReturnValue
+          assert_equal(expected_response, response)
+        @else
+          assert_nil(response)
+        @end
+      end
     end
 
     {@simpleTestWithError(test)}
@@ -86,27 +104,21 @@
 @end
 
 @private mockUnaryRequest(test)
-  client.instance_variable_set(
-    "@@{@test.clientMethodName}",
-    proc do |request|
-      {@requestAsserts(test)}
-      @if test.hasReturnValue
-        expected_response
-      @else
-        nil
-      @end
-    end
-  )
+  mock_method = proc do |request|
+    {@requestAsserts(test)}
+    @if test.hasReturnValue
+      expected_response
+    @else
+      nil
+    @end
+  end
 @end
 
 @private mockUnaryError(test)
-  client.instance_variable_set(
-    "@@{@test.clientMethodName}",
-    proc do |request|
-      {@requestAsserts(test)}
-      raise error
-    end
-  )
+  mock_method = proc do |request|
+    {@requestAsserts(test)}
+    raise error
+  end
 @end
 
 @private requestAsserts(test)
@@ -130,12 +142,19 @@
     {@initCode(test.initCode)}
 
     @# Mock Grpc layer
-    client = {@test.serviceConstructorName}.new
     {@mockUnaryError(test)}
+    mock_stub = MockGrpcStub.new(:{@test.clientMethodName}, mock_method)
 
-    @# Call method
-    assert_raises CustomError do
-      {@methodCall(test)}
+    {@test.grpcStubTypeName}.stub(:new, mock_stub) do
+      client = {@test.serviceConstructorName}.new
+
+      @# Call method
+      err = assert_raises Google::Gax::GaxError do
+        {@methodCall(test)}
+      end
+
+      @# Verify the GaxError wrapped the error raised.
+      assert_match(error.message, err.message)
     end
   end
 @end

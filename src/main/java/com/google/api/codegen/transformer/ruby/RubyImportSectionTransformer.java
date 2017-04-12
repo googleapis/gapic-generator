@@ -116,6 +116,11 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
     for (Interface service : new InterfaceView().getElementIterable(model)) {
       imports.add(createImport(namer.getServiceFileName(apiConfig.getInterfaceConfig(service))));
     }
+    for (Interface service : new InterfaceView().getElementIterable(model)) {
+      imports.add(
+          createImport(
+              namer.getServiceFileImportName(service.getFile().getFile().getSimpleName())));
+    }
     return imports.build();
   }
 

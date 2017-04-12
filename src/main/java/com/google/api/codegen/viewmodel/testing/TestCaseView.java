@@ -53,6 +53,8 @@ public abstract class TestCaseView {
 
   public abstract GrpcStreamingType grpcStreamingType();
 
+  public abstract String grpcStubTypeName();
+
   public abstract String mockGrpcStubTypeName();
 
   public abstract String createStubFunctionName();
@@ -95,6 +97,8 @@ public abstract class TestCaseView {
     public abstract Builder hasReturnValue(boolean val);
 
     public abstract Builder grpcStreamingType(GrpcStreamingType val);
+
+    public abstract Builder grpcStubTypeName(String val);
 
     public abstract Builder mockGrpcStubTypeName(String val);
 
