@@ -75,7 +75,8 @@ public class DefaultString {
     return "";
   }
 
-  private static final Set<String> WILDCARD_PATTERNS = ImmutableSet.of("[^/]+", ".+", ".*");
+  private static final Set<String> WILDCARD_PATTERNS =
+      ImmutableSet.of("[^/]+", "[^/]*", ".+", ".*");
 
   /** Returns a default string from `pattern`, or null if the pattern is not supported. */
   @VisibleForTesting
