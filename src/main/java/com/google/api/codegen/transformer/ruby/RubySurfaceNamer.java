@@ -15,14 +15,14 @@
 package com.google.api.codegen.transformer.ruby;
 
 import com.google.api.codegen.ServiceMessages;
-import com.google.api.codegen.config.InterfaceConfig;
-import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.GapicInterfaceConfig;
+import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
+import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.transformer.Synchronicity;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
@@ -55,8 +55,8 @@ public class RubySurfaceNamer extends SurfaceNamer {
 
   /** The name of the class that implements snippets for a particular proto interface. */
   @Override
-  public String getApiSnippetsClassName(Interface interfaze) {
-    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "ClientSnippets"));
+  public String getApiSnippetsClassName(Interface apiInterface) {
+    return publicClassName(Name.upperCamel(apiInterface.getSimpleName(), "ClientSnippets"));
   }
 
   /** The function name to set a field having the given type and name. */
@@ -68,7 +68,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
   /** The function name to format the entity for the given collection. */
   @Override
   public String getFormatFunctionName(
-      Interface service, SingleResourceNameConfig resourceNameConfig) {
+      Interface apiInterface, SingleResourceNameConfig resourceNameConfig) {
     return staticFunctionName(Name.from(resourceNameConfig.getEntityName(), "path"));
   }
 
@@ -79,8 +79,8 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getClientConfigPath(Interface service) {
-    return Name.upperCamel(service.getSimpleName()).join("client_config").toLowerUnderscore()
+  public String getClientConfigPath(Interface apiInterface) {
+    return Name.upperCamel(apiInterface.getSimpleName()).join("client_config").toLowerUnderscore()
         + ".json";
   }
 
@@ -94,8 +94,8 @@ public class RubySurfaceNamer extends SurfaceNamer {
    * particular language.
    */
   @Override
-  public String getGrpcClientTypeName(Interface service) {
-    return getModelTypeFormatter().getFullNameFor(service);
+  public String getGrpcClientTypeName(Interface apiInterface) {
+    return getModelTypeFormatter().getFullNameFor(apiInterface);
   }
 
   @Override
@@ -126,7 +126,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getDynamicLangReturnTypeName(Method method, MethodConfig methodConfig) {
+  public String getDynamicLangReturnTypeName(Method method, GapicMethodConfig methodConfig) {
     if (ServiceMessages.s_isEmptyType(method.getOutputType())) {
       return "";
     }
@@ -150,9 +150,9 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFullyQualifiedStubType(Interface service) {
+  public String getFullyQualifiedStubType(Interface apiInterface) {
     NamePath namePath =
-        getTypeNameConverter().getNamePath(getModelTypeFormatter().getFullNameFor(service));
+        getTypeNameConverter().getNamePath(getModelTypeFormatter().getFullNameFor(apiInterface));
     return qualifiedName(namePath.append("Stub"));
   }
 
@@ -167,13 +167,13 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public List<String> getThrowsDocLines(MethodConfig methodConfig) {
+  public List<String> getThrowsDocLines(GapicMethodConfig methodConfig) {
     return ImmutableList.of("@raise [Google::Gax::GaxError] if the RPC is aborted.");
   }
 
   @Override
   public List<String> getReturnDocLines(
-      SurfaceTransformerContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
+      GapicInterfaceContext context, GapicMethodConfig methodConfig, Synchronicity synchronicity) {
     Method method = methodConfig.getMethod();
     if (method.getResponseStreaming()) {
       String classInfo = getModelTypeFormatter().getFullNameForElementType(method.getOutputType());
@@ -193,9 +193,9 @@ public class RubySurfaceNamer extends SurfaceNamer {
     return ImmutableList.<String>of();
   }
 
-  /** The file name for an API service. */
+  /** The file name for an API interface. */
   @Override
-  public String getServiceFileName(InterfaceConfig interfaceConfig) {
+  public String getServiceFileName(GapicInterfaceConfig interfaceConfig) {
     return getPackageFilePath()
         + "/"
         + classFileNameBase(Name.upperCamel(getApiWrapperClassName(interfaceConfig)));
@@ -213,7 +213,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFullyQualifiedApiWrapperClassName(InterfaceConfig interfaceConfig) {
+  public String getFullyQualifiedApiWrapperClassName(GapicInterfaceConfig interfaceConfig) {
     return getPackageName() + "::" + getApiWrapperClassName(interfaceConfig);
   }
 

@@ -14,25 +14,25 @@
  */
 package com.google.api.codegen.py;
 
-import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.tools.framework.model.Interface;
 import com.google.common.collect.ImmutableMap;
 
 public class PythonInterfaceInitializer implements PythonSnippetSetInputInitializer<Interface> {
 
-  private final ApiConfig apiConfig;
+  private final GapicProductConfig productConfig;
 
-  public PythonInterfaceInitializer(ApiConfig apiConfig) {
-    this.apiConfig = apiConfig;
+  public PythonInterfaceInitializer(GapicProductConfig productConfig) {
+    this.productConfig = productConfig;
   }
 
   @Override
-  public PythonImportHandler getImportHandler(Interface iface) {
-    return new PythonImportHandler(iface, apiConfig);
+  public PythonImportHandler getImportHandler(Interface apiInterface) {
+    return new PythonImportHandler(apiInterface, productConfig);
   }
 
   @Override
-  public ImmutableMap<String, Object> getGlobalMap(Interface iface) {
+  public ImmutableMap<String, Object> getGlobalMap(Interface apiInterface) {
     return ImmutableMap.of("pyproto", (Object) new PythonProtoElements());
   }
 }

@@ -12,16 +12,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.transformer;
+package com.google.api.codegen.config;
 
-import com.google.api.codegen.viewmodel.DynamicLangDefaultableParamView;
-import com.google.api.codegen.viewmodel.ParamDocView;
-import java.util.List;
+import com.google.common.collect.ImmutableList;
 
-public interface ApiMethodParamTransformer {
-  /** Creates the views for the parameters in the API method definition. */
-  List<DynamicLangDefaultableParamView> generateMethodParams(GapicMethodContext context);
+/** ProductConfig represents client code-gen config for an API product in an input-agnostic way. */
+public interface ProductConfig {
 
-  /** Creates the views for the documentation of the API method parameters. */
-  List<ParamDocView> generateParamDocs(GapicMethodContext context);
+  String getPackageName();
+
+  ImmutableList<String> getCopyrightLines();
+
+  ImmutableList<String> getLicenseLines();
 }

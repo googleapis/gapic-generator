@@ -44,8 +44,8 @@
 @end
 
 @private retryCodesSection(service)
-    @let interfaceConfig = context.getApiConfig.getInterfaceConfig(service), \
-            codes = context.entrySet(interfaceConfig.getRetryCodesDefinition)
+    @let gapicInterfaceConfig = context.getApiConfig.getInterfaceConfig(service), \
+            codes = context.entrySet(gapicInterfaceConfig.getRetryCodesDefinition)
         @if codes
             @join retryDef : codes on ",".add(BREAK)
                 @if retryDef.getValue
@@ -64,8 +64,8 @@
 @end
 
 @private retryParamsSection(service)
-    @let interfaceConfig = context.getApiConfig.getInterfaceConfig(service)
-        @join retryDef : context.entrySet(interfaceConfig.getRetrySettingsDefinition) on ",".add(BREAK)
+    @let gapicInterfaceConfig = context.getApiConfig.getInterfaceConfig(service)
+        @join retryDef : context.entrySet(gapicInterfaceConfig.getRetrySettingsDefinition) on ",".add(BREAK)
             "{@retryDef.getKey}": {
               "initial_retry_delay_millis": {@retryDef.getValue.getInitialRetryDelay.getMillis()},
               "retry_delay_multiplier": {@retryDef.getValue.getRetryDelayMultiplier},

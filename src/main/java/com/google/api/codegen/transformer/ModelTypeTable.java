@@ -173,4 +173,8 @@ public class ModelTypeTable implements ModelTypeFormatter {
   public Map<String, TypeAlias> getImports() {
     return typeTable.getImports();
   }
+
+  public TypeTable getTypeTable() {
+    return typeTable;
+  }
 }

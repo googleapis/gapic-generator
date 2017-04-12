@@ -106,7 +106,7 @@ public class ConfigGeneratorApi extends ToolDriverBase {
   }
 
   private List<Object> generateMethodConfigs(
-      Interface service, Map<String, String> collectionConfigNameMap) {
+      Interface apiInterface, Map<String, String> collectionConfigNameMap) {
     List<MethodConfigGenerator> methodConfigGenerators =
         Arrays.asList(
             new FieldConfigGenerator(),
@@ -120,7 +120,7 @@ public class ConfigGeneratorApi extends ToolDriverBase {
               }
             });
     List<Object> methods = new LinkedList<Object>();
-    for (Method method : service.getMethods()) {
+    for (Method method : apiInterface.getMethods()) {
       Map<String, Object> methodConfig = new LinkedHashMap<String, Object>();
       methodConfig.put(CONFIG_KEY_METHOD_NAME, method.getSimpleName());
       for (MethodConfigGenerator generator : methodConfigGenerators) {
@@ -137,13 +137,13 @@ public class ConfigGeneratorApi extends ToolDriverBase {
   private List<Object> generateInterfacesConfig() {
     List<Object> services = new LinkedList<Object>();
     for (Api api : model.getServiceConfig().getApisList()) {
-      Interface service = model.getSymbolTable().lookupInterface(api.getName());
+      Interface apiInterface = model.getSymbolTable().lookupInterface(api.getName());
       Map<String, Object> serviceConfig = new LinkedHashMap<String, Object>();
-      Map<String, String> collectionNameMap = getResourceToEntityNameMap(service.getMethods());
-      serviceConfig.put(CONFIG_KEY_SERVICE_NAME, service.getFullName());
+      Map<String, String> collectionNameMap = getResourceToEntityNameMap(apiInterface.getMethods());
+      serviceConfig.put(CONFIG_KEY_SERVICE_NAME, apiInterface.getFullName());
       serviceConfig.put(CONFIG_KEY_COLLECTIONS, generateCollectionConfigs(collectionNameMap));
       serviceConfig.putAll(RetryGenerator.generateRetryDefinitions());
-      serviceConfig.put(CONFIG_KEY_METHODS, generateMethodConfigs(service, collectionNameMap));
+      serviceConfig.put(CONFIG_KEY_METHODS, generateMethodConfigs(apiInterface, collectionNameMap));
       services.add(serviceConfig);
     }
     return services;
@@ -153,8 +153,8 @@ public class ConfigGeneratorApi extends ToolDriverBase {
     String packageName = null;
     for (Api api : model.getServiceConfig().getApisList()) {
       // use the package name of the interface of the first api
-      Interface interfaze = model.getSymbolTable().lookupInterface(api.getName());
-      packageName = interfaze.getFile().getFullName();
+      Interface apiInterface = model.getSymbolTable().lookupInterface(api.getName());
+      packageName = apiInterface.getFile().getFullName();
       break;
     }
     Preconditions.checkNotNull(packageName, "No interface found.");

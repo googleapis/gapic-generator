@@ -14,8 +14,8 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.LongRunningConfig;
-import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.viewmodel.ApiCallSettingsView;
@@ -43,7 +43,7 @@ public class ApiCallableTransformer {
     this.retryDefinitionsTransformer = new RetryDefinitionsTransformer();
   }
 
-  public List<ApiCallableView> generateStaticLangApiCallables(SurfaceTransformerContext context) {
+  public List<ApiCallableView> generateStaticLangApiCallables(GapicInterfaceContext context) {
     List<ApiCallableView> callableMembers = new ArrayList<>();
     boolean excludeMixins = !context.getFeatureConfig().enableMixins();
 
@@ -58,7 +58,7 @@ public class ApiCallableTransformer {
     return callableMembers;
   }
 
-  public List<ApiCallSettingsView> generateCallSettings(SurfaceTransformerContext context) {
+  public List<ApiCallSettingsView> generateCallSettings(GapicInterfaceContext context) {
     List<ApiCallSettingsView> settingsMembers = new ArrayList<>();
 
     for (Method method : context.getSupportedMethods()) {
@@ -68,7 +68,7 @@ public class ApiCallableTransformer {
     return settingsMembers;
   }
 
-  private List<ApiCallableView> generateStaticLangApiCallables(MethodTransformerContext context) {
+  private List<ApiCallableView> generateStaticLangApiCallables(GapicMethodContext context) {
     List<ApiCallableView> apiCallables = new ArrayList<>();
 
     apiCallables.add(generateMainApiCallable(context));
@@ -84,10 +84,10 @@ public class ApiCallableTransformer {
     return apiCallables;
   }
 
-  private ApiCallableView generateMainApiCallable(MethodTransformerContext context) {
+  private ApiCallableView generateMainApiCallable(GapicMethodContext context) {
     ModelTypeTable typeTable = context.getTypeTable();
     Method method = context.getMethod();
-    MethodConfig methodConfig = context.getMethodConfig();
+    GapicMethodConfig methodConfig = context.getMethodConfig();
     SurfaceNamer namer = context.getNamer();
 
     ApiCallableView.Builder apiCallableBuilder = ApiCallableView.newBuilder();
@@ -119,10 +119,10 @@ public class ApiCallableTransformer {
     return apiCallableBuilder.build();
   }
 
-  private ApiCallableView generatePagedApiCallable(MethodTransformerContext context) {
+  private ApiCallableView generatePagedApiCallable(GapicMethodContext context) {
     ModelTypeTable typeTable = context.getTypeTable();
     Method method = context.getMethod();
-    MethodConfig methodConfig = context.getMethodConfig();
+    GapicMethodConfig methodConfig = context.getMethodConfig();
     SurfaceNamer namer = context.getNamer();
 
     PageStreamingConfig pageStreaming = methodConfig.getPageStreaming();
@@ -150,10 +150,10 @@ public class ApiCallableTransformer {
     return pagedApiCallableBuilder.build();
   }
 
-  private ApiCallableView generateOperationApiCallable(MethodTransformerContext context) {
+  private ApiCallableView generateOperationApiCallable(GapicMethodContext context) {
     ModelTypeTable typeTable = context.getTypeTable();
     Method method = context.getMethod();
-    MethodConfig methodConfig = context.getMethodConfig();
+    GapicMethodConfig methodConfig = context.getMethodConfig();
     SurfaceNamer namer = context.getNamer();
 
     LongRunningConfig longRunning = methodConfig.getLongRunningConfig();
@@ -180,11 +180,11 @@ public class ApiCallableTransformer {
     return operationApiCallableBuilder.build();
   }
 
-  public List<ApiCallSettingsView> generateApiCallableSettings(MethodTransformerContext context) {
+  public List<ApiCallSettingsView> generateApiCallableSettings(GapicMethodContext context) {
     SurfaceNamer namer = context.getNamer();
     ModelTypeTable typeTable = context.getTypeTable();
     Method method = context.getMethod();
-    MethodConfig methodConfig = context.getMethodConfig();
+    GapicMethodConfig methodConfig = context.getMethodConfig();
     Map<String, RetryCodesDefinitionView> retryCodesByKey = new HashMap<>();
     for (RetryCodesDefinitionView retryCodes :
         retryDefinitionsTransformer.generateRetryCodesDefinitions(

@@ -15,19 +15,19 @@
 package com.google.api.codegen.transformer.go;
 
 import com.google.api.codegen.InterfaceView;
-import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
+import com.google.api.codegen.transformer.GapicInterfaceContext;
+import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.InitCodeTransformer;
-import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.MockServiceTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.transformer.TestCaseTransformer;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.StandardValueProducer;
@@ -69,33 +69,36 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(Model model, ApiConfig apiConfig) {
+  public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
     List<ViewModel> models = new ArrayList<ViewModel>();
-    GoSurfaceNamer namer = new GoSurfaceNamer(apiConfig.getPackageName());
-    models.add(generateMockServiceView(model, apiConfig, namer));
+    GoSurfaceNamer namer = new GoSurfaceNamer(productConfig.getPackageName());
+    models.add(generateMockServiceView(model, productConfig, namer));
     return models;
   }
 
   private MockCombinedView generateMockServiceView(
-      Model model, ApiConfig apiConfig, SurfaceNamer namer) {
+      Model model, GapicProductConfig productConfig, SurfaceNamer namer) {
     ModelTypeTable typeTable = GoGapicSurfaceTransformer.createTypeTable();
     List<MockServiceImplView> impls = new ArrayList<>();
     List<ClientTestClassView> testClasses = new ArrayList<>();
 
-    for (Interface service : mockServiceTransformer.getGrpcInterfacesToMock(model, apiConfig)) {
-      SurfaceTransformerContext context =
-          SurfaceTransformerContext.create(service, apiConfig, typeTable, namer, featureConfig);
+    for (Interface apiInterface :
+        mockServiceTransformer.getGrpcInterfacesToMock(model, productConfig)) {
+      GapicInterfaceContext context =
+          GapicInterfaceContext.create(
+              apiInterface, productConfig, typeTable, namer, featureConfig);
       impls.add(
           MockServiceImplView.newBuilder()
-              .grpcClassName(namer.getGrpcServerTypeName(service))
-              .name(namer.getMockGrpcServiceImplName(service))
+              .grpcClassName(namer.getGrpcServerTypeName(apiInterface))
+              .name(namer.getMockGrpcServiceImplName(apiInterface))
               .grpcMethods(mockServiceTransformer.createMockGrpcMethodViews(context))
               .build());
     }
-    for (Interface service : new InterfaceView().getElementIterable(model)) {
+    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
       // We don't need any import here.
-      SurfaceTransformerContext context =
-          SurfaceTransformerContext.create(service, apiConfig, typeTable, namer, featureConfig);
+      GapicInterfaceContext context =
+          GapicInterfaceContext.create(
+              apiInterface, productConfig, typeTable, namer, featureConfig);
       testClasses.add(
           ClientTestClassView.newBuilder()
               .apiSettingsClassName(
@@ -114,20 +117,20 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
     ImportSectionView importSection =
         importSectionTransformer.generateImportSection(typeTable.getImports());
     return MockCombinedView.newBuilder()
-        .outputPath(apiConfig.getPackageName() + File.separator + "mock_test.go")
+        .outputPath(productConfig.getPackageName() + File.separator + "mock_test.go")
         .serviceImpls(impls)
         .testClasses(testClasses)
         .templateFileName(MOCK_SERVICE_TEMPLATE_FILE)
-        .fileHeader(fileHeaderTransformer.generateFileHeader(apiConfig, importSection, namer))
-        .mockServices(mockServiceTransformer.createMockServices(namer, model, apiConfig))
+        .fileHeader(fileHeaderTransformer.generateFileHeader(productConfig, importSection, namer))
+        .mockServices(mockServiceTransformer.createMockServices(namer, model, productConfig))
         .build();
   }
 
-  private List<TestCaseView> createTestCaseViews(SurfaceTransformerContext context) {
+  private List<TestCaseView> createTestCaseViews(GapicInterfaceContext context) {
     ArrayList<TestCaseView> testCaseViews = new ArrayList<>();
     SymbolTable testNameTable = new SymbolTable();
     for (Method method : context.getSupportedMethods()) {
-      MethodTransformerContext methodContext = context.asRequestMethodContext(method);
+      GapicMethodContext methodContext = context.asRequestMethodContext(method);
       ClientMethodType clientMethodType = ClientMethodType.RequestObjectMethod;
       if (methodContext.getMethodConfig().isPageStreaming()) {
         clientMethodType = ClientMethodType.PagedRequestObjectMethod;

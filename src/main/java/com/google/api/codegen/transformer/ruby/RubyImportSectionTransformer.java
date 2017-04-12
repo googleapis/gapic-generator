@@ -15,10 +15,11 @@
 package com.google.api.codegen.transformer.ruby;
 
 import com.google.api.codegen.metacode.InitCodeNode;
+import com.google.api.codegen.transformer.GapicInterfaceContext;
+import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.ImportSectionTransformer;
-import com.google.api.codegen.transformer.MethodTransformerContext;
+import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
-import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ImportTypeView;
@@ -31,19 +32,21 @@ import java.util.TreeSet;
 
 public class RubyImportSectionTransformer implements ImportSectionTransformer {
   @Override
-  public ImportSectionView generateImportSection(SurfaceTransformerContext context) {
-    Set<String> importFilenames = generateImportFilenames(context);
+  public ImportSectionView generateImportSection(InterfaceContext context) {
+    // TODO support non-Gapic inputs
+    GapicInterfaceContext gapicContext = (GapicInterfaceContext) context;
+    Set<String> importFilenames = generateImportFilenames(gapicContext);
     ImportSectionView.Builder importSection = ImportSectionView.newBuilder();
     importSection.standardImports(generateStandardImports());
-    importSection.externalImports(generateExternalImports(context));
-    importSection.appImports(generateAppImports(context, importFilenames));
-    importSection.serviceImports(generateServiceImports(context, importFilenames));
+    importSection.externalImports(generateExternalImports(gapicContext));
+    importSection.appImports(generateAppImports(gapicContext, importFilenames));
+    importSection.serviceImports(generateServiceImports(gapicContext, importFilenames));
     return importSection.build();
   }
 
   @Override
   public ImportSectionView generateImportSection(
-      MethodTransformerContext context, Iterable<InitCodeNode> specItemNodes) {
+      GapicMethodContext context, Iterable<InitCodeNode> specItemNodes) {
     return new StandardImportSectionTransformer().generateImportSection(context, specItemNodes);
   }
 
@@ -51,7 +54,7 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
     return ImmutableList.of(createImport("json"), createImport("pathname"));
   }
 
-  private List<ImportFileView> generateExternalImports(SurfaceTransformerContext context) {
+  private List<ImportFileView> generateExternalImports(GapicInterfaceContext context) {
     ImmutableList.Builder<ImportFileView> imports = ImmutableList.builder();
     imports.add(createImport("google/gax"));
 
@@ -64,7 +67,7 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
   }
 
   private List<ImportFileView> generateAppImports(
-      SurfaceTransformerContext context, Set<String> filenames) {
+      GapicInterfaceContext context, Set<String> filenames) {
     ImmutableList.Builder<ImportFileView> imports = ImmutableList.builder();
     for (String filename : filenames) {
       imports.add(createImport(context.getNamer().getProtoFileImportName(filename)));
@@ -73,7 +76,7 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
   }
 
   private List<ImportFileView> generateServiceImports(
-      SurfaceTransformerContext context, Set<String> filenames) {
+      GapicInterfaceContext context, Set<String> filenames) {
     ImmutableList.Builder<ImportFileView> imports = ImmutableList.builder();
     imports.add(createImport("google/gax/grpc"));
     for (String filename : filenames) {
@@ -82,7 +85,7 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
     return imports.build();
   }
 
-  private Set<String> generateImportFilenames(SurfaceTransformerContext context) {
+  private Set<String> generateImportFilenames(GapicInterfaceContext context) {
     Set<String> filenames = new TreeSet<>();
     filenames.add(context.getInterface().getFile().getSimpleName());
     for (Method method : context.getSupportedMethods()) {

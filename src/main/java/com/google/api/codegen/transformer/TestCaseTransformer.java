@@ -50,12 +50,12 @@ public class TestCaseTransformer {
   }
 
   public TestCaseView createTestCaseView(
-      MethodTransformerContext methodContext,
+      GapicMethodContext methodContext,
       SymbolTable testNameTable,
       InitCodeContext initCodeContext,
       ClientMethodType clientMethodType) {
     Method method = methodContext.getMethod();
-    MethodConfig methodConfig = methodContext.getMethodConfig();
+    GapicMethodConfig methodConfig = methodContext.getMethodConfig();
     SurfaceNamer namer = methodContext.getNamer();
 
     String clientMethodName;
@@ -114,8 +114,8 @@ public class TestCaseTransformer {
   }
 
   private List<PageStreamingResponseView> createPageStreamingResponseViews(
-      MethodTransformerContext methodContext) {
-    MethodConfig methodConfig = methodContext.getMethodConfig();
+      GapicMethodContext methodContext) {
+    GapicMethodConfig methodConfig = methodContext.getMethodConfig();
     SurfaceNamer namer = methodContext.getNamer();
 
     List<PageStreamingResponseView> pageStreamingResponseViews =
@@ -162,7 +162,7 @@ public class TestCaseTransformer {
   }
 
   private MockGrpcResponseView createMockResponseView(
-      MethodTransformerContext methodContext, SymbolTable symbolTable) {
+      GapicMethodContext methodContext, SymbolTable symbolTable) {
     InitCodeView initCodeView =
         initCodeTransformer.generateInitCode(
             methodContext, createResponseInitCodeContext(methodContext, symbolTable));
@@ -175,7 +175,7 @@ public class TestCaseTransformer {
   }
 
   private InitCodeContext createResponseInitCodeContext(
-      MethodTransformerContext context, SymbolTable symbolTable) {
+      GapicMethodContext context, SymbolTable symbolTable) {
     ArrayList<Field> primitiveFields = new ArrayList<>();
     TypeRef outputType = context.getMethod().getOutputType();
     if (context.getMethodConfig().isLongRunningOperation()) {
@@ -193,14 +193,13 @@ public class TestCaseTransformer {
         .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
         .initValueConfigMap(ImmutableMap.<String, InitValueConfig>of())
         .initFields(primitiveFields)
-        .fieldConfigMap(context.getApiConfig().getDefaultResourceNameFieldConfigMap())
+        .fieldConfigMap(context.getProductConfig().getDefaultResourceNameFieldConfigMap())
         .valueGenerator(valueGenerator)
         .additionalInitCodeNodes(createMockResponseAdditionalSubTrees(context))
         .build();
   }
 
-  private Iterable<InitCodeNode> createMockResponseAdditionalSubTrees(
-      MethodTransformerContext context) {
+  private Iterable<InitCodeNode> createMockResponseAdditionalSubTrees(GapicMethodContext context) {
     List<InitCodeNode> additionalSubTrees = new ArrayList<>();
     if (context.getMethodConfig().isPageStreaming()) {
       // Initialize one resource element if it is page-streaming.
@@ -226,7 +225,7 @@ public class TestCaseTransformer {
     return additionalSubTrees;
   }
 
-  public TestCaseView createSmokeTestCaseView(MethodTransformerContext context) {
+  public TestCaseView createSmokeTestCaseView(GapicMethodContext context) {
     ClientMethodType methodType = ClientMethodType.FlattenedMethod;
     if (context.getMethodConfig().isPageStreaming()) {
       methodType = ClientMethodType.PagedFlattenedMethod;
@@ -263,7 +262,7 @@ public class TestCaseTransformer {
     return false;
   }
 
-  public InitCodeContext createSmokeTestInitContext(MethodTransformerContext context) {
+  public InitCodeContext createSmokeTestInitContext(GapicMethodContext context) {
     SmokeTestConfig testConfig = context.getInterfaceConfig().getSmokeTestConfig();
     InitCodeContext.InitCodeOutputType outputType;
     ImmutableMap<String, FieldConfig> fieldConfigMap;
@@ -298,7 +297,7 @@ public class TestCaseTransformer {
   }
 
   public FlatteningConfig getSmokeTestFlatteningGroup(
-      MethodConfig methodConfig, SmokeTestConfig smokeTestConfig) {
+      GapicMethodConfig methodConfig, SmokeTestConfig smokeTestConfig) {
     for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
       if (flatteningGroup.getFlatteningName().equals(smokeTestConfig.getFlatteningName())) {
         return flatteningGroup;

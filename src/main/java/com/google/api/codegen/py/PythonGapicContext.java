@@ -16,16 +16,16 @@ package com.google.api.codegen.py;
 
 import com.google.api.codegen.GapicContext;
 import com.google.api.codegen.TargetLanguage;
-import com.google.api.codegen.config.ApiConfig;
-import com.google.api.codegen.config.InterfaceConfig;
-import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.GapicInterfaceConfig;
+import com.google.api.codegen.config.GapicMethodConfig;
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
+import com.google.api.codegen.transformer.GapicInterfaceContext;
+import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.InitCodeTransformer;
-import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelTypeTable;
-import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.transformer.py.PythonApiMethodParamTransformer;
 import com.google.api.codegen.transformer.py.PythonImportSectionTransformer;
 import com.google.api.codegen.transformer.py.PythonModelTypeNameConverter;
@@ -108,8 +108,9 @@ public class PythonGapicContext extends GapicContext {
 
   private PackageMetadataConfig packageConfig;
 
-  public PythonGapicContext(Model model, ApiConfig apiConfig, PackageMetadataConfig packageConfig) {
-    super(model, apiConfig);
+  public PythonGapicContext(
+      Model model, GapicProductConfig productConfig, PackageMetadataConfig packageConfig) {
+    super(model, productConfig);
     this.packageConfig = packageConfig;
     this.pythonCommon = new PythonContextCommon();
   }
@@ -132,9 +133,9 @@ public class PythonGapicContext extends GapicContext {
    * <p>TODO(eoogbe): Temporary solution to use MVVM with just sample gen. This class will
    * eventually go away when code gen also converts to MVVM.
    */
-  public ApiMethodView getApiMethodView(Interface service, Method method) {
-    SurfaceTransformerContext context = getSurfaceTransformerContextFromService(service);
-    MethodTransformerContext methodContext = context.asDynamicMethodContext(method);
+  public ApiMethodView getApiMethodView(Interface apiInterface, Method method) {
+    GapicInterfaceContext context = getSurfaceTransformerContextFromService(apiInterface);
+    GapicMethodContext methodContext = context.asDynamicMethodContext(method);
     DynamicLangApiMethodTransformer apiMethodTransformer =
         new DynamicLangApiMethodTransformer(
             new PythonApiMethodParamTransformer(),
@@ -143,13 +144,13 @@ public class PythonGapicContext extends GapicContext {
     return apiMethodTransformer.generateMethod(methodContext);
   }
 
-  private SurfaceTransformerContext getSurfaceTransformerContextFromService(Interface service) {
+  private GapicInterfaceContext getSurfaceTransformerContextFromService(Interface apiInterface) {
     ModelTypeTable modelTypeTable =
         new ModelTypeTable(
             new PythonTypeTable(getApiConfig().getPackageName()),
             new PythonModelTypeNameConverter(getApiConfig().getPackageName()));
-    return SurfaceTransformerContext.create(
-        service,
+    return GapicInterfaceContext.create(
+        apiInterface,
         getApiConfig(),
         modelTypeTable,
         new PythonSurfaceNamer(getApiConfig().getPackageName()),
@@ -276,9 +277,10 @@ public class PythonGapicContext extends GapicContext {
    * None.
    */
   public String returnTypeComment(
-      Interface service, Method method, PythonImportHandler importHandler) {
-    MethodConfig config = getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
-    if (MethodConfig.isReturnEmptyMessageMethod(method)) {
+      Interface apiInterface, Method method, PythonImportHandler importHandler) {
+    GapicMethodConfig config =
+        getApiConfig().getInterfaceConfig(apiInterface).getMethodConfig(method);
+    if (GapicMethodConfig.isReturnEmptyMessageMethod(method)) {
       return "";
     }
 
@@ -301,7 +303,7 @@ public class PythonGapicContext extends GapicContext {
   }
 
   private String returnTypeCommentPath(
-      Method method, MethodConfig config, PythonImportHandler importHandler) {
+      Method method, GapicMethodConfig config, PythonImportHandler importHandler) {
     if (config.isLongRunningOperation()) {
       return "google.gax._OperationFuture";
     }
@@ -332,8 +334,9 @@ public class PythonGapicContext extends GapicContext {
     return splitToLines(getTrimmedDocs(method));
   }
 
-  public String throwsComment(Interface service, Method method) {
-    MethodConfig config = getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
+  public String throwsComment(Interface apiInterface, Method method) {
+    GapicMethodConfig config =
+        getApiConfig().getInterfaceConfig(apiInterface).getMethodConfig(method);
     StringBuilder contentBuilder = new StringBuilder();
     contentBuilder.append("\nRaises:\n  :exc:`google.gax.errors.GaxError` if the RPC is aborted.");
     if (Iterables.size(config.getRequiredFields()) > 0
@@ -353,8 +356,9 @@ public class PythonGapicContext extends GapicContext {
   }
 
   /** Get required (non-optional) fields. */
-  public List<Field> getRequiredFields(Interface service, Method method) {
-    MethodConfig methodConfig = getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
+  public List<Field> getRequiredFields(Interface apiInterface, Method method) {
+    GapicMethodConfig methodConfig =
+        getApiConfig().getInterfaceConfig(apiInterface).getMethodConfig(method);
     return Lists.newArrayList(methodConfig.getRequiredFields());
   }
 
@@ -471,38 +475,41 @@ public class PythonGapicContext extends GapicContext {
     }
   }
 
-  public List<Interface> getStubInterfaces(Interface service) {
+  public List<Interface> getStubInterfaces(Interface apiInterface) {
     Map<String, Interface> interfaces = new TreeMap<>();
-    for (MethodConfig methodConfig :
-        getApiConfig().getInterfaceConfig(service).getMethodConfigs()) {
+    for (GapicMethodConfig methodConfig :
+        getApiConfig().getInterfaceConfig(apiInterface).getMethodConfigs()) {
       String rerouteToGrpcInterface = methodConfig.getRerouteToGrpcInterface();
-      Interface target = InterfaceConfig.getTargetInterface(service, rerouteToGrpcInterface);
+      Interface target =
+          GapicInterfaceConfig.getTargetInterface(apiInterface, rerouteToGrpcInterface);
       interfaces.put(target.getFullName(), target);
     }
     return new ArrayList<>(interfaces.values());
   }
 
-  public String stubName(Interface service) {
-    return upperCamelToLowerUnderscore(service.getSimpleName()) + "_stub";
+  public String stubName(Interface apiInterface) {
+    return upperCamelToLowerUnderscore(apiInterface.getSimpleName()) + "_stub";
   }
 
-  public String stubNameForMethod(Interface service, Method method) {
-    MethodConfig methodConfig = getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
+  public String stubNameForMethod(Interface apiInterface, Method method) {
+    GapicMethodConfig methodConfig =
+        getApiConfig().getInterfaceConfig(apiInterface).getMethodConfig(method);
     String rerouteToGrpcInterface = methodConfig.getRerouteToGrpcInterface();
-    Interface target = InterfaceConfig.getTargetInterface(service, rerouteToGrpcInterface);
+    Interface target =
+        GapicInterfaceConfig.getTargetInterface(apiInterface, rerouteToGrpcInterface);
     return stubName(target);
   }
 
-  public boolean isLongrunning(Method method, Interface service) {
+  public boolean isLongrunning(Method method, Interface apiInterface) {
     return getApiConfig()
-        .getInterfaceConfig(service)
+        .getInterfaceConfig(apiInterface)
         .getMethodConfig(method)
         .isLongRunningOperation();
   }
 
-  public boolean hasLongrunningMethod(Interface service) {
-    for (Method method : getSupportedMethodsV2(service)) {
-      if (isLongrunning(method, service)) {
+  public boolean hasLongrunningMethod(Interface apiInterface) {
+    for (Method method : getSupportedMethodsV2(apiInterface)) {
+      if (isLongrunning(method, apiInterface)) {
         return true;
       }
     }

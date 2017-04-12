@@ -16,16 +16,16 @@ package com.google.api.codegen.transformer.csharp;
 
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.InterfaceConfig;
-import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.GapicInterfaceConfig;
+import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.config.SingleResourceNameConfig;
-import com.google.api.codegen.transformer.MethodTransformerContext;
+import com.google.api.codegen.transformer.GapicInterfaceContext;
+import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.transformer.Synchronicity;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
@@ -144,12 +144,12 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFullyQualifiedApiWrapperClassName(InterfaceConfig interfaceConfig) {
+  public String getFullyQualifiedApiWrapperClassName(GapicInterfaceConfig interfaceConfig) {
     return getPackageName() + "." + getApiWrapperClassName(interfaceConfig);
   }
 
   @Override
-  public String getStaticLangReturnTypeName(Method method, MethodConfig methodConfig) {
+  public String getStaticLangReturnTypeName(Method method, GapicMethodConfig methodConfig) {
     if (ServiceMessages.s_isEmptyType(method.getOutputType())) {
       return "void";
     }
@@ -157,7 +157,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getStaticLangAsyncReturnTypeName(Method method, MethodConfig methodConfig) {
+  public String getStaticLangAsyncReturnTypeName(Method method, GapicMethodConfig methodConfig) {
     if (ServiceMessages.s_isEmptyType(method.getOutputType())) {
       return "System.Threading.Tasks.Task";
     }
@@ -167,15 +167,16 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getStaticLangCallerAsyncReturnTypeName(Method method, MethodConfig methodConfig) {
+  public String getStaticLangCallerAsyncReturnTypeName(
+      Method method, GapicMethodConfig methodConfig) {
     // Same as sync because of 'await'
     return getStaticLangReturnTypeName(method, methodConfig);
   }
 
   @Override
-  public String getApiSnippetsClassName(Interface interfaze) {
+  public String getApiSnippetsClassName(Interface apiInterface) {
     return publicClassName(
-        Name.upperCamel("Generated", interfaze.getSimpleName(), "ClientSnippets"));
+        Name.upperCamel("Generated", apiInterface.getSimpleName(), "ClientSnippets"));
   }
 
   @Override
@@ -192,7 +193,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getPathTemplateName(
-      Interface service, SingleResourceNameConfig resourceNameConfig) {
+      Interface apiInterface, SingleResourceNameConfig resourceNameConfig) {
     return inittedConstantName(Name.from(resourceNameConfig.getEntityName(), "template"));
   }
 
@@ -265,7 +266,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getFormatFunctionName(
-      Interface service, SingleResourceNameConfig resourceNameConfig) {
+      Interface apiInterface, SingleResourceNameConfig resourceNameConfig) {
     return getResourceTypeName(resourceNameConfig);
   }
 
@@ -317,12 +318,12 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getGrpcContainerTypeName(Interface service) {
-    return publicClassName(Name.upperCamel(service.getSimpleName()));
+  public String getGrpcContainerTypeName(Interface apiInterface) {
+    return publicClassName(Name.upperCamel(apiInterface.getSimpleName()));
   }
 
   @Override
-  public String getReroutedGrpcClientVarName(MethodConfig methodConfig) {
+  public String getReroutedGrpcClientVarName(GapicMethodConfig methodConfig) {
     String reroute = methodConfig.getRerouteToGrpcInterface();
     if (reroute == null) {
       return "GrpcClient";
@@ -333,21 +334,21 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getReroutedGrpcMethodName(MethodConfig methodConfig) {
+  public String getReroutedGrpcMethodName(GapicMethodConfig methodConfig) {
     List<String> reroutes = Splitter.on('.').splitToList(methodConfig.getRerouteToGrpcInterface());
     return Name.anyCamel("create", reroutes.get(reroutes.size() - 1), "client").toUpperCamel();
   }
 
   @Override
-  public String getGrpcServiceClassName(Interface service) {
-    return publicClassName(Name.upperCamel(service.getSimpleName()))
+  public String getGrpcServiceClassName(Interface apiInterface) {
+    return publicClassName(Name.upperCamel(apiInterface.getSimpleName()))
         + "."
-        + publicClassName(Name.upperCamel(service.getSimpleName(), "Client"));
+        + publicClassName(Name.upperCamel(apiInterface.getSimpleName(), "Client"));
   }
 
   @Override
-  public String getApiWrapperClassImplName(Interface interfaze) {
-    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "ClientImpl"));
+  public String getApiWrapperClassImplName(Interface apiInterface) {
+    return publicClassName(Name.upperCamel(apiInterface.getSimpleName(), "ClientImpl"));
   }
 
   @Override
@@ -392,7 +393,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getAndSaveOperationResponseTypeName(
-      Method method, ModelTypeTable typeTable, MethodConfig methodConfig) {
+      Method method, ModelTypeTable typeTable, GapicMethodConfig methodConfig) {
     String responseTypeName =
         typeTable.getFullNameFor(methodConfig.getLongRunningConfig().getReturnType());
     return typeTable.getAndSaveNicknameForContainer(
@@ -424,11 +425,11 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public List<String> getReturnDocLines(
-      SurfaceTransformerContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
+      GapicInterfaceContext context, GapicMethodConfig methodConfig, Synchronicity synchronicity) {
     if (methodConfig.isPageStreaming()) {
       TypeRef resourceType = methodConfig.getPageStreaming().getResourcesField().getType();
       String resourceTypeName =
-          context.getTypeTable().getAndSaveNicknameForElementType(resourceType);
+          context.getModelTypeTable().getAndSaveNicknameForElementType(resourceType);
       switch (synchronicity) {
         case Sync:
           return ImmutableList.of(
@@ -490,8 +491,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getOptionalFieldDefaultValue(
-      FieldConfig fieldConfig, MethodTransformerContext context) {
+  public String getOptionalFieldDefaultValue(FieldConfig fieldConfig, GapicMethodContext context) {
     // Need to provide defaults for primitives, enums, strings, and repeated (including maps)
     TypeRef type = fieldConfig.getField().getType();
     if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
