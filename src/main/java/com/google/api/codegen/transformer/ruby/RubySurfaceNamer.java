@@ -15,10 +15,12 @@
 package com.google.api.codegen.transformer.ruby;
 
 import com.google.api.codegen.ServiceMessages;
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
+import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -264,5 +266,10 @@ public class RubySurfaceNamer extends SurfaceNamer {
       newNames.add(packageFilePathPiece(Name.upperCamel(name)));
     }
     return Joiner.on("/").join(newNames.toArray());
+  }
+
+  /** The function name to get the given proto field. */
+  public String getFieldGetFunctionName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
+    return getFieldKey(fieldConfig.getField());
   }
 }

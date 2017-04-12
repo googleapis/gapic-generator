@@ -39,9 +39,7 @@ import com.google.api.codegen.util.testing.StandardValueProducer;
 import com.google.api.codegen.util.testing.ValueProducer;
 import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.FileHeaderView;
-import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
-import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -67,6 +65,8 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private final GapicCodePathMapper pathMapper;
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new RubyImportSectionTransformer());
+  private final RubyImportSectionTransformer importSectionTransformer =
+      new RubyImportSectionTransformer();
   private final ValueProducer valueProducer = new StandardValueProducer();
   private final TestCaseTransformer testCaseTransformer = new TestCaseTransformer(valueProducer);
 
@@ -97,7 +97,8 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
   private MockCombinedView createUnitTestView(Model model, ApiConfig apiConfig) {
     SurfaceNamer namer = new RubySurfaceNamer(apiConfig.getPackageName());
-    ImportSectionView importSection = createTestImportSection(model, apiConfig);
+    ImportSectionView importSection =
+        importSectionTransformer.generateTestImportSection(model, apiConfig);
     return MockCombinedView.newBuilder()
         .outputPath("test" + File.separator + "test.rb")
         .serviceImpls(ImmutableList.<MockServiceImplView>of())
@@ -106,36 +107,6 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
         .templateFileName(UNIT_TEST_TEMPLATE_FILE)
         .fileHeader(fileHeaderTransformer.generateFileHeader(apiConfig, importSection, namer))
         .build();
-  }
-
-  private ImportSectionView createTestImportSection(Model model, ApiConfig apiConfig) {
-    List<ImportFileView> none = ImmutableList.of();
-    ImportSectionView.Builder importSection = ImportSectionView.newBuilder();
-    importSection.standardImports(generateStandardImports());
-    importSection.externalImports(generateExternalImports(model, apiConfig));
-    importSection.appImports(none);
-    importSection.serviceImports(none);
-    return importSection.build();
-  }
-
-  private List<ImportFileView> generateStandardImports() {
-    return ImmutableList.of(createImport("minitest/autorun"), createImport("minitest/spec"));
-  }
-
-  private List<ImportFileView> generateExternalImports(Model model, ApiConfig apiConfig) {
-    ImmutableList.Builder<ImportFileView> imports = ImmutableList.builder();
-    SurfaceNamer namer = new RubySurfaceNamer(apiConfig.getPackageName());
-    for (Interface service : new InterfaceView().getElementIterable(model)) {
-      imports.add(createImport(namer.getServiceFileName(apiConfig.getInterfaceConfig(service))));
-    }
-    return imports.build();
-  }
-
-  private ImportFileView createImport(String name) {
-    ImportFileView.Builder fileImport = ImportFileView.newBuilder();
-    fileImport.moduleName(name);
-    fileImport.types(ImmutableList.<ImportTypeView>of());
-    return fileImport.build();
   }
 
   private List<ClientTestClassView> generateTestClasses(
@@ -213,7 +184,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
         .initValueConfigMap(InitCodeTransformer.createCollectionMap(dynamicMethodContext))
         .initFields(FieldConfig.toFieldIterable(fieldConfigs))
         // This field will vary when page streaming tests are supported.
-        .outputType(InitCodeOutputType.FieldListAndRequestObject)
+        .outputType(InitCodeOutputType.FieldList)
         .fieldConfigMap(FieldConfig.toFieldConfigMap(fieldConfigs))
         .build();
   }

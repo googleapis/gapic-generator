@@ -9,11 +9,11 @@
 
   @join testClass : apiTest.testClasses
     describe {@testClass.fullyQualifiedApiClassName} do
-      error = Google::Gax::GaxError.new "Test error"
+      error = CustomError.new "Test error"
       @join test : testClass.testCases
-        @if testCase(test, testClass.apiClassName)
+        @if testCase(test)
 
-          {@testCase(test, testClass.apiClassName)}
+          {@testCase(test)}
         @end
       @end
     end
@@ -25,25 +25,19 @@
 
   {@importList(fileHeader.importSection.standardImports)}
 
-  {@importList(fileHeader.importSection.externalImports)}
+  {@importList(fileHeader.importSection.appImports)}
 @end
 
 @private helpers()
-  def simple_grpc_mock(expected_request, response: nil, error: nil)
-    proc do |actual_request|
-      assert_equal(expected_request, actual_request)
-      raise error if error
-      response
-    end
-  end
+  class CustomError < StandardError; end
 @end
 
-@private testCase(test, apiClassName)
+@private testCase(test)
   @switch test.grpcStreamingType
   @case "NonStreaming"
     @switch test.clientMethodType
     @case "RequestObjectMethod"
-      {@requestObjectTestCase(test, apiClassName)}
+      {@requestObjectTestCase(test)}
     @case "PagedRequestObjectMethod"
     @case "OperationCallableMethod"
     @default
@@ -56,7 +50,7 @@
   @end
 @end
 
-@private requestObjectTestCase(test, apiClassName)
+@private requestObjectTestCase(test)
   describe '{@test.clientMethodName}' do
 
     @if {@aliasSection(test.initCode.importSection)}
@@ -66,23 +60,20 @@
     it 'invokes {@test.clientMethodName} without error' do
       @# Create request parameters and expected request
       {@initCode(test.initCode)}
+      @if test.hasReturnValue
 
-      @# Create expected grpc response
-      {@initCode(test.mockResponse.initCode)}
+        @# Create expected grpc response
+        {@initCode(test.mockResponse.initCode)}
+      @end
 
       @# Mock Grpc layer
       client = {@test.serviceConstructorName}.new
-      client.instance_variable_set(
-        "@@{@test.clientMethodName}",
-        simple_grpc_mock(
-          expected_request,
-          response: expected_response
-        )
-      )
+      {@mockUnaryRequest(test)}
 
       @# Call method
       {@methodCallWithResponse(test)}
 
+      @# Verify the response
       @if test.hasReturnValue
         assert_equal(expected_response, response)
       @else
@@ -90,27 +81,60 @@
       @end
     end
 
-    {@simpleTestWithError(test, apiClassName)}
+    {@simpleTestWithError(test)}
   end
 @end
 
-@private simpleTestWithError(test, apiClassName)
+@private mockUnaryRequest(test)
+  client.instance_variable_set(
+    "@@{@test.clientMethodName}",
+    proc do |request|
+      {@requestAsserts(test)}
+      @if test.hasReturnValue
+        expected_response
+      @else
+        nil
+      @end
+    end
+  )
+@end
+
+@private mockUnaryError(test)
+  client.instance_variable_set(
+    "@@{@test.clientMethodName}",
+    proc do |request|
+      {@requestAsserts(test)}
+      raise error
+    end
+  )
+@end
+
+@private requestAsserts(test)
+   @join assert : test.asserts
+     @if assert.hasExpectedValueTransformFunction
+       assert_equal(\
+         {@assert.expectedValueTransformFunction}(\
+             {@assert.expectedValueIdentifier}), \
+         request.{@assert.actualValueGetter})
+     @else
+       assert_equal(\
+         {@assert.expectedValueIdentifier}, \
+         request.{@assert.actualValueGetter})
+     @end
+   @end
+@end
+
+@private simpleTestWithError(test)
   it 'invokes {@test.clientMethodName} with error' do
     @# Create request parameters and expected request
     {@initCode(test.initCode)}
 
     @# Mock Grpc layer
     client = {@test.serviceConstructorName}.new
-    client.instance_variable_set(
-      "@@{@test.clientMethodName}",
-      simple_grpc_mock(
-        expected_request,
-        error: error
-      )
-    )
+    {@mockUnaryError(test)}
 
     @# Call method
-    assert_raises Google::Gax::GaxError do
+    assert_raises CustomError do
       {@methodCall(test)}
     end
   end

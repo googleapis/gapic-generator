@@ -14,16 +14,20 @@
  */
 package com.google.api.codegen.transformer.ruby;
 
+import com.google.api.codegen.InterfaceView;
+import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.transformer.ImportSectionTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
+import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.Set;
@@ -45,6 +49,16 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
   public ImportSectionView generateImportSection(
       MethodTransformerContext context, Iterable<InitCodeNode> specItemNodes) {
     return new StandardImportSectionTransformer().generateImportSection(context, specItemNodes);
+  }
+
+  public ImportSectionView generateTestImportSection(Model model, ApiConfig apiConfig) {
+    List<ImportFileView> none = ImmutableList.of();
+    ImportSectionView.Builder importSection = ImportSectionView.newBuilder();
+    importSection.standardImports(generateTestStandardImports());
+    importSection.externalImports(none);
+    importSection.appImports(generateTestAppImports(model, apiConfig));
+    importSection.serviceImports(none);
+    return importSection.build();
   }
 
   private List<ImportFileView> generateStandardImports() {
@@ -90,6 +104,19 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
       filenames.add(targetInterface.getFile().getSimpleName());
     }
     return filenames;
+  }
+
+  private List<ImportFileView> generateTestStandardImports() {
+    return ImmutableList.of(createImport("minitest/autorun"), createImport("minitest/spec"));
+  }
+
+  private List<ImportFileView> generateTestAppImports(Model model, ApiConfig apiConfig) {
+    ImmutableList.Builder<ImportFileView> imports = ImmutableList.builder();
+    SurfaceNamer namer = new RubySurfaceNamer(apiConfig.getPackageName());
+    for (Interface service : new InterfaceView().getElementIterable(model)) {
+      imports.add(createImport(namer.getServiceFileName(apiConfig.getInterfaceConfig(service))));
+    }
+    return imports.build();
   }
 
   private ImportFileView createImport(String name) {

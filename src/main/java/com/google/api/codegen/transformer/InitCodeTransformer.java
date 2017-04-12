@@ -76,11 +76,6 @@ public class InitCodeTransformer {
         return buildInitCodeViewFlattened(methodContext, rootNode);
       case SingleObject:
         return buildInitCodeViewRequestObject(methodContext, rootNode);
-      case FieldListAndRequestObject:
-        // This is used in grpc testing for when a method accepts a field list but the grpc request
-        // object is needed. This helps to compare the the request object that was constructed by
-        // the method against the request object that is initialized.
-        return buildInitCodeViewFlattenedWithRequestObject(methodContext, rootNode);
       default:
         throw new IllegalArgumentException();
     }
