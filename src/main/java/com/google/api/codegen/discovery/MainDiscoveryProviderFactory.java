@@ -85,16 +85,16 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
           .build();
 
   public static DiscoveryProvider defaultCreate(
-      Service service, ApiaryConfig apiaryConfig, JsonNode sampleConfigOverrides, String id) {
+      Service service, ApiaryConfig apiaryConfig, List<JsonNode> sampleConfigOverrides, String id) {
     // Use nodes corresponding to language pattern fields matching current language.
     List<JsonNode> overrides = new ArrayList<JsonNode>();
     // Sort patterns to ensure deterministic ordering of overrides
-    if (sampleConfigOverrides != null) {
-      List<String> languagePatterns = Lists.newArrayList(sampleConfigOverrides.fieldNames());
+    for (JsonNode override : sampleConfigOverrides) {
+      List<String> languagePatterns = Lists.newArrayList(override.fieldNames());
       Collections.sort(languagePatterns);
       for (String languagePattern : languagePatterns) {
         if (Pattern.matches(languagePattern, id)) {
-          overrides.add(sampleConfigOverrides.get(languagePattern));
+          overrides.add(override.get(languagePattern));
         }
       }
     }
@@ -130,7 +130,7 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
 
   @Override
   public DiscoveryProvider create(
-      Service service, ApiaryConfig apiaryConfig, JsonNode sampleConfigOverrides, String id) {
+      Service service, ApiaryConfig apiaryConfig, List<JsonNode> sampleConfigOverrides, String id) {
     return defaultCreate(service, apiaryConfig, sampleConfigOverrides, id);
   }
 }

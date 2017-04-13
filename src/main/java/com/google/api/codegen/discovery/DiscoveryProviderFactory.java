@@ -17,10 +17,11 @@ package com.google.api.codegen.discovery;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.api.Service;
 import com.google.api.codegen.ApiaryConfig;
+import java.util.List;
 
 /** A factory for DiscoveryProviders which perform code generation. */
 public interface DiscoveryProviderFactory {
   /** Create the provider from the given service, apiaryConfig, sampleConfigOverrides, and id. */
   DiscoveryProvider create(
-      Service service, ApiaryConfig apiaryConfig, JsonNode sampleConfigOverrides, String id);
+      Service service, ApiaryConfig apiaryConfig, List<JsonNode> sampleConfigOverrides, String id);
 }
