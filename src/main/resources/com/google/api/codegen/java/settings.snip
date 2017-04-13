@@ -73,7 +73,35 @@
   private static final String META_VERSION_KEY = "artifact.version";
 
   private static String gapicVersion;
+
+  @join settings : xsettingsClass.callSettings
+    {@grpcMethodStub(settings)}
+  @end
   {@""}
+@end
+
+@private grpcMethodStub(settings)
+  private static final io.grpc.MethodDescriptor<{@settings.requestTypeName}, {@settings.responseTypeName}> {@settings.grpcMethodConstant} =
+        io.grpc.MethodDescriptor.create(
+            {@streamingTypeEnum(settings.grpcStreamingType)},
+            "{@settings.fullServiceName}/{@settings.protoMethodName}",
+            io.grpc.protobuf.ProtoUtils.marshaller({@settings.requestTypeName}.getDefaultInstance()),
+            io.grpc.protobuf.ProtoUtils.marshaller({@settings.responseTypeName}.getDefaultInstance()));
+@end
+
+@private streamingTypeEnum(streamingType)
+  @switch streamingType
+  @case "NonStreaming"
+    io.grpc.MethodDescriptor.MethodType.UNARY
+  @case "ServerStreaming"
+    io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING
+  @case "ClientStreaming"
+    io.grpc.MethodDescriptor.MethodType.CLIENT_STREAMING
+  @case "BidiStreaming"
+    io.grpc.MethodDescriptor.MethodType.BIDI_STREAMING
+  @default
+    $unhandledCase: {@streamingType}$
+  @end
 @end
 
 @private members(xsettingsClass)
@@ -487,21 +515,21 @@
     @join settings : xsettingsClass.callSettings
       @switch settings.type.toString
       @case "SimpleApiCallable"
-        {@settings.memberName} = SimpleCallSettings.newBuilder({@settings.grpcTypeName}.{@settings.grpcMethodConstant});
+        {@settings.memberName} = SimpleCallSettings.newBuilder({@settings.grpcMethodConstant});
       @case "PagedApiCallable"
         {@settings.memberName} = PagedCallSettings.newBuilder(
-            {@settings.grpcTypeName}.{@settings.grpcMethodConstant},
+            {@settings.grpcMethodConstant},
             {@settings.pagedListResponseFactoryName});
       @case "BatchingApiCallable"
         {@settings.memberName} = BatchingCallSettings.newBuilder(
-            {@settings.grpcTypeName}.{@settings.grpcMethodConstant},
+            {@settings.grpcMethodConstant},
             {@settings.batchingDescriptorName})
                 .setBatchingSettingsBuilder(BatchingSettings.newBuilder());
       @case "StreamingApiCallable"
-        {@settings.memberName} = StreamingCallSettings.newBuilder({@settings.grpcTypeName}.{@settings.grpcMethodConstant});
+        {@settings.memberName} = StreamingCallSettings.newBuilder({@settings.grpcMethodConstant});
       @case "OperationApiCallable"
         {@settings.memberName} = OperationCallSettings.newBuilder(
-            {@settings.grpcTypeName}.{@settings.grpcMethodConstant},
+            {@settings.grpcMethodConstant},
             {@settings.operationResultTypeName}.class);
         @if settings.hasPollingInterval
           {@settings.memberName}.setPollingInterval(Duration.millis({@settings.operationPollingIntervalMillis}));

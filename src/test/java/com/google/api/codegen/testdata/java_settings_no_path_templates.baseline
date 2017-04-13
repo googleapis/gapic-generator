@@ -62,6 +62,13 @@ public class NoTemplatesApiServiceSettings extends ClientSettings {
 
   private static String gapicVersion;
 
+  private static final io.grpc.MethodDescriptor<IncrementRequest, Empty> METHOD_INCREMENT =
+        io.grpc.MethodDescriptor.create(
+            io.grpc.MethodDescriptor.MethodType.UNARY,
+            "google.cloud.example.v1.NoTemplatesAPIService/Increment",
+            io.grpc.protobuf.ProtoUtils.marshaller(IncrementRequest.getDefaultInstance()),
+            io.grpc.protobuf.ProtoUtils.marshaller(Empty.getDefaultInstance()));
+
   private final SimpleCallSettings<IncrementRequest, Empty> incrementSettings;
 
   /**
@@ -162,7 +169,7 @@ public class NoTemplatesApiServiceSettings extends ClientSettings {
     private Builder() {
       super((InstantiatingChannelProvider) null);
 
-      incrementSettings = SimpleCallSettings.newBuilder(NoTemplatesAPIServiceGrpc.METHOD_INCREMENT);
+      incrementSettings = SimpleCallSettings.newBuilder(METHOD_INCREMENT);
 
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder>of(
           incrementSettings
