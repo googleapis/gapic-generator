@@ -35,8 +35,7 @@ describe "LibraryServiceSmokeTest" do
     library_service_client = LibraryServiceClient.new
     formatted_name = LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)
     rating = Rating::GOOD
-    book = Book.new
-    book.rating = rating
+    book = Book.new(rating: rating)
     response = library_service_client.update_book(formatted_name, book)
   end
 end
