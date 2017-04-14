@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.Documentation;
 import com.google.api.Service;
+import com.google.api.codegen.ApiaryConfig.Location;
 import com.google.common.base.CaseFormat;
 import com.google.common.collect.ImmutableTable;
 import com.google.protobuf.Api;
@@ -231,7 +232,13 @@ public class DiscoveryImporter {
       return builder
           .setCardinality(Field.Cardinality.CARDINALITY_OPTIONAL)
           .setKind(
-              getFieldKind(typeName, fieldName, typeText, root.get("format"), root.get("pattern")))
+              getFieldKind(
+                  typeName,
+                  fieldName,
+                  typeText,
+                  root.get("format"),
+                  root.get("pattern"),
+                  root.get("location")))
           .build();
     }
 
@@ -271,7 +278,12 @@ public class DiscoveryImporter {
         return builder
             .setKind(
                 getFieldKind(
-                    typeName, fieldName, typeText, items.get("format"), items.get("pattern")))
+                    typeName,
+                    fieldName,
+                    typeText,
+                    items.get("format"),
+                    items.get("pattern"),
+                    items.get("location")))
             .build();
       } else if (typeText.equals("object")) {
         String elementTypeName = typeName + "." + lowerCamelToUpperCamel(fieldName);
@@ -318,7 +330,12 @@ public class DiscoveryImporter {
       if (TYPE_TABLE.containsRow(valueTypeText)) {
         valueKind =
             getFieldKind(
-                typeName, fieldName, valueTypeText, root.get("format"), root.get("pattern"));
+                typeName,
+                fieldName,
+                valueTypeText,
+                root.get("format"),
+                root.get("pattern"),
+                root.get("location"));
         valueType = null;
       } else if (valueTypeText.equals("object") || valueTypeText.equals("array")) {
         valueKind = Field.Kind.TYPE_MESSAGE;
@@ -453,10 +470,27 @@ public class DiscoveryImporter {
    * format, if exists, is recorded in {@link ApiaryConfig#stringFormat}.
    */
   private Field.Kind getFieldKind(
-      String type, String field, String kindName, JsonNode formatNode, JsonNode patternNode) {
+      String type,
+      String field,
+      String kindName,
+      JsonNode formatNode,
+      JsonNode patternNode,
+      JsonNode locationNode) {
     String format = "";
     if (formatNode != null) {
       format = formatNode.asText();
+    }
+    if (locationNode != null) {
+      Location location = null;
+      if (locationNode.asText().equals("path")) {
+        location = Location.PATH;
+      } else if (locationNode.asText().equals("query")) {
+        location = Location.QUERY;
+      } else {
+        throw new IllegalArgumentException(
+            String.format("unknown location: %s", locationNode.asText()));
+      }
+      config.getFieldLocation().put(type, field, location);
     }
     if (kindName.equals("string")) {
       if (formatNode != null) {

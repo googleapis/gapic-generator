@@ -20,8 +20,8 @@ import java.util.List;
 
 public interface ApiMethodParamTransformer {
   /** Creates the views for the parameters in the API method definition. */
-  List<DynamicLangDefaultableParamView> generateMethodParams(MethodTransformerContext context);
+  List<DynamicLangDefaultableParamView> generateMethodParams(GapicMethodContext context);
 
   /** Creates the views for the documentation of the API method parameters. */
-  List<ParamDocView> generateParamDocs(MethodTransformerContext context);
+  List<ParamDocView> generateParamDocs(GapicMethodContext context);
 }

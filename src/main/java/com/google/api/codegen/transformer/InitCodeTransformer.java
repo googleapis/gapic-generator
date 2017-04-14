@@ -65,11 +65,10 @@ public class InitCodeTransformer {
   }
 
   /**
-   * Generates initialization code from the given MethodTransformerContext and InitCodeContext
-   * objects.
+   * Generates initialization code from the given GapicMethodContext and InitCodeContext objects.
    */
   public InitCodeView generateInitCode(
-      MethodTransformerContext methodContext, InitCodeContext initCodeContext) {
+      GapicMethodContext methodContext, InitCodeContext initCodeContext) {
     InitCodeNode rootNode = InitCodeNode.createTree(initCodeContext);
     if (initCodeContext.outputType() == InitCodeOutputType.FieldList) {
       return buildInitCodeViewFlattened(methodContext, rootNode);
@@ -79,7 +78,7 @@ public class InitCodeTransformer {
   }
 
   public InitCodeContext createRequestInitCodeContext(
-      MethodTransformerContext context,
+      GapicMethodContext context,
       SymbolTable symbolTable,
       Iterable<FieldConfig> fieldConfigs,
       InitCodeOutputType outputType,
@@ -99,7 +98,7 @@ public class InitCodeTransformer {
 
   /** Generates assert views for the test of the tested method and its fields. */
   public List<ClientTestAssertView> generateRequestAssertViews(
-      MethodTransformerContext methodContext, InitCodeContext initContext) {
+      GapicMethodContext methodContext, InitCodeContext initContext) {
     InitCodeNode rootNode =
         InitCodeNode.createTree(
             InitCodeContext.newBuilder()
@@ -138,7 +137,7 @@ public class InitCodeTransformer {
    * data.
    */
   public static ImmutableMap<String, InitValueConfig> createCollectionMap(
-      MethodTransformerContext context) {
+      GapicMethodContext context) {
     ImmutableMap.Builder<String, InitValueConfig> mapBuilder = ImmutableMap.builder();
     Map<String, String> fieldNamePatterns = context.getMethodConfig().getFieldNamePatterns();
     for (Map.Entry<String, String> fieldNamePattern : fieldNamePatterns.entrySet()) {
@@ -162,8 +161,7 @@ public class InitCodeTransformer {
         .build();
   }
 
-  private InitCodeView buildInitCodeViewFlattened(
-      MethodTransformerContext context, InitCodeNode root) {
+  private InitCodeView buildInitCodeViewFlattened(GapicMethodContext context, InitCodeNode root) {
     List<InitCodeNode> orderedItems = root.listInInitializationOrder();
     List<InitCodeNode> argItems = new ArrayList<>(root.getChildren().values());
     //Remove the request object for flattened method
@@ -172,14 +170,14 @@ public class InitCodeTransformer {
   }
 
   private InitCodeView buildInitCodeViewRequestObject(
-      MethodTransformerContext context, InitCodeNode root) {
+      GapicMethodContext context, InitCodeNode root) {
     List<InitCodeNode> orderedItems = root.listInInitializationOrder();
     List<InitCodeNode> argItems = Lists.newArrayList(root);
     return buildInitCodeView(context, orderedItems, argItems);
   }
 
   private InitCodeView buildInitCodeView(
-      MethodTransformerContext context,
+      GapicMethodContext context,
       Iterable<InitCodeNode> orderedItems,
       Iterable<InitCodeNode> argItems) {
     ModelTypeTable typeTable = context.getTypeTable();
@@ -201,7 +199,7 @@ public class InitCodeTransformer {
   }
 
   private List<InitCodeLineView> generateSurfaceInitCodeLines(
-      MethodTransformerContext context, Iterable<InitCodeNode> specItemNode) {
+      GapicMethodContext context, Iterable<InitCodeNode> specItemNode) {
     List<InitCodeLineView> surfaceLines = new ArrayList<>();
     for (InitCodeNode item : specItemNode) {
       surfaceLines.add(generateSurfaceInitCodeLine(context, item));
@@ -210,7 +208,7 @@ public class InitCodeTransformer {
   }
 
   private InitCodeLineView generateSurfaceInitCodeLine(
-      MethodTransformerContext context, InitCodeNode specItemNode) {
+      GapicMethodContext context, InitCodeNode specItemNode) {
     switch (specItemNode.getLineType()) {
       case StructureInitLine:
         return generateStructureInitCodeLine(context, specItemNode);
@@ -226,7 +224,7 @@ public class InitCodeTransformer {
   }
 
   private InitCodeLineView generateSimpleInitCodeLine(
-      MethodTransformerContext context, InitCodeNode item) {
+      GapicMethodContext context, InitCodeNode item) {
     SimpleInitCodeLineView.Builder surfaceLine = SimpleInitCodeLineView.newBuilder();
     FieldConfig fieldConfig = item.getFieldConfig();
 
@@ -256,7 +254,7 @@ public class InitCodeTransformer {
   }
 
   private InitCodeLineView generateStructureInitCodeLine(
-      MethodTransformerContext context, InitCodeNode item) {
+      GapicMethodContext context, InitCodeNode item) {
     StructureInitCodeLineView.Builder surfaceLine = StructureInitCodeLineView.newBuilder();
 
     SurfaceNamer namer = context.getNamer();
@@ -273,8 +271,7 @@ public class InitCodeTransformer {
     return surfaceLine.build();
   }
 
-  private InitCodeLineView generateListInitCodeLine(
-      MethodTransformerContext context, InitCodeNode item) {
+  private InitCodeLineView generateListInitCodeLine(GapicMethodContext context, InitCodeNode item) {
     ListInitCodeLineView.Builder surfaceLine = ListInitCodeLineView.newBuilder();
     FieldConfig fieldConfig = item.getFieldConfig();
 
@@ -302,8 +299,7 @@ public class InitCodeTransformer {
     return surfaceLine.build();
   }
 
-  private InitCodeLineView generateMapInitCodeLine(
-      MethodTransformerContext context, InitCodeNode item) {
+  private InitCodeLineView generateMapInitCodeLine(GapicMethodContext context, InitCodeNode item) {
     MapInitCodeLineView.Builder surfaceLine = MapInitCodeLineView.newBuilder();
 
     SurfaceNamer namer = context.getNamer();
@@ -331,7 +327,7 @@ public class InitCodeTransformer {
     return surfaceLine.build();
   }
 
-  private InitValueView getInitValue(MethodTransformerContext context, InitCodeNode item) {
+  private InitValueView getInitValue(GapicMethodContext context, InitCodeNode item) {
 
     SurfaceNamer namer = context.getNamer();
     ModelTypeTable typeTable = context.getTypeTable();
@@ -355,7 +351,7 @@ public class InitCodeTransformer {
         case ANY:
           // TODO(michaelbausor): handle case where there are no other resource names at all...
           singleResourceNameConfig =
-              Iterables.get(context.getApiConfig().getSingleResourceNameConfigs(), 0);
+              Iterables.get(context.getProductConfig().getSingleResourceNameConfigs(), 0);
           FieldConfig anyResourceNameFieldConfig =
               fieldConfig.withResourceNameConfig(singleResourceNameConfig);
           return createResourceNameInitValueView(context, anyResourceNameFieldConfig, item).build();
@@ -437,7 +433,7 @@ public class InitCodeTransformer {
   }
 
   private ResourceNameInitValueView.Builder createResourceNameInitValueView(
-      MethodTransformerContext context, FieldConfig fieldConfig, InitCodeNode item) {
+      GapicMethodContext context, FieldConfig fieldConfig, InitCodeNode item) {
     String resourceName =
         context.getNamer().getAndSaveElementResourceTypeName(context.getTypeTable(), fieldConfig);
     SingleResourceNameConfig singleResourceNameConfig =
@@ -450,7 +446,7 @@ public class InitCodeTransformer {
   }
 
   private static List<String> getFormatFunctionArgs(
-      MethodTransformerContext context, List<String> varList, InitValueConfig initValueConfig) {
+      GapicMethodContext context, List<String> varList, InitValueConfig initValueConfig) {
     List<String> formatFunctionArgs = new ArrayList<>();
     for (String entityName : varList) {
       String entityValue =
@@ -478,7 +474,7 @@ public class InitCodeTransformer {
   }
 
   private List<FieldSettingView> getFieldSettings(
-      MethodTransformerContext context, Iterable<InitCodeNode> childItems) {
+      GapicMethodContext context, Iterable<InitCodeNode> childItems) {
     SurfaceNamer namer = context.getNamer();
     List<FieldSettingView> allSettings = new ArrayList<>();
     for (InitCodeNode item : childItems) {
@@ -514,7 +510,7 @@ public class InitCodeTransformer {
     return allSettings;
   }
 
-  private static String getVariableName(MethodTransformerContext context, InitCodeNode item) {
+  private static String getVariableName(GapicMethodContext context, InitCodeNode item) {
     if (!context.getFeatureConfig().useResourceNameFormatOption(item.getFieldConfig())
         && item.getInitValueConfig().hasFormattingConfig()) {
       return context.getNamer().getFormattedVariableName(item.getIdentifier());

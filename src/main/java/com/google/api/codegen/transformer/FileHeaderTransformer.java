@@ -15,7 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.GeneratorVersionProvider;
-import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.ProductConfig;
 import com.google.api.codegen.viewmodel.FileHeaderView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 
@@ -27,19 +27,19 @@ public class FileHeaderTransformer {
     this.importSectionTransformer = importSectionTransformer;
   }
 
-  public FileHeaderView generateFileHeader(SurfaceTransformerContext context) {
+  public FileHeaderView generateFileHeader(InterfaceContext context) {
     return generateFileHeader(
-        context.getApiConfig(),
+        context.getProductConfig(),
         importSectionTransformer.generateImportSection(context),
         context.getNamer());
   }
 
   public FileHeaderView generateFileHeader(
-      ApiConfig apiConfig, ImportSectionView importSection, SurfaceNamer namer) {
+      ProductConfig productConfig, ImportSectionView importSection, SurfaceNamer namer) {
     FileHeaderView.Builder fileHeader = FileHeaderView.newBuilder();
 
-    fileHeader.copyrightLines(apiConfig.getCopyrightLines());
-    fileHeader.licenseLines(apiConfig.getLicenseLines());
+    fileHeader.copyrightLines(productConfig.getCopyrightLines());
+    fileHeader.licenseLines(productConfig.getLicenseLines());
     fileHeader.packageName(namer.getPackageName());
     fileHeader.examplePackageName(namer.getExamplePackageName());
     fileHeader.localPackageName(namer.getLocalPackageName());

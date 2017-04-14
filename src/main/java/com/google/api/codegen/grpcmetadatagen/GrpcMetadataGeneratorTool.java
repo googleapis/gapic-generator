@@ -94,7 +94,7 @@ public class GrpcMetadataGeneratorTool {
 
   private static void generate(
       String descriptorSet,
-      String[] apiConfigs,
+      String[] configs,
       String inputDir,
       String outputDir,
       String languageString,
@@ -104,8 +104,8 @@ public class GrpcMetadataGeneratorTool {
     options.set(GrpcMetadataGenerator.INPUT_DIR, inputDir);
     options.set(GrpcMetadataGenerator.OUTPUT_DIR, outputDir);
     options.set(ToolOptions.DESCRIPTOR_SET, descriptorSet);
-    if (apiConfigs != null) {
-      options.set(ToolOptions.CONFIG_FILES, Lists.newArrayList(apiConfigs));
+    if (configs != null) {
+      options.set(ToolOptions.CONFIG_FILES, Lists.newArrayList(configs));
     }
     options.set(GrpcMetadataGenerator.METADATA_CONFIG_FILE, metadataConfig);
     options.set(GrpcMetadataGenerator.LANGUAGE, languageString);

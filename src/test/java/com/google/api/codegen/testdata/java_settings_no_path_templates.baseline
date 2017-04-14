@@ -20,6 +20,7 @@ import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.GoogleCredentialsProvider;
 import com.google.api.gax.core.PropertiesProvider;
 import com.google.api.gax.core.RetrySettings;
+import com.google.api.gax.grpc.ApiExceptions;
 import com.google.api.gax.grpc.ChannelProvider;
 import com.google.api.gax.grpc.ClientSettings;
 import com.google.api.gax.grpc.ExecutorProvider;
@@ -53,16 +54,10 @@ import org.joda.time.Duration;
 @ExperimentalApi
 public class NoTemplatesApiServiceSettings extends ClientSettings {
 
-  /**
-   * The default port of the service.
-   */
-  private static final int DEFAULT_SERVICE_PORT = 443;
-
-
   private static final String DEFAULT_GAPIC_NAME = "gapic";
   private static final String DEFAULT_GAPIC_VERSION = "";
 
-  private static final String PROPERTIES_FILE = "/project.properties";
+  private static final String PROPERTIES_FILE = "/com/google/gcloud/example/project.properties";
   private static final String META_VERSION_KEY = "artifact.version";
 
   private static String gapicVersion;
@@ -84,12 +79,6 @@ public class NoTemplatesApiServiceSettings extends ClientSettings {
     return InstantiatingExecutorProvider.newBuilder();
   }
 
-  /**
-   * Returns the default service port.
-   */
-  public static int getDefaultServicePort() {
-    return DEFAULT_SERVICE_PORT;
-  }
 
 
   /**
@@ -103,7 +92,6 @@ public class NoTemplatesApiServiceSettings extends ClientSettings {
   /** Returns a builder for the default ChannelProvider for this service. */
   public static InstantiatingChannelProvider.Builder defaultChannelProviderBuilder() {
     return InstantiatingChannelProvider.newBuilder()
-        .setPort(DEFAULT_SERVICE_PORT)
         .setGeneratorHeader(DEFAULT_GAPIC_NAME, getGapicVersion())
         .setCredentialsProvider(defaultCredentialsProviderBuilder().build());
   }

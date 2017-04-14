@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.model.Model;
 import java.util.List;
@@ -24,7 +24,7 @@ import java.util.List;
  * rendered by a template engine.
  */
 public interface ModelToViewTransformer {
-  List<ViewModel> transform(Model model, ApiConfig apiConfig);
+  List<ViewModel> transform(Model model, GapicProductConfig productConfig);
 
   List<String> getTemplateFileNames();
 }

@@ -14,8 +14,8 @@
  */
 package com.google.api.codegen.py;
 
-import com.google.api.codegen.config.ApiConfig;
-import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.GapicMethodConfig;
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.py.PythonImport.ImportType;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
@@ -65,8 +65,8 @@ public class PythonImportHandler {
    */
   private final BiMap<ProtoFile, String> fileImports = HashBiMap.create();
 
-  /** This constructor is for the main imports of a generated service file */
-  public PythonImportHandler(Interface service, ApiConfig apiConfig) {
+  /** This constructor is for the main imports of a generated interface file */
+  public PythonImportHandler(Interface apiInterface, GapicProductConfig productConfig) {
     // Add non-service-specific imports.
     addImportStandard("collections");
     addImportStandard("json");
@@ -80,15 +80,16 @@ public class PythonImportHandler {
     addImportExternal("google.gax", "path_template");
 
     // only if add enum import if there are enums
-    for (TypeRef type : service.getModel().getSymbolTable().getDeclaredTypes()) {
+    for (TypeRef type : apiInterface.getModel().getSymbolTable().getDeclaredTypes()) {
       if (type.isEnum() && type.getEnumType().isReachable()) {
-        addImportLocal(apiConfig.getPackageName(), "enums");
+        addImportLocal(productConfig.getPackageName(), "enums");
         break;
       }
     }
 
     // Add method request-type imports.
-    for (MethodConfig methodConfig : apiConfig.getInterfaceConfig(service).getMethodConfigs()) {
+    for (GapicMethodConfig methodConfig :
+        productConfig.getInterfaceConfig(apiInterface).getMethodConfigs()) {
       // Add the import for gax.utils.oneof if and only if there is at
       // least one "one of" argument set.
       for (Oneof oneof : methodConfig.getOneofs()) {

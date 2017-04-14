@@ -1198,6 +1198,8 @@ class TestLibraryServiceClient(unittest2.TestCase):
         required_singular_message = library_pb2.TestOptionalRequiredFlatteningParamsRequest.InnerMessage()
         required_singular_resource_name = 'requiredSingularResourceName-1701575020'
         required_singular_resource_name_oneof = 'requiredSingularResourceNameOneof-25303726'
+        required_singular_fixed32 = 720656715
+        required_singular_fixed64 = 720656810
         required_repeated_int32 = []
         required_repeated_int64 = []
         required_repeated_float = []
@@ -1209,13 +1211,15 @@ class TestLibraryServiceClient(unittest2.TestCase):
         required_repeated_message = []
         required_repeated_resource_name = []
         required_repeated_resource_name_oneof = []
+        required_repeated_fixed32 = []
+        required_repeated_fixed64 = []
         required_map = {}
 
         # Mock response
         expected_response = library_pb2.TestOptionalRequiredFlatteningParamsResponse()
         grpc_stub.TestOptionalRequiredFlatteningParams.return_value = expected_response
 
-        response = client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, required_repeated_resource_name, required_repeated_resource_name_oneof, required_map)
+        response = client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, required_repeated_resource_name, required_repeated_resource_name_oneof, required_repeated_fixed32, required_repeated_fixed64, required_map)
         self.assertEqual(expected_response, response)
 
         grpc_stub.TestOptionalRequiredFlatteningParams.assert_called_once()
@@ -1232,6 +1236,8 @@ class TestLibraryServiceClient(unittest2.TestCase):
         self.assertEqual(required_singular_message, actual_request.required_singular_message)
         self.assertEqual(required_singular_resource_name, actual_request.required_singular_resource_name)
         self.assertEqual(required_singular_resource_name_oneof, actual_request.required_singular_resource_name_oneof)
+        self.assertEqual(required_singular_fixed32, actual_request.required_singular_fixed32)
+        self.assertEqual(required_singular_fixed64, actual_request.required_singular_fixed64)
         self.assertEqual(required_repeated_int32, actual_request.required_repeated_int32)
         self.assertEqual(required_repeated_int64, actual_request.required_repeated_int64)
         self.assertEqual(required_repeated_float, actual_request.required_repeated_float)
@@ -1243,6 +1249,8 @@ class TestLibraryServiceClient(unittest2.TestCase):
         self.assertEqual(required_repeated_message, actual_request.required_repeated_message)
         self.assertEqual(required_repeated_resource_name, actual_request.required_repeated_resource_name)
         self.assertEqual(required_repeated_resource_name_oneof, actual_request.required_repeated_resource_name_oneof)
+        self.assertEqual(required_repeated_fixed32, actual_request.required_repeated_fixed32)
+        self.assertEqual(required_repeated_fixed64, actual_request.required_repeated_fixed64)
         self.assertEqual(required_map, actual_request.required_map)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
@@ -1266,6 +1274,8 @@ class TestLibraryServiceClient(unittest2.TestCase):
         required_singular_message = library_pb2.TestOptionalRequiredFlatteningParamsRequest.InnerMessage()
         required_singular_resource_name = 'requiredSingularResourceName-1701575020'
         required_singular_resource_name_oneof = 'requiredSingularResourceNameOneof-25303726'
+        required_singular_fixed32 = 720656715
+        required_singular_fixed64 = 720656810
         required_repeated_int32 = []
         required_repeated_int64 = []
         required_repeated_float = []
@@ -1277,9 +1287,12 @@ class TestLibraryServiceClient(unittest2.TestCase):
         required_repeated_message = []
         required_repeated_resource_name = []
         required_repeated_resource_name_oneof = []
+        required_repeated_fixed32 = []
+        required_repeated_fixed64 = []
         required_map = {}
 
         # Mock exception response
         grpc_stub.TestOptionalRequiredFlatteningParams.side_effect = CustomException()
 
-        self.assertRaises(errors.GaxError, client.test_optional_required_flattening_params, required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, required_repeated_resource_name, required_repeated_resource_name_oneof, required_map)
+        self.assertRaises(errors.GaxError, client.test_optional_required_flattening_params, required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, required_repeated_resource_name, required_repeated_resource_name_oneof, required_repeated_fixed32, required_repeated_fixed64, required_map)
+

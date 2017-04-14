@@ -16,7 +16,7 @@ package com.google.api.codegen.transformer.php;
 
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.TargetLanguage;
-import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.PackageMetadataNamer;
@@ -46,13 +46,14 @@ public class PhpPackageMetadataTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(Model model, ApiConfig apiConfig) {
-    Iterable<Interface> services = new InterfaceView().getElementIterable(model);
-    boolean hasMultipleServices = Iterables.size(services) > 1;
+  public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
+    Iterable<Interface> apiInterfaces = new InterfaceView().getElementIterable(model);
+    boolean hasMultipleInterfaces = Iterables.size(apiInterfaces) > 1;
     List<ViewModel> models = new ArrayList<ViewModel>();
     PhpPackageMetadataNamer namer =
-        new PhpPackageMetadataNamer(apiConfig.getPackageName(), apiConfig.getDomainLayerLocation());
-    models.add(generateMetadataView(model, namer, hasMultipleServices));
+        new PhpPackageMetadataNamer(
+            productConfig.getPackageName(), productConfig.getDomainLayerLocation());
+    models.add(generateMetadataView(model, namer, hasMultipleInterfaces));
     return models;
   }
 

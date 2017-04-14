@@ -46,12 +46,12 @@ import java.util.LinkedHashMap;
 import javax.annotation.Nullable;
 
 /**
- * ApiConfig represents the code-gen config for an API library contained in the {api}_gapic.yaml
- * configuration file.
+ * GapicProductConfig represents client code-gen config for an API product contained in a
+ * {api}_gapic.yaml configuration file.
  */
 @AutoValue
-public abstract class ApiConfig {
-  abstract ImmutableMap<String, InterfaceConfig> getInterfaceConfigMap();
+public abstract class GapicProductConfig implements ProductConfig {
+  abstract ImmutableMap<String, GapicInterfaceConfig> getInterfaceConfigMap();
 
   /** Returns the package name. */
   public abstract String getPackageName();
@@ -67,9 +67,11 @@ public abstract class ApiConfig {
   public abstract ResourceNameMessageConfigs getResourceNameMessageConfigs();
 
   /** Returns the lines from the configured copyright file. */
+  @Override
   public abstract ImmutableList<String> getCopyrightLines();
 
   /** Returns the lines from the configured license file. */
+  @Override
   public abstract ImmutableList<String> getLicenseLines();
 
   /** Returns a map from entity names to resource name configs. */
@@ -83,12 +85,12 @@ public abstract class ApiConfig {
   public abstract ImmutableMap<String, FieldConfig> getDefaultResourceNameFieldConfigMap();
 
   /**
-   * Creates an instance of ApiConfig based on ConfigProto, linking up API interface configurations
-   * with specified interfaces in interfaceConfigMap. On errors, null will be returned, and
-   * diagnostics are reported to the model.
+   * Creates an instance of GapicProductConfig based on ConfigProto, linking up API interface
+   * configurations with specified interfaces in interfaceConfigMap. On errors, null will be
+   * returned, and diagnostics are reported to the model.
    */
   @Nullable
-  public static ApiConfig createApiConfig(Model model, ConfigProto configProto) {
+  public static GapicProductConfig create(Model model, ConfigProto configProto) {
 
     // Get the proto file containing the first interface listed in the config proto, and use it as
     // the assigned file for generated resource names, and to get the default message namespace
@@ -109,7 +111,7 @@ public abstract class ApiConfig {
       settings = LanguageSettingsProto.getDefaultInstance();
     }
 
-    ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
+    ImmutableMap<String, GapicInterfaceConfig> interfaceConfigMap =
         createInterfaceConfigMap(
             model.getDiagCollector(),
             configProto,
@@ -134,7 +136,7 @@ public abstract class ApiConfig {
     if (interfaceConfigMap == null || copyrightLines == null || licenseLines == null) {
       return null;
     } else {
-      return new AutoValue_ApiConfig(
+      return new AutoValue_GapicProductConfig(
           interfaceConfigMap,
           settings.getPackageName(),
           settings.getDomainLayerLocation(),
@@ -147,20 +149,20 @@ public abstract class ApiConfig {
     }
   }
 
-  /** Creates an ApiConfig with no content. Exposed for testing. */
+  /** Creates an GapicProductConfig with no content. Exposed for testing. */
   @VisibleForTesting
-  public static ApiConfig createDummyApiConfig() {
-    return createDummyApiConfig(ImmutableMap.<String, InterfaceConfig>of(), "", "", null);
+  public static GapicProductConfig createDummyInstance() {
+    return createDummyInstance(ImmutableMap.<String, GapicInterfaceConfig>of(), "", "", null);
   }
 
-  /** Creates an ApiConfig with fixed content. Exposed for testing. */
+  /** Creates an GapicProductConfig with fixed content. Exposed for testing. */
   @VisibleForTesting
-  public static ApiConfig createDummyApiConfig(
-      ImmutableMap<String, InterfaceConfig> interfaceConfigMap,
+  public static GapicProductConfig createDummyInstance(
+      ImmutableMap<String, GapicInterfaceConfig> interfaceConfigMap,
       String packageName,
       String domainLayerLocation,
       ResourceNameMessageConfigs messageConfigs) {
-    return new AutoValue_ApiConfig(
+    return new AutoValue_GapicProductConfig(
         interfaceConfigMap,
         packageName,
         domainLayerLocation,
@@ -173,18 +175,18 @@ public abstract class ApiConfig {
             messageConfigs, ImmutableMap.<String, ResourceNameConfig>of()));
   }
 
-  private static ImmutableMap<String, InterfaceConfig> createInterfaceConfigMap(
+  private static ImmutableMap<String, GapicInterfaceConfig> createInterfaceConfigMap(
       DiagCollector diagCollector,
       ConfigProto configProto,
       LanguageSettingsProto languageSettings,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       SymbolTable symbolTable) {
-    ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap =
-        ImmutableMap.<String, InterfaceConfig>builder();
+    ImmutableMap.Builder<String, GapicInterfaceConfig> interfaceConfigMap =
+        ImmutableMap.<String, GapicInterfaceConfig>builder();
     for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
-      Interface iface = symbolTable.lookupInterface(interfaceConfigProto.getName());
-      if (iface == null || !iface.isReachable()) {
+      Interface apiInterface = symbolTable.lookupInterface(interfaceConfigProto.getName());
+      if (apiInterface == null || !apiInterface.isReachable()) {
         diagCollector.addDiag(
             Diag.error(
                 SimpleLocation.TOPLEVEL,
@@ -195,12 +197,12 @@ public abstract class ApiConfig {
       String interfaceNameOverride =
           languageSettings.getInterfaceNames().get(interfaceConfigProto.getName());
 
-      InterfaceConfig interfaceConfig =
-          InterfaceConfig.createInterfaceConfig(
+      GapicInterfaceConfig interfaceConfig =
+          GapicInterfaceConfig.createInterfaceConfig(
               diagCollector,
               configProto.getLanguage(),
               interfaceConfigProto,
-              iface,
+              apiInterface,
               interfaceNameOverride,
               messageConfigs,
               resourceNameConfigs);
@@ -381,9 +383,9 @@ public abstract class ApiConfig {
     return builder.build();
   }
 
-  /** Returns the InterfaceConfig for the given API interface. */
-  public InterfaceConfig getInterfaceConfig(Interface iface) {
-    return getInterfaceConfigMap().get(iface.getFullName());
+  /** Returns the GapicInterfaceConfig for the given API interface. */
+  public GapicInterfaceConfig getInterfaceConfig(Interface apiInterface) {
+    return getInterfaceConfigMap().get(apiInterface.getFullName());
   }
 
   public Iterable<SingleResourceNameConfig> getSingleResourceNameConfigs() {

@@ -44,11 +44,11 @@ import javax.annotation.Nullable;
 import org.joda.time.Duration;
 
 /**
- * MethodConfig represents the code-gen config for a method, and includes the specification of
+ * GapicMethodConfig represents the code-gen config for a method, and includes the specification of
  * features like page streaming and parameter flattening.
  */
 @AutoValue
-public abstract class MethodConfig {
+public abstract class GapicMethodConfig {
   public abstract Method getMethod();
 
   @Nullable
@@ -92,11 +92,12 @@ public abstract class MethodConfig {
   public abstract LongRunningConfig getLongRunningConfig();
 
   /**
-   * Creates an instance of MethodConfig based on MethodConfigProto, linking it up with the provided
-   * method. On errors, null will be returned, and diagnostics are reported to the diag collector.
+   * Creates an instance of GapicMethodConfig based on MethodConfigProto, linking it up with the
+   * provided method. On errors, null will be returned, and diagnostics are reported to the diag
+   * collector.
    */
   @Nullable
-  public static MethodConfig createMethodConfig(
+  public static GapicMethodConfig createMethodConfig(
       DiagCollector diagCollector,
       String language,
       MethodConfigProto methodConfigProto,
@@ -249,7 +250,7 @@ public abstract class MethodConfig {
     if (error) {
       return null;
     } else {
-      return new AutoValue_MethodConfig(
+      return new AutoValue_GapicMethodConfig(
           method,
           pageStreaming,
           grpcStreaming,

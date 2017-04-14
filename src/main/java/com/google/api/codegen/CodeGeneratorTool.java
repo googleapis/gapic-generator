@@ -101,14 +101,14 @@ public class CodeGeneratorTool {
 
   private static int generate(
       String descriptorSet,
-      String[] apiConfigs,
+      String[] configs,
       String[] generatorConfigs,
       String packageConfig,
       String outputDirectory,
       String[] enabledArtifacts) {
     ToolOptions options = ToolOptions.create();
     options.set(ToolOptions.DESCRIPTOR_SET, descriptorSet);
-    options.set(ToolOptions.CONFIG_FILES, Lists.newArrayList(apiConfigs));
+    options.set(ToolOptions.CONFIG_FILES, Lists.newArrayList(configs));
     options.set(CodeGeneratorApi.OUTPUT_FILE, outputDirectory);
     options.set(CodeGeneratorApi.GENERATOR_CONFIG_FILES, Lists.newArrayList(generatorConfigs));
     options.set(CodeGeneratorApi.PACKAGE_CONFIG_FILE, packageConfig);

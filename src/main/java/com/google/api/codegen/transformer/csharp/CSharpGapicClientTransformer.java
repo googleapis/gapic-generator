@@ -15,17 +15,18 @@
 package com.google.api.codegen.transformer.csharp;
 
 import com.google.api.codegen.InterfaceView;
-import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.FlatteningConfig;
+import com.google.api.codegen.config.GapicInterfaceConfig;
+import com.google.api.codegen.config.GapicMethodConfig;
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
-import com.google.api.codegen.config.InterfaceConfig;
-import com.google.api.codegen.config.MethodConfig;
-import com.google.api.codegen.config.ServiceConfig;
+import com.google.api.codegen.config.ProductServiceConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
 import com.google.api.codegen.transformer.BatchingTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
-import com.google.api.codegen.transformer.MethodTransformerContext;
+import com.google.api.codegen.transformer.GapicInterfaceContext;
+import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PageStreamingTransformer;
@@ -36,7 +37,6 @@ import com.google.api.codegen.transformer.ServiceTransformer;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.csharp.CSharpTypeTable;
 import com.google.api.codegen.viewmodel.ApiCallSettingsView;
 import com.google.api.codegen.viewmodel.ApiCallableImplType;
@@ -86,28 +86,32 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(Model model, ApiConfig apiConfig) {
+  public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
     List<ViewModel> surfaceDocs = new ArrayList<>();
-    SurfaceNamer namer = new CSharpSurfaceNamer(apiConfig.getPackageName());
+    SurfaceNamer namer = new CSharpSurfaceNamer(productConfig.getPackageName());
     CSharpFeatureConfig featureConfig = new CSharpFeatureConfig();
 
-    Interface aService = null;
-    for (Interface service : new InterfaceView().getElementIterable(model)) {
-      SurfaceTransformerContext context =
-          SurfaceTransformerContext.create(
-              service,
-              apiConfig,
-              createTypeTable(apiConfig.getPackageName()),
+    Interface lastApiInterface = null;
+    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+      GapicInterfaceContext context =
+          GapicInterfaceContext.create(
+              apiInterface,
+              productConfig,
+              createTypeTable(productConfig.getPackageName()),
               namer,
               featureConfig);
 
       surfaceDocs.add(generateApiAndSettingsView(context));
-      aService = service;
+      lastApiInterface = apiInterface;
     }
 
-    SurfaceTransformerContext context =
-        SurfaceTransformerContext.create(
-            aService, apiConfig, createTypeTable(apiConfig.getPackageName()), namer, featureConfig);
+    GapicInterfaceContext context =
+        GapicInterfaceContext.create(
+            lastApiInterface,
+            productConfig,
+            createTypeTable(productConfig.getPackageName()),
+            namer,
+            featureConfig);
     surfaceDocs.add(generateResourceNamesView(context));
 
     return surfaceDocs;
@@ -124,22 +128,23 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
         new CSharpModelTypeNameConverter(implicitPackageName));
   }
 
-  private StaticLangResourceNamesView generateResourceNamesView(SurfaceTransformerContext context) {
+  private StaticLangResourceNamesView generateResourceNamesView(GapicInterfaceContext context) {
     StaticLangResourceNamesView.Builder view = StaticLangResourceNamesView.newBuilder();
     view.templateFileName(RESOURCENAMES_TEMPLATE_FILENAME);
-    String outputPath = pathMapper.getOutputPath(context.getInterface(), context.getApiConfig());
+    String outputPath =
+        pathMapper.getOutputPath(context.getInterface(), context.getProductConfig());
     view.outputPath(outputPath + File.separator + "ResourceNames.cs");
     view.resourceNames(pathTemplateTransformer.generateResourceNames(context));
     view.resourceProtos(pathTemplateTransformer.generateResourceProtos(context));
-    context.getTypeTable().saveNicknameFor("Google.Api.Gax.GaxPreconditions");
-    context.getTypeTable().saveNicknameFor("System.Linq.Enumerable");
-    context.getTypeTable().saveNicknameFor("System.InvalidOperationException");
+    context.getModelTypeTable().saveNicknameFor("Google.Api.Gax.GaxPreconditions");
+    context.getModelTypeTable().saveNicknameFor("System.Linq.Enumerable");
+    context.getModelTypeTable().saveNicknameFor("System.InvalidOperationException");
     view.fileHeader(fileHeaderTransformer.generateFileHeader(context));
     return view.build();
   }
 
   private StaticLangApiAndSettingsFileView generateApiAndSettingsView(
-      SurfaceTransformerContext context) {
+      GapicInterfaceContext context) {
     StaticLangApiAndSettingsFileView.Builder fileView =
         StaticLangApiAndSettingsFileView.newBuilder();
 
@@ -148,7 +153,8 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     fileView.api(generateApiClass(context));
     fileView.settings(generateSettingsClass(context));
 
-    String outputPath = pathMapper.getOutputPath(context.getInterface(), context.getApiConfig());
+    String outputPath =
+        pathMapper.getOutputPath(context.getInterface(), context.getProductConfig());
     String name = context.getNamer().getApiWrapperClassName(context.getInterfaceConfig());
     fileView.outputPath(outputPath + File.separator + name + ".cs");
 
@@ -159,7 +165,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     return fileView.build();
   }
 
-  private StaticLangApiView generateApiClass(SurfaceTransformerContext context) {
+  private StaticLangApiView generateApiClass(GapicInterfaceContext context) {
     SurfaceNamer namer = context.getNamer();
     StaticLangApiView.Builder apiClass = StaticLangApiView.newBuilder();
     List<StaticLangApiMethodView> methods = generateApiMethods(context);
@@ -218,15 +224,15 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     }
   }
 
-  private StaticLangSettingsView generateSettingsClass(SurfaceTransformerContext context) {
+  private StaticLangSettingsView generateSettingsClass(GapicInterfaceContext context) {
     StaticLangSettingsView.Builder settingsClass = StaticLangSettingsView.newBuilder();
     settingsClass.doc(generateSettingsDoc(context));
     String name = context.getNamer().getApiSettingsClassName(context.getInterfaceConfig());
     settingsClass.name(name);
-    ServiceConfig serviceConfig = new ServiceConfig();
-    settingsClass.serviceAddress(serviceConfig.getServiceAddress(context.getInterface()));
-    settingsClass.servicePort(serviceConfig.getServicePort());
-    settingsClass.authScopes(serviceConfig.getAuthScopes(context.getInterface()));
+    ProductServiceConfig productServiceConfig = new ProductServiceConfig();
+    settingsClass.serviceAddress(productServiceConfig.getServiceAddress(context.getInterface()));
+    settingsClass.servicePort(productServiceConfig.getServicePort());
+    settingsClass.authScopes(productServiceConfig.getAuthScopes(context.getInterface()));
     settingsClass.callSettings(generateCallSettings(context));
     settingsClass.pageStreamingDescriptors(
         pageStreamingTransformer.generateDescriptorClasses(context));
@@ -237,7 +243,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
         retryDefinitionsTransformer.generateRetryCodesDefinitions(context));
     settingsClass.retryParamsDefinitions(
         retryDefinitionsTransformer.generateRetryParamsDefinitions(context));
-    InterfaceConfig interfaceConfig = context.getInterfaceConfig();
+    GapicInterfaceConfig interfaceConfig = context.getInterfaceConfig();
     settingsClass.hasDefaultServiceAddress(interfaceConfig.hasDefaultServiceAddress());
     settingsClass.hasDefaultServiceScopes(interfaceConfig.hasDefaultServiceScopes());
     settingsClass.hasDefaultInstance(interfaceConfig.hasDefaultInstance());
@@ -245,7 +251,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     return settingsClass.build();
   }
 
-  public List<ApiCallSettingsView> generateCallSettings(SurfaceTransformerContext context) {
+  public List<ApiCallSettingsView> generateCallSettings(GapicInterfaceContext context) {
     // This method can be removed once mixins are supported in C#
     List<ApiCallSettingsView> settingsMembers = new ArrayList<>();
     for (Method method : csharpCommonTransformer.getSupportedMethods(context)) {
@@ -257,11 +263,11 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     return settingsMembers;
   }
 
-  private List<ReroutedGrpcView> generateReroutedGrpcView(SurfaceTransformerContext context) {
+  private List<ReroutedGrpcView> generateReroutedGrpcView(GapicInterfaceContext context) {
     SurfaceNamer namer = context.getNamer();
     Set<ReroutedGrpcView> reroutedViews = new LinkedHashSet<>();
     for (Method method : csharpCommonTransformer.getSupportedMethods(context)) {
-      MethodConfig methodConfig = context.getMethodConfig(method);
+      GapicMethodConfig methodConfig = context.getMethodConfig(method);
       String reroute = methodConfig.getRerouteToGrpcInterface();
       if (reroute != null) {
         ReroutedGrpcView rerouted =
@@ -276,12 +282,12 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     return new ArrayList<ReroutedGrpcView>(reroutedViews);
   }
 
-  private List<ModifyMethodView> generateModifyMethods(SurfaceTransformerContext context) {
+  private List<ModifyMethodView> generateModifyMethods(GapicInterfaceContext context) {
     SurfaceNamer namer = context.getNamer();
-    ModelTypeTable typeTable = context.getTypeTable();
+    ModelTypeTable typeTable = context.getModelTypeTable();
     List<ModifyMethodView> modifyMethods = new ArrayList<>();
     for (Method method : csharpCommonTransformer.getSupportedMethods(context)) {
-      MethodConfig methodContext = context.asRequestMethodContext(method).getMethodConfig();
+      GapicMethodConfig methodContext = context.asRequestMethodContext(method).getMethodConfig();
       ModifyMethodView.Builder builder = ModifyMethodView.builder();
       builder.name(namer.getModifyMethodName(method));
       builder.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
@@ -291,7 +297,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     return modifyMethods;
   }
 
-  private List<StaticLangApiMethodView> generateApiMethods(SurfaceTransformerContext context) {
+  private List<StaticLangApiMethodView> generateApiMethods(GapicInterfaceContext context) {
     List<ParamWithSimpleDoc> pagedMethodAdditionalParams =
         new ImmutableList.Builder<ParamWithSimpleDoc>()
             .addAll(csharpCommonTransformer.pagedMethodAdditionalParams())
@@ -300,15 +306,15 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
 
     List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
     for (Method method : csharpCommonTransformer.getSupportedMethods(context)) {
-      MethodConfig methodConfig = context.getMethodConfig(method);
-      MethodTransformerContext requestMethodContext = context.asRequestMethodContext(method);
+      GapicMethodConfig methodConfig = context.getMethodConfig(method);
+      GapicMethodContext requestMethodContext = context.asRequestMethodContext(method);
       if (methodConfig.isGrpcStreaming()) {
         apiMethods.add(
             apiMethodTransformer.generateGrpcStreamingRequestObjectMethod(requestMethodContext));
       } else if (methodConfig.isLongRunningOperation()) {
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
-            MethodTransformerContext methodContext =
+            GapicMethodContext methodContext =
                 context.asFlattenedMethodContext(method, flatteningGroup);
             apiMethods.add(
                 apiMethodTransformer.generateAsyncOperationFlattenedMethod(
@@ -336,7 +342,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
       } else if (methodConfig.isPageStreaming()) {
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
-            MethodTransformerContext methodContext =
+            GapicMethodContext methodContext =
                 context.asFlattenedMethodContext(method, flatteningGroup);
             apiMethods.add(
                 apiMethodTransformer.generatePagedFlattenedAsyncMethod(
@@ -355,7 +361,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
       } else {
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
-            MethodTransformerContext methodContext =
+            GapicMethodContext methodContext =
                 context.asFlattenedMethodContext(method, flatteningGroup);
             apiMethods.add(
                 apiMethodTransformer.generateFlattenedAsyncMethod(
@@ -384,12 +390,12 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     return apiMethods;
   }
 
-  public SettingsDocView generateSettingsDoc(SurfaceTransformerContext context) {
+  public SettingsDocView generateSettingsDoc(GapicInterfaceContext context) {
     SurfaceNamer namer = context.getNamer();
     SettingsDocView.Builder settingsDoc = SettingsDocView.newBuilder();
-    ServiceConfig serviceConfig = new ServiceConfig();
-    settingsDoc.serviceAddress(serviceConfig.getServiceAddress(context.getInterface()));
-    settingsDoc.servicePort(serviceConfig.getServicePort());
+    ProductServiceConfig productServiceConfig = new ProductServiceConfig();
+    settingsDoc.serviceAddress(productServiceConfig.getServiceAddress(context.getInterface()));
+    settingsDoc.servicePort(productServiceConfig.getServicePort());
     settingsDoc.exampleApiMethodName(""); // Unused in C#
     settingsDoc.exampleApiMethodSettingsGetter(""); // Unused in C#
     settingsDoc.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));

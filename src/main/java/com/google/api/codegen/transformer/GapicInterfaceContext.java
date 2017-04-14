@@ -15,11 +15,12 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.InterfaceView;
-import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.FlatteningConfig;
-import com.google.api.codegen.config.InterfaceConfig;
-import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.GapicInterfaceConfig;
+import com.google.api.codegen.config.GapicMethodConfig;
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.VisibilityConfig;
+import com.google.api.codegen.util.TypeTable;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
@@ -31,36 +32,40 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 
-/** The context for transforming a model into a view model for a surface. */
+/**
+ * The context for transforming an API interface, as contained in a Model, into a view model to use
+ * for client library generation.
+ */
 @AutoValue
-public abstract class SurfaceTransformerContext {
-  public static SurfaceTransformerContext create(
-      Interface service,
-      ApiConfig apiConfig,
+public abstract class GapicInterfaceContext implements InterfaceContext {
+  public static GapicInterfaceContext create(
+      Interface apiInterface,
+      GapicProductConfig productConfig,
       ModelTypeTable typeTable,
       SurfaceNamer namer,
       FeatureConfig featureConfig) {
-    return new AutoValue_SurfaceTransformerContext(
-        service,
-        apiConfig,
+    return new AutoValue_GapicInterfaceContext(
+        apiInterface,
+        productConfig,
         typeTable,
         namer,
         featureConfig,
-        createGrpcRerouteMap(service.getModel(), apiConfig));
+        createGrpcRerouteMap(apiInterface.getModel(), productConfig));
   }
 
-  private static Map<Interface, Interface> createGrpcRerouteMap(Model model, ApiConfig apiConfig) {
+  private static Map<Interface, Interface> createGrpcRerouteMap(
+      Model model, GapicProductConfig productConfig) {
     HashMap<Interface, Interface> grpcRerouteMap = new HashMap<>();
-    for (Interface interfaze : new InterfaceView().getElementIterable(model)) {
-      if (!interfaze.isReachable()) {
+    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+      if (!apiInterface.isReachable()) {
         continue;
       }
-      InterfaceConfig interfaceConfig = apiConfig.getInterfaceConfig(interfaze);
-      for (MethodConfig methodConfig : interfaceConfig.getMethodConfigs()) {
+      GapicInterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
+      for (GapicMethodConfig methodConfig : interfaceConfig.getMethodConfigs()) {
         String reroute = methodConfig.getRerouteToGrpcInterface();
         if (!Strings.isNullOrEmpty(reroute)) {
           Interface targetInterface = model.getSymbolTable().lookupInterface(reroute);
-          grpcRerouteMap.put(targetInterface, interfaze);
+          grpcRerouteMap.put(targetInterface, apiInterface);
         }
       }
     }
@@ -73,10 +78,17 @@ public abstract class SurfaceTransformerContext {
 
   public abstract Interface getInterface();
 
-  public abstract ApiConfig getApiConfig();
+  @Override
+  public abstract GapicProductConfig getProductConfig();
 
-  public abstract ModelTypeTable getTypeTable();
+  public abstract ModelTypeTable getModelTypeTable();
 
+  @Override
+  public TypeTable getTypeTable() {
+    return getModelTypeTable().getTypeTable();
+  }
+
+  @Override
   public abstract SurfaceNamer getNamer();
 
   public abstract FeatureConfig getFeatureConfig();
@@ -85,45 +97,47 @@ public abstract class SurfaceTransformerContext {
   @Nullable
   public abstract Map<Interface, Interface> getGrpcRerouteMap();
 
-  public SurfaceTransformerContext withNewTypeTable() {
+  public GapicInterfaceContext withNewTypeTable() {
     return create(
         getInterface(),
-        getApiConfig(),
-        getTypeTable().cloneEmpty(),
+        getProductConfig(),
+        getModelTypeTable().cloneEmpty(),
         getNamer(),
         getFeatureConfig());
   }
 
-  public InterfaceConfig getInterfaceConfig() {
-    return getApiConfig().getInterfaceConfig(getInterface());
+  public GapicInterfaceConfig getInterfaceConfig() {
+    return getProductConfig().getInterfaceConfig(getInterface());
   }
 
   /**
-   * Returns the MethodConfig object of the given gRPC method.
+   * Returns the GapicMethodConfig object of the given gRPC method.
    *
-   * <p>If the method is a gRPC re-route method, returns the MethodConfig of the original method.
+   * <p>If the method is a gRPC re-route method, returns the GapicMethodConfig of the original
+   * method.
    */
-  public MethodConfig getMethodConfig(Method method) {
+  public GapicMethodConfig getMethodConfig(Method method) {
     Interface originalInterface = getInterface();
     if (getGrpcRerouteMap().containsKey(originalInterface)) {
       originalInterface = getGrpcRerouteMap().get(originalInterface);
     }
-    InterfaceConfig originalInterfaceConfig = getApiConfig().getInterfaceConfig(originalInterface);
-    if (originalInterfaceConfig != null) {
-      return originalInterfaceConfig.getMethodConfig(method);
+    GapicInterfaceConfig originalGapicInterfaceConfig =
+        getProductConfig().getInterfaceConfig(originalInterface);
+    if (originalGapicInterfaceConfig != null) {
+      return originalGapicInterfaceConfig.getMethodConfig(method);
     } else {
       throw new IllegalArgumentException(
           "Interface config does not exist for method: " + method.getSimpleName());
     }
   }
 
-  public MethodTransformerContext asFlattenedMethodContext(
+  public GapicMethodContext asFlattenedMethodContext(
       Method method, FlatteningConfig flatteningConfig) {
-    return MethodTransformerContext.create(
+    return GapicMethodContext.create(
         this,
         getInterface(),
-        getApiConfig(),
-        getTypeTable(),
+        getProductConfig(),
+        getModelTypeTable(),
         getNamer(),
         method,
         getMethodConfig(method),
@@ -131,12 +145,12 @@ public abstract class SurfaceTransformerContext {
         getFeatureConfig());
   }
 
-  public MethodTransformerContext asRequestMethodContext(Method method) {
-    return MethodTransformerContext.create(
+  public GapicMethodContext asRequestMethodContext(Method method) {
+    return GapicMethodContext.create(
         this,
         getInterface(),
-        getApiConfig(),
-        getTypeTable(),
+        getProductConfig(),
+        getModelTypeTable(),
         getNamer(),
         method,
         getMethodConfig(method),
@@ -144,12 +158,12 @@ public abstract class SurfaceTransformerContext {
         getFeatureConfig());
   }
 
-  public MethodTransformerContext asDynamicMethodContext(Method method) {
-    return MethodTransformerContext.create(
+  public GapicMethodContext asDynamicMethodContext(Method method) {
+    return GapicMethodContext.create(
         this,
         getInterface(),
-        getApiConfig(),
-        getTypeTable(),
+        getProductConfig(),
+        getModelTypeTable(),
         getNamer(),
         method,
         getMethodConfig(method),
@@ -160,7 +174,7 @@ public abstract class SurfaceTransformerContext {
   /** Returns a list of supported methods, configured by FeatureConfig. */
   public List<Method> getSupportedMethods() {
     List<Method> methods = new ArrayList<>(getInterfaceConfig().getMethodConfigs().size());
-    for (MethodConfig methodConfig : getInterfaceConfig().getMethodConfigs()) {
+    for (GapicMethodConfig methodConfig : getInterfaceConfig().getMethodConfigs()) {
       Method method = methodConfig.getMethod();
       if (isSupported(method)) {
         methods.add(method);
@@ -175,7 +189,7 @@ public abstract class SurfaceTransformerContext {
    */
   public List<Method> getPublicMethods() {
     List<Method> methods = new ArrayList<>(getInterfaceConfig().getMethodConfigs().size());
-    for (MethodConfig methodConfig : getInterfaceConfig().getMethodConfigs()) {
+    for (GapicMethodConfig methodConfig : getInterfaceConfig().getMethodConfigs()) {
       Method method = methodConfig.getMethod();
       VisibilityConfig visibility = getInterfaceConfig().getMethodConfig(method).getVisibility();
       if (isSupported(method) && visibility == VisibilityConfig.PUBLIC) {
@@ -188,7 +202,8 @@ public abstract class SurfaceTransformerContext {
   private boolean isSupported(Method method) {
     boolean supported = true;
     supported &=
-        getFeatureConfig().enableGrpcStreaming() || !MethodConfig.isGrpcStreamingMethod(method);
+        getFeatureConfig().enableGrpcStreaming()
+            || !GapicMethodConfig.isGrpcStreamingMethod(method);
     supported &=
         getInterfaceConfig().getMethodConfig(method).getVisibility() != VisibilityConfig.DISABLED;
     return supported;

@@ -20,15 +20,14 @@ authorize(function(authClient) {
   var request = {
     // The resource name of the billing account to retrieve. For example,
     // `billingAccounts/012345-567890-ABCDEF`.
-    name: '',  // TODO: Update placeholder value.
-    // ex: 'billingAccounts/my-billingAccount'
+    name: 'billingAccounts/my-billing-account',  // TODO: Update placeholder value.
 
-    auth: authClient
+    auth: authClient,
   };
 
   cloudbilling.billingAccounts.get(request, function(err, response) {
     if (err) {
-      console.log(err);
+      console.error(err);
       return;
     }
 
@@ -40,7 +39,7 @@ authorize(function(authClient) {
 function authorize(callback) {
   google.auth.getApplicationDefault(function(err, authClient)) {
     if (err) {
-      console.log('authentication failed: ', err);
+      console.error('authentication failed: ', err);
       return;
     }
     if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -69,12 +68,12 @@ var cloudbilling = google.cloudbilling('v1');
 
 authorize(function(authClient) {
   var request = {
-    auth: authClient
+    auth: authClient,
   };
 
   var handlePage = function(err, response) {
     if (err) {
-      console.log(err);
+      console.error(err);
       return;
     }
 
@@ -99,7 +98,7 @@ authorize(function(authClient) {
 function authorize(callback) {
   google.auth.getApplicationDefault(function(err, authClient)) {
     if (err) {
-      console.log('authentication failed: ', err);
+      console.error('authentication failed: ', err);
       return;
     }
     if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -128,17 +127,16 @@ var cloudbilling = google.cloudbilling('v1');
 
 authorize(function(authClient) {
   var request = {
-    // The resource name of the billing account associated with the projects that you want to list. For
-    // example, `billingAccounts/012345-567890-ABCDEF`.
-    name: '',  // TODO: Update placeholder value.
-    // ex: 'billingAccounts/my-billingAccount'
+    // The resource name of the billing account associated with the projects that
+    // you want to list. For example, `billingAccounts/012345-567890-ABCDEF`.
+    name: 'billingAccounts/my-billing-account',  // TODO: Update placeholder value.
 
-    auth: authClient
+    auth: authClient,
   };
 
   var handlePage = function(err, response) {
     if (err) {
-      console.log(err);
+      console.error(err);
       return;
     }
 
@@ -163,7 +161,7 @@ authorize(function(authClient) {
 function authorize(callback) {
   google.auth.getApplicationDefault(function(err, authClient)) {
     if (err) {
-      console.log('authentication failed: ', err);
+      console.error('authentication failed: ', err);
       return;
     }
     if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -192,17 +190,16 @@ var cloudbilling = google.cloudbilling('v1');
 
 authorize(function(authClient) {
   var request = {
-    // The resource name of the project for which billing information is retrieved. For example,
-    // `projects/tokyo-rain-123`.
-    name: '',  // TODO: Update placeholder value.
-    // ex: 'projects/my-project'
+    // The resource name of the project for which billing information is
+    // retrieved. For example, `projects/tokyo-rain-123`.
+    name: 'projects/my-project',  // TODO: Update placeholder value.
 
-    auth: authClient
+    auth: authClient,
   };
 
   cloudbilling.projects.getBillingInfo(request, function(err, response) {
     if (err) {
-      console.log(err);
+      console.error(err);
       return;
     }
 
@@ -214,7 +211,7 @@ authorize(function(authClient) {
 function authorize(callback) {
   google.auth.getApplicationDefault(function(err, authClient)) {
     if (err) {
-      console.log('authentication failed: ', err);
+      console.error('authentication failed: ', err);
       return;
     }
     if (authClient.createScopedRequired && authClient.createScopedRequired()) {
@@ -243,22 +240,21 @@ var cloudbilling = google.cloudbilling('v1');
 
 authorize(function(authClient) {
   var request = {
-    // The resource name of the project associated with the billing information that you want to update.
-    // For example, `projects/tokyo-rain-123`.
-    name: '',  // TODO: Update placeholder value.
-    // ex: 'projects/my-project'
+    // The resource name of the project associated with the billing information
+    // that you want to update. For example, `projects/tokyo-rain-123`.
+    name: 'projects/my-project',  // TODO: Update placeholder value.
 
     resource: {
       // TODO: Add desired properties to the request body. All existing properties
       // will be replaced.
     },
 
-    auth: authClient
+    auth: authClient,
   };
 
   cloudbilling.projects.updateBillingInfo(request, function(err, response) {
     if (err) {
-      console.log(err);
+      console.error(err);
       return;
     }
 
@@ -270,7 +266,7 @@ authorize(function(authClient) {
 function authorize(callback) {
   google.auth.getApplicationDefault(function(err, authClient)) {
     if (err) {
-      console.log('authentication failed: ', err);
+      console.error('authentication failed: ', err);
       return;
     }
     if (authClient.createScopedRequired && authClient.createScopedRequired()) {

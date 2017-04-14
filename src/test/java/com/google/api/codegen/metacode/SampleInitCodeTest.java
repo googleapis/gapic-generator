@@ -43,7 +43,7 @@ public class SampleInitCodeTest {
   private TestDataLocator testDataLocator;
   private TestConfig testConfig;
   private Model model;
-  private Interface interfaze;
+  private Interface apiInterface;
   private Method method;
 
   @Before
@@ -56,8 +56,8 @@ public class SampleInitCodeTest {
     StandardSetup.registerStandardProcessors(model);
     StandardSetup.registerStandardConfigAspects(model);
     model.establishStage(Merged.KEY);
-    interfaze = model.getSymbolTable().getInterfaces().asList().get(0);
-    method = interfaze.getMethods().get(0);
+    apiInterface = model.getSymbolTable().getInterfaces().asList().get(0);
+    method = apiInterface.getMethods().get(0);
   }
 
   private InitCodeContext.Builder getContextBuilder() {
