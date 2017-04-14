@@ -43,7 +43,7 @@ public class DiscoveryFragmentGeneratorTool {
     options.addOption(
         Option.builder()
             .longOpt("overrides")
-            .desc("A comma dielimited list of paths to sample config override files.")
+            .desc("A comma delimited list of paths to sample config override files.")
             .hasArg()
             .argName("OVERRIDES")
             .build());
