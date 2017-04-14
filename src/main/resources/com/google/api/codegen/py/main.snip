@@ -423,9 +423,6 @@
                         @end
                         options=None):
                     {@methodComments(methodView, methodView.doc)}
-                    @if {@defaultMutableValues(optionalParams)}
-                        {@defaultMutableValues(optionalParams)}
-                    @end
                     @if oneOfParams
                         {@checkOneOfParams(oneOfParams)}
                     @end
@@ -466,20 +463,7 @@
 @private optionalParameterValues(params)
     @join field : params on ",".add(BREAK)
         @let paramName = {@context.python.wrapIfKeywordOrBuiltIn(field.getSimpleName())}
-            @if or(context.isDefaultValueMutable(field), context.isOneof(field))
-                {@paramName}=None
-            @else
-                {@paramName}={@context.defaultValue(field, importHandler)}
-            @end
-        @end
-    @end
-@end
-
-@private defaultMutableValues(params)
-    @join field : params if and(context.isDefaultValueMutable(field), not(context.isOneof(field))) on BREAK
-        @let paramName = {@context.python.wrapIfKeywordOrBuiltIn(field.getSimpleName())}
-            if {@paramName} is None:
-                {@paramName} = {@context.defaultValue(field, importHandler)}
+            {@paramName}=None
         @end
     @end
 @end
