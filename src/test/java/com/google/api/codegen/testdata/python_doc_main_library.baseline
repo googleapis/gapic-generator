@@ -474,10 +474,6 @@ class LibraryServiceClient(object):
           :exc:`google.gax.errors.GaxError` if the RPC is aborted.
           :exc:`ValueError` if the parameters are invalid.
         """
-        if message is None:
-            message = library_pb2.SomeMessage()
-        if string_builder is None:
-            string_builder = library_pb2.StringBuilder()
         # Create the request object.
         request = library_pb2.GetShelfRequest(
             name=name,
@@ -708,8 +704,8 @@ class LibraryServiceClient(object):
     def list_books(
             self,
             name,
-            page_size=0,
-            filter_='',
+            page_size=None,
+            filter_=None,
             options=None):
         """
         Lists books in a shelf.
@@ -819,10 +815,6 @@ class LibraryServiceClient(object):
           :exc:`google.gax.errors.GaxError` if the RPC is aborted.
           :exc:`ValueError` if the parameters are invalid.
         """
-        if update_mask is None:
-            update_mask = protobuf_field_mask_pb2.FieldMask()
-        if physical_mask is None:
-            physical_mask = v1_field_mask_pb2.FieldMask()
         # Create the request object.
         request = library_pb2.UpdateBookRequest(
             name=name,
@@ -867,8 +859,8 @@ class LibraryServiceClient(object):
 
     def list_strings(
             self,
-            name='',
-            page_size=0,
+            name=None,
+            page_size=None,
             options=None):
         """
         Lists a primitive resource. To test go page streaming.
@@ -1185,7 +1177,7 @@ class LibraryServiceClient(object):
             self,
             names,
             shelves,
-            page_size=0,
+            page_size=None,
             options=None):
         """
 
@@ -1425,19 +1417,19 @@ class LibraryServiceClient(object):
             required_repeated_fixed32,
             required_repeated_fixed64,
             required_map,
-            optional_singular_int32=0,
-            optional_singular_int64=0,
-            optional_singular_float=0.0,
-            optional_singular_double=0.0,
-            optional_singular_bool=False,
+            optional_singular_int32=None,
+            optional_singular_int64=None,
+            optional_singular_float=None,
+            optional_singular_double=None,
+            optional_singular_bool=None,
             optional_singular_enum=None,
-            optional_singular_string='',
-            optional_singular_bytes=b'',
+            optional_singular_string=None,
+            optional_singular_bytes=None,
             optional_singular_message=None,
-            optional_singular_resource_name='',
-            optional_singular_resource_name_oneof='',
-            optional_singular_fixed32=0,
-            optional_singular_fixed64=0,
+            optional_singular_resource_name=None,
+            optional_singular_resource_name_oneof=None,
+            optional_singular_fixed32=None,
+            optional_singular_fixed64=None,
             optional_repeated_int32=None,
             optional_repeated_int64=None,
             optional_repeated_float=None,
@@ -1555,38 +1547,6 @@ class LibraryServiceClient(object):
           :exc:`google.gax.errors.GaxError` if the RPC is aborted.
           :exc:`ValueError` if the parameters are invalid.
         """
-        if optional_singular_enum is None:
-            optional_singular_enum = enums.TestOptionalRequiredFlatteningParamsRequest.InnerEnum.ZERO
-        if optional_singular_message is None:
-            optional_singular_message = library_pb2.TestOptionalRequiredFlatteningParamsRequest.InnerMessage()
-        if optional_repeated_int32 is None:
-            optional_repeated_int32 = []
-        if optional_repeated_int64 is None:
-            optional_repeated_int64 = []
-        if optional_repeated_float is None:
-            optional_repeated_float = []
-        if optional_repeated_double is None:
-            optional_repeated_double = []
-        if optional_repeated_bool is None:
-            optional_repeated_bool = []
-        if optional_repeated_enum is None:
-            optional_repeated_enum = []
-        if optional_repeated_string is None:
-            optional_repeated_string = []
-        if optional_repeated_bytes is None:
-            optional_repeated_bytes = []
-        if optional_repeated_message is None:
-            optional_repeated_message = []
-        if optional_repeated_resource_name is None:
-            optional_repeated_resource_name = []
-        if optional_repeated_resource_name_oneof is None:
-            optional_repeated_resource_name_oneof = []
-        if optional_repeated_fixed32 is None:
-            optional_repeated_fixed32 = []
-        if optional_repeated_fixed64 is None:
-            optional_repeated_fixed64 = []
-        if optional_map is None:
-            optional_map = []
         # Create the request object.
         request = library_pb2.TestOptionalRequiredFlatteningParamsRequest(
             required_singular_int32=required_singular_int32,

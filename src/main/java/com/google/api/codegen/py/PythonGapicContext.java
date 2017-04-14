@@ -429,21 +429,6 @@ public class PythonGapicContext extends GapicContext {
     }
   }
 
-  /** Return whether the given field's default value is mutable in python. */
-  public boolean isDefaultValueMutable(Field field) {
-    TypeRef type = field.getType();
-    if (type.getCardinality() == Cardinality.REPEATED) {
-      return true;
-    }
-    switch (type.getKind()) {
-      case TYPE_MESSAGE: // Fall-through.
-      case TYPE_ENUM:
-        return true;
-      default:
-        return false;
-    }
-  }
-
   public String getSphinxifiedScopedDescription(ProtoElement element) {
     return new PythonCommentReformatter().reformat(DocumentationUtil.getScopedDescription(element));
   }
