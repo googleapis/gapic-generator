@@ -182,14 +182,15 @@
 @end
 
 @private simpleMethod(view, method)
-    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.serviceRequestTypeName}) ({@method.responseTypeName}, error) {
+    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.serviceRequestTypeName}, opts ...gax.CallOption) ({@method.responseTypeName}, error) {
         {@mergeMetadata()}
+        opts = {@mergeOptions(method.settingsGetterName)}
         var resp {@method.serviceResponseTypeName}
         err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
             var err error
             resp, err = c.{@method.stubName}.{@method.callableName}(ctx, req, settings.GRPC...)
             return err
-        }, c.CallOptions.{@method.settingsGetterName}...)
+        }, opts...)
         if err != nil {
             return nil, err
         }
@@ -198,14 +199,15 @@
 @end
 
 @private lroMethod(view, method)
-    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.serviceRequestTypeName}) (*{@method.operationMethod.clientReturnTypeName}, error) {
+    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.serviceRequestTypeName}, opts ...gax.CallOption) (*{@method.operationMethod.clientReturnTypeName}, error) {
         {@mergeMetadata()}
+        opts = {@mergeOptions(method.settingsGetterName)}
         var resp {@method.serviceResponseTypeName}
         err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
             var err error
             resp, err = c.{@method.stubName}.{@method.callableName}(ctx, req, settings.GRPC...)
             return err
-        }, c.CallOptions.{@method.settingsGetterName}...)
+        }, opts...)
         if err != nil {
             return nil, err
         }
@@ -219,14 +221,15 @@
 # Used for bidi and request GRPC streaming.
 # The function is not accept a request, but otherwise the same with simpleMethod.
 @private noRequestStreamMethod(view, method)
-    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context) ({@method.responseTypeName}, error) {
+    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, opts ...gax.CallOption) ({@method.responseTypeName}, error) {
         {@mergeMetadata()}
+        opts = {@mergeOptions(method.settingsGetterName)}
         var resp {@method.serviceResponseTypeName}
         err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
             var err error
             resp, err = c.{@method.stubName}.{@method.name}(ctx, settings.GRPC...)
             return err
-        }, c.CallOptions.{@method.settingsGetterName}...)
+        }, opts...)
         if err != nil {
             return nil, err
         }
@@ -235,20 +238,22 @@
 @end
 
 @private emptyReturnMethod(view, method)
-    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.serviceRequestTypeName}) error {
+    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.serviceRequestTypeName}, opts ...gax.CallOption) error {
         {@mergeMetadata()}
+        opts = {@mergeOptions(method.settingsGetterName)}
         err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
             var err error
             _, err = c.{@method.stubName}.{@method.callableName}(ctx, req, settings.GRPC...)
             return err
-        }, c.CallOptions.{@method.settingsGetterName}...)
+        }, opts...)
         return err
     }
 @end
 
 @private pageStreamingMethod(view, method)
-    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.serviceRequestTypeName}) *{@method.responseTypeName} {
+    func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.serviceRequestTypeName}, opts ...gax.CallOption) *{@method.responseTypeName} {
         {@mergeMetadata()}
+        opts = {@mergeOptions(method.settingsGetterName)}
         it := &{@method.responseTypeName}{}
         it.InternalFetch = func(pageSize int, pageToken string) ([]{@method.listMethod.resourceTypeName}, string, error) {
             var resp {@method.serviceResponseTypeName}
@@ -262,7 +267,7 @@
                 var err error
                 resp, err = c.{@method.stubName}.{@method.callableName}(ctx, req, settings.GRPC...)
                 return err
-            }, c.CallOptions.{@method.settingsGetterName}...)
+            }, opts...)
             if err != nil {
                 return nil, "", err
             }
@@ -460,4 +465,8 @@
 
 @private mergeMetadata()
     ctx = insertXGoog(ctx, c.xGoogHeader)
+@end
+
+@private mergeOptions(getterName)
+    append(c.CallOptions.{@getterName}[0:len(c.CallOptions.{@getterName}):len(c.CallOptions.{@getterName})], opts...)
 @end

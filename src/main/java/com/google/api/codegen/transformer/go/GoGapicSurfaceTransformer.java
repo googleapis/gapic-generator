@@ -16,18 +16,19 @@ package com.google.api.codegen.transformer.go;
 
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.ServiceMessages;
-import com.google.api.codegen.config.ApiConfig;
-import com.google.api.codegen.config.InterfaceConfig;
-import com.google.api.codegen.config.MethodConfig;
-import com.google.api.codegen.config.ServiceConfig;
+import com.google.api.codegen.config.GapicInterfaceConfig;
+import com.google.api.codegen.config.GapicMethodConfig;
+import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.ProductServiceConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
+import com.google.api.codegen.transformer.GapicInterfaceContext;
+import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.IamResourceTransformer;
-import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PageStreamingTransformer;
@@ -35,7 +36,6 @@ import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.ServiceTransformer;
 import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.go.GoTypeTable;
 import com.google.api.codegen.viewmodel.ImportSectionView;
@@ -101,43 +101,43 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(Model model, ApiConfig apiConfig) {
+  public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
     List<ViewModel> models = new ArrayList<ViewModel>();
-    GoSurfaceNamer namer = new GoSurfaceNamer(apiConfig.getPackageName());
-    for (Interface service : new InterfaceView().getElementIterable(model)) {
-      SurfaceTransformerContext context =
-          SurfaceTransformerContext.create(
-              service, apiConfig, createTypeTable(), namer, featureConfig);
+    GoSurfaceNamer namer = new GoSurfaceNamer(productConfig.getPackageName());
+    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+      GapicInterfaceContext context =
+          GapicInterfaceContext.create(
+              apiInterface, productConfig, createTypeTable(), namer, featureConfig);
       models.add(generate(context));
 
       context =
-          SurfaceTransformerContext.create(
-              service, apiConfig, createTypeTable(), namer, featureConfig);
+          GapicInterfaceContext.create(
+              apiInterface, productConfig, createTypeTable(), namer, featureConfig);
       models.add(generateExample(context));
     }
-    models.add(generatePackageInfo(model, apiConfig, namer));
+    models.add(generatePackageInfo(model, productConfig, namer));
     return models;
   }
 
-  private StaticLangClientFileView generate(SurfaceTransformerContext context) {
+  private StaticLangClientFileView generate(GapicInterfaceContext context) {
     StaticLangClientFileView.Builder view = StaticLangClientFileView.newBuilder();
 
     SurfaceNamer namer = context.getNamer();
     Model model = context.getModel();
-    Interface service = context.getInterface();
-    ApiConfig apiConfig = context.getApiConfig();
+    Interface apiInterface = context.getInterface();
+    GapicProductConfig productConfig = context.getProductConfig();
 
     view.templateFileName(API_TEMPLATE_FILENAME);
     view.serviceDoc(serviceTransformer.generateServiceDoc(context, null));
     view.clientTypeName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
-    view.clientConstructorName(namer.getApiWrapperClassConstructorName(service));
-    view.defaultClientOptionFunctionName(namer.getDefaultApiSettingsFunctionName(service));
-    view.defaultCallOptionFunctionName(namer.getDefaultCallSettingsFunctionName(service));
-    view.callOptionsTypeName(namer.getCallSettingsTypeName(service));
+    view.clientConstructorName(namer.getApiWrapperClassConstructorName(apiInterface));
+    view.defaultClientOptionFunctionName(namer.getDefaultApiSettingsFunctionName(apiInterface));
+    view.defaultCallOptionFunctionName(namer.getDefaultCallSettingsFunctionName(apiInterface));
+    view.callOptionsTypeName(namer.getCallSettingsTypeName(apiInterface));
     view.serviceOriginalName(model.getServiceConfig().getTitle());
-    view.servicePhraseName(namer.getServicePhraseName(service));
+    view.servicePhraseName(namer.getServicePhraseName(apiInterface));
 
-    String outputPath = pathMapper.getOutputPath(service, apiConfig);
+    String outputPath = pathMapper.getOutputPath(apiInterface, productConfig);
     String fileName = namer.getServiceFileName(context.getInterfaceConfig());
     view.outputPath(outputPath + File.separator + fileName);
 
@@ -154,8 +154,8 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.apiMethods(apiMethods);
 
     view.iamResources(iamResourceTransformer.generateIamResources(context));
-    if (!apiConfig.getInterfaceConfig(service).getIamResources().isEmpty()) {
-      context.getTypeTable().saveNicknameFor("cloud.google.com/go/iam;;;");
+    if (!productConfig.getInterfaceConfig(apiInterface).getIamResources().isEmpty()) {
+      context.getModelTypeTable().saveNicknameFor("cloud.google.com/go/iam;;;");
     }
 
     // In Go, multiple methods share the same iterator type, one iterator type per resource type.
@@ -178,10 +178,10 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     }
     view.lroDetailViews(new ArrayList<LongRunningOperationDetailView>(lros.values()));
 
-    ServiceConfig serviceConfig = new ServiceConfig();
-    view.serviceAddress(serviceConfig.getServiceAddress(service));
-    view.servicePort(serviceConfig.getServicePort());
-    view.authScopes(serviceConfig.getAuthScopes(service));
+    ProductServiceConfig productServiceConfig = new ProductServiceConfig();
+    view.serviceAddress(productServiceConfig.getServiceAddress(apiInterface));
+    view.servicePort(productServiceConfig.getServicePort());
+    view.authScopes(productServiceConfig.getAuthScopes(apiInterface));
 
     view.stubs(grpcStubTransformer.generateGrpcStubs(context));
 
@@ -191,22 +191,22 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     return view.build();
   }
 
-  private StaticLangClientExampleFileView generateExample(SurfaceTransformerContext context) {
+  private StaticLangClientExampleFileView generateExample(GapicInterfaceContext context) {
     StaticLangClientExampleFileView.Builder view = StaticLangClientExampleFileView.newBuilder();
 
     SurfaceNamer namer = context.getNamer();
-    Interface service = context.getInterface();
-    ApiConfig apiConfig = context.getApiConfig();
+    Interface apiInterface = context.getInterface();
+    GapicProductConfig productConfig = context.getProductConfig();
 
     view.templateFileName(SAMPLE_TEMPLATE_FILENAME);
 
-    String outputPath = pathMapper.getOutputPath(service, apiConfig);
-    String fileName = namer.getExampleFileName(service);
+    String outputPath = pathMapper.getOutputPath(apiInterface, productConfig);
+    String fileName = namer.getExampleFileName(apiInterface);
     view.outputPath(outputPath + File.separator + fileName);
 
     view.clientTypeName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
-    view.clientConstructorName(namer.getApiWrapperClassConstructorName(service));
-    view.clientConstructorExampleName(namer.getApiWrapperClassConstructorExampleName(service));
+    view.clientConstructorName(namer.getApiWrapperClassConstructorName(apiInterface));
+    view.clientConstructorExampleName(namer.getApiWrapperClassConstructorExampleName(apiInterface));
     view.apiMethods(generateApiMethods(context, context.getPublicMethods()));
     view.iamResources(iamResourceTransformer.generateIamResources(context));
 
@@ -216,7 +216,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     //   - The VKit generated library, that's what the sample is for
     //   - The input types of the methods, to initialize the requests
     // So, we clear all imports; addXExampleImports will add back the ones we want.
-    context.getTypeTable().getImports().clear();
+    context.getModelTypeTable().getImports().clear();
     addXExampleImports(context, context.getPublicMethods());
     view.fileHeader(fileHeaderTransformer.generateFileHeader(context));
 
@@ -224,24 +224,24 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private PackageInfoView generatePackageInfo(
-      Model model, ApiConfig apiConfig, SurfaceNamer namer) {
-    String outputPath = apiConfig.getPackageName();
+      Model model, GapicProductConfig productConfig, SurfaceNamer namer) {
+    String outputPath = productConfig.getPackageName();
     String fileName = "doc.go";
     PackageInfoView.Builder packageInfo = PackageInfoView.newBuilder();
 
     packageInfo.templateFileName(DOC_TEMPLATE_FILENAME);
     packageInfo.outputPath(outputPath + File.separator + fileName);
     packageInfo.serviceTitle(model.getServiceConfig().getTitle());
-    packageInfo.importPath(apiConfig.getPackageName());
+    packageInfo.importPath(productConfig.getPackageName());
     packageInfo.serviceDocs(Collections.<ServiceDocView>emptyList());
     packageInfo.packageDoc(
         CommonRenderingUtil.getDocLines(
             model.getServiceConfig().getDocumentation().getSummary(), COMMENT_LINE_LENGTH));
-    packageInfo.domainLayerLocation(apiConfig.getDomainLayerLocation());
+    packageInfo.domainLayerLocation(productConfig.getDomainLayerLocation());
 
     packageInfo.fileHeader(
         fileHeaderTransformer.generateFileHeader(
-            apiConfig, ImportSectionView.newBuilder().build(), namer));
+            productConfig, ImportSectionView.newBuilder().build(), namer));
 
     return packageInfo.build();
   }
@@ -252,11 +252,11 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
 
   @VisibleForTesting
   List<StaticLangApiMethodView> generateApiMethods(
-      SurfaceTransformerContext context, List<Method> methods) {
+      GapicInterfaceContext context, List<Method> methods) {
     List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
     for (Method method : methods) {
-      MethodConfig methodConfig = context.getMethodConfig(method);
-      MethodTransformerContext methodContext = context.asRequestMethodContext(method);
+      GapicMethodConfig methodConfig = context.getMethodConfig(method);
+      GapicMethodContext methodContext = context.asRequestMethodContext(method);
 
       if (method.getRequestStreaming() || method.getResponseStreaming()) {
         apiMethods.add(
@@ -274,10 +274,10 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
 
   @VisibleForTesting
   List<RetryConfigDefinitionView> generateRetryConfigDefinitions(
-      SurfaceTransformerContext context, List<Method> methods) {
+      GapicInterfaceContext context, List<Method> methods) {
     Set<RetryConfigDefinitionView.Name> retryNames = new HashSet<>();
     for (Method method : methods) {
-      MethodConfig conf = context.getMethodConfig(method);
+      GapicMethodConfig conf = context.getMethodConfig(method);
       retryNames.add(
           RetryConfigDefinitionView.Name.create(
               conf.getRetrySettingsConfigName(), conf.getRetryCodesConfigName()));
@@ -306,8 +306,8 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
               .build());
     }
     if (!retryDef.isEmpty()) {
-      context.getTypeTable().saveNicknameFor("time;;;");
-      context.getTypeTable().saveNicknameFor("google.golang.org/grpc/codes;;;");
+      context.getModelTypeTable().saveNicknameFor("time;;;");
+      context.getModelTypeTable().saveNicknameFor("google.golang.org/grpc/codes;;;");
     }
     return new ArrayList<>(retryDef.values());
   }
@@ -315,8 +315,8 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   private static final String EMPTY_PROTO_PKG = "github.com/golang/protobuf/ptypes/empty";
 
   @VisibleForTesting
-  void addXApiImports(SurfaceTransformerContext context, Collection<Method> methods) {
-    ModelTypeTable typeTable = context.getTypeTable();
+  void addXApiImports(GapicInterfaceContext context, Collection<Method> methods) {
+    ModelTypeTable typeTable = context.getModelTypeTable();
     typeTable.saveNicknameFor("cloud.google.com/go/internal/version;;;");
     typeTable.saveNicknameFor("golang.org/x/net/context;;;");
     typeTable.saveNicknameFor("google.golang.org/grpc;;;");
@@ -328,10 +328,10 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   @VisibleForTesting
-  void addXExampleImports(SurfaceTransformerContext context, Collection<Method> methods) {
-    ModelTypeTable typeTable = context.getTypeTable();
+  void addXExampleImports(GapicInterfaceContext context, Collection<Method> methods) {
+    ModelTypeTable typeTable = context.getModelTypeTable();
     typeTable.saveNicknameFor("golang.org/x/net/context;;;");
-    typeTable.saveNicknameFor(context.getApiConfig().getPackageName() + ";;;");
+    typeTable.saveNicknameFor(context.getProductConfig().getPackageName() + ";;;");
 
     for (Method method : methods) {
       typeTable.getAndSaveNicknameFor(method.getInputType());
@@ -340,28 +340,29 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private void addContextImports(
-      SurfaceTransformerContext context, ImportContext importContext, Collection<Method> methods) {
+      GapicInterfaceContext context, ImportContext importContext, Collection<Method> methods) {
     for (ImportKind kind : getImportKinds(context.getInterfaceConfig(), methods)) {
       ImmutableList<String> imps = CONTEXTUAL_IMPORTS.get(importContext, kind);
       if (imps != null) {
         for (String imp : imps) {
-          context.getTypeTable().saveNicknameFor(imp);
+          context.getModelTypeTable().saveNicknameFor(imp);
         }
       }
     }
   }
 
   private Set<ImportKind> getImportKinds(
-      InterfaceConfig serviceConfig, Collection<Method> methods) {
+      GapicInterfaceConfig interfaceConfig, Collection<Method> methods) {
     EnumSet<ImportKind> kinds = EnumSet.noneOf(ImportKind.class);
     for (Method method : methods) {
       if (method.getResponseStreaming()) {
         kinds.add(ImportKind.SERVER_STREAM);
       }
-      if (serviceMessages.isLongRunningOperationType(method.getOutputType())) {
+      GapicMethodConfig methodConfig = interfaceConfig.getMethodConfig(method);
+      if (methodConfig.isLongRunningOperation()) {
         kinds.add(ImportKind.LRO);
       }
-      if (serviceConfig.getMethodConfig(method).isPageStreaming()) {
+      if (methodConfig.isPageStreaming()) {
         kinds.add(ImportKind.PAGE_STREAM);
       }
     }

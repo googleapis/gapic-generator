@@ -15,8 +15,9 @@
 package com.google.api.codegen.transformer.go;
 
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.GapicInterfaceConfig;
+import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.InterfaceConfig;
-import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.OneofConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
@@ -57,9 +58,9 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getPathTemplateName(
-      Interface service, SingleResourceNameConfig resourceNameConfig) {
+      Interface apiInterface, SingleResourceNameConfig resourceNameConfig) {
     return inittedConstantName(
-        getReducedServiceName(service)
+        getReducedServiceName(apiInterface)
             .join(resourceNameConfig.getEntityName())
             .join("path")
             .join("template"));
@@ -67,19 +68,19 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getPathTemplateNameGetter(
-      Interface service, SingleResourceNameConfig resourceNameConfig) {
-    return getFormatFunctionName(service, resourceNameConfig);
+      Interface apiInterface, SingleResourceNameConfig resourceNameConfig) {
+    return getFormatFunctionName(apiInterface, resourceNameConfig);
   }
 
   @Override
   public String getFormatFunctionName(
-      Interface service, SingleResourceNameConfig resourceNameConfig) {
+      Interface apiInterface, SingleResourceNameConfig resourceNameConfig) {
     return publicMethodName(
-        getReducedServiceName(service).join(resourceNameConfig.getEntityName()).join("path"));
+        getReducedServiceName(apiInterface).join(resourceNameConfig.getEntityName()).join("path"));
   }
 
   @Override
-  public String getStaticLangReturnTypeName(Method method, MethodConfig methodConfig) {
+  public String getStaticLangReturnTypeName(Method method, GapicMethodConfig methodConfig) {
     return converter.getTypeName(method.getOutputType()).getFullName();
   }
 
@@ -89,7 +90,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public List<String> getDocLines(Method method, MethodConfig methodConfig) {
+  public List<String> getDocLines(Method method, GapicMethodConfig methodConfig) {
     String text = DocumentationUtil.getDescription(method);
     text = lowerFirstLetter(text);
     return super.getDocLines(getApiMethodName(method, methodConfig.getVisibility()) + " " + text);
@@ -118,7 +119,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getAndSaveOperationResponseTypeName(
-      Method method, ModelTypeTable typeTable, MethodConfig methodConfig) {
+      Method method, ModelTypeTable typeTable, GapicMethodConfig methodConfig) {
     return publicClassName(Name.upperCamel(method.getSimpleName()).join("operation"));
   }
 
@@ -141,35 +142,35 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getGrpcServerTypeName(Interface service) {
-    return converter.getTypeName(service).getNickname() + "Server";
+  public String getGrpcServerTypeName(Interface apiInterface) {
+    return converter.getTypeName(apiInterface).getNickname() + "Server";
   }
 
   @Override
-  public String getGrpcClientTypeName(Interface service) {
-    return converter.getTypeName(service).getNickname() + "Client";
+  public String getGrpcClientTypeName(Interface apiInterface) {
+    return converter.getTypeName(apiInterface).getNickname() + "Client";
   }
 
   @Override
-  public String getServerRegisterFunctionName(Interface service) {
-    return converter.getTypeName(service).getNickname().replace(".", ".Register") + "Server";
+  public String getServerRegisterFunctionName(Interface apiInterface) {
+    return converter.getTypeName(apiInterface).getNickname().replace(".", ".Register") + "Server";
   }
 
   @Override
-  public String getCallSettingsTypeName(Interface service) {
-    return publicClassName(clientNamePrefix(service).join("call").join("options"));
+  public String getCallSettingsTypeName(Interface apiInterface) {
+    return publicClassName(clientNamePrefix(apiInterface).join("call").join("options"));
   }
 
   @Override
-  public String getDefaultApiSettingsFunctionName(Interface service) {
+  public String getDefaultApiSettingsFunctionName(Interface apiInterface) {
     return privateMethodName(
-        Name.from("default").join(clientNamePrefix(service)).join("client").join("options"));
+        Name.from("default").join(clientNamePrefix(apiInterface)).join("client").join("options"));
   }
 
   @Override
-  public String getDefaultCallSettingsFunctionName(Interface service) {
+  public String getDefaultCallSettingsFunctionName(Interface apiInterface) {
     return privateMethodName(
-        Name.from("default").join(clientNamePrefix(service)).join("call").join("options"));
+        Name.from("default").join(clientNamePrefix(apiInterface)).join("call").join("options"));
   }
 
   @Override
@@ -179,28 +180,30 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getApiWrapperClassName(InterfaceConfig interfaceConfig) {
-    return publicClassName(clientNamePrefix(interfaceConfig.getInterface()).join("client"));
+    // TODO support non-Gapic inputs
+    GapicInterfaceConfig gapicInterfaceConfig = (GapicInterfaceConfig) interfaceConfig;
+    return publicClassName(clientNamePrefix(gapicInterfaceConfig.getInterface()).join("client"));
   }
 
   @Override
-  public String getApiWrapperClassConstructorName(Interface service) {
-    return publicMethodName(Name.from("new").join(clientNamePrefix(service)).join("client"));
+  public String getApiWrapperClassConstructorName(Interface apiInterface) {
+    return publicMethodName(Name.from("new").join(clientNamePrefix(apiInterface)).join("client"));
   }
 
   @Override
-  public String getApiWrapperClassConstructorExampleName(Interface service) {
+  public String getApiWrapperClassConstructorExampleName(Interface apiInterface) {
     return publicMethodName(
-        Name.from("example").join("new").join(clientNamePrefix(service)).join("client"));
+        Name.from("example").join("new").join(clientNamePrefix(apiInterface)).join("client"));
   }
 
   @Override
-  public String getApiMethodExampleName(Interface service, Method method) {
-    return exampleFunction(service, getApiMethodName(method, VisibilityConfig.PUBLIC));
+  public String getApiMethodExampleName(Interface apiInterface, Method method) {
+    return exampleFunction(apiInterface, getApiMethodName(method, VisibilityConfig.PUBLIC));
   }
 
   @Override
-  public String getGrpcStreamingApiMethodExampleName(Interface service, Method method) {
-    return exampleFunction(service, getApiMethodName(method, VisibilityConfig.PUBLIC));
+  public String getGrpcStreamingApiMethodExampleName(Interface apiInterface, Method method) {
+    return exampleFunction(apiInterface, getApiMethodName(method, VisibilityConfig.PUBLIC));
   }
 
   @Override
@@ -222,8 +225,8 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @VisibleForTesting
-  Name clientNamePrefix(Interface service) {
-    Name name = getReducedServiceName(service);
+  Name clientNamePrefix(Interface apiInterface) {
+    Name name = getReducedServiceName(apiInterface);
     // If the service name matches the package name, don't include the service name in the prefix.
     // Eg, instead of "library.NewLibraryClient", we want "library.NewClient".
     if (Name.from(getLocalPackageName()).equals(name)) {
@@ -250,29 +253,29 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getGrpcContainerTypeName(Interface service) {
+  public String getGrpcContainerTypeName(Interface apiInterface) {
     return "";
   }
 
   @Override
-  public String getServiceFileName(InterfaceConfig interfaceConfig) {
+  public String getServiceFileName(GapicInterfaceConfig interfaceConfig) {
     return classFileNameBase(getReducedServiceName(interfaceConfig.getInterface()).join("client"));
   }
 
   @Override
-  public String getExampleFileName(Interface service) {
+  public String getExampleFileName(Interface apiInterface) {
     return classFileNameBase(
-        getReducedServiceName(service).join("client").join("example").join("test"));
+        getReducedServiceName(apiInterface).join("client").join("example").join("test"));
   }
 
   @Override
-  public String getStubName(Interface service) {
-    return privateFieldName(clientNamePrefix(service).join("client"));
+  public String getStubName(Interface apiInterface) {
+    return privateFieldName(clientNamePrefix(apiInterface).join("client"));
   }
 
   @Override
-  public String getCreateStubFunctionName(Interface service) {
-    return getGrpcClientTypeName(service).replace(".", ".New");
+  public String getCreateStubFunctionName(Interface apiInterface) {
+    return getGrpcClientTypeName(apiInterface).replace(".", ".New");
   }
 
   @Override
@@ -301,8 +304,8 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getIamResourceGetterFunctionExampleName(Interface service, Field field) {
-    return exampleFunction(service, getIamResourceGetterFunctionName(field));
+  public String getIamResourceGetterFunctionExampleName(Interface apiInterface, Field field) {
+    return exampleFunction(apiInterface, getIamResourceGetterFunctionName(field));
   }
 
   @Override
@@ -310,23 +313,25 @@ public class GoSurfaceNamer extends SurfaceNamer {
     return publicFieldName(Name.upperCamel(method.getSimpleName()));
   }
 
-  private String exampleFunction(Interface service, String functionName) {
+  private String exampleFunction(Interface apiInterface, String functionName) {
     // We use "unsafe" string concatenation here.
     // Godoc expects the name to be in format "ExampleMyType_MyMethod";
     // it is the only place we have mixed camel and underscore names.
-    return publicMethodName(Name.from("example").join(clientNamePrefix(service)).join("client"))
+    return publicMethodName(
+            Name.from("example").join(clientNamePrefix(apiInterface)).join("client"))
         + "_"
         + functionName;
   }
 
   @Override
-  public String getMockGrpcServiceImplName(Interface service) {
-    return privateClassName(Name.from("mock").join(getReducedServiceName(service)).join("server"));
+  public String getMockGrpcServiceImplName(Interface apiInterface) {
+    return privateClassName(
+        Name.from("mock").join(getReducedServiceName(apiInterface)).join("server"));
   }
 
   @Override
-  public String getMockServiceVarName(Interface service) {
-    return localVarName(Name.from("mock").join(getReducedServiceName(service)));
+  public String getMockServiceVarName(Interface apiInterface) {
+    return localVarName(Name.from("mock").join(getReducedServiceName(apiInterface)));
   }
 
   @Override

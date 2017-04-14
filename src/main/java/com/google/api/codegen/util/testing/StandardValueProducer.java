@@ -30,11 +30,10 @@ public class StandardValueProducer implements ValueProducer {
     } else if (type == Type.TYPE_BYTES) {
       byte lowByte = (byte) (identifier.hashCode());
       return Byte.toString(lowByte);
-    } else if (typeRef.getPrimitiveTypeName().contains("int")) {
-      return Integer.toString(identifier.hashCode());
-    } else if (type == Type.TYPE_DOUBLE
-        || type == Type.TYPE_FLOAT
+    } else if (typeRef.getPrimitiveTypeName().contains("int")
         || typeRef.getPrimitiveTypeName().contains("fixed")) {
+      return Integer.toString(identifier.hashCode());
+    } else if (type == Type.TYPE_DOUBLE || type == Type.TYPE_FLOAT) {
       return Double.toString(identifier.hashCode() / 10);
     } else {
       throw new RuntimeException("Unknown type in ValueProducer: " + type);

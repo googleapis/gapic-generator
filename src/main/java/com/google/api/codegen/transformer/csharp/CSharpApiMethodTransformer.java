@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.transformer.csharp;
 
-import com.google.api.codegen.transformer.MethodTransformerContext;
+import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.viewmodel.SimpleParamDocView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
@@ -27,7 +27,7 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
 
   @Override
   protected void setServiceResponseTypeName(
-      MethodTransformerContext context, StaticLangApiMethodView.Builder methodViewBuilder) {
+      GapicMethodContext context, StaticLangApiMethodView.Builder methodViewBuilder) {
     String responseTypeName =
         context.getTypeTable().getAndSaveNicknameFor(context.getMethod().getOutputType());
     methodViewBuilder.serviceResponseTypeName(responseTypeName);
@@ -35,7 +35,7 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
 
   @Override
   public List<SimpleParamDocView> getRequestObjectParamDocs(
-      MethodTransformerContext context, TypeRef typeRef) {
+      GapicMethodContext context, TypeRef typeRef) {
     switch (context.getMethodConfig().getGrpcStreamingType()) {
       case NonStreaming:
         SimpleParamDocView doc =

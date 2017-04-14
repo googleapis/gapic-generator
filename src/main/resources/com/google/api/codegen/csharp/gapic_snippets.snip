@@ -376,8 +376,10 @@
     @else
         {@snippetMethod.apiClassName} {@snippetMethod.apiVariableName} = {@snippetMethod.apiClassName}.Create();
     @end
-    // Initialize request argument(s)
-    {@topLevelInitCode(snippetMethod.method.initCode)}
+    @if snippetMethod.method.initCode.topLevelLines.size
+        // Initialize request argument(s)
+        {@topLevelInitCode(snippetMethod.method.initCode)}
+    @end
     // Make the request
 @end
 

@@ -32,6 +32,7 @@ import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.js.JSNameFormatter;
 import com.google.api.codegen.util.js.JSTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Field.Cardinality;
 import com.google.protobuf.Method;
@@ -192,9 +193,15 @@ public class NodeJSSampleMethodToViewTransformer implements SampleMethodToViewTr
     if (escapeReservedParamNames && RESERVED_PARAM_NAMES.contains(name)) {
       name = name + "_";
     }
+    String defaultValue;
+    if (!Strings.isNullOrEmpty(field.defaultValue())) {
+      defaultValue = field.defaultValue();
+    } else {
+      defaultValue = typeTable.getZeroValueAndSaveNicknameFor(field.type());
+    }
     return SampleFieldView.newBuilder()
         .name(name)
-        .defaultValue(typeTable.getZeroValueAndSaveNicknameFor(field.type()))
+        .defaultValue(defaultValue)
         .example(field.example())
         .description(field.description())
         .required(field.required())

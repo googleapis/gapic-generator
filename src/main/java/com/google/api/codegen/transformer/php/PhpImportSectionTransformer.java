@@ -15,9 +15,9 @@
 package com.google.api.codegen.transformer.php;
 
 import com.google.api.codegen.metacode.InitCodeNode;
+import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.ImportSectionTransformer;
-import com.google.api.codegen.transformer.MethodTransformerContext;
-import com.google.api.codegen.transformer.SurfaceTransformerContext;
+import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
@@ -27,13 +27,13 @@ import java.util.Map;
 
 public class PhpImportSectionTransformer implements ImportSectionTransformer {
   @Override
-  public ImportSectionView generateImportSection(SurfaceTransformerContext context) {
+  public ImportSectionView generateImportSection(InterfaceContext context) {
     return generateImportSection(context.getTypeTable().getImports());
   }
 
   @Override
   public ImportSectionView generateImportSection(
-      MethodTransformerContext context, Iterable<InitCodeNode> specItemNodes) {
+      GapicMethodContext context, Iterable<InitCodeNode> specItemNodes) {
     return generateImportSection(context.getTypeTable().getImports());
   }
 

@@ -15,14 +15,15 @@
 package com.google.api.codegen.transformer.py;
 
 import com.google.api.codegen.ServiceMessages;
+import com.google.api.codegen.config.GapicInterfaceConfig;
+import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.InterfaceConfig;
-import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
+import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.transformer.Synchronicity;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
@@ -51,8 +52,8 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getApiWrapperClassConstructorName(Interface service) {
-    return getApiWrapperClassName(service.getSimpleName());
+  public String getApiWrapperClassConstructorName(Interface apiInterface) {
+    return getApiWrapperClassName(apiInterface.getSimpleName());
   }
 
   @Override
@@ -70,7 +71,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFullyQualifiedApiWrapperClassName(InterfaceConfig interfaceConfig) {
+  public String getFullyQualifiedApiWrapperClassName(GapicInterfaceConfig interfaceConfig) {
     return Joiner.on(".")
         .join(
             getPackageName(),
@@ -129,7 +130,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getFormatFunctionName(
-      Interface service, SingleResourceNameConfig resourceNameConfig) {
+      Interface apiInterface, SingleResourceNameConfig resourceNameConfig) {
     return staticFunctionName(Name.from(resourceNameConfig.getEntityName(), "path"));
   }
 
@@ -140,18 +141,18 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getCreateStubFunctionName(Interface service) {
-    return getGrpcClientTypeName(service);
+  public String getCreateStubFunctionName(Interface apiInterface) {
+    return getGrpcClientTypeName(apiInterface);
   }
 
   @Override
-  public String getGrpcClientTypeName(Interface service) {
-    String fullName = getModelTypeFormatter().getFullNameFor(service) + "Stub";
+  public String getGrpcClientTypeName(Interface apiInterface) {
+    String fullName = getModelTypeFormatter().getFullNameFor(apiInterface) + "Stub";
     return getTypeNameConverter().getTypeName(fullName).getNickname();
   }
 
   @Override
-  public List<String> getThrowsDocLines(MethodConfig methodConfig) {
+  public List<String> getThrowsDocLines(GapicMethodConfig methodConfig) {
     ImmutableList.Builder<String> lines = ImmutableList.builder();
     lines.add(":exc:`google.gax.errors.GaxError` if the RPC is aborted.");
     if (hasParams(methodConfig)) {
@@ -160,7 +161,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
     return lines.build();
   }
 
-  private boolean hasParams(MethodConfig methodConfig) {
+  private boolean hasParams(GapicMethodConfig methodConfig) {
     if (!Iterables.isEmpty(methodConfig.getRequiredFieldConfigs())) {
       return true;
     }
@@ -172,7 +173,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
 
   @Override
   public List<String> getReturnDocLines(
-      SurfaceTransformerContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
+      GapicInterfaceContext context, GapicMethodConfig methodConfig, Synchronicity synchronicity) {
     TypeRef outputType = methodConfig.getMethod().getOutputType();
     if (ServiceMessages.s_isEmptyType(outputType)) {
       return ImmutableList.<String>of();
@@ -211,7 +212,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getGrpcStubCallString(Interface service, Method method) {
+  public String getGrpcStubCallString(Interface apiInterface, Method method) {
     return getGrpcMethodName(method);
   }
 
@@ -221,7 +222,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getUnitTestClassName(InterfaceConfig interfaceConfig) {
+  public String getUnitTestClassName(GapicInterfaceConfig interfaceConfig) {
     return publicClassName(
         Name.upperCamelKeepUpperAcronyms("Test", getInterfaceName(interfaceConfig), "Client"));
   }

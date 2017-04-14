@@ -17,7 +17,7 @@ package com.google.api.codegen.transformer.py;
 import com.google.api.codegen.GapicContext;
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.TargetLanguage;
-import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.gapic.GapicProvider;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
@@ -60,12 +60,12 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
   }
 
   @Override
-  public List<ViewModel> transform(final Model model, final ApiConfig apiConfig) {
+  public List<ViewModel> transform(final Model model, final GapicProductConfig productConfig) {
     String version = packageConfig.apiVersion();
     List<ViewModel> metadata =
-        computeInitFiles(computePackages(apiConfig.getPackageName()), version);
+        computeInitFiles(computePackages(productConfig.getPackageName()), version);
     for (String templateFileName : getTopLevelTemplateFileNames()) {
-      metadata.add(generateMetadataView(model, apiConfig, templateFileName));
+      metadata.add(generateMetadataView(model, productConfig, templateFileName));
     }
     return metadata;
   }
@@ -97,7 +97,8 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
     return Lists.newArrayList("py/__init__.py.snip", "py/namespace__init__.py.snip");
   }
 
-  private ViewModel generateMetadataView(Model model, ApiConfig apiConfig, String template) {
+  private ViewModel generateMetadataView(
+      Model model, GapicProductConfig productConfig, String template) {
     String noLeadingPyDir = template.startsWith("py/") ? template.substring(3) : template;
     int extensionIndex = noLeadingPyDir.lastIndexOf(".");
     String outputPath = noLeadingPyDir.substring(0, extensionIndex);
@@ -106,7 +107,7 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
     return metadataTransformer
         .generateMetadataView(packageConfig, model, template, outputPath, TargetLanguage.PYTHON)
         .namespacePackages(
-            computeNamespacePackages(apiConfig.getPackageName(), packageConfig.apiVersion()))
+            computeNamespacePackages(productConfig.getPackageName(), packageConfig.apiVersion()))
         .apiModules(apiModules)
         .typeModules(typeModules)
         .build();

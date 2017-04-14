@@ -15,22 +15,22 @@
 package com.google.api.codegen.transformer.nodejs;
 
 import com.google.api.codegen.InterfaceView;
-import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.GapicMethodConfig;
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
-import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.nodejs.NodeJSUtils;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
+import com.google.api.codegen.transformer.GapicInterfaceContext;
+import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.InitCodeTransformer;
-import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.MockServiceTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.transformer.TestCaseTransformer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
@@ -74,40 +74,43 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
   }
 
   @Override
-  public List<ViewModel> transform(Model model, ApiConfig apiConfig) {
+  public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
     List<ViewModel> models = new ArrayList<ViewModel>();
     NodeJSSurfaceNamer namer =
-        new NodeJSSurfaceNamer(apiConfig.getPackageName(), NodeJSUtils.isGcloud(apiConfig));
-    models.add(generateTestView(model, apiConfig, namer));
+        new NodeJSSurfaceNamer(productConfig.getPackageName(), NodeJSUtils.isGcloud(productConfig));
+    models.add(generateTestView(model, productConfig, namer));
     return models;
   }
 
-  private static ModelTypeTable createTypeTable(ApiConfig apiConfig) {
-    String packageName = apiConfig.getPackageName();
+  private static ModelTypeTable createTypeTable(GapicProductConfig productConfig) {
+    String packageName = productConfig.getPackageName();
     return new ModelTypeTable(
         new JSTypeTable(packageName), new NodeJSModelTypeNameConverter(packageName));
   }
 
-  private MockCombinedView generateTestView(Model model, ApiConfig apiConfig, SurfaceNamer namer) {
-    ModelTypeTable typeTable = createTypeTable(apiConfig);
+  private MockCombinedView generateTestView(
+      Model model, GapicProductConfig productConfig, SurfaceNamer namer) {
+    ModelTypeTable typeTable = createTypeTable(productConfig);
     List<MockServiceImplView> impls = new ArrayList<>();
     List<ClientTestClassView> testClasses = new ArrayList<>();
 
-    for (Interface service : mockServiceTransformer.getGrpcInterfacesToMock(model, apiConfig)) {
-      SurfaceTransformerContext context =
-          SurfaceTransformerContext.create(service, apiConfig, typeTable, namer, featureConfig);
+    for (Interface apiInterface :
+        mockServiceTransformer.getGrpcInterfacesToMock(model, productConfig)) {
+      GapicInterfaceContext context =
+          GapicInterfaceContext.create(
+              apiInterface, productConfig, typeTable, namer, featureConfig);
       impls.add(
           MockServiceImplView.newBuilder()
-              .grpcClassName(namer.getGrpcServerTypeName(service))
-              .name(namer.getMockGrpcServiceImplName(service))
+              .grpcClassName(namer.getGrpcServerTypeName(apiInterface))
+              .name(namer.getMockGrpcServiceImplName(apiInterface))
               .grpcMethods(mockServiceTransformer.createMockGrpcMethodViews(context))
               .build());
     }
-    for (Interface service : new InterfaceView().getElementIterable(model)) {
+    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
       // We don't need any imports here.
-      SurfaceTransformerContext context =
-          SurfaceTransformerContext.create(
-              service, apiConfig, createTypeTable(apiConfig), namer, featureConfig);
+      GapicInterfaceContext context =
+          GapicInterfaceContext.create(
+              apiInterface, productConfig, createTypeTable(productConfig), namer, featureConfig);
       testClasses.add(
           ClientTestClassView.newBuilder()
               .apiSettingsClassName(
@@ -132,15 +135,15 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
         .testClasses(testClasses)
         .apiWrapperModuleName(namer.getApiWrapperModuleName())
         .templateFileName(TEST_TEMPLATE_FILE)
-        .fileHeader(fileHeaderTransformer.generateFileHeader(apiConfig, importSection, namer))
+        .fileHeader(fileHeaderTransformer.generateFileHeader(productConfig, importSection, namer))
         .build();
   }
 
-  private List<TestCaseView> createTestCaseViews(SurfaceTransformerContext context) {
+  private List<TestCaseView> createTestCaseViews(GapicInterfaceContext context) {
     ArrayList<TestCaseView> testCaseViews = new ArrayList<>();
     SymbolTable testNameTable = new SymbolTable();
     for (Method method : context.getSupportedMethods()) {
-      MethodTransformerContext methodContext = context.asRequestMethodContext(method);
+      GapicMethodContext methodContext = context.asRequestMethodContext(method);
       if (methodContext.getMethodConfig().getGrpcStreamingType()
           == GrpcStreamingType.ClientStreaming) {
         //TODO: Add unit test generation for ClientStreaming methods
@@ -171,7 +174,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
     return testCaseViews;
   }
 
-  private ClientMethodType getMethodType(MethodConfig config) {
+  private ClientMethodType getMethodType(GapicMethodConfig config) {
     ClientMethodType clientMethodType = ClientMethodType.RequestObjectMethod;
     if (config.isPageStreaming()) {
       clientMethodType = ClientMethodType.PagedRequestObjectMethod;

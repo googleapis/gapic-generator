@@ -54,19 +54,6 @@
 @end
 
 @private constants(xsettingsClass)
-  @if xsettingsClass.hasDefaultServiceAddress
-    /**
-     * The default address of the service.
-     */
-    private static final String DEFAULT_SERVICE_ADDRESS = "{@xsettingsClass.serviceAddress}";
-    {@""}
-  @end
-
-  /**
-   * The default port of the service.
-   */
-  private static final int DEFAULT_SERVICE_PORT = {@xsettingsClass.servicePort};
-
   @if xsettingsClass.hasDefaultServiceScopes
     /**
      * The default scopes of the service.
@@ -82,7 +69,7 @@
   private static final String DEFAULT_GAPIC_NAME = "gapic";
   private static final String DEFAULT_GAPIC_VERSION = "";
 
-  private static final String PROPERTIES_FILE = "/project.properties";
+  private static final String PROPERTIES_FILE = "/{@xsettingsClass.packagePath}/project.properties";
   private static final String META_VERSION_KEY = "artifact.version";
 
   private static String gapicVersion;
@@ -102,19 +89,13 @@
 
   @if xsettingsClass.hasDefaultServiceAddress
     /**
-     * Returns the default service address.
+     * Returns the default service endpoint.
      */
-    public static String getDefaultServiceAddress() {
-      return DEFAULT_SERVICE_ADDRESS;
+    public static String getDefaultEndpoint() {
+      return "{@xsettingsClass.serviceAddress}:{@xsettingsClass.servicePort}";
     }
 
   @end
-  /**
-   * Returns the default service port.
-   */
-  public static int getDefaultServicePort() {
-    return DEFAULT_SERVICE_PORT;
-  }
 
   @if xsettingsClass.hasDefaultServiceScopes
     /**
@@ -141,9 +122,8 @@
   public static InstantiatingChannelProvider.Builder defaultChannelProviderBuilder() {
     return InstantiatingChannelProvider.newBuilder()
         @if xsettingsClass.hasDefaultServiceAddress
-            .setServiceAddress(DEFAULT_SERVICE_ADDRESS)
+            .setEndpoint(getDefaultEndpoint())
         @end
-        .setPort(DEFAULT_SERVICE_PORT)
         .setGeneratorHeader(DEFAULT_GAPIC_NAME, getGapicVersion())
         .setCredentialsProvider(defaultCredentialsProviderBuilder().build());
   }
@@ -268,14 +248,14 @@
     private static final PagedListDescriptor<{@desc.requestTypeName}, {@desc.responseTypeName}, {@desc.resourceTypeName}> {@desc.name} =
         new PagedListDescriptor<{@desc.requestTypeName}, {@desc.responseTypeName}, {@desc.resourceTypeName}>() {
           @@Override
-          public Object emptyToken() {
+          public String emptyToken() {
             return {@desc.defaultTokenValue};
           }
           @@Override
-          public {@desc.requestTypeName} injectToken({@desc.requestTypeName} payload, Object token) {
+          public {@desc.requestTypeName} injectToken({@desc.requestTypeName} payload, String token) {
             return {@desc.requestTypeName}
               .newBuilder(payload)
-              .{@desc.requestTokenSetFunction}(({@desc.tokenTypeName}) token)
+              .{@desc.requestTokenSetFunction}(token)
               .build();
           }
           @@Override
@@ -298,7 +278,7 @@
             @end
           }
           @@Override
-          public Object extractNextToken({@desc.responseTypeName} payload) {
+          public String extractNextToken({@desc.responseTypeName} payload) {
             return payload.{@desc.responseTokenGetFunction}();
           }
           @@Override
@@ -315,11 +295,14 @@
     private static final PagedListResponseFactory<{@factory.requestTypeName}, {@factory.responseTypeName}, {@factory.pagedListResponseTypeName}> {@factory.name} =
         new PagedListResponseFactory<{@factory.requestTypeName}, {@factory.responseTypeName}, {@factory.pagedListResponseTypeName}>() {
           @@Override
-          public {@factory.pagedListResponseTypeName} createPagedListResponse(
+          public ApiFuture<{@factory.pagedListResponseTypeName}> getFuturePagedResponse(
               UnaryCallable<{@factory.requestTypeName}, {@factory.responseTypeName}> callable,
               {@factory.requestTypeName} request,
-              CallContext context) {
-            return new {@factory.pagedListResponseTypeName}(callable, {@factory.pageStreamingDescriptorName}, request, context);
+              CallContext context,
+              ApiFuture<{@factory.responseTypeName}> futureResponse) {
+            PageContext<{@factory.requestTypeName}, {@factory.responseTypeName}, {@factory.resourceTypeName}> pageContext =
+                PageContext.create(callable, {@factory.pageStreamingDescriptorName}, request, context);
+            return {@factory.pagedListResponseTypeName}.createAsync(pageContext, futureResponse);
           }
         };
     {@""}

@@ -14,10 +14,10 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.FlatteningConfig;
-import com.google.api.codegen.config.InterfaceConfig;
-import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.GapicInterfaceConfig;
+import com.google.api.codegen.config.GapicMethodConfig;
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
@@ -26,21 +26,21 @@ import javax.annotation.Nullable;
 
 /** The context for transforming a method to a view model object. */
 @AutoValue
-public abstract class MethodTransformerContext {
-  public static MethodTransformerContext create(
-      SurfaceTransformerContext surfaceTransformerContext,
-      Interface interfaze,
-      ApiConfig apiConfig,
+public abstract class GapicMethodContext {
+  public static GapicMethodContext create(
+      GapicInterfaceContext surfaceTransformerContext,
+      Interface apiInterface,
+      GapicProductConfig productConfig,
       ModelTypeTable typeTable,
       SurfaceNamer namer,
       Method method,
-      MethodConfig methodConfig,
+      GapicMethodConfig methodConfig,
       FlatteningConfig flatteningConfig,
       FeatureConfig featureConfig) {
-    return new AutoValue_MethodTransformerContext(
+    return new AutoValue_GapicMethodContext(
         surfaceTransformerContext,
-        interfaze,
-        apiConfig,
+        apiInterface,
+        productConfig,
         typeTable,
         namer,
         method,
@@ -49,11 +49,11 @@ public abstract class MethodTransformerContext {
         featureConfig);
   }
 
-  public abstract SurfaceTransformerContext getSurfaceTransformerContext();
+  public abstract GapicInterfaceContext getSurfaceTransformerContext();
 
   public abstract Interface getInterface();
 
-  public abstract ApiConfig getApiConfig();
+  public abstract GapicProductConfig getProductConfig();
 
   public abstract ModelTypeTable getTypeTable();
 
@@ -61,7 +61,7 @@ public abstract class MethodTransformerContext {
 
   public abstract Method getMethod();
 
-  public abstract MethodConfig getMethodConfig();
+  public abstract GapicMethodConfig getMethodConfig();
 
   @Nullable
   public abstract FlatteningConfig getFlatteningConfig();
@@ -73,23 +73,23 @@ public abstract class MethodTransformerContext {
   }
 
   public Interface getTargetInterface() {
-    return InterfaceConfig.getTargetInterface(
+    return GapicInterfaceConfig.getTargetInterface(
         getInterface(), getMethodConfig().getRerouteToGrpcInterface());
   }
 
-  public InterfaceConfig getInterfaceConfig() {
-    return getApiConfig().getInterfaceConfig(getInterface());
+  public GapicInterfaceConfig getInterfaceConfig() {
+    return getProductConfig().getInterfaceConfig(getInterface());
   }
 
   public SingleResourceNameConfig getSingleResourceNameConfig(String entityName) {
-    return getApiConfig().getSingleResourceNameConfig(entityName);
+    return getProductConfig().getSingleResourceNameConfig(entityName);
   }
 
-  public MethodTransformerContext cloneWithEmptyTypeTable() {
+  public GapicMethodContext cloneWithEmptyTypeTable() {
     return create(
         getSurfaceTransformerContext(),
         getInterface(),
-        getApiConfig(),
+        getProductConfig(),
         getTypeTable().cloneEmpty(),
         getNamer(),
         getMethod(),

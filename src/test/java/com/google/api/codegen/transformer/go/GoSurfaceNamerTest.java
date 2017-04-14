@@ -16,7 +16,7 @@ package com.google.api.codegen.transformer.go;
 
 import com.google.api.codegen.CodegenTestUtil;
 import com.google.api.codegen.ConfigProto;
-import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
@@ -43,32 +43,33 @@ public class GoSurfaceNamerTest {
         CodegenTestUtil.readConfig(
             model.getDiagCollector(), locator, new String[] {"myproto_gapic.yaml"});
 
-    ApiConfig apiConfig = ApiConfig.createApiConfig(model, configProto);
+    GapicProductConfig productConfig = GapicProductConfig.create(model, configProto);
 
     if (model.getDiagCollector().hasErrors()) {
       throw new IllegalStateException(model.getDiagCollector().getDiags().toString());
     }
 
-    GoSurfaceNamer namer = new GoSurfaceNamer(apiConfig.getPackageName());
-    Map<String, Interface> services = new HashMap<>();
-    for (Interface service : model.getSymbolTable().getInterfaces()) {
-      services.put(service.getSimpleName(), service);
+    GoSurfaceNamer namer = new GoSurfaceNamer(productConfig.getPackageName());
+    Map<String, Interface> apiInterfaces = new HashMap<>();
+    for (Interface apiInterface : model.getSymbolTable().getInterfaces()) {
+      apiInterfaces.put(apiInterface.getSimpleName(), apiInterface);
     }
 
-    Truth.assertThat(apiConfig.getPackageName()).isEqualTo("cloud.google.com/go/gopher/apiv1");
+    Truth.assertThat(productConfig.getPackageName()).isEqualTo("cloud.google.com/go/gopher/apiv1");
     Truth.assertThat(namer.getLocalPackageName()).isEqualTo("gopher");
 
     // Both the service name and the local package name are "gopher",
     // the client name prefix should be empty.
-    Truth.assertThat(namer.getReducedServiceName(services.get("Gopher")))
+    Truth.assertThat(namer.getReducedServiceName(apiInterfaces.get("Gopher")))
         .isEqualTo(Name.from("gopher"));
-    Truth.assertThat(namer.clientNamePrefix(services.get("Gopher"))).isEqualTo(Name.from());
+    Truth.assertThat(namer.clientNamePrefix(apiInterfaces.get("Gopher"))).isEqualTo(Name.from());
 
     // The service name is different from the local package name,
     // use the service name as the prefix.
-    Truth.assertThat(namer.getReducedServiceName(services.get("Guru")))
+    Truth.assertThat(namer.getReducedServiceName(apiInterfaces.get("Guru")))
         .isEqualTo(Name.from("guru"));
-    Truth.assertThat(namer.clientNamePrefix(services.get("Guru"))).isEqualTo(Name.from("guru"));
+    Truth.assertThat(namer.clientNamePrefix(apiInterfaces.get("Guru")))
+        .isEqualTo(Name.from("guru"));
   }
 
   @Test
@@ -85,24 +86,24 @@ public class GoSurfaceNamerTest {
         CodegenTestUtil.readConfig(
             model.getDiagCollector(), locator, new String[] {"singleservice_gapic.yaml"});
 
-    ApiConfig apiConfig = ApiConfig.createApiConfig(model, configProto);
+    GapicProductConfig productConfig = GapicProductConfig.create(model, configProto);
 
     if (model.getDiagCollector().hasErrors()) {
       throw new IllegalStateException(model.getDiagCollector().getDiags().toString());
     }
 
-    GoSurfaceNamer namer = new GoSurfaceNamer(apiConfig.getPackageName());
-    List<Interface> services = model.getSymbolTable().getInterfaces().asList();
+    GoSurfaceNamer namer = new GoSurfaceNamer(productConfig.getPackageName());
+    List<Interface> apiInterfaces = model.getSymbolTable().getInterfaces().asList();
 
-    Truth.assertThat(apiConfig.getPackageName())
+    Truth.assertThat(productConfig.getPackageName())
         .isEqualTo("cloud.google.com/go/singleservice/apiv1");
     Truth.assertThat(namer.getLocalPackageName()).isEqualTo("singleservice");
 
     // Don't drop service name if the name is different from package,
     // even if there's only one.
-    Truth.assertThat(namer.getReducedServiceName(services.get(0)))
+    Truth.assertThat(namer.getReducedServiceName(apiInterfaces.get(0)))
         .isEqualTo(Name.from("oddly", "named"));
-    Truth.assertThat(namer.clientNamePrefix(services.get(0)))
+    Truth.assertThat(namer.clientNamePrefix(apiInterfaces.get(0)))
         .isEqualTo(Name.from("oddly", "named"));
   }
 }
