@@ -66,7 +66,7 @@ public class DiscoveryFragmentGeneratorApi {
       ToolOptions.createOption(
           String.class,
           "overrides",
-          "A comma dielimited list of paths to sample config override files.",
+          "A comma delimited list of paths to sample config override files.",
           "");
 
   public static final Option<List<String>> GENERATOR_CONFIG_FILES =
