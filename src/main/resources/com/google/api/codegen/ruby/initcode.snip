@@ -16,14 +16,38 @@
 @end
 
 @private initLineStructure(line)
-  {@line.identifier} = {@line.typeName}.new
-  @join fieldSetting : line.fieldSettings
-    @if fieldSetting.isArray
-      # If the array is empty, the protobuf will not allow for this operation.
-      {@line.identifier}.{@fieldSetting.fieldSetFunction} += {@fieldSetting.identifier} unless {@fieldSetting.identifier}.empty?
-    @else
-      {@line.identifier}.{@fieldSetting.fieldSetFunction} = {@fieldSetting.identifier}
-    @end
+  @switch line.fieldSettings.size.toString
+  @case "0"
+    {@line.identifier} = {@line.typeName}.new
+  @case "1"
+    {@singleLineInitStructure(line)}
+  @case "2"
+    {@singleLineInitStructure(line)}
+  @default
+    {@multiLineInitStructure(line)}
+  @end
+@end
+
+@private singleLineInitStructure(line)
+    {@line.identifier} = {@line.typeName}.new({@structureFieldsList(line.fieldSettings)})
+@end
+
+@private multiLineInitStructure(line)
+  {@line.identifier} = {@line.typeName}.new(
+    {@multilineStructureFieldsList(line.fieldSettings)}
+  )
+@end
+
+@private structureFieldsList(fieldSettings)
+  @join fieldSetting : fieldSettings on ", "
+    {@fieldSetting.fieldName}: {@fieldSetting.identifier}
+  @end
+@end
+
+@private multilineStructureFieldsList(fieldSettings)
+  @join fieldSetting : fieldSettings on ",".add(BREAK)
+    {@fieldSetting.fieldName}: {@fieldSetting.identifier}
+>>>>>>> 832371ab231da478f773ec6edb0f97143ebeb6f0
   @end
 @end
 

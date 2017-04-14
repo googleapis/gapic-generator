@@ -643,8 +643,7 @@ module Library
       #   shelf = Shelf.new
       #   books = []
       #   series_string = "foobar"
-      #   series_uuid = SeriesUuid.new
-      #   series_uuid.series_string = series_string
+      #   series_uuid = SeriesUuid.new(series_string: series_string)
       #   response = library_service_client.publish_series(shelf, books, series_uuid)
 
       def publish_series \
@@ -916,10 +915,11 @@ module Library
       #   comment = ''
       #   stage = Stage::UNSET
       #   alignment = Alignment::CHAR
-      #   comments_element = Comment.new
-      #   comments_element.comment = comment
-      #   comments_element.stage = stage
-      #   comments_element.alignment = alignment
+      #   comments_element = Comment.new(
+      #     comment: comment,
+      #     stage: stage,
+      #     alignment: alignment
+      #   )
       #   comments = [comments_element]
       #   library_service_client.add_comments(formatted_name, comments)
 
@@ -1116,8 +1116,7 @@ module Library
       #
       #   library_service_client = LibraryServiceClient.new
       #   name = ''
-      #   request = DiscussBookRequest.new
-      #   request.name = name
+      #   request = DiscussBookRequest.new(name: name)
       #   requests = [request]
       #   library_service_client.discuss_book(requests).each do |element|
       #     # Process element.
@@ -1151,8 +1150,7 @@ module Library
       #
       #   library_service_client = LibraryServiceClient.new
       #   name = ''
-      #   request = DiscussBookRequest.new
-      #   request.name = name
+      #   request = DiscussBookRequest.new(name: name)
       #   requests = [request]
       #   response = library_service_client.monolog_about_book(requests)
 
