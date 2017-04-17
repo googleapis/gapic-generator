@@ -90,11 +90,14 @@ public class TestCaseTransformer {
           !ServiceMessages.s_isEmptyType(methodConfig.getLongRunningConfig().getReturnType());
     }
 
+    String fullyQualifiedGrpcStubTypeName =
+        methodContext.getNamer().getFullyQualifiedStubType(methodContext.getTargetInterface());
+
     return TestCaseView.newBuilder()
         .asserts(initCodeTransformer.generateRequestAssertViews(methodContext, initCodeContext))
         .clientMethodType(clientMethodType)
         .grpcStreamingType(methodConfig.getGrpcStreamingType())
-        .grpcStubTypeName(namer.getFullyQualifiedStubType(methodContext.getInterface()))
+        .grpcStubTypeName(fullyQualifiedGrpcStubTypeName)
         .hasRequestParameters(hasRequestParameters)
         .hasReturnValue(hasReturnValue)
         .initCode(initCode)

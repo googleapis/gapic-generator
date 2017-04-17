@@ -51,10 +51,11 @@ describe Library::V1::LibraryServiceClient do
       name = "name3373707"
       theme = "theme110327241"
       internal_theme = "internalTheme792518087"
-      expected_response = Shelf.new
-      expected_response.name = name
-      expected_response.theme = theme
-      expected_response.internal_theme = internal_theme
+      expected_response = Shelf.new(
+        name: name,
+        theme: theme,
+        internal_theme: internal_theme
+      )
 
       # Mock Grpc layer
       mock_method = proc do |request|
@@ -113,10 +114,11 @@ describe Library::V1::LibraryServiceClient do
       name_2 = "name2-1052831874"
       theme = "theme110327241"
       internal_theme = "internalTheme792518087"
-      expected_response = Shelf.new
-      expected_response.name = name_2
-      expected_response.theme = theme
-      expected_response.internal_theme = internal_theme
+      expected_response = Shelf.new(
+        name: name_2,
+        theme: theme,
+        internal_theme: internal_theme
+      )
 
       # Mock Grpc layer
       mock_method = proc do |request|
@@ -230,10 +232,11 @@ describe Library::V1::LibraryServiceClient do
       name_2 = "name2-1052831874"
       theme = "theme110327241"
       internal_theme = "internalTheme792518087"
-      expected_response = Shelf.new
-      expected_response.name = name_2
-      expected_response.theme = theme
-      expected_response.internal_theme = internal_theme
+      expected_response = Shelf.new(
+        name: name_2,
+        theme: theme,
+        internal_theme: internal_theme
+      )
 
       # Mock Grpc layer
       mock_method = proc do |request|
@@ -296,11 +299,12 @@ describe Library::V1::LibraryServiceClient do
       author = "author-1406328437"
       title = "title110371416"
       read = true
-      expected_response = Book.new
-      expected_response.name = name_2
-      expected_response.author = author
-      expected_response.title = title
-      expected_response.read = read
+      expected_response = Book.new(
+        name: name_2,
+        author: author,
+        title: title,
+        read: read
+      )
 
       # Mock Grpc layer
       mock_method = proc do |request|
@@ -360,14 +364,12 @@ describe Library::V1::LibraryServiceClient do
       shelf = Shelf.new
       books = []
       series_string = "foobar"
-      series_uuid = SeriesUuid.new
-      series_uuid.series_string = series_string
+      series_uuid = SeriesUuid.new(series_string: series_string)
 
       # Create expected grpc response
       book_names_element = "bookNamesElement1491670575"
       book_names = [book_names_element]
-      expected_response = PublishSeriesResponse.new
-      expected_response.book_names += book_names unless book_names.empty?
+      expected_response = PublishSeriesResponse.new(book_names: book_names)
 
       # Mock Grpc layer
       mock_method = proc do |request|
@@ -398,8 +400,7 @@ describe Library::V1::LibraryServiceClient do
       shelf = Shelf.new
       books = []
       series_string = "foobar"
-      series_uuid = SeriesUuid.new
-      series_uuid.series_string = series_string
+      series_uuid = SeriesUuid.new(series_string: series_string)
 
       # Mock Grpc layer
       mock_method = proc do |request|
@@ -442,11 +443,12 @@ describe Library::V1::LibraryServiceClient do
       author = "author-1406328437"
       title = "title110371416"
       read = true
-      expected_response = Book.new
-      expected_response.name = name_2
-      expected_response.author = author
-      expected_response.title = title
-      expected_response.read = read
+      expected_response = Book.new(
+        name: name_2,
+        author: author,
+        title: title,
+        read: read
+      )
 
       # Mock Grpc layer
       mock_method = proc do |request|
@@ -558,11 +560,12 @@ describe Library::V1::LibraryServiceClient do
       author = "author-1406328437"
       title = "title110371416"
       read = true
-      expected_response = Book.new
-      expected_response.name = name_2
-      expected_response.author = author
-      expected_response.title = title
-      expected_response.read = read
+      expected_response = Book.new(
+        name: name_2,
+        author: author,
+        title: title,
+        read: read
+      )
 
       # Mock Grpc layer
       mock_method = proc do |request|
@@ -625,11 +628,12 @@ describe Library::V1::LibraryServiceClient do
       author = "author-1406328437"
       title = "title110371416"
       read = true
-      expected_response = Book.new
-      expected_response.name = name_2
-      expected_response.author = author
-      expected_response.title = title
-      expected_response.read = read
+      expected_response = Book.new(
+        name: name_2,
+        author: author,
+        title: title,
+        read: read
+      )
 
       # Mock Grpc layer
       mock_method = proc do |request|
@@ -691,10 +695,11 @@ describe Library::V1::LibraryServiceClient do
       comment = ''
       stage = Stage::UNSET
       alignment = Alignment::CHAR
-      comments_element = Comment.new
-      comments_element.comment = comment
-      comments_element.stage = stage
-      comments_element.alignment = alignment
+      comments_element = Comment.new(
+        comment: comment,
+        stage: stage,
+        alignment: alignment
+      )
       comments = [comments_element]
 
       # Mock Grpc layer
@@ -722,10 +727,11 @@ describe Library::V1::LibraryServiceClient do
       comment = ''
       stage = Stage::UNSET
       alignment = Alignment::CHAR
-      comments_element = Comment.new
-      comments_element.comment = comment
-      comments_element.stage = stage
-      comments_element.alignment = alignment
+      comments_element = Comment.new(
+        comment: comment,
+        stage: stage,
+        alignment: alignment
+      )
       comments = [comments_element]
 
       # Mock Grpc layer
@@ -764,11 +770,12 @@ describe Library::V1::LibraryServiceClient do
       author = "author-1406328437"
       title = "title110371416"
       read = true
-      expected_response = BookFromArchive.new
-      expected_response.name = name_2
-      expected_response.author = author
-      expected_response.title = title
-      expected_response.read = read
+      expected_response = BookFromArchive.new(
+        name: name_2,
+        author: author,
+        title: title,
+        read: read
+      )
 
       # Mock Grpc layer
       mock_method = proc do |request|
@@ -828,11 +835,12 @@ describe Library::V1::LibraryServiceClient do
       author = "author-1406328437"
       title = "title110371416"
       read = true
-      expected_response = BookFromAnywhere.new
-      expected_response.name = name_2
-      expected_response.author = author
-      expected_response.title = title
-      expected_response.read = read
+      expected_response = BookFromAnywhere.new(
+        name: name_2,
+        author: author,
+        title: title,
+        read: read
+      )
 
       # Mock Grpc layer
       mock_method = proc do |request|
@@ -1030,7 +1038,7 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcStub.new(:add_label, mock_method)
 
-      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+      Google::Tagger::V1::Labeler::Stub.stub(:new, mock_stub) do
         client = LibraryServiceClient.new
 
         # Call method
@@ -1054,7 +1062,7 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcStub.new(:add_label, mock_method)
 
-      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+      Google::Tagger::V1::Labeler::Stub.stub(:new, mock_stub) do
         client = LibraryServiceClient.new
 
         # Call method
@@ -1115,7 +1123,7 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(required_singular_float, request.required_singular_float)
         assert_equal(required_singular_double, request.required_singular_double)
         assert_equal(required_singular_bool, request.required_singular_bool)
-        assert_equal(required_singular_enum, request.required_singular_enum)
+        assert_equal(InnerEnum.lookup(required_singular_enum), request.required_singular_enum)
         assert_equal(required_singular_string, request.required_singular_string)
         assert_equal(required_singular_bytes, request.required_singular_bytes)
         assert_equal(required_singular_message, request.required_singular_message)
@@ -1217,7 +1225,7 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(required_singular_float, request.required_singular_float)
         assert_equal(required_singular_double, request.required_singular_double)
         assert_equal(required_singular_bool, request.required_singular_bool)
-        assert_equal(required_singular_enum, request.required_singular_enum)
+        assert_equal(InnerEnum.lookup(required_singular_enum), request.required_singular_enum)
         assert_equal(required_singular_string, request.required_singular_string)
         assert_equal(required_singular_bytes, request.required_singular_bytes)
         assert_equal(required_singular_message, request.required_singular_message)

@@ -64,7 +64,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
   /** The function name to set a field having the given type and name. */
   @Override
   public String getFieldSetFunctionName(TypeRef type, Name identifier) {
-    return keyName(identifier);
+    return getFieldGetFunctionName(type, identifier);
   }
 
   /** The function name to format the entity for the given collection. */
@@ -268,8 +268,15 @@ public class RubySurfaceNamer extends SurfaceNamer {
     return Joiner.on("/").join(newNames.toArray());
   }
 
+  @Override
   /** The function name to get the given proto field. */
   public String getFieldGetFunctionName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
     return getFieldKey(fieldConfig.getField());
+  }
+
+  @Override
+  /** The function name to get a field having the given type and name. */
+  public String getFieldGetFunctionName(TypeRef type, Name identifier) {
+    return keyName(identifier);
   }
 }

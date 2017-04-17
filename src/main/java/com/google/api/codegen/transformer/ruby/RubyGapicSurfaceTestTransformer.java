@@ -182,7 +182,6 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
         .initFieldConfigStrings(methodConfig.getSampleCodeInitFields())
         .initValueConfigMap(InitCodeTransformer.createCollectionMap(dynamicMethodContext))
         .initFields(FieldConfig.toFieldIterable(fieldConfigs))
-        // This field will vary when page streaming tests are supported.
         .outputType(InitCodeOutputType.FieldList)
         .fieldConfigMap(FieldConfig.toFieldConfigMap(fieldConfigs))
         .build();

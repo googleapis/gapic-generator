@@ -15,7 +15,7 @@
         describe '{@test.clientMethodName}' do
 
           @if {@aliasSection(test.initCode.importSection)}
-            {@aliasSection(test.initCode.importSection)}
+            {@aliasSection(test.mockResponse.initCode.importSection)}
 
           @end
           {@testCase(test)}
@@ -126,7 +126,9 @@
 
 @private mockUnaryRequest(test)
   mock_method = proc do |request|
-    {@requestAsserts(test)}
+    @if requestAsserts(test)
+      {@requestAsserts(test)}
+    @end
     @if test.hasReturnValue
       expected_response
     @else
@@ -144,17 +146,18 @@
 
 @private requestAsserts(test)
    @join assert : test.asserts
-     @if assert.hasExpectedValueTransformFunction
-       assert_equal(\
-         {@assert.expectedValueTransformFunction}(\
-             {@assert.expectedValueIdentifier}), \
-         request.{@assert.actualValueGetter})
-     @else
-       assert_equal(\
-         {@assert.expectedValueIdentifier}, \
-         request.{@assert.actualValueGetter})
-     @end
+     assert_equal(\
+       {@expectedValue(assert)}, \
+       request.{@assert.actualValueGetter})
    @end
+@end
+
+@private expectedValue(assert)
+  @if assert.hasEnumTypeName
+    {@assert.enumTypeName}.lookup({@assert.expectedValueIdentifier})
+  @else
+    {@assert.expectedValueIdentifier}
+  @end
 @end
 
 @private methodCallWithResponse(test)
