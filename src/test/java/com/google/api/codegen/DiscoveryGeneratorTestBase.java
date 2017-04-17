@@ -32,6 +32,8 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -101,9 +103,13 @@ public abstract class DiscoveryGeneratorTestBase extends ConfigBaselineTestCase 
     // This field is manually populated to test the end-to-end behavior of the
     // "auth_instructions" flag.
     discoveryImporter.getConfig().setAuthInstructionsUrl("https://foo.com/bar");
+    List<JsonNode> overrides = new ArrayList<JsonNode>();
+    if (overridesJson != null) {
+      overrides.add(overridesJson);
+    }
     DiscoveryProvider provider =
         MainDiscoveryProviderFactory.defaultCreate(
-            discoveryImporter.getService(), discoveryImporter.getConfig(), overridesJson, id);
+            discoveryImporter.getService(), discoveryImporter.getConfig(), overrides, id);
 
     Doc output = Doc.EMPTY;
     for (Api api : discoveryImporter.getService().getApisList()) {
