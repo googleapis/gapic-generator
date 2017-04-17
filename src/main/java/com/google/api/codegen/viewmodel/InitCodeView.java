@@ -36,10 +36,6 @@ public abstract class InitCodeView {
   /** The file name of the index file. */
   public abstract String versionIndexFileImportName();
 
-  public boolean hasManyFieldSettings() {
-    return fieldSettings().size() > 2;
-  };
-
   public static Builder newBuilder() {
     return new AutoValue_InitCodeView.Builder();
   }

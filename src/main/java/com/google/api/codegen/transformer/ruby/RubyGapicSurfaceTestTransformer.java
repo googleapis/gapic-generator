@@ -54,13 +54,13 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
-import java.util.Collections;
 import java.util.List;
 
 /** A subclass of ModelToViewTransformer which translates model into API smoke tests in Ruby. */
 public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private static String SMOKE_TEST_TEMPLATE_FILE = "ruby/smoke_test.snip";
   private static String UNIT_TEST_TEMPLATE_FILE = "ruby/test.snip";
+  private static String UNIT_TEST_OUTPUT_FILE = "test" + File.separator + "test.rb";
 
   private final GapicCodePathMapper pathMapper;
   private final FileHeaderTransformer fileHeaderTransformer =
@@ -80,11 +80,11 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(Model model, GapicProductConfig apiConfig) {
+  public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ViewModel> views = ImmutableList.builder();
-    views.add(createUnitTestView(model, apiConfig));
-    for (Interface service : new InterfaceView().getElementIterable(model)) {
-      GapicInterfaceContext context = createContext(service, apiConfig);
+    views.add(createUnitTestView(model, productConfig));
+    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+      GapicInterfaceContext context = createContext(apiInterface, productConfig);
       if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
         views.add(createSmokeTestClassView(context));
       }
@@ -95,22 +95,22 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
   ///////////////////////////////////// Unit Test ///////////////////////////////////////
 
-  private MockCombinedView createUnitTestView(Model model, GapicProductConfig apiConfig) {
-    SurfaceNamer namer = new RubySurfaceNamer(apiConfig.getPackageName());
+  private MockCombinedView createUnitTestView(Model model, GapicProductConfig productConfig) {
+    SurfaceNamer namer = new RubySurfaceNamer(productConfig.getPackageName());
     ImportSectionView importSection =
-        importSectionTransformer.generateTestImportSection(model, apiConfig);
+        importSectionTransformer.generateTestImportSection(model, productConfig);
     return MockCombinedView.newBuilder()
-        .outputPath("test" + File.separator + "test.rb")
+        .outputPath(UNIT_TEST_OUTPUT_FILE)
         .serviceImpls(ImmutableList.<MockServiceImplView>of())
         .mockServices(ImmutableList.<MockServiceUsageView>of())
-        .testClasses(generateTestClasses(model, apiConfig, namer))
+        .testClasses(generateTestClasses(model, productConfig, namer))
         .templateFileName(UNIT_TEST_TEMPLATE_FILE)
-        .fileHeader(fileHeaderTransformer.generateFileHeader(apiConfig, importSection, namer))
+        .fileHeader(fileHeaderTransformer.generateFileHeader(productConfig, importSection, namer))
         .build();
   }
 
   private List<ClientTestClassView> generateTestClasses(
-      Model model, GapicProductConfig apiConfig, SurfaceNamer namer) {
+      Model model, GapicProductConfig productConfig, SurfaceNamer namer) {
     ImmutableList.Builder<ClientTestClassView> testClasses = ImmutableList.builder();
     String apiSettingsClassName =
         namer.getNotImplementedString(
@@ -118,8 +118,8 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
     String testClassName =
         namer.getNotImplementedString("RubyGapicSurfaceTestTransformer.generateTestView - name");
 
-    for (Interface service : new InterfaceView().getElementIterable(model)) {
-      GapicInterfaceContext context = createContext(service, apiConfig);
+    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+      GapicInterfaceContext context = createContext(apiInterface, productConfig);
       GapicInterfaceConfig serviceConfig = context.getInterfaceConfig();
       ClientTestClassView testClass =
           ClientTestClassView.newBuilder()
@@ -128,7 +128,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
               .name(testClassName)
               .testCases(createTestCaseViews(context))
               .apiHasLongRunningMethods(serviceConfig.hasLongRunningOperations())
-              .mockServices(Collections.<MockServiceUsageView>emptyList())
+              .mockServices(ImmutableList.<MockServiceUsageView>of())
               .build();
       testClasses.add(testClass);
     }
@@ -256,14 +256,15 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
   /////////////////////////////////// General Helpers //////////////////////////////////////
 
-  private GapicInterfaceContext createContext(Interface service, GapicProductConfig apiConfig) {
+  private GapicInterfaceContext createContext(
+      Interface apiInterface, GapicProductConfig productConfig) {
     return GapicInterfaceContext.create(
-        service,
-        apiConfig,
+        apiInterface,
+        productConfig,
         new ModelTypeTable(
-            new RubyTypeTable(apiConfig.getPackageName()),
-            new RubyModelTypeNameConverter(apiConfig.getPackageName())),
-        new RubySurfaceNamer(apiConfig.getPackageName()),
+            new RubyTypeTable(productConfig.getPackageName()),
+            new RubyModelTypeNameConverter(productConfig.getPackageName())),
+        new RubySurfaceNamer(productConfig.getPackageName()),
         new RubyFeatureConfig());
   }
 }

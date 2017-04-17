@@ -85,7 +85,7 @@
     {@mockUnaryRequest(test)}
     mock_stub = MockGrpcStub.new(:{@test.clientMethodName}, mock_method)
 
-    {@test.grpcStubTypeName}.stub(:new, mock_stub) do
+    {@test.grpcStubCallString}.stub(:new, mock_stub) do
       client = {@test.serviceConstructorName}.new
 
       @# Call method
@@ -110,7 +110,7 @@
     {@mockUnaryError(test)}
     mock_stub = MockGrpcStub.new(:{@test.clientMethodName}, mock_method)
 
-    {@test.grpcStubTypeName}.stub(:new, mock_stub) do
+    {@test.grpcStubCallString}.stub(:new, mock_stub) do
       client = {@test.serviceConstructorName}.new
 
       @# Call method
@@ -161,22 +161,32 @@
 @end
 
 @private methodCallWithResponse(test)
-  @if @test.initCode.hasManyFieldSettings
+  @switch test.initCode.fieldSettings.size.toString
+  @case "0"
+    response = client.{@test.clientMethodName}({@argList(test.initCode.fieldSettings)})
+  @case "1"
+    response = client.{@test.clientMethodName}({@argList(test.initCode.fieldSettings)})
+  @case "2"
+    response = client.{@test.clientMethodName}({@argList(test.initCode.fieldSettings)})
+  @default
     response = client.{@test.clientMethodName}(
       {@multilineArgList(test.initCode.fieldSettings)}
     )
-  @else
-    response = client.{@test.clientMethodName}({@argList(test.initCode.fieldSettings)})
   @end
 @end
 
 @private methodCall(test)
-  @if @test.initCode.hasManyFieldSettings
+  @switch test.initCode.fieldSettings.size.toString
+  @case "0"
+    client.{@test.clientMethodName}({@argList(test.initCode.fieldSettings)})
+  @case "1"
+    client.{@test.clientMethodName}({@argList(test.initCode.fieldSettings)})
+  @case "2"
+    client.{@test.clientMethodName}({@argList(test.initCode.fieldSettings)})
+  @default
     client.{@test.clientMethodName}(
       {@multilineArgList(test.initCode.fieldSettings)}
     )
-  @else
-    client.{@test.clientMethodName}({@argList(test.initCode.fieldSettings)})
   @end
 @end
 

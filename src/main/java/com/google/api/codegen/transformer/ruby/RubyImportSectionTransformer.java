@@ -54,12 +54,13 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
     return new StandardImportSectionTransformer().generateImportSection(context, specItemNodes);
   }
 
-  public ImportSectionView generateTestImportSection(Model model, GapicProductConfig apiConfig) {
+  public ImportSectionView generateTestImportSection(
+      Model model, GapicProductConfig productConfig) {
     List<ImportFileView> none = ImmutableList.of();
     ImportSectionView.Builder importSection = ImportSectionView.newBuilder();
     importSection.standardImports(generateTestStandardImports());
     importSection.externalImports(none);
-    importSection.appImports(generateTestAppImports(model, apiConfig));
+    importSection.appImports(generateTestAppImports(model, productConfig));
     importSection.serviceImports(none);
     return importSection.build();
   }
@@ -113,18 +114,16 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
     return ImmutableList.of(createImport("minitest/autorun"), createImport("minitest/spec"));
   }
 
-  private List<ImportFileView> generateTestAppImports(Model model, GapicProductConfig apiConfig) {
+  private List<ImportFileView> generateTestAppImports(
+      Model model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ImportFileView> imports = ImmutableList.builder();
-    SurfaceNamer namer = new RubySurfaceNamer(apiConfig.getPackageName());
-    for (Interface service : new InterfaceView().getElementIterable(model)) {
-      imports.add(createImport(namer.getServiceFileName(apiConfig.getInterfaceConfig(service))));
-    }
-
-    // The protobuf imports need to be loaded before the client is initialized.
-    for (Interface service : new InterfaceView().getElementIterable(model)) {
+    SurfaceNamer namer = new RubySurfaceNamer(productConfig.getPackageName());
+    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+      imports.add(
+          createImport(namer.getServiceFileName(productConfig.getInterfaceConfig(apiInterface))));
       imports.add(
           createImport(
-              namer.getServiceFileImportName(service.getFile().getFile().getSimpleName())));
+              namer.getServiceFileImportName(apiInterface.getFile().getFile().getSimpleName())));
     }
     return imports.build();
   }

@@ -269,14 +269,17 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  /** The function name to get the given proto field. */
   public String getFieldGetFunctionName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
     return getFieldKey(fieldConfig.getField());
   }
 
   @Override
-  /** The function name to get a field having the given type and name. */
   public String getFieldGetFunctionName(TypeRef type, Name identifier) {
     return keyName(identifier);
+  }
+
+  @Override
+  public String getGrpcStubCallString(Interface apiInterface, Method method) {
+    return getFullyQualifiedStubType(apiInterface);
   }
 }
