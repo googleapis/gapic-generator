@@ -73,10 +73,14 @@
 
 @private requestObjectTestCase(test)
   it 'invokes {@test.clientMethodName} without error' do
-    @# Create request parameters and expected request
-    {@initCode(test.initCode)}
+    @if initCode(test.initCode)
+      @# Create request parameters and expected request
+      {@initCode(test.initCode)}
+    @end
+    @if and(initCode(test.initCode), test.hasReturnValue)
+      {@BREAK}
+    @end
     @if test.hasReturnValue
-
       @# Create expected grpc response
       {@initCode(test.mockResponse.initCode)}
     @end
@@ -103,9 +107,11 @@
 
 @private errorTestCase(test)
   it 'invokes {@test.clientMethodName} with error' do
-    @# Create request parameters and expected request
-    {@initCode(test.initCode)}
+    @if initCode(test.initCode)
+      @# Create request parameters and expected request
+      {@initCode(test.initCode)}
 
+    @end
     @# Mock Grpc layer
     {@mockUnaryError(test)}
     mock_stub = MockGrpcStub.new(:{@test.clientMethodName}, mock_method)
@@ -125,7 +131,7 @@
 @end
 
 @private mockUnaryRequest(test)
-  mock_method = proc do |request|
+  {@mockRequestInitLine(test)}
     @if requestAsserts(test)
       {@requestAsserts(test)}
     @end
@@ -138,10 +144,20 @@
 @end
 
 @private mockUnaryError(test)
-  mock_method = proc do |request|
-    {@requestAsserts(test)}
+  {@mockRequestInitLine(test)}
+    @if requestAsserts(test)
+      {@requestAsserts(test)}
+    @end
     raise error
   end
+@end
+
+@private mockRequestInitLine(test)
+  @if test.initCode.fieldSettings
+    mock_method = proc do |request|
+  @else
+    mock_method = proc do
+  @end
 @end
 
 @private requestAsserts(test)
@@ -163,7 +179,7 @@
 @private methodCallWithResponse(test)
   @switch test.initCode.fieldSettings.size.toString
   @case "0"
-    response = client.{@test.clientMethodName}({@argList(test.initCode.fieldSettings)})
+    response = client.{@test.clientMethodName}
   @case "1"
     response = client.{@test.clientMethodName}({@argList(test.initCode.fieldSettings)})
   @case "2"
@@ -178,7 +194,7 @@
 @private methodCall(test)
   @switch test.initCode.fieldSettings.size.toString
   @case "0"
-    client.{@test.clientMethodName}({@argList(test.initCode.fieldSettings)})
+    client.{@test.clientMethodName}
   @case "1"
     client.{@test.clientMethodName}({@argList(test.initCode.fieldSettings)})
   @case "2"
