@@ -14,8 +14,6 @@
  */
 package com.google.api.codegen.transformer.ruby;
 
-import com.google.api.codegen.InterfaceView;
-import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
@@ -28,7 +26,6 @@ import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
-import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.Set;
@@ -54,13 +51,12 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
     return new StandardImportSectionTransformer().generateImportSection(context, specItemNodes);
   }
 
-  public ImportSectionView generateTestImportSection(
-      Model model, GapicProductConfig productConfig) {
+  public ImportSectionView generateTestImportSection(GapicInterfaceContext context) {
     List<ImportFileView> none = ImmutableList.of();
     ImportSectionView.Builder importSection = ImportSectionView.newBuilder();
     importSection.standardImports(generateTestStandardImports());
     importSection.externalImports(none);
-    importSection.appImports(generateTestAppImports(model, productConfig));
+    importSection.appImports(generateTestAppImports(context));
     importSection.serviceImports(none);
     return importSection.build();
   }
@@ -114,17 +110,13 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
     return ImmutableList.of(createImport("minitest/autorun"), createImport("minitest/spec"));
   }
 
-  private List<ImportFileView> generateTestAppImports(
-      Model model, GapicProductConfig productConfig) {
+  private List<ImportFileView> generateTestAppImports(GapicInterfaceContext context) {
     ImmutableList.Builder<ImportFileView> imports = ImmutableList.builder();
-    SurfaceNamer namer = new RubySurfaceNamer(productConfig.getPackageName());
-    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
-      imports.add(
-          createImport(namer.getServiceFileName(productConfig.getInterfaceConfig(apiInterface))));
-      imports.add(
-          createImport(
-              namer.getServiceFileImportName(apiInterface.getFile().getFile().getSimpleName())));
-    }
+    SurfaceNamer namer = context.getNamer();
+    imports.add(createImport(namer.getServiceFileName(context.getInterfaceConfig())));
+    imports.add(
+        createImport(
+            namer.getServiceFileImportName(context.getInterface().getFile().getSimpleName())));
     return imports.build();
   }
 
