@@ -7,10 +7,7 @@
 
   {@helpers()}
 
-  describe {@apiTest.testClass.apiClassName} do
-    error = CustomError.new "Test error"
-    {@testClass(apiTest.testClass)}
-  end
+  {@testClass(apiTest.testClass)}
 @end
 
 @private header(fileHeader)
@@ -40,19 +37,22 @@
 @end
 
 @private testClass(testClass)
-  @join test : testClass.testCases
+  describe {@testClass.apiClassName} do
+    error = CustomError.new "Test error"
+    @join test : testClass.testCases
 
-    describe '{@test.clientMethodName}' do
+      describe '{@test.clientMethodName}' do
 
-      @if {@aliasSection(test.initCode.importSection)}
-        {@aliasSection(test.mockResponse.initCode.importSection)}
+        @if {@aliasSection(test.initCode.importSection)}
+          {@aliasSection(test.mockResponse.initCode.importSection)}
 
-      @end
-      {@testCase(test)}
+        @end
+        {@testCase(test)}
 
-      {@errorTestCase(test)}
-    end
-  @end
+        {@errorTestCase(test)}
+      end
+    @end
+  end
 @end
 
 @private testCase(test)
