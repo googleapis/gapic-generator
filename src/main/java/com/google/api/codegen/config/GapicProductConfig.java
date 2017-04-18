@@ -123,8 +123,14 @@ public abstract class GapicProductConfig implements ProductConfig {
     ImmutableList<String> copyrightLines = null;
     ImmutableList<String> licenseLines = null;
     try {
-      copyrightLines = loadCopyrightLines(model.getDiagCollector(), configProto.getLicenseHeader());
-      licenseLines = loadLicenseLines(model.getDiagCollector(), configProto.getLicenseHeader());
+      LicenseHeaderProto licenseHeader =
+          configProto
+              .getLicenseHeader()
+              .toBuilder()
+              .mergeFrom(settings.getLicenseHeaderOverride())
+              .build();
+      copyrightLines = loadCopyrightLines(model.getDiagCollector(), licenseHeader);
+      licenseLines = loadLicenseLines(model.getDiagCollector(), licenseHeader);
     } catch (Exception e) {
       model
           .getDiagCollector()
