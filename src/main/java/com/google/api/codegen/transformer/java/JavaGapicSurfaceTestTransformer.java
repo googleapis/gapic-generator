@@ -321,6 +321,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("java.util.ArrayList");
     typeTable.saveNicknameFor("java.util.Arrays");
     typeTable.saveNicknameFor("java.util.List");
+    typeTable.saveNicknameFor("java.util.concurrent.ExecutionException");
     typeTable.saveNicknameFor("com.google.api.gax.testing.MockServiceHelper");
     typeTable.saveNicknameFor("com.google.api.gax.testing.MockGrpcService");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.ApiException");
@@ -377,6 +378,5 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("com.google.api.gax.core.ApiStreamObserver");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.StreamingCallable");
     typeTable.saveNicknameFor("com.google.api.gax.testing.MockStreamObserver");
-    typeTable.saveNicknameFor("java.util.concurrent.ExecutionException");
   }
 }
