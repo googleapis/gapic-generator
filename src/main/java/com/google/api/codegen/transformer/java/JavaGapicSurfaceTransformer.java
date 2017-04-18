@@ -473,7 +473,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
 
     GapicInterfaceConfig interfaceConfig = context.getInterfaceConfig();
     if (interfaceConfig.hasPageStreamingMethods()) {
-      typeTable.saveNicknameFor("com.google.api.gax.core.ApiFuture");
+      typeTable.saveNicknameFor("com.google.api.core.ApiFuture");
       typeTable.saveNicknameFor("com.google.api.gax.grpc.CallContext");
       typeTable.saveNicknameFor("com.google.api.gax.grpc.PageContext");
       typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedCallSettings");
@@ -504,9 +504,9 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private void addPagedResponseWrapperImports(ModelTypeTable typeTable) {
-    typeTable.saveNicknameFor("com.google.api.gax.core.ApiFunction");
-    typeTable.saveNicknameFor("com.google.api.gax.core.ApiFuture");
-    typeTable.saveNicknameFor("com.google.api.gax.core.ApiFutures");
+    typeTable.saveNicknameFor("com.google.api.core.ApiFunction");
+    typeTable.saveNicknameFor("com.google.api.core.ApiFuture");
+    typeTable.saveNicknameFor("com.google.api.core.ApiFutures");
     typeTable.saveNicknameFor("com.google.api.gax.core.FixedSizeCollection");
     typeTable.saveNicknameFor("com.google.api.gax.core.Page");
     typeTable.saveNicknameFor("com.google.api.gax.core.PagedListResponse");
