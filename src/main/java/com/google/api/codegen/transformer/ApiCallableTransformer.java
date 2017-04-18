@@ -201,6 +201,8 @@ public class ApiCallableTransformer {
     ApiCallSettingsView.Builder settings = ApiCallSettingsView.newBuilder();
 
     settings.methodName(namer.getApiMethodName(method, VisibilityConfig.PUBLIC));
+    settings.protoMethodName(method.getSimpleName());
+    settings.fullServiceName(context.getTargetInterface().getFullName());
     settings.asyncMethodName(namer.getAsyncApiMethodName(method, VisibilityConfig.PUBLIC));
     settings.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
     settings.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));
