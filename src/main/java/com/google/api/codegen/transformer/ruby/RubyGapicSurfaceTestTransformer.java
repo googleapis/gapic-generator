@@ -87,14 +87,14 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
   private List<ClientTestFileView> createUnitTestViews(
       Model model, GapicProductConfig productConfig) {
-    ImmutableList.Builder<ClientTestFileView> models = ImmutableList.builder();
+    ImmutableList.Builder<ClientTestFileView> views = ImmutableList.builder();
     SurfaceNamer namer = new RubySurfaceNamer(productConfig.getPackageName());
     for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
       String testClassName = namer.getUnitTestClassName(context.getInterfaceConfig());
       String outputPath = pathMapper.getOutputPath(context.getInterface(), productConfig);
       ImportSectionView importSection = importSectionTransformer.generateTestImportSection(context);
-      models.add(
+      views.add(
           ClientTestFileView.newBuilder()
               .templateFileName(UNIT_TEST_TEMPLATE_FILE)
               .outputPath(namer.getSourceFilePath(outputPath, testClassName))
@@ -103,7 +103,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
                   fileHeaderTransformer.generateFileHeader(productConfig, importSection, namer))
               .build());
     }
-    return models.build();
+    return views.build();
   }
 
   private ClientTestClassView createUnitTestClassView(GapicInterfaceContext context) {
