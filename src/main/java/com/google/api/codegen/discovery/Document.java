@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,10 @@
 package com.google.api.codegen.discovery;
 
 import com.google.auto.value.AutoValue;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @AutoValue
 public abstract class Document {
@@ -57,11 +60,16 @@ public abstract class Document {
 
   private static List<Method> parseMethods(DiscoveryNode root, List<String> resourceHierarchy) {
     List<Method> methods = new ArrayList<>();
-    for (DiscoveryNode methodNode : root.getObject("methods").elements()) {
-      methods.add(Method.from(methodNode, new ArrayList<>(resourceHierarchy)));
+
+    DiscoveryNode methodsNode = root.getObject("methods");
+    List<String> resourceNames = methodsNode.fieldNames();
+    for (String resourceName : resourceNames) {
+      List<String> copy = new ArrayList<>(resourceHierarchy);
+      copy.add(resourceName);
+      methods.add(Method.from(methodsNode.getObject(resourceName), copy));
     }
     DiscoveryNode resourcesNode = root.getObject("resources");
-    List<String> resourceNames = resourcesNode.fieldNames();
+    resourceNames = resourcesNode.fieldNames();
     for (String resourceName : resourceNames) {
       List<String> copy = new ArrayList<>(resourceHierarchy);
       copy.add(resourceName);

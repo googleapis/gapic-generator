@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,10 @@
 package com.google.api.codegen.discovery;
 
 import com.google.auto.value.AutoValue;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.annotation.Nullable;
 
 @AutoValue
@@ -36,7 +39,7 @@ public abstract class Method implements Comparable<Method> {
     for (DiscoveryNode idNode : root.getArray("parameterOrder").elements()) {
       parameterOrder.add(idNode.asText());
     }
-    Map<String, Schema> parameters = new HashMap<String, Schema>();
+    Map<String, Schema> parameters = new HashMap<>();
     DiscoveryNode parametersNode = root.getObject("parameters");
     for (String name : parametersNode.fieldNames()) {
       Schema schema = Schema.from(parametersNode.getObject(name));
@@ -44,7 +47,7 @@ public abstract class Method implements Comparable<Method> {
     }
     Schema request = Schema.from(root.getObject("request"));
     Schema response = Schema.from(root.getObject("response"));
-    List<String> scopes = new ArrayList<String>();
+    List<String> scopes = new ArrayList<>();
     for (DiscoveryNode scopeNode : root.getArray("scopes").elements()) {
       scopes.add(scopeNode.asText());
     }

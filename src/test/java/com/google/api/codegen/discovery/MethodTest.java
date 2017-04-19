@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,11 @@ package com.google.api.codegen.discovery;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.truth.Truth;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -35,27 +39,26 @@ public class MethodTest {
     List<String> resourceHierarchy = Arrays.asList("bar");
     Method method = Method.from(new DiscoveryNode(root), resourceHierarchy);
 
-    Truth.assertThat(method.description().equals("Get a baz!"));
-    Truth.assertThat(method.httpMethod().equals("GET"));
-    Truth.assertThat(method.id().equals("foo.bar.baz.get"));
-    Truth.assertThat(method.parameterOrder().equals(resourceHierarchy));
+    Truth.assertThat(method.description()).isEqualTo("Get a baz!");
+    Truth.assertThat(method.httpMethod()).isEqualTo("GET");
+    Truth.assertThat(method.id()).isEqualTo("foo.bar.baz.get");
+    Truth.assertThat(method.parameterOrder()).isEqualTo(Arrays.asList("p1", "p2"));
 
     Map<String, Schema> parameters = method.parameters();
 
-    Truth.assertThat(parameters.get("p1").type() == Schema.Type.STRING);
-    Truth.assertThat(parameters.get("p1").required());
-    Truth.assertThat(parameters.get("p1").location().equals("path"));
+    Truth.assertThat(parameters.get("p1").type()).isEqualTo(Schema.Type.STRING);
+    Truth.assertThat(parameters.get("p1").required()).isTrue();
+    Truth.assertThat(parameters.get("p1").location()).isEqualTo("path");
 
-    Truth.assertThat(parameters.get("p2").type() == Schema.Type.STRING);
-    Truth.assertThat(parameters.get("p2").location().equals("query"));
+    Truth.assertThat(parameters.get("p2").type()).isEqualTo(Schema.Type.STRING);
+    Truth.assertThat(parameters.get("p2").location()).isEqualTo("query");
 
-    Truth.assertThat(method.request().reference().equals("GetBazRequest"));
-    Truth.assertThat(method.response().reference().equals("Baz"));
-    Truth.assertThat(
-        method
-            .scopes()
-            .equals(Arrays.asList("https://www.example.com/foo", "https://www.example.com/bar")));
-    Truth.assertThat(method.supportsMediaDownload());
-    Truth.assertThat(method.supportsMediaUpload());
+    Truth.assertThat(method.resourceHierarchy()).isEqualTo(resourceHierarchy);
+    Truth.assertThat(method.request().reference()).isEqualTo("GetBazRequest");
+    Truth.assertThat(method.response().reference()).isEqualTo("Baz");
+    Truth.assertThat(method.scopes())
+        .isEqualTo(Arrays.asList("https://www.example.com/foo", "https://www.example.com/bar"));
+    Truth.assertThat(method.supportsMediaDownload()).isTrue();
+    Truth.assertThat(method.supportsMediaUpload()).isTrue();
   }
 }

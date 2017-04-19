@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@ package com.google.api.codegen.discovery;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -47,7 +48,7 @@ public class DiscoveryNode {
 
   /** @return a valid string representation of this node. */
   public String asText() {
-    assert (jsonNode.isTextual());
+    Preconditions.checkArgument(jsonNode.isTextual());
     return jsonNode.asText();
   }
 
@@ -93,7 +94,7 @@ public class DiscoveryNode {
     if (!jsonNode.has(fieldName)) {
       return new DiscoveryNode(EMPTY_ARRAY_JSON_NODE);
     }
-    assert (jsonNode.get(fieldName).isArray());
+    Preconditions.checkArgument(jsonNode.get(fieldName).isArray());
     return new DiscoveryNode(jsonNode.get(fieldName));
   }
 
@@ -118,7 +119,7 @@ public class DiscoveryNode {
         return false;
       }
     }
-    assert (jsonNode.get(fieldName).isBoolean());
+    Preconditions.checkArgument(jsonNode.get(fieldName).isBoolean());
     return jsonNode.get(fieldName).asBoolean();
   }
 
@@ -133,7 +134,7 @@ public class DiscoveryNode {
     if (!jsonNode.has(fieldName)) {
       return new DiscoveryNode(EMPTY_OBJECT_JSON_NODE);
     }
-    assert (jsonNode.get(fieldName).isObject());
+    Preconditions.checkArgument(jsonNode.get(fieldName).isObject());
     return new DiscoveryNode(jsonNode.get(fieldName));
   }
 
@@ -147,7 +148,7 @@ public class DiscoveryNode {
     if (!jsonNode.has(fieldName)) {
       return "";
     }
-    assert (jsonNode.get(fieldName).isTextual());
+    Preconditions.checkArgument(jsonNode.get(fieldName).isTextual());
     return jsonNode.get(fieldName).asText();
   }
 }
