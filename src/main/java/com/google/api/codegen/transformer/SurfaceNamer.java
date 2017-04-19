@@ -236,6 +236,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getFieldGetFunctionName(TypeRef type, Name identifier) {
     if (type.isRepeated() && !type.isMap()) {
       return publicMethodName(Name.from("get").join(identifier).join("list"));
+    } else if (type.isMap()) {
+      return publicMethodName(Name.from("get").join(identifier).join("map"));
     } else {
       return publicMethodName(Name.from("get").join(identifier));
     }
