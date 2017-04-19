@@ -53,6 +53,7 @@ public class DocumentTest {
 
     Truth.assertThat(methods.get(1).description()).isEqualTo("Insert a foo.");
     Truth.assertThat(methods.get(1).id()).isEqualTo("myapi.foo.insert");
+    Truth.assertThat(methods.get(1).resourceHierarchy()).isEqualTo(Arrays.asList("foo"));
 
     Truth.assertThat(document.name()).isEqualTo("myapi");
     Truth.assertThat(document.revision()).isEqualTo("20170419");
