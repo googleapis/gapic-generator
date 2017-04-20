@@ -429,26 +429,23 @@ public class MainGapicProviderFactory
                   .build();
           providers.add(messageProvider);
         }
-
-        if (generatorConfig.enableTestGenerator() && id.equals(RUBY)) {
-          GapicCodePathMapper rubyTestPathMapper =
-              CommonGapicCodePathMapper.newBuilder()
-                  .setPrefix("test")
-                  .setShouldAppendPackage(true)
-                  .setPackageFilePathNameFormatter(new RubyNameFormatter())
-                  .build();
-          GapicProvider<? extends Object> testProvider =
-              ViewModelGapicProvider.newBuilder()
-                  .setModel(model)
-                  .setProductConfig(productConfig)
-                  .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
-                  .setModelToViewTransformer(
-                      new RubyGapicSurfaceTestTransformer(rubyTestPathMapper))
-                  .build();
-          providers.add(testProvider);
-        }
       }
-
+      if (generatorConfig.enableTestGenerator() && id.equals(RUBY)) {
+        GapicCodePathMapper rubyTestPathMapper =
+            CommonGapicCodePathMapper.newBuilder()
+                .setPrefix("test")
+                .setShouldAppendPackage(true)
+                .setPackageFilePathNameFormatter(new RubyNameFormatter())
+                .build();
+        GapicProvider<? extends Object> testProvider =
+            ViewModelGapicProvider.newBuilder()
+                .setModel(model)
+                .setProductConfig(productConfig)
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+                .setModelToViewTransformer(new RubyGapicSurfaceTestTransformer(rubyTestPathMapper))
+                .build();
+        providers.add(testProvider);
+      }
     } else {
       throw new NotImplementedException("GapicProviderFactory: invalid id \"" + id + "\"");
     }
