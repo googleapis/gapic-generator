@@ -15,10 +15,12 @@
 package com.google.api.codegen.transformer.ruby;
 
 import com.google.api.codegen.ServiceMessages;
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
+import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -62,7 +64,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
   /** The function name to set a field having the given type and name. */
   @Override
   public String getFieldSetFunctionName(TypeRef type, Name identifier) {
-    return publicMethodName(identifier);
+    return getFieldGetFunctionName(type, identifier);
   }
 
   /** The function name to format the entity for the given collection. */
@@ -264,5 +266,20 @@ public class RubySurfaceNamer extends SurfaceNamer {
       newNames.add(packageFilePathPiece(Name.upperCamel(name)));
     }
     return Joiner.on("/").join(newNames.toArray());
+  }
+
+  @Override
+  public String getFieldGetFunctionName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
+    return getFieldKey(fieldConfig.getField());
+  }
+
+  @Override
+  public String getFieldGetFunctionName(TypeRef type, Name identifier) {
+    return keyName(identifier);
+  }
+
+  @Override
+  public String getGrpcStubCallString(Interface apiInterface, Method method) {
+    return getFullyQualifiedStubType(apiInterface);
   }
 }
