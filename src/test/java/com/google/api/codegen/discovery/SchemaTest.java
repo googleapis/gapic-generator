@@ -26,7 +26,6 @@ import java.util.Map;
 import org.junit.Test;
 
 public class SchemaTest {
-
   @Test
   public void testSchema() throws IOException {
     String file = "src/test/java/com/google/api/codegen/discoverytestdata/schema.json";
