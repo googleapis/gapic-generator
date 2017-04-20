@@ -49,9 +49,6 @@ public class GrpcMetadataGenerator extends ToolDriverBase {
           "");
   public static final Option<String> LANGUAGE =
       ToolOptions.createOption(String.class, "language", "The package's language.", "");
-  public static final Option<String> PACKAGE_TYPE =
-      ToolOptions.createOption(
-          String.class, "package_type", "The type of package for the given language.", "");
 
   protected GrpcMetadataGenerator(ToolOptions options) {
     super(options);
@@ -69,19 +66,6 @@ public class GrpcMetadataGenerator extends ToolDriverBase {
     }
     Map<String, Doc> docs = generate(model);
     ToolUtil.writeFiles(docs, options.get(OUTPUT_DIR));
-  }
-
-  enum PackageType {
-    PROTO,
-    GRPC,
-    DEFAULT;
-
-    public static PackageType fromString(String package_type) {
-      if (package_type == null || package_type.isEmpty()) {
-        return DEFAULT;
-      }
-      return Enum.valueOf(PackageType.class, package_type.toUpperCase());
-    }
   }
 
   protected Map<String, Doc> generate(Model model) throws IOException {
