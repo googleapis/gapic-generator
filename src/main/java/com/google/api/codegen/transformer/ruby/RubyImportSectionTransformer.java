@@ -114,9 +114,9 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
     ImmutableList.Builder<ImportFileView> imports = ImmutableList.builder();
     SurfaceNamer namer = context.getNamer();
     imports.add(createImport(namer.getServiceFileName(context.getInterfaceConfig())));
-    imports.add(
-        createImport(
-            namer.getServiceFileImportName(context.getInterface().getFile().getSimpleName())));
+    for (String filename : generateImportFilenames(context)) {
+      imports.add(createImport(namer.getServiceFileImportName(filename)));
+    }
     return imports.build();
   }
 
