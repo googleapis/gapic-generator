@@ -14,13 +14,13 @@
  */
 package com.google.api.codegen.grpcmetadatagen;
 
-public enum PackageDivision {
+public enum GenerationLayer {
   GRPC,
   PROTO;
 
-  public static PackageDivision of(String packageTypeString) {
-    if (packageTypeString != null) {
-      return PackageDivision.valueOf(packageTypeString.toUpperCase());
+  public static GenerationLayer of(String generationLayerString) {
+    if (generationLayerString != null) {
+      return GenerationLayer.valueOf(generationLayerString.toUpperCase());
     } else {
       return null;
     }

@@ -39,7 +39,7 @@ public abstract class JavaPackageMetadataTransformer {
       Model model, PackageMetadataConfig config) {
     JavaPackageMetadataNamer namer =
         new JavaPackageMetadataNamer(
-            config.packageName(TargetLanguage.JAVA), config.packageDivision());
+            config.packageName(TargetLanguage.JAVA), config.generationLayer());
     ArrayList<PackageMetadataView> views = new ArrayList<>();
     for (String template : getSnippetsOutput().keySet()) {
       PackageMetadataView view =
@@ -48,7 +48,7 @@ public abstract class JavaPackageMetadataTransformer {
                   config, model, template, getSnippetsOutput().get(template), TargetLanguage.JAVA)
               .identifier(namer.getMetadataIdentifier())
               .protoPackageName(namer.getProtoPackageName())
-              .packageDivision(config.packageDivision())
+              .generationLayer(config.generationLayer())
               .apiCommonVersionBound(config.apiCommonVersionBound(TargetLanguage.JAVA))
               .build();
       views.add(view);

@@ -14,21 +14,21 @@
  */
 package com.google.api.codegen.transformer.java;
 
-import com.google.api.codegen.grpcmetadatagen.PackageDivision;
+import com.google.api.codegen.grpcmetadatagen.GenerationLayer;
 import com.google.api.codegen.transformer.PackageMetadataNamer;
 
 /** A NodeJSPackageMetadataNamer provides nodejs specific names for metadata views. */
 public class JavaPackageMetadataNamer extends PackageMetadataNamer {
   private final String packageName;
-  private final PackageDivision packageDivision;
+  private final GenerationLayer generationLayer;
 
-  public JavaPackageMetadataNamer(String packageName, PackageDivision packageDivision) {
+  public JavaPackageMetadataNamer(String packageName, GenerationLayer generationLayer) {
     this.packageName = packageName;
-    this.packageDivision = packageDivision;
+    this.generationLayer = generationLayer;
   }
 
-  private static String getMetadataIdentifier(String packageName, PackageDivision packageDivision) {
-    switch (packageDivision) {
+  private static String getMetadataIdentifier(String packageName, GenerationLayer generationLayer) {
+    switch (generationLayer) {
       case PROTO:
         return "proto-" + packageName;
       case GRPC:
@@ -40,11 +40,11 @@ public class JavaPackageMetadataNamer extends PackageMetadataNamer {
 
   @Override
   public String getProtoPackageName() {
-    return getMetadataIdentifier(packageName, PackageDivision.PROTO);
+    return getMetadataIdentifier(packageName, GenerationLayer.PROTO);
   }
 
   @Override
   public String getMetadataIdentifier() {
-    return getMetadataIdentifier(packageName, packageDivision);
+    return getMetadataIdentifier(packageName, generationLayer);
   }
 }

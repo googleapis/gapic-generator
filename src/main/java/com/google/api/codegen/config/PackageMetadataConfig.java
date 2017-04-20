@@ -15,7 +15,7 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.TargetLanguage;
-import com.google.api.codegen.grpcmetadatagen.PackageDivision;
+import com.google.api.codegen.grpcmetadatagen.GenerationLayer;
 import com.google.api.codegen.grpcmetadatagen.PackageType;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
@@ -109,7 +109,7 @@ public abstract class PackageMetadataConfig {
   public abstract PackageType packageType();
 
   @Nullable
-  public abstract PackageDivision packageDivision();
+  public abstract GenerationLayer generationLayer();
 
   /** A single-word short name of the API. E.g., "logging". */
   public abstract String shortName();
@@ -162,7 +162,7 @@ public abstract class PackageMetadataConfig {
 
     abstract Builder packageType(PackageType val);
 
-    abstract Builder packageDivision(PackageDivision val);
+    abstract Builder generationLayer(GenerationLayer val);
 
     abstract Builder apiVersion(String val);
 
@@ -195,7 +195,7 @@ public abstract class PackageMetadataConfig {
         .protoPackageDependencies(ImmutableMap.<TargetLanguage, Map<String, VersionBound>>of())
         .shortName("")
         .packageType(PackageType.GRPC_CLIENT)
-        .packageDivision(PackageDivision.PROTO)
+        .generationLayer(GenerationLayer.PROTO)
         .apiVersion("")
         .protoPath("")
         .author("")
@@ -230,7 +230,7 @@ public abstract class PackageMetadataConfig {
         .packageName(buildMapWithDefault((Map<String, String>) configMap.get("package_name")))
         .shortName((String) configMap.get("short_name"))
         .packageType(PackageType.of((String) configMap.get("package_type")))
-        .packageDivision(PackageDivision.of((String) configMap.get("package_division")))
+        .generationLayer(GenerationLayer.of((String) configMap.get("generation_layer")))
         .apiVersion((String) configMap.get("major_version"))
         .protoPath((String) configMap.get("proto_path"))
         .author((String) configMap.get("author"))

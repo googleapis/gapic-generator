@@ -32,17 +32,17 @@ public class GrpcMetadataProviderFactory {
       case PYTHON:
         return new PythonGrpcMetadataProvider(options);
       case JAVA:
-        if (config.packageDivision() == null) {
+        if (config.generationLayer() == null) {
           throw new IllegalArgumentException("Java requires a package division to be specified");
         }
-        switch (config.packageDivision()) {
+        switch (config.generationLayer()) {
           case GRPC:
             return new JavaGrpcMetadataProvider(new JavaGrpcPackageMetadataTransformer(), options);
           case PROTO:
             return new JavaGrpcMetadataProvider(new JavaProtoPackageMetadataTransformer(), options);
           default:
             throw new IllegalArgumentException(
-                "Java does not support the package division \"" + config.packageDivision() + "\"");
+                "Java does not support the package division \"" + config.generationLayer() + "\"");
         }
       default:
         throw new IllegalArgumentException(
