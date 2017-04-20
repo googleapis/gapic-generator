@@ -16,6 +16,7 @@ package com.google.api.codegen.viewmodel.metadata;
 
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.config.VersionBound;
+import com.google.api.codegen.grpcmetadatagen.PackageDivision;
 import com.google.api.codegen.grpcmetadatagen.PackageType;
 import com.google.api.codegen.viewmodel.FileHeaderView;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -39,6 +40,9 @@ public abstract class PackageMetadataView implements ViewModel {
 
   @Nullable
   public abstract PackageType packageType();
+
+  @Nullable
+  public abstract PackageDivision packageDivision();
 
   @Nullable
   public abstract String gapicConfigName();
@@ -122,6 +126,8 @@ public abstract class PackageMetadataView implements ViewModel {
     public abstract Builder gapicConfigName(String val);
 
     public abstract Builder packageType(PackageType val);
+
+    public abstract Builder packageDivision(PackageDivision val);
 
     public abstract Builder packageVersionBound(VersionBound val);
 

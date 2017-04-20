@@ -27,6 +27,11 @@ public class PackageMetadataNamer {
     return getNotImplementedString("PackageMetadataNamer.getMetadataIdentifier");
   }
 
+  /** Returns the artifact identifier for a proto classes package */
+  public String getProtoPackageName() {
+    return getNotImplementedString("PackageMetadataNamer.getProtoPackageName");
+  }
+
   public String getOutputFileName() {
     return getNotImplementedString("PackageMetadataNamer.getOutputFileName");
   }
