@@ -987,6 +987,196 @@ describe Library::V1::LibraryServiceClient do
     end
   end
 
+  describe 'stream_shelves' do
+    custom_error = CustomTestError.new "Custom test error for LibraryServiceClient#stream_shelves."
+
+    LibraryServiceClient = Library::V1::LibraryServiceClient
+    StreamShelvesRequest = Google::Example::Library::V1::StreamShelvesRequest
+    StreamShelvesResponse = Google::Example::Library::V1::StreamShelvesResponse
+
+
+
+    it 'invokes stream_shelves with error' do
+      # Create request parameters and expected request
+      expected_request = StreamShelvesRequest.new
+
+      # Mock Grpc layer
+      mock_method = proc do |request|
+        raise custom_error
+      end
+      mock_stub = MockGrpcClientStub.new(:stream_shelves, mock_method)
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
+
+        # Call method
+        err = assert_raises Google::Gax::GaxError do
+          client.stream_shelves(expected_request)
+        end
+
+        # Verify the GaxError wrapped the custom error that was raised.
+        assert_match(custom_error.message, err.message)
+      end
+    end
+  end
+
+  describe 'stream_books' do
+    custom_error = CustomTestError.new "Custom test error for LibraryServiceClient#stream_books."
+
+    Book = Google::Example::Library::V1::Book
+    LibraryServiceClient = Library::V1::LibraryServiceClient
+    StreamBooksRequest = Google::Example::Library::V1::StreamBooksRequest
+
+
+
+    it 'invokes stream_books with error' do
+      # Create request parameters and expected request
+      name = ''
+      expected_request = StreamBooksRequest.new(name: name)
+
+      # Mock Grpc layer
+      mock_method = proc do |request|
+        assert_equal(name, request.name)
+        raise custom_error
+      end
+      mock_stub = MockGrpcClientStub.new(:stream_books, mock_method)
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
+
+        # Call method
+        err = assert_raises Google::Gax::GaxError do
+          client.stream_books(expected_request)
+        end
+
+        # Verify the GaxError wrapped the custom error that was raised.
+        assert_match(custom_error.message, err.message)
+      end
+    end
+  end
+
+  describe 'discuss_book' do
+    custom_error = CustomTestError.new "Custom test error for LibraryServiceClient#discuss_book."
+
+    Comment = Google::Example::Library::V1::Comment
+    DiscussBookRequest = Google::Example::Library::V1::DiscussBookRequest
+    LibraryServiceClient = Library::V1::LibraryServiceClient
+
+    it 'invokes discuss_book without error' do
+      # Create request parameters and expected request
+      name = ''
+      expected_request = DiscussBookRequest.new(name: name)
+      # Create expected grpc response
+      user_name = "userName339340927"
+      comment = "95"
+      expected_response = Comment.new(user_name: user_name, comment: comment)
+
+      # Mock Grpc layer
+      mock_method = proc do |request|
+        assert_equal(name, request.name)
+        [expected_response]
+      end
+      mock_stub = MockGrpcClientStub.new(:discuss_book, mock_method)
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
+
+        # Call method
+        response = client.discuss_book(expected_request)
+
+        # Verify the response
+        assert_equal([expected_response], response)
+      end
+    end
+
+    it 'invokes discuss_book with error' do
+      # Create request parameters and expected request
+      name = ''
+      expected_request = DiscussBookRequest.new(name: name)
+
+      # Mock Grpc layer
+      mock_method = proc do |request|
+        assert_equal(name, request.name)
+        raise custom_error
+      end
+      mock_stub = MockGrpcClientStub.new(:discuss_book, mock_method)
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
+
+        # Call method
+        err = assert_raises Google::Gax::GaxError do
+          client.discuss_book(expected_request)
+        end
+
+        # Verify the GaxError wrapped the custom error that was raised.
+        assert_match(custom_error.message, err.message)
+      end
+    end
+  end
+
+  describe 'monolog_about_book' do
+    custom_error = CustomTestError.new "Custom test error for LibraryServiceClient#monolog_about_book."
+
+    Comment = Google::Example::Library::V1::Comment
+    DiscussBookRequest = Google::Example::Library::V1::DiscussBookRequest
+    LibraryServiceClient = Library::V1::LibraryServiceClient
+
+    it 'invokes monolog_about_book without error' do
+      # Create request parameters and expected request
+      name = ''
+      expected_request = DiscussBookRequest.new(name: name)
+      requests = [expected_request]
+      # Create expected grpc response
+      user_name = "userName339340927"
+      comment = "95"
+      expected_response = Comment.new(user_name: user_name, comment: comment)
+
+      # Mock Grpc layer
+      mock_method = proc do |request|
+        request = requests.first
+        assert_equal(name, request.name)
+        expected_response
+      end
+      mock_stub = MockGrpcClientStub.new(:monolog_about_book, mock_method)
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
+
+        # Call method
+        response = client.monolog_about_book(expected_request)
+
+        # Verify the response
+        assert_equal(expected_response, response)
+      end
+    end
+
+    it 'invokes monolog_about_book with error' do
+      # Create request parameters and expected request
+      name = ''
+      expected_request = DiscussBookRequest.new(name: name)
+
+      # Mock Grpc layer
+      mock_method = proc do |request|
+        assert_equal(name, request.name)
+        raise custom_error
+      end
+      mock_stub = MockGrpcClientStub.new(:monolog_about_book, mock_method)
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
+
+        # Call method
+        err = assert_raises Google::Gax::GaxError do
+          client.monolog_about_book(expected_request)
+        end
+
+        # Verify the GaxError wrapped the custom error that was raised.
+        assert_match(custom_error.message, err.message)
+      end
+    end
+  end
+
   describe 'add_tag' do
     custom_error = CustomTestError.new "Custom test error for LibraryServiceClient#add_tag."
 

@@ -149,9 +149,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
     for (Method method : context.getSupportedMethods()) {
       GapicMethodContext requestMethodContext = context.asRequestMethodContext(method);
       GapicMethodConfig methodConfig = requestMethodContext.getMethodConfig();
-      if (methodConfig.isPageStreaming()
-          || methodConfig.isGrpcStreaming()
-          || methodConfig.isLongRunningOperation()) {
+      if (methodConfig.isPageStreaming() || methodConfig.isLongRunningOperation()) {
         continue;
       }
       methods.add(method);
@@ -166,13 +164,18 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
     GapicMethodConfig methodConfig = requestMethodContext.getMethodConfig();
     Iterable<FieldConfig> fieldConfigs = methodConfig.getRequiredFieldConfigs();
 
+    InitCodeOutputType outputType =
+        methodConfig.isGrpcStreaming()
+            ? InitCodeOutputType.SingleObject
+            : InitCodeOutputType.FieldList;
+
     return InitCodeContext.newBuilder()
         .initObjectType(method.getInputType())
         .suggestedName(Name.from("expected_request"))
         .initFieldConfigStrings(methodConfig.getSampleCodeInitFields())
         .initValueConfigMap(InitCodeTransformer.createCollectionMap(dynamicMethodContext))
         .initFields(FieldConfig.toFieldIterable(fieldConfigs))
-        .outputType(InitCodeOutputType.FieldList)
+        .outputType(outputType)
         .fieldConfigMap(FieldConfig.toFieldConfigMap(fieldConfigs))
         .build();
   }

@@ -83,6 +83,11 @@
     @end
   @case "ServerStreaming"
   @case "BidiStreaming"
+    {@serverStreamingTest(test)}
+  @case "BidiStreaming"
+    {@bidiStreamingTest(test)}
+  @case "ClientStreaming"
+    {@clientStreamingTest(test)}
   @default
     $unhandled case: {@test.grpcStreamingType.toString}$
   @end
@@ -122,6 +127,88 @@
   end
 @end
 
+@private serverStreamingTest(test)
+  it 'invokes {@test.clientMethodName} without error' do
+    @if initCode(test.initCode)
+      @# Create request parameters and expected request
+      {@initCode(test.initCode)}
+    @end
+    @# Create expected grpc response
+    {@initCode(test.mockResponse.initCode)}
+
+    @# Mock Grpc layer
+    {@mockServerStreamingRequest(test)}
+    mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
+
+    {@test.grpcStubCallString}.stub(:new, mock_stub) do
+      client = {@test.serviceConstructorName}.new
+
+      @# Call method
+      {@methodCallWithResponse(test)}
+
+      @# Verify the response
+      assert_equal([expected_response], response)
+    end
+  end
+@end
+
+@private clientStreamingTest(test)
+  it 'invokes {@test.clientMethodName} without error' do
+    @# Create request parameters and expected request
+    {@initCode(test.initCode)}
+    requests = [expected_request]
+    @if test.hasReturnValue
+      @# Create expected grpc response
+      {@initCode(test.mockResponse.initCode)}
+    @end
+
+    @# Mock Grpc layer
+    {@mockClientStreamingRequest(test)}
+    mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
+
+    {@test.grpcStubCallString}.stub(:new, mock_stub) do
+      client = {@test.serviceConstructorName}.new
+
+      @# Call method
+      {@methodCallWithResponse(test)}
+
+      @# Verify the response
+      @if test.hasReturnValue
+        assert_equal(expected_response, response)
+      @else
+        assert_nil(response)
+      @end
+    end
+  end
+@end
+
+@private bidiStreamingTest(test)
+  it 'invokes {@test.clientMethodName} without error' do
+    @# Create request parameters and expected request
+    {@initCode(test.initCode)}
+    requests = [expected_request]
+    @if test.hasReturnValue
+
+      @# Create expected grpc response
+      {@initCode(test.mockResponse.initCode)}
+    @end
+
+    @# Mock Grpc layer
+    {@mockBidiStreamingRequest(test)}
+    mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
+
+    {@test.grpcStubCallString}.stub(:new, mock_stub) do
+      client = {@test.serviceConstructorName}.new
+
+      @# Call method
+      {@methodCallWithResponse(test)}
+
+      @# Verify the response
+      assert_equal([expected_response], response)
+    end
+  end
+@end
+
 @private errorTestCase(test)
   it 'invokes {@test.clientMethodName} with error' do
     @if initCode(test.initCode)
@@ -157,6 +244,39 @@
     @else
       nil
     @end
+  end
+@end
+
+@private mockServerStreamingRequest(test)
+  {@mockRequestInitLine(test)}
+    @if requestAsserts(test)
+      {@requestAsserts(test)}
+    @end
+    [expected_response]
+  end
+@end
+
+@private mockClientStreamingRequest(test)
+  {@mockRequestInitLine(test)}
+    request = requests.first
+    @if requestAsserts(test)
+      {@requestAsserts(test)}
+    @end
+    @if test.hasReturnValue
+      expected_response
+    @else
+      nil
+    @end
+  end
+@end
+
+@private mockBidiStreamingRequest(test)
+  {@mockRequestInitLine(test)}
+    request = requests.first
+    @if requestAsserts(test)
+      {@requestAsserts(test)}
+    @end
+    [expected_response]
   end
 @end
 
