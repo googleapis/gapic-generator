@@ -78,6 +78,7 @@
       {@requestObjectTestCase(test)}
     @case "PagedRequestObjectMethod"
     @case "OperationCallableMethod"
+      {@longrunningTestCase(test)}
     @default
       $unhandled case: {@test.clientMethodType.toString}$
     @end
@@ -122,6 +123,39 @@
   end
 @end
 
+@private longrunningTestCase(test)
+  it 'invokes {@test.clientMethodName} without error' do
+    @if initCode(test.initCode)
+      @# Create request parameters and expected request
+      {@initCode(test.initCode)}
+
+    @end
+    @# Create expected grpc response
+    {@initCode(test.mockResponse.initCode)}
+    result = Google::Protobuf::Any.new
+    result.pack(expected_response)
+    operation = Google::Longrunning::Operation.new(
+      name: 'operations/{@test.name}',
+      done: true,
+      response: result
+    )
+
+    @# Mock Grpc layer
+    {@mockLongrunningRequest(test)}
+    mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
+
+    {@test.grpcStubCallString}.stub(:new, mock_stub) do
+      client = {@test.serviceConstructorName}.new
+
+      @# Call method
+      {@methodCallWithResponse(test)}
+
+      @# Verify the response
+      assert_equal(expected_response, response.response)
+    end
+  end
+@end
+
 @private errorTestCase(test)
   it 'invokes {@test.clientMethodName} with error' do
     @if initCode(test.initCode)
@@ -157,6 +191,15 @@
     @else
       nil
     @end
+  end
+@end
+
+@private mockLongrunningRequest(test)
+  {@mockRequestInitLine(test)}
+    @if requestAsserts(test)
+      {@requestAsserts(test)}
+    @end
+    operation
   end
 @end
 

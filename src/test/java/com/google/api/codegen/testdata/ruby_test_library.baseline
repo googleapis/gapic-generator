@@ -19,6 +19,7 @@ require "minitest/spec"
 require "library/v1/library_service_client"
 require "library_services_pb"
 require "tagger_services_pb"
+require "google/longrunning/operations_pb"
 
 class CustomTestError < StandardError; end
 
@@ -1099,6 +1100,141 @@ describe Library::V1::LibraryServiceClient do
         # Call method
         err = assert_raises Google::Gax::GaxError do
           client.add_label(formatted_resource, label)
+        end
+
+        # Verify the GaxError wrapped the custom error that was raised.
+        assert_match(custom_error.message, err.message)
+      end
+    end
+  end
+
+  describe 'get_big_book' do
+    custom_error = CustomTestError.new "Custom test error for LibraryServiceClient#get_big_book."
+
+    Book = Google::Example::Library::V1::Book
+    LibraryServiceClient = Library::V1::LibraryServiceClient
+
+    it 'invokes get_big_book without error' do
+      # Create request parameters and expected request
+      formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+
+      # Create expected grpc response
+      name_2 = "name2-1052831874"
+      author = "author-1406328437"
+      title = "title110371416"
+      read = true
+      expected_response = Book.new(
+        name: name_2,
+        author: author,
+        title: title,
+        read: read
+      )
+      result = Google::Protobuf::Any.new
+      result.pack(expected_response)
+      operation = Google::Longrunning::Operation.new(
+        name: 'operations/get_big_book_test',
+        done: true,
+        response: result
+      )
+
+      # Mock Grpc layer
+      mock_method = proc do |request|
+        assert_equal(formatted_name, request.name)
+        operation
+      end
+      mock_stub = MockGrpcClientStub.new(:get_big_book, mock_method)
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
+
+        # Call method
+        response = client.get_big_book(formatted_name)
+
+        # Verify the response
+        assert_equal(expected_response, response.response)
+      end
+    end
+
+    it 'invokes get_big_book with error' do
+      # Create request parameters and expected request
+      formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+
+      # Mock Grpc layer
+      mock_method = proc do |request|
+        assert_equal(formatted_name, request.name)
+        raise custom_error
+      end
+      mock_stub = MockGrpcClientStub.new(:get_big_book, mock_method)
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
+
+        # Call method
+        err = assert_raises Google::Gax::GaxError do
+          client.get_big_book(formatted_name)
+        end
+
+        # Verify the GaxError wrapped the custom error that was raised.
+        assert_match(custom_error.message, err.message)
+      end
+    end
+  end
+
+  describe 'get_big_nothing' do
+    custom_error = CustomTestError.new "Custom test error for LibraryServiceClient#get_big_nothing."
+
+    Empty = Google::Protobuf::Empty
+    LibraryServiceClient = Library::V1::LibraryServiceClient
+
+    it 'invokes get_big_nothing without error' do
+      # Create request parameters and expected request
+      formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+
+      # Create expected grpc response
+      expected_response = Empty.new
+      result = Google::Protobuf::Any.new
+      result.pack(expected_response)
+      operation = Google::Longrunning::Operation.new(
+        name: 'operations/get_big_nothing_test',
+        done: true,
+        response: result
+      )
+
+      # Mock Grpc layer
+      mock_method = proc do |request|
+        assert_equal(formatted_name, request.name)
+        operation
+      end
+      mock_stub = MockGrpcClientStub.new(:get_big_nothing, mock_method)
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
+
+        # Call method
+        response = client.get_big_nothing(formatted_name)
+
+        # Verify the response
+        assert_equal(expected_response, response.response)
+      end
+    end
+
+    it 'invokes get_big_nothing with error' do
+      # Create request parameters and expected request
+      formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+
+      # Mock Grpc layer
+      mock_method = proc do |request|
+        assert_equal(formatted_name, request.name)
+        raise custom_error
+      end
+      mock_stub = MockGrpcClientStub.new(:get_big_nothing, mock_method)
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
+
+        # Call method
+        err = assert_raises Google::Gax::GaxError do
+          client.get_big_nothing(formatted_name)
         end
 
         # Verify the GaxError wrapped the custom error that was raised.
