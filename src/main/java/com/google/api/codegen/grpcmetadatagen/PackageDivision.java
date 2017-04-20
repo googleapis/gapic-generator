@@ -12,20 +12,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.grpcmetadatagen.java;
+package com.google.api.codegen.grpcmetadatagen;
 
-import com.google.common.collect.ImmutableMap;
-import java.util.Map;
+public enum PackageDivision {
+  GRPC,
+  PROTO;
 
-/** Responsible for producing GRPC package meta-data related views for Java */
-public class JavaGrpcPackageMetadataTransformer extends JavaPackageMetadataTransformer {
-  private final Map<String, String> snippetsOutput =
-      ImmutableMap.of(
-          "LICENSE.snip", "LICENSE",
-          "metadatagen/java/grpc/grpc_package.snip", "build.gradle");
-
-  @Override
-  protected Map<String, String> getSnippetsOutput() {
-    return snippetsOutput;
+  public static PackageDivision of(String packageTypeString) {
+    if (packageTypeString != null) {
+      return PackageDivision.valueOf(packageTypeString.toUpperCase());
+    } else {
+      return null;
+    }
   }
 }

@@ -18,11 +18,12 @@ import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 
 /** Responsible for producing GRPC package meta-data related views for Java */
-public class JavaGrpcPackageMetadataTransformer extends JavaPackageMetadataTransformer {
+public class JavaProtoPackageMetadataTransformer extends JavaPackageMetadataTransformer {
+
   private final Map<String, String> snippetsOutput =
       ImmutableMap.of(
           "LICENSE.snip", "LICENSE",
-          "metadatagen/java/grpc/grpc_package.snip", "build.gradle");
+          "metadatagen/java/grpc/proto_package.snip", "build.gradle");
 
   @Override
   protected Map<String, String> getSnippetsOutput() {

@@ -76,6 +76,14 @@ public class GrpcMetadataGeneratorTool {
             .argName("METADATA-CONFIG")
             .required(true)
             .build());
+    options.addOption(
+        Option.builder()
+            .longOpt("package_type")
+            .desc("The type of package to generate metadata for.")
+            .hasArg()
+            .argName("PACKAGE-TYPE")
+            .required(false)
+            .build());
 
     CommandLine cl = (new DefaultParser()).parse(options, args);
     if (cl.hasOption("help")) {
@@ -89,7 +97,8 @@ public class GrpcMetadataGeneratorTool {
         cl.getOptionValue("input"),
         cl.getOptionValue("output"),
         cl.getOptionValue("language"),
-        cl.getOptionValue("metadata_config"));
+        cl.getOptionValue("metadata_config"),
+        cl.getOptionValue("pacakge_type"));
   }
 
   private static void generate(
@@ -98,7 +107,8 @@ public class GrpcMetadataGeneratorTool {
       String inputDir,
       String outputDir,
       String languageString,
-      String metadataConfig) {
+      String metadataConfig,
+      String packageType) {
     TargetLanguage language = TargetLanguage.fromString(languageString);
     ToolOptions options = ToolOptions.create();
     options.set(GrpcMetadataGenerator.INPUT_DIR, inputDir);
@@ -109,6 +119,9 @@ public class GrpcMetadataGeneratorTool {
     }
     options.set(GrpcMetadataGenerator.METADATA_CONFIG_FILE, metadataConfig);
     options.set(GrpcMetadataGenerator.LANGUAGE, languageString);
+    if (packageType != null) {
+      options.set(GrpcMetadataGenerator.PACKAGE_TYPE, packageType);
+    }
     GrpcMetadataGenerator generator = new GrpcMetadataGenerator(options);
     generator.run();
   }
