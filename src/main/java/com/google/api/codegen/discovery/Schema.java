@@ -19,6 +19,11 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Nullable;
 
+/**
+ * A representation of a Discovery Document schema.
+ *
+ * <p>Note that this class is not necessarily a 1-1 mapping of the official specification.
+ */
 @AutoValue
 public abstract class Schema {
 

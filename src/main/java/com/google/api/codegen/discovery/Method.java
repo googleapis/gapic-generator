@@ -21,6 +21,11 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 
+/**
+ * A representation of a Discovery Document method.
+ *
+ * <p>Note that this class is not necessarily a 1-1 mapping of the official specification.
+ */
 @AutoValue
 public abstract class Method implements Comparable<Method> {
 

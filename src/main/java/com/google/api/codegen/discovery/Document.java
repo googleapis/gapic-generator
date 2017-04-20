@@ -20,6 +20,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A representation of a Discovery Document.
+ *
+ * <p>Note that this class is not necessarily a 1-1 mapping of the official specification. For
+ * example, this class combines all methods in the Discovery Document into one list for convenience.
+ */
 @AutoValue
 public abstract class Document {
 
