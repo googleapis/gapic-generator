@@ -75,7 +75,7 @@ public class GrpcMetadataGenerator extends ToolDriverBase {
             Files.readAllBytes(Paths.get(options.get(METADATA_CONFIG_FILE))),
             StandardCharsets.UTF_8);
     PackageMetadataConfig config = PackageMetadataConfig.createFromString(configContent);
-    GrpcMetadataProvider provider = GrpcMetadataProviderFactory.create(language, options);
+    GrpcMetadataProvider provider = GrpcMetadataProviderFactory.create(language, config, options);
     return provider.generate(model, config);
   }
 }
