@@ -108,7 +108,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
   }
 
   private List<ImportFileView> generateTestStandardImports() {
-    return ImmutableList.of(createImport("mock"), createImport("unittest2"));
+    return ImmutableList.of(createImport("mock"), createImport("unittest"));
   }
 
   private List<ImportFileView> generateTestExternalImports(GapicInterfaceContext context) {
