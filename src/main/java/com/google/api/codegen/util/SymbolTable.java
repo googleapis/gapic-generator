@@ -15,7 +15,7 @@
 package com.google.api.codegen.util;
 
 import com.google.common.base.Strings;
-import java.util.HashSet;
+import com.google.common.collect.HashMultiset;
 import java.util.Set;
 
 /**
@@ -26,7 +26,15 @@ import java.util.Set;
  */
 public class SymbolTable {
 
-  private final Set<String> symbolTable = new HashSet<>();
+  private final HashMultiset<String> symbolTable;
+
+  public SymbolTable() {
+    symbolTable = HashMultiset.create();
+  }
+
+  private SymbolTable(Set<String> seed) {
+    symbolTable = HashMultiset.create(seed);
+  }
 
   /**
    * Returns a new SymbolTable seeded with all the words in seed.
@@ -38,11 +46,7 @@ public class SymbolTable {
    * #getNewSymbol(String)}, but not with {@link #getNewSymbol(Name)}.
    */
   public static SymbolTable fromSeed(Set<String> seed) {
-    SymbolTable symbolTable = new SymbolTable();
-    for (String s : seed) {
-      symbolTable.getNewSymbol(s);
-    }
-    return symbolTable;
+    return new SymbolTable(seed);
   }
 
   /**
@@ -77,16 +81,7 @@ public class SymbolTable {
    * is returned. If "foo" is passed again, "2" is returned, and then "3" and so on.
    */
   private String getAndSaveSuffix(String desiredName) {
-    if (!symbolTable.contains(desiredName)) {
-      symbolTable.add(desiredName);
-      return "";
-    }
-    // Resolve collisions with a numeric suffix, starting with 2.
-    int i = 2;
-    while (symbolTable.contains(desiredName + Integer.toString(i))) {
-      i++;
-    }
-    symbolTable.add(desiredName + Integer.toString(i));
-    return Integer.toString(i);
+    int count = symbolTable.add(desiredName, 1) + 1;
+    return count == 1 ? "" : Integer.toString(count);
   }
 }
