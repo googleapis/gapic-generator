@@ -24,6 +24,7 @@ import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
+import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PathTemplateTransformer;
@@ -35,6 +36,7 @@ import com.google.api.codegen.util.py.PythonCommentReformatter;
 import com.google.api.codegen.util.py.PythonTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.FormatResourceFunctionView;
+import com.google.api.codegen.viewmodel.GrpcStubView;
 import com.google.api.codegen.viewmodel.ParseResourceFunctionView;
 import com.google.api.codegen.viewmodel.PathTemplateView;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
@@ -163,6 +165,12 @@ public class PythonGapicContext extends GapicContext {
   public List<ParseResourceFunctionView> getParseResourceFunctions(Interface apiInterface) {
     GapicInterfaceContext context = getSurfaceTransformerContextFromService(apiInterface);
     return pathTemplateTransformer.generateParseResourceFunctions(context);
+  }
+
+  public List<GrpcStubView> getGrpcStubs(Interface apiInterface) {
+    GapicInterfaceContext context = getSurfaceTransformerContextFromService(apiInterface);
+    GrpcStubTransformer grpcStubTransformer = new GrpcStubTransformer();
+    return grpcStubTransformer.generateGrpcStubs(context);
   }
 
   private GapicInterfaceContext getSurfaceTransformerContextFromService(Interface apiInterface) {

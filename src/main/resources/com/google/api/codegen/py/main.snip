@@ -219,19 +219,15 @@
 
             @# Load the configuration defaults.
             {@constructDefaults(service)}
-            @join stubInterface : context.getStubInterfaces(service)
-                @let stubName = context.stubName(stubInterface), \
-                        stubModule = importHandler.fileToModule(stubInterface.getFile()), \
-                        stubService = stubInterface.getSimpleName
-                    self.{@stubName} = config.create_stub(
-                        {@stubModule}.{@stubService}Stub,
-                        channel=channel,
-                        service_path=service_path,
-                        service_port=port,
-                        credentials=credentials,
-                        scopes=scopes,
-                        ssl_credentials=ssl_credentials)
-                @end
+            @join stub : context.getGrpcStubs(service)
+                self.{@stub.name} = config.create_stub(
+                    {@stub.grpcClientTypeName},
+                    channel=channel,
+                    service_path=service_path,
+                    service_port=port,
+                    credentials=credentials,
+                    scopes=scopes,
+                    ssl_credentials=ssl_credentials)
             @end
             @if context.hasLongrunningMethod(service)
 
