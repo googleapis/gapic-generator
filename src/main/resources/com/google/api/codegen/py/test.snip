@@ -228,7 +228,7 @@
 
 @private unaryTestSetup(test, moduleName)
     @# Mock gRPC layer
-    grpc_stub = mock.Mock(spec={@test.createStubFunctionName})
+    grpc_stub = mock.Mock()
     mock_create_stub.return_value = grpc_stub
 
     client = {@moduleName}.{@test.serviceConstructorName}()
@@ -242,7 +242,7 @@
 
 @private requestStreamingTestSetup(test, moduleName)
     @# Mock gRPC layer
-    grpc_stub = mock.Mock(spec={@test.createStubFunctionName})
+    grpc_stub = mock.Mock()
     mock_create_stub.return_value = grpc_stub
 
     client = {@moduleName}.{@test.serviceConstructorName}()
