@@ -51,7 +51,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         name = 'name3373707'
         theme = 'theme110327241'
         internal_theme = 'internalTheme792518087'
-        expected_response = library_pb2.Shelf(name, theme, internal_theme)
+        expected_response = library_pb2.Shelf(name=name, theme=theme, internal_theme=internal_theme)
         grpc_stub.CreateShelf.return_value = expected_response
 
         response = client.create_shelf(shelf)
@@ -95,7 +95,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         name_2 = 'name2-1052831874'
         theme = 'theme110327241'
         internal_theme = 'internalTheme792518087'
-        expected_response = library_pb2.Shelf(name_2, theme, internal_theme)
+        expected_response = library_pb2.Shelf(name=name_2, theme=theme, internal_theme=internal_theme)
         grpc_stub.GetShelf.return_value = expected_response
 
         response = client.get_shelf(name, options_)
@@ -137,7 +137,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         next_page_token = ''
         shelves_element = library_pb2.Shelf()
         shelves = [shelves_element]
-        expected_response = library_pb2.ListShelvesResponse(next_page_token, shelves)
+        expected_response = library_pb2.ListShelvesResponse(next_page_token=next_page_token, shelves=shelves)
         grpc_stub.ListShelves.return_value = expected_response
 
         paged_list_response = client.list_shelves()
@@ -212,7 +212,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         name_2 = 'name2-1052831874'
         theme = 'theme110327241'
         internal_theme = 'internalTheme792518087'
-        expected_response = library_pb2.Shelf(name_2, theme, internal_theme)
+        expected_response = library_pb2.Shelf(name=name_2, theme=theme, internal_theme=internal_theme)
         grpc_stub.MergeShelves.return_value = expected_response
 
         response = client.merge_shelves(name, other_shelf_name)
@@ -259,7 +259,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         author = 'author-1406328437'
         title = 'title110371416'
         read = True
-        expected_response = library_pb2.Book(name_2, author, title, read)
+        expected_response = library_pb2.Book(name=name_2, author=author, title=title, read=read)
         grpc_stub.CreateBook.return_value = expected_response
 
         response = client.create_book(name, book)
@@ -301,12 +301,12 @@ class TestLibraryServiceClient(unittest.TestCase):
         shelf = library_pb2.Shelf()
         books = []
         series_string = 'foobar'
-        series_uuid = library_pb2.SeriesUuid(series_string)
+        series_uuid = library_pb2.SeriesUuid(series_string=series_string)
 
         # Mock response
         book_names_element = 'bookNamesElement1491670575'
         book_names = [book_names_element]
-        expected_response = library_pb2.PublishSeriesResponse(book_names)
+        expected_response = library_pb2.PublishSeriesResponse(book_names=book_names)
         grpc_stub.PublishSeries.return_value = expected_response
 
         response = client.publish_series(shelf, books, series_uuid)
@@ -332,7 +332,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         shelf = library_pb2.Shelf()
         books = []
         series_string = 'foobar'
-        series_uuid = library_pb2.SeriesUuid(series_string)
+        series_uuid = library_pb2.SeriesUuid(series_string=series_string)
 
         # Mock exception response
         grpc_stub.PublishSeries.side_effect = CustomException()
@@ -355,7 +355,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         author = 'author-1406328437'
         title = 'title110371416'
         read = True
-        expected_response = library_pb2.Book(name_2, author, title, read)
+        expected_response = library_pb2.Book(name=name_2, author=author, title=title, read=read)
         grpc_stub.GetBook.return_value = expected_response
 
         response = client.get_book(name)
@@ -398,7 +398,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         next_page_token = ''
         books_element = library_pb2.Book()
         books = [books_element]
-        expected_response = library_pb2.ListBooksResponse(next_page_token, books)
+        expected_response = library_pb2.ListBooksResponse(next_page_token=next_page_token, books=books)
         grpc_stub.ListBooks.return_value = expected_response
 
         paged_list_response = client.list_books(name)
@@ -480,7 +480,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         author = 'author-1406328437'
         title = 'title110371416'
         read = True
-        expected_response = library_pb2.Book(name_2, author, title, read)
+        expected_response = library_pb2.Book(name=name_2, author=author, title=title, read=read)
         grpc_stub.UpdateBook.return_value = expected_response
 
         response = client.update_book(name, book)
@@ -527,7 +527,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         author = 'author-1406328437'
         title = 'title110371416'
         read = True
-        expected_response = library_pb2.Book(name_2, author, title, read)
+        expected_response = library_pb2.Book(name=name_2, author=author, title=title, read=read)
         grpc_stub.MoveBook.return_value = expected_response
 
         response = client.move_book(name, other_shelf_name)
@@ -569,7 +569,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         next_page_token = ''
         strings_element = 'stringsElement474465855'
         strings = [strings_element]
-        expected_response = library_pb2.ListStringsResponse(next_page_token, strings)
+        expected_response = library_pb2.ListStringsResponse(next_page_token=next_page_token, strings=strings)
         grpc_stub.ListStrings.return_value = expected_response
 
         paged_list_response = client.list_strings()
@@ -606,7 +606,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         comment = b'95'
         stage = enums.Comment.Stage.UNSET
         alignment = enums.SomeMessage2.SomeMessage3.Alignment.CHAR
-        comments_element = library_pb2.Comment(comment, stage, alignment)
+        comments_element = library_pb2.Comment(comment=comment, stage=stage, alignment=alignment)
         comments = [comments_element]
 
         client.add_comments(name, comments)
@@ -631,7 +631,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         comment = b'95'
         stage = enums.Comment.Stage.UNSET
         alignment = enums.SomeMessage2.SomeMessage3.Alignment.CHAR
-        comments_element = library_pb2.Comment(comment, stage, alignment)
+        comments_element = library_pb2.Comment(comment=comment, stage=stage, alignment=alignment)
         comments = [comments_element]
 
         # Mock exception response
@@ -655,7 +655,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         author = 'author-1406328437'
         title = 'title110371416'
         read = True
-        expected_response = library_pb2.BookFromArchive(name_2, author, title, read)
+        expected_response = library_pb2.BookFromArchive(name=name_2, author=author, title=title, read=read)
         grpc_stub.GetBookFromArchive.return_value = expected_response
 
         response = client.get_book_from_archive(name)
@@ -700,7 +700,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         author = 'author-1406328437'
         title = 'title110371416'
         read = True
-        expected_response = book_from_anywhere_pb2.BookFromAnywhere(name_2, author, title, read)
+        expected_response = book_from_anywhere_pb2.BookFromAnywhere(name=name_2, author=author, title=title, read=read)
         grpc_stub.GetBookFromAnywhere.return_value = expected_response
 
         response = client.get_book_from_anywhere(name, alt_book_name)
@@ -822,7 +822,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         author = 'author-1406328437'
         title = 'title110371416'
         read = True
-        expected_response = library_pb2.Book(name_2, author, title, read)
+        expected_response = library_pb2.Book(name=name_2, author=author, title=title, read=read)
         grpc_stub.StreamBooks.return_value = iter([expected_response])
 
         response = client.stream_books(name)
@@ -862,13 +862,13 @@ class TestLibraryServiceClient(unittest.TestCase):
 
         # Mock request
         name = 'name3373707'
-        request = library_pb2.DiscussBookRequest(name)
+        request = library_pb2.DiscussBookRequest(name=name)
         requests = [request]
 
         # Mock response
         user_name = 'userName339340927'
         comment = b'95'
-        expected_response = library_pb2.Comment(user_name, comment)
+        expected_response = library_pb2.Comment(user_name=user_name, comment=comment)
         grpc_stub.DiscussBook.return_value = iter([expected_response])
 
         response = client.discuss_book(requests)
@@ -893,7 +893,7 @@ class TestLibraryServiceClient(unittest.TestCase):
 
         # Mock request
         name = 'name3373707'
-        request = library_pb2.DiscussBookRequest(name)
+        request = library_pb2.DiscussBookRequest(name=name)
         requests = [request]
 
         # Mock exception response
@@ -911,13 +911,13 @@ class TestLibraryServiceClient(unittest.TestCase):
 
         # Mock request
         name = 'name3373707'
-        request = library_pb2.DiscussBookRequest(name)
+        request = library_pb2.DiscussBookRequest(name=name)
         requests = [request]
 
         # Mock response
         user_name = 'userName339340927'
         comment = b'95'
-        expected_response = library_pb2.Comment(user_name, comment)
+        expected_response = library_pb2.Comment(user_name=user_name, comment=comment)
         grpc_stub.MonologAboutBook.return_value = expected_response
 
         response = client.monolog_about_book(requests)
@@ -940,7 +940,7 @@ class TestLibraryServiceClient(unittest.TestCase):
 
         # Mock request
         name = 'name3373707'
-        request = library_pb2.DiscussBookRequest(name)
+        request = library_pb2.DiscussBookRequest(name=name)
         requests = [request]
 
         # Mock exception response
@@ -965,7 +965,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         next_page_token = ''
         names_element_2 = 'namesElement21120252792'
         names_2 = [names_element_2]
-        expected_response = library_pb2.FindRelatedBooksResponse(next_page_token, names_2)
+        expected_response = library_pb2.FindRelatedBooksResponse(next_page_token=next_page_token, names=names_2)
         grpc_stub.FindRelatedBooks.return_value = expected_response
 
         paged_list_response = client.find_related_books(names, shelves)
@@ -1100,8 +1100,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         author = 'author-1406328437'
         title = 'title110371416'
         read = True
-        expected_response = library_pb2.Book(name_2, author, title, read)
-        operation = operations_pb2.Operation('operations/test_get_big_book', True)
+        expected_response = library_pb2.Book(name=name_2, author=author, title=title, read=read)
+        operation = operations_pb2.Operation(name='operations/test_get_big_book', done=True)
         operation.response.Pack(expected_response)
         grpc_stub.GetBigBook.return_value = operation
 
@@ -1126,7 +1126,7 @@ class TestLibraryServiceClient(unittest.TestCase):
 
         # Mock exception response
         error = status_pb2.Status()
-        operation = operations_pb2.Operation('operations/test_get_big_book_exception', True)
+        operation = operations_pb2.Operation(name='operations/test_get_big_book_exception', done=True)
         operation.error.CopyFrom(error)
         grpc_stub.GetBigBook.return_value = operation
 
@@ -1146,7 +1146,7 @@ class TestLibraryServiceClient(unittest.TestCase):
 
         # Mock response
         expected_response = empty_pb2.Empty()
-        operation = operations_pb2.Operation('operations/test_get_big_nothing', True)
+        operation = operations_pb2.Operation(name='operations/test_get_big_nothing', done=True)
         operation.response.Pack(expected_response)
         grpc_stub.GetBigNothing.return_value = operation
 
@@ -1171,7 +1171,7 @@ class TestLibraryServiceClient(unittest.TestCase):
 
         # Mock exception response
         error = status_pb2.Status()
-        operation = operations_pb2.Operation('operations/test_get_big_nothing_exception', True)
+        operation = operations_pb2.Operation(name='operations/test_get_big_nothing_exception', done=True)
         operation.error.CopyFrom(error)
         grpc_stub.GetBigNothing.return_value = operation
 

@@ -203,7 +203,7 @@
         {@unaryTestSetup(test, moduleName)}
         @# Mock response
         {@initCode(test.mockResponse.initCode)}
-        operation = operations_pb2.Operation('operations/{@test.name}', True)
+        operation = operations_pb2.Operation(name='operations/{@test.name}', done=True)
         operation.response.Pack(expected_response)
         grpc_stub.{@test.grpcStubCallString}.return_value = operation
 
@@ -218,7 +218,7 @@
         @# Mock exception response
         error = status_pb2.Status()
         operation = operations_pb2.Operation(\
-            'operations/{@test.nameWithException}', True)
+            name='operations/{@test.nameWithException}', done=True)
         operation.error.CopyFrom(error)
         grpc_stub.{@test.grpcStubCallString}.return_value = operation
 
