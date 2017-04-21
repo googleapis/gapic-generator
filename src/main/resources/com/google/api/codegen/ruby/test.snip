@@ -154,6 +154,35 @@
       assert_equal(expected_response, response.response)
     end
   end
+
+  it 'invokes {@test.clientMethodName} and returns an operation error.' do
+    @if initCode(test.initCode)
+      @# Create request parameters and expected request
+      {@initCode(test.initCode)}
+
+    @end
+    @# Create expected grpc response
+    operation = Google::Longrunning::Operation.new(
+      name: 'operations/{@test.name}',
+      done: false,
+      error: custom_error
+    )
+
+    @# Mock Grpc layer
+    {@mockLongrunningRequest(test)}
+    mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
+
+    {@test.grpcStubCallString}.stub(:new, mock_stub) do
+      client = {@test.serviceConstructorName}.new
+
+      @# Call method
+      {@methodCallWithResponse(test)}
+
+      @# Verify the response
+      assert(response.error?)
+      assert_equal(error, response.error)
+    end
+  end
 @end
 
 @private errorTestCase(test)

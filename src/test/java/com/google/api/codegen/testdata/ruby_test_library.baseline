@@ -1155,6 +1155,36 @@ describe Library::V1::LibraryServiceClient do
       end
     end
 
+    it 'invokes get_big_book and returns an operation error.' do
+      # Create request parameters and expected request
+      formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+
+      # Create expected grpc response
+      operation = Google::Longrunning::Operation.new(
+        name: 'operations/get_big_book_test',
+        done: false,
+        error: custom_error
+      )
+
+      # Mock Grpc layer
+      mock_method = proc do |request|
+        assert_equal(formatted_name, request.name)
+        operation
+      end
+      mock_stub = MockGrpcClientStub.new(:get_big_book, mock_method)
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
+
+        # Call method
+        response = client.get_big_book(formatted_name)
+
+        # Verify the response
+        assert(response.error?)
+        assert_equal(error, response.error)
+      end
+    end
+
     it 'invokes get_big_book with error' do
       # Create request parameters and expected request
       formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
@@ -1215,6 +1245,36 @@ describe Library::V1::LibraryServiceClient do
 
         # Verify the response
         assert_equal(expected_response, response.response)
+      end
+    end
+
+    it 'invokes get_big_nothing and returns an operation error.' do
+      # Create request parameters and expected request
+      formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+
+      # Create expected grpc response
+      operation = Google::Longrunning::Operation.new(
+        name: 'operations/get_big_nothing_test',
+        done: false,
+        error: custom_error
+      )
+
+      # Mock Grpc layer
+      mock_method = proc do |request|
+        assert_equal(formatted_name, request.name)
+        operation
+      end
+      mock_stub = MockGrpcClientStub.new(:get_big_nothing, mock_method)
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
+
+        # Call method
+        response = client.get_big_nothing(formatted_name)
+
+        # Verify the response
+        assert(response.error?)
+        assert_equal(error, response.error)
       end
     end
 
