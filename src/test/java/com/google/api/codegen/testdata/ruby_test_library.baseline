@@ -16,6 +16,8 @@
 require "minitest/autorun"
 require "minitest/spec"
 
+require "google/gax"
+
 require "library/v1/library_service_client"
 require "library_services_pb"
 require "tagger_services_pb"
@@ -210,6 +212,8 @@ describe Library::V1::LibraryServiceClient do
         response = client.list_shelves
 
         # Verify the response
+        assert(response.instance_of?(Google::Gax::PagedEnumerable))
+        assert_equal(expected_response, response.page.response)
         assert_equal(expected_response.shelves.to_a, response.to_a)
       end
     end
@@ -598,6 +602,8 @@ describe Library::V1::LibraryServiceClient do
         response = client.list_books(formatted_name)
 
         # Verify the response
+        assert(response.instance_of?(Google::Gax::PagedEnumerable))
+        assert_equal(expected_response, response.page.response)
         assert_equal(expected_response.books.to_a, response.to_a)
       end
     end
@@ -844,6 +850,8 @@ describe Library::V1::LibraryServiceClient do
         response = client.list_strings
 
         # Verify the response
+        assert(response.instance_of?(Google::Gax::PagedEnumerable))
+        assert_equal(expected_response, response.page.response)
         assert_equal(expected_response.strings.to_a, response.to_a)
       end
     end
@@ -1183,6 +1191,8 @@ describe Library::V1::LibraryServiceClient do
         response = client.find_related_books(names, shelves)
 
         # Verify the response
+        assert(response.instance_of?(Google::Gax::PagedEnumerable))
+        assert_equal(expected_response, response.page.response)
         assert_equal(expected_response.names.to_a, response.to_a)
       end
     end
