@@ -82,7 +82,6 @@
       $unhandled case: {@test.clientMethodType.toString}$
     @end
   @case "ServerStreaming"
-  @case "BidiStreaming"
     {@serverStreamingTest(test)}
   @case "BidiStreaming"
     {@bidiStreamingTest(test)}
@@ -96,7 +95,7 @@
 @private requestObjectTestCase(test)
   it 'invokes {@test.clientMethodName} without error' do
     @if initCode(test.initCode)
-      @# Create request parameters and expected request
+      @# Create request parameters
       {@initCode(test.initCode)}
     @end
     @if and(initCode(test.initCode), test.hasReturnValue)
@@ -130,7 +129,7 @@
 @private serverStreamingTest(test)
   it 'invokes {@test.clientMethodName} without error' do
     @if initCode(test.initCode)
-      @# Create request parameters and expected request
+      @# Create request parameters
       {@initCode(test.initCode)}
     @end
     @# Create expected grpc response
@@ -147,17 +146,19 @@
       {@methodCallWithResponse(test)}
 
       @# Verify the response
-      assert_equal([expected_response], response)
+      assert_equal(1, response.first(2).size) # The enumerable should only have one element.
+      assert_equal(expected_response, response.first)
     end
   end
 @end
 
 @private clientStreamingTest(test)
   it 'invokes {@test.clientMethodName} without error' do
-    @# Create request parameters and expected request
+    @# Create request parameters
     {@initCode(test.initCode)}
-    requests = [expected_request]
+    requests = [request]
     @if test.hasReturnValue
+    
       @# Create expected grpc response
       {@initCode(test.mockResponse.initCode)}
     @end
@@ -184,9 +185,9 @@
 
 @private bidiStreamingTest(test)
   it 'invokes {@test.clientMethodName} without error' do
-    @# Create request parameters and expected request
+    @# Create request parameters
     {@initCode(test.initCode)}
-    requests = [expected_request]
+    requests = [request]
     @if test.hasReturnValue
 
       @# Create expected grpc response
@@ -204,7 +205,8 @@
       {@methodCallWithResponse(test)}
 
       @# Verify the response
-      assert_equal([expected_response], response)
+      assert_equal(1, response.first(2).size) # The enumerable should only have one element.
+      assert_equal(expected_response, response.first)
     end
   end
 @end
@@ -212,7 +214,7 @@
 @private errorTestCase(test)
   it 'invokes {@test.clientMethodName} with error' do
     @if initCode(test.initCode)
-      @# Create request parameters and expected request
+      @# Create request parameters
       {@initCode(test.initCode)}
 
     @end
@@ -257,7 +259,7 @@
 @end
 
 @private mockClientStreamingRequest(test)
-  {@mockRequestInitLine(test)}
+  mock_method = proc do |requests|
     request = requests.first
     @if requestAsserts(test)
       {@requestAsserts(test)}
@@ -271,7 +273,7 @@
 @end
 
 @private mockBidiStreamingRequest(test)
-  {@mockRequestInitLine(test)}
+  mock_method = proc do |requests|
     request = requests.first
     @if requestAsserts(test)
       {@requestAsserts(test)}
