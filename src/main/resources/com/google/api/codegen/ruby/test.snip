@@ -148,6 +148,7 @@
       @# Verify the response
       assert(response.instance_of?(Google::Gax::PagedEnumerable))
       assert_equal(expected_response, response.page.response)
+      assert_nil(response.next_page)
       @join pageResponseView : test.pageStreamingResponseViews on BREAK
         assert_equal(expected_response.{@pageResponseView.resourcesFieldGetterName}.to_a, response.to_a)
       @end
