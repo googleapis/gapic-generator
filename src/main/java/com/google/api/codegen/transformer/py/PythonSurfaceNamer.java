@@ -122,9 +122,22 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getPathTemplateName(
+      Interface service, SingleResourceNameConfig resourceNameConfig) {
+    return "_"
+        + inittedConstantName(Name.from(resourceNameConfig.getEntityName(), "path", "template"));
+  }
+
+  @Override
   public String getFormatFunctionName(
       Interface apiInterface, SingleResourceNameConfig resourceNameConfig) {
     return staticFunctionName(Name.from(resourceNameConfig.getEntityName(), "path"));
+  }
+
+  @Override
+  public String getParseFunctionName(String var, SingleResourceNameConfig resourceNameConfig) {
+    return staticFunctionName(
+        Name.from("match", var, "from", resourceNameConfig.getEntityName(), "name"));
   }
 
   @Override
