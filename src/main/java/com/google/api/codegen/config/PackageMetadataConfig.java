@@ -40,7 +40,7 @@ public abstract class PackageMetadataConfig {
 
   private static final String CONFIG_KEY_DEFAULT = "default";
   private static final ImmutableMap<TargetLanguage, String> DEFAULT_PROTO_PACKAGE_PREFIX =
-      ImmutableMap.<TargetLanguage, String>builder().put(TargetLanguage.JAVA, "grpc-").build();
+      ImmutableMap.<TargetLanguage, String>builder().put(TargetLanguage.JAVA, "proto-").build();
 
   protected abstract Map<TargetLanguage, VersionBound> gaxVersionBound();
 
