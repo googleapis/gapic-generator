@@ -446,7 +446,6 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     ModelTypeTable typeTable = context.getModelTypeTable();
     typeTable.saveNicknameFor("com.google.api.gax.core.CredentialsProvider");
     typeTable.saveNicknameFor("com.google.api.gax.core.GoogleCredentialsProvider");
-    typeTable.saveNicknameFor("com.google.api.gax.core.RetrySettings");
     typeTable.saveNicknameFor("com.google.api.gax.core.PropertiesProvider");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.ApiExceptions");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.ChannelProvider");
@@ -456,6 +455,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("com.google.api.gax.grpc.InstantiatingExecutorProvider");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.SimpleCallSettings");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryCallSettings");
+    typeTable.saveNicknameFor("com.google.api.gax.retrying.RetrySettings");
     typeTable.saveNicknameFor("com.google.auth.Credentials");
     typeTable.saveNicknameFor("com.google.common.collect.ImmutableList");
     typeTable.saveNicknameFor("com.google.common.collect.ImmutableMap");
@@ -483,11 +483,11 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     }
     if (interfaceConfig.hasBatchingMethods()) {
       typeTable.saveNicknameFor("com.google.api.gax.batching.BatchingSettings");
+      typeTable.saveNicknameFor("com.google.api.gax.batching.FlowController");
+      typeTable.saveNicknameFor("com.google.api.gax.batching.FlowController.LimitExceededBehavior");
+      typeTable.saveNicknameFor("com.google.api.gax.batching.FlowControlSettings");
       typeTable.saveNicknameFor("com.google.api.gax.batching.PartitionKey");
       typeTable.saveNicknameFor("com.google.api.gax.batching.RequestBuilder");
-      typeTable.saveNicknameFor("com.google.api.gax.core.FlowController");
-      typeTable.saveNicknameFor("com.google.api.gax.core.FlowController.LimitExceededBehavior");
-      typeTable.saveNicknameFor("com.google.api.gax.core.FlowControlSettings");
       typeTable.saveNicknameFor("com.google.api.gax.grpc.BatchingCallSettings");
       typeTable.saveNicknameFor("com.google.api.gax.grpc.BatchedRequestIssuer");
       typeTable.saveNicknameFor("com.google.api.gax.grpc.BatchingDescriptor");
