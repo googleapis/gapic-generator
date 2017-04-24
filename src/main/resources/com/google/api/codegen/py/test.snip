@@ -279,9 +279,10 @@
 @private unaryTestSuccessAsserts(test)
     grpc_stub.{@test.grpcStubCallString}.assert_called_once()
     @if test.asserts
-        args, kwargs = grpc_stub.{@test.grpcStubCallString}.call_args[0]
-        self.assertEqual(1, len(args))
-        self.assertFalse(kwargs)
+        args, kwargs = grpc_stub.{@test.grpcStubCallString}.call_args
+        self.assertEqual(len(args), 2)
+        self.assertEqual(len(kwargs), 1)
+        self.assertIn('metadata', kwargs)
         actual_request = args[0]
 
     @end
@@ -301,9 +302,10 @@
 
 @private requestStreamingTestSuccessAsserts(test)
     grpc_stub.{@test.grpcStubCallString}.assert_called_once()
-    args, kwargs = grpc_stub.{@test.grpcStubCallString}.call_args[0]
-    self.assertEqual(1, len(args))
-    self.assertFalse(kwargs)
+    args, kwargs = grpc_stub.{@test.grpcStubCallString}.call_args
+    self.assertEqual(len(args), 2)
+    self.assertEqual(len(kwargs), 1)
+    self.assertIn('metadata', kwargs)
     actual_requests = args[0]
     self.assertEqual(1, len(actual_requests))
     actual_request = list(actual_requests)[0]
