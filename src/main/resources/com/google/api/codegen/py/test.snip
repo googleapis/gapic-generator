@@ -279,7 +279,10 @@
 @private unaryTestSuccessAsserts(test)
     grpc_stub.{@test.grpcStubCallString}.assert_called_once()
     @if test.asserts
-        actual_request = grpc_stub.{@test.grpcStubCallString}.call_args[0]
+        args, kwargs = grpc_stub.{@test.grpcStubCallString}.call_args[0]
+        self.assertEqual(1, len(args))
+        self.assertFalse(kwargs)
+        actual_request = args[0]
 
     @end
     @join assert : test.asserts
@@ -298,7 +301,10 @@
 
 @private requestStreamingTestSuccessAsserts(test)
     grpc_stub.{@test.grpcStubCallString}.assert_called_once()
-    actual_requests = grpc_stub.{@test.grpcStubCallString}.call_args[0]
+    args, kwargs = grpc_stub.{@test.grpcStubCallString}.call_args[0]
+    self.assertEqual(1, len(args))
+    self.assertFalse(kwargs)
+    actual_requests = args[0]
     self.assertEqual(1, len(actual_requests))
     actual_request = list(actual_requests)[0]
     self.assertEqual(request, actual_request)
