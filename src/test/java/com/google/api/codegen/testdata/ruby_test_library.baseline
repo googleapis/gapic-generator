@@ -1160,10 +1160,13 @@ describe Library::V1::LibraryServiceClient do
       formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
 
       # Create expected grpc response
+      operation_error = Google::Rpc::Status.new(
+        message: 'Operation error for LibraryServiceClient#get_big_book.'
+      )
       operation = Google::Longrunning::Operation.new(
         name: 'operations/get_big_book_test',
-        done: false,
-        error: custom_error
+        done: true,
+        error: operation_error
       )
 
       # Mock Grpc layer
@@ -1181,7 +1184,7 @@ describe Library::V1::LibraryServiceClient do
 
         # Verify the response
         assert(response.error?)
-        assert_equal(error, response.error)
+        assert_equal(operation_error, response.error)
       end
     end
 
@@ -1253,10 +1256,13 @@ describe Library::V1::LibraryServiceClient do
       formatted_name = LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
 
       # Create expected grpc response
+      operation_error = Google::Rpc::Status.new(
+        message: 'Operation error for LibraryServiceClient#get_big_nothing.'
+      )
       operation = Google::Longrunning::Operation.new(
         name: 'operations/get_big_nothing_test',
-        done: false,
-        error: custom_error
+        done: true,
+        error: operation_error
       )
 
       # Mock Grpc layer
@@ -1274,7 +1280,7 @@ describe Library::V1::LibraryServiceClient do
 
         # Verify the response
         assert(response.error?)
-        assert_equal(error, response.error)
+        assert_equal(operation_error, response.error)
       end
     end
 

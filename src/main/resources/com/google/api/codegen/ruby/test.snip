@@ -162,10 +162,13 @@
 
     @end
     @# Create expected grpc response
+    operation_error = Google::Rpc::Status.new(
+      message: 'Operation error for {@test.serviceConstructorName}#{@test.clientMethodName}.'
+    )
     operation = Google::Longrunning::Operation.new(
       name: 'operations/{@test.name}',
-      done: false,
-      error: custom_error
+      done: true,
+      error: operation_error
     )
 
     @# Mock Grpc layer
@@ -180,7 +183,7 @@
 
       @# Verify the response
       assert(response.error?)
-      assert_equal(error, response.error)
+      assert_equal(operation_error, response.error)
     end
   end
 @end
