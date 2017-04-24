@@ -226,9 +226,16 @@ public class TestCaseTransformer {
   }
 
   public TestCaseView createSmokeTestCaseView(GapicMethodContext context) {
-    ClientMethodType methodType = ClientMethodType.FlattenedMethod;
-    if (context.getMethodConfig().isPageStreaming()) {
+    GapicMethodConfig methodConfig = context.getMethodConfig();
+    ClientMethodType methodType = null;
+    if (methodConfig.isPageStreaming() && context.isFlattenedMethodContext()) {
       methodType = ClientMethodType.PagedFlattenedMethod;
+    } else if (methodConfig.isPageStreaming() && !context.isFlattenedMethodContext()) {
+      methodType = ClientMethodType.PagedRequestObjectMethod;
+    } else if (!methodConfig.isPageStreaming() && context.isFlattenedMethodContext()) {
+      methodType = ClientMethodType.FlattenedMethod;
+    } else if (!methodConfig.isPageStreaming() && !context.isFlattenedMethodContext()) {
+      methodType = ClientMethodType.RequestObjectMethod;
     }
 
     return createTestCaseView(
@@ -266,14 +273,15 @@ public class TestCaseTransformer {
     SmokeTestConfig testConfig = context.getInterfaceConfig().getSmokeTestConfig();
     InitCodeContext.InitCodeOutputType outputType;
     ImmutableMap<String, FieldConfig> fieldConfigMap;
-    if (context.getMethodConfig().isFlattening()) {
+    if (context.isFlattenedMethodContext()) {
       outputType = InitCodeContext.InitCodeOutputType.FieldList;
       fieldConfigMap =
           FieldConfig.toFieldConfigMap(
               context.getFlatteningConfig().getFlattenedFieldConfigs().values());
     } else {
       outputType = InitCodeContext.InitCodeOutputType.SingleObject;
-      fieldConfigMap = null;
+      fieldConfigMap =
+          FieldConfig.toFieldConfigMap(context.getMethodConfig().getRequiredFieldConfigs());
     }
 
     // Store project ID variable name into the symbol table since it is used
@@ -290,7 +298,7 @@ public class TestCaseTransformer {
             .initFieldConfigStrings(testConfig.getInitFieldConfigStrings())
             .symbolTable(table)
             .fieldConfigMap(fieldConfigMap);
-    if (context.getMethodConfig().isFlattening()) {
+    if (context.isFlattenedMethodContext()) {
       contextBuilder.initFields(context.getFlatteningConfig().getFlattenedFields());
     }
     return contextBuilder.build();

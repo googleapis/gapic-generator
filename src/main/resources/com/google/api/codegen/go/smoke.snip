@@ -1,0 +1,77 @@
+@extends "go/header.snip"
+@extends "go/initcode.snip"
+
+@snippet generate(view)
+  {@headerComment(view.fileHeader)}
+
+  package {@view.fileHeader.localPackageName}
+
+  import (
+    {@renderImportSection(view.fileHeader.importSection)}
+  )
+
+  import (
+    "cloud.google.com/go/internal/testutil"
+    "golang.org/x/net/context"
+    "google.golang.org/api/iterator"
+    "testing"
+  )
+
+  var _ = iterator.Done
+
+  func {@view.name}(t *testing.T) {
+    if testing.Short() {
+      t.Skip("skipping smoke test in short mode")
+    }
+
+    projectId := testutil.ProjID()
+    uidSpace := testutil.NewUIDSpace("{@view.name}")
+    _, _ = projectId, uidSpace
+
+    ctx := context.Background()
+    c, err := New{@view.apiClassName}(ctx)
+    if err != nil {
+      t.Fatal(err)
+    }
+
+    {@initCode(view.method.initCode)}
+
+    @switch view.method.clientMethodType
+    @case "PagedRequestObjectMethod"
+      iter := {@call(view.method)}
+      resp, err := iter.Next()
+      if err == iterator.Done {
+        t.Log("no items")
+      } else if err != nil {
+        t.Error(err)
+      } else {
+        t.Log(resp)
+      }
+    @case "RequestObjectMethod"
+      @if view.method.hasReturnValue
+        resp, err := {@call(view.method)}
+        if err != nil {
+          t.Error(err)
+        } else {
+          t.Log(resp)
+        }
+      @else
+        if err := {@call(view.method)}; err != nil {
+          t.Error(err)
+        } else {
+          t.Log("done")
+        }
+      @end
+    @end
+  }
+@end
+
+@private call(method)
+  c.{@method.clientMethodName}(ctx, {@args(method.initCode.fieldSettings)})
+@end
+
+@private args(fieldSettings)
+  @join fieldSetting : fieldSettings on ", "
+    {@fieldSetting.identifier}
+  @end
+@end

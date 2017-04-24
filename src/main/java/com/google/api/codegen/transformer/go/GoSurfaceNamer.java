@@ -21,6 +21,7 @@ import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.OneofConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
+import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -362,5 +363,16 @@ public class GoSurfaceNamer extends SurfaceNamer {
         "%s_%s",
         converter.getTypeName(oneof.parentType(), false).getNickname(),
         publicFieldName(Name.from(oneof.field().getSimpleName())));
+  }
+
+  @Override
+  public String getSmokeTestClassName(GapicInterfaceConfig interfaceConfig) {
+    // Go smoke test is a just a method; return method name instead.
+    return publicMethodName(Name.upperCamel("Test", getInterfaceName(interfaceConfig), "Smoke"));
+  }
+
+  @Override
+  public String injectRandomStringGeneratorCode(String randomString) {
+    return randomString.replace(InitFieldConfig.RANDOM_TOKEN, "\" + uidSpace.New() + \"");
   }
 }

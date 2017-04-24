@@ -1209,7 +1209,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** Inject random value generator code to the given string. */
   public String injectRandomStringGeneratorCode(String randomString) {
-    return getNotImplementedString("SurfaceNamer.getRandomStringValue");
+    return getNotImplementedString("SurfaceNamer.injectRandomStringGeneratorCode");
   }
 
   ////////////////////////////////////////// Examples ////////////////////////////////////////////
