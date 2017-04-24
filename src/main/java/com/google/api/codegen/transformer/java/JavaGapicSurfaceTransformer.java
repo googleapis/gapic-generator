@@ -421,10 +421,10 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private void addApiImports(GapicInterfaceContext context) {
     ModelTypeTable typeTable = context.getModelTypeTable();
+    typeTable.saveNicknameFor("com.google.api.core.BetaApi");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.ChannelAndExecutor");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryCallable");
     typeTable.saveNicknameFor("com.google.api.gax.protobuf.PathTemplate");
-    typeTable.saveNicknameFor("com.google.protobuf.ExperimentalApi");
     typeTable.saveNicknameFor("io.grpc.ManagedChannel");
     typeTable.saveNicknameFor("java.io.Closeable");
     typeTable.saveNicknameFor("java.io.IOException");
@@ -444,6 +444,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private void addSettingsImports(GapicInterfaceContext context) {
     ModelTypeTable typeTable = context.getModelTypeTable();
+    typeTable.saveNicknameFor("com.google.api.core.BetaApi");
     typeTable.saveNicknameFor("com.google.api.gax.core.CredentialsProvider");
     typeTable.saveNicknameFor("com.google.api.gax.core.GoogleCredentialsProvider");
     typeTable.saveNicknameFor("com.google.api.gax.core.PropertiesProvider");
@@ -462,7 +463,6 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("com.google.common.collect.ImmutableSet");
     typeTable.saveNicknameFor("com.google.common.collect.Lists");
     typeTable.saveNicknameFor("com.google.common.collect.Sets");
-    typeTable.saveNicknameFor("com.google.protobuf.ExperimentalApi");
     typeTable.saveNicknameFor("io.grpc.ManagedChannel");
     typeTable.saveNicknameFor("io.grpc.Status");
     typeTable.saveNicknameFor("org.joda.time.Duration");
@@ -507,6 +507,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("com.google.api.core.ApiFunction");
     typeTable.saveNicknameFor("com.google.api.core.ApiFuture");
     typeTable.saveNicknameFor("com.google.api.core.ApiFutures");
+    typeTable.saveNicknameFor("com.google.api.core.BetaApi");
     typeTable.saveNicknameFor("com.google.api.gax.core.FixedSizeCollection");
     typeTable.saveNicknameFor("com.google.api.gax.core.Page");
     typeTable.saveNicknameFor("com.google.api.gax.core.PagedListResponse");
@@ -517,7 +518,6 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("com.google.api.gax.grpc.PageContext");
     typeTable.saveNicknameFor("com.google.common.base.Function");
     typeTable.saveNicknameFor("com.google.common.collect.Iterables");
-    typeTable.saveNicknameFor("com.google.protobuf.ExperimentalApi");
     typeTable.saveNicknameFor("javax.annotation.Generated");
     typeTable.saveNicknameFor("java.util.Iterator");
     typeTable.saveNicknameFor("java.util.List");
