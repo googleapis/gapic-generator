@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer.py;
 
+import com.google.api.codegen.DevelopmentStatus;
 import com.google.api.codegen.GapicContext;
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.TargetLanguage;
@@ -108,6 +109,9 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
         .generateMetadataView(packageConfig, model, template, outputPath, TargetLanguage.PYTHON)
         .namespacePackages(
             computeNamespacePackages(productConfig.getPackageName(), packageConfig.apiVersion()))
+        .developmentStatus(
+            DevelopmentStatus.fromString(packageConfig.developmentStatus(TargetLanguage.PYTHON))
+                .toTroveClassifier())
         .apiModules(apiModules)
         .typeModules(typeModules)
         .build();
