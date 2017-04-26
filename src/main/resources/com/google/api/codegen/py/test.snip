@@ -166,7 +166,7 @@
 
         {@unaryTestSuccessAsserts(test)}
 
-    {@simpleTestWithException(test, moduleName)}
+    {@pagedStreamingTestWithException(test, moduleName)}
 @end
 
 @private simpleTestWithException(test, moduleName)
@@ -181,6 +181,18 @@
             errors.GaxError, \
             client.{@test.clientMethodName}\
             {@fieldSettingArgListAfterComma(test.initCode.fieldSettings)})
+@end
+
+@private pagedStreamingTestWithException(test, moduleName)
+    @@mock.patch('google.gax.config.API_ERRORS', (CustomException,))
+    @@mock.patch('google.gax.config.create_stub', spec=True)
+    def {@test.nameWithException}(self, mock_create_stub):
+        {@unaryTestSetup(test, moduleName)}
+        @# Mock exception response
+        grpc_stub.{@test.grpcStubCallString}.side_effect = CustomException()
+
+        paged_list_response = {@unaryTestMethodCall(test)}
+        self.assertRaises(errors.GaxError, list, paged_list_response)
 @end
 
 @private requestStreamingTestWithException(test, moduleName)

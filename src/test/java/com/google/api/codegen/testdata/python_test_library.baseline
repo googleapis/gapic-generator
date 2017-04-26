@@ -176,7 +176,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         # Mock exception response
         grpc_stub.ListShelves.side_effect = CustomException()
 
-        self.assertRaises(errors.GaxError, client.list_shelves)
+        paged_list_response = client.list_shelves()
+        self.assertRaises(errors.GaxError, list, paged_list_response)
 
     @mock.patch('google.gax.config.create_stub', spec=True)
     def test_delete_shelf(self, mock_create_stub):
@@ -469,7 +470,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         # Mock exception response
         grpc_stub.ListBooks.side_effect = CustomException()
 
-        self.assertRaises(errors.GaxError, client.list_books, name)
+        paged_list_response = client.list_books(name)
+        self.assertRaises(errors.GaxError, list, paged_list_response)
 
     @mock.patch('google.gax.config.create_stub', spec=True)
     def test_delete_book(self, mock_create_stub):
@@ -655,7 +657,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         # Mock exception response
         grpc_stub.ListStrings.side_effect = CustomException()
 
-        self.assertRaises(errors.GaxError, client.list_strings)
+        paged_list_response = client.list_strings()
+        self.assertRaises(errors.GaxError, list, paged_list_response)
 
     @mock.patch('google.gax.config.create_stub', spec=True)
     def test_add_comments(self, mock_create_stub):
@@ -1101,7 +1104,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         # Mock exception response
         grpc_stub.FindRelatedBooks.side_effect = CustomException()
 
-        self.assertRaises(errors.GaxError, client.find_related_books, names, shelves)
+        paged_list_response = client.find_related_books(names, shelves)
+        self.assertRaises(errors.GaxError, list, paged_list_response)
 
     @mock.patch('google.gax.config.create_stub', spec=True)
     def test_add_tag(self, mock_create_stub):
