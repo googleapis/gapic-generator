@@ -101,7 +101,11 @@ public abstract class PackageMetadataConfig {
 
   /** The development status of the client library. Configured per language. */
   public ReleaseLevel releaseLevel(TargetLanguage language) {
-    return releaseLevel().get(language);
+    ReleaseLevel level = releaseLevel().get(language);
+    if (level == null) {
+      level = ReleaseLevel.UNSET_RELEASE_LEVEL;
+    }
+    return level;
   }
 
   /**
