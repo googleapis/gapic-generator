@@ -228,7 +228,7 @@
 
 @private serverStreamingTest(test)
   it 'invokes {@test.clientMethodName} without error' do
-    @if initCode(test.initCode)
+    @if test.hasRequestParameters
       @# Create request parameters
       {@initCode(test.initCode)}
 
@@ -339,7 +339,7 @@
 
 @private mockUnaryRequest(test)
   {@mockRequestInitLine(test)}
-    @if requestAsserts(test)
+    @if test.asserts
       {@requestAsserts(test)}
     @end
     @if test.hasReturnValue
@@ -352,7 +352,7 @@
 
 @private mockLongrunningRequest(test)
   {@mockRequestInitLine(test)}
-    @if requestAsserts(test)
+    @if test.asserts
       {@requestAsserts(test)}
     @end
     operation
@@ -361,7 +361,7 @@
 
 @private mockUnaryError(test)
   {@mockRequestInitLine(test)}
-    @if requestAsserts(test)
+    @if test.asserts
       {@requestAsserts(test)}
     @end
     raise custom_error
@@ -370,7 +370,7 @@
 
 @private mockServerStreamingRequest(test)
   {@mockRequestInitLine(test)}
-    @if requestAsserts(test)
+    @if test.asserts
       {@requestAsserts(test)}
     @end
     [expected_response]
@@ -380,7 +380,7 @@
 @private mockClientStreamingRequest(test)
   mock_method = proc do |requests|
     request = requests.first
-    @if requestAsserts(test)
+    @if test.asserts
       {@requestAsserts(test)}
     @end
     @if test.hasReturnValue
@@ -394,7 +394,7 @@
 @private mockBidiStreamingRequest(test)
   mock_method = proc do |requests|
     request = requests.first
-    @if requestAsserts(test)
+    @if test.asserts
       {@requestAsserts(test)}
     @end
     [expected_response]
