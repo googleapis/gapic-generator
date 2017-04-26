@@ -321,7 +321,7 @@ public abstract class PackageMetadataConfig {
   private static Map<TargetLanguage, ReleaseLevel> createReleaseLevelMap(
       Map<String, String> inputMap) {
     Map<TargetLanguage, String> intermediate = buildMapWithDefault(inputMap);
-    // Convert parsed YAML map into VersionBound object
+    // Convert parsed YAML map into ReleaseLevel enum
     return Maps.transformValues(
         intermediate,
         new Function<String, ReleaseLevel>() {
