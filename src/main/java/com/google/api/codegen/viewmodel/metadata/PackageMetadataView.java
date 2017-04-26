@@ -92,9 +92,6 @@ public abstract class PackageMetadataView implements ViewModel {
 
   public abstract String licenseName();
 
-  @Nullable
-  public abstract String developmentStatus();
-
   public abstract boolean hasMultipleServices();
 
   public abstract boolean hasSmokeTests();
@@ -180,9 +177,6 @@ public abstract class PackageMetadataView implements ViewModel {
 
     /** The name of the license that the package is licensed under. */
     public abstract Builder licenseName(String val);
-
-    /** The developement status of the package. E.g., "alpha". */
-    public abstract Builder developmentStatus(String val);
 
     /** Whether the package contains multiple service objects */
     public abstract Builder hasMultipleServices(boolean val);
