@@ -16,6 +16,8 @@
 require "minitest/autorun"
 require "minitest/spec"
 
+require "google/gax"
+
 require "library/v1/library_service_client"
 require "library_services_pb"
 require "tagger_services_pb"
@@ -175,6 +177,61 @@ describe Library::V1::LibraryServiceClient do
         # Call method
         err = assert_raises Google::Gax::GaxError do
           client.get_shelf(formatted_name, options_)
+        end
+
+        # Verify the GaxError wrapped the custom error that was raised.
+        assert_match(custom_error.message, err.message)
+      end
+    end
+  end
+
+  describe 'list_shelves' do
+    custom_error = CustomTestError.new "Custom test error for LibraryServiceClient#list_shelves."
+
+    LibraryServiceClient = Library::V1::LibraryServiceClient
+    ListShelvesResponse = Google::Example::Library::V1::ListShelvesResponse
+    Shelf = Google::Example::Library::V1::Shelf
+
+    it 'invokes list_shelves without error' do
+      # Create expected grpc response
+      next_page_token = ""
+      shelves_element = Shelf.new
+      shelves = [shelves_element]
+      expected_response = ListShelvesResponse.new(next_page_token: next_page_token, shelves: shelves)
+
+      # Mock Grpc layer
+      mock_method = proc do
+        expected_response
+      end
+      mock_stub = MockGrpcClientStub.new(:list_shelves, mock_method)
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
+
+        # Call method
+        response = client.list_shelves
+
+        # Verify the response
+        assert(response.instance_of?(Google::Gax::PagedEnumerable))
+        assert_equal(expected_response, response.page.response)
+        assert_nil(response.next_page)
+        assert_equal(expected_response.shelves.to_a, response.to_a)
+      end
+    end
+
+    it 'invokes list_shelves with error' do
+      # Mock Grpc layer
+      mock_method = proc do
+        raise custom_error
+      end
+      mock_stub = MockGrpcClientStub.new(:list_shelves, mock_method)
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
+
+        # Call method
+        err = assert_raises Google::Gax::GaxError do
+          client.list_shelves
         end
 
         # Verify the GaxError wrapped the custom error that was raised.
@@ -515,6 +572,69 @@ describe Library::V1::LibraryServiceClient do
     end
   end
 
+  describe 'list_books' do
+    custom_error = CustomTestError.new "Custom test error for LibraryServiceClient#list_books."
+
+    Book = Google::Example::Library::V1::Book
+    LibraryServiceClient = Library::V1::LibraryServiceClient
+    ListBooksResponse = Google::Example::Library::V1::ListBooksResponse
+
+    it 'invokes list_books without error' do
+      # Create request parameters and expected request
+      formatted_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
+
+      # Create expected grpc response
+      next_page_token = ""
+      books_element = Book.new
+      books = [books_element]
+      expected_response = ListBooksResponse.new(next_page_token: next_page_token, books: books)
+
+      # Mock Grpc layer
+      mock_method = proc do |request|
+        assert_equal(formatted_name, request.name)
+        expected_response
+      end
+      mock_stub = MockGrpcClientStub.new(:list_books, mock_method)
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
+
+        # Call method
+        response = client.list_books(formatted_name)
+
+        # Verify the response
+        assert(response.instance_of?(Google::Gax::PagedEnumerable))
+        assert_equal(expected_response, response.page.response)
+        assert_nil(response.next_page)
+        assert_equal(expected_response.books.to_a, response.to_a)
+      end
+    end
+
+    it 'invokes list_books with error' do
+      # Create request parameters and expected request
+      formatted_name = LibraryServiceClient.shelf_path("[SHELF_ID]")
+
+      # Mock Grpc layer
+      mock_method = proc do |request|
+        assert_equal(formatted_name, request.name)
+        raise custom_error
+      end
+      mock_stub = MockGrpcClientStub.new(:list_books, mock_method)
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
+
+        # Call method
+        err = assert_raises Google::Gax::GaxError do
+          client.list_books(formatted_name)
+        end
+
+        # Verify the GaxError wrapped the custom error that was raised.
+        assert_match(custom_error.message, err.message)
+      end
+    end
+  end
+
   describe 'delete_book' do
     custom_error = CustomTestError.new "Custom test error for LibraryServiceClient#delete_book."
 
@@ -698,6 +818,60 @@ describe Library::V1::LibraryServiceClient do
         # Call method
         err = assert_raises Google::Gax::GaxError do
           client.move_book(formatted_name, formatted_other_shelf_name)
+        end
+
+        # Verify the GaxError wrapped the custom error that was raised.
+        assert_match(custom_error.message, err.message)
+      end
+    end
+  end
+
+  describe 'list_strings' do
+    custom_error = CustomTestError.new "Custom test error for LibraryServiceClient#list_strings."
+
+    LibraryServiceClient = Library::V1::LibraryServiceClient
+    ListStringsResponse = Google::Example::Library::V1::ListStringsResponse
+
+    it 'invokes list_strings without error' do
+      # Create expected grpc response
+      next_page_token = ""
+      strings_element = "stringsElement474465855"
+      strings = [strings_element]
+      expected_response = ListStringsResponse.new(next_page_token: next_page_token, strings: strings)
+
+      # Mock Grpc layer
+      mock_method = proc do
+        expected_response
+      end
+      mock_stub = MockGrpcClientStub.new(:list_strings, mock_method)
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
+
+        # Call method
+        response = client.list_strings
+
+        # Verify the response
+        assert(response.instance_of?(Google::Gax::PagedEnumerable))
+        assert_equal(expected_response, response.page.response)
+        assert_nil(response.next_page)
+        assert_equal(expected_response.strings.to_a, response.to_a)
+      end
+    end
+
+    it 'invokes list_strings with error' do
+      # Mock Grpc layer
+      mock_method = proc do
+        raise custom_error
+      end
+      mock_stub = MockGrpcClientStub.new(:list_strings, mock_method)
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
+
+        # Call method
+        err = assert_raises Google::Gax::GaxError do
+          client.list_strings
         end
 
         # Verify the GaxError wrapped the custom error that was raised.
@@ -979,6 +1153,74 @@ describe Library::V1::LibraryServiceClient do
             index_name,
             index_map
           )
+        end
+
+        # Verify the GaxError wrapped the custom error that was raised.
+        assert_match(custom_error.message, err.message)
+      end
+    end
+  end
+
+  describe 'find_related_books' do
+    custom_error = CustomTestError.new "Custom test error for LibraryServiceClient#find_related_books."
+
+    FindRelatedBooksResponse = Google::Example::Library::V1::FindRelatedBooksResponse
+    LibraryServiceClient = Library::V1::LibraryServiceClient
+
+    it 'invokes find_related_books without error' do
+      # Create request parameters and expected request
+      names_element = ''
+      names = [names_element]
+      shelves = []
+
+      # Create expected grpc response
+      next_page_token = ""
+      names_element_2 = "namesElement21120252792"
+      names_2 = [names_element_2]
+      expected_response = FindRelatedBooksResponse.new(next_page_token: next_page_token, names: names_2)
+
+      # Mock Grpc layer
+      mock_method = proc do |request|
+        assert_equal(names, request.names)
+        assert_equal(shelves, request.shelves)
+        expected_response
+      end
+      mock_stub = MockGrpcClientStub.new(:find_related_books, mock_method)
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
+
+        # Call method
+        response = client.find_related_books(names, shelves)
+
+        # Verify the response
+        assert(response.instance_of?(Google::Gax::PagedEnumerable))
+        assert_equal(expected_response, response.page.response)
+        assert_nil(response.next_page)
+        assert_equal(expected_response.names.to_a, response.to_a)
+      end
+    end
+
+    it 'invokes find_related_books with error' do
+      # Create request parameters and expected request
+      names_element = ''
+      names = [names_element]
+      shelves = []
+
+      # Mock Grpc layer
+      mock_method = proc do |request|
+        assert_equal(names, request.names)
+        assert_equal(shelves, request.shelves)
+        raise custom_error
+      end
+      mock_stub = MockGrpcClientStub.new(:find_related_books, mock_method)
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = LibraryServiceClient.new
+
+        # Call method
+        err = assert_raises Google::Gax::GaxError do
+          client.find_related_books(names, shelves)
         end
 
         # Verify the GaxError wrapped the custom error that was raised.
