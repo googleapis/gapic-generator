@@ -96,6 +96,21 @@
   @end
 @end
 
+@private errorTestCase(test)
+  @switch test.grpcStreamingType
+    @case "NonStreaming"
+      {@simpleErrorTestCase(test)}
+    @case "ServerStreaming"
+      {@simpleErrorTestCase(test)}
+    @case "BidiStreaming"
+      {@clientStreamingErrorTestCase(test)}
+    @case "ClientStreaming"
+       {@clientStreamingErrorTestCase(test)}
+    @default
+      $unhandled case: {@test.grpcStreamingType.toString}$
+    @end
+@end
+
 @private requestObjectTestCase(test)
   it 'invokes {@test.clientMethodName} without error' do
     @if initCode(test.initCode)
@@ -257,7 +272,6 @@
   it 'invokes {@test.clientMethodName} without error' do
     @# Create request parameters
     {@initCode(test.initCode)}
-    requests = [request]
     @if test.hasReturnValue
 
       @# Create expected grpc response
@@ -272,7 +286,7 @@
       client = {@test.serviceConstructorName}.new
 
       @# Call method
-      {@methodCallWithResponse(test)}
+      {@clientStreamingCall(test)}
 
       @# Verify the response
       @if test.hasReturnValue
@@ -288,12 +302,9 @@
   it 'invokes {@test.clientMethodName} without error' do
     @# Create request parameters
     {@initCode(test.initCode)}
-    requests = [request]
-    @if test.hasReturnValue
 
-      @# Create expected grpc response
-      {@initCode(test.mockResponse.initCode)}
-    @end
+    @# Create expected grpc response
+    {@initCode(test.mockResponse.initCode)}
 
     @# Mock Grpc layer
     {@mockBidiStreamingRequest(test)}
@@ -303,7 +314,7 @@
       client = {@test.serviceConstructorName}.new
 
       @# Call method
-      {@methodCallWithResponse(test)}
+      {@clientStreamingCall(test)}
 
       @# Verify the response
       assert_equal(1, response.count)
@@ -312,7 +323,7 @@
   end
 @end
 
-@private errorTestCase(test)
+@private simpleErrorTestCase(test)
   it 'invokes {@test.clientMethodName} with error' do
     @if initCode(test.initCode)
       @# Create request parameters
@@ -329,6 +340,29 @@
       @# Call method
       err = assert_raises Google::Gax::GaxError do
         {@methodCall(test)}
+      end
+
+      @# Verify the GaxError wrapped the custom error that was raised.
+      assert_match(custom_error.message, err.message)
+    end
+  end
+@end
+
+@private clientStreamingErrorTestCase(test)
+  it 'invokes {@test.clientMethodName} with error' do
+    @# Create request parameters
+    {@initCode(test.initCode)}
+
+    @# Mock Grpc layer
+    {@mockClientStreamingError(test)}
+    mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
+
+    {@test.grpcStubCallString}.stub(:new, mock_stub) do
+      client = {@test.serviceConstructorName}.new
+
+      @# Call method
+      err = assert_raises Google::Gax::GaxError do
+        client.{@test.clientMethodName}([request])
       end
 
       @# Verify the GaxError wrapped the custom error that was raised.
@@ -409,6 +443,16 @@
   @end
 @end
 
+@private mockClientStreamingError(test)
+  mock_method = proc do |requests|
+    @if test.asserts
+      request = requests.first
+      {@requestAsserts(test)}
+    @end
+    raise custom_error
+  end
+@end
+
 @private requestAsserts(test)
    @join assert : test.asserts
      assert_equal(\
@@ -452,6 +496,14 @@
     client.{@test.clientMethodName}(
       {@multilineArgList(test.initCode.fieldSettings)}
     )
+  @end
+@end
+
+@private clientStreamingCall(test)
+  @if test.hasReturnValue
+    response = client.{@test.clientMethodName}([request])
+  @else
+    client.{@test.clientMethodName}([request])
   @end
 @end
 

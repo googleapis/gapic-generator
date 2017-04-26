@@ -1298,7 +1298,6 @@ describe Library::V1::LibraryServiceClient do
       # Create request parameters
       name = ''
       request = DiscussBookRequest.new(name: name)
-      requests = [request]
 
       # Create expected grpc response
       user_name = "userName339340927"
@@ -1317,7 +1316,7 @@ describe Library::V1::LibraryServiceClient do
         client = LibraryServiceClient.new
 
         # Call method
-        response = client.discuss_book(request)
+        response = client.discuss_book([request])
 
         # Verify the response
         assert_equal(1, response.count)
@@ -1331,7 +1330,8 @@ describe Library::V1::LibraryServiceClient do
       request = DiscussBookRequest.new(name: name)
 
       # Mock Grpc layer
-      mock_method = proc do |request|
+      mock_method = proc do |requests|
+        request = requests.first
         assert_equal(name, request.name)
         raise custom_error
       end
@@ -1342,7 +1342,7 @@ describe Library::V1::LibraryServiceClient do
 
         # Call method
         err = assert_raises Google::Gax::GaxError do
-          client.discuss_book(request)
+          client.discuss_book([request])
         end
 
         # Verify the GaxError wrapped the custom error that was raised.
@@ -1362,7 +1362,6 @@ describe Library::V1::LibraryServiceClient do
       # Create request parameters
       name = ''
       request = DiscussBookRequest.new(name: name)
-      requests = [request]
 
       # Create expected grpc response
       user_name = "userName339340927"
@@ -1381,7 +1380,7 @@ describe Library::V1::LibraryServiceClient do
         client = LibraryServiceClient.new
 
         # Call method
-        response = client.monolog_about_book(request)
+        response = client.monolog_about_book([request])
 
         # Verify the response
         assert_equal(expected_response, response)
@@ -1394,7 +1393,8 @@ describe Library::V1::LibraryServiceClient do
       request = DiscussBookRequest.new(name: name)
 
       # Mock Grpc layer
-      mock_method = proc do |request|
+      mock_method = proc do |requests|
+        request = requests.first
         assert_equal(name, request.name)
         raise custom_error
       end
@@ -1405,7 +1405,7 @@ describe Library::V1::LibraryServiceClient do
 
         # Call method
         err = assert_raises Google::Gax::GaxError do
-          client.monolog_about_book(request)
+          client.monolog_about_book([request])
         end
 
         # Verify the GaxError wrapped the custom error that was raised.
