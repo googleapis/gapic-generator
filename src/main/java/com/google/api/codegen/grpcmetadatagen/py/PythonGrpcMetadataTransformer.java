@@ -14,10 +14,10 @@
  */
 package com.google.api.codegen.grpcmetadatagen.py;
 
-import com.google.api.codegen.DevelopmentStatus;
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.transformer.PackageMetadataTransformer;
+import com.google.api.codegen.transformer.py.PythonSurfaceNamer;
 import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.ImmutableSet;
@@ -47,6 +47,8 @@ public class PythonGrpcMetadataTransformer {
 
   public List<PackageMetadataView> transform(Model model, PackageMetadataConfig config) {
     ArrayList<PackageMetadataView> views = new ArrayList<>();
+    PythonSurfaceNamer surfaceNamer =
+        new PythonSurfaceNamer(config.packageName(TargetLanguage.PYTHON));
 
     PackageMetadataTransformer transformer = new PackageMetadataTransformer();
     for (String snippetFilename : SNIPPETS) {
@@ -61,8 +63,7 @@ public class PythonGrpcMetadataTransformer {
                   PROTO_PACKAGE_DEPENDENCY_WHITELIST)
               .namespacePackages(copierResult.namespacePackages())
               .developmentStatus(
-                  DevelopmentStatus.fromString(config.developmentStatus(TargetLanguage.PYTHON))
-                      .toTroveClassifier())
+                  surfaceNamer.getReleaseAnnotation(config.releaseLevel(TargetLanguage.PYTHON)))
               .build();
       views.add(view);
     }

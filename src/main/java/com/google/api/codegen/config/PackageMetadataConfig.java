@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.grpcmetadatagen.GenerationLayer;
 import com.google.api.codegen.grpcmetadatagen.PackageType;
@@ -58,7 +59,7 @@ public abstract class PackageMetadataConfig {
 
   protected abstract Map<TargetLanguage, Map<String, VersionBound>> protoPackageDependencies();
 
-  protected abstract Map<TargetLanguage, String> developmentStatus();
+  protected abstract Map<TargetLanguage, ReleaseLevel> releaseLevel();
 
   /** The version of GAX that this package depends on. Configured per language. */
   public VersionBound gaxVersionBound(TargetLanguage language) {
@@ -99,8 +100,8 @@ public abstract class PackageMetadataConfig {
   }
 
   /** The development status of the client library. Configured per language. */
-  public String developmentStatus(TargetLanguage language) {
-    return developmentStatus().get(language);
+  public ReleaseLevel releaseLevel(TargetLanguage language) {
+    return releaseLevel().get(language);
   }
 
   /**
@@ -165,7 +166,7 @@ public abstract class PackageMetadataConfig {
 
     abstract Builder protoPackageDependencies(Map<TargetLanguage, Map<String, VersionBound>> val);
 
-    abstract Builder developmentStatus(Map<TargetLanguage, String> val);
+    abstract Builder releaseLevel(Map<TargetLanguage, ReleaseLevel> val);
 
     abstract Builder shortName(String val);
 
@@ -202,7 +203,7 @@ public abstract class PackageMetadataConfig {
         .apiCommonVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
         .generatedPackageVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
         .protoPackageDependencies(ImmutableMap.<TargetLanguage, Map<String, VersionBound>>of())
-        .developmentStatus(ImmutableMap.<TargetLanguage, String>of())
+        .releaseLevel(ImmutableMap.<TargetLanguage, ReleaseLevel>of())
         .shortName("")
         .packageType(PackageType.GRPC_CLIENT)
         .generationLayer(GenerationLayer.PROTO)
@@ -236,8 +237,7 @@ public abstract class PackageMetadataConfig {
         .apiCommonVersionBound(
             createVersionMap(
                 (Map<String, Map<String, String>>) configMap.get("api_common_version")))
-        .developmentStatus(
-            buildMapWithDefault((Map<String, String>) configMap.get("development_status")))
+        .releaseLevel(createReleaseLevelMap((Map<String, String>) configMap.get("release_level")))
         .protoPackageDependencies(createProtoPackageDependencies(configMap))
         .packageName(buildMapWithDefault((Map<String, String>) configMap.get("package_name")))
         .shortName((String) configMap.get("short_name"))
@@ -310,6 +310,24 @@ public abstract class PackageMetadataConfig {
               return null;
             }
             return VersionBound.create(versionMap.get("lower"), versionMap.get("upper"));
+          }
+        });
+  }
+
+  private static Map<TargetLanguage, ReleaseLevel> createReleaseLevelMap(
+      Map<String, String> inputMap) {
+    Map<TargetLanguage, String> intermediate = buildMapWithDefault(inputMap);
+    // Convert parsed YAML map into VersionBound object
+    return Maps.transformValues(
+        intermediate,
+        new Function<String, ReleaseLevel>() {
+          @Override
+          @Nullable
+          public ReleaseLevel apply(@Nullable String releaseLevelName) {
+            if (releaseLevelName == null) {
+              return null;
+            }
+            return Enum.valueOf(ReleaseLevel.class, releaseLevelName.toUpperCase());
           }
         });
   }

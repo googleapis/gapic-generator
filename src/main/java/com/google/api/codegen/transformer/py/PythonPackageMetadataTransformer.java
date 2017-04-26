@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer.py;
 
-import com.google.api.codegen.DevelopmentStatus;
 import com.google.api.codegen.GapicContext;
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.TargetLanguage;
@@ -51,6 +50,7 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
   private final PackageMetadataConfig packageConfig;
   private final PackageMetadataTransformer metadataTransformer = new PackageMetadataTransformer();
   private final List<GapicProvider<? extends Object>> gapicProviders;
+  private final PythonSurfaceNamer surfaceNamer;
   private List<String> apiModules = null;
   private List<String> typeModules = null;
 
@@ -58,6 +58,7 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
       PackageMetadataConfig packageConfig, List<GapicProvider<? extends Object>> gapicProviders) {
     this.packageConfig = packageConfig;
     this.gapicProviders = gapicProviders;
+    this.surfaceNamer = new PythonSurfaceNamer(packageConfig.packageName(TargetLanguage.PYTHON));
   }
 
   @Override
@@ -110,8 +111,7 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
         .namespacePackages(
             computeNamespacePackages(productConfig.getPackageName(), packageConfig.apiVersion()))
         .developmentStatus(
-            DevelopmentStatus.fromString(packageConfig.developmentStatus(TargetLanguage.PYTHON))
-                .toTroveClassifier())
+            surfaceNamer.getReleaseAnnotation(packageConfig.releaseLevel(TargetLanguage.PYTHON)))
         .apiModules(apiModules)
         .typeModules(typeModules)
         .build();

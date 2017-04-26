@@ -15,11 +15,14 @@
 package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.InterfaceView;
+import com.google.api.codegen.ReleaseLevel;
+import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProductServiceConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
@@ -65,6 +68,7 @@ import java.util.List;
 /** The ModelToViewTransformer to transform a Model into the standard GAPIC surface in Java. */
 public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
   private final GapicCodePathMapper pathMapper;
+  private final PackageMetadataConfig packageMetadataConfig;
   private final ServiceTransformer serviceTransformer = new ServiceTransformer();
   private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
   private final ApiCallableTransformer apiCallableTransformer = new ApiCallableTransformer();
@@ -85,8 +89,10 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
   private static final String PAGE_STREAMING_RESPONSE_TEMPLATE_FILENAME =
       "java/page_streaming_response.snip";
 
-  public JavaGapicSurfaceTransformer(GapicCodePathMapper pathMapper) {
+  public JavaGapicSurfaceTransformer(
+      GapicCodePathMapper pathMapper, PackageMetadataConfig packageMetadataConfig) {
     this.pathMapper = pathMapper;
+    this.packageMetadataConfig = packageMetadataConfig;
   }
 
   @Override
@@ -135,7 +141,8 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     }
 
     StaticLangPagedResponseWrappersView pagedResponseWrappers =
-        generatePagedResponseWrappers(model, productConfig);
+        generatePagedResponseWrappers(
+            model, productConfig, packageMetadataConfig.releaseLevel(TargetLanguage.JAVA));
     if (pagedResponseWrappers != null) {
       surfaceDocs.add(pagedResponseWrappers);
     }
@@ -182,7 +189,9 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
 
     String name = context.getNamer().getApiWrapperClassName(context.getInterfaceConfig());
     xapiClass.releaseLevelAnnotation(
-        context.getNamer().getReleaseAnnotation(context.getProductConfig().getReleaseLevel()));
+        context
+            .getNamer()
+            .getReleaseAnnotation(packageMetadataConfig.releaseLevel(TargetLanguage.JAVA)));
     xapiClass.name(name);
     xapiClass.settingsClassName(
         context.getNamer().getApiSettingsClassName(context.getInterfaceConfig()));
@@ -200,7 +209,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private StaticLangPagedResponseWrappersView generatePagedResponseWrappers(
-      Model model, GapicProductConfig productConfig) {
+      Model model, GapicProductConfig productConfig, ReleaseLevel releaseLevel) {
 
     SurfaceNamer namer = new JavaSurfaceNamer(productConfig.getPackageName());
     ModelTypeTable typeTable = createTypeTable(productConfig.getPackageName());
@@ -210,8 +219,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     StaticLangPagedResponseWrappersView.Builder pagedResponseWrappers =
         StaticLangPagedResponseWrappersView.newBuilder();
 
-    pagedResponseWrappers.releaseLevelAnnotation(
-        namer.getReleaseAnnotation(productConfig.getReleaseLevel()));
+    pagedResponseWrappers.releaseLevelAnnotation(namer.getReleaseAnnotation(releaseLevel));
     pagedResponseWrappers.templateFileName(PAGE_STREAMING_RESPONSE_TEMPLATE_FILENAME);
 
     String name = namer.getPagedResponseWrappersClassName();
@@ -365,7 +373,9 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     SurfaceNamer namer = context.getNamer();
     StaticLangSettingsView.Builder xsettingsClass = StaticLangSettingsView.newBuilder();
     xsettingsClass.releaseLevelAnnotation(
-        context.getNamer().getReleaseAnnotation(context.getProductConfig().getReleaseLevel()));
+        context
+            .getNamer()
+            .getReleaseAnnotation(packageMetadataConfig.releaseLevel(TargetLanguage.JAVA)));
     xsettingsClass.doc(generateSettingsDoc(context, exampleApiMethod));
     String name = namer.getApiSettingsClassName(context.getInterfaceConfig());
     xsettingsClass.name(name);

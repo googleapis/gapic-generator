@@ -162,7 +162,8 @@ public class MainGapicProviderFactory
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new JavaRenderingUtil()))
-                .setModelToViewTransformer(new JavaGapicSurfaceTransformer(javaPathMapper))
+                .setModelToViewTransformer(
+                    new JavaGapicSurfaceTransformer(javaPathMapper, packageConfig))
                 .build();
 
         providers.add(mainProvider);
