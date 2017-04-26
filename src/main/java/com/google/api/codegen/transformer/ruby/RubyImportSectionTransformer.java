@@ -121,6 +121,9 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
     for (String filename : generateImportFilenames(context)) {
       imports.add(createImport(namer.getServiceFileImportName(filename)));
     }
+    if (context.getInterfaceConfig().hasLongRunningOperations()) {
+      imports.add(createImport("google/longrunning/operations_pb"));
+    }
     return imports.build();
   }
 
