@@ -278,25 +278,28 @@
 
 @private unaryTestSuccessAsserts(test)
     grpc_stub.{@test.grpcStubCallString}.assert_called_once()
-    @if test.asserts
-        args, kwargs = grpc_stub.{@test.grpcStubCallString}.call_args
-        self.assertEqual(len(args), 2)
-        self.assertEqual(len(kwargs), 1)
-        self.assertIn('metadata', kwargs)
-        actual_request = args[0]
+    args, kwargs = grpc_stub.{@test.grpcStubCallString}.call_args
+    self.assertEqual(len(args), 2)
+    self.assertEqual(len(kwargs), 1)
+    self.assertIn('metadata', kwargs)
+    actual_request = args[0]
 
+    expected_request = {@test.requestTypeName}({@requestParams(test.asserts)})
+    self.assertEqual(expected_request, actual_request)
+@end
+
+@private requestParams(asserts)
+    @join assert : asserts on ", "
+        {@assert.actualValueGetter}={@expectedRequestParam(assert)}
     @end
-    @join assert : test.asserts
-        @if assert.hasExpectedValueTransformFunction
-            self.assertEqual(\
-                {@assert.expectedValueTransformFunction}(\
-                    {@assert.expectedValueIdentifier}), \
-                actual_request.{@assert.actualValueGetter})
-        @else
-            self.assertEqual(\
-                {@assert.expectedValueIdentifier}, \
-                actual_request.{@assert.actualValueGetter})
-        @end
+@end
+
+@private expectedRequestParam(assert)
+    @if assert.hasExpectedValueTransformFunction
+        {@assert.expectedValueTransformFunction}(\
+            {@assert.expectedValueIdentifier})
+    @else
+        {@assert.expectedValueIdentifier}
     @end
 @end
 
