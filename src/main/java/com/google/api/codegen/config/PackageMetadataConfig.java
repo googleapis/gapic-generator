@@ -58,8 +58,6 @@ public abstract class PackageMetadataConfig {
 
   protected abstract Map<TargetLanguage, Map<String, VersionBound>> protoPackageDependencies();
 
-  protected abstract Map<TargetLanguage, String> developmentStatus();
-
   /** The version of GAX that this package depends on. Configured per language. */
   public VersionBound gaxVersionBound(TargetLanguage language) {
     return gaxVersionBound().get(language);
@@ -96,11 +94,6 @@ public abstract class PackageMetadataConfig {
   /** The versions of the proto packages that this package depends on. Configured per language. */
   public Map<String, VersionBound> protoPackageDependencies(TargetLanguage language) {
     return protoPackageDependencies().get(language);
-  }
-
-  /** The development status of the client library. Configured per language. */
-  public String developmentStatus(TargetLanguage language) {
-    return developmentStatus().get(language);
   }
 
   /**
@@ -165,8 +158,6 @@ public abstract class PackageMetadataConfig {
 
     abstract Builder protoPackageDependencies(Map<TargetLanguage, Map<String, VersionBound>> val);
 
-    abstract Builder developmentStatus(Map<TargetLanguage, String> val);
-
     abstract Builder shortName(String val);
 
     abstract Builder packageType(PackageType val);
@@ -202,7 +193,6 @@ public abstract class PackageMetadataConfig {
         .apiCommonVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
         .generatedPackageVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
         .protoPackageDependencies(ImmutableMap.<TargetLanguage, Map<String, VersionBound>>of())
-        .developmentStatus(ImmutableMap.<TargetLanguage, String>of())
         .shortName("")
         .packageType(PackageType.GRPC_CLIENT)
         .generationLayer(GenerationLayer.PROTO)
@@ -236,8 +226,6 @@ public abstract class PackageMetadataConfig {
         .apiCommonVersionBound(
             createVersionMap(
                 (Map<String, Map<String, String>>) configMap.get("api_common_version")))
-        .developmentStatus(
-            buildMapWithDefault((Map<String, String>) configMap.get("development_status")))
         .protoPackageDependencies(createProtoPackageDependencies(configMap))
         .packageName(buildMapWithDefault((Map<String, String>) configMap.get("package_name")))
         .shortName((String) configMap.get("short_name"))

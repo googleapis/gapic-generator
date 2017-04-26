@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.grpcmetadatagen.py;
 
-import com.google.api.codegen.DevelopmentStatus;
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.transformer.PackageMetadataTransformer;
@@ -60,9 +59,6 @@ public class PythonGrpcMetadataTransformer {
                   TargetLanguage.PYTHON,
                   PROTO_PACKAGE_DEPENDENCY_WHITELIST)
               .namespacePackages(copierResult.namespacePackages())
-              .developmentStatus(
-                  DevelopmentStatus.fromString(config.developmentStatus(TargetLanguage.PYTHON))
-                      .toTroveClassifier())
               .build();
       views.add(view);
     }
