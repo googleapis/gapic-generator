@@ -15,6 +15,7 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.TargetLanguage;
+import com.google.api.codegen.grpcmetadatagen.GenerationLayer;
 import com.google.api.codegen.grpcmetadatagen.PackageType;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
@@ -39,7 +40,7 @@ public abstract class PackageMetadataConfig {
 
   private static final String CONFIG_KEY_DEFAULT = "default";
   private static final ImmutableMap<TargetLanguage, String> DEFAULT_PROTO_PACKAGE_PREFIX =
-      ImmutableMap.<TargetLanguage, String>builder().put(TargetLanguage.JAVA, "grpc-").build();
+      ImmutableMap.<TargetLanguage, String>builder().put(TargetLanguage.JAVA, "proto-").build();
 
   protected abstract Map<TargetLanguage, VersionBound> gaxVersionBound();
 
@@ -107,6 +108,9 @@ public abstract class PackageMetadataConfig {
   @Nullable
   public abstract PackageType packageType();
 
+  @Nullable
+  public abstract GenerationLayer generationLayer();
+
   /** A single-word short name of the API. E.g., "logging". */
   public abstract String shortName();
 
@@ -158,6 +162,8 @@ public abstract class PackageMetadataConfig {
 
     abstract Builder packageType(PackageType val);
 
+    abstract Builder generationLayer(GenerationLayer val);
+
     abstract Builder apiVersion(String val);
 
     abstract Builder protoPath(String val);
@@ -189,6 +195,7 @@ public abstract class PackageMetadataConfig {
         .protoPackageDependencies(ImmutableMap.<TargetLanguage, Map<String, VersionBound>>of())
         .shortName("")
         .packageType(PackageType.GRPC_CLIENT)
+        .generationLayer(GenerationLayer.PROTO)
         .apiVersion("")
         .protoPath("")
         .author("")
@@ -223,6 +230,7 @@ public abstract class PackageMetadataConfig {
         .packageName(buildMapWithDefault((Map<String, String>) configMap.get("package_name")))
         .shortName((String) configMap.get("short_name"))
         .packageType(PackageType.of((String) configMap.get("package_type")))
+        .generationLayer(GenerationLayer.of((String) configMap.get("generation_layer")))
         .apiVersion((String) configMap.get("major_version"))
         .protoPath((String) configMap.get("proto_path"))
         .author((String) configMap.get("author"))

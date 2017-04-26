@@ -24,8 +24,10 @@ import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
+import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.py.PythonApiMethodParamTransformer;
 import com.google.api.codegen.transformer.py.PythonImportSectionTransformer;
 import com.google.api.codegen.transformer.py.PythonModelTypeNameConverter;
@@ -33,6 +35,10 @@ import com.google.api.codegen.transformer.py.PythonSurfaceNamer;
 import com.google.api.codegen.util.py.PythonCommentReformatter;
 import com.google.api.codegen.util.py.PythonTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodView;
+import com.google.api.codegen.viewmodel.FormatResourceFunctionView;
+import com.google.api.codegen.viewmodel.GrpcStubView;
+import com.google.api.codegen.viewmodel.ParseResourceFunctionView;
+import com.google.api.codegen.viewmodel.PathTemplateView;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.aspects.documentation.model.ElementDocumentationAttribute;
 import com.google.api.tools.framework.model.EnumType;
@@ -108,6 +114,8 @@ public class PythonGapicContext extends GapicContext {
 
   private PackageMetadataConfig packageConfig;
 
+  private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
+
   public PythonGapicContext(
       Model model, GapicProductConfig productConfig, PackageMetadataConfig packageConfig) {
     super(model, productConfig);
@@ -142,6 +150,27 @@ public class PythonGapicContext extends GapicContext {
             new InitCodeTransformer(new PythonImportSectionTransformer()));
 
     return apiMethodTransformer.generateMethod(methodContext);
+  }
+
+  public List<PathTemplateView> getPathTemplates(Interface apiInterface) {
+    GapicInterfaceContext context = getSurfaceTransformerContextFromService(apiInterface);
+    return pathTemplateTransformer.generatePathTemplates(context);
+  }
+
+  public List<FormatResourceFunctionView> getFormatResourceFunctions(Interface apiInterface) {
+    GapicInterfaceContext context = getSurfaceTransformerContextFromService(apiInterface);
+    return pathTemplateTransformer.generateFormatResourceFunctions(context);
+  }
+
+  public List<ParseResourceFunctionView> getParseResourceFunctions(Interface apiInterface) {
+    GapicInterfaceContext context = getSurfaceTransformerContextFromService(apiInterface);
+    return pathTemplateTransformer.generateParseResourceFunctions(context);
+  }
+
+  public List<GrpcStubView> getGrpcStubs(Interface apiInterface) {
+    GapicInterfaceContext context = getSurfaceTransformerContextFromService(apiInterface);
+    GrpcStubTransformer grpcStubTransformer = new GrpcStubTransformer();
+    return grpcStubTransformer.generateGrpcStubs(context);
   }
 
   private GapicInterfaceContext getSurfaceTransformerContextFromService(Interface apiInterface) {

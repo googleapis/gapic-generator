@@ -17,17 +17,50 @@ package com.google.api.codegen.util.ruby;
 import com.google.api.codegen.CommentPatterns;
 import com.google.api.codegen.util.CommentReformatter;
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import java.util.regex.Matcher;
 
 public class RubyCommentReformatter implements CommentReformatter {
+  private static final String BULLET = "* ";
+
   @Override
   public String reformat(String comment) {
-    comment = CommentPatterns.BACK_QUOTE_PATTERN.matcher(comment).replaceAll("+");
-    comment = reformatProtoMarkdownLinks(comment);
-    comment = reformatCloudMarkdownLinks(comment);
-    comment = reformatAbsoluteMarkdownLinks(comment);
-    comment = reformatHeadline(comment);
-    return comment.trim();
+    StringBuffer sb = new StringBuffer();
+    int listIndent = 0;
+    boolean followsListItem = false;
+    boolean followsBlankLine = false;
+    for (String line : Splitter.on("\n").split(comment)) {
+      Matcher listMatcher = CommentPatterns.UNORDERED_LIST_PATTERN.matcher(line);
+      boolean matchesList = listMatcher.lookingAt();
+      Matcher indentMatcher = CommentPatterns.INDENT_PATTERN.matcher(line);
+      indentMatcher.lookingAt();
+      int indent = indentMatcher.group().length();
+      if (matchesList) {
+        line = listMatcher.replaceFirst(BULLET);
+      }
+      if (indent < listIndent && (matchesList || followsBlankLine)) {
+        listIndent -= BULLET.length();
+      } else if (followsListItem && (!matchesList || indent > listIndent)) {
+        listIndent += BULLET.length();
+      }
+      if (listIndent > 0) {
+        line = line.trim();
+        sb.append(Strings.repeat(" ", listIndent));
+      }
+      sb.append(applyTransformations(line)).append("\n");
+      followsListItem = matchesList;
+      followsBlankLine = line.isEmpty();
+    }
+    return sb.toString().trim();
+  }
+
+  private String applyTransformations(String line) {
+    line = CommentPatterns.BACK_QUOTE_PATTERN.matcher(line).replaceAll("+");
+    line = reformatProtoMarkdownLinks(line);
+    line = reformatCloudMarkdownLinks(line);
+    line = reformatAbsoluteMarkdownLinks(line);
+    line = reformatHeadline(line);
+    return line;
   }
 
   /** Returns a string with all proto markdown links formatted to RDoc style. */

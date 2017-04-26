@@ -21,15 +21,18 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.BasicFileAttributes;
 
-/** Responsible for copying static grpc meta-data files for Java */
-public class JavaStaticGrpcMetadataCopier {
+/** Responsible for copying package files and static meta-data files for Java */
+public class JavaPackageCopier {
   private static final String RESOURCE_DIR = "/com/google/api/codegen/metadatagen/java/grpc/";
-  private static final ImmutableList<String> GRPC_STATIC_FILES =
+  private static final ImmutableList<String> STATIC_FILES =
       ImmutableList.of(
           "gradlew",
           "gradle/wrapper/gradle-wrapper.jar",
@@ -38,19 +41,46 @@ public class JavaStaticGrpcMetadataCopier {
           "PUBLISHING.md",
           "templates/apidocs_index.html.template");
 
+  private final String inputDir;
   private final String outputDir;
 
-  public JavaStaticGrpcMetadataCopier(ToolOptions options) {
+  private class JavaPackageFileVisitor extends SimpleFileVisitor<Path> {
+    Path inputPath;
+    Path outputPath;
+
+    public JavaPackageFileVisitor(Path inputPath, Path outputPath) {
+      this.inputPath = inputPath;
+      this.outputPath = outputPath;
+    }
+
+    @Override
+    public FileVisitResult visitFile(Path file, BasicFileAttributes attr) throws IOException {
+      Path destination = outputPath.resolve(inputPath.relativize(file));
+      Files.createDirectories(destination.getParent());
+      Files.copy(file, destination, StandardCopyOption.REPLACE_EXISTING);
+      return FileVisitResult.CONTINUE;
+    }
+  }
+
+  public JavaPackageCopier(ToolOptions options) {
+    this.inputDir = options.get(GrpcMetadataGenerator.INPUT_DIR);
     this.outputDir = options.get(GrpcMetadataGenerator.OUTPUT_DIR);
   }
 
   public ImmutableMap<String, Doc> run() throws IOException {
     ImmutableMap.Builder<String, Doc> docBuilder = new ImmutableMap.Builder<String, Doc>();
-    for (String staticFile : GRPC_STATIC_FILES) {
+
+    // Copy all files in the input dir
+    Path inputPath = Paths.get(inputDir);
+    Path outputPath = Paths.get(outputDir);
+    JavaPackageFileVisitor visitor = new JavaPackageFileVisitor(inputPath, outputPath);
+    Files.walkFileTree(inputPath, visitor);
+
+    // Copy static files
+    for (String staticFile : STATIC_FILES) {
       Path staticFilePath = Paths.get(staticFile);
       URL input =
-          JavaStaticGrpcMetadataCopier.class
-              .getResource(Paths.get(RESOURCE_DIR, staticFile).toString());
+          JavaPackageCopier.class.getResource(Paths.get(RESOURCE_DIR, staticFile).toString());
       createDirectoryIfNecessary(staticFilePath, outputDir);
 
       Path output = Paths.get(outputDir, staticFile);

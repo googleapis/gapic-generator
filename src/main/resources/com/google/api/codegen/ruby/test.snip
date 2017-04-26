@@ -15,6 +15,8 @@
 
   {@importList(fileHeader.importSection.standardImports)}
 
+  {@importList(fileHeader.importSection.externalImports)}
+
   {@importList(fileHeader.importSection.appImports)}
 @end
 
@@ -77,6 +79,7 @@
     @case "RequestObjectMethod"
       {@requestObjectTestCase(test)}
     @case "PagedRequestObjectMethod"
+      {@pageIterationTestCase(test)}
     @case "OperationCallableMethod"
       {@longrunningTestCase(test)}
     @default
@@ -118,6 +121,37 @@
         assert_equal(expected_response, response)
       @else
         assert_nil(response)
+      @end
+    end
+  end
+@end
+
+@private pageIterationTestCase(test)
+  it 'invokes {@test.clientMethodName} without error' do
+    @if initCode(test.initCode)
+      @# Create request parameters and expected request
+      {@initCode(test.initCode)}
+
+    @end
+    @# Create expected grpc response
+    {@initCode(test.mockResponse.initCode)}
+
+    @# Mock Grpc layer
+    {@mockUnaryRequest(test)}
+    mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
+
+    {@test.grpcStubCallString}.stub(:new, mock_stub) do
+      client = {@test.serviceConstructorName}.new
+
+      @# Call method
+      {@methodCallWithResponse(test)}
+
+      @# Verify the response
+      assert(response.instance_of?(Google::Gax::PagedEnumerable))
+      assert_equal(expected_response, response.page.response)
+      assert_nil(response.next_page)
+      @join pageResponseView : test.pageStreamingResponseViews on BREAK
+        assert_equal(expected_response.{@pageResponseView.resourcesFieldGetterName}.to_a, response.to_a)
       @end
     end
   end

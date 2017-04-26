@@ -132,12 +132,6 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
     SymbolTable testNameTable = new SymbolTable();
     for (Method method : context.getSupportedMethods()) {
       GapicMethodContext methodContext = context.asRequestMethodContext(method);
-
-      if (methodContext.getMethodConfig().isGrpcStreaming()) {
-        // TODO(eoogbe): Remove this check once grpc streaming is supported by test
-        continue;
-      }
-
       ClientMethodType clientMethodType = ClientMethodType.OptionalArrayMethod;
       if (methodContext.getMethodConfig().isLongRunningOperation()) {
         clientMethodType = ClientMethodType.OperationOptionalArrayMethod;
@@ -147,6 +141,10 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
 
       Iterable<FieldConfig> fieldConfigs =
           methodContext.getMethodConfig().getRequiredFieldConfigs();
+      InitCodeOutputType initCodeOutputType =
+          method.getRequestStreaming()
+              ? InitCodeOutputType.SingleObject
+              : InitCodeOutputType.FieldList;
       InitCodeContext initCodeContext =
           InitCodeContext.newBuilder()
               .initObjectType(methodContext.getMethod().getInputType())
@@ -154,7 +152,7 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
               .initFieldConfigStrings(methodContext.getMethodConfig().getSampleCodeInitFields())
               .initValueConfigMap(InitCodeTransformer.createCollectionMap(methodContext))
               .initFields(FieldConfig.toFieldIterable(fieldConfigs))
-              .outputType(InitCodeOutputType.FieldList)
+              .outputType(initCodeOutputType)
               .fieldConfigMap(FieldConfig.toFieldConfigMap(fieldConfigs))
               .valueGenerator(valueGenerator)
               .build();

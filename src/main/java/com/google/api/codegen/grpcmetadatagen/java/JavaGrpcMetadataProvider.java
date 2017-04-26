@@ -29,10 +29,12 @@ import java.util.Map;
 /** Performs gRPC meta-data generation for Java */
 public class JavaGrpcMetadataProvider implements GrpcMetadataProvider {
 
-  private final JavaStaticGrpcMetadataCopier copier;
+  private final JavaPackageMetadataTransformer transformer;
+  private final JavaPackageCopier copier;
 
-  public JavaGrpcMetadataProvider(ToolOptions options) {
-    this.copier = new JavaStaticGrpcMetadataCopier(options);
+  public JavaGrpcMetadataProvider(JavaPackageMetadataTransformer transformer, ToolOptions options) {
+    this.transformer = transformer;
+    this.copier = new JavaPackageCopier(options);
   }
 
   @Override
@@ -41,8 +43,7 @@ public class JavaGrpcMetadataProvider implements GrpcMetadataProvider {
     docs.putAll(copier.run());
 
     ArrayList<PackageMetadataView> metadataViews = new ArrayList<>();
-    JavaGrpcPackageMetadataTransformer javaTransformer = new JavaGrpcPackageMetadataTransformer();
-    metadataViews.addAll(javaTransformer.transform(model, config));
+    metadataViews.addAll(transformer.transform(model, config));
 
     for (PackageMetadataView view : metadataViews) {
       CommonSnippetSetRunner runner = new CommonSnippetSetRunner(view);

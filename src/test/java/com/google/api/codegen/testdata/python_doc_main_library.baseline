@@ -636,7 +636,7 @@ class LibraryServiceClient(object):
           >>> shelf = library_pb2.Shelf()
           >>> books = []
           >>> series_string = 'foobar'
-          >>> series_uuid = library_pb2.SeriesUuid(series_string)
+          >>> series_uuid = library_pb2.SeriesUuid(series_string=series_string)
           >>> response = client.publish_series(shelf, books, series_uuid)
 
         Args:
@@ -924,7 +924,7 @@ class LibraryServiceClient(object):
           >>> comment = b''
           >>> stage = enums.Comment.Stage.UNSET
           >>> alignment = enums.SomeMessage2.SomeMessage3.Alignment.CHAR
-          >>> comments_element = library_pb2.Comment(comment, stage, alignment)
+          >>> comments_element = library_pb2.Comment(comment=comment, stage=stage, alignment=alignment)
           >>> comments = [comments_element]
           >>> client.add_comments(name, comments)
 
@@ -1120,7 +1120,7 @@ class LibraryServiceClient(object):
           >>> from google.cloud.proto.example.library.v1 import library_pb2
           >>> client = library_service_client.LibraryServiceClient()
           >>> name = ''
-          >>> request = library_pb2.DiscussBookRequest(name)
+          >>> request = library_pb2.DiscussBookRequest(name=name)
           >>> requests = [request]
           >>> for element in client.discuss_book(requests):
           >>>     # process element
@@ -1155,7 +1155,7 @@ class LibraryServiceClient(object):
           >>> from google.cloud.proto.example.library.v1 import library_pb2
           >>> client = library_service_client.LibraryServiceClient()
           >>> name = ''
-          >>> request = library_pb2.DiscussBookRequest(name)
+          >>> request = library_pb2.DiscussBookRequest(name=name)
           >>> requests = [request]
           >>> response = client.monolog_about_book(requests)
 
