@@ -192,38 +192,35 @@ public class GoModelTypeNameConverter implements ModelTypeNameConverter {
 
   @Override
   public TypedValue getSnippetZeroValue(TypeRef type) {
+    if (type.isRepeated() || type.isMap()) {
+      return TypedValue.create(getTypeName(type), "nil");
+    }
     if (type.isEnum()) {
       return getEnumValue(type, type.getEnumType().getValues().get(0));
     }
-    return TypedValue.create(getTypeName(type), getZeroValueStr(type));
+    if (type.isMessage()) {
+      return TypedValue.create(
+          getTypeName(type), "&" + getTypeName(type.getMessageType(), false).getNickname() + "{}");
+    }
+    switch (type.getKind()) {
+      case TYPE_BOOL:
+        return TypedValue.create(getTypeName(type), "false");
+
+      case TYPE_STRING:
+        return TypedValue.create(getTypeName(type), "\"\"");
+
+      case TYPE_BYTES:
+        return TypedValue.create(getTypeName(type), "nil");
+
+      default:
+        // Anything else -- numeric values.
+        return TypedValue.create(getTypeName(type), "0");
+    }
   }
 
   @Override
   public TypedValue getImplZeroValue(TypeRef type) {
     return getSnippetZeroValue(type);
-  }
-
-  private String getZeroValueStr(TypeRef type) {
-    if (type.isRepeated() || type.isMap()) {
-      return "nil";
-    }
-    if (type.isMessage()) {
-      return "&" + getTypeName(type.getMessageType(), false).getNickname() + "{}";
-    }
-    switch (type.getKind()) {
-      case TYPE_BOOL:
-        return "false";
-
-      case TYPE_STRING:
-        return "\"\"";
-
-      case TYPE_BYTES:
-        return "nil";
-
-      default:
-        // Anything else -- numeric values.
-        return "0";
-    }
   }
 
   @Override
