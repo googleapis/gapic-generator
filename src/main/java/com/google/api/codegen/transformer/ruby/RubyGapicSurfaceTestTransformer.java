@@ -127,8 +127,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
   private List<TestCaseView> createUnitTestCaseViews(GapicInterfaceContext context) {
     ImmutableList.Builder<TestCaseView> testCases = ImmutableList.builder();
-    List<Method> methods = getUnitTestedMethods(context);
-    for (Method method : methods) {
+    for (Method method : context.getSupportedMethods()) {
       GapicMethodContext requestMethodContext =
           context.withNewTypeTable().asRequestMethodContext(method);
       GapicMethodConfig methodConfig = requestMethodContext.getMethodConfig();
@@ -141,20 +140,6 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
       testCases.add(testCase);
     }
     return testCases.build();
-  }
-
-  // TODO(landrito): Remove this function when all test types are supported.
-  private List<Method> getUnitTestedMethods(GapicInterfaceContext context) {
-    ImmutableList.Builder<Method> methods = ImmutableList.builder();
-    for (Method method : context.getSupportedMethods()) {
-      GapicMethodContext requestMethodContext = context.asRequestMethodContext(method);
-      GapicMethodConfig methodConfig = requestMethodContext.getMethodConfig();
-      if (methodConfig.isPageStreaming() || methodConfig.isLongRunningOperation()) {
-        continue;
-      }
-      methods.add(method);
-    }
-    return methods.build();
   }
 
   private InitCodeContext createUnitTestCaseInitCodeContext(

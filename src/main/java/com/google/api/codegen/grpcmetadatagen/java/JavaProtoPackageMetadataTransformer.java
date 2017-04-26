@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,8 @@ import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 
 /** Responsible for producing GRPC package meta-data related views for Java */
-public class JavaGrpcPackageMetadataTransformer extends JavaPackageMetadataTransformer {
+public class JavaProtoPackageMetadataTransformer extends JavaPackageMetadataTransformer {
+
   private final Map<String, String> snippetsOutput =
       ImmutableMap.of(
           "LICENSE.snip", "LICENSE",

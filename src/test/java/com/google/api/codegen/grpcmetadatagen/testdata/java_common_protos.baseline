@@ -206,19 +206,17 @@ buildscript {
   repositories {
     mavenCentral()
   }
-  dependencies { classpath 'com.google.protobuf:protobuf-gradle-plugin:0.7.7' }
 }
 
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'signing'
-apply plugin: 'com.google.protobuf'
 
-description = 'GRPC library for google-common-protos'
+description = 'PROTO library for proto-google-common-protos'
 group = "com.google.api.grpc"
 version = "0.1.7"
-sourceCompatibility = 1.6
-targetCompatibility = 1.6
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
 
 repositories {
   mavenCentral()
@@ -228,40 +226,16 @@ repositories {
 dependencies {
   compile "com.google.protobuf:protobuf-java:3.0.0"
   compile "com.google.api:api-common:0.0.2"
-  compile "io.grpc:grpc-stub:1.0.1"
-  compile "io.grpc:grpc-protobuf:1.0.1"
 }
 
 ext {
-  packageName = 'google-common-protos'
-}
-
-
-protobuf {
-  protoc {
-    // The version of protoc must match protobuf-java. If you don't depend on
-    // protobuf-java directly, you will be transitively depending on the
-    // protobuf-java version that grpc depends on.
-    artifact = "com.google.protobuf:protoc:3.0.0"
-  }
-  plugins {
-    grpc {
-      artifact = 'io.grpc:protoc-gen-grpc-java:1.0.1'
-    }
-  }
-  generateProtoTasks {
-    all()*.plugins {
-      grpc {
-        outputSubDir = 'java'
-      }
-    }
-  }
+  packageName = 'proto-google-common-protos'
 }
 
 sourceSets {
   main {
     java {
-      srcDir 'build/generated/source/proto/main/java'
+      srcDir 'src/main/java'
     }
   }
 }
@@ -300,7 +274,7 @@ if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')
         }
 
         pom.project {
-          name "com.google.api.grpc:google-common-protos"
+          name "com.google.api.grpc:proto-google-common-protos"
           description project.description
           url 'https://github.com/googleapis/googleapis'
           scm {
@@ -341,7 +315,7 @@ task checkOutGhPages {
   if (!new File('tmp_gh-pages').exists()) {
     exec {
       commandLine 'git', 'clone', '--branch', 'gh-pages',
-          '--single-branch', 'https://github.com/googleapis/googleapis/', 'tmp_gh-pages'
+          '--single-branch', 'git@github.com:googleapis/googleapis.git', 'tmp_gh-pages'
     }
   }
 }

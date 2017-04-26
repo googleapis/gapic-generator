@@ -104,6 +104,11 @@ public class PackageMetadataGeneratorTest extends ConfigBaselineTestCase {
   }
 
   @Test
+  public void java_grpc_stubs() throws Exception {
+    test("library", "library_stubs_pkg.yaml", "java");
+  }
+
+  @Test
   public void java_common_protos() throws Exception {
     test("library", "common_protos_pkg.yaml", "java");
   }

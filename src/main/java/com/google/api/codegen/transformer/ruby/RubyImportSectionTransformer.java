@@ -55,7 +55,7 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
     List<ImportFileView> none = ImmutableList.of();
     ImportSectionView.Builder importSection = ImportSectionView.newBuilder();
     importSection.standardImports(generateTestStandardImports());
-    importSection.externalImports(none);
+    importSection.externalImports(generateTestExternalImports());
     importSection.appImports(generateTestAppImports(context));
     importSection.serviceImports(none);
     return importSection.build();
@@ -110,12 +110,19 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
     return ImmutableList.of(createImport("minitest/autorun"), createImport("minitest/spec"));
   }
 
+  private List<ImportFileView> generateTestExternalImports() {
+    return ImmutableList.of(createImport("google/gax"));
+  }
+
   private List<ImportFileView> generateTestAppImports(GapicInterfaceContext context) {
     ImmutableList.Builder<ImportFileView> imports = ImmutableList.builder();
     SurfaceNamer namer = context.getNamer();
     imports.add(createImport(namer.getServiceFileName(context.getInterfaceConfig())));
     for (String filename : generateImportFilenames(context)) {
       imports.add(createImport(namer.getServiceFileImportName(filename)));
+    }
+    if (context.getInterfaceConfig().hasLongRunningOperations()) {
+      imports.add(createImport("google/longrunning/operations_pb"));
     }
     return imports.build();
   }
