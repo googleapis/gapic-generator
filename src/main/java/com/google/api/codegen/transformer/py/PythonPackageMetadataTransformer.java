@@ -50,6 +50,7 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
   private final PackageMetadataConfig packageConfig;
   private final PackageMetadataTransformer metadataTransformer = new PackageMetadataTransformer();
   private final List<GapicProvider<? extends Object>> gapicProviders;
+  private final PythonSurfaceNamer surfaceNamer;
   private List<String> apiModules = null;
   private List<String> typeModules = null;
 
@@ -57,6 +58,7 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
       PackageMetadataConfig packageConfig, List<GapicProvider<? extends Object>> gapicProviders) {
     this.packageConfig = packageConfig;
     this.gapicProviders = gapicProviders;
+    this.surfaceNamer = new PythonSurfaceNamer(packageConfig.packageName(TargetLanguage.PYTHON));
   }
 
   @Override
@@ -108,6 +110,8 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
         .generateMetadataView(packageConfig, model, template, outputPath, TargetLanguage.PYTHON)
         .namespacePackages(
             computeNamespacePackages(productConfig.getPackageName(), packageConfig.apiVersion()))
+        .developmentStatus(
+            surfaceNamer.getReleaseAnnotation(packageConfig.releaseLevel(TargetLanguage.PYTHON)))
         .apiModules(apiModules)
         .typeModules(typeModules)
         .build();
