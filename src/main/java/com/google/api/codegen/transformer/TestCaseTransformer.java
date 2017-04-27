@@ -227,15 +227,20 @@ public class TestCaseTransformer {
 
   public TestCaseView createSmokeTestCaseView(GapicMethodContext context) {
     GapicMethodConfig methodConfig = context.getMethodConfig();
-    ClientMethodType methodType = null;
-    if (methodConfig.isPageStreaming() && context.isFlattenedMethodContext()) {
-      methodType = ClientMethodType.PagedFlattenedMethod;
-    } else if (methodConfig.isPageStreaming() && !context.isFlattenedMethodContext()) {
-      methodType = ClientMethodType.PagedRequestObjectMethod;
-    } else if (!methodConfig.isPageStreaming() && context.isFlattenedMethodContext()) {
-      methodType = ClientMethodType.FlattenedMethod;
-    } else if (!methodConfig.isPageStreaming() && !context.isFlattenedMethodContext()) {
-      methodType = ClientMethodType.RequestObjectMethod;
+    ClientMethodType methodType;
+
+    if (methodConfig.isPageStreaming()) {
+      if (context.isFlattenedMethodContext()) {
+        methodType = ClientMethodType.PagedFlattenedMethod;
+      } else {
+        methodType = ClientMethodType.PagedRequestObjectMethod;
+      }
+    } else {
+      if (context.isFlattenedMethodContext()) {
+        methodType = ClientMethodType.FlattenedMethod;
+      } else {
+        methodType = ClientMethodType.RequestObjectMethod;
+      }
     }
 
     return createTestCaseView(
