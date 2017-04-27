@@ -64,7 +64,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         self.assertIn('metadata', kwargs)
         actual_request = args[0]
 
-        self.assertEqual(shelf, actual_request.shelf)
+        expected_request = library_pb2.CreateShelfRequest(shelf=shelf)
+        self.assertEqual(expected_request, actual_request)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
     @mock.patch('google.gax.config.create_stub', spec=True)
@@ -112,8 +113,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         self.assertIn('metadata', kwargs)
         actual_request = args[0]
 
-        self.assertEqual(name, actual_request.name)
-        self.assertEqual(options_, actual_request.options)
+        expected_request = library_pb2.GetShelfRequest(name=name, options=options_)
+        self.assertEqual(expected_request, actual_request)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
     @mock.patch('google.gax.config.create_stub', spec=True)
@@ -154,6 +155,14 @@ class TestLibraryServiceClient(unittest.TestCase):
         self.assertEqual(expected_response.shelves[0], resources[0])
 
         grpc_stub.ListShelves.assert_called_once()
+        args, kwargs = grpc_stub.ListShelves.call_args
+        self.assertEqual(len(args), 2)
+        self.assertEqual(len(kwargs), 1)
+        self.assertIn('metadata', kwargs)
+        actual_request = args[0]
+
+        expected_request = library_pb2.ListShelvesRequest()
+        self.assertEqual(expected_request, actual_request)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
     @mock.patch('google.gax.config.create_stub', spec=True)
@@ -167,7 +176,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         # Mock exception response
         grpc_stub.ListShelves.side_effect = CustomException()
 
-        self.assertRaises(errors.GaxError, client.list_shelves)
+        paged_list_response = client.list_shelves()
+        self.assertRaises(errors.GaxError, list, paged_list_response)
 
     @mock.patch('google.gax.config.create_stub', spec=True)
     def test_delete_shelf(self, mock_create_stub):
@@ -189,7 +199,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         self.assertIn('metadata', kwargs)
         actual_request = args[0]
 
-        self.assertEqual(name, actual_request.name)
+        expected_request = library_pb2.DeleteShelfRequest(name=name)
+        self.assertEqual(expected_request, actual_request)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
     @mock.patch('google.gax.config.create_stub', spec=True)
@@ -237,8 +248,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         self.assertIn('metadata', kwargs)
         actual_request = args[0]
 
-        self.assertEqual(name, actual_request.name)
-        self.assertEqual(other_shelf_name, actual_request.other_shelf_name)
+        expected_request = library_pb2.MergeShelvesRequest(name=name, other_shelf_name=other_shelf_name)
+        self.assertEqual(expected_request, actual_request)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
     @mock.patch('google.gax.config.create_stub', spec=True)
@@ -288,8 +299,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         self.assertIn('metadata', kwargs)
         actual_request = args[0]
 
-        self.assertEqual(name, actual_request.name)
-        self.assertEqual(book, actual_request.book)
+        expected_request = library_pb2.CreateBookRequest(name=name, book=book)
+        self.assertEqual(expected_request, actual_request)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
     @mock.patch('google.gax.config.create_stub', spec=True)
@@ -339,9 +350,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         self.assertIn('metadata', kwargs)
         actual_request = args[0]
 
-        self.assertEqual(shelf, actual_request.shelf)
-        self.assertEqual(books, actual_request.books)
-        self.assertEqual(series_uuid, actual_request.series_uuid)
+        expected_request = library_pb2.PublishSeriesRequest(shelf=shelf, books=books, series_uuid=series_uuid)
+        self.assertEqual(expected_request, actual_request)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
     @mock.patch('google.gax.config.create_stub', spec=True)
@@ -392,7 +402,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         self.assertIn('metadata', kwargs)
         actual_request = args[0]
 
-        self.assertEqual(name, actual_request.name)
+        expected_request = library_pb2.GetBookRequest(name=name)
+        self.assertEqual(expected_request, actual_request)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
     @mock.patch('google.gax.config.create_stub', spec=True)
@@ -441,7 +452,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         self.assertIn('metadata', kwargs)
         actual_request = args[0]
 
-        self.assertEqual(name, actual_request.name)
+        expected_request = library_pb2.ListBooksRequest(name=name)
+        self.assertEqual(expected_request, actual_request)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
     @mock.patch('google.gax.config.create_stub', spec=True)
@@ -458,7 +470,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         # Mock exception response
         grpc_stub.ListBooks.side_effect = CustomException()
 
-        self.assertRaises(errors.GaxError, client.list_books, name)
+        paged_list_response = client.list_books(name)
+        self.assertRaises(errors.GaxError, list, paged_list_response)
 
     @mock.patch('google.gax.config.create_stub', spec=True)
     def test_delete_book(self, mock_create_stub):
@@ -480,7 +493,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         self.assertIn('metadata', kwargs)
         actual_request = args[0]
 
-        self.assertEqual(name, actual_request.name)
+        expected_request = library_pb2.DeleteBookRequest(name=name)
+        self.assertEqual(expected_request, actual_request)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
     @mock.patch('google.gax.config.create_stub', spec=True)
@@ -529,8 +543,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         self.assertIn('metadata', kwargs)
         actual_request = args[0]
 
-        self.assertEqual(name, actual_request.name)
-        self.assertEqual(book, actual_request.book)
+        expected_request = library_pb2.UpdateBookRequest(name=name, book=book)
+        self.assertEqual(expected_request, actual_request)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
     @mock.patch('google.gax.config.create_stub', spec=True)
@@ -580,8 +594,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         self.assertIn('metadata', kwargs)
         actual_request = args[0]
 
-        self.assertEqual(name, actual_request.name)
-        self.assertEqual(other_shelf_name, actual_request.other_shelf_name)
+        expected_request = library_pb2.MoveBookRequest(name=name, other_shelf_name=other_shelf_name)
+        self.assertEqual(expected_request, actual_request)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
     @mock.patch('google.gax.config.create_stub', spec=True)
@@ -622,6 +636,14 @@ class TestLibraryServiceClient(unittest.TestCase):
         self.assertEqual(expected_response.strings[0], resources[0])
 
         grpc_stub.ListStrings.assert_called_once()
+        args, kwargs = grpc_stub.ListStrings.call_args
+        self.assertEqual(len(args), 2)
+        self.assertEqual(len(kwargs), 1)
+        self.assertIn('metadata', kwargs)
+        actual_request = args[0]
+
+        expected_request = library_pb2.ListStringsRequest()
+        self.assertEqual(expected_request, actual_request)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
     @mock.patch('google.gax.config.create_stub', spec=True)
@@ -635,7 +657,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         # Mock exception response
         grpc_stub.ListStrings.side_effect = CustomException()
 
-        self.assertRaises(errors.GaxError, client.list_strings)
+        paged_list_response = client.list_strings()
+        self.assertRaises(errors.GaxError, list, paged_list_response)
 
     @mock.patch('google.gax.config.create_stub', spec=True)
     def test_add_comments(self, mock_create_stub):
@@ -662,8 +685,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         self.assertIn('metadata', kwargs)
         actual_request = args[0]
 
-        self.assertEqual(name, actual_request.name)
-        self.assertEqual(comments, actual_request.comments)
+        expected_request = library_pb2.AddCommentsRequest(name=name, comments=comments)
+        self.assertEqual(expected_request, actual_request)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
     @mock.patch('google.gax.config.create_stub', spec=True)
@@ -716,7 +739,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         self.assertIn('metadata', kwargs)
         actual_request = args[0]
 
-        self.assertEqual(name, actual_request.name)
+        expected_request = library_pb2.GetBookFromArchiveRequest(name=name)
+        self.assertEqual(expected_request, actual_request)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
     @mock.patch('google.gax.config.create_stub', spec=True)
@@ -765,8 +789,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         self.assertIn('metadata', kwargs)
         actual_request = args[0]
 
-        self.assertEqual(name, actual_request.name)
-        self.assertEqual(alt_book_name, actual_request.alt_book_name)
+        expected_request = library_pb2.GetBookFromAnywhereRequest(name=name, alt_book_name=alt_book_name)
+        self.assertEqual(expected_request, actual_request)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
     @mock.patch('google.gax.config.create_stub', spec=True)
@@ -809,9 +833,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         self.assertIn('metadata', kwargs)
         actual_request = args[0]
 
-        self.assertEqual(name, actual_request.name)
-        self.assertEqual(index_name, actual_request.index_name)
-        self.assertEqual(index_map, actual_request.index_map)
+        expected_request = library_pb2.UpdateBookIndexRequest(name=name, index_name=index_name, index_map=index_map)
+        self.assertEqual(expected_request, actual_request)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
     @mock.patch('google.gax.config.create_stub', spec=True)
@@ -851,6 +874,14 @@ class TestLibraryServiceClient(unittest.TestCase):
         self.assertEqual(expected_response, resources[0])
 
         grpc_stub.StreamShelves.assert_called_once()
+        args, kwargs = grpc_stub.StreamShelves.call_args
+        self.assertEqual(len(args), 2)
+        self.assertEqual(len(kwargs), 1)
+        self.assertIn('metadata', kwargs)
+        actual_request = args[0]
+
+        expected_request = library_pb2.StreamShelvesRequest()
+        self.assertEqual(expected_request, actual_request)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
     @mock.patch('google.gax.config.create_stub', spec=True)
@@ -897,7 +928,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         self.assertIn('metadata', kwargs)
         actual_request = args[0]
 
-        self.assertEqual(name, actual_request.name)
+        expected_request = library_pb2.StreamBooksRequest(name=name)
+        self.assertEqual(expected_request, actual_request)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
     @mock.patch('google.gax.config.create_stub', spec=True)
@@ -1052,8 +1084,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         self.assertIn('metadata', kwargs)
         actual_request = args[0]
 
-        self.assertEqual(names, actual_request.names)
-        self.assertEqual(shelves, actual_request.shelves)
+        expected_request = library_pb2.FindRelatedBooksRequest(names=names, shelves=shelves)
+        self.assertEqual(expected_request, actual_request)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
     @mock.patch('google.gax.config.create_stub', spec=True)
@@ -1072,7 +1104,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         # Mock exception response
         grpc_stub.FindRelatedBooks.side_effect = CustomException()
 
-        self.assertRaises(errors.GaxError, client.find_related_books, names, shelves)
+        paged_list_response = client.find_related_books(names, shelves)
+        self.assertRaises(errors.GaxError, list, paged_list_response)
 
     @mock.patch('google.gax.config.create_stub', spec=True)
     def test_add_tag(self, mock_create_stub):
@@ -1100,8 +1133,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         self.assertIn('metadata', kwargs)
         actual_request = args[0]
 
-        self.assertEqual(resource, actual_request.resource)
-        self.assertEqual(tag, actual_request.tag)
+        expected_request = tagger_pb2.AddTagRequest(resource=resource, tag=tag)
+        self.assertEqual(expected_request, actual_request)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
     @mock.patch('google.gax.config.create_stub', spec=True)
@@ -1147,8 +1180,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         self.assertIn('metadata', kwargs)
         actual_request = args[0]
 
-        self.assertEqual(resource, actual_request.resource)
-        self.assertEqual(label, actual_request.label)
+        expected_request = tagger_pb2.AddLabelRequest(resource=resource, label=label)
+        self.assertEqual(expected_request, actual_request)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
     @mock.patch('google.gax.config.create_stub', spec=True)
@@ -1199,7 +1232,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         self.assertIn('metadata', kwargs)
         actual_request = args[0]
 
-        self.assertEqual(name, actual_request.name)
+        expected_request = library_pb2.GetBookRequest(name=name)
+        self.assertEqual(expected_request, actual_request)
 
     @mock.patch('google.gax.config.create_stub', spec=True)
     def test_get_big_book_exception(self, mock_create_stub):
@@ -1248,7 +1282,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         self.assertIn('metadata', kwargs)
         actual_request = args[0]
 
-        self.assertEqual(name, actual_request.name)
+        expected_request = library_pb2.GetBookRequest(name=name)
+        self.assertEqual(expected_request, actual_request)
 
     @mock.patch('google.gax.config.create_stub', spec=True)
     def test_get_big_nothing_exception(self, mock_create_stub):
@@ -1321,33 +1356,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         self.assertIn('metadata', kwargs)
         actual_request = args[0]
 
-        self.assertEqual(required_singular_int32, actual_request.required_singular_int32)
-        self.assertEqual(required_singular_int64, actual_request.required_singular_int64)
-        self.assertEqual(required_singular_float, actual_request.required_singular_float)
-        self.assertEqual(required_singular_double, actual_request.required_singular_double)
-        self.assertEqual(required_singular_bool, actual_request.required_singular_bool)
-        self.assertEqual(required_singular_enum, actual_request.required_singular_enum)
-        self.assertEqual(required_singular_string, actual_request.required_singular_string)
-        self.assertEqual(required_singular_bytes, actual_request.required_singular_bytes)
-        self.assertEqual(required_singular_message, actual_request.required_singular_message)
-        self.assertEqual(required_singular_resource_name, actual_request.required_singular_resource_name)
-        self.assertEqual(required_singular_resource_name_oneof, actual_request.required_singular_resource_name_oneof)
-        self.assertEqual(required_singular_fixed32, actual_request.required_singular_fixed32)
-        self.assertEqual(required_singular_fixed64, actual_request.required_singular_fixed64)
-        self.assertEqual(required_repeated_int32, actual_request.required_repeated_int32)
-        self.assertEqual(required_repeated_int64, actual_request.required_repeated_int64)
-        self.assertEqual(required_repeated_float, actual_request.required_repeated_float)
-        self.assertEqual(required_repeated_double, actual_request.required_repeated_double)
-        self.assertEqual(required_repeated_bool, actual_request.required_repeated_bool)
-        self.assertEqual(required_repeated_enum, actual_request.required_repeated_enum)
-        self.assertEqual(required_repeated_string, actual_request.required_repeated_string)
-        self.assertEqual(required_repeated_bytes, actual_request.required_repeated_bytes)
-        self.assertEqual(required_repeated_message, actual_request.required_repeated_message)
-        self.assertEqual(required_repeated_resource_name, actual_request.required_repeated_resource_name)
-        self.assertEqual(required_repeated_resource_name_oneof, actual_request.required_repeated_resource_name_oneof)
-        self.assertEqual(required_repeated_fixed32, actual_request.required_repeated_fixed32)
-        self.assertEqual(required_repeated_fixed64, actual_request.required_repeated_fixed64)
-        self.assertEqual(required_map, actual_request.required_map)
+        expected_request = library_pb2.TestOptionalRequiredFlatteningParamsRequest(required_singular_int32=required_singular_int32, required_singular_int64=required_singular_int64, required_singular_float=required_singular_float, required_singular_double=required_singular_double, required_singular_bool=required_singular_bool, required_singular_enum=required_singular_enum, required_singular_string=required_singular_string, required_singular_bytes=required_singular_bytes, required_singular_message=required_singular_message, required_singular_resource_name=required_singular_resource_name, required_singular_resource_name_oneof=required_singular_resource_name_oneof, required_singular_fixed32=required_singular_fixed32, required_singular_fixed64=required_singular_fixed64, required_repeated_int32=required_repeated_int32, required_repeated_int64=required_repeated_int64, required_repeated_float=required_repeated_float, required_repeated_double=required_repeated_double, required_repeated_bool=required_repeated_bool, required_repeated_enum=required_repeated_enum, required_repeated_string=required_repeated_string, required_repeated_bytes=required_repeated_bytes, required_repeated_message=required_repeated_message, required_repeated_resource_name=required_repeated_resource_name, required_repeated_resource_name_oneof=required_repeated_resource_name_oneof, required_repeated_fixed32=required_repeated_fixed32, required_repeated_fixed64=required_repeated_fixed64, required_map=required_map)
+        self.assertEqual(expected_request, actual_request)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
     @mock.patch('google.gax.config.create_stub', spec=True)

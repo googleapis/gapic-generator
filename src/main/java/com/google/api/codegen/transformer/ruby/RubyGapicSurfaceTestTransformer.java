@@ -149,9 +149,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
     for (Method method : context.getSupportedMethods()) {
       GapicMethodContext requestMethodContext = context.asRequestMethodContext(method);
       GapicMethodConfig methodConfig = requestMethodContext.getMethodConfig();
-      if (methodConfig.isPageStreaming()
-          || methodConfig.isGrpcStreaming()
-          || methodConfig.isLongRunningOperation()) {
+      if (methodConfig.isGrpcStreaming()) {
         continue;
       }
       methods.add(method);

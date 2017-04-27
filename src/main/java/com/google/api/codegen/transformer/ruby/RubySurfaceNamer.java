@@ -19,6 +19,7 @@ import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
+import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
@@ -281,5 +282,10 @@ public class RubySurfaceNamer extends SurfaceNamer {
   @Override
   public String getGrpcStubCallString(Interface apiInterface, Method method) {
     return getFullyQualifiedStubType(apiInterface);
+  }
+
+  @Override
+  public String getLroApiMethodName(Method method, VisibilityConfig visibility) {
+    return getMethodKey(method);
   }
 }
