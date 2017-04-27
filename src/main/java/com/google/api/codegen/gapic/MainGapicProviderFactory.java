@@ -364,7 +364,7 @@ public class MainGapicProviderFactory
                   .setProductConfig(productConfig)
                   .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
                   .setModelToViewTransformer(
-                      new PythonGapicSurfaceTestTransformer(pythonTestPathMapper))
+                      new PythonGapicSurfaceTestTransformer(pythonTestPathMapper, packageConfig))
                   .build();
           providers.add(testProvider);
         }
