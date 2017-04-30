@@ -45,7 +45,7 @@
      * {@doc.settingsClassName}.Builder {@doc.settingsBuilderVarName} =
      *     {@doc.settingsClassName}.defaultBuilder();
      * {@doc.settingsBuilderVarName}.{@doc.exampleApiMethodSettingsGetter}().getRetrySettingsBuilder()
-     *     .setTotalTimeout(Duration.standardSeconds(30));
+     *     .setTotalTimeout(Duration.ofSeconds(30));
      * {@doc.settingsClassName} {@doc.settingsVarName} = {@doc.settingsBuilderVarName}.build();
      * </code>
      * </pre>
@@ -485,13 +485,13 @@
     RetrySettings.Builder settingsBuilder = null;
     @join retryParamsDef : xsettingsClass.retryParamsDefinitions
       settingsBuilder = RetrySettings.newBuilder()
-          .setInitialRetryDelay(Duration.millis({@retryParamsDef.initialRetryDelay.getMillis}L))
+          .setInitialRetryDelay(Duration.ofMillis({@retryParamsDef.initialRetryDelay.getMillis}L))
           .setRetryDelayMultiplier({@retryParamsDef.retryDelayMultiplier})
-          .setMaxRetryDelay(Duration.millis({@retryParamsDef.maxRetryDelay.getMillis}L))
-          .setInitialRpcTimeout(Duration.millis({@retryParamsDef.initialRpcTimeout.getMillis}L))
+          .setMaxRetryDelay(Duration.ofMillis({@retryParamsDef.maxRetryDelay.getMillis}L))
+          .setInitialRpcTimeout(Duration.ofMillis({@retryParamsDef.initialRpcTimeout.getMillis}L))
           .setRpcTimeoutMultiplier({@retryParamsDef.rpcTimeoutMultiplier})
-          .setMaxRpcTimeout(Duration.millis({@retryParamsDef.maxRpcTimeout.getMillis}L))
-          .setTotalTimeout(Duration.millis({@retryParamsDef.totalTimeout.getMillis}L));
+          .setMaxRpcTimeout(Duration.ofMillis({@retryParamsDef.maxRpcTimeout.getMillis}L))
+          .setTotalTimeout(Duration.ofMillis({@retryParamsDef.totalTimeout.getMillis}L));
       definitions.put("{@retryParamsDef.key}", settingsBuilder);
     @end
     RETRY_PARAM_DEFINITIONS = definitions.build();
@@ -532,7 +532,7 @@
             {@settings.grpcMethodConstant},
             {@settings.operationResultTypeName}.class);
         @if settings.hasPollingInterval
-          {@settings.memberName}.setPollingInterval(Duration.millis({@settings.operationPollingIntervalMillis}));
+          {@settings.memberName}.setPollingInterval(Duration.ofMillis({@settings.operationPollingIntervalMillis}));
         @end
 
       @default
@@ -557,7 +557,7 @@
         builder.{@settings.settingsGetFunction}().getBatchingSettingsBuilder()
             .setElementCountThreshold({@settings.batchingConfig.elementCountThreshold}L)
             .setRequestByteThreshold({@settings.batchingConfig.requestByteThreshold}L)
-            .setDelayThreshold(Duration.millis({@settings.batchingConfig.delayThresholdMillis}))
+            .setDelayThreshold(Duration.ofMillis({@settings.batchingConfig.delayThresholdMillis}))
             .setFlowControlSettings(
               FlowControlSettings.newBuilder()
                 @if settings.batchingConfig.hasFlowControlElementLimit
