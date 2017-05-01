@@ -384,9 +384,11 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     String name = namer.getApiSettingsClassName(context.getInterfaceConfig());
     xsettingsClass.name(name);
     ProductServiceConfig productServiceConfig = new ProductServiceConfig();
-    xsettingsClass.serviceAddress(productServiceConfig.getServiceAddress(context.getInterface()));
+    xsettingsClass.serviceAddress(
+        productServiceConfig.getServiceAddress(context.getInterface().getModel()));
     xsettingsClass.servicePort(productServiceConfig.getServicePort());
-    xsettingsClass.authScopes(productServiceConfig.getAuthScopes(context.getInterface()));
+    xsettingsClass.authScopes(
+        productServiceConfig.getAuthScopes(context.getInterface().getModel()));
 
     List<ApiCallSettingsView> apiCallSettings =
         apiCallableTransformer.generateCallSettings(context);
@@ -542,7 +544,8 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     SurfaceNamer namer = context.getNamer();
     SettingsDocView.Builder settingsDoc = SettingsDocView.newBuilder();
     ProductServiceConfig productServiceConfig = new ProductServiceConfig();
-    settingsDoc.serviceAddress(productServiceConfig.getServiceAddress(context.getInterface()));
+    settingsDoc.serviceAddress(
+        productServiceConfig.getServiceAddress(context.getInterface().getModel()));
     settingsDoc.servicePort(productServiceConfig.getServicePort());
     settingsDoc.exampleApiMethodName(exampleApiMethod.name());
     settingsDoc.exampleApiMethodSettingsGetter(exampleApiMethod.settingsGetterName());

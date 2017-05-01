@@ -89,7 +89,7 @@
 
 @private constantSection(service)
     @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service)
-        SERVICE_ADDRESS = '{@context.getServiceConfig.getServiceAddress(service)}'
+        SERVICE_ADDRESS = '{@context.getServiceConfig.getServiceAddress(service.getModel)}'
         """The default address of the service."""
 
         DEFAULT_SERVICE_PORT = {@context.getServiceConfig.getServicePort()}
@@ -115,7 +115,7 @@
         @# The scopes needed to make gRPC calls to all of the methods defined in
         @# this service
         _ALL_SCOPES = (
-            @join auth_scope : context.getServiceConfig.getAuthScopes(service) on BREAK
+            @join auth_scope : context.getServiceConfig.getAuthScopes(service.getModel) on BREAK
                 '{@auth_scope}',
             @end
         )
