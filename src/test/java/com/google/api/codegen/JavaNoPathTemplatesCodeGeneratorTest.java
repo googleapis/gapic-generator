@@ -42,7 +42,8 @@ public class JavaNoPathTemplatesCodeGeneratorTest extends GapicTestBase {
   public static List<Object[]> testedConfigs() {
     return GapicTestBase.createTestedConfigs(
         MainGapicProviderFactory.JAVA,
-        new String[] {"java_gapic.yaml", "no_path_templates_gapic.yaml"});
+        new String[] {"java_gapic.yaml", "no_path_templates_gapic.yaml"},
+        "no_path_templates_pkg.yaml");
   }
 
   // Tests

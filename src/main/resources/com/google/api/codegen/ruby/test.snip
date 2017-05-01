@@ -86,16 +86,35 @@
       $unhandled case: {@test.clientMethodType.toString}$
     @end
   @case "ServerStreaming"
+    {@serverStreamingTest(test)}
   @case "BidiStreaming"
+    {@bidiStreamingTest(test)}
+  @case "ClientStreaming"
+    {@clientStreamingTest(test)}
   @default
     $unhandled case: {@test.grpcStreamingType.toString}$
   @end
 @end
 
+@private errorTestCase(test)
+  @switch test.grpcStreamingType
+    @case "NonStreaming"
+      {@simpleErrorTestCase(test)}
+    @case "ServerStreaming"
+      {@simpleErrorTestCase(test)}
+    @case "BidiStreaming"
+      {@clientStreamingErrorTestCase(test)}
+    @case "ClientStreaming"
+       {@clientStreamingErrorTestCase(test)}
+    @default
+      $unhandled case: {@test.grpcStreamingType.toString}$
+    @end
+@end
+
 @private requestObjectTestCase(test)
   it 'invokes {@test.clientMethodName} without error' do
     @if initCode(test.initCode)
-      @# Create request parameters and expected request
+      @# Create request parameters
       {@initCode(test.initCode)}
     @end
     @if and(initCode(test.initCode), test.hasReturnValue)
@@ -129,7 +148,7 @@
 @private pageIterationTestCase(test)
   it 'invokes {@test.clientMethodName} without error' do
     @if initCode(test.initCode)
-      @# Create request parameters and expected request
+      @# Create request parameters
       {@initCode(test.initCode)}
 
     @end
@@ -160,7 +179,7 @@
 @private longrunningTestCase(test)
   it 'invokes {@test.clientMethodName} without error' do
     @if initCode(test.initCode)
-      @# Create request parameters and expected request
+      @# Create request parameters
       {@initCode(test.initCode)}
 
     @end
@@ -191,7 +210,7 @@
 
   it 'invokes {@test.clientMethodName} and returns an operation error.' do
     @if initCode(test.initCode)
-      @# Create request parameters and expected request
+      @# Create request parameters
       {@initCode(test.initCode)}
 
     @end
@@ -222,10 +241,92 @@
   end
 @end
 
-@private errorTestCase(test)
+@private serverStreamingTest(test)
+  it 'invokes {@test.clientMethodName} without error' do
+    @if test.hasRequestParameters
+      @# Create request parameters
+      {@initCode(test.initCode)}
+
+    @end
+    @# Create expected grpc response
+    {@initCode(test.mockResponse.initCode)}
+
+    @# Mock Grpc layer
+    {@mockServerStreamingRequest(test)}
+    mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
+
+    {@test.grpcStubCallString}.stub(:new, mock_stub) do
+      client = {@test.serviceConstructorName}.new
+
+      @# Call method
+      {@methodCallWithResponse(test)}
+
+      @# Verify the response
+      assert_equal(1, response.count)
+      assert_equal(expected_response, response.first)
+    end
+  end
+@end
+
+@private clientStreamingTest(test)
+  it 'invokes {@test.clientMethodName} without error' do
+    @# Create request parameters
+    {@initCode(test.initCode)}
+    @if test.hasReturnValue
+
+      @# Create expected grpc response
+      {@initCode(test.mockResponse.initCode)}
+    @end
+
+    @# Mock Grpc layer
+    {@mockClientStreamingRequest(test)}
+    mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
+
+    {@test.grpcStubCallString}.stub(:new, mock_stub) do
+      client = {@test.serviceConstructorName}.new
+
+      @# Call method
+      {@clientStreamingCall(test)}
+
+      @# Verify the response
+      @if test.hasReturnValue
+        assert_equal(expected_response, response)
+      @else
+        assert_nil(response)
+      @end
+    end
+  end
+@end
+
+@private bidiStreamingTest(test)
+  it 'invokes {@test.clientMethodName} without error' do
+    @# Create request parameters
+    {@initCode(test.initCode)}
+
+    @# Create expected grpc response
+    {@initCode(test.mockResponse.initCode)}
+
+    @# Mock Grpc layer
+    {@mockBidiStreamingRequest(test)}
+    mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
+
+    {@test.grpcStubCallString}.stub(:new, mock_stub) do
+      client = {@test.serviceConstructorName}.new
+
+      @# Call method
+      {@clientStreamingCall(test)}
+
+      @# Verify the response
+      assert_equal(1, response.count)
+      assert_equal(expected_response, response.first)
+    end
+  end
+@end
+
+@private simpleErrorTestCase(test)
   it 'invokes {@test.clientMethodName} with error' do
     @if initCode(test.initCode)
-      @# Create request parameters and expected request
+      @# Create request parameters
       {@initCode(test.initCode)}
 
     @end
@@ -247,9 +348,32 @@
   end
 @end
 
+@private clientStreamingErrorTestCase(test)
+  it 'invokes {@test.clientMethodName} with error' do
+    @# Create request parameters
+    {@initCode(test.initCode)}
+
+    @# Mock Grpc layer
+    {@mockClientStreamingError(test)}
+    mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
+
+    {@test.grpcStubCallString}.stub(:new, mock_stub) do
+      client = {@test.serviceConstructorName}.new
+
+      @# Call method
+      err = assert_raises Google::Gax::GaxError do
+        client.{@test.clientMethodName}([request])
+      end
+
+      @# Verify the GaxError wrapped the custom error that was raised.
+      assert_match(custom_error.message, err.message)
+    end
+  end
+@end
+
 @private mockUnaryRequest(test)
   {@mockRequestInitLine(test)}
-    @if requestAsserts(test)
+    @if test.asserts
       {@requestAsserts(test)}
     @end
     @if test.hasReturnValue
@@ -262,7 +386,7 @@
 
 @private mockLongrunningRequest(test)
   {@mockRequestInitLine(test)}
-    @if requestAsserts(test)
+    @if test.asserts
       {@requestAsserts(test)}
     @end
     operation
@@ -271,10 +395,43 @@
 
 @private mockUnaryError(test)
   {@mockRequestInitLine(test)}
-    @if requestAsserts(test)
+    @if test.asserts
       {@requestAsserts(test)}
     @end
     raise custom_error
+  end
+@end
+
+@private mockServerStreamingRequest(test)
+  {@mockRequestInitLine(test)}
+    @if test.asserts
+      {@requestAsserts(test)}
+    @end
+    [expected_response]
+  end
+@end
+
+@private mockClientStreamingRequest(test)
+  mock_method = proc do |requests|
+    request = requests.first
+    @if test.asserts
+      {@requestAsserts(test)}
+    @end
+    @if test.hasReturnValue
+      expected_response
+    @else
+      nil
+    @end
+  end
+@end
+
+@private mockBidiStreamingRequest(test)
+  mock_method = proc do |requests|
+    request = requests.first
+    @if test.asserts
+      {@requestAsserts(test)}
+    @end
+    [expected_response]
   end
 @end
 
@@ -284,6 +441,16 @@
   @else
     mock_method = proc do
   @end
+@end
+
+@private mockClientStreamingError(test)
+  mock_method = proc do |requests|
+    @if test.asserts
+      request = requests.first
+      {@requestAsserts(test)}
+    @end
+    raise custom_error
+  end
 @end
 
 @private requestAsserts(test)
@@ -329,6 +496,14 @@
     client.{@test.clientMethodName}(
       {@multilineArgList(test.initCode.fieldSettings)}
     )
+  @end
+@end
+
+@private clientStreamingCall(test)
+  @if test.hasReturnValue
+    response = client.{@test.clientMethodName}([request])
+  @else
+    client.{@test.clientMethodName}([request])
   @end
 @end
 

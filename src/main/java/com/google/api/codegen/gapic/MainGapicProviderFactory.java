@@ -162,7 +162,8 @@ public class MainGapicProviderFactory
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new JavaRenderingUtil()))
-                .setModelToViewTransformer(new JavaGapicSurfaceTransformer(javaPathMapper))
+                .setModelToViewTransformer(
+                    new JavaGapicSurfaceTransformer(javaPathMapper, packageConfig))
                 .build();
 
         providers.add(mainProvider);
@@ -363,7 +364,7 @@ public class MainGapicProviderFactory
                   .setProductConfig(productConfig)
                   .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
                   .setModelToViewTransformer(
-                      new PythonGapicSurfaceTestTransformer(pythonTestPathMapper))
+                      new PythonGapicSurfaceTestTransformer(pythonTestPathMapper, packageConfig))
                   .build();
           providers.add(testProvider);
         }
