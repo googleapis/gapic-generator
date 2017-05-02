@@ -82,6 +82,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
       new FileHeaderTransformer(importSectionTransformer);
   private final RetryDefinitionsTransformer retryDefinitionsTransformer =
       new RetryDefinitionsTransformer();
+  private final ProductServiceConfig productServiceConfig = new ProductServiceConfig();
 
   private static final String XAPI_TEMPLATE_FILENAME = "java/main.snip";
   private static final String XSETTINGS_TEMPLATE_FILENAME = "java/settings.snip";
@@ -383,7 +384,6 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     xsettingsClass.doc(generateSettingsDoc(context, exampleApiMethod));
     String name = namer.getApiSettingsClassName(context.getInterfaceConfig());
     xsettingsClass.name(name);
-    ProductServiceConfig productServiceConfig = new ProductServiceConfig();
     xsettingsClass.serviceAddress(
         productServiceConfig.getServiceAddress(context.getInterface().getModel()));
     xsettingsClass.servicePort(productServiceConfig.getServicePort());
@@ -423,6 +423,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     packageInfo.serviceTitle(model.getServiceConfig().getTitle());
     packageInfo.serviceDocs(serviceDocs);
     packageInfo.domainLayerLocation(productConfig.getDomainLayerLocation());
+    packageInfo.authScopes(productServiceConfig.getAuthScopes(model));
 
     packageInfo.fileHeader(
         fileHeaderTransformer.generateFileHeader(

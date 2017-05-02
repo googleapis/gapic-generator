@@ -27,11 +27,7 @@
     func {@view.defaultClientOptionFunctionName}() []option.ClientOption {
         return []option.ClientOption{
             option.WithEndpoint("{@view.serviceAddress}:{@view.servicePort}"),
-            option.WithScopes(
-                @join scope : view.authScopes
-                    "{@scope}",
-                @end
-            ),
+            option.WithScopes(DefaultAuthScopes()...),
         }
     }
 

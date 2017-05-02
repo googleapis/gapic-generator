@@ -18,7 +18,7 @@ import com.google.api.Authentication;
 import com.google.api.AuthenticationRule;
 import com.google.api.Service;
 import com.google.api.tools.framework.model.Model;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -44,7 +44,7 @@ public class ProductServiceConfig {
   }
 
   /** Return a list of scopes for authentication. */
-  public Iterable<String> getAuthScopes(Model model) {
+  public List<String> getAuthScopes(Model model) {
     Set<String> result = new TreeSet<>();
     Service config = model.getServiceConfig();
     Authentication auth = config.getAuthentication();
@@ -54,11 +54,10 @@ public class ProductServiceConfig {
       // We are doing this for implementation simplicity so we don't have to compute which scopes
       // are subsets of the others.
       String scopesString = rule.getOauth().getCanonicalScopes();
-      List<String> scopes = Arrays.asList(scopesString.split(","));
-      for (String scope : scopes) {
+      for (String scope : scopesString.split(",")) {
         result.add(scope.trim());
       }
     }
-    return result;
+    return new ArrayList<>(result);
   }
 }
