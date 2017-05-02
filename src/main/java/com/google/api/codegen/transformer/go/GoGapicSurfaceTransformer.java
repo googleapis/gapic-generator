@@ -179,9 +179,9 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.lroDetailViews(new ArrayList<LongRunningOperationDetailView>(lros.values()));
 
     ProductServiceConfig productServiceConfig = new ProductServiceConfig();
-    view.serviceAddress(productServiceConfig.getServiceAddress(apiInterface));
+    view.serviceAddress(productServiceConfig.getServiceAddress(apiInterface.getModel()));
     view.servicePort(productServiceConfig.getServicePort());
-    view.authScopes(productServiceConfig.getAuthScopes(apiInterface));
+    view.authScopes(productServiceConfig.getAuthScopes(apiInterface.getModel()));
 
     view.stubs(grpcStubTransformer.generateGrpcStubs(context));
 

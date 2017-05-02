@@ -17,7 +17,7 @@ package com.google.api.codegen.config;
 import com.google.api.Authentication;
 import com.google.api.AuthenticationRule;
 import com.google.api.Service;
-import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.Model;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -30,8 +30,8 @@ import java.util.TreeSet;
  */
 public class ProductServiceConfig {
   /** Return the service address. */
-  public String getServiceAddress(Interface apiInterface) {
-    return apiInterface.getModel().getServiceConfig().getName();
+  public String getServiceAddress(Model model) {
+    return model.getServiceConfig().getName();
   }
 
   /** Return the service port. TODO(cbao): Read the port from config. */
@@ -39,14 +39,14 @@ public class ProductServiceConfig {
     return 443;
   }
 
-  public String getTitle(Interface apiInterface) {
-    return apiInterface.getModel().getServiceConfig().getTitle();
+  public String getTitle(Model model) {
+    return model.getServiceConfig().getTitle();
   }
 
   /** Return a list of scopes for authentication. */
-  public Iterable<String> getAuthScopes(Interface apiInterface) {
+  public Iterable<String> getAuthScopes(Model model) {
     Set<String> result = new TreeSet<>();
-    Service config = apiInterface.getModel().getServiceConfig();
+    Service config = model.getServiceConfig();
     Authentication auth = config.getAuthentication();
     for (AuthenticationRule rule : auth.getRulesList()) {
       // Scopes form a union and the union is used for down-scoping, so adding more scopes that
