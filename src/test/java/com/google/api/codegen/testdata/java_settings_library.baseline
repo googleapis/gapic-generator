@@ -108,7 +108,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 import javax.annotation.Generated;
-import org.joda.time.Duration;
+import org.threeten.bp.Duration;
 
 // AUTO-GENERATED DOCUMENTATION AND CLASS
 /**
@@ -132,7 +132,7 @@ import org.joda.time.Duration;
  * LibrarySettings.Builder librarySettingsBuilder =
  *     LibrarySettings.defaultBuilder();
  * librarySettingsBuilder.createShelfSettings().getRetrySettingsBuilder()
- *     .setTotalTimeout(Duration.standardSeconds(30));
+ *     .setTotalTimeout(Duration.ofSeconds(30));
  * LibrarySettings librarySettings = librarySettingsBuilder.build();
  * </code>
  * </pre>
@@ -1003,13 +1003,13 @@ public class LibrarySettings extends ClientSettings {
       ImmutableMap.Builder<String, RetrySettings.Builder> definitions = ImmutableMap.builder();
       RetrySettings.Builder settingsBuilder = null;
       settingsBuilder = RetrySettings.newBuilder()
-          .setInitialRetryDelay(Duration.millis(100L))
+          .setInitialRetryDelay(Duration.ofMillis(100L))
           .setRetryDelayMultiplier(1.2)
-          .setMaxRetryDelay(Duration.millis(1000L))
-          .setInitialRpcTimeout(Duration.millis(300L))
+          .setMaxRetryDelay(Duration.ofMillis(1000L))
+          .setInitialRpcTimeout(Duration.ofMillis(300L))
           .setRpcTimeoutMultiplier(1.3)
-          .setMaxRpcTimeout(Duration.millis(3000L))
-          .setTotalTimeout(Duration.millis(30000L));
+          .setMaxRpcTimeout(Duration.ofMillis(3000L))
+          .setTotalTimeout(Duration.ofMillis(30000L));
       definitions.put("default", settingsBuilder);
       RETRY_PARAM_DEFINITIONS = definitions.build();
     }
@@ -1082,7 +1082,7 @@ public class LibrarySettings extends ClientSettings {
       getBigBookSettings = OperationCallSettings.newBuilder(
           METHOD_GET_BIG_BOOK,
           Book.class);
-      getBigBookSettings.setPollingInterval(Duration.millis(300000));
+      getBigBookSettings.setPollingInterval(Duration.ofMillis(300000));
 
 
       getBigNothingSettings = OperationCallSettings.newBuilder(
@@ -1147,7 +1147,7 @@ public class LibrarySettings extends ClientSettings {
       builder.publishSeriesSettings().getBatchingSettingsBuilder()
           .setElementCountThreshold(6L)
           .setRequestByteThreshold(100000L)
-          .setDelayThreshold(Duration.millis(500))
+          .setDelayThreshold(Duration.ofMillis(500))
           .setFlowControlSettings(
             FlowControlSettings.newBuilder()
               .setLimitExceededBehavior(LimitExceededBehavior.Ignore)
@@ -1183,7 +1183,7 @@ public class LibrarySettings extends ClientSettings {
       builder.addCommentsSettings().getBatchingSettingsBuilder()
           .setElementCountThreshold(6L)
           .setRequestByteThreshold(100000L)
-          .setDelayThreshold(Duration.millis(500))
+          .setDelayThreshold(Duration.ofMillis(500))
           .setFlowControlSettings(
             FlowControlSettings.newBuilder()
               .setLimitExceededBehavior(LimitExceededBehavior.Ignore)
