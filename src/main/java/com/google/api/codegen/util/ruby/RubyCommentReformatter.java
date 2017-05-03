@@ -78,8 +78,7 @@ public class RubyCommentReformatter implements CommentReformatter {
         .reformatCloudMarkdownLinks("{%s}[%s]")
         .reformatAbsoluteMarkdownLinks("{%s}[%s]")
         .reformat(CommentPatterns.HEADLINE_PATTERN, HEADLINE_REPLACE)
-        .toString()
-        .trim();
+        .toString();
   }
 
   private static String protoToRubyDoc(String comment) {
