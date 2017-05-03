@@ -30,6 +30,7 @@ import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.ruby.RubyNameFormatter;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.common.base.Strings;
 import com.google.protobuf.Field.Cardinality;
 import com.google.protobuf.Method;
 import java.util.ArrayList;
@@ -64,10 +65,6 @@ public class RubySampleMethodToViewTransformer implements SampleMethodToViewTran
     String serviceTypeName = typeTable.getServiceTypeName(config.apiTypeName()).getNickname();
     String serviceTypeNamespace =
         RubySampleNamer.getServiceTypeNamespace(config.apiName(), config.apiVersion());
-
-    if (methodInfo.isPageStreaming()) {
-      builder.pageStreaming(createSamplePageStreamingView(context, symbolTable));
-    }
 
     // Created before the fields in case there are naming conflicts in the symbol table.
     SampleAuthView sampleAuthView = createSampleAuthView(context);
@@ -104,6 +101,12 @@ public class RubySampleMethodToViewTransformer implements SampleMethodToViewTran
 
     // Ensure that optional method parameters appear last.
     methodCallFieldVarNames.addAll(optionalMethodCallFieldVarNames);
+
+    // The page streaming view model is generated close to last to avoid taking naming precedence in
+    // the symbol table.
+    if (methodInfo.isPageStreaming()) {
+      builder.pageStreaming(createSamplePageStreamingView(context, symbolTable));
+    }
 
     boolean hasResponse = methodInfo.responseType() != null;
     if (hasResponse) {
@@ -190,9 +193,15 @@ public class RubySampleMethodToViewTransformer implements SampleMethodToViewTran
     SampleNamer namer = context.getSampleNamer();
     SampleTypeTable typeTable = context.getSampleTypeTable();
     String name = namer.getFieldVarName(field.name());
+    String defaultValue;
+    if (!Strings.isNullOrEmpty(field.defaultValue())) {
+      defaultValue = field.defaultValue();
+    } else {
+      defaultValue = typeTable.getZeroValueAndSaveNicknameFor(field.type());
+    }
     return SampleFieldView.newBuilder()
         .name(symbolTable.getNewSymbol(name))
-        .defaultValue(typeTable.getZeroValueAndSaveNicknameFor(field.type()))
+        .defaultValue(defaultValue)
         .example(field.example())
         .description(field.description())
         .setterFuncName(name)

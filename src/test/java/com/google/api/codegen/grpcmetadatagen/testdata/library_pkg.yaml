@@ -1,6 +1,8 @@
 # Common configuration
 short_name: library
 major_version: v1
+package_type: grpc_client
+gapic_config_name: library_gapic.yaml
 proto_path: google/example/library/v1
 author: Google, Inc.
 email: googleapis-packages@google.com
@@ -9,10 +11,14 @@ license: Apache-2.0
 proto_deps:
 - google-common-protos
 - google-some-other-package-v1
+generation_layer: proto
 
 # Language-dependent configuration
 package_name:
   default: google-cloud-library-v1
+
+release_level:
+  python: 'alpha'
 
 generated_package_version:
   python:
@@ -20,6 +26,8 @@ generated_package_version:
     upper: '0.16dev'
   nodejs:
     lower: '0.7.1'
+  java:
+    lower: '0.1.7'
 
 # Dependencies
 gax_version:
@@ -28,11 +36,15 @@ gax_version:
     upper: '0.16.0'
   nodejs:
     lower: '^0.7.0'
+  java:
+    lower: '0.6.1'
 
 grpc_version:
   python:
     lower: '1.0.0'
     upper: '2.0.0dev'
+  java:
+    lower: '1.0.1'
 
 proto_version:
   python:
@@ -40,6 +52,8 @@ proto_version:
     upper: '4.0dev'
   nodejs:
     lower: '^0.8.3'
+  java:
+    lower: '3.0.0'
 
 auth_version:
   python:
@@ -48,14 +62,19 @@ auth_version:
   nodejs:
     lower: '0.1.1'
 
+api_common_version:
+  java:
+    lower: '0.0.2'
+
 google-common-protos_version:
   python:
     name_override: googleapis-common-protos
     lower: '1.5.0'
     upper: '2.0.0dev'
-
   nodejs:
     lower: '0.8.2'
+  java:
+    lower: '0.1.6'
 
 google-some-other-package-v1_version:
   python:
@@ -65,3 +84,5 @@ google-some-other-package-v1_version:
   nodejs:
     name_override: node-pkg
     lower: '0.2.1'
+  java:
+    lower: '0.0.0'

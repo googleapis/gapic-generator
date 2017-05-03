@@ -48,7 +48,9 @@ public class GrpcElementDocTransformer {
       }
 
       GrpcMessageDocView.Builder doc = GrpcMessageDocView.newBuilder();
-      doc.name(typeTable.getNicknameFor(TypeRef.of(message)));
+      doc.name(namer.getMessageTypeName(typeTable, message));
+      doc.fullName(typeTable.getFullNameFor(TypeRef.of(message)));
+      doc.fileUrl(namer.getFileUrl(message.getFile()));
       doc.lines(namer.getDocLines(message));
       doc.properties(generateMessagePropertyDocs(typeTable, namer, message.getFields()));
       doc.elementDocs(generateElementDocs(typeTable, namer, message));
@@ -62,7 +64,7 @@ public class GrpcElementDocTransformer {
     ImmutableList.Builder<ParamDocView> propertyDocs = ImmutableList.builder();
     for (Field field : fields) {
       SimpleParamDocView.Builder doc = SimpleParamDocView.newBuilder();
-      doc.paramName(field.getSimpleName());
+      doc.paramName(namer.getFieldKey(field));
       doc.typeName(namer.getParamTypeName(typeTable, field.getType()));
       doc.lines(namer.getDocLines(field));
       propertyDocs.add(doc.build());
@@ -75,7 +77,7 @@ public class GrpcElementDocTransformer {
     ImmutableList.Builder<GrpcElementDocView> enumDocs = ImmutableList.builder();
     for (EnumType enumElement : containerElement.getEnums()) {
       GrpcEnumDocView.Builder doc = GrpcEnumDocView.newBuilder();
-      doc.name(typeTable.getNicknameFor(TypeRef.of(enumElement)));
+      doc.name(namer.getEnumTypeName(typeTable, enumElement));
       doc.lines(namer.getDocLines(enumElement));
       doc.values(generateEnumValueDocs(namer, enumElement));
       enumDocs.add(doc.build());

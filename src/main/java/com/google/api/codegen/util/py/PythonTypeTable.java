@@ -19,8 +19,11 @@ import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import com.google.common.collect.HashBiMap;
-import com.google.common.collect.ImmutableSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -40,7 +43,21 @@ public class PythonTypeTable implements TypeTable {
 
   @Override
   public TypeName getTypeName(String fullName) {
-    return dynamicTypeTable.getTypeName(fullName);
+    List<String> namespaces = new ArrayList<>();
+    List<String> shortNameParts = new ArrayList<>();
+    for (String name : Splitter.on(".").split(fullName)) {
+      if (shortNameParts.isEmpty() && Character.isLowerCase(name.charAt(0))) {
+        namespaces.add(name);
+      } else {
+        shortNameParts.add(name);
+      }
+    }
+    if (namespaces.isEmpty() || shortNameParts.isEmpty()) {
+      throw new IllegalArgumentException("expected fully qualified name");
+    }
+    String filename = namespaces.get(namespaces.size() - 1);
+    String nickname = Joiner.on(".").join(shortNameParts);
+    return new TypeName(fullName, filename + "." + nickname);
   }
 
   @Override
@@ -55,12 +72,12 @@ public class PythonTypeTable implements TypeTable {
 
   @Override
   public TypeName getContainerTypeName(String containerFullName, String... elementFullNames) {
-    return dynamicTypeTable.getContainerTypeName(containerFullName, elementFullNames);
+    return getTypeName(containerFullName);
   }
 
   @Override
   public String getAndSaveNicknameFor(String fullName) {
-    return dynamicTypeTable.getAndSaveNicknameFor(fullName);
+    return getAndSaveNicknameFor(getTypeName(fullName));
   }
 
   @Override
@@ -89,133 +106,4 @@ public class PythonTypeTable implements TypeTable {
       String containerFullName, String innerTypeShortName) {
     return dynamicTypeTable.getAndSaveNicknameForInnerType(containerFullName, innerTypeShortName);
   }
-
-  /**
-   * A set of Python reserved keywords. See
-   * https://docs.python.org/2/reference/lexical_analysis.html#keywords
-   * https://docs.python.org/2/library/functions.html
-   * https://docs.python.org/2/library/functions.html#non-essential-built-in-funcs
-   * https://docs.python.org/2/library/constants.html#constants-added-by-the-site-module
-   */
-  public static final ImmutableSet<String> RESERVED_IDENTIFIER_SET =
-      ImmutableSet.<String>builder()
-          .add(
-              "and",
-              "del",
-              "from",
-              "not",
-              "while",
-              "as",
-              "elif",
-              "global",
-              "or",
-              "with",
-              "assert",
-              "else",
-              "if",
-              "pass",
-              "yield",
-              "break",
-              "except",
-              "import",
-              "print",
-              "class",
-              "exec",
-              "in",
-              "raise",
-              "continue",
-              "finally",
-              "is",
-              "return",
-              "def",
-              "for",
-              "lambda",
-              "try",
-              // Built-ins
-              "abs",
-              "all",
-              "any",
-              "apply",
-              "basestring",
-              "bin",
-              "bool",
-              "buffer",
-              "bytearray",
-              "bytes",
-              "callable",
-              "chr",
-              "classmethod",
-              "cmp",
-              "coerce",
-              "compile",
-              "complex",
-              "copyright",
-              "credits",
-              "delattr",
-              "dict",
-              "dir",
-              "divmod",
-              "enumerate",
-              "eval",
-              "execfile",
-              "exit",
-              "file",
-              "filter",
-              "float",
-              "format",
-              "frozenset",
-              "getattr",
-              "globals",
-              "hasattr",
-              "hash",
-              "help",
-              "hex",
-              "id",
-              "input",
-              "int",
-              "intern",
-              "isinstance",
-              "issubclass",
-              "iter",
-              "len",
-              "license",
-              "list",
-              "locals",
-              "long",
-              "map",
-              "max",
-              "memoryview",
-              "min",
-              "next",
-              "object",
-              "oct",
-              "open",
-              "ord",
-              "pow",
-              "print",
-              "property",
-              "quit",
-              "range",
-              "raw_input",
-              "reduce",
-              "reload",
-              "repr",
-              "reversed",
-              "round",
-              "set",
-              "setattr",
-              "slice",
-              "sorted",
-              "staticmethod",
-              "str",
-              "sum",
-              "super",
-              "tuple",
-              "type",
-              "unichr",
-              "unicode",
-              "vars",
-              "xrange",
-              "zip")
-          .build();
 }

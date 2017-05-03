@@ -17,7 +17,7 @@ package com.google.api.codegen.transformer.py;
 import com.google.api.codegen.GapicContext;
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.TargetLanguage;
-import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.gapic.GapicProvider;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
@@ -45,10 +45,12 @@ import java.util.Map;
  * from the corresponding transformers/view models without actually rendering the templates.
  */
 public class PythonPackageMetadataTransformer implements ModelToViewTransformer {
+  private static final String TEST_PREFIX = "test.";
 
   private final PackageMetadataConfig packageConfig;
   private final PackageMetadataTransformer metadataTransformer = new PackageMetadataTransformer();
   private final List<GapicProvider<? extends Object>> gapicProviders;
+  private final PythonSurfaceNamer surfaceNamer;
   private List<String> apiModules = null;
   private List<String> typeModules = null;
 
@@ -56,15 +58,16 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
       PackageMetadataConfig packageConfig, List<GapicProvider<? extends Object>> gapicProviders) {
     this.packageConfig = packageConfig;
     this.gapicProviders = gapicProviders;
+    this.surfaceNamer = new PythonSurfaceNamer(packageConfig.packageName(TargetLanguage.PYTHON));
   }
 
   @Override
-  public List<ViewModel> transform(final Model model, final ApiConfig apiConfig) {
+  public List<ViewModel> transform(final Model model, final GapicProductConfig productConfig) {
     String version = packageConfig.apiVersion();
     List<ViewModel> metadata =
-        computeInitFiles(computePackages(apiConfig.getPackageName()), version);
+        computeInitFiles(computePackages(productConfig.getPackageName()), version);
     for (String templateFileName : getTopLevelTemplateFileNames()) {
-      metadata.add(generateMetadataView(model, apiConfig, templateFileName));
+      metadata.add(generateMetadataView(model, productConfig, templateFileName));
     }
     return metadata;
   }
@@ -96,7 +99,8 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
     return Lists.newArrayList("py/__init__.py.snip", "py/namespace__init__.py.snip");
   }
 
-  private ViewModel generateMetadataView(Model model, ApiConfig apiConfig, String template) {
+  private ViewModel generateMetadataView(
+      Model model, GapicProductConfig productConfig, String template) {
     String noLeadingPyDir = template.startsWith("py/") ? template.substring(3) : template;
     int extensionIndex = noLeadingPyDir.lastIndexOf(".");
     String outputPath = noLeadingPyDir.substring(0, extensionIndex);
@@ -105,7 +109,9 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
     return metadataTransformer
         .generateMetadataView(packageConfig, model, template, outputPath, TargetLanguage.PYTHON)
         .namespacePackages(
-            computeNamespacePackages(apiConfig.getPackageName(), packageConfig.apiVersion()))
+            computeNamespacePackages(productConfig.getPackageName(), packageConfig.apiVersion()))
+        .developmentStatus(
+            surfaceNamer.getReleaseAnnotation(packageConfig.releaseLevel(TargetLanguage.PYTHON)))
         .apiModules(apiModules)
         .typeModules(typeModules)
         .build();
@@ -123,14 +129,19 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
     for (GapicProvider<? extends Object> provider : gapicProviders) {
       Map<String, Doc> result = provider.generate();
       for (String fileName : result.keySet()) {
-        if (Files.getFileExtension(fileName).equals("py")) {
-          String moduleName =
-              fileName.substring(0, fileName.length() - ".py".length()).replace("/", ".");
-          if (moduleName.endsWith(GapicContext.API_WRAPPER_SUFFIX.toLowerCase())) {
-            apiModules.add(moduleName);
-          } else {
-            typeModules.add(moduleName);
-          }
+        if (!Files.getFileExtension(fileName).equals("py")) {
+          continue;
+        }
+        String moduleName =
+            fileName.substring(0, fileName.length() - ".py".length()).replace("/", ".");
+        if (moduleName.startsWith(TEST_PREFIX)) {
+          continue;
+        }
+
+        if (moduleName.endsWith(GapicContext.API_WRAPPER_SUFFIX.toLowerCase())) {
+          apiModules.add(moduleName);
+        } else {
+          typeModules.add(moduleName);
         }
       }
     }

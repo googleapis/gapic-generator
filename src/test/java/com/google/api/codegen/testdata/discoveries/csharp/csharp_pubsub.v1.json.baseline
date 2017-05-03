@@ -17,6 +17,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -37,7 +38,7 @@ namespace PubsubSample
             // REQUIRED: The resource for which the policy is being requested.
             // `resource` is usually specified as a path. For example, a Project
             // resource is specified as `projects/{project}`.
-            string resource = "";  // TODO: Update placeholder value.
+            string resource = "projects/my-project/snapshots/my-snapshot";  // TODO: Update placeholder value.
 
             ProjectsResource.SnapshotsResource.GetIamPolicyRequest request = pubsubService.Projects.Snapshots.GetIamPolicy(resource);
 
@@ -46,7 +47,7 @@ namespace PubsubSample
             // Data.Policy response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -78,6 +79,7 @@ namespace PubsubSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -98,7 +100,7 @@ namespace PubsubSample
             // REQUIRED: The resource for which the policy is being specified.
             // `resource` is usually specified as a path. For example, a Project
             // resource is specified as `projects/{project}`.
-            string resource = "";  // TODO: Update placeholder value.
+            string resource = "projects/my-project/snapshots/my-snapshot";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.SetIamPolicyRequest requestBody = new Data.SetIamPolicyRequest();
@@ -110,7 +112,7 @@ namespace PubsubSample
             // Data.Policy response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -142,6 +144,7 @@ namespace PubsubSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -162,7 +165,7 @@ namespace PubsubSample
             // REQUIRED: The resource for which the policy detail is being requested.
             // `resource` is usually specified as a path. For example, a Project
             // resource is specified as `projects/{project}`.
-            string resource = "";  // TODO: Update placeholder value.
+            string resource = "projects/my-project/snapshots/my-snapshot";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.TestIamPermissionsRequest requestBody = new Data.TestIamPermissionsRequest();
@@ -174,7 +177,7 @@ namespace PubsubSample
             // Data.TestIamPermissionsResponse response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -206,6 +209,7 @@ namespace PubsubSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 
 using Data = Google.Apis.Pubsub.v1.Data;
@@ -224,7 +228,7 @@ namespace PubsubSample
 
             // The subscription whose message is being acknowledged.
             // Format is `projects/{project}/subscriptions/{sub}`.
-            string subscription = "";  // TODO: Update placeholder value.
+            string subscription = "projects/my-project/subscriptions/my-subscription";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.AcknowledgeRequest requestBody = new Data.AcknowledgeRequest();
@@ -265,6 +269,7 @@ namespace PubsubSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -288,7 +293,7 @@ namespace PubsubSample
             // (`[0-9]`), dashes (`-`), underscores (`_`), periods (`.`), tildes (`~`),
             // plus (`+`) or percent signs (`%`). It must be between 3 and 255 characters
             // in length, and it must not start with `"goog"`.
-            string name = "";  // TODO: Update placeholder value.
+            string name = "projects/my-project/subscriptions/my-subscription";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`. All existing
             // properties will be replaced:
@@ -301,7 +306,7 @@ namespace PubsubSample
             // Data.Subscription response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -333,6 +338,7 @@ namespace PubsubSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 
 namespace PubsubSample
@@ -349,7 +355,7 @@ namespace PubsubSample
 
             // The subscription to delete.
             // Format is `projects/{project}/subscriptions/{sub}`.
-            string subscription = "";  // TODO: Update placeholder value.
+            string subscription = "projects/my-project/subscriptions/my-subscription";  // TODO: Update placeholder value.
 
             ProjectsResource.SubscriptionsResource.DeleteRequest request = pubsubService.Projects.Subscriptions.Delete(subscription);
 
@@ -387,6 +393,7 @@ namespace PubsubSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -406,7 +413,7 @@ namespace PubsubSample
 
             // The name of the subscription to get.
             // Format is `projects/{project}/subscriptions/{sub}`.
-            string subscription = "";  // TODO: Update placeholder value.
+            string subscription = "projects/my-project/subscriptions/my-subscription";  // TODO: Update placeholder value.
 
             ProjectsResource.SubscriptionsResource.GetRequest request = pubsubService.Projects.Subscriptions.Get(subscription);
 
@@ -415,7 +422,7 @@ namespace PubsubSample
             // Data.Subscription response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -447,6 +454,7 @@ namespace PubsubSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -467,7 +475,7 @@ namespace PubsubSample
             // REQUIRED: The resource for which the policy is being requested.
             // `resource` is usually specified as a path. For example, a Project
             // resource is specified as `projects/{project}`.
-            string resource = "";  // TODO: Update placeholder value.
+            string resource = "projects/my-project/subscriptions/my-subscription";  // TODO: Update placeholder value.
 
             ProjectsResource.SubscriptionsResource.GetIamPolicyRequest request = pubsubService.Projects.Subscriptions.GetIamPolicy(resource);
 
@@ -476,7 +484,7 @@ namespace PubsubSample
             // Data.Policy response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -508,6 +516,7 @@ namespace PubsubSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -527,7 +536,7 @@ namespace PubsubSample
 
             // The name of the cloud project that subscriptions belong to.
             // Format is `projects/{project}`.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "projects/my-project";  // TODO: Update placeholder value.
 
             ProjectsResource.SubscriptionsResource.ListRequest request = pubsubService.Projects.Subscriptions.List(project);
 
@@ -545,7 +554,7 @@ namespace PubsubSample
                 foreach (Data.Subscription subscription in response.Subscriptions)
                 {
                     // TODO: Change code below to process each `subscription` resource:
-                    Console.WriteLine(subscription);
+                    Console.WriteLine(JsonConvert.SerializeObject(subscription));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -580,6 +589,7 @@ namespace PubsubSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 
 using Data = Google.Apis.Pubsub.v1.Data;
@@ -598,7 +608,7 @@ namespace PubsubSample
 
             // The name of the subscription.
             // Format is `projects/{project}/subscriptions/{sub}`.
-            string subscription = "";  // TODO: Update placeholder value.
+            string subscription = "projects/my-project/subscriptions/my-subscription";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.ModifyAckDeadlineRequest requestBody = new Data.ModifyAckDeadlineRequest();
@@ -639,6 +649,7 @@ namespace PubsubSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 
 using Data = Google.Apis.Pubsub.v1.Data;
@@ -657,7 +668,7 @@ namespace PubsubSample
 
             // The name of the subscription.
             // Format is `projects/{project}/subscriptions/{sub}`.
-            string subscription = "";  // TODO: Update placeholder value.
+            string subscription = "projects/my-project/subscriptions/my-subscription";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.ModifyPushConfigRequest requestBody = new Data.ModifyPushConfigRequest();
@@ -698,6 +709,7 @@ namespace PubsubSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -717,7 +729,7 @@ namespace PubsubSample
 
             // The subscription from which messages should be pulled.
             // Format is `projects/{project}/subscriptions/{sub}`.
-            string subscription = "";  // TODO: Update placeholder value.
+            string subscription = "projects/my-project/subscriptions/my-subscription";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.PullRequest requestBody = new Data.PullRequest();
@@ -729,7 +741,7 @@ namespace PubsubSample
             // Data.PullResponse response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -761,6 +773,7 @@ namespace PubsubSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -781,7 +794,7 @@ namespace PubsubSample
             // REQUIRED: The resource for which the policy is being specified.
             // `resource` is usually specified as a path. For example, a Project
             // resource is specified as `projects/{project}`.
-            string resource = "";  // TODO: Update placeholder value.
+            string resource = "projects/my-project/subscriptions/my-subscription";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.SetIamPolicyRequest requestBody = new Data.SetIamPolicyRequest();
@@ -793,7 +806,7 @@ namespace PubsubSample
             // Data.Policy response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -825,6 +838,7 @@ namespace PubsubSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -845,7 +859,7 @@ namespace PubsubSample
             // REQUIRED: The resource for which the policy detail is being requested.
             // `resource` is usually specified as a path. For example, a Project
             // resource is specified as `projects/{project}`.
-            string resource = "";  // TODO: Update placeholder value.
+            string resource = "projects/my-project/subscriptions/my-subscription";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.TestIamPermissionsRequest requestBody = new Data.TestIamPermissionsRequest();
@@ -857,7 +871,7 @@ namespace PubsubSample
             // Data.TestIamPermissionsResponse response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -889,6 +903,7 @@ namespace PubsubSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -912,7 +927,7 @@ namespace PubsubSample
             // underscores (`_`), periods (`.`), tildes (`~`), plus (`+`) or percent
             // signs (`%`). It must be between 3 and 255 characters in length, and it
             // must not start with `"goog"`.
-            string name = "";  // TODO: Update placeholder value.
+            string name = "projects/my-project/topics/my-topic";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`. All existing
             // properties will be replaced:
@@ -925,7 +940,7 @@ namespace PubsubSample
             // Data.Topic response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -957,6 +972,7 @@ namespace PubsubSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 
 namespace PubsubSample
@@ -973,7 +989,7 @@ namespace PubsubSample
 
             // Name of the topic to delete.
             // Format is `projects/{project}/topics/{topic}`.
-            string topic = "";  // TODO: Update placeholder value.
+            string topic = "projects/my-project/topics/my-topic";  // TODO: Update placeholder value.
 
             ProjectsResource.TopicsResource.DeleteRequest request = pubsubService.Projects.Topics.Delete(topic);
 
@@ -1011,6 +1027,7 @@ namespace PubsubSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1030,7 +1047,7 @@ namespace PubsubSample
 
             // The name of the topic to get.
             // Format is `projects/{project}/topics/{topic}`.
-            string topic = "";  // TODO: Update placeholder value.
+            string topic = "projects/my-project/topics/my-topic";  // TODO: Update placeholder value.
 
             ProjectsResource.TopicsResource.GetRequest request = pubsubService.Projects.Topics.Get(topic);
 
@@ -1039,7 +1056,7 @@ namespace PubsubSample
             // Data.Topic response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -1071,6 +1088,7 @@ namespace PubsubSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1091,7 +1109,7 @@ namespace PubsubSample
             // REQUIRED: The resource for which the policy is being requested.
             // `resource` is usually specified as a path. For example, a Project
             // resource is specified as `projects/{project}`.
-            string resource = "";  // TODO: Update placeholder value.
+            string resource = "projects/my-project/topics/my-topic";  // TODO: Update placeholder value.
 
             ProjectsResource.TopicsResource.GetIamPolicyRequest request = pubsubService.Projects.Topics.GetIamPolicy(resource);
 
@@ -1100,7 +1118,7 @@ namespace PubsubSample
             // Data.Policy response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -1132,6 +1150,7 @@ namespace PubsubSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1151,7 +1170,7 @@ namespace PubsubSample
 
             // The name of the cloud project that topics belong to.
             // Format is `projects/{project}`.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "projects/my-project";  // TODO: Update placeholder value.
 
             ProjectsResource.TopicsResource.ListRequest request = pubsubService.Projects.Topics.List(project);
 
@@ -1169,7 +1188,7 @@ namespace PubsubSample
                 foreach (Data.Topic topic in response.Topics)
                 {
                     // TODO: Change code below to process each `topic` resource:
-                    Console.WriteLine(topic);
+                    Console.WriteLine(JsonConvert.SerializeObject(topic));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -1204,6 +1223,7 @@ namespace PubsubSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1223,7 +1243,7 @@ namespace PubsubSample
 
             // The messages in the request will be published on this topic.
             // Format is `projects/{project}/topics/{topic}`.
-            string topic = "";  // TODO: Update placeholder value.
+            string topic = "projects/my-project/topics/my-topic";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.PublishRequest requestBody = new Data.PublishRequest();
@@ -1235,7 +1255,7 @@ namespace PubsubSample
             // Data.PublishResponse response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -1267,6 +1287,7 @@ namespace PubsubSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1287,7 +1308,7 @@ namespace PubsubSample
             // REQUIRED: The resource for which the policy is being specified.
             // `resource` is usually specified as a path. For example, a Project
             // resource is specified as `projects/{project}`.
-            string resource = "";  // TODO: Update placeholder value.
+            string resource = "projects/my-project/topics/my-topic";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.SetIamPolicyRequest requestBody = new Data.SetIamPolicyRequest();
@@ -1299,7 +1320,7 @@ namespace PubsubSample
             // Data.Policy response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -1331,6 +1352,7 @@ namespace PubsubSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1350,7 +1372,7 @@ namespace PubsubSample
 
             // The name of the topic that subscriptions are attached to.
             // Format is `projects/{project}/topics/{topic}`.
-            string topic = "";  // TODO: Update placeholder value.
+            string topic = "projects/my-project/topics/my-topic";  // TODO: Update placeholder value.
 
             ProjectsResource.TopicsResource.SubscriptionsResource.ListRequest request = pubsubService.Projects.Topics.Subscriptions.List(topic);
 
@@ -1368,7 +1390,7 @@ namespace PubsubSample
                 foreach (string item in response.Subscriptions)
                 {
                     // TODO: Change code below to process each `item` resource:
-                    Console.WriteLine(item);
+                    Console.WriteLine(JsonConvert.SerializeObject(item));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -1403,6 +1425,7 @@ namespace PubsubSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1423,7 +1446,7 @@ namespace PubsubSample
             // REQUIRED: The resource for which the policy detail is being requested.
             // `resource` is usually specified as a path. For example, a Project
             // resource is specified as `projects/{project}`.
-            string resource = "";  // TODO: Update placeholder value.
+            string resource = "projects/my-project/topics/my-topic";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.TestIamPermissionsRequest requestBody = new Data.TestIamPermissionsRequest();
@@ -1435,7 +1458,7 @@ namespace PubsubSample
             // Data.TestIamPermissionsResponse response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()

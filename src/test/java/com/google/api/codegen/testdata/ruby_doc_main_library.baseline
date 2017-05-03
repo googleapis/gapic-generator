@@ -39,10 +39,10 @@ module Library
     # resources and Book resources in the library. It defines the following
     # resource model:
     #
-    # - The API has a collection of Shelf
+    # * The API has a collection of Shelf
     #   resources, named +bookShelves/*+
     #
-    # - Each Shelf has a collection of Book
+    # * Each Shelf has a collection of Book
     #   resources, named +bookShelves/*/books/*+
     #
     # Check out {cloud docs!}[https://cloud.google.com/library/example/link].
@@ -93,7 +93,12 @@ module Library
             "edition",
             "shelf.name"
           ],
-          subresponse_field: "book_names")
+          subresponse_field: "book_names"),
+        "add_comments" => Google::Gax::BundleDescriptor.new(
+          "comments",
+          [
+            "name"
+          ])
       }.freeze
 
       private_constant :BUNDLE_DESCRIPTORS
@@ -206,6 +211,12 @@ module Library
       #   A Channel object through which to make calls.
       # @param chan_creds [Grpc::ChannelCredentials]
       #   A ChannelCredentials for the setting up the RPC client.
+      # @param updater_proc [Proc]
+      #   A function that transforms the metadata for requests, e.g., to give
+      #   OAuth credentials.
+      # @param scopes [Array<String>]
+      #   The OAuth scopes for this service. This parameter is ignored if
+      #   an updater_proc is supplied.
       # @param client_config[Hash]
       #   A Hash for call options for each method. See
       #   Google::Gax#construct_settings for the structure of
@@ -218,6 +229,7 @@ module Library
           port: DEFAULT_SERVICE_PORT,
           channel: nil,
           chan_creds: nil,
+          updater_proc: nil,
           scopes: ALL_SCOPES,
           client_config: {},
           timeout: DEFAULT_TIMEOUT,
@@ -237,6 +249,7 @@ module Library
           port: port,
           channel: channel,
           chan_creds: chan_creds,
+          updater_proc: updater_proc,
           scopes: scopes,
           client_config: client_config,
           timeout: timeout,
@@ -278,6 +291,7 @@ module Library
           port,
           chan_creds: chan_creds,
           channel: channel,
+          updater_proc: updater_proc,
           scopes: scopes,
           &Google::Example::Library::V1::LibraryService::Stub.method(:new)
         )
@@ -286,6 +300,7 @@ module Library
           port,
           chan_creds: chan_creds,
           channel: channel,
+          updater_proc: updater_proc,
           scopes: scopes,
           &Google::Tagger::V1::Labeler::Stub.method(:new)
         )
@@ -390,6 +405,10 @@ module Library
           @library_service_stub.method(:get_big_nothing),
           defaults["get_big_nothing"]
         )
+        @test_optional_required_flattening_params = Google::Gax.create_api_call(
+          @library_service_stub.method(:test_optional_required_flattening_params),
+          defaults["test_optional_required_flattening_params"]
+        )
         @add_label = Google::Gax.create_api_call(
           @labeler_stub.method(:add_label),
           defaults["add_label"]
@@ -409,7 +428,7 @@ module Library
       # @return [Google::Example::Library::V1::Shelf]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
-      #   require "library/v1/library_service_client"
+      #   require "library/v1"
       #
       #   LibraryServiceClient = Library::V1::LibraryServiceClient
       #   Shelf = Google::Example::Library::V1::Shelf
@@ -442,7 +461,7 @@ module Library
       # @return [Google::Example::Library::V1::Shelf]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
-      #   require "library/v1/library_service_client"
+      #   require "library/v1"
       #
       #   LibraryServiceClient = Library::V1::LibraryServiceClient
       #
@@ -478,7 +497,7 @@ module Library
       #   object.
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
-      #   require "library/v1/library_service_client"
+      #   require "library/v1"
       #
       #   LibraryServiceClient = Library::V1::LibraryServiceClient
       #
@@ -511,7 +530,7 @@ module Library
       #   retries, etc.
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
-      #   require "library/v1/library_service_client"
+      #   require "library/v1"
       #
       #   LibraryServiceClient = Library::V1::LibraryServiceClient
       #
@@ -543,7 +562,7 @@ module Library
       # @return [Google::Example::Library::V1::Shelf]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
-      #   require "library/v1/library_service_client"
+      #   require "library/v1"
       #
       #   LibraryServiceClient = Library::V1::LibraryServiceClient
       #
@@ -575,7 +594,7 @@ module Library
       # @return [Google::Example::Library::V1::Book]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
-      #   require "library/v1/library_service_client"
+      #   require "library/v1"
       #
       #   Book = Google::Example::Library::V1::Book
       #   LibraryServiceClient = Library::V1::LibraryServiceClient
@@ -614,7 +633,7 @@ module Library
       # @return [Google::Example::Library::V1::PublishSeriesResponse]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
-      #   require "library/v1/library_service_client"
+      #   require "library/v1"
       #
       #   LibraryServiceClient = Library::V1::LibraryServiceClient
       #   SeriesUuid = Google::Example::Library::V1::SeriesUuid
@@ -624,8 +643,7 @@ module Library
       #   shelf = Shelf.new
       #   books = []
       #   series_string = "foobar"
-      #   series_uuid = SeriesUuid.new
-      #   series_uuid.series_string = series_string
+      #   series_uuid = SeriesUuid.new(series_string: series_string)
       #   response = library_service_client.publish_series(shelf, books, series_uuid)
 
       def publish_series \
@@ -655,7 +673,7 @@ module Library
       # @return [Google::Example::Library::V1::Book]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
-      #   require "library/v1/library_service_client"
+      #   require "library/v1"
       #
       #   LibraryServiceClient = Library::V1::LibraryServiceClient
       #
@@ -694,7 +712,7 @@ module Library
       #   object.
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
-      #   require "library/v1/library_service_client"
+      #   require "library/v1"
       #
       #   LibraryServiceClient = Library::V1::LibraryServiceClient
       #
@@ -736,7 +754,7 @@ module Library
       #   retries, etc.
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
-      #   require "library/v1/library_service_client"
+      #   require "library/v1"
       #
       #   LibraryServiceClient = Library::V1::LibraryServiceClient
       #
@@ -770,7 +788,7 @@ module Library
       # @return [Google::Example::Library::V1::Book]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
-      #   require "library/v1/library_service_client"
+      #   require "library/v1"
       #
       #   Book = Google::Example::Library::V1::Book
       #   LibraryServiceClient = Library::V1::LibraryServiceClient
@@ -807,7 +825,7 @@ module Library
       # @return [Google::Example::Library::V1::Book]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
-      #   require "library/v1/library_service_client"
+      #   require "library/v1"
       #
       #   LibraryServiceClient = Library::V1::LibraryServiceClient
       #
@@ -846,7 +864,7 @@ module Library
       #   object.
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
-      #   require "library/v1/library_service_client"
+      #   require "library/v1"
       #
       #   LibraryServiceClient = Library::V1::LibraryServiceClient
       #
@@ -885,7 +903,7 @@ module Library
       #   retries, etc.
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
-      #   require "library/v1/library_service_client"
+      #   require "library/v1"
       #
       #   Alignment = Google::Example::Library::V1::SomeMessage2::SomeMessage3::Alignment
       #   Comment = Google::Example::Library::V1::Comment
@@ -897,10 +915,11 @@ module Library
       #   comment = ''
       #   stage = Stage::UNSET
       #   alignment = Alignment::CHAR
-      #   comments_element = Comment.new
-      #   comments_element.comment = comment
-      #   comments_element.stage = stage
-      #   comments_element.alignment = alignment
+      #   comments_element = Comment.new(
+      #     comment: comment,
+      #     stage: stage,
+      #     alignment: alignment
+      #   )
       #   comments = [comments_element]
       #   library_service_client.add_comments(formatted_name, comments)
 
@@ -926,7 +945,7 @@ module Library
       # @return [Google::Example::Library::V1::BookFromArchive]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
-      #   require "library/v1/library_service_client"
+      #   require "library/v1"
       #
       #   LibraryServiceClient = Library::V1::LibraryServiceClient
       #
@@ -956,7 +975,7 @@ module Library
       # @return [Google::Example::Library::V1::BookFromAnywhere]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
-      #   require "library/v1/library_service_client"
+      #   require "library/v1"
       #
       #   LibraryServiceClient = Library::V1::LibraryServiceClient
       #
@@ -989,7 +1008,7 @@ module Library
       #   retries, etc.
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
-      #   require "library/v1/library_service_client"
+      #   require "library/v1"
       #
       #   LibraryServiceClient = Library::V1::LibraryServiceClient
       #
@@ -1025,7 +1044,7 @@ module Library
       #
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
-      #   require "library/v1/library_service_client"
+      #   require "library/v1"
       #
       #   LibraryServiceClient = Library::V1::LibraryServiceClient
       #
@@ -1052,7 +1071,7 @@ module Library
       #
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
-      #   require "library/v1/library_service_client"
+      #   require "library/v1"
       #
       #   LibraryServiceClient = Library::V1::LibraryServiceClient
       #
@@ -1090,15 +1109,14 @@ module Library
       #     This method interface might change in the future.
       #
       # @example
-      #   require "library/v1/library_service_client"
+      #   require "library/v1"
       #
       #   DiscussBookRequest = Google::Example::Library::V1::DiscussBookRequest
       #   LibraryServiceClient = Library::V1::LibraryServiceClient
       #
       #   library_service_client = LibraryServiceClient.new
       #   name = ''
-      #   request = DiscussBookRequest.new
-      #   request.name = name
+      #   request = DiscussBookRequest.new(name: name)
       #   requests = [request]
       #   library_service_client.discuss_book(requests).each do |element|
       #     # Process element.
@@ -1125,15 +1143,14 @@ module Library
       #     This method interface might change in the future.
       #
       # @example
-      #   require "library/v1/library_service_client"
+      #   require "library/v1"
       #
       #   DiscussBookRequest = Google::Example::Library::V1::DiscussBookRequest
       #   LibraryServiceClient = Library::V1::LibraryServiceClient
       #
       #   library_service_client = LibraryServiceClient.new
       #   name = ''
-      #   request = DiscussBookRequest.new
-      #   request.name = name
+      #   request = DiscussBookRequest.new(name: name)
       #   requests = [request]
       #   response = library_service_client.monolog_about_book(requests)
 
@@ -1159,7 +1176,7 @@ module Library
       #   object.
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
-      #   require "library/v1/library_service_client"
+      #   require "library/v1"
       #
       #   LibraryServiceClient = Library::V1::LibraryServiceClient
       #
@@ -1208,7 +1225,7 @@ module Library
       # @return [Google::Tagger::V1::AddTagResponse]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
-      #   require "library/v1/library_service_client"
+      #   require "library/v1"
       #
       #   LibraryServiceClient = Library::V1::LibraryServiceClient
       #
@@ -1242,7 +1259,7 @@ module Library
       # @return [Google::Tagger::V1::AddLabelResponse]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
-      #   require "library/v1/library_service_client"
+      #   require "library/v1"
       #
       #   LibraryServiceClient = Library::V1::LibraryServiceClient
       #
@@ -1272,7 +1289,7 @@ module Library
       # @return [Google::Gax::Operation]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
-      #   require "library/v1/library_service_client"
+      #   require "library/v1"
       #
       #   LibraryServiceClient = Library::V1::LibraryServiceClient
       #
@@ -1333,7 +1350,7 @@ module Library
       # @return [Google::Gax::Operation]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
       # @example
-      #   require "library/v1/library_service_client"
+      #   require "library/v1"
       #
       #   LibraryServiceClient = Library::V1::LibraryServiceClient
       #
@@ -1382,6 +1399,219 @@ module Library
         )
         operation.on_done { |operation| yield(operation) } if block_given?
         operation
+      end
+
+      # Test optional flattening parameters of all types
+      #
+      # @param required_singular_int32 [Integer]
+      # @param required_singular_int64 [Integer]
+      # @param required_singular_float [Float]
+      # @param required_singular_double [Float]
+      # @param required_singular_bool [true, false]
+      # @param required_singular_enum [Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerEnum]
+      # @param required_singular_string [String]
+      # @param required_singular_bytes [String]
+      # @param required_singular_message [Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerMessage]
+      # @param required_singular_resource_name [String]
+      # @param required_singular_resource_name_oneof [String]
+      # @param required_singular_fixed32 [Integer]
+      # @param required_singular_fixed64 [Integer]
+      # @param required_repeated_int32 [Array<Integer>]
+      # @param required_repeated_int64 [Array<Integer>]
+      # @param required_repeated_float [Array<Float>]
+      # @param required_repeated_double [Array<Float>]
+      # @param required_repeated_bool [Array<true, false>]
+      # @param required_repeated_enum [Array<Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerEnum>]
+      # @param required_repeated_string [Array<String>]
+      # @param required_repeated_bytes [Array<String>]
+      # @param required_repeated_message [Array<Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerMessage>]
+      # @param required_repeated_resource_name [Array<String>]
+      # @param required_repeated_resource_name_oneof [Array<String>]
+      # @param required_repeated_fixed32 [Array<Integer>]
+      # @param required_repeated_fixed64 [Array<Integer>]
+      # @param required_map [Hash{Integer => String}]
+      # @param optional_singular_int32 [Integer]
+      # @param optional_singular_int64 [Integer]
+      # @param optional_singular_float [Float]
+      # @param optional_singular_double [Float]
+      # @param optional_singular_bool [true, false]
+      # @param optional_singular_enum [Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerEnum]
+      # @param optional_singular_string [String]
+      # @param optional_singular_bytes [String]
+      # @param optional_singular_message [Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerMessage]
+      # @param optional_singular_resource_name [String]
+      # @param optional_singular_resource_name_oneof [String]
+      # @param optional_singular_fixed32 [Integer]
+      # @param optional_singular_fixed64 [Integer]
+      # @param optional_repeated_int32 [Array<Integer>]
+      # @param optional_repeated_int64 [Array<Integer>]
+      # @param optional_repeated_float [Array<Float>]
+      # @param optional_repeated_double [Array<Float>]
+      # @param optional_repeated_bool [Array<true, false>]
+      # @param optional_repeated_enum [Array<Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerEnum>]
+      # @param optional_repeated_string [Array<String>]
+      # @param optional_repeated_bytes [Array<String>]
+      # @param optional_repeated_message [Array<Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerMessage>]
+      # @param optional_repeated_resource_name [Array<String>]
+      # @param optional_repeated_resource_name_oneof [Array<String>]
+      # @param optional_repeated_fixed32 [Array<Integer>]
+      # @param optional_repeated_fixed64 [Array<Integer>]
+      # @param optional_map [Hash{Integer => String}]
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @return [Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsResponse]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library/v1"
+      #
+      #   InnerEnum = Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerEnum
+      #   InnerMessage = Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerMessage
+      #   LibraryServiceClient = Library::V1::LibraryServiceClient
+      #
+      #   library_service_client = LibraryServiceClient.new
+      #   required_singular_int32 = 0
+      #   required_singular_int64 = 0
+      #   required_singular_float = 0.0
+      #   required_singular_double = 0.0
+      #   required_singular_bool = false
+      #   required_singular_enum = InnerEnum::ZERO
+      #   required_singular_string = ''
+      #   required_singular_bytes = ''
+      #   required_singular_message = InnerMessage.new
+      #   required_singular_resource_name = ''
+      #   required_singular_resource_name_oneof = ''
+      #   required_singular_fixed32 = 0
+      #   required_singular_fixed64 = 0
+      #   required_repeated_int32 = []
+      #   required_repeated_int64 = []
+      #   required_repeated_float = []
+      #   required_repeated_double = []
+      #   required_repeated_bool = []
+      #   required_repeated_enum = []
+      #   required_repeated_string = []
+      #   required_repeated_bytes = []
+      #   required_repeated_message = []
+      #   formatted_required_repeated_resource_name = []
+      #   formatted_required_repeated_resource_name_oneof = []
+      #   required_repeated_fixed32 = []
+      #   required_repeated_fixed64 = []
+      #   required_map = {}
+      #   response = library_service_client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, formatted_required_repeated_resource_name, formatted_required_repeated_resource_name_oneof, required_repeated_fixed32, required_repeated_fixed64, required_map)
+
+      def test_optional_required_flattening_params \
+          required_singular_int32,
+          required_singular_int64,
+          required_singular_float,
+          required_singular_double,
+          required_singular_bool,
+          required_singular_enum,
+          required_singular_string,
+          required_singular_bytes,
+          required_singular_message,
+          required_singular_resource_name,
+          required_singular_resource_name_oneof,
+          required_singular_fixed32,
+          required_singular_fixed64,
+          required_repeated_int32,
+          required_repeated_int64,
+          required_repeated_float,
+          required_repeated_double,
+          required_repeated_bool,
+          required_repeated_enum,
+          required_repeated_string,
+          required_repeated_bytes,
+          required_repeated_message,
+          required_repeated_resource_name,
+          required_repeated_resource_name_oneof,
+          required_repeated_fixed32,
+          required_repeated_fixed64,
+          required_map,
+          optional_singular_int32: nil,
+          optional_singular_int64: nil,
+          optional_singular_float: nil,
+          optional_singular_double: nil,
+          optional_singular_bool: nil,
+          optional_singular_enum: nil,
+          optional_singular_string: nil,
+          optional_singular_bytes: nil,
+          optional_singular_message: nil,
+          optional_singular_resource_name: nil,
+          optional_singular_resource_name_oneof: nil,
+          optional_singular_fixed32: nil,
+          optional_singular_fixed64: nil,
+          optional_repeated_int32: nil,
+          optional_repeated_int64: nil,
+          optional_repeated_float: nil,
+          optional_repeated_double: nil,
+          optional_repeated_bool: nil,
+          optional_repeated_enum: nil,
+          optional_repeated_string: nil,
+          optional_repeated_bytes: nil,
+          optional_repeated_message: nil,
+          optional_repeated_resource_name: nil,
+          optional_repeated_resource_name_oneof: nil,
+          optional_repeated_fixed32: nil,
+          optional_repeated_fixed64: nil,
+          optional_map: nil,
+          options: nil
+        req = Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest.new({
+          required_singular_int32: required_singular_int32,
+          required_singular_int64: required_singular_int64,
+          required_singular_float: required_singular_float,
+          required_singular_double: required_singular_double,
+          required_singular_bool: required_singular_bool,
+          required_singular_enum: required_singular_enum,
+          required_singular_string: required_singular_string,
+          required_singular_bytes: required_singular_bytes,
+          required_singular_message: required_singular_message,
+          required_singular_resource_name: required_singular_resource_name,
+          required_singular_resource_name_oneof: required_singular_resource_name_oneof,
+          required_singular_fixed32: required_singular_fixed32,
+          required_singular_fixed64: required_singular_fixed64,
+          required_repeated_int32: required_repeated_int32,
+          required_repeated_int64: required_repeated_int64,
+          required_repeated_float: required_repeated_float,
+          required_repeated_double: required_repeated_double,
+          required_repeated_bool: required_repeated_bool,
+          required_repeated_enum: required_repeated_enum,
+          required_repeated_string: required_repeated_string,
+          required_repeated_bytes: required_repeated_bytes,
+          required_repeated_message: required_repeated_message,
+          required_repeated_resource_name: required_repeated_resource_name,
+          required_repeated_resource_name_oneof: required_repeated_resource_name_oneof,
+          required_repeated_fixed32: required_repeated_fixed32,
+          required_repeated_fixed64: required_repeated_fixed64,
+          required_map: required_map,
+          optional_singular_int32: optional_singular_int32,
+          optional_singular_int64: optional_singular_int64,
+          optional_singular_float: optional_singular_float,
+          optional_singular_double: optional_singular_double,
+          optional_singular_bool: optional_singular_bool,
+          optional_singular_enum: optional_singular_enum,
+          optional_singular_string: optional_singular_string,
+          optional_singular_bytes: optional_singular_bytes,
+          optional_singular_message: optional_singular_message,
+          optional_singular_resource_name: optional_singular_resource_name,
+          optional_singular_resource_name_oneof: optional_singular_resource_name_oneof,
+          optional_singular_fixed32: optional_singular_fixed32,
+          optional_singular_fixed64: optional_singular_fixed64,
+          optional_repeated_int32: optional_repeated_int32,
+          optional_repeated_int64: optional_repeated_int64,
+          optional_repeated_float: optional_repeated_float,
+          optional_repeated_double: optional_repeated_double,
+          optional_repeated_bool: optional_repeated_bool,
+          optional_repeated_enum: optional_repeated_enum,
+          optional_repeated_string: optional_repeated_string,
+          optional_repeated_bytes: optional_repeated_bytes,
+          optional_repeated_message: optional_repeated_message,
+          optional_repeated_resource_name: optional_repeated_resource_name,
+          optional_repeated_resource_name_oneof: optional_repeated_resource_name_oneof,
+          optional_repeated_fixed32: optional_repeated_fixed32,
+          optional_repeated_fixed64: optional_repeated_fixed64,
+          optional_map: optional_map
+        }.delete_if { |_, v| v.nil? })
+        @test_optional_required_flattening_params.call(req, options)
       end
     end
   end

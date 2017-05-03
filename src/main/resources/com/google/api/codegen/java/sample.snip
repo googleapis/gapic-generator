@@ -136,6 +136,14 @@
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     @switch class.auth.type
+    @case "NONE"
+    @case "APPLICATION_DEFAULT_CREDENTIALS"
+      GoogleCredential credential = GoogleCredential.getApplicationDefault();
+      if (credential.createScopedRequired()) {
+        credential =
+            credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
+      }
+
     @case "OAUTH_3L"
       // TODO: Change placeholder below to generate authentication credentials. See
       // {@class.auth.instructionsUrl}
@@ -149,19 +157,18 @@
         //   "{@scope}"
       @end
       GoogleCredential credential = null;
+
     @case "API_KEY"
       // TODO: Change placeholder below to generate authentication credentials. See
       // {@class.auth.instructionsUrl}
       GoogleCredential credential = null;
-    @default
-      GoogleCredential credential = GoogleCredential.getApplicationDefault();
-      if (credential.createScopedRequired()) {
-        credential =
-            credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
-      }
-    @end
 
-    return new {@class.serviceTypeName}.Builder(httpTransport, jsonFactory, credential)
+    @end
+    @if class.auth.type == "NONE"
+      return new {@class.serviceTypeName}.Builder(httpTransport, jsonFactory, null)
+    @else
+      return new {@class.serviceTypeName}.Builder(httpTransport, jsonFactory, credential)
+    @end
         .setApplicationName("{@class.appName}")
         .build();
   }

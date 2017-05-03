@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen;
 
-import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.gapic.GapicGeneratorConfig;
 import com.google.api.codegen.gapic.GapicProvider;
@@ -116,9 +116,9 @@ public class CodeGeneratorApi extends ToolDriverBase {
       packageConfig = PackageMetadataConfig.createFromString(contents);
     }
     GeneratorProto generator = configProto.getGenerator();
-    ApiConfig apiConfig = ApiConfig.createApiConfig(model, configProto);
+    GapicProductConfig productConfig = GapicProductConfig.create(model, configProto);
 
-    if (apiConfig == null) {
+    if (productConfig == null) {
       return;
     }
     if (generator != null) {
@@ -134,7 +134,7 @@ public class CodeGeneratorApi extends ToolDriverBase {
               .build();
 
       List<GapicProvider<? extends Object>> providers =
-          providerFactory.create(model, apiConfig, generatorConfig, packageConfig);
+          providerFactory.create(model, productConfig, generatorConfig, packageConfig);
       String outputFile = options.get(OUTPUT_FILE);
       Map<String, Doc> outputFiles = Maps.newHashMap();
       for (GapicProvider<? extends Object> provider : providers) {

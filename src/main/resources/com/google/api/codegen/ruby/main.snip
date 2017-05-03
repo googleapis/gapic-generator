@@ -8,12 +8,6 @@
 
 @end
 
-@private importList(imports)
-  @join import : imports
-    require "{@import.moduleName}"
-  @end
-@end
-
 @private renderFileHeader(protoFilename, fileHeader)
   {@license(fileHeader)}
   @#
@@ -95,12 +89,12 @@
 
     private_constant :PAGE_DESCRIPTORS
   @end
-  @if xapiClass.hasBundlingMethods
+  @if xapiClass.hasBatchingMethods
 
     BUNDLE_DESCRIPTORS = {
-      @join descriptor : xapiClass.bundlingDescriptors on {@", "}.add(BREAK)
+      @join descriptor : xapiClass.batchingDescriptors on {@", "}.add(BREAK)
         "{@descriptor.methodName}" => Google::Gax::BundleDescriptor.new(
-          {@bundleDescriptorBody(descriptor)})
+          {@batchDescriptorBody(descriptor)})
       @end
     }.freeze
 
@@ -127,7 +121,7 @@
       client_config,
       Google::Gax::Grpc::STATUS_CODE_NAMES,
       timeout,
-      @if xapiClass.hasBundlingMethods
+      @if xapiClass.hasBatchingMethods
         bundle_descriptors: BUNDLE_DESCRIPTORS,
       @end
       @if xapiClass.hasPageStreamingMethods
@@ -148,6 +142,12 @@
   @#   A Channel object through which to make calls.
   @# @@param chan_creds [Grpc::ChannelCredentials]
   @#   A ChannelCredentials for the setting up the RPC client.
+  @# @@param updater_proc [Proc]
+  @#   A function that transforms the metadata for requests, e.g., to give
+  @#   OAuth credentials.
+  @# @@param scopes [Array<String>]
+  @#   The OAuth scopes for this service. This parameter is ignored if
+  @#   an updater_proc is supplied.
   @# @@param client_config[Hash]
   @#   A Hash for call options for each method. See
   @#   Google::Gax#construct_settings for the structure of
@@ -160,6 +160,7 @@
       port: DEFAULT_SERVICE_PORT,
       channel: nil,
       chan_creds: nil,
+      updater_proc: nil,
       scopes: ALL_SCOPES,
       client_config: {},
       timeout: DEFAULT_TIMEOUT,
@@ -180,6 +181,7 @@
         port: port,
         channel: channel,
         chan_creds: chan_creds,
+        updater_proc: updater_proc,
         scopes: scopes,
         client_config: client_config,
         timeout: timeout,
@@ -208,6 +210,7 @@
         port,
         chan_creds: chan_creds,
         channel: channel,
+        updater_proc: updater_proc,
         scopes: scopes,
         &{@stub.fullyQualifiedType}.method(:new)
       )
@@ -224,8 +227,8 @@
   end
 @end
 
-@private bundleDescriptorBody(descriptor)
-  "{@descriptor.bundledFieldName}",
+@private batchDescriptorBody(descriptor)
+  "{@descriptor.batchedFieldName}",
   [
     @join name : descriptor.discriminatorFieldNames on {@","}.add(BREAK)
       "{@name}"

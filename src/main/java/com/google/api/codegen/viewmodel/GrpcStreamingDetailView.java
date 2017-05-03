@@ -32,6 +32,9 @@ public abstract class GrpcStreamingDetailView {
     return grpcResourcesField() != null;
   }
 
+  @Nullable
+  public abstract String streamTypeName();
+
   public static Builder newBuilder() {
     return new AutoValue_GrpcStreamingDetailView.Builder();
   }
@@ -44,6 +47,8 @@ public abstract class GrpcStreamingDetailView {
     public abstract Builder grpcStreamingType(GrpcStreamingType val);
 
     public abstract Builder grpcResourcesField(String val);
+
+    public abstract Builder streamTypeName(String val);
 
     public abstract GrpcStreamingDetailView build();
   }

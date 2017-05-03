@@ -44,8 +44,8 @@
 @end
 
 @private retryCodesSection(service)
-    @let interfaceConfig = context.getApiConfig.getInterfaceConfig(service), \
-            codes = context.entrySet(interfaceConfig.getRetryCodesDefinition)
+    @let gapicInterfaceConfig = context.getApiConfig.getInterfaceConfig(service), \
+            codes = context.entrySet(gapicInterfaceConfig.getRetryCodesDefinition)
         @if codes
             @join retryDef : codes on ",".add(BREAK)
                 @if retryDef.getValue
@@ -64,8 +64,8 @@
 @end
 
 @private retryParamsSection(service)
-    @let interfaceConfig = context.getApiConfig.getInterfaceConfig(service)
-        @join retryDef : context.entrySet(interfaceConfig.getRetrySettingsDefinition) on ",".add(BREAK)
+    @let gapicInterfaceConfig = context.getApiConfig.getInterfaceConfig(service)
+        @join retryDef : context.entrySet(gapicInterfaceConfig.getRetrySettingsDefinition) on ",".add(BREAK)
             "{@retryDef.getKey}": {
               "initial_retry_delay_millis": {@retryDef.getValue.getInitialRetryDelay.getMillis()},
               "retry_delay_multiplier": {@retryDef.getValue.getRetryDelayMultiplier},
@@ -83,27 +83,27 @@
     @join method : context.getSupportedMethods(service) on ",".add(BREAK)
         @let methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
                 methodName = context.upperCamelToLowerUnderscore(method.getSimpleName), \
-                isBundling = methodConfig.isBundling, \
+                isBatching = methodConfig.isBatching, \
                 timeout = methodConfig.getTimeout.getMillis, \
                 retryCodesName = methodConfig.getRetryCodesConfigName, \
                 retryParamsName = methodConfig.getRetrySettingsConfigName
             "{@method.getSimpleName}": {
-              @if or(and(retryCodesName, retryParamsName), isBundling)
+              @if or(and(retryCodesName, retryParamsName), isBatching)
                 "timeout_millis": {@timeout},
               @else
                 "timeout_millis": {@timeout}
               @end
               @if and(retryCodesName, retryParamsName)
                   "retry_codes_name": "{@retryCodesName}",
-                  @if isBundling
+                  @if isBatching
                       "retry_params_name": "{@retryParamsName}",
                   @else
                       "retry_params_name": "{@retryParamsName}"
                   @end
               @end
-              @if isBundling
+              @if isBatching
                   "bundling": {
-                    @join param : context.entrySet(context.bundlingParams(methodConfig.getBundling)) on ",".add(BREAK)
+                    @join param : context.entrySet(context.batchingParams(methodConfig.getBatching)) on ",".add(BREAK)
                         "{@param.getKey}": {@param.getValue}
                     @end
                   }

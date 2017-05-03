@@ -26,4 +26,12 @@
         md["x-goog-api-client"] = []string{val}
         return metadata.NewContext(ctx, md)
     }
+
+    func DefaultAuthScopes() []string {
+      return []string{
+        @join scope : view.authScopes
+          "{@scope}",
+        @end
+      }
+    }
 @end

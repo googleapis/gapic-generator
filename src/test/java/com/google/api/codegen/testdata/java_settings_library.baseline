@@ -1,4 +1,4 @@
-============== file: src/main/java/com/google/gcloud/pubsub/spi/LibraryServiceSettings.java ==============
+============== file: src/main/java/com/google/gcloud/pubsub/spi/LibrarySettings.java ==============
 /*
  * Copyright 2017, Google Inc. All rights reserved.
  *
@@ -16,12 +16,21 @@
  */
 package com.google.gcloud.pubsub.spi;
 
+import com.google.api.core.ApiFuture;
+import com.google.api.core.BetaApi;
+import com.google.api.gax.batching.BatchingSettings;
+import com.google.api.gax.batching.FlowControlSettings;
+import com.google.api.gax.batching.FlowController;
+import com.google.api.gax.batching.FlowController.LimitExceededBehavior;
+import com.google.api.gax.batching.PartitionKey;
+import com.google.api.gax.batching.RequestBuilder;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.GoogleCredentialsProvider;
-import com.google.api.gax.core.RetrySettings;
-import com.google.api.gax.grpc.BundlingCallSettings;
-import com.google.api.gax.grpc.BundlingDescriptor;
-import com.google.api.gax.grpc.BundlingSettings;
+import com.google.api.gax.core.PropertiesProvider;
+import com.google.api.gax.grpc.ApiExceptions;
+import com.google.api.gax.grpc.BatchedRequestIssuer;
+import com.google.api.gax.grpc.BatchingCallSettings;
+import com.google.api.gax.grpc.BatchingDescriptor;
 import com.google.api.gax.grpc.CallContext;
 import com.google.api.gax.grpc.ChannelProvider;
 import com.google.api.gax.grpc.ClientSettings;
@@ -29,6 +38,7 @@ import com.google.api.gax.grpc.ExecutorProvider;
 import com.google.api.gax.grpc.InstantiatingChannelProvider;
 import com.google.api.gax.grpc.InstantiatingExecutorProvider;
 import com.google.api.gax.grpc.OperationCallSettings;
+import com.google.api.gax.grpc.PageContext;
 import com.google.api.gax.grpc.PagedCallSettings;
 import com.google.api.gax.grpc.PagedListDescriptor;
 import com.google.api.gax.grpc.PagedListResponseFactory;
@@ -37,6 +47,7 @@ import com.google.api.gax.grpc.SimpleCallSettings;
 import com.google.api.gax.grpc.StreamingCallSettings;
 import com.google.api.gax.grpc.UnaryCallSettings;
 import com.google.api.gax.grpc.UnaryCallable;
+import com.google.api.gax.retrying.RetrySettings;
 import com.google.auth.Credentials;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -74,6 +85,8 @@ import com.google.example.library.v1.Shelf;
 import com.google.example.library.v1.StreamBooksRequest;
 import com.google.example.library.v1.StreamShelvesRequest;
 import com.google.example.library.v1.StreamShelvesResponse;
+import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest;
+import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse;
 import com.google.example.library.v1.UpdateBookIndexRequest;
 import com.google.example.library.v1.UpdateBookRequest;
 import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.FindRelatedBooksPagedResponse;
@@ -82,7 +95,6 @@ import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.ListShelvesPage
 import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.ListStringsPagedResponse;
 import com.google.longrunning.Operation;
 import com.google.protobuf.Empty;
-import com.google.protobuf.ExperimentalApi;
 import com.google.tagger.v1.AddLabelRequest;
 import com.google.tagger.v1.AddLabelResponse;
 import com.google.tagger.v1.AddTagRequest;
@@ -96,11 +108,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 import javax.annotation.Generated;
-import org.joda.time.Duration;
+import org.threeten.bp.Duration;
 
 // AUTO-GENERATED DOCUMENTATION AND CLASS
 /**
- * Settings class to configure an instance of {@link LibraryServiceClient}.
+ * Settings class to configure an instance of {@link LibraryClient}.
  *
  * <p>The default instance has everything set to sensible defaults:
  *
@@ -117,27 +129,16 @@ import org.joda.time.Duration;
  *
  * <pre>
  * <code>
- * LibraryServiceSettings.Builder libraryServiceSettingsBuilder =
- *     LibraryServiceSettings.defaultBuilder();
- * libraryServiceSettingsBuilder.createShelfSettings().getRetrySettingsBuilder()
- *     .setTotalTimeout(Duration.standardSeconds(30));
- * LibraryServiceSettings libraryServiceSettings = libraryServiceSettingsBuilder.build();
+ * LibrarySettings.Builder librarySettingsBuilder =
+ *     LibrarySettings.defaultBuilder();
+ * librarySettingsBuilder.createShelfSettings().getRetrySettingsBuilder()
+ *     .setTotalTimeout(Duration.ofSeconds(30));
+ * LibrarySettings librarySettings = librarySettingsBuilder.build();
  * </code>
  * </pre>
  */
 @Generated("by GAPIC v0.0.5")
-@ExperimentalApi
-public class LibraryServiceSettings extends ClientSettings {
-  /**
-   * The default address of the service.
-   */
-  private static final String DEFAULT_SERVICE_ADDRESS = "library-example.googleapis.com";
-
-  /**
-   * The default port of the service.
-   */
-  private static final int DEFAULT_SERVICE_PORT = 443;
-
+public class LibrarySettings extends ClientSettings {
   /**
    * The default scopes of the service.
    */
@@ -146,9 +147,176 @@ public class LibraryServiceSettings extends ClientSettings {
       .add("https://www.googleapis.com/auth/library")
       .build();
 
-
   private static final String DEFAULT_GAPIC_NAME = "gapic";
   private static final String DEFAULT_GAPIC_VERSION = "";
+
+  private static final String PROPERTIES_FILE = "/com/google/gcloud/pubsub/project.properties";
+  private static final String META_VERSION_KEY = "artifact.version";
+
+  private static String gapicVersion;
+
+  private static final io.grpc.MethodDescriptor<CreateShelfRequest, Shelf> METHOD_CREATE_SHELF =
+        io.grpc.MethodDescriptor.create(
+            io.grpc.MethodDescriptor.MethodType.UNARY,
+            "google.example.library.v1.LibraryService/CreateShelf",
+            io.grpc.protobuf.ProtoUtils.marshaller(CreateShelfRequest.getDefaultInstance()),
+            io.grpc.protobuf.ProtoUtils.marshaller(Shelf.getDefaultInstance()));
+  private static final io.grpc.MethodDescriptor<GetShelfRequest, Shelf> METHOD_GET_SHELF =
+        io.grpc.MethodDescriptor.create(
+            io.grpc.MethodDescriptor.MethodType.UNARY,
+            "google.example.library.v1.LibraryService/GetShelf",
+            io.grpc.protobuf.ProtoUtils.marshaller(GetShelfRequest.getDefaultInstance()),
+            io.grpc.protobuf.ProtoUtils.marshaller(Shelf.getDefaultInstance()));
+  private static final io.grpc.MethodDescriptor<ListShelvesRequest, ListShelvesResponse> METHOD_LIST_SHELVES =
+        io.grpc.MethodDescriptor.create(
+            io.grpc.MethodDescriptor.MethodType.UNARY,
+            "google.example.library.v1.LibraryService/ListShelves",
+            io.grpc.protobuf.ProtoUtils.marshaller(ListShelvesRequest.getDefaultInstance()),
+            io.grpc.protobuf.ProtoUtils.marshaller(ListShelvesResponse.getDefaultInstance()));
+  private static final io.grpc.MethodDescriptor<DeleteShelfRequest, Empty> METHOD_DELETE_SHELF =
+        io.grpc.MethodDescriptor.create(
+            io.grpc.MethodDescriptor.MethodType.UNARY,
+            "google.example.library.v1.LibraryService/DeleteShelf",
+            io.grpc.protobuf.ProtoUtils.marshaller(DeleteShelfRequest.getDefaultInstance()),
+            io.grpc.protobuf.ProtoUtils.marshaller(Empty.getDefaultInstance()));
+  private static final io.grpc.MethodDescriptor<MergeShelvesRequest, Shelf> METHOD_MERGE_SHELVES =
+        io.grpc.MethodDescriptor.create(
+            io.grpc.MethodDescriptor.MethodType.UNARY,
+            "google.example.library.v1.LibraryService/MergeShelves",
+            io.grpc.protobuf.ProtoUtils.marshaller(MergeShelvesRequest.getDefaultInstance()),
+            io.grpc.protobuf.ProtoUtils.marshaller(Shelf.getDefaultInstance()));
+  private static final io.grpc.MethodDescriptor<CreateBookRequest, Book> METHOD_CREATE_BOOK =
+        io.grpc.MethodDescriptor.create(
+            io.grpc.MethodDescriptor.MethodType.UNARY,
+            "google.example.library.v1.LibraryService/CreateBook",
+            io.grpc.protobuf.ProtoUtils.marshaller(CreateBookRequest.getDefaultInstance()),
+            io.grpc.protobuf.ProtoUtils.marshaller(Book.getDefaultInstance()));
+  private static final io.grpc.MethodDescriptor<PublishSeriesRequest, PublishSeriesResponse> METHOD_PUBLISH_SERIES =
+        io.grpc.MethodDescriptor.create(
+            io.grpc.MethodDescriptor.MethodType.UNARY,
+            "google.example.library.v1.LibraryService/PublishSeries",
+            io.grpc.protobuf.ProtoUtils.marshaller(PublishSeriesRequest.getDefaultInstance()),
+            io.grpc.protobuf.ProtoUtils.marshaller(PublishSeriesResponse.getDefaultInstance()));
+  private static final io.grpc.MethodDescriptor<GetBookRequest, Book> METHOD_GET_BOOK =
+        io.grpc.MethodDescriptor.create(
+            io.grpc.MethodDescriptor.MethodType.UNARY,
+            "google.example.library.v1.LibraryService/GetBook",
+            io.grpc.protobuf.ProtoUtils.marshaller(GetBookRequest.getDefaultInstance()),
+            io.grpc.protobuf.ProtoUtils.marshaller(Book.getDefaultInstance()));
+  private static final io.grpc.MethodDescriptor<ListBooksRequest, ListBooksResponse> METHOD_LIST_BOOKS =
+        io.grpc.MethodDescriptor.create(
+            io.grpc.MethodDescriptor.MethodType.UNARY,
+            "google.example.library.v1.LibraryService/ListBooks",
+            io.grpc.protobuf.ProtoUtils.marshaller(ListBooksRequest.getDefaultInstance()),
+            io.grpc.protobuf.ProtoUtils.marshaller(ListBooksResponse.getDefaultInstance()));
+  private static final io.grpc.MethodDescriptor<DeleteBookRequest, Empty> METHOD_DELETE_BOOK =
+        io.grpc.MethodDescriptor.create(
+            io.grpc.MethodDescriptor.MethodType.UNARY,
+            "google.example.library.v1.LibraryService/DeleteBook",
+            io.grpc.protobuf.ProtoUtils.marshaller(DeleteBookRequest.getDefaultInstance()),
+            io.grpc.protobuf.ProtoUtils.marshaller(Empty.getDefaultInstance()));
+  private static final io.grpc.MethodDescriptor<UpdateBookRequest, Book> METHOD_UPDATE_BOOK =
+        io.grpc.MethodDescriptor.create(
+            io.grpc.MethodDescriptor.MethodType.UNARY,
+            "google.example.library.v1.LibraryService/UpdateBook",
+            io.grpc.protobuf.ProtoUtils.marshaller(UpdateBookRequest.getDefaultInstance()),
+            io.grpc.protobuf.ProtoUtils.marshaller(Book.getDefaultInstance()));
+  private static final io.grpc.MethodDescriptor<MoveBookRequest, Book> METHOD_MOVE_BOOK =
+        io.grpc.MethodDescriptor.create(
+            io.grpc.MethodDescriptor.MethodType.UNARY,
+            "google.example.library.v1.LibraryService/MoveBook",
+            io.grpc.protobuf.ProtoUtils.marshaller(MoveBookRequest.getDefaultInstance()),
+            io.grpc.protobuf.ProtoUtils.marshaller(Book.getDefaultInstance()));
+  private static final io.grpc.MethodDescriptor<ListStringsRequest, ListStringsResponse> METHOD_LIST_STRINGS =
+        io.grpc.MethodDescriptor.create(
+            io.grpc.MethodDescriptor.MethodType.UNARY,
+            "google.example.library.v1.LibraryService/ListStrings",
+            io.grpc.protobuf.ProtoUtils.marshaller(ListStringsRequest.getDefaultInstance()),
+            io.grpc.protobuf.ProtoUtils.marshaller(ListStringsResponse.getDefaultInstance()));
+  private static final io.grpc.MethodDescriptor<AddCommentsRequest, Empty> METHOD_ADD_COMMENTS =
+        io.grpc.MethodDescriptor.create(
+            io.grpc.MethodDescriptor.MethodType.UNARY,
+            "google.example.library.v1.LibraryService/AddComments",
+            io.grpc.protobuf.ProtoUtils.marshaller(AddCommentsRequest.getDefaultInstance()),
+            io.grpc.protobuf.ProtoUtils.marshaller(Empty.getDefaultInstance()));
+  private static final io.grpc.MethodDescriptor<GetBookFromArchiveRequest, BookFromArchive> METHOD_GET_BOOK_FROM_ARCHIVE =
+        io.grpc.MethodDescriptor.create(
+            io.grpc.MethodDescriptor.MethodType.UNARY,
+            "google.example.library.v1.LibraryService/GetBookFromArchive",
+            io.grpc.protobuf.ProtoUtils.marshaller(GetBookFromArchiveRequest.getDefaultInstance()),
+            io.grpc.protobuf.ProtoUtils.marshaller(BookFromArchive.getDefaultInstance()));
+  private static final io.grpc.MethodDescriptor<GetBookFromAnywhereRequest, BookFromAnywhere> METHOD_GET_BOOK_FROM_ANYWHERE =
+        io.grpc.MethodDescriptor.create(
+            io.grpc.MethodDescriptor.MethodType.UNARY,
+            "google.example.library.v1.LibraryService/GetBookFromAnywhere",
+            io.grpc.protobuf.ProtoUtils.marshaller(GetBookFromAnywhereRequest.getDefaultInstance()),
+            io.grpc.protobuf.ProtoUtils.marshaller(BookFromAnywhere.getDefaultInstance()));
+  private static final io.grpc.MethodDescriptor<UpdateBookIndexRequest, Empty> METHOD_UPDATE_BOOK_INDEX =
+        io.grpc.MethodDescriptor.create(
+            io.grpc.MethodDescriptor.MethodType.UNARY,
+            "google.example.library.v1.LibraryService/UpdateBookIndex",
+            io.grpc.protobuf.ProtoUtils.marshaller(UpdateBookIndexRequest.getDefaultInstance()),
+            io.grpc.protobuf.ProtoUtils.marshaller(Empty.getDefaultInstance()));
+  private static final io.grpc.MethodDescriptor<StreamShelvesRequest, StreamShelvesResponse> METHOD_STREAM_SHELVES =
+        io.grpc.MethodDescriptor.create(
+            io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING,
+            "google.example.library.v1.LibraryService/StreamShelves",
+            io.grpc.protobuf.ProtoUtils.marshaller(StreamShelvesRequest.getDefaultInstance()),
+            io.grpc.protobuf.ProtoUtils.marshaller(StreamShelvesResponse.getDefaultInstance()));
+  private static final io.grpc.MethodDescriptor<StreamBooksRequest, Book> METHOD_STREAM_BOOKS =
+        io.grpc.MethodDescriptor.create(
+            io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING,
+            "google.example.library.v1.LibraryService/StreamBooks",
+            io.grpc.protobuf.ProtoUtils.marshaller(StreamBooksRequest.getDefaultInstance()),
+            io.grpc.protobuf.ProtoUtils.marshaller(Book.getDefaultInstance()));
+  private static final io.grpc.MethodDescriptor<DiscussBookRequest, Comment> METHOD_DISCUSS_BOOK =
+        io.grpc.MethodDescriptor.create(
+            io.grpc.MethodDescriptor.MethodType.BIDI_STREAMING,
+            "google.example.library.v1.LibraryService/DiscussBook",
+            io.grpc.protobuf.ProtoUtils.marshaller(DiscussBookRequest.getDefaultInstance()),
+            io.grpc.protobuf.ProtoUtils.marshaller(Comment.getDefaultInstance()));
+  private static final io.grpc.MethodDescriptor<DiscussBookRequest, Comment> METHOD_MONOLOG_ABOUT_BOOK =
+        io.grpc.MethodDescriptor.create(
+            io.grpc.MethodDescriptor.MethodType.CLIENT_STREAMING,
+            "google.example.library.v1.LibraryService/MonologAboutBook",
+            io.grpc.protobuf.ProtoUtils.marshaller(DiscussBookRequest.getDefaultInstance()),
+            io.grpc.protobuf.ProtoUtils.marshaller(Comment.getDefaultInstance()));
+  private static final io.grpc.MethodDescriptor<FindRelatedBooksRequest, FindRelatedBooksResponse> METHOD_FIND_RELATED_BOOKS =
+        io.grpc.MethodDescriptor.create(
+            io.grpc.MethodDescriptor.MethodType.UNARY,
+            "google.example.library.v1.LibraryService/FindRelatedBooks",
+            io.grpc.protobuf.ProtoUtils.marshaller(FindRelatedBooksRequest.getDefaultInstance()),
+            io.grpc.protobuf.ProtoUtils.marshaller(FindRelatedBooksResponse.getDefaultInstance()));
+  private static final io.grpc.MethodDescriptor<AddTagRequest, AddTagResponse> METHOD_ADD_TAG =
+        io.grpc.MethodDescriptor.create(
+            io.grpc.MethodDescriptor.MethodType.UNARY,
+            "google.example.library.v1.LibraryService/AddTag",
+            io.grpc.protobuf.ProtoUtils.marshaller(AddTagRequest.getDefaultInstance()),
+            io.grpc.protobuf.ProtoUtils.marshaller(AddTagResponse.getDefaultInstance()));
+  private static final io.grpc.MethodDescriptor<AddLabelRequest, AddLabelResponse> METHOD_ADD_LABEL =
+        io.grpc.MethodDescriptor.create(
+            io.grpc.MethodDescriptor.MethodType.UNARY,
+            "google.tagger.v1.Labeler/AddLabel",
+            io.grpc.protobuf.ProtoUtils.marshaller(AddLabelRequest.getDefaultInstance()),
+            io.grpc.protobuf.ProtoUtils.marshaller(AddLabelResponse.getDefaultInstance()));
+  private static final io.grpc.MethodDescriptor<GetBookRequest, Operation> METHOD_GET_BIG_BOOK =
+        io.grpc.MethodDescriptor.create(
+            io.grpc.MethodDescriptor.MethodType.UNARY,
+            "google.example.library.v1.LibraryService/GetBigBook",
+            io.grpc.protobuf.ProtoUtils.marshaller(GetBookRequest.getDefaultInstance()),
+            io.grpc.protobuf.ProtoUtils.marshaller(Operation.getDefaultInstance()));
+  private static final io.grpc.MethodDescriptor<GetBookRequest, Operation> METHOD_GET_BIG_NOTHING =
+        io.grpc.MethodDescriptor.create(
+            io.grpc.MethodDescriptor.MethodType.UNARY,
+            "google.example.library.v1.LibraryService/GetBigNothing",
+            io.grpc.protobuf.ProtoUtils.marshaller(GetBookRequest.getDefaultInstance()),
+            io.grpc.protobuf.ProtoUtils.marshaller(Operation.getDefaultInstance()));
+  private static final io.grpc.MethodDescriptor<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> METHOD_TEST_OPTIONAL_REQUIRED_FLATTENING_PARAMS =
+        io.grpc.MethodDescriptor.create(
+            io.grpc.MethodDescriptor.MethodType.UNARY,
+            "google.example.library.v1.LibraryService/TestOptionalRequiredFlatteningParams",
+            io.grpc.protobuf.ProtoUtils.marshaller(TestOptionalRequiredFlatteningParamsRequest.getDefaultInstance()),
+            io.grpc.protobuf.ProtoUtils.marshaller(TestOptionalRequiredFlatteningParamsResponse.getDefaultInstance()));
 
   private final SimpleCallSettings<CreateShelfRequest, Shelf> createShelfSettings;
   private final SimpleCallSettings<GetShelfRequest, Shelf> getShelfSettings;
@@ -156,14 +324,14 @@ public class LibraryServiceSettings extends ClientSettings {
   private final SimpleCallSettings<DeleteShelfRequest, Empty> deleteShelfSettings;
   private final SimpleCallSettings<MergeShelvesRequest, Shelf> mergeShelvesSettings;
   private final SimpleCallSettings<CreateBookRequest, Book> createBookSettings;
-  private final BundlingCallSettings<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings;
+  private final BatchingCallSettings<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings;
   private final SimpleCallSettings<GetBookRequest, Book> getBookSettings;
   private final PagedCallSettings<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse> listBooksSettings;
   private final SimpleCallSettings<DeleteBookRequest, Empty> deleteBookSettings;
   private final SimpleCallSettings<UpdateBookRequest, Book> updateBookSettings;
   private final SimpleCallSettings<MoveBookRequest, Book> moveBookSettings;
   private final PagedCallSettings<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse> listStringsSettings;
-  private final SimpleCallSettings<AddCommentsRequest, Empty> addCommentsSettings;
+  private final BatchingCallSettings<AddCommentsRequest, Empty> addCommentsSettings;
   private final SimpleCallSettings<GetBookFromArchiveRequest, BookFromArchive> getBookFromArchiveSettings;
   private final SimpleCallSettings<GetBookFromAnywhereRequest, BookFromAnywhere> getBookFromAnywhereSettings;
   private final SimpleCallSettings<UpdateBookIndexRequest, Empty> updateBookIndexSettings;
@@ -176,6 +344,7 @@ public class LibraryServiceSettings extends ClientSettings {
   private final SimpleCallSettings<AddLabelRequest, AddLabelResponse> addLabelSettings;
   private final OperationCallSettings<GetBookRequest, Book> getBigBookSettings;
   private final OperationCallSettings<GetBookRequest, Empty> getBigNothingSettings;
+  private final SimpleCallSettings<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings;
 
   /**
    * Returns the object with the settings used for calls to createShelf.
@@ -222,7 +391,7 @@ public class LibraryServiceSettings extends ClientSettings {
   /**
    * Returns the object with the settings used for calls to publishSeries.
    */
-  public BundlingCallSettings<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings() {
+  public BatchingCallSettings<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings() {
     return publishSeriesSettings;
   }
 
@@ -271,7 +440,7 @@ public class LibraryServiceSettings extends ClientSettings {
   /**
    * Returns the object with the settings used for calls to addComments.
    */
-  public SimpleCallSettings<AddCommentsRequest, Empty> addCommentsSettings() {
+  public BatchingCallSettings<AddCommentsRequest, Empty> addCommentsSettings() {
     return addCommentsSettings;
   }
 
@@ -359,6 +528,13 @@ public class LibraryServiceSettings extends ClientSettings {
     return getBigNothingSettings;
   }
 
+  /**
+   * Returns the object with the settings used for calls to testOptionalRequiredFlatteningParams.
+   */
+  public SimpleCallSettings<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings() {
+    return testOptionalRequiredFlatteningParamsSettings;
+  }
+
 
   /**
    * Returns a builder for the default ExecutorProvider for this service.
@@ -368,23 +544,17 @@ public class LibraryServiceSettings extends ClientSettings {
   }
 
   /**
-   * Returns the default service address.
+   * Returns the default service endpoint.
    */
-  public static String getDefaultServiceAddress() {
-    return DEFAULT_SERVICE_ADDRESS;
+  public static String getDefaultEndpoint() {
+    return "library-example.googleapis.com:443";
   }
 
-  /**
-   * Returns the default service port.
-   */
-  public static int getDefaultServicePort() {
-    return DEFAULT_SERVICE_PORT;
-  }
 
   /**
    * Returns the default service scopes.
    */
-  public static ImmutableList<String> getDefaultServiceScopes() {
+  public static List<String> getDefaultServiceScopes() {
     return DEFAULT_SERVICE_SCOPES;
   }
 
@@ -401,15 +571,18 @@ public class LibraryServiceSettings extends ClientSettings {
   /** Returns a builder for the default ChannelProvider for this service. */
   public static InstantiatingChannelProvider.Builder defaultChannelProviderBuilder() {
     return InstantiatingChannelProvider.newBuilder()
-        .setServiceAddress(DEFAULT_SERVICE_ADDRESS)
-        .setPort(DEFAULT_SERVICE_PORT)
+        .setEndpoint(getDefaultEndpoint())
         .setGeneratorHeader(DEFAULT_GAPIC_NAME, getGapicVersion())
         .setCredentialsProvider(defaultCredentialsProviderBuilder().build());
   }
 
   private static String getGapicVersion() {
-    String packageVersion = LibraryServiceSettings.class.getPackage().getImplementationVersion();
-    return packageVersion != null ? packageVersion : DEFAULT_GAPIC_VERSION;
+    if (gapicVersion == null) {
+      gapicVersion = PropertiesProvider.loadProperty(
+          LibrarySettings.class, PROPERTIES_FILE, META_VERSION_KEY);
+      gapicVersion = gapicVersion == null ? DEFAULT_GAPIC_VERSION : gapicVersion;
+    }
+    return gapicVersion;
   }
 
   /**
@@ -433,7 +606,7 @@ public class LibraryServiceSettings extends ClientSettings {
     return new Builder(this);
   }
 
-  private LibraryServiceSettings(Builder settingsBuilder) throws IOException {
+  private LibrarySettings(Builder settingsBuilder) throws IOException {
     super(settingsBuilder.getExecutorProvider(),
           settingsBuilder.getChannelProvider());
 
@@ -463,19 +636,20 @@ public class LibraryServiceSettings extends ClientSettings {
     addLabelSettings = settingsBuilder.addLabelSettings().build();
     getBigBookSettings = settingsBuilder.getBigBookSettings().build();
     getBigNothingSettings = settingsBuilder.getBigNothingSettings().build();
+    testOptionalRequiredFlatteningParamsSettings = settingsBuilder.testOptionalRequiredFlatteningParamsSettings().build();
   }
 
   private static final PagedListDescriptor<ListShelvesRequest, ListShelvesResponse, Shelf> LIST_SHELVES_PAGE_STR_DESC =
       new PagedListDescriptor<ListShelvesRequest, ListShelvesResponse, Shelf>() {
         @Override
-        public Object emptyToken() {
+        public String emptyToken() {
           return "";
         }
         @Override
-        public ListShelvesRequest injectToken(ListShelvesRequest payload, Object token) {
+        public ListShelvesRequest injectToken(ListShelvesRequest payload, String token) {
           return ListShelvesRequest
             .newBuilder(payload)
-            .setPageToken((String) token)
+            .setPageToken(token)
             .build();
         }
         @Override
@@ -487,7 +661,7 @@ public class LibraryServiceSettings extends ClientSettings {
           throw new UnsupportedOperationException("page size is not supported by this API method");
         }
         @Override
-        public Object extractNextToken(ListShelvesResponse payload) {
+        public String extractNextToken(ListShelvesResponse payload) {
           return payload.getNextPageToken();
         }
         @Override
@@ -499,14 +673,14 @@ public class LibraryServiceSettings extends ClientSettings {
   private static final PagedListDescriptor<ListBooksRequest, ListBooksResponse, Book> LIST_BOOKS_PAGE_STR_DESC =
       new PagedListDescriptor<ListBooksRequest, ListBooksResponse, Book>() {
         @Override
-        public Object emptyToken() {
+        public String emptyToken() {
           return "";
         }
         @Override
-        public ListBooksRequest injectToken(ListBooksRequest payload, Object token) {
+        public ListBooksRequest injectToken(ListBooksRequest payload, String token) {
           return ListBooksRequest
             .newBuilder(payload)
-            .setPageToken((String) token)
+            .setPageToken(token)
             .build();
         }
         @Override
@@ -521,7 +695,7 @@ public class LibraryServiceSettings extends ClientSettings {
           return payload.getPageSize();
         }
         @Override
-        public Object extractNextToken(ListBooksResponse payload) {
+        public String extractNextToken(ListBooksResponse payload) {
           return payload.getNextPageToken();
         }
         @Override
@@ -533,14 +707,14 @@ public class LibraryServiceSettings extends ClientSettings {
   private static final PagedListDescriptor<ListStringsRequest, ListStringsResponse, String> LIST_STRINGS_PAGE_STR_DESC =
       new PagedListDescriptor<ListStringsRequest, ListStringsResponse, String>() {
         @Override
-        public Object emptyToken() {
+        public String emptyToken() {
           return "";
         }
         @Override
-        public ListStringsRequest injectToken(ListStringsRequest payload, Object token) {
+        public ListStringsRequest injectToken(ListStringsRequest payload, String token) {
           return ListStringsRequest
             .newBuilder(payload)
-            .setPageToken((String) token)
+            .setPageToken(token)
             .build();
         }
         @Override
@@ -555,7 +729,7 @@ public class LibraryServiceSettings extends ClientSettings {
           return payload.getPageSize();
         }
         @Override
-        public Object extractNextToken(ListStringsResponse payload) {
+        public String extractNextToken(ListStringsResponse payload) {
           return payload.getNextPageToken();
         }
         @Override
@@ -567,14 +741,14 @@ public class LibraryServiceSettings extends ClientSettings {
   private static final PagedListDescriptor<FindRelatedBooksRequest, FindRelatedBooksResponse, String> FIND_RELATED_BOOKS_PAGE_STR_DESC =
       new PagedListDescriptor<FindRelatedBooksRequest, FindRelatedBooksResponse, String>() {
         @Override
-        public Object emptyToken() {
+        public String emptyToken() {
           return "";
         }
         @Override
-        public FindRelatedBooksRequest injectToken(FindRelatedBooksRequest payload, Object token) {
+        public FindRelatedBooksRequest injectToken(FindRelatedBooksRequest payload, String token) {
           return FindRelatedBooksRequest
             .newBuilder(payload)
-            .setPageToken((String) token)
+            .setPageToken(token)
             .build();
         }
         @Override
@@ -589,7 +763,7 @@ public class LibraryServiceSettings extends ClientSettings {
           return payload.getPageSize();
         }
         @Override
-        public Object extractNextToken(FindRelatedBooksResponse payload) {
+        public String extractNextToken(FindRelatedBooksResponse payload) {
           return payload.getNextPageToken();
         }
         @Override
@@ -601,83 +775,96 @@ public class LibraryServiceSettings extends ClientSettings {
   private static final PagedListResponseFactory<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse> LIST_SHELVES_PAGE_STR_FACT =
       new PagedListResponseFactory<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse>() {
         @Override
-        public ListShelvesPagedResponse createPagedListResponse(
+        public ApiFuture<ListShelvesPagedResponse> getFuturePagedResponse(
             UnaryCallable<ListShelvesRequest, ListShelvesResponse> callable,
             ListShelvesRequest request,
-            CallContext context) {
-          return new ListShelvesPagedResponse(callable, LIST_SHELVES_PAGE_STR_DESC, request, context);
+            CallContext context,
+            ApiFuture<ListShelvesResponse> futureResponse) {
+          PageContext<ListShelvesRequest, ListShelvesResponse, Shelf> pageContext =
+              PageContext.create(callable, LIST_SHELVES_PAGE_STR_DESC, request, context);
+          return ListShelvesPagedResponse.createAsync(pageContext, futureResponse);
         }
       };
 
   private static final PagedListResponseFactory<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse> LIST_BOOKS_PAGE_STR_FACT =
       new PagedListResponseFactory<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse>() {
         @Override
-        public ListBooksPagedResponse createPagedListResponse(
+        public ApiFuture<ListBooksPagedResponse> getFuturePagedResponse(
             UnaryCallable<ListBooksRequest, ListBooksResponse> callable,
             ListBooksRequest request,
-            CallContext context) {
-          return new ListBooksPagedResponse(callable, LIST_BOOKS_PAGE_STR_DESC, request, context);
+            CallContext context,
+            ApiFuture<ListBooksResponse> futureResponse) {
+          PageContext<ListBooksRequest, ListBooksResponse, Book> pageContext =
+              PageContext.create(callable, LIST_BOOKS_PAGE_STR_DESC, request, context);
+          return ListBooksPagedResponse.createAsync(pageContext, futureResponse);
         }
       };
 
   private static final PagedListResponseFactory<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse> LIST_STRINGS_PAGE_STR_FACT =
       new PagedListResponseFactory<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse>() {
         @Override
-        public ListStringsPagedResponse createPagedListResponse(
+        public ApiFuture<ListStringsPagedResponse> getFuturePagedResponse(
             UnaryCallable<ListStringsRequest, ListStringsResponse> callable,
             ListStringsRequest request,
-            CallContext context) {
-          return new ListStringsPagedResponse(callable, LIST_STRINGS_PAGE_STR_DESC, request, context);
+            CallContext context,
+            ApiFuture<ListStringsResponse> futureResponse) {
+          PageContext<ListStringsRequest, ListStringsResponse, String> pageContext =
+              PageContext.create(callable, LIST_STRINGS_PAGE_STR_DESC, request, context);
+          return ListStringsPagedResponse.createAsync(pageContext, futureResponse);
         }
       };
 
   private static final PagedListResponseFactory<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> FIND_RELATED_BOOKS_PAGE_STR_FACT =
       new PagedListResponseFactory<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse>() {
         @Override
-        public FindRelatedBooksPagedResponse createPagedListResponse(
+        public ApiFuture<FindRelatedBooksPagedResponse> getFuturePagedResponse(
             UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> callable,
             FindRelatedBooksRequest request,
-            CallContext context) {
-          return new FindRelatedBooksPagedResponse(callable, FIND_RELATED_BOOKS_PAGE_STR_DESC, request, context);
+            CallContext context,
+            ApiFuture<FindRelatedBooksResponse> futureResponse) {
+          PageContext<FindRelatedBooksRequest, FindRelatedBooksResponse, String> pageContext =
+              PageContext.create(callable, FIND_RELATED_BOOKS_PAGE_STR_DESC, request, context);
+          return FindRelatedBooksPagedResponse.createAsync(pageContext, futureResponse);
         }
       };
 
-  private static final BundlingDescriptor<PublishSeriesRequest, PublishSeriesResponse> PUBLISH_SERIES_BUNDLING_DESC =
-      new BundlingDescriptor<PublishSeriesRequest, PublishSeriesResponse>() {
+  private static final BatchingDescriptor<PublishSeriesRequest, PublishSeriesResponse> PUBLISH_SERIES_BATCHING_DESC =
+      new BatchingDescriptor<PublishSeriesRequest, PublishSeriesResponse>() {
         @Override
-        public String getBundlePartitionKey(PublishSeriesRequest request) {
-          return request.getEdition() + "|" + request.getName() + "|";
+        public PartitionKey getBatchPartitionKey(PublishSeriesRequest request) {
+          return new PartitionKey(request.getEdition(), request.getName());
         }
 
         @Override
-        public PublishSeriesRequest mergeRequests(Collection<PublishSeriesRequest> requests) {
-          PublishSeriesRequest firstRequest = requests.iterator().next();
-
-          List<Book> elements = new ArrayList<>();
-          for (PublishSeriesRequest request : requests) {
-            elements.addAll(request.getBooksList());
-          }
-
-          PublishSeriesRequest bundleRequest =
-              PublishSeriesRequest.newBuilder()
-                  .setEdition(firstRequest.getEdition())
-                  .setName(firstRequest.getName())
-                  .addAllBooks(elements)
-                  .build();
-          return bundleRequest;
+        public RequestBuilder<PublishSeriesRequest> getRequestBuilder() {
+          return new RequestBuilder<PublishSeriesRequest>() {
+            private PublishSeriesRequest.Builder builder;
+            @Override
+            public void appendRequest(PublishSeriesRequest request) {
+              if (builder == null) {
+                builder = request.toBuilder();
+              } else {
+                builder.addAllBooks(request.getBooksList());
+              }
+            }
+            @Override
+            public PublishSeriesRequest build() {
+              return builder.build();
+            }
+          };
         }
 
         @Override
         public void splitResponse(
-            PublishSeriesResponse bundleResponse,
-            Collection<? extends RequestIssuer<PublishSeriesRequest, PublishSeriesResponse>> bundle) {
-          int bundleMessageIndex = 0;
-          for (RequestIssuer<PublishSeriesRequest, PublishSeriesResponse> responder : bundle) {
+            PublishSeriesResponse batchResponse,
+            Collection<? extends BatchedRequestIssuer<PublishSeriesResponse>> batch) {
+          int batchMessageIndex = 0;
+          for (BatchedRequestIssuer<PublishSeriesResponse> responder : batch) {
             List<String> subresponseElements = new ArrayList<>();
-            int subresponseCount = responder.getRequest().getBooksCount();
+            long subresponseCount = responder.getMessageCount();
             for (int i = 0; i < subresponseCount; i++) {
-              subresponseElements.add(bundleResponse.getBookNames(bundleMessageIndex));
-              bundleMessageIndex += 1;
+              subresponseElements.add(batchResponse.getBookNames(batchMessageIndex));
+              batchMessageIndex += 1;
             }
             PublishSeriesResponse response =
                 PublishSeriesResponse.newBuilder().addAllBookNames(subresponseElements).build();
@@ -688,8 +875,8 @@ public class LibraryServiceSettings extends ClientSettings {
         @Override
         public void splitException(
             Throwable throwable,
-            Collection<? extends RequestIssuer<PublishSeriesRequest, PublishSeriesResponse>> bundle) {
-          for (RequestIssuer<PublishSeriesRequest, PublishSeriesResponse> responder : bundle) {
+            Collection<? extends BatchedRequestIssuer<PublishSeriesResponse>> batch) {
+          for (BatchedRequestIssuer<PublishSeriesResponse> responder : batch) {
             responder.setException(throwable);
           }
         }
@@ -705,8 +892,66 @@ public class LibraryServiceSettings extends ClientSettings {
         }
       };
 
+  private static final BatchingDescriptor<AddCommentsRequest, Empty> ADD_COMMENTS_BATCHING_DESC =
+      new BatchingDescriptor<AddCommentsRequest, Empty>() {
+        @Override
+        public PartitionKey getBatchPartitionKey(AddCommentsRequest request) {
+          return new PartitionKey(request.getName());
+        }
+
+        @Override
+        public RequestBuilder<AddCommentsRequest> getRequestBuilder() {
+          return new RequestBuilder<AddCommentsRequest>() {
+            private AddCommentsRequest.Builder builder;
+            @Override
+            public void appendRequest(AddCommentsRequest request) {
+              if (builder == null) {
+                builder = request.toBuilder();
+              } else {
+                builder.addAllComments(request.getCommentsList());
+              }
+            }
+            @Override
+            public AddCommentsRequest build() {
+              return builder.build();
+            }
+          };
+        }
+
+        @Override
+        public void splitResponse(
+            Empty batchResponse,
+            Collection<? extends BatchedRequestIssuer<Empty>> batch) {
+          int batchMessageIndex = 0;
+          for (BatchedRequestIssuer<Empty> responder : batch) {
+            Empty response =
+                Empty.newBuilder().build();
+            responder.setResponse(response);
+          }
+        }
+
+        @Override
+        public void splitException(
+            Throwable throwable,
+            Collection<? extends BatchedRequestIssuer<Empty>> batch) {
+          for (BatchedRequestIssuer<Empty> responder : batch) {
+            responder.setException(throwable);
+          }
+        }
+
+        @Override
+        public long countElements(AddCommentsRequest request) {
+          return request.getCommentsCount();
+        }
+
+        @Override
+        public long countBytes(AddCommentsRequest request) {
+          return request.getSerializedSize();
+        }
+      };
+
   /**
-   * Builder for LibraryServiceSettings.
+   * Builder for LibrarySettings.
    */
   public static class Builder extends ClientSettings.Builder {
     private final ImmutableList<UnaryCallSettings.Builder> unaryMethodSettingsBuilders;
@@ -717,14 +962,14 @@ public class LibraryServiceSettings extends ClientSettings {
     private final SimpleCallSettings.Builder<DeleteShelfRequest, Empty> deleteShelfSettings;
     private final SimpleCallSettings.Builder<MergeShelvesRequest, Shelf> mergeShelvesSettings;
     private final SimpleCallSettings.Builder<CreateBookRequest, Book> createBookSettings;
-    private final BundlingCallSettings.Builder<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings;
+    private final BatchingCallSettings.Builder<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings;
     private final SimpleCallSettings.Builder<GetBookRequest, Book> getBookSettings;
     private final PagedCallSettings.Builder<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse> listBooksSettings;
     private final SimpleCallSettings.Builder<DeleteBookRequest, Empty> deleteBookSettings;
     private final SimpleCallSettings.Builder<UpdateBookRequest, Book> updateBookSettings;
     private final SimpleCallSettings.Builder<MoveBookRequest, Book> moveBookSettings;
     private final PagedCallSettings.Builder<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse> listStringsSettings;
-    private final SimpleCallSettings.Builder<AddCommentsRequest, Empty> addCommentsSettings;
+    private final BatchingCallSettings.Builder<AddCommentsRequest, Empty> addCommentsSettings;
     private final SimpleCallSettings.Builder<GetBookFromArchiveRequest, BookFromArchive> getBookFromArchiveSettings;
     private final SimpleCallSettings.Builder<GetBookFromAnywhereRequest, BookFromAnywhere> getBookFromAnywhereSettings;
     private final SimpleCallSettings.Builder<UpdateBookIndexRequest, Empty> updateBookIndexSettings;
@@ -737,6 +982,7 @@ public class LibraryServiceSettings extends ClientSettings {
     private final SimpleCallSettings.Builder<AddLabelRequest, AddLabelResponse> addLabelSettings;
     private final OperationCallSettings.Builder<GetBookRequest, Book> getBigBookSettings;
     private final OperationCallSettings.Builder<GetBookRequest, Empty> getBigNothingSettings;
+    private final SimpleCallSettings.Builder<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings;
 
     private static final ImmutableMap<String, ImmutableSet<Status.Code>> RETRYABLE_CODE_DEFINITIONS;
 
@@ -757,13 +1003,13 @@ public class LibraryServiceSettings extends ClientSettings {
       ImmutableMap.Builder<String, RetrySettings.Builder> definitions = ImmutableMap.builder();
       RetrySettings.Builder settingsBuilder = null;
       settingsBuilder = RetrySettings.newBuilder()
-          .setInitialRetryDelay(Duration.millis(100L))
+          .setInitialRetryDelay(Duration.ofMillis(100L))
           .setRetryDelayMultiplier(1.2)
-          .setMaxRetryDelay(Duration.millis(1000L))
-          .setInitialRpcTimeout(Duration.millis(300L))
+          .setMaxRetryDelay(Duration.ofMillis(1000L))
+          .setInitialRpcTimeout(Duration.ofMillis(300L))
           .setRpcTimeoutMultiplier(1.3)
-          .setMaxRpcTimeout(Duration.millis(3000L))
-          .setTotalTimeout(Duration.millis(30000L));
+          .setMaxRpcTimeout(Duration.ofMillis(3000L))
+          .setTotalTimeout(Duration.ofMillis(30000L));
       definitions.put("default", settingsBuilder);
       RETRY_PARAM_DEFINITIONS = definitions.build();
     }
@@ -771,75 +1017,80 @@ public class LibraryServiceSettings extends ClientSettings {
     private Builder() {
       super(defaultChannelProviderBuilder().build());
 
-      createShelfSettings = SimpleCallSettings.newBuilder(LibraryServiceGrpc.METHOD_CREATE_SHELF);
+      createShelfSettings = SimpleCallSettings.newBuilder(METHOD_CREATE_SHELF);
 
-      getShelfSettings = SimpleCallSettings.newBuilder(LibraryServiceGrpc.METHOD_GET_SHELF);
+      getShelfSettings = SimpleCallSettings.newBuilder(METHOD_GET_SHELF);
 
       listShelvesSettings = PagedCallSettings.newBuilder(
-          LibraryServiceGrpc.METHOD_LIST_SHELVES,
+          METHOD_LIST_SHELVES,
           LIST_SHELVES_PAGE_STR_FACT);
 
-      deleteShelfSettings = SimpleCallSettings.newBuilder(LibraryServiceGrpc.METHOD_DELETE_SHELF);
+      deleteShelfSettings = SimpleCallSettings.newBuilder(METHOD_DELETE_SHELF);
 
-      mergeShelvesSettings = SimpleCallSettings.newBuilder(LibraryServiceGrpc.METHOD_MERGE_SHELVES);
+      mergeShelvesSettings = SimpleCallSettings.newBuilder(METHOD_MERGE_SHELVES);
 
-      createBookSettings = SimpleCallSettings.newBuilder(LibraryServiceGrpc.METHOD_CREATE_BOOK);
+      createBookSettings = SimpleCallSettings.newBuilder(METHOD_CREATE_BOOK);
 
-      publishSeriesSettings = BundlingCallSettings.newBuilder(
-          LibraryServiceGrpc.METHOD_PUBLISH_SERIES,
-          PUBLISH_SERIES_BUNDLING_DESC)
-              .setBundlingSettingsBuilder(BundlingSettings.newBuilder());
+      publishSeriesSettings = BatchingCallSettings.newBuilder(
+          METHOD_PUBLISH_SERIES,
+          PUBLISH_SERIES_BATCHING_DESC)
+              .setBatchingSettingsBuilder(BatchingSettings.newBuilder());
 
-      getBookSettings = SimpleCallSettings.newBuilder(LibraryServiceGrpc.METHOD_GET_BOOK);
+      getBookSettings = SimpleCallSettings.newBuilder(METHOD_GET_BOOK);
 
       listBooksSettings = PagedCallSettings.newBuilder(
-          LibraryServiceGrpc.METHOD_LIST_BOOKS,
+          METHOD_LIST_BOOKS,
           LIST_BOOKS_PAGE_STR_FACT);
 
-      deleteBookSettings = SimpleCallSettings.newBuilder(LibraryServiceGrpc.METHOD_DELETE_BOOK);
+      deleteBookSettings = SimpleCallSettings.newBuilder(METHOD_DELETE_BOOK);
 
-      updateBookSettings = SimpleCallSettings.newBuilder(LibraryServiceGrpc.METHOD_UPDATE_BOOK);
+      updateBookSettings = SimpleCallSettings.newBuilder(METHOD_UPDATE_BOOK);
 
-      moveBookSettings = SimpleCallSettings.newBuilder(LibraryServiceGrpc.METHOD_MOVE_BOOK);
+      moveBookSettings = SimpleCallSettings.newBuilder(METHOD_MOVE_BOOK);
 
       listStringsSettings = PagedCallSettings.newBuilder(
-          LibraryServiceGrpc.METHOD_LIST_STRINGS,
+          METHOD_LIST_STRINGS,
           LIST_STRINGS_PAGE_STR_FACT);
 
-      addCommentsSettings = SimpleCallSettings.newBuilder(LibraryServiceGrpc.METHOD_ADD_COMMENTS);
+      addCommentsSettings = BatchingCallSettings.newBuilder(
+          METHOD_ADD_COMMENTS,
+          ADD_COMMENTS_BATCHING_DESC)
+              .setBatchingSettingsBuilder(BatchingSettings.newBuilder());
 
-      getBookFromArchiveSettings = SimpleCallSettings.newBuilder(LibraryServiceGrpc.METHOD_GET_BOOK_FROM_ARCHIVE);
+      getBookFromArchiveSettings = SimpleCallSettings.newBuilder(METHOD_GET_BOOK_FROM_ARCHIVE);
 
-      getBookFromAnywhereSettings = SimpleCallSettings.newBuilder(LibraryServiceGrpc.METHOD_GET_BOOK_FROM_ANYWHERE);
+      getBookFromAnywhereSettings = SimpleCallSettings.newBuilder(METHOD_GET_BOOK_FROM_ANYWHERE);
 
-      updateBookIndexSettings = SimpleCallSettings.newBuilder(LibraryServiceGrpc.METHOD_UPDATE_BOOK_INDEX);
+      updateBookIndexSettings = SimpleCallSettings.newBuilder(METHOD_UPDATE_BOOK_INDEX);
 
-      streamShelvesSettings = StreamingCallSettings.newBuilder(LibraryServiceGrpc.METHOD_STREAM_SHELVES);
+      streamShelvesSettings = StreamingCallSettings.newBuilder(METHOD_STREAM_SHELVES);
 
-      streamBooksSettings = StreamingCallSettings.newBuilder(LibraryServiceGrpc.METHOD_STREAM_BOOKS);
+      streamBooksSettings = StreamingCallSettings.newBuilder(METHOD_STREAM_BOOKS);
 
-      discussBookSettings = StreamingCallSettings.newBuilder(LibraryServiceGrpc.METHOD_DISCUSS_BOOK);
+      discussBookSettings = StreamingCallSettings.newBuilder(METHOD_DISCUSS_BOOK);
 
-      monologAboutBookSettings = StreamingCallSettings.newBuilder(LibraryServiceGrpc.METHOD_MONOLOG_ABOUT_BOOK);
+      monologAboutBookSettings = StreamingCallSettings.newBuilder(METHOD_MONOLOG_ABOUT_BOOK);
 
       findRelatedBooksSettings = PagedCallSettings.newBuilder(
-          LibraryServiceGrpc.METHOD_FIND_RELATED_BOOKS,
+          METHOD_FIND_RELATED_BOOKS,
           FIND_RELATED_BOOKS_PAGE_STR_FACT);
 
-      addTagSettings = SimpleCallSettings.newBuilder(LibraryServiceGrpc.METHOD_ADD_TAG);
+      addTagSettings = SimpleCallSettings.newBuilder(METHOD_ADD_TAG);
 
-      addLabelSettings = SimpleCallSettings.newBuilder(LabelerGrpc.METHOD_ADD_LABEL);
+      addLabelSettings = SimpleCallSettings.newBuilder(METHOD_ADD_LABEL);
 
       getBigBookSettings = OperationCallSettings.newBuilder(
-          LibraryServiceGrpc.METHOD_GET_BIG_BOOK,
+          METHOD_GET_BIG_BOOK,
           Book.class);
-      getBigBookSettings.setPollingInterval(Duration.millis(300000));
+      getBigBookSettings.setPollingInterval(Duration.ofMillis(300000));
 
 
       getBigNothingSettings = OperationCallSettings.newBuilder(
-          LibraryServiceGrpc.METHOD_GET_BIG_NOTHING,
+          METHOD_GET_BIG_NOTHING,
           Empty.class);
 
+
+      testOptionalRequiredFlatteningParamsSettings = SimpleCallSettings.newBuilder(METHOD_TEST_OPTIONAL_REQUIRED_FLATTENING_PARAMS);
 
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder>of(
           createShelfSettings,
@@ -861,7 +1112,8 @@ public class LibraryServiceSettings extends ClientSettings {
           updateBookIndexSettings,
           findRelatedBooksSettings,
           addTagSettings,
-          addLabelSettings
+          addLabelSettings,
+          testOptionalRequiredFlatteningParamsSettings
       );
     }
 
@@ -892,10 +1144,14 @@ public class LibraryServiceSettings extends ClientSettings {
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
 
-      builder.publishSeriesSettings().getBundlingSettingsBuilder()
-          .setElementCountThreshold(6)
-          .setRequestByteThreshold(100000)
-          .setDelayThreshold(Duration.millis(500));
+      builder.publishSeriesSettings().getBatchingSettingsBuilder()
+          .setElementCountThreshold(6L)
+          .setRequestByteThreshold(100000L)
+          .setDelayThreshold(Duration.ofMillis(500))
+          .setFlowControlSettings(
+            FlowControlSettings.newBuilder()
+              .setLimitExceededBehavior(LimitExceededBehavior.Ignore)
+              .build());
       builder.publishSeriesSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
@@ -924,6 +1180,14 @@ public class LibraryServiceSettings extends ClientSettings {
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
 
+      builder.addCommentsSettings().getBatchingSettingsBuilder()
+          .setElementCountThreshold(6L)
+          .setRequestByteThreshold(100000L)
+          .setDelayThreshold(Duration.ofMillis(500))
+          .setFlowControlSettings(
+            FlowControlSettings.newBuilder()
+              .setLimitExceededBehavior(LimitExceededBehavior.Ignore)
+              .build());
       builder.addCommentsSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
@@ -951,6 +1215,10 @@ public class LibraryServiceSettings extends ClientSettings {
       builder.addLabelSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
+
+      builder.testOptionalRequiredFlatteningParamsSettings()
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
+          .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
       builder.getBigBookSettings().getInitialCallSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
@@ -961,7 +1229,7 @@ public class LibraryServiceSettings extends ClientSettings {
       return builder;
     }
 
-    private Builder(LibraryServiceSettings settings) {
+    private Builder(LibrarySettings settings) {
       super(settings);
 
       createShelfSettings = settings.createShelfSettings.toBuilder();
@@ -990,6 +1258,7 @@ public class LibraryServiceSettings extends ClientSettings {
       addLabelSettings = settings.addLabelSettings.toBuilder();
       getBigBookSettings = settings.getBigBookSettings.toBuilder();
       getBigNothingSettings = settings.getBigNothingSettings.toBuilder();
+      testOptionalRequiredFlatteningParamsSettings = settings.testOptionalRequiredFlatteningParamsSettings.toBuilder();
 
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder>of(
           createShelfSettings,
@@ -1011,7 +1280,8 @@ public class LibraryServiceSettings extends ClientSettings {
           updateBookIndexSettings,
           findRelatedBooksSettings,
           addTagSettings,
-          addLabelSettings
+          addLabelSettings,
+          testOptionalRequiredFlatteningParamsSettings
       );
     }
 
@@ -1084,7 +1354,7 @@ public class LibraryServiceSettings extends ClientSettings {
     /**
      * Returns the builder for the settings used for calls to publishSeries.
      */
-    public BundlingCallSettings.Builder<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings() {
+    public BatchingCallSettings.Builder<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings() {
       return publishSeriesSettings;
     }
 
@@ -1133,7 +1403,7 @@ public class LibraryServiceSettings extends ClientSettings {
     /**
      * Returns the builder for the settings used for calls to addComments.
      */
-    public SimpleCallSettings.Builder<AddCommentsRequest, Empty> addCommentsSettings() {
+    public BatchingCallSettings.Builder<AddCommentsRequest, Empty> addCommentsSettings() {
       return addCommentsSettings;
     }
 
@@ -1221,9 +1491,16 @@ public class LibraryServiceSettings extends ClientSettings {
       return getBigNothingSettings;
     }
 
+    /**
+     * Returns the builder for the settings used for calls to testOptionalRequiredFlatteningParams.
+     */
+    public SimpleCallSettings.Builder<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings() {
+      return testOptionalRequiredFlatteningParamsSettings;
+    }
+
     @Override
-    public LibraryServiceSettings build() throws IOException {
-      return new LibraryServiceSettings(this);
+    public LibrarySettings build() throws IOException {
+      return new LibrarySettings(this);
     }
   }
 }

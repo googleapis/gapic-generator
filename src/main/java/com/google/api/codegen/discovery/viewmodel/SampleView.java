@@ -42,6 +42,9 @@ public abstract class SampleView implements ViewModel {
   public abstract String apiVersion();
 
   @Nullable
+  public abstract String discoveryDocUrl();
+
+  @Nullable
   public abstract String appName();
 
   @Nullable
@@ -148,6 +151,9 @@ public abstract class SampleView implements ViewModel {
   public abstract String credentialsVarName();
 
   @Nullable
+  public abstract List<String> discoveryBuildParams();
+
+  @Nullable
   public abstract String lastMethodNameComponent();
 
   @Nullable
@@ -207,6 +213,8 @@ public abstract class SampleView implements ViewModel {
     public abstract Builder apiName(String val);
 
     public abstract Builder apiVersion(String val);
+
+    public abstract Builder discoveryDocUrl(String val);
 
     public abstract Builder appName(String val);
 
@@ -279,6 +287,8 @@ public abstract class SampleView implements ViewModel {
     public abstract Builder namespaceName(String val);
 
     public abstract Builder credentialsVarName(String val);
+
+    public abstract Builder discoveryBuildParams(List<String> val);
 
     public abstract Builder lastMethodNameComponent(String val);
 

@@ -28,8 +28,10 @@ public abstract class GrpcDocView implements ViewModel {
 
   public abstract List<GrpcElementDocView> elementDocs();
 
+  public abstract boolean isExternalFile();
+
   public static Builder newBuilder() {
-    return new AutoValue_GrpcDocView.Builder();
+    return new AutoValue_GrpcDocView.Builder().isExternalFile(false);
   }
 
   @Override
@@ -46,6 +48,8 @@ public abstract class GrpcDocView implements ViewModel {
     public abstract Builder fileHeader(FileHeaderView val);
 
     public abstract Builder elementDocs(List<GrpcElementDocView> val);
+
+    public abstract Builder isExternalFile(boolean externalFile);
 
     public abstract GrpcDocView build();
   }

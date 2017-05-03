@@ -17,6 +17,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudMonitoring.v2beta2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -35,7 +36,7 @@ namespace CloudMonitoringSample
             });
 
             // The project id. The value can be the numeric project ID or string-based project name.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.MetricDescriptor requestBody = new Data.MetricDescriptor();
@@ -47,7 +48,7 @@ namespace CloudMonitoringSample
             // Data.MetricDescriptor response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -79,6 +80,7 @@ namespace CloudMonitoringSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudMonitoring.v2beta2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -97,10 +99,10 @@ namespace CloudMonitoringSample
             });
 
             // The project ID to which the metric belongs.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Name of the metric.
-            string metric = "";  // TODO: Update placeholder value.
+            string metric = "my-metric";  // TODO: Update placeholder value.
 
             MetricDescriptorsResource.DeleteRequest request = cloudMonitoringService.MetricDescriptors.Delete(project, metric);
 
@@ -109,7 +111,7 @@ namespace CloudMonitoringSample
             // Data.DeleteMetricDescriptorResponse response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -141,6 +143,7 @@ namespace CloudMonitoringSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudMonitoring.v2beta2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -159,7 +162,7 @@ namespace CloudMonitoringSample
             });
 
             // The project id. The value can be the numeric project ID or string-based project name.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             MetricDescriptorsResource.ListRequest request = cloudMonitoringService.MetricDescriptors.List(project);
 
@@ -177,7 +180,7 @@ namespace CloudMonitoringSample
                 foreach (Data.MetricDescriptor metricDescriptor in response.Metrics)
                 {
                     // TODO: Change code below to process each `metricDescriptor` resource:
-                    Console.WriteLine(metricDescriptor);
+                    Console.WriteLine(JsonConvert.SerializeObject(metricDescriptor));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -212,6 +215,7 @@ namespace CloudMonitoringSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudMonitoring.v2beta2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -231,11 +235,11 @@ namespace CloudMonitoringSample
 
             // The project ID to which this time series belongs. The value can be the numeric project ID or
             // string-based project name.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
             // compute.googleapis.com/instance/disk/read_ops_count.
-            string metric = "";  // TODO: Update placeholder value.
+            string metric = "my-metric";  // TODO: Update placeholder value.
 
             // End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
             string youngest = "";  // TODO: Update placeholder value.
@@ -256,7 +260,7 @@ namespace CloudMonitoringSample
                 foreach (Data.Timeseries timeseries in response.Timeseries)
                 {
                     // TODO: Change code below to process each `timeseries` resource:
-                    Console.WriteLine(timeseries);
+                    Console.WriteLine(JsonConvert.SerializeObject(timeseries));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -291,6 +295,7 @@ namespace CloudMonitoringSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudMonitoring.v2beta2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -309,7 +314,7 @@ namespace CloudMonitoringSample
             });
 
             // The project ID. The value can be the numeric project ID or string-based project name.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.WriteTimeseriesRequest requestBody = new Data.WriteTimeseriesRequest();
@@ -321,7 +326,7 @@ namespace CloudMonitoringSample
             // Data.WriteTimeseriesResponse response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -353,6 +358,7 @@ namespace CloudMonitoringSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudMonitoring.v2beta2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -372,11 +378,11 @@ namespace CloudMonitoringSample
 
             // The project ID to which this time series belongs. The value can be the numeric project ID or
             // string-based project name.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
             // compute.googleapis.com/instance/disk/read_ops_count.
-            string metric = "";  // TODO: Update placeholder value.
+            string metric = "my-metric";  // TODO: Update placeholder value.
 
             // End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
             string youngest = "";  // TODO: Update placeholder value.
@@ -397,7 +403,7 @@ namespace CloudMonitoringSample
                 foreach (Data.TimeseriesDescriptor timeseriesDescriptor in response.Timeseries)
                 {
                     // TODO: Change code below to process each `timeseriesDescriptor` resource:
-                    Console.WriteLine(timeseriesDescriptor);
+                    Console.WriteLine(JsonConvert.SerializeObject(timeseriesDescriptor));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);

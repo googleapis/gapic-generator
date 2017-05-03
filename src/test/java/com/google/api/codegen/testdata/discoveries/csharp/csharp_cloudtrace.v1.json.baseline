@@ -17,6 +17,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudTrace.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 
 using Data = Google.Apis.CloudTrace.v1.Data;
@@ -34,7 +35,7 @@ namespace CloudTraceSample
             });
 
             // ID of the Cloud project where the trace data is stored.
-            string projectId = "";  // TODO: Update placeholder value.
+            string projectId = "my-project-id";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`. Only assigned
             // properties will be changed:
@@ -76,6 +77,7 @@ namespace CloudTraceSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudTrace.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -94,10 +96,10 @@ namespace CloudTraceSample
             });
 
             // ID of the Cloud project where the trace data is stored.
-            string projectId = "";  // TODO: Update placeholder value.
+            string projectId = "my-project-id";  // TODO: Update placeholder value.
 
             // ID of the trace to return.
-            string traceId = "";  // TODO: Update placeholder value.
+            string traceId = "my-trace-id";  // TODO: Update placeholder value.
 
             ProjectsResource.TracesResource.GetRequest request = cloudTraceService.Projects.Traces.Get(projectId, traceId);
 
@@ -106,7 +108,7 @@ namespace CloudTraceSample
             // Data.Trace response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -138,6 +140,7 @@ namespace CloudTraceSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudTrace.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -156,7 +159,7 @@ namespace CloudTraceSample
             });
 
             // ID of the Cloud project where the trace data is stored.
-            string projectId = "";  // TODO: Update placeholder value.
+            string projectId = "my-project-id";  // TODO: Update placeholder value.
 
             ProjectsResource.TracesResource.ListRequest request = cloudTraceService.Projects.Traces.List(projectId);
 
@@ -174,7 +177,7 @@ namespace CloudTraceSample
                 foreach (Data.Trace trace in response.Traces)
                 {
                     // TODO: Change code below to process each `trace` resource:
-                    Console.WriteLine(trace);
+                    Console.WriteLine(JsonConvert.SerializeObject(trace));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);

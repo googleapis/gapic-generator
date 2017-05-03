@@ -18,7 +18,7 @@
 package library
 
 import (
-    google_protobuf "github.com/golang/protobuf/ptypes/empty"
+    emptypb "github.com/golang/protobuf/ptypes/empty"
     librarypb "google.golang.org/genproto/googleapis/example/library/v1"
     longrunningpb "google.golang.org/genproto/googleapis/longrunning"
     taggerpb "google.golang.org/genproto/googleapis/tagger/v1"
@@ -84,12 +84,12 @@ func (s *mockLibraryServer) ListShelves(_ context.Context, req *librarypb.ListSh
     return s.resps[0].(*librarypb.ListShelvesResponse), nil
 }
 
-func (s *mockLibraryServer) DeleteShelf(_ context.Context, req *librarypb.DeleteShelfRequest) (*google_protobuf.Empty, error) {
+func (s *mockLibraryServer) DeleteShelf(_ context.Context, req *librarypb.DeleteShelfRequest) (*emptypb.Empty, error) {
     s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
     }
-    return s.resps[0].(*google_protobuf.Empty), nil
+    return s.resps[0].(*emptypb.Empty), nil
 }
 
 func (s *mockLibraryServer) MergeShelves(_ context.Context, req *librarypb.MergeShelvesRequest) (*librarypb.Shelf, error) {
@@ -132,12 +132,12 @@ func (s *mockLibraryServer) ListBooks(_ context.Context, req *librarypb.ListBook
     return s.resps[0].(*librarypb.ListBooksResponse), nil
 }
 
-func (s *mockLibraryServer) DeleteBook(_ context.Context, req *librarypb.DeleteBookRequest) (*google_protobuf.Empty, error) {
+func (s *mockLibraryServer) DeleteBook(_ context.Context, req *librarypb.DeleteBookRequest) (*emptypb.Empty, error) {
     s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
     }
-    return s.resps[0].(*google_protobuf.Empty), nil
+    return s.resps[0].(*emptypb.Empty), nil
 }
 
 func (s *mockLibraryServer) UpdateBook(_ context.Context, req *librarypb.UpdateBookRequest) (*librarypb.Book, error) {
@@ -164,12 +164,12 @@ func (s *mockLibraryServer) ListStrings(_ context.Context, req *librarypb.ListSt
     return s.resps[0].(*librarypb.ListStringsResponse), nil
 }
 
-func (s *mockLibraryServer) AddComments(_ context.Context, req *librarypb.AddCommentsRequest) (*google_protobuf.Empty, error) {
+func (s *mockLibraryServer) AddComments(_ context.Context, req *librarypb.AddCommentsRequest) (*emptypb.Empty, error) {
     s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
     }
-    return s.resps[0].(*google_protobuf.Empty), nil
+    return s.resps[0].(*emptypb.Empty), nil
 }
 
 func (s *mockLibraryServer) GetBookFromArchive(_ context.Context, req *librarypb.GetBookFromArchiveRequest) (*librarypb.BookFromArchive, error) {
@@ -188,12 +188,12 @@ func (s *mockLibraryServer) GetBookFromAnywhere(_ context.Context, req *libraryp
     return s.resps[0].(*librarypb.BookFromAnywhere), nil
 }
 
-func (s *mockLibraryServer) UpdateBookIndex(_ context.Context, req *librarypb.UpdateBookIndexRequest) (*google_protobuf.Empty, error) {
+func (s *mockLibraryServer) UpdateBookIndex(_ context.Context, req *librarypb.UpdateBookIndexRequest) (*emptypb.Empty, error) {
     s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
     }
-    return s.resps[0].(*google_protobuf.Empty), nil
+    return s.resps[0].(*emptypb.Empty), nil
 }
 
 func (s *mockLibraryServer) StreamShelves(req *librarypb.StreamShelvesRequest, stream librarypb.LibraryService_StreamShelvesServer) error {
@@ -289,6 +289,14 @@ func (s *mockLibraryServer) GetBigNothing(_ context.Context, req *librarypb.GetB
         return nil, s.err
     }
     return s.resps[0].(*longrunningpb.Operation), nil
+}
+
+func (s *mockLibraryServer) TestOptionalRequiredFlatteningParams(_ context.Context, req *librarypb.TestOptionalRequiredFlatteningParamsRequest) (*librarypb.TestOptionalRequiredFlatteningParamsResponse, error) {
+    s.reqs = append(s.reqs, req)
+    if s.err != nil {
+        return nil, s.err
+    }
+    return s.resps[0].(*librarypb.TestOptionalRequiredFlatteningParamsResponse), nil
 }
 
 type mockLabelerServer struct {
@@ -387,7 +395,7 @@ func TestLibraryServiceCreateShelf(t *testing.T) {
 }
 
 func TestLibraryServiceCreateShelfError(t *testing.T) {
-    errCode := codes.Internal
+    errCode := codes.PermissionDenied
     mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     var shelf *librarypb.Shelf = &librarypb.Shelf{}
@@ -450,7 +458,7 @@ func TestLibraryServiceGetShelf(t *testing.T) {
 }
 
 func TestLibraryServiceGetShelfError(t *testing.T) {
-    errCode := codes.Internal
+    errCode := codes.PermissionDenied
     mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     var formattedName string = LibraryShelfPath("[SHELF_ID]")
@@ -519,7 +527,7 @@ func TestLibraryServiceListShelves(t *testing.T) {
 }
 
 func TestLibraryServiceListShelvesError(t *testing.T) {
-    errCode := codes.Internal
+    errCode := codes.PermissionDenied
     mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     var request *librarypb.ListShelvesRequest = &librarypb.ListShelvesRequest{}
@@ -537,7 +545,7 @@ func TestLibraryServiceListShelvesError(t *testing.T) {
     _ = resp
 }
 func TestLibraryServiceDeleteShelf(t *testing.T) {
-    var expectedResponse *google_protobuf.Empty = &google_protobuf.Empty{}
+    var expectedResponse *emptypb.Empty = &emptypb.Empty{}
 
     mockLibrary.err = nil
     mockLibrary.reqs = nil
@@ -567,7 +575,7 @@ func TestLibraryServiceDeleteShelf(t *testing.T) {
 }
 
 func TestLibraryServiceDeleteShelfError(t *testing.T) {
-    errCode := codes.Internal
+    errCode := codes.PermissionDenied
     mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     var formattedName string = LibraryShelfPath("[SHELF_ID]")
@@ -629,7 +637,7 @@ func TestLibraryServiceMergeShelves(t *testing.T) {
 }
 
 func TestLibraryServiceMergeShelvesError(t *testing.T) {
-    errCode := codes.Internal
+    errCode := codes.PermissionDenied
     mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     var formattedName string = LibraryShelfPath("[SHELF_ID]")
@@ -696,7 +704,7 @@ func TestLibraryServiceCreateBook(t *testing.T) {
 }
 
 func TestLibraryServiceCreateBookError(t *testing.T) {
-    errCode := codes.Internal
+    errCode := codes.PermissionDenied
     mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     var formattedName string = LibraryShelfPath("[SHELF_ID]")
@@ -765,7 +773,7 @@ func TestLibraryServicePublishSeries(t *testing.T) {
 }
 
 func TestLibraryServicePublishSeriesError(t *testing.T) {
-    errCode := codes.Internal
+    errCode := codes.PermissionDenied
     mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     var shelf *librarypb.Shelf = &librarypb.Shelf{}
@@ -837,7 +845,7 @@ func TestLibraryServiceGetBook(t *testing.T) {
 }
 
 func TestLibraryServiceGetBookError(t *testing.T) {
-    errCode := codes.Internal
+    errCode := codes.PermissionDenied
     mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
@@ -907,7 +915,7 @@ func TestLibraryServiceListBooks(t *testing.T) {
 }
 
 func TestLibraryServiceListBooksError(t *testing.T) {
-    errCode := codes.Internal
+    errCode := codes.PermissionDenied
     mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     var formattedName string = LibraryShelfPath("[SHELF_ID]")
@@ -928,7 +936,7 @@ func TestLibraryServiceListBooksError(t *testing.T) {
     _ = resp
 }
 func TestLibraryServiceDeleteBook(t *testing.T) {
-    var expectedResponse *google_protobuf.Empty = &google_protobuf.Empty{}
+    var expectedResponse *emptypb.Empty = &emptypb.Empty{}
 
     mockLibrary.err = nil
     mockLibrary.reqs = nil
@@ -958,7 +966,7 @@ func TestLibraryServiceDeleteBook(t *testing.T) {
 }
 
 func TestLibraryServiceDeleteBookError(t *testing.T) {
-    errCode := codes.Internal
+    errCode := codes.PermissionDenied
     mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
@@ -1022,7 +1030,7 @@ func TestLibraryServiceUpdateBook(t *testing.T) {
 }
 
 func TestLibraryServiceUpdateBookError(t *testing.T) {
-    errCode := codes.Internal
+    errCode := codes.PermissionDenied
     mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
@@ -1089,7 +1097,7 @@ func TestLibraryServiceMoveBook(t *testing.T) {
 }
 
 func TestLibraryServiceMoveBookError(t *testing.T) {
-    errCode := codes.Internal
+    errCode := codes.PermissionDenied
     mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
@@ -1158,7 +1166,7 @@ func TestLibraryServiceListStrings(t *testing.T) {
 }
 
 func TestLibraryServiceListStringsError(t *testing.T) {
-    errCode := codes.Internal
+    errCode := codes.PermissionDenied
     mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     var request *librarypb.ListStringsRequest = &librarypb.ListStringsRequest{}
@@ -1176,7 +1184,7 @@ func TestLibraryServiceListStringsError(t *testing.T) {
     _ = resp
 }
 func TestLibraryServiceAddComments(t *testing.T) {
-    var expectedResponse *google_protobuf.Empty = &google_protobuf.Empty{}
+    var expectedResponse *emptypb.Empty = &emptypb.Empty{}
 
     mockLibrary.err = nil
     mockLibrary.reqs = nil
@@ -1216,7 +1224,7 @@ func TestLibraryServiceAddComments(t *testing.T) {
 }
 
 func TestLibraryServiceAddCommentsError(t *testing.T) {
-    errCode := codes.Internal
+    errCode := codes.PermissionDenied
     mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
@@ -1288,7 +1296,7 @@ func TestLibraryServiceGetBookFromArchive(t *testing.T) {
 }
 
 func TestLibraryServiceGetBookFromArchiveError(t *testing.T) {
-    errCode := codes.Internal
+    errCode := codes.PermissionDenied
     mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     var formattedName string = LibraryArchivedBookPath("[ARCHIVE_PATH]", "[BOOK_ID]")
@@ -1353,7 +1361,7 @@ func TestLibraryServiceGetBookFromAnywhere(t *testing.T) {
 }
 
 func TestLibraryServiceGetBookFromAnywhereError(t *testing.T) {
-    errCode := codes.Internal
+    errCode := codes.PermissionDenied
     mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
@@ -1376,7 +1384,7 @@ func TestLibraryServiceGetBookFromAnywhereError(t *testing.T) {
     _ = resp
 }
 func TestLibraryServiceUpdateBookIndex(t *testing.T) {
-    var expectedResponse *google_protobuf.Empty = &google_protobuf.Empty{}
+    var expectedResponse *emptypb.Empty = &emptypb.Empty{}
 
     mockLibrary.err = nil
     mockLibrary.reqs = nil
@@ -1413,7 +1421,7 @@ func TestLibraryServiceUpdateBookIndex(t *testing.T) {
 }
 
 func TestLibraryServiceUpdateBookIndexError(t *testing.T) {
-    errCode := codes.Internal
+    errCode := codes.PermissionDenied
     mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
@@ -1474,7 +1482,7 @@ func TestLibraryServiceStreamShelves(t *testing.T) {
 }
 
 func TestLibraryServiceStreamShelvesError(t *testing.T) {
-    errCode := codes.Internal
+    errCode := codes.PermissionDenied
     mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     var request *librarypb.StreamShelvesRequest = &librarypb.StreamShelvesRequest{}
@@ -1542,7 +1550,7 @@ func TestLibraryServiceStreamBooks(t *testing.T) {
 }
 
 func TestLibraryServiceStreamBooksError(t *testing.T) {
-    errCode := codes.Internal
+    errCode := codes.PermissionDenied
     mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     var name string = "name3373707"
@@ -1615,7 +1623,7 @@ func TestLibraryServiceDiscussBook(t *testing.T) {
 }
 
 func TestLibraryServiceDiscussBookError(t *testing.T) {
-    errCode := codes.Internal
+    errCode := codes.PermissionDenied
     mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     var name string = "name3373707"
@@ -1688,7 +1696,7 @@ func TestLibraryServiceMonologAboutBook(t *testing.T) {
 }
 
 func TestLibraryServiceMonologAboutBookError(t *testing.T) {
-    errCode := codes.Internal
+    errCode := codes.PermissionDenied
     mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     var name string = "name3373707"
@@ -1765,7 +1773,7 @@ func TestLibraryServiceFindRelatedBooks(t *testing.T) {
 }
 
 func TestLibraryServiceFindRelatedBooksError(t *testing.T) {
-    errCode := codes.Internal
+    errCode := codes.PermissionDenied
     mockLibrary.err = grpc.Errorf(errCode, "test error")
 
     var namesElement string = "namesElement-249113339"
@@ -1824,7 +1832,7 @@ func TestLabelerAddLabel(t *testing.T) {
 }
 
 func TestLabelerAddLabelError(t *testing.T) {
-    errCode := codes.Internal
+    errCode := codes.PermissionDenied
     mockLabeler.err = grpc.Errorf(errCode, "test error")
 
     var formattedResource string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
@@ -1901,7 +1909,7 @@ func TestLibraryServiceGetBigBook(t *testing.T) {
 }
 
 func TestLibraryServiceGetBigBookError(t *testing.T) {
-    errCode := codes.Internal
+    errCode := codes.PermissionDenied
     mockLibrary.err = nil
     mockLibrary.resps = append(mockLibrary.resps[:0], &longrunningpb.Operation{
         Name: "longrunning-test",
@@ -1936,7 +1944,7 @@ func TestLibraryServiceGetBigBookError(t *testing.T) {
     _ = resp
 }
 func TestLibraryServiceGetBigNothing(t *testing.T) {
-    var expectedResponse *google_protobuf.Empty = &google_protobuf.Empty{}
+    var expectedResponse *emptypb.Empty = &emptypb.Empty{}
 
     mockLibrary.err = nil
     mockLibrary.reqs = nil
@@ -1978,7 +1986,7 @@ func TestLibraryServiceGetBigNothing(t *testing.T) {
 }
 
 func TestLibraryServiceGetBigNothingError(t *testing.T) {
-    errCode := codes.Internal
+    errCode := codes.PermissionDenied
     mockLibrary.err = nil
     mockLibrary.resps = append(mockLibrary.resps[:0], &longrunningpb.Operation{
         Name: "longrunning-test",
@@ -2010,4 +2018,162 @@ func TestLibraryServiceGetBigNothingError(t *testing.T) {
     if c := grpc.Code(err); c != errCode {
         t.Errorf("got error code %q, want %q", c, errCode)
     }
+}
+func TestLibraryServiceTestOptionalRequiredFlatteningParams(t *testing.T) {
+    var expectedResponse *librarypb.TestOptionalRequiredFlatteningParamsResponse = &librarypb.TestOptionalRequiredFlatteningParamsResponse{}
+
+    mockLibrary.err = nil
+    mockLibrary.reqs = nil
+
+    mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
+
+    var requiredSingularInt32 int32 = -72313594
+    var requiredSingularInt64 int64 = -72313499
+    var requiredSingularFloat float32 = -7514705.0
+    var requiredSingularDouble float64 = 1.9111005E8
+    var requiredSingularBool bool = true
+    var requiredSingularEnum librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerEnum = librarypb.TestOptionalRequiredFlatteningParamsRequest_ZERO
+    var requiredSingularString string = "requiredSingularString-1949894503"
+    var requiredSingularBytes []byte = []byte("-29")
+    var requiredSingularMessage *librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerMessage = &librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerMessage{}
+    var requiredSingularResourceName string = "requiredSingularResourceName-1701575020"
+    var requiredSingularResourceNameOneof string = "requiredSingularResourceNameOneof-25303726"
+    var requiredSingularFixed32 int32 = 720656715
+    var requiredSingularFixed64 int64 = 720656810
+    var requiredRepeatedInt32 []int32 = nil
+    var requiredRepeatedInt64 []int64 = nil
+    var requiredRepeatedFloat []float32 = nil
+    var requiredRepeatedDouble []float64 = nil
+    var requiredRepeatedBool []bool = nil
+    var requiredRepeatedEnum []librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerEnum = nil
+    var requiredRepeatedString []string = nil
+    var requiredRepeatedBytes [][]byte = nil
+    var requiredRepeatedMessage []*librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerMessage = nil
+    var formattedRequiredRepeatedResourceName []string = nil
+    var formattedRequiredRepeatedResourceNameOneof []string = nil
+    var requiredRepeatedFixed32 []int32 = nil
+    var requiredRepeatedFixed64 []int64 = nil
+    var requiredMap map[int32]string = nil
+    var request = &librarypb.TestOptionalRequiredFlatteningParamsRequest{
+        RequiredSingularInt32: requiredSingularInt32,
+        RequiredSingularInt64: requiredSingularInt64,
+        RequiredSingularFloat: requiredSingularFloat,
+        RequiredSingularDouble: requiredSingularDouble,
+        RequiredSingularBool: requiredSingularBool,
+        RequiredSingularEnum: requiredSingularEnum,
+        RequiredSingularString: requiredSingularString,
+        RequiredSingularBytes: requiredSingularBytes,
+        RequiredSingularMessage: requiredSingularMessage,
+        RequiredSingularResourceName: requiredSingularResourceName,
+        RequiredSingularResourceNameOneof: requiredSingularResourceNameOneof,
+        RequiredSingularFixed32: requiredSingularFixed32,
+        RequiredSingularFixed64: requiredSingularFixed64,
+        RequiredRepeatedInt32: requiredRepeatedInt32,
+        RequiredRepeatedInt64: requiredRepeatedInt64,
+        RequiredRepeatedFloat: requiredRepeatedFloat,
+        RequiredRepeatedDouble: requiredRepeatedDouble,
+        RequiredRepeatedBool: requiredRepeatedBool,
+        RequiredRepeatedEnum: requiredRepeatedEnum,
+        RequiredRepeatedString: requiredRepeatedString,
+        RequiredRepeatedBytes: requiredRepeatedBytes,
+        RequiredRepeatedMessage: requiredRepeatedMessage,
+        RequiredRepeatedResourceName: formattedRequiredRepeatedResourceName,
+        RequiredRepeatedResourceNameOneof: formattedRequiredRepeatedResourceNameOneof,
+        RequiredRepeatedFixed32: requiredRepeatedFixed32,
+        RequiredRepeatedFixed64: requiredRepeatedFixed64,
+        RequiredMap: requiredMap,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.TestOptionalRequiredFlatteningParams(context.Background(), request)
+
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    if want, got := request, mockLibrary.reqs[0]; !proto.Equal(want, got) {
+        t.Errorf("wrong request %q, want %q", got, want)
+    }
+
+    if want, got := expectedResponse, resp; !proto.Equal(want, got) {
+        t.Errorf("wrong response %q, want %q)", got, want)
+    }
+}
+
+func TestLibraryServiceTestOptionalRequiredFlatteningParamsError(t *testing.T) {
+    errCode := codes.PermissionDenied
+    mockLibrary.err = grpc.Errorf(errCode, "test error")
+
+    var requiredSingularInt32 int32 = -72313594
+    var requiredSingularInt64 int64 = -72313499
+    var requiredSingularFloat float32 = -7514705.0
+    var requiredSingularDouble float64 = 1.9111005E8
+    var requiredSingularBool bool = true
+    var requiredSingularEnum librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerEnum = librarypb.TestOptionalRequiredFlatteningParamsRequest_ZERO
+    var requiredSingularString string = "requiredSingularString-1949894503"
+    var requiredSingularBytes []byte = []byte("-29")
+    var requiredSingularMessage *librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerMessage = &librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerMessage{}
+    var requiredSingularResourceName string = "requiredSingularResourceName-1701575020"
+    var requiredSingularResourceNameOneof string = "requiredSingularResourceNameOneof-25303726"
+    var requiredSingularFixed32 int32 = 720656715
+    var requiredSingularFixed64 int64 = 720656810
+    var requiredRepeatedInt32 []int32 = nil
+    var requiredRepeatedInt64 []int64 = nil
+    var requiredRepeatedFloat []float32 = nil
+    var requiredRepeatedDouble []float64 = nil
+    var requiredRepeatedBool []bool = nil
+    var requiredRepeatedEnum []librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerEnum = nil
+    var requiredRepeatedString []string = nil
+    var requiredRepeatedBytes [][]byte = nil
+    var requiredRepeatedMessage []*librarypb.TestOptionalRequiredFlatteningParamsRequest_InnerMessage = nil
+    var formattedRequiredRepeatedResourceName []string = nil
+    var formattedRequiredRepeatedResourceNameOneof []string = nil
+    var requiredRepeatedFixed32 []int32 = nil
+    var requiredRepeatedFixed64 []int64 = nil
+    var requiredMap map[int32]string = nil
+    var request = &librarypb.TestOptionalRequiredFlatteningParamsRequest{
+        RequiredSingularInt32: requiredSingularInt32,
+        RequiredSingularInt64: requiredSingularInt64,
+        RequiredSingularFloat: requiredSingularFloat,
+        RequiredSingularDouble: requiredSingularDouble,
+        RequiredSingularBool: requiredSingularBool,
+        RequiredSingularEnum: requiredSingularEnum,
+        RequiredSingularString: requiredSingularString,
+        RequiredSingularBytes: requiredSingularBytes,
+        RequiredSingularMessage: requiredSingularMessage,
+        RequiredSingularResourceName: requiredSingularResourceName,
+        RequiredSingularResourceNameOneof: requiredSingularResourceNameOneof,
+        RequiredSingularFixed32: requiredSingularFixed32,
+        RequiredSingularFixed64: requiredSingularFixed64,
+        RequiredRepeatedInt32: requiredRepeatedInt32,
+        RequiredRepeatedInt64: requiredRepeatedInt64,
+        RequiredRepeatedFloat: requiredRepeatedFloat,
+        RequiredRepeatedDouble: requiredRepeatedDouble,
+        RequiredRepeatedBool: requiredRepeatedBool,
+        RequiredRepeatedEnum: requiredRepeatedEnum,
+        RequiredRepeatedString: requiredRepeatedString,
+        RequiredRepeatedBytes: requiredRepeatedBytes,
+        RequiredRepeatedMessage: requiredRepeatedMessage,
+        RequiredRepeatedResourceName: formattedRequiredRepeatedResourceName,
+        RequiredRepeatedResourceNameOneof: formattedRequiredRepeatedResourceNameOneof,
+        RequiredRepeatedFixed32: requiredRepeatedFixed32,
+        RequiredRepeatedFixed64: requiredRepeatedFixed64,
+        RequiredMap: requiredMap,
+    }
+
+    c, err := NewClient(context.Background(), clientOpt)
+    if err != nil {
+        t.Fatal(err)
+    }
+
+    resp, err := c.TestOptionalRequiredFlatteningParams(context.Background(), request)
+
+    if c := grpc.Code(err); c != errCode {
+        t.Errorf("got error code %q, want %q", c, errCode)
+    }
+    _ = resp
 }

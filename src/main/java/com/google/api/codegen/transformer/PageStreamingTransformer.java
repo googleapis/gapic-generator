@@ -15,7 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.viewmodel.PageStreamingDescriptorClassView;
 import com.google.api.codegen.viewmodel.PageStreamingDescriptorView;
@@ -29,21 +29,22 @@ import java.util.List;
 /** PageStreamingTransformer generates view objects for page streaming from a service model. */
 public class PageStreamingTransformer {
 
-  public List<PageStreamingDescriptorView> generateDescriptors(SurfaceTransformerContext context) {
+  public List<PageStreamingDescriptorView> generateDescriptors(GapicInterfaceContext context) {
     List<PageStreamingDescriptorView> descriptors = new ArrayList<>();
 
     for (Method method : context.getPageStreamingMethods()) {
-      MethodConfig methodConfig = context.getMethodConfig(method);
+      GapicMethodConfig methodConfig = context.getMethodConfig(method);
       PageStreamingConfig pageStreaming = methodConfig.getPageStreaming();
 
       PageStreamingDescriptorView.Builder descriptor = PageStreamingDescriptorView.newBuilder();
       descriptor.varName(context.getNamer().getPageStreamingDescriptorName(method));
-      descriptor.requestTokenFieldName(pageStreaming.getRequestTokenField().getSimpleName());
+      descriptor.requestTokenFieldName(context.getNamer().getRequestTokenFieldName(pageStreaming));
       if (pageStreaming.hasPageSizeField()) {
-        descriptor.requestPageSizeFieldName(pageStreaming.getPageSizeField().getSimpleName());
+        descriptor.requestPageSizeFieldName(context.getNamer().getPageSizeFieldName(pageStreaming));
       }
-      descriptor.responseTokenFieldName(pageStreaming.getResponseTokenField().getSimpleName());
-      descriptor.resourcesFieldName(pageStreaming.getResourcesFieldName());
+      descriptor.responseTokenFieldName(
+          context.getNamer().getResponseTokenFieldName(pageStreaming));
+      descriptor.resourcesFieldName(context.getNamer().getResourcesFieldName(pageStreaming));
       descriptor.methodName(context.getNamer().getMethodKey(method));
 
       descriptors.add(descriptor.build());
@@ -53,7 +54,7 @@ public class PageStreamingTransformer {
   }
 
   public List<PageStreamingDescriptorClassView> generateDescriptorClasses(
-      SurfaceTransformerContext context) {
+      GapicInterfaceContext context) {
     List<PageStreamingDescriptorClassView> descriptors = new ArrayList<>();
 
     for (Method method : context.getPageStreamingMethods()) {
@@ -63,8 +64,7 @@ public class PageStreamingTransformer {
     return descriptors;
   }
 
-  private PageStreamingDescriptorClassView generateDescriptorClass(
-      MethodTransformerContext context) {
+  private PageStreamingDescriptorClassView generateDescriptorClass(GapicMethodContext context) {
     SurfaceNamer namer = context.getNamer();
     ModelTypeTable typeTable = context.getTypeTable();
     Method method = context.getMethod();
@@ -84,7 +84,7 @@ public class PageStreamingTransformer {
 
     TypeRef tokenType = pageStreaming.getResponseTokenField().getType();
     desc.tokenTypeName(typeTable.getAndSaveNicknameFor(tokenType));
-    desc.defaultTokenValue(context.getTypeTable().getZeroValueAndSaveNicknameFor(tokenType));
+    desc.defaultTokenValue(context.getTypeTable().getSnippetZeroValueAndSaveNicknameFor(tokenType));
 
     desc.requestTokenSetFunction(
         namer.getFieldSetFunctionName(pageStreaming.getRequestTokenField()));
@@ -103,7 +103,7 @@ public class PageStreamingTransformer {
   }
 
   public List<PagedListResponseFactoryClassView> generateFactoryClasses(
-      SurfaceTransformerContext context) {
+      GapicInterfaceContext context) {
     List<PagedListResponseFactoryClassView> factories = new ArrayList<>();
 
     for (Method method : context.getPageStreamingMethods()) {
@@ -113,7 +113,7 @@ public class PageStreamingTransformer {
     return factories;
   }
 
-  private PagedListResponseFactoryClassView generateFactoryClass(MethodTransformerContext context) {
+  private PagedListResponseFactoryClassView generateFactoryClass(GapicMethodContext context) {
     SurfaceNamer namer = context.getNamer();
     ModelTypeTable typeTable = context.getTypeTable();
     Method method = context.getMethod();

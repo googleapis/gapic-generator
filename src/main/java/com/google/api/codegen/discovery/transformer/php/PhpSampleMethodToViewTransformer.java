@@ -29,6 +29,7 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.common.base.Strings;
 import com.google.protobuf.Field.Cardinality;
 import com.google.protobuf.Method;
 import java.util.ArrayList;
@@ -63,10 +64,6 @@ public class PhpSampleMethodToViewTransformer implements SampleMethodToViewTrans
     String serviceVarName = symbolTable.getNewSymbol(namer.getServiceVarName(config.apiTypeName()));
     String serviceTypeName = typeTable.getServiceTypeName(config.apiTypeName()).getNickname();
 
-    if (methodInfo.isPageStreaming()) {
-      builder.pageStreaming(createSamplePageStreamingView(context, symbolTable));
-    }
-
     // Created before the fields in case there are naming conflicts in the symbol table.
     SampleAuthView sampleAuthView = createSampleAuthView(context);
 
@@ -98,6 +95,12 @@ public class PhpSampleMethodToViewTransformer implements SampleMethodToViewTrans
       for (FieldInfo fieldInfo : methodInfo.requestBodyType().message().fields().values()) {
         requestBodyFields.add(createSampleFieldView(fieldInfo, context, symbolTable, true));
       }
+    }
+
+    // The page streaming view model is generated close to last to avoid taking naming precedence in
+    // the symbol table.
+    if (methodInfo.isPageStreaming()) {
+      builder.pageStreaming(createSamplePageStreamingView(context, symbolTable));
     }
 
     boolean hasResponse = methodInfo.responseType() != null;
@@ -203,9 +206,15 @@ public class PhpSampleMethodToViewTransformer implements SampleMethodToViewTrans
     if (disambiguateName) {
       name = symbolTable.getNewSymbol(name);
     }
+    String defaultValue;
+    if (!Strings.isNullOrEmpty(field.defaultValue())) {
+      defaultValue = field.defaultValue();
+    } else {
+      defaultValue = typeTable.getZeroValueAndSaveNicknameFor(field.type());
+    }
     return SampleFieldView.newBuilder()
         .name(name)
-        .defaultValue(typeTable.getZeroValueAndSaveNicknameFor(field.type()))
+        .defaultValue(defaultValue)
         .example(field.example())
         .description(field.description())
         .setterFuncName(namer.getRequestBodyFieldSetterName(field.name()))

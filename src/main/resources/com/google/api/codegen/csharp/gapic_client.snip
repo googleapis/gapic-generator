@@ -461,12 +461,7 @@
         *** ERROR: unexpected flattenedMethodSync implementation ***
     @else
         public virtual {@method.responseTypeName} {@method.name}(
-            {@objectParams(method.methodParams)}) => {@method.name}(
-                new {@method.serviceRequestTypeName}
-                {
-                    {@requestProperties(method.forwardingMethodParams)}
-                },
-                callSettings);
+        {@flattenedBody(method, FALSE)}
     @end
 @end
 
@@ -477,12 +472,7 @@
         }
     @else
         public virtual {@method.responseTypeName} {@method.name}(
-            {@objectParams(method.methodParams)}) => {@method.name}(
-                new {@method.serviceRequestTypeName}
-                {
-                    {@requestProperties(method.forwardingMethodParams)}
-                },
-                callSettings);
+        {@flattenedBody(method, FALSE)}
     @end
 @end
 
@@ -493,7 +483,9 @@
     @else
         public virtual {@method.responseTypeName} {@method.name}(
             {@objectParams(method.methodParams)}) => {@method.name}(
-                {@objectArgs(method.forwardingMethodParams)},
+                @if method.forwardingMethodParams.size
+                    {@objectArgs(method.forwardingMethodParams)},
+                @end
                 CallSettings.FromCancellationToken(cancellationToken));
     @end
 @end
@@ -655,14 +647,7 @@
         *** ERROR: unexpected pagedFlattenedMethodSync implementation ***
     @else
         public virtual PagedEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
-            {@objectParams(method.methodParams)}) => {@method.name}(
-                new {@method.serviceRequestTypeName}
-                {
-                    {@requestProperties(method.forwardingMethodParams)}
-                    PageToken = pageToken ?? "",
-                    PageSize = pageSize ?? 0,
-                },
-                callSettings);
+        {@flattenedBody(method, TRUE)}
     @end
 @end
 
@@ -672,14 +657,7 @@
         *** ERROR: unexpected pagedFlattenedMethodAsync implementation ***
     @else
         public virtual PagedAsyncEnumerable<{@method.listMethod.responseTypeName}, {@method.listMethod.resourceTypeName}> {@method.name}(
-            {@objectParams(method.methodParams)}) => {@method.name}(
-                new {@method.serviceRequestTypeName}
-                {
-                    {@requestProperties(method.forwardingMethodParams)}
-                    PageToken = pageToken ?? "",
-                    PageSize = pageSize ?? 0,
-                },
-                callSettings);
+        {@flattenedBody(method, TRUE)}
     @end
 @end
 
@@ -769,7 +747,7 @@
         {
             {@method.modifyMethodName}(ref request, ref callSettings);
             return new {@method.operationMethod.clientReturnTypeName}(
-                await {@method.callableName}.Async(request, callSettings), LongRunningOperationsClient);
+                await {@method.callableName}.Async(request, callSettings).ConfigureAwait(false), LongRunningOperationsClient);
         }
     @else
         public virtual Task<{@method.operationMethod.clientReturnTypeName}> {@method.name}(
@@ -803,12 +781,7 @@
         *** ERROR: unexpected operationFlattenedMethodAsync implementation ***
     @else
         public virtual Task<{@method.operationMethod.clientReturnTypeName}> {@method.name}(
-            {@objectParams(method.methodParams)}) => {@method.name}(
-                new {@method.serviceRequestTypeName}
-                {
-                    {@requestProperties(method.forwardingMethodParams)}
-                },
-                callSettings);
+        {@flattenedBody(method, FALSE)}
     @end
 @end
 
@@ -819,10 +792,9 @@
     @else
         public virtual Task<{@method.operationMethod.clientReturnTypeName}> {@method.name}(
             {@objectParams(method.methodParams)}) => {@method.name}(
-                new {@method.serviceRequestTypeName}
-                {
-                    {@requestProperties(method.forwardingMethodParams)}
-                },
+                @if method.forwardingMethodParams.size
+                    {@objectArgs(method.forwardingMethodParams)},
+                @end
                 CallSettings.FromCancellationToken(cancellationToken));
     @end
 @end
@@ -833,29 +805,82 @@
         *** ERROR: unexpected operationFlattenedMethodAsync implementation ***
     @else
         public virtual {@method.operationMethod.clientReturnTypeName} {@method.name}(
-            {@objectParams(method.methodParams)}) => {@method.name}(
-                new {@method.serviceRequestTypeName}
-                {
-                    {@requestProperties(method.forwardingMethodParams)}
-                },
-                callSettings);
+        {@flattenedBody(method, FALSE)}
     @end
+@end
+
+# method: StaticLangApiMethodView, isPaged: boolean
+@private flattenedBody(method, isPaged)
+    {@""}    {@objectParams(method.methodParams)}) => {@method.name}(
+        {@""}    new {@method.serviceRequestTypeName}
+            {
+                @if method.forwardingMethodParams.size
+                    {@requestProperties(method.forwardingMethodParams)}
+                @end
+                @if isPaged
+                    PageToken = pageToken ?? "",
+                    PageSize = pageSize ?? 0,
+                @end
+            },
+            callSettings);
 @end
 
 # params: List[RequestObjectParamView]
 @private requestProperties(params)
     @join param : params
-        @if param.hasTransformParamFunction
-            @if param.isCollection
-                {@param.nameAsMethodName} = { {@param.name}.Select(x => {@param.transformParamFunctionName}(x) },
+        {@requestProperty(param)}
+    @end
+@end
+
+#        TYPE         |    SINGLE    |    SINGLE    |   REPEATED   |   REPEATED   |
+#                     |   OPTIONAL   |   REQUIRED   |   OPTIONAL   |   REQUIRED   |
+# int/float/bool/enum | nullable->def| nothing to do| null->empty  | checknotnull | def = 0/0.0/false/(Enum)0
+# string              | null->def    | checknotempty| null->empty  | checknotnull | def = ""
+# bytes               | null->def    | checknotnull | null->empty  | checknotnull | def = byte[0]
+# message             | null ok      | checknotnull | null->empty  | checknotnull | [def = null unused]
+# resourcename(string)| null ok      | checknotnull | null->empty  | checknotnull | [def = ResourceType("") unused]
+#   resource oneofs is the only current use for transformParamFunction
+#
+# param: RequestObjectParamView
+@private requestProperty(param)
+    @if param.isCollection
+        @if param.isOptional
+            @if param.hasTransformParamFunction
+                {@param.nameAsMethodName} = { ({@param.name} ?? {@param.optionalDefault}).Select(x => {@param.transformParamFunctionName}(x)) }, // Optional
             @else
-                {@param.nameAsMethodName} = {@param.transformParamFunctionName}({@param.name}),
+                {@param.nameAsMethodName} = { {@param.name} ?? {@param.optionalDefault} }, // Optional
             @end
         @else
-            @if param.isCollection
-                {@param.nameAsMethodName} = { {@param.name} },
+            @if param.hasTransformParamFunction
+                {@param.nameAsMethodName} = { GaxPreconditions.CheckNotNull({@param.name}, nameof({@param.name})).Select(x => {@param.transformParamFunctionName}(x)) },
             @else
+                {@param.nameAsMethodName} = { GaxPreconditions.CheckNotNull({@param.name}, nameof({@param.name})) },
+            @end
+        @end
+    @else
+        @if param.isOptional
+            @if param.hasTransformParamFunction
+                {@param.nameAsMethodName} = {@param.name} != null ? {@param.transformParamFunctionName}({@param.name}) : null, // Optional
+            @else
+                @if param.hasOptionalDefault
+                    {@param.nameAsMethodName} = {@param.name} ?? {@param.optionalDefault}, // Optional
+                @else
+                    {@param.nameAsMethodName} = {@param.name}, // Optional
+                @end
+            @end
+        @else
+            @if param.isPrimitive
                 {@param.nameAsMethodName} = {@param.name},
+            @else
+                @if param.hasTransformParamFunction
+                    {@param.nameAsMethodName} = {@param.transformParamFunctionName}(GaxPreconditions.CheckNotNull({@param.name}, nameof({@param.name}))),
+                @else
+                    @if param.typeName == "string"
+                        {@param.nameAsMethodName} = GaxPreconditions.CheckNotNullOrEmpty({@param.name}, nameof({@param.name})),
+                    @else
+                        {@param.nameAsMethodName} = GaxPreconditions.CheckNotNull({@param.name}, nameof({@param.name})),
+                    @end
+                @end
             @end
         @end
     @end

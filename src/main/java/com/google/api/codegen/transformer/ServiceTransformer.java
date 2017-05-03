@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.ServiceDocView;
 import com.google.common.collect.ImmutableList;
@@ -22,13 +22,13 @@ import com.google.common.collect.ImmutableList;
 public class ServiceTransformer {
 
   public ServiceDocView generateServiceDoc(
-      SurfaceTransformerContext context, ApiMethodView exampleApiMethod) {
+      GapicInterfaceContext context, ApiMethodView exampleApiMethod) {
     SurfaceNamer namer = context.getNamer();
     ServiceDocView.Builder serviceDoc = ServiceDocView.newBuilder();
 
     ImmutableList.Builder<String> docLines = ImmutableList.builder();
     docLines.addAll(namer.getDocLines(context.getInterface()));
-    InterfaceConfig conf = context.getInterfaceConfig();
+    GapicInterfaceConfig conf = context.getInterfaceConfig();
     if (!conf.getManualDoc().isEmpty()) {
       docLines.add("");
       docLines.addAll(namer.getDocLines(conf.getManualDoc()));
@@ -36,10 +36,10 @@ public class ServiceTransformer {
     serviceDoc.lines(docLines.build());
 
     serviceDoc.exampleApiMethod(exampleApiMethod);
-    serviceDoc.apiVarName(namer.getApiWrapperVariableName(context.getInterface()));
-    serviceDoc.apiClassName(namer.getApiWrapperClassName(context.getInterface()));
-    serviceDoc.settingsVarName(namer.getApiSettingsVariableName(context.getInterface()));
-    serviceDoc.settingsClassName(namer.getApiSettingsClassName(context.getInterface()));
+    serviceDoc.apiVarName(namer.getApiWrapperVariableName(context.getInterfaceConfig()));
+    serviceDoc.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
+    serviceDoc.settingsVarName(namer.getApiSettingsVariableName(context.getInterfaceConfig()));
+    serviceDoc.settingsClassName(namer.getApiSettingsClassName(context.getInterfaceConfig()));
     serviceDoc.hasDefaultInstance(context.getInterfaceConfig().hasDefaultInstance());
     return serviceDoc.build();
   }

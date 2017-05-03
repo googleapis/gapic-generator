@@ -96,7 +96,12 @@
         "AddComments": {
           "timeout_millis": 10000,
           "retry_codes_name": "non_idempotent",
-          "retry_params_name": "default"
+          "retry_params_name": "default",
+          "bundling": {
+            "element_count_threshold": 6,
+            "request_byte_threshold": 100000,
+            "delay_threshold_millis": 500
+          }
         },
         "GetBookFromArchive": {
           "timeout_millis": 10000,
@@ -154,6 +159,11 @@
           "retry_params_name": "default"
         },
         "GetBigNothing": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "TestOptionalRequiredFlatteningParams": {
           "timeout_millis": 60000,
           "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"

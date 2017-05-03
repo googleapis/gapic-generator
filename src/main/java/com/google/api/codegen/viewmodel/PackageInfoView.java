@@ -33,6 +33,8 @@ public abstract class PackageInfoView implements ViewModel {
 
   public abstract List<ServiceDocView> serviceDocs();
 
+  public abstract List<String> authScopes();
+
   public abstract String domainLayerLocation();
 
   @Nullable
@@ -61,6 +63,8 @@ public abstract class PackageInfoView implements ViewModel {
     public abstract Builder serviceTitle(String val);
 
     public abstract Builder serviceDocs(List<ServiceDocView> val);
+
+    public abstract Builder authScopes(List<String> val);
 
     public abstract Builder domainLayerLocation(String val);
 

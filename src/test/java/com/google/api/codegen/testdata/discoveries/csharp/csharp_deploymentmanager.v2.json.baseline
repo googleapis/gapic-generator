@@ -17,6 +17,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -35,10 +36,10 @@ namespace DeploymentManagerSample
             });
 
             // The project ID for this request.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // The name of the deployment for this request.
-            string deployment = "";  // TODO: Update placeholder value.
+            string deployment = "my-deployment";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.DeploymentsCancelPreviewRequest requestBody = new Data.DeploymentsCancelPreviewRequest();
@@ -50,7 +51,7 @@ namespace DeploymentManagerSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -82,6 +83,7 @@ namespace DeploymentManagerSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -100,10 +102,10 @@ namespace DeploymentManagerSample
             });
 
             // The project ID for this request.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // The name of the deployment for this request.
-            string deployment = "";  // TODO: Update placeholder value.
+            string deployment = "my-deployment";  // TODO: Update placeholder value.
 
             DeploymentsResource.DeleteRequest request = deploymentManagerService.Deployments.Delete(project, deployment);
 
@@ -112,7 +114,7 @@ namespace DeploymentManagerSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -144,6 +146,7 @@ namespace DeploymentManagerSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -162,10 +165,10 @@ namespace DeploymentManagerSample
             });
 
             // The project ID for this request.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // The name of the deployment for this request.
-            string deployment = "";  // TODO: Update placeholder value.
+            string deployment = "my-deployment";  // TODO: Update placeholder value.
 
             DeploymentsResource.GetRequest request = deploymentManagerService.Deployments.Get(project, deployment);
 
@@ -174,7 +177,7 @@ namespace DeploymentManagerSample
             // Data.Deployment response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -206,6 +209,7 @@ namespace DeploymentManagerSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -224,10 +228,10 @@ namespace DeploymentManagerSample
             });
 
             // Project ID for this request.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Name of the resource for this request.
-            string resource = "";  // TODO: Update placeholder value.
+            string resource = "my-resource";  // TODO: Update placeholder value.
 
             DeploymentsResource.GetIamPolicyRequest request = deploymentManagerService.Deployments.GetIamPolicy(project, resource);
 
@@ -236,7 +240,7 @@ namespace DeploymentManagerSample
             // Data.Policy response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -268,6 +272,7 @@ namespace DeploymentManagerSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -286,7 +291,7 @@ namespace DeploymentManagerSample
             });
 
             // The project ID for this request.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.Deployment requestBody = new Data.Deployment();
@@ -298,7 +303,7 @@ namespace DeploymentManagerSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -330,6 +335,7 @@ namespace DeploymentManagerSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -348,7 +354,7 @@ namespace DeploymentManagerSample
             });
 
             // The project ID for this request.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             DeploymentsResource.ListRequest request = deploymentManagerService.Deployments.List(project);
 
@@ -366,7 +372,7 @@ namespace DeploymentManagerSample
                 foreach (Data.Deployment deployment in response.Deployments)
                 {
                     // TODO: Change code below to process each `deployment` resource:
-                    Console.WriteLine(deployment);
+                    Console.WriteLine(JsonConvert.SerializeObject(deployment));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -401,6 +407,7 @@ namespace DeploymentManagerSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -419,10 +426,10 @@ namespace DeploymentManagerSample
             });
 
             // The project ID for this request.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // The name of the deployment for this request.
-            string deployment = "";  // TODO: Update placeholder value.
+            string deployment = "my-deployment";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`. Only assigned
             // properties will be changed:
@@ -435,7 +442,7 @@ namespace DeploymentManagerSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -467,6 +474,7 @@ namespace DeploymentManagerSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -485,10 +493,10 @@ namespace DeploymentManagerSample
             });
 
             // Project ID for this request.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Name of the resource for this request.
-            string resource = "";  // TODO: Update placeholder value.
+            string resource = "my-resource";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.Policy requestBody = new Data.Policy();
@@ -500,7 +508,7 @@ namespace DeploymentManagerSample
             // Data.Policy response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -532,6 +540,7 @@ namespace DeploymentManagerSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -550,10 +559,10 @@ namespace DeploymentManagerSample
             });
 
             // The project ID for this request.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // The name of the deployment for this request.
-            string deployment = "";  // TODO: Update placeholder value.
+            string deployment = "my-deployment";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.DeploymentsStopRequest requestBody = new Data.DeploymentsStopRequest();
@@ -565,7 +574,7 @@ namespace DeploymentManagerSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -597,6 +606,7 @@ namespace DeploymentManagerSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -615,10 +625,10 @@ namespace DeploymentManagerSample
             });
 
             // Project ID for this request.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Name of the resource for this request.
-            string resource = "";  // TODO: Update placeholder value.
+            string resource = "my-resource";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.TestPermissionsRequest requestBody = new Data.TestPermissionsRequest();
@@ -630,7 +640,7 @@ namespace DeploymentManagerSample
             // Data.TestPermissionsResponse response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -662,6 +672,7 @@ namespace DeploymentManagerSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -680,10 +691,10 @@ namespace DeploymentManagerSample
             });
 
             // The project ID for this request.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // The name of the deployment for this request.
-            string deployment = "";  // TODO: Update placeholder value.
+            string deployment = "my-deployment";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`. All existing
             // properties will be replaced:
@@ -696,7 +707,7 @@ namespace DeploymentManagerSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -728,6 +739,7 @@ namespace DeploymentManagerSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -746,13 +758,13 @@ namespace DeploymentManagerSample
             });
 
             // The project ID for this request.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // The name of the deployment for this request.
-            string deployment = "";  // TODO: Update placeholder value.
+            string deployment = "my-deployment";  // TODO: Update placeholder value.
 
             // The name of the manifest for this request.
-            string manifest = "";  // TODO: Update placeholder value.
+            string manifest = "my-manifest";  // TODO: Update placeholder value.
 
             ManifestsResource.GetRequest request = deploymentManagerService.Manifests.Get(project, deployment, manifest);
 
@@ -761,7 +773,7 @@ namespace DeploymentManagerSample
             // Data.Manifest response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -793,6 +805,7 @@ namespace DeploymentManagerSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -811,10 +824,10 @@ namespace DeploymentManagerSample
             });
 
             // The project ID for this request.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // The name of the deployment for this request.
-            string deployment = "";  // TODO: Update placeholder value.
+            string deployment = "my-deployment";  // TODO: Update placeholder value.
 
             ManifestsResource.ListRequest request = deploymentManagerService.Manifests.List(project, deployment);
 
@@ -832,7 +845,7 @@ namespace DeploymentManagerSample
                 foreach (Data.Manifest manifest in response.Manifests)
                 {
                     // TODO: Change code below to process each `manifest` resource:
-                    Console.WriteLine(manifest);
+                    Console.WriteLine(JsonConvert.SerializeObject(manifest));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -867,6 +880,7 @@ namespace DeploymentManagerSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -885,10 +899,10 @@ namespace DeploymentManagerSample
             });
 
             // The project ID for this request.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // The name of the operation for this request.
-            string operation = "";  // TODO: Update placeholder value.
+            string operation = "my-operation";  // TODO: Update placeholder value.
 
             OperationsResource.GetRequest request = deploymentManagerService.Operations.Get(project, operation);
 
@@ -897,7 +911,7 @@ namespace DeploymentManagerSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -929,6 +943,7 @@ namespace DeploymentManagerSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -947,7 +962,7 @@ namespace DeploymentManagerSample
             });
 
             // The project ID for this request.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             OperationsResource.ListRequest request = deploymentManagerService.Operations.List(project);
 
@@ -965,7 +980,7 @@ namespace DeploymentManagerSample
                 foreach (Data.Operation operation in response.Operations)
                 {
                     // TODO: Change code below to process each `operation` resource:
-                    Console.WriteLine(operation);
+                    Console.WriteLine(JsonConvert.SerializeObject(operation));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -1000,6 +1015,7 @@ namespace DeploymentManagerSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1018,13 +1034,13 @@ namespace DeploymentManagerSample
             });
 
             // The project ID for this request.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // The name of the deployment for this request.
-            string deployment = "";  // TODO: Update placeholder value.
+            string deployment = "my-deployment";  // TODO: Update placeholder value.
 
             // The name of the resource for this request.
-            string resource = "";  // TODO: Update placeholder value.
+            string resource = "my-resource";  // TODO: Update placeholder value.
 
             ResourcesResource.GetRequest request = deploymentManagerService.Resources.Get(project, deployment, resource);
 
@@ -1033,7 +1049,7 @@ namespace DeploymentManagerSample
             // Data.Resource response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -1065,6 +1081,7 @@ namespace DeploymentManagerSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1083,10 +1100,10 @@ namespace DeploymentManagerSample
             });
 
             // The project ID for this request.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // The name of the deployment for this request.
-            string deployment = "";  // TODO: Update placeholder value.
+            string deployment = "my-deployment";  // TODO: Update placeholder value.
 
             ResourcesResource.ListRequest request = deploymentManagerService.Resources.List(project, deployment);
 
@@ -1104,7 +1121,7 @@ namespace DeploymentManagerSample
                 foreach (Data.Resource resource in response.Resources)
                 {
                     // TODO: Change code below to process each `resource` resource:
-                    Console.WriteLine(resource);
+                    Console.WriteLine(JsonConvert.SerializeObject(resource));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -1139,6 +1156,7 @@ namespace DeploymentManagerSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.DeploymentManager.v2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1157,7 +1175,7 @@ namespace DeploymentManagerSample
             });
 
             // The project ID for this request.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             TypesResource.ListRequest request = deploymentManagerService.Types.List(project);
 
@@ -1175,7 +1193,7 @@ namespace DeploymentManagerSample
                 foreach (Data.Type type in response.Types)
                 {
                     // TODO: Change code below to process each `type` resource:
-                    Console.WriteLine(type);
+                    Console.WriteLine(JsonConvert.SerializeObject(type));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);

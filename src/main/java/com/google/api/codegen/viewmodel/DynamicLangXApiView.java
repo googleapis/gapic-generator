@@ -50,7 +50,7 @@ public abstract class DynamicLangXApiView implements ViewModel {
   public abstract List<PageStreamingDescriptorView> pageStreamingDescriptors();
 
   @Nullable
-  public abstract List<BundlingDescriptorView> bundlingDescriptors();
+  public abstract List<BatchingDescriptorView> batchingDescriptors();
 
   public abstract List<LongRunningOperationDetailView> longRunningDescriptors();
 
@@ -72,7 +72,7 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
   public abstract boolean hasPageStreamingMethods();
 
-  public abstract boolean hasBundlingMethods();
+  public abstract boolean hasBatchingMethods();
 
   public abstract boolean hasLongRunningOperations();
 
@@ -101,13 +101,21 @@ public abstract class DynamicLangXApiView implements ViewModel {
   @Nullable
   public abstract String packageVersion();
 
+  @Nullable
+  public abstract List<String> validDescriptorsNames();
+
+  @Nullable
+  public abstract String constructorName();
+
+  public abstract boolean isGcloud();
+
   @Override
   public String resourceRoot() {
     return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
   }
 
   public static Builder newBuilder() {
-    return new AutoValue_DynamicLangXApiView.Builder();
+    return new AutoValue_DynamicLangXApiView.Builder().isGcloud(false);
   }
 
   @AutoValue.Builder
@@ -140,7 +148,7 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
     public abstract Builder pageStreamingDescriptors(List<PageStreamingDescriptorView> val);
 
-    public abstract Builder bundlingDescriptors(List<BundlingDescriptorView> val);
+    public abstract Builder batchingDescriptors(List<BatchingDescriptorView> val);
 
     public abstract Builder longRunningDescriptors(List<LongRunningOperationDetailView> val);
 
@@ -162,7 +170,7 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
     public abstract Builder hasPageStreamingMethods(boolean val);
 
-    public abstract Builder hasBundlingMethods(boolean val);
+    public abstract Builder hasBatchingMethods(boolean val);
 
     public abstract Builder hasLongRunningOperations(boolean val);
 
@@ -173,6 +181,12 @@ public abstract class DynamicLangXApiView implements ViewModel {
     public abstract Builder toolkitVersion(String val);
 
     public abstract Builder packageVersion(String val);
+
+    public abstract Builder validDescriptorsNames(List<String> strings);
+
+    public abstract Builder constructorName(String val);
+
+    public abstract Builder isGcloud(boolean val);
 
     public abstract DynamicLangXApiView build();
   }

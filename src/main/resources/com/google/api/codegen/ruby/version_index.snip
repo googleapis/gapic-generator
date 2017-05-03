@@ -1,0 +1,12 @@
+@extends "ruby/common.snip"
+
+@snippet generate(index)
+  {@toComments(index.fileHeader.copyrightLines)}
+  #
+  {@toComments(index.fileHeader.licenseLines)}
+
+  @join requireView : {@index.requireViews}
+      require "{@requireView.fileName}"
+  @end
+
+@end

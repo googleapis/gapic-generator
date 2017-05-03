@@ -18,6 +18,7 @@ import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.viewmodel.StaticLangApiView.Builder;
 import com.google.auto.value.AutoValue;
 import java.util.List;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class StaticLangPagedResponseWrappersView implements ViewModel {
@@ -25,6 +26,9 @@ public abstract class StaticLangPagedResponseWrappersView implements ViewModel {
   public abstract String templateFileName();
 
   public abstract FileHeaderView fileHeader();
+
+  @Nullable
+  public abstract String releaseLevelAnnotation();
 
   public abstract String name();
 
@@ -47,6 +51,8 @@ public abstract class StaticLangPagedResponseWrappersView implements ViewModel {
     public abstract Builder templateFileName(String val);
 
     public abstract Builder fileHeader(FileHeaderView val);
+
+    public abstract Builder releaseLevelAnnotation(String releaseAnnotation);
 
     public abstract Builder name(String val);
 

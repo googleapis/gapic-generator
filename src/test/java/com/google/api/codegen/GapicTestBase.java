@@ -15,7 +15,7 @@
 package com.google.api.codegen;
 
 import com.google.api.Service;
-import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.gapic.GapicGeneratorConfig;
 import com.google.api.codegen.gapic.GapicProvider;
@@ -132,7 +132,7 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
   public static List<Object[]> createTestedConfigs(
       String idForFactory, String[] gapicConfigFileNames, String packageConfigFileName) {
     Model model = Model.create(Service.getDefaultInstance());
-    ApiConfig apiConfig = ApiConfig.createDummyApiConfig();
+    GapicProductConfig productConfig = GapicProductConfig.createDummyInstance();
     PackageMetadataConfig packageConfig = PackageMetadataConfig.createDummyPackageMetadataConfig();
 
     GapicGeneratorConfig generatorConfig =
@@ -141,7 +141,8 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
             .enabledArtifacts(new ArrayList<String>())
             .build();
     List<GapicProvider<? extends Object>> providers =
-        MainGapicProviderFactory.defaultCreate(model, apiConfig, generatorConfig, packageConfig);
+        MainGapicProviderFactory.defaultCreate(
+            model, productConfig, generatorConfig, packageConfig);
     List<Object[]> testArgs = new ArrayList<>();
     for (GapicProvider<? extends Object> provider : providers) {
       for (String snippetFileName : provider.getSnippetFileNames()) {
@@ -175,8 +176,8 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
       return null;
     }
 
-    ApiConfig apiConfig = ApiConfig.createApiConfig(model, gapicConfig);
-    if (apiConfig == null) {
+    GapicProductConfig productConfig = GapicProductConfig.create(model, gapicConfig);
+    if (productConfig == null) {
       for (Diag diag : model.getDiagCollector().getDiags()) {
         System.err.println(diag.toString());
       }
@@ -189,7 +190,8 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
             .enabledArtifacts(new ArrayList<String>())
             .build();
     List<GapicProvider<? extends Object>> providers =
-        MainGapicProviderFactory.defaultCreate(model, apiConfig, generatorConfig, packageConfig);
+        MainGapicProviderFactory.defaultCreate(
+            model, productConfig, generatorConfig, packageConfig);
     GapicProvider<? extends Object> testedProvider = null;
     for (GapicProvider<? extends Object> provider : providers) {
       for (String snippetFileName : provider.getSnippetFileNames()) {

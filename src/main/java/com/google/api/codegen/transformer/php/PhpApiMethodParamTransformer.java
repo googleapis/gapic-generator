@@ -14,9 +14,9 @@
  */
 package com.google.api.codegen.transformer.php;
 
-import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.transformer.ApiMethodParamTransformer;
-import com.google.api.codegen.transformer.MethodTransformerContext;
+import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.DynamicLangDefaultableParamView;
 import com.google.api.codegen.viewmodel.MapParamDocView;
@@ -30,8 +30,7 @@ import java.util.List;
 
 public class PhpApiMethodParamTransformer implements ApiMethodParamTransformer {
   @Override
-  public List<DynamicLangDefaultableParamView> generateMethodParams(
-      MethodTransformerContext context) {
+  public List<DynamicLangDefaultableParamView> generateMethodParams(GapicMethodContext context) {
     ImmutableList.Builder<DynamicLangDefaultableParamView> methodParams = ImmutableList.builder();
     methodParams.addAll(generateDefaultableParams(context));
 
@@ -40,14 +39,15 @@ public class PhpApiMethodParamTransformer implements ApiMethodParamTransformer {
     DynamicLangDefaultableParamView.Builder optionalArgs =
         DynamicLangDefaultableParamView.newBuilder();
     optionalArgs.name(context.getNamer().localVarName(Name.from("optional", "args")));
-    optionalArgs.defaultValue(context.getTypeTable().getZeroValueAndSaveNicknameFor(arrayType));
+    optionalArgs.defaultValue(
+        context.getTypeTable().getSnippetZeroValueAndSaveNicknameFor(arrayType));
     methodParams.add(optionalArgs.build());
 
     return methodParams.build();
   }
 
   @Override
-  public List<ParamDocView> generateParamDocs(MethodTransformerContext context) {
+  public List<ParamDocView> generateParamDocs(GapicMethodContext context) {
     ImmutableList.Builder<ParamDocView> paramDocs = ImmutableList.builder();
     paramDocs.addAll(getMethodParamDocs(context, context.getMethodConfig().getRequiredFields()));
     paramDocs.add(getOptionalArrayParamDoc(context, context.getMethodConfig().getOptionalFields()));
@@ -55,7 +55,7 @@ public class PhpApiMethodParamTransformer implements ApiMethodParamTransformer {
   }
 
   private List<DynamicLangDefaultableParamView> generateDefaultableParams(
-      MethodTransformerContext context) {
+      GapicMethodContext context) {
     if (context.getMethod().getRequestStreaming()) {
       return ImmutableList.<DynamicLangDefaultableParamView>of();
     }
@@ -72,11 +72,11 @@ public class PhpApiMethodParamTransformer implements ApiMethodParamTransformer {
   }
 
   private List<ParamDocView> getMethodParamDocs(
-      MethodTransformerContext context, Iterable<Field> fields) {
+      GapicMethodContext context, Iterable<Field> fields) {
     if (context.getMethod().getRequestStreaming()) {
       return ImmutableList.<ParamDocView>of();
     }
-    MethodConfig methodConfig = context.getMethodConfig();
+    GapicMethodConfig methodConfig = context.getMethodConfig();
     ImmutableList.Builder<ParamDocView> paramDocs = ImmutableList.builder();
     for (Field field : fields) {
       SimpleParamDocView.Builder paramDoc = SimpleParamDocView.newBuilder();
@@ -110,7 +110,7 @@ public class PhpApiMethodParamTransformer implements ApiMethodParamTransformer {
   }
 
   private ParamDocView getOptionalArrayParamDoc(
-      MethodTransformerContext context, Iterable<Field> fields) {
+      GapicMethodContext context, Iterable<Field> fields) {
     MapParamDocView.Builder paramDoc = MapParamDocView.newBuilder();
 
     Name optionalArgsName = Name.from("optional", "args");
@@ -130,7 +130,7 @@ public class PhpApiMethodParamTransformer implements ApiMethodParamTransformer {
     return paramDoc.build();
   }
 
-  private List<ParamDocView> getCallSettingsParamDocList(MethodTransformerContext context) {
+  private List<ParamDocView> getCallSettingsParamDocList(GapicMethodContext context) {
     ImmutableList.Builder<ParamDocView> arrayKeyDocs = ImmutableList.builder();
 
     Name retrySettingsName = Name.from("retry", "settings");

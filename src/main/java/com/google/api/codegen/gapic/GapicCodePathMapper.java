@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.gapic;
 
-import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.ProductConfig;
 import com.google.api.tools.framework.model.ProtoElement;
 
 /**
@@ -22,5 +22,5 @@ import com.google.api.tools.framework.model.ProtoElement;
  * constructing a path to the GAPIC output.
  */
 public interface GapicCodePathMapper {
-  public String getOutputPath(ProtoElement element, ApiConfig config);
+  String getOutputPath(ProtoElement element, ProductConfig config);
 }

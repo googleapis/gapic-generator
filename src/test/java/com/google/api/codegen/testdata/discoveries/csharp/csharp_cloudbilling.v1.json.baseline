@@ -17,6 +17,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudbilling.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -36,8 +37,7 @@ namespace CloudbillingSample
 
             // The resource name of the billing account to retrieve. For example,
             // `billingAccounts/012345-567890-ABCDEF`.
-            string name = "";  // TODO: Update placeholder value.
-            // ex: "billingAccounts/my-billingAccount"
+            string name = "billingAccounts/my-billing-account";  // TODO: Update placeholder value.
 
             BillingAccountsResource.GetRequest request = cloudbillingService.BillingAccounts.Get(name);
 
@@ -46,7 +46,7 @@ namespace CloudbillingSample
             // Data.BillingAccount response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -78,6 +78,7 @@ namespace CloudbillingSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudbilling.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -111,7 +112,7 @@ namespace CloudbillingSample
                 foreach (Data.BillingAccount billingAccount in response.BillingAccounts)
                 {
                     // TODO: Change code below to process each `billingAccount` resource:
-                    Console.WriteLine(billingAccount);
+                    Console.WriteLine(JsonConvert.SerializeObject(billingAccount));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -146,6 +147,7 @@ namespace CloudbillingSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudbilling.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -163,10 +165,9 @@ namespace CloudbillingSample
                 ApplicationName = "Google-CloudbillingSample/0.1",
             });
 
-            // The resource name of the billing account associated with the projects that you want to list. For
-            // example, `billingAccounts/012345-567890-ABCDEF`.
-            string name = "";  // TODO: Update placeholder value.
-            // ex: "billingAccounts/my-billingAccount"
+            // The resource name of the billing account associated with the projects that
+            // you want to list. For example, `billingAccounts/012345-567890-ABCDEF`.
+            string name = "billingAccounts/my-billing-account";  // TODO: Update placeholder value.
 
             BillingAccountsResource.ProjectsResource.ListRequest request = cloudbillingService.BillingAccounts.Projects.List(name);
 
@@ -184,7 +185,7 @@ namespace CloudbillingSample
                 foreach (Data.ProjectBillingInfo projectBillingInfo in response.ProjectBillingInfo)
                 {
                     // TODO: Change code below to process each `projectBillingInfo` resource:
-                    Console.WriteLine(projectBillingInfo);
+                    Console.WriteLine(JsonConvert.SerializeObject(projectBillingInfo));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -219,6 +220,7 @@ namespace CloudbillingSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudbilling.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -236,10 +238,9 @@ namespace CloudbillingSample
                 ApplicationName = "Google-CloudbillingSample/0.1",
             });
 
-            // The resource name of the project for which billing information is retrieved. For example,
-            // `projects/tokyo-rain-123`.
-            string name = "";  // TODO: Update placeholder value.
-            // ex: "projects/my-project"
+            // The resource name of the project for which billing information is
+            // retrieved. For example, `projects/tokyo-rain-123`.
+            string name = "projects/my-project";  // TODO: Update placeholder value.
 
             ProjectsResource.GetBillingInfoRequest request = cloudbillingService.Projects.GetBillingInfo(name);
 
@@ -248,7 +249,7 @@ namespace CloudbillingSample
             // Data.ProjectBillingInfo response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -280,6 +281,7 @@ namespace CloudbillingSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudbilling.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -297,10 +299,9 @@ namespace CloudbillingSample
                 ApplicationName = "Google-CloudbillingSample/0.1",
             });
 
-            // The resource name of the project associated with the billing information that you want to update.
-            // For example, `projects/tokyo-rain-123`.
-            string name = "";  // TODO: Update placeholder value.
-            // ex: "projects/my-project"
+            // The resource name of the project associated with the billing information
+            // that you want to update. For example, `projects/tokyo-rain-123`.
+            string name = "projects/my-project";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`. All existing
             // properties will be replaced:
@@ -313,7 +314,7 @@ namespace CloudbillingSample
             // Data.ProjectBillingInfo response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()

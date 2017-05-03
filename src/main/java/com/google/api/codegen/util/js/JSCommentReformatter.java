@@ -17,7 +17,10 @@ package com.google.api.codegen.util.js;
 import com.google.api.codegen.CommentPatterns;
 import com.google.api.codegen.util.CommentReformatter;
 import com.google.api.codegen.util.CommentReformatting;
+import com.google.api.tools.framework.model.ProtoElement;
+import com.google.api.tools.framework.model.ProtoFile;
 import com.google.common.base.Function;
+import com.google.common.collect.ImmutableSet;
 import java.util.regex.Matcher;
 
 public class JSCommentReformatter implements CommentReformatter {
@@ -38,4 +41,34 @@ public class JSCommentReformatter implements CommentReformatter {
         .toString()
         .trim();
   }
+
+  public String getLinkedElementName(ProtoElement element) {
+    if (isExternalFile(element.getFile())) {
+      String fullName = element.getFullName();
+      return String.format("[%s]{@link external:\"%s\"}", fullName, fullName);
+    } else {
+      String simpleName = element.getSimpleName();
+      return String.format("[%s]{@link %s}", simpleName, simpleName);
+    }
+  }
+
+  public boolean isExternalFile(ProtoFile file) {
+    String filePath = file.getSimpleName();
+    for (String commonPath : COMMON_PROTO_PATHS) {
+      if (filePath.startsWith(commonPath)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private static final ImmutableSet<String> COMMON_PROTO_PATHS =
+      ImmutableSet.of(
+          "google/api",
+          "google/bytestream",
+          "google/logging/type",
+          "google/longrunning",
+          "google/protobuf",
+          "google/rpc",
+          "google/type");
 }

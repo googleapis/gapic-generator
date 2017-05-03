@@ -17,6 +17,7 @@
 using Google.Apis.Appengine.v1beta5;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -44,7 +45,7 @@ namespace AppengineSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -76,6 +77,7 @@ namespace AppengineSample
 using Google.Apis.Appengine.v1beta5;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -94,7 +96,7 @@ namespace AppengineSample
             });
 
             // Part of `name`. Name of the application to get. Example: apps/myapp.
-            string appsId = "";  // TODO: Update placeholder value.
+            string appsId = "my-apps-id";  // TODO: Update placeholder value.
 
             AppsResource.GetRequest request = appengineService.Apps.Get(appsId);
 
@@ -103,7 +105,7 @@ namespace AppengineSample
             // Data.Application response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -135,6 +137,7 @@ namespace AppengineSample
 using Google.Apis.Appengine.v1beta5;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -153,10 +156,10 @@ namespace AppengineSample
             });
 
             // Part of `name`. Resource name for the location.
-            string appsId = "";  // TODO: Update placeholder value.
+            string appsId = "my-apps-id";  // TODO: Update placeholder value.
 
             // Part of `name`. See documentation of `appsId`.
-            string locationsId = "";  // TODO: Update placeholder value.
+            string locationsId = "my-locations-id";  // TODO: Update placeholder value.
 
             AppsResource.LocationsResource.GetRequest request = appengineService.Apps.Locations.Get(appsId, locationsId);
 
@@ -165,7 +168,7 @@ namespace AppengineSample
             // Data.Location response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -197,6 +200,7 @@ namespace AppengineSample
 using Google.Apis.Appengine.v1beta5;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -215,7 +219,7 @@ namespace AppengineSample
             });
 
             // Part of `name`. The resource that owns the locations collection, if applicable.
-            string appsId = "";  // TODO: Update placeholder value.
+            string appsId = "my-apps-id";  // TODO: Update placeholder value.
 
             AppsResource.LocationsResource.ListRequest request = appengineService.Apps.Locations.List(appsId);
 
@@ -233,7 +237,7 @@ namespace AppengineSample
                 foreach (Data.Location location in response.Locations)
                 {
                     // TODO: Change code below to process each `location` resource:
-                    Console.WriteLine(location);
+                    Console.WriteLine(JsonConvert.SerializeObject(location));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -268,6 +272,7 @@ namespace AppengineSample
 using Google.Apis.Appengine.v1beta5;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -286,10 +291,10 @@ namespace AppengineSample
             });
 
             // Part of `name`. The name of the operation resource.
-            string appsId = "";  // TODO: Update placeholder value.
+            string appsId = "my-apps-id";  // TODO: Update placeholder value.
 
             // Part of `name`. See documentation of `appsId`.
-            string operationsId = "";  // TODO: Update placeholder value.
+            string operationsId = "my-operations-id";  // TODO: Update placeholder value.
 
             AppsResource.OperationsResource.GetRequest request = appengineService.Apps.Operations.Get(appsId, operationsId);
 
@@ -298,7 +303,7 @@ namespace AppengineSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -330,6 +335,7 @@ namespace AppengineSample
 using Google.Apis.Appengine.v1beta5;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -348,7 +354,7 @@ namespace AppengineSample
             });
 
             // Part of `name`. The name of the operation collection.
-            string appsId = "";  // TODO: Update placeholder value.
+            string appsId = "my-apps-id";  // TODO: Update placeholder value.
 
             AppsResource.OperationsResource.ListRequest request = appengineService.Apps.Operations.List(appsId);
 
@@ -366,7 +372,7 @@ namespace AppengineSample
                 foreach (Data.Operation operation in response.Operations)
                 {
                     // TODO: Change code below to process each `operation` resource:
-                    Console.WriteLine(operation);
+                    Console.WriteLine(JsonConvert.SerializeObject(operation));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -401,6 +407,7 @@ namespace AppengineSample
 using Google.Apis.Appengine.v1beta5;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -419,7 +426,7 @@ namespace AppengineSample
             });
 
             // Part of `name`. Name of the Application resource to update. Example: apps/myapp.
-            string appsId = "";  // TODO: Update placeholder value.
+            string appsId = "my-apps-id";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`. Only assigned
             // properties will be changed:
@@ -432,7 +439,7 @@ namespace AppengineSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -464,6 +471,7 @@ namespace AppengineSample
 using Google.Apis.Appengine.v1beta5;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -482,10 +490,10 @@ namespace AppengineSample
             });
 
             // Part of `name`. Name of the resource requested. Example: apps/myapp/services/default.
-            string appsId = "";  // TODO: Update placeholder value.
+            string appsId = "my-apps-id";  // TODO: Update placeholder value.
 
             // Part of `name`. See documentation of `appsId`.
-            string servicesId = "";  // TODO: Update placeholder value.
+            string servicesId = "my-services-id";  // TODO: Update placeholder value.
 
             AppsResource.ServicesResource.DeleteRequest request = appengineService.Apps.Services.Delete(appsId, servicesId);
 
@@ -494,7 +502,7 @@ namespace AppengineSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -526,6 +534,7 @@ namespace AppengineSample
 using Google.Apis.Appengine.v1beta5;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -544,10 +553,10 @@ namespace AppengineSample
             });
 
             // Part of `name`. Name of the resource requested. Example: apps/myapp/services/default.
-            string appsId = "";  // TODO: Update placeholder value.
+            string appsId = "my-apps-id";  // TODO: Update placeholder value.
 
             // Part of `name`. See documentation of `appsId`.
-            string servicesId = "";  // TODO: Update placeholder value.
+            string servicesId = "my-services-id";  // TODO: Update placeholder value.
 
             AppsResource.ServicesResource.GetRequest request = appengineService.Apps.Services.Get(appsId, servicesId);
 
@@ -556,7 +565,7 @@ namespace AppengineSample
             // Data.Service response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -588,6 +597,7 @@ namespace AppengineSample
 using Google.Apis.Appengine.v1beta5;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -606,7 +616,7 @@ namespace AppengineSample
             });
 
             // Part of `name`. Name of the resource requested. Example: apps/myapp.
-            string appsId = "";  // TODO: Update placeholder value.
+            string appsId = "my-apps-id";  // TODO: Update placeholder value.
 
             AppsResource.ServicesResource.ListRequest request = appengineService.Apps.Services.List(appsId);
 
@@ -624,7 +634,7 @@ namespace AppengineSample
                 foreach (Data.Service service in response.Services)
                 {
                     // TODO: Change code below to process each `service` resource:
-                    Console.WriteLine(service);
+                    Console.WriteLine(JsonConvert.SerializeObject(service));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -659,6 +669,7 @@ namespace AppengineSample
 using Google.Apis.Appengine.v1beta5;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -677,10 +688,10 @@ namespace AppengineSample
             });
 
             // Part of `name`. Name of the resource to update. Example: apps/myapp/services/default.
-            string appsId = "";  // TODO: Update placeholder value.
+            string appsId = "my-apps-id";  // TODO: Update placeholder value.
 
             // Part of `name`. See documentation of `appsId`.
-            string servicesId = "";  // TODO: Update placeholder value.
+            string servicesId = "my-services-id";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`. Only assigned
             // properties will be changed:
@@ -693,7 +704,7 @@ namespace AppengineSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -725,6 +736,7 @@ namespace AppengineSample
 using Google.Apis.Appengine.v1beta5;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -743,10 +755,10 @@ namespace AppengineSample
             });
 
             // Part of `name`. Name of the resource to update. For example: "apps/myapp/services/default".
-            string appsId = "";  // TODO: Update placeholder value.
+            string appsId = "my-apps-id";  // TODO: Update placeholder value.
 
             // Part of `name`. See documentation of `appsId`.
-            string servicesId = "";  // TODO: Update placeholder value.
+            string servicesId = "my-services-id";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.Version requestBody = new Data.Version();
@@ -758,7 +770,7 @@ namespace AppengineSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -790,6 +802,7 @@ namespace AppengineSample
 using Google.Apis.Appengine.v1beta5;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -808,13 +821,13 @@ namespace AppengineSample
             });
 
             // Part of `name`. Name of the resource requested. Example: apps/myapp/services/default/versions/v1.
-            string appsId = "";  // TODO: Update placeholder value.
+            string appsId = "my-apps-id";  // TODO: Update placeholder value.
 
             // Part of `name`. See documentation of `appsId`.
-            string servicesId = "";  // TODO: Update placeholder value.
+            string servicesId = "my-services-id";  // TODO: Update placeholder value.
 
             // Part of `name`. See documentation of `appsId`.
-            string versionsId = "";  // TODO: Update placeholder value.
+            string versionsId = "my-versions-id";  // TODO: Update placeholder value.
 
             AppsResource.ServicesResource.VersionsResource.DeleteRequest request = appengineService.Apps.Services.Versions.Delete(appsId, servicesId, versionsId);
 
@@ -823,7 +836,7 @@ namespace AppengineSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -855,6 +868,7 @@ namespace AppengineSample
 using Google.Apis.Appengine.v1beta5;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -873,13 +887,13 @@ namespace AppengineSample
             });
 
             // Part of `name`. Name of the resource requested. Example: apps/myapp/services/default/versions/v1.
-            string appsId = "";  // TODO: Update placeholder value.
+            string appsId = "my-apps-id";  // TODO: Update placeholder value.
 
             // Part of `name`. See documentation of `appsId`.
-            string servicesId = "";  // TODO: Update placeholder value.
+            string servicesId = "my-services-id";  // TODO: Update placeholder value.
 
             // Part of `name`. See documentation of `appsId`.
-            string versionsId = "";  // TODO: Update placeholder value.
+            string versionsId = "my-versions-id";  // TODO: Update placeholder value.
 
             AppsResource.ServicesResource.VersionsResource.GetRequest request = appengineService.Apps.Services.Versions.Get(appsId, servicesId, versionsId);
 
@@ -888,7 +902,7 @@ namespace AppengineSample
             // Data.Version response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -920,6 +934,7 @@ namespace AppengineSample
 using Google.Apis.Appengine.v1beta5;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -939,16 +954,16 @@ namespace AppengineSample
 
             // Part of `name`. Name of the resource requested. Example:
             // apps/myapp/services/default/versions/v1/instances/instance-1.
-            string appsId = "";  // TODO: Update placeholder value.
+            string appsId = "my-apps-id";  // TODO: Update placeholder value.
 
             // Part of `name`. See documentation of `appsId`.
-            string servicesId = "";  // TODO: Update placeholder value.
+            string servicesId = "my-services-id";  // TODO: Update placeholder value.
 
             // Part of `name`. See documentation of `appsId`.
-            string versionsId = "";  // TODO: Update placeholder value.
+            string versionsId = "my-versions-id";  // TODO: Update placeholder value.
 
             // Part of `name`. See documentation of `appsId`.
-            string instancesId = "";  // TODO: Update placeholder value.
+            string instancesId = "my-instances-id";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.DebugInstanceRequest requestBody = new Data.DebugInstanceRequest();
@@ -960,7 +975,7 @@ namespace AppengineSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -992,6 +1007,7 @@ namespace AppengineSample
 using Google.Apis.Appengine.v1beta5;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1011,16 +1027,16 @@ namespace AppengineSample
 
             // Part of `name`. Name of the resource requested. For example:
             // "apps/myapp/services/default/versions/v1/instances/instance-1".
-            string appsId = "";  // TODO: Update placeholder value.
+            string appsId = "my-apps-id";  // TODO: Update placeholder value.
 
             // Part of `name`. See documentation of `appsId`.
-            string servicesId = "";  // TODO: Update placeholder value.
+            string servicesId = "my-services-id";  // TODO: Update placeholder value.
 
             // Part of `name`. See documentation of `appsId`.
-            string versionsId = "";  // TODO: Update placeholder value.
+            string versionsId = "my-versions-id";  // TODO: Update placeholder value.
 
             // Part of `name`. See documentation of `appsId`.
-            string instancesId = "";  // TODO: Update placeholder value.
+            string instancesId = "my-instances-id";  // TODO: Update placeholder value.
 
             AppsResource.ServicesResource.VersionsResource.InstancesResource.DeleteRequest request = appengineService.Apps.Services.Versions.Instances.Delete(appsId, servicesId, versionsId, instancesId);
 
@@ -1029,7 +1045,7 @@ namespace AppengineSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -1061,6 +1077,7 @@ namespace AppengineSample
 using Google.Apis.Appengine.v1beta5;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1080,16 +1097,16 @@ namespace AppengineSample
 
             // Part of `name`. Name of the resource requested. Example:
             // apps/myapp/services/default/versions/v1/instances/instance-1.
-            string appsId = "";  // TODO: Update placeholder value.
+            string appsId = "my-apps-id";  // TODO: Update placeholder value.
 
             // Part of `name`. See documentation of `appsId`.
-            string servicesId = "";  // TODO: Update placeholder value.
+            string servicesId = "my-services-id";  // TODO: Update placeholder value.
 
             // Part of `name`. See documentation of `appsId`.
-            string versionsId = "";  // TODO: Update placeholder value.
+            string versionsId = "my-versions-id";  // TODO: Update placeholder value.
 
             // Part of `name`. See documentation of `appsId`.
-            string instancesId = "";  // TODO: Update placeholder value.
+            string instancesId = "my-instances-id";  // TODO: Update placeholder value.
 
             AppsResource.ServicesResource.VersionsResource.InstancesResource.GetRequest request = appengineService.Apps.Services.Versions.Instances.Get(appsId, servicesId, versionsId, instancesId);
 
@@ -1098,7 +1115,7 @@ namespace AppengineSample
             // Data.Instance response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -1130,6 +1147,7 @@ namespace AppengineSample
 using Google.Apis.Appengine.v1beta5;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1148,13 +1166,13 @@ namespace AppengineSample
             });
 
             // Part of `name`. Name of the resource requested. Example: apps/myapp/services/default/versions/v1.
-            string appsId = "";  // TODO: Update placeholder value.
+            string appsId = "my-apps-id";  // TODO: Update placeholder value.
 
             // Part of `name`. See documentation of `appsId`.
-            string servicesId = "";  // TODO: Update placeholder value.
+            string servicesId = "my-services-id";  // TODO: Update placeholder value.
 
             // Part of `name`. See documentation of `appsId`.
-            string versionsId = "";  // TODO: Update placeholder value.
+            string versionsId = "my-versions-id";  // TODO: Update placeholder value.
 
             AppsResource.ServicesResource.VersionsResource.InstancesResource.ListRequest request = appengineService.Apps.Services.Versions.Instances.List(appsId, servicesId, versionsId);
 
@@ -1172,7 +1190,7 @@ namespace AppengineSample
                 foreach (Data.Instance instance in response.Instances)
                 {
                     // TODO: Change code below to process each `instance` resource:
-                    Console.WriteLine(instance);
+                    Console.WriteLine(JsonConvert.SerializeObject(instance));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -1207,6 +1225,7 @@ namespace AppengineSample
 using Google.Apis.Appengine.v1beta5;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1225,10 +1244,10 @@ namespace AppengineSample
             });
 
             // Part of `name`. Name of the resource requested. Example: apps/myapp/services/default.
-            string appsId = "";  // TODO: Update placeholder value.
+            string appsId = "my-apps-id";  // TODO: Update placeholder value.
 
             // Part of `name`. See documentation of `appsId`.
-            string servicesId = "";  // TODO: Update placeholder value.
+            string servicesId = "my-services-id";  // TODO: Update placeholder value.
 
             AppsResource.ServicesResource.VersionsResource.ListRequest request = appengineService.Apps.Services.Versions.List(appsId, servicesId);
 
@@ -1246,7 +1265,7 @@ namespace AppengineSample
                 foreach (Data.Version version in response.Versions)
                 {
                     // TODO: Change code below to process each `version` resource:
-                    Console.WriteLine(version);
+                    Console.WriteLine(JsonConvert.SerializeObject(version));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -1281,6 +1300,7 @@ namespace AppengineSample
 using Google.Apis.Appengine.v1beta5;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1299,13 +1319,13 @@ namespace AppengineSample
             });
 
             // Part of `name`. Name of the resource to update. Example: apps/myapp/services/default/versions/1.
-            string appsId = "";  // TODO: Update placeholder value.
+            string appsId = "my-apps-id";  // TODO: Update placeholder value.
 
             // Part of `name`. See documentation of `appsId`.
-            string servicesId = "";  // TODO: Update placeholder value.
+            string servicesId = "my-services-id";  // TODO: Update placeholder value.
 
             // Part of `name`. See documentation of `appsId`.
-            string versionsId = "";  // TODO: Update placeholder value.
+            string versionsId = "my-versions-id";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`. Only assigned
             // properties will be changed:
@@ -1318,7 +1338,7 @@ namespace AppengineSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()

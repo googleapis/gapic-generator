@@ -10,18 +10,14 @@
 @end
 
 @snippet sampleCode_(apiMethod)
-  require "{@apiMethod.initCode.apiFileName}"
+  require "{@apiMethod.initCode.versionIndexFileImportName}"
 
   {@sampleCodeCore(apiMethod)}
 @end
 
 @snippet sampleCodeCore(apiMethod)
-  @join fileImport : apiMethod.initCode.importSection.appImports
-    @join alias : fileImport.types
-      {@alias.nickname} = {@alias.fullName}
-    @end
-  @end
-  {@BREAK}
+  {@aliasSection(apiMethod.initCode.importSection)}
+
   {@apiMethod.apiVariableName} = {@apiMethod.apiClassName}.new
   @if apiMethod.initCode.lines
     {@initCode(apiMethod.initCode)}
@@ -39,6 +35,15 @@
     @end
   @end
 @end
+
+@snippet aliasSection(importSection)
+  @join fileImport : importSection.appImports
+    @join alias : fileImport.types
+      {@alias.nickname} = {@alias.fullName}
+    @end
+  @end
+@end
+
 
 @private longRunningMethodSampleCode(apiMethod)
 

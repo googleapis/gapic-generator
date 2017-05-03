@@ -17,6 +17,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -44,7 +45,7 @@ namespace GenomicsSample
             // Data.BatchCreateAnnotationsResponse response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -76,6 +77,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -103,7 +105,7 @@ namespace GenomicsSample
             // Data.Annotation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -135,6 +137,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 
 namespace GenomicsSample
@@ -150,7 +153,7 @@ namespace GenomicsSample
             });
 
             // The ID of the annotation to be deleted.
-            string annotationId = "";  // TODO: Update placeholder value.
+            string annotationId = "my-annotation-id";  // TODO: Update placeholder value.
 
             AnnotationsResource.DeleteRequest request = genomicsService.Annotations.Delete(annotationId);
 
@@ -188,6 +191,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -206,7 +210,7 @@ namespace GenomicsSample
             });
 
             // The ID of the annotation to be retrieved.
-            string annotationId = "";  // TODO: Update placeholder value.
+            string annotationId = "my-annotation-id";  // TODO: Update placeholder value.
 
             AnnotationsResource.GetRequest request = genomicsService.Annotations.Get(annotationId);
 
@@ -215,7 +219,7 @@ namespace GenomicsSample
             // Data.Annotation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -247,6 +251,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -283,7 +288,7 @@ namespace GenomicsSample
                 foreach (Data.Annotation annotation in response.Annotations)
                 {
                     // TODO: Change code below to process each `annotation` resource:
-                    Console.WriteLine(annotation);
+                    Console.WriteLine(JsonConvert.SerializeObject(annotation));
                 }
                 requestBody.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -318,6 +323,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -336,7 +342,7 @@ namespace GenomicsSample
             });
 
             // The ID of the annotation to be updated.
-            string annotationId = "";  // TODO: Update placeholder value.
+            string annotationId = "my-annotation-id";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`. All existing
             // properties will be replaced:
@@ -349,7 +355,7 @@ namespace GenomicsSample
             // Data.Annotation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -381,6 +387,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -408,7 +415,7 @@ namespace GenomicsSample
             // Data.AnnotationSet response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -440,6 +447,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 
 namespace GenomicsSample
@@ -455,7 +463,7 @@ namespace GenomicsSample
             });
 
             // The ID of the annotation set to be deleted.
-            string annotationSetId = "";  // TODO: Update placeholder value.
+            string annotationSetId = "my-annotation-set-id";  // TODO: Update placeholder value.
 
             AnnotationsetsResource.DeleteRequest request = genomicsService.Annotationsets.Delete(annotationSetId);
 
@@ -493,6 +501,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -511,7 +520,7 @@ namespace GenomicsSample
             });
 
             // The ID of the annotation set to be retrieved.
-            string annotationSetId = "";  // TODO: Update placeholder value.
+            string annotationSetId = "my-annotation-set-id";  // TODO: Update placeholder value.
 
             AnnotationsetsResource.GetRequest request = genomicsService.Annotationsets.Get(annotationSetId);
 
@@ -520,7 +529,7 @@ namespace GenomicsSample
             // Data.AnnotationSet response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -552,6 +561,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -588,7 +598,7 @@ namespace GenomicsSample
                 foreach (Data.AnnotationSet annotationSet in response.AnnotationSets)
                 {
                     // TODO: Change code below to process each `annotationSet` resource:
-                    Console.WriteLine(annotationSet);
+                    Console.WriteLine(JsonConvert.SerializeObject(annotationSet));
                 }
                 requestBody.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -623,6 +633,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -641,7 +652,7 @@ namespace GenomicsSample
             });
 
             // The ID of the annotation set to be updated.
-            string annotationSetId = "";  // TODO: Update placeholder value.
+            string annotationSetId = "my-annotation-set-id";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`. All existing
             // properties will be replaced:
@@ -654,7 +665,7 @@ namespace GenomicsSample
             // Data.AnnotationSet response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -686,6 +697,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -713,7 +725,7 @@ namespace GenomicsSample
             // Data.CallSet response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -745,6 +757,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 
 namespace GenomicsSample
@@ -760,7 +773,7 @@ namespace GenomicsSample
             });
 
             // The ID of the call set to be deleted.
-            string callSetId = "";  // TODO: Update placeholder value.
+            string callSetId = "my-call-set-id";  // TODO: Update placeholder value.
 
             CallsetsResource.DeleteRequest request = genomicsService.Callsets.Delete(callSetId);
 
@@ -798,6 +811,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -816,7 +830,7 @@ namespace GenomicsSample
             });
 
             // The ID of the call set.
-            string callSetId = "";  // TODO: Update placeholder value.
+            string callSetId = "my-call-set-id";  // TODO: Update placeholder value.
 
             CallsetsResource.GetRequest request = genomicsService.Callsets.Get(callSetId);
 
@@ -825,7 +839,7 @@ namespace GenomicsSample
             // Data.CallSet response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -857,6 +871,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -875,7 +890,7 @@ namespace GenomicsSample
             });
 
             // The ID of the call set to be updated.
-            string callSetId = "";  // TODO: Update placeholder value.
+            string callSetId = "my-call-set-id";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`. Only assigned
             // properties will be changed:
@@ -888,7 +903,7 @@ namespace GenomicsSample
             // Data.CallSet response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -920,6 +935,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -956,7 +972,7 @@ namespace GenomicsSample
                 foreach (Data.CallSet callSet in response.CallSets)
                 {
                     // TODO: Change code below to process each `callSet` resource:
-                    Console.WriteLine(callSet);
+                    Console.WriteLine(JsonConvert.SerializeObject(callSet));
                 }
                 requestBody.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -991,6 +1007,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1018,7 +1035,7 @@ namespace GenomicsSample
             // Data.Dataset response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -1050,6 +1067,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 
 namespace GenomicsSample
@@ -1065,7 +1083,7 @@ namespace GenomicsSample
             });
 
             // The ID of the dataset to be deleted.
-            string datasetId = "";  // TODO: Update placeholder value.
+            string datasetId = "my-dataset-id";  // TODO: Update placeholder value.
 
             DatasetsResource.DeleteRequest request = genomicsService.Datasets.Delete(datasetId);
 
@@ -1103,6 +1121,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1121,7 +1140,7 @@ namespace GenomicsSample
             });
 
             // The ID of the dataset.
-            string datasetId = "";  // TODO: Update placeholder value.
+            string datasetId = "my-dataset-id";  // TODO: Update placeholder value.
 
             DatasetsResource.GetRequest request = genomicsService.Datasets.Get(datasetId);
 
@@ -1130,7 +1149,7 @@ namespace GenomicsSample
             // Data.Dataset response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -1162,6 +1181,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1180,7 +1200,7 @@ namespace GenomicsSample
             });
 
             // REQUIRED: The resource for which policy is being specified. Format is `datasets/`.
-            string resource = "";  // TODO: Update placeholder value.
+            string resource = "datasets/my-dataset";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.GetIamPolicyRequest requestBody = new Data.GetIamPolicyRequest();
@@ -1192,7 +1212,7 @@ namespace GenomicsSample
             // Data.Policy response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -1224,6 +1244,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1257,7 +1278,7 @@ namespace GenomicsSample
                 foreach (Data.Dataset dataset in response.Datasets)
                 {
                     // TODO: Change code below to process each `dataset` resource:
-                    Console.WriteLine(dataset);
+                    Console.WriteLine(JsonConvert.SerializeObject(dataset));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -1292,6 +1313,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1310,7 +1332,7 @@ namespace GenomicsSample
             });
 
             // The ID of the dataset to be updated.
-            string datasetId = "";  // TODO: Update placeholder value.
+            string datasetId = "my-dataset-id";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`. Only assigned
             // properties will be changed:
@@ -1323,7 +1345,7 @@ namespace GenomicsSample
             // Data.Dataset response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -1355,6 +1377,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1373,7 +1396,7 @@ namespace GenomicsSample
             });
 
             // REQUIRED: The resource for which policy is being specified. Format is `datasets/`.
-            string resource = "";  // TODO: Update placeholder value.
+            string resource = "datasets/my-dataset";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.SetIamPolicyRequest requestBody = new Data.SetIamPolicyRequest();
@@ -1385,7 +1408,7 @@ namespace GenomicsSample
             // Data.Policy response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -1417,6 +1440,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1435,7 +1459,7 @@ namespace GenomicsSample
             });
 
             // REQUIRED: The resource for which policy is being specified. Format is `datasets/`.
-            string resource = "";  // TODO: Update placeholder value.
+            string resource = "datasets/my-dataset";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.TestIamPermissionsRequest requestBody = new Data.TestIamPermissionsRequest();
@@ -1447,7 +1471,7 @@ namespace GenomicsSample
             // Data.TestIamPermissionsResponse response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -1479,6 +1503,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1497,7 +1522,7 @@ namespace GenomicsSample
             });
 
             // The ID of the dataset to be undeleted.
-            string datasetId = "";  // TODO: Update placeholder value.
+            string datasetId = "my-dataset-id";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.UndeleteDatasetRequest requestBody = new Data.UndeleteDatasetRequest();
@@ -1509,7 +1534,7 @@ namespace GenomicsSample
             // Data.Dataset response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -1541,6 +1566,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 
 using Data = Google.Apis.Genomics.v1.Data;
@@ -1558,7 +1584,7 @@ namespace GenomicsSample
             });
 
             // The name of the operation resource to be cancelled.
-            string name = "";  // TODO: Update placeholder value.
+            string name = "operations/my-operation";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.CancelOperationRequest requestBody = new Data.CancelOperationRequest();
@@ -1599,6 +1625,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1617,7 +1644,7 @@ namespace GenomicsSample
             });
 
             // The name of the operation resource.
-            string name = "";  // TODO: Update placeholder value.
+            string name = "operations/my-operation";  // TODO: Update placeholder value.
 
             OperationsResource.GetRequest request = genomicsService.Operations.Get(name);
 
@@ -1626,7 +1653,7 @@ namespace GenomicsSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -1658,6 +1685,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1676,7 +1704,7 @@ namespace GenomicsSample
             });
 
             // The name of the operation collection.
-            string name = "";  // TODO: Update placeholder value.
+            string name = "my-name";  // TODO: Update placeholder value.
 
             OperationsResource.ListRequest request = genomicsService.Operations.List(name);
 
@@ -1694,7 +1722,7 @@ namespace GenomicsSample
                 foreach (Data.Operation operation in response.Operations)
                 {
                     // TODO: Change code below to process each `operation` resource:
-                    Console.WriteLine(operation);
+                    Console.WriteLine(JsonConvert.SerializeObject(operation));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -1729,6 +1757,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1747,7 +1776,7 @@ namespace GenomicsSample
             });
 
             // Required. The ID of the read group set over which coverage is requested.
-            string readGroupSetId = "";  // TODO: Update placeholder value.
+            string readGroupSetId = "my-read-group-set-id";  // TODO: Update placeholder value.
 
             ReadgroupsetsResource.CoveragebucketsResource.ListRequest request = genomicsService.Readgroupsets.Coveragebuckets.List(readGroupSetId);
 
@@ -1765,7 +1794,7 @@ namespace GenomicsSample
                 foreach (Data.CoverageBucket coverageBucket in response.CoverageBuckets)
                 {
                     // TODO: Change code below to process each `coverageBucket` resource:
-                    Console.WriteLine(coverageBucket);
+                    Console.WriteLine(JsonConvert.SerializeObject(coverageBucket));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -1800,6 +1829,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 
 namespace GenomicsSample
@@ -1816,7 +1846,7 @@ namespace GenomicsSample
 
             // The ID of the read group set to be deleted. The caller must have WRITE permissions to the dataset
             // associated with this read group set.
-            string readGroupSetId = "";  // TODO: Update placeholder value.
+            string readGroupSetId = "my-read-group-set-id";  // TODO: Update placeholder value.
 
             ReadgroupsetsResource.DeleteRequest request = genomicsService.Readgroupsets.Delete(readGroupSetId);
 
@@ -1854,6 +1884,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1873,7 +1904,7 @@ namespace GenomicsSample
 
             // Required. The ID of the read group set to export. The caller must have READ access to this read
             // group set.
-            string readGroupSetId = "";  // TODO: Update placeholder value.
+            string readGroupSetId = "my-read-group-set-id";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.ExportReadGroupSetRequest requestBody = new Data.ExportReadGroupSetRequest();
@@ -1885,7 +1916,7 @@ namespace GenomicsSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -1917,6 +1948,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1935,7 +1967,7 @@ namespace GenomicsSample
             });
 
             // The ID of the read group set.
-            string readGroupSetId = "";  // TODO: Update placeholder value.
+            string readGroupSetId = "my-read-group-set-id";  // TODO: Update placeholder value.
 
             ReadgroupsetsResource.GetRequest request = genomicsService.Readgroupsets.Get(readGroupSetId);
 
@@ -1944,7 +1976,7 @@ namespace GenomicsSample
             // Data.ReadGroupSet response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -1976,6 +2008,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -2003,7 +2036,7 @@ namespace GenomicsSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -2035,6 +2068,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -2054,7 +2088,7 @@ namespace GenomicsSample
 
             // The ID of the read group set to be updated. The caller must have WRITE permissions to the dataset
             // associated with this read group set.
-            string readGroupSetId = "";  // TODO: Update placeholder value.
+            string readGroupSetId = "my-read-group-set-id";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`. Only assigned
             // properties will be changed:
@@ -2067,7 +2101,7 @@ namespace GenomicsSample
             // Data.ReadGroupSet response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -2099,6 +2133,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -2135,7 +2170,7 @@ namespace GenomicsSample
                 foreach (Data.ReadGroupSet readGroupSet in response.ReadGroupSets)
                 {
                     // TODO: Change code below to process each `readGroupSet` resource:
-                    Console.WriteLine(readGroupSet);
+                    Console.WriteLine(JsonConvert.SerializeObject(readGroupSet));
                 }
                 requestBody.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -2170,6 +2205,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -2206,7 +2242,7 @@ namespace GenomicsSample
                 foreach (Data.Read read in response.Alignments)
                 {
                     // TODO: Change code below to process each `read` resource:
-                    Console.WriteLine(read);
+                    Console.WriteLine(JsonConvert.SerializeObject(read));
                 }
                 requestBody.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -2241,6 +2277,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -2268,7 +2305,7 @@ namespace GenomicsSample
             // Data.StreamReadsResponse response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -2300,6 +2337,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -2318,7 +2356,7 @@ namespace GenomicsSample
             });
 
             // The ID of the reference.
-            string referenceId = "";  // TODO: Update placeholder value.
+            string referenceId = "my-reference-id";  // TODO: Update placeholder value.
 
             ReferencesResource.BasesResource.ListRequest request = genomicsService.References.Bases.List(referenceId);
 
@@ -2334,7 +2372,7 @@ namespace GenomicsSample
                     continue;
                 }
                 // TODO: Change code below to process each `response.Sequence` resource:
-                Console.WriteLine(response.Sequence);
+                Console.WriteLine(JsonConvert.SerializeObject(response.Sequence));
 
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -2369,6 +2407,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -2387,7 +2426,7 @@ namespace GenomicsSample
             });
 
             // The ID of the reference.
-            string referenceId = "";  // TODO: Update placeholder value.
+            string referenceId = "my-reference-id";  // TODO: Update placeholder value.
 
             ReferencesResource.GetRequest request = genomicsService.References.Get(referenceId);
 
@@ -2396,7 +2435,7 @@ namespace GenomicsSample
             // Data.Reference response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -2428,6 +2467,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -2464,7 +2504,7 @@ namespace GenomicsSample
                 foreach (Data.Reference reference in response.References)
                 {
                     // TODO: Change code below to process each `reference` resource:
-                    Console.WriteLine(reference);
+                    Console.WriteLine(JsonConvert.SerializeObject(reference));
                 }
                 requestBody.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -2499,6 +2539,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -2517,7 +2558,7 @@ namespace GenomicsSample
             });
 
             // The ID of the reference set.
-            string referenceSetId = "";  // TODO: Update placeholder value.
+            string referenceSetId = "my-reference-set-id";  // TODO: Update placeholder value.
 
             ReferencesetsResource.GetRequest request = genomicsService.Referencesets.Get(referenceSetId);
 
@@ -2526,7 +2567,7 @@ namespace GenomicsSample
             // Data.ReferenceSet response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -2558,6 +2599,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -2594,7 +2636,7 @@ namespace GenomicsSample
                 foreach (Data.ReferenceSet referenceSet in response.ReferenceSets)
                 {
                     // TODO: Change code below to process each `referenceSet` resource:
-                    Console.WriteLine(referenceSet);
+                    Console.WriteLine(JsonConvert.SerializeObject(referenceSet));
                 }
                 requestBody.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -2629,6 +2671,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -2656,7 +2699,7 @@ namespace GenomicsSample
             // Data.Variant response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -2688,6 +2731,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 
 namespace GenomicsSample
@@ -2703,7 +2747,7 @@ namespace GenomicsSample
             });
 
             // The ID of the variant to be deleted.
-            string variantId = "";  // TODO: Update placeholder value.
+            string variantId = "my-variant-id";  // TODO: Update placeholder value.
 
             VariantsResource.DeleteRequest request = genomicsService.Variants.Delete(variantId);
 
@@ -2741,6 +2785,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -2759,7 +2804,7 @@ namespace GenomicsSample
             });
 
             // The ID of the variant.
-            string variantId = "";  // TODO: Update placeholder value.
+            string variantId = "my-variant-id";  // TODO: Update placeholder value.
 
             VariantsResource.GetRequest request = genomicsService.Variants.Get(variantId);
 
@@ -2768,7 +2813,7 @@ namespace GenomicsSample
             // Data.Variant response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -2800,6 +2845,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -2827,7 +2873,7 @@ namespace GenomicsSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -2859,6 +2905,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 
 using Data = Google.Apis.Genomics.v1.Data;
@@ -2914,6 +2961,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -2932,7 +2980,7 @@ namespace GenomicsSample
             });
 
             // The ID of the variant to be updated.
-            string variantId = "";  // TODO: Update placeholder value.
+            string variantId = "my-variant-id";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`. Only assigned
             // properties will be changed:
@@ -2945,7 +2993,7 @@ namespace GenomicsSample
             // Data.Variant response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -2977,6 +3025,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -3013,7 +3062,7 @@ namespace GenomicsSample
                 foreach (Data.Variant variant in response.Variants)
                 {
                     // TODO: Change code below to process each `variant` resource:
-                    Console.WriteLine(variant);
+                    Console.WriteLine(JsonConvert.SerializeObject(variant));
                 }
                 requestBody.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -3048,6 +3097,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -3075,7 +3125,7 @@ namespace GenomicsSample
             // Data.StreamVariantsResponse response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -3107,6 +3157,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -3134,7 +3185,7 @@ namespace GenomicsSample
             // Data.VariantSet response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -3166,6 +3217,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 
 namespace GenomicsSample
@@ -3181,7 +3233,7 @@ namespace GenomicsSample
             });
 
             // The ID of the variant set to be deleted.
-            string variantSetId = "";  // TODO: Update placeholder value.
+            string variantSetId = "my-variant-set-id";  // TODO: Update placeholder value.
 
             VariantsetsResource.DeleteRequest request = genomicsService.Variantsets.Delete(variantSetId);
 
@@ -3219,6 +3271,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -3238,7 +3291,7 @@ namespace GenomicsSample
 
             // Required. The ID of the variant set that contains variant data which should be exported. The caller
             // must have READ access to this variant set.
-            string variantSetId = "";  // TODO: Update placeholder value.
+            string variantSetId = "my-variant-set-id";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.ExportVariantSetRequest requestBody = new Data.ExportVariantSetRequest();
@@ -3250,7 +3303,7 @@ namespace GenomicsSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -3282,6 +3335,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -3300,7 +3354,7 @@ namespace GenomicsSample
             });
 
             // Required. The ID of the variant set.
-            string variantSetId = "";  // TODO: Update placeholder value.
+            string variantSetId = "my-variant-set-id";  // TODO: Update placeholder value.
 
             VariantsetsResource.GetRequest request = genomicsService.Variantsets.Get(variantSetId);
 
@@ -3309,7 +3363,7 @@ namespace GenomicsSample
             // Data.VariantSet response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -3341,6 +3395,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -3359,7 +3414,7 @@ namespace GenomicsSample
             });
 
             // The ID of the variant to be updated (must already exist).
-            string variantSetId = "";  // TODO: Update placeholder value.
+            string variantSetId = "my-variant-set-id";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`. Only assigned
             // properties will be changed:
@@ -3372,7 +3427,7 @@ namespace GenomicsSample
             // Data.VariantSet response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -3404,6 +3459,7 @@ namespace GenomicsSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Genomics.v1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -3440,7 +3496,7 @@ namespace GenomicsSample
                 foreach (Data.VariantSet variantSet in response.VariantSets)
                 {
                     // TODO: Change code below to process each `variantSet` resource:
-                    Console.WriteLine(variantSet);
+                    Console.WriteLine(JsonConvert.SerializeObject(variantSet));
                 }
                 requestBody.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);

@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.py;
 
+import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.tools.framework.snippet.Doc;
 
 /** Entry points for a Python snippet set. */
@@ -29,5 +30,5 @@ interface PythonSnippetSet<Element> {
   Doc generateModule(Element element, Doc body, Iterable<String> imports);
 
   /** Generate the example snippet for the code documentation. */
-  Doc generateMethodSampleCode(PythonDocConfig config);
+  Doc sampleCode(ApiMethodView apiMethod);
 }

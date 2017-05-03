@@ -17,6 +17,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataflow.v1b3;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -35,7 +36,7 @@ namespace DataflowSample
             });
 
             // The ID of the Cloud Platform project that the job belongs to.
-            string projectId = "";  // TODO: Update placeholder value.
+            string projectId = "my-project-id";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.Job requestBody = new Data.Job();
@@ -47,7 +48,7 @@ namespace DataflowSample
             // Data.Job response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -79,6 +80,7 @@ namespace DataflowSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataflow.v1b3;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -97,10 +99,10 @@ namespace DataflowSample
             });
 
             // The project id.
-            string projectId = "";  // TODO: Update placeholder value.
+            string projectId = "my-project-id";  // TODO: Update placeholder value.
 
             // The job id.
-            string jobId = "";  // TODO: Update placeholder value.
+            string jobId = "my-job-id";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.GetDebugConfigRequest requestBody = new Data.GetDebugConfigRequest();
@@ -112,7 +114,7 @@ namespace DataflowSample
             // Data.GetDebugConfigResponse response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -144,6 +146,7 @@ namespace DataflowSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataflow.v1b3;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -162,10 +165,10 @@ namespace DataflowSample
             });
 
             // The project id.
-            string projectId = "";  // TODO: Update placeholder value.
+            string projectId = "my-project-id";  // TODO: Update placeholder value.
 
             // The job id.
-            string jobId = "";  // TODO: Update placeholder value.
+            string jobId = "my-job-id";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.SendDebugCaptureRequest requestBody = new Data.SendDebugCaptureRequest();
@@ -177,7 +180,7 @@ namespace DataflowSample
             // Data.SendDebugCaptureResponse response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -209,6 +212,7 @@ namespace DataflowSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataflow.v1b3;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -227,10 +231,10 @@ namespace DataflowSample
             });
 
             // The ID of the Cloud Platform project that the job belongs to.
-            string projectId = "";  // TODO: Update placeholder value.
+            string projectId = "my-project-id";  // TODO: Update placeholder value.
 
             // The job ID.
-            string jobId = "";  // TODO: Update placeholder value.
+            string jobId = "my-job-id";  // TODO: Update placeholder value.
 
             ProjectsResource.JobsResource.GetRequest request = dataflowService.Projects.Jobs.Get(projectId, jobId);
 
@@ -239,7 +243,7 @@ namespace DataflowSample
             // Data.Job response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -271,6 +275,7 @@ namespace DataflowSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataflow.v1b3;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -289,10 +294,10 @@ namespace DataflowSample
             });
 
             // A project id.
-            string projectId = "";  // TODO: Update placeholder value.
+            string projectId = "my-project-id";  // TODO: Update placeholder value.
 
             // The job to get messages for.
-            string jobId = "";  // TODO: Update placeholder value.
+            string jobId = "my-job-id";  // TODO: Update placeholder value.
 
             ProjectsResource.JobsResource.GetMetricsRequest request = dataflowService.Projects.Jobs.GetMetrics(projectId, jobId);
 
@@ -301,7 +306,7 @@ namespace DataflowSample
             // Data.JobMetrics response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -333,6 +338,7 @@ namespace DataflowSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataflow.v1b3;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -351,7 +357,7 @@ namespace DataflowSample
             });
 
             // The project which owns the jobs.
-            string projectId = "";  // TODO: Update placeholder value.
+            string projectId = "my-project-id";  // TODO: Update placeholder value.
 
             ProjectsResource.JobsResource.ListRequest request = dataflowService.Projects.Jobs.List(projectId);
 
@@ -369,7 +375,7 @@ namespace DataflowSample
                 foreach (Data.Job job in response.Jobs)
                 {
                     // TODO: Change code below to process each `job` resource:
-                    Console.WriteLine(job);
+                    Console.WriteLine(JsonConvert.SerializeObject(job));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -404,6 +410,7 @@ namespace DataflowSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataflow.v1b3;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -422,10 +429,10 @@ namespace DataflowSample
             });
 
             // A project id.
-            string projectId = "";  // TODO: Update placeholder value.
+            string projectId = "my-project-id";  // TODO: Update placeholder value.
 
             // The job to get messages about.
-            string jobId = "";  // TODO: Update placeholder value.
+            string jobId = "my-job-id";  // TODO: Update placeholder value.
 
             ProjectsResource.JobsResource.MessagesResource.ListRequest request = dataflowService.Projects.Jobs.Messages.List(projectId, jobId);
 
@@ -443,7 +450,7 @@ namespace DataflowSample
                 foreach (Data.JobMessage jobMessage in response.JobMessages)
                 {
                     // TODO: Change code below to process each `jobMessage` resource:
-                    Console.WriteLine(jobMessage);
+                    Console.WriteLine(JsonConvert.SerializeObject(jobMessage));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -478,6 +485,7 @@ namespace DataflowSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataflow.v1b3;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -496,10 +504,10 @@ namespace DataflowSample
             });
 
             // The ID of the Cloud Platform project that the job belongs to.
-            string projectId = "";  // TODO: Update placeholder value.
+            string projectId = "my-project-id";  // TODO: Update placeholder value.
 
             // The job ID.
-            string jobId = "";  // TODO: Update placeholder value.
+            string jobId = "my-job-id";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`. All existing
             // properties will be replaced:
@@ -512,7 +520,7 @@ namespace DataflowSample
             // Data.Job response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -544,6 +552,7 @@ namespace DataflowSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataflow.v1b3;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -562,10 +571,10 @@ namespace DataflowSample
             });
 
             // Identifies the project this worker belongs to.
-            string projectId = "";  // TODO: Update placeholder value.
+            string projectId = "my-project-id";  // TODO: Update placeholder value.
 
             // Identifies the workflow job this worker belongs to.
-            string jobId = "";  // TODO: Update placeholder value.
+            string jobId = "my-job-id";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.LeaseWorkItemRequest requestBody = new Data.LeaseWorkItemRequest();
@@ -577,7 +586,7 @@ namespace DataflowSample
             // Data.LeaseWorkItemResponse response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -609,6 +618,7 @@ namespace DataflowSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataflow.v1b3;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -627,10 +637,10 @@ namespace DataflowSample
             });
 
             // The project which owns the WorkItem's job.
-            string projectId = "";  // TODO: Update placeholder value.
+            string projectId = "my-project-id";  // TODO: Update placeholder value.
 
             // The job which the WorkItem is part of.
-            string jobId = "";  // TODO: Update placeholder value.
+            string jobId = "my-job-id";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.ReportWorkItemStatusRequest requestBody = new Data.ReportWorkItemStatusRequest();
@@ -642,7 +652,7 @@ namespace DataflowSample
             // Data.ReportWorkItemStatusResponse response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -674,6 +684,7 @@ namespace DataflowSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataflow.v1b3;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -692,10 +703,10 @@ namespace DataflowSample
             });
 
             // The ID of the Cloud Platform project that the job belongs to.
-            string projectId = "";  // TODO: Update placeholder value.
+            string projectId = "my-project-id";  // TODO: Update placeholder value.
 
             // The location that contains this job.
-            string location = "";  // TODO: Update placeholder value.
+            string location = "my-location";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.Job requestBody = new Data.Job();
@@ -707,7 +718,7 @@ namespace DataflowSample
             // Data.Job response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -739,6 +750,7 @@ namespace DataflowSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataflow.v1b3;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -757,13 +769,13 @@ namespace DataflowSample
             });
 
             // The ID of the Cloud Platform project that the job belongs to.
-            string projectId = "";  // TODO: Update placeholder value.
+            string projectId = "my-project-id";  // TODO: Update placeholder value.
 
             // The location that contains this job.
-            string location = "";  // TODO: Update placeholder value.
+            string location = "my-location";  // TODO: Update placeholder value.
 
             // The job ID.
-            string jobId = "";  // TODO: Update placeholder value.
+            string jobId = "my-job-id";  // TODO: Update placeholder value.
 
             ProjectsResource.LocationsResource.JobsResource.GetRequest request = dataflowService.Projects.Locations.Jobs.Get(projectId, location, jobId);
 
@@ -772,7 +784,7 @@ namespace DataflowSample
             // Data.Job response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -804,6 +816,7 @@ namespace DataflowSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataflow.v1b3;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -822,13 +835,13 @@ namespace DataflowSample
             });
 
             // A project id.
-            string projectId = "";  // TODO: Update placeholder value.
+            string projectId = "my-project-id";  // TODO: Update placeholder value.
 
             // The location which contains the job specified by job_id.
-            string location = "";  // TODO: Update placeholder value.
+            string location = "my-location";  // TODO: Update placeholder value.
 
             // The job to get messages for.
-            string jobId = "";  // TODO: Update placeholder value.
+            string jobId = "my-job-id";  // TODO: Update placeholder value.
 
             ProjectsResource.LocationsResource.JobsResource.GetMetricsRequest request = dataflowService.Projects.Locations.Jobs.GetMetrics(projectId, location, jobId);
 
@@ -837,7 +850,7 @@ namespace DataflowSample
             // Data.JobMetrics response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -869,6 +882,7 @@ namespace DataflowSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataflow.v1b3;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -887,10 +901,10 @@ namespace DataflowSample
             });
 
             // The project which owns the jobs.
-            string projectId = "";  // TODO: Update placeholder value.
+            string projectId = "my-project-id";  // TODO: Update placeholder value.
 
             // The location that contains this job.
-            string location = "";  // TODO: Update placeholder value.
+            string location = "my-location";  // TODO: Update placeholder value.
 
             ProjectsResource.LocationsResource.JobsResource.ListRequest request = dataflowService.Projects.Locations.Jobs.List(projectId, location);
 
@@ -908,7 +922,7 @@ namespace DataflowSample
                 foreach (Data.Job job in response.Jobs)
                 {
                     // TODO: Change code below to process each `job` resource:
-                    Console.WriteLine(job);
+                    Console.WriteLine(JsonConvert.SerializeObject(job));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -943,6 +957,7 @@ namespace DataflowSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataflow.v1b3;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -961,13 +976,13 @@ namespace DataflowSample
             });
 
             // A project id.
-            string projectId = "";  // TODO: Update placeholder value.
+            string projectId = "my-project-id";  // TODO: Update placeholder value.
 
             // The location which contains the job specified by job_id.
-            string location = "";  // TODO: Update placeholder value.
+            string location = "my-location";  // TODO: Update placeholder value.
 
             // The job to get messages about.
-            string jobId = "";  // TODO: Update placeholder value.
+            string jobId = "my-job-id";  // TODO: Update placeholder value.
 
             ProjectsResource.LocationsResource.JobsResource.MessagesResource.ListRequest request = dataflowService.Projects.Locations.Jobs.Messages.List(projectId, location, jobId);
 
@@ -985,7 +1000,7 @@ namespace DataflowSample
                 foreach (Data.JobMessage jobMessage in response.JobMessages)
                 {
                     // TODO: Change code below to process each `jobMessage` resource:
-                    Console.WriteLine(jobMessage);
+                    Console.WriteLine(JsonConvert.SerializeObject(jobMessage));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -1020,6 +1035,7 @@ namespace DataflowSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataflow.v1b3;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1038,13 +1054,13 @@ namespace DataflowSample
             });
 
             // The ID of the Cloud Platform project that the job belongs to.
-            string projectId = "";  // TODO: Update placeholder value.
+            string projectId = "my-project-id";  // TODO: Update placeholder value.
 
             // The location that contains this job.
-            string location = "";  // TODO: Update placeholder value.
+            string location = "my-location";  // TODO: Update placeholder value.
 
             // The job ID.
-            string jobId = "";  // TODO: Update placeholder value.
+            string jobId = "my-job-id";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`. All existing
             // properties will be replaced:
@@ -1057,7 +1073,7 @@ namespace DataflowSample
             // Data.Job response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -1089,6 +1105,7 @@ namespace DataflowSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataflow.v1b3;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1107,13 +1124,13 @@ namespace DataflowSample
             });
 
             // Identifies the project this worker belongs to.
-            string projectId = "";  // TODO: Update placeholder value.
+            string projectId = "my-project-id";  // TODO: Update placeholder value.
 
             // The location which contains the WorkItem's job.
-            string location = "";  // TODO: Update placeholder value.
+            string location = "my-location";  // TODO: Update placeholder value.
 
             // Identifies the workflow job this worker belongs to.
-            string jobId = "";  // TODO: Update placeholder value.
+            string jobId = "my-job-id";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.LeaseWorkItemRequest requestBody = new Data.LeaseWorkItemRequest();
@@ -1125,7 +1142,7 @@ namespace DataflowSample
             // Data.LeaseWorkItemResponse response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -1157,6 +1174,7 @@ namespace DataflowSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataflow.v1b3;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1175,13 +1193,13 @@ namespace DataflowSample
             });
 
             // The project which owns the WorkItem's job.
-            string projectId = "";  // TODO: Update placeholder value.
+            string projectId = "my-project-id";  // TODO: Update placeholder value.
 
             // The location which contains the WorkItem's job.
-            string location = "";  // TODO: Update placeholder value.
+            string location = "my-location";  // TODO: Update placeholder value.
 
             // The job which the WorkItem is part of.
-            string jobId = "";  // TODO: Update placeholder value.
+            string jobId = "my-job-id";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.ReportWorkItemStatusRequest requestBody = new Data.ReportWorkItemStatusRequest();
@@ -1193,7 +1211,7 @@ namespace DataflowSample
             // Data.ReportWorkItemStatusResponse response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -1225,6 +1243,7 @@ namespace DataflowSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataflow.v1b3;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1243,7 +1262,7 @@ namespace DataflowSample
             });
 
             // Required. The ID of the Cloud Platform project that the job belongs to.
-            string projectId = "";  // TODO: Update placeholder value.
+            string projectId = "my-project-id";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.CreateJobFromTemplateRequest requestBody = new Data.CreateJobFromTemplateRequest();
@@ -1255,7 +1274,7 @@ namespace DataflowSample
             // Data.Job response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -1287,6 +1306,7 @@ namespace DataflowSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataflow.v1b3;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1305,7 +1325,7 @@ namespace DataflowSample
             });
 
             // The project to send the WorkerMessages to.
-            string projectId = "";  // TODO: Update placeholder value.
+            string projectId = "my-project-id";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.SendWorkerMessagesRequest requestBody = new Data.SendWorkerMessagesRequest();
@@ -1317,7 +1337,7 @@ namespace DataflowSample
             // Data.SendWorkerMessagesResponse response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()

@@ -49,10 +49,6 @@ public class InitCodeNode {
   private Name identifier;
   private OneofConfig oneofConfig;
 
-  // TODO(michaelbausor): delete this field once DocConfig is no longer used (when python converts
-  // to MVVM)
-  private InitCodeLine initCodeLine;
-
   /*
    * Get the key associated with the node. For InitCodeNode objects that are not a root object, they
    * will be stored in their parent node using this key. For elements of a structure, this is the
@@ -117,15 +113,6 @@ public class InitCodeNode {
     return oneofConfig;
   }
 
-  /*
-   * Get the InitCodeLine object.
-   * TODO(michaelbausor): delete this method once DocConfig is no longer used (when python converts
-   * to MVVM)
-   */
-  public InitCodeLine getInitCodeLine() {
-    return initCodeLine;
-  }
-
   public static InitCodeNode create(String key) {
     return new InitCodeNode(key, InitCodeLineType.Unknown, InitValueConfig.create());
   }
@@ -160,7 +147,6 @@ public class InitCodeNode {
     List<InitCodeNode> subTrees = buildSubTrees(context);
     InitCodeNode root = createWithChildren("root", InitCodeLineType.StructureInitLine, subTrees);
     root.resolveNamesAndTypes(context, context.initObjectType(), context.suggestedName(), null);
-    root.createInitCodeLines();
     return root;
   }
 
@@ -292,57 +278,6 @@ public class InitCodeNode {
         String newValue = valueGenerator.getAndStoreValue(type, identifier);
         initValueConfig = InitValueConfig.createWithValue(InitValue.createLiteral(newValue));
       }
-    }
-  }
-
-  /**
-   * TODO(michaelbausor): delete this method once DocConfig is no longer used (when python converts
-   * to MVVM)
-   */
-  private void createInitCodeLines() {
-    if (children.size() == 0) {
-      initCodeLine = SimpleInitCodeLine.create(typeRef, identifier, initValueConfig);
-      return;
-    }
-    for (InitCodeNode childItem : children.values()) {
-      childItem.createInitCodeLines();
-    }
-    switch (lineType) {
-      case StructureInitLine:
-        List<FieldSetting> fieldSettings = new ArrayList<>();
-        for (InitCodeNode childItem : children.values()) {
-          FieldSetting fieldSetting =
-              FieldSetting.create(
-                  childItem.typeRef,
-                  childItem.identifier,
-                  childItem.initCodeLine.getIdentifier(),
-                  childItem.initCodeLine.getInitValueConfig());
-          fieldSettings.add(fieldSetting);
-        }
-        initCodeLine = StructureInitCodeLine.create(typeRef, identifier, fieldSettings);
-        break;
-      case ListInitLine:
-        List<Name> elementIdentifiers = new ArrayList<>();
-        for (InitCodeNode childItem : children.values()) {
-          elementIdentifiers.add(childItem.initCodeLine.getIdentifier());
-        }
-        initCodeLine = ListInitCodeLine.create(typeRef, identifier, elementIdentifiers);
-        break;
-      case MapInitLine:
-        Map<String, Name> elementIdentifierMap = new LinkedHashMap<>();
-        for (InitCodeNode childItem : children.values()) {
-          elementIdentifierMap.put(childItem.key, childItem.initCodeLine.getIdentifier());
-        }
-        initCodeLine =
-            MapInitCodeLine.create(
-                typeRef.getMapKeyField().getType(),
-                typeRef.getMapValueField().getType(),
-                typeRef,
-                identifier,
-                elementIdentifierMap);
-        break;
-      default:
-        throw new IllegalArgumentException("Unexpected ParsedNodeType: " + lineType);
     }
   }
 

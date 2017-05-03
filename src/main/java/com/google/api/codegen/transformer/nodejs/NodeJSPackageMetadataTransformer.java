@@ -16,7 +16,7 @@ package com.google.api.codegen.transformer.nodejs;
 
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.TargetLanguage;
-import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.PackageMetadataTransformer;
@@ -45,13 +45,13 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
   }
 
   @Override
-  public List<ViewModel> transform(Model model, ApiConfig apiConfig) {
+  public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
     Iterable<Interface> services = new InterfaceView().getElementIterable(model);
     boolean hasMultipleServices = Iterables.size(services) > 1;
     List<ViewModel> models = new ArrayList<ViewModel>();
     NodeJSPackageMetadataNamer namer =
         new NodeJSPackageMetadataNamer(
-            apiConfig.getPackageName(), apiConfig.getDomainLayerLocation());
+            productConfig.getPackageName(), productConfig.getDomainLayerLocation());
     models.add(generateMetadataView(model, namer, hasMultipleServices));
     return models;
   }

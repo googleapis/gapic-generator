@@ -19,10 +19,11 @@ import com.google.api.codegen.util.CommentReformatter;
 import com.google.api.codegen.util.CommentReformatting;
 import com.google.common.base.Function;
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import java.util.regex.Matcher;
-import javax.annotation.Nullable;
 
 public class RubyCommentReformatter implements CommentReformatter {
+  private static final String BULLET = "* ";
 
   private static Function<Matcher, String> PROTO_TO_RUBY_DOC =
       new Function<Matcher, String>() {
@@ -33,17 +34,46 @@ public class RubyCommentReformatter implements CommentReformatter {
       };
   private static Function<Matcher, String> HEADLINE_REPLACE =
       new Function<Matcher, String>() {
-        @Nullable
         @Override
-        public String apply(@Nullable Matcher matcher) {
+        public String apply(Matcher matcher) {
           return matcher.group().replace("#", "=");
         }
       };
 
   @Override
   public String reformat(String comment) {
-    comment = CommentPatterns.BACK_QUOTE_PATTERN.matcher(comment).replaceAll("+");
-    return CommentReformatting.of(comment)
+    StringBuffer sb = new StringBuffer();
+    int listIndent = 0;
+    boolean followsListItem = false;
+    boolean followsBlankLine = false;
+    for (String line : Splitter.on("\n").split(comment)) {
+      Matcher listMatcher = CommentPatterns.UNORDERED_LIST_PATTERN.matcher(line);
+      boolean matchesList = listMatcher.lookingAt();
+      Matcher indentMatcher = CommentPatterns.INDENT_PATTERN.matcher(line);
+      indentMatcher.lookingAt();
+      int indent = indentMatcher.group().length();
+      if (matchesList) {
+        line = listMatcher.replaceFirst(BULLET);
+      }
+      if (indent < listIndent && (matchesList || followsBlankLine)) {
+        listIndent -= BULLET.length();
+      } else if (followsListItem && (!matchesList || indent > listIndent)) {
+        listIndent += BULLET.length();
+      }
+      if (listIndent > 0) {
+        line = line.trim();
+        sb.append(Strings.repeat(" ", listIndent));
+      }
+      sb.append(applyTransformations(line)).append("\n");
+      followsListItem = matchesList;
+      followsBlankLine = line.isEmpty();
+    }
+    return sb.toString().trim();
+  }
+
+  private String applyTransformations(String line) {
+    line = CommentPatterns.BACK_QUOTE_PATTERN.matcher(line).replaceAll("+");
+    return CommentReformatting.of(line)
         .reformat(CommentPatterns.PROTO_LINK_PATTERN, PROTO_TO_RUBY_DOC)
         .reformatCloudMarkdownLinks("{%s}[%s]")
         .reformatAbsoluteMarkdownLinks("{%s}[%s]")

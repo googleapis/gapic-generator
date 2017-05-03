@@ -20,7 +20,11 @@ import java.util.List;
 @AutoValue
 public abstract class StaticLangPagedResponseView {
 
-  public abstract String name();
+  public abstract String pagedResponseTypeName();
+
+  public abstract String pageTypeName();
+
+  public abstract String fixedSizeCollectionTypeName();
 
   public abstract String requestTypeName();
 
@@ -37,7 +41,11 @@ public abstract class StaticLangPagedResponseView {
   @AutoValue.Builder
   public abstract static class Builder {
 
-    public abstract Builder name(String val);
+    public abstract Builder pagedResponseTypeName(String val);
+
+    public abstract Builder pageTypeName(String val);
+
+    public abstract Builder fixedSizeCollectionTypeName(String val);
 
     public abstract Builder requestTypeName(String val);
 

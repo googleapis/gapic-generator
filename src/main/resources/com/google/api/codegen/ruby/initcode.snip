@@ -16,9 +16,37 @@
 @end
 
 @private initLineStructure(line)
-  {@line.identifier} = {@line.typeName}.new
-  @join fieldSetting : line.fieldSettings
-    {@line.identifier}.{@fieldSetting.fieldSetFunction} = {@fieldSetting.identifier}
+  @switch line.fieldSettings.size.toString
+  @case "0"
+    {@line.identifier} = {@line.typeName}.new
+  @case "1"
+    {@singleLineInitStructure(line)}
+  @case "2"
+    {@singleLineInitStructure(line)}
+  @default
+    {@multiLineInitStructure(line)}
+  @end
+@end
+
+@private singleLineInitStructure(line)
+    {@line.identifier} = {@line.typeName}.new({@structureFieldsList(line.fieldSettings)})
+@end
+
+@private multiLineInitStructure(line)
+  {@line.identifier} = {@line.typeName}.new(
+    {@multilineStructureFieldsList(line.fieldSettings)}
+  )
+@end
+
+@private structureFieldsList(fieldSettings)
+  @join fieldSetting : fieldSettings on ", "
+    {@fieldSetting.fieldName}: {@fieldSetting.identifier}
+  @end
+@end
+
+@private multilineStructureFieldsList(fieldSettings)
+  @join fieldSetting : fieldSettings on ",".add(BREAK)
+    {@fieldSetting.fieldName}: {@fieldSetting.identifier}
   @end
 @end
 

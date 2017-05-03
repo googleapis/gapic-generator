@@ -43,7 +43,7 @@ public class SampleInitCodeTest {
   private TestDataLocator testDataLocator;
   private TestConfig testConfig;
   private Model model;
-  private Interface interfaze;
+  private Interface apiInterface;
   private Method method;
 
   @Before
@@ -56,8 +56,8 @@ public class SampleInitCodeTest {
     StandardSetup.registerStandardProcessors(model);
     StandardSetup.registerStandardConfigAspects(model);
     model.establishStage(Merged.KEY);
-    interfaze = model.getSymbolTable().getInterfaces().asList().get(0);
-    method = interfaze.getMethods().get(0);
+    apiInterface = model.getSymbolTable().getInterfaces().asList().get(0);
+    method = apiInterface.getMethods().get(0);
   }
 
   private InitCodeContext.Builder getContextBuilder() {
@@ -458,10 +458,7 @@ public class SampleInitCodeTest {
             : first.getType().equals(second.getType()))
         && (first.getIdentifier() == null
             ? second.getIdentifier() == null
-            : first.getIdentifier().equals(second.getIdentifier()))
-        && (first.getInitCodeLine() == null
-            ? second.getInitCodeLine() == null
-            : first.getInitCodeLine().equals(second.getInitCodeLine())))) {
+            : first.getIdentifier().equals(second.getIdentifier())))) {
       return false;
     }
     for (String key : first.getChildren().keySet()) {

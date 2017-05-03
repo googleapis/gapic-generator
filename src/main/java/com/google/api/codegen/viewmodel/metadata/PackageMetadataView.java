@@ -16,6 +16,9 @@ package com.google.api.codegen.viewmodel.metadata;
 
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.config.VersionBound;
+import com.google.api.codegen.grpcmetadatagen.GenerationLayer;
+import com.google.api.codegen.grpcmetadatagen.PackageType;
+import com.google.api.codegen.viewmodel.FileHeaderView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
 import java.util.List;
@@ -36,6 +39,15 @@ public abstract class PackageMetadataView implements ViewModel {
   public abstract String outputPath();
 
   @Nullable
+  public abstract PackageType packageType();
+
+  @Nullable
+  public abstract GenerationLayer generationLayer();
+
+  @Nullable
+  public abstract String gapicConfigName();
+
+  @Nullable
   public abstract String identifier();
 
   public abstract VersionBound packageVersionBound();
@@ -45,6 +57,9 @@ public abstract class PackageMetadataView implements ViewModel {
   public abstract VersionBound grpcVersionBound();
 
   public abstract VersionBound protoVersionBound();
+
+  @Nullable
+  public abstract VersionBound apiCommonVersionBound();
 
   @Nullable
   public abstract List<PackageDependencyView> protoPackageDependencies();
@@ -77,7 +92,17 @@ public abstract class PackageMetadataView implements ViewModel {
 
   public abstract String licenseName();
 
+  @Nullable
+  public abstract String developmentStatus();
+
   public abstract boolean hasMultipleServices();
+
+  public abstract boolean hasSmokeTests();
+
+  // TODO(landrito) Currently only Ruby supports using fileHeaderView. Switch all metadata gen to
+  // use this field.
+  @Nullable
+  public abstract FileHeaderView fileHeader();
 
   // Python-specific configuration
   @Nullable
@@ -90,7 +115,7 @@ public abstract class PackageMetadataView implements ViewModel {
   public abstract List<String> typeModules();
 
   public static Builder newBuilder() {
-    return new AutoValue_PackageMetadataView.Builder();
+    return new AutoValue_PackageMetadataView.Builder().hasSmokeTests(false);
   }
 
   @AutoValue.Builder
@@ -101,6 +126,12 @@ public abstract class PackageMetadataView implements ViewModel {
 
     public abstract Builder identifier(String val);
 
+    public abstract Builder gapicConfigName(String val);
+
+    public abstract Builder packageType(PackageType val);
+
+    public abstract Builder generationLayer(GenerationLayer val);
+
     public abstract Builder packageVersionBound(VersionBound val);
 
     public abstract Builder gaxVersionBound(VersionBound val);
@@ -108,6 +139,8 @@ public abstract class PackageMetadataView implements ViewModel {
     public abstract Builder grpcVersionBound(VersionBound val);
 
     public abstract Builder protoVersionBound(VersionBound val);
+
+    public abstract Builder apiCommonVersionBound(VersionBound val);
 
     public abstract Builder protoPackageDependencies(List<PackageDependencyView> val);
 
@@ -148,6 +181,9 @@ public abstract class PackageMetadataView implements ViewModel {
     /** The name of the license that the package is licensed under. */
     public abstract Builder licenseName(String val);
 
+    /** The developement status of the package. E.g., "alpha". */
+    public abstract Builder developmentStatus(String val);
+
     /** Whether the package contains multiple service objects */
     public abstract Builder hasMultipleServices(boolean val);
 
@@ -159,6 +195,12 @@ public abstract class PackageMetadataView implements ViewModel {
 
     /** The names of the GAPIC modules defining service types. */
     public abstract Builder typeModules(List<String> val);
+
+    /** Whether a smoketest was generated for the package. */
+    public abstract Builder hasSmokeTests(boolean val);
+
+    /** File header information such as copyright lines and license lines */
+    public abstract Builder fileHeader(FileHeaderView val);
 
     public abstract PackageMetadataView build();
   }
