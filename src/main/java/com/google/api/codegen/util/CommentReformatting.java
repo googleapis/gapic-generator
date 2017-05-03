@@ -19,7 +19,11 @@ import com.google.common.base.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/** A collection of static helper methods for reformatting comments. */
 public class CommentReformatting {
+
+  public static String CLOUD_URL_PREFIX = "https://cloud.google.com";
+
   private CommentReformatting() {}
 
   public static String reformatAbsoluteMarkdownLinks(String comment, String linkFormat) {
@@ -31,7 +35,7 @@ public class CommentReformatting {
     return reformatPattern(
         comment,
         CommentPatterns.CLOUD_LINK_PATTERN,
-        reformatLinkFunction(linkFormat, "https://cloud.google.com"));
+        reformatLinkFunction(linkFormat, CLOUD_URL_PREFIX));
   }
 
   public static String reformatPattern(
@@ -46,6 +50,42 @@ public class CommentReformatting {
     } while (m.find());
     m.appendTail(sb);
     return sb.toString();
+  }
+
+  public static Formatter of(String comment) {
+    return new Formatter(comment);
+  }
+
+  /**
+   * The Formatter object allows the static methods in CommentReformatting to be used via a fluent
+   * interface.
+   */
+  public static class Formatter {
+    private String comment;
+
+    private Formatter(String comment) {
+      this.comment = comment;
+    }
+
+    public Formatter reformat(Pattern pattern, Function<Matcher, String> replacementFunction) {
+      comment = CommentReformatting.reformatPattern(comment, pattern, replacementFunction);
+      return this;
+    }
+
+    public Formatter reformatAbsoluteMarkdownLinks(String linkFormat) {
+      comment = CommentReformatting.reformatAbsoluteMarkdownLinks(comment, linkFormat);
+      return this;
+    }
+
+    public Formatter reformatCloudMarkdownLinks(String linkFormat) {
+      comment = CommentReformatting.reformatCloudMarkdownLinks(comment, linkFormat);
+      return this;
+    }
+
+    @Override
+    public String toString() {
+      return comment;
+    }
   }
 
   private static Function<Matcher, String> reformatLinkFunction(

@@ -43,15 +43,13 @@ public class RubyCommentReformatter implements CommentReformatter {
   @Override
   public String reformat(String comment) {
     comment = CommentPatterns.BACK_QUOTE_PATTERN.matcher(comment).replaceAll("+");
-    comment =
-        CommentReformatting.reformatPattern(
-            comment, CommentPatterns.PROTO_LINK_PATTERN, PROTO_TO_RUBY_DOC);
-    comment = CommentReformatting.reformatCloudMarkdownLinks(comment, "{%s}[%s]");
-    comment = CommentReformatting.reformatAbsoluteMarkdownLinks(comment, "{%s}[%s]");
-    comment =
-        CommentReformatting.reformatPattern(
-            comment, CommentPatterns.HEADLINE_PATTERN, HEADLINE_REPLACE);
-    return comment.trim();
+    return CommentReformatting.of(comment)
+        .reformat(CommentPatterns.PROTO_LINK_PATTERN, PROTO_TO_RUBY_DOC)
+        .reformatCloudMarkdownLinks("{%s}[%s]")
+        .reformatAbsoluteMarkdownLinks("{%s}[%s]")
+        .reformat(CommentPatterns.HEADLINE_PATTERN, HEADLINE_REPLACE)
+        .toString()
+        .trim();
   }
 
   private static String protoToRubyDoc(String comment) {

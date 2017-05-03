@@ -32,10 +32,10 @@ public class JSCommentReformatter implements CommentReformatter {
 
   @Override
   public String reformat(String comment) {
-    comment =
-        CommentReformatting.reformatPattern(
-            comment, CommentPatterns.PROTO_LINK_PATTERN, PROTO_TO_JS_DOC);
-    comment = CommentReformatting.reformatCloudMarkdownLinks(comment, "[%s](%s)");
-    return comment.trim();
+    return CommentReformatting.of(comment)
+        .reformat(CommentPatterns.PROTO_LINK_PATTERN, PROTO_TO_JS_DOC)
+        .reformatCloudMarkdownLinks("[%s](%s)")
+        .toString()
+        .trim();
   }
 }
