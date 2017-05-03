@@ -11,10 +11,12 @@
   )
 
   import (
+    "testing"
+
     "cloud.google.com/go/internal/testutil"
     "golang.org/x/net/context"
     "google.golang.org/api/iterator"
-    "testing"
+    "google.golang.org/api/option"
   )
 
   var _ = iterator.Done
@@ -23,13 +25,17 @@
     if testing.Short() {
       t.Skip("skipping smoke test in short mode")
     }
+    ctx := context.Background()
+    ts := testutil.TokenSource(ctx, DefaultAuthScopes()...)
+    if ts == nil {
+      t.Skip("Integration tests skipped. See CONTRIBUTING.md for details")
+    }
 
     projectId := testutil.ProjID()
     uidSpace := testutil.NewUIDSpace("{@view.name}")
     _, _ = projectId, uidSpace
 
-    ctx := context.Background()
-    c, err := New{@view.apiClassName}(ctx)
+    c, err := {@view.method.serviceConstructorName}(ctx, option.WithTokenSource(ts))
     if err != nil {
       t.Fatal(err)
     }
