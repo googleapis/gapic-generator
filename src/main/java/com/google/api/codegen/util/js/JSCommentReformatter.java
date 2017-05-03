@@ -16,44 +16,26 @@ package com.google.api.codegen.util.js;
 
 import com.google.api.codegen.CommentPatterns;
 import com.google.api.codegen.util.CommentReformatter;
+import com.google.api.codegen.util.CommentReformatting;
+import com.google.common.base.Function;
 import java.util.regex.Matcher;
 
 public class JSCommentReformatter implements CommentReformatter {
+
+  private static Function<Matcher, String> PROTO_TO_JS_DOC =
+      new Function<Matcher, String>() {
+        @Override
+        public String apply(Matcher matcher) {
+          return Matcher.quoteReplacement(String.format("{@link %s}", matcher.group(1)));
+        }
+      };
+
   @Override
   public String reformat(String comment) {
-    comment = reformatProtoMarkdownLinks(comment);
-    comment = reformatCloudMarkdownLinks(comment);
+    comment =
+        CommentReformatting.reformatPattern(
+            comment, CommentPatterns.PROTO_LINK_PATTERN, PROTO_TO_JS_DOC);
+    comment = CommentReformatting.reformatCloudMarkdownLinks(comment, "[%s](%s)");
     return comment.trim();
-  }
-
-  /** Returns a string with all proto markdown links formatted to JSDoc style. */
-  private String reformatProtoMarkdownLinks(String comment) {
-    StringBuffer sb = new StringBuffer();
-    Matcher m = CommentPatterns.PROTO_LINK_PATTERN.matcher(comment);
-    if (!m.find()) {
-      return comment;
-    }
-    do {
-      // proto display name may contain '$' which needs to be escaped using Matcher.quoteReplacement
-      m.appendReplacement(sb, Matcher.quoteReplacement(String.format("{@link %s}", m.group(1))));
-    } while (m.find());
-    m.appendTail(sb);
-    return sb.toString();
-  }
-
-  /** Returns a string with all cloud markdown links formatted to JSDoc style. */
-  private String reformatCloudMarkdownLinks(String comment) {
-    StringBuffer sb = new StringBuffer();
-    Matcher m = CommentPatterns.CLOUD_LINK_PATTERN.matcher(comment);
-    if (!m.find()) {
-      return comment;
-    }
-    do {
-      String url = "https://cloud.google.com" + m.group(2);
-      // cloud markdown links may contain '$' which needs to be escaped using Matcher.quoteReplacement
-      m.appendReplacement(sb, Matcher.quoteReplacement(String.format("[%s](%s)", m.group(1), url)));
-    } while (m.find());
-    m.appendTail(sb);
-    return sb.toString();
   }
 }
