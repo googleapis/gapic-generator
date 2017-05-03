@@ -89,6 +89,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
   private final ServiceMessages serviceMessages = new ServiceMessages();
   private final ServiceTransformer serviceTransformer = new ServiceTransformer();
+  private final ProductServiceConfig productServiceConfig = new ProductServiceConfig();
   private final GapicCodePathMapper pathMapper;
 
   public GoGapicSurfaceTransformer(GapicCodePathMapper pathMapper) {
@@ -178,10 +179,8 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     }
     view.lroDetailViews(new ArrayList<LongRunningOperationDetailView>(lros.values()));
 
-    ProductServiceConfig productServiceConfig = new ProductServiceConfig();
-    view.serviceAddress(productServiceConfig.getServiceAddress(apiInterface));
+    view.serviceAddress(productServiceConfig.getServiceAddress(apiInterface.getModel()));
     view.servicePort(productServiceConfig.getServicePort());
-    view.authScopes(productServiceConfig.getAuthScopes(apiInterface));
 
     view.stubs(grpcStubTransformer.generateGrpcStubs(context));
 
@@ -238,6 +237,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
         CommonRenderingUtil.getDocLines(
             model.getServiceConfig().getDocumentation().getSummary(), COMMENT_LINE_LENGTH));
     packageInfo.domainLayerLocation(productConfig.getDomainLayerLocation());
+    packageInfo.authScopes(productServiceConfig.getAuthScopes(model));
 
     packageInfo.fileHeader(
         fileHeaderTransformer.generateFileHeader(

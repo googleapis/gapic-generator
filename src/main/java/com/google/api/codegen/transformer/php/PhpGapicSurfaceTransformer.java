@@ -117,10 +117,11 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     String name = namer.getApiWrapperClassName(context.getInterfaceConfig());
     xapiClass.name(name);
     ProductServiceConfig productServiceConfig = new ProductServiceConfig();
-    xapiClass.serviceAddress(productServiceConfig.getServiceAddress(context.getInterface()));
+    xapiClass.serviceAddress(
+        productServiceConfig.getServiceAddress(context.getInterface().getModel()));
     xapiClass.servicePort(productServiceConfig.getServicePort());
-    xapiClass.serviceTitle(productServiceConfig.getTitle(context.getInterface()));
-    xapiClass.authScopes(productServiceConfig.getAuthScopes(context.getInterface()));
+    xapiClass.serviceTitle(productServiceConfig.getTitle(context.getInterface().getModel()));
+    xapiClass.authScopes(productServiceConfig.getAuthScopes(context.getInterface().getModel()));
 
     xapiClass.pathTemplates(pathTemplateTransformer.generatePathTemplates(context));
     xapiClass.formatResourceFunctions(
