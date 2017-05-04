@@ -22,16 +22,16 @@ func main() {
   ctx := context.Background()
 
   c := &http.Client{}
-  if err != nil {
-    log.Fatal(err)
-  }
 
   fooService, err := foo.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
-  resp, err := fooService.Baz.Get().Context(ctx).Do()
+  // A string.
+  foobar := []string{}  // TODO: Update placeholder value.
+
+  resp, err := fooService.Bar.Get(foobar).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }

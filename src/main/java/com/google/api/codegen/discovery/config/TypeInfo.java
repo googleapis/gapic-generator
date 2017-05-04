@@ -59,6 +59,8 @@ public abstract class TypeInfo {
     return new AutoValue_TypeInfo.Builder();
   }
 
+  public abstract Builder toBuilder();
+
   @AutoValue.Builder
   public abstract static class Builder {
 

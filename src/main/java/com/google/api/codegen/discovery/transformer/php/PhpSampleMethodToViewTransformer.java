@@ -207,7 +207,7 @@ public class PhpSampleMethodToViewTransformer implements SampleMethodToViewTrans
       name = symbolTable.getNewSymbol(name);
     }
     String defaultValue;
-    if (!Strings.isNullOrEmpty(field.defaultValue())) {
+    if (!Strings.isNullOrEmpty(field.defaultValue()) && !field.type().isArray()) {
       defaultValue = field.defaultValue();
     } else {
       defaultValue = typeTable.getZeroValueAndSaveNicknameFor(field.type());

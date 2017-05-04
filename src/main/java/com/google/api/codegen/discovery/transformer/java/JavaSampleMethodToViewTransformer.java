@@ -200,7 +200,7 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
 
     TypeInfo typeInfo = field.type();
     String defaultValue;
-    if (!Strings.isNullOrEmpty(field.defaultValue())) {
+    if (!Strings.isNullOrEmpty(field.defaultValue()) && !field.type().isArray()) {
       defaultValue = field.defaultValue();
     } else {
       defaultValue = typeTable.getZeroValueAndSaveNicknameFor(typeInfo);
