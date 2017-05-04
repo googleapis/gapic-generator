@@ -111,6 +111,7 @@ public class PythonTypeTable implements TypeTable {
       // Short name already there.
       String oldModuleName = usedShortNames.get(shortName);
       if (moduleName.equals(oldModuleName)) {
+        // New alias for existing module import, no clash
         moduleImports.put(moduleName, alias);
         return alias.getNickname();
       }
@@ -120,6 +121,7 @@ public class PythonTypeTable implements TypeTable {
       String disambiguatedNewShortName = disambiguate(moduleName, shortName);
 
       if (!disambiguatedOldShortName.equals(disambiguatedNewShortName)) {
+        // Names were not mangled, replace old imports with disambiguated
         usedShortNames.remove(shortName);
         updateOldImports(disambiguatedOldShortName, moduleImports.removeAll(oldModuleName));
       }
@@ -130,6 +132,7 @@ public class PythonTypeTable implements TypeTable {
     }
 
     if (moduleImports.containsKey(moduleName)) {
+      // Use existing local name for already used module
       String newShortName = usedShortNames.inverse().get(moduleName);
       return getAndSaveNicknameFor(
           TypeAlias.createAliasedImport(alias.getFullName(), newShortName + "." + className));
@@ -140,6 +143,20 @@ public class PythonTypeTable implements TypeTable {
     return alias.getNickname();
   }
 
+  /* Attempts to disambiguate an import by changing the shortName by applying a number of
+   * strategies in sequence. If a strategy succeeds in modifying the shortName corresponding to the
+   * import, subsequent strategies are not attempted. In the order that they are attempted,
+   * these strategies are:
+   *
+   * Move the highest-level single package name not already present in the alias into the alias:
+   *   "from foo import bar as baz" ====> "from foo import bar as foo_baz"
+   *   "from foo.bar import baz as bar_baz" ====> "from foo.bar import baz as foo_bar_baz"
+   *
+   * Mangle with a single underscore:
+   *   "import foo as bar" ====> "import foo as bar_"
+   *   "from foo import bar as foo_bar" ====> "from foo import bar as foo_bar_"
+   *   "import foo as bar_" ====> "import foo as bar__"
+   */
   private String disambiguate(String moduleName, String localName) {
     List<String> nameParts = Splitter.on(".").splitToList(moduleName);
     String localNamePackagePrefix = "";
