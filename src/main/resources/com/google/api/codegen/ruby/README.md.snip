@@ -1,47 +1,54 @@
+@extends "ruby/method_sample.snip"
+
 @snippet generate(metadata)
-  {@metadata.fullName} for Ruby
-  =================================================
+  {@title(metadata)}
 
-  {@metadata.fullName} uses [Google API extensions][google-gax] to provide an
-  easy-to-use client library for the [{@metadata.fullName}][] ({@metadata.majorVersion}) defined in the [googleapis][] git repository
+  {@quickStart(metadata)}
 
+  {@commonLinkDeclarations(metadata)}
+@end
 
-  [googleapis]: https://github.com/googleapis/googleapis/tree/master/{@metadata.protoPath}
-  [google-gax]: https://github.com/googleapis/gax-ruby
-  [{@metadata.fullName}]: https://developers.google.com/apis-explorer/?hl=en_US#p/{@metadata.discoveryApiName}/{@metadata.majorVersion}/
+@private title(metadata)
+  @# Ruby Client for {@metadata.fullName} ({@metadata.developmentStatus})
 
-  Getting started
-  ---------------
+  Idiomatic Ruby client for [{@metadata.fullName}][Product Documentation]
 
-  {@metadata.identifier} will allow you to connect to the [{@metadata.fullName}][] and access all its methods.
+  - [Client Library Documentation][]
+  - [Product Documentation][]
+@end
 
-  In order to achieve so, you need to set up authentication, as well as install the library locally.
+@private quickStart(metadata)
+  @## Quick Start
+  In order to use this library, you first need to go through the following steps:
 
+  - [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
+  - [Enable the {@metadata.shortName} api.](https://console.cloud.google.com/apis/{@metadata.shortName})
+  - [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/@#/docs/google-cloud/master/guides/authentication)
 
-  Setup Authentication
-  --------------------
+  @### Installation
+  ```
+  $ gem install {@metadata.identifier}
+  ```
 
-  To authenticate all of your API calls, first install and setup the [Google Cloud SDK][].
-  Once done, you can then run the following command in your terminal:
+  @### Preview
+  {@exampleMethods(metadata.exampleMethods)}
 
-      $ gcloud beta auth application-default login
+  @### Next Steps
+  - Read the [Client Library Documentation][] for {@metadata.fullName} to see other available methods on the client.
+  - Read the [{@metadata.fullName} Product documentation][Product Documentation] to learn more about the product and see How-to Guides.
+  - View this [repository's main README](https://github.com/GoogleCloudPlatform/google-cloud-ruby/blob/master/README.md) to see the full list of Cloud APIs that we cover.
+@end
 
-  or
+@private exampleMethods(methods)
+  @join method : methods on BREAK
+    @#### {@method.apiClassName}
+    ```rb
+     {@sampleCode_(method)}
+    ```
+  @end
+@end
 
-      $ gcloud auth login
-
-  Please see the [gcloud beta auth application-default login][] to find documentation showing the difference between these commands.
-
-  [Google Cloud SDK]: https://cloud.google.com/sdk/
-  [gcloud beta auth application-default login]: https://cloud.google.com/sdk/gcloud/reference/beta/auth/application-default/login
-
-
-  Installation
-  -------------------
-
-  Install this library using gem:
-
-      $ [sudo] gem install {@metadata.identifier}
-
-  At this point you are all set to continue.
+@private commonLinkDeclarations(metadata)
+  [Client Library Documentation]: https://googlecloudplatform.github.io/google-cloud-ruby/@#/docs/google-cloud-monitoring/latest/{@metadata.protoPath}
+  [Product Documentation]: https://cloud.google.com/{@metadata.shortName}
 @end

@@ -18,6 +18,7 @@ import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.config.VersionBound;
 import com.google.api.codegen.grpcmetadatagen.GenerationLayer;
 import com.google.api.codegen.grpcmetadatagen.PackageType;
+import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.FileHeaderView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
@@ -98,6 +99,9 @@ public abstract class PackageMetadataView implements ViewModel {
   public abstract boolean hasMultipleServices();
 
   public abstract boolean hasSmokeTests();
+
+  @Nullable
+  public abstract List<ApiMethodView> exampleMethods();
 
   // TODO(landrito) Currently only Ruby supports using fileHeaderView. Switch all metadata gen to
   // use this field.
@@ -201,6 +205,9 @@ public abstract class PackageMetadataView implements ViewModel {
 
     /** File header information such as copyright lines and license lines */
     public abstract Builder fileHeader(FileHeaderView val);
+
+    /** Methods to show smoke test examples for in the readme * */
+    public abstract Builder exampleMethods(List<ApiMethodView> vals);
 
     public abstract PackageMetadataView build();
   }
