@@ -23,7 +23,8 @@ public class PythonTypeTableTest {
   @Test
   public void testGetAndSaveNicknameFor_disambiguate_movePackage() {
     PythonTypeTable typeTable = new PythonTypeTable("foo.bar");
-    typeTable.getAndSaveNicknameFor(TypeAlias.create("a.c.D", "c.D"));
+    Truth.assertThat(typeTable.getAndSaveNicknameFor(TypeAlias.create("a.c.D", "c.D")))
+        .isEqualTo("c.D");
     Truth.assertThat(typeTable.getAndSaveNicknameFor(TypeAlias.create("b.c.E", "c.E")))
         .isEqualTo("b_c.E");
   }
@@ -31,7 +32,8 @@ public class PythonTypeTableTest {
   @Test
   public void testGetAndSaveNicknameFor_disambiguate_move2Packages() {
     PythonTypeTable typeTable = new PythonTypeTable("foo.bar");
-    typeTable.getAndSaveNicknameFor(TypeAlias.create("a.c.d.E", "c_d.E"));
+    Truth.assertThat(typeTable.getAndSaveNicknameFor(TypeAlias.create("a.c.d.E", "c_d.E")))
+        .isEqualTo("c_d.E");
     Truth.assertThat(typeTable.getAndSaveNicknameFor(TypeAlias.create("b.c.d.F", "c_d.F")))
         .isEqualTo("b_c_d.F");
   }
@@ -39,7 +41,8 @@ public class PythonTypeTableTest {
   @Test
   public void testGetAndSaveNicknameFor_disambiguate_move3Packages() {
     PythonTypeTable typeTable = new PythonTypeTable("foo.bar");
-    typeTable.getAndSaveNicknameFor(TypeAlias.create("a.c.d.e.F", "c_d_e.F"));
+    Truth.assertThat(typeTable.getAndSaveNicknameFor(TypeAlias.create("a.c.d.e.F", "c_d_e.F")))
+        .isEqualTo("c_d_e.F");
     Truth.assertThat(typeTable.getAndSaveNicknameFor(TypeAlias.create("b.c.d.e.G", "c_d_e.G")))
         .isEqualTo("b_c_d_e.G");
   }
