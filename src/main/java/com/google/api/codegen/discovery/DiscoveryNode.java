@@ -27,10 +27,9 @@ import java.util.List;
  */
 public class DiscoveryNode {
 
-  private JsonNode jsonNode;
-
   private static JsonNode EMPTY_ARRAY_JSON_NODE = JsonNodeFactory.instance.arrayNode();
   private static JsonNode EMPTY_OBJECT_JSON_NODE = JsonNodeFactory.instance.objectNode();
+  private JsonNode jsonNode;
 
   /**
    * Constructs a DiscoveryNode that wraps jsonNode.
@@ -52,17 +51,12 @@ public class DiscoveryNode {
     return jsonNode.asText();
   }
 
-  /** @return the number of child nodes this node contains. */
-  public int size() {
-    return jsonNode.size();
-  }
-
   /**
    * Returns this node's elements. If this node is not an array node, an empty list is returned.
    *
    * @return a list of this node's elements.
    */
-  public List<DiscoveryNode> elements() {
+  public List<DiscoveryNode> getElements() {
     List<DiscoveryNode> elements = new ArrayList<>();
     for (Iterator<JsonNode> it = jsonNode.elements(); it.hasNext(); ) {
       elements.add(new DiscoveryNode(it.next()));
@@ -75,7 +69,7 @@ public class DiscoveryNode {
    *
    * @return a list of this node's field names.
    */
-  public List<String> fieldNames() {
+  public List<String> getFieldNames() {
     List<String> fieldNames = new ArrayList<>();
     for (Iterator<String> it = jsonNode.fieldNames(); it.hasNext(); ) {
       fieldNames.add(it.next());
@@ -150,5 +144,26 @@ public class DiscoveryNode {
     }
     Preconditions.checkArgument(jsonNode.get(fieldName).isTextual());
     return jsonNode.get(fieldName).asText();
+  }
+
+  /**
+   * Returns true if this node is an object node and if it has the key getFieldName.
+   *
+   * @param fieldName key of the child node.
+   * @return whether or not this node has the key getFieldName.
+   */
+  public boolean has(String fieldName) {
+    Preconditions.checkArgument(jsonNode.isObject());
+    return jsonNode.has(fieldName);
+  }
+
+  /** @return true if this node has no children. */
+  public boolean isEmpty() {
+    return jsonNode.size() == 0;
+  }
+
+  /** @return the number of child nodes this node contains. */
+  public int size() {
+    return jsonNode.size();
   }
 }
