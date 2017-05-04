@@ -112,6 +112,7 @@ public class PythonTypeTable implements TypeTable {
       String oldModuleName = usedShortNames.get(shortName);
       if (moduleName.equals(oldModuleName)) {
         // New alias for existing module import, no clash
+        // Name already in multimap, add alias
         moduleImports.put(moduleName, alias);
         return alias.getNickname();
       }
@@ -120,11 +121,8 @@ public class PythonTypeTable implements TypeTable {
       String disambiguatedOldShortName = disambiguate(oldModuleName, shortName);
       String disambiguatedNewShortName = disambiguate(moduleName, shortName);
 
-      if (!disambiguatedOldShortName.equals(disambiguatedNewShortName)) {
-        // Names were not mangled, replace old imports with disambiguated
-        usedShortNames.remove(shortName);
-        updateOldImports(disambiguatedOldShortName, moduleImports.removeAll(oldModuleName));
-      }
+      usedShortNames.remove(shortName);
+      updateOldImports(disambiguatedOldShortName, moduleImports.removeAll(oldModuleName));
 
       return getAndSaveNicknameFor(
           TypeAlias.createAliasedImport(
@@ -143,25 +141,15 @@ public class PythonTypeTable implements TypeTable {
     return alias.getNickname();
   }
 
-  /* Attempts to disambiguate an import by changing the shortName by applying a number of
-   * strategies in sequence. If a strategy succeeds in modifying the shortName corresponding to the
-   * import, subsequent strategies are not attempted. In the order that they are attempted,
-   * these strategies are:
-   *
-   * Move the highest-level single package name not already present in the alias into the alias:
+  /* Attempts to disambiguate an import by moving the highest-level single package name not already
+   * present in the alias into the alias:
    *   "from foo import bar as baz" ====> "from foo import bar as foo_baz"
    *   "from foo.bar import baz as bar_baz" ====> "from foo.bar import baz as foo_bar_baz"
-   *
-   * Mangle with a single underscore:
-   *   "import foo as bar" ====> "import foo as bar_"
-   *   "from foo import bar as foo_bar" ====> "from foo import bar as foo_bar_"
-   *   "import foo as bar_" ====> "import foo as bar__"
    */
   private String disambiguate(String moduleName, String localName) {
     List<String> nameParts = Splitter.on(".").splitToList(moduleName);
     String localNamePackagePrefix = "";
 
-    // Move the highest-level single package name not already present in the alias into the alias.
     for (int i = nameParts.size() - 2; i >= 0; --i) {
       localNamePackagePrefix = nameParts.get(i) + "_" + localNamePackagePrefix;
       if (!localName.contains(localNamePackagePrefix)) {
@@ -169,8 +157,7 @@ public class PythonTypeTable implements TypeTable {
       }
     }
 
-    // If all packages are present in the alias, mangle.
-    return localName + "_";
+    throw new IllegalStateException("Can't disambiguate a module (" + moduleName + ") with itself");
   }
 
   private void updateOldImports(String shortName, Collection<TypeAlias> aliases) {
