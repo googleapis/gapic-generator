@@ -107,6 +107,9 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
         .build();
   }
 
+  // Generates methods used as examples for the README.md file.
+  // Note: This is based on sample gen method calls. In the future, the example
+  // methods may be configured separately.
   private List<ApiMethodView> generateExampleMethods(
       Model model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ApiMethodView> exampleMethods = ImmutableList.builder();
