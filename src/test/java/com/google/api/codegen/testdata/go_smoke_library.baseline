@@ -61,10 +61,7 @@ func TestLibraryServiceSmoke(t *testing.T) {
       Book: book,
   }
 
-  resp, err := c.UpdateBook(ctx, request)
-  if err != nil {
+  if _, err := c.UpdateBook(ctx, request); err != nil {
     t.Error(err)
-  } else {
-    t.Log(resp)
   }
 }
