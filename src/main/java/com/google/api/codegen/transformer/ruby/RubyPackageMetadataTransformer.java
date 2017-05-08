@@ -104,6 +104,8 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
         .developmentStatus(
             namer.getReleaseAnnotation(packageConfig.releaseLevel(TargetLanguage.RUBY)))
         .exampleMethods(exampleMethods)
+        .targetLanguage("Ruby")
+        .metapackageIdentifier("google-cloud-ruby")
         .build();
   }
 

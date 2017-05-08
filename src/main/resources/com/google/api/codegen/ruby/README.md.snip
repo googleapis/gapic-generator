@@ -1,57 +1,19 @@
+@extends "readme.snip"
 @extends "ruby/method_sample.snip"
 
 @snippet generate(metadata)
-  {@title(metadata)}
-
-  {@quickStart(metadata)}
-
-  {@commonLinkDeclarations(metadata)}
-@end
-
-@private title(metadata)
-  @# Ruby Client for {@metadata.fullName} ({@metadata.developmentStatus})
-
-  Idiomatic Ruby client for [{@metadata.fullName}][Product Documentation]
-
-  - [Client Library Documentation][]
-  - [Product Documentation][]
-@end
-
-@private quickStart(metadata)
-  @## Quick Start
-  In order to use this library, you first need to go through the following steps:
-
-  - [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
-  - [Enable the {@metadata.shortName} api.](https://console.cloud.google.com/apis/api/{@metadata.shortName})
-  - [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/@#/docs/google-cloud/master/guides/authentication)
-
-  @### Installation
-  ```
-  $ gem install {@metadata.identifier}
-  ```
-
-  {@exampleMethods(metadata.exampleMethods)}
-
-  @### Next Steps
-  - Read the [Client Library Documentation][] for {@metadata.fullName} to see other available methods on the client.
-  - Read the [{@metadata.fullName} Product documentation][Product Documentation] to learn more about the product and see How-to Guides.
-  - View this [repository's main README](https://github.com/GoogleCloudPlatform/google-cloud-ruby/blob/master/README.md) to see the full list of Cloud APIs that we cover.
+  {@readme(metadata, exampleMethods(metadata.exampleMethods), installationLines(metadata))}
 @end
 
 @private exampleMethods(methods)
-  @if methods
-    @### Preview
-
-  @end
   @join method : methods on BREAK
     @#### {@method.apiClassName}
     ```rb
-     {@sampleCode_(method)}
+    {@sampleCode_(method)}
     ```
   @end
 @end
 
-@private commonLinkDeclarations(metadata)
-  [Client Library Documentation]: https://googlecloudplatform.github.io/google-cloud-ruby/@#/docs/{@metadata.identifier}/latest/{@metadata.protoPath}
-  [Product Documentation]: https://cloud.google.com/{@metadata.shortName}
+@private installationLines(metadata)
+  $ gem install {@metadata.identifier}
 @end

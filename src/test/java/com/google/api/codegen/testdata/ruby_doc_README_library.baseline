@@ -2,16 +2,15 @@
 # Ruby Client for Google Example Library API (Alpha)
 
 Idiomatic Ruby client for [Google Example Library API][Product Documentation]
-
 - [Client Library Documentation][]
 - [Product Documentation][]
 
 ## Quick Start
 In order to use this library, you first need to go through the following steps:
 
-- [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
-- [Enable the library api.](https://console.cloud.google.com/apis/api/library)
-- [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
+1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
+2. [Enable the library api.](https://console.cloud.google.com/apis/api/library)
+3. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
 
 ### Installation
 ```
@@ -21,18 +20,18 @@ $ gem install library
 ### Preview
 #### LibraryServiceClient
 ```rb
- require "library/v1"
+require "library/v1"
 
- Book = Google::Example::Library::V1::Book
- FieldMask = Google::Protobuf::FieldMask
- LibraryServiceClient = Library::V1::LibraryServiceClient
- Rating = Google::Example::Library::V1::Book::Rating
+Book = Google::Example::Library::V1::Book
+FieldMask = Google::Protobuf::FieldMask
+LibraryServiceClient = Library::V1::LibraryServiceClient
+Rating = Google::Example::Library::V1::Book::Rating
 
- library_service_client = LibraryServiceClient.new
- formatted_name = LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)
- rating = Rating::GOOD
- book = Book.new(rating: rating)
- response = library_service_client.update_book(formatted_name, book)
+library_service_client = LibraryServiceClient.new
+formatted_name = LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)
+rating = Rating::GOOD
+book = Book.new(rating: rating)
+response = library_service_client.update_book(formatted_name, book)
 ```
 
 ### Next Steps

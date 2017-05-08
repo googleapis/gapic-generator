@@ -118,6 +118,12 @@ public abstract class PackageMetadataView implements ViewModel {
   @Nullable
   public abstract List<String> typeModules();
 
+  @Nullable
+  public abstract String targetLanguage();
+
+  @Nullable
+  public abstract String metapackageIdentifier();
+
   public static Builder newBuilder() {
     return new AutoValue_PackageMetadataView.Builder().hasSmokeTests(false);
   }
@@ -208,6 +214,14 @@ public abstract class PackageMetadataView implements ViewModel {
 
     /** Methods to show smoke test examples for in the readme * */
     public abstract Builder exampleMethods(List<ApiMethodView> vals);
+
+    /**
+     * The language that is being generated; primarily used in titles. First letter is uppercase.
+     */
+    public abstract Builder targetLanguage(String val);
+
+    /** The name of the metapackage identifier. E.g: google-cloud-{lang}. */
+    public abstract Builder metapackageIdentifier(String s);
 
     public abstract PackageMetadataView build();
   }
