@@ -15,6 +15,7 @@
 package com.google.api.codegen.discovery;
 
 import com.google.auto.value.AutoValue;
+import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,30 +31,43 @@ import javax.annotation.Nullable;
 public abstract class Method implements Comparable<Method> {
 
   /**
-   * Returns a method constructed from root and resourceHierarchy.
+   * Returns a method constructed from root.
    *
    * @param root the root node to parse.
-   * @param resourceHierarchy an in-order list of parent resources, or an empty list if none.
+   * @param path the full path to this node (ex: "resources.foo.methods.bar").
    * @return a method.
    */
-  public static Method from(DiscoveryNode root, List<String> resourceHierarchy) {
+  public static Method from(DiscoveryNode root, String path) {
     String description = root.getString("description");
     String httpMethod = root.getString("httpMethod");
     String id = root.getString("id");
     List<String> parameterOrder = new ArrayList<>();
-    for (DiscoveryNode idNode : root.getArray("parameterOrder").elements()) {
-      parameterOrder.add(idNode.asText());
+    for (DiscoveryNode nameNode : root.getArray("parameterOrder").getElements()) {
+      parameterOrder.add(nameNode.asText());
     }
-    Map<String, Schema> parameters = new HashMap<>();
+
     DiscoveryNode parametersNode = root.getObject("parameters");
-    for (String name : parametersNode.fieldNames()) {
-      Schema schema = Schema.from(parametersNode.getObject(name));
+    HashMap<String, Schema> parameters = new HashMap<>();
+    for (String name : root.getObject("parameters").getFieldNames()) {
+      Schema schema = Schema.from(parametersNode.getObject(name), path + ".parameters." + name);
+      // TODO: Remove these checks once we're sure that parameters can't be objects/arrays.
+      // This is based on the assumption that these types can't be serialized as a query or path parameter.
+      Preconditions.checkState(schema.type() != Schema.Type.ANY);
+      Preconditions.checkState(schema.type() != Schema.Type.ARRAY);
+      Preconditions.checkState(schema.type() != Schema.Type.OBJECT);
       parameters.put(name, schema);
     }
-    Schema request = Schema.from(root.getObject("request"));
-    Schema response = Schema.from(root.getObject("response"));
+
+    Schema request = Schema.from(root.getObject("request"), path + ".request");
+    if (request.reference().isEmpty()) {
+      request = null;
+    }
+    Schema response = Schema.from(root.getObject("response"), path + ".response");
+    if (response.reference().isEmpty()) {
+      response = null;
+    }
     List<String> scopes = new ArrayList<>();
-    for (DiscoveryNode scopeNode : root.getArray("scopes").elements()) {
+    for (DiscoveryNode scopeNode : root.getArray("scopes").getElements()) {
       scopes.add(scopeNode.asText());
     }
     boolean supportsMediaDownload = root.getBoolean("supportsMediaDownload");
@@ -65,12 +79,17 @@ public abstract class Method implements Comparable<Method> {
         id,
         parameterOrder,
         parameters,
-        resourceHierarchy,
+        path,
         request,
         response,
         scopes,
         supportsMediaDownload,
         supportsMediaUpload);
+  }
+
+  @Override
+  public int compareTo(Method other) {
+    return id().compareTo(other.id());
   }
 
   /** @return the description. */
@@ -82,14 +101,14 @@ public abstract class Method implements Comparable<Method> {
   /** @return the ID. */
   public abstract String id();
 
-  /** @return the parameter order. */
+  /** @return the order of parameter names. */
   public abstract List<String> parameterOrder();
 
   /** @return the map of parameter names to schemas. */
   public abstract Map<String, Schema> parameters();
 
-  /** @return the in-order list of parent resources. */
-  public abstract List<String> resourceHierarchy();
+  /** @return the fully qualified path to this method. */
+  public abstract String path();
 
   /** @return the request schema, or null if none. */
   @Nullable
@@ -107,9 +126,4 @@ public abstract class Method implements Comparable<Method> {
 
   /** @return whether or not the method supports media upload. */
   public abstract boolean supportsMediaUpload();
-
-  @Override
-  public int compareTo(Method other) {
-    return id().compareTo(other.id());
-  }
 }

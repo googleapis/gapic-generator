@@ -23,39 +23,43 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import org.junit.Test;
 
 public class MethodTest {
   @Test
-  public void testMethod() throws IOException {
+  public void testMethodFromJson() throws IOException {
     String file = "src/test/java/com/google/api/codegen/discoverytestdata/method_.json";
     Reader reader = new InputStreamReader(new FileInputStream(new File(file)));
 
     ObjectMapper mapper = new ObjectMapper();
     JsonNode root = mapper.readTree(reader);
 
-    List<String> resourceHierarchy = Arrays.asList("bar");
-    Method method = Method.from(new DiscoveryNode(root), resourceHierarchy);
+    Method method = Method.from(new DiscoveryNode(root), "root");
 
     Truth.assertThat(method.description()).isEqualTo("Get a baz!");
     Truth.assertThat(method.httpMethod()).isEqualTo("GET");
     Truth.assertThat(method.id()).isEqualTo("foo.bar.baz.get");
-    Truth.assertThat(method.parameterOrder()).isEqualTo(Arrays.asList("p1", "p2"));
+    Truth.assertThat(method.parameterOrder()).isEqualTo(Arrays.asList("p3", "p1"));
 
     Map<String, Schema> parameters = method.parameters();
-
     Truth.assertThat(parameters.get("p1").type()).isEqualTo(Schema.Type.STRING);
     Truth.assertThat(parameters.get("p1").required()).isTrue();
     Truth.assertThat(parameters.get("p1").location()).isEqualTo("path");
+    Truth.assertThat(parameters.get("p1").path()).isEqualTo("root.parameters.p1");
 
     Truth.assertThat(parameters.get("p2").type()).isEqualTo(Schema.Type.STRING);
     Truth.assertThat(parameters.get("p2").location()).isEqualTo("query");
 
-    Truth.assertThat(method.resourceHierarchy()).isEqualTo(resourceHierarchy);
+    Truth.assertThat(parameters.get("p3").type()).isEqualTo(Schema.Type.INTEGER);
+    Truth.assertThat(parameters.get("p3").required()).isTrue();
+
     Truth.assertThat(method.request().reference()).isEqualTo("GetBazRequest");
     Truth.assertThat(method.response().reference()).isEqualTo("Baz");
+
+    Truth.assertThat(method.request().path()).isEqualTo("root.request");
+    Truth.assertThat(method.response().path()).isEqualTo("root.response");
+
     Truth.assertThat(method.scopes())
         .isEqualTo(Arrays.asList("https://www.example.com/foo", "https://www.example.com/bar"));
     Truth.assertThat(method.supportsMediaDownload()).isTrue();

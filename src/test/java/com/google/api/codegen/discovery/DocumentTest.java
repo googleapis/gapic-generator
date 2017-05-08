@@ -22,51 +22,87 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.junit.Test;
 
 public class DocumentTest {
-  @Test
-  public void testDocument() throws IOException {
-    String file = "src/test/java/com/google/api/codegen/discoverytestdata/document.json";
-    Reader reader = new InputStreamReader(new FileInputStream(new File(file)));
+
+  private Document document(String filename) throws IOException {
+    Reader reader = new InputStreamReader(new FileInputStream(new File(filename)));
 
     ObjectMapper mapper = new ObjectMapper();
     JsonNode root = mapper.readTree(reader);
 
-    Document document = Document.from(new DiscoveryNode(root));
+    return Document.from(new DiscoveryNode(root));
+  }
+
+  @Test
+  public void testDocumentFromJson() throws IOException {
+    String filename = "src/test/java/com/google/api/codegen/discoverytestdata/document_.json";
+    Document document = document(filename);
+
     Truth.assertThat(document.description()).isEqualTo("My API!");
 
     List<Method> methods = document.methods();
     Collections.sort(methods);
 
+    Truth.assertThat(document.authType()).isEqualTo(Document.AuthType.OAUTH_3L);
     Truth.assertThat(methods.get(0).description()).isEqualTo("Get a baz.");
     Truth.assertThat(methods.get(0).id()).isEqualTo("myapi.bar.baz.get");
-    Truth.assertThat(methods.get(0).parameterOrder()).isEqualTo(Arrays.asList("p1"));
-    Truth.assertThat(methods.get(0).parameters().get("p1").type()).isEqualTo(Schema.Type.BOOLEAN);
-    Truth.assertThat(methods.get(0).parameters().get("p1").required()).isTrue();
-    Truth.assertThat(methods.get(0).parameters().get("p1").location()).isEqualTo("query");
-    Truth.assertThat(methods.get(0).resourceHierarchy()).isEqualTo(Arrays.asList("bar", "baz"));
+    Truth.assertThat(methods.get(0).parameterOrder()).isEqualTo(Collections.singletonList("p1"));
+    Truth.assertThat(methods.get(0).path()).isEqualTo("resources.bar.methods.baz");
+
+    Map<String, Schema> parameters = methods.get(0).parameters();
+    Truth.assertThat(parameters.get("p1").type()).isEqualTo(Schema.Type.BOOLEAN);
+    Truth.assertThat(parameters.get("p1").required()).isTrue();
+    Truth.assertThat(parameters.get("p1").location()).isEqualTo("query");
+    Truth.assertThat(parameters.get("p1").path())
+        .isEqualTo("resources.bar.methods.baz.parameters.p1");
 
     Truth.assertThat(methods.get(1).description()).isEqualTo("Insert a foo.");
     Truth.assertThat(methods.get(1).id()).isEqualTo("myapi.foo.insert");
-    Truth.assertThat(methods.get(1).resourceHierarchy()).isEqualTo(Arrays.asList("foo"));
+    Truth.assertThat(methods.get(1).parameters().isEmpty()).isTrue();
+    Truth.assertThat(methods.get(1).request()).isNull();
+    Truth.assertThat(methods.get(1).response()).isNull();
+    Truth.assertThat(methods.get(1).path()).isEqualTo("methods.foo");
 
     Truth.assertThat(document.name()).isEqualTo("myapi");
+    Truth.assertThat(document.canonicalName()).isEqualTo("My API");
     Truth.assertThat(document.revision()).isEqualTo("20170419");
     Truth.assertThat(document.rootUrl()).isEqualTo("https://example.com");
 
     Map<String, Schema> schemas = document.schemas();
 
     Truth.assertThat(schemas.get("GetBazRequest").type()).isEqualTo(Schema.Type.STRING);
+    Truth.assertThat(schemas.get("GetBazRequest").path()).isEqualTo("schemas.GetBazRequest");
+    Truth.assertThat(schemas.get("GetBazRequest").properties().get("foo").path())
+        .isEqualTo("schemas.GetBazRequest.properties.foo");
+
     Truth.assertThat(schemas.get("Baz").type()).isEqualTo(Schema.Type.STRING);
 
     Truth.assertThat(document.servicePath()).isEqualTo("/api");
     Truth.assertThat(document.title()).isEqualTo("My API!");
     Truth.assertThat(document.version()).isEqualTo("v1");
     Truth.assertThat(document.versionModule()).isTrue();
+  }
+
+  @Test
+  public void testAuthType() throws IOException {
+    String filename = "src/test/java/com/google/api/codegen/discoverytestdata/auth_adc.json";
+    Document document = document(filename);
+
+    Truth.assertThat(document.authType()).isEqualTo(Document.AuthType.ADC);
+
+    filename = "src/test/java/com/google/api/codegen/discoverytestdata/auth_3lo.json";
+    document = document(filename);
+
+    Truth.assertThat(document.authType()).isEqualTo(Document.AuthType.OAUTH_3L);
+
+    filename = "src/test/java/com/google/api/codegen/discoverytestdata/auth_api_key.json";
+    document = document(filename);
+
+    Truth.assertThat(document.authType()).isEqualTo(Document.AuthType.API_KEY);
   }
 }
