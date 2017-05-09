@@ -7,18 +7,17 @@
 @end
 
 @private title(metadata)
-  @if metadata.hasMultipleServices
-    @# {@metadata.targetLanguage} Clients for {@metadata.fullName} ({@metadata.developmentStatus})
+    @# {@metadata.targetLanguage} Client{@plurality(metadata.hasMultipleServices)} for {@metadata.fullName} ({@metadata.developmentStatus})
 
-    Idiomatic {@metadata.targetLanguage} clients for [{@metadata.fullName}][Product Documentation]
-  @else
-    @# {@metadata.targetLanguage} Client for {@metadata.fullName} ({@metadata.developmentStatus})
-
-    Idiomatic {@metadata.targetLanguage} client for [{@metadata.fullName}][Product Documentation]
-  @end
-
+    Idiomatic {@metadata.targetLanguage} client{@plurality(metadata.hasMultipleServices)} for [{@metadata.fullName}][Product Documentation]
   - [Client Library Documentation][]
   - [Product Documentation][]
+@end
+
+@private plurality(isPlural)
+  @if isPlural
+    s
+  @end
 @end
 
 @private quickStart(metadata, samples, installationLines)
