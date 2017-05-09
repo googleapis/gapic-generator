@@ -17,12 +17,17 @@
 package com.google.gcloud.example;
 
 import com.google.api.core.BetaApi;
+import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.grpc.ChannelAndExecutor;
+import com.google.api.gax.grpc.ClientContext;
 import com.google.api.gax.grpc.UnaryCallable;
 import com.google.api.pathtemplate.PathTemplate;
+import com.google.auth.Credentials;
 import com.google.example.noPathTemplates.v1.IncrementRequest;
 import com.google.protobuf.Empty;
+import io.grpc.CallCredentials;
 import io.grpc.ManagedChannel;
+import io.grpc.auth.MoreCallCredentials;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -119,8 +124,20 @@ public class NoTemplatesApiServiceClient implements AutoCloseable {
     this.executor = channelAndExecutor.getExecutor();
     this.channel = channelAndExecutor.getChannel();
 
+    CredentialsProvider credentialsProvider = settings.getCredentialsProvider();
+    CallCredentials callCredentials = null;
+    if (credentialsProvider.getCredentials() != null) {
+      callCredentials = MoreCallCredentials.from(credentialsProvider.getCredentials());
+    }
+    ClientContext clientContext =
+        ClientContext.newBuilder()
+            .setExecutor(this.executor)
+            .setChannel(this.channel)
+            .setCallCredentials(callCredentials)
+            .build();
 
-    this.incrementCallable = UnaryCallable.create(settings.incrementSettings(), this.channel, this.executor);
+
+    this.incrementCallable = UnaryCallable.create(settings.incrementSettings(), clientContext);
 
     if (settings.getChannelProvider().shouldAutoClose()) {
       closeables.add(
