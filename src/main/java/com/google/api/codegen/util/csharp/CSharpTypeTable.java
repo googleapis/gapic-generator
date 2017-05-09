@@ -46,6 +46,7 @@ public class CSharpTypeTable implements TypeTable {
       String containerTypeName = fullName.substring(0, firstGenericOpenIndex);
       List<String> genericParamNames =
           Splitter.on(',')
+              .trimResults()
               .splitToList(fullName.substring(firstGenericOpenIndex + 1, lastGenericCloseIndex));
       return getContainerTypeName(
           containerTypeName, genericParamNames.toArray(new String[genericParamNames.size()]));

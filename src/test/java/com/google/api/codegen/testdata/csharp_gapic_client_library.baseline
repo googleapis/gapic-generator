@@ -5559,7 +5559,7 @@ namespace Google.Example.Library.V1
             Modify_DiscussBookRequestCallSettings(ref callSettings);
             BidirectionalStreamingSettings effectiveStreamingSettings =
                 streamingSettings ?? _callDiscussBook.StreamingSettings;
-            AsyncDuplexStreamingCall<DiscussBookRequest,  Comment> call =
+            AsyncDuplexStreamingCall<DiscussBookRequest, Comment> call =
                 _callDiscussBook.Call(callSettings);
             BufferedClientStreamWriter<DiscussBookRequest> writeBuffer =
                 new BufferedClientStreamWriter<DiscussBookRequest>(
@@ -5581,7 +5581,7 @@ namespace Google.Example.Library.V1
             /// instance associated with this streaming call.</param>
             public DiscussBookStreamImpl(
                 LibraryServiceClientImpl service,
-                AsyncDuplexStreamingCall<DiscussBookRequest,  Comment> call,
+                AsyncDuplexStreamingCall<DiscussBookRequest, Comment> call,
                 BufferedClientStreamWriter<DiscussBookRequest> writeBuffer)
             {
                 _service = service;
@@ -5599,7 +5599,7 @@ namespace Google.Example.Library.V1
             }
 
             /// <inheritdoc/>
-            public override AsyncDuplexStreamingCall<DiscussBookRequest,  Comment> GrpcCall { get; }
+            public override AsyncDuplexStreamingCall<DiscussBookRequest, Comment> GrpcCall { get; }
 
             /// <inheritdoc/>
             public override Task TryWriteAsync(DiscussBookRequest message) =>
