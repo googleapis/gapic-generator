@@ -396,8 +396,10 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
       Method method, ModelTypeTable typeTable, GapicMethodConfig methodConfig) {
     String responseTypeName =
         typeTable.getFullNameFor(methodConfig.getLongRunningConfig().getReturnType());
+    String metaTypeName =
+        typeTable.getFullNameFor(methodConfig.getLongRunningConfig().getMetadataType());
     return typeTable.getAndSaveNicknameForContainer(
-        "Google.LongRunning.Operation", responseTypeName);
+        "Google.LongRunning.Operation", responseTypeName, metaTypeName);
   }
 
   @Override
