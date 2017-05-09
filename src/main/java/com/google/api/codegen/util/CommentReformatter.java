@@ -14,7 +14,79 @@
  */
 package com.google.api.codegen.util;
 
-public interface CommentReformatter {
-  /** Reformats the given comment to match a language comment format */
-  String reformat(String comment);
+import com.google.api.codegen.CommentPatterns;
+import com.google.common.base.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class CommentReformatter {
+
+  public static String CLOUD_URL_PREFIX = "https://cloud.google.com";
+
+  private String comment;
+
+  private CommentReformatter(String comment) {
+    this.comment = comment;
+  }
+
+  public static CommentReformatter of(String comment) {
+    return new CommentReformatter(comment);
+  }
+
+  public CommentReformatter reformat(
+      Pattern pattern, Function<Matcher, String> replacementFunction) {
+    comment = reformatPattern(comment, pattern, replacementFunction);
+    return this;
+  }
+
+  public CommentReformatter replace(Pattern pattern, String replacement) {
+    comment = pattern.matcher(comment).replaceAll(replacement);
+    return this;
+  }
+
+  public CommentReformatter reformatAbsoluteMarkdownLinks(String linkFormat) {
+    comment =
+        reformatPattern(
+            comment, CommentPatterns.ABSOLUTE_LINK_PATTERN, reformatLinkFunction(linkFormat, ""));
+    return this;
+  }
+
+  public CommentReformatter reformatCloudMarkdownLinks(String linkFormat) {
+    comment =
+        reformatPattern(
+            comment,
+            CommentPatterns.CLOUD_LINK_PATTERN,
+            reformatLinkFunction(linkFormat, CLOUD_URL_PREFIX));
+    return this;
+  }
+
+  @Override
+  public String toString() {
+    return comment;
+  }
+
+  public static Function<Matcher, String> reformatLinkFunction(
+      final String linkFormat, final String urlPrefix) {
+    return new Function<Matcher, String>() {
+      @Override
+      public String apply(Matcher matcher) {
+        String url = urlPrefix + matcher.group(2);
+        return Matcher.quoteReplacement(String.format(linkFormat, matcher.group(1), url));
+      }
+    };
+  }
+
+  private static String reformatPattern(
+      String comment, Pattern pattern, Function<Matcher, String> replacementFunction) {
+    StringBuffer sb = new StringBuffer();
+    Matcher m = pattern.matcher(comment);
+    if (!m.find()) {
+      return comment;
+    }
+    do {
+      m.appendReplacement(sb, replacementFunction.apply(m));
+    } while (m.find());
+    m.appendTail(sb);
+    return sb.toString();
+  }
 }

@@ -16,10 +16,16 @@ package com.google.api.codegen.util.py;
 
 import com.google.api.codegen.CommentPatterns;
 import com.google.api.codegen.util.CommentReformatter;
+import com.google.api.codegen.util.LanguageCommentReformatter;
+import com.google.common.base.Function;
 import com.google.common.base.Splitter;
 import java.util.regex.Matcher;
 
-public class PythonCommentReformatter implements CommentReformatter {
+public class PythonCommentReformatter implements LanguageCommentReformatter {
+
+  private static Function<Matcher, String> PROTO_REPLACE_FUNCTION =
+      CommentReformatter.reformatLinkFunction("``%s``", "");
+
   @Override
   public String reformat(String comment) {
     boolean inCodeBlock = false;
@@ -53,58 +59,11 @@ public class PythonCommentReformatter implements CommentReformatter {
   }
 
   private String applyTransformations(String line) {
-    line = CommentPatterns.BACK_QUOTE_PATTERN.matcher(line).replaceAll("``");
-    line = reformatProtoMarkdownLinks(line);
-    line = reformatAbsoluteMarkdownLinks(line);
-    return reformatCloudMarkdownLinks(line);
-  }
-
-  /** Returns a string with all proto markdown links formatted to Sphinx style. */
-  private String reformatProtoMarkdownLinks(String comment) {
-    StringBuffer sb = new StringBuffer();
-    Matcher m = CommentPatterns.PROTO_LINK_PATTERN.matcher(comment);
-    if (!m.find()) {
-      return comment;
-    }
-    do {
-      // proto display name may contain '$' which needs to be escaped using Matcher.quoteReplacement
-      m.appendReplacement(sb, Matcher.quoteReplacement(String.format("``%s``", m.group(1))));
-    } while (m.find());
-    m.appendTail(sb);
-    return sb.toString();
-  }
-
-  /** Returns a string with all absolute markdown links formatted to Sphinx style. */
-  private String reformatAbsoluteMarkdownLinks(String comment) {
-    StringBuffer sb = new StringBuffer();
-    Matcher m = CommentPatterns.ABSOLUTE_LINK_PATTERN.matcher(comment);
-    if (!m.find()) {
-      return comment;
-    }
-    do {
-      // absolute markdown links may contain '$' which needs to be escaped using Matcher.quoteReplacement
-      m.appendReplacement(
-          sb, Matcher.quoteReplacement(String.format("`%s <%s>`_", m.group(1), m.group(2))));
-    } while (m.find());
-    m.appendTail(sb);
-    return sb.toString();
-  }
-
-  /** Returns a string with all cloud markdown links formatted to Sphinx style. */
-  private String reformatCloudMarkdownLinks(String comment) {
-    StringBuffer sb = new StringBuffer();
-    Matcher m = CommentPatterns.CLOUD_LINK_PATTERN.matcher(comment);
-    if (!m.find()) {
-      return comment;
-    }
-    do {
-      // cloud markdown links may contain '$' which needs to be escaped using Matcher.quoteReplacement
-      m.appendReplacement(
-          sb,
-          Matcher.quoteReplacement(
-              String.format("`%s <https://cloud.google.com%s>`_", m.group(1), m.group(2))));
-    } while (m.find());
-    m.appendTail(sb);
-    return sb.toString();
+    return CommentReformatter.of(line)
+        .replace(CommentPatterns.BACK_QUOTE_PATTERN, "``")
+        .reformat(CommentPatterns.PROTO_LINK_PATTERN, PROTO_REPLACE_FUNCTION)
+        .reformatAbsoluteMarkdownLinks("`%s <%s>`_")
+        .reformatCloudMarkdownLinks("`%s <%s>`_")
+        .toString();
   }
 }

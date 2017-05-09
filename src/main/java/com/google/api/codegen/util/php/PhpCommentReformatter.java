@@ -15,19 +15,20 @@
 package com.google.api.codegen.util.php;
 
 import com.google.api.codegen.util.CommentReformatter;
-import com.google.api.codegen.util.CommentReformatting;
-import com.google.common.escape.Escaper;
-import com.google.common.escape.Escapers;
+import com.google.api.codegen.util.LanguageCommentReformatter;
+import java.util.regex.Pattern;
 
-public class PhpCommentReformatter implements CommentReformatter {
-  /** Escaper for formatting PHP doc strings. */
-  private static final Escaper PHP_ESCAPER =
-      Escapers.builder().addEscape('*', "&#42;").addEscape('@', "&#64;").build();
+public class PhpCommentReformatter implements LanguageCommentReformatter {
+  public static final Pattern ASTERISK_PATTERN = Pattern.compile("\\*");
+  public static final Pattern AMPERSAND_PATTERN = Pattern.compile("@");
 
   @Override
   public String reformat(String comment) {
-    comment = PHP_ESCAPER.escape(comment);
-    comment = CommentReformatting.reformatCloudMarkdownLinks(comment, "[%s](%s)");
-    return comment.trim();
+    return CommentReformatter.of(comment)
+        .replace(ASTERISK_PATTERN, "&#42;")
+        .replace(AMPERSAND_PATTERN, "&#64;")
+        .reformatCloudMarkdownLinks("[%s](%s)")
+        .toString()
+        .trim();
   }
 }

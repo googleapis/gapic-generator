@@ -16,13 +16,13 @@ package com.google.api.codegen.util.ruby;
 
 import com.google.api.codegen.CommentPatterns;
 import com.google.api.codegen.util.CommentReformatter;
-import com.google.api.codegen.util.CommentReformatting;
+import com.google.api.codegen.util.LanguageCommentReformatter;
 import com.google.common.base.Function;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import java.util.regex.Matcher;
 
-public class RubyCommentReformatter implements CommentReformatter {
+public class RubyCommentReformatter implements LanguageCommentReformatter {
   private static final String BULLET = "* ";
 
   private static Function<Matcher, String> PROTO_TO_RUBY_DOC =
@@ -72,8 +72,8 @@ public class RubyCommentReformatter implements CommentReformatter {
   }
 
   private String applyTransformations(String line) {
-    line = CommentPatterns.BACK_QUOTE_PATTERN.matcher(line).replaceAll("+");
-    return CommentReformatting.of(line)
+    return CommentReformatter.of(line)
+        .replace(CommentPatterns.BACK_QUOTE_PATTERN, "+")
         .reformat(CommentPatterns.PROTO_LINK_PATTERN, PROTO_TO_RUBY_DOC)
         .reformatCloudMarkdownLinks("{%s}[%s]")
         .reformatAbsoluteMarkdownLinks("{%s}[%s]")

@@ -15,11 +15,11 @@
 
 package com.google.api.codegen.util.csharp;
 
-import com.google.api.codegen.util.CommentReformatter;
+import com.google.api.codegen.util.LanguageCommentReformatter;
 import com.google.common.escape.Escaper;
 import com.google.common.escape.Escapers;
 
-public class CSharpCommentReformatter implements CommentReformatter {
+public class CSharpCommentReformatter implements LanguageCommentReformatter {
 
   private static final Escaper CSHARP_ESCAPER =
       Escapers.builder()

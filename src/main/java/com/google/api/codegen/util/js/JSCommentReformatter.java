@@ -16,14 +16,14 @@ package com.google.api.codegen.util.js;
 
 import com.google.api.codegen.CommentPatterns;
 import com.google.api.codegen.util.CommentReformatter;
-import com.google.api.codegen.util.CommentReformatting;
+import com.google.api.codegen.util.LanguageCommentReformatter;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableSet;
 import java.util.regex.Matcher;
 
-public class JSCommentReformatter implements CommentReformatter {
+public class JSCommentReformatter implements LanguageCommentReformatter {
 
   private static Function<Matcher, String> PROTO_TO_JS_DOC =
       new Function<Matcher, String>() {
@@ -35,7 +35,7 @@ public class JSCommentReformatter implements CommentReformatter {
 
   @Override
   public String reformat(String comment) {
-    return CommentReformatting.of(comment)
+    return CommentReformatter.of(comment)
         .reformat(CommentPatterns.PROTO_LINK_PATTERN, PROTO_TO_JS_DOC)
         .reformatCloudMarkdownLinks("[%s](%s)")
         .toString()
