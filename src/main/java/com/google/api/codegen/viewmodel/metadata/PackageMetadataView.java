@@ -122,7 +122,13 @@ public abstract class PackageMetadataView implements ViewModel {
   public abstract String targetLanguage();
 
   @Nullable
-  public abstract String metapackageIdentifier();
+  public abstract String mainReadmeLink();
+
+  @Nullable
+  public abstract String authDocumentationLink();
+
+  @Nullable
+  public abstract String libraryDocumentationLink();
 
   public static Builder newBuilder() {
     return new AutoValue_PackageMetadataView.Builder().hasSmokeTests(false);
@@ -221,7 +227,13 @@ public abstract class PackageMetadataView implements ViewModel {
     public abstract Builder targetLanguage(String val);
 
     /** The name of the metapackage identifier. E.g: google-cloud-{lang}. */
-    public abstract Builder metapackageIdentifier(String s);
+    public abstract Builder mainReadmeLink(String s);
+
+    /** The name of the metapackage identifier. E.g: google-cloud-{lang}. */
+    public abstract Builder authDocumentationLink(String s);
+
+    /** The name of the metapackage identifier. E.g: google-cloud-{lang}. */
+    public abstract Builder libraryDocumentationLink(String s);
 
     public abstract PackageMetadataView build();
   }

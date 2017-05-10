@@ -49,6 +49,15 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
   private static final String README_OUTPUT_FILE = "README.md";
   private static final List<String> TOP_LEVEL_FILES =
       ImmutableList.of("ruby/Gemfile.snip", "ruby/Rakefile.snip", "LICENSE.snip");
+
+  private static final String GITHUB_DOC_HOST =
+      "https://googlecloudplatform.github.io/google-cloud-ruby";
+  private static final String GITHUB_REPO_HOST =
+      "https://github.com/GoogleCloudPlatform/google-cloud-ruby";
+  private static final String AUTH_DOC_PATH = "/#/docs/google-cloud/master/guides/authentication";
+  private static final String LIB_DOC_PATH = "/#/docs/%s/latest/%s";
+  private static final String MAIN_README_PATH = "/blob/master/README.md";
+
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new RubyImportSectionTransformer());
   private final PackageMetadataConfig packageConfig;
@@ -105,7 +114,12 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
             namer.getReleaseAnnotation(packageConfig.releaseLevel(TargetLanguage.RUBY)))
         .exampleMethods(exampleMethods)
         .targetLanguage("Ruby")
-        .metapackageIdentifier("google-cloud-ruby")
+        .mainReadmeLink(GITHUB_REPO_HOST + MAIN_README_PATH)
+        .libraryDocumentationLink(
+            GITHUB_DOC_HOST
+                + String.format(
+                    LIB_DOC_PATH, namer.getMetadataIdentifier(), packageConfig.protoPath()))
+        .authDocumentationLink(GITHUB_DOC_HOST + AUTH_DOC_PATH)
         .build();
   }
 
