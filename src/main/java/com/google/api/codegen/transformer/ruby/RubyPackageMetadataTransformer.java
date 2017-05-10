@@ -23,11 +23,13 @@ import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PackageMetadataTransformer;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 
@@ -37,6 +39,8 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
   private static final List<String> TOP_LEVEL_FILES =
       ImmutableList.of(
           "ruby/Gemfile.snip", "ruby/Rakefile.snip", "ruby/README.md.snip", "LICENSE.snip");
+  private static final List<String> TOP_LEVEL_DOT_FILES =
+      ImmutableList.of("ruby/gitignore.snip", "ruby/rubocop.yml.snip", "ruby/yardopts.snip");
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new RubyImportSectionTransformer());
   private final PackageMetadataConfig packageConfig;
@@ -50,7 +54,11 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
 
   @Override
   public List<String> getTemplateFileNames() {
-    return ImmutableList.<String>builder().add(GEMSPEC_FILE).addAll(TOP_LEVEL_FILES).build();
+    return ImmutableList.<String>builder()
+        .add(GEMSPEC_FILE)
+        .addAll(TOP_LEVEL_FILES)
+        .addAll(TOP_LEVEL_DOT_FILES)
+        .build();
   }
 
   @Override
@@ -58,7 +66,8 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
     RubyPackageMetadataNamer namer = new RubyPackageMetadataNamer(productConfig.getPackageName());
     return ImmutableList.<ViewModel>builder()
         .add(generateGemspecView(model, namer))
-        .addAll(generateMetadataViews(model, productConfig, namer))
+        .addAll(generateMetadataViews(model, productConfig, namer, TOP_LEVEL_FILES))
+        .addAll(generateMetadataViews(model, productConfig, namer, TOP_LEVEL_DOT_FILES, "."))
         .build();
   }
 
@@ -71,10 +80,22 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
   }
 
   private List<ViewModel> generateMetadataViews(
-      Model model, GapicProductConfig productConfig, RubyPackageMetadataNamer namer) {
+      Model model,
+      GapicProductConfig productConfig,
+      RubyPackageMetadataNamer namer,
+      List<String> snippets) {
+    return generateMetadataViews(model, productConfig, namer, snippets, null);
+  }
+
+  private List<ViewModel> generateMetadataViews(
+      Model model,
+      GapicProductConfig productConfig,
+      RubyPackageMetadataNamer namer,
+      List<String> snippets,
+      String filePrefix) {
     ImmutableList.Builder<ViewModel> views = ImmutableList.builder();
-    for (String template : TOP_LEVEL_FILES) {
-      views.add(generateMetadataView(model, productConfig, template, namer));
+    for (String template : snippets) {
+      views.add(generateMetadataView(model, productConfig, template, namer, filePrefix));
     }
     return views.build();
   }
@@ -83,9 +104,13 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
       Model model,
       GapicProductConfig productConfig,
       String template,
-      RubyPackageMetadataNamer namer) {
+      RubyPackageMetadataNamer namer,
+      String filePrefix) {
     String noLeadingRubyDir =
         template.startsWith(RUBY_PREFIX) ? template.substring(RUBY_PREFIX.length()) : template;
+    if (!Strings.isNullOrEmpty(filePrefix)) {
+      noLeadingRubyDir = filePrefix + noLeadingRubyDir;
+    }
     int extensionIndex = noLeadingRubyDir.lastIndexOf(".");
     String outputPath = noLeadingRubyDir.substring(0, extensionIndex);
 
@@ -98,15 +123,16 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
       }
     }
 
+    SurfaceNamer surfaceNamer = new RubySurfaceNamer(productConfig.getPackageName());
+
     return metadataTransformer
         .generateMetadataView(packageConfig, model, template, outputPath, TargetLanguage.RUBY)
         .identifier(namer.getMetadataIdentifier())
         .fileHeader(
             fileHeaderTransformer.generateFileHeader(
-                productConfig,
-                ImportSectionView.newBuilder().build(),
-                new RubySurfaceNamer(productConfig.getPackageName())))
+                productConfig, ImportSectionView.newBuilder().build(), surfaceNamer))
         .hasSmokeTests(hasSmokeTests)
+        .versionPath(surfaceNamer.getVersionIndexFileImportName())
         .build();
   }
 
