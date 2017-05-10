@@ -234,16 +234,16 @@
     @join apiCallable : xapiClass.apiCallableMembers
       @switch apiCallable.type
       @case "SimpleApiCallable"
-        this.{@apiCallable.name} = UnaryCallable.create(settings.{@apiCallable.settingsFunctionName}(), this.channel, this.executor);
+        this.{@apiCallable.name} = UnaryGrpcCallable.create(settings.{@apiCallable.settingsFunctionName}(), this.channel, this.executor);
       @case "PagedApiCallable"
         this.{@apiCallable.name} =
             UnaryGrpcCallable.createPagedVariant(settings.{@apiCallable.settingsFunctionName}(), this.channel, this.executor);
       @case "BatchingApiCallable"
-        this.{@apiCallable.name} = UnaryCallable.create(settings.{@apiCallable.settingsFunctionName}(), this.channel, this.executor);
+        this.{@apiCallable.name} = UnaryGrpcCallable.create(settings.{@apiCallable.settingsFunctionName}(), this.channel, this.executor);
       @case "StreamingApiCallable"
         this.{@apiCallable.name} = StreamingCallable.create(settings.{@apiCallable.settingsFunctionName}(), this.channel);
       @case "InitialOperationApiCallable"
-        this.{@apiCallable.name} = UnaryCallable.create(settings.{@apiCallable.settingsFunctionName}().getInitialCallSettings(), this.channel, this.executor);
+        this.{@apiCallable.name} = UnaryGrpcCallable.create(settings.{@apiCallable.settingsFunctionName}().getInitialCallSettings(), this.channel, this.executor);
       @case "OperationApiCallable"
         this.{@apiCallable.name} = OperationCallable.create(settings.{@apiCallable.settingsFunctionName}(),\
             this.channel, this.executor, this.operationsClient);
@@ -438,7 +438,7 @@
     {@apiMethod.releaseLevelAnnotation}
 
   @end
-  {@apiMethod.visibility} final UnaryCallable<{@apiMethod.serviceRequestTypeName}, \
+  {@apiMethod.visibility} final UnaryGrpcCallable<{@apiMethod.serviceRequestTypeName}, \
       {@apiMethod.responseTypeName}> {@apiMethod.name}() {
     return {@apiMethod.callableMethod.callableName};
   }

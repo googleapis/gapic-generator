@@ -29,7 +29,7 @@ import com.google.api.gax.core.GoogleCredentialsProvider;
 import com.google.api.gax.core.PropertiesProvider;
 import com.google.api.gax.grpc.ApiExceptions;
 import com.google.api.gax.grpc.BatchedRequestIssuer;
-import com.google.api.gax.grpc.BatchingCallSettings;
+import com.google.api.gax.grpc.BatchingGrpcCallSettings;
 import com.google.api.gax.grpc.BatchingDescriptor;
 import com.google.api.gax.grpc.CallContext;
 import com.google.api.gax.grpc.ChannelProvider;
@@ -39,14 +39,14 @@ import com.google.api.gax.grpc.InstantiatingChannelProvider;
 import com.google.api.gax.grpc.InstantiatingExecutorProvider;
 import com.google.api.gax.grpc.OperationCallSettings;
 import com.google.api.gax.grpc.PageContext;
-import com.google.api.gax.grpc.PagedCallSettings;
+import com.google.api.gax.grpc.PagedGrpcCallSettings;
 import com.google.api.gax.grpc.PagedListDescriptor;
 import com.google.api.gax.grpc.PagedListResponseFactory;
 import com.google.api.gax.grpc.RequestIssuer;
 import com.google.api.gax.grpc.SimpleCallSettings;
 import com.google.api.gax.grpc.StreamingCallSettings;
-import com.google.api.gax.grpc.UnaryCallSettings;
-import com.google.api.gax.grpc.UnaryCallable;
+import com.google.api.gax.grpc.UnaryGrpcCallSettings;
+import com.google.api.gax.grpc.UnaryGrpcCallable;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.auth.Credentials;
 import com.google.common.collect.ImmutableList;
@@ -320,18 +320,18 @@ public class LibrarySettings extends ClientSettings {
 
   private final SimpleCallSettings<CreateShelfRequest, Shelf> createShelfSettings;
   private final SimpleCallSettings<GetShelfRequest, Shelf> getShelfSettings;
-  private final PagedCallSettings<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse> listShelvesSettings;
+  private final PagedGrpcCallSettings<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse> listShelvesSettings;
   private final SimpleCallSettings<DeleteShelfRequest, Empty> deleteShelfSettings;
   private final SimpleCallSettings<MergeShelvesRequest, Shelf> mergeShelvesSettings;
   private final SimpleCallSettings<CreateBookRequest, Book> createBookSettings;
-  private final BatchingCallSettings<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings;
+  private final BatchingGrpcCallSettings<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings;
   private final SimpleCallSettings<GetBookRequest, Book> getBookSettings;
-  private final PagedCallSettings<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse> listBooksSettings;
+  private final PagedGrpcCallSettings<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse> listBooksSettings;
   private final SimpleCallSettings<DeleteBookRequest, Empty> deleteBookSettings;
   private final SimpleCallSettings<UpdateBookRequest, Book> updateBookSettings;
   private final SimpleCallSettings<MoveBookRequest, Book> moveBookSettings;
-  private final PagedCallSettings<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse> listStringsSettings;
-  private final BatchingCallSettings<AddCommentsRequest, Empty> addCommentsSettings;
+  private final PagedGrpcCallSettings<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse> listStringsSettings;
+  private final BatchingGrpcCallSettings<AddCommentsRequest, Empty> addCommentsSettings;
   private final SimpleCallSettings<GetBookFromArchiveRequest, BookFromArchive> getBookFromArchiveSettings;
   private final SimpleCallSettings<GetBookFromAnywhereRequest, BookFromAnywhere> getBookFromAnywhereSettings;
   private final SimpleCallSettings<UpdateBookIndexRequest, Empty> updateBookIndexSettings;
@@ -339,7 +339,7 @@ public class LibrarySettings extends ClientSettings {
   private final StreamingCallSettings<StreamBooksRequest, Book> streamBooksSettings;
   private final StreamingCallSettings<DiscussBookRequest, Comment> discussBookSettings;
   private final StreamingCallSettings<DiscussBookRequest, Comment> monologAboutBookSettings;
-  private final PagedCallSettings<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings;
+  private final PagedGrpcCallSettings<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings;
   private final SimpleCallSettings<AddTagRequest, AddTagResponse> addTagSettings;
   private final SimpleCallSettings<AddLabelRequest, AddLabelResponse> addLabelSettings;
   private final OperationCallSettings<GetBookRequest, Book> getBigBookSettings;
@@ -363,7 +363,7 @@ public class LibrarySettings extends ClientSettings {
   /**
    * Returns the object with the settings used for calls to listShelves.
    */
-  public PagedCallSettings<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse> listShelvesSettings() {
+  public PagedGrpcCallSettings<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse> listShelvesSettings() {
     return listShelvesSettings;
   }
 
@@ -391,7 +391,7 @@ public class LibrarySettings extends ClientSettings {
   /**
    * Returns the object with the settings used for calls to publishSeries.
    */
-  public BatchingCallSettings<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings() {
+  public BatchingGrpcCallSettings<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings() {
     return publishSeriesSettings;
   }
 
@@ -405,7 +405,7 @@ public class LibrarySettings extends ClientSettings {
   /**
    * Returns the object with the settings used for calls to listBooks.
    */
-  public PagedCallSettings<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse> listBooksSettings() {
+  public PagedGrpcCallSettings<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse> listBooksSettings() {
     return listBooksSettings;
   }
 
@@ -433,14 +433,14 @@ public class LibrarySettings extends ClientSettings {
   /**
    * Returns the object with the settings used for calls to listStrings.
    */
-  public PagedCallSettings<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse> listStringsSettings() {
+  public PagedGrpcCallSettings<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse> listStringsSettings() {
     return listStringsSettings;
   }
 
   /**
    * Returns the object with the settings used for calls to addComments.
    */
-  public BatchingCallSettings<AddCommentsRequest, Empty> addCommentsSettings() {
+  public BatchingGrpcCallSettings<AddCommentsRequest, Empty> addCommentsSettings() {
     return addCommentsSettings;
   }
 
@@ -496,7 +496,7 @@ public class LibrarySettings extends ClientSettings {
   /**
    * Returns the object with the settings used for calls to findRelatedBooks.
    */
-  public PagedCallSettings<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings() {
+  public PagedGrpcCallSettings<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings() {
     return findRelatedBooksSettings;
   }
 
@@ -776,7 +776,7 @@ public class LibrarySettings extends ClientSettings {
       new PagedListResponseFactory<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse>() {
         @Override
         public ApiFuture<ListShelvesPagedResponse> getFuturePagedResponse(
-            UnaryCallable<ListShelvesRequest, ListShelvesResponse> callable,
+            UnaryGrpcCallable<ListShelvesRequest, ListShelvesResponse> callable,
             ListShelvesRequest request,
             CallContext context,
             ApiFuture<ListShelvesResponse> futureResponse) {
@@ -790,7 +790,7 @@ public class LibrarySettings extends ClientSettings {
       new PagedListResponseFactory<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse>() {
         @Override
         public ApiFuture<ListBooksPagedResponse> getFuturePagedResponse(
-            UnaryCallable<ListBooksRequest, ListBooksResponse> callable,
+            UnaryGrpcCallable<ListBooksRequest, ListBooksResponse> callable,
             ListBooksRequest request,
             CallContext context,
             ApiFuture<ListBooksResponse> futureResponse) {
@@ -804,7 +804,7 @@ public class LibrarySettings extends ClientSettings {
       new PagedListResponseFactory<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse>() {
         @Override
         public ApiFuture<ListStringsPagedResponse> getFuturePagedResponse(
-            UnaryCallable<ListStringsRequest, ListStringsResponse> callable,
+            UnaryGrpcCallable<ListStringsRequest, ListStringsResponse> callable,
             ListStringsRequest request,
             CallContext context,
             ApiFuture<ListStringsResponse> futureResponse) {
@@ -818,7 +818,7 @@ public class LibrarySettings extends ClientSettings {
       new PagedListResponseFactory<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse>() {
         @Override
         public ApiFuture<FindRelatedBooksPagedResponse> getFuturePagedResponse(
-            UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> callable,
+            UnaryGrpcCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> callable,
             FindRelatedBooksRequest request,
             CallContext context,
             ApiFuture<FindRelatedBooksResponse> futureResponse) {
@@ -954,22 +954,22 @@ public class LibrarySettings extends ClientSettings {
    * Builder for LibrarySettings.
    */
   public static class Builder extends ClientSettings.Builder {
-    private final ImmutableList<UnaryCallSettings.Builder> unaryMethodSettingsBuilders;
+    private final ImmutableList<UnaryGrpcCallSettings.Builder> unaryMethodSettingsBuilders;
 
     private final SimpleCallSettings.Builder<CreateShelfRequest, Shelf> createShelfSettings;
     private final SimpleCallSettings.Builder<GetShelfRequest, Shelf> getShelfSettings;
-    private final PagedCallSettings.Builder<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse> listShelvesSettings;
+    private final PagedGrpcCallSettings.Builder<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse> listShelvesSettings;
     private final SimpleCallSettings.Builder<DeleteShelfRequest, Empty> deleteShelfSettings;
     private final SimpleCallSettings.Builder<MergeShelvesRequest, Shelf> mergeShelvesSettings;
     private final SimpleCallSettings.Builder<CreateBookRequest, Book> createBookSettings;
-    private final BatchingCallSettings.Builder<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings;
+    private final BatchingGrpcCallSettings.Builder<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings;
     private final SimpleCallSettings.Builder<GetBookRequest, Book> getBookSettings;
-    private final PagedCallSettings.Builder<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse> listBooksSettings;
+    private final PagedGrpcCallSettings.Builder<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse> listBooksSettings;
     private final SimpleCallSettings.Builder<DeleteBookRequest, Empty> deleteBookSettings;
     private final SimpleCallSettings.Builder<UpdateBookRequest, Book> updateBookSettings;
     private final SimpleCallSettings.Builder<MoveBookRequest, Book> moveBookSettings;
-    private final PagedCallSettings.Builder<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse> listStringsSettings;
-    private final BatchingCallSettings.Builder<AddCommentsRequest, Empty> addCommentsSettings;
+    private final PagedGrpcCallSettings.Builder<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse> listStringsSettings;
+    private final BatchingGrpcCallSettings.Builder<AddCommentsRequest, Empty> addCommentsSettings;
     private final SimpleCallSettings.Builder<GetBookFromArchiveRequest, BookFromArchive> getBookFromArchiveSettings;
     private final SimpleCallSettings.Builder<GetBookFromAnywhereRequest, BookFromAnywhere> getBookFromAnywhereSettings;
     private final SimpleCallSettings.Builder<UpdateBookIndexRequest, Empty> updateBookIndexSettings;
@@ -977,7 +977,7 @@ public class LibrarySettings extends ClientSettings {
     private final StreamingCallSettings.Builder<StreamBooksRequest, Book> streamBooksSettings;
     private final StreamingCallSettings.Builder<DiscussBookRequest, Comment> discussBookSettings;
     private final StreamingCallSettings.Builder<DiscussBookRequest, Comment> monologAboutBookSettings;
-    private final PagedCallSettings.Builder<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings;
+    private final PagedGrpcCallSettings.Builder<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings;
     private final SimpleCallSettings.Builder<AddTagRequest, AddTagResponse> addTagSettings;
     private final SimpleCallSettings.Builder<AddLabelRequest, AddLabelResponse> addLabelSettings;
     private final OperationCallSettings.Builder<GetBookRequest, Book> getBigBookSettings;
@@ -1021,7 +1021,7 @@ public class LibrarySettings extends ClientSettings {
 
       getShelfSettings = SimpleCallSettings.newBuilder(METHOD_GET_SHELF);
 
-      listShelvesSettings = PagedCallSettings.newBuilder(
+      listShelvesSettings = PagedGrpcCallSettings.newBuilder(
           METHOD_LIST_SHELVES,
           LIST_SHELVES_PAGE_STR_FACT);
 
@@ -1031,14 +1031,14 @@ public class LibrarySettings extends ClientSettings {
 
       createBookSettings = SimpleCallSettings.newBuilder(METHOD_CREATE_BOOK);
 
-      publishSeriesSettings = BatchingCallSettings.newBuilder(
+      publishSeriesSettings = BatchingGrpcCallSettings.newBuilder(
           METHOD_PUBLISH_SERIES,
           PUBLISH_SERIES_BATCHING_DESC)
               .setBatchingSettingsBuilder(BatchingSettings.newBuilder());
 
       getBookSettings = SimpleCallSettings.newBuilder(METHOD_GET_BOOK);
 
-      listBooksSettings = PagedCallSettings.newBuilder(
+      listBooksSettings = PagedGrpcCallSettings.newBuilder(
           METHOD_LIST_BOOKS,
           LIST_BOOKS_PAGE_STR_FACT);
 
@@ -1048,11 +1048,11 @@ public class LibrarySettings extends ClientSettings {
 
       moveBookSettings = SimpleCallSettings.newBuilder(METHOD_MOVE_BOOK);
 
-      listStringsSettings = PagedCallSettings.newBuilder(
+      listStringsSettings = PagedGrpcCallSettings.newBuilder(
           METHOD_LIST_STRINGS,
           LIST_STRINGS_PAGE_STR_FACT);
 
-      addCommentsSettings = BatchingCallSettings.newBuilder(
+      addCommentsSettings = BatchingGrpcCallSettings.newBuilder(
           METHOD_ADD_COMMENTS,
           ADD_COMMENTS_BATCHING_DESC)
               .setBatchingSettingsBuilder(BatchingSettings.newBuilder());
@@ -1071,7 +1071,7 @@ public class LibrarySettings extends ClientSettings {
 
       monologAboutBookSettings = StreamingCallSettings.newBuilder(METHOD_MONOLOG_ABOUT_BOOK);
 
-      findRelatedBooksSettings = PagedCallSettings.newBuilder(
+      findRelatedBooksSettings = PagedGrpcCallSettings.newBuilder(
           METHOD_FIND_RELATED_BOOKS,
           FIND_RELATED_BOOKS_PAGE_STR_FACT);
 
@@ -1092,7 +1092,7 @@ public class LibrarySettings extends ClientSettings {
 
       testOptionalRequiredFlatteningParamsSettings = SimpleCallSettings.newBuilder(METHOD_TEST_OPTIONAL_REQUIRED_FLATTENING_PARAMS);
 
-      unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder>of(
+      unaryMethodSettingsBuilders = ImmutableList.<UnaryGrpcCallSettings.Builder>of(
           createShelfSettings,
           getShelfSettings,
           listShelvesSettings,
@@ -1260,7 +1260,7 @@ public class LibrarySettings extends ClientSettings {
       getBigNothingSettings = settings.getBigNothingSettings.toBuilder();
       testOptionalRequiredFlatteningParamsSettings = settings.testOptionalRequiredFlatteningParamsSettings.toBuilder();
 
-      unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder>of(
+      unaryMethodSettingsBuilders = ImmutableList.<UnaryGrpcCallSettings.Builder>of(
           createShelfSettings,
           getShelfSettings,
           listShelvesSettings,
@@ -1304,7 +1304,7 @@ public class LibrarySettings extends ClientSettings {
      *
      * Note: This method does not support applying settings to streaming methods.
      */
-    public Builder applyToAllUnaryMethods(UnaryCallSettings.Builder unaryCallSettings) throws Exception {
+    public Builder applyToAllUnaryMethods(UnaryGrpcCallSettings.Builder unaryCallSettings) throws Exception {
       super.applyToAllUnaryMethods(unaryMethodSettingsBuilders, unaryCallSettings);
       return this;
     }
@@ -1326,7 +1326,7 @@ public class LibrarySettings extends ClientSettings {
     /**
      * Returns the builder for the settings used for calls to listShelves.
      */
-    public PagedCallSettings.Builder<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse> listShelvesSettings() {
+    public PagedGrpcCallSettings.Builder<ListShelvesRequest, ListShelvesResponse, ListShelvesPagedResponse> listShelvesSettings() {
       return listShelvesSettings;
     }
 
@@ -1354,7 +1354,7 @@ public class LibrarySettings extends ClientSettings {
     /**
      * Returns the builder for the settings used for calls to publishSeries.
      */
-    public BatchingCallSettings.Builder<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings() {
+    public BatchingGrpcCallSettings.Builder<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings() {
       return publishSeriesSettings;
     }
 
@@ -1368,7 +1368,7 @@ public class LibrarySettings extends ClientSettings {
     /**
      * Returns the builder for the settings used for calls to listBooks.
      */
-    public PagedCallSettings.Builder<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse> listBooksSettings() {
+    public PagedGrpcCallSettings.Builder<ListBooksRequest, ListBooksResponse, ListBooksPagedResponse> listBooksSettings() {
       return listBooksSettings;
     }
 
@@ -1396,14 +1396,14 @@ public class LibrarySettings extends ClientSettings {
     /**
      * Returns the builder for the settings used for calls to listStrings.
      */
-    public PagedCallSettings.Builder<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse> listStringsSettings() {
+    public PagedGrpcCallSettings.Builder<ListStringsRequest, ListStringsResponse, ListStringsPagedResponse> listStringsSettings() {
       return listStringsSettings;
     }
 
     /**
      * Returns the builder for the settings used for calls to addComments.
      */
-    public BatchingCallSettings.Builder<AddCommentsRequest, Empty> addCommentsSettings() {
+    public BatchingGrpcCallSettings.Builder<AddCommentsRequest, Empty> addCommentsSettings() {
       return addCommentsSettings;
     }
 
@@ -1459,7 +1459,7 @@ public class LibrarySettings extends ClientSettings {
     /**
      * Returns the builder for the settings used for calls to findRelatedBooks.
      */
-    public PagedCallSettings.Builder<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings() {
+    public PagedGrpcCallSettings.Builder<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings() {
       return findRelatedBooksSettings;
     }
 

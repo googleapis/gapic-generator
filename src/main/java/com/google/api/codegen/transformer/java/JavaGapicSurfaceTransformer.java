@@ -471,8 +471,8 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("com.google.api.gax.grpc.ExecutorProvider");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.InstantiatingChannelProvider");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.InstantiatingExecutorProvider");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.SimpleCallSettings");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryCallSettings");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.SimpleGrpcCallSettings");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryGrpcCallSettings");
     typeTable.saveNicknameFor("com.google.api.gax.retrying.RetrySettings");
     typeTable.saveNicknameFor("com.google.auth.Credentials");
     typeTable.saveNicknameFor("com.google.common.collect.ImmutableList");
@@ -493,7 +493,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
       typeTable.saveNicknameFor("com.google.api.core.ApiFuture");
       typeTable.saveNicknameFor("com.google.api.gax.grpc.CallContext");
       typeTable.saveNicknameFor("com.google.api.gax.grpc.PageContext");
-      typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedCallSettings");
+      typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedGrpcCallSettings");
       typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedListDescriptor");
       typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedListResponseFactory");
       typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryGrpcCallable");
@@ -505,7 +505,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
       typeTable.saveNicknameFor("com.google.api.gax.batching.FlowControlSettings");
       typeTable.saveNicknameFor("com.google.api.gax.batching.PartitionKey");
       typeTable.saveNicknameFor("com.google.api.gax.batching.RequestBuilder");
-      typeTable.saveNicknameFor("com.google.api.gax.grpc.BatchingCallSettings");
+      typeTable.saveNicknameFor("com.google.api.gax.grpc.BatchingGrpcCallSettings");
       typeTable.saveNicknameFor("com.google.api.gax.grpc.BatchedRequestIssuer");
       typeTable.saveNicknameFor("com.google.api.gax.grpc.BatchingDescriptor");
       typeTable.saveNicknameFor("com.google.api.gax.grpc.RequestIssuer");
