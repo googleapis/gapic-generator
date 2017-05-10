@@ -440,7 +440,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     ModelTypeTable typeTable = context.getModelTypeTable();
     typeTable.saveNicknameFor("com.google.api.core.BetaApi");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.ChannelAndExecutor");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryCallable");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryGrpcCallable");
     typeTable.saveNicknameFor("com.google.api.pathtemplate.PathTemplate");
     typeTable.saveNicknameFor("io.grpc.ManagedChannel");
     typeTable.saveNicknameFor("java.io.Closeable");
@@ -496,7 +496,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
       typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedCallSettings");
       typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedListDescriptor");
       typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedListResponseFactory");
-      typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryCallable");
+      typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryGrpcCallable");
     }
     if (interfaceConfig.hasBatchingMethods()) {
       typeTable.saveNicknameFor("com.google.api.gax.batching.BatchingSettings");
