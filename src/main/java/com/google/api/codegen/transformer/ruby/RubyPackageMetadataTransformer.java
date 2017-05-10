@@ -57,6 +57,7 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
   private static final String AUTH_DOC_PATH = "/#/docs/google-cloud/master/guides/authentication";
   private static final String LIB_DOC_PATH = "/#/docs/%s/latest/%s";
   private static final String MAIN_README_PATH = "/blob/master/README.md";
+  private static final String VERSIONING_DOC_PATH = "#versioning";
 
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new RubyImportSectionTransformer());
@@ -120,6 +121,7 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
                 + String.format(
                     LIB_DOC_PATH, namer.getMetadataIdentifier(), packageConfig.protoPath()))
         .authDocumentationLink(GITHUB_DOC_HOST + AUTH_DOC_PATH)
+        .versioningDocumentationLink(GITHUB_REPO_HOST + VERSIONING_DOC_PATH)
         .build();
   }
 
