@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer.ruby;
 
+import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.transformer.PackageMetadataNamer;
 import com.google.api.codegen.util.Name;
 import com.google.common.base.Joiner;
@@ -45,5 +46,23 @@ public class RubyPackageMetadataNamer extends PackageMetadataNamer {
   @Override
   public String getOutputFileName() {
     return getMetadataIdentifier() + ".gemspec";
+  }
+
+  @Override
+  public String getReleaseAnnotation(ReleaseLevel releaseLevel) {
+    switch (releaseLevel) {
+      case UNSET_RELEASE_LEVEL:
+        // fallthrough
+      case ALPHA:
+        return "Alpha";
+      case BETA:
+        return "Beta";
+      case GA:
+        return "Production/Stable";
+      case DEPRECATED:
+        return "Inactive";
+      default:
+        throw new IllegalStateException("Invalid development status");
+    }
   }
 }
