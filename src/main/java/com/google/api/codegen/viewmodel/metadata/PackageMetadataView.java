@@ -96,6 +96,9 @@ public abstract class PackageMetadataView implements ViewModel {
   @Nullable
   public abstract String developmentStatus();
 
+  @Nullable
+  public abstract String developmentStatusTitle();
+
   public abstract boolean hasMultipleServices();
 
   public abstract boolean hasSmokeTests();
@@ -202,6 +205,9 @@ public abstract class PackageMetadataView implements ViewModel {
 
     /** The developement status of the package. E.g., "alpha". */
     public abstract Builder developmentStatus(String val);
+
+    /** The developement status of the package used in titles. E.g., "Alpha". */
+    public abstract Builder developmentStatusTitle(String s);
 
     /** Whether the package contains multiple service objects */
     public abstract Builder hasMultipleServices(boolean val);
