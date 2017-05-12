@@ -26,7 +26,6 @@ import com.google.common.collect.ImmutableList;
 import java.util.Map;
 
 public class PhpImportSectionTransformer implements ImportSectionTransformer {
-
   @Override
   public ImportSectionView generateImportSection(InterfaceContext context) {
     return generateImportSection(context.getTypeTable().getImports());
@@ -45,7 +44,6 @@ public class PhpImportSectionTransformer implements ImportSectionTransformer {
       TypeAlias alias = entry.getValue();
       // Remove leading backslash because it is not required by PHP use statements
       String fullName = key.startsWith("\\") ? key.substring(1) : key;
-      fullName = capitalizeNamespace(fullName);
       ImportTypeView.Builder imp = ImportTypeView.newBuilder();
       imp.fullName(fullName);
       imp.nickname(alias.getNickname());
@@ -53,14 +51,5 @@ public class PhpImportSectionTransformer implements ImportSectionTransformer {
       appImports.add(ImportFileView.newBuilder().types(ImmutableList.of(imp.build())).build());
     }
     return ImportSectionView.newBuilder().appImports(appImports.build()).build();
-  }
-
-  private static String capitalizeNamespace(String importString) {
-    String[] components = importString.split("\\\\");
-    for (int index = 0; index < components.length - 1; index++) {
-      components[index] =
-          components[index].substring(0, 1).toUpperCase() + components[index].substring(1);
-    }
-    return String.join("\\", components);
   }
 }

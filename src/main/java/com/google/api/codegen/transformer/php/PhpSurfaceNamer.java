@@ -17,7 +17,6 @@ package com.google.api.codegen.transformer.php;
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicMethodConfig;
-import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
@@ -178,21 +177,5 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   @Override
   public boolean methodHasRetrySettings(GapicMethodConfig methodConfig) {
     return !methodConfig.isGrpcStreaming();
-  }
-
-  public String getRequestTokenFieldName(PageStreamingConfig pageStreaming) {
-    return getFieldGetFunctionName(pageStreaming.getRequestTokenField());
-  }
-
-  public String getPageSizeFieldName(PageStreamingConfig pageStreaming) {
-    return getFieldGetFunctionName(pageStreaming.getPageSizeField());
-  }
-
-  public String getResponseTokenFieldName(PageStreamingConfig pageStreaming) {
-    return getFieldGetFunctionName(pageStreaming.getResponseTokenField());
-  }
-
-  public String getResourcesFieldName(PageStreamingConfig pageStreaming) {
-    return getFieldGetFunctionName(pageStreaming.getResourcesField());
   }
 }

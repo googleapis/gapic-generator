@@ -70,6 +70,12 @@ public class PhpModelTypeNameConverter implements ModelTypeNameConverter {
           .put(Type.TYPE_BYTES, "\"\"")
           .build();
 
+  /** A map from protobuf message type names to PHP types for special case messages. */
+  private static final ImmutableMap<String, String> TYPE_NAME_MAP =
+      ImmutableMap.<String, String>builder()
+          .put("google.protobuf.Empty", "\\Google\\Protobuf\\GPBEmpty")
+          .build();
+
   private TypeNameConverter typeNameConverter;
 
   public PhpModelTypeNameConverter(String implicitPackageName) {
@@ -147,14 +153,29 @@ public class PhpModelTypeNameConverter implements ModelTypeNameConverter {
       TypeAlias typeAlias = TypeAlias.createAliasedImport(enumFullName, nickname);
       return new TypeName(typeAlias);
     }
-    return getTypeNameSimple(elem);
+    return typeNameConverter.getTypeName(getTypeNameString(elem));
   }
 
-  private TypeName getTypeNameSimple(ProtoElement elem) {
-    if (elem.getFullName().equals("google.protobuf.Empty")) {
-      return typeNameConverter.getTypeName("\\Google\\Protobuf\\GPBEmpty");
+  /**
+   * This function determines the type name as follows: 1. If the proto type name is in
+   * TYPE_NAME_MAP, return that value 2. Else: a. Split on "." b. Prepend '\' and capitalize each
+   * component of the namespace except the message name
+   */
+  private static String getTypeNameString(ProtoElement elem) {
+    String fullName = elem.getFullName();
+    if (TYPE_NAME_MAP.containsKey(fullName)) {
+      return TYPE_NAME_MAP.get(fullName);
     }
-    return typeNameConverter.getTypeName("\\" + elem.getFullName().replaceAll("\\.", "\\\\"));
+    String[] components = fullName.split("\\.");
+    StringBuilder builder = new StringBuilder();
+    for (int index = 0; index < components.length - 1; index++) {
+      builder
+          .append('\\')
+          .append(components[index].substring(0, 1).toUpperCase())
+          .append(components[index].substring(1));
+    }
+    builder.append('\\').append(components[components.length - 1]);
+    return builder.toString();
   }
 
   /**
