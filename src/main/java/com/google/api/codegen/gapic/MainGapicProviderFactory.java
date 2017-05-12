@@ -431,7 +431,7 @@ public class MainGapicProviderFactory
           providers.add(messageProvider);
         }
       }
-      if (generatorConfig.enableTestGenerator() && id.equals(RUBY)) {
+      if (generatorConfig.enableTestGenerator()) {
         GapicCodePathMapper rubyTestPathMapper =
             CommonGapicCodePathMapper.newBuilder()
                 .setPrefix("test")
