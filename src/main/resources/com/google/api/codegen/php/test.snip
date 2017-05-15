@@ -139,11 +139,6 @@
     @else
         $expectedResponse = new GPBEmpty();
     @end
-    // Serialize/deserialize so that arrays are converted to repeated objects
-    $expectedResponseSerialized = $expectedResponse->serializeToString();
-    $expectedResponseClass = get_class($expectedResponse);
-    $expectedResponse = new $expectedResponseClass();
-    $expectedResponse->mergeFromString($expectedResponseSerialized);
     $anyResponse = new Any();
     $anyResponse->setValue($expectedResponse->serializeToString());
     $completeOperation = new Operation();
@@ -216,11 +211,6 @@
     @if test.hasReturnValue
         // Mock response
         {@initCode(test.mockResponse.initCode)}
-        // Serialize/deserialize so that arrays are converted to repeated objects
-        $expectedResponseSerialized = $expectedResponse->serializeToString();
-        $expectedResponseClass = get_class($expectedResponse);
-        $expectedResponse = new $expectedResponseClass();
-        $expectedResponse->mergeFromString($expectedResponseSerialized);
         $grpcStub->addResponse($expectedResponse);
 
     @else
