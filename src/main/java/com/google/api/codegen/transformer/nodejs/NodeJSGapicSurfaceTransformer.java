@@ -268,6 +268,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
           VersionIndexRequireView.newBuilder()
               .clientName(
                   namer.getApiWrapperVariableName(productConfig.getInterfaceConfig(apiInterface)))
+              .serviceName(namer.getReducedServiceName(apiInterface).toLowerCamel())
               .fileName(namer.getClientFileName(apiInterface))
               .build());
     }
@@ -296,7 +297,8 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
           VersionIndexView.newBuilder()
               .templateFileName(VERSION_INDEX_TEMPLATE_FILE)
               .outputPath(versionIndexOutputPath)
-              .requireViews(new ArrayList<VersionIndexRequireView>())
+              .requireViews(requireViews)
+              .primaryService(requireViews.get(0))
               .apiVersion(version)
               .packageVersion(
                   packageConfig.generatedPackageVersionBound(TargetLanguage.NODEJS).lower())
