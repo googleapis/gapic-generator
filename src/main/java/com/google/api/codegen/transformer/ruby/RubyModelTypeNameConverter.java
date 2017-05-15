@@ -133,7 +133,8 @@ public class RubyModelTypeNameConverter implements ModelTypeNameConverter {
       return TypedValue.create(getTypeName(type), PRIMITIVE_ZERO_VALUE.get(type.getKind()));
     }
     if (type.isMessage()) {
-      return TypedValue.create(getTypeName(type), "%s.new");
+      TypeName typeName = getTypeName(type);
+      return TypedValue.create(typeName, typeName.getFullName() + ".new");
     }
     if (type.isEnum()) {
       return getEnumValue(type, type.getEnumType().getValues().get(0));
@@ -185,6 +186,6 @@ public class RubyModelTypeNameConverter implements ModelTypeNameConverter {
 
   @Override
   public TypedValue getEnumValue(TypeRef type, EnumValue value) {
-    return TypedValue.create(getTypeName(type), "%s::" + value.getSimpleName());
+    return TypedValue.create(getTypeName(type), ":" + value.getSimpleName());
   }
 }

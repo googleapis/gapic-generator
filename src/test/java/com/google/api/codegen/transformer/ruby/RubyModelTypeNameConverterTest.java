@@ -38,6 +38,6 @@ public class RubyModelTypeNameConverterTest {
             converter
                 .getEnumValue(type, value)
                 .getValueAndSaveTypeNicknameIn(new RubyTypeTable(packageName)))
-        .isEqualTo("Rating::GOOD");
+        .isEqualTo(":GOOD");
   }
 }
