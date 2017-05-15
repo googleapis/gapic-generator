@@ -134,6 +134,27 @@ public class PhpModelTypeNameConverter implements ModelTypeNameConverter {
     }
   }
 
+  /**
+   * This function recursively determines the PHP type name for a proto message. Recursion is
+   * required because in PHP nested messages are handled differently from non-nested messages. For
+   * example, the following proto definition: <code>
+   * package example;
+   * message Top {
+   *  message Nested {
+   *    message DeepNested {}
+   *  }
+   * }
+   * </code> will generate these PHP types:
+   *
+   * <ul>
+   *   <li>\Example\Top
+   *   <li>\Example\Top_Nested
+   *   <li>\Example\Top_Nested_DeepNested
+   * </ul>
+   *
+   * <p>To correctly output these type names, we need to check whether the parent of a proto element
+   * is a message, and if so use '_' as a separator.
+   */
   private TypeName getTypeName(ProtoElement elem, int maxDepth) {
     ProtoElement parent = elem.getParent();
     if (parent != null && parent instanceof MessageType) {
@@ -146,20 +167,20 @@ public class PhpModelTypeNameConverter implements ModelTypeNameConverter {
         throw new IllegalStateException("Cannot determine type for deeply nested message");
       }
 
-      String parentFullName = getTypeName(elem.getParent(), maxDepth - 1).getFullName();
+      String parentFullName = getTypeName(parent, maxDepth - 1).getFullName();
       String nickname = elem.getSimpleName();
-      String enumFullName = String.format("%s_%s", parentFullName, nickname);
+      String fullName = String.format("%s_%s", parentFullName, nickname);
 
-      TypeAlias typeAlias = TypeAlias.createAliasedImport(enumFullName, nickname);
+      TypeAlias typeAlias = TypeAlias.createAliasedImport(fullName, nickname);
       return new TypeName(typeAlias);
     }
     return typeNameConverter.getTypeName(getTypeNameString(elem));
   }
 
   /**
-   * This function determines the type name as follows: 1. If the proto type name is in
-   * TYPE_NAME_MAP, return that value 2. Else: a. Split on "." b. Prepend '\' and capitalize each
-   * component of the namespace except the message name
+   * This function determines the type name as follows: If the proto type name is in TYPE_NAME_MAP,
+   * return that value. Else, split on ".", prepend '\' and capitalize each component of the
+   * namespace except the message name
    */
   private static String getTypeNameString(ProtoElement elem) {
     String fullName = elem.getFullName();
