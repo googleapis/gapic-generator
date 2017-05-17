@@ -12,10 +12,12 @@
 
     import (
         "flag"
+        "fmt"
         "io"
         "log"
         "net"
         "os"
+        "strings"
         "testing"
 
         "github.com/golang/protobuf/proto"
@@ -25,6 +27,7 @@
         status "google.golang.org/genproto/googleapis/rpc/status"
         "google.golang.org/grpc"
         "google.golang.org/grpc/codes"
+        "google.golang.org/grpc/metadata"
     )
 
     var _ = io.EOF
@@ -104,7 +107,11 @@
 @end
 
 @private simpleMethod(impl, method)
-    func (s *{@impl.name}) {@method.name}(_ context.Context, req {@method.requestTypeName}) ({@method.responseTypeName}, error) {
+    func (s *{@impl.name}) {@method.name}(ctx context.Context, req {@method.requestTypeName}) ({@method.responseTypeName}, error) {
+        md, _ := metadata.FromIncomingContext(ctx)
+        if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+            return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+        }
         s.reqs = append(s.reqs, req)
         if s.err != nil {
             return nil, s.err
@@ -113,8 +120,16 @@
     }
 @end
 
+@private streamAssertXGoog()
+    md, _ := metadata.FromIncomingContext(stream.Context())
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
+@end
+
 @private serverStreamMethod(impl, method)
     func (s *{@impl.name}) {@method.name}(req {@method.requestTypeName}, stream {@method.streamHandleTypeName}) error {
+        {@streamAssertXGoog()}
         s.reqs = append(s.reqs, req)
         if s.err != nil {
             return s.err
@@ -130,6 +145,7 @@
 
 @private clientStreamMethod(impl, method)
     func (s *{@impl.name}) {@method.name}(stream {@method.streamHandleTypeName}) error {
+        {@streamAssertXGoog()}
         for {
             if req, err := stream.Recv(); err == io.EOF {
                 break
@@ -148,6 +164,7 @@
 
 @private bidiMethod(impl, method)
     func (s *{@impl.name}) {@method.name}(stream {@method.streamHandleTypeName}) error {
+        {@streamAssertXGoog()}
         for {
             if req, err := stream.Recv(); err == io.EOF {
                 break

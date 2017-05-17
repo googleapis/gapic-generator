@@ -106,6 +106,8 @@ public class TestCaseTransformer {
         .responseTypeName(responseTypeName)
         .serviceConstructorName(
             namer.getApiWrapperClassConstructorName(methodContext.getInterface()))
+        .fullyQualifiedServiceClassName(
+            namer.getFullyQualifiedApiWrapperClassName(methodContext.getInterfaceConfig()))
         .clientMethodName(clientMethodName)
         .mockGrpcStubTypeName(namer.getMockGrpcServiceImplName(methodContext.getTargetInterface()))
         .createStubFunctionName(namer.getCreateStubFunctionName(methodContext.getTargetInterface()))
