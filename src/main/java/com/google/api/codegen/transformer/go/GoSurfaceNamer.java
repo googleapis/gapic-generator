@@ -373,6 +373,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String injectRandomStringGeneratorCode(String randomString) {
-    return randomString.replace(InitFieldConfig.RANDOM_TOKEN, "\" + uidSpace.New() + \"");
+    return randomString.replace(
+        InitFieldConfig.RANDOM_TOKEN, "\" + strconv.FormatInt(time.Now().UnixNano(), 10) + \"");
   }
 }
