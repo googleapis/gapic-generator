@@ -27,11 +27,8 @@ import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PackageMetadataTransformer;
-<<<<<<< HEAD
 import com.google.api.codegen.transformer.SurfaceNamer;
-=======
 import com.google.api.codegen.transformer.TestCaseTransformer;
->>>>>>> 2f4e1211124adf97089742a3e72214e3ac44254f
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.codegen.util.testing.StandardValueProducer;
 import com.google.api.codegen.util.testing.ValueProducer;
@@ -53,8 +50,7 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
   private static final String README_FILE = "ruby/README.md.snip";
   private static final String README_OUTPUT_FILE = "README.md";
   private static final List<String> TOP_LEVEL_FILES =
-      ImmutableList.of(
-          "ruby/Gemfile.snip", "ruby/Rakefile.snip", "ruby/README.md.snip", "LICENSE.snip");
+      ImmutableList.of("ruby/Gemfile.snip", "ruby/Rakefile.snip", "LICENSE.snip");
   private static final List<String> TOP_LEVEL_DOT_FILES =
       ImmutableList.of("ruby/gitignore.snip", "ruby/rubocop.yml.snip", "ruby/yardopts.snip");
 
