@@ -8,7 +8,7 @@
      * @@group {@apiTest.testClass.apiName}
      * @@group grpc
      */
-    class {@apiTest.testClass.name} extends PHPUnit_Framework_TestCase
+    class {@apiTest.testClass.name} extends GeneratedTest
     {
         {@setupMethods(apiTest.testClass)}
         @join test : apiTest.testClass.testCases
@@ -164,21 +164,13 @@
     $actualApiRequestObject = $apiRequests[0]->getRequestObject();
     $this->assertSame('{@test.grpcStubCallString}', $actualApiFuncCall);
     @join assert : test.asserts
-        @if assert.isArray
-            ${@assert.expectedValueIdentifier}Actual = [];
-            foreach ($actualApiRequestObject->{@assert.actualValueGetter}() as ${@assert.expectedValueIdentifier}Item) {
-                ${@assert.expectedValueIdentifier}Actual[] = ${@assert.expectedValueIdentifier}Item;
-            }
-        @else
-            ${@assert.expectedValueIdentifier}Actual = $actualApiRequestObject->{@assert.actualValueGetter}();
-        @end
         @if assert.hasExpectedValueTransformFunction
-            $this->assertEquals({@assert.expectedValueTransformFunction}(\
+            $this->{@assertFunction(assert)}({@assert.expectedValueTransformFunction}(\
                 ${@assert.expectedValueIdentifier}), \
-                ${@assert.expectedValueIdentifier}Actual);
+                $actualApiRequestObject->{@assert.actualValueGetter}());
         @else
-            $this->assertEquals(${@assert.expectedValueIdentifier}, \
-                ${@assert.expectedValueIdentifier}Actual);
+            $this->{@assertFunction(assert)}(${@assert.expectedValueIdentifier}, \
+                $actualApiRequestObject->{@assert.actualValueGetter}());
         @end
     @end
 
@@ -200,6 +192,14 @@
 
     $this->assertTrue($grpcStub->isExhausted());
     $this->assertTrue($operationsStub->isExhausted());
+@end
+
+@private assertFunction(assert)
+    @if assert.isArray
+        assertRepeatedFieldEquals
+    @else
+        assertEquals
+    @end
 @end
 
 @private singleCallTestSetup(test)
@@ -232,23 +232,13 @@
     $this->assertSame('{@test.grpcStubCallString}', $actualFuncCall);
 
     @join assert : test.asserts
-        @if assert.isArray
-            ${@assert.expectedValueIdentifier}Actual = [];
-            foreach ($actualRequestObject->{@assert.actualValueGetter}() as ${@assert.expectedValueIdentifier}Item) {
-                ${@assert.expectedValueIdentifier}Actual[] = ${@assert.expectedValueIdentifier}Item;
-            }
-
-        @else
-            ${@assert.expectedValueIdentifier}Actual = $actualRequestObject->{@assert.actualValueGetter}();
-
-        @end
         @if assert.hasExpectedValueTransformFunction
-            $this->assertEquals({@assert.expectedValueTransformFunction}(\
+            $this->{@assertFunction(assert)}({@assert.expectedValueTransformFunction}(\
                 ${@assert.expectedValueIdentifier}), \
-                ${@assert.expectedValueIdentifier}Actual);
+                $actualRequestObject->{@assert.actualValueGetter}());
         @else
-            $this->assertEquals(${@assert.expectedValueIdentifier}, \
-                ${@assert.expectedValueIdentifier}Actual);
+            $this->{@assertFunction(assert)}(${@assert.expectedValueIdentifier}, \
+                $actualRequestObject->{@assert.actualValueGetter}());
         @end
     @end
 @end
