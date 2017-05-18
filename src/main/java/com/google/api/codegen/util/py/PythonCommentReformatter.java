@@ -15,16 +15,11 @@
 package com.google.api.codegen.util.py;
 
 import com.google.api.codegen.CommentPatterns;
-import com.google.api.codegen.util.CommentReformatter;
+import com.google.api.codegen.util.CommentTransformer;
 import com.google.api.codegen.util.LanguageCommentReformatter;
-import com.google.common.base.Function;
 import com.google.common.base.Splitter;
-import java.util.regex.Matcher;
 
 public class PythonCommentReformatter implements LanguageCommentReformatter {
-
-  private static Function<Matcher, String> PROTO_REPLACE_FUNCTION =
-      CommentReformatter.reformatLinkFunction("``%s``", "");
 
   @Override
   public String reformat(String comment) {
@@ -59,11 +54,11 @@ public class PythonCommentReformatter implements LanguageCommentReformatter {
   }
 
   private String applyTransformations(String line) {
-    return CommentReformatter.of(line)
+    return CommentTransformer.of(line)
         .replace(CommentPatterns.BACK_QUOTE_PATTERN, "``")
-        .reformat(CommentPatterns.PROTO_LINK_PATTERN, PROTO_REPLACE_FUNCTION)
-        .reformatAbsoluteMarkdownLinks("`%s <%s>`_")
-        .reformatCloudMarkdownLinks("`%s <%s>`_")
+        .transformProtoMarkdownLinks("``%s``")
+        .transformAbsoluteMarkdownLinks("`%s <%s>`_")
+        .transformCloudMarkdownLinks("`%s <%s>`_")
         .toString();
   }
 }

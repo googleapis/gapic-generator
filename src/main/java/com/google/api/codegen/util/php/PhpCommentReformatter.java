@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.util.php;
 
-import com.google.api.codegen.util.CommentReformatter;
+import com.google.api.codegen.util.CommentTransformer;
 import com.google.api.codegen.util.LanguageCommentReformatter;
 import java.util.regex.Pattern;
 
@@ -24,10 +24,10 @@ public class PhpCommentReformatter implements LanguageCommentReformatter {
 
   @Override
   public String reformat(String comment) {
-    return CommentReformatter.of(comment)
+    return CommentTransformer.of(comment)
         .replace(ASTERISK_PATTERN, "&#42;")
         .replace(AMPERSAND_PATTERN, "&#64;")
-        .reformatCloudMarkdownLinks("[%s](%s)")
+        .transformCloudMarkdownLinks("[%s](%s)")
         .toString()
         .trim();
   }

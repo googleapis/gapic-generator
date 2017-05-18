@@ -14,30 +14,19 @@
  */
 package com.google.api.codegen.util.js;
 
-import com.google.api.codegen.CommentPatterns;
-import com.google.api.codegen.util.CommentReformatter;
+import com.google.api.codegen.util.CommentTransformer;
 import com.google.api.codegen.util.LanguageCommentReformatter;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
-import com.google.common.base.Function;
 import com.google.common.collect.ImmutableSet;
-import java.util.regex.Matcher;
 
 public class JSCommentReformatter implements LanguageCommentReformatter {
 
-  private static Function<Matcher, String> PROTO_TO_JS_DOC =
-      new Function<Matcher, String>() {
-        @Override
-        public String apply(Matcher matcher) {
-          return Matcher.quoteReplacement(String.format("{@link %s}", matcher.group(1)));
-        }
-      };
-
   @Override
   public String reformat(String comment) {
-    return CommentReformatter.of(comment)
-        .reformat(CommentPatterns.PROTO_LINK_PATTERN, PROTO_TO_JS_DOC)
-        .reformatCloudMarkdownLinks("[%s](%s)")
+    return CommentTransformer.of(comment)
+        .transformProtoMarkdownLinks("{@link %s}")
+        .transformCloudMarkdownLinks("[%s](%s)")
         .toString()
         .trim();
   }
