@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.util;
 
-public class PassThroughCommentReformatter implements LanguageCommentReformatter {
+public class PassThroughCommentReformatter implements CommentReformatter {
   @Override
   public String reformat(String comment) {
     return comment;

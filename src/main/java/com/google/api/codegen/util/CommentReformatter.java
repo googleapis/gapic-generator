@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.util;
 
-public interface LanguageCommentReformatter {
+public interface CommentReformatter {
   /** Reformats the given comment to match a language comment format */
   String reformat(String comment);
 }

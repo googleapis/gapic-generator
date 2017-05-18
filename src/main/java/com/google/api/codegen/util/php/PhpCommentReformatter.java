@@ -15,10 +15,10 @@
 package com.google.api.codegen.util.php;
 
 import com.google.api.codegen.util.CommentTransformer;
-import com.google.api.codegen.util.LanguageCommentReformatter;
+import com.google.api.codegen.util.CommentReformatter;
 import java.util.regex.Pattern;
 
-public class PhpCommentReformatter implements LanguageCommentReformatter {
+public class PhpCommentReformatter implements CommentReformatter {
   public static final Pattern ASTERISK_PATTERN = Pattern.compile("\\*");
   public static final Pattern AMPERSAND_PATTERN = Pattern.compile("@");
 

@@ -16,10 +16,10 @@ package com.google.api.codegen.util.py;
 
 import com.google.api.codegen.CommentPatterns;
 import com.google.api.codegen.util.CommentTransformer;
-import com.google.api.codegen.util.LanguageCommentReformatter;
+import com.google.api.codegen.util.CommentReformatter;
 import com.google.common.base.Splitter;
 
-public class PythonCommentReformatter implements LanguageCommentReformatter {
+public class PythonCommentReformatter implements CommentReformatter {
 
   @Override
   public String reformat(String comment) {

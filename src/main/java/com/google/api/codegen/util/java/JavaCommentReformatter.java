@@ -14,11 +14,11 @@
  */
 package com.google.api.codegen.util.java;
 
-import com.google.api.codegen.util.LanguageCommentReformatter;
+import com.google.api.codegen.util.CommentReformatter;
 import com.google.common.escape.Escaper;
 import com.google.common.escape.Escapers;
 
-public class JavaCommentReformatter implements LanguageCommentReformatter {
+public class JavaCommentReformatter implements CommentReformatter {
   /** Escaper for formatting javadoc strings. */
   private static final Escaper JAVADOC_ESCAPER =
       Escapers.builder()

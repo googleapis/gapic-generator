@@ -15,12 +15,12 @@
 package com.google.api.codegen.util.js;
 
 import com.google.api.codegen.util.CommentTransformer;
-import com.google.api.codegen.util.LanguageCommentReformatter;
+import com.google.api.codegen.util.CommentReformatter;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.common.collect.ImmutableSet;
 
-public class JSCommentReformatter implements LanguageCommentReformatter {
+public class JSCommentReformatter implements CommentReformatter {
 
   @Override
   public String reformat(String comment) {

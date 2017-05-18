@@ -17,13 +17,13 @@ package com.google.api.codegen.util.ruby;
 import com.google.api.codegen.CommentPatterns;
 import com.google.api.codegen.util.CommentTransformer;
 import com.google.api.codegen.util.CommentTransformer.Transformation;
-import com.google.api.codegen.util.LanguageCommentReformatter;
+import com.google.api.codegen.util.CommentReformatter;
 import com.google.common.base.Function;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import java.util.regex.Matcher;
 
-public class RubyCommentReformatter implements LanguageCommentReformatter {
+public class RubyCommentReformatter implements CommentReformatter {
   private static final String BULLET = "* ";
 
   private static Transformation PROTO_TO_RUBY_DOC_TRANSFORMATION =

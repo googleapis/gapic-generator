@@ -26,8 +26,8 @@ import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
+import com.google.api.codegen.util.CommentReformatter;
 import com.google.api.codegen.util.CommonRenderingUtil;
-import com.google.api.codegen.util.LanguageCommentReformatter;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NameFormatter;
 import com.google.api.codegen.util.NameFormatterDelegator;
@@ -64,14 +64,14 @@ import java.util.List;
 public class SurfaceNamer extends NameFormatterDelegator {
   private final ModelTypeFormatter modelTypeFormatter;
   private final TypeNameConverter typeNameConverter;
-  private final LanguageCommentReformatter commentReformatter;
+  private final CommentReformatter commentReformatter;
   private final String packageName;
 
   public SurfaceNamer(
       NameFormatter languageNamer,
       ModelTypeFormatter modelTypeFormatter,
       TypeNameConverter typeNameConverter,
-      LanguageCommentReformatter commentReformatter,
+      CommentReformatter commentReformatter,
       String packageName) {
     super(languageNamer);
     this.modelTypeFormatter = modelTypeFormatter;
