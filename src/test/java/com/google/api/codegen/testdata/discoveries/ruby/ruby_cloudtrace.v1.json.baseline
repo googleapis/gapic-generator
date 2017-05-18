@@ -47,7 +47,6 @@ service.patch_project_traces(project_id, request_body)
 
 require 'googleauth'
 require 'google/apis/cloudtrace_v1'
-require 'json'
 
 service = Google::Apis::CloudtraceV1::CloudTraceService.new
 
@@ -63,7 +62,7 @@ trace_id = 'my-trace-id'  # TODO: Update placeholder value.
 response = service.get_project_trace(project_id, trace_id)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_unparse(response.to_h)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Trace API
@@ -81,7 +80,6 @@ puts JSON.pretty_unparse(response.to_h)
 
 require 'googleauth'
 require 'google/apis/cloudtrace_v1'
-require 'json'
 
 service = Google::Apis::CloudtraceV1::CloudTraceService.new
 
@@ -97,5 +95,5 @@ end
 
 traces.each do |trace|
   # TODO: Change code below to process each `trace` resource:
-  puts JSON.pretty_unparse(trace.to_h)
+  puts trace.to_json
 end
