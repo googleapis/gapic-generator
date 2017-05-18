@@ -26,6 +26,8 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
   public abstract String apiClassName();
 
+  public abstract String fullyQualifiedApiClassName();
+
   public abstract String apiVariableName();
 
   public abstract String apiModuleName();
@@ -88,6 +90,8 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
     public abstract Builder type(ClientMethodType val);
 
     public abstract Builder apiClassName(String val);
+
+    public abstract Builder fullyQualifiedApiClassName(String val);
 
     public abstract Builder apiVariableName(String val);
 

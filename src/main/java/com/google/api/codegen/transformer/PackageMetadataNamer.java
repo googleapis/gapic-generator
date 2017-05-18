@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.ReleaseLevel;
+
 /** A PackageMetadataNamer provides language-specific strings for metadata views. */
 public class PackageMetadataNamer {
 
@@ -34,6 +36,24 @@ public class PackageMetadataNamer {
 
   public String getOutputFileName() {
     return getNotImplementedString("PackageMetadataNamer.getOutputFileName");
+  }
+
+  // TODO: (landrito) this is copied from SurfaceNamer. Figure out a way to consolidate the methods.
+  public String getReleaseAnnotation(ReleaseLevel releaseLevel) {
+    switch (releaseLevel) {
+      case UNSET_RELEASE_LEVEL:
+        // fallthrough
+      case ALPHA:
+        return "Alpha";
+      case BETA:
+        return "Beta";
+      case GA:
+        return "Production/Stable";
+      case DEPRECATED:
+        return "Inactive";
+      default:
+        throw new IllegalStateException("Invalid development status");
+    }
   }
 
   /** Returns the unimplemented string message */

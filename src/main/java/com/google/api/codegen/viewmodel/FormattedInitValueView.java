@@ -21,6 +21,8 @@ import java.util.List;
 public abstract class FormattedInitValueView implements InitValueView {
   public abstract String apiWrapperName();
 
+  public abstract String fullyQualifiedApiWrapperName();
+
   public abstract String formatFunctionName();
 
   public abstract List<String> formatArgs();
@@ -36,6 +38,8 @@ public abstract class FormattedInitValueView implements InitValueView {
   @AutoValue.Builder
   public abstract static class Builder {
     public abstract Builder apiWrapperName(String val);
+
+    public abstract Builder fullyQualifiedApiWrapperName(String val);
 
     public abstract Builder formatFunctionName(String val);
 

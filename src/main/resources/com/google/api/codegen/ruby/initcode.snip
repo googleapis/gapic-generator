@@ -18,7 +18,7 @@
 @private initLineStructure(line)
   @switch line.fieldSettings.size.toString
   @case "0"
-    {@line.identifier} = {@line.typeName}.new
+    {@line.identifier} = {@line.fullyQualifiedTypeName}.new
   @case "1"
     {@singleLineInitStructure(line)}
   @case "2"
@@ -29,11 +29,11 @@
 @end
 
 @private singleLineInitStructure(line)
-    {@line.identifier} = {@line.typeName}.new({@structureFieldsList(line.fieldSettings)})
+    {@line.identifier} = {@line.fullyQualifiedTypeName}.new({@structureFieldsList(line.fieldSettings)})
 @end
 
 @private multiLineInitStructure(line)
-  {@line.identifier} = {@line.typeName}.new(
+  {@line.identifier} = {@line.fullyQualifiedTypeName}.new(
     {@multilineStructureFieldsList(line.fieldSettings)}
   )
 @end
@@ -79,7 +79,7 @@
   @case "SimpleInitValueView"
     {@initValue.initialValue}
   @case "FormattedInitValueView"
-    {@initValue.apiWrapperName}.{@initValue.formatFunctionName}\
+    {@initValue.fullyQualifiedApiWrapperName}.{@initValue.formatFunctionName}\
       ({@varList(initValue.formatArgs)})
   @default
     $unhandledCase: {@initValue.type}$
