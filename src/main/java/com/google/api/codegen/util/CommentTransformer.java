@@ -37,18 +37,6 @@ public class CommentTransformer {
     return this;
   }
 
-  public CommentTransformer transformProtoMarkdownLinks(String linkFormat) {
-    return transform(ProtoLinkPattern.PROTO.createTransformation(linkFormat, ""));
-  }
-
-  public CommentTransformer transformAbsoluteMarkdownLinks(String linkFormat) {
-    return transform(ProtoLinkPattern.ABSOLUTE.createTransformation(linkFormat, ""));
-  }
-
-  public CommentTransformer transformCloudMarkdownLinks(String linkFormat) {
-    return transform(ProtoLinkPattern.CLOUD.createTransformation(linkFormat, CLOUD_URL_PREFIX));
-  }
-
   public CommentTransformer transform(Transformation transformation) {
     comment = transformation.apply(comment);
     return this;

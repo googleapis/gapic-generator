@@ -26,23 +26,21 @@ import java.util.regex.Pattern;
  * title and link url.
  */
 public enum ProtoLinkPattern {
-  ABSOLUTE(CommentPatterns.ABSOLUTE_LINK_PATTERN),
-  CLOUD(CommentPatterns.CLOUD_LINK_PATTERN),
-  PROTO(CommentPatterns.PROTO_LINK_PATTERN);
+  ABSOLUTE(CommentPatterns.ABSOLUTE_LINK_PATTERN, ""),
+  CLOUD(CommentPatterns.CLOUD_LINK_PATTERN, CommentTransformer.CLOUD_URL_PREFIX),
+  PROTO(CommentPatterns.PROTO_LINK_PATTERN, "");
 
   private Pattern pattern;
+  private String urlPrefix;
 
-  ProtoLinkPattern(Pattern pattern) {
+  ProtoLinkPattern(Pattern pattern, String urlPrefix) {
     this.pattern = pattern;
+    this.urlPrefix = urlPrefix;
   }
 
-  public Pattern getPattern() {
-    return pattern;
-  }
-
-  public Transformation createTransformation(final String linkFormat, final String urlPrefix) {
+  public Transformation createTransformation(final String linkFormat) {
     return new Transformation(
-        getPattern(),
+        pattern,
         new Function<Matcher, String>() {
           @Override
           public String apply(Matcher matcher) {

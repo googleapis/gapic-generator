@@ -15,8 +15,9 @@
 package com.google.api.codegen.util.py;
 
 import com.google.api.codegen.CommentPatterns;
-import com.google.api.codegen.util.CommentTransformer;
 import com.google.api.codegen.util.CommentReformatter;
+import com.google.api.codegen.util.CommentTransformer;
+import com.google.api.codegen.util.ProtoLinkPattern;
 import com.google.common.base.Splitter;
 
 public class PythonCommentReformatter implements CommentReformatter {
@@ -56,9 +57,9 @@ public class PythonCommentReformatter implements CommentReformatter {
   private String applyTransformations(String line) {
     return CommentTransformer.of(line)
         .replace(CommentPatterns.BACK_QUOTE_PATTERN, "``")
-        .transformProtoMarkdownLinks("``%s``")
-        .transformAbsoluteMarkdownLinks("`%s <%s>`_")
-        .transformCloudMarkdownLinks("`%s <%s>`_")
+        .transform(ProtoLinkPattern.PROTO.createTransformation("``%s``"))
+        .transform(ProtoLinkPattern.ABSOLUTE.createTransformation("`%s <%s>`_"))
+        .transform(ProtoLinkPattern.CLOUD.createTransformation("`%s <%s>`_"))
         .toString();
   }
 }

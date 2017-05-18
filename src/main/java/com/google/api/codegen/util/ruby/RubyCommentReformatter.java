@@ -15,9 +15,10 @@
 package com.google.api.codegen.util.ruby;
 
 import com.google.api.codegen.CommentPatterns;
+import com.google.api.codegen.util.CommentReformatter;
 import com.google.api.codegen.util.CommentTransformer;
 import com.google.api.codegen.util.CommentTransformer.Transformation;
-import com.google.api.codegen.util.CommentReformatter;
+import com.google.api.codegen.util.ProtoLinkPattern;
 import com.google.common.base.Function;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
@@ -81,8 +82,8 @@ public class RubyCommentReformatter implements CommentReformatter {
     return CommentTransformer.of(line)
         .replace(CommentPatterns.BACK_QUOTE_PATTERN, "+")
         .transform(PROTO_TO_RUBY_DOC_TRANSFORMATION)
-        .transformCloudMarkdownLinks("{%s}[%s]")
-        .transformAbsoluteMarkdownLinks("{%s}[%s]")
+        .transform(ProtoLinkPattern.CLOUD.createTransformation("{%s}[%s]"))
+        .transform(ProtoLinkPattern.ABSOLUTE.createTransformation("{%s}[%s]"))
         .transform(HEADLINE_TRANSFORMATION)
         .toString();
   }
