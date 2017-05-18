@@ -85,6 +85,9 @@ public abstract class PackageMetadataView implements ViewModel {
 
   public abstract String protoPath();
 
+  @Nullable
+  public abstract String versionPath();
+
   public abstract String author();
 
   public abstract String email();
@@ -190,6 +193,8 @@ public abstract class PackageMetadataView implements ViewModel {
 
     /** The path to the API protos in the googleapis repo. */
     public abstract Builder protoPath(String val);
+
+    public abstract Builder versionPath(String val);
 
     /** The author of the package. */
     public abstract Builder author(String val);
