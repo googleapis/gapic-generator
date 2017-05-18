@@ -111,7 +111,7 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
                 productConfig,
                 ImportSectionView.newBuilder().build(),
                 new RubySurfaceNamer(productConfig.getPackageName())))
-        .developmentStatus(
+        .developmentStatusTitle(
             namer.getReleaseAnnotation(packageConfig.releaseLevel(TargetLanguage.RUBY)))
         .exampleMethods(exampleMethods)
         .targetLanguage("Ruby")

@@ -15,19 +15,37 @@
 package com.google.api.codegen.transformer.py;
 
 import com.google.api.codegen.GapicContext;
+import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.TargetLanguage;
+import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.gapic.GapicProvider;
+import com.google.api.codegen.transformer.DefaultFeatureConfig;
+import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
+import com.google.api.codegen.transformer.GapicInterfaceContext;
+import com.google.api.codegen.transformer.GapicMethodContext;
+import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
+import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.PackageMetadataNamer;
 import com.google.api.codegen.transformer.PackageMetadataTransformer;
+import com.google.api.codegen.transformer.TestCaseTransformer;
+import com.google.api.codegen.util.py.PythonTypeTable;
+import com.google.api.codegen.util.testing.PythonValueProducer;
+import com.google.api.codegen.util.testing.ValueProducer;
+import com.google.api.codegen.viewmodel.ApiMethodView;
+import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.SimpleViewModel;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import java.io.File;
@@ -47,8 +65,18 @@ import java.util.Map;
 public class PythonPackageMetadataTransformer implements ModelToViewTransformer {
   private static final String TEST_PREFIX = "test.";
 
+  private static final String GITHUB_DOC_HOST =
+      "https://googlecloudplatform.github.io/google-cloud-python/stable";
+  private static final String GITHUB_REPO_HOST =
+      "https://github.com/GoogleCloudPlatform/google-cloud-python";
+  private static final String AUTH_DOC_PATH = "/google-cloud-auth";
+  private static final String LIB_DOC_PATH = "/%s-usage";
+  private static final String MAIN_README_PATH = "/blob/master/README.rst";
+
   private final PackageMetadataConfig packageConfig;
   private final PackageMetadataTransformer metadataTransformer = new PackageMetadataTransformer();
+  private final ValueProducer valueProducer = new PythonValueProducer();
+  private final TestCaseTransformer testCaseTransformer = new TestCaseTransformer(valueProducer);
   private final List<GapicProvider<? extends Object>> gapicProviders;
   private final PythonSurfaceNamer surfaceNamer;
   private List<String> apiModules = null;
@@ -66,8 +94,9 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
     String version = packageConfig.apiVersion();
     List<ViewModel> metadata =
         computeInitFiles(computePackages(productConfig.getPackageName()), version);
+    PackageMetadataNamer namer = new PackageMetadataNamer();
     for (String templateFileName : getTopLevelTemplateFileNames()) {
-      metadata.add(generateMetadataView(model, productConfig, templateFileName));
+      metadata.add(generateMetadataView(model, productConfig, templateFileName, namer));
     }
     return metadata;
   }
@@ -100,21 +129,60 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
   }
 
   private ViewModel generateMetadataView(
-      Model model, GapicProductConfig productConfig, String template) {
+      Model model, GapicProductConfig productConfig, String template, PackageMetadataNamer namer) {
+    List<ApiMethodView> exampleMethods = generateExampleMethods(model, productConfig);
     String noLeadingPyDir = template.startsWith("py/") ? template.substring(3) : template;
     int extensionIndex = noLeadingPyDir.lastIndexOf(".");
     String outputPath = noLeadingPyDir.substring(0, extensionIndex);
     computeModules(gapicProviders);
-
     return metadataTransformer
         .generateMetadataView(packageConfig, model, template, outputPath, TargetLanguage.PYTHON)
         .namespacePackages(
             computeNamespacePackages(productConfig.getPackageName(), packageConfig.apiVersion()))
         .developmentStatus(
             surfaceNamer.getReleaseAnnotation(packageConfig.releaseLevel(TargetLanguage.PYTHON)))
+        .developmentStatusTitle(
+            namer.getReleaseAnnotation(packageConfig.releaseLevel(TargetLanguage.PYTHON)))
         .apiModules(apiModules)
         .typeModules(typeModules)
+        .exampleMethods(exampleMethods)
+        .targetLanguage("Python")
+        .mainReadmeLink(GITHUB_REPO_HOST + MAIN_README_PATH)
+        .libraryDocumentationLink(
+            GITHUB_DOC_HOST + String.format(LIB_DOC_PATH, packageConfig.shortName()))
+        .authDocumentationLink(GITHUB_DOC_HOST + AUTH_DOC_PATH)
+        .versioningDocumentationLink(GITHUB_REPO_HOST + MAIN_README_PATH)
         .build();
+  }
+
+  // Generates methods used as examples for the README.md file.
+  // This currently generates a list of methods that have smoke test configuration. In the future,
+  //  the example methods may be configured separately.
+  private List<ApiMethodView> generateExampleMethods(
+      Model model, GapicProductConfig productConfig) {
+    ImmutableList.Builder<ApiMethodView> exampleMethods = ImmutableList.builder();
+    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+      GapicInterfaceContext context = createContext(apiInterface, productConfig);
+      if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
+        Method method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
+        FlatteningConfig flatteningGroup =
+            testCaseTransformer.getSmokeTestFlatteningGroup(
+                context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
+        GapicMethodContext flattenedMethodContext =
+            context.asFlattenedMethodContext(method, flatteningGroup);
+        exampleMethods.add(createExampleApiMethodView(flattenedMethodContext));
+      }
+    }
+    return exampleMethods.build();
+  }
+
+  private OptionalArrayMethodView createExampleApiMethodView(GapicMethodContext context) {
+    DynamicLangApiMethodTransformer apiMethodTransformer =
+        new DynamicLangApiMethodTransformer(
+            new PythonApiMethodParamTransformer(),
+            new InitCodeTransformer(new PythonImportSectionTransformer()));
+
+    return apiMethodTransformer.generateMethod(context);
   }
 
   /** Determines the Python files generated in the main phase of generation. */
@@ -196,5 +264,17 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
           SimpleViewModel.create(SnippetSetRunner.SNIPPET_RESOURCE_ROOT, template, outputPath));
     }
     return initFiles;
+  }
+
+  private GapicInterfaceContext createContext(
+      Interface apiInterface, GapicProductConfig productConfig) {
+    return GapicInterfaceContext.create(
+        apiInterface,
+        productConfig,
+        new ModelTypeTable(
+            new PythonTypeTable(productConfig.getPackageName()),
+            new PythonModelTypeNameConverter(productConfig.getPackageName())),
+        new PythonSurfaceNamer(productConfig.getPackageName()),
+        new DefaultFeatureConfig());
   }
 }
