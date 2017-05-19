@@ -192,14 +192,14 @@
   @join settings : xsettingsClass.callSettings
     @switch settings.type
     @case "SimpleApiCallable"
-      private final SimpleCallSettings<{@settings.requestTypeName}, \
+      private final SimpleGrpcCallSettings<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.memberName};
     @case "PagedApiCallable"
-      private final PagedCallSettings<{@settings.requestTypeName}, \
+      private final PagedGrpcCallSettings<{@settings.requestTypeName}, \
           {@settings.responseTypeName}, \
           {@settings.pagedListResponseTypeName}> {@settings.memberName};
     @case "BatchingApiCallable"
-      private final BatchingCallSettings<{@settings.requestTypeName}, \
+      private final BatchingGrpcCallSettings<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.memberName};
     @case "StreamingApiCallable"
       private final StreamingCallSettings<{@settings.requestTypeName}, \
@@ -221,18 +221,18 @@
      */
     @switch settings.type
     @case "SimpleApiCallable"
-        public SimpleCallSettings<{@settings.requestTypeName}, \
+        public SimpleGrpcCallSettings<{@settings.requestTypeName}, \
             {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
           return {@settings.memberName};
        }
     @case "PagedApiCallable"
-      public PagedCallSettings<{@settings.requestTypeName}, \
+      public PagedGrpcCallSettings<{@settings.requestTypeName}, \
           {@settings.responseTypeName}, \
           {@settings.pagedListResponseTypeName}> {@settings.settingsGetFunction}() {
         return {@settings.memberName};
       }
     @case "BatchingApiCallable"
-      public BatchingCallSettings<{@settings.requestTypeName}, \
+      public BatchingGrpcCallSettings<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
         return {@settings.memberName};
       }
@@ -324,7 +324,7 @@
         new PagedListResponseFactory<{@factory.requestTypeName}, {@factory.responseTypeName}, {@factory.pagedListResponseTypeName}>() {
           @@Override
           public ApiFuture<{@factory.pagedListResponseTypeName}> getFuturePagedResponse(
-              UnaryCallable<{@factory.requestTypeName}, {@factory.responseTypeName}> callable,
+              UnaryGrpcCallable<{@factory.requestTypeName}, {@factory.responseTypeName}> callable,
               {@factory.requestTypeName} request,
               CallContext context,
               ApiFuture<{@factory.responseTypeName}> futureResponse) {
@@ -428,7 +428,7 @@
    * Builder for {@xsettingsClass.name}.
    */
   public static class Builder extends ClientSettings.Builder {
-    private final ImmutableList<UnaryCallSettings.Builder> unaryMethodSettingsBuilders;
+    private final ImmutableList<UnaryGrpcCallSettings.Builder> unaryMethodSettingsBuilders;
 
     {@builderMembers(xsettingsClass)}
 
@@ -444,14 +444,14 @@
   @join settings : xsettingsClass.callSettings
     @switch settings.type.toString
     @case "SimpleApiCallable"
-      private final SimpleCallSettings.Builder<{@settings.requestTypeName}, \
+      private final SimpleGrpcCallSettings.Builder<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.memberName};
     @case "PagedApiCallable"
-      private final PagedCallSettings.Builder<{@settings.requestTypeName}, \
+      private final PagedGrpcCallSettings.Builder<{@settings.requestTypeName}, \
           {@settings.responseTypeName}, \
           {@settings.pagedListResponseTypeName}> {@settings.memberName};
     @case "BatchingApiCallable"
-      private final BatchingCallSettings.Builder<{@settings.requestTypeName}, \
+      private final BatchingGrpcCallSettings.Builder<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.memberName};
     @case "StreamingApiCallable"
       private final StreamingCallSettings.Builder<{@settings.requestTypeName}, \
@@ -515,13 +515,13 @@
     @join settings : xsettingsClass.callSettings
       @switch settings.type.toString
       @case "SimpleApiCallable"
-        {@settings.memberName} = SimpleCallSettings.newBuilder({@settings.grpcMethodConstant});
+        {@settings.memberName} = SimpleGrpcCallSettings.newBuilder({@settings.grpcMethodConstant});
       @case "PagedApiCallable"
-        {@settings.memberName} = PagedCallSettings.newBuilder(
+        {@settings.memberName} = PagedGrpcCallSettings.newBuilder(
             {@settings.grpcMethodConstant},
             {@settings.pagedListResponseFactoryName});
       @case "BatchingApiCallable"
-        {@settings.memberName} = BatchingCallSettings.newBuilder(
+        {@settings.memberName} = BatchingGrpcCallSettings.newBuilder(
             {@settings.grpcMethodConstant},
             {@settings.batchingDescriptorName})
                 .setBatchingSettingsBuilder(BatchingSettings.newBuilder());
@@ -540,7 +540,7 @@
       @end
       {@BREAK}
     @end
-    unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder>of(
+    unaryMethodSettingsBuilders = ImmutableList.<UnaryGrpcCallSettings.Builder>of(
         @join settings : xsettingsClass.unaryCallSettings vertical on ",".add(BREAK)
           {@settings.memberName}
         @end
@@ -591,7 +591,7 @@
       {@settings.memberName} = settings.{@settings.memberName}.toBuilder();
     @end
 
-    unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder>of(
+    unaryMethodSettingsBuilders = ImmutableList.<UnaryGrpcCallSettings.Builder>of(
         @join settings : xsettingsClass.unaryCallSettings vertical on ",".add(BREAK)
           {@settings.memberName}
         @end
@@ -619,7 +619,7 @@
    *
    * Note: This method does not support applying settings to streaming methods.
    */
-  public Builder applyToAllUnaryMethods(UnaryCallSettings.Builder unaryCallSettings) throws Exception {
+  public Builder applyToAllUnaryMethods(UnaryGrpcCallSettings.Builder unaryCallSettings) throws Exception {
     super.applyToAllUnaryMethods(unaryMethodSettingsBuilders, unaryCallSettings);
     return this;
   }
@@ -630,17 +630,17 @@
      */
     @switch settings.type
     @case "SimpleApiCallable"
-      public SimpleCallSettings.Builder<{@settings.requestTypeName}, \
+      public SimpleGrpcCallSettings.Builder<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
         return {@settings.memberName};
       }
     @case "PagedApiCallable"
-      public PagedCallSettings.Builder<{@settings.requestTypeName}, \
+      public PagedGrpcCallSettings.Builder<{@settings.requestTypeName}, \
           {@settings.responseTypeName}, {@settings.pagedListResponseTypeName}> {@settings.settingsGetFunction}() {
         return {@settings.memberName};
       }
     @case "BatchingApiCallable"
-      public BatchingCallSettings.Builder<{@settings.requestTypeName}, \
+      public BatchingGrpcCallSettings.Builder<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
         return {@settings.memberName};
       }

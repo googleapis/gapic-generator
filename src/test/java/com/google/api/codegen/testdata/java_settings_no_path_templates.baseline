@@ -27,7 +27,7 @@ import com.google.api.gax.grpc.ExecutorProvider;
 import com.google.api.gax.grpc.InstantiatingChannelProvider;
 import com.google.api.gax.grpc.InstantiatingExecutorProvider;
 import com.google.api.gax.grpc.SimpleCallSettings;
-import com.google.api.gax.grpc.UnaryCallSettings;
+import com.google.api.gax.grpc.UnaryGrpcCallSettings;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.auth.Credentials;
 import com.google.common.collect.ImmutableList;
@@ -147,7 +147,7 @@ public class NoTemplatesApiServiceSettings extends ClientSettings {
    * Builder for NoTemplatesApiServiceSettings.
    */
   public static class Builder extends ClientSettings.Builder {
-    private final ImmutableList<UnaryCallSettings.Builder> unaryMethodSettingsBuilders;
+    private final ImmutableList<UnaryGrpcCallSettings.Builder> unaryMethodSettingsBuilders;
 
     private final SimpleCallSettings.Builder<IncrementRequest, Empty> incrementSettings;
 
@@ -171,7 +171,7 @@ public class NoTemplatesApiServiceSettings extends ClientSettings {
 
       incrementSettings = SimpleCallSettings.newBuilder(METHOD_INCREMENT);
 
-      unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder>of(
+      unaryMethodSettingsBuilders = ImmutableList.<UnaryGrpcCallSettings.Builder>of(
           incrementSettings
       );
     }
@@ -191,7 +191,7 @@ public class NoTemplatesApiServiceSettings extends ClientSettings {
 
       incrementSettings = settings.incrementSettings.toBuilder();
 
-      unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder>of(
+      unaryMethodSettingsBuilders = ImmutableList.<UnaryGrpcCallSettings.Builder>of(
           incrementSettings
       );
     }
@@ -215,7 +215,7 @@ public class NoTemplatesApiServiceSettings extends ClientSettings {
      *
      * Note: This method does not support applying settings to streaming methods.
      */
-    public Builder applyToAllUnaryMethods(UnaryCallSettings.Builder unaryCallSettings) throws Exception {
+    public Builder applyToAllUnaryMethods(UnaryGrpcCallSettings.Builder unaryCallSettings) throws Exception {
       super.applyToAllUnaryMethods(unaryMethodSettingsBuilders, unaryCallSettings);
       return this;
     }

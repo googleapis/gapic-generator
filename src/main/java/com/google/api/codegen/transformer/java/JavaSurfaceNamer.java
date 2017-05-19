@@ -186,7 +186,7 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   public String getApiCallableTypeName(ServiceMethodType serviceMethodType) {
     switch (serviceMethodType) {
       case UnaryMethod:
-        return "UnaryCallable";
+        return "UnaryGrpcCallable";
       case GrpcStreamingMethod:
         return "StreamingCallable";
       case LongRunningMethod:

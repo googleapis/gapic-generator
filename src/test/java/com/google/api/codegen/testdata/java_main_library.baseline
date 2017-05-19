@@ -23,7 +23,7 @@ import com.google.api.gax.grpc.FixedExecutorProvider;
 import com.google.api.gax.grpc.OperationCallable;
 import com.google.api.gax.grpc.OperationFuture;
 import com.google.api.gax.grpc.StreamingCallable;
-import com.google.api.gax.grpc.UnaryCallable;
+import com.google.api.gax.grpc.UnaryGrpcCallable;
 import com.google.api.pathtemplate.PathTemplate;
 import com.google.api.resourcenames.ResourceName;
 import com.google.example.library.v1.AddCommentsRequest;
@@ -170,39 +170,39 @@ public class LibraryClient implements AutoCloseable {
   private final OperationsClient operationsClient;
   private final List<AutoCloseable> closeables = new ArrayList<>();
 
-  private final UnaryCallable<CreateShelfRequest, Shelf> createShelfCallable;
-  private final UnaryCallable<GetShelfRequest, Shelf> getShelfCallable;
-  private final UnaryCallable<ListShelvesRequest, ListShelvesResponse> listShelvesCallable;
-  private final UnaryCallable<ListShelvesRequest, ListShelvesPagedResponse> listShelvesPagedCallable;
-  private final UnaryCallable<DeleteShelfRequest, Empty> deleteShelfCallable;
-  private final UnaryCallable<MergeShelvesRequest, Shelf> mergeShelvesCallable;
-  private final UnaryCallable<CreateBookRequest, Book> createBookCallable;
-  private final UnaryCallable<PublishSeriesRequest, PublishSeriesResponse> publishSeriesCallable;
-  private final UnaryCallable<GetBookRequest, Book> getBookCallable;
-  private final UnaryCallable<ListBooksRequest, ListBooksResponse> listBooksCallable;
-  private final UnaryCallable<ListBooksRequest, ListBooksPagedResponse> listBooksPagedCallable;
-  private final UnaryCallable<DeleteBookRequest, Empty> deleteBookCallable;
-  private final UnaryCallable<UpdateBookRequest, Book> updateBookCallable;
-  private final UnaryCallable<MoveBookRequest, Book> moveBookCallable;
-  private final UnaryCallable<ListStringsRequest, ListStringsResponse> listStringsCallable;
-  private final UnaryCallable<ListStringsRequest, ListStringsPagedResponse> listStringsPagedCallable;
-  private final UnaryCallable<AddCommentsRequest, Empty> addCommentsCallable;
-  private final UnaryCallable<GetBookFromArchiveRequest, BookFromArchive> getBookFromArchiveCallable;
-  private final UnaryCallable<GetBookFromAnywhereRequest, BookFromAnywhere> getBookFromAnywhereCallable;
-  private final UnaryCallable<UpdateBookIndexRequest, Empty> updateBookIndexCallable;
+  private final UnaryGrpcCallable<CreateShelfRequest, Shelf> createShelfCallable;
+  private final UnaryGrpcCallable<GetShelfRequest, Shelf> getShelfCallable;
+  private final UnaryGrpcCallable<ListShelvesRequest, ListShelvesResponse> listShelvesCallable;
+  private final UnaryGrpcCallable<ListShelvesRequest, ListShelvesPagedResponse> listShelvesPagedCallable;
+  private final UnaryGrpcCallable<DeleteShelfRequest, Empty> deleteShelfCallable;
+  private final UnaryGrpcCallable<MergeShelvesRequest, Shelf> mergeShelvesCallable;
+  private final UnaryGrpcCallable<CreateBookRequest, Book> createBookCallable;
+  private final UnaryGrpcCallable<PublishSeriesRequest, PublishSeriesResponse> publishSeriesCallable;
+  private final UnaryGrpcCallable<GetBookRequest, Book> getBookCallable;
+  private final UnaryGrpcCallable<ListBooksRequest, ListBooksResponse> listBooksCallable;
+  private final UnaryGrpcCallable<ListBooksRequest, ListBooksPagedResponse> listBooksPagedCallable;
+  private final UnaryGrpcCallable<DeleteBookRequest, Empty> deleteBookCallable;
+  private final UnaryGrpcCallable<UpdateBookRequest, Book> updateBookCallable;
+  private final UnaryGrpcCallable<MoveBookRequest, Book> moveBookCallable;
+  private final UnaryGrpcCallable<ListStringsRequest, ListStringsResponse> listStringsCallable;
+  private final UnaryGrpcCallable<ListStringsRequest, ListStringsPagedResponse> listStringsPagedCallable;
+  private final UnaryGrpcCallable<AddCommentsRequest, Empty> addCommentsCallable;
+  private final UnaryGrpcCallable<GetBookFromArchiveRequest, BookFromArchive> getBookFromArchiveCallable;
+  private final UnaryGrpcCallable<GetBookFromAnywhereRequest, BookFromAnywhere> getBookFromAnywhereCallable;
+  private final UnaryGrpcCallable<UpdateBookIndexRequest, Empty> updateBookIndexCallable;
   private final StreamingCallable<StreamShelvesRequest, StreamShelvesResponse> streamShelvesCallable;
   private final StreamingCallable<StreamBooksRequest, Book> streamBooksCallable;
   private final StreamingCallable<DiscussBookRequest, Comment> discussBookCallable;
   private final StreamingCallable<DiscussBookRequest, Comment> monologAboutBookCallable;
-  private final UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksCallable;
-  private final UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksPagedResponse> findRelatedBooksPagedCallable;
-  private final UnaryCallable<AddTagRequest, AddTagResponse> addTagCallable;
-  private final UnaryCallable<AddLabelRequest, AddLabelResponse> addLabelCallable;
-  private final UnaryCallable<GetBookRequest, Operation> getBigBookCallable;
+  private final UnaryGrpcCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksCallable;
+  private final UnaryGrpcCallable<FindRelatedBooksRequest, FindRelatedBooksPagedResponse> findRelatedBooksPagedCallable;
+  private final UnaryGrpcCallable<AddTagRequest, AddTagResponse> addTagCallable;
+  private final UnaryGrpcCallable<AddLabelRequest, AddLabelResponse> addLabelCallable;
+  private final UnaryGrpcCallable<GetBookRequest, Operation> getBigBookCallable;
   private final OperationCallable<GetBookRequest, Book> getBigBookOperationCallable;
-  private final UnaryCallable<GetBookRequest, Operation> getBigNothingCallable;
+  private final UnaryGrpcCallable<GetBookRequest, Operation> getBigNothingCallable;
   private final OperationCallable<GetBookRequest, Empty> getBigNothingOperationCallable;
-  private final UnaryCallable<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsCallable;
+  private final UnaryGrpcCallable<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsCallable;
 
 
 
@@ -242,43 +242,43 @@ public class LibraryClient implements AutoCloseable {
             .build();
     this.operationsClient = OperationsClient.create(operationsSettings);
 
-    this.createShelfCallable = UnaryCallable.create(settings.createShelfSettings(), this.channel, this.executor);
-    this.getShelfCallable = UnaryCallable.create(settings.getShelfSettings(), this.channel, this.executor);
-    this.listShelvesCallable = UnaryCallable.create(settings.listShelvesSettings(), this.channel, this.executor);
+    this.createShelfCallable = UnaryGrpcCallable.create(settings.createShelfSettings(), this.channel, this.executor);
+    this.getShelfCallable = UnaryGrpcCallable.create(settings.getShelfSettings(), this.channel, this.executor);
+    this.listShelvesCallable = UnaryGrpcCallable.create(settings.listShelvesSettings(), this.channel, this.executor);
     this.listShelvesPagedCallable =
-        UnaryCallable.createPagedVariant(settings.listShelvesSettings(), this.channel, this.executor);
-    this.deleteShelfCallable = UnaryCallable.create(settings.deleteShelfSettings(), this.channel, this.executor);
-    this.mergeShelvesCallable = UnaryCallable.create(settings.mergeShelvesSettings(), this.channel, this.executor);
-    this.createBookCallable = UnaryCallable.create(settings.createBookSettings(), this.channel, this.executor);
-    this.publishSeriesCallable = UnaryCallable.create(settings.publishSeriesSettings(), this.channel, this.executor);
-    this.getBookCallable = UnaryCallable.create(settings.getBookSettings(), this.channel, this.executor);
-    this.listBooksCallable = UnaryCallable.create(settings.listBooksSettings(), this.channel, this.executor);
+        UnaryGrpcCallable.createPagedVariant(settings.listShelvesSettings(), this.channel, this.executor);
+    this.deleteShelfCallable = UnaryGrpcCallable.create(settings.deleteShelfSettings(), this.channel, this.executor);
+    this.mergeShelvesCallable = UnaryGrpcCallable.create(settings.mergeShelvesSettings(), this.channel, this.executor);
+    this.createBookCallable = UnaryGrpcCallable.create(settings.createBookSettings(), this.channel, this.executor);
+    this.publishSeriesCallable = UnaryGrpcCallable.create(settings.publishSeriesSettings(), this.channel, this.executor);
+    this.getBookCallable = UnaryGrpcCallable.create(settings.getBookSettings(), this.channel, this.executor);
+    this.listBooksCallable = UnaryGrpcCallable.create(settings.listBooksSettings(), this.channel, this.executor);
     this.listBooksPagedCallable =
-        UnaryCallable.createPagedVariant(settings.listBooksSettings(), this.channel, this.executor);
-    this.deleteBookCallable = UnaryCallable.create(settings.deleteBookSettings(), this.channel, this.executor);
-    this.updateBookCallable = UnaryCallable.create(settings.updateBookSettings(), this.channel, this.executor);
-    this.moveBookCallable = UnaryCallable.create(settings.moveBookSettings(), this.channel, this.executor);
-    this.listStringsCallable = UnaryCallable.create(settings.listStringsSettings(), this.channel, this.executor);
+        UnaryGrpcCallable.createPagedVariant(settings.listBooksSettings(), this.channel, this.executor);
+    this.deleteBookCallable = UnaryGrpcCallable.create(settings.deleteBookSettings(), this.channel, this.executor);
+    this.updateBookCallable = UnaryGrpcCallable.create(settings.updateBookSettings(), this.channel, this.executor);
+    this.moveBookCallable = UnaryGrpcCallable.create(settings.moveBookSettings(), this.channel, this.executor);
+    this.listStringsCallable = UnaryGrpcCallable.create(settings.listStringsSettings(), this.channel, this.executor);
     this.listStringsPagedCallable =
-        UnaryCallable.createPagedVariant(settings.listStringsSettings(), this.channel, this.executor);
-    this.addCommentsCallable = UnaryCallable.create(settings.addCommentsSettings(), this.channel, this.executor);
-    this.getBookFromArchiveCallable = UnaryCallable.create(settings.getBookFromArchiveSettings(), this.channel, this.executor);
-    this.getBookFromAnywhereCallable = UnaryCallable.create(settings.getBookFromAnywhereSettings(), this.channel, this.executor);
-    this.updateBookIndexCallable = UnaryCallable.create(settings.updateBookIndexSettings(), this.channel, this.executor);
+        UnaryGrpcCallable.createPagedVariant(settings.listStringsSettings(), this.channel, this.executor);
+    this.addCommentsCallable = UnaryGrpcCallable.create(settings.addCommentsSettings(), this.channel, this.executor);
+    this.getBookFromArchiveCallable = UnaryGrpcCallable.create(settings.getBookFromArchiveSettings(), this.channel, this.executor);
+    this.getBookFromAnywhereCallable = UnaryGrpcCallable.create(settings.getBookFromAnywhereSettings(), this.channel, this.executor);
+    this.updateBookIndexCallable = UnaryGrpcCallable.create(settings.updateBookIndexSettings(), this.channel, this.executor);
     this.streamShelvesCallable = StreamingCallable.create(settings.streamShelvesSettings(), this.channel);
     this.streamBooksCallable = StreamingCallable.create(settings.streamBooksSettings(), this.channel);
     this.discussBookCallable = StreamingCallable.create(settings.discussBookSettings(), this.channel);
     this.monologAboutBookCallable = StreamingCallable.create(settings.monologAboutBookSettings(), this.channel);
-    this.findRelatedBooksCallable = UnaryCallable.create(settings.findRelatedBooksSettings(), this.channel, this.executor);
+    this.findRelatedBooksCallable = UnaryGrpcCallable.create(settings.findRelatedBooksSettings(), this.channel, this.executor);
     this.findRelatedBooksPagedCallable =
-        UnaryCallable.createPagedVariant(settings.findRelatedBooksSettings(), this.channel, this.executor);
-    this.addTagCallable = UnaryCallable.create(settings.addTagSettings(), this.channel, this.executor);
-    this.addLabelCallable = UnaryCallable.create(settings.addLabelSettings(), this.channel, this.executor);
-    this.getBigBookCallable = UnaryCallable.create(settings.getBigBookSettings().getInitialCallSettings(), this.channel, this.executor);
+        UnaryGrpcCallable.createPagedVariant(settings.findRelatedBooksSettings(), this.channel, this.executor);
+    this.addTagCallable = UnaryGrpcCallable.create(settings.addTagSettings(), this.channel, this.executor);
+    this.addLabelCallable = UnaryGrpcCallable.create(settings.addLabelSettings(), this.channel, this.executor);
+    this.getBigBookCallable = UnaryGrpcCallable.create(settings.getBigBookSettings().getInitialCallSettings(), this.channel, this.executor);
     this.getBigBookOperationCallable = OperationCallable.create(settings.getBigBookSettings(),this.channel, this.executor, this.operationsClient);
-    this.getBigNothingCallable = UnaryCallable.create(settings.getBigNothingSettings().getInitialCallSettings(), this.channel, this.executor);
+    this.getBigNothingCallable = UnaryGrpcCallable.create(settings.getBigNothingSettings().getInitialCallSettings(), this.channel, this.executor);
     this.getBigNothingOperationCallable = OperationCallable.create(settings.getBigNothingSettings(),this.channel, this.executor, this.operationsClient);
-    this.testOptionalRequiredFlatteningParamsCallable = UnaryCallable.create(settings.testOptionalRequiredFlatteningParamsSettings(), this.channel, this.executor);
+    this.testOptionalRequiredFlatteningParamsCallable = UnaryGrpcCallable.create(settings.testOptionalRequiredFlatteningParamsSettings(), this.channel, this.executor);
 
     if (settings.getChannelProvider().shouldAutoClose()) {
       closeables.add(
@@ -378,7 +378,7 @@ public class LibraryClient implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryCallable<CreateShelfRequest, Shelf> createShelfCallable() {
+  public final UnaryGrpcCallable<CreateShelfRequest, Shelf> createShelfCallable() {
     return createShelfCallable;
   }
 
@@ -506,7 +506,7 @@ public class LibraryClient implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryCallable<GetShelfRequest, Shelf> getShelfCallable() {
+  public final UnaryGrpcCallable<GetShelfRequest, Shelf> getShelfCallable() {
     return getShelfCallable;
   }
 
@@ -571,7 +571,7 @@ public class LibraryClient implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryCallable<ListShelvesRequest, ListShelvesPagedResponse> listShelvesPagedCallable() {
+  public final UnaryGrpcCallable<ListShelvesRequest, ListShelvesPagedResponse> listShelvesPagedCallable() {
     return listShelvesPagedCallable;
   }
 
@@ -598,7 +598,7 @@ public class LibraryClient implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryCallable<ListShelvesRequest, ListShelvesResponse> listShelvesCallable() {
+  public final UnaryGrpcCallable<ListShelvesRequest, ListShelvesResponse> listShelvesCallable() {
     return listShelvesCallable;
   }
 
@@ -665,7 +665,7 @@ public class LibraryClient implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryCallable<DeleteShelfRequest, Empty> deleteShelfCallable() {
+  public final UnaryGrpcCallable<DeleteShelfRequest, Empty> deleteShelfCallable() {
     return deleteShelfCallable;
   }
 
@@ -745,7 +745,7 @@ public class LibraryClient implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryCallable<MergeShelvesRequest, Shelf> mergeShelvesCallable() {
+  public final UnaryGrpcCallable<MergeShelvesRequest, Shelf> mergeShelvesCallable() {
     return mergeShelvesCallable;
   }
 
@@ -819,7 +819,7 @@ public class LibraryClient implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryCallable<CreateBookRequest, Book> createBookCallable() {
+  public final UnaryGrpcCallable<CreateBookRequest, Book> createBookCallable() {
     return createBookCallable;
   }
 
@@ -912,7 +912,7 @@ public class LibraryClient implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryCallable<PublishSeriesRequest, PublishSeriesResponse> publishSeriesCallable() {
+  public final UnaryGrpcCallable<PublishSeriesRequest, PublishSeriesResponse> publishSeriesCallable() {
     return publishSeriesCallable;
   }
 
@@ -979,7 +979,7 @@ public class LibraryClient implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryCallable<GetBookRequest, Book> getBookCallable() {
+  public final UnaryGrpcCallable<GetBookRequest, Book> getBookCallable() {
     return getBookCallable;
   }
 
@@ -1055,7 +1055,7 @@ public class LibraryClient implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryCallable<ListBooksRequest, ListBooksPagedResponse> listBooksPagedCallable() {
+  public final UnaryGrpcCallable<ListBooksRequest, ListBooksPagedResponse> listBooksPagedCallable() {
     return listBooksPagedCallable;
   }
 
@@ -1085,7 +1085,7 @@ public class LibraryClient implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryCallable<ListBooksRequest, ListBooksResponse> listBooksCallable() {
+  public final UnaryGrpcCallable<ListBooksRequest, ListBooksResponse> listBooksCallable() {
     return listBooksCallable;
   }
 
@@ -1152,7 +1152,7 @@ public class LibraryClient implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryCallable<DeleteBookRequest, Empty> deleteBookCallable() {
+  public final UnaryGrpcCallable<DeleteBookRequest, Empty> deleteBookCallable() {
     return deleteBookCallable;
   }
 
@@ -1259,7 +1259,7 @@ public class LibraryClient implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryCallable<UpdateBookRequest, Book> updateBookCallable() {
+  public final UnaryGrpcCallable<UpdateBookRequest, Book> updateBookCallable() {
     return updateBookCallable;
   }
 
@@ -1333,7 +1333,7 @@ public class LibraryClient implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryCallable<MoveBookRequest, Book> moveBookCallable() {
+  public final UnaryGrpcCallable<MoveBookRequest, Book> moveBookCallable() {
     return moveBookCallable;
   }
 
@@ -1423,7 +1423,7 @@ public class LibraryClient implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryCallable<ListStringsRequest, ListStringsPagedResponse> listStringsPagedCallable() {
+  public final UnaryGrpcCallable<ListStringsRequest, ListStringsPagedResponse> listStringsPagedCallable() {
     return listStringsPagedCallable;
   }
 
@@ -1450,7 +1450,7 @@ public class LibraryClient implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryCallable<ListStringsRequest, ListStringsResponse> listStringsCallable() {
+  public final UnaryGrpcCallable<ListStringsRequest, ListStringsResponse> listStringsCallable() {
     return listStringsCallable;
   }
 
@@ -1548,7 +1548,7 @@ public class LibraryClient implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryCallable<AddCommentsRequest, Empty> addCommentsCallable() {
+  public final UnaryGrpcCallable<AddCommentsRequest, Empty> addCommentsCallable() {
     return addCommentsCallable;
   }
 
@@ -1615,7 +1615,7 @@ public class LibraryClient implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryCallable<GetBookFromArchiveRequest, BookFromArchive> getBookFromArchiveCallable() {
+  public final UnaryGrpcCallable<GetBookFromArchiveRequest, BookFromArchive> getBookFromArchiveCallable() {
     return getBookFromArchiveCallable;
   }
 
@@ -1690,7 +1690,7 @@ public class LibraryClient implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryCallable<GetBookFromAnywhereRequest, BookFromAnywhere> getBookFromAnywhereCallable() {
+  public final UnaryGrpcCallable<GetBookFromAnywhereRequest, BookFromAnywhere> getBookFromAnywhereCallable() {
     return getBookFromAnywhereCallable;
   }
 
@@ -1777,7 +1777,7 @@ public class LibraryClient implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryCallable<UpdateBookIndexRequest, Empty> updateBookIndexCallable() {
+  public final UnaryGrpcCallable<UpdateBookIndexRequest, Empty> updateBookIndexCallable() {
     return updateBookIndexCallable;
   }
 
@@ -2015,7 +2015,7 @@ public class LibraryClient implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksPagedResponse> findRelatedBooksPagedCallable() {
+  public final UnaryGrpcCallable<FindRelatedBooksRequest, FindRelatedBooksPagedResponse> findRelatedBooksPagedCallable() {
     return findRelatedBooksPagedCallable;
   }
 
@@ -2048,7 +2048,7 @@ public class LibraryClient implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksCallable() {
+  public final UnaryGrpcCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksCallable() {
     return findRelatedBooksCallable;
   }
 
@@ -2124,7 +2124,7 @@ public class LibraryClient implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryCallable<AddTagRequest, AddTagResponse> addTagCallable() {
+  public final UnaryGrpcCallable<AddTagRequest, AddTagResponse> addTagCallable() {
     return addTagCallable;
   }
 
@@ -2203,7 +2203,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    */
   @Deprecated
-  /* package-private */ final UnaryCallable<AddLabelRequest, AddLabelResponse> addLabelCallable() {
+  /* package-private */ final UnaryGrpcCallable<AddLabelRequest, AddLabelResponse> addLabelCallable() {
     return addLabelCallable;
   }
 
@@ -2291,7 +2291,7 @@ public class LibraryClient implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryCallable<GetBookRequest, Operation> getBigBookCallable() {
+  public final UnaryGrpcCallable<GetBookRequest, Operation> getBigBookCallable() {
     return getBigBookCallable;
   }
 
@@ -2379,7 +2379,7 @@ public class LibraryClient implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryCallable<GetBookRequest, Operation> getBigNothingCallable() {
+  public final UnaryGrpcCallable<GetBookRequest, Operation> getBigNothingCallable() {
     return getBigNothingCallable;
   }
 
@@ -2731,7 +2731,7 @@ public class LibraryClient implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final UnaryCallable<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsCallable() {
+  public final UnaryGrpcCallable<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsCallable() {
     return testOptionalRequiredFlatteningParamsCallable;
   }
 
