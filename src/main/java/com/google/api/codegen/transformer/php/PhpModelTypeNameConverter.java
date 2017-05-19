@@ -30,6 +30,9 @@ import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 public class PhpModelTypeNameConverter implements ModelTypeNameConverter {
 
+  /** The maximum depth of nested messages supported by PHP type name determination. */
+  private static final int MAX_NESTED_DEPTH = 20;
+
   /** A map from primitive types in proto to PHP counterparts. */
   private static final ImmutableMap<Type, String> PRIMITIVE_TYPE_MAP =
       ImmutableMap.<Type, String>builder()
@@ -128,7 +131,7 @@ public class PhpModelTypeNameConverter implements ModelTypeNameConverter {
   @Override
   public TypeName getTypeName(ProtoElement elem) {
     try {
-      return getTypeName(elem, 20);
+      return getTypeName(elem, MAX_NESTED_DEPTH);
     } catch (IllegalStateException e) {
       throw new IllegalStateException("Could not determine type name for elem: " + elem, e);
     }
