@@ -156,12 +156,10 @@ import javax.annotation.Generated;
  *
  * <pre>
  * <code>
- * InstantiatingChannelProvider channelProvider =
- *     LibrarySettings.defaultChannelProviderBuilder()
+ * LibrarySettings librarySettings =
+ *     LibrarySettings.defaultBuilder()
  *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
  *         .build();
- * LibrarySettings librarySettings =
- *     LibrarySettings.defaultBuilder().setChannelProvider(channelProvider).build();
  * LibraryClient libraryClient =
  *     LibraryClient.create(librarySettings);
  * </code>
@@ -170,8 +168,6 @@ import javax.annotation.Generated;
 @Generated("by GAPIC")
 public class LibraryClient implements AutoCloseable {
   private final LibrarySettings settings;
-  private final ScheduledExecutorService executor;
-  private final ManagedChannel channel;
   private final OperationsClient operationsClient;
   private final List<AutoCloseable> closeables = new ArrayList<>();
 
@@ -234,21 +230,8 @@ public class LibraryClient implements AutoCloseable {
    */
   protected LibraryClient(LibrarySettings settings) throws IOException {
     this.settings = settings;
-    ChannelAndExecutor channelAndExecutor = settings.getChannelAndExecutor();
-    this.executor = channelAndExecutor.getExecutor();
-    this.channel = channelAndExecutor.getChannel();
 
-    CredentialsProvider credentialsProvider = settings.getCredentialsProvider();
-    CallCredentials callCredentials = null;
-    if (credentialsProvider.getCredentials() != null) {
-      callCredentials = MoreCallCredentials.from(credentialsProvider.getCredentials());
-    }
-    ClientContext clientContext =
-        ClientContext.newBuilder()
-            .setExecutor(this.executor)
-            .setChannel(this.channel)
-            .setCallCredentials(callCredentials)
-            .build();
+    ClientContext clientContext = ClientContext.create(settings);
 
     FixedExecutorProvider executorProvider = FixedExecutorProvider.create(this.executor);
     FixedChannelProvider channelProvider = FixedChannelProvider.create(this.channel);
@@ -298,24 +281,7 @@ public class LibraryClient implements AutoCloseable {
     this.getBigNothingOperationCallable = OperationCallable.create(settings.getBigNothingSettings(),clientContext, this.operationsClient);
     this.testOptionalRequiredFlatteningParamsCallable = UnaryCallable.create(settings.testOptionalRequiredFlatteningParamsSettings(), clientContext);
 
-    if (settings.getChannelProvider().shouldAutoClose()) {
-      closeables.add(
-        new Closeable() {
-          @Override
-          public void close() throws IOException {
-            channel.shutdown();
-          }
-        });
-    }
-    if (settings.getExecutorProvider().shouldAutoClose()) {
-      closeables.add(
-        new Closeable() {
-          @Override
-          public void close() throws IOException {
-            executor.shutdown();
-          }
-        });
-    }
+    closeables.addAll(clientContext.getCloseables());
   }
 
   public final LibrarySettings getSettings() {
