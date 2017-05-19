@@ -311,7 +311,7 @@ if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')
   tasks.uploadArchives.dependsOn(failUploadArchives)
 }
 
-task checkOutGhPages {
+task checkOutGhPages << {
   if (!new File('tmp_gh-pages').exists()) {
     exec {
       commandLine 'git', 'clone', '--branch', 'gh-pages',
@@ -358,3 +358,4 @@ task createApiDocsRedirect {
 task updateDocsWithCurrentVersion {
   dependsOn 'createApiDocsRedirect'
 }
+

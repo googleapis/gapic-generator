@@ -226,7 +226,7 @@ repositories {
 dependencies {
   compile "io.grpc:grpc-stub:1.0.1"
   compile "io.grpc:grpc-protobuf:1.0.1"
-  compile "com.google.api.grpc:proto-google-cloud-library-v1:0.1.7"
+  compile project(":proto-google-cloud-library-v1")
 }
 
 ext {
@@ -312,7 +312,7 @@ if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')
   tasks.uploadArchives.dependsOn(failUploadArchives)
 }
 
-task checkOutGhPages {
+task checkOutGhPages << {
   if (!new File('tmp_gh-pages').exists()) {
     exec {
       commandLine 'git', 'clone', '--branch', 'gh-pages',
@@ -359,3 +359,4 @@ task createApiDocsRedirect {
 task updateDocsWithCurrentVersion {
   dependsOn 'createApiDocsRedirect'
 }
+
