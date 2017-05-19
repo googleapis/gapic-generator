@@ -27,6 +27,7 @@ import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PackageMetadataTransformer;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.TestCaseTransformer;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.codegen.util.testing.StandardValueProducer;
@@ -39,6 +40,7 @@ import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 
@@ -49,6 +51,8 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
   private static final String README_OUTPUT_FILE = "README.md";
   private static final List<String> TOP_LEVEL_FILES =
       ImmutableList.of("ruby/Gemfile.snip", "ruby/Rakefile.snip", "LICENSE.snip");
+  private static final List<String> TOP_LEVEL_DOT_FILES =
+      ImmutableList.of("ruby/gitignore.snip", "ruby/rubocop.yml.snip", "ruby/yardopts.snip");
 
   private static final String GITHUB_DOC_HOST =
       "https://googlecloudplatform.github.io/google-cloud-ruby";
@@ -78,6 +82,7 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
         .add(GEMSPEC_FILE)
         .add(README_FILE)
         .addAll(TOP_LEVEL_FILES)
+        .addAll(TOP_LEVEL_DOT_FILES)
         .build();
   }
 
@@ -87,7 +92,8 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
     return ImmutableList.<ViewModel>builder()
         .add(generateGemspecView(model, namer))
         .add(generateReadmeView(model, productConfig, namer))
-        .addAll(generateMetadataViews(model, productConfig, namer))
+        .addAll(generateMetadataViews(model, productConfig, namer, TOP_LEVEL_FILES))
+        .addAll(generateMetadataViews(model, productConfig, namer, TOP_LEVEL_DOT_FILES, "."))
         .build();
   }
 
@@ -111,7 +117,7 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
                 productConfig,
                 ImportSectionView.newBuilder().build(),
                 new RubySurfaceNamer(productConfig.getPackageName())))
-        .developmentStatus(
+        .developmentStatusTitle(
             namer.getReleaseAnnotation(packageConfig.releaseLevel(TargetLanguage.RUBY)))
         .exampleMethods(exampleMethods)
         .targetLanguage("Ruby")
@@ -163,10 +169,22 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
   }
 
   private List<ViewModel> generateMetadataViews(
-      Model model, GapicProductConfig productConfig, RubyPackageMetadataNamer namer) {
+      Model model,
+      GapicProductConfig productConfig,
+      RubyPackageMetadataNamer namer,
+      List<String> snippets) {
+    return generateMetadataViews(model, productConfig, namer, snippets, null);
+  }
+
+  private List<ViewModel> generateMetadataViews(
+      Model model,
+      GapicProductConfig productConfig,
+      RubyPackageMetadataNamer namer,
+      List<String> snippets,
+      String filePrefix) {
     ImmutableList.Builder<ViewModel> views = ImmutableList.builder();
-    for (String template : TOP_LEVEL_FILES) {
-      views.add(generateMetadataView(model, productConfig, template, namer));
+    for (String template : snippets) {
+      views.add(generateMetadataView(model, productConfig, template, namer, filePrefix));
     }
     return views.build();
   }
@@ -175,9 +193,13 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
       Model model,
       GapicProductConfig productConfig,
       String template,
-      RubyPackageMetadataNamer namer) {
+      RubyPackageMetadataNamer namer,
+      String filePrefix) {
     String noLeadingRubyDir =
         template.startsWith(RUBY_PREFIX) ? template.substring(RUBY_PREFIX.length()) : template;
+    if (!Strings.isNullOrEmpty(filePrefix)) {
+      noLeadingRubyDir = filePrefix + noLeadingRubyDir;
+    }
     int extensionIndex = noLeadingRubyDir.lastIndexOf(".");
     String outputPath = noLeadingRubyDir.substring(0, extensionIndex);
 
@@ -190,15 +212,16 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
       }
     }
 
+    SurfaceNamer surfaceNamer = new RubySurfaceNamer(productConfig.getPackageName());
+
     return metadataTransformer
         .generateMetadataView(packageConfig, model, template, outputPath, TargetLanguage.RUBY)
         .identifier(namer.getMetadataIdentifier())
         .fileHeader(
             fileHeaderTransformer.generateFileHeader(
-                productConfig,
-                ImportSectionView.newBuilder().build(),
-                new RubySurfaceNamer(productConfig.getPackageName())))
+                productConfig, ImportSectionView.newBuilder().build(), surfaceNamer))
         .hasSmokeTests(hasSmokeTests)
+        .versionPath(surfaceNamer.getVersionIndexFileImportName())
         .build();
   }
 

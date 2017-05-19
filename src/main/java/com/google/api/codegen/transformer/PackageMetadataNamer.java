@@ -40,7 +40,20 @@ public class PackageMetadataNamer {
 
   // TODO: (landrito) this is copied from SurfaceNamer. Figure out a way to consolidate the methods.
   public String getReleaseAnnotation(ReleaseLevel releaseLevel) {
-    return getNotImplementedString("SurfaceNamer.getReleaseAnnotation");
+    switch (releaseLevel) {
+      case UNSET_RELEASE_LEVEL:
+        // fallthrough
+      case ALPHA:
+        return "Alpha";
+      case BETA:
+        return "Beta";
+      case GA:
+        return "Production/Stable";
+      case DEPRECATED:
+        return "Inactive";
+      default:
+        throw new IllegalStateException("Invalid development status");
+    }
   }
 
   /** Returns the unimplemented string message */

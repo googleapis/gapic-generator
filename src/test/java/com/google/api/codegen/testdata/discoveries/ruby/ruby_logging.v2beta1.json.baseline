@@ -48,7 +48,6 @@ service.delete_billing_account_log(log_name)
 
 require 'googleauth'
 require 'google/apis/logging_v2beta1'
-require 'json'
 
 service = Google::Apis::LoggingV2beta1::LoggingService.new
 
@@ -66,7 +65,7 @@ end
 
 log_names.each do |item|
   # TODO: Change code below to process each `item` resource:
-  puts JSON.pretty_unparse(item.to_h)
+  puts item.to_json
 end
 # BEFORE RUNNING:
 # ---------------
@@ -85,7 +84,6 @@ end
 
 require 'googleauth'
 require 'google/apis/logging_v2beta1'
-require 'json'
 
 service = Google::Apis::LoggingV2beta1::LoggingService.new
 
@@ -102,7 +100,7 @@ end
 
 entries.each do |log_entry|
   # TODO: Change code below to process each `log_entry` resource:
-  puts JSON.pretty_unparse(log_entry.to_h)
+  puts log_entry.to_json
 end
 # BEFORE RUNNING:
 # ---------------
@@ -121,7 +119,6 @@ end
 
 require 'googleauth'
 require 'google/apis/logging_v2beta1'
-require 'json'
 
 service = Google::Apis::LoggingV2beta1::LoggingService.new
 
@@ -134,7 +131,7 @@ request_body = Google::Apis::LoggingV2beta1::WriteLogEntriesRequest.new
 response = service.write_entry_log_entries(request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_unparse(response.to_h)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Stackdriver Logging API
@@ -152,7 +149,6 @@ puts JSON.pretty_unparse(response.to_h)
 
 require 'googleauth'
 require 'google/apis/logging_v2beta1'
-require 'json'
 
 service = Google::Apis::LoggingV2beta1::LoggingService.new
 
@@ -165,7 +161,7 @@ end
 
 resource_descriptors.each do |monitored_resource_descriptor|
   # TODO: Change code below to process each `monitored_resource_descriptor` resource:
-  puts JSON.pretty_unparse(monitored_resource_descriptor.to_h)
+  puts monitored_resource_descriptor.to_json
 end
 # BEFORE RUNNING:
 # ---------------
@@ -216,7 +212,6 @@ service.delete_organization_log(log_name)
 
 require 'googleauth'
 require 'google/apis/logging_v2beta1'
-require 'json'
 
 service = Google::Apis::LoggingV2beta1::LoggingService.new
 
@@ -234,7 +229,7 @@ end
 
 log_names.each do |item|
   # TODO: Change code below to process each `item` resource:
-  puts JSON.pretty_unparse(item.to_h)
+  puts item.to_json
 end
 # BEFORE RUNNING:
 # ---------------
@@ -285,7 +280,6 @@ service.delete_log(log_name)
 
 require 'googleauth'
 require 'google/apis/logging_v2beta1'
-require 'json'
 
 service = Google::Apis::LoggingV2beta1::LoggingService.new
 
@@ -303,7 +297,7 @@ end
 
 log_names.each do |item|
   # TODO: Change code below to process each `item` resource:
-  puts JSON.pretty_unparse(item.to_h)
+  puts item.to_json
 end
 # BEFORE RUNNING:
 # ---------------
@@ -322,7 +316,6 @@ end
 
 require 'googleauth'
 require 'google/apis/logging_v2beta1'
-require 'json'
 
 service = Google::Apis::LoggingV2beta1::LoggingService.new
 
@@ -340,7 +333,7 @@ request_body = Google::Apis::LoggingV2beta1::LogMetric.new
 response = service.create_project_metric(parent, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_unparse(response.to_h)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Stackdriver Logging API
@@ -386,7 +379,6 @@ service.delete_project_metric(metric_name)
 
 require 'googleauth'
 require 'google/apis/logging_v2beta1'
-require 'json'
 
 service = Google::Apis::LoggingV2beta1::LoggingService.new
 
@@ -400,7 +392,7 @@ metric_name = 'projects/my-project/metrics/my-metric'  # TODO: Update placeholde
 response = service.get_project_metric(metric_name)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_unparse(response.to_h)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Stackdriver Logging API
@@ -418,7 +410,6 @@ puts JSON.pretty_unparse(response.to_h)
 
 require 'googleauth'
 require 'google/apis/logging_v2beta1'
-require 'json'
 
 service = Google::Apis::LoggingV2beta1::LoggingService.new
 
@@ -435,7 +426,7 @@ end
 
 metrics.each do |log_metric|
   # TODO: Change code below to process each `log_metric` resource:
-  puts JSON.pretty_unparse(log_metric.to_h)
+  puts log_metric.to_json
 end
 # BEFORE RUNNING:
 # ---------------
@@ -454,7 +445,6 @@ end
 
 require 'googleauth'
 require 'google/apis/logging_v2beta1'
-require 'json'
 
 service = Google::Apis::LoggingV2beta1::LoggingService.new
 
@@ -474,7 +464,7 @@ request_body = Google::Apis::LoggingV2beta1::LogMetric.new
 response = service.update_project_metric(metric_name, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_unparse(response.to_h)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Stackdriver Logging API
@@ -492,7 +482,6 @@ puts JSON.pretty_unparse(response.to_h)
 
 require 'googleauth'
 require 'google/apis/logging_v2beta1'
-require 'json'
 
 service = Google::Apis::LoggingV2beta1::LoggingService.new
 
@@ -511,7 +500,7 @@ request_body = Google::Apis::LoggingV2beta1::LogSink.new
 response = service.create_project_sink(parent, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_unparse(response.to_h)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Stackdriver Logging API
@@ -561,7 +550,6 @@ service.delete_project_sink(sink_name)
 
 require 'googleauth'
 require 'google/apis/logging_v2beta1'
-require 'json'
 
 service = Google::Apis::LoggingV2beta1::LoggingService.new
 
@@ -577,7 +565,7 @@ sink_name = 'projects/my-project/sinks/my-sink'  # TODO: Update placeholder valu
 response = service.get_project_sink(sink_name)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_unparse(response.to_h)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Stackdriver Logging API
@@ -595,7 +583,6 @@ puts JSON.pretty_unparse(response.to_h)
 
 require 'googleauth'
 require 'google/apis/logging_v2beta1'
-require 'json'
 
 service = Google::Apis::LoggingV2beta1::LoggingService.new
 
@@ -612,7 +599,7 @@ end
 
 sinks.each do |log_sink|
   # TODO: Change code below to process each `log_sink` resource:
-  puts JSON.pretty_unparse(log_sink.to_h)
+  puts log_sink.to_json
 end
 # BEFORE RUNNING:
 # ---------------
@@ -631,7 +618,6 @@ end
 
 require 'googleauth'
 require 'google/apis/logging_v2beta1'
-require 'json'
 
 service = Google::Apis::LoggingV2beta1::LoggingService.new
 
@@ -652,4 +638,4 @@ request_body = Google::Apis::LoggingV2beta1::LogSink.new
 response = service.update_project_sink(sink_name, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_unparse(response.to_h)
+puts response.to_json
