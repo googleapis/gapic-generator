@@ -22,15 +22,10 @@ $ gem install library
 ```rb
 require "library/v1"
 
-Book = Google::Example::Library::V1::Book
-FieldMask = Google::Protobuf::FieldMask
-LibraryServiceClient = Library::V1::LibraryServiceClient
-Rating = Google::Example::Library::V1::Book::Rating
-
-library_service_client = LibraryServiceClient.new
-formatted_name = LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)
-rating = Rating::GOOD
-book = Book.new(rating: rating)
+library_service_client = Library::V1::LibraryServiceClient.new
+formatted_name = Library::V1::LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)
+rating = :GOOD
+book = Google::Example::Library::V1::Book.new(rating: rating)
 response = library_service_client.update_book(formatted_name, book)
 ```
 

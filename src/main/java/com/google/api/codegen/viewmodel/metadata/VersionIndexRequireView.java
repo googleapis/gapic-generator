@@ -15,11 +15,15 @@
 package com.google.api.codegen.viewmodel.metadata;
 
 import com.google.auto.value.AutoValue;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class VersionIndexRequireView {
 
   public abstract String clientName();
+
+  @Nullable
+  public abstract String serviceName();
 
   public abstract String fileName();
 
@@ -30,6 +34,8 @@ public abstract class VersionIndexRequireView {
   @AutoValue.Builder
   public abstract static class Builder {
     public abstract Builder clientName(String val);
+
+    public abstract Builder serviceName(String val);
 
     public abstract Builder fileName(String val);
 

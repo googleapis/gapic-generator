@@ -22,7 +22,7 @@ public class JavaGrpcPackageMetadataTransformer extends JavaPackageMetadataTrans
   private final Map<String, String> snippetsOutput =
       ImmutableMap.of(
           "LICENSE.snip", "LICENSE",
-          "metadatagen/java/grpc/package.snip", "build.gradle");
+          "metadatagen/java/grpc/build.gradle.snip", "build.gradle");
 
   @Override
   protected Map<String, String> getSnippetsOutput() {

@@ -70,7 +70,7 @@
         CallOptions *{@view.callOptionsTypeName}
 
         // The metadata to be sent with each request.
-        xGoogHeader string
+        xGoogHeader []string
     }
 
     // {@view.clientConstructorName} creates a new {@view.servicePhraseName} client.
@@ -113,7 +113,7 @@
     func (c *{@view.clientTypeName}) SetGoogleClientInfo(keyval ...string) {
         kv := append([]string{"gl-go", version.Go()}, keyval...)
         kv = append(kv, "gapic", version.Repo, "gax", gax.Version, "grpc", grpc.Version)
-        c.xGoogHeader = gax.XGoogHeader(kv...)
+        c.xGoogHeader = []string{gax.XGoogHeader(kv...)}
     }
 
     @join getter : view.pathTemplateGetters
@@ -338,7 +338,7 @@
         lro *longrunning.Operation
 
         // The metadata to be sent with each request.
-        xGoogHeader string
+        xGoogHeader []string
     }
 
     // {@lro.constructorName} returns a new {@lro.clientReturnTypeName} from a given name.

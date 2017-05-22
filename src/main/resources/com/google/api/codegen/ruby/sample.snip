@@ -23,9 +23,6 @@
     require 'googleauth'
   @end
   require '{@class.serviceRequirePath}'
-  @if class.hasResponse
-    require 'json'
-  @end
 
   {@class.serviceVarName} = {@class.serviceTypeNamespace}::{@class.serviceTypeName}.new
 
@@ -116,14 +113,14 @@
     @if class.pageStreaming.isResourceMap
       {@class.pageStreaming.pageVarName}.each do |{@class.pageStreaming.resourceKeyVarName}, {@class.pageStreaming.resourceValueVarName}|
         @# TODO: Change code below to process each ({@class.pageStreaming.resourceKeyVarName}, {@class.pageStreaming.resourceValueVarName}) pair:
-        puts String({@class.pageStreaming.resourceKeyVarName} << " => " << JSON.pretty_unparse({@class.pageStreaming.resourceValueVarName}.to_h)
+        puts String({@class.pageStreaming.resourceKeyVarName} << " => " << {@class.pageStreaming.resourceValueVarName}.to_json
       end
     @else
       # We don't handle non-repeated page streaming resources separately in Ruby
       # because the fetch_all treats them correctly.
       {@class.pageStreaming.pageVarName}.each do |{@class.pageStreaming.resourceVarName}|
         @# TODO: Change code below to process each `{@class.pageStreaming.resourceVarName}` resource:
-        puts JSON.pretty_unparse({@class.pageStreaming.resourceVarName}.to_h)
+        puts {@class.pageStreaming.resourceVarName}.to_json
       end
     @end
   @else
@@ -131,7 +128,7 @@
       {@class.responseVarName} = {@methodCall(class)}({@paramList(class.methodCallFieldVarNames)})
 
       @# TODO: Change code below to process the `{@class.responseVarName}` object:
-      puts JSON.pretty_unparse({@class.responseVarName}.to_h)
+      puts {@class.responseVarName}.to_json
     @else
       {@methodCall(class)}({@paramList(class.methodCallFieldVarNames)})
     @end

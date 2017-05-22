@@ -85,6 +85,9 @@ public abstract class PackageMetadataView implements ViewModel {
 
   public abstract String protoPath();
 
+  @Nullable
+  public abstract String versionPath();
+
   public abstract String author();
 
   public abstract String email();
@@ -95,6 +98,9 @@ public abstract class PackageMetadataView implements ViewModel {
 
   @Nullable
   public abstract String developmentStatus();
+
+  @Nullable
+  public abstract String developmentStatusTitle();
 
   public abstract boolean hasMultipleServices();
 
@@ -188,6 +194,8 @@ public abstract class PackageMetadataView implements ViewModel {
     /** The path to the API protos in the googleapis repo. */
     public abstract Builder protoPath(String val);
 
+    public abstract Builder versionPath(String val);
+
     /** The author of the package. */
     public abstract Builder author(String val);
 
@@ -202,6 +210,9 @@ public abstract class PackageMetadataView implements ViewModel {
 
     /** The developement status of the package. E.g., "alpha". */
     public abstract Builder developmentStatus(String val);
+
+    /** The developement status of the package used in titles. E.g., "Alpha". */
+    public abstract Builder developmentStatusTitle(String s);
 
     /** Whether the package contains multiple service objects */
     public abstract Builder hasMultipleServices(boolean val);

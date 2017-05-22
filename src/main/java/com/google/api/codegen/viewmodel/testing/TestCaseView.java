@@ -45,6 +45,8 @@ public abstract class TestCaseView {
 
   public abstract String serviceConstructorName();
 
+  public abstract String fullyQualifiedServiceClassName();
+
   public abstract String mockServiceVarName();
 
   public abstract boolean hasRequestParameters();
@@ -73,6 +75,8 @@ public abstract class TestCaseView {
     public abstract Builder nameWithException(String val);
 
     public abstract Builder serviceConstructorName(String val);
+
+    public abstract Builder fullyQualifiedServiceClassName(String val);
 
     public abstract Builder mockServiceVarName(String val);
 
