@@ -150,7 +150,6 @@
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($status->details, $ex->getMessage());
-            {@singleCallSuccessAsserts(test)}
         }
 
         $this->assertTrue($grpcStub->isExhausted());
@@ -266,7 +265,6 @@
         $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
         $this->assertFalse($response->isDone());
         $this->assertNull($response->getResult());
-        {@lroCallSuccessAsserts(test)}
 
         $expectedOperationsRequestObject = new GetOperationRequest();
         $expectedOperationsRequestObject->setName('operations/{@test.name}');
@@ -278,13 +276,6 @@
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($status->details, $ex->getMessage());
-
-            $operationsRequests = $operationsStub->getReceivedCalls();
-            $this->assertSame(1, count($operationsRequests));
-            $actualOperationsFuncCall = $operationsRequests[0]->getFuncCall();
-            $actualOperationsRequestObject = $operationsRequests[0]->getRequestObject();
-            $this->assertSame('/google.longrunning.Operations/GetOperation', $actualOperationsFuncCall);
-            $this->assertEquals($expectedOperationsRequestObject, $actualOperationsRequestObject);
         }
 
         $this->assertTrue($grpcStub->isExhausted());
