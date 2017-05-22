@@ -92,6 +92,8 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
   private ViewModel generateReadmeView(
       Model model, GapicProductConfig productConfig, NodeJSPackageMetadataNamer namer) {
     List<ApiMethodView> exampleMethods = generateExampleMethods(model, productConfig);
+    Iterable<Interface> services = new InterfaceView().getElementIterable(model);
+    boolean hasMultipleServices = Iterables.size(services) > 1;
     return metadataTransformer
         .generateMetadataView(
             packageConfig, model, README_FILE, README_OUTPUT_FILE, TargetLanguage.NODEJS)
@@ -102,9 +104,10 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
                 ImportSectionView.newBuilder().build(),
                 new NodeJSSurfaceNamer(
                     productConfig.getPackageName(), NodeJSUtils.isGcloud(productConfig))))
-        .developmentStatus(
+        .developmentStatusTitle(
             namer.getReleaseAnnotation(packageConfig.releaseLevel(TargetLanguage.NODEJS)))
         .exampleMethods(exampleMethods)
+        .hasMultipleServices(hasMultipleServices)
         .targetLanguage("NodeJS")
         .mainReadmeLink(GITHUB_REPO_HOST + MAIN_README_PATH)
         .libraryDocumentationLink(
