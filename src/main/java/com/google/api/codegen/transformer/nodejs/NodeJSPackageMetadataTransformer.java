@@ -49,7 +49,8 @@ import java.util.List;
 public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer {
   private static final String README_FILE = "nodejs/README.md.snip";
   private static final String README_OUTPUT_FILE = "README.md";
-  private static final List<String> TOP_LEVEL_FILES = ImmutableList.of("nodejs/package.json.snip");
+  private static final List<String> TOP_LEVEL_FILES =
+      ImmutableList.of("nodejs/package.json.snip", "LICENSE.snip");
 
   private static final String GITHUB_DOC_HOST =
       "https://googlecloudplatform.github.io/google-cloud-node";
