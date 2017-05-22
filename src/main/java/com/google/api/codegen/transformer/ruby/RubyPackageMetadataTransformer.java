@@ -222,6 +222,9 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
                 productConfig, ImportSectionView.newBuilder().build(), surfaceNamer))
         .hasSmokeTests(hasSmokeTests)
         .versionPath(surfaceNamer.getVersionIndexFileImportName())
+        .versionNamespace(
+            surfaceNamer.getNamespace(
+                new InterfaceView().getElementIterable(model).iterator().next()))
         .build();
   }
 

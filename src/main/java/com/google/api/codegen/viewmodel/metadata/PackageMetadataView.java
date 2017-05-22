@@ -88,6 +88,9 @@ public abstract class PackageMetadataView implements ViewModel {
   @Nullable
   public abstract String versionPath();
 
+  @Nullable
+  public abstract String versionNamespace();
+
   public abstract String author();
 
   public abstract String email();
@@ -195,6 +198,8 @@ public abstract class PackageMetadataView implements ViewModel {
     public abstract Builder protoPath(String val);
 
     public abstract Builder versionPath(String val);
+
+    public abstract Builder versionNamespace(String val);
 
     /** The author of the package. */
     public abstract Builder author(String val);
