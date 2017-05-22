@@ -200,7 +200,7 @@ public abstract class PackageMetadataView implements ViewModel {
     /* The path to the generated version index file. */
     public abstract Builder versionPath(String val);
 
-    /** The namespace of the services found within this package.*/
+    /** The namespace of the services found within this package. */
     public abstract Builder versionNamespace(String val);
 
     /** The author of the package. */

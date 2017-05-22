@@ -42,7 +42,9 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /** Responsible for producing package metadata related views for Ruby */
 public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
@@ -204,7 +206,8 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
     String outputPath = noLeadingRubyDir.substring(0, extensionIndex);
 
     boolean hasSmokeTests = false;
-    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+    Iterable<Interface> interfaces = new InterfaceView().getElementIterable(model);
+    for (Interface apiInterface : interfaces) {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
       if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
         hasSmokeTests = true;
@@ -213,6 +216,7 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
     }
 
     SurfaceNamer surfaceNamer = new RubySurfaceNamer(productConfig.getPackageName());
+    validateVersionNamespaces(interfaces, surfaceNamer);
 
     return metadataTransformer
         .generateMetadataView(packageConfig, model, template, outputPath, TargetLanguage.RUBY)
@@ -222,10 +226,18 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
                 productConfig, ImportSectionView.newBuilder().build(), surfaceNamer))
         .hasSmokeTests(hasSmokeTests)
         .versionPath(surfaceNamer.getVersionIndexFileImportName())
-        .versionNamespace(
-            surfaceNamer.getNamespace(
-                new InterfaceView().getElementIterable(model).iterator().next()))
+        .versionNamespace(surfaceNamer.getNamespace(interfaces.iterator().next()))
         .build();
+  }
+
+  private void validateVersionNamespaces(Iterable<Interface> interfaces, SurfaceNamer namer) {
+    Set<String> versionNamespaces = new HashSet<>();
+    for (Interface apiInterface : interfaces) {
+      versionNamespaces.add(namer.getNamespace(apiInterface));
+    }
+    if (versionNamespaces.size() > 1) {
+      throw new IllegalArgumentException("Multiple versionNamespaces found for the package.");
+    }
   }
 
   private GapicInterfaceContext createContext(
