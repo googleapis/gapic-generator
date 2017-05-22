@@ -101,12 +101,10 @@
    *
    * <pre>
    * <code>
-   * InstantiatingChannelProvider channelProvider =
-   *     {@xapiClassDoc.settingsClassName}.defaultChannelProviderBuilder()
+   * {@xapiClassDoc.settingsClassName} {@xapiClassDoc.settingsVarName} =
+   *     {@xapiClassDoc.settingsClassName}.defaultBuilder()
    *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
    *         .build();
-   * {@xapiClassDoc.settingsClassName} {@xapiClassDoc.settingsVarName} =
-   *     {@xapiClassDoc.settingsClassName}.defaultBuilder().setChannelProvider(channelProvider).build();
    * {@xapiClassDoc.apiClassName} {@xapiClassDoc.apiVarName} =
    *     {@xapiClassDoc.apiClassName}.create({@xapiClassDoc.settingsVarName});
    * </code>
@@ -171,8 +169,6 @@
 
 @private members(xapiClass)
   private final {@xapiClass.settingsClassName} settings;
-  private final ScheduledExecutorService executor;
-  private final ManagedChannel channel;
   @if xapiClass.hasLongRunningOperations
     private final OperationsClient operationsClient;
   @end
@@ -216,9 +212,8 @@
    */
   protected {@xapiClass.name}({@xapiClass.settingsClassName} settings) throws IOException {
     this.settings = settings;
-    ChannelAndExecutor channelAndExecutor = settings.getChannelAndExecutor();
-    this.executor = channelAndExecutor.getExecutor();
-    this.channel = channelAndExecutor.getChannel();
+
+    ClientContext clientContext = ClientContext.create(settings);
 
     @if xapiClass.hasLongRunningOperations
       FixedExecutorProvider executorProvider = FixedExecutorProvider.create(this.executor);
@@ -227,6 +222,7 @@
           OperationsSettings.defaultBuilder()
               .setExecutorProvider(executorProvider)
               .setChannelProvider(channelProvider)
+              .setCredentialsProvider(credentialsProvider)
               .build();
       this.operationsClient = OperationsClient.create(operationsSettings);
     @end
@@ -234,42 +230,25 @@
     @join apiCallable : xapiClass.apiCallableMembers
       @switch apiCallable.type
       @case "SimpleApiCallable"
-        this.{@apiCallable.name} = UnaryCallable.create(settings.{@apiCallable.settingsFunctionName}(), this.channel, this.executor);
+        this.{@apiCallable.name} = UnaryCallable.create(settings.{@apiCallable.settingsFunctionName}(), clientContext);
       @case "PagedApiCallable"
         this.{@apiCallable.name} =
-            UnaryCallable.createPagedVariant(settings.{@apiCallable.settingsFunctionName}(), this.channel, this.executor);
+            UnaryCallable.createPagedVariant(settings.{@apiCallable.settingsFunctionName}(), clientContext);
       @case "BatchingApiCallable"
-        this.{@apiCallable.name} = UnaryCallable.create(settings.{@apiCallable.settingsFunctionName}(), this.channel, this.executor);
+        this.{@apiCallable.name} = UnaryCallable.create(settings.{@apiCallable.settingsFunctionName}(), clientContext);
       @case "StreamingApiCallable"
         this.{@apiCallable.name} = StreamingCallable.create(settings.{@apiCallable.settingsFunctionName}(), this.channel);
       @case "InitialOperationApiCallable"
-        this.{@apiCallable.name} = UnaryCallable.create(settings.{@apiCallable.settingsFunctionName}().getInitialCallSettings(), this.channel, this.executor);
+        this.{@apiCallable.name} = UnaryCallable.create(settings.{@apiCallable.settingsFunctionName}().getInitialCallSettings(), clientContext);
       @case "OperationApiCallable"
         this.{@apiCallable.name} = OperationCallable.create(settings.{@apiCallable.settingsFunctionName}(),\
-            this.channel, this.executor, this.operationsClient);
+            clientContext, this.operationsClient);
       @default
         $unhandledCase: {@apiCallable.type}$
       @end
     @end
 
-    if (settings.getChannelProvider().shouldAutoClose()) {
-      closeables.add(
-        new Closeable() {
-          @@Override
-          public void close() throws IOException {
-            channel.shutdown();
-          }
-        });
-    }
-    if (settings.getExecutorProvider().shouldAutoClose()) {
-      closeables.add(
-        new Closeable() {
-          @@Override
-          public void close() throws IOException {
-            executor.shutdown();
-          }
-        });
-    }
+    closeables.addAll(clientContext.getCloseables());
   }
   {@""}
 @end

@@ -99,8 +99,7 @@ public class NoTemplatesApiServiceSettings extends ClientSettings {
   /** Returns a builder for the default ChannelProvider for this service. */
   public static InstantiatingChannelProvider.Builder defaultChannelProviderBuilder() {
     return InstantiatingChannelProvider.newBuilder()
-        .setGeneratorHeader(DEFAULT_GAPIC_NAME, getGapicVersion())
-        .setCredentialsProvider(defaultCredentialsProviderBuilder().build());
+        .setGeneratorHeader(DEFAULT_GAPIC_NAME, getGapicVersion());
   }
 
   private static String getGapicVersion() {
@@ -135,7 +134,8 @@ public class NoTemplatesApiServiceSettings extends ClientSettings {
 
   private NoTemplatesApiServiceSettings(Builder settingsBuilder) throws IOException {
     super(settingsBuilder.getExecutorProvider(),
-          settingsBuilder.getChannelProvider());
+          settingsBuilder.getChannelProvider(),
+          settingsBuilder.getCredentialsProvider());
 
     incrementSettings = settingsBuilder.incrementSettings().build();
   }
@@ -205,6 +205,12 @@ public class NoTemplatesApiServiceSettings extends ClientSettings {
     @Override
     public Builder setChannelProvider(ChannelProvider channelProvider) {
       super.setChannelProvider(channelProvider);
+      return this;
+    }
+
+    @Override
+    public Builder setCredentialsProvider(CredentialsProvider credentialsProvider) {
+      super.setCredentialsProvider(credentialsProvider);
       return this;
     }
 
