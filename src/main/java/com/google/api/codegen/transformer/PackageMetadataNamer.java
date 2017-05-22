@@ -38,7 +38,6 @@ public class PackageMetadataNamer {
     return getNotImplementedString("PackageMetadataNamer.getOutputFileName");
   }
 
-  // TODO: (landrito) this is copied from SurfaceNamer. Figure out a way to consolidate the methods.
   public String getReleaseAnnotation(ReleaseLevel releaseLevel) {
     switch (releaseLevel) {
       case UNSET_RELEASE_LEVEL:
