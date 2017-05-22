@@ -216,7 +216,6 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
     }
 
     SurfaceNamer surfaceNamer = new RubySurfaceNamer(productConfig.getPackageName());
-    validateVersionNamespaces(interfaces, surfaceNamer);
 
     return metadataTransformer
         .generateMetadataView(packageConfig, model, template, outputPath, TargetLanguage.RUBY)
@@ -226,11 +225,11 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
                 productConfig, ImportSectionView.newBuilder().build(), surfaceNamer))
         .hasSmokeTests(hasSmokeTests)
         .versionPath(surfaceNamer.getVersionIndexFileImportName())
-        .versionNamespace(surfaceNamer.getNamespace(interfaces.iterator().next()))
+        .versionNamespace(validVersionNamespace(interfaces, surfaceNamer))
         .build();
   }
 
-  private void validateVersionNamespaces(Iterable<Interface> interfaces, SurfaceNamer namer) {
+  private String validVersionNamespace(Iterable<Interface> interfaces, SurfaceNamer namer) {
     Set<String> versionNamespaces = new HashSet<>();
     for (Interface apiInterface : interfaces) {
       versionNamespaces.add(namer.getNamespace(apiInterface));
@@ -238,6 +237,7 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
     if (versionNamespaces.size() > 1) {
       throw new IllegalArgumentException("Multiple versionNamespaces found for the package.");
     }
+    return versionNamespaces.iterator().next();
   }
 
   private GapicInterfaceContext createContext(
