@@ -1,81 +1,51 @@
+@extends "readme_rst.snip"
+@extends "py/method_sample.snip"
+
 @snippet generate(metadata)
-  GAPIC library for the {@metadata.fullName}
-  ================================================================================
+  {@readme(metadata, exampleMethods(metadata.exampleMethods), installationLines(metadata))}
+@end
 
-  {@metadata.gapicPackageName} uses google-gax_ (Google API extensions) to provide an
-  easy-to-use client library for the `{@metadata.fullName}`_ ({@metadata.majorVersion}) defined in the googleapis_ git repository
+@private exampleMethods(methods)
+  @join method : methods on BREAK
+    {@method.apiClassName}
+    ^^^^^^^^^^^^^^^^^^^^^^
 
+    .. code:: py
 
-  .. _`googleapis`: https://github.com/googleapis/googleapis/tree/master/{@metadata.protoPath}
-  .. _`google-gax`: https://github.com/googleapis/gax-python
-  .. _`{@metadata.fullName}`: https://developers.google.com/apis-explorer/?hl=en_US#p/{@metadata.discoveryApiName}/{@metadata.majorVersion}
+      {@sampleCode_(method)}
+  @end
+@end
 
-  Getting started
-  ---------------
+@private installationLines(metadata)
+    Install this library in a `virtualenv`_ using pip. `virtualenv`_ is a tool to
+    create isolated Python environments. The basic problem it addresses is one of
+    dependencies and versions, and indirectly permissions.
 
-  {@metadata.gapicPackageName} will allow you to connect to the
-  {@metadata.fullName} and access all its methods. In order to do this, you need
-  to set up authentication as well as install the library locally.
+    With `virtualenv`_, it's possible to install this library without needing system
+    install permissions, and without clashing with the installed system
+    dependencies.
 
-
-  Setup Authentication
-  ~~~~~~~~~~~~~~~~~~~~
-
-  To authenticate all your API calls, first install and setup the `Google Cloud SDK`_.
-  Once done, you can then run the following command in your terminal:
-
-  .. code-block:: console
-
-      $ gcloud beta auth application-default login
-
-  or
-
-  .. code-block:: console
-
-      $ gcloud auth login
-
-  Please see `gcloud beta auth application-default login`_ document for the difference between these commands.
-
-  .. _Google Cloud SDK: https://cloud.google.com/sdk/
-  .. _gcloud beta auth application-default login: https://cloud.google.com/sdk/gcloud/reference/beta/auth/application-default/login
+    .. _`virtualenv`: https://virtualenv.pypa.io/en/latest/
 
 
-  Installation
-  ~~~~~~~~~~~~
+    Mac/Linux
+    ^^^^^^^^^
 
-  Install this library in a `virtualenv`_ using pip. `virtualenv`_ is a tool to
-  create isolated Python environments. The basic problem it addresses is one of
-  dependencies and versions, and indirectly permissions.
+    .. code-block:: console
 
-  With `virtualenv`_, it's possible to install this library without needing system
-  install permissions, and without clashing with the installed system
-  dependencies.
-
-  .. _`virtualenv`: https://virtualenv.pypa.io/en/latest/
+        pip install virtualenv
+        virtualenv <your-env>
+        source <your-env>/bin/activate
+        <your-env>/bin/pip install {@metadata.gapicPackageName}
 
 
-  Mac/Linux
-  ~~~~~~~~~~
+    Windows
+    ^^^^^^^
 
-  .. code-block:: console
+    .. code-block:: console
 
-      pip install virtualenv
-      virtualenv <your-env>
-      source <your-env>/bin/activate
-      <your-env>/bin/pip install {@metadata.gapicPackageName}
-
-
-  Windows
-  ~~~~~~~
-
-  .. code-block:: console
-
-      pip install virtualenv
-      virtualenv <your-env>
-      <your-env>\Scripts\activate
-      <your-env>\Scripts\pip.exe install {@metadata.gapicPackageName}
-
-
-  At this point you are all set to continue.
-
+        pip install virtualenv
+        virtualenv <your-env>
+        <your-env>\Scripts\activate
+        <your-env>\Scripts\pip.exe install {@metadata.gapicPackageName}
 @end

@@ -50,12 +50,12 @@ public class TestCaseTransformer {
   }
 
   public TestCaseView createTestCaseView(
-      MethodTransformerContext methodContext,
+      GapicMethodContext methodContext,
       SymbolTable testNameTable,
       InitCodeContext initCodeContext,
       ClientMethodType clientMethodType) {
     Method method = methodContext.getMethod();
-    MethodConfig methodConfig = methodContext.getMethodConfig();
+    GapicMethodConfig methodConfig = methodContext.getMethodConfig();
     SurfaceNamer namer = methodContext.getNamer();
 
     String clientMethodName;
@@ -106,6 +106,8 @@ public class TestCaseTransformer {
         .responseTypeName(responseTypeName)
         .serviceConstructorName(
             namer.getApiWrapperClassConstructorName(methodContext.getInterface()))
+        .fullyQualifiedServiceClassName(
+            namer.getFullyQualifiedApiWrapperClassName(methodContext.getInterfaceConfig()))
         .clientMethodName(clientMethodName)
         .mockGrpcStubTypeName(namer.getMockGrpcServiceImplName(methodContext.getTargetInterface()))
         .createStubFunctionName(namer.getCreateStubFunctionName(methodContext.getTargetInterface()))
@@ -114,8 +116,8 @@ public class TestCaseTransformer {
   }
 
   private List<PageStreamingResponseView> createPageStreamingResponseViews(
-      MethodTransformerContext methodContext) {
-    MethodConfig methodConfig = methodContext.getMethodConfig();
+      GapicMethodContext methodContext) {
+    GapicMethodConfig methodConfig = methodContext.getMethodConfig();
     SurfaceNamer namer = methodContext.getNamer();
 
     List<PageStreamingResponseView> pageStreamingResponseViews =
@@ -162,7 +164,7 @@ public class TestCaseTransformer {
   }
 
   private MockGrpcResponseView createMockResponseView(
-      MethodTransformerContext methodContext, SymbolTable symbolTable) {
+      GapicMethodContext methodContext, SymbolTable symbolTable) {
     InitCodeView initCodeView =
         initCodeTransformer.generateInitCode(
             methodContext, createResponseInitCodeContext(methodContext, symbolTable));
@@ -175,7 +177,7 @@ public class TestCaseTransformer {
   }
 
   private InitCodeContext createResponseInitCodeContext(
-      MethodTransformerContext context, SymbolTable symbolTable) {
+      GapicMethodContext context, SymbolTable symbolTable) {
     ArrayList<Field> primitiveFields = new ArrayList<>();
     TypeRef outputType = context.getMethod().getOutputType();
     if (context.getMethodConfig().isLongRunningOperation()) {
@@ -193,14 +195,13 @@ public class TestCaseTransformer {
         .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
         .initValueConfigMap(ImmutableMap.<String, InitValueConfig>of())
         .initFields(primitiveFields)
-        .fieldConfigMap(context.getApiConfig().getDefaultResourceNameFieldConfigMap())
+        .fieldConfigMap(context.getProductConfig().getDefaultResourceNameFieldConfigMap())
         .valueGenerator(valueGenerator)
         .additionalInitCodeNodes(createMockResponseAdditionalSubTrees(context))
         .build();
   }
 
-  private Iterable<InitCodeNode> createMockResponseAdditionalSubTrees(
-      MethodTransformerContext context) {
+  private Iterable<InitCodeNode> createMockResponseAdditionalSubTrees(GapicMethodContext context) {
     List<InitCodeNode> additionalSubTrees = new ArrayList<>();
     if (context.getMethodConfig().isPageStreaming()) {
       // Initialize one resource element if it is page-streaming.
@@ -215,9 +216,9 @@ public class TestCaseTransformer {
           InitCodeNode.createWithValue(
               responseTokenName, InitValueConfig.createWithValue(InitValue.createLiteral(""))));
     }
-    if (context.getMethodConfig().isBundling()) {
-      // Initialize one bundling element if it is bundling.
-      BundlingConfig config = context.getMethodConfig().getBundling();
+    if (context.getMethodConfig().isBatching()) {
+      // Initialize one batching element if it is batching.
+      BatchingConfig config = context.getMethodConfig().getBatching();
       if (config.getSubresponseField() != null) {
         String subResponseFieldName = config.getSubresponseField().getSimpleName();
         additionalSubTrees.add(InitCodeNode.createSingletonList(subResponseFieldName));
@@ -226,10 +227,22 @@ public class TestCaseTransformer {
     return additionalSubTrees;
   }
 
-  public TestCaseView createSmokeTestCaseView(MethodTransformerContext context) {
-    ClientMethodType methodType = ClientMethodType.FlattenedMethod;
-    if (context.getMethodConfig().isPageStreaming()) {
-      methodType = ClientMethodType.PagedFlattenedMethod;
+  public TestCaseView createSmokeTestCaseView(GapicMethodContext context) {
+    GapicMethodConfig methodConfig = context.getMethodConfig();
+    ClientMethodType methodType;
+
+    if (methodConfig.isPageStreaming()) {
+      if (context.isFlattenedMethodContext()) {
+        methodType = ClientMethodType.PagedFlattenedMethod;
+      } else {
+        methodType = ClientMethodType.PagedRequestObjectMethod;
+      }
+    } else {
+      if (context.isFlattenedMethodContext()) {
+        methodType = ClientMethodType.FlattenedMethod;
+      } else {
+        methodType = ClientMethodType.RequestObjectMethod;
+      }
     }
 
     return createTestCaseView(
@@ -263,18 +276,19 @@ public class TestCaseTransformer {
     return false;
   }
 
-  public InitCodeContext createSmokeTestInitContext(MethodTransformerContext context) {
+  public InitCodeContext createSmokeTestInitContext(GapicMethodContext context) {
     SmokeTestConfig testConfig = context.getInterfaceConfig().getSmokeTestConfig();
     InitCodeContext.InitCodeOutputType outputType;
     ImmutableMap<String, FieldConfig> fieldConfigMap;
-    if (context.getMethodConfig().isFlattening()) {
+    if (context.isFlattenedMethodContext()) {
       outputType = InitCodeContext.InitCodeOutputType.FieldList;
       fieldConfigMap =
           FieldConfig.toFieldConfigMap(
               context.getFlatteningConfig().getFlattenedFieldConfigs().values());
     } else {
       outputType = InitCodeContext.InitCodeOutputType.SingleObject;
-      fieldConfigMap = null;
+      fieldConfigMap =
+          FieldConfig.toFieldConfigMap(context.getMethodConfig().getRequiredFieldConfigs());
     }
 
     // Store project ID variable name into the symbol table since it is used
@@ -291,14 +305,14 @@ public class TestCaseTransformer {
             .initFieldConfigStrings(testConfig.getInitFieldConfigStrings())
             .symbolTable(table)
             .fieldConfigMap(fieldConfigMap);
-    if (context.getMethodConfig().isFlattening()) {
+    if (context.isFlattenedMethodContext()) {
       contextBuilder.initFields(context.getFlatteningConfig().getFlattenedFields());
     }
     return contextBuilder.build();
   }
 
   public FlatteningConfig getSmokeTestFlatteningGroup(
-      MethodConfig methodConfig, SmokeTestConfig smokeTestConfig) {
+      GapicMethodConfig methodConfig, SmokeTestConfig smokeTestConfig) {
     for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
       if (flatteningGroup.getFlatteningName().equals(smokeTestConfig.getFlatteningName())) {
         return flatteningGroup;

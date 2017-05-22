@@ -28,8 +28,10 @@ import com.google.api.codegen.discovery.viewmodel.SamplePageStreamingView;
 import com.google.api.codegen.discovery.viewmodel.SampleView;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
+import com.google.api.codegen.util.py.PythonNameFormatter;
 import com.google.api.codegen.util.py.PythonTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.protobuf.Field.Cardinality;
 import com.google.protobuf.Method;
@@ -56,17 +58,16 @@ public class PythonSampleMethodToViewTransformer implements SampleMethodToViewTr
     SampleConfig config = context.getSampleConfig();
     MethodInfo methodInfo = config.methods().get(context.getMethodName());
     SampleNamer namer = context.getSampleNamer();
-    SymbolTable symbolTable = SymbolTable.fromSeed(PythonTypeTable.RESERVED_IDENTIFIER_SET);
+    SymbolTable symbolTable = SymbolTable.fromSeed(PythonNameFormatter.RESERVED_IDENTIFIER_SET);
 
     SampleView.Builder builder = SampleView.newBuilder();
 
     String serviceVarName = symbolTable.getNewSymbol(namer.getServiceVarName(config.apiTypeName()));
 
-    if (methodInfo.isPageStreaming()) {
-      builder.pageStreaming(createSamplePageStreamingView(context, symbolTable));
-    }
-
     // Created before the fields in case there are naming conflicts in the symbol table.
+    String credentialsVarName =
+        symbolTable.getNewSymbol(
+            config.authType() == AuthType.API_KEY ? "developerKey" : "credentials");
     SampleAuthView sampleAuthView = createSampleAuthView(context);
 
     List<SampleFieldView> requiredFields = new ArrayList<>();
@@ -100,13 +101,35 @@ public class PythonSampleMethodToViewTransformer implements SampleMethodToViewTr
       methodParamAssignments.add("body=" + requestBodyVarName);
     }
 
+    // The page streaming view model is generated close to last to avoid taking naming precedence in
+    // the symbol table.
+    if (methodInfo.isPageStreaming()) {
+      builder.pageStreaming(createSamplePageStreamingView(context, symbolTable));
+    }
+
     boolean hasResponse = methodInfo.responseType() != null;
     if (hasResponse) {
       builder.responseVarName(symbolTable.getNewSymbol(namer.getResponseVarName()));
     }
 
-    String credentialsVarName =
-        config.authType() == AuthType.API_KEY ? "developerKey" : "credentials";
+    List<String> discoveryBuildParams = new ArrayList<>();
+    discoveryBuildParams.add(String.format("'%s'", config.apiName()));
+    discoveryBuildParams.add(String.format("'%s'", config.apiVersion()));
+    switch (config.authType()) {
+      case NONE:
+        discoveryBuildParams.add("http=httplib2.Http(timeout=60)");
+        break;
+      case API_KEY:
+        discoveryBuildParams.add("developerKey=" + credentialsVarName);
+        break;
+      default:
+        discoveryBuildParams.add("credentials=" + credentialsVarName);
+        break;
+    }
+    String discoveryDocUrl = config.discoveryDocUrl();
+    if (!Strings.isNullOrEmpty(discoveryDocUrl)) {
+      discoveryBuildParams.add(String.format("discoveryServiceUrl='%s'", discoveryDocUrl));
+    }
 
     return builder
         .templateFileName(TEMPLATE_FILENAME)
@@ -128,6 +151,7 @@ public class PythonSampleMethodToViewTransformer implements SampleMethodToViewTr
         .hasMediaUpload(methodInfo.hasMediaUpload())
         .hasMediaDownload(methodInfo.hasMediaDownload())
         .credentialsVarName(credentialsVarName)
+        .discoveryBuildParams(discoveryBuildParams)
         .lastMethodNameComponent(Iterables.getLast(methodInfo.nameComponents()))
         .methodParamAssigments(methodParamAssignments)
         .build();
@@ -187,16 +211,17 @@ public class PythonSampleMethodToViewTransformer implements SampleMethodToViewTr
     SampleTypeTable typeTable = context.getSampleTypeTable();
     String name = namer.getFieldVarName(field.name());
     if (disambiguateName) {
-      // Force names which are in the reserved set to be disambiguated with an
-      // `_` before being added to the symbol table.
-      if (PythonTypeTable.RESERVED_IDENTIFIER_SET.contains(name)) {
-        name += "_";
-      }
       name = symbolTable.getNewSymbol(name);
+    }
+    String defaultValue;
+    if (!Strings.isNullOrEmpty(field.defaultValue())) {
+      defaultValue = field.defaultValue();
+    } else {
+      defaultValue = typeTable.getZeroValueAndSaveNicknameFor(field.type());
     }
     return SampleFieldView.newBuilder()
         .name(name)
-        .defaultValue(typeTable.getZeroValueAndSaveNicknameFor(field.type()))
+        .defaultValue(defaultValue)
         .example(field.example())
         .description(field.description())
         .required(field.required())

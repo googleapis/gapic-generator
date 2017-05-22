@@ -1,46 +1,38 @@
 ============== file: README.md ==============
-Google Example Library API for Ruby
-=================================================
+# Ruby Client for Google Example Library API ([Alpha](https://github.com/GoogleCloudPlatform/google-cloud-ruby#versioning))
 
-Google Example Library API uses [Google API extensions][google-gax] to provide an
-easy-to-use client library for the [Google Example Library API][] (v1) defined in the [googleapis][] git repository
+Idiomatic Ruby client for [Google Example Library API][Product Documentation]
+- [Client Library Documentation][]
+- [Product Documentation][]
 
+## Quick Start
+In order to use this library, you first need to go through the following steps:
 
-[googleapis]: https://github.com/googleapis/googleapis/tree/master/google/library/v1
-[google-gax]: https://github.com/googleapis/gax-ruby
-[Google Google Example Library API API]: https://developers.google.com/apis-explorer/#p/library/v1/
+1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
+2. [Enable the library api.](https://console.cloud.google.com/apis/api/library)
+3. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
 
-Getting started
----------------
+### Installation
+```
+$ gem install library
+```
 
-library will allow you to connect to the [Google Example Library API][] and access all its methods.
+### Preview
+#### LibraryServiceClient
+```rb
+require "library/v1"
 
-In order to achieve so you need to set up authentication as well as install the library locally.
+library_service_client = Library::V1::LibraryServiceClient.new
+formatted_name = Library::V1::LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)
+rating = :GOOD
+book = Google::Example::Library::V1::Book.new(rating: rating)
+response = library_service_client.update_book(formatted_name, book)
+```
 
+### Next Steps
+- Read the [Client Library Documentation][] for Google Example Library API to see other available methods on the client.
+- Read the [Google Example Library API Product documentation][Product Documentation] to learn more about the product and see How-to Guides.
+- View this [repository's main README](https://github.com/GoogleCloudPlatform/google-cloud-ruby/blob/master/README.md) to see the full list of Cloud APIs that we cover.
 
-Setup Authentication
---------------------
-
-To authenticate all your API calls, first install and setup the [Google Cloud SDK][].
-Once done, you can then run the following command in your terminal:
-
-    $ gcloud beta auth application-default login
-
-or
-
-    $ gcloud auth login
-
-Please see [gcloud beta auth application-default login][] document for the difference between these commands.
-
-[Google Cloud SDK]: https://cloud.google.com/sdk/
-[gcloud beta auth application-default login]: https://cloud.google.com/sdk/gcloud/reference/beta/auth/application-default/login
-
-
-Installation
--------------------
-
-Install this library using gem:
-
-    $ [sudo] gem install library
-
-At this point you are all set to continue.
+[Client Library Documentation]: https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/library/latest/google/library
+[Product Documentation]: https://cloud.google.com/library

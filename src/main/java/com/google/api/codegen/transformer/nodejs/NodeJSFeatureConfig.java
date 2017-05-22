@@ -14,11 +14,11 @@
  */
 package com.google.api.codegen.transformer.nodejs;
 
-import com.google.api.codegen.transformer.FeatureConfig;
+import com.google.api.codegen.transformer.DefaultFeatureConfig;
 
-public class NodeJSFeatureConfig extends FeatureConfig {
+public class NodeJSFeatureConfig extends DefaultFeatureConfig {
   @Override
-  public boolean enableGrpcStreaming() {
+  public boolean enableMixins() {
     return true;
   }
 }

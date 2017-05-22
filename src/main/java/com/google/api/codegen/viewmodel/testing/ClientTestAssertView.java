@@ -26,8 +26,18 @@ public abstract class ClientTestAssertView {
   @Nullable
   public abstract String expectedValueTransformFunction();
 
+  // Enum type name is needed for ruby because enum fields are converted to symbols when assigned
+  // for a message. In order to do comparison, the enum value will need to be resolved to the
+  // corresponding symbol using the enumTypeName.
+  @Nullable
+  public abstract String enumTypeName();
+
   public boolean hasExpectedValueTransformFunction() {
     return expectedValueTransformFunction() != null;
+  }
+
+  public boolean hasEnumTypeName() {
+    return enumTypeName() != null;
   }
 
   public static Builder newBuilder() {
@@ -41,6 +51,8 @@ public abstract class ClientTestAssertView {
     public abstract Builder expectedValueIdentifier(String val);
 
     public abstract Builder expectedValueTransformFunction(String val);
+
+    public abstract Builder enumTypeName(String val);
 
     public abstract ClientTestAssertView build();
   }

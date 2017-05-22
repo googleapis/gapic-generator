@@ -62,9 +62,12 @@ public class DiscoveryFragmentGeneratorApi {
           "The name of the output file or folder to put generated code.",
           "");
 
-  public static final Option<String> OVERRIDES_FILE =
+  public static final Option<String> OVERRIDE_FILES =
       ToolOptions.createOption(
-          String.class, "overrides", "The path to the sample config overrides file.", "");
+          String.class,
+          "overrides",
+          "A comma delimited list of paths to sample config override files.",
+          "");
 
   public static final Option<List<String>> GENERATOR_CONFIG_FILES =
       ToolOptions.createOption(
@@ -107,15 +110,14 @@ public class DiscoveryFragmentGeneratorApi {
       return;
     }
 
-    String overridesFilename = options.get(OVERRIDES_FILE);
-    JsonNode overridesJson = null;
-    if (!Strings.isNullOrEmpty(overridesFilename)) {
+    String[] filenames = options.get(OVERRIDE_FILES).split(",");
+    List<JsonNode> overrides = new ArrayList<>();
+    for (String filename : filenames) {
       try {
         BufferedReader reader =
-            com.google.common.io.Files.newReader(
-                new File(overridesFilename), Charset.forName("UTF8"));
+            com.google.common.io.Files.newReader(new File(filename), Charset.forName("UTF8"));
         ObjectMapper mapper = new ObjectMapper();
-        overridesJson = mapper.readTree(reader);
+        overrides.add(mapper.readTree(reader));
       } catch (FileNotFoundException e) {
         // Do nothing if the overrides file doesn't exist. Avoiding crashes for
         // this scenario makes parts of the automation around samplegen simpler.
@@ -133,7 +135,7 @@ public class DiscoveryFragmentGeneratorApi {
 
     DiscoveryProviderFactory providerFactory = createProviderFactory(factory);
     DiscoveryProvider provider =
-        providerFactory.create(discovery.getService(), apiaryConfig, overridesJson, id);
+        providerFactory.create(discovery.getService(), apiaryConfig, overrides, id);
 
     for (Api api : discovery.getService().getApisList()) {
       for (Method method : api.getMethodsList()) {

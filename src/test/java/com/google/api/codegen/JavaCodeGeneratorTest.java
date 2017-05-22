@@ -42,7 +42,9 @@ public class JavaCodeGeneratorTest extends GapicTestBase {
   @Parameters(name = "{0}")
   public static List<Object[]> testedConfigs() {
     return GapicTestBase.createTestedConfigs(
-        MainGapicProviderFactory.JAVA, new String[] {"java_gapic.yaml", "library_gapic.yaml"});
+        MainGapicProviderFactory.JAVA,
+        new String[] {"java_gapic.yaml", "library_gapic.yaml"},
+        "library_pkg.yaml");
   }
 
   // Tests

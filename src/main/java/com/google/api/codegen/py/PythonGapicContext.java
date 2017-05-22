@@ -16,10 +16,29 @@ package com.google.api.codegen.py;
 
 import com.google.api.codegen.GapicContext;
 import com.google.api.codegen.TargetLanguage;
-import com.google.api.codegen.config.ApiConfig;
-import com.google.api.codegen.config.InterfaceConfig;
-import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.GapicInterfaceConfig;
+import com.google.api.codegen.config.GapicMethodConfig;
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.transformer.DefaultFeatureConfig;
+import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
+import com.google.api.codegen.transformer.GapicInterfaceContext;
+import com.google.api.codegen.transformer.GapicMethodContext;
+import com.google.api.codegen.transformer.GrpcStubTransformer;
+import com.google.api.codegen.transformer.InitCodeTransformer;
+import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.PathTemplateTransformer;
+import com.google.api.codegen.transformer.py.PythonApiMethodParamTransformer;
+import com.google.api.codegen.transformer.py.PythonImportSectionTransformer;
+import com.google.api.codegen.transformer.py.PythonModelTypeNameConverter;
+import com.google.api.codegen.transformer.py.PythonSurfaceNamer;
+import com.google.api.codegen.util.py.PythonCommentReformatter;
+import com.google.api.codegen.util.py.PythonTypeTable;
+import com.google.api.codegen.viewmodel.ApiMethodView;
+import com.google.api.codegen.viewmodel.FormatResourceFunctionView;
+import com.google.api.codegen.viewmodel.GrpcStubView;
+import com.google.api.codegen.viewmodel.ParseResourceFunctionView;
+import com.google.api.codegen.viewmodel.PathTemplateView;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.aspects.documentation.model.ElementDocumentationAttribute;
 import com.google.api.tools.framework.model.EnumType;
@@ -47,7 +66,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import javax.annotation.Nullable;
 
 /** A GapicContext specialized for Python. */
 public class PythonGapicContext extends GapicContext {
@@ -96,8 +114,11 @@ public class PythonGapicContext extends GapicContext {
 
   private PackageMetadataConfig packageConfig;
 
-  public PythonGapicContext(Model model, ApiConfig apiConfig, PackageMetadataConfig packageConfig) {
-    super(model, apiConfig);
+  private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
+
+  public PythonGapicContext(
+      Model model, GapicProductConfig productConfig, PackageMetadataConfig packageConfig) {
+    super(model, productConfig);
     this.packageConfig = packageConfig;
     this.pythonCommon = new PythonContextCommon();
   }
@@ -113,6 +134,57 @@ public class PythonGapicContext extends GapicContext {
 
   // Snippet Helpers
   // ===============
+
+  /**
+   * Return ApiMethodView for sample gen.
+   *
+   * <p>TODO(eoogbe): Temporary solution to use MVVM with just sample gen. This class will
+   * eventually go away when code gen also converts to MVVM.
+   */
+  public ApiMethodView getApiMethodView(Interface apiInterface, Method method) {
+    GapicInterfaceContext context = getSurfaceTransformerContextFromService(apiInterface);
+    GapicMethodContext methodContext = context.asDynamicMethodContext(method);
+    DynamicLangApiMethodTransformer apiMethodTransformer =
+        new DynamicLangApiMethodTransformer(
+            new PythonApiMethodParamTransformer(),
+            new InitCodeTransformer(new PythonImportSectionTransformer()));
+
+    return apiMethodTransformer.generateMethod(methodContext);
+  }
+
+  public List<PathTemplateView> getPathTemplates(Interface apiInterface) {
+    GapicInterfaceContext context = getSurfaceTransformerContextFromService(apiInterface);
+    return pathTemplateTransformer.generatePathTemplates(context);
+  }
+
+  public List<FormatResourceFunctionView> getFormatResourceFunctions(Interface apiInterface) {
+    GapicInterfaceContext context = getSurfaceTransformerContextFromService(apiInterface);
+    return pathTemplateTransformer.generateFormatResourceFunctions(context);
+  }
+
+  public List<ParseResourceFunctionView> getParseResourceFunctions(Interface apiInterface) {
+    GapicInterfaceContext context = getSurfaceTransformerContextFromService(apiInterface);
+    return pathTemplateTransformer.generateParseResourceFunctions(context);
+  }
+
+  public List<GrpcStubView> getGrpcStubs(Interface apiInterface) {
+    GapicInterfaceContext context = getSurfaceTransformerContextFromService(apiInterface);
+    GrpcStubTransformer grpcStubTransformer = new GrpcStubTransformer();
+    return grpcStubTransformer.generateGrpcStubs(context);
+  }
+
+  private GapicInterfaceContext getSurfaceTransformerContextFromService(Interface apiInterface) {
+    ModelTypeTable modelTypeTable =
+        new ModelTypeTable(
+            new PythonTypeTable(getApiConfig().getPackageName()),
+            new PythonModelTypeNameConverter(getApiConfig().getPackageName()));
+    return GapicInterfaceContext.create(
+        apiInterface,
+        getApiConfig(),
+        modelTypeTable,
+        new PythonSurfaceNamer(getApiConfig().getPackageName()),
+        new DefaultFeatureConfig());
+  }
 
   public String filePath(ProtoFile file, PythonImportHandler importHandler) {
     return importHandler
@@ -233,11 +305,12 @@ public class PythonGapicContext extends GapicContext {
    * Return Sphinx-style return type string for the given method, or null if the return type is
    * None.
    */
-  @Nullable
-  private String returnTypeComment(
-      Method method, MethodConfig config, PythonImportHandler importHandler) {
-    if (MethodConfig.isReturnEmptyMessageMethod(method)) {
-      return null;
+  public String returnTypeComment(
+      Interface apiInterface, Method method, PythonImportHandler importHandler) {
+    GapicMethodConfig config =
+        getApiConfig().getInterfaceConfig(apiInterface).getMethodConfig(method);
+    if (GapicMethodConfig.isReturnEmptyMessageMethod(method)) {
+      return "";
     }
 
     String path = returnTypeCommentPath(method, config, importHandler);
@@ -259,17 +332,13 @@ public class PythonGapicContext extends GapicContext {
   }
 
   private String returnTypeCommentPath(
-      Method method, MethodConfig config, PythonImportHandler importHandler) {
+      Method method, GapicMethodConfig config, PythonImportHandler importHandler) {
     if (config.isLongRunningOperation()) {
       return "google.gax._OperationFuture";
     }
 
     MessageType returnMessageType = method.getOutputMessage();
     return importHandler.elementPath(returnMessageType, true);
-  }
-
-  public PythonDocConfig.Builder newDocConfigBuilder() {
-    return PythonDocConfig.newBuilder();
   }
 
   public List<String> splitToLines(String s) {
@@ -294,62 +363,16 @@ public class PythonGapicContext extends GapicContext {
     return splitToLines(getTrimmedDocs(method));
   }
 
-  /**
-   * Generate comments lines for a given method's signature, consisting of proto doc and parameter
-   * type documentation.
-   */
-  public List<String> methodSignatureComments(
-      Interface service, Method method, PythonImportHandler importHandler) {
-    MethodConfig config = getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
-
+  public String throwsComment(Interface apiInterface, Method method) {
+    GapicMethodConfig config =
+        getApiConfig().getInterfaceConfig(apiInterface).getMethodConfig(method);
     StringBuilder contentBuilder = new StringBuilder();
-
-    // parameter types
-    contentBuilder.append("Args:\n");
-    if (method.getRequestStreaming()) {
-      contentBuilder.append(
-          "  requests (iterator["
-              + typeComment(method.getInputType(), importHandler)
-              + "]): The input objects.\n");
-    } else {
-      for (Field field :
-          removePageTokenFromFields(method.getInputType().getMessageType().getFields(), config)) {
-        String name = pythonCommon.wrapIfKeywordOrBuiltIn(field.getSimpleName());
-        if (config.isPageStreaming()
-            && field.equals((config.getPageStreaming().getPageSizeField()))) {
-          contentBuilder.append(
-              fieldComment(
-                  name,
-                  field,
-                  importHandler,
-                  "The maximum number of resources contained in the\n"
-                      + "underlying API response. If page streaming is performed per-\n"
-                      + "resource, this parameter does not affect the return value. If page\n"
-                      + "streaming is performed per-page, this determines the maximum number\n"
-                      + "of resources in a page."));
-        } else {
-          contentBuilder.append(fieldComment(name, field, importHandler, null));
-        }
-      }
-    }
-    contentBuilder.append(
-        "  options (:class:`google.gax.CallOptions`): "
-            + "Overrides the default\n    settings for this call, e.g, timeout, retries etc.");
-
-    // return type
-    String returnType = returnTypeComment(method, config, importHandler);
-    if (returnType != null) {
-      contentBuilder.append("\n\n" + returnType);
-    }
-
-    // exception types
-    contentBuilder.append(
-        "\n\nRaises:\n  :exc:`google.gax.errors.GaxError` if the RPC is aborted.");
+    contentBuilder.append("\nRaises:\n  :exc:`google.gax.errors.GaxError` if the RPC is aborted.");
     if (Iterables.size(config.getRequiredFields()) > 0
         || Iterables.size(removePageTokenFromFields(config.getOptionalFields(), config)) > 0) {
       contentBuilder.append("\n  :exc:`ValueError` if the parameters are invalid.");
     }
-    return splitToLines(contentBuilder.toString());
+    return contentBuilder.toString();
   }
 
   public List<String> enumValueComment(EnumValue value) {
@@ -362,8 +385,9 @@ public class PythonGapicContext extends GapicContext {
   }
 
   /** Get required (non-optional) fields. */
-  public List<Field> getRequiredFields(Interface service, Method method) {
-    MethodConfig methodConfig = getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
+  public List<Field> getRequiredFields(Interface apiInterface, Method method) {
+    GapicMethodConfig methodConfig =
+        getApiConfig().getInterfaceConfig(apiInterface).getMethodConfig(method);
     return Lists.newArrayList(methodConfig.getRequiredFields());
   }
 
@@ -434,23 +458,8 @@ public class PythonGapicContext extends GapicContext {
     }
   }
 
-  /** Return whether the given field's default value is mutable in python. */
-  public boolean isDefaultValueMutable(Field field) {
-    TypeRef type = field.getType();
-    if (type.getCardinality() == Cardinality.REPEATED) {
-      return true;
-    }
-    switch (type.getKind()) {
-      case TYPE_MESSAGE: // Fall-through.
-      case TYPE_ENUM:
-        return true;
-      default:
-        return false;
-    }
-  }
-
   public String getSphinxifiedScopedDescription(ProtoElement element) {
-    return PythonSphinxCommentFixer.sphinxify(DocumentationUtil.getScopedDescription(element));
+    return new PythonCommentReformatter().reformat(DocumentationUtil.getScopedDescription(element));
   }
 
   /**
@@ -480,38 +489,41 @@ public class PythonGapicContext extends GapicContext {
     }
   }
 
-  public List<Interface> getStubInterfaces(Interface service) {
+  public List<Interface> getStubInterfaces(Interface apiInterface) {
     Map<String, Interface> interfaces = new TreeMap<>();
-    for (MethodConfig methodConfig :
-        getApiConfig().getInterfaceConfig(service).getMethodConfigs()) {
+    for (GapicMethodConfig methodConfig :
+        getApiConfig().getInterfaceConfig(apiInterface).getMethodConfigs()) {
       String rerouteToGrpcInterface = methodConfig.getRerouteToGrpcInterface();
-      Interface target = InterfaceConfig.getTargetInterface(service, rerouteToGrpcInterface);
+      Interface target =
+          GapicInterfaceConfig.getTargetInterface(apiInterface, rerouteToGrpcInterface);
       interfaces.put(target.getFullName(), target);
     }
     return new ArrayList<>(interfaces.values());
   }
 
-  public String stubName(Interface service) {
-    return upperCamelToLowerUnderscore(service.getSimpleName()) + "_stub";
+  public String stubName(Interface apiInterface) {
+    return upperCamelToLowerUnderscore(apiInterface.getSimpleName()) + "_stub";
   }
 
-  public String stubNameForMethod(Interface service, Method method) {
-    MethodConfig methodConfig = getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
+  public String stubNameForMethod(Interface apiInterface, Method method) {
+    GapicMethodConfig methodConfig =
+        getApiConfig().getInterfaceConfig(apiInterface).getMethodConfig(method);
     String rerouteToGrpcInterface = methodConfig.getRerouteToGrpcInterface();
-    Interface target = InterfaceConfig.getTargetInterface(service, rerouteToGrpcInterface);
+    Interface target =
+        GapicInterfaceConfig.getTargetInterface(apiInterface, rerouteToGrpcInterface);
     return stubName(target);
   }
 
-  public boolean isLongrunning(Method method, Interface service) {
+  public boolean isLongrunning(Method method, Interface apiInterface) {
     return getApiConfig()
-        .getInterfaceConfig(service)
+        .getInterfaceConfig(apiInterface)
         .getMethodConfig(method)
         .isLongRunningOperation();
   }
 
-  public boolean hasLongrunningMethod(Interface service) {
-    for (Method method : getSupportedMethodsV2(service)) {
-      if (isLongrunning(method, service)) {
+  public boolean hasLongrunningMethod(Interface apiInterface) {
+    for (Method method : getSupportedMethodsV2(apiInterface)) {
+      if (isLongrunning(method, apiInterface)) {
         return true;
       }
     }

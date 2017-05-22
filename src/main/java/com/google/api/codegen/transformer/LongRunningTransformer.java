@@ -15,14 +15,25 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.ServiceMessages;
+import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.LongRunningConfig;
-import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
+import com.google.api.tools.framework.model.Method;
+import com.google.common.collect.ImmutableList;
+import java.util.List;
 
 public class LongRunningTransformer {
-  public LongRunningOperationDetailView generateDetailView(MethodTransformerContext context) {
-    MethodConfig methodConfig = context.getMethodConfig();
+  public List<LongRunningOperationDetailView> generateDetailViews(GapicInterfaceContext context) {
+    ImmutableList.Builder<LongRunningOperationDetailView> views = ImmutableList.builder();
+    for (Method method : context.getLongRunningMethods()) {
+      views.add(generateDetailView(context.asDynamicMethodContext(method)));
+    }
+    return views.build();
+  }
+
+  public LongRunningOperationDetailView generateDetailView(GapicMethodContext context) {
+    GapicMethodConfig methodConfig = context.getMethodConfig();
     LongRunningConfig lroConfig = methodConfig.getLongRunningConfig();
     SurfaceNamer namer = context.getNamer();
 
@@ -30,17 +41,17 @@ public class LongRunningTransformer {
         namer.getAndSaveOperationResponseTypeName(
             context.getMethod(), context.getTypeTable(), methodConfig);
     String operationPayloadTypeName =
-        context.getTypeTable().getAndSaveNicknameFor(lroConfig.getReturnType());
+        namer.getLongRunningOperationTypeName(context.getTypeTable(), lroConfig.getReturnType());
     String metadataTypeName =
-        context.getTypeTable().getAndSaveNicknameFor(lroConfig.getMetadataType());
+        namer.getLongRunningOperationTypeName(context.getTypeTable(), lroConfig.getMetadataType());
 
     return LongRunningOperationDetailView.newBuilder()
         .methodName(namer.getApiMethodName(context.getMethod(), VisibilityConfig.PUBLIC))
         .constructorName(namer.getTypeConstructor(clientReturnTypeName))
         .clientReturnTypeName(clientReturnTypeName)
-        .operationPayloadTypeName(namer.valueType(operationPayloadTypeName))
+        .operationPayloadTypeName(operationPayloadTypeName)
         .isEmptyOperation(ServiceMessages.s_isEmptyType(lroConfig.getReturnType()))
-        .metadataTypeName(namer.valueType(metadataTypeName))
+        .metadataTypeName(metadataTypeName)
         .implementsDelete(lroConfig.implementsDelete())
         .implementsCancel(lroConfig.implementsCancel())
         .build();

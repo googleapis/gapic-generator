@@ -15,26 +15,27 @@
 package com.google.api.codegen.transformer.php;
 
 import com.google.api.codegen.InterfaceView;
-import com.google.api.codegen.config.ApiConfig;
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.php.PhpGapicCodePathMapper;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
+import com.google.api.codegen.transformer.GapicInterfaceContext;
+import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.InitCodeTransformer;
-import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.MockServiceTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.transformer.TestCaseTransformer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.php.PhpTypeTable;
-import com.google.api.codegen.util.testing.PhpValueProducer;
+import com.google.api.codegen.util.testing.StandardValueProducer;
 import com.google.api.codegen.util.testing.TestValueGenerator;
+import com.google.api.codegen.util.testing.ValueProducer;
 import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -58,7 +59,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private static final String TEST_TEMPLATE_FILE = "php/test.snip";
   private static final String MOCK_SERVICE_TEMPLATE_FILE = "php/mock_service.snip";
 
-  private final PhpValueProducer valueProducer = new PhpValueProducer();
+  private final ValueProducer valueProducer = new StandardValueProducer();
   private final StandardImportSectionTransformer importSectionTransformer =
       new StandardImportSectionTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
@@ -76,14 +77,14 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(Model model, ApiConfig apiConfig) {
+  public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
     List<ViewModel> models = new ArrayList<ViewModel>();
-    PhpSurfaceNamer surfacePackageNamer = new PhpSurfaceNamer(apiConfig.getPackageName());
+    PhpSurfaceNamer surfacePackageNamer = new PhpSurfaceNamer(productConfig.getPackageName());
     PhpSurfaceNamer testPackageNamer =
         new PhpSurfaceNamer(surfacePackageNamer.getTestPackageName());
-    models.addAll(generateTestViews(model, apiConfig, surfacePackageNamer, testPackageNamer));
+    models.addAll(generateTestViews(model, productConfig, surfacePackageNamer, testPackageNamer));
     models.addAll(
-        generateMockServiceViews(model, apiConfig, surfacePackageNamer, testPackageNamer));
+        generateMockServiceViews(model, productConfig, surfacePackageNamer, testPackageNamer));
     return models;
   }
 
@@ -94,13 +95,13 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
   private List<MockServiceImplFileView> generateMockServiceViews(
       Model model,
-      ApiConfig apiConfig,
+      GapicProductConfig productConfig,
       SurfaceNamer surfacePackageNamer,
       SurfaceNamer testPackageNamer) {
     List<MockServiceImplFileView> mockFiles = new ArrayList<>();
 
     for (Interface grpcInterface :
-        mockServiceTransformer.getGrpcInterfacesToMock(model, apiConfig)) {
+        mockServiceTransformer.getGrpcInterfacesToMock(model, productConfig)) {
       ModelTypeTable typeTable = createTypeTable(surfacePackageNamer.getTestPackageName());
       String name = surfacePackageNamer.getMockGrpcServiceImplName(grpcInterface);
       String grpcClassName =
@@ -111,7 +112,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
               .grpcClassName(grpcClassName)
               .grpcMethods(new ArrayList<MockGrpcMethodView>())
               .build();
-      String outputPath = pathMapper.getOutputPath(grpcInterface, apiConfig);
+      String outputPath = pathMapper.getOutputPath(grpcInterface, productConfig);
 
       addUnitTestImports(typeTable);
 
@@ -123,7 +124,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
               .templateFileName(MOCK_SERVICE_TEMPLATE_FILE)
               .fileHeader(
                   fileHeaderTransformer.generateFileHeader(
-                      apiConfig, importSection, testPackageNamer))
+                      productConfig, importSection, testPackageNamer))
               .serviceImpl(mockImpl)
               .build());
     }
@@ -132,21 +133,23 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
   private List<ClientTestFileView> generateTestViews(
       Model model,
-      ApiConfig apiConfig,
+      GapicProductConfig productConfig,
       SurfaceNamer surfacePackageNamer,
       SurfaceNamer testPackageNamer) {
     List<ClientTestFileView> testViews = new ArrayList<>();
 
-    for (Interface service : new InterfaceView().getElementIterable(model)) {
+    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
       ModelTypeTable typeTable = createTypeTable(surfacePackageNamer.getTestPackageName());
       List<MockServiceImplView> impls = new ArrayList<>();
-      SurfaceTransformerContext context =
-          SurfaceTransformerContext.create(
-              service, apiConfig, typeTable, surfacePackageNamer, featureConfig);
+      GapicInterfaceContext context =
+          GapicInterfaceContext.create(
+              apiInterface, productConfig, typeTable, surfacePackageNamer, featureConfig);
       List<MockServiceUsageView> mockServiceList = new ArrayList<>();
 
       for (Interface grpcInterface :
-          mockServiceTransformer.getGrpcInterfacesForService(model, apiConfig, service).values()) {
+          mockServiceTransformer
+              .getGrpcInterfacesForService(model, productConfig, apiInterface)
+              .values()) {
         String name = surfacePackageNamer.getMockGrpcServiceImplName(grpcInterface);
         String varName = surfacePackageNamer.getMockServiceVarName(grpcInterface);
         String grpcClassName =
@@ -166,13 +169,14 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
                 .build());
       }
 
-      String testClassName = surfacePackageNamer.getUnitTestClassName(service);
+      String testClassName = surfacePackageNamer.getUnitTestClassName(context.getInterfaceConfig());
       ClientTestClassView testClassView =
           ClientTestClassView.newBuilder()
               .apiSettingsClassName(
                   surfacePackageNamer.getNotImplementedString(
                       "PhpGapicSurfaceTestTransformer.generateTestView - apiSettingsClassName"))
-              .apiClassName(surfacePackageNamer.getApiWrapperClassName(service))
+              .apiClassName(
+                  surfacePackageNamer.getApiWrapperClassName(context.getInterfaceConfig()))
               .name(testClassName)
               .apiName(
                   PhpPackageMetadataNamer.getApiNameFromPackageName(
@@ -185,7 +189,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
       addUnitTestImports(typeTable);
 
-      String outputPath = pathMapper.getOutputPath(context.getInterface(), apiConfig);
+      String outputPath = pathMapper.getOutputPath(context.getInterface(), productConfig);
       ImportSectionView importSection =
           importSectionTransformer.generateImportSection(typeTable.getImports());
       testViews.add(
@@ -195,18 +199,18 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
               .templateFileName(TEST_TEMPLATE_FILE)
               .fileHeader(
                   fileHeaderTransformer.generateFileHeader(
-                      apiConfig, importSection, testPackageNamer))
+                      productConfig, importSection, testPackageNamer))
               .build());
     }
 
     return testViews;
   }
 
-  private List<TestCaseView> createTestCaseViews(SurfaceTransformerContext context) {
+  private List<TestCaseView> createTestCaseViews(GapicInterfaceContext context) {
     ArrayList<TestCaseView> testCaseViews = new ArrayList<>();
     SymbolTable testNameTable = new SymbolTable();
     for (Method method : context.getSupportedMethods()) {
-      MethodTransformerContext methodContext = context.asRequestMethodContext(method);
+      GapicMethodContext methodContext = context.asRequestMethodContext(method);
 
       if (methodContext.getMethodConfig().isGrpcStreaming()) {
         // TODO(shinfan): Remove this check once grpc streaming is supported by test

@@ -15,6 +15,7 @@
 package com.google.api.codegen.discovery.config;
 
 import com.google.api.codegen.ApiaryConfig;
+import com.google.api.codegen.ApiaryConfig.Location;
 import com.google.api.codegen.DiscoveryImporter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -82,6 +83,7 @@ public class ApiaryConfigToSampleConfigConverter {
         .methods(methods)
         .authType(apiaryConfig.getAuthType())
         .authInstructionsUrl(apiaryConfig.getAuthInstructionsUrl())
+        .discoveryDocUrl(typeNameGenerator.getDiscoveryDocUrl(apiName, apiVersion))
         .build();
   }
 
@@ -197,24 +199,25 @@ public class ApiaryConfigToSampleConfigConverter {
 
   /** Creates a field. */
   private FieldInfo createFieldInfo(Field field, Type containerType, Method method) {
+    String defaultValue = "";
     String example = "";
     TypeInfo typeInfo = createTypeInfo(field, method);
     if (typeInfo.kind() == Field.Kind.TYPE_STRING) {
       String fieldPattern =
           apiaryConfig.getFieldPattern().get(containerType.getName(), field.getName());
       String stringFormat = apiaryConfig.getStringFormat(containerType.getName(), field.getName());
-      example = typeNameGenerator.getFieldPatternExample(fieldPattern);
-      if (!Strings.isNullOrEmpty(example)) {
-        // Generates an example of the format: `ex: "projects/my-project/logs/my-log"`
-        example = "ex: " + example;
-      } else {
-        example = typeNameGenerator.getStringFormatExample(stringFormat);
-      }
+      Location location =
+          apiaryConfig.getFieldLocation().get(containerType.getName(), field.getName());
+      defaultValue =
+          typeNameGenerator.getStringFieldPlaceholder(
+              field.getName(), fieldPattern, location == Location.PATH);
+      example = typeNameGenerator.getStringFormatExample(stringFormat);
     }
     return FieldInfo.newBuilder()
         .name(field.getName())
         .type(typeInfo)
         .cardinality(field.getCardinality())
+        .defaultValue(defaultValue)
         .example(example)
         .description(
             Strings.nullToEmpty(

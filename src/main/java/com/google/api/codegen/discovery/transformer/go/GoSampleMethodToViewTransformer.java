@@ -33,6 +33,7 @@ import com.google.api.codegen.util.go.GoNameFormatter;
 import com.google.api.codegen.util.go.GoTypeTable;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.common.base.Strings;
 import com.google.protobuf.Field.Cardinality;
 import com.google.protobuf.Method;
 import java.util.ArrayList;
@@ -106,6 +107,8 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
       }
     }
 
+    // The page streaming view model is generated close to last to avoid taking naming precedence in
+    // the symbol table.
     boolean isPageStreaming = methodInfo.isPageStreaming();
     if (isPageStreaming) {
       builder.pageStreaming(createSamplePageStreamingView(context, symbolTable));
@@ -212,9 +215,16 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
       FieldInfo field, SampleTransformerContext context, SymbolTable symbolTable) {
     SampleNamer namer = context.getSampleNamer();
     SampleTypeTable typeTable = context.getSampleTypeTable();
+
+    String defaultValue;
+    if (!Strings.isNullOrEmpty(field.defaultValue())) {
+      defaultValue = field.defaultValue();
+    } else {
+      defaultValue = typeTable.getZeroValueAndSaveNicknameFor(field.type());
+    }
     return SampleFieldView.newBuilder()
         .name(symbolTable.getNewSymbol(field.name()))
-        .defaultValue(typeTable.getZeroValueAndSaveNicknameFor(field.type()))
+        .defaultValue(defaultValue)
         .example(field.example())
         .description(field.description())
         .setterFuncName(namer.getRequestBodyFieldSetterName(field.name()))
@@ -238,6 +248,9 @@ public class GoSampleMethodToViewTransformer implements SampleMethodToViewTransf
     saveNicknameAndSymbolFor("log;;;", "log", typeTable, symbolTable);
     saveNicknameAndSymbolFor("golang.org/x/net/context;;;", "context", typeTable, symbolTable);
     switch (config.authType()) {
+      case NONE:
+        saveNicknameAndSymbolFor("net/http;;;", "http", typeTable, symbolTable);
+        break;
       case APPLICATION_DEFAULT_CREDENTIALS:
         saveNicknameAndSymbolFor("golang.org/x/oauth2/google;;;", "google", typeTable, symbolTable);
         break;

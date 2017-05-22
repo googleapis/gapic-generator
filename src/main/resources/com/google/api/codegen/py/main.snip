@@ -55,17 +55,12 @@
 
 @private aliasSection(service)
     @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service), \
-            bundling = context.messages.filterBundlingMethods(ifaceConfig, context.getSupportedMethodsV2(service)), \
             pageStreaming = context.messages.filterPageStreamingMethods(ifaceConfig, context.getSupportedMethodsV2(service))
-        @if bundling
-            _BundleDesc = google.gax.BundleDescriptor
-        @end
         # Note that this should be inside the page streaming conditional. But a snippets bug
         # causes the indentation to render improperly if so. The result is that sometimes we
         # generate too much whitespace, which can be removed by yapf in the pipeline.
         {@BREAK}
         @if pageStreaming
-
             _PageDesc = google.gax.PageDescriptor
         @end
     @end
@@ -94,7 +89,7 @@
 
 @private constantSection(service)
     @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service)
-        SERVICE_ADDRESS = '{@context.getServiceConfig.getServiceAddress(service)}'
+        SERVICE_ADDRESS = '{@context.getServiceConfig.getServiceAddress(service.getModel)}'
         """The default address of the service."""
 
         DEFAULT_SERVICE_PORT = {@context.getServiceConfig.getServicePort()}
@@ -116,25 +111,11 @@
                 @end
             }
         @end
-        @if context.messages.filterBundlingMethods(ifaceConfig, context.getSupportedMethodsV2(service))
-
-            _BUNDLE_DESCRIPTORS = {
-                @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service)
-                    @join method : context.messages.filterBundlingMethods(ifaceConfig, context.getSupportedMethodsV2(service)) on {@", "}.add(BREAK)
-                        @let bundling = ifaceConfig.getMethodConfig(method).getBundling()
-                            '{@methodName(method)}': _BundleDesc(
-                                {@bundleDescriptorBody(bundling, method)}
-                            )
-                        @end
-                    @end
-                @end
-            }
-        @end
 
         @# The scopes needed to make gRPC calls to all of the methods defined in
         @# this service
         _ALL_SCOPES = (
-            @join auth_scope : context.getServiceConfig.getAuthScopes(service) on BREAK
+            @join auth_scope : context.getServiceConfig.getAuthScopes(service.getModel) on BREAK
                 '{@auth_scope}',
             @end
         )
@@ -146,33 +127,16 @@
          jsonBaseName = {@context.upperCamelToLowerUnderscore(service.getSimpleName)}
         default_client_config = json.loads(pkg_resources.resource_string(
             __name__, '{@jsonBaseName}_client_config.json').decode())
-        @if or(context.messages.filterPageStreamingMethods(ifaceConfig, context.getSupportedMethodsV2(service)), \
-               context.messages.filterBundlingMethods(ifaceConfig, context.getSupportedMethodsV2(service)))
-            defaults = api_callable.construct_settings(
-                '{@service.getFullName}',
-                default_client_config,
-                client_config,
-                config.STATUS_CODE_NAMES,
-                metrics_headers=metrics_headers,
-                @if context.messages.filterBundlingMethods(ifaceConfig, context.getSupportedMethodsV2(service))
-                    @if context.messages.filterPageStreamingMethods(ifaceConfig, context.getSupportedMethodsV2(service))
-                        bundle_descriptors=self._BUNDLE_DESCRIPTORS,
-                    @else
-                        bundle_descriptors=self._BUNDLE_DESCRIPTORS)
-                    @end
-                @end
-                @if context.messages.filterPageStreamingMethods(ifaceConfig, context.getSupportedMethodsV2(service))
-                    page_descriptors=self._PAGE_DESCRIPTORS)
-                @end
-        @else
-            defaults = api_callable.construct_settings(
-                '{@service.getFullName}',
-                default_client_config,
-                client_config,
-                config.STATUS_CODE_NAMES,
-                metrics_headers=metrics_headers,
-            )
-        @end
+        defaults = api_callable.construct_settings(
+            '{@service.getFullName}',
+            default_client_config,
+            client_config,
+            config.STATUS_CODE_NAMES,
+            metrics_headers=metrics_headers,
+            @if context.messages.filterPageStreamingMethods(ifaceConfig, context.getSupportedMethodsV2(service))
+                page_descriptors=self._PAGE_DESCRIPTORS,
+            @end
+        )
     @end
 @end
 
@@ -255,19 +219,15 @@
 
             @# Load the configuration defaults.
             {@constructDefaults(service)}
-            @join stubInterface : context.getStubInterfaces(service)
-                @let stubName = context.stubName(stubInterface), \
-                        stubModule = importHandler.fileToModule(stubInterface.getFile()), \
-                        stubService = stubInterface.getSimpleName
-                    self.{@stubName} = config.create_stub(
-                        {@stubModule}.{@stubService}Stub,
-                        channel=channel,
-                        service_path=service_path,
-                        service_port=port,
-                        credentials=credentials,
-                        scopes=scopes,
-                        ssl_credentials=ssl_credentials)
-                @end
+            @join stub : context.getGrpcStubs(service)
+                self.{@stub.name} = config.create_stub(
+                    {@stub.grpcClientTypeName},
+                    channel=channel,
+                    service_path=service_path,
+                    service_port=port,
+                    credentials=credentials,
+                    scopes=scopes,
+                    ssl_credentials=ssl_credentials)
             @end
             @if context.hasLongrunningMethod(service)
 
@@ -279,8 +239,8 @@
                     ssl_credentials=ssl_credentials,
                     scopes=scopes,
                     client_config=client_config,
-                    app_name=app_name,
-                    app_version=app_version)
+                    metrics_headers=metrics_headers,
+                )
             @end
 
             @join method : context.getSupportedMethodsV2(service)
@@ -291,91 +251,55 @@
     @end
 @end
 
-@private bundleDescriptorBody(bundling, method)
-    @let bundledField = bundling.getBundledField().getSimpleName(), \
-            discriminatorFields = bundling.getDiscriminatorFields()
-        @if {@bundling.hasSubresponseField}
-                '{@bundledField}',
-                [
-                    @join fieldSelector : bundling.getDiscriminatorFields() on {@", "}.add(BREAK)
-                        '{@fieldSelector.getParamName}'
-                    @end
-                ],
-                subresponse_field='{@bundling.getSubresponseField().getSimpleName()}',
-        @else
-                '{@bundledField}',
-                [
-                    @join fieldSelector : bundling.getDiscriminatorFields() on {@", "}.add(BREAK)
-                        '{@fieldSelector.getParamName}'
-                    @end
-                ]
-        @end
-    @end
-@end
-
-@private pathTemplateName(collectionConfig)
-    _{@context.lowerUnderscoreToUpperUnderscore(entityName(collectionConfig))}_PATH_TEMPLATE
-@end
-
 @private pathTemplateSection(service)
-    @if context.getApiConfig.getInterfaceConfig(service).getSingleResourceNameConfigs()
-        @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getSingleResourceNameConfigs()
-            {@pathTemplateName(collectionConfig)} = path_template.PathTemplate(
-                '{@collectionConfig.getNamePattern}')
-        @end
+    @join pathTemplate : context.getPathTemplates(service)
+        {@pathTemplate.name} = path_template.PathTemplate(
+            '{@pathTemplate.pattern}')
+    @end
 
-        @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getSingleResourceNameConfigs()
+    @join function : context.getFormatResourceFunctions(service)
 
-            {@createResourceFunction(collectionConfig)}
-        @end
-        @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getSingleResourceNameConfigs()
+        {@createResourceFunction(function)}
+    @end
+    @join function : context.getParseResourceFunctions(service)
 
-            {@createMatchFunctions(collectionConfig)}
-        @end
+        {@createMatchFunctions(function)}
     @end
 @end
 
-@private createResourceFunction(collectionConfig)
+@private createResourceFunction(function)
     @@classmethod
-    def {@formatResourceFunctionName(collectionConfig)}(cls, {@createResourceFunctionParams(collectionConfig)}):
-        """Returns a fully-qualified {@entityName(collectionConfig)} resource name string."""
-        return cls.{@pathTemplateName(collectionConfig)}.render({
-            {@createRenderDictionary(collectionConfig)}
+    def {@function.name}(cls, {@createResourceFunctionParams(function.resourceIdParams)}):
+        """Returns a fully-qualified {@function.entityName} resource name string."""
+        return cls.{@function.pathTemplateName}.render({
+            {@createRenderDictionary(function.resourceIdParams)}
         })
 @end
 
-@private createMatchFunctions(collectionConfig)
-  @join subField : collectionConfig.getNameTemplate.vars() on BREAK.add(BREAK)
-    @let fieldPath = resourceName(collectionConfig)
-      @@classmethod
-      def match_{@subField}_from_{@fieldPath}(cls, {@fieldPath}):
-          """Parses the {@subField} from a {@entityName(collectionConfig)} resource.
+@private createMatchFunctions(function)
+    @@classmethod
+    def {@function.name}(cls, {@function.entityNameParamName}):
+        """Parses the {@function.outputResourceId} from a {@function.entityName} resource.
 
-          Args:
-            {@fieldPath} (string): A fully-qualified path representing a {@entityName(collectionConfig)}
-              resource.
+        Args:
+          {@function.entityNameParamName} (string): A fully-qualified path representing a {@function.entityName}
+            resource.
 
-          Returns:
-            A string representing the {@subField}.
-          """
-          return cls.{@pathTemplateName(collectionConfig)}.match({@fieldPath}).get('{@subField}')
-    @end
-  @end
+        Returns:
+          A string representing the {@function.outputResourceId}.
+        """
+        return cls.{@function.pathTemplateName}.match({@function.entityNameParamName}).get('{@function.outputResourceId}')
 @end
 
-@private resourceName(collectionConfig)
-  {@entityName(collectionConfig)}_name
-@end
-
-@private createResourceFunctionParams(collectionConfig)
-    @join param : collectionConfig.getNameTemplate.vars() on ", "
-        {@context.python.wrapIfKeywordOrBuiltIn(param)}
+@private createResourceFunctionParams(params)
+    @join param : params on ", "
+        {@param.name}
     @end
 @end
 
-@private createRenderDictionary(collectionConfig)
-    @join param: collectionConfig.getNameTemplate.vars() on BREAK
-        '{@param}': {@context.python.wrapIfKeywordOrBuiltIn(param)},
+@private createRenderDictionary(params)
+    @join param: params on BREAK
+        '{@param.templateKey}': {@param.name},
     @end
 @end
 
@@ -385,59 +309,42 @@
     @end
 @end
 
-@private methodComments(service, method)
-  @let descriptionComments = context.methodDescriptionComments(method), \
-       signatureComments = context.methodSignatureComments(service, method, importHandler)
+@private methodComments(apiMethod, apiMethodDoc)
     """
-    @join comment : descriptionComments
-      {@comment}
+    @join line : util.trimDocs(apiMethodDoc.mainDocLines)
+      {@line}
     @end
-    @if descriptionComments.isEmpty
-    @else
 
-
-    @end
-    @if method.getRequestStreaming()
+    @if apiMethod.hasRequestStreaming
       EXPERIMENTAL: This method interface might change in the future.
 
     @end
-    {@methodSample(service, method)}
-    @if signatureComments.isEmpty
-    @else
+    {@sampleCode(apiMethod)}
 
+    Args:
+      @join paramDoc : apiMethodDoc.paramDocs
+          @if paramDoc.lines
+              {@paramDoc.paramName} ({@paramDoc.typeName}): {@paramDoc.firstLine}
+                @join line : paramDoc.remainingLines
+                    {@line}
+                @end
+          @else
+              {@paramDoc.paramName} ({@paramDoc.typeName})
+          @end
+      @end
+    @if apiMethodDoc.returnsDocLines
 
+        Returns:
+          @join line : apiMethodDoc.returnsDocLines
+                {@line}
+          @end
     @end
-    @join comment : signatureComments
-      {@comment}
-    @end
+
+    Raises:
+      @join line : apiMethodDoc.throwsDocLines
+          {@line}
+      @end
     """
-  @end
-@end
-
-@private methodSample(service, method)
-  @let apiConfig = context.getApiConfig, \
-       apiName = context.getApiWrapperName(service), \
-       returnType = context.returnTypeOrEmpty(method, importHandler), \
-       fields = context.getRequiredFields(service, method), \
-       builder = context.newDocConfigBuilder \
-         .setInterface(service) \
-         .setApiConfig(apiConfig) \
-         .setApiName(apiName) \
-         .setImportHandler(importHandler) \
-         .setMethod(method) \
-         .setReturnType(returnType)
-    @if method.getRequestStreaming()
-      {@generateMethodSampleCode(builder \
-        .setRequestObjectInitCode(context, service, method) \
-        .setEmptyParams() \
-        .build)}
-    @else
-      {@generateMethodSampleCode(builder \
-        .setFieldInitCode(context, service, method, fields) \
-        .setFieldParams(context, fields) \
-        .build)}
-    @end
-  @end
 @end
 
 @private serviceMethodsSection(service)
@@ -470,18 +377,17 @@
 
 @private flattenedMethod(service, method)
     @let methodInputElementPath = importHandler.elementPath(method.getInputMessage, FALSE), \
-             documentation = methodComments(service, method), \
+             methodView = context.getApiMethodView(service, method), \
              methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
              requiredParams = methodConfig.getRequiredFields(), \
-             optionalParams = context.removePageTokenFromFields(methodConfig.getOptionalFields(), methodConfig)
+             optionalParams = context.removePageTokenFromFields(methodConfig.getOptionalFields(), methodConfig), \
+             oneOfParams = methodConfig.getOneofs()
         @if method.getRequestStreaming
             def {@methodName(method)}(
                     self,
                     requests,
                     options=None):
-                @if documentation
-                    {@documentation}
-                @end
+                {@methodComments(methodView, methodView.doc)}
                 {@callLine(methodConfig, method, "requests")}
         @else
             @if or(requiredParams, optionalParams)
@@ -498,12 +404,11 @@
                             {@optionalParameterValues(optionalParams)},
                         @end
                         options=None):
-                    @if documentation
-                        {@documentation}
+                    {@methodComments(methodView, methodView.doc)}
+                    @if oneOfParams
+                        {@checkOneOfParams(oneOfParams)}
                     @end
-                    @if {@defaultMutableValues(optionalParams)}
-                        {@defaultMutableValues(optionalParams)}
-                    @end
+                    @# Create the request object.
                     @if requiredParams
                         @if optionalParams
                             request = {@methodInputElementPath}(
@@ -522,9 +427,8 @@
                 def {@methodName(method)}(
                         self,
                         options=None):
-                    @if documentation
-                        {@documentation}
-                    @end
+                    {@methodComments(methodView, methodView.doc)}
+                    # Create the request object.
                     request = {@methodInputElementPath}()
                     {@callLine(methodConfig, method, "request")}
             @end
@@ -541,20 +445,7 @@
 @private optionalParameterValues(params)
     @join field : params on ",".add(BREAK)
         @let paramName = {@context.python.wrapIfKeywordOrBuiltIn(field.getSimpleName())}
-            @if or(context.isDefaultValueMutable(field), context.isOneof(field))
-                {@paramName}=None
-            @else
-                {@paramName}={@context.defaultValue(field, importHandler)}
-            @end
-        @end
-    @end
-@end
-
-@private defaultMutableValues(params)
-    @join field : params if and(context.isDefaultValueMutable(field), not(context.isOneof(field))) on BREAK
-        @let paramName = {@context.python.wrapIfKeywordOrBuiltIn(field.getSimpleName())}
-            if {@paramName} is None:
-                {@paramName} = {@context.defaultValue(field, importHandler)}
+            {@paramName}=None
         @end
     @end
 @end
@@ -564,5 +455,18 @@
         @let paramName = {@field.getSimpleName()}
             {@paramName}={@context.python.wrapIfKeywordOrBuiltIn(field.getSimpleName())}
         @end
+    @end
+@end
+
+@private checkOneOfParams(oneOfs)
+    @join oneOf : oneOfs on BREAK
+        @# Sanity check: We have some fields which are mutually exclusive;
+        @# raise ValueError if more than one is sent.
+        oneof.check_oneof(
+            @join oneOfField : oneOf.getFields() on BREAK
+                {@oneOfField.getSimpleName()}={@oneOfField.getSimpleName},
+            @end
+        )
+
     @end
 @end

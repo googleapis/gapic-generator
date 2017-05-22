@@ -17,6 +17,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storagetransfer.v1;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -41,7 +42,7 @@ namespace StoragetransferSample
             // Data.GoogleServiceAccount response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -73,6 +74,7 @@ namespace StoragetransferSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storagetransfer.v1;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -92,7 +94,7 @@ namespace StoragetransferSample
 
             // The ID of the Google Developers Console project that the Google service account is associated with.
             // Required.
-            string projectId = "";  // TODO: Update placeholder value.
+            string projectId = "my-project-id";  // TODO: Update placeholder value.
 
             GoogleServiceAccountsResource.GetRequest request = storagetransferService.GoogleServiceAccounts.Get(projectId);
 
@@ -101,7 +103,7 @@ namespace StoragetransferSample
             // Data.GoogleServiceAccount response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -133,6 +135,7 @@ namespace StoragetransferSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storagetransfer.v1;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -160,7 +163,7 @@ namespace StoragetransferSample
             // Data.TransferJob response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -192,6 +195,7 @@ namespace StoragetransferSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storagetransfer.v1;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -210,7 +214,7 @@ namespace StoragetransferSample
             });
 
             // The job to get. Required.
-            string jobName = "";  // TODO: Update placeholder value.
+            string jobName = "transferJobs/my-transfer-job";  // TODO: Update placeholder value.
 
             TransferJobsResource.GetRequest request = storagetransferService.TransferJobs.Get(jobName);
 
@@ -219,7 +223,7 @@ namespace StoragetransferSample
             // Data.TransferJob response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -251,6 +255,7 @@ namespace StoragetransferSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storagetransfer.v1;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -284,7 +289,7 @@ namespace StoragetransferSample
                 foreach (Data.TransferJob transferJob in response.TransferJobs)
                 {
                     // TODO: Change code below to process each `transferJob` resource:
-                    Console.WriteLine(transferJob);
+                    Console.WriteLine(JsonConvert.SerializeObject(transferJob));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -319,6 +324,7 @@ namespace StoragetransferSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storagetransfer.v1;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -337,7 +343,7 @@ namespace StoragetransferSample
             });
 
             // The name of job to update. Required.
-            string jobName = "";  // TODO: Update placeholder value.
+            string jobName = "transferJobs/my-transfer-job";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`. Only assigned
             // properties will be changed:
@@ -350,7 +356,7 @@ namespace StoragetransferSample
             // Data.TransferJob response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -382,6 +388,7 @@ namespace StoragetransferSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storagetransfer.v1;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 
 namespace StoragetransferSample
@@ -397,7 +404,7 @@ namespace StoragetransferSample
             });
 
             // The name of the operation resource to be cancelled.
-            string name = "";  // TODO: Update placeholder value.
+            string name = "transferOperations/my-transfer-operation";  // TODO: Update placeholder value.
 
             TransferOperationsResource.CancelRequest request = storagetransferService.TransferOperations.Cancel(name);
 
@@ -435,6 +442,7 @@ namespace StoragetransferSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storagetransfer.v1;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 
 namespace StoragetransferSample
@@ -450,7 +458,7 @@ namespace StoragetransferSample
             });
 
             // The name of the operation resource to be deleted.
-            string name = "";  // TODO: Update placeholder value.
+            string name = "transferOperations/my-transfer-operation";  // TODO: Update placeholder value.
 
             TransferOperationsResource.DeleteRequest request = storagetransferService.TransferOperations.Delete(name);
 
@@ -488,6 +496,7 @@ namespace StoragetransferSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storagetransfer.v1;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -506,7 +515,7 @@ namespace StoragetransferSample
             });
 
             // The name of the operation resource.
-            string name = "";  // TODO: Update placeholder value.
+            string name = "transferOperations/my-transfer-operation";  // TODO: Update placeholder value.
 
             TransferOperationsResource.GetRequest request = storagetransferService.TransferOperations.Get(name);
 
@@ -515,7 +524,7 @@ namespace StoragetransferSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -547,6 +556,7 @@ namespace StoragetransferSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storagetransfer.v1;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -565,7 +575,7 @@ namespace StoragetransferSample
             });
 
             // The value `transferOperations`.
-            string name = "";  // TODO: Update placeholder value.
+            string name = "my-name";  // TODO: Update placeholder value.
 
             TransferOperationsResource.ListRequest request = storagetransferService.TransferOperations.List(name);
 
@@ -583,7 +593,7 @@ namespace StoragetransferSample
                 foreach (Data.Operation operation in response.Operations)
                 {
                     // TODO: Change code below to process each `operation` resource:
-                    Console.WriteLine(operation);
+                    Console.WriteLine(JsonConvert.SerializeObject(operation));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -618,6 +628,7 @@ namespace StoragetransferSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storagetransfer.v1;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 
 using Data = Google.Apis.Storagetransfer.v1.Data;
@@ -635,7 +646,7 @@ namespace StoragetransferSample
             });
 
             // The name of the transfer operation. Required.
-            string name = "";  // TODO: Update placeholder value.
+            string name = "transferOperations/my-transfer-operation";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.PauseTransferOperationRequest requestBody = new Data.PauseTransferOperationRequest();
@@ -676,6 +687,7 @@ namespace StoragetransferSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storagetransfer.v1;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 
 using Data = Google.Apis.Storagetransfer.v1.Data;
@@ -693,7 +705,7 @@ namespace StoragetransferSample
             });
 
             // The name of the transfer operation. Required.
-            string name = "";  // TODO: Update placeholder value.
+            string name = "transferOperations/my-transfer-operation";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.ResumeTransferOperationRequest requestBody = new Data.ResumeTransferOperationRequest();

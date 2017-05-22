@@ -1,12 +1,12 @@
 ============== file: src/v1/no_templates_api_service_client.js ==============
 /*
- * Copyright 2016 Google Inc. All rights reserved.
+ * Copyright 2017, Google Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -36,7 +36,7 @@ var SERVICE_ADDRESS = 'no-path-templates.googleapis.com';
 
 var DEFAULT_SERVICE_PORT = 443;
 
-var CODE_GEN_NAME_VERSION = 'gapic/0.1.0';
+var CODE_GEN_NAME_VERSION = 'gapic/0.7.1';
 
 /**
  * The scopes needed to make gRPC calls to all of the methods defined in
@@ -58,35 +58,37 @@ var ALL_SCOPES = [
  *
  * @class
  */
-function NoTemplatesAPIServiceClient(gaxGrpc, grpcClients, opts) {
-  opts = opts || {};
-  var servicePath = opts.servicePath || SERVICE_ADDRESS;
-  var port = opts.port || DEFAULT_SERVICE_PORT;
-  var sslCreds = opts.sslCreds || null;
-  var clientConfig = opts.clientConfig || {};
-  var appName = opts.appName || 'gax';
-  var appVersion = opts.appVersion || gax.version;
+function NoTemplatesApiServiceClient(gaxGrpc, grpcClients, opts) {
+  opts = extend({
+    servicePath: SERVICE_ADDRESS,
+    port: DEFAULT_SERVICE_PORT,
+    clientConfig: {}
+  }, opts);
 
   var googleApiClient = [
-    appName + '/' + appVersion,
+    'gl-node/' + process.versions.node
+  ];
+  if (opts.libName && opts.libVersion) {
+    googleApiClient.push(opts.libName + '/' + opts.libVersion);
+  }
+  googleApiClient.push(
     CODE_GEN_NAME_VERSION,
     'gax/' + gax.version,
-    'nodejs/' + process.version].join(' ');
+    'grpc/' + gaxGrpc.grpcVersion
+  );
 
   var defaults = gaxGrpc.constructSettings(
       'google.cloud.example.v1.NoTemplatesAPIService',
       configData,
-      clientConfig,
-      {'x-goog-api-client': googleApiClient});
+      opts.clientConfig,
+      {'x-goog-api-client': googleApiClient.join(' ')});
 
   var self = this;
 
   this.auth = gaxGrpc.auth;
   var noTemplatesApiServiceStub = gaxGrpc.createStub(
-      servicePath,
-      port,
       grpcClients.google.cloud.example.v1.NoTemplatesAPIService,
-      {sslCreds: sslCreds});
+      opts);
   var noTemplatesApiServiceStubMethods = [
     'increment'
   ];
@@ -103,12 +105,13 @@ function NoTemplatesAPIServiceClient(gaxGrpc, grpcClients, opts) {
   });
 }
 
+
 /**
  * Get the project ID used by this class.
- * @aram {function(Error, string)} callback - the callback to be called with
+ * @param {function(Error, string)} callback - the callback to be called with
  *   the current project Id.
  */
-NoTemplatesAPIServiceClient.prototype.getProjectId = function(callback) {
+NoTemplatesApiServiceClient.prototype.getProjectId = function(callback) {
   return this.auth.getProjectId(callback);
 };
 
@@ -140,7 +143,7 @@ NoTemplatesAPIServiceClient.prototype.getProjectId = function(callback) {
  *     console.error(err);
  * });
  */
-NoTemplatesAPIServiceClient.prototype.increment = function(request, options, callback) {
+NoTemplatesApiServiceClient.prototype.increment = function(request, options, callback) {
   if (options instanceof Function && callback === undefined) {
     callback = options;
     options = {};
@@ -154,9 +157,9 @@ NoTemplatesAPIServiceClient.prototype.increment = function(request, options, cal
   return this._increment(request, options, callback);
 };
 
-function NoTemplatesAPIServiceClientBuilder(gaxGrpc) {
-  if (!(this instanceof NoTemplatesAPIServiceClientBuilder)) {
-    return new NoTemplatesAPIServiceClientBuilder(gaxGrpc);
+function NoTemplatesApiServiceClientBuilder(gaxGrpc) {
+  if (!(this instanceof NoTemplatesApiServiceClientBuilder)) {
+    return new NoTemplatesApiServiceClientBuilder(gaxGrpc);
   }
 
   var noTemplatesApiServiceClient = require('grpc-google-cloud-example-v1').client;
@@ -164,7 +167,7 @@ function NoTemplatesAPIServiceClientBuilder(gaxGrpc) {
 
 
   /**
-   * Build a new instance of {@link NoTemplatesAPIServiceClient}.
+   * Build a new instance of {@link NoTemplatesApiServiceClient}.
    *
    * @param {Object=} opts - The optional parameters.
    * @param {String=} opts.servicePath
@@ -176,16 +179,12 @@ function NoTemplatesAPIServiceClientBuilder(gaxGrpc) {
    * @param {Object=} opts.clientConfig
    *   The customized config to build the call settings. See
    *   {@link gax.constructSettings} for the format.
-   * @param {number=} opts.appName
-   *   The codename of the calling service.
-   * @param {String=} opts.appVersion
-   *   The version of the calling service.
    */
   this.noTemplatesApiServiceClient = function(opts) {
-    return new NoTemplatesAPIServiceClient(gaxGrpc, noTemplatesApiServiceClient, opts);
+    return new NoTemplatesApiServiceClient(gaxGrpc, noTemplatesApiServiceClient, opts);
   };
-  extend(this.noTemplatesApiServiceClient, NoTemplatesAPIServiceClient);
+  extend(this.noTemplatesApiServiceClient, NoTemplatesApiServiceClient);
 }
-module.exports = NoTemplatesAPIServiceClientBuilder;
+module.exports = NoTemplatesApiServiceClientBuilder;
 module.exports.SERVICE_ADDRESS = SERVICE_ADDRESS;
 module.exports.ALL_SCOPES = ALL_SCOPES;

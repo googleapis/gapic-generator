@@ -1,11 +1,11 @@
 ============== file: lib/library/v1/doc/field_mask.rb ==============
-# Copyright 2016 Google Inc. All rights reserved.
+# Copyright 2017, Google Inc. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-# http://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -37,13 +37,13 @@ module Google
   end
 end
 ============== file: lib/library/v1/doc/google/protobuf/any.rb ==============
-# Copyright 2016 Google Inc. All rights reserved.
+# Copyright 2017, Google Inc. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-# http://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -152,13 +152,13 @@ module Google
   end
 end
 ============== file: lib/library/v1/doc/google/protobuf/duration.rb ==============
-# Copyright 2016 Google Inc. All rights reserved.
+# Copyright 2017, Google Inc. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-# http://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -208,6 +208,12 @@ module Google
     #       end.seconds += 1;
     #       end.nanos -= 1000000000;
     #     }
+    #
+    # Example 3: Compute Duration from datetime.timedelta in Python.
+    #
+    #     td = datetime.timedelta(days=3, minutes=10)
+    #     duration = Duration()
+    #     duration.FromTimedelta(td)
     # @!attribute [rw] seconds
     #   @return [Integer]
     #     Signed seconds of the span of time. Must be from -315,576,000,000
@@ -224,13 +230,13 @@ module Google
   end
 end
 ============== file: lib/library/v1/doc/google/protobuf/field_mask.rb ==============
-# Copyright 2016 Google Inc. All rights reserved.
+# Copyright 2017, Google Inc. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-# http://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -283,7 +289,7 @@ module Google
     #     }
     #
     # A repeated field is not allowed except at the last position of a
-    # field mask.
+    # paths string.
     #
     # If a FieldMask object is not present in a get operation, the
     # operation applies to all fields (as if a FieldMask of all fields
@@ -310,8 +316,8 @@ module Google
     #
     # If a repeated field is specified for an update operation, the existing
     # repeated values in the target resource will be overwritten by the new values.
-    # Note that a repeated field is only allowed in the last position of a field
-    # mask.
+    # Note that a repeated field is only allowed in the last position of a +paths+
+    # string.
     #
     # If a sub-message is specified in the last position of the field mask for an
     # update operation, then the existing sub-message in the target resource is
@@ -448,13 +454,13 @@ module Google
   end
 end
 ============== file: lib/library/v1/doc/google/protobuf/struct.rb ==============
-# Copyright 2016 Google Inc. All rights reserved.
+# Copyright 2017, Google Inc. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-# http://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -522,13 +528,13 @@ module Google
   end
 end
 ============== file: lib/library/v1/doc/google/protobuf/timestamp.rb ==============
-# Copyright 2016 Google Inc. All rights reserved.
+# Copyright 2017, Google Inc. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-# http://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -587,14 +593,12 @@ module Google
     #
     # Example 5: Compute Timestamp from current time in Python.
     #
-    #     now = time.time()
-    #     seconds = int(now)
-    #     nanos = int((now - seconds) * 10**9)
-    #     timestamp = Timestamp(seconds=seconds, nanos=nanos)
+    #     timestamp = Timestamp()
+    #     timestamp.GetCurrentTime()
     # @!attribute [rw] seconds
     #   @return [Integer]
     #     Represents seconds of UTC time since Unix epoch
-    #     1970-01-01T00:00:00Z. Must be from from 0001-01-01T00:00:00Z to
+    #     1970-01-01T00:00:00Z. Must be from 0001-01-01T00:00:00Z to
     #     9999-12-31T23:59:59Z inclusive.
     # @!attribute [rw] nanos
     #   @return [Integer]
@@ -606,13 +610,13 @@ module Google
   end
 end
 ============== file: lib/library/v1/doc/google/protobuf/wrappers.rb ==============
-# Copyright 2016 Google Inc. All rights reserved.
+# Copyright 2017, Google Inc. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-# http://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -696,13 +700,13 @@ module Google
   end
 end
 ============== file: lib/library/v1/doc/google/rpc/status.rb ==============
-# Copyright 2016 Google Inc. All rights reserved.
+# Copyright 2017, Google Inc. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-# http://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -716,8 +720,8 @@ module Google
     # programming environments, including REST APIs and RPC APIs. It is used by
     # {gRPC}[https://github.com/grpc]. The error model is designed to be:
     #
-    # - Simple to use and understand for most users
-    # - Flexible enough to meet unexpected needs
+    # * Simple to use and understand for most users
+    # * Flexible enough to meet unexpected needs
     #
     # = Overview
     #
@@ -747,23 +751,23 @@ module Google
     #
     # Example uses of this error model include:
     #
-    # - Partial errors. If a service needs to return partial errors to the client,
-    #     it may embed the +Status+ in the normal response to indicate the partial
-    #     errors.
+    # * Partial errors. If a service needs to return partial errors to the client,
+    #   it may embed the +Status+ in the normal response to indicate the partial
+    #   errors.
     #
-    # - Workflow errors. A typical workflow has multiple steps. Each step may
-    #     have a +Status+ message for error reporting purpose.
+    # * Workflow errors. A typical workflow has multiple steps. Each step may
+    #   have a +Status+ message for error reporting purpose.
     #
-    # - Batch operations. If a client uses batch request and batch response, the
-    #     +Status+ message should be used directly inside batch response, one for
-    #     each error sub-response.
+    # * Batch operations. If a client uses batch request and batch response, the
+    #   +Status+ message should be used directly inside batch response, one for
+    #   each error sub-response.
     #
-    # - Asynchronous operations. If an API call embeds asynchronous operation
-    #     results in its response, the status of those operations should be
-    #     represented directly using the +Status+ message.
+    # * Asynchronous operations. If an API call embeds asynchronous operation
+    #   results in its response, the status of those operations should be
+    #   represented directly using the +Status+ message.
     #
-    # - Logging. If some API errors are stored in logs, the message +Status+ could
-    #     be used directly after any stripping needed for security/privacy reasons.
+    # * Logging. If some API errors are stored in logs, the message +Status+ could
+    #   be used directly after any stripping needed for security/privacy reasons.
     # @!attribute [rw] code
     #   @return [Integer]
     #     The status code, which should be an enum value of Google::Rpc::Code.
@@ -780,13 +784,13 @@ module Google
   end
 end
 ============== file: lib/library/v1/doc/library.rb ==============
-# Copyright 2016 Google Inc. All rights reserved.
+# Copyright 2017, Google Inc. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-# http://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -854,6 +858,16 @@ module Google
         #   @return [Google::Protobuf::BytesValue]
         # @!attribute [rw] map_string_value
         #   @return [Hash{Integer => String}]
+        #     Test doc generation of lists:
+        #
+        #     * Here is a sentence about the first element of the list that continues
+        #       into a second line.
+        #     * The second element of the list.
+        #     * Another element of the list where the indentation isn't consistent
+        #       after a blank space.
+        #
+        #       The second paragraph of the list
+        #       that doesn't have a hanging indent.
         # @!attribute [rw] map_message_value
         #   @return [Hash{String => Google::Example::Library::V1::SomeMessage}]
         # @!attribute [rw] resource
@@ -1239,6 +1253,127 @@ module Google
         #     Approximate percentage of the book processed thus far.
         class GetBigBookMetadata; end
 
+        # @!attribute [rw] required_singular_int32
+        #   @return [Integer]
+        # @!attribute [rw] required_singular_int64
+        #   @return [Integer]
+        # @!attribute [rw] required_singular_float
+        #   @return [Float]
+        # @!attribute [rw] required_singular_double
+        #   @return [Float]
+        # @!attribute [rw] required_singular_bool
+        #   @return [true, false]
+        # @!attribute [rw] required_singular_enum
+        #   @return [Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerEnum]
+        # @!attribute [rw] required_singular_string
+        #   @return [String]
+        # @!attribute [rw] required_singular_bytes
+        #   @return [String]
+        # @!attribute [rw] required_singular_message
+        #   @return [Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerMessage]
+        # @!attribute [rw] required_singular_resource_name
+        #   @return [String]
+        # @!attribute [rw] required_singular_resource_name_oneof
+        #   @return [String]
+        # @!attribute [rw] required_singular_fixed32
+        #   @return [Integer]
+        # @!attribute [rw] required_singular_fixed64
+        #   @return [Integer]
+        # @!attribute [rw] required_repeated_int32
+        #   @return [Array<Integer>]
+        # @!attribute [rw] required_repeated_int64
+        #   @return [Array<Integer>]
+        # @!attribute [rw] required_repeated_float
+        #   @return [Array<Float>]
+        # @!attribute [rw] required_repeated_double
+        #   @return [Array<Float>]
+        # @!attribute [rw] required_repeated_bool
+        #   @return [Array<true, false>]
+        # @!attribute [rw] required_repeated_enum
+        #   @return [Array<Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerEnum>]
+        # @!attribute [rw] required_repeated_string
+        #   @return [Array<String>]
+        # @!attribute [rw] required_repeated_bytes
+        #   @return [Array<String>]
+        # @!attribute [rw] required_repeated_message
+        #   @return [Array<Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerMessage>]
+        # @!attribute [rw] required_repeated_resource_name
+        #   @return [Array<String>]
+        # @!attribute [rw] required_repeated_resource_name_oneof
+        #   @return [Array<String>]
+        # @!attribute [rw] required_repeated_fixed32
+        #   @return [Array<Integer>]
+        # @!attribute [rw] required_repeated_fixed64
+        #   @return [Array<Integer>]
+        # @!attribute [rw] required_map
+        #   @return [Hash{Integer => String}]
+        # @!attribute [rw] optional_singular_int32
+        #   @return [Integer]
+        # @!attribute [rw] optional_singular_int64
+        #   @return [Integer]
+        # @!attribute [rw] optional_singular_float
+        #   @return [Float]
+        # @!attribute [rw] optional_singular_double
+        #   @return [Float]
+        # @!attribute [rw] optional_singular_bool
+        #   @return [true, false]
+        # @!attribute [rw] optional_singular_enum
+        #   @return [Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerEnum]
+        # @!attribute [rw] optional_singular_string
+        #   @return [String]
+        # @!attribute [rw] optional_singular_bytes
+        #   @return [String]
+        # @!attribute [rw] optional_singular_message
+        #   @return [Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerMessage]
+        # @!attribute [rw] optional_singular_resource_name
+        #   @return [String]
+        # @!attribute [rw] optional_singular_resource_name_oneof
+        #   @return [String]
+        # @!attribute [rw] optional_singular_fixed32
+        #   @return [Integer]
+        # @!attribute [rw] optional_singular_fixed64
+        #   @return [Integer]
+        # @!attribute [rw] optional_repeated_int32
+        #   @return [Array<Integer>]
+        # @!attribute [rw] optional_repeated_int64
+        #   @return [Array<Integer>]
+        # @!attribute [rw] optional_repeated_float
+        #   @return [Array<Float>]
+        # @!attribute [rw] optional_repeated_double
+        #   @return [Array<Float>]
+        # @!attribute [rw] optional_repeated_bool
+        #   @return [Array<true, false>]
+        # @!attribute [rw] optional_repeated_enum
+        #   @return [Array<Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerEnum>]
+        # @!attribute [rw] optional_repeated_string
+        #   @return [Array<String>]
+        # @!attribute [rw] optional_repeated_bytes
+        #   @return [Array<String>]
+        # @!attribute [rw] optional_repeated_message
+        #   @return [Array<Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerMessage>]
+        # @!attribute [rw] optional_repeated_resource_name
+        #   @return [Array<String>]
+        # @!attribute [rw] optional_repeated_resource_name_oneof
+        #   @return [Array<String>]
+        # @!attribute [rw] optional_repeated_fixed32
+        #   @return [Array<Integer>]
+        # @!attribute [rw] optional_repeated_fixed64
+        #   @return [Array<Integer>]
+        # @!attribute [rw] optional_map
+        #   @return [Hash{Integer => String}]
+        class TestOptionalRequiredFlatteningParamsRequest
+          class InnerMessage; end
+
+          # For testing all types, plus resource-names, as required and optional.
+          module InnerEnum
+            ZERO = 0
+
+            ONE = 1
+          end
+        end
+
+        class TestOptionalRequiredFlatteningParamsResponse; end
+
         module TopLevelEnum
           FOO = 0
 
@@ -1249,13 +1384,13 @@ module Google
   end
 end
 ============== file: lib/library/v1/doc/shared_type.rb ==============
-# Copyright 2016 Google Inc. All rights reserved.
+# Copyright 2017, Google Inc. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-# http://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,

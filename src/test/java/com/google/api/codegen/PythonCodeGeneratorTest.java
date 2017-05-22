@@ -117,7 +117,7 @@ public class PythonCodeGeneratorTest {
       return GapicTestBase.createTestedConfigs(
           "python",
           new String[] {"python_gapic.yaml", "no_path_templates_gapic.yaml"},
-          "library_pkg.yaml");
+          "no_path_templates_pkg.yaml");
     }
 
     // Tests

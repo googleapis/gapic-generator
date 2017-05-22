@@ -51,7 +51,7 @@
       @default
           $unhandledCase: {@apiMethod.grpcStreamingType}$
       @end
-      
+
     @end
 @end
 
@@ -93,7 +93,7 @@
       $error = $operationResponse->getError();
       // handleError($error)
     }
-    
+
     // OR start the operation, keep the operation name, and resume later
     $operationResponse = {@methodCallSampleCode(apiMethod)};
     $operationName = $operationResponse->getName();
@@ -118,12 +118,12 @@
 
 @private clientStreamingMethodSampleCode(apiMethod)
     $requests = [$request];
-    
+
     // Write data to server and wait for a response
     $stream = {@methodCallSampleCode(apiMethod)};
     $result = $stream->writeAllAndReadResponse($requests);
     // doSomethingWith($result)
-    
+
     // OR write data as it becomes available, then wait for a response
     $stream = {@methodCallSampleCode(apiMethod)};
     foreach ($requests as $request) {
@@ -143,7 +143,7 @@
 
 @private bidiStreamingMethodSampleCode(apiMethod)
     $requests = [$request];
-    
+
     // Write all requests to the server, then read all responses until the
     // stream is complete
     $stream = {@methodCallSampleCode(apiMethod)};
@@ -151,7 +151,7 @@
     foreach ($stream->closeWriteAndReadAll() as $element) {
         // doSomethingWith($element);
     }
-    
+
     // OR write requests individually, making read() calls if
     // required. Call closeWrite() once writes are complete, and read the
     // remaining responses from the server.
@@ -180,7 +180,7 @@
 @end
 
 @private pageSizeMethodCallSampleCode(apiMethod)
-    @if apiMethod.hasRequestParameters
+    @if apiMethod.hasRequiredParameters
         ${@apiMethod.apiVariableName}->{@apiMethod.name}(\
             {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)}, ['pageSize' => 5])
     @else

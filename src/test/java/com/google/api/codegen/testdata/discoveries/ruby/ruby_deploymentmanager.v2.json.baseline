@@ -16,7 +16,6 @@
 
 require 'googleauth'
 require 'google/apis/deploymentmanager_v2'
-require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
 
@@ -24,10 +23,10 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # The project ID for this request.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # The name of the deployment for this request.
-deployment = ''  # TODO: Update placeholder value.
+deployment = 'my-deployment'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::DeploymentmanagerV2::DeploymentsCancelPreviewRequest.new
@@ -35,7 +34,7 @@ request_body = Google::Apis::DeploymentmanagerV2::DeploymentsCancelPreviewReques
 response = service.cancel_deployment_preview(project, deployment, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -53,7 +52,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/deploymentmanager_v2'
-require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
 
@@ -61,15 +59,15 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # The project ID for this request.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # The name of the deployment for this request.
-deployment = ''  # TODO: Update placeholder value.
+deployment = 'my-deployment'  # TODO: Update placeholder value.
 
 response = service.delete_deployment(project, deployment)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -87,7 +85,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/deploymentmanager_v2'
-require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
 
@@ -95,15 +92,15 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # The project ID for this request.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # The name of the deployment for this request.
-deployment = ''  # TODO: Update placeholder value.
+deployment = 'my-deployment'  # TODO: Update placeholder value.
 
 response = service.get_deployment(project, deployment)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -121,7 +118,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/deploymentmanager_v2'
-require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
 
@@ -129,15 +125,15 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Project ID for this request.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # Name of the resource for this request.
-resource = ''  # TODO: Update placeholder value.
+resource = 'my-resource'  # TODO: Update placeholder value.
 
 response = service.get_deployment_iam_policy(project, resource)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -155,7 +151,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/deploymentmanager_v2'
-require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
 
@@ -163,7 +158,7 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # The project ID for this request.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::DeploymentmanagerV2::Deployment.new
@@ -171,7 +166,7 @@ request_body = Google::Apis::DeploymentmanagerV2::Deployment.new
 response = service.insert_deployment(project, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -189,7 +184,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/deploymentmanager_v2'
-require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
 
@@ -197,7 +191,7 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # The project ID for this request.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 deployments = service.fetch_all(items: :deployments) do |token|
   service.list_deployments(project, page_token: token)
@@ -205,7 +199,7 @@ end
 
 deployments.each do |deployment|
   # TODO: Change code below to process each `deployment` resource:
-  puts JSON.pretty_generate(deployment)
+  puts deployment.to_json
 end
 # BEFORE RUNNING:
 # ---------------
@@ -224,7 +218,6 @@ end
 
 require 'googleauth'
 require 'google/apis/deploymentmanager_v2'
-require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
 
@@ -232,10 +225,10 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # The project ID for this request.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # The name of the deployment for this request.
-deployment = ''  # TODO: Update placeholder value.
+deployment = 'my-deployment'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`. Only assigned
 # members will be changed:
@@ -244,7 +237,7 @@ request_body = Google::Apis::DeploymentmanagerV2::Deployment.new
 response = service.patch_deployment(project, deployment, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -262,7 +255,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/deploymentmanager_v2'
-require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
 
@@ -270,10 +262,10 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Project ID for this request.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # Name of the resource for this request.
-resource = ''  # TODO: Update placeholder value.
+resource = 'my-resource'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::DeploymentmanagerV2::Policy.new
@@ -281,7 +273,7 @@ request_body = Google::Apis::DeploymentmanagerV2::Policy.new
 response = service.set_deployment_iam_policy(project, resource, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -299,7 +291,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/deploymentmanager_v2'
-require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
 
@@ -307,10 +298,10 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # The project ID for this request.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # The name of the deployment for this request.
-deployment = ''  # TODO: Update placeholder value.
+deployment = 'my-deployment'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::DeploymentmanagerV2::DeploymentsStopRequest.new
@@ -318,7 +309,7 @@ request_body = Google::Apis::DeploymentmanagerV2::DeploymentsStopRequest.new
 response = service.stop_deployment(project, deployment, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -336,7 +327,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/deploymentmanager_v2'
-require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
 
@@ -344,10 +334,10 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Project ID for this request.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # Name of the resource for this request.
-resource = ''  # TODO: Update placeholder value.
+resource = 'my-resource'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::DeploymentmanagerV2::TestPermissionsRequest.new
@@ -355,7 +345,7 @@ request_body = Google::Apis::DeploymentmanagerV2::TestPermissionsRequest.new
 response = service.test_deployment_iam_permissions(project, resource, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -373,7 +363,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/deploymentmanager_v2'
-require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
 
@@ -381,10 +370,10 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # The project ID for this request.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # The name of the deployment for this request.
-deployment = ''  # TODO: Update placeholder value.
+deployment = 'my-deployment'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`. All existing
 # members will be replaced:
@@ -393,7 +382,7 @@ request_body = Google::Apis::DeploymentmanagerV2::Deployment.new
 response = service.update_deployment(project, deployment, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -411,7 +400,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/deploymentmanager_v2'
-require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
 
@@ -419,18 +407,18 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # The project ID for this request.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # The name of the deployment for this request.
-deployment = ''  # TODO: Update placeholder value.
+deployment = 'my-deployment'  # TODO: Update placeholder value.
 
 # The name of the manifest for this request.
-manifest = ''  # TODO: Update placeholder value.
+manifest = 'my-manifest'  # TODO: Update placeholder value.
 
 response = service.get_manifest(project, deployment, manifest)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -448,7 +436,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/deploymentmanager_v2'
-require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
 
@@ -456,10 +443,10 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # The project ID for this request.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # The name of the deployment for this request.
-deployment = ''  # TODO: Update placeholder value.
+deployment = 'my-deployment'  # TODO: Update placeholder value.
 
 manifests = service.fetch_all(items: :manifests) do |token|
   service.list_manifests(project, deployment, page_token: token)
@@ -467,7 +454,7 @@ end
 
 manifests.each do |manifest|
   # TODO: Change code below to process each `manifest` resource:
-  puts JSON.pretty_generate(manifest)
+  puts manifest.to_json
 end
 # BEFORE RUNNING:
 # ---------------
@@ -486,7 +473,6 @@ end
 
 require 'googleauth'
 require 'google/apis/deploymentmanager_v2'
-require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
 
@@ -494,15 +480,15 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # The project ID for this request.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # The name of the operation for this request.
-operation = ''  # TODO: Update placeholder value.
+operation = 'my-operation'  # TODO: Update placeholder value.
 
 response = service.get_operation(project, operation)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -520,7 +506,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/deploymentmanager_v2'
-require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
 
@@ -528,7 +513,7 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # The project ID for this request.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 operations = service.fetch_all(items: :operations) do |token|
   service.list_operations(project, page_token: token)
@@ -536,7 +521,7 @@ end
 
 operations.each do |operation|
   # TODO: Change code below to process each `operation` resource:
-  puts JSON.pretty_generate(operation)
+  puts operation.to_json
 end
 # BEFORE RUNNING:
 # ---------------
@@ -555,7 +540,6 @@ end
 
 require 'googleauth'
 require 'google/apis/deploymentmanager_v2'
-require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
 
@@ -563,18 +547,18 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # The project ID for this request.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # The name of the deployment for this request.
-deployment = ''  # TODO: Update placeholder value.
+deployment = 'my-deployment'  # TODO: Update placeholder value.
 
 # The name of the resource for this request.
-resource = ''  # TODO: Update placeholder value.
+resource = 'my-resource'  # TODO: Update placeholder value.
 
 response = service.get_resource(project, deployment, resource)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -592,7 +576,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/deploymentmanager_v2'
-require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
 
@@ -600,10 +583,10 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # The project ID for this request.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # The name of the deployment for this request.
-deployment = ''  # TODO: Update placeholder value.
+deployment = 'my-deployment'  # TODO: Update placeholder value.
 
 resources = service.fetch_all(items: :resources) do |token|
   service.list_resources(project, deployment, page_token: token)
@@ -611,7 +594,7 @@ end
 
 resources.each do |resource|
   # TODO: Change code below to process each `resource` resource:
-  puts JSON.pretty_generate(resource)
+  puts resource.to_json
 end
 # BEFORE RUNNING:
 # ---------------
@@ -630,7 +613,6 @@ end
 
 require 'googleauth'
 require 'google/apis/deploymentmanager_v2'
-require 'json'
 
 service = Google::Apis::DeploymentmanagerV2::DeploymentManagerService.new
 
@@ -638,7 +620,7 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # The project ID for this request.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 types = service.fetch_all(items: :types) do |token|
   service.list_types(project, page_token: token)
@@ -646,5 +628,5 @@ end
 
 types.each do |type|
   # TODO: Change code below to process each `type` resource:
-  puts JSON.pretty_generate(type)
+  puts type.to_json
 end

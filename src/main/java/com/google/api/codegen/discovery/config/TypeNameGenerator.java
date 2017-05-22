@@ -15,6 +15,7 @@
 package com.google.api.codegen.discovery.config;
 
 import com.google.api.codegen.DiscoveryImporter;
+import com.google.api.codegen.LanguageUtil;
 import com.google.api.codegen.discovery.DefaultString;
 import com.google.common.base.Strings;
 import java.util.LinkedList;
@@ -146,17 +147,31 @@ public class TypeNameGenerator {
   }
 
   /**
-   * Returns an example demonstrating the given field pattern or an empty string if pattern is
-   * invalid.
+   * Returns a string placeholder demonstrating the field or an empty string if none.
+   *
+   * <p>If pattern is valid, a path template style string is returned ("foo/my-bar"). If pattern is
+   * invalid, and inPath is false, an empty string is returned. If pattern is invalid, and inPath is
+   * true, a "my-bar" style string is returned.
    *
    * <p>If not the empty string, the returned value will be enclosed within the correct
    * language-specific quotes.
    */
-  public String getFieldPatternExample(String pattern) {
-    String def = DefaultString.getNonTrivialPlaceholder(pattern);
-    if (Strings.isNullOrEmpty(def)) {
+  public String getStringFieldPlaceholder(String fieldName, String pattern, boolean inPath) {
+    String format = "my-%s";
+    String val = DefaultString.getNonTrivialPlaceholder(pattern, format);
+    if (!Strings.isNullOrEmpty(val)) {
+      return stringLiteral(val);
+    }
+    if (!inPath) {
       return "";
     }
-    return stringLiteral(def);
+    fieldName = LanguageUtil.lowerCamelToLowerUnderscore(fieldName);
+    val = String.format(format, fieldName.replace('_', '-'));
+    return stringLiteral(val);
+  }
+
+  /** Returns the URL of the discovery doc. */
+  public String getDiscoveryDocUrl(String apiName, String apiVersion) {
+    return "";
   }
 }

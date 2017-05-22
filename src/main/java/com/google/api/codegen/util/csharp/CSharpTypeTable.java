@@ -39,12 +39,14 @@ public class CSharpTypeTable implements TypeTable {
 
   @Override
   public TypeName getTypeName(String fullName) {
+    fullName = resolveInner(fullName);
     int firstGenericOpenIndex = fullName.indexOf('<');
     if (firstGenericOpenIndex >= 0) {
       int lastGenericCloseIndex = fullName.lastIndexOf('>');
       String containerTypeName = fullName.substring(0, firstGenericOpenIndex);
       List<String> genericParamNames =
           Splitter.on(',')
+              .trimResults()
               .splitToList(fullName.substring(firstGenericOpenIndex + 1, lastGenericCloseIndex));
       return getContainerTypeName(
           containerTypeName, genericParamNames.toArray(new String[genericParamNames.size()]));
@@ -75,7 +77,7 @@ public class CSharpTypeTable implements TypeTable {
     for (int i = 0; i < elementTypeNames.length; i++) {
       elementTypeNames[i] = getTypeName(elementFullNames[i]);
     }
-    String argPattern = Joiner.on(",").join(Collections.nCopies(elementTypeNames.length, "%i"));
+    String argPattern = Joiner.on(", ").join(Collections.nCopies(elementTypeNames.length, "%i"));
     String pattern = "%s<" + argPattern + ">";
     return new TypeName(
         containerTypeName.getFullName(),

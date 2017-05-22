@@ -121,7 +121,7 @@ public class RubyModelTypeNameConverter implements ModelTypeNameConverter {
    * Returns the Ruby representation of a zero value for that type, to be used in code sample doc.
    */
   @Override
-  public TypedValue getZeroValue(TypeRef type) {
+  public TypedValue getSnippetZeroValue(TypeRef type) {
     // Don't call getTypeName; we don't need to import these.
     if (type.isMap()) {
       return TypedValue.create(new TypeName("Hash"), "{}");
@@ -133,12 +133,18 @@ public class RubyModelTypeNameConverter implements ModelTypeNameConverter {
       return TypedValue.create(getTypeName(type), PRIMITIVE_ZERO_VALUE.get(type.getKind()));
     }
     if (type.isMessage()) {
-      return TypedValue.create(getTypeName(type), "%s.new");
+      TypeName typeName = getTypeName(type);
+      return TypedValue.create(typeName, typeName.getFullName() + ".new");
     }
     if (type.isEnum()) {
       return getEnumValue(type, type.getEnumType().getValues().get(0));
     }
     return TypedValue.create(new TypeName(""), "nil");
+  }
+
+  @Override
+  public TypedValue getImplZeroValue(TypeRef type) {
+    return getSnippetZeroValue(type);
   }
 
   @Override
@@ -180,6 +186,6 @@ public class RubyModelTypeNameConverter implements ModelTypeNameConverter {
 
   @Override
   public TypedValue getEnumValue(TypeRef type, EnumValue value) {
-    return TypedValue.create(getTypeName(type), "%s::" + value.getSimpleName());
+    return TypedValue.create(getTypeName(type), ":" + value.getSimpleName());
   }
 }

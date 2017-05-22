@@ -17,7 +17,8 @@ package com.google.api.codegen.transformer.java;
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.GapicInterfaceConfig;
+import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
@@ -35,6 +36,7 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,8 +55,8 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getApiSnippetsClassName(Interface interfaze) {
-    return publicClassName(Name.upperCamel(interfaze.getSimpleName(), "ClientSnippets"));
+  public String getApiSnippetsClassName(Interface apiInterface) {
+    return publicClassName(Name.upperCamel(apiInterface.getSimpleName(), "ClientSnippets"));
   }
 
   @Override
@@ -77,12 +79,12 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public List<String> getThrowsDocLines() {
+  public List<String> getThrowsDocLines(GapicMethodConfig methodConfig) {
     return Arrays.asList("@throws com.google.api.gax.grpc.ApiException if the remote call fails");
   }
 
   @Override
-  public String getStaticLangReturnTypeName(Method method, MethodConfig methodConfig) {
+  public String getStaticLangReturnTypeName(Method method, GapicMethodConfig methodConfig) {
     if (ServiceMessages.s_isEmptyType(method.getOutputType())) {
       return "void";
     }
@@ -91,7 +93,7 @@ public class JavaSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getAndSaveOperationResponseTypeName(
-      Method method, ModelTypeTable typeTable, MethodConfig methodConfig) {
+      Method method, ModelTypeTable typeTable, GapicMethodConfig methodConfig) {
     String responseTypeName =
         typeTable.getFullNameFor(methodConfig.getLongRunningConfig().getReturnType());
     return typeTable.getAndSaveNicknameForContainer(
@@ -105,6 +107,11 @@ public class JavaSurfaceNamer extends SurfaceNamer {
     } else {
       return getModelTypeFormatter().getFullNameFor(outputType);
     }
+  }
+
+  @Override
+  public String getPagedResponseIterateMethod() {
+    return publicMethodName(Name.from("iterate_all"));
   }
 
   @Override
@@ -139,8 +146,19 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFullyQualifiedApiWrapperClassName(Interface service) {
-    return getPackageName() + "." + getApiWrapperClassName(service);
+  public String getPageTypeInnerName(Method method, ModelTypeTable typeTable, Field resourceField) {
+    return publicClassName(Name.upperCamel(method.getSimpleName(), "Page"));
+  }
+
+  @Override
+  public String getFixedSizeCollectionTypeInnerName(
+      Method method, ModelTypeTable typeTable, Field resourceField) {
+    return publicClassName(Name.upperCamel(method.getSimpleName(), "FixedSizeCollection"));
+  }
+
+  @Override
+  public String getFullyQualifiedApiWrapperClassName(GapicInterfaceConfig interfaceConfig) {
+    return getPackageName() + "." + getApiWrapperClassName(interfaceConfig);
   }
 
   @Override
@@ -183,11 +201,30 @@ public class JavaSurfaceNamer extends SurfaceNamer {
     switch (releaseLevel) {
       case UNSET_RELEASE_LEVEL:
       case ALPHA:
-        return "@ExperimentalApi";
+        return "@BetaApi";
+      case BETA:
+        return "@BetaApi";
       case DEPRECATED:
         return "@Deprecated";
       default:
         return "";
+    }
+  }
+
+  @Override
+  public String getBatchingDescriptorConstName(Method method) {
+    return inittedConstantName(Name.upperCamel(method.getSimpleName()).join("batching_desc"));
+  }
+
+  @Override
+  public String getPackagePath() {
+    List<String> packagePath = Splitter.on(".").splitToList(getPackageName());
+    int spiIndex = packagePath.indexOf("spi");
+    if (spiIndex != -1) {
+      // Remove the "spi.{version}" suffix
+      return Joiner.on("/").join(packagePath.subList(0, spiIndex));
+    } else {
+      return Joiner.on("/").join(packagePath);
     }
   }
 }

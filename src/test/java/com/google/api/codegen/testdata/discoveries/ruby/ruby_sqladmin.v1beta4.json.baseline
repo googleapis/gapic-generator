@@ -16,7 +16,6 @@
 
 require 'googleauth'
 require 'google/apis/sqladmin_v1beta4'
-require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
@@ -24,18 +23,18 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Project ID of the project that contains the instance.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # Cloud SQL instance ID. This does not include the project ID.
-instance = ''  # TODO: Update placeholder value.
+instance = 'my-instance'  # TODO: Update placeholder value.
 
 # The ID of the Backup Run to delete. To find a Backup Run ID, use the list method.
-id = ''  # TODO: Update placeholder value.
+id = 0  # TODO: Update placeholder value.
 
 response = service.delete_backup_run(project, instance, id)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud SQL Administration API
@@ -53,7 +52,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/sqladmin_v1beta4'
-require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
@@ -61,18 +59,18 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Project ID of the project that contains the instance.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # Cloud SQL instance ID. This does not include the project ID.
-instance = ''  # TODO: Update placeholder value.
+instance = 'my-instance'  # TODO: Update placeholder value.
 
 # The ID of this Backup Run.
-id = ''  # TODO: Update placeholder value.
+id = 0  # TODO: Update placeholder value.
 
 response = service.get_backup_run(project, instance, id)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud SQL Administration API
@@ -90,7 +88,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/sqladmin_v1beta4'
-require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
@@ -98,10 +95,10 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Project ID of the project that contains the instance.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # Cloud SQL instance ID. This does not include the project ID.
-instance = ''  # TODO: Update placeholder value.
+instance = 'my-instance'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::SqladminV1beta4::BackupRun.new
@@ -109,7 +106,7 @@ request_body = Google::Apis::SqladminV1beta4::BackupRun.new
 response = service.insert_backup_run(project, instance, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud SQL Administration API
@@ -127,7 +124,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/sqladmin_v1beta4'
-require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
@@ -135,10 +131,10 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Project ID of the project that contains the instance.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # Cloud SQL instance ID. This does not include the project ID.
-instance = ''  # TODO: Update placeholder value.
+instance = 'my-instance'  # TODO: Update placeholder value.
 
 items = service.fetch_all do |token|
   service.list_backup_runs(project, instance, page_token: token)
@@ -146,7 +142,7 @@ end
 
 items.each do |backup_run|
   # TODO: Change code below to process each `backup_run` resource:
-  puts JSON.pretty_generate(backup_run)
+  puts backup_run.to_json
 end
 # BEFORE RUNNING:
 # ---------------
@@ -165,7 +161,6 @@ end
 
 require 'googleauth'
 require 'google/apis/sqladmin_v1beta4'
-require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
@@ -173,18 +168,18 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Project ID of the project that contains the instance.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # Database instance ID. This does not include the project ID.
-instance = ''  # TODO: Update placeholder value.
+instance = 'my-instance'  # TODO: Update placeholder value.
 
 # Name of the database to be deleted in the instance.
-database = ''  # TODO: Update placeholder value.
+database = 'my-database'  # TODO: Update placeholder value.
 
 response = service.delete_database(project, instance, database)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud SQL Administration API
@@ -202,7 +197,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/sqladmin_v1beta4'
-require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
@@ -210,18 +204,18 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Project ID of the project that contains the instance.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # Database instance ID. This does not include the project ID.
-instance = ''  # TODO: Update placeholder value.
+instance = 'my-instance'  # TODO: Update placeholder value.
 
 # Name of the database in the instance.
-database = ''  # TODO: Update placeholder value.
+database = 'my-database'  # TODO: Update placeholder value.
 
 response = service.get_database(project, instance, database)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud SQL Administration API
@@ -239,7 +233,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/sqladmin_v1beta4'
-require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
@@ -247,10 +240,10 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Project ID of the project that contains the instance.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # Database instance ID. This does not include the project ID.
-instance = ''  # TODO: Update placeholder value.
+instance = 'my-instance'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::SqladminV1beta4::Database.new
@@ -258,7 +251,7 @@ request_body = Google::Apis::SqladminV1beta4::Database.new
 response = service.insert_database(project, instance, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud SQL Administration API
@@ -276,7 +269,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/sqladmin_v1beta4'
-require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
@@ -284,15 +276,15 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Project ID of the project for which to list Cloud SQL instances.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # Cloud SQL instance ID. This does not include the project ID.
-instance = ''  # TODO: Update placeholder value.
+instance = 'my-instance'  # TODO: Update placeholder value.
 
 response = service.list_databases(project, instance)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud SQL Administration API
@@ -310,7 +302,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/sqladmin_v1beta4'
-require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
@@ -318,13 +309,13 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Project ID of the project that contains the instance.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # Database instance ID. This does not include the project ID.
-instance = ''  # TODO: Update placeholder value.
+instance = 'my-instance'  # TODO: Update placeholder value.
 
 # Name of the database to be updated in the instance.
-database = ''  # TODO: Update placeholder value.
+database = 'my-database'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`. Only assigned
 # members will be changed:
@@ -333,7 +324,7 @@ request_body = Google::Apis::SqladminV1beta4::Database.new
 response = service.patch_database(project, instance, database, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud SQL Administration API
@@ -351,7 +342,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/sqladmin_v1beta4'
-require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
@@ -359,13 +349,13 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Project ID of the project that contains the instance.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # Database instance ID. This does not include the project ID.
-instance = ''  # TODO: Update placeholder value.
+instance = 'my-instance'  # TODO: Update placeholder value.
 
 # Name of the database to be updated in the instance.
-database = ''  # TODO: Update placeholder value.
+database = 'my-database'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`. All existing
 # members will be replaced:
@@ -374,7 +364,7 @@ request_body = Google::Apis::SqladminV1beta4::Database.new
 response = service.update_database(project, instance, database, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud SQL Administration API
@@ -392,7 +382,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/sqladmin_v1beta4'
-require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
@@ -402,7 +391,7 @@ service.authorization = \
 response = service.list_flags()
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud SQL Administration API
@@ -420,7 +409,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/sqladmin_v1beta4'
-require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
@@ -428,10 +416,10 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Project ID of the source as well as the clone Cloud SQL instance.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # The ID of the Cloud SQL instance to be cloned (source). This does not include the project ID.
-instance = ''  # TODO: Update placeholder value.
+instance = 'my-instance'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::SqladminV1beta4::CloneInstancesRequest.new
@@ -439,7 +427,7 @@ request_body = Google::Apis::SqladminV1beta4::CloneInstancesRequest.new
 response = service.clone_instance(project, instance, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud SQL Administration API
@@ -457,7 +445,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/sqladmin_v1beta4'
-require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
@@ -465,15 +452,15 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Project ID of the project that contains the instance to be deleted.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # Cloud SQL instance ID. This does not include the project ID.
-instance = ''  # TODO: Update placeholder value.
+instance = 'my-instance'  # TODO: Update placeholder value.
 
 response = service.delete_instance(project, instance)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud SQL Administration API
@@ -491,7 +478,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/sqladmin_v1beta4'
-require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
@@ -499,10 +485,10 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Project ID of the project that contains the instance to be exported.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # Cloud SQL instance ID. This does not include the project ID.
-instance = ''  # TODO: Update placeholder value.
+instance = 'my-instance'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::SqladminV1beta4::ExportInstancesRequest.new
@@ -510,7 +496,7 @@ request_body = Google::Apis::SqladminV1beta4::ExportInstancesRequest.new
 response = service.export_instance(project, instance, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud SQL Administration API
@@ -528,7 +514,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/sqladmin_v1beta4'
-require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
@@ -536,10 +521,10 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # ID of the project that contains the read replica.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # Cloud SQL instance ID. This does not include the project ID.
-instance = ''  # TODO: Update placeholder value.
+instance = 'my-instance'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::SqladminV1beta4::InstancesFailoverRequest.new
@@ -547,7 +532,7 @@ request_body = Google::Apis::SqladminV1beta4::InstancesFailoverRequest.new
 response = service.failover_instance(project, instance, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud SQL Administration API
@@ -565,7 +550,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/sqladmin_v1beta4'
-require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
@@ -573,15 +557,15 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Project ID of the project that contains the instance.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # Database instance ID. This does not include the project ID.
-instance = ''  # TODO: Update placeholder value.
+instance = 'my-instance'  # TODO: Update placeholder value.
 
 response = service.get_instance(project, instance)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud SQL Administration API
@@ -599,7 +583,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/sqladmin_v1beta4'
-require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
@@ -607,10 +590,10 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Project ID of the project that contains the instance.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # Cloud SQL instance ID. This does not include the project ID.
-instance = ''  # TODO: Update placeholder value.
+instance = 'my-instance'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::SqladminV1beta4::ImportInstancesRequest.new
@@ -618,7 +601,7 @@ request_body = Google::Apis::SqladminV1beta4::ImportInstancesRequest.new
 response = service.import_instance(project, instance, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud SQL Administration API
@@ -636,7 +619,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/sqladmin_v1beta4'
-require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
@@ -644,7 +626,7 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Project ID of the project to which the newly created Cloud SQL instances should belong.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::SqladminV1beta4::DatabaseInstance.new
@@ -652,7 +634,7 @@ request_body = Google::Apis::SqladminV1beta4::DatabaseInstance.new
 response = service.insert_instance(project, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud SQL Administration API
@@ -670,7 +652,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/sqladmin_v1beta4'
-require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
@@ -678,7 +659,7 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Project ID of the project for which to list Cloud SQL instances.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 items = service.fetch_all do |token|
   service.list_instances(project, page_token: token)
@@ -686,7 +667,7 @@ end
 
 items.each do |database_instance|
   # TODO: Change code below to process each `database_instance` resource:
-  puts JSON.pretty_generate(database_instance)
+  puts database_instance.to_json
 end
 # BEFORE RUNNING:
 # ---------------
@@ -705,7 +686,6 @@ end
 
 require 'googleauth'
 require 'google/apis/sqladmin_v1beta4'
-require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
@@ -713,10 +693,10 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Project ID of the project that contains the instance.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # Cloud SQL instance ID. This does not include the project ID.
-instance = ''  # TODO: Update placeholder value.
+instance = 'my-instance'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`. Only assigned
 # members will be changed:
@@ -725,7 +705,7 @@ request_body = Google::Apis::SqladminV1beta4::DatabaseInstance.new
 response = service.patch_instance(project, instance, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud SQL Administration API
@@ -743,7 +723,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/sqladmin_v1beta4'
-require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
@@ -751,15 +730,15 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # ID of the project that contains the read replica.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # Cloud SQL read replica instance name.
-instance = ''  # TODO: Update placeholder value.
+instance = 'my-instance'  # TODO: Update placeholder value.
 
 response = service.promote_instance_replica(project, instance)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud SQL Administration API
@@ -777,7 +756,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/sqladmin_v1beta4'
-require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
@@ -785,15 +763,15 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Project ID of the project that contains the instance.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # Cloud SQL instance ID. This does not include the project ID.
-instance = ''  # TODO: Update placeholder value.
+instance = 'my-instance'  # TODO: Update placeholder value.
 
 response = service.reset_instance_ssl_config(project, instance)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud SQL Administration API
@@ -811,7 +789,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/sqladmin_v1beta4'
-require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
@@ -819,15 +796,15 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Project ID of the project that contains the instance to be restarted.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # Cloud SQL instance ID. This does not include the project ID.
-instance = ''  # TODO: Update placeholder value.
+instance = 'my-instance'  # TODO: Update placeholder value.
 
 response = service.restart_instance(project, instance)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud SQL Administration API
@@ -845,7 +822,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/sqladmin_v1beta4'
-require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
@@ -853,10 +829,10 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Project ID of the project that contains the instance.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # Cloud SQL instance ID. This does not include the project ID.
-instance = ''  # TODO: Update placeholder value.
+instance = 'my-instance'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::SqladminV1beta4::RestoreInstancesBackupRequest.new
@@ -864,7 +840,7 @@ request_body = Google::Apis::SqladminV1beta4::RestoreInstancesBackupRequest.new
 response = service.restore_instance_backup(project, instance, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud SQL Administration API
@@ -882,7 +858,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/sqladmin_v1beta4'
-require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
@@ -890,15 +865,15 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # ID of the project that contains the read replica.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # Cloud SQL read replica instance name.
-instance = ''  # TODO: Update placeholder value.
+instance = 'my-instance'  # TODO: Update placeholder value.
 
 response = service.start_instance_replica(project, instance)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud SQL Administration API
@@ -916,7 +891,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/sqladmin_v1beta4'
-require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
@@ -924,15 +898,15 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # ID of the project that contains the read replica.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # Cloud SQL read replica instance name.
-instance = ''  # TODO: Update placeholder value.
+instance = 'my-instance'  # TODO: Update placeholder value.
 
 response = service.stop_instance_replica(project, instance)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud SQL Administration API
@@ -950,7 +924,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/sqladmin_v1beta4'
-require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
@@ -958,10 +931,10 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Project ID of the Cloud SQL project.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # Cloud SQL instance ID. This does not include the project ID.
-instance = ''  # TODO: Update placeholder value.
+instance = 'my-instance'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::SqladminV1beta4::InstancesTruncateLogRequest.new
@@ -969,7 +942,7 @@ request_body = Google::Apis::SqladminV1beta4::InstancesTruncateLogRequest.new
 response = service.truncate_instance_log(project, instance, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud SQL Administration API
@@ -987,7 +960,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/sqladmin_v1beta4'
-require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
@@ -995,10 +967,10 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Project ID of the project that contains the instance.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # Cloud SQL instance ID. This does not include the project ID.
-instance = ''  # TODO: Update placeholder value.
+instance = 'my-instance'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`. All existing
 # members will be replaced:
@@ -1007,7 +979,7 @@ request_body = Google::Apis::SqladminV1beta4::DatabaseInstance.new
 response = service.update_instance(project, instance, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud SQL Administration API
@@ -1025,7 +997,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/sqladmin_v1beta4'
-require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
@@ -1033,15 +1004,15 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Project ID of the project that contains the instance.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # Instance operation ID.
-operation = ''  # TODO: Update placeholder value.
+operation = 'my-operation'  # TODO: Update placeholder value.
 
 response = service.get_operation(project, operation)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud SQL Administration API
@@ -1059,7 +1030,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/sqladmin_v1beta4'
-require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
@@ -1067,7 +1037,7 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Project ID of the project that contains the instance.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # Cloud SQL instance ID. This does not include the project ID.
 instance = ''  # TODO: Update placeholder value.
@@ -1078,7 +1048,7 @@ end
 
 items.each do |operation|
   # TODO: Change code below to process each `operation` resource:
-  puts JSON.pretty_generate(operation)
+  puts operation.to_json
 end
 # BEFORE RUNNING:
 # ---------------
@@ -1097,7 +1067,6 @@ end
 
 require 'googleauth'
 require 'google/apis/sqladmin_v1beta4'
-require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
@@ -1105,10 +1074,10 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Project ID of the Cloud SQL project.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # Cloud SQL instance ID. This does not include the project ID.
-instance = ''  # TODO: Update placeholder value.
+instance = 'my-instance'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::SqladminV1beta4::SslCertsCreateEphemeralRequest.new
@@ -1116,7 +1085,7 @@ request_body = Google::Apis::SqladminV1beta4::SslCertsCreateEphemeralRequest.new
 response = service.create_ssl_cert_ephemeral(project, instance, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud SQL Administration API
@@ -1134,7 +1103,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/sqladmin_v1beta4'
-require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
@@ -1142,18 +1110,18 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Project ID of the project that contains the instance to be deleted.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # Cloud SQL instance ID. This does not include the project ID.
-instance = ''  # TODO: Update placeholder value.
+instance = 'my-instance'  # TODO: Update placeholder value.
 
 # Sha1 FingerPrint.
-sha1_fingerprint = ''  # TODO: Update placeholder value.
+sha1_fingerprint = 'my-sha1-fingerprint'  # TODO: Update placeholder value.
 
 response = service.delete_ssl_cert(project, instance, sha1_fingerprint)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud SQL Administration API
@@ -1171,7 +1139,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/sqladmin_v1beta4'
-require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
@@ -1179,18 +1146,18 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Project ID of the project that contains the instance.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # Cloud SQL instance ID. This does not include the project ID.
-instance = ''  # TODO: Update placeholder value.
+instance = 'my-instance'  # TODO: Update placeholder value.
 
 # Sha1 FingerPrint.
-sha1_fingerprint = ''  # TODO: Update placeholder value.
+sha1_fingerprint = 'my-sha1-fingerprint'  # TODO: Update placeholder value.
 
 response = service.get_ssl_cert(project, instance, sha1_fingerprint)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud SQL Administration API
@@ -1208,7 +1175,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/sqladmin_v1beta4'
-require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
@@ -1216,10 +1182,10 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Project ID of the project to which the newly created Cloud SQL instances should belong.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # Cloud SQL instance ID. This does not include the project ID.
-instance = ''  # TODO: Update placeholder value.
+instance = 'my-instance'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::SqladminV1beta4::InsertSslCertsRequest.new
@@ -1227,7 +1193,7 @@ request_body = Google::Apis::SqladminV1beta4::InsertSslCertsRequest.new
 response = service.insert_ssl_cert(project, instance, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud SQL Administration API
@@ -1245,7 +1211,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/sqladmin_v1beta4'
-require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
@@ -1253,15 +1218,15 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Project ID of the project for which to list Cloud SQL instances.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # Cloud SQL instance ID. This does not include the project ID.
-instance = ''  # TODO: Update placeholder value.
+instance = 'my-instance'  # TODO: Update placeholder value.
 
 response = service.list_ssl_certs(project, instance)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud SQL Administration API
@@ -1279,7 +1244,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/sqladmin_v1beta4'
-require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
@@ -1287,12 +1251,12 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Project ID of the project for which to list tiers.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 response = service.list_tiers(project)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud SQL Administration API
@@ -1310,7 +1274,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/sqladmin_v1beta4'
-require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
@@ -1318,10 +1281,10 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Project ID of the project that contains the instance.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # Database instance ID. This does not include the project ID.
-instance = ''  # TODO: Update placeholder value.
+instance = 'my-instance'  # TODO: Update placeholder value.
 
 # Host of the user in the instance.
 host = ''  # TODO: Update placeholder value.
@@ -1332,7 +1295,7 @@ name = ''  # TODO: Update placeholder value.
 response = service.delete_user(project, instance, host, name)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud SQL Administration API
@@ -1350,7 +1313,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/sqladmin_v1beta4'
-require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
@@ -1358,10 +1320,10 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Project ID of the project that contains the instance.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # Database instance ID. This does not include the project ID.
-instance = ''  # TODO: Update placeholder value.
+instance = 'my-instance'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::SqladminV1beta4::User.new
@@ -1369,7 +1331,7 @@ request_body = Google::Apis::SqladminV1beta4::User.new
 response = service.insert_user(project, instance, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud SQL Administration API
@@ -1387,7 +1349,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/sqladmin_v1beta4'
-require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
@@ -1395,15 +1356,15 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Project ID of the project that contains the instance.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # Database instance ID. This does not include the project ID.
-instance = ''  # TODO: Update placeholder value.
+instance = 'my-instance'  # TODO: Update placeholder value.
 
 response = service.list_users(project, instance)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud SQL Administration API
@@ -1421,7 +1382,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/sqladmin_v1beta4'
-require 'json'
 
 service = Google::Apis::SqladminV1beta4::SQLAdminService.new
 
@@ -1429,10 +1389,10 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Project ID of the project that contains the instance.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # Database instance ID. This does not include the project ID.
-instance = ''  # TODO: Update placeholder value.
+instance = 'my-instance'  # TODO: Update placeholder value.
 
 # Host of the user in the instance.
 host = ''  # TODO: Update placeholder value.
@@ -1447,4 +1407,4 @@ request_body = Google::Apis::SqladminV1beta4::User.new
 response = service.update_user(project, instance, host, name, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json

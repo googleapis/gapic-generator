@@ -43,7 +43,7 @@ public class DiscoveryFragmentGeneratorTool {
     options.addOption(
         Option.builder()
             .longOpt("overrides")
-            .desc("The path to the sample config overrides file")
+            .desc("A comma delimited list of paths to sample config override files.")
             .hasArg()
             .argName("OVERRIDES")
             .build());
@@ -96,7 +96,7 @@ public class DiscoveryFragmentGeneratorTool {
     options.set(DiscoveryFragmentGeneratorApi.DISCOVERY_DOC, discoveryDoc);
     options.set(
         DiscoveryFragmentGeneratorApi.GENERATOR_CONFIG_FILES, Arrays.asList(generatorConfigs));
-    options.set(DiscoveryFragmentGeneratorApi.OVERRIDES_FILE, overridesFile);
+    options.set(DiscoveryFragmentGeneratorApi.OVERRIDE_FILES, overridesFile);
     options.set(DiscoveryFragmentGeneratorApi.OUTPUT_FILE, outputDirectory);
     options.set(DiscoveryFragmentGeneratorApi.AUTH_INSTRUCTIONS_URL, authInstructions);
     DiscoveryFragmentGeneratorApi generator = new DiscoveryFragmentGeneratorApi(options);

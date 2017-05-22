@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.ReleaseLevel;
+
 /** A PackageMetadataNamer provides language-specific strings for metadata views. */
 public class PackageMetadataNamer {
 
@@ -27,8 +29,30 @@ public class PackageMetadataNamer {
     return getNotImplementedString("PackageMetadataNamer.getMetadataIdentifier");
   }
 
+  /** Returns the artifact identifier for a proto classes package */
+  public String getProtoPackageName() {
+    return getNotImplementedString("PackageMetadataNamer.getProtoPackageName");
+  }
+
   public String getOutputFileName() {
     return getNotImplementedString("PackageMetadataNamer.getOutputFileName");
+  }
+
+  public String getReleaseAnnotation(ReleaseLevel releaseLevel) {
+    switch (releaseLevel) {
+      case UNSET_RELEASE_LEVEL:
+        // fallthrough
+      case ALPHA:
+        return "Alpha";
+      case BETA:
+        return "Beta";
+      case GA:
+        return "Production/Stable";
+      case DEPRECATED:
+        return "Inactive";
+      default:
+        throw new IllegalStateException("Invalid development status");
+    }
   }
 
   /** Returns the unimplemented string message */

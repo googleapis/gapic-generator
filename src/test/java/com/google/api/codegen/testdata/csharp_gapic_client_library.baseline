@@ -18,6 +18,7 @@
 using Google.Api.Gax;
 using Google.Api.Gax.Grpc;
 using Google.LongRunning;
+using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using Google.Tagger.V1;
 using Grpc.Core;
@@ -25,6 +26,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -75,6 +77,7 @@ namespace Google.Example.Library.V1
             AddLabelSettings = existing.AddLabelSettings;
             GetBigBookSettings = existing.GetBigBookSettings;
             GetBigNothingSettings = existing.GetBigNothingSettings;
+            TestOptionalRequiredFlatteningParamsSettings = existing.TestOptionalRequiredFlatteningParamsSettings;
             LongRunningOperationsSettings = existing.LongRunningOperationsSettings?.Clone();
             OnCopy(existing);
         }
@@ -815,6 +818,35 @@ namespace Google.Example.Library.V1
             )));
 
         /// <summary>
+        /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
+        /// <c>LibraryServiceClient.TestOptionalRequiredFlatteningParams</c> and <c>LibraryServiceClient.TestOptionalRequiredFlatteningParamsAsync</c>.
+        /// </summary>
+        /// <remarks>
+        /// The default <c>LibraryServiceClient.TestOptionalRequiredFlatteningParams</c> and
+        /// <c>LibraryServiceClient.TestOptionalRequiredFlatteningParamsAsync</c> <see cref="RetrySettings"/> are:
+        /// <list type="bullet">
+        /// <item><description>Initial retry delay: 100 milliseconds</description></item>
+        /// <item><description>Retry delay multiplier: 1.2</description></item>
+        /// <item><description>Retry maximum delay: 1000 milliseconds</description></item>
+        /// <item><description>Initial timeout: 300 milliseconds</description></item>
+        /// <item><description>Timeout multiplier: 1.3</description></item>
+        /// <item><description>Timeout maximum delay: 3000 milliseconds</description></item>
+        /// </list>
+        /// Retry will be attempted on the following response status codes:
+        /// <list>
+        /// <item><description>No status codes</description></item>
+        /// </list>
+        /// Default RPC expiration is 30000 milliseconds.
+        /// </remarks>
+        public CallSettings TestOptionalRequiredFlatteningParamsSettings { get; set; } = CallSettings.FromCallTiming(
+            CallTiming.FromRetry(new RetrySettings(
+                retryBackoff: GetDefaultRetryBackoff(),
+                timeoutBackoff: GetDefaultTimeoutBackoff(),
+                totalExpiration: Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                retryFilter: NonIdempotentRetryFilter
+            )));
+
+        /// <summary>
         /// Settings used for long running operations.
         /// </summary>
         public OperationsSettings LongRunningOperationsSettings { get; set; }
@@ -946,7 +978,7 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => CreateShelfAsync(
                 new CreateShelfRequest
                 {
-                    Shelf = shelf,
+                    Shelf = GaxPreconditions.CheckNotNull(shelf, nameof(shelf)),
                 },
                 callSettings);
 
@@ -987,7 +1019,7 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => CreateShelf(
                 new CreateShelfRequest
                 {
-                    Shelf = shelf,
+                    Shelf = GaxPreconditions.CheckNotNull(shelf, nameof(shelf)),
                 },
                 callSettings);
 
@@ -1048,7 +1080,7 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => GetShelfAsync(
                 new GetShelfRequest
                 {
-                    ShelfName = name,
+                    ShelfName = GaxPreconditions.CheckNotNull(name, nameof(name)),
                 },
                 callSettings);
 
@@ -1087,7 +1119,7 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => GetShelf(
                 new GetShelfRequest
                 {
-                    ShelfName = name,
+                    ShelfName = GaxPreconditions.CheckNotNull(name, nameof(name)),
                 },
                 callSettings);
 
@@ -1112,8 +1144,8 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => GetShelfAsync(
                 new GetShelfRequest
                 {
-                    Name = name,
-                    Message = message,
+                    Name = GaxPreconditions.CheckNotNullOrEmpty(name, nameof(name)),
+                    Message = message, // Optional
                 },
                 callSettings);
 
@@ -1161,8 +1193,8 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => GetShelf(
                 new GetShelfRequest
                 {
-                    Name = name,
-                    Message = message,
+                    Name = GaxPreconditions.CheckNotNullOrEmpty(name, nameof(name)),
+                    Message = message, // Optional
                 },
                 callSettings);
 
@@ -1191,9 +1223,9 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => GetShelfAsync(
                 new GetShelfRequest
                 {
-                    Name = name,
-                    Message = message,
-                    StringBuilder = stringBuilder,
+                    Name = GaxPreconditions.CheckNotNullOrEmpty(name, nameof(name)),
+                    Message = message, // Optional
+                    StringBuilder = stringBuilder, // Optional
                 },
                 callSettings);
 
@@ -1250,9 +1282,9 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => GetShelf(
                 new GetShelfRequest
                 {
-                    Name = name,
-                    Message = message,
-                    StringBuilder = stringBuilder,
+                    Name = GaxPreconditions.CheckNotNullOrEmpty(name, nameof(name)),
+                    Message = message, // Optional
+                    StringBuilder = stringBuilder, // Optional
                 },
                 callSettings);
 
@@ -1317,7 +1349,6 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => ListShelvesAsync(
                 new ListShelvesRequest
                 {
-
                     PageToken = pageToken ?? "",
                     PageSize = pageSize ?? 0,
                 },
@@ -1346,7 +1377,6 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => ListShelves(
                 new ListShelvesRequest
                 {
-
                     PageToken = pageToken ?? "",
                     PageSize = pageSize ?? 0,
                 },
@@ -1407,7 +1437,7 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => DeleteShelfAsync(
                 new DeleteShelfRequest
                 {
-                    ShelfName = name,
+                    ShelfName = GaxPreconditions.CheckNotNull(name, nameof(name)),
                 },
                 callSettings);
 
@@ -1446,7 +1476,7 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => DeleteShelf(
                 new DeleteShelfRequest
                 {
-                    ShelfName = name,
+                    ShelfName = GaxPreconditions.CheckNotNull(name, nameof(name)),
                 },
                 callSettings);
 
@@ -1511,8 +1541,8 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => MergeShelvesAsync(
                 new MergeShelvesRequest
                 {
-                    ShelfName = name,
-                    OtherShelfNameAsShelfName = otherShelfName,
+                    ShelfName = GaxPreconditions.CheckNotNull(name, nameof(name)),
+                    OtherShelfNameAsShelfName = GaxPreconditions.CheckNotNull(otherShelfName, nameof(otherShelfName)),
                 },
                 callSettings);
 
@@ -1564,8 +1594,8 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => MergeShelves(
                 new MergeShelvesRequest
                 {
-                    ShelfName = name,
-                    OtherShelfNameAsShelfName = otherShelfName,
+                    ShelfName = GaxPreconditions.CheckNotNull(name, nameof(name)),
+                    OtherShelfNameAsShelfName = GaxPreconditions.CheckNotNull(otherShelfName, nameof(otherShelfName)),
                 },
                 callSettings);
 
@@ -1632,8 +1662,8 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => CreateBookAsync(
                 new CreateBookRequest
                 {
-                    Name = name,
-                    Book = book,
+                    Name = GaxPreconditions.CheckNotNullOrEmpty(name, nameof(name)),
+                    Book = GaxPreconditions.CheckNotNull(book, nameof(book)),
                 },
                 callSettings);
 
@@ -1681,8 +1711,8 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => CreateBook(
                 new CreateBookRequest
                 {
-                    Name = name,
-                    Book = book,
+                    Name = GaxPreconditions.CheckNotNullOrEmpty(name, nameof(name)),
+                    Book = GaxPreconditions.CheckNotNull(book, nameof(book)),
                 },
                 callSettings);
 
@@ -1748,15 +1778,15 @@ namespace Google.Example.Library.V1
         public virtual Task<PublishSeriesResponse> PublishSeriesAsync(
             Shelf shelf,
             IEnumerable<Book> books,
-            uint edition,
+            uint? edition,
             SeriesUuid seriesUuid,
             CallSettings callSettings = null) => PublishSeriesAsync(
                 new PublishSeriesRequest
                 {
-                    Shelf = shelf,
-                    Books = { books },
-                    Edition = edition,
-                    SeriesUuid = seriesUuid,
+                    Shelf = GaxPreconditions.CheckNotNull(shelf, nameof(shelf)),
+                    Books = { GaxPreconditions.CheckNotNull(books, nameof(books)) },
+                    Edition = edition ?? 0, // Optional
+                    SeriesUuid = GaxPreconditions.CheckNotNull(seriesUuid, nameof(seriesUuid)),
                 },
                 callSettings);
 
@@ -1784,7 +1814,7 @@ namespace Google.Example.Library.V1
         public virtual Task<PublishSeriesResponse> PublishSeriesAsync(
             Shelf shelf,
             IEnumerable<Book> books,
-            uint edition,
+            uint? edition,
             SeriesUuid seriesUuid,
             CancellationToken cancellationToken) => PublishSeriesAsync(
                 shelf,
@@ -1817,15 +1847,15 @@ namespace Google.Example.Library.V1
         public virtual PublishSeriesResponse PublishSeries(
             Shelf shelf,
             IEnumerable<Book> books,
-            uint edition,
+            uint? edition,
             SeriesUuid seriesUuid,
             CallSettings callSettings = null) => PublishSeries(
                 new PublishSeriesRequest
                 {
-                    Shelf = shelf,
-                    Books = { books },
-                    Edition = edition,
-                    SeriesUuid = seriesUuid,
+                    Shelf = GaxPreconditions.CheckNotNull(shelf, nameof(shelf)),
+                    Books = { GaxPreconditions.CheckNotNull(books, nameof(books)) },
+                    Edition = edition ?? 0, // Optional
+                    SeriesUuid = GaxPreconditions.CheckNotNull(seriesUuid, nameof(seriesUuid)),
                 },
                 callSettings);
 
@@ -1884,7 +1914,7 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => GetBookAsync(
                 new GetBookRequest
                 {
-                    BookName = name,
+                    BookName = GaxPreconditions.CheckNotNull(name, nameof(name)),
                 },
                 callSettings);
 
@@ -1923,7 +1953,7 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => GetBook(
                 new GetBookRequest
                 {
-                    BookName = name,
+                    BookName = GaxPreconditions.CheckNotNull(name, nameof(name)),
                 },
                 callSettings);
 
@@ -1996,8 +2026,8 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => ListBooksAsync(
                 new ListBooksRequest
                 {
-                    ShelfName = name,
-                    Filter = filter,
+                    ShelfName = GaxPreconditions.CheckNotNull(name, nameof(name)),
+                    Filter = filter ?? "", // Optional
                     PageToken = pageToken ?? "",
                     PageSize = pageSize ?? 0,
                 },
@@ -2034,8 +2064,8 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => ListBooks(
                 new ListBooksRequest
                 {
-                    ShelfName = name,
-                    Filter = filter,
+                    ShelfName = GaxPreconditions.CheckNotNull(name, nameof(name)),
+                    Filter = filter ?? "", // Optional
                     PageToken = pageToken ?? "",
                     PageSize = pageSize ?? 0,
                 },
@@ -2096,7 +2126,7 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => DeleteBookAsync(
                 new DeleteBookRequest
                 {
-                    BookName = name,
+                    BookName = GaxPreconditions.CheckNotNull(name, nameof(name)),
                 },
                 callSettings);
 
@@ -2135,7 +2165,7 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => DeleteBook(
                 new DeleteBookRequest
                 {
-                    BookName = name,
+                    BookName = GaxPreconditions.CheckNotNull(name, nameof(name)),
                 },
                 callSettings);
 
@@ -2198,8 +2228,8 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => UpdateBookAsync(
                 new UpdateBookRequest
                 {
-                    BookName = name,
-                    Book = book,
+                    BookName = GaxPreconditions.CheckNotNull(name, nameof(name)),
+                    Book = GaxPreconditions.CheckNotNull(book, nameof(book)),
                 },
                 callSettings);
 
@@ -2247,8 +2277,8 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => UpdateBook(
                 new UpdateBookRequest
                 {
-                    BookName = name,
-                    Book = book,
+                    BookName = GaxPreconditions.CheckNotNull(name, nameof(name)),
+                    Book = GaxPreconditions.CheckNotNull(book, nameof(book)),
                 },
                 callSettings);
 
@@ -2281,10 +2311,10 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => UpdateBookAsync(
                 new UpdateBookRequest
                 {
-                    BookName = name,
-                    Book = book,
-                    UpdateMask = updateMask,
-                    PhysicalMask = physicalMask,
+                    BookName = GaxPreconditions.CheckNotNull(name, nameof(name)),
+                    Book = GaxPreconditions.CheckNotNull(book, nameof(book)),
+                    UpdateMask = updateMask, // Optional
+                    PhysicalMask = physicalMask, // Optional
                 },
                 callSettings);
 
@@ -2350,10 +2380,10 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => UpdateBook(
                 new UpdateBookRequest
                 {
-                    BookName = name,
-                    Book = book,
-                    UpdateMask = updateMask,
-                    PhysicalMask = physicalMask,
+                    BookName = GaxPreconditions.CheckNotNull(name, nameof(name)),
+                    Book = GaxPreconditions.CheckNotNull(book, nameof(book)),
+                    UpdateMask = updateMask, // Optional
+                    PhysicalMask = physicalMask, // Optional
                 },
                 callSettings);
 
@@ -2416,8 +2446,8 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => MoveBookAsync(
                 new MoveBookRequest
                 {
-                    BookName = name,
-                    OtherShelfNameAsShelfName = otherShelfName,
+                    BookName = GaxPreconditions.CheckNotNull(name, nameof(name)),
+                    OtherShelfNameAsShelfName = GaxPreconditions.CheckNotNull(otherShelfName, nameof(otherShelfName)),
                 },
                 callSettings);
 
@@ -2465,8 +2495,8 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => MoveBook(
                 new MoveBookRequest
                 {
-                    BookName = name,
-                    OtherShelfNameAsShelfName = otherShelfName,
+                    BookName = GaxPreconditions.CheckNotNull(name, nameof(name)),
+                    OtherShelfNameAsShelfName = GaxPreconditions.CheckNotNull(otherShelfName, nameof(otherShelfName)),
                 },
                 callSettings);
 
@@ -2531,7 +2561,6 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => ListStringsAsync(
                 new ListStringsRequest
                 {
-
                     PageToken = pageToken ?? "",
                     PageSize = pageSize ?? 0,
                 },
@@ -2560,7 +2589,6 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => ListStrings(
                 new ListStringsRequest
                 {
-
                     PageToken = pageToken ?? "",
                     PageSize = pageSize ?? 0,
                 },
@@ -2593,7 +2621,7 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => ListStringsAsync(
                 new ListStringsRequest
                 {
-                    AsResourceName = name,
+                    AsResourceName = name, // Optional
                     PageToken = pageToken ?? "",
                     PageSize = pageSize ?? 0,
                 },
@@ -2626,7 +2654,7 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => ListStrings(
                 new ListStringsRequest
                 {
-                    AsResourceName = name,
+                    AsResourceName = name, // Optional
                     PageToken = pageToken ?? "",
                     PageSize = pageSize ?? 0,
                 },
@@ -2691,8 +2719,8 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => AddCommentsAsync(
                 new AddCommentsRequest
                 {
-                    Name = name,
-                    Comments = { comments },
+                    Name = GaxPreconditions.CheckNotNullOrEmpty(name, nameof(name)),
+                    Comments = { GaxPreconditions.CheckNotNull(comments, nameof(comments)) },
                 },
                 callSettings);
 
@@ -2740,8 +2768,8 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => AddComments(
                 new AddCommentsRequest
                 {
-                    Name = name,
-                    Comments = { comments },
+                    Name = GaxPreconditions.CheckNotNullOrEmpty(name, nameof(name)),
+                    Comments = { GaxPreconditions.CheckNotNull(comments, nameof(comments)) },
                 },
                 callSettings);
 
@@ -2800,7 +2828,7 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => GetBookFromArchiveAsync(
                 new GetBookFromArchiveRequest
                 {
-                    ArchivedBookName = name,
+                    ArchivedBookName = GaxPreconditions.CheckNotNull(name, nameof(name)),
                 },
                 callSettings);
 
@@ -2839,7 +2867,7 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => GetBookFromArchive(
                 new GetBookFromArchiveRequest
                 {
-                    ArchivedBookName = name,
+                    ArchivedBookName = GaxPreconditions.CheckNotNull(name, nameof(name)),
                 },
                 callSettings);
 
@@ -2903,8 +2931,8 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => GetBookFromAnywhereAsync(
                 new GetBookFromAnywhereRequest
                 {
-                    BookNameOneof = name,
-                    AltBookNameAsBookNameOneof = BookNameOneof.From(altBookName),
+                    BookNameOneof = GaxPreconditions.CheckNotNull(name, nameof(name)),
+                    AltBookNameAsBookNameOneof = BookNameOneof.From(GaxPreconditions.CheckNotNull(altBookName, nameof(altBookName))),
                 },
                 callSettings);
 
@@ -2954,8 +2982,8 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => GetBookFromAnywhere(
                 new GetBookFromAnywhereRequest
                 {
-                    BookNameOneof = name,
-                    AltBookNameAsBookNameOneof = BookNameOneof.From(altBookName),
+                    BookNameOneof = GaxPreconditions.CheckNotNull(name, nameof(name)),
+                    AltBookNameAsBookNameOneof = BookNameOneof.From(GaxPreconditions.CheckNotNull(altBookName, nameof(altBookName))),
                 },
                 callSettings);
 
@@ -3022,9 +3050,9 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => UpdateBookIndexAsync(
                 new UpdateBookIndexRequest
                 {
-                    BookName = name,
-                    IndexName = indexName,
-                    IndexMap = { indexMap },
+                    BookName = GaxPreconditions.CheckNotNull(name, nameof(name)),
+                    IndexName = GaxPreconditions.CheckNotNullOrEmpty(indexName, nameof(indexName)),
+                    IndexMap = { GaxPreconditions.CheckNotNull(indexMap, nameof(indexMap)) },
                 },
                 callSettings);
 
@@ -3081,9 +3109,9 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => UpdateBookIndex(
                 new UpdateBookIndexRequest
                 {
-                    BookName = name,
-                    IndexName = indexName,
-                    IndexMap = { indexMap },
+                    BookName = GaxPreconditions.CheckNotNull(name, nameof(name)),
+                    IndexName = GaxPreconditions.CheckNotNullOrEmpty(indexName, nameof(indexName)),
+                    IndexMap = { GaxPreconditions.CheckNotNull(indexMap, nameof(indexMap)) },
                 },
                 callSettings);
 
@@ -3183,8 +3211,8 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => FindRelatedBooksAsync(
                 new FindRelatedBooksRequest
                 {
-                    BookNames = { names },
-                    ShelvesAsShelfNames = { shelves },
+                    BookNames = { GaxPreconditions.CheckNotNull(names, nameof(names)) },
+                    ShelvesAsShelfNames = { GaxPreconditions.CheckNotNull(shelves, nameof(shelves)) },
                     PageToken = pageToken ?? "",
                     PageSize = pageSize ?? 0,
                 },
@@ -3221,8 +3249,8 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => FindRelatedBooks(
                 new FindRelatedBooksRequest
                 {
-                    BookNames = { names },
-                    ShelvesAsShelfNames = { shelves },
+                    BookNames = { GaxPreconditions.CheckNotNull(names, nameof(names)) },
+                    ShelvesAsShelfNames = { GaxPreconditions.CheckNotNull(shelves, nameof(shelves)) },
                     PageToken = pageToken ?? "",
                     PageSize = pageSize ?? 0,
                 },
@@ -3289,8 +3317,8 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => AddTagAsync(
                 new AddTagRequest
                 {
-                    Resource = resource,
-                    Tag = tag,
+                    Resource = GaxPreconditions.CheckNotNullOrEmpty(resource, nameof(resource)),
+                    Tag = GaxPreconditions.CheckNotNullOrEmpty(tag, nameof(tag)),
                 },
                 callSettings);
 
@@ -3342,8 +3370,8 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => AddTag(
                 new AddTagRequest
                 {
-                    Resource = resource,
-                    Tag = tag,
+                    Resource = GaxPreconditions.CheckNotNullOrEmpty(resource, nameof(resource)),
+                    Tag = GaxPreconditions.CheckNotNullOrEmpty(tag, nameof(tag)),
                 },
                 callSettings);
 
@@ -3408,8 +3436,8 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => AddLabelAsync(
                 new AddLabelRequest
                 {
-                    Resource = resource,
-                    Label = label,
+                    Resource = GaxPreconditions.CheckNotNullOrEmpty(resource, nameof(resource)),
+                    Label = GaxPreconditions.CheckNotNullOrEmpty(label, nameof(label)),
                 },
                 callSettings);
 
@@ -3461,8 +3489,8 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null) => AddLabel(
                 new AddLabelRequest
                 {
-                    Resource = resource,
-                    Label = label,
+                    Resource = GaxPreconditions.CheckNotNullOrEmpty(resource, nameof(resource)),
+                    Label = GaxPreconditions.CheckNotNullOrEmpty(label, nameof(label)),
                 },
                 callSettings);
 
@@ -3516,12 +3544,12 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A Task containing the RPC response.
         /// </returns>
-        public virtual Task<Operation<Book>> GetBigBookAsync(
+        public virtual Task<Operation<Book, GetBigBookMetadata>> GetBigBookAsync(
             BookName name,
             CallSettings callSettings = null) => GetBigBookAsync(
                 new GetBookRequest
                 {
-                    BookName = name,
+                    BookName = GaxPreconditions.CheckNotNull(name, nameof(name)),
                 },
                 callSettings);
 
@@ -3537,13 +3565,10 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A Task containing the RPC response.
         /// </returns>
-        public virtual Task<Operation<Book>> GetBigBookAsync(
+        public virtual Task<Operation<Book, GetBigBookMetadata>> GetBigBookAsync(
             BookName name,
             CancellationToken cancellationToken) => GetBigBookAsync(
-                new GetBookRequest
-                {
-                    BookName = name,
-                },
+                name,
                 CallSettings.FromCancellationToken(cancellationToken));
 
         /// <summary>
@@ -3558,12 +3583,12 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// The RPC response.
         /// </returns>
-        public virtual Operation<Book> GetBigBook(
+        public virtual Operation<Book, GetBigBookMetadata> GetBigBook(
             BookName name,
             CallSettings callSettings = null) => GetBigBook(
                 new GetBookRequest
                 {
-                    BookName = name,
+                    BookName = GaxPreconditions.CheckNotNull(name, nameof(name)),
                 },
                 callSettings);
 
@@ -3579,7 +3604,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A Task containing the RPC response.
         /// </returns>
-        public virtual Task<Operation<Book>> GetBigBookAsync(
+        public virtual Task<Operation<Book, GetBigBookMetadata>> GetBigBookAsync(
             GetBookRequest request,
             CallSettings callSettings = null)
         {
@@ -3592,9 +3617,9 @@ namespace Google.Example.Library.V1
         /// <param name="operationName">The name of a previously invoked operation. Must not be <c>null</c> or empty.</param>
         /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
         /// <returns>A task representing the result of polling the operation.</returns>
-        public virtual Task<Operation<Book>> PollOnceGetBigBookAsync(
+        public virtual Task<Operation<Book, GetBigBookMetadata>> PollOnceGetBigBookAsync(
             string operationName,
-            CallSettings callSettings = null) => Operation<Book>.PollOnceFromNameAsync(
+            CallSettings callSettings = null) => Operation<Book, GetBigBookMetadata>.PollOnceFromNameAsync(
                 GaxPreconditions.CheckNotNullOrEmpty(operationName, nameof(operationName)),
                 LongRunningOperationsClient,
                 callSettings);
@@ -3611,7 +3636,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// The RPC response.
         /// </returns>
-        public virtual Operation<Book> GetBigBook(
+        public virtual Operation<Book, GetBigBookMetadata> GetBigBook(
             GetBookRequest request,
             CallSettings callSettings = null)
         {
@@ -3624,9 +3649,9 @@ namespace Google.Example.Library.V1
         /// <param name="operationName">The name of a previously invoked operation. Must not be <c>null</c> or empty.</param>
         /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
         /// <returns>The result of polling the operation.</returns>
-        public virtual Operation<Book> PollOnceGetBigBook(
+        public virtual Operation<Book, GetBigBookMetadata> PollOnceGetBigBook(
             string operationName,
-            CallSettings callSettings = null) => Operation<Book>.PollOnceFromName(
+            CallSettings callSettings = null) => Operation<Book, GetBigBookMetadata>.PollOnceFromName(
                 GaxPreconditions.CheckNotNullOrEmpty(operationName, nameof(operationName)),
                 LongRunningOperationsClient,
                 callSettings);
@@ -3643,12 +3668,12 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A Task containing the RPC response.
         /// </returns>
-        public virtual Task<Operation<Empty>> GetBigNothingAsync(
+        public virtual Task<Operation<Empty, GetBigBookMetadata>> GetBigNothingAsync(
             BookName name,
             CallSettings callSettings = null) => GetBigNothingAsync(
                 new GetBookRequest
                 {
-                    BookName = name,
+                    BookName = GaxPreconditions.CheckNotNull(name, nameof(name)),
                 },
                 callSettings);
 
@@ -3664,13 +3689,10 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A Task containing the RPC response.
         /// </returns>
-        public virtual Task<Operation<Empty>> GetBigNothingAsync(
+        public virtual Task<Operation<Empty, GetBigBookMetadata>> GetBigNothingAsync(
             BookName name,
             CancellationToken cancellationToken) => GetBigNothingAsync(
-                new GetBookRequest
-                {
-                    BookName = name,
-                },
+                name,
                 CallSettings.FromCancellationToken(cancellationToken));
 
         /// <summary>
@@ -3685,12 +3707,12 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// The RPC response.
         /// </returns>
-        public virtual Operation<Empty> GetBigNothing(
+        public virtual Operation<Empty, GetBigBookMetadata> GetBigNothing(
             BookName name,
             CallSettings callSettings = null) => GetBigNothing(
                 new GetBookRequest
                 {
-                    BookName = name,
+                    BookName = GaxPreconditions.CheckNotNull(name, nameof(name)),
                 },
                 callSettings);
 
@@ -3706,7 +3728,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A Task containing the RPC response.
         /// </returns>
-        public virtual Task<Operation<Empty>> GetBigNothingAsync(
+        public virtual Task<Operation<Empty, GetBigBookMetadata>> GetBigNothingAsync(
             GetBookRequest request,
             CallSettings callSettings = null)
         {
@@ -3719,9 +3741,9 @@ namespace Google.Example.Library.V1
         /// <param name="operationName">The name of a previously invoked operation. Must not be <c>null</c> or empty.</param>
         /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
         /// <returns>A task representing the result of polling the operation.</returns>
-        public virtual Task<Operation<Empty>> PollOnceGetBigNothingAsync(
+        public virtual Task<Operation<Empty, GetBigBookMetadata>> PollOnceGetBigNothingAsync(
             string operationName,
-            CallSettings callSettings = null) => Operation<Empty>.PollOnceFromNameAsync(
+            CallSettings callSettings = null) => Operation<Empty, GetBigBookMetadata>.PollOnceFromNameAsync(
                 GaxPreconditions.CheckNotNullOrEmpty(operationName, nameof(operationName)),
                 LongRunningOperationsClient,
                 callSettings);
@@ -3738,7 +3760,7 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// The RPC response.
         /// </returns>
-        public virtual Operation<Empty> GetBigNothing(
+        public virtual Operation<Empty, GetBigBookMetadata> GetBigNothing(
             GetBookRequest request,
             CallSettings callSettings = null)
         {
@@ -3751,12 +3773,950 @@ namespace Google.Example.Library.V1
         /// <param name="operationName">The name of a previously invoked operation. Must not be <c>null</c> or empty.</param>
         /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
         /// <returns>The result of polling the operation.</returns>
-        public virtual Operation<Empty> PollOnceGetBigNothing(
+        public virtual Operation<Empty, GetBigBookMetadata> PollOnceGetBigNothing(
             string operationName,
-            CallSettings callSettings = null) => Operation<Empty>.PollOnceFromName(
+            CallSettings callSettings = null) => Operation<Empty, GetBigBookMetadata>.PollOnceFromName(
                 GaxPreconditions.CheckNotNullOrEmpty(operationName, nameof(operationName)),
                 LongRunningOperationsClient,
                 callSettings);
+
+        /// <summary>
+        /// Test optional flattening parameters of all types
+        /// </summary>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual Task<TestOptionalRequiredFlatteningParamsResponse> TestOptionalRequiredFlatteningParamsAsync(
+            CallSettings callSettings = null) => TestOptionalRequiredFlatteningParamsAsync(
+                new TestOptionalRequiredFlatteningParamsRequest
+                {
+                },
+                callSettings);
+
+        /// <summary>
+        /// Test optional flattening parameters of all types
+        /// </summary>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual Task<TestOptionalRequiredFlatteningParamsResponse> TestOptionalRequiredFlatteningParamsAsync(
+            CancellationToken cancellationToken) => TestOptionalRequiredFlatteningParamsAsync(
+                CallSettings.FromCancellationToken(cancellationToken));
+
+        /// <summary>
+        /// Test optional flattening parameters of all types
+        /// </summary>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public virtual TestOptionalRequiredFlatteningParamsResponse TestOptionalRequiredFlatteningParams(
+            CallSettings callSettings = null) => TestOptionalRequiredFlatteningParams(
+                new TestOptionalRequiredFlatteningParamsRequest
+                {
+                },
+                callSettings);
+
+        /// <summary>
+        /// Test optional flattening parameters of all types
+        /// </summary>
+        /// <param name="requiredSingularInt32">
+        ///
+        /// </param>
+        /// <param name="requiredSingularInt64">
+        ///
+        /// </param>
+        /// <param name="requiredSingularFloat">
+        ///
+        /// </param>
+        /// <param name="requiredSingularDouble">
+        ///
+        /// </param>
+        /// <param name="requiredSingularBool">
+        ///
+        /// </param>
+        /// <param name="requiredSingularEnum">
+        ///
+        /// </param>
+        /// <param name="requiredSingularString">
+        ///
+        /// </param>
+        /// <param name="requiredSingularBytes">
+        ///
+        /// </param>
+        /// <param name="requiredSingularMessage">
+        ///
+        /// </param>
+        /// <param name="requiredSingularResourceName">
+        ///
+        /// </param>
+        /// <param name="requiredSingularResourceNameOneof">
+        ///
+        /// </param>
+        /// <param name="requiredSingularFixed32">
+        ///
+        /// </param>
+        /// <param name="requiredSingularFixed64">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedInt32">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedInt64">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedFloat">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedDouble">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedBool">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedEnum">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedString">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedBytes">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedMessage">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedResourceName">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedResourceNameOneof">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedFixed32">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedFixed64">
+        ///
+        /// </param>
+        /// <param name="requiredMap">
+        ///
+        /// </param>
+        /// <param name="optionalSingularInt32">
+        ///
+        /// </param>
+        /// <param name="optionalSingularInt64">
+        ///
+        /// </param>
+        /// <param name="optionalSingularFloat">
+        ///
+        /// </param>
+        /// <param name="optionalSingularDouble">
+        ///
+        /// </param>
+        /// <param name="optionalSingularBool">
+        ///
+        /// </param>
+        /// <param name="optionalSingularEnum">
+        ///
+        /// </param>
+        /// <param name="optionalSingularString">
+        ///
+        /// </param>
+        /// <param name="optionalSingularBytes">
+        ///
+        /// </param>
+        /// <param name="optionalSingularMessage">
+        ///
+        /// </param>
+        /// <param name="optionalSingularResourceName">
+        ///
+        /// </param>
+        /// <param name="optionalSingularResourceNameOneof">
+        ///
+        /// </param>
+        /// <param name="optionalSingularFixed32">
+        ///
+        /// </param>
+        /// <param name="optionalSingularFixed64">
+        ///
+        /// </param>
+        /// <param name="optionalRepeatedInt32">
+        ///
+        /// </param>
+        /// <param name="optionalRepeatedInt64">
+        ///
+        /// </param>
+        /// <param name="optionalRepeatedFloat">
+        ///
+        /// </param>
+        /// <param name="optionalRepeatedDouble">
+        ///
+        /// </param>
+        /// <param name="optionalRepeatedBool">
+        ///
+        /// </param>
+        /// <param name="optionalRepeatedEnum">
+        ///
+        /// </param>
+        /// <param name="optionalRepeatedString">
+        ///
+        /// </param>
+        /// <param name="optionalRepeatedBytes">
+        ///
+        /// </param>
+        /// <param name="optionalRepeatedMessage">
+        ///
+        /// </param>
+        /// <param name="optionalRepeatedResourceName">
+        ///
+        /// </param>
+        /// <param name="optionalRepeatedResourceNameOneof">
+        ///
+        /// </param>
+        /// <param name="optionalRepeatedFixed32">
+        ///
+        /// </param>
+        /// <param name="optionalRepeatedFixed64">
+        ///
+        /// </param>
+        /// <param name="optionalMap">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual Task<TestOptionalRequiredFlatteningParamsResponse> TestOptionalRequiredFlatteningParamsAsync(
+            int requiredSingularInt32,
+            long requiredSingularInt64,
+            float requiredSingularFloat,
+            double requiredSingularDouble,
+            bool requiredSingularBool,
+            TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum requiredSingularEnum,
+            string requiredSingularString,
+            ByteString requiredSingularBytes,
+            TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage requiredSingularMessage,
+            BookName requiredSingularResourceName,
+            BookNameOneof requiredSingularResourceNameOneof,
+            int requiredSingularFixed32,
+            long requiredSingularFixed64,
+            IEnumerable<int> requiredRepeatedInt32,
+            IEnumerable<long> requiredRepeatedInt64,
+            IEnumerable<float> requiredRepeatedFloat,
+            IEnumerable<double> requiredRepeatedDouble,
+            IEnumerable<bool> requiredRepeatedBool,
+            IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum> requiredRepeatedEnum,
+            IEnumerable<string> requiredRepeatedString,
+            IEnumerable<ByteString> requiredRepeatedBytes,
+            IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage> requiredRepeatedMessage,
+            IEnumerable<BookName> requiredRepeatedResourceName,
+            IEnumerable<BookNameOneof> requiredRepeatedResourceNameOneof,
+            IEnumerable<int> requiredRepeatedFixed32,
+            IEnumerable<long> requiredRepeatedFixed64,
+            IDictionary<int, string> requiredMap,
+            int? optionalSingularInt32,
+            long? optionalSingularInt64,
+            float? optionalSingularFloat,
+            double? optionalSingularDouble,
+            bool? optionalSingularBool,
+            TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum? optionalSingularEnum,
+            string optionalSingularString,
+            ByteString optionalSingularBytes,
+            TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage optionalSingularMessage,
+            BookName optionalSingularResourceName,
+            BookNameOneof optionalSingularResourceNameOneof,
+            int? optionalSingularFixed32,
+            long? optionalSingularFixed64,
+            IEnumerable<int> optionalRepeatedInt32,
+            IEnumerable<long> optionalRepeatedInt64,
+            IEnumerable<float> optionalRepeatedFloat,
+            IEnumerable<double> optionalRepeatedDouble,
+            IEnumerable<bool> optionalRepeatedBool,
+            IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum> optionalRepeatedEnum,
+            IEnumerable<string> optionalRepeatedString,
+            IEnumerable<ByteString> optionalRepeatedBytes,
+            IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage> optionalRepeatedMessage,
+            IEnumerable<BookName> optionalRepeatedResourceName,
+            IEnumerable<BookNameOneof> optionalRepeatedResourceNameOneof,
+            IEnumerable<int> optionalRepeatedFixed32,
+            IEnumerable<long> optionalRepeatedFixed64,
+            IDictionary<int, string> optionalMap,
+            CallSettings callSettings = null) => TestOptionalRequiredFlatteningParamsAsync(
+                new TestOptionalRequiredFlatteningParamsRequest
+                {
+                    RequiredSingularInt32 = requiredSingularInt32,
+                    RequiredSingularInt64 = requiredSingularInt64,
+                    RequiredSingularFloat = requiredSingularFloat,
+                    RequiredSingularDouble = requiredSingularDouble,
+                    RequiredSingularBool = requiredSingularBool,
+                    RequiredSingularEnum = requiredSingularEnum,
+                    RequiredSingularString = GaxPreconditions.CheckNotNullOrEmpty(requiredSingularString, nameof(requiredSingularString)),
+                    RequiredSingularBytes = GaxPreconditions.CheckNotNull(requiredSingularBytes, nameof(requiredSingularBytes)),
+                    RequiredSingularMessage = GaxPreconditions.CheckNotNull(requiredSingularMessage, nameof(requiredSingularMessage)),
+                    RequiredSingularResourceNameAsBookName = GaxPreconditions.CheckNotNull(requiredSingularResourceName, nameof(requiredSingularResourceName)),
+                    RequiredSingularResourceNameOneofAsBookNameOneof = GaxPreconditions.CheckNotNull(requiredSingularResourceNameOneof, nameof(requiredSingularResourceNameOneof)),
+                    RequiredSingularFixed32 = requiredSingularFixed32,
+                    RequiredSingularFixed64 = requiredSingularFixed64,
+                    RequiredRepeatedInt32 = { GaxPreconditions.CheckNotNull(requiredRepeatedInt32, nameof(requiredRepeatedInt32)) },
+                    RequiredRepeatedInt64 = { GaxPreconditions.CheckNotNull(requiredRepeatedInt64, nameof(requiredRepeatedInt64)) },
+                    RequiredRepeatedFloat = { GaxPreconditions.CheckNotNull(requiredRepeatedFloat, nameof(requiredRepeatedFloat)) },
+                    RequiredRepeatedDouble = { GaxPreconditions.CheckNotNull(requiredRepeatedDouble, nameof(requiredRepeatedDouble)) },
+                    RequiredRepeatedBool = { GaxPreconditions.CheckNotNull(requiredRepeatedBool, nameof(requiredRepeatedBool)) },
+                    RequiredRepeatedEnum = { GaxPreconditions.CheckNotNull(requiredRepeatedEnum, nameof(requiredRepeatedEnum)) },
+                    RequiredRepeatedString = { GaxPreconditions.CheckNotNull(requiredRepeatedString, nameof(requiredRepeatedString)) },
+                    RequiredRepeatedBytes = { GaxPreconditions.CheckNotNull(requiredRepeatedBytes, nameof(requiredRepeatedBytes)) },
+                    RequiredRepeatedMessage = { GaxPreconditions.CheckNotNull(requiredRepeatedMessage, nameof(requiredRepeatedMessage)) },
+                    RequiredRepeatedResourceNameAsBookNames = { GaxPreconditions.CheckNotNull(requiredRepeatedResourceName, nameof(requiredRepeatedResourceName)) },
+                    RequiredRepeatedResourceNameOneofAsBookNameOneofs = { GaxPreconditions.CheckNotNull(requiredRepeatedResourceNameOneof, nameof(requiredRepeatedResourceNameOneof)) },
+                    RequiredRepeatedFixed32 = { GaxPreconditions.CheckNotNull(requiredRepeatedFixed32, nameof(requiredRepeatedFixed32)) },
+                    RequiredRepeatedFixed64 = { GaxPreconditions.CheckNotNull(requiredRepeatedFixed64, nameof(requiredRepeatedFixed64)) },
+                    RequiredMap = { GaxPreconditions.CheckNotNull(requiredMap, nameof(requiredMap)) },
+                    OptionalSingularInt32 = optionalSingularInt32 ?? 0, // Optional
+                    OptionalSingularInt64 = optionalSingularInt64 ?? 0L, // Optional
+                    OptionalSingularFloat = optionalSingularFloat ?? 0.0f, // Optional
+                    OptionalSingularDouble = optionalSingularDouble ?? 0.0, // Optional
+                    OptionalSingularBool = optionalSingularBool ?? false, // Optional
+                    OptionalSingularEnum = optionalSingularEnum ?? TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum.Zero, // Optional
+                    OptionalSingularString = optionalSingularString ?? "", // Optional
+                    OptionalSingularBytes = optionalSingularBytes ?? ByteString.Empty, // Optional
+                    OptionalSingularMessage = optionalSingularMessage, // Optional
+                    OptionalSingularResourceNameAsBookName = optionalSingularResourceName, // Optional
+                    OptionalSingularResourceNameOneofAsBookNameOneof = optionalSingularResourceNameOneof, // Optional
+                    OptionalSingularFixed32 = optionalSingularFixed32 ?? 0, // Optional
+                    OptionalSingularFixed64 = optionalSingularFixed64 ?? 0L, // Optional
+                    OptionalRepeatedInt32 = { optionalRepeatedInt32 ?? Enumerable.Empty<int>() }, // Optional
+                    OptionalRepeatedInt64 = { optionalRepeatedInt64 ?? Enumerable.Empty<long>() }, // Optional
+                    OptionalRepeatedFloat = { optionalRepeatedFloat ?? Enumerable.Empty<float>() }, // Optional
+                    OptionalRepeatedDouble = { optionalRepeatedDouble ?? Enumerable.Empty<double>() }, // Optional
+                    OptionalRepeatedBool = { optionalRepeatedBool ?? Enumerable.Empty<bool>() }, // Optional
+                    OptionalRepeatedEnum = { optionalRepeatedEnum ?? Enumerable.Empty<TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum>() }, // Optional
+                    OptionalRepeatedString = { optionalRepeatedString ?? Enumerable.Empty<string>() }, // Optional
+                    OptionalRepeatedBytes = { optionalRepeatedBytes ?? Enumerable.Empty<ByteString>() }, // Optional
+                    OptionalRepeatedMessage = { optionalRepeatedMessage ?? Enumerable.Empty<TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage>() }, // Optional
+                    OptionalRepeatedResourceNameAsBookNames = { optionalRepeatedResourceName ?? Enumerable.Empty<BookName>() }, // Optional
+                    OptionalRepeatedResourceNameOneofAsBookNameOneofs = { optionalRepeatedResourceNameOneof ?? Enumerable.Empty<BookNameOneof>() }, // Optional
+                    OptionalRepeatedFixed32 = { optionalRepeatedFixed32 ?? Enumerable.Empty<int>() }, // Optional
+                    OptionalRepeatedFixed64 = { optionalRepeatedFixed64 ?? Enumerable.Empty<long>() }, // Optional
+                    OptionalMap = { optionalMap ?? EmptyDictionary<int, string>.Instance }, // Optional
+                },
+                callSettings);
+
+        /// <summary>
+        /// Test optional flattening parameters of all types
+        /// </summary>
+        /// <param name="requiredSingularInt32">
+        ///
+        /// </param>
+        /// <param name="requiredSingularInt64">
+        ///
+        /// </param>
+        /// <param name="requiredSingularFloat">
+        ///
+        /// </param>
+        /// <param name="requiredSingularDouble">
+        ///
+        /// </param>
+        /// <param name="requiredSingularBool">
+        ///
+        /// </param>
+        /// <param name="requiredSingularEnum">
+        ///
+        /// </param>
+        /// <param name="requiredSingularString">
+        ///
+        /// </param>
+        /// <param name="requiredSingularBytes">
+        ///
+        /// </param>
+        /// <param name="requiredSingularMessage">
+        ///
+        /// </param>
+        /// <param name="requiredSingularResourceName">
+        ///
+        /// </param>
+        /// <param name="requiredSingularResourceNameOneof">
+        ///
+        /// </param>
+        /// <param name="requiredSingularFixed32">
+        ///
+        /// </param>
+        /// <param name="requiredSingularFixed64">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedInt32">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedInt64">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedFloat">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedDouble">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedBool">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedEnum">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedString">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedBytes">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedMessage">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedResourceName">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedResourceNameOneof">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedFixed32">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedFixed64">
+        ///
+        /// </param>
+        /// <param name="requiredMap">
+        ///
+        /// </param>
+        /// <param name="optionalSingularInt32">
+        ///
+        /// </param>
+        /// <param name="optionalSingularInt64">
+        ///
+        /// </param>
+        /// <param name="optionalSingularFloat">
+        ///
+        /// </param>
+        /// <param name="optionalSingularDouble">
+        ///
+        /// </param>
+        /// <param name="optionalSingularBool">
+        ///
+        /// </param>
+        /// <param name="optionalSingularEnum">
+        ///
+        /// </param>
+        /// <param name="optionalSingularString">
+        ///
+        /// </param>
+        /// <param name="optionalSingularBytes">
+        ///
+        /// </param>
+        /// <param name="optionalSingularMessage">
+        ///
+        /// </param>
+        /// <param name="optionalSingularResourceName">
+        ///
+        /// </param>
+        /// <param name="optionalSingularResourceNameOneof">
+        ///
+        /// </param>
+        /// <param name="optionalSingularFixed32">
+        ///
+        /// </param>
+        /// <param name="optionalSingularFixed64">
+        ///
+        /// </param>
+        /// <param name="optionalRepeatedInt32">
+        ///
+        /// </param>
+        /// <param name="optionalRepeatedInt64">
+        ///
+        /// </param>
+        /// <param name="optionalRepeatedFloat">
+        ///
+        /// </param>
+        /// <param name="optionalRepeatedDouble">
+        ///
+        /// </param>
+        /// <param name="optionalRepeatedBool">
+        ///
+        /// </param>
+        /// <param name="optionalRepeatedEnum">
+        ///
+        /// </param>
+        /// <param name="optionalRepeatedString">
+        ///
+        /// </param>
+        /// <param name="optionalRepeatedBytes">
+        ///
+        /// </param>
+        /// <param name="optionalRepeatedMessage">
+        ///
+        /// </param>
+        /// <param name="optionalRepeatedResourceName">
+        ///
+        /// </param>
+        /// <param name="optionalRepeatedResourceNameOneof">
+        ///
+        /// </param>
+        /// <param name="optionalRepeatedFixed32">
+        ///
+        /// </param>
+        /// <param name="optionalRepeatedFixed64">
+        ///
+        /// </param>
+        /// <param name="optionalMap">
+        ///
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual Task<TestOptionalRequiredFlatteningParamsResponse> TestOptionalRequiredFlatteningParamsAsync(
+            int requiredSingularInt32,
+            long requiredSingularInt64,
+            float requiredSingularFloat,
+            double requiredSingularDouble,
+            bool requiredSingularBool,
+            TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum requiredSingularEnum,
+            string requiredSingularString,
+            ByteString requiredSingularBytes,
+            TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage requiredSingularMessage,
+            BookName requiredSingularResourceName,
+            BookNameOneof requiredSingularResourceNameOneof,
+            int requiredSingularFixed32,
+            long requiredSingularFixed64,
+            IEnumerable<int> requiredRepeatedInt32,
+            IEnumerable<long> requiredRepeatedInt64,
+            IEnumerable<float> requiredRepeatedFloat,
+            IEnumerable<double> requiredRepeatedDouble,
+            IEnumerable<bool> requiredRepeatedBool,
+            IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum> requiredRepeatedEnum,
+            IEnumerable<string> requiredRepeatedString,
+            IEnumerable<ByteString> requiredRepeatedBytes,
+            IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage> requiredRepeatedMessage,
+            IEnumerable<BookName> requiredRepeatedResourceName,
+            IEnumerable<BookNameOneof> requiredRepeatedResourceNameOneof,
+            IEnumerable<int> requiredRepeatedFixed32,
+            IEnumerable<long> requiredRepeatedFixed64,
+            IDictionary<int, string> requiredMap,
+            int? optionalSingularInt32,
+            long? optionalSingularInt64,
+            float? optionalSingularFloat,
+            double? optionalSingularDouble,
+            bool? optionalSingularBool,
+            TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum? optionalSingularEnum,
+            string optionalSingularString,
+            ByteString optionalSingularBytes,
+            TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage optionalSingularMessage,
+            BookName optionalSingularResourceName,
+            BookNameOneof optionalSingularResourceNameOneof,
+            int? optionalSingularFixed32,
+            long? optionalSingularFixed64,
+            IEnumerable<int> optionalRepeatedInt32,
+            IEnumerable<long> optionalRepeatedInt64,
+            IEnumerable<float> optionalRepeatedFloat,
+            IEnumerable<double> optionalRepeatedDouble,
+            IEnumerable<bool> optionalRepeatedBool,
+            IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum> optionalRepeatedEnum,
+            IEnumerable<string> optionalRepeatedString,
+            IEnumerable<ByteString> optionalRepeatedBytes,
+            IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage> optionalRepeatedMessage,
+            IEnumerable<BookName> optionalRepeatedResourceName,
+            IEnumerable<BookNameOneof> optionalRepeatedResourceNameOneof,
+            IEnumerable<int> optionalRepeatedFixed32,
+            IEnumerable<long> optionalRepeatedFixed64,
+            IDictionary<int, string> optionalMap,
+            CancellationToken cancellationToken) => TestOptionalRequiredFlatteningParamsAsync(
+                requiredSingularInt32,
+                requiredSingularInt64,
+                requiredSingularFloat,
+                requiredSingularDouble,
+                requiredSingularBool,
+                requiredSingularEnum,
+                requiredSingularString,
+                requiredSingularBytes,
+                requiredSingularMessage,
+                requiredSingularResourceName,
+                requiredSingularResourceNameOneof,
+                requiredSingularFixed32,
+                requiredSingularFixed64,
+                requiredRepeatedInt32,
+                requiredRepeatedInt64,
+                requiredRepeatedFloat,
+                requiredRepeatedDouble,
+                requiredRepeatedBool,
+                requiredRepeatedEnum,
+                requiredRepeatedString,
+                requiredRepeatedBytes,
+                requiredRepeatedMessage,
+                requiredRepeatedResourceName,
+                requiredRepeatedResourceNameOneof,
+                requiredRepeatedFixed32,
+                requiredRepeatedFixed64,
+                requiredMap,
+                optionalSingularInt32,
+                optionalSingularInt64,
+                optionalSingularFloat,
+                optionalSingularDouble,
+                optionalSingularBool,
+                optionalSingularEnum,
+                optionalSingularString,
+                optionalSingularBytes,
+                optionalSingularMessage,
+                optionalSingularResourceName,
+                optionalSingularResourceNameOneof,
+                optionalSingularFixed32,
+                optionalSingularFixed64,
+                optionalRepeatedInt32,
+                optionalRepeatedInt64,
+                optionalRepeatedFloat,
+                optionalRepeatedDouble,
+                optionalRepeatedBool,
+                optionalRepeatedEnum,
+                optionalRepeatedString,
+                optionalRepeatedBytes,
+                optionalRepeatedMessage,
+                optionalRepeatedResourceName,
+                optionalRepeatedResourceNameOneof,
+                optionalRepeatedFixed32,
+                optionalRepeatedFixed64,
+                optionalMap,
+                CallSettings.FromCancellationToken(cancellationToken));
+
+        /// <summary>
+        /// Test optional flattening parameters of all types
+        /// </summary>
+        /// <param name="requiredSingularInt32">
+        ///
+        /// </param>
+        /// <param name="requiredSingularInt64">
+        ///
+        /// </param>
+        /// <param name="requiredSingularFloat">
+        ///
+        /// </param>
+        /// <param name="requiredSingularDouble">
+        ///
+        /// </param>
+        /// <param name="requiredSingularBool">
+        ///
+        /// </param>
+        /// <param name="requiredSingularEnum">
+        ///
+        /// </param>
+        /// <param name="requiredSingularString">
+        ///
+        /// </param>
+        /// <param name="requiredSingularBytes">
+        ///
+        /// </param>
+        /// <param name="requiredSingularMessage">
+        ///
+        /// </param>
+        /// <param name="requiredSingularResourceName">
+        ///
+        /// </param>
+        /// <param name="requiredSingularResourceNameOneof">
+        ///
+        /// </param>
+        /// <param name="requiredSingularFixed32">
+        ///
+        /// </param>
+        /// <param name="requiredSingularFixed64">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedInt32">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedInt64">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedFloat">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedDouble">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedBool">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedEnum">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedString">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedBytes">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedMessage">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedResourceName">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedResourceNameOneof">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedFixed32">
+        ///
+        /// </param>
+        /// <param name="requiredRepeatedFixed64">
+        ///
+        /// </param>
+        /// <param name="requiredMap">
+        ///
+        /// </param>
+        /// <param name="optionalSingularInt32">
+        ///
+        /// </param>
+        /// <param name="optionalSingularInt64">
+        ///
+        /// </param>
+        /// <param name="optionalSingularFloat">
+        ///
+        /// </param>
+        /// <param name="optionalSingularDouble">
+        ///
+        /// </param>
+        /// <param name="optionalSingularBool">
+        ///
+        /// </param>
+        /// <param name="optionalSingularEnum">
+        ///
+        /// </param>
+        /// <param name="optionalSingularString">
+        ///
+        /// </param>
+        /// <param name="optionalSingularBytes">
+        ///
+        /// </param>
+        /// <param name="optionalSingularMessage">
+        ///
+        /// </param>
+        /// <param name="optionalSingularResourceName">
+        ///
+        /// </param>
+        /// <param name="optionalSingularResourceNameOneof">
+        ///
+        /// </param>
+        /// <param name="optionalSingularFixed32">
+        ///
+        /// </param>
+        /// <param name="optionalSingularFixed64">
+        ///
+        /// </param>
+        /// <param name="optionalRepeatedInt32">
+        ///
+        /// </param>
+        /// <param name="optionalRepeatedInt64">
+        ///
+        /// </param>
+        /// <param name="optionalRepeatedFloat">
+        ///
+        /// </param>
+        /// <param name="optionalRepeatedDouble">
+        ///
+        /// </param>
+        /// <param name="optionalRepeatedBool">
+        ///
+        /// </param>
+        /// <param name="optionalRepeatedEnum">
+        ///
+        /// </param>
+        /// <param name="optionalRepeatedString">
+        ///
+        /// </param>
+        /// <param name="optionalRepeatedBytes">
+        ///
+        /// </param>
+        /// <param name="optionalRepeatedMessage">
+        ///
+        /// </param>
+        /// <param name="optionalRepeatedResourceName">
+        ///
+        /// </param>
+        /// <param name="optionalRepeatedResourceNameOneof">
+        ///
+        /// </param>
+        /// <param name="optionalRepeatedFixed32">
+        ///
+        /// </param>
+        /// <param name="optionalRepeatedFixed64">
+        ///
+        /// </param>
+        /// <param name="optionalMap">
+        ///
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public virtual TestOptionalRequiredFlatteningParamsResponse TestOptionalRequiredFlatteningParams(
+            int requiredSingularInt32,
+            long requiredSingularInt64,
+            float requiredSingularFloat,
+            double requiredSingularDouble,
+            bool requiredSingularBool,
+            TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum requiredSingularEnum,
+            string requiredSingularString,
+            ByteString requiredSingularBytes,
+            TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage requiredSingularMessage,
+            BookName requiredSingularResourceName,
+            BookNameOneof requiredSingularResourceNameOneof,
+            int requiredSingularFixed32,
+            long requiredSingularFixed64,
+            IEnumerable<int> requiredRepeatedInt32,
+            IEnumerable<long> requiredRepeatedInt64,
+            IEnumerable<float> requiredRepeatedFloat,
+            IEnumerable<double> requiredRepeatedDouble,
+            IEnumerable<bool> requiredRepeatedBool,
+            IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum> requiredRepeatedEnum,
+            IEnumerable<string> requiredRepeatedString,
+            IEnumerable<ByteString> requiredRepeatedBytes,
+            IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage> requiredRepeatedMessage,
+            IEnumerable<BookName> requiredRepeatedResourceName,
+            IEnumerable<BookNameOneof> requiredRepeatedResourceNameOneof,
+            IEnumerable<int> requiredRepeatedFixed32,
+            IEnumerable<long> requiredRepeatedFixed64,
+            IDictionary<int, string> requiredMap,
+            int? optionalSingularInt32,
+            long? optionalSingularInt64,
+            float? optionalSingularFloat,
+            double? optionalSingularDouble,
+            bool? optionalSingularBool,
+            TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum? optionalSingularEnum,
+            string optionalSingularString,
+            ByteString optionalSingularBytes,
+            TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage optionalSingularMessage,
+            BookName optionalSingularResourceName,
+            BookNameOneof optionalSingularResourceNameOneof,
+            int? optionalSingularFixed32,
+            long? optionalSingularFixed64,
+            IEnumerable<int> optionalRepeatedInt32,
+            IEnumerable<long> optionalRepeatedInt64,
+            IEnumerable<float> optionalRepeatedFloat,
+            IEnumerable<double> optionalRepeatedDouble,
+            IEnumerable<bool> optionalRepeatedBool,
+            IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum> optionalRepeatedEnum,
+            IEnumerable<string> optionalRepeatedString,
+            IEnumerable<ByteString> optionalRepeatedBytes,
+            IEnumerable<TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage> optionalRepeatedMessage,
+            IEnumerable<BookName> optionalRepeatedResourceName,
+            IEnumerable<BookNameOneof> optionalRepeatedResourceNameOneof,
+            IEnumerable<int> optionalRepeatedFixed32,
+            IEnumerable<long> optionalRepeatedFixed64,
+            IDictionary<int, string> optionalMap,
+            CallSettings callSettings = null) => TestOptionalRequiredFlatteningParams(
+                new TestOptionalRequiredFlatteningParamsRequest
+                {
+                    RequiredSingularInt32 = requiredSingularInt32,
+                    RequiredSingularInt64 = requiredSingularInt64,
+                    RequiredSingularFloat = requiredSingularFloat,
+                    RequiredSingularDouble = requiredSingularDouble,
+                    RequiredSingularBool = requiredSingularBool,
+                    RequiredSingularEnum = requiredSingularEnum,
+                    RequiredSingularString = GaxPreconditions.CheckNotNullOrEmpty(requiredSingularString, nameof(requiredSingularString)),
+                    RequiredSingularBytes = GaxPreconditions.CheckNotNull(requiredSingularBytes, nameof(requiredSingularBytes)),
+                    RequiredSingularMessage = GaxPreconditions.CheckNotNull(requiredSingularMessage, nameof(requiredSingularMessage)),
+                    RequiredSingularResourceNameAsBookName = GaxPreconditions.CheckNotNull(requiredSingularResourceName, nameof(requiredSingularResourceName)),
+                    RequiredSingularResourceNameOneofAsBookNameOneof = GaxPreconditions.CheckNotNull(requiredSingularResourceNameOneof, nameof(requiredSingularResourceNameOneof)),
+                    RequiredSingularFixed32 = requiredSingularFixed32,
+                    RequiredSingularFixed64 = requiredSingularFixed64,
+                    RequiredRepeatedInt32 = { GaxPreconditions.CheckNotNull(requiredRepeatedInt32, nameof(requiredRepeatedInt32)) },
+                    RequiredRepeatedInt64 = { GaxPreconditions.CheckNotNull(requiredRepeatedInt64, nameof(requiredRepeatedInt64)) },
+                    RequiredRepeatedFloat = { GaxPreconditions.CheckNotNull(requiredRepeatedFloat, nameof(requiredRepeatedFloat)) },
+                    RequiredRepeatedDouble = { GaxPreconditions.CheckNotNull(requiredRepeatedDouble, nameof(requiredRepeatedDouble)) },
+                    RequiredRepeatedBool = { GaxPreconditions.CheckNotNull(requiredRepeatedBool, nameof(requiredRepeatedBool)) },
+                    RequiredRepeatedEnum = { GaxPreconditions.CheckNotNull(requiredRepeatedEnum, nameof(requiredRepeatedEnum)) },
+                    RequiredRepeatedString = { GaxPreconditions.CheckNotNull(requiredRepeatedString, nameof(requiredRepeatedString)) },
+                    RequiredRepeatedBytes = { GaxPreconditions.CheckNotNull(requiredRepeatedBytes, nameof(requiredRepeatedBytes)) },
+                    RequiredRepeatedMessage = { GaxPreconditions.CheckNotNull(requiredRepeatedMessage, nameof(requiredRepeatedMessage)) },
+                    RequiredRepeatedResourceNameAsBookNames = { GaxPreconditions.CheckNotNull(requiredRepeatedResourceName, nameof(requiredRepeatedResourceName)) },
+                    RequiredRepeatedResourceNameOneofAsBookNameOneofs = { GaxPreconditions.CheckNotNull(requiredRepeatedResourceNameOneof, nameof(requiredRepeatedResourceNameOneof)) },
+                    RequiredRepeatedFixed32 = { GaxPreconditions.CheckNotNull(requiredRepeatedFixed32, nameof(requiredRepeatedFixed32)) },
+                    RequiredRepeatedFixed64 = { GaxPreconditions.CheckNotNull(requiredRepeatedFixed64, nameof(requiredRepeatedFixed64)) },
+                    RequiredMap = { GaxPreconditions.CheckNotNull(requiredMap, nameof(requiredMap)) },
+                    OptionalSingularInt32 = optionalSingularInt32 ?? 0, // Optional
+                    OptionalSingularInt64 = optionalSingularInt64 ?? 0L, // Optional
+                    OptionalSingularFloat = optionalSingularFloat ?? 0.0f, // Optional
+                    OptionalSingularDouble = optionalSingularDouble ?? 0.0, // Optional
+                    OptionalSingularBool = optionalSingularBool ?? false, // Optional
+                    OptionalSingularEnum = optionalSingularEnum ?? TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum.Zero, // Optional
+                    OptionalSingularString = optionalSingularString ?? "", // Optional
+                    OptionalSingularBytes = optionalSingularBytes ?? ByteString.Empty, // Optional
+                    OptionalSingularMessage = optionalSingularMessage, // Optional
+                    OptionalSingularResourceNameAsBookName = optionalSingularResourceName, // Optional
+                    OptionalSingularResourceNameOneofAsBookNameOneof = optionalSingularResourceNameOneof, // Optional
+                    OptionalSingularFixed32 = optionalSingularFixed32 ?? 0, // Optional
+                    OptionalSingularFixed64 = optionalSingularFixed64 ?? 0L, // Optional
+                    OptionalRepeatedInt32 = { optionalRepeatedInt32 ?? Enumerable.Empty<int>() }, // Optional
+                    OptionalRepeatedInt64 = { optionalRepeatedInt64 ?? Enumerable.Empty<long>() }, // Optional
+                    OptionalRepeatedFloat = { optionalRepeatedFloat ?? Enumerable.Empty<float>() }, // Optional
+                    OptionalRepeatedDouble = { optionalRepeatedDouble ?? Enumerable.Empty<double>() }, // Optional
+                    OptionalRepeatedBool = { optionalRepeatedBool ?? Enumerable.Empty<bool>() }, // Optional
+                    OptionalRepeatedEnum = { optionalRepeatedEnum ?? Enumerable.Empty<TestOptionalRequiredFlatteningParamsRequest.Types.InnerEnum>() }, // Optional
+                    OptionalRepeatedString = { optionalRepeatedString ?? Enumerable.Empty<string>() }, // Optional
+                    OptionalRepeatedBytes = { optionalRepeatedBytes ?? Enumerable.Empty<ByteString>() }, // Optional
+                    OptionalRepeatedMessage = { optionalRepeatedMessage ?? Enumerable.Empty<TestOptionalRequiredFlatteningParamsRequest.Types.InnerMessage>() }, // Optional
+                    OptionalRepeatedResourceNameAsBookNames = { optionalRepeatedResourceName ?? Enumerable.Empty<BookName>() }, // Optional
+                    OptionalRepeatedResourceNameOneofAsBookNameOneofs = { optionalRepeatedResourceNameOneof ?? Enumerable.Empty<BookNameOneof>() }, // Optional
+                    OptionalRepeatedFixed32 = { optionalRepeatedFixed32 ?? Enumerable.Empty<int>() }, // Optional
+                    OptionalRepeatedFixed64 = { optionalRepeatedFixed64 ?? Enumerable.Empty<long>() }, // Optional
+                    OptionalMap = { optionalMap ?? EmptyDictionary<int, string>.Instance }, // Optional
+                },
+                callSettings);
+
+        /// <summary>
+        /// Test optional flattening parameters of all types
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual Task<TestOptionalRequiredFlatteningParamsResponse> TestOptionalRequiredFlatteningParamsAsync(
+            TestOptionalRequiredFlatteningParamsRequest request,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Test optional flattening parameters of all types
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public virtual TestOptionalRequiredFlatteningParamsResponse TestOptionalRequiredFlatteningParams(
+            TestOptionalRequiredFlatteningParamsRequest request,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
 
     }
 
@@ -3788,6 +4748,7 @@ namespace Google.Example.Library.V1
         private readonly ApiCall<AddLabelRequest, AddLabelResponse> _callAddLabel;
         private readonly ApiCall<GetBookRequest, Operation> _callGetBigBook;
         private readonly ApiCall<GetBookRequest, Operation> _callGetBigNothing;
+        private readonly ApiCall<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> _callTestOptionalRequiredFlatteningParams;
 
         /// <summary>
         /// Constructs a client wrapper for the LibraryService service, with the specified gRPC client and settings.
@@ -3848,6 +4809,8 @@ namespace Google.Example.Library.V1
                 GrpcClient.GetBigBookAsync, GrpcClient.GetBigBook, effectiveSettings.GetBigBookSettings);
             _callGetBigNothing = clientHelper.BuildApiCall<GetBookRequest, Operation>(
                 GrpcClient.GetBigNothingAsync, GrpcClient.GetBigNothing, effectiveSettings.GetBigNothingSettings);
+            _callTestOptionalRequiredFlatteningParams = clientHelper.BuildApiCall<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse>(
+                GrpcClient.TestOptionalRequiredFlatteningParamsAsync, GrpcClient.TestOptionalRequiredFlatteningParams, effectiveSettings.TestOptionalRequiredFlatteningParamsSettings);
             OnConstruction(grpcClient, effectiveSettings, clientHelper);
         }
 
@@ -3888,6 +4851,7 @@ namespace Google.Example.Library.V1
         partial void Modify_AddLabelRequest(ref AddLabelRequest request, ref CallSettings settings);
         partial void Modify_GetBookRequest(ref GetBookRequest request, ref CallSettings settings);
         partial void Modify_GetBookRequest(ref GetBookRequest request, ref CallSettings settings);
+        partial void Modify_TestOptionalRequiredFlatteningParamsRequest(ref TestOptionalRequiredFlatteningParamsRequest request, ref CallSettings settings);
 
         /// <summary>
         /// Creates a shelf, and returns the new Shelf.
@@ -4595,7 +5559,7 @@ namespace Google.Example.Library.V1
             Modify_DiscussBookRequestCallSettings(ref callSettings);
             BidirectionalStreamingSettings effectiveStreamingSettings =
                 streamingSettings ?? _callDiscussBook.StreamingSettings;
-            AsyncDuplexStreamingCall<DiscussBookRequest,Comment> call =
+            AsyncDuplexStreamingCall<DiscussBookRequest, Comment> call =
                 _callDiscussBook.Call(callSettings);
             BufferedClientStreamWriter<DiscussBookRequest> writeBuffer =
                 new BufferedClientStreamWriter<DiscussBookRequest>(
@@ -4617,7 +5581,7 @@ namespace Google.Example.Library.V1
             /// instance associated with this streaming call.</param>
             public DiscussBookStreamImpl(
                 LibraryServiceClientImpl service,
-                AsyncDuplexStreamingCall<DiscussBookRequest,Comment> call,
+                AsyncDuplexStreamingCall<DiscussBookRequest, Comment> call,
                 BufferedClientStreamWriter<DiscussBookRequest> writeBuffer)
             {
                 _service = service;
@@ -4635,7 +5599,7 @@ namespace Google.Example.Library.V1
             }
 
             /// <inheritdoc/>
-            public override AsyncDuplexStreamingCall<DiscussBookRequest,Comment> GrpcCall { get; }
+            public override AsyncDuplexStreamingCall<DiscussBookRequest, Comment> GrpcCall { get; }
 
             /// <inheritdoc/>
             public override Task TryWriteAsync(DiscussBookRequest message) =>
@@ -4798,13 +5762,13 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A Task containing the RPC response.
         /// </returns>
-        public override async Task<Operation<Book>> GetBigBookAsync(
+        public override async Task<Operation<Book, GetBigBookMetadata>> GetBigBookAsync(
             GetBookRequest request,
             CallSettings callSettings = null)
         {
             Modify_GetBookRequest(ref request, ref callSettings);
-            return new Operation<Book>(
-                await _callGetBigBook.Async(request, callSettings), LongRunningOperationsClient);
+            return new Operation<Book, GetBigBookMetadata>(
+                await _callGetBigBook.Async(request, callSettings).ConfigureAwait(false), LongRunningOperationsClient);
         }
 
         /// <summary>
@@ -4819,12 +5783,12 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// The RPC response.
         /// </returns>
-        public override Operation<Book> GetBigBook(
+        public override Operation<Book, GetBigBookMetadata> GetBigBook(
             GetBookRequest request,
             CallSettings callSettings = null)
         {
             Modify_GetBookRequest(ref request, ref callSettings);
-            return new Operation<Book>(
+            return new Operation<Book, GetBigBookMetadata>(
                 _callGetBigBook.Sync(request, callSettings), LongRunningOperationsClient);
         }
 
@@ -4840,13 +5804,13 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// A Task containing the RPC response.
         /// </returns>
-        public override async Task<Operation<Empty>> GetBigNothingAsync(
+        public override async Task<Operation<Empty, GetBigBookMetadata>> GetBigNothingAsync(
             GetBookRequest request,
             CallSettings callSettings = null)
         {
             Modify_GetBookRequest(ref request, ref callSettings);
-            return new Operation<Empty>(
-                await _callGetBigNothing.Async(request, callSettings), LongRunningOperationsClient);
+            return new Operation<Empty, GetBigBookMetadata>(
+                await _callGetBigNothing.Async(request, callSettings).ConfigureAwait(false), LongRunningOperationsClient);
         }
 
         /// <summary>
@@ -4861,13 +5825,53 @@ namespace Google.Example.Library.V1
         /// <returns>
         /// The RPC response.
         /// </returns>
-        public override Operation<Empty> GetBigNothing(
+        public override Operation<Empty, GetBigBookMetadata> GetBigNothing(
             GetBookRequest request,
             CallSettings callSettings = null)
         {
             Modify_GetBookRequest(ref request, ref callSettings);
-            return new Operation<Empty>(
+            return new Operation<Empty, GetBigBookMetadata>(
                 _callGetBigNothing.Sync(request, callSettings), LongRunningOperationsClient);
+        }
+
+        /// <summary>
+        /// Test optional flattening parameters of all types
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public override Task<TestOptionalRequiredFlatteningParamsResponse> TestOptionalRequiredFlatteningParamsAsync(
+            TestOptionalRequiredFlatteningParamsRequest request,
+            CallSettings callSettings = null)
+        {
+            Modify_TestOptionalRequiredFlatteningParamsRequest(ref request, ref callSettings);
+            return _callTestOptionalRequiredFlatteningParams.Async(request, callSettings);
+        }
+
+        /// <summary>
+        /// Test optional flattening parameters of all types
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public override TestOptionalRequiredFlatteningParamsResponse TestOptionalRequiredFlatteningParams(
+            TestOptionalRequiredFlatteningParamsRequest request,
+            CallSettings callSettings = null)
+        {
+            Modify_TestOptionalRequiredFlatteningParamsRequest(ref request, ref callSettings);
+            return _callTestOptionalRequiredFlatteningParams.Sync(request, callSettings);
         }
 
     }

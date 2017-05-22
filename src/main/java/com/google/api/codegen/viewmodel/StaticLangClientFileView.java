@@ -35,8 +35,6 @@ public abstract class StaticLangClientFileView implements ViewModel {
 
   public abstract FileHeaderView fileHeader();
 
-  public abstract Iterable<String> authScopes();
-
   public abstract List<PathTemplateView> pathTemplates();
 
   public abstract List<PathTemplateGetterFunctionView> pathTemplateGetters();
@@ -83,8 +81,6 @@ public abstract class StaticLangClientFileView implements ViewModel {
     public abstract Builder apiMethods(List<StaticLangApiMethodView> val);
 
     public abstract Builder fileHeader(FileHeaderView val);
-
-    public abstract Builder authScopes(Iterable<String> val);
 
     public abstract Builder clientTypeName(String val);
 

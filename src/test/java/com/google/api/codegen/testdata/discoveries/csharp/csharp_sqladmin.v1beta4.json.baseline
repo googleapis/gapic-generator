@@ -17,6 +17,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -35,10 +36,10 @@ namespace SQLAdminSample
             });
 
             // Project ID of the project that contains the instance.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Cloud SQL instance ID. This does not include the project ID.
-            string instance = "";  // TODO: Update placeholder value.
+            string instance = "my-instance";  // TODO: Update placeholder value.
 
             // The ID of the Backup Run to delete. To find a Backup Run ID, use the list method.
             long id = 0L;  // TODO: Update placeholder value.
@@ -50,7 +51,7 @@ namespace SQLAdminSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -82,6 +83,7 @@ namespace SQLAdminSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -100,10 +102,10 @@ namespace SQLAdminSample
             });
 
             // Project ID of the project that contains the instance.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Cloud SQL instance ID. This does not include the project ID.
-            string instance = "";  // TODO: Update placeholder value.
+            string instance = "my-instance";  // TODO: Update placeholder value.
 
             // The ID of this Backup Run.
             long id = 0L;  // TODO: Update placeholder value.
@@ -115,7 +117,7 @@ namespace SQLAdminSample
             // Data.BackupRun response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -147,6 +149,7 @@ namespace SQLAdminSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -165,10 +168,10 @@ namespace SQLAdminSample
             });
 
             // Project ID of the project that contains the instance.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Cloud SQL instance ID. This does not include the project ID.
-            string instance = "";  // TODO: Update placeholder value.
+            string instance = "my-instance";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.BackupRun requestBody = new Data.BackupRun();
@@ -180,7 +183,7 @@ namespace SQLAdminSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -212,6 +215,7 @@ namespace SQLAdminSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -230,10 +234,10 @@ namespace SQLAdminSample
             });
 
             // Project ID of the project that contains the instance.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Cloud SQL instance ID. This does not include the project ID.
-            string instance = "";  // TODO: Update placeholder value.
+            string instance = "my-instance";  // TODO: Update placeholder value.
 
             BackupRunsResource.ListRequest request = sqlAdminService.BackupRuns.List(project, instance);
 
@@ -251,7 +255,7 @@ namespace SQLAdminSample
                 foreach (Data.BackupRun backupRun in response.Items)
                 {
                     // TODO: Change code below to process each `backupRun` resource:
-                    Console.WriteLine(backupRun);
+                    Console.WriteLine(JsonConvert.SerializeObject(backupRun));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -286,6 +290,7 @@ namespace SQLAdminSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -304,13 +309,13 @@ namespace SQLAdminSample
             });
 
             // Project ID of the project that contains the instance.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Database instance ID. This does not include the project ID.
-            string instance = "";  // TODO: Update placeholder value.
+            string instance = "my-instance";  // TODO: Update placeholder value.
 
             // Name of the database to be deleted in the instance.
-            string database = "";  // TODO: Update placeholder value.
+            string database = "my-database";  // TODO: Update placeholder value.
 
             DatabasesResource.DeleteRequest request = sqlAdminService.Databases.Delete(project, instance, database);
 
@@ -319,7 +324,7 @@ namespace SQLAdminSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -351,6 +356,7 @@ namespace SQLAdminSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -369,13 +375,13 @@ namespace SQLAdminSample
             });
 
             // Project ID of the project that contains the instance.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Database instance ID. This does not include the project ID.
-            string instance = "";  // TODO: Update placeholder value.
+            string instance = "my-instance";  // TODO: Update placeholder value.
 
             // Name of the database in the instance.
-            string database = "";  // TODO: Update placeholder value.
+            string database = "my-database";  // TODO: Update placeholder value.
 
             DatabasesResource.GetRequest request = sqlAdminService.Databases.Get(project, instance, database);
 
@@ -384,7 +390,7 @@ namespace SQLAdminSample
             // Data.Database response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -416,6 +422,7 @@ namespace SQLAdminSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -434,10 +441,10 @@ namespace SQLAdminSample
             });
 
             // Project ID of the project that contains the instance.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Database instance ID. This does not include the project ID.
-            string instance = "";  // TODO: Update placeholder value.
+            string instance = "my-instance";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.Database requestBody = new Data.Database();
@@ -449,7 +456,7 @@ namespace SQLAdminSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -481,6 +488,7 @@ namespace SQLAdminSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -499,10 +507,10 @@ namespace SQLAdminSample
             });
 
             // Project ID of the project for which to list Cloud SQL instances.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Cloud SQL instance ID. This does not include the project ID.
-            string instance = "";  // TODO: Update placeholder value.
+            string instance = "my-instance";  // TODO: Update placeholder value.
 
             DatabasesResource.ListRequest request = sqlAdminService.Databases.List(project, instance);
 
@@ -511,7 +519,7 @@ namespace SQLAdminSample
             // Data.DatabasesListResponse response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -543,6 +551,7 @@ namespace SQLAdminSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -561,13 +570,13 @@ namespace SQLAdminSample
             });
 
             // Project ID of the project that contains the instance.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Database instance ID. This does not include the project ID.
-            string instance = "";  // TODO: Update placeholder value.
+            string instance = "my-instance";  // TODO: Update placeholder value.
 
             // Name of the database to be updated in the instance.
-            string database = "";  // TODO: Update placeholder value.
+            string database = "my-database";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`. Only assigned
             // properties will be changed:
@@ -580,7 +589,7 @@ namespace SQLAdminSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -612,6 +621,7 @@ namespace SQLAdminSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -630,13 +640,13 @@ namespace SQLAdminSample
             });
 
             // Project ID of the project that contains the instance.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Database instance ID. This does not include the project ID.
-            string instance = "";  // TODO: Update placeholder value.
+            string instance = "my-instance";  // TODO: Update placeholder value.
 
             // Name of the database to be updated in the instance.
-            string database = "";  // TODO: Update placeholder value.
+            string database = "my-database";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`. All existing
             // properties will be replaced:
@@ -649,7 +659,7 @@ namespace SQLAdminSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -681,6 +691,7 @@ namespace SQLAdminSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -705,7 +716,7 @@ namespace SQLAdminSample
             // Data.FlagsListResponse response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -737,6 +748,7 @@ namespace SQLAdminSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -755,10 +767,10 @@ namespace SQLAdminSample
             });
 
             // Project ID of the source as well as the clone Cloud SQL instance.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // The ID of the Cloud SQL instance to be cloned (source). This does not include the project ID.
-            string instance = "";  // TODO: Update placeholder value.
+            string instance = "my-instance";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.InstancesCloneRequest requestBody = new Data.InstancesCloneRequest();
@@ -770,7 +782,7 @@ namespace SQLAdminSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -802,6 +814,7 @@ namespace SQLAdminSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -820,10 +833,10 @@ namespace SQLAdminSample
             });
 
             // Project ID of the project that contains the instance to be deleted.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Cloud SQL instance ID. This does not include the project ID.
-            string instance = "";  // TODO: Update placeholder value.
+            string instance = "my-instance";  // TODO: Update placeholder value.
 
             InstancesResource.DeleteRequest request = sqlAdminService.Instances.Delete(project, instance);
 
@@ -832,7 +845,7 @@ namespace SQLAdminSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -864,6 +877,7 @@ namespace SQLAdminSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -882,10 +896,10 @@ namespace SQLAdminSample
             });
 
             // Project ID of the project that contains the instance to be exported.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Cloud SQL instance ID. This does not include the project ID.
-            string instance = "";  // TODO: Update placeholder value.
+            string instance = "my-instance";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.InstancesExportRequest requestBody = new Data.InstancesExportRequest();
@@ -897,7 +911,7 @@ namespace SQLAdminSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -929,6 +943,7 @@ namespace SQLAdminSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -947,10 +962,10 @@ namespace SQLAdminSample
             });
 
             // ID of the project that contains the read replica.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Cloud SQL instance ID. This does not include the project ID.
-            string instance = "";  // TODO: Update placeholder value.
+            string instance = "my-instance";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.InstancesFailoverRequest requestBody = new Data.InstancesFailoverRequest();
@@ -962,7 +977,7 @@ namespace SQLAdminSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -994,6 +1009,7 @@ namespace SQLAdminSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1012,10 +1028,10 @@ namespace SQLAdminSample
             });
 
             // Project ID of the project that contains the instance.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Database instance ID. This does not include the project ID.
-            string instance = "";  // TODO: Update placeholder value.
+            string instance = "my-instance";  // TODO: Update placeholder value.
 
             InstancesResource.GetRequest request = sqlAdminService.Instances.Get(project, instance);
 
@@ -1024,7 +1040,7 @@ namespace SQLAdminSample
             // Data.DatabaseInstance response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -1056,6 +1072,7 @@ namespace SQLAdminSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1074,10 +1091,10 @@ namespace SQLAdminSample
             });
 
             // Project ID of the project that contains the instance.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Cloud SQL instance ID. This does not include the project ID.
-            string instance = "";  // TODO: Update placeholder value.
+            string instance = "my-instance";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.InstancesImportRequest requestBody = new Data.InstancesImportRequest();
@@ -1089,7 +1106,7 @@ namespace SQLAdminSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -1121,6 +1138,7 @@ namespace SQLAdminSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1139,7 +1157,7 @@ namespace SQLAdminSample
             });
 
             // Project ID of the project to which the newly created Cloud SQL instances should belong.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.DatabaseInstance requestBody = new Data.DatabaseInstance();
@@ -1151,7 +1169,7 @@ namespace SQLAdminSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -1183,6 +1201,7 @@ namespace SQLAdminSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1201,7 +1220,7 @@ namespace SQLAdminSample
             });
 
             // Project ID of the project for which to list Cloud SQL instances.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             InstancesResource.ListRequest request = sqlAdminService.Instances.List(project);
 
@@ -1219,7 +1238,7 @@ namespace SQLAdminSample
                 foreach (Data.DatabaseInstance databaseInstance in response.Items)
                 {
                     // TODO: Change code below to process each `databaseInstance` resource:
-                    Console.WriteLine(databaseInstance);
+                    Console.WriteLine(JsonConvert.SerializeObject(databaseInstance));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -1254,6 +1273,7 @@ namespace SQLAdminSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1272,10 +1292,10 @@ namespace SQLAdminSample
             });
 
             // Project ID of the project that contains the instance.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Cloud SQL instance ID. This does not include the project ID.
-            string instance = "";  // TODO: Update placeholder value.
+            string instance = "my-instance";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`. Only assigned
             // properties will be changed:
@@ -1288,7 +1308,7 @@ namespace SQLAdminSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -1320,6 +1340,7 @@ namespace SQLAdminSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1338,10 +1359,10 @@ namespace SQLAdminSample
             });
 
             // ID of the project that contains the read replica.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Cloud SQL read replica instance name.
-            string instance = "";  // TODO: Update placeholder value.
+            string instance = "my-instance";  // TODO: Update placeholder value.
 
             InstancesResource.PromoteReplicaRequest request = sqlAdminService.Instances.PromoteReplica(project, instance);
 
@@ -1350,7 +1371,7 @@ namespace SQLAdminSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -1382,6 +1403,7 @@ namespace SQLAdminSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1400,10 +1422,10 @@ namespace SQLAdminSample
             });
 
             // Project ID of the project that contains the instance.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Cloud SQL instance ID. This does not include the project ID.
-            string instance = "";  // TODO: Update placeholder value.
+            string instance = "my-instance";  // TODO: Update placeholder value.
 
             InstancesResource.ResetSslConfigRequest request = sqlAdminService.Instances.ResetSslConfig(project, instance);
 
@@ -1412,7 +1434,7 @@ namespace SQLAdminSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -1444,6 +1466,7 @@ namespace SQLAdminSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1462,10 +1485,10 @@ namespace SQLAdminSample
             });
 
             // Project ID of the project that contains the instance to be restarted.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Cloud SQL instance ID. This does not include the project ID.
-            string instance = "";  // TODO: Update placeholder value.
+            string instance = "my-instance";  // TODO: Update placeholder value.
 
             InstancesResource.RestartRequest request = sqlAdminService.Instances.Restart(project, instance);
 
@@ -1474,7 +1497,7 @@ namespace SQLAdminSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -1506,6 +1529,7 @@ namespace SQLAdminSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1524,10 +1548,10 @@ namespace SQLAdminSample
             });
 
             // Project ID of the project that contains the instance.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Cloud SQL instance ID. This does not include the project ID.
-            string instance = "";  // TODO: Update placeholder value.
+            string instance = "my-instance";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.InstancesRestoreBackupRequest requestBody = new Data.InstancesRestoreBackupRequest();
@@ -1539,7 +1563,7 @@ namespace SQLAdminSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -1571,6 +1595,7 @@ namespace SQLAdminSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1589,10 +1614,10 @@ namespace SQLAdminSample
             });
 
             // ID of the project that contains the read replica.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Cloud SQL read replica instance name.
-            string instance = "";  // TODO: Update placeholder value.
+            string instance = "my-instance";  // TODO: Update placeholder value.
 
             InstancesResource.StartReplicaRequest request = sqlAdminService.Instances.StartReplica(project, instance);
 
@@ -1601,7 +1626,7 @@ namespace SQLAdminSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -1633,6 +1658,7 @@ namespace SQLAdminSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1651,10 +1677,10 @@ namespace SQLAdminSample
             });
 
             // ID of the project that contains the read replica.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Cloud SQL read replica instance name.
-            string instance = "";  // TODO: Update placeholder value.
+            string instance = "my-instance";  // TODO: Update placeholder value.
 
             InstancesResource.StopReplicaRequest request = sqlAdminService.Instances.StopReplica(project, instance);
 
@@ -1663,7 +1689,7 @@ namespace SQLAdminSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -1695,6 +1721,7 @@ namespace SQLAdminSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1713,10 +1740,10 @@ namespace SQLAdminSample
             });
 
             // Project ID of the Cloud SQL project.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Cloud SQL instance ID. This does not include the project ID.
-            string instance = "";  // TODO: Update placeholder value.
+            string instance = "my-instance";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.InstancesTruncateLogRequest requestBody = new Data.InstancesTruncateLogRequest();
@@ -1728,7 +1755,7 @@ namespace SQLAdminSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -1760,6 +1787,7 @@ namespace SQLAdminSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1778,10 +1806,10 @@ namespace SQLAdminSample
             });
 
             // Project ID of the project that contains the instance.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Cloud SQL instance ID. This does not include the project ID.
-            string instance = "";  // TODO: Update placeholder value.
+            string instance = "my-instance";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`. All existing
             // properties will be replaced:
@@ -1794,7 +1822,7 @@ namespace SQLAdminSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -1826,6 +1854,7 @@ namespace SQLAdminSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1844,10 +1873,10 @@ namespace SQLAdminSample
             });
 
             // Project ID of the project that contains the instance.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Instance operation ID.
-            string operation = "";  // TODO: Update placeholder value.
+            string operation = "my-operation";  // TODO: Update placeholder value.
 
             OperationsResource.GetRequest request = sqlAdminService.Operations.Get(project, operation);
 
@@ -1856,7 +1885,7 @@ namespace SQLAdminSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -1888,6 +1917,7 @@ namespace SQLAdminSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1906,7 +1936,7 @@ namespace SQLAdminSample
             });
 
             // Project ID of the project that contains the instance.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Cloud SQL instance ID. This does not include the project ID.
             string instance = "";  // TODO: Update placeholder value.
@@ -1927,7 +1957,7 @@ namespace SQLAdminSample
                 foreach (Data.Operation operation in response.Items)
                 {
                     // TODO: Change code below to process each `operation` resource:
-                    Console.WriteLine(operation);
+                    Console.WriteLine(JsonConvert.SerializeObject(operation));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -1962,6 +1992,7 @@ namespace SQLAdminSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1980,10 +2011,10 @@ namespace SQLAdminSample
             });
 
             // Project ID of the Cloud SQL project.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Cloud SQL instance ID. This does not include the project ID.
-            string instance = "";  // TODO: Update placeholder value.
+            string instance = "my-instance";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.SslCertsCreateEphemeralRequest requestBody = new Data.SslCertsCreateEphemeralRequest();
@@ -1995,7 +2026,7 @@ namespace SQLAdminSample
             // Data.SslCert response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -2027,6 +2058,7 @@ namespace SQLAdminSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -2045,13 +2077,13 @@ namespace SQLAdminSample
             });
 
             // Project ID of the project that contains the instance to be deleted.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Cloud SQL instance ID. This does not include the project ID.
-            string instance = "";  // TODO: Update placeholder value.
+            string instance = "my-instance";  // TODO: Update placeholder value.
 
             // Sha1 FingerPrint.
-            string sha1Fingerprint = "";  // TODO: Update placeholder value.
+            string sha1Fingerprint = "my-sha1-fingerprint";  // TODO: Update placeholder value.
 
             SslCertsResource.DeleteRequest request = sqlAdminService.SslCerts.Delete(project, instance, sha1Fingerprint);
 
@@ -2060,7 +2092,7 @@ namespace SQLAdminSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -2092,6 +2124,7 @@ namespace SQLAdminSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -2110,13 +2143,13 @@ namespace SQLAdminSample
             });
 
             // Project ID of the project that contains the instance.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Cloud SQL instance ID. This does not include the project ID.
-            string instance = "";  // TODO: Update placeholder value.
+            string instance = "my-instance";  // TODO: Update placeholder value.
 
             // Sha1 FingerPrint.
-            string sha1Fingerprint = "";  // TODO: Update placeholder value.
+            string sha1Fingerprint = "my-sha1-fingerprint";  // TODO: Update placeholder value.
 
             SslCertsResource.GetRequest request = sqlAdminService.SslCerts.Get(project, instance, sha1Fingerprint);
 
@@ -2125,7 +2158,7 @@ namespace SQLAdminSample
             // Data.SslCert response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -2157,6 +2190,7 @@ namespace SQLAdminSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -2175,10 +2209,10 @@ namespace SQLAdminSample
             });
 
             // Project ID of the project to which the newly created Cloud SQL instances should belong.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Cloud SQL instance ID. This does not include the project ID.
-            string instance = "";  // TODO: Update placeholder value.
+            string instance = "my-instance";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.SslCertsInsertRequest requestBody = new Data.SslCertsInsertRequest();
@@ -2190,7 +2224,7 @@ namespace SQLAdminSample
             // Data.SslCertsInsertResponse response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -2222,6 +2256,7 @@ namespace SQLAdminSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -2240,10 +2275,10 @@ namespace SQLAdminSample
             });
 
             // Project ID of the project for which to list Cloud SQL instances.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Cloud SQL instance ID. This does not include the project ID.
-            string instance = "";  // TODO: Update placeholder value.
+            string instance = "my-instance";  // TODO: Update placeholder value.
 
             SslCertsResource.ListRequest request = sqlAdminService.SslCerts.List(project, instance);
 
@@ -2252,7 +2287,7 @@ namespace SQLAdminSample
             // Data.SslCertsListResponse response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -2284,6 +2319,7 @@ namespace SQLAdminSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -2302,7 +2338,7 @@ namespace SQLAdminSample
             });
 
             // Project ID of the project for which to list tiers.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             TiersResource.ListRequest request = sqlAdminService.Tiers.List(project);
 
@@ -2311,7 +2347,7 @@ namespace SQLAdminSample
             // Data.TiersListResponse response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -2343,6 +2379,7 @@ namespace SQLAdminSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -2361,10 +2398,10 @@ namespace SQLAdminSample
             });
 
             // Project ID of the project that contains the instance.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Database instance ID. This does not include the project ID.
-            string instance = "";  // TODO: Update placeholder value.
+            string instance = "my-instance";  // TODO: Update placeholder value.
 
             // Host of the user in the instance.
             string host = "";  // TODO: Update placeholder value.
@@ -2379,7 +2416,7 @@ namespace SQLAdminSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -2411,6 +2448,7 @@ namespace SQLAdminSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -2429,10 +2467,10 @@ namespace SQLAdminSample
             });
 
             // Project ID of the project that contains the instance.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Database instance ID. This does not include the project ID.
-            string instance = "";  // TODO: Update placeholder value.
+            string instance = "my-instance";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.User requestBody = new Data.User();
@@ -2444,7 +2482,7 @@ namespace SQLAdminSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -2476,6 +2514,7 @@ namespace SQLAdminSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -2494,10 +2533,10 @@ namespace SQLAdminSample
             });
 
             // Project ID of the project that contains the instance.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Database instance ID. This does not include the project ID.
-            string instance = "";  // TODO: Update placeholder value.
+            string instance = "my-instance";  // TODO: Update placeholder value.
 
             UsersResource.ListRequest request = sqlAdminService.Users.List(project, instance);
 
@@ -2506,7 +2545,7 @@ namespace SQLAdminSample
             // Data.UsersListResponse response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -2538,6 +2577,7 @@ namespace SQLAdminSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -2556,10 +2596,10 @@ namespace SQLAdminSample
             });
 
             // Project ID of the project that contains the instance.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Database instance ID. This does not include the project ID.
-            string instance = "";  // TODO: Update placeholder value.
+            string instance = "my-instance";  // TODO: Update placeholder value.
 
             // Host of the user in the instance.
             string host = "";  // TODO: Update placeholder value.
@@ -2578,7 +2618,7 @@ namespace SQLAdminSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()

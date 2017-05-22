@@ -34,6 +34,7 @@ import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.common.base.Strings;
 import com.google.protobuf.Field.Cardinality;
 import com.google.protobuf.Method;
 import java.util.ArrayList;
@@ -111,6 +112,8 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
       }
     }
 
+    // The page streaming view model is generated close to last to avoid taking naming precedence in
+    // the symbol table.
     if (methodInfo.isPageStreaming()) {
       builder.pageStreaming(createSamplePageStreamingView(context, symbolTable));
     }
@@ -196,7 +199,12 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
     SampleTypeTable typeTable = context.getSampleTypeTable();
 
     TypeInfo typeInfo = field.type();
-    String defaultValue = typeTable.getZeroValueAndSaveNicknameFor(typeInfo);
+    String defaultValue;
+    if (!Strings.isNullOrEmpty(field.defaultValue())) {
+      defaultValue = field.defaultValue();
+    } else {
+      defaultValue = typeTable.getZeroValueAndSaveNicknameFor(typeInfo);
+    }
     return SampleFieldView.newBuilder()
         .name(symbolTable.getNewSymbol(field.name()))
         .typeName(typeTable.getAndSaveNicknameFor(typeInfo))
@@ -211,7 +219,9 @@ public class JavaSampleMethodToViewTransformer implements SampleMethodToViewTran
   private void addStaticImports(SampleTransformerContext context) {
     SampleConfig sampleConfig = context.getSampleConfig();
     SampleTypeTable typeTable = context.getSampleTypeTable();
-    typeTable.saveNicknameFor("com.google.api.client.googleapis.auth.oauth2.GoogleCredential");
+    if (sampleConfig.authType() != AuthType.NONE) {
+      typeTable.saveNicknameFor("com.google.api.client.googleapis.auth.oauth2.GoogleCredential");
+    }
     typeTable.saveNicknameFor("com.google.api.client.googleapis.javanet.GoogleNetHttpTransport");
     typeTable.saveNicknameFor("com.google.api.client.http.HttpTransport");
     typeTable.saveNicknameFor("com.google.api.client.json.jackson2.JacksonFactory");

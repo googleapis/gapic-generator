@@ -17,6 +17,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 
 namespace LoggingSample
@@ -37,7 +38,7 @@ namespace LoggingSample
             // [LOG_ID] must be URL-encoded. For example, "projects/my-project-id/logs/syslog",
             // "organizations/1234567890/logs/cloudresourcemanager.googleapis.com%2Factivity". For more
             // information about log names, see LogEntry.
-            string logName = "";  // TODO: Update placeholder value.
+            string logName = "billingAccounts/my-billing-account/logs/my-log";  // TODO: Update placeholder value.
 
             BillingAccountsResource.LogsResource.DeleteRequest request = loggingService.BillingAccounts.Logs.Delete(logName);
 
@@ -75,6 +76,7 @@ namespace LoggingSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -95,7 +97,7 @@ namespace LoggingSample
             // Required. The resource name that owns the logs:
             // "projects/[PROJECT_ID]"
             // "organizations/[ORGANIZATION_ID]"
-            string parent = "";  // TODO: Update placeholder value.
+            string parent = "billingAccounts/my-billing-account";  // TODO: Update placeholder value.
 
             BillingAccountsResource.LogsResource.ListRequest request = loggingService.BillingAccounts.Logs.List(parent);
 
@@ -113,7 +115,7 @@ namespace LoggingSample
                 foreach (string item in response.LogNames)
                 {
                     // TODO: Change code below to process each `item` resource:
-                    Console.WriteLine(item);
+                    Console.WriteLine(JsonConvert.SerializeObject(item));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -148,6 +150,7 @@ namespace LoggingSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -184,7 +187,7 @@ namespace LoggingSample
                 foreach (Data.LogEntry logEntry in response.Entries)
                 {
                     // TODO: Change code below to process each `logEntry` resource:
-                    Console.WriteLine(logEntry);
+                    Console.WriteLine(JsonConvert.SerializeObject(logEntry));
                 }
                 requestBody.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -219,6 +222,7 @@ namespace LoggingSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -246,7 +250,7 @@ namespace LoggingSample
             // Data.WriteLogEntriesResponse response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -278,6 +282,7 @@ namespace LoggingSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -311,7 +316,7 @@ namespace LoggingSample
                 foreach (Data.MonitoredResourceDescriptor monitoredResourceDescriptor in response.ResourceDescriptors)
                 {
                     // TODO: Change code below to process each `monitoredResourceDescriptor` resource:
-                    Console.WriteLine(monitoredResourceDescriptor);
+                    Console.WriteLine(JsonConvert.SerializeObject(monitoredResourceDescriptor));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -346,6 +351,7 @@ namespace LoggingSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 
 namespace LoggingSample
@@ -366,7 +372,7 @@ namespace LoggingSample
             // [LOG_ID] must be URL-encoded. For example, "projects/my-project-id/logs/syslog",
             // "organizations/1234567890/logs/cloudresourcemanager.googleapis.com%2Factivity". For more
             // information about log names, see LogEntry.
-            string logName = "";  // TODO: Update placeholder value.
+            string logName = "organizations/my-organization/logs/my-log";  // TODO: Update placeholder value.
 
             OrganizationsResource.LogsResource.DeleteRequest request = loggingService.Organizations.Logs.Delete(logName);
 
@@ -404,6 +410,7 @@ namespace LoggingSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -424,7 +431,7 @@ namespace LoggingSample
             // Required. The resource name that owns the logs:
             // "projects/[PROJECT_ID]"
             // "organizations/[ORGANIZATION_ID]"
-            string parent = "";  // TODO: Update placeholder value.
+            string parent = "organizations/my-organization";  // TODO: Update placeholder value.
 
             OrganizationsResource.LogsResource.ListRequest request = loggingService.Organizations.Logs.List(parent);
 
@@ -442,7 +449,7 @@ namespace LoggingSample
                 foreach (string item in response.LogNames)
                 {
                     // TODO: Change code below to process each `item` resource:
-                    Console.WriteLine(item);
+                    Console.WriteLine(JsonConvert.SerializeObject(item));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -477,6 +484,7 @@ namespace LoggingSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 
 namespace LoggingSample
@@ -497,7 +505,7 @@ namespace LoggingSample
             // [LOG_ID] must be URL-encoded. For example, "projects/my-project-id/logs/syslog",
             // "organizations/1234567890/logs/cloudresourcemanager.googleapis.com%2Factivity". For more
             // information about log names, see LogEntry.
-            string logName = "";  // TODO: Update placeholder value.
+            string logName = "projects/my-project/logs/my-log";  // TODO: Update placeholder value.
 
             ProjectsResource.LogsResource.DeleteRequest request = loggingService.Projects.Logs.Delete(logName);
 
@@ -535,6 +543,7 @@ namespace LoggingSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -555,7 +564,7 @@ namespace LoggingSample
             // Required. The resource name that owns the logs:
             // "projects/[PROJECT_ID]"
             // "organizations/[ORGANIZATION_ID]"
-            string parent = "";  // TODO: Update placeholder value.
+            string parent = "projects/my-project";  // TODO: Update placeholder value.
 
             ProjectsResource.LogsResource.ListRequest request = loggingService.Projects.Logs.List(parent);
 
@@ -573,7 +582,7 @@ namespace LoggingSample
                 foreach (string item in response.LogNames)
                 {
                     // TODO: Change code below to process each `item` resource:
-                    Console.WriteLine(item);
+                    Console.WriteLine(JsonConvert.SerializeObject(item));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -608,6 +617,7 @@ namespace LoggingSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -628,7 +638,7 @@ namespace LoggingSample
             // The resource name of the project in which to create the metric:
             // "projects/[PROJECT_ID]"
             // The new metric must be provided in the request.
-            string parent = "";  // TODO: Update placeholder value.
+            string parent = "projects/my-project";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.LogMetric requestBody = new Data.LogMetric();
@@ -640,7 +650,7 @@ namespace LoggingSample
             // Data.LogMetric response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -672,6 +682,7 @@ namespace LoggingSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 
 namespace LoggingSample
@@ -688,7 +699,7 @@ namespace LoggingSample
 
             // The resource name of the metric to delete:
             // "projects/[PROJECT_ID]/metrics/[METRIC_ID]"
-            string metricName = "";  // TODO: Update placeholder value.
+            string metricName = "projects/my-project/metrics/my-metric";  // TODO: Update placeholder value.
 
             ProjectsResource.MetricsResource.DeleteRequest request = loggingService.Projects.Metrics.Delete(metricName);
 
@@ -726,6 +737,7 @@ namespace LoggingSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -745,7 +757,7 @@ namespace LoggingSample
 
             // The resource name of the desired metric:
             // "projects/[PROJECT_ID]/metrics/[METRIC_ID]"
-            string metricName = "";  // TODO: Update placeholder value.
+            string metricName = "projects/my-project/metrics/my-metric";  // TODO: Update placeholder value.
 
             ProjectsResource.MetricsResource.GetRequest request = loggingService.Projects.Metrics.Get(metricName);
 
@@ -754,7 +766,7 @@ namespace LoggingSample
             // Data.LogMetric response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -786,6 +798,7 @@ namespace LoggingSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -805,7 +818,7 @@ namespace LoggingSample
 
             // Required. The name of the project containing the metrics:
             // "projects/[PROJECT_ID]"
-            string parent = "";  // TODO: Update placeholder value.
+            string parent = "projects/my-project";  // TODO: Update placeholder value.
 
             ProjectsResource.MetricsResource.ListRequest request = loggingService.Projects.Metrics.List(parent);
 
@@ -823,7 +836,7 @@ namespace LoggingSample
                 foreach (Data.LogMetric logMetric in response.Metrics)
                 {
                     // TODO: Change code below to process each `logMetric` resource:
-                    Console.WriteLine(logMetric);
+                    Console.WriteLine(JsonConvert.SerializeObject(logMetric));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -858,6 +871,7 @@ namespace LoggingSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -879,7 +893,7 @@ namespace LoggingSample
             // "projects/[PROJECT_ID]/metrics/[METRIC_ID]"
             // The updated metric must be provided in the request and it's name field must be the same as
             // [METRIC_ID] If the metric does not exist in [PROJECT_ID], then a new metric is created.
-            string metricName = "";  // TODO: Update placeholder value.
+            string metricName = "projects/my-project/metrics/my-metric";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`. All existing
             // properties will be replaced:
@@ -892,7 +906,7 @@ namespace LoggingSample
             // Data.LogMetric response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -924,6 +938,7 @@ namespace LoggingSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -945,7 +960,7 @@ namespace LoggingSample
             // "projects/[PROJECT_ID]"
             // "organizations/[ORGANIZATION_ID]"
             // Examples: "projects/my-logging-project", "organizations/123456789".
-            string parent = "";  // TODO: Update placeholder value.
+            string parent = "projects/my-project";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.LogSink requestBody = new Data.LogSink();
@@ -957,7 +972,7 @@ namespace LoggingSample
             // Data.LogSink response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -989,6 +1004,7 @@ namespace LoggingSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 
 namespace LoggingSample
@@ -1009,7 +1025,7 @@ namespace LoggingSample
             // "organizations/[ORGANIZATION_ID]/sinks/[SINK_ID]"
             // It is an error if the sink does not exist. Example: "projects/my-project-id/sinks/my-sink-id". It
             // is an error if the sink does not exist.
-            string sinkName = "";  // TODO: Update placeholder value.
+            string sinkName = "projects/my-project/sinks/my-sink";  // TODO: Update placeholder value.
 
             ProjectsResource.SinksResource.DeleteRequest request = loggingService.Projects.Sinks.Delete(sinkName);
 
@@ -1047,6 +1063,7 @@ namespace LoggingSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1068,7 +1085,7 @@ namespace LoggingSample
             // "projects/[PROJECT_ID]/sinks/[SINK_ID]"
             // "organizations/[ORGANIZATION_ID]/sinks/[SINK_ID]"
             // Example: "projects/my-project-id/sinks/my-sink-id".
-            string sinkName = "";  // TODO: Update placeholder value.
+            string sinkName = "projects/my-project/sinks/my-sink";  // TODO: Update placeholder value.
 
             ProjectsResource.SinksResource.GetRequest request = loggingService.Projects.Sinks.Get(sinkName);
 
@@ -1077,7 +1094,7 @@ namespace LoggingSample
             // Data.LogSink response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -1109,6 +1126,7 @@ namespace LoggingSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1128,7 +1146,7 @@ namespace LoggingSample
 
             // Required. The parent resource whose sinks are to be listed. Examples:
             // "projects/my-logging-project", "organizations/123456789".
-            string parent = "";  // TODO: Update placeholder value.
+            string parent = "projects/my-project";  // TODO: Update placeholder value.
 
             ProjectsResource.SinksResource.ListRequest request = loggingService.Projects.Sinks.List(parent);
 
@@ -1146,7 +1164,7 @@ namespace LoggingSample
                 foreach (Data.LogSink logSink in response.Sinks)
                 {
                     // TODO: Change code below to process each `logSink` resource:
-                    Console.WriteLine(logSink);
+                    Console.WriteLine(JsonConvert.SerializeObject(logSink));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -1181,6 +1199,7 @@ namespace LoggingSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -1203,7 +1222,7 @@ namespace LoggingSample
             // "projects/[PROJECT_ID]/sinks/[SINK_ID]"
             // "organizations/[ORGANIZATION_ID]/sinks/[SINK_ID]"
             // Example: "projects/my-project-id/sinks/my-sink-id".
-            string sinkName = "";  // TODO: Update placeholder value.
+            string sinkName = "projects/my-project/sinks/my-sink";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`. All existing
             // properties will be replaced:
@@ -1216,7 +1235,7 @@ namespace LoggingSample
             // Data.LogSink response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()

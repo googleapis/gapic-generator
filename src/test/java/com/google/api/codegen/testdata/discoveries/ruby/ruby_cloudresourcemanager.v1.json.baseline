@@ -16,7 +16,6 @@
 
 require 'googleauth'
 require 'google/apis/cloudresourcemanager_v1'
-require 'json'
 
 service = Google::Apis::CloudresourcemanagerV1::CloudResourceManagerService.new
 
@@ -24,12 +23,12 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # The name of the operation resource.
-name = ''  # TODO: Update placeholder value.
+name = 'operations/my-operation'  # TODO: Update placeholder value.
 
 response = service.get_operation(name)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Resource Manager API
@@ -47,7 +46,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/cloudresourcemanager_v1'
-require 'json'
 
 service = Google::Apis::CloudresourcemanagerV1::CloudResourceManagerService.new
 
@@ -55,12 +53,12 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # The resource name of the Organization to fetch, e.g. "organizations/1234".
-name = ''  # TODO: Update placeholder value.
+name = 'organizations/my-organization'  # TODO: Update placeholder value.
 
 response = service.get_organization(name)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Resource Manager API
@@ -78,7 +76,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/cloudresourcemanager_v1'
-require 'json'
 
 service = Google::Apis::CloudresourcemanagerV1::CloudResourceManagerService.new
 
@@ -88,7 +85,7 @@ service.authorization = \
 # REQUIRED: The resource for which the policy is being requested.
 # `resource` is usually specified as a path. For example, a Project
 # resource is specified as `projects/{project}`.
-resource = ''  # TODO: Update placeholder value.
+resource = 'organizations/my-organization'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::CloudresourcemanagerV1::GetIamPolicyRequest.new
@@ -96,7 +93,7 @@ request_body = Google::Apis::CloudresourcemanagerV1::GetIamPolicyRequest.new
 response = service.get_organization_iam_policy(resource, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Resource Manager API
@@ -114,7 +111,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/cloudresourcemanager_v1'
-require 'json'
 
 service = Google::Apis::CloudresourcemanagerV1::CloudResourceManagerService.new
 
@@ -131,7 +127,7 @@ end
 
 organizations.each do |organization|
   # TODO: Change code below to process each `organization` resource:
-  puts JSON.pretty_generate(organization)
+  puts organization.to_json
 end
 # BEFORE RUNNING:
 # ---------------
@@ -150,7 +146,6 @@ end
 
 require 'googleauth'
 require 'google/apis/cloudresourcemanager_v1'
-require 'json'
 
 service = Google::Apis::CloudresourcemanagerV1::CloudResourceManagerService.new
 
@@ -160,7 +155,7 @@ service.authorization = \
 # REQUIRED: The resource for which the policy is being specified.
 # `resource` is usually specified as a path. For example, a Project
 # resource is specified as `projects/{project}`.
-resource = ''  # TODO: Update placeholder value.
+resource = 'organizations/my-organization'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::CloudresourcemanagerV1::SetIamPolicyRequest.new
@@ -168,7 +163,7 @@ request_body = Google::Apis::CloudresourcemanagerV1::SetIamPolicyRequest.new
 response = service.set_organization_iam_policy(resource, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Resource Manager API
@@ -186,7 +181,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/cloudresourcemanager_v1'
-require 'json'
 
 service = Google::Apis::CloudresourcemanagerV1::CloudResourceManagerService.new
 
@@ -196,7 +190,7 @@ service.authorization = \
 # REQUIRED: The resource for which the policy detail is being requested.
 # `resource` is usually specified as a path. For example, a Project
 # resource is specified as `projects/{project}`.
-resource = ''  # TODO: Update placeholder value.
+resource = 'organizations/my-organization'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::CloudresourcemanagerV1::TestIamPermissionsRequest.new
@@ -204,7 +198,7 @@ request_body = Google::Apis::CloudresourcemanagerV1::TestIamPermissionsRequest.n
 response = service.test_organization_iam_permissions(resource, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Resource Manager API
@@ -222,7 +216,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/cloudresourcemanager_v1'
-require 'json'
 
 service = Google::Apis::CloudresourcemanagerV1::CloudResourceManagerService.new
 
@@ -235,7 +228,7 @@ request_body = Google::Apis::CloudresourcemanagerV1::Project.new
 response = service.create_project(request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Resource Manager API
@@ -261,7 +254,7 @@ service.authorization = \
 
 # The Project ID (for example, `foo-bar-123`).
 # Required.
-project_id = ''  # TODO: Update placeholder value.
+project_id = 'my-project-id'  # TODO: Update placeholder value.
 
 service.delete_project(project_id)
 # BEFORE RUNNING:
@@ -281,7 +274,6 @@ service.delete_project(project_id)
 
 require 'googleauth'
 require 'google/apis/cloudresourcemanager_v1'
-require 'json'
 
 service = Google::Apis::CloudresourcemanagerV1::CloudResourceManagerService.new
 
@@ -290,12 +282,12 @@ service.authorization = \
 
 # The Project ID (for example, `my-project-123`).
 # Required.
-project_id = ''  # TODO: Update placeholder value.
+project_id = 'my-project-id'  # TODO: Update placeholder value.
 
 response = service.get_project(project_id)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Resource Manager API
@@ -313,7 +305,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/cloudresourcemanager_v1'
-require 'json'
 
 service = Google::Apis::CloudresourcemanagerV1::CloudResourceManagerService.new
 
@@ -322,7 +313,7 @@ service.authorization = \
 
 # The Project ID (for example, `my-project-123`).
 # Required.
-project_id = ''  # TODO: Update placeholder value.
+project_id = 'my-project-id'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::CloudresourcemanagerV1::GetAncestryRequest.new
@@ -330,7 +321,7 @@ request_body = Google::Apis::CloudresourcemanagerV1::GetAncestryRequest.new
 response = service.get_project_ancestry(project_id, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Resource Manager API
@@ -348,7 +339,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/cloudresourcemanager_v1'
-require 'json'
 
 service = Google::Apis::CloudresourcemanagerV1::CloudResourceManagerService.new
 
@@ -358,7 +348,7 @@ service.authorization = \
 # REQUIRED: The resource for which the policy is being requested.
 # `resource` is usually specified as a path. For example, a Project
 # resource is specified as `projects/{project}`.
-resource = ''  # TODO: Update placeholder value.
+resource = 'my-resource'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::CloudresourcemanagerV1::GetIamPolicyRequest.new
@@ -366,7 +356,7 @@ request_body = Google::Apis::CloudresourcemanagerV1::GetIamPolicyRequest.new
 response = service.get_project_iam_policy(resource, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Resource Manager API
@@ -384,7 +374,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/cloudresourcemanager_v1'
-require 'json'
 
 service = Google::Apis::CloudresourcemanagerV1::CloudResourceManagerService.new
 
@@ -397,7 +386,7 @@ end
 
 projects.each do |project|
   # TODO: Change code below to process each `project` resource:
-  puts JSON.pretty_generate(project)
+  puts project.to_json
 end
 # BEFORE RUNNING:
 # ---------------
@@ -416,7 +405,6 @@ end
 
 require 'googleauth'
 require 'google/apis/cloudresourcemanager_v1'
-require 'json'
 
 service = Google::Apis::CloudresourcemanagerV1::CloudResourceManagerService.new
 
@@ -426,7 +414,7 @@ service.authorization = \
 # REQUIRED: The resource for which the policy is being specified.
 # `resource` is usually specified as a path. For example, a Project
 # resource is specified as `projects/{project}`.
-resource = ''  # TODO: Update placeholder value.
+resource = 'my-resource'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::CloudresourcemanagerV1::SetIamPolicyRequest.new
@@ -434,7 +422,7 @@ request_body = Google::Apis::CloudresourcemanagerV1::SetIamPolicyRequest.new
 response = service.set_project_iam_policy(resource, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Resource Manager API
@@ -452,7 +440,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/cloudresourcemanager_v1'
-require 'json'
 
 service = Google::Apis::CloudresourcemanagerV1::CloudResourceManagerService.new
 
@@ -462,7 +449,7 @@ service.authorization = \
 # REQUIRED: The resource for which the policy detail is being requested.
 # `resource` is usually specified as a path. For example, a Project
 # resource is specified as `projects/{project}`.
-resource = ''  # TODO: Update placeholder value.
+resource = 'my-resource'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::CloudresourcemanagerV1::TestIamPermissionsRequest.new
@@ -470,7 +457,7 @@ request_body = Google::Apis::CloudresourcemanagerV1::TestIamPermissionsRequest.n
 response = service.test_project_iam_permissions(resource, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Resource Manager API
@@ -496,7 +483,7 @@ service.authorization = \
 
 # The project ID (for example, `foo-bar-123`).
 # Required.
-project_id = ''  # TODO: Update placeholder value.
+project_id = 'my-project-id'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::CloudresourcemanagerV1::UndeleteProjectRequest.new
@@ -519,7 +506,6 @@ service.undelete_project(project_id, request_body)
 
 require 'googleauth'
 require 'google/apis/cloudresourcemanager_v1'
-require 'json'
 
 service = Google::Apis::CloudresourcemanagerV1::CloudResourceManagerService.new
 
@@ -528,7 +514,7 @@ service.authorization = \
 
 # The project ID (for example, `my-project-123`).
 # Required.
-project_id = ''  # TODO: Update placeholder value.
+project_id = 'my-project-id'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`. All existing
 # members will be replaced:
@@ -537,4 +523,4 @@ request_body = Google::Apis::CloudresourcemanagerV1::Project.new
 response = service.update_project(project_id, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json

@@ -32,6 +32,7 @@ import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.js.JSNameFormatter;
 import com.google.api.codegen.util.js.JSTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Field.Cardinality;
 import com.google.protobuf.Method;
@@ -77,10 +78,6 @@ public class NodeJSSampleMethodToViewTransformer implements SampleMethodToViewTr
     String serviceTypeName = typeTable.getAndSaveNicknameForServiceType(config.apiTypeName());
     String requestVarName = symbolTable.getNewSymbol(namer.getRequestVarName());
 
-    if (methodInfo.isPageStreaming()) {
-      builder.pageStreaming(createSamplePageStreamingView(context, symbolTable));
-    }
-
     // Created before the fields in case there are naming conflicts in the symbol table.
     SampleAuthView sampleAuthView = createSampleAuthView(context, symbolTable);
 
@@ -101,6 +98,12 @@ public class NodeJSSampleMethodToViewTransformer implements SampleMethodToViewTr
       for (FieldInfo fieldInfo : methodInfo.requestBodyType().message().fields().values()) {
         requestBodyFields.add(createSampleFieldView(fieldInfo, typeTable, false));
       }
+    }
+
+    // The page streaming view model is generated close to last to avoid taking naming precedence in
+    // the symbol table.
+    if (methodInfo.isPageStreaming()) {
+      builder.pageStreaming(createSamplePageStreamingView(context, symbolTable));
     }
 
     boolean hasResponse = methodInfo.responseType() != null;
@@ -190,9 +193,15 @@ public class NodeJSSampleMethodToViewTransformer implements SampleMethodToViewTr
     if (escapeReservedParamNames && RESERVED_PARAM_NAMES.contains(name)) {
       name = name + "_";
     }
+    String defaultValue;
+    if (!Strings.isNullOrEmpty(field.defaultValue())) {
+      defaultValue = field.defaultValue();
+    } else {
+      defaultValue = typeTable.getZeroValueAndSaveNicknameFor(field.type());
+    }
     return SampleFieldView.newBuilder()
         .name(name)
-        .defaultValue(typeTable.getZeroValueAndSaveNicknameFor(field.type()))
+        .defaultValue(defaultValue)
         .example(field.example())
         .description(field.description())
         .required(field.required())

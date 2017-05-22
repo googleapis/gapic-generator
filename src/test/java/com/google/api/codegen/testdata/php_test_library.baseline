@@ -61,6 +61,10 @@ use \google\example\library\v1\PublishSeriesResponse;
 use \google\example\library\v1\SeriesUuid;
 use \google\example\library\v1\Shelf;
 use \google\example\library\v1\SomeMessage2\SomeMessage3\Alignment;
+use \google\example\library\v1\TestOptionalRequiredFlatteningParamsRequest;
+use \google\example\library\v1\TestOptionalRequiredFlatteningParamsRequest\InnerEnum;
+use \google\example\library\v1\TestOptionalRequiredFlatteningParamsRequest\InnerMessage;
+use \google\example\library\v1\TestOptionalRequiredFlatteningParamsResponse;
 use \google\example\library\v1\UpdateBookIndexRequest;
 use \google\example\library\v1\UpdateBookRequest;
 use \google\longrunning\GetOperationRequest;
@@ -1907,6 +1911,177 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
 
         $this->assertTrue($grpcStub->isExhausted());
         $this->assertTrue($operationsStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function testOptionalRequiredFlatteningParamsTest()
+    {
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        // Mock response
+        $expectedResponse = new TestOptionalRequiredFlatteningParamsResponse();
+        $grpcStub->addResponse($expectedResponse);
+
+        // Mock request
+        $requiredSingularInt32 = -72313594;
+        $requiredSingularInt64 = -72313499;
+        $requiredSingularFloat = -7514705.0;
+        $requiredSingularDouble = 1.9111005E8;
+        $requiredSingularBool = true;
+        $requiredSingularEnum = InnerEnum::ZERO;
+        $requiredSingularString = "requiredSingularString-1949894503";
+        $requiredSingularBytes = "-29";
+        $requiredSingularMessage = new InnerMessage();
+        $requiredSingularResourceName = "requiredSingularResourceName-1701575020";
+        $requiredSingularResourceNameOneof = "requiredSingularResourceNameOneof-25303726";
+        $requiredSingularFixed32 = 720656715;
+        $requiredSingularFixed64 = 720656810;
+        $requiredRepeatedInt32 = [];
+        $requiredRepeatedInt64 = [];
+        $requiredRepeatedFloat = [];
+        $requiredRepeatedDouble = [];
+        $requiredRepeatedBool = [];
+        $requiredRepeatedEnum = [];
+        $requiredRepeatedString = [];
+        $requiredRepeatedBytes = [];
+        $requiredRepeatedMessage = [];
+        $formattedRequiredRepeatedResourceName = [];
+        $formattedRequiredRepeatedResourceNameOneof = [];
+        $requiredRepeatedFixed32 = [];
+        $requiredRepeatedFixed64 = [];
+        $requiredMap = [];
+
+        $response = $client->testOptionalRequiredFlatteningParams($requiredSingularInt32, $requiredSingularInt64, $requiredSingularFloat, $requiredSingularDouble, $requiredSingularBool, $requiredSingularEnum, $requiredSingularString, $requiredSingularBytes, $requiredSingularMessage, $requiredSingularResourceName, $requiredSingularResourceNameOneof, $requiredSingularFixed32, $requiredSingularFixed64, $requiredRepeatedInt32, $requiredRepeatedInt64, $requiredRepeatedFloat, $requiredRepeatedDouble, $requiredRepeatedBool, $requiredRepeatedEnum, $requiredRepeatedString, $requiredRepeatedBytes, $requiredRepeatedMessage, $formattedRequiredRepeatedResourceName, $formattedRequiredRepeatedResourceNameOneof, $requiredRepeatedFixed32, $requiredRepeatedFixed64, $requiredMap);
+        $this->assertEquals($expectedResponse, $response);
+        $actualRequests = $grpcStub->getReceivedCalls();
+        $this->assertSame(1, count($actualRequests));
+        $actualFuncCall = $actualRequests[0]->getFuncCall();
+        $actualRequestObject = $actualRequests[0]->getRequestObject();
+        $this->assertSame('/google.example.library.v1.LibraryService/TestOptionalRequiredFlatteningParams', $actualFuncCall);
+
+        $this->assertEquals($requiredSingularInt32, $actualRequestObject->getRequiredSingularInt32());
+        $this->assertEquals($requiredSingularInt64, $actualRequestObject->getRequiredSingularInt64());
+        $this->assertEquals($requiredSingularFloat, $actualRequestObject->getRequiredSingularFloat());
+        $this->assertEquals($requiredSingularDouble, $actualRequestObject->getRequiredSingularDouble());
+        $this->assertEquals($requiredSingularBool, $actualRequestObject->getRequiredSingularBool());
+        $this->assertEquals($requiredSingularEnum, $actualRequestObject->getRequiredSingularEnum());
+        $this->assertEquals($requiredSingularString, $actualRequestObject->getRequiredSingularString());
+        $this->assertEquals($requiredSingularBytes, $actualRequestObject->getRequiredSingularBytes());
+        $this->assertEquals($requiredSingularMessage, $actualRequestObject->getRequiredSingularMessage());
+        $this->assertEquals($requiredSingularResourceName, $actualRequestObject->getRequiredSingularResourceName());
+        $this->assertEquals($requiredSingularResourceNameOneof, $actualRequestObject->getRequiredSingularResourceNameOneof());
+        $this->assertEquals($requiredSingularFixed32, $actualRequestObject->getRequiredSingularFixed32());
+        $this->assertEquals($requiredSingularFixed64, $actualRequestObject->getRequiredSingularFixed64());
+        $this->assertEquals($requiredRepeatedInt32, $actualRequestObject->getRequiredRepeatedInt32List());
+        $this->assertEquals($requiredRepeatedInt64, $actualRequestObject->getRequiredRepeatedInt64List());
+        $this->assertEquals($requiredRepeatedFloat, $actualRequestObject->getRequiredRepeatedFloatList());
+        $this->assertEquals($requiredRepeatedDouble, $actualRequestObject->getRequiredRepeatedDoubleList());
+        $this->assertEquals($requiredRepeatedBool, $actualRequestObject->getRequiredRepeatedBoolList());
+        $this->assertEquals($requiredRepeatedEnum, $actualRequestObject->getRequiredRepeatedEnumList());
+        $this->assertEquals($requiredRepeatedString, $actualRequestObject->getRequiredRepeatedStringList());
+        $this->assertEquals($requiredRepeatedBytes, $actualRequestObject->getRequiredRepeatedBytesList());
+        $this->assertEquals($requiredRepeatedMessage, $actualRequestObject->getRequiredRepeatedMessageList());
+        $this->assertEquals($formattedRequiredRepeatedResourceName, $actualRequestObject->getRequiredRepeatedResourceNameList());
+        $this->assertEquals($formattedRequiredRepeatedResourceNameOneof, $actualRequestObject->getRequiredRepeatedResourceNameOneofList());
+        $this->assertEquals($requiredRepeatedFixed32, $actualRequestObject->getRequiredRepeatedFixed32List());
+        $this->assertEquals($requiredRepeatedFixed64, $actualRequestObject->getRequiredRepeatedFixed64List());
+        $this->assertEquals($requiredMap, $actualRequestObject->getRequiredMap());
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function testOptionalRequiredFlatteningParamsExceptionTest()
+    {
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        $status = new stdClass();
+        $status->code = Grpc\STATUS_INTERNAL;
+        $status->details = 'internal error';
+        $grpcStub->addResponse(null, $status);
+
+        // Mock request
+        $requiredSingularInt32 = -72313594;
+        $requiredSingularInt64 = -72313499;
+        $requiredSingularFloat = -7514705.0;
+        $requiredSingularDouble = 1.9111005E8;
+        $requiredSingularBool = true;
+        $requiredSingularEnum = InnerEnum::ZERO;
+        $requiredSingularString = "requiredSingularString-1949894503";
+        $requiredSingularBytes = "-29";
+        $requiredSingularMessage = new InnerMessage();
+        $requiredSingularResourceName = "requiredSingularResourceName-1701575020";
+        $requiredSingularResourceNameOneof = "requiredSingularResourceNameOneof-25303726";
+        $requiredSingularFixed32 = 720656715;
+        $requiredSingularFixed64 = 720656810;
+        $requiredRepeatedInt32 = [];
+        $requiredRepeatedInt64 = [];
+        $requiredRepeatedFloat = [];
+        $requiredRepeatedDouble = [];
+        $requiredRepeatedBool = [];
+        $requiredRepeatedEnum = [];
+        $requiredRepeatedString = [];
+        $requiredRepeatedBytes = [];
+        $requiredRepeatedMessage = [];
+        $formattedRequiredRepeatedResourceName = [];
+        $formattedRequiredRepeatedResourceNameOneof = [];
+        $requiredRepeatedFixed32 = [];
+        $requiredRepeatedFixed64 = [];
+        $requiredMap = [];
+
+        try {
+            $client->testOptionalRequiredFlatteningParams($requiredSingularInt32, $requiredSingularInt64, $requiredSingularFloat, $requiredSingularDouble, $requiredSingularBool, $requiredSingularEnum, $requiredSingularString, $requiredSingularBytes, $requiredSingularMessage, $requiredSingularResourceName, $requiredSingularResourceNameOneof, $requiredSingularFixed32, $requiredSingularFixed64, $requiredRepeatedInt32, $requiredRepeatedInt64, $requiredRepeatedFloat, $requiredRepeatedDouble, $requiredRepeatedBool, $requiredRepeatedEnum, $requiredRepeatedString, $requiredRepeatedBytes, $requiredRepeatedMessage, $formattedRequiredRepeatedResourceName, $formattedRequiredRepeatedResourceNameOneof, $requiredRepeatedFixed32, $requiredRepeatedFixed64, $requiredMap);
+            // If the $client method call did not throw, fail the test
+            $this->fail("Expected an ApiException, but no exception was thrown.");
+        } catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($status->details, $ex->getMessage());
+            $actualRequests = $grpcStub->getReceivedCalls();
+            $this->assertSame(1, count($actualRequests));
+            $actualFuncCall = $actualRequests[0]->getFuncCall();
+            $actualRequestObject = $actualRequests[0]->getRequestObject();
+            $this->assertSame('/google.example.library.v1.LibraryService/TestOptionalRequiredFlatteningParams', $actualFuncCall);
+
+            $this->assertEquals($requiredSingularInt32, $actualRequestObject->getRequiredSingularInt32());
+            $this->assertEquals($requiredSingularInt64, $actualRequestObject->getRequiredSingularInt64());
+            $this->assertEquals($requiredSingularFloat, $actualRequestObject->getRequiredSingularFloat());
+            $this->assertEquals($requiredSingularDouble, $actualRequestObject->getRequiredSingularDouble());
+            $this->assertEquals($requiredSingularBool, $actualRequestObject->getRequiredSingularBool());
+            $this->assertEquals($requiredSingularEnum, $actualRequestObject->getRequiredSingularEnum());
+            $this->assertEquals($requiredSingularString, $actualRequestObject->getRequiredSingularString());
+            $this->assertEquals($requiredSingularBytes, $actualRequestObject->getRequiredSingularBytes());
+            $this->assertEquals($requiredSingularMessage, $actualRequestObject->getRequiredSingularMessage());
+            $this->assertEquals($requiredSingularResourceName, $actualRequestObject->getRequiredSingularResourceName());
+            $this->assertEquals($requiredSingularResourceNameOneof, $actualRequestObject->getRequiredSingularResourceNameOneof());
+            $this->assertEquals($requiredSingularFixed32, $actualRequestObject->getRequiredSingularFixed32());
+            $this->assertEquals($requiredSingularFixed64, $actualRequestObject->getRequiredSingularFixed64());
+            $this->assertEquals($requiredRepeatedInt32, $actualRequestObject->getRequiredRepeatedInt32List());
+            $this->assertEquals($requiredRepeatedInt64, $actualRequestObject->getRequiredRepeatedInt64List());
+            $this->assertEquals($requiredRepeatedFloat, $actualRequestObject->getRequiredRepeatedFloatList());
+            $this->assertEquals($requiredRepeatedDouble, $actualRequestObject->getRequiredRepeatedDoubleList());
+            $this->assertEquals($requiredRepeatedBool, $actualRequestObject->getRequiredRepeatedBoolList());
+            $this->assertEquals($requiredRepeatedEnum, $actualRequestObject->getRequiredRepeatedEnumList());
+            $this->assertEquals($requiredRepeatedString, $actualRequestObject->getRequiredRepeatedStringList());
+            $this->assertEquals($requiredRepeatedBytes, $actualRequestObject->getRequiredRepeatedBytesList());
+            $this->assertEquals($requiredRepeatedMessage, $actualRequestObject->getRequiredRepeatedMessageList());
+            $this->assertEquals($formattedRequiredRepeatedResourceName, $actualRequestObject->getRequiredRepeatedResourceNameList());
+            $this->assertEquals($formattedRequiredRepeatedResourceNameOneof, $actualRequestObject->getRequiredRepeatedResourceNameOneofList());
+            $this->assertEquals($requiredRepeatedFixed32, $actualRequestObject->getRequiredRepeatedFixed32List());
+            $this->assertEquals($requiredRepeatedFixed64, $actualRequestObject->getRequiredRepeatedFixed64List());
+            $this->assertEquals($requiredMap, $actualRequestObject->getRequiredMap());
+        }
+
+        $this->assertTrue($grpcStub->isExhausted());
     }
 
 }

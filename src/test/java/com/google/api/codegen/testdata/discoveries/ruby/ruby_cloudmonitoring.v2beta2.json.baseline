@@ -16,7 +16,6 @@
 
 require 'googleauth'
 require 'google/apis/cloudmonitoring_v2beta2'
-require 'json'
 
 service = Google::Apis::CloudmonitoringV2beta2::CloudMonitoringService.new
 
@@ -24,7 +23,7 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # The project id. The value can be the numeric project ID or string-based project name.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::CloudmonitoringV2beta2::MetricDescriptor.new
@@ -32,7 +31,7 @@ request_body = Google::Apis::CloudmonitoringV2beta2::MetricDescriptor.new
 response = service.create_metric_descriptor(project, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Monitoring API
@@ -50,7 +49,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/cloudmonitoring_v2beta2'
-require 'json'
 
 service = Google::Apis::CloudmonitoringV2beta2::CloudMonitoringService.new
 
@@ -58,15 +56,15 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # The project ID to which the metric belongs.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # Name of the metric.
-metric = ''  # TODO: Update placeholder value.
+metric = 'my-metric'  # TODO: Update placeholder value.
 
 response = service.delete_metric_descriptor(project, metric)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Monitoring API
@@ -84,7 +82,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/cloudmonitoring_v2beta2'
-require 'json'
 
 service = Google::Apis::CloudmonitoringV2beta2::CloudMonitoringService.new
 
@@ -92,7 +89,7 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # The project id. The value can be the numeric project ID or string-based project name.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::CloudmonitoringV2beta2::ListMetricDescriptorsRequest.new
@@ -103,7 +100,7 @@ end
 
 metrics.each do |metric_descriptor|
   # TODO: Change code below to process each `metric_descriptor` resource:
-  puts JSON.pretty_generate(metric_descriptor)
+  puts metric_descriptor.to_json
 end
 # BEFORE RUNNING:
 # ---------------
@@ -122,7 +119,6 @@ end
 
 require 'googleauth'
 require 'google/apis/cloudmonitoring_v2beta2'
-require 'json'
 
 service = Google::Apis::CloudmonitoringV2beta2::CloudMonitoringService.new
 
@@ -131,11 +127,11 @@ service.authorization = \
 
 # The project ID to which this time series belongs. The value can be the numeric project ID or
 # string-based project name.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
 # compute.googleapis.com/instance/disk/read_ops_count.
-metric = ''  # TODO: Update placeholder value.
+metric = 'my-metric'  # TODO: Update placeholder value.
 
 # End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
 youngest = ''  # TODO: Update placeholder value.
@@ -149,7 +145,7 @@ end
 
 timeseries2.each do |timeseries|
   # TODO: Change code below to process each `timeseries` resource:
-  puts JSON.pretty_generate(timeseries)
+  puts timeseries.to_json
 end
 # BEFORE RUNNING:
 # ---------------
@@ -168,7 +164,6 @@ end
 
 require 'googleauth'
 require 'google/apis/cloudmonitoring_v2beta2'
-require 'json'
 
 service = Google::Apis::CloudmonitoringV2beta2::CloudMonitoringService.new
 
@@ -176,7 +171,7 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # The project ID. The value can be the numeric project ID or string-based project name.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::CloudmonitoringV2beta2::WriteTimeseriesRequest.new
@@ -184,7 +179,7 @@ request_body = Google::Apis::CloudmonitoringV2beta2::WriteTimeseriesRequest.new
 response = service.write_timeseries(project, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Monitoring API
@@ -202,7 +197,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/cloudmonitoring_v2beta2'
-require 'json'
 
 service = Google::Apis::CloudmonitoringV2beta2::CloudMonitoringService.new
 
@@ -211,11 +205,11 @@ service.authorization = \
 
 # The project ID to which this time series belongs. The value can be the numeric project ID or
 # string-based project name.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
 # compute.googleapis.com/instance/disk/read_ops_count.
-metric = ''  # TODO: Update placeholder value.
+metric = 'my-metric'  # TODO: Update placeholder value.
 
 # End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
 youngest = ''  # TODO: Update placeholder value.
@@ -229,5 +223,5 @@ end
 
 timeseries.each do |timeseries_descriptor|
   # TODO: Change code below to process each `timeseries_descriptor` resource:
-  puts JSON.pretty_generate(timeseries_descriptor)
+  puts timeseries_descriptor.to_json
 end

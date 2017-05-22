@@ -14,16 +14,11 @@
  */
 package com.google.api.codegen.transformer.php;
 
-import com.google.api.codegen.transformer.FeatureConfig;
+import com.google.api.codegen.transformer.DefaultFeatureConfig;
 
-public class PhpFeatureConfig extends FeatureConfig {
+public class PhpFeatureConfig extends DefaultFeatureConfig {
   @Override
   public boolean enableMixins() {
-    return true;
-  }
-
-  @Override
-  public boolean enableGrpcStreaming() {
     return true;
   }
 }

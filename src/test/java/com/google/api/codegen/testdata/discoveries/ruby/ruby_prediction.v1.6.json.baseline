@@ -16,7 +16,6 @@
 
 require 'googleauth'
 require 'google/apis/prediction_v1_6'
-require 'json'
 
 service = Google::Apis::PredictionV1_6::PredictionService.new
 
@@ -24,10 +23,10 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # The project associated with the model.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # The name of a hosted model.
-hosted_model_name = ''  # TODO: Update placeholder value.
+hosted_model_name = 'my-hosted-model-name'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::PredictionV1_6::Input.new
@@ -35,7 +34,7 @@ request_body = Google::Apis::PredictionV1_6::Input.new
 response = service.predict_hosted_model(project, hosted_model_name, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Prediction API
@@ -53,7 +52,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/prediction_v1_6'
-require 'json'
 
 service = Google::Apis::PredictionV1_6::PredictionService.new
 
@@ -61,15 +59,15 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # The project associated with the model.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # The unique name for the predictive model.
-id = ''  # TODO: Update placeholder value.
+id = 'my-id'  # TODO: Update placeholder value.
 
 response = service.analyze_trained_model(project, id)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Prediction API
@@ -94,10 +92,10 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # The project associated with the model.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # The unique name for the predictive model.
-id = ''  # TODO: Update placeholder value.
+id = 'my-id'  # TODO: Update placeholder value.
 
 service.delete_trained_model(project, id)
 # BEFORE RUNNING:
@@ -117,7 +115,6 @@ service.delete_trained_model(project, id)
 
 require 'googleauth'
 require 'google/apis/prediction_v1_6'
-require 'json'
 
 service = Google::Apis::PredictionV1_6::PredictionService.new
 
@@ -125,15 +122,15 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # The project associated with the model.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # The unique name for the predictive model.
-id = ''  # TODO: Update placeholder value.
+id = 'my-id'  # TODO: Update placeholder value.
 
 response = service.get_trained_model(project, id)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Prediction API
@@ -151,7 +148,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/prediction_v1_6'
-require 'json'
 
 service = Google::Apis::PredictionV1_6::PredictionService.new
 
@@ -159,7 +155,7 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # The project associated with the model.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::PredictionV1_6::Insert.new
@@ -167,7 +163,7 @@ request_body = Google::Apis::PredictionV1_6::Insert.new
 response = service.insert_trained_model(project, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Prediction API
@@ -185,7 +181,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/prediction_v1_6'
-require 'json'
 
 service = Google::Apis::PredictionV1_6::PredictionService.new
 
@@ -193,7 +188,7 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # The project associated with the model.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 items = service.fetch_all do |token|
   service.list_trained_models(project, page_token: token)
@@ -201,7 +196,7 @@ end
 
 items.each do |insert2|
   # TODO: Change code below to process each `insert2` resource:
-  puts JSON.pretty_generate(insert2)
+  puts insert2.to_json
 end
 # BEFORE RUNNING:
 # ---------------
@@ -220,7 +215,6 @@ end
 
 require 'googleauth'
 require 'google/apis/prediction_v1_6'
-require 'json'
 
 service = Google::Apis::PredictionV1_6::PredictionService.new
 
@@ -228,10 +222,10 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # The project associated with the model.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # The unique name for the predictive model.
-id = ''  # TODO: Update placeholder value.
+id = 'my-id'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::PredictionV1_6::Input.new
@@ -239,7 +233,7 @@ request_body = Google::Apis::PredictionV1_6::Input.new
 response = service.predict_trained_model(project, id, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Prediction API
@@ -257,7 +251,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/prediction_v1_6'
-require 'json'
 
 service = Google::Apis::PredictionV1_6::PredictionService.new
 
@@ -265,10 +258,10 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # The project associated with the model.
-project = ''  # TODO: Update placeholder value.
+project = 'my-project'  # TODO: Update placeholder value.
 
 # The unique name for the predictive model.
-id = ''  # TODO: Update placeholder value.
+id = 'my-id'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`. All existing
 # members will be replaced:
@@ -277,4 +270,4 @@ request_body = Google::Apis::PredictionV1_6::Update.new
 response = service.update_trained_model(project, id, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json

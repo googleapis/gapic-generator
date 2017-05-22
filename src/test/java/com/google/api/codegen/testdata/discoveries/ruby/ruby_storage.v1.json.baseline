@@ -23,11 +23,11 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Name of a bucket.
-bucket = ''  # TODO: Update placeholder value.
+bucket = 'my-bucket'  # TODO: Update placeholder value.
 
 # The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
 # group-emailAddress, allUsers, or allAuthenticatedUsers.
-entity = ''  # TODO: Update placeholder value.
+entity = 'my-entity'  # TODO: Update placeholder value.
 
 service.delete_bucket_access_control(bucket, entity)
 # BEFORE RUNNING:
@@ -47,7 +47,6 @@ service.delete_bucket_access_control(bucket, entity)
 
 require 'googleauth'
 require 'google/apis/storage_v1'
-require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
 
@@ -55,16 +54,16 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Name of a bucket.
-bucket = ''  # TODO: Update placeholder value.
+bucket = 'my-bucket'  # TODO: Update placeholder value.
 
 # The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
 # group-emailAddress, allUsers, or allAuthenticatedUsers.
-entity = ''  # TODO: Update placeholder value.
+entity = 'my-entity'  # TODO: Update placeholder value.
 
 response = service.get_bucket_access_control(bucket, entity)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -82,7 +81,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/storage_v1'
-require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
 
@@ -90,7 +88,7 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Name of a bucket.
-bucket = ''  # TODO: Update placeholder value.
+bucket = 'my-bucket'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::StorageV1::BucketAccessControl.new
@@ -98,7 +96,7 @@ request_body = Google::Apis::StorageV1::BucketAccessControl.new
 response = service.insert_bucket_access_control(bucket, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -116,7 +114,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/storage_v1'
-require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
 
@@ -124,12 +121,12 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Name of a bucket.
-bucket = ''  # TODO: Update placeholder value.
+bucket = 'my-bucket'  # TODO: Update placeholder value.
 
 response = service.list_bucket_access_controls(bucket)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -147,7 +144,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/storage_v1'
-require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
 
@@ -155,11 +151,11 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Name of a bucket.
-bucket = ''  # TODO: Update placeholder value.
+bucket = 'my-bucket'  # TODO: Update placeholder value.
 
 # The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
 # group-emailAddress, allUsers, or allAuthenticatedUsers.
-entity = ''  # TODO: Update placeholder value.
+entity = 'my-entity'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`. Only assigned
 # members will be changed:
@@ -168,7 +164,7 @@ request_body = Google::Apis::StorageV1::BucketAccessControl.new
 response = service.patch_bucket_access_control(bucket, entity, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -186,7 +182,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/storage_v1'
-require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
 
@@ -194,11 +189,11 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Name of a bucket.
-bucket = ''  # TODO: Update placeholder value.
+bucket = 'my-bucket'  # TODO: Update placeholder value.
 
 # The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
 # group-emailAddress, allUsers, or allAuthenticatedUsers.
-entity = ''  # TODO: Update placeholder value.
+entity = 'my-entity'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`. All existing
 # members will be replaced:
@@ -207,7 +202,7 @@ request_body = Google::Apis::StorageV1::BucketAccessControl.new
 response = service.update_bucket_access_control(bucket, entity, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -232,7 +227,7 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Name of a bucket.
-bucket = ''  # TODO: Update placeholder value.
+bucket = 'my-bucket'  # TODO: Update placeholder value.
 
 service.delete_bucket(bucket)
 # BEFORE RUNNING:
@@ -252,7 +247,6 @@ service.delete_bucket(bucket)
 
 require 'googleauth'
 require 'google/apis/storage_v1'
-require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
 
@@ -260,12 +254,12 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Name of a bucket.
-bucket = ''  # TODO: Update placeholder value.
+bucket = 'my-bucket'  # TODO: Update placeholder value.
 
 response = service.get_bucket(bucket)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -283,7 +277,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/storage_v1'
-require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
 
@@ -299,7 +292,7 @@ request_body = Google::Apis::StorageV1::Bucket.new
 response = service.insert_bucket(project, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -317,7 +310,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/storage_v1'
-require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
 
@@ -333,7 +325,7 @@ end
 
 items.each do |bucket|
   # TODO: Change code below to process each `bucket` resource:
-  puts JSON.pretty_generate(bucket)
+  puts bucket.to_json
 end
 # BEFORE RUNNING:
 # ---------------
@@ -352,7 +344,6 @@ end
 
 require 'googleauth'
 require 'google/apis/storage_v1'
-require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
 
@@ -360,7 +351,7 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Name of a bucket.
-bucket = ''  # TODO: Update placeholder value.
+bucket = 'my-bucket'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`. Only assigned
 # members will be changed:
@@ -369,7 +360,7 @@ request_body = Google::Apis::StorageV1::Bucket.new
 response = service.patch_bucket(bucket, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -387,7 +378,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/storage_v1'
-require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
 
@@ -395,7 +385,7 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Name of a bucket.
-bucket = ''  # TODO: Update placeholder value.
+bucket = 'my-bucket'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`. All existing
 # members will be replaced:
@@ -404,7 +394,7 @@ request_body = Google::Apis::StorageV1::Bucket.new
 response = service.update_bucket(bucket, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -456,11 +446,11 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Name of a bucket.
-bucket = ''  # TODO: Update placeholder value.
+bucket = 'my-bucket'  # TODO: Update placeholder value.
 
 # The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
 # group-emailAddress, allUsers, or allAuthenticatedUsers.
-entity = ''  # TODO: Update placeholder value.
+entity = 'my-entity'  # TODO: Update placeholder value.
 
 service.delete_default_object_access_control(bucket, entity)
 # BEFORE RUNNING:
@@ -480,7 +470,6 @@ service.delete_default_object_access_control(bucket, entity)
 
 require 'googleauth'
 require 'google/apis/storage_v1'
-require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
 
@@ -488,16 +477,16 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Name of a bucket.
-bucket = ''  # TODO: Update placeholder value.
+bucket = 'my-bucket'  # TODO: Update placeholder value.
 
 # The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
 # group-emailAddress, allUsers, or allAuthenticatedUsers.
-entity = ''  # TODO: Update placeholder value.
+entity = 'my-entity'  # TODO: Update placeholder value.
 
 response = service.get_default_object_access_control(bucket, entity)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -515,7 +504,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/storage_v1'
-require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
 
@@ -523,7 +511,7 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Name of a bucket.
-bucket = ''  # TODO: Update placeholder value.
+bucket = 'my-bucket'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::StorageV1::ObjectAccessControl.new
@@ -531,7 +519,7 @@ request_body = Google::Apis::StorageV1::ObjectAccessControl.new
 response = service.insert_default_object_access_control(bucket, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -549,7 +537,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/storage_v1'
-require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
 
@@ -557,12 +544,12 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Name of a bucket.
-bucket = ''  # TODO: Update placeholder value.
+bucket = 'my-bucket'  # TODO: Update placeholder value.
 
 response = service.list_default_object_access_controls(bucket)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -580,7 +567,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/storage_v1'
-require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
 
@@ -588,11 +574,11 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Name of a bucket.
-bucket = ''  # TODO: Update placeholder value.
+bucket = 'my-bucket'  # TODO: Update placeholder value.
 
 # The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
 # group-emailAddress, allUsers, or allAuthenticatedUsers.
-entity = ''  # TODO: Update placeholder value.
+entity = 'my-entity'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`. Only assigned
 # members will be changed:
@@ -601,7 +587,7 @@ request_body = Google::Apis::StorageV1::ObjectAccessControl.new
 response = service.patch_default_object_access_control(bucket, entity, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -619,7 +605,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/storage_v1'
-require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
 
@@ -627,11 +612,11 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Name of a bucket.
-bucket = ''  # TODO: Update placeholder value.
+bucket = 'my-bucket'  # TODO: Update placeholder value.
 
 # The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
 # group-emailAddress, allUsers, or allAuthenticatedUsers.
-entity = ''  # TODO: Update placeholder value.
+entity = 'my-entity'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`. All existing
 # members will be replaced:
@@ -640,7 +625,7 @@ request_body = Google::Apis::StorageV1::ObjectAccessControl.new
 response = service.update_default_object_access_control(bucket, entity, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -665,15 +650,15 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Name of a bucket.
-bucket = ''  # TODO: Update placeholder value.
+bucket = 'my-bucket'  # TODO: Update placeholder value.
 
 # Name of the object. For information about how to URL encode object names to be path safe, see
 # Encoding URI Path Parts.
-object = ''  # TODO: Update placeholder value.
+object = 'my-object'  # TODO: Update placeholder value.
 
 # The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
 # group-emailAddress, allUsers, or allAuthenticatedUsers.
-entity = ''  # TODO: Update placeholder value.
+entity = 'my-entity'  # TODO: Update placeholder value.
 
 service.delete_object_access_control(bucket, object, entity)
 # BEFORE RUNNING:
@@ -693,7 +678,6 @@ service.delete_object_access_control(bucket, object, entity)
 
 require 'googleauth'
 require 'google/apis/storage_v1'
-require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
 
@@ -701,20 +685,20 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Name of a bucket.
-bucket = ''  # TODO: Update placeholder value.
+bucket = 'my-bucket'  # TODO: Update placeholder value.
 
 # Name of the object. For information about how to URL encode object names to be path safe, see
 # Encoding URI Path Parts.
-object = ''  # TODO: Update placeholder value.
+object = 'my-object'  # TODO: Update placeholder value.
 
 # The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
 # group-emailAddress, allUsers, or allAuthenticatedUsers.
-entity = ''  # TODO: Update placeholder value.
+entity = 'my-entity'  # TODO: Update placeholder value.
 
 response = service.get_object_access_control(bucket, object, entity)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -732,7 +716,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/storage_v1'
-require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
 
@@ -740,11 +723,11 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Name of a bucket.
-bucket = ''  # TODO: Update placeholder value.
+bucket = 'my-bucket'  # TODO: Update placeholder value.
 
 # Name of the object. For information about how to URL encode object names to be path safe, see
 # Encoding URI Path Parts.
-object = ''  # TODO: Update placeholder value.
+object = 'my-object'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::StorageV1::ObjectAccessControl.new
@@ -752,7 +735,7 @@ request_body = Google::Apis::StorageV1::ObjectAccessControl.new
 response = service.insert_object_access_control(bucket, object, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -770,7 +753,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/storage_v1'
-require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
 
@@ -778,16 +760,16 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Name of a bucket.
-bucket = ''  # TODO: Update placeholder value.
+bucket = 'my-bucket'  # TODO: Update placeholder value.
 
 # Name of the object. For information about how to URL encode object names to be path safe, see
 # Encoding URI Path Parts.
-object = ''  # TODO: Update placeholder value.
+object = 'my-object'  # TODO: Update placeholder value.
 
 response = service.list_object_access_controls(bucket, object)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -805,7 +787,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/storage_v1'
-require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
 
@@ -813,15 +794,15 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Name of a bucket.
-bucket = ''  # TODO: Update placeholder value.
+bucket = 'my-bucket'  # TODO: Update placeholder value.
 
 # Name of the object. For information about how to URL encode object names to be path safe, see
 # Encoding URI Path Parts.
-object = ''  # TODO: Update placeholder value.
+object = 'my-object'  # TODO: Update placeholder value.
 
 # The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
 # group-emailAddress, allUsers, or allAuthenticatedUsers.
-entity = ''  # TODO: Update placeholder value.
+entity = 'my-entity'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`. Only assigned
 # members will be changed:
@@ -830,7 +811,7 @@ request_body = Google::Apis::StorageV1::ObjectAccessControl.new
 response = service.patch_object_access_control(bucket, object, entity, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -848,7 +829,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/storage_v1'
-require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
 
@@ -856,15 +836,15 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Name of a bucket.
-bucket = ''  # TODO: Update placeholder value.
+bucket = 'my-bucket'  # TODO: Update placeholder value.
 
 # Name of the object. For information about how to URL encode object names to be path safe, see
 # Encoding URI Path Parts.
-object = ''  # TODO: Update placeholder value.
+object = 'my-object'  # TODO: Update placeholder value.
 
 # The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
 # group-emailAddress, allUsers, or allAuthenticatedUsers.
-entity = ''  # TODO: Update placeholder value.
+entity = 'my-entity'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`. All existing
 # members will be replaced:
@@ -873,7 +853,7 @@ request_body = Google::Apis::StorageV1::ObjectAccessControl.new
 response = service.update_object_access_control(bucket, object, entity, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -891,7 +871,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/storage_v1'
-require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
 
@@ -899,11 +878,11 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Name of the bucket in which to store the new object.
-destination_bucket = ''  # TODO: Update placeholder value.
+destination_bucket = 'my-destination-bucket'  # TODO: Update placeholder value.
 
 # Name of the new object. For information about how to URL encode object names to be path safe, see
 # Encoding URI Path Parts.
-destination_object = ''  # TODO: Update placeholder value.
+destination_object = 'my-destination-object'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::StorageV1::ComposeRequest.new
@@ -915,7 +894,7 @@ request_body = Google::Apis::StorageV1::ComposeRequest.new
 response = service.compose_object(destination_bucket, destination_object, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -933,7 +912,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/storage_v1'
-require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
 
@@ -941,20 +919,20 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Name of the bucket in which to find the source object.
-source_bucket = ''  # TODO: Update placeholder value.
+source_bucket = 'my-source-bucket'  # TODO: Update placeholder value.
 
 # Name of the source object. For information about how to URL encode object names to be path safe,
 # see Encoding URI Path Parts.
-source_object = ''  # TODO: Update placeholder value.
+source_object = 'my-source-object'  # TODO: Update placeholder value.
 
 # Name of the bucket in which to store the new object. Overrides the provided object metadata's
 # bucket value, if any.For information about how to URL encode object names to be path safe, see
 # Encoding URI Path Parts.
-destination_bucket = ''  # TODO: Update placeholder value.
+destination_bucket = 'my-destination-bucket'  # TODO: Update placeholder value.
 
 # Name of the new object. Required when the object metadata is not otherwise provided. Overrides the
 # object metadata's name value, if any.
-destination_object = ''  # TODO: Update placeholder value.
+destination_object = 'my-destination-object'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::StorageV1::Object.new
@@ -966,7 +944,7 @@ request_body = Google::Apis::StorageV1::Object.new
 response = service.copy_object(source_bucket, source_object, destination_bucket, destination_object, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -991,11 +969,11 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Name of the bucket in which the object resides.
-bucket = ''  # TODO: Update placeholder value.
+bucket = 'my-bucket'  # TODO: Update placeholder value.
 
 # Name of the object. For information about how to URL encode object names to be path safe, see
 # Encoding URI Path Parts.
-object = ''  # TODO: Update placeholder value.
+object = 'my-object'  # TODO: Update placeholder value.
 
 service.delete_object(bucket, object)
 # BEFORE RUNNING:
@@ -1015,7 +993,6 @@ service.delete_object(bucket, object)
 
 require 'googleauth'
 require 'google/apis/storage_v1'
-require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
 
@@ -1023,11 +1000,11 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Name of the bucket in which the object resides.
-bucket = ''  # TODO: Update placeholder value.
+bucket = 'my-bucket'  # TODO: Update placeholder value.
 
 # Name of the object. For information about how to URL encode object names to be path safe, see
 # Encoding URI Path Parts.
-object = ''  # TODO: Update placeholder value.
+object = 'my-object'  # TODO: Update placeholder value.
 
 # TODO: Specify destination to download media content, if desired. For more information, see
 # https://github.com/google/google-api-ruby-client#basic-usage
@@ -1036,7 +1013,7 @@ object = ''  # TODO: Update placeholder value.
 response = service.get_object(bucket, object)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -1054,7 +1031,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/storage_v1'
-require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
 
@@ -1063,7 +1039,7 @@ service.authorization = \
 
 # Name of the bucket in which to store the new object. Overrides the provided object metadata's
 # bucket value, if any.
-bucket = ''  # TODO: Update placeholder value.
+bucket = 'my-bucket'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::StorageV1::Object.new
@@ -1075,7 +1051,7 @@ request_body = Google::Apis::StorageV1::Object.new
 response = service.insert_object(bucket, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -1093,7 +1069,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/storage_v1'
-require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
 
@@ -1101,7 +1076,7 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Name of the bucket in which to look for objects.
-bucket = ''  # TODO: Update placeholder value.
+bucket = 'my-bucket'  # TODO: Update placeholder value.
 
 items = service.fetch_all do |token|
   service.list_objects(bucket, page_token: token)
@@ -1109,7 +1084,7 @@ end
 
 items.each do |object|
   # TODO: Change code below to process each `object` resource:
-  puts JSON.pretty_generate(object)
+  puts object.to_json
 end
 # BEFORE RUNNING:
 # ---------------
@@ -1128,7 +1103,6 @@ end
 
 require 'googleauth'
 require 'google/apis/storage_v1'
-require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
 
@@ -1136,11 +1110,11 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Name of the bucket in which the object resides.
-bucket = ''  # TODO: Update placeholder value.
+bucket = 'my-bucket'  # TODO: Update placeholder value.
 
 # Name of the object. For information about how to URL encode object names to be path safe, see
 # Encoding URI Path Parts.
-object = ''  # TODO: Update placeholder value.
+object = 'my-object'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`. Only assigned
 # members will be changed:
@@ -1149,7 +1123,7 @@ request_body = Google::Apis::StorageV1::Object.new
 response = service.patch_object(bucket, object, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -1167,7 +1141,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/storage_v1'
-require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
 
@@ -1175,20 +1148,20 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Name of the bucket in which to find the source object.
-source_bucket = ''  # TODO: Update placeholder value.
+source_bucket = 'my-source-bucket'  # TODO: Update placeholder value.
 
 # Name of the source object. For information about how to URL encode object names to be path safe,
 # see Encoding URI Path Parts.
-source_object = ''  # TODO: Update placeholder value.
+source_object = 'my-source-object'  # TODO: Update placeholder value.
 
 # Name of the bucket in which to store the new object. Overrides the provided object metadata's
 # bucket value, if any.
-destination_bucket = ''  # TODO: Update placeholder value.
+destination_bucket = 'my-destination-bucket'  # TODO: Update placeholder value.
 
 # Name of the new object. Required when the object metadata is not otherwise provided. Overrides the
 # object metadata's name value, if any. For information about how to URL encode object names to be
 # path safe, see Encoding URI Path Parts.
-destination_object = ''  # TODO: Update placeholder value.
+destination_object = 'my-destination-object'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::StorageV1::Object.new
@@ -1196,7 +1169,7 @@ request_body = Google::Apis::StorageV1::Object.new
 response = service.rewrite_object(source_bucket, source_object, destination_bucket, destination_object, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -1214,7 +1187,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/storage_v1'
-require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
 
@@ -1222,11 +1194,11 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Name of the bucket in which the object resides.
-bucket = ''  # TODO: Update placeholder value.
+bucket = 'my-bucket'  # TODO: Update placeholder value.
 
 # Name of the object. For information about how to URL encode object names to be path safe, see
 # Encoding URI Path Parts.
-object = ''  # TODO: Update placeholder value.
+object = 'my-object'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`. All existing
 # members will be replaced:
@@ -1239,7 +1211,7 @@ request_body = Google::Apis::StorageV1::Object.new
 response = service.update_object(bucket, object, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Cloud Storage JSON API
@@ -1257,7 +1229,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/storage_v1'
-require 'json'
 
 service = Google::Apis::StorageV1::StorageService.new
 
@@ -1265,7 +1236,7 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # Name of the bucket in which to look for objects.
-bucket = ''  # TODO: Update placeholder value.
+bucket = 'my-bucket'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`:
 request_body = Google::Apis::StorageV1::Channel.new
@@ -1273,4 +1244,4 @@ request_body = Google::Apis::StorageV1::Channel.new
 response = service.watch_all_objects(bucket, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json

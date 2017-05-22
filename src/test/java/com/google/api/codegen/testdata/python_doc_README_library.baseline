@@ -1,44 +1,29 @@
 ============== file: README.rst ==============
-GAPIC library for the Google Example Library API
-================================================================================
+Python Client for Google Example Library API (`Alpha`_)
+==================================================================================================
 
-gapic-google-cloud-library-v1 uses google-gax_ (Google API extensions) to provide an
-easy-to-use client library for the `Google Example Library API`_ (v1) defined in the googleapis_ git repository
+Idiomatic Python client for `Google Example Library API`_
 
+- `Client Library Documentation`_
+- `Product Documentation`_
 
-.. _`googleapis`: https://github.com/googleapis/googleapis/tree/master/google/library
-.. _`google-gax`: https://github.com/googleapis/gax-python
-.. _`Google Example Library API`: https://developers.google.com/apis-explorer/?hl=en_US#p/library_example/v1
+.. _Alpha: https://github.com/GoogleCloudPlatform/google-cloud-python/blob/master/README.rst
+.. _Google Example Library API: https://cloud.google.com/library
+.. _Client Library Documentation: https://googlecloudplatform.github.io/google-cloud-python/stable/library-usage
+.. _Product Documentation:  https://cloud.google.com/library
 
-Getting started
----------------
+Quick Start
+-----------
 
-gapic-google-cloud-library-v1 will allow you to connect to the
-Google Example Library API and access all its methods. In order to do this, you need
-to set up authentication as well as install the library locally.
+In order to use this library, you first need to go through the following steps:
 
+1. `Select or create a Cloud Platform project.`_
+2. `Enable the monitoring api.`_
+3. `Setup Authentication.`_
 
-Setup Authentication
-~~~~~~~~~~~~~~~~~~~~
-
-To authenticate all your API calls, first install and setup the `Google Cloud SDK`_.
-Once done, you can then run the following command in your terminal:
-
-.. code-block:: console
-
-    $ gcloud beta auth application-default login
-
-or
-
-.. code-block:: console
-
-    $ gcloud auth login
-
-Please see `gcloud beta auth application-default login`_ document for the difference between these commands.
-
-.. _Google Cloud SDK: https://cloud.google.com/sdk/
-.. _gcloud beta auth application-default login: https://cloud.google.com/sdk/gcloud/reference/beta/auth/application-default/login
-
+.. _Select or create a Cloud Platform project.: https://console.cloud.google.com/project
+.. _Enable the library api.:  https://cloud.google.com/library
+.. _Setup Authentication.: https://googlecloudplatform.github.io/google-cloud-python/stable/google-cloud-auth
 
 Installation
 ~~~~~~~~~~~~
@@ -55,7 +40,7 @@ dependencies.
 
 
 Mac/Linux
-~~~~~~~~~~
+^^^^^^^^^
 
 .. code-block:: console
 
@@ -66,7 +51,7 @@ Mac/Linux
 
 
 Windows
-~~~~~~~
+^^^^^^^
 
 .. code-block:: console
 
@@ -75,6 +60,30 @@ Windows
     <your-env>\Scripts\activate
     <your-env>\Scripts\pip.exe install gapic-google-cloud-library-v1
 
+Preview
+~~~~~~~
 
-At this point you are all set to continue.
+LibraryServiceClient
+^^^^^^^^^^^^^^^^^^^^^^
 
+.. code:: py
+
+  from google.cloud.gapic.example.library.v1 import library_service_client
+  from google.cloud.proto.example.library.v1 import library_pb2
+  client = library_service_client.LibraryServiceClient()
+  name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+  book = library_pb2.Book()
+  response = client.update_book(name, book)
+
+Next Steps
+~~~~~~~~~~
+
+-  Read the `Client Library Documentation`_ for Google Example Library API
+   API to see other available methods on the client.
+-  Read the `Google Example Library API Product documentation`_ to learn
+   more about the product and see How-to Guides.
+-  View this `repository’s main README`_ to see the full list of Cloud
+   APIs that we cover.
+
+.. _Google Example Library API Product documentation:  https://cloud.google.com/library
+.. _repository’s main README: https://github.com/GoogleCloudPlatform/google-cloud-python/blob/master/README.rst

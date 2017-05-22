@@ -71,6 +71,18 @@ public class ApiaryConfig {
   private final Table<String, String, String> pattern =
       HashBasedTable.<String, String, String>create();
 
+  public enum Location {
+    PATH,
+    QUERY
+  }
+
+  /**
+   * Specifies the location of each field. The location is one of PATH or QUERY. The table is
+   * indexed by (type name, field name).
+   */
+  private final Table<String, String, Location> location =
+      HashBasedTable.<String, String, Location>create();
+
   /** Records whether or not the method allows media upload. */
   private final Set<String> mediaUpload = new HashSet<>();
 
@@ -180,6 +192,10 @@ public class ApiaryConfig {
 
   public Table<String, String, String> getFieldPattern() {
     return pattern;
+  }
+
+  public Table<String, String, Location> getFieldLocation() {
+    return location;
   }
 
   public Map<String, Type> getTypes() {

@@ -1,0 +1,334 @@
+@extends "py/common.snip"
+@extends "py/method_sample.snip"
+
+@snippet generate(apiTest)
+    {@header(apiTest.fileHeader)}
+
+    class {@apiTest.testClass.name}(unittest.TestCase):
+
+        @join test : apiTest.testClass.testCases
+            {@testCase(test, apiTest.testClass.apiVariableName)}
+
+        @end
+@end
+
+@private header(fileHeader)
+    {@licenseSection(fileHeader)}
+
+    {@moduleDocstring()}
+    {@renderImportSection(fileHeader.importSection)}
+
+    class CustomException(Exception):
+        pass
+
+@end
+
+@private licenseSection(fileHeader)
+    @join line : fileHeader.copyrightLines
+        @# {@line}
+    @end
+    {@BREAK}@#
+    @join line : fileHeader.licenseLines
+        @# {@line}
+    @end
+@end
+
+@private moduleDocstring()
+    """Unit tests."""
+@end
+
+@private renderImportSection(importSection)
+    @if importSection.standardImports
+
+        {@importList(importSection.standardImports)}
+
+    @end
+    @if importSection.externalImports
+
+        {@importList(importSection.externalImports)}
+
+    @end
+    @if importSection.appImports
+
+        {@importList(importSection.appImports)}
+
+    @end
+@end
+
+@private testCase(test, moduleName)
+    @switch test.grpcStreamingType
+    @case "NonStreaming"
+        {@nonStreamingOptionalArrayTestCase(test, moduleName)}
+    @case "ServerStreaming"
+        {@serverStreamingOptionalArrayTestCase(test, moduleName)}
+    @case "ClientStreaming"
+        {@clientStreamingOptionalArrayTestCase(test, moduleName)}
+    @case "BidiStreaming"
+        {@bidiStreamingOptionalArrayTestCase(test, moduleName)}
+    @default
+        {@unhandledCase()}
+    @end
+@end
+
+@private nonStreamingOptionalArrayTestCase(test, moduleName)
+    @switch test.clientMethodType
+    @case "OptionalArrayMethod"
+        {@simpleTestCase(test, moduleName)}
+    @case "PagedOptionalArrayMethod"
+        {@pagedStreamingTestCase(test, moduleName)}
+    @case "OperationOptionalArrayMethod"
+        {@operationTestCase(test, moduleName)}
+    @default
+        {@unhandledCase()}
+    @end
+@end
+
+@private serverStreamingOptionalArrayTestCase(test, moduleName)
+    @@mock.patch('google.gax.config.create_stub', spec=True)
+    def {@test.name}(self, mock_create_stub):
+        {@unaryTestSetup(test, moduleName)}
+        {@responseStreamingTestResponse(test)}
+        response = {@unaryTestMethodCall(test)}
+        resources = list(response)
+        self.assertEqual(1, len(resources))
+        self.assertEqual(expected_response, resources[0])
+
+        {@unaryTestSuccessAsserts(test)}
+
+    {@simpleTestWithException(test, moduleName)}
+@end
+
+@private clientStreamingOptionalArrayTestCase(test, moduleName)
+    @@mock.patch('google.gax.config.create_stub', spec=True)
+    def {@test.name}(self, mock_create_stub):
+        {@requestStreamingTestSetup(test, moduleName)}
+        @if test.hasReturnValue
+            {@unaryTestResponse(test)}
+            response = {@requestStreamingTestMethodCall(test)}
+            self.assertEqual(expected_response, response)
+        @else
+            {@requestStreamingTestMethodCall(test)}
+        @end
+
+        {@requestStreamingTestSuccessAsserts(test)}
+
+    {@requestStreamingTestWithException(test, moduleName)}
+@end
+
+@private bidiStreamingOptionalArrayTestCase(test, moduleName)
+    @@mock.patch('google.gax.config.create_stub', spec=True)
+    def {@test.name}(self, mock_create_stub):
+        {@requestStreamingTestSetup(test, moduleName)}
+        {@responseStreamingTestResponse(test)}
+        response = {@requestStreamingTestMethodCall(test)}
+        resources = list(response)
+        self.assertEqual(1, len(resources))
+        self.assertEqual(expected_response, resources[0])
+
+        {@requestStreamingTestSuccessAsserts(test)}
+
+    {@requestStreamingTestWithException(test, moduleName)}
+@end
+
+@private simpleTestCase(test, moduleName)
+    @@mock.patch('google.gax.config.create_stub', spec=True)
+    def {@test.name}(self, mock_create_stub):
+        {@unaryTestSetup(test, moduleName)}
+        @if test.hasReturnValue
+            {@unaryTestResponse(test)}
+            response = {@unaryTestMethodCall(test)}
+            self.assertEqual(expected_response, response)
+        @else
+            {@unaryTestMethodCall(test)}
+        @end
+
+        {@unaryTestSuccessAsserts(test)}
+
+    {@simpleTestWithException(test, moduleName)}
+@end
+
+@private pagedStreamingTestCase(test, moduleName)
+    @@mock.patch('google.gax.config.create_stub', spec=True)
+    def {@test.name}(self, mock_create_stub):
+        {@unaryTestSetup(test, moduleName)}
+        {@unaryTestResponse(test)}
+        paged_list_response = {@unaryTestMethodCall(test)}
+        @join pageStreamingResponseView : test.pageStreamingResponseViews
+            {@pageStreamingResponseView.resourcesVarName} = \
+                list(paged_list_response)
+            self.assertEqual(1, \
+                len({@pageStreamingResponseView.resourcesVarName}))
+            self.assertEqual(\
+                expected_response.\
+                    {@pageStreamingResponseView.resourcesFieldGetterName}[0], \
+                {@pageStreamingResponseView.resourcesVarName}[0])
+        @end
+
+        {@unaryTestSuccessAsserts(test)}
+
+    {@pagedStreamingTestWithException(test, moduleName)}
+@end
+
+@private simpleTestWithException(test, moduleName)
+    @@mock.patch('google.gax.config.API_ERRORS', (CustomException,))
+    @@mock.patch('google.gax.config.create_stub', spec=True)
+    def {@test.nameWithException}(self, mock_create_stub):
+        {@unaryTestSetup(test, moduleName)}
+        @# Mock exception response
+        grpc_stub.{@test.grpcStubCallString}.side_effect = CustomException()
+
+        self.assertRaises(\
+            errors.GaxError, \
+            client.{@test.clientMethodName}\
+            {@fieldSettingArgListAfterComma(test.initCode.fieldSettings)})
+@end
+
+@private pagedStreamingTestWithException(test, moduleName)
+    @@mock.patch('google.gax.config.API_ERRORS', (CustomException,))
+    @@mock.patch('google.gax.config.create_stub', spec=True)
+    def {@test.nameWithException}(self, mock_create_stub):
+        {@unaryTestSetup(test, moduleName)}
+        @# Mock exception response
+        grpc_stub.{@test.grpcStubCallString}.side_effect = CustomException()
+
+        paged_list_response = {@unaryTestMethodCall(test)}
+        self.assertRaises(errors.GaxError, list, paged_list_response)
+@end
+
+@private requestStreamingTestWithException(test, moduleName)
+    @@mock.patch('google.gax.config.API_ERRORS', (CustomException,))
+    @@mock.patch('google.gax.config.create_stub', spec=True)
+    def {@test.nameWithException}(self, mock_create_stub):
+        {@requestStreamingTestSetup(test, moduleName)}
+        @# Mock exception response
+        grpc_stub.{@test.grpcStubCallString}.side_effect = CustomException()
+
+        self.assertRaises(\
+            errors.GaxError, \
+            client.{@test.clientMethodName}, \
+            requests)
+@end
+
+@private operationTestCase(test, moduleName)
+    @@mock.patch('google.gax.config.create_stub', spec=True)
+    def {@test.name}(self, mock_create_stub):
+        {@unaryTestSetup(test, moduleName)}
+        @# Mock response
+        {@initCode(test.mockResponse.initCode)}
+        operation = operations_pb2.Operation(name='operations/{@test.name}', done=True)
+        operation.response.Pack(expected_response)
+        grpc_stub.{@test.grpcStubCallString}.return_value = operation
+
+        response = {@unaryTestMethodCall(test)}
+        self.assertEqual(expected_response, response.result())
+
+        {@unaryTestSuccessAsserts(test)}
+
+    @@mock.patch('google.gax.config.create_stub', spec=True)
+    def {@test.nameWithException}(self, mock_create_stub):
+        {@unaryTestSetup(test, moduleName)}
+        @# Mock exception response
+        error = status_pb2.Status()
+        operation = operations_pb2.Operation(\
+            name='operations/{@test.nameWithException}', done=True)
+        operation.error.CopyFrom(error)
+        grpc_stub.{@test.grpcStubCallString}.return_value = operation
+
+        response = {@unaryTestMethodCall(test)}
+        self.assertEqual(error, response.exception())
+@end
+
+@private unaryTestSetup(test, moduleName)
+    @# Mock gRPC layer
+    grpc_stub = mock.Mock()
+    mock_create_stub.return_value = grpc_stub
+
+    client = {@moduleName}.{@test.serviceConstructorName}()
+
+    @if test.hasRequestParameters
+        @# Mock request
+        {@initCode(test.initCode)}
+
+    @end
+@end
+
+@private requestStreamingTestSetup(test, moduleName)
+    @# Mock gRPC layer
+    grpc_stub = mock.Mock()
+    mock_create_stub.return_value = grpc_stub
+
+    client = {@moduleName}.{@test.serviceConstructorName}()
+
+    @# Mock request
+    {@initCode(test.initCode)}
+    requests = [request]
+
+@end
+
+@private unaryTestResponse(test)
+    @# Mock response
+    {@initCode(test.mockResponse.initCode)}
+    grpc_stub.{@test.grpcStubCallString}.return_value = expected_response
+
+@end
+
+@private responseStreamingTestResponse(test)
+    @# Mock response
+    {@initCode(test.mockResponse.initCode)}
+    grpc_stub.{@test.grpcStubCallString}.return_value = iter([expected_response])
+
+@end
+
+@private unaryTestMethodCall(test)
+    client.{@test.clientMethodName}(\
+        {@fieldSettingArgList(test.initCode.fieldSettings)})
+@end
+
+@private requestStreamingTestMethodCall(test)
+    client.{@test.clientMethodName}(requests)
+@end
+
+@private unaryTestSuccessAsserts(test)
+    grpc_stub.{@test.grpcStubCallString}.assert_called_once()
+    args, kwargs = grpc_stub.{@test.grpcStubCallString}.call_args
+    self.assertEqual(len(args), 2)
+    self.assertEqual(len(kwargs), 1)
+    self.assertIn('metadata', kwargs)
+    actual_request = args[0]
+
+    expected_request = {@test.requestTypeName}({@requestParams(test.asserts)})
+    self.assertEqual(expected_request, actual_request)
+@end
+
+@private requestParams(asserts)
+    @join assert : asserts on ", "
+        {@assert.actualValueGetter}={@expectedRequestParam(assert)}
+    @end
+@end
+
+@private expectedRequestParam(assert)
+    @if assert.hasExpectedValueTransformFunction
+        {@assert.expectedValueTransformFunction}(\
+            {@assert.expectedValueIdentifier})
+    @else
+        {@assert.expectedValueIdentifier}
+    @end
+@end
+
+@private requestStreamingTestSuccessAsserts(test)
+    grpc_stub.{@test.grpcStubCallString}.assert_called_once()
+    args, kwargs = grpc_stub.{@test.grpcStubCallString}.call_args
+    self.assertEqual(len(args), 2)
+    self.assertEqual(len(kwargs), 1)
+    self.assertIn('metadata', kwargs)
+    actual_requests = args[0]
+    self.assertEqual(1, len(actual_requests))
+    actual_request = list(actual_requests)[0]
+    self.assertEqual(request, actual_request)
+@end
+
+@private fieldSettingArgListAfterComma(fieldSettings)
+  @if fieldSettings
+    , {@fieldSettingArgList(fieldSettings)}
+  @end
+@end

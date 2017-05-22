@@ -16,7 +16,6 @@
 
 require 'googleauth'
 require 'google/apis/cloudbilling_v1'
-require 'json'
 
 service = Google::Apis::CloudbillingV1::CloudbillingService.new
 
@@ -25,13 +24,12 @@ service.authorization = \
 
 # The resource name of the billing account to retrieve. For example,
 # `billingAccounts/012345-567890-ABCDEF`.
-name = ''  # TODO: Update placeholder value.
-# ex: 'billingAccounts/my-billingAccount'
+name = 'billingAccounts/my-billing-account'  # TODO: Update placeholder value.
 
 response = service.get_billing_account(name)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Billing API
@@ -49,7 +47,6 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/cloudbilling_v1'
-require 'json'
 
 service = Google::Apis::CloudbillingV1::CloudbillingService.new
 
@@ -62,7 +59,7 @@ end
 
 billing_accounts.each do |billing_account|
   # TODO: Change code below to process each `billing_account` resource:
-  puts JSON.pretty_generate(billing_account)
+  puts billing_account.to_json
 end
 # BEFORE RUNNING:
 # ---------------
@@ -81,17 +78,15 @@ end
 
 require 'googleauth'
 require 'google/apis/cloudbilling_v1'
-require 'json'
 
 service = Google::Apis::CloudbillingV1::CloudbillingService.new
 
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# The resource name of the billing account associated with the projects that you want to list. For
-# example, `billingAccounts/012345-567890-ABCDEF`.
-name = ''  # TODO: Update placeholder value.
-# ex: 'billingAccounts/my-billingAccount'
+# The resource name of the billing account associated with the projects that
+# you want to list. For example, `billingAccounts/012345-567890-ABCDEF`.
+name = 'billingAccounts/my-billing-account'  # TODO: Update placeholder value.
 
 project_billing_info2 = service.fetch_all(items: :project_billing_info) do |token|
   service.list_billing_account_projects(name, page_token: token)
@@ -99,7 +94,7 @@ end
 
 project_billing_info2.each do |project_billing_info|
   # TODO: Change code below to process each `project_billing_info` resource:
-  puts JSON.pretty_generate(project_billing_info)
+  puts project_billing_info.to_json
 end
 # BEFORE RUNNING:
 # ---------------
@@ -118,22 +113,20 @@ end
 
 require 'googleauth'
 require 'google/apis/cloudbilling_v1'
-require 'json'
 
 service = Google::Apis::CloudbillingV1::CloudbillingService.new
 
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# The resource name of the project for which billing information is retrieved. For example,
-# `projects/tokyo-rain-123`.
-name = ''  # TODO: Update placeholder value.
-# ex: 'projects/my-project'
+# The resource name of the project for which billing information is
+# retrieved. For example, `projects/tokyo-rain-123`.
+name = 'projects/my-project'  # TODO: Update placeholder value.
 
 response = service.get_project_billing_info(name)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json
 # BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Billing API
@@ -151,17 +144,15 @@ puts JSON.pretty_generate(response)
 
 require 'googleauth'
 require 'google/apis/cloudbilling_v1'
-require 'json'
 
 service = Google::Apis::CloudbillingV1::CloudbillingService.new
 
 service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
-# The resource name of the project associated with the billing information that you want to update.
-# For example, `projects/tokyo-rain-123`.
-name = ''  # TODO: Update placeholder value.
-# ex: 'projects/my-project'
+# The resource name of the project associated with the billing information
+# that you want to update. For example, `projects/tokyo-rain-123`.
+name = 'projects/my-project'  # TODO: Update placeholder value.
 
 # TODO: Assign values to desired members of `request_body`. All existing
 # members will be replaced:
@@ -170,4 +161,4 @@ request_body = Google::Apis::CloudbillingV1::ProjectBillingInfo.new
 response = service.update_project_billing_info(name, request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json

@@ -15,6 +15,7 @@
 package com.google.api.codegen.util;
 
 import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -41,11 +42,8 @@ public class CommonRenderingUtil {
   public static List<String> getDocLines(String text) {
     // TODO: Convert markdown to language-specific doc format.
     // https://github.com/googleapis/toolkit/issues/331
-    List<String> result = new ArrayList<>();
-    for (String line : Splitter.on(String.format("%n")).split(text)) {
-      result.add(line);
-    }
-    return result;
+    List<String> result = Splitter.on(String.format("%n")).splitToList(text);
+    return result.size() == 1 && result.get(0).isEmpty() ? ImmutableList.<String>of() : result;
   }
 
   /**

@@ -30,6 +30,7 @@ import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.js.JSNameFormatter;
 import com.google.api.codegen.util.js.JSTypeTable;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.common.base.Strings;
 import com.google.protobuf.Field.Cardinality;
 import com.google.protobuf.Method;
 import java.util.ArrayList;
@@ -72,10 +73,6 @@ public class JSSampleMethodToViewTransformer implements SampleMethodToViewTransf
     builder.handleSignOutClickFuncName(symbolTable.getNewSymbol("handleSignOutClick"));
     builder.paramsVarName(symbolTable.getNewSymbol("params"));
 
-    if (methodInfo.isPageStreaming()) {
-      builder.pageStreaming(createSamplePageStreamingView(context, symbolTable));
-    }
-
     List<SampleFieldView> requiredFields = new ArrayList<>();
     for (FieldInfo field : methodInfo.fields().values()) {
       // The distinction between required and optional fields doesn't matter as
@@ -98,6 +95,12 @@ public class JSSampleMethodToViewTransformer implements SampleMethodToViewTransf
       }
     }
 
+    // The page streaming view model is generated close to last to avoid taking naming precedence in
+    // the symbol table.
+    if (methodInfo.isPageStreaming()) {
+      builder.pageStreaming(createSamplePageStreamingView(context, symbolTable));
+    }
+
     boolean hasResponse = methodInfo.responseType() != null;
     if (hasResponse) {
       builder.responseVarName(symbolTable.getNewSymbol(namer.getResponseVarName()));
@@ -117,6 +120,7 @@ public class JSSampleMethodToViewTransformer implements SampleMethodToViewTransf
         .apiTitle(config.apiTitle())
         .apiName(config.apiName())
         .apiVersion(config.apiVersion())
+        .discoveryDocUrl(config.discoveryDocUrl())
         .auth(createSampleAuthView(context))
         .methodVerb(methodInfo.verb())
         .methodNameComponents(methodInfo.nameComponents())
@@ -168,9 +172,13 @@ public class JSSampleMethodToViewTransformer implements SampleMethodToViewTransf
   }
 
   private SampleFieldView createSampleFieldView(FieldInfo field, SampleTypeTable typeTable) {
+    String defaultValue = typeTable.getZeroValueAndSaveNicknameFor(field.type());
+    if (!Strings.isNullOrEmpty(field.defaultValue())) {
+      defaultValue = field.defaultValue();
+    }
     return SampleFieldView.newBuilder()
         .name(field.name())
-        .defaultValue(typeTable.getZeroValueAndSaveNicknameFor(field.type()))
+        .defaultValue(defaultValue)
         .example(field.example())
         .description(field.description())
         .build();

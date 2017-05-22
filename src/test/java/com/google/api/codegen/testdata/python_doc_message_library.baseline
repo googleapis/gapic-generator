@@ -210,6 +210,14 @@ class Duration(object):
           end.nanos -= 1000000000;
         }
 
+    Example 3: Compute Duration from datetime.timedelta in Python.
+
+    ::
+
+        td = datetime.timedelta(days=3, minutes=10)
+        duration = Duration()
+        duration.FromTimedelta(td)
+
     Attributes:
       seconds (long): Signed seconds of the span of time. Must be from -315,576,000,000
         to +315,576,000,000 inclusive.
@@ -290,7 +298,7 @@ class FieldMask(object):
         }
 
     A repeated field is not allowed except at the last position of a
-    field mask.
+    paths string.
 
     If a FieldMask object is not present in a get operation, the
     operation applies to all fields (as if a FieldMask of all fields
@@ -317,8 +325,8 @@ class FieldMask(object):
 
     If a repeated field is specified for an update operation, the existing
     repeated values in the target resource will be overwritten by the new values.
-    Note that a repeated field is only allowed in the last position of a field
-    mask.
+    Note that a repeated field is only allowed in the last position of a ``paths``
+    string.
 
     If a sub-message is specified in the last position of the field mask for an
     update operation, then the existing sub-message in the target resource is
@@ -619,14 +627,12 @@ class Timestamp(object):
 
     ::
 
-        now = time.time()
-        seconds = int(now)
-        nanos = int((now - seconds) * 10**9)
-        timestamp = Timestamp(seconds=seconds, nanos=nanos)
+        timestamp = Timestamp()
+        timestamp.GetCurrentTime()
 
     Attributes:
       seconds (long): Represents seconds of UTC time since Unix epoch
-        1970-01-01T00:00:00Z. Must be from from 0001-01-01T00:00:00Z to
+        1970-01-01T00:00:00Z. Must be from 0001-01-01T00:00:00Z to
         9999-12-31T23:59:59Z inclusive.
       nanos (int): Non-negative fractions of a second at nanosecond resolution. Negative
         second values with fractions must still have non-negative nanos values
@@ -917,7 +923,20 @@ class Book(object):
       string_value (:class:`google.protobuf.wrappers_pb2.StringValue`)
       bool_value (:class:`google.protobuf.wrappers_pb2.BoolValue`)
       bytes_value (:class:`google.protobuf.wrappers_pb2.BytesValue`)
-      map_string_value (dict[int -> :class:`google.cloud.proto.example.library.v1.library_pb2.Book.MapStringValueEntry`])
+      map_string_value (dict[int -> :class:`google.cloud.proto.example.library.v1.library_pb2.Book.MapStringValueEntry`]): Test doc generation of lists:
+
+        +   Here is a sentence about the first element of the list that continues
+        ::
+
+            into a second line.
+        +   The second element of the list.
+        +   Another element of the list where the indentation isn't consistent
+        after a blank space.
+
+        ::
+
+            The second paragraph of the list
+        that doesn't have a hanging indent.
       map_message_value (dict[string -> :class:`google.cloud.proto.example.library.v1.library_pb2.Book.MapMessageValueEntry`])
       resource (:class:`google.cloud.proto.test.shared.data.shared_type_pb2.Used`): Tests Python doc generation: should generate a dummy file for shared_type
         resource, but *not* its import, other_shared_type
@@ -1353,6 +1372,76 @@ class GetBigBookMetadata(object):
 
     Attributes:
       progress_percent (int): Approximate percentage of the book processed thus far.
+
+    """
+    pass
+
+
+class TestOptionalRequiredFlatteningParamsRequest(object):
+    """
+    Attributes:
+      required_singular_int32 (int)
+      required_singular_int64 (long)
+      required_singular_float (float)
+      required_singular_double (float)
+      required_singular_bool (bool)
+      required_singular_enum (enum :class:`google.cloud.gapic.example.library.v1.enums.TestOptionalRequiredFlatteningParamsRequest.InnerEnum`)
+      required_singular_string (string)
+      required_singular_bytes (bytes)
+      required_singular_message (:class:`google.cloud.proto.example.library.v1.library_pb2.TestOptionalRequiredFlatteningParamsRequest.InnerMessage`)
+      required_singular_resource_name (string)
+      required_singular_resource_name_oneof (string)
+      required_singular_fixed32 (int)
+      required_singular_fixed64 (long)
+      required_repeated_int32 (list[int])
+      required_repeated_int64 (list[long])
+      required_repeated_float (list[float])
+      required_repeated_double (list[float])
+      required_repeated_bool (list[bool])
+      required_repeated_enum (list[enum :class:`google.cloud.gapic.example.library.v1.enums.TestOptionalRequiredFlatteningParamsRequest.InnerEnum`])
+      required_repeated_string (list[string])
+      required_repeated_bytes (list[bytes])
+      required_repeated_message (list[:class:`google.cloud.proto.example.library.v1.library_pb2.TestOptionalRequiredFlatteningParamsRequest.InnerMessage`])
+      required_repeated_resource_name (list[string])
+      required_repeated_resource_name_oneof (list[string])
+      required_repeated_fixed32 (list[int])
+      required_repeated_fixed64 (list[long])
+      required_map (dict[int -> :class:`google.cloud.proto.example.library.v1.library_pb2.TestOptionalRequiredFlatteningParamsRequest.RequiredMapEntry`])
+      optional_singular_int32 (int)
+      optional_singular_int64 (long)
+      optional_singular_float (float)
+      optional_singular_double (float)
+      optional_singular_bool (bool)
+      optional_singular_enum (enum :class:`google.cloud.gapic.example.library.v1.enums.TestOptionalRequiredFlatteningParamsRequest.InnerEnum`)
+      optional_singular_string (string)
+      optional_singular_bytes (bytes)
+      optional_singular_message (:class:`google.cloud.proto.example.library.v1.library_pb2.TestOptionalRequiredFlatteningParamsRequest.InnerMessage`)
+      optional_singular_resource_name (string)
+      optional_singular_resource_name_oneof (string)
+      optional_singular_fixed32 (int)
+      optional_singular_fixed64 (long)
+      optional_repeated_int32 (list[int])
+      optional_repeated_int64 (list[long])
+      optional_repeated_float (list[float])
+      optional_repeated_double (list[float])
+      optional_repeated_bool (list[bool])
+      optional_repeated_enum (list[enum :class:`google.cloud.gapic.example.library.v1.enums.TestOptionalRequiredFlatteningParamsRequest.InnerEnum`])
+      optional_repeated_string (list[string])
+      optional_repeated_bytes (list[bytes])
+      optional_repeated_message (list[:class:`google.cloud.proto.example.library.v1.library_pb2.TestOptionalRequiredFlatteningParamsRequest.InnerMessage`])
+      optional_repeated_resource_name (list[string])
+      optional_repeated_resource_name_oneof (list[string])
+      optional_repeated_fixed32 (list[int])
+      optional_repeated_fixed64 (list[long])
+      optional_map (dict[int -> :class:`google.cloud.proto.example.library.v1.library_pb2.TestOptionalRequiredFlatteningParamsRequest.OptionalMapEntry`])
+
+    """
+    pass
+
+
+class TestOptionalRequiredFlatteningParamsResponse(object):
+    """
+    Attributes:
 
     """
     pass

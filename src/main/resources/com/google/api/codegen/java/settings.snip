@@ -4,8 +4,14 @@
   {@renderFileHeader(settingsFile.fileHeader)}
 
   {@settingsDoc(settingsFile.settings.doc)}
-  @@Generated("by GAPIC")
-  @@ExperimentalApi
+  @if settingsFile.fileHeader.hasGeneratorVersion
+    @@Generated("by GAPIC v{@settingsFile.fileHeader.generatorVersion}")
+  @else
+    @@Generated("by GAPIC")
+  @end
+  @if settingsFile.settings.releaseLevelAnnotation
+    {@settingsFile.settings.releaseLevelAnnotation}
+  @end
   public class {@settingsFile.settings.name} extends ClientSettings {
     {@constants(settingsFile.settings)}
     {@members(settingsFile.settings)}
@@ -39,7 +45,7 @@
      * {@doc.settingsClassName}.Builder {@doc.settingsBuilderVarName} =
      *     {@doc.settingsClassName}.defaultBuilder();
      * {@doc.settingsBuilderVarName}.{@doc.exampleApiMethodSettingsGetter}().getRetrySettingsBuilder()
-     *     .setTotalTimeout(Duration.standardSeconds(30));
+     *     .setTotalTimeout(Duration.ofSeconds(30));
      * {@doc.settingsClassName} {@doc.settingsVarName} = {@doc.settingsBuilderVarName}.build();
      * </code>
      * </pre>
@@ -48,19 +54,6 @@
 @end
 
 @private constants(xsettingsClass)
-  @if xsettingsClass.hasDefaultServiceAddress
-    /**
-     * The default address of the service.
-     */
-    private static final String DEFAULT_SERVICE_ADDRESS = "{@xsettingsClass.serviceAddress}";
-    {@""}
-  @end
-
-  /**
-   * The default port of the service.
-   */
-  private static final int DEFAULT_SERVICE_PORT = {@xsettingsClass.servicePort};
-
   @if xsettingsClass.hasDefaultServiceScopes
     /**
      * The default scopes of the service.
@@ -73,9 +66,42 @@
     {@""}
   @end
 
-  private static final String DEFAULT_GENERATOR_NAME = "gapic";
-  private static final String DEFAULT_GENERATOR_VERSION = "{@xsettingsClass.generatorVersion}";
+  private static final String DEFAULT_GAPIC_NAME = "gapic";
+  private static final String DEFAULT_GAPIC_VERSION = "";
+
+  private static final String PROPERTIES_FILE = "/{@xsettingsClass.packagePath}/project.properties";
+  private static final String META_VERSION_KEY = "artifact.version";
+
+  private static String gapicVersion;
+
+  @join settings : xsettingsClass.callSettings
+    {@grpcMethodStub(settings)}
+  @end
   {@""}
+@end
+
+@private grpcMethodStub(settings)
+  private static final io.grpc.MethodDescriptor<{@settings.requestTypeName}, {@settings.responseTypeName}> {@settings.grpcMethodConstant} =
+        io.grpc.MethodDescriptor.create(
+            {@streamingTypeEnum(settings.grpcStreamingType)},
+            "{@settings.fullServiceName}/{@settings.protoMethodName}",
+            io.grpc.protobuf.ProtoUtils.marshaller({@settings.requestTypeName}.getDefaultInstance()),
+            io.grpc.protobuf.ProtoUtils.marshaller({@settings.responseTypeName}.getDefaultInstance()));
+@end
+
+@private streamingTypeEnum(streamingType)
+  @switch streamingType
+  @case "NonStreaming"
+    io.grpc.MethodDescriptor.MethodType.UNARY
+  @case "ServerStreaming"
+    io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING
+  @case "ClientStreaming"
+    io.grpc.MethodDescriptor.MethodType.CLIENT_STREAMING
+  @case "BidiStreaming"
+    io.grpc.MethodDescriptor.MethodType.BIDI_STREAMING
+  @default
+    $unhandledCase: {@streamingType}$
+  @end
 @end
 
 @private members(xsettingsClass)
@@ -91,25 +117,19 @@
 
   @if xsettingsClass.hasDefaultServiceAddress
     /**
-     * Returns the default service address.
+     * Returns the default service endpoint.
      */
-    public static String getDefaultServiceAddress() {
-      return DEFAULT_SERVICE_ADDRESS;
+    public static String getDefaultEndpoint() {
+      return "{@xsettingsClass.serviceAddress}:{@xsettingsClass.servicePort}";
     }
 
   @end
-  /**
-   * Returns the default service port.
-   */
-  public static int getDefaultServicePort() {
-    return DEFAULT_SERVICE_PORT;
-  }
 
   @if xsettingsClass.hasDefaultServiceScopes
     /**
      * Returns the default service scopes.
      */
-    public static ImmutableList<String> getDefaultServiceScopes() {
+    public static List<String> getDefaultServiceScopes() {
       return DEFAULT_SERVICE_SCOPES;
     }
 
@@ -126,17 +146,22 @@
         ;
   }
 
-  /**
-   * Returns a builder for the default ChannelProvider for this service.
-   */
+  /** Returns a builder for the default ChannelProvider for this service. */
   public static InstantiatingChannelProvider.Builder defaultChannelProviderBuilder() {
     return InstantiatingChannelProvider.newBuilder()
         @if xsettingsClass.hasDefaultServiceAddress
-            .setServiceAddress(DEFAULT_SERVICE_ADDRESS)
+            .setEndpoint(getDefaultEndpoint())
         @end
-        .setPort(DEFAULT_SERVICE_PORT)
-        .setGeneratorHeader(DEFAULT_GENERATOR_NAME, DEFAULT_GENERATOR_VERSION)
-        .setCredentialsProvider(defaultCredentialsProviderBuilder().build());
+        .setGeneratorHeader(DEFAULT_GAPIC_NAME, getGapicVersion());
+  }
+
+  private static String getGapicVersion() {
+    if (gapicVersion == null) {
+      gapicVersion = PropertiesProvider.loadProperty(
+          {@xsettingsClass.name}.class, PROPERTIES_FILE, META_VERSION_KEY);
+      gapicVersion = gapicVersion == null ? DEFAULT_GAPIC_VERSION : gapicVersion;
+    }
+    return gapicVersion;
   }
 
   /**
@@ -172,8 +197,8 @@
       private final PagedCallSettings<{@settings.requestTypeName}, \
           {@settings.responseTypeName}, \
           {@settings.pagedListResponseTypeName}> {@settings.memberName};
-    @case "BundlingApiCallable"
-      private final BundlingCallSettings<{@settings.requestTypeName}, \
+    @case "BatchingApiCallable"
+      private final BatchingCallSettings<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.memberName};
     @case "StreamingApiCallable"
       private final StreamingCallSettings<{@settings.requestTypeName}, \
@@ -205,8 +230,8 @@
           {@settings.pagedListResponseTypeName}> {@settings.settingsGetFunction}() {
         return {@settings.memberName};
       }
-    @case "BundlingApiCallable"
-      public BundlingCallSettings<{@settings.requestTypeName}, \
+    @case "BatchingApiCallable"
+      public BatchingCallSettings<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
         return {@settings.memberName};
       }
@@ -230,7 +255,8 @@
 @private constructors(xsettingsClass)
   private {@xsettingsClass.name}(Builder settingsBuilder) throws IOException {
     super(settingsBuilder.getExecutorProvider(),
-          settingsBuilder.getChannelProvider());
+          settingsBuilder.getChannelProvider(),
+          settingsBuilder.getCredentialsProvider());
 
     @join settings : xsettingsClass.callSettings
       {@settings.memberName} = settingsBuilder.{@settings.settingsGetFunction}().build();
@@ -242,7 +268,7 @@
 @private descriptors(xsettingsClass)
   {@pageStreamingDescriptors(xsettingsClass)}
   {@pagedListResponseFactories(xsettingsClass)}
-  {@bundlingDescriptors(xsettingsClass)}
+  {@batchingDescriptors(xsettingsClass)}
 @end
 
 @private pageStreamingDescriptors(xsettingsClass)
@@ -250,14 +276,14 @@
     private static final PagedListDescriptor<{@desc.requestTypeName}, {@desc.responseTypeName}, {@desc.resourceTypeName}> {@desc.name} =
         new PagedListDescriptor<{@desc.requestTypeName}, {@desc.responseTypeName}, {@desc.resourceTypeName}>() {
           @@Override
-          public Object emptyToken() {
+          public String emptyToken() {
             return {@desc.defaultTokenValue};
           }
           @@Override
-          public {@desc.requestTypeName} injectToken({@desc.requestTypeName} payload, Object token) {
+          public {@desc.requestTypeName} injectToken({@desc.requestTypeName} payload, String token) {
             return {@desc.requestTypeName}
               .newBuilder(payload)
-              .{@desc.requestTokenSetFunction}(({@desc.tokenTypeName}) token)
+              .{@desc.requestTokenSetFunction}(token)
               .build();
           }
           @@Override
@@ -280,7 +306,7 @@
             @end
           }
           @@Override
-          public Object extractNextToken({@desc.responseTypeName} payload) {
+          public String extractNextToken({@desc.responseTypeName} payload) {
             return payload.{@desc.responseTokenGetFunction}();
           }
           @@Override
@@ -297,55 +323,60 @@
     private static final PagedListResponseFactory<{@factory.requestTypeName}, {@factory.responseTypeName}, {@factory.pagedListResponseTypeName}> {@factory.name} =
         new PagedListResponseFactory<{@factory.requestTypeName}, {@factory.responseTypeName}, {@factory.pagedListResponseTypeName}>() {
           @@Override
-          public {@factory.pagedListResponseTypeName} createPagedListResponse(
+          public ApiFuture<{@factory.pagedListResponseTypeName}> getFuturePagedResponse(
               UnaryCallable<{@factory.requestTypeName}, {@factory.responseTypeName}> callable,
               {@factory.requestTypeName} request,
-              CallContext context) {
-            return new {@factory.pagedListResponseTypeName}(callable, {@factory.pageStreamingDescriptorName}, request, context);
+              CallContext context,
+              ApiFuture<{@factory.responseTypeName}> futureResponse) {
+            PageContext<{@factory.requestTypeName}, {@factory.responseTypeName}, {@factory.resourceTypeName}> pageContext =
+                PageContext.create(callable, {@factory.pageStreamingDescriptorName}, request, context);
+            return {@factory.pagedListResponseTypeName}.createAsync(pageContext, futureResponse);
           }
         };
     {@""}
   @end
 @end
 
-@private bundlingDescriptors(xsettingsClass)
-  @join desc : xsettingsClass.bundlingDescriptors
-    private static final BundlingDescriptor<{@desc.requestTypeName}, {@desc.responseTypeName}> {@desc.name} =
-        new BundlingDescriptor<{@desc.requestTypeName}, {@desc.responseTypeName}>() {
+@private batchingDescriptors(xsettingsClass)
+  @join desc : xsettingsClass.batchingDescriptors
+    private static final BatchingDescriptor<{@desc.requestTypeName}, {@desc.responseTypeName}> {@desc.name} =
+        new BatchingDescriptor<{@desc.requestTypeName}, {@desc.responseTypeName}>() {
           @@Override
-          public String getBundlePartitionKey({@desc.requestTypeName} request) {
-            return {@partitionKeyCode(desc)};
+          public PartitionKey getBatchPartitionKey({@desc.requestTypeName} request) {
+            return new PartitionKey({@partitionKeyCode(desc)});
           }
 
           @@Override
-          public {@desc.requestTypeName} mergeRequests(Collection<{@desc.requestTypeName}> requests) {
-            {@desc.requestTypeName} firstRequest = requests.iterator().next();
-
-            {@desc.bundledFieldTypeName} elements = new ArrayList<>();
-            for ({@desc.requestTypeName} request : requests) {
-              elements.addAll(request.{@desc.bundledFieldGetFunction}());
-            }
-
-            {@desc.requestTypeName} bundleRequest =
-                {@desc.requestTypeName}.newBuilder()
-                    {@fieldCopyCalls(desc.discriminatorFieldCopies)}
-                    .{@desc.bundledFieldSetFunction}(elements)
-                    .build();
-            return bundleRequest;
+          public RequestBuilder<{@desc.requestTypeName}> getRequestBuilder() {
+            return new RequestBuilder<{@desc.requestTypeName}>() {
+              private {@desc.requestTypeName}.Builder builder;
+              @@Override
+              public void appendRequest({@desc.requestTypeName} request) {
+                if (builder == null) {
+                  builder = request.toBuilder();
+                } else {
+                  builder.{@desc.batchedFieldSetFunction}(request.{@desc.batchedFieldGetFunction}());
+                }
+              }
+              @@Override
+              public {@desc.requestTypeName} build() {
+                return builder.build();
+              }
+            };
           }
 
           @@Override
           public void splitResponse(
-              {@desc.responseTypeName} bundleResponse,
-              Collection<? extends RequestIssuer<{@desc.requestTypeName}, {@desc.responseTypeName}>> bundle) {
-            int bundleMessageIndex = 0;
-            for (RequestIssuer<{@desc.requestTypeName}, {@desc.responseTypeName}> responder : bundle) {
+              {@desc.responseTypeName} batchResponse,
+              Collection<? extends BatchedRequestIssuer<{@desc.responseTypeName}>> batch) {
+            int batchMessageIndex = 0;
+            for (BatchedRequestIssuer<{@desc.responseTypeName}> responder : batch) {
               @if desc.hasSubresponse
                 {@desc.subresponseTypeName} subresponseElements = new ArrayList<>();
-                int subresponseCount = responder.getRequest().{@desc.bundledFieldCountGetFunction}();
+                long subresponseCount = responder.getMessageCount();
                 for (int i = 0; i < subresponseCount; i++) {
-                  subresponseElements.add(bundleResponse.{@desc.subresponseByIndexGetFunction}(bundleMessageIndex));
-                  bundleMessageIndex += 1;
+                  subresponseElements.add(batchResponse.{@desc.subresponseByIndexGetFunction}(batchMessageIndex));
+                  batchMessageIndex += 1;
                 }
                 {@desc.responseTypeName} response =
                     {@desc.responseTypeName}.newBuilder().{@desc.subresponseSetFunction}(subresponseElements).build();
@@ -360,15 +391,15 @@
           @@Override
           public void splitException(
               Throwable throwable,
-              Collection<? extends RequestIssuer<{@desc.requestTypeName}, {@desc.responseTypeName}>> bundle) {
-            for (RequestIssuer<{@desc.requestTypeName}, {@desc.responseTypeName}> responder : bundle) {
+              Collection<? extends BatchedRequestIssuer<{@desc.responseTypeName}>> batch) {
+            for (BatchedRequestIssuer<{@desc.responseTypeName}> responder : batch) {
               responder.setException(throwable);
             }
           }
 
           @@Override
           public long countElements({@desc.requestTypeName} request) {
-            return request.{@desc.bundledFieldCountGetFunction}();
+            return request.{@desc.batchedFieldCountGetFunction}();
           }
 
           @@Override
@@ -380,9 +411,9 @@
   @end
 @end
 
-@private partitionKeyCode(bundlingDesc)
-  @join partitionKey : bundlingDesc.partitionKeys on " + "
-    request.{@partitionKey.fieldGetFunction}() + {@partitionKey.separatorLiteral}
+@private partitionKeyCode(batchingDesc)
+  @join partitionKey : batchingDesc.partitionKeys on ", "
+    request.{@partitionKey.fieldGetFunction}()
   @end
 @end
 
@@ -419,8 +450,8 @@
       private final PagedCallSettings.Builder<{@settings.requestTypeName}, \
           {@settings.responseTypeName}, \
           {@settings.pagedListResponseTypeName}> {@settings.memberName};
-    @case "BundlingApiCallable"
-      private final BundlingCallSettings.Builder<{@settings.requestTypeName}, \
+    @case "BatchingApiCallable"
+      private final BatchingCallSettings.Builder<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.memberName};
     @case "StreamingApiCallable"
       private final StreamingCallSettings.Builder<{@settings.requestTypeName}, \
@@ -454,13 +485,13 @@
     RetrySettings.Builder settingsBuilder = null;
     @join retryParamsDef : xsettingsClass.retryParamsDefinitions
       settingsBuilder = RetrySettings.newBuilder()
-          .setInitialRetryDelay(Duration.millis({@retryParamsDef.initialRetryDelay.getMillis}L))
+          .setInitialRetryDelay(Duration.ofMillis({@retryParamsDef.initialRetryDelay.getMillis}L))
           .setRetryDelayMultiplier({@retryParamsDef.retryDelayMultiplier})
-          .setMaxRetryDelay(Duration.millis({@retryParamsDef.maxRetryDelay.getMillis}L))
-          .setInitialRpcTimeout(Duration.millis({@retryParamsDef.initialRpcTimeout.getMillis}L))
+          .setMaxRetryDelay(Duration.ofMillis({@retryParamsDef.maxRetryDelay.getMillis}L))
+          .setInitialRpcTimeout(Duration.ofMillis({@retryParamsDef.initialRpcTimeout.getMillis}L))
           .setRpcTimeoutMultiplier({@retryParamsDef.rpcTimeoutMultiplier})
-          .setMaxRpcTimeout(Duration.millis({@retryParamsDef.maxRpcTimeout.getMillis}L))
-          .setTotalTimeout(Duration.millis({@retryParamsDef.totalTimeout.getMillis}L));
+          .setMaxRpcTimeout(Duration.ofMillis({@retryParamsDef.maxRpcTimeout.getMillis}L))
+          .setTotalTimeout(Duration.ofMillis({@retryParamsDef.totalTimeout.getMillis}L));
       definitions.put("{@retryParamsDef.key}", settingsBuilder);
     @end
     RETRY_PARAM_DEFINITIONS = definitions.build();
@@ -477,6 +508,7 @@
   private Builder() {
     @if xsettingsClass.hasDefaultInstance
       super(defaultChannelProviderBuilder().build());
+      setCredentialsProvider(defaultCredentialsProviderBuilder().build());
     @else
       super((InstantiatingChannelProvider) null);
     @end
@@ -484,24 +516,24 @@
     @join settings : xsettingsClass.callSettings
       @switch settings.type.toString
       @case "SimpleApiCallable"
-        {@settings.memberName} = SimpleCallSettings.newBuilder({@settings.grpcTypeName}.{@settings.grpcMethodConstant});
+        {@settings.memberName} = SimpleCallSettings.newBuilder({@settings.grpcMethodConstant});
       @case "PagedApiCallable"
         {@settings.memberName} = PagedCallSettings.newBuilder(
-            {@settings.grpcTypeName}.{@settings.grpcMethodConstant},
+            {@settings.grpcMethodConstant},
             {@settings.pagedListResponseFactoryName});
-      @case "BundlingApiCallable"
-        {@settings.memberName} = BundlingCallSettings.newBuilder(
-            {@settings.grpcTypeName}.{@settings.grpcMethodConstant},
-            {@settings.bundlingDescriptorName})
-                .setBundlingSettingsBuilder(BundlingSettings.newBuilder());
+      @case "BatchingApiCallable"
+        {@settings.memberName} = BatchingCallSettings.newBuilder(
+            {@settings.grpcMethodConstant},
+            {@settings.batchingDescriptorName})
+                .setBatchingSettingsBuilder(BatchingSettings.newBuilder());
       @case "StreamingApiCallable"
-        {@settings.memberName} = StreamingCallSettings.newBuilder({@settings.grpcTypeName}.{@settings.grpcMethodConstant});
+        {@settings.memberName} = StreamingCallSettings.newBuilder({@settings.grpcMethodConstant});
       @case "OperationApiCallable"
         {@settings.memberName} = OperationCallSettings.newBuilder(
-            {@settings.grpcTypeName}.{@settings.grpcMethodConstant},
+            {@settings.grpcMethodConstant},
             {@settings.operationResultTypeName}.class);
         @if settings.hasPollingInterval
-          {@settings.memberName}.setPollingInterval(Duration.millis({@settings.operationPollingIntervalMillis}));
+          {@settings.memberName}.setPollingInterval(Duration.ofMillis({@settings.operationPollingIntervalMillis}));
         @end
 
       @default
@@ -520,13 +552,23 @@
     Builder builder = new Builder();
     @join settings : xsettingsClass.unaryCallSettings
       {@""}
-      # bundling settings
+      # batching settings
       @switch settings.type
-      @case "BundlingApiCallable"
-        builder.{@settings.settingsGetFunction}().getBundlingSettingsBuilder()
-            .setElementCountThreshold({@settings.bundlingConfig.elementCountThreshold})
-            .setRequestByteThreshold({@settings.bundlingConfig.requestByteThreshold})
-            .setDelayThreshold(Duration.millis({@settings.bundlingConfig.delayThresholdMillis}));
+      @case "BatchingApiCallable"
+        builder.{@settings.settingsGetFunction}().getBatchingSettingsBuilder()
+            .setElementCountThreshold({@settings.batchingConfig.elementCountThreshold}L)
+            .setRequestByteThreshold({@settings.batchingConfig.requestByteThreshold}L)
+            .setDelayThreshold(Duration.ofMillis({@settings.batchingConfig.delayThresholdMillis}))
+            .setFlowControlSettings(
+              FlowControlSettings.newBuilder()
+                @if settings.batchingConfig.hasFlowControlElementLimit
+                  .setMaxOutstandingElementCount({@settings.batchingConfig.flowControlElementLimit})
+                @end
+                @if settings.batchingConfig.hasFlowControlByteLimit
+                  .setMaxOutstandingRequestBytes({@settings.batchingConfig.flowControlByteLimit})
+                @end
+                .setLimitExceededBehavior(LimitExceededBehavior.{@settings.batchingConfig.flowControlLimitExceededBehavior})
+                .build());
       @default
       @end
       # retry settings
@@ -571,6 +613,12 @@
     return this;
   }
 
+  @@Override
+  public Builder setCredentialsProvider(CredentialsProvider credentialsProvider) {
+    super.setCredentialsProvider(credentialsProvider);
+    return this;
+  }
+
   /**
    * Applies the given settings to all of the unary API methods in this service. Only
    * values that are non-null will be applied, so this method is not capable
@@ -598,8 +646,8 @@
           {@settings.responseTypeName}, {@settings.pagedListResponseTypeName}> {@settings.settingsGetFunction}() {
         return {@settings.memberName};
       }
-    @case "BundlingApiCallable"
-      public BundlingCallSettings.Builder<{@settings.requestTypeName}, \
+    @case "BatchingApiCallable"
+      public BatchingCallSettings.Builder<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
         return {@settings.memberName};
       }

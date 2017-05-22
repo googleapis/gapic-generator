@@ -2,7 +2,8 @@ type: com.google.api.codegen.ConfigProto
 language_settings:
   java:
     package_name: com.google.gcloud.pubsub.spi
-    release_level: BETA
+    interface_names:
+      google.example.library.v1.LibraryService: Library
   python:
     package_name: google.cloud.gapic.example.library.v1
   go:
@@ -203,15 +204,15 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 7000
-    bundling:
+    batching:
       thresholds:
         element_count_threshold: 6
         element_count_limit: 7
         request_byte_threshold: 100000
         request_byte_limit: 150000
         delay_threshold_millis: 500
-      bundle_descriptor:
-        bundled_field: books
+      batch_descriptor:
+        batched_field: books
         discriminator_fields:
           - edition
           - shelf.name
@@ -343,6 +344,16 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     timeout_millis: 10000
+    # Test batching with minimal settings (no flow control)
+    batching:
+      thresholds:
+        element_count_threshold: 6
+        request_byte_threshold: 100000
+        delay_threshold_millis: 500
+      batch_descriptor:
+        batched_field: comments
+        discriminator_fields:
+          - name
     request_object_method: true
     # Test resource_name_treatment unset, so using default
     # resource_name_treatment: VALIDATE
@@ -546,6 +557,104 @@ interfaces:
       return_type: google.protobuf.Empty
       metadata_type: google.example.library.v1.GetBigBookMetadata
       implements_delete: true
+  - name: TestOptionalRequiredFlatteningParams
+    flattening:
+      groups:
+      - parameters:
+        # Test empty flattening
+      - parameters:
+        - required_singular_int32
+        - required_singular_int64
+        - required_singular_float
+        - required_singular_double
+        - required_singular_bool
+        - required_singular_enum
+        - required_singular_string
+        - required_singular_bytes
+        - required_singular_message
+        - required_singular_resource_name
+        - required_singular_resource_name_oneof
+        - required_singular_fixed32
+        - required_singular_fixed64
+        - required_repeated_int32
+        - required_repeated_int64
+        - required_repeated_float
+        - required_repeated_double
+        - required_repeated_bool
+        - required_repeated_enum
+        - required_repeated_string
+        - required_repeated_bytes
+        - required_repeated_message
+        - required_repeated_resource_name
+        - required_repeated_resource_name_oneof
+        - required_repeated_fixed32
+        - required_repeated_fixed64
+        - required_map
+        - optional_singular_int32
+        - optional_singular_int64
+        - optional_singular_float
+        - optional_singular_double
+        - optional_singular_bool
+        - optional_singular_enum
+        - optional_singular_string
+        - optional_singular_bytes
+        - optional_singular_message
+        - optional_singular_resource_name
+        - optional_singular_resource_name_oneof
+        - optional_singular_fixed32
+        - optional_singular_fixed64
+        - optional_repeated_int32
+        - optional_repeated_int64
+        - optional_repeated_float
+        - optional_repeated_double
+        - optional_repeated_bool
+        - optional_repeated_enum
+        - optional_repeated_string
+        - optional_repeated_bytes
+        - optional_repeated_message
+        - optional_repeated_resource_name
+        - optional_repeated_resource_name_oneof
+        - optional_repeated_fixed32
+        - optional_repeated_fixed64
+        - optional_map
+    required_fields:
+    - required_singular_int32
+    - required_singular_int64
+    - required_singular_float
+    - required_singular_double
+    - required_singular_bool
+    - required_singular_enum
+    - required_singular_string
+    - required_singular_bytes
+    - required_singular_message
+    - required_singular_resource_name
+    - required_singular_resource_name_oneof
+    - required_singular_fixed32
+    - required_singular_fixed64
+    - required_repeated_int32
+    - required_repeated_int64
+    - required_repeated_float
+    - required_repeated_double
+    - required_repeated_bool
+    - required_repeated_enum
+    - required_repeated_string
+    - required_repeated_bytes
+    - required_repeated_message
+    - required_repeated_resource_name
+    - required_repeated_resource_name_oneof
+    - required_repeated_fixed32
+    - required_repeated_fixed64
+    - required_map
+    request_object_method: true
+    resource_name_treatment: STATIC_TYPES
+    retry_codes_name: non_idempotent
+    retry_params_name: default
+    field_name_patterns:
+      required_repeated_resource_name: book
+      required_repeated_resource_name_oneof: book_oneof
+      optional_repeated_resource_name: book
+      optional_repeated_resource_name_oneof: book_oneof
+    timeout_millis: 60000
 resource_name_generation:
 - message_name: Book
   field_entity_map:
@@ -612,3 +721,13 @@ resource_name_generation:
 - message_name: FindRelatedBooksResponse
   field_entity_map:
     names: book
+- message_name: TestOptionalRequiredFlatteningParamsRequest
+  field_entity_map:
+    required_singular_resource_name: book
+    required_singular_resource_name_oneof: book_oneof
+    required_repeated_resource_name: book
+    required_repeated_resource_name_oneof: book_oneof
+    optional_singular_resource_name: book
+    optional_singular_resource_name_oneof: book_oneof
+    optional_repeated_resource_name: book
+    optional_repeated_resource_name_oneof: book_oneof

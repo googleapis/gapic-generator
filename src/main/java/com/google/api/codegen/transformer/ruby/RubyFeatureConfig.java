@@ -14,16 +14,11 @@
  */
 package com.google.api.codegen.transformer.ruby;
 
-import com.google.api.codegen.transformer.FeatureConfig;
+import com.google.api.codegen.transformer.DefaultFeatureConfig;
 
-public class RubyFeatureConfig extends FeatureConfig {
+public class RubyFeatureConfig extends DefaultFeatureConfig {
   @Override
   public boolean enableMixins() {
-    return true;
-  }
-
-  @Override
-  public boolean enableGrpcStreaming() {
     return true;
   }
 }

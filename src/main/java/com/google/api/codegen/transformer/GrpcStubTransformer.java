@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class GrpcStubTransformer {
-  public List<GrpcStubView> generateGrpcStubs(SurfaceTransformerContext context) {
+  public List<GrpcStubView> generateGrpcStubs(GapicInterfaceContext context) {
     List<GrpcStubView> stubs = new ArrayList<>();
     Map<String, Interface> interfaces = new TreeMap<>();
     Map<String, List<Method>> methods = new TreeMap<>();
@@ -39,15 +39,15 @@ public class GrpcStubTransformer {
     }
 
     for (Map.Entry<String, Interface> entry : interfaces.entrySet()) {
-      Interface service = entry.getValue();
-      stubs.add(generateGrpcStub(context, service, methods.get(entry.getKey())));
+      Interface apiInterface = entry.getValue();
+      stubs.add(generateGrpcStub(context, apiInterface, methods.get(entry.getKey())));
     }
 
     return stubs;
   }
 
   public GrpcStubView generateGrpcStub(
-      SurfaceTransformerContext context, Interface targetInterface, List<Method> methods) {
+      GapicInterfaceContext context, Interface targetInterface, List<Method> methods) {
     SurfaceNamer namer = context.getNamer();
     GrpcStubView.Builder stub = GrpcStubView.newBuilder();
 
@@ -55,7 +55,7 @@ public class GrpcStubTransformer {
     stub.fullyQualifiedType(namer.getFullyQualifiedStubType(targetInterface));
     stub.createStubFunctionName(namer.getCreateStubFunctionName(targetInterface));
     String grpcClientTypeName =
-        namer.getAndSaveNicknameForGrpcClientTypeName(context.getTypeTable(), targetInterface);
+        namer.getAndSaveNicknameForGrpcClientTypeName(context.getModelTypeTable(), targetInterface);
     stub.grpcClientTypeName(grpcClientTypeName);
     stub.grpcClientVariableName(namer.getGrpcClientVariableName(targetInterface));
     stub.grpcClientImportName(namer.getGrpcClientImportName(targetInterface));

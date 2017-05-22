@@ -14,25 +14,26 @@
  */
 package com.google.api.codegen.transformer.php;
 
+import com.google.api.codegen.GeneratorVersionProvider;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.ServiceMessages;
-import com.google.api.codegen.config.ApiConfig;
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig;
 import com.google.api.codegen.config.LongRunningConfig;
-import com.google.api.codegen.config.ServiceConfig;
+import com.google.api.codegen.config.ProductServiceConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
+import com.google.api.codegen.transformer.GapicInterfaceContext;
+import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
-import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PageStreamingTransformer;
 import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.ServiceTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.DynamicLangXApiView;
@@ -60,7 +61,8 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private static final String XAPI_TEMPLATE_FILENAME = "php/main.snip";
 
-  public PhpGapicSurfaceTransformer(ApiConfig apiConfig, GapicCodePathMapper pathMapper) {
+  public PhpGapicSurfaceTransformer(
+      GapicProductConfig productConfig, GapicCodePathMapper pathMapper) {
     this.pathMapper = pathMapper;
     this.serviceTransformer = new ServiceTransformer();
     this.pathTemplateTransformer = new PathTemplateTransformer();
@@ -76,27 +78,28 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(Model model, ApiConfig apiConfig) {
+  public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
     List<ViewModel> surfaceDocs = new ArrayList<>();
-    for (Interface service : new InterfaceView().getElementIterable(model)) {
+    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
       ModelTypeTable modelTypeTable =
           new ModelTypeTable(
-              new PhpTypeTable(apiConfig.getPackageName()),
-              new PhpModelTypeNameConverter(apiConfig.getPackageName()));
-      SurfaceTransformerContext context =
-          SurfaceTransformerContext.create(
-              service,
-              apiConfig,
+              new PhpTypeTable(productConfig.getPackageName()),
+              new PhpModelTypeNameConverter(productConfig.getPackageName()));
+      GapicInterfaceContext context =
+          GapicInterfaceContext.create(
+              apiInterface,
+              productConfig,
               modelTypeTable,
-              new PhpSurfaceNamer(apiConfig.getPackageName()),
+              new PhpSurfaceNamer(productConfig.getPackageName()),
               new PhpFeatureConfig());
       surfaceDocs.addAll(transform(context));
     }
     return surfaceDocs;
   }
 
-  public List<ViewModel> transform(SurfaceTransformerContext context) {
-    String outputPath = pathMapper.getOutputPath(context.getInterface(), context.getApiConfig());
+  public List<ViewModel> transform(GapicInterfaceContext context) {
+    String outputPath =
+        pathMapper.getOutputPath(context.getInterface(), context.getProductConfig());
     SurfaceNamer namer = context.getNamer();
 
     List<ViewModel> surfaceData = new ArrayList<>();
@@ -111,13 +114,14 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
 
     xapiClass.templateFileName(XAPI_TEMPLATE_FILENAME);
     xapiClass.protoFilename(context.getInterface().getFile().getSimpleName());
-    String name = namer.getApiWrapperClassName(context.getInterface());
+    String name = namer.getApiWrapperClassName(context.getInterfaceConfig());
     xapiClass.name(name);
-    ServiceConfig serviceConfig = new ServiceConfig();
-    xapiClass.serviceAddress(serviceConfig.getServiceAddress(context.getInterface()));
-    xapiClass.servicePort(serviceConfig.getServicePort());
-    xapiClass.serviceTitle(serviceConfig.getTitle(context.getInterface()));
-    xapiClass.authScopes(serviceConfig.getAuthScopes(context.getInterface()));
+    ProductServiceConfig productServiceConfig = new ProductServiceConfig();
+    xapiClass.serviceAddress(
+        productServiceConfig.getServiceAddress(context.getInterface().getModel()));
+    xapiClass.servicePort(productServiceConfig.getServicePort());
+    xapiClass.serviceTitle(productServiceConfig.getTitle(context.getInterface().getModel()));
+    xapiClass.authScopes(productServiceConfig.getAuthScopes(context.getInterface().getModel()));
 
     xapiClass.pathTemplates(pathTemplateTransformer.generatePathTemplates(context));
     xapiClass.formatResourceFunctions(
@@ -128,7 +132,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
         pathTemplateTransformer.generatePathTemplateGetterFunctions(context));
     xapiClass.pageStreamingDescriptors(pageStreamingTransformer.generateDescriptors(context));
     xapiClass.hasPageStreamingMethods(context.getInterfaceConfig().hasPageStreamingMethods());
-    xapiClass.hasBundlingMethods(context.getInterfaceConfig().hasBundlingMethods());
+    xapiClass.hasBatchingMethods(context.getInterfaceConfig().hasBatchingMethods());
     xapiClass.longRunningDescriptors(createLongRunningDescriptors(context));
     xapiClass.hasLongRunningOperations(context.getInterfaceConfig().hasLongRunningOperations());
     xapiClass.grpcStreamingDescriptors(createGrpcStreamingDescriptors(context));
@@ -138,7 +142,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.interfaceKey(context.getInterface().getFullName());
     String grpcClientTypeName =
         namer.getAndSaveNicknameForGrpcClientTypeName(
-            context.getTypeTable(), context.getInterface());
+            context.getModelTypeTable(), context.getInterface());
     xapiClass.grpcClientTypeName(grpcClientTypeName);
 
     xapiClass.apiMethods(methods);
@@ -147,6 +151,8 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
 
     xapiClass.hasDefaultServiceAddress(context.getInterfaceConfig().hasDefaultServiceAddress());
     xapiClass.hasDefaultServiceScopes(context.getInterfaceConfig().hasDefaultServiceScopes());
+
+    xapiClass.toolkitVersion(GeneratorVersionProvider.getGeneratorVersion());
 
     // must be done as the last step to catch all imports
     xapiClass.fileHeader(fileHeaderTransformer.generateFileHeader(context));
@@ -159,11 +165,11 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private List<LongRunningOperationDetailView> createLongRunningDescriptors(
-      SurfaceTransformerContext context) {
+      GapicInterfaceContext context) {
     List<LongRunningOperationDetailView> result = new ArrayList<>();
 
     for (Method method : context.getLongRunningMethods()) {
-      MethodTransformerContext methodContext = context.asDynamicMethodContext(method);
+      GapicMethodContext methodContext = context.asDynamicMethodContext(method);
       LongRunningConfig lroConfig = methodContext.getMethodConfig().getLongRunningConfig();
       TypeRef returnType = lroConfig.getReturnType();
       TypeRef metadataType = lroConfig.getMetadataType();
@@ -172,9 +178,9 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
               .methodName(context.getNamer().getApiMethodName(method, VisibilityConfig.PUBLIC))
               .constructorName("")
               .clientReturnTypeName("")
-              .operationPayloadTypeName(context.getTypeTable().getFullNameFor(returnType))
+              .operationPayloadTypeName(context.getModelTypeTable().getFullNameFor(returnType))
               .isEmptyOperation(ServiceMessages.s_isEmptyType(lroConfig.getReturnType()))
-              .metadataTypeName(context.getTypeTable().getFullNameFor(metadataType))
+              .metadataTypeName(context.getModelTypeTable().getFullNameFor(metadataType))
               .implementsCancel(true)
               .implementsDelete(true)
               .build());
@@ -184,7 +190,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private List<GrpcStreamingDetailView> createGrpcStreamingDescriptors(
-      SurfaceTransformerContext context) {
+      GapicInterfaceContext context) {
     List<GrpcStreamingDetailView> result = new ArrayList<>();
 
     for (Method method : context.getGrpcStreamingMethods()) {
@@ -206,8 +212,8 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     return result;
   }
 
-  private void addApiImports(SurfaceTransformerContext context) {
-    ModelTypeTable typeTable = context.getTypeTable();
+  private void addApiImports(GapicInterfaceContext context) {
+    ModelTypeTable typeTable = context.getModelTypeTable();
     typeTable.saveNicknameFor("\\Google\\GAX\\AgentHeaderDescriptor");
     typeTable.saveNicknameFor("\\Google\\GAX\\ApiCallable");
     typeTable.saveNicknameFor("\\Google\\GAX\\CallSettings");
@@ -226,7 +232,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     }
   }
 
-  private List<String> generateMethodKeys(SurfaceTransformerContext context) {
+  private List<String> generateMethodKeys(GapicInterfaceContext context) {
     List<String> methodKeys = new ArrayList<>(context.getInterface().getMethods().size());
 
     for (Method method : context.getSupportedMethods()) {
@@ -236,7 +242,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     return methodKeys;
   }
 
-  private List<ApiMethodView> generateApiMethods(SurfaceTransformerContext context) {
+  private List<ApiMethodView> generateApiMethods(GapicInterfaceContext context) {
     List<ApiMethodView> apiMethods = new ArrayList<>(context.getInterface().getMethods().size());
 
     for (Method method : context.getSupportedMethods()) {

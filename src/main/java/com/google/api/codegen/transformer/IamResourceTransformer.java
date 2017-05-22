@@ -23,12 +23,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class IamResourceTransformer {
-  public List<IamResourceView> generateIamResources(SurfaceTransformerContext context) {
+  public List<IamResourceView> generateIamResources(GapicInterfaceContext context) {
     List<IamResourceView> resources = new ArrayList<>();
     for (Field field :
-        context.getApiConfig().getInterfaceConfig(context.getInterface()).getIamResources()) {
+        context.getProductConfig().getInterfaceConfig(context.getInterface()).getIamResources()) {
       String resourceTypeName =
-          context.getTypeTable().getAndSaveNicknameFor(TypeRef.of((MessageType) field.getParent()));
+          context
+              .getModelTypeTable()
+              .getAndSaveNicknameFor(TypeRef.of((MessageType) field.getParent()));
       resources.add(
           IamResourceView.builder()
               .resourceGetterFunctionName(

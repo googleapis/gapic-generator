@@ -17,6 +17,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Replicapoolupdater.v1beta1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -35,13 +36,13 @@ namespace ReplicapoolupdaterSample
             });
 
             // The Google Developers Console project name.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // The name of the zone in which the update's target resides.
-            string zone = "";  // TODO: Update placeholder value.
+            string zone = "my-zone";  // TODO: Update placeholder value.
 
             // The name of the update.
-            string rollingUpdate = "";  // TODO: Update placeholder value.
+            string rollingUpdate = "my-rolling-update";  // TODO: Update placeholder value.
 
             RollingUpdatesResource.CancelRequest request = replicapoolupdaterService.RollingUpdates.Cancel(project, zone, rollingUpdate);
 
@@ -50,7 +51,7 @@ namespace ReplicapoolupdaterSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -82,6 +83,7 @@ namespace ReplicapoolupdaterSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Replicapoolupdater.v1beta1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -100,13 +102,13 @@ namespace ReplicapoolupdaterSample
             });
 
             // The Google Developers Console project name.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // The name of the zone in which the update's target resides.
-            string zone = "";  // TODO: Update placeholder value.
+            string zone = "my-zone";  // TODO: Update placeholder value.
 
             // The name of the update.
-            string rollingUpdate = "";  // TODO: Update placeholder value.
+            string rollingUpdate = "my-rolling-update";  // TODO: Update placeholder value.
 
             RollingUpdatesResource.GetRequest request = replicapoolupdaterService.RollingUpdates.Get(project, zone, rollingUpdate);
 
@@ -115,7 +117,7 @@ namespace ReplicapoolupdaterSample
             // Data.RollingUpdate response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -147,6 +149,7 @@ namespace ReplicapoolupdaterSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Replicapoolupdater.v1beta1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -165,10 +168,10 @@ namespace ReplicapoolupdaterSample
             });
 
             // The Google Developers Console project name.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // The name of the zone in which the update's target resides.
-            string zone = "";  // TODO: Update placeholder value.
+            string zone = "my-zone";  // TODO: Update placeholder value.
 
             // TODO: Assign values to desired properties of `requestBody`:
             Data.RollingUpdate requestBody = new Data.RollingUpdate();
@@ -180,7 +183,7 @@ namespace ReplicapoolupdaterSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -212,6 +215,7 @@ namespace ReplicapoolupdaterSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Replicapoolupdater.v1beta1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -230,10 +234,10 @@ namespace ReplicapoolupdaterSample
             });
 
             // The Google Developers Console project name.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // The name of the zone in which the update's target resides.
-            string zone = "";  // TODO: Update placeholder value.
+            string zone = "my-zone";  // TODO: Update placeholder value.
 
             RollingUpdatesResource.ListRequest request = replicapoolupdaterService.RollingUpdates.List(project, zone);
 
@@ -251,7 +255,7 @@ namespace ReplicapoolupdaterSample
                 foreach (Data.RollingUpdate rollingUpdate in response.Items)
                 {
                     // TODO: Change code below to process each `rollingUpdate` resource:
-                    Console.WriteLine(rollingUpdate);
+                    Console.WriteLine(JsonConvert.SerializeObject(rollingUpdate));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -286,6 +290,7 @@ namespace ReplicapoolupdaterSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Replicapoolupdater.v1beta1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -304,13 +309,13 @@ namespace ReplicapoolupdaterSample
             });
 
             // The Google Developers Console project name.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // The name of the zone in which the update's target resides.
-            string zone = "";  // TODO: Update placeholder value.
+            string zone = "my-zone";  // TODO: Update placeholder value.
 
             // The name of the update.
-            string rollingUpdate = "";  // TODO: Update placeholder value.
+            string rollingUpdate = "my-rolling-update";  // TODO: Update placeholder value.
 
             RollingUpdatesResource.ListInstanceUpdatesRequest request = replicapoolupdaterService.RollingUpdates.ListInstanceUpdates(project, zone, rollingUpdate);
 
@@ -328,7 +333,7 @@ namespace ReplicapoolupdaterSample
                 foreach (Data.InstanceUpdate instanceUpdate in response.Items)
                 {
                     // TODO: Change code below to process each `instanceUpdate` resource:
-                    Console.WriteLine(instanceUpdate);
+                    Console.WriteLine(JsonConvert.SerializeObject(instanceUpdate));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);
@@ -363,6 +368,7 @@ namespace ReplicapoolupdaterSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Replicapoolupdater.v1beta1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -381,13 +387,13 @@ namespace ReplicapoolupdaterSample
             });
 
             // The Google Developers Console project name.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // The name of the zone in which the update's target resides.
-            string zone = "";  // TODO: Update placeholder value.
+            string zone = "my-zone";  // TODO: Update placeholder value.
 
             // The name of the update.
-            string rollingUpdate = "";  // TODO: Update placeholder value.
+            string rollingUpdate = "my-rolling-update";  // TODO: Update placeholder value.
 
             RollingUpdatesResource.PauseRequest request = replicapoolupdaterService.RollingUpdates.Pause(project, zone, rollingUpdate);
 
@@ -396,7 +402,7 @@ namespace ReplicapoolupdaterSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -428,6 +434,7 @@ namespace ReplicapoolupdaterSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Replicapoolupdater.v1beta1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -446,13 +453,13 @@ namespace ReplicapoolupdaterSample
             });
 
             // The Google Developers Console project name.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // The name of the zone in which the update's target resides.
-            string zone = "";  // TODO: Update placeholder value.
+            string zone = "my-zone";  // TODO: Update placeholder value.
 
             // The name of the update.
-            string rollingUpdate = "";  // TODO: Update placeholder value.
+            string rollingUpdate = "my-rolling-update";  // TODO: Update placeholder value.
 
             RollingUpdatesResource.ResumeRequest request = replicapoolupdaterService.RollingUpdates.Resume(project, zone, rollingUpdate);
 
@@ -461,7 +468,7 @@ namespace ReplicapoolupdaterSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -493,6 +500,7 @@ namespace ReplicapoolupdaterSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Replicapoolupdater.v1beta1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -511,13 +519,13 @@ namespace ReplicapoolupdaterSample
             });
 
             // The Google Developers Console project name.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // The name of the zone in which the update's target resides.
-            string zone = "";  // TODO: Update placeholder value.
+            string zone = "my-zone";  // TODO: Update placeholder value.
 
             // The name of the update.
-            string rollingUpdate = "";  // TODO: Update placeholder value.
+            string rollingUpdate = "my-rolling-update";  // TODO: Update placeholder value.
 
             RollingUpdatesResource.RollbackRequest request = replicapoolupdaterService.RollingUpdates.Rollback(project, zone, rollingUpdate);
 
@@ -526,7 +534,7 @@ namespace ReplicapoolupdaterSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -558,6 +566,7 @@ namespace ReplicapoolupdaterSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Replicapoolupdater.v1beta1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -576,13 +585,13 @@ namespace ReplicapoolupdaterSample
             });
 
             // Name of the project scoping this request.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Name of the zone scoping this request.
-            string zone = "";  // TODO: Update placeholder value.
+            string zone = "my-zone";  // TODO: Update placeholder value.
 
             // Name of the operation resource to return.
-            string operation = "";  // TODO: Update placeholder value.
+            string operation = "my-operation";  // TODO: Update placeholder value.
 
             ZoneOperationsResource.GetRequest request = replicapoolupdaterService.ZoneOperations.Get(project, zone, operation);
 
@@ -591,7 +600,7 @@ namespace ReplicapoolupdaterSample
             // Data.Operation response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
-            Console.WriteLine(response);
+            Console.WriteLine(JsonConvert.SerializeObject(response));
         }
 
         public static GoogleCredential GetCredential()
@@ -623,6 +632,7 @@ namespace ReplicapoolupdaterSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Replicapoolupdater.v1beta1;
 using Google.Apis.Services;
+using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
@@ -641,10 +651,10 @@ namespace ReplicapoolupdaterSample
             });
 
             // Name of the project scoping this request.
-            string project = "";  // TODO: Update placeholder value.
+            string project = "my-project";  // TODO: Update placeholder value.
 
             // Name of the zone scoping this request.
-            string zone = "";  // TODO: Update placeholder value.
+            string zone = "my-zone";  // TODO: Update placeholder value.
 
             ZoneOperationsResource.ListRequest request = replicapoolupdaterService.ZoneOperations.List(project, zone);
 
@@ -662,7 +672,7 @@ namespace ReplicapoolupdaterSample
                 foreach (Data.Operation operation in response.Items)
                 {
                     // TODO: Change code below to process each `operation` resource:
-                    Console.WriteLine(operation);
+                    Console.WriteLine(JsonConvert.SerializeObject(operation));
                 }
                 request.PageToken = response.NextPageToken;
             } while (response.NextPageToken != null);

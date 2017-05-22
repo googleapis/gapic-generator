@@ -25,7 +25,6 @@ import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 import java.util.ArrayList;
@@ -113,9 +112,8 @@ public class GoModelTypeNameConverter implements ModelTypeNameConverter {
 
   TypeName getTypeName(ProtoElement elem, boolean isPointer) {
     String importPath = elem.getFile().getProto().getOptions().getGoPackage();
-    String protoPackage = elem.getFile().getProto().getPackage();
     String elemName = getElemName(elem);
-    return getTypeName(importPath, protoPackage, elemName, isPointer);
+    return getTypeName(importPath, elemName, isPointer);
   }
 
   private String getElemName(ProtoElement elem) {
@@ -136,25 +134,7 @@ public class GoModelTypeNameConverter implements ModelTypeNameConverter {
   }
 
   @VisibleForTesting
-  TypeName getTypeName(String importPath, String protoPackage, String elemName, boolean isPointer) {
-    // This is out of our list of curated protos,
-    // and we don't currently have a good way to name them.
-    if (!Strings.isNullOrEmpty(importPath) && !importPath.startsWith(CORE_PROTO_BASE)) {
-      String localName = protoPackage.replace(".", "_");
-      String pointerPrefix = isPointer ? "*" : "";
-      return new TypeName(
-          Joiner.on(";").join(importPath, localName, elemName, pointerPrefix),
-          pointerPrefix + localName + "." + elemName);
-    }
-
-    // If the go_package option doesn't exist, infer it.
-    if (Strings.isNullOrEmpty(importPath)) {
-      if (protoPackage.startsWith(GOOGLE_PREFIX)) {
-        protoPackage = protoPackage.substring(GOOGLE_PREFIX.length());
-      }
-      importPath = CORE_PROTO_PATH + protoPackage.replace('.', '/');
-    }
-
+  TypeName getTypeName(String importPath, String elemName, boolean isPointer) {
     // There are two ways the import path can be formatted:
     // - "path/to/pkg"
     // - "path/to/pkg;pkgName"
@@ -181,23 +161,6 @@ public class GoModelTypeNameConverter implements ModelTypeNameConverter {
       if (localName == null) {
         throw new IllegalArgumentException("cannot find a suitable import name: " + importPath);
       }
-    }
-
-    // TODO(pongad): Remove this atrocious hack after resolving
-    // https://github.com/googleapis/googleapis/issues/161 .
-    // Context: The structure of Go "google.golang.org/genproto/googleapis/api" directory is different from
-    // the way proto files are laid out in https://github.com/googleapis/googleapis/tree/master/google/api .
-    // These files therefore needs the `go_package` option so we can generate import paths properly.
-    // This is the workaround until that can happen.
-    if (importPath.equals("google.golang.org/genproto/googleapis/api")
-        && (elemName.equals("MetricDescriptor") || elemName.equals("Metric"))) {
-      importPath = "google.golang.org/genproto/googleapis/api/metric";
-      localName = "metricpb";
-    } else if (importPath.equals("google.golang.org/genproto/googleapis/api")
-        && (elemName.equals("MonitoredResourceDescriptor")
-            || elemName.equals("MonitoredResource"))) {
-      importPath = "google.golang.org/genproto/googleapis/api/monitoredres";
-      localName = "monitoredrespb";
     }
 
     String pointerPrefix = isPointer ? "*" : "";
@@ -228,34 +191,36 @@ public class GoModelTypeNameConverter implements ModelTypeNameConverter {
   }
 
   @Override
-  public TypedValue getZeroValue(TypeRef type) {
+  public TypedValue getSnippetZeroValue(TypeRef type) {
+    if (type.isRepeated() || type.isMap()) {
+      return TypedValue.create(getTypeName(type), "nil");
+    }
     if (type.isEnum()) {
       return getEnumValue(type, type.getEnumType().getValues().get(0));
     }
-    return TypedValue.create(getTypeName(type), getZeroValueStr(type));
-  }
-
-  private String getZeroValueStr(TypeRef type) {
-    if (type.isRepeated() || type.isMap()) {
-      return "nil";
-    }
     if (type.isMessage()) {
-      return "&" + getTypeName(type.getMessageType(), false).getNickname() + "{}";
+      return TypedValue.create(
+          getTypeName(type), "&" + getTypeName(type.getMessageType(), false).getNickname() + "{}");
     }
     switch (type.getKind()) {
       case TYPE_BOOL:
-        return "false";
+        return TypedValue.create(getTypeName(type), "false");
 
       case TYPE_STRING:
-        return "\"\"";
+        return TypedValue.create(getTypeName(type), "\"\"");
 
       case TYPE_BYTES:
-        return "nil";
+        return TypedValue.create(getTypeName(type), "nil");
 
       default:
         // Anything else -- numeric values.
-        return "0";
+        return TypedValue.create(getTypeName(type), "0");
     }
+  }
+
+  @Override
+  public TypedValue getImplZeroValue(TypeRef type) {
+    return getSnippetZeroValue(type);
   }
 
   @Override
