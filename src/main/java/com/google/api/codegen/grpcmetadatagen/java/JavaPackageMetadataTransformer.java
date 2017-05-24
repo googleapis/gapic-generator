@@ -48,6 +48,7 @@ public abstract class JavaPackageMetadataTransformer {
                   config, model, template, getSnippetsOutput().get(template), TargetLanguage.JAVA)
               .identifier(namer.getMetadataIdentifier())
               .protoPackageName(namer.getProtoPackageName())
+              .grpcPackageName(namer.getGrpcPackageName())
               .generationLayer(config.generationLayer())
               .apiCommonVersionBound(config.apiCommonVersionBound(TargetLanguage.JAVA))
               .build();

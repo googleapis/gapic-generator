@@ -51,12 +51,16 @@ public abstract class PackageMetadataView implements ViewModel {
   @Nullable
   public abstract String identifier();
 
+  @Nullable
   public abstract VersionBound packageVersionBound();
 
+  @Nullable
   public abstract VersionBound gaxVersionBound();
 
+  @Nullable
   public abstract VersionBound grpcVersionBound();
 
+  @Nullable
   public abstract VersionBound protoVersionBound();
 
   @Nullable
@@ -78,6 +82,9 @@ public abstract class PackageMetadataView implements ViewModel {
   public abstract String discoveryApiName();
 
   public abstract String protoPackageName();
+
+  @Nullable
+  public abstract String grpcPackageName();
 
   public abstract String gapicPackageName();
 
@@ -184,6 +191,9 @@ public abstract class PackageMetadataView implements ViewModel {
 
     /** The base name of the proto client library package. E.g., "proto-google-cloud-logging-v1". */
     public abstract Builder protoPackageName(String val);
+
+    /** The base name of the gRPC client library package. E.g., "grpc-google-cloud-logging-v1". */
+    public abstract Builder grpcPackageName(String val);
 
     /** The base name of the GAPIC client library package. E.g., "gapic-google-cloud-logging-v1". */
     public abstract Builder gapicPackageName(String val);
