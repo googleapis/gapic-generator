@@ -39,6 +39,7 @@ import com.google.api.codegen.transformer.PageStreamingTransformer;
 import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.ServiceTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.js.JSTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.DynamicLangXApiView;
@@ -261,19 +262,22 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
     FileHeaderTransformer fileHeaderTransformer =
         new FileHeaderTransformer(new NodeJSImportSectionTransformer());
     ArrayList<ViewModel> indexViews = new ArrayList<>();
-
+    String version = namer.getApiWrapperModuleVersion();
+    boolean hasVersion = version != null && !version.isEmpty();
     ArrayList<VersionIndexRequireView> requireViews = new ArrayList<>();
     for (Interface apiInterface : apiInterfaces) {
+      Name serviceName = namer.getReducedServiceName(apiInterface);
+      String localName =
+          hasVersion ? serviceName.join(version).toLowerCamel() : serviceName.toLowerCamel();
       requireViews.add(
           VersionIndexRequireView.newBuilder()
               .clientName(
                   namer.getApiWrapperVariableName(productConfig.getInterfaceConfig(apiInterface)))
-              .serviceName(namer.getReducedServiceName(apiInterface).toLowerCamel())
+              .serviceName(serviceName.toLowerCamel())
+              .localName(localName)
               .fileName(namer.getClientFileName(apiInterface))
               .build());
     }
-    String version = namer.getApiWrapperModuleVersion();
-    boolean hasVersion = version != null && !version.isEmpty();
     String indexOutputPath = hasVersion ? "src/" + version + "/index.js" : "src/index.js";
     VersionIndexView.Builder indexViewbuilder =
         VersionIndexView.newBuilder()

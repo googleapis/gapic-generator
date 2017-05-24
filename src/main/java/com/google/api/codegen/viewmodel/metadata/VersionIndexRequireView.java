@@ -25,6 +25,9 @@ public abstract class VersionIndexRequireView {
   @Nullable
   public abstract String serviceName();
 
+  @Nullable
+  public abstract String localName();
+
   public abstract String fileName();
 
   public static Builder newBuilder() {
@@ -36,6 +39,8 @@ public abstract class VersionIndexRequireView {
     public abstract Builder clientName(String val);
 
     public abstract Builder serviceName(String val);
+
+    public abstract Builder localName(String val);
 
     public abstract Builder fileName(String val);
 
