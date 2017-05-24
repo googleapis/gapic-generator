@@ -36,7 +36,7 @@ public class PackageMetadataNamer {
 
   /** Returns the artifact identifier for a gRPC classes package */
   public String getGrpcPackageName() {
-    return getNotImplementedString("PackageMetadataNamer.getProtoPackageName");
+    return getNotImplementedString("PackageMetadataNamer.getGrpcPackageName");
   }
 
   public String getOutputFileName() {

@@ -18,11 +18,11 @@
   }
 
   dependencies {
-    @join dependency : metadata.protoPackageDependencies
-      compile project(":{@dependency.name}")
-    @end
     compile project(":{@metadata.protoPackageName}")
     testCompile project(":{@metadata.grpcPackageName}")
+    @join dependency : metadata.protoPackageTestDependencies
+      testCompile project(":{@dependency.name}")
+    @end
   }
 
   sourceSets {

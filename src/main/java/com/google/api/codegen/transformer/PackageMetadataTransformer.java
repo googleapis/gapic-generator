@@ -88,7 +88,12 @@ public class PackageMetadataTransformer {
         .gaxVersionBound(packageConfig.gaxVersionBound(language))
         .grpcVersionBound(packageConfig.grpcVersionBound(language))
         .protoVersionBound(packageConfig.protoVersionBound(language))
-        .protoPackageDependencies(protoPackageDependencies)
+        .protoPackageDependencies(
+            getDependencies(
+                packageConfig.protoPackageDependencies(language), whitelistedDependencies))
+        .protoPackageTestDependencies(
+            getDependencies(
+                packageConfig.protoPackageTestDependencies(language), whitelistedDependencies))
         .authVersionBound(packageConfig.authVersionBound(language))
         .protoPackageName("proto-" + packageConfig.packageName(language))
         .gapicPackageName("gapic-" + packageConfig.packageName(language))
@@ -100,5 +105,23 @@ public class PackageMetadataTransformer {
         .fullName(model.getServiceConfig().getTitle())
         .discoveryApiName(discoveryApiName)
         .hasMultipleServices(false);
+  }
+
+  private List<PackageDependencyView> getDependencies(
+      Map<String, VersionBound> dependencies, Set<String> whitelistedDependencies) {
+    List<PackageDependencyView> protoPackageDependencies = new ArrayList<>();
+    if (dependencies != null) {
+      for (Map.Entry<String, VersionBound> entry : dependencies.entrySet()) {
+        if (entry.getValue() != null
+            && (whitelistedDependencies == null
+                || whitelistedDependencies.contains(entry.getKey()))) {
+          protoPackageDependencies.add(
+              PackageDependencyView.create(entry.getKey(), entry.getValue()));
+        }
+      }
+      // Ensures deterministic test results.
+      Collections.sort(protoPackageDependencies);
+    }
+    return protoPackageDependencies;
   }
 }

@@ -70,6 +70,9 @@ public abstract class PackageMetadataView implements ViewModel {
   public abstract List<PackageDependencyView> protoPackageDependencies();
 
   @Nullable
+  public abstract List<PackageDependencyView> protoPackageTestDependencies();
+
+  @Nullable
   public abstract VersionBound authVersionBound();
 
   @Nullable
@@ -175,6 +178,9 @@ public abstract class PackageMetadataView implements ViewModel {
     public abstract Builder apiCommonVersionBound(VersionBound val);
 
     public abstract Builder protoPackageDependencies(List<PackageDependencyView> val);
+
+    @Nullable
+    public abstract Builder protoPackageTestDependencies(List<PackageDependencyView> val);
 
     public abstract Builder authVersionBound(VersionBound val);
 
