@@ -53,7 +53,7 @@
     *   The customized config to build the call settings. See
     *   {@@link gax.constructSettings} for the format.
     */
-   function {@service.serviceName}_{@version}(opts) {
+   function {@service.localName}(opts) {
      // Define the header options.
      opts = opts || {};
      opts.libName = 'gccl';
@@ -75,15 +75,15 @@
 
 @private multipleServicesExports(services, version)
   @join service : services
-    module.exports.{@service.serviceName} = {@service.serviceName}_{@version};
+    module.exports.{@service.serviceName} = {@service.localName};
   @end
 
   @join service : services
-    module.exports.{@version}.{@service.serviceName} = {@service.serviceName}_{@version};
+    module.exports.{@version}.{@service.serviceName} = {@service.localName};
   @end
 @end
 
 @private singleServiceExport(service, version)
-  module.exports = {@service.serviceName}_{@version};
-  module.exports.{@version} = {@service.serviceName}_{@version};
+  module.exports = {@service.localName};
+  module.exports.{@version} = {@service.localName};
 @end
