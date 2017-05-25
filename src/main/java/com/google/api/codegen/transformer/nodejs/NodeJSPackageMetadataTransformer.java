@@ -108,7 +108,7 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
             namer.getReleaseAnnotation(packageConfig.releaseLevel(TargetLanguage.NODEJS)))
         .exampleMethods(exampleMethods)
         .hasMultipleServices(hasMultipleServices)
-        .targetLanguage("NodeJS")
+        .targetLanguage("Node.js")
         .mainReadmeLink(GITHUB_REPO_HOST + MAIN_README_PATH)
         .libraryDocumentationLink(
             GITHUB_DOC_HOST + String.format(LIB_DOC_PATH, packageConfig.shortName()))
