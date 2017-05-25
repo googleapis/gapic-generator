@@ -71,6 +71,10 @@ public abstract class StaticLangClientFileView implements ViewModel {
 
   public abstract List<LongRunningOperationDetailView> lroDetailViews();
 
+  public boolean hasLongRunningOperations() {
+    return !lroDetailViews().isEmpty();
+  }
+
   public static Builder newBuilder() {
     return new AutoValue_StaticLangClientFileView.Builder();
   }
