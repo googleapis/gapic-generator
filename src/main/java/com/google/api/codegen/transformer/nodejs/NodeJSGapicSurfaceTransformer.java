@@ -265,16 +265,29 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
     String version = namer.getApiWrapperModuleVersion();
     boolean hasVersion = version != null && !version.isEmpty();
     ArrayList<VersionIndexRequireView> requireViews = new ArrayList<>();
+    SurfaceNamer surfaceNamer =
+        new NodeJSSurfaceNamer(productConfig.getPackageName(), NodeJSUtils.isGcloud(productConfig));
+    FeatureConfig featureConfig = new NodeJSFeatureConfig();
     for (Interface apiInterface : apiInterfaces) {
       Name serviceName = namer.getReducedServiceName(apiInterface);
       String localName =
           hasVersion ? serviceName.join(version).toLowerCamel() : serviceName.toLowerCamel();
+      ModelTypeTable modelTypeTable =
+          new ModelTypeTable(
+              new JSTypeTable(productConfig.getPackageName()),
+              new NodeJSModelTypeNameConverter(productConfig.getPackageName()));
+      GapicInterfaceContext context =
+          GapicInterfaceContext.create(
+              apiInterface, productConfig, modelTypeTable, surfaceNamer, featureConfig);
       requireViews.add(
           VersionIndexRequireView.newBuilder()
               .clientName(
                   namer.getApiWrapperVariableName(productConfig.getInterfaceConfig(apiInterface)))
               .serviceName(serviceName.toLowerCamel())
               .localName(localName)
+              .doc(
+                  serviceTransformer.generateServiceDoc(
+                      context, generateApiMethods(context).get(0)))
               .fileName(namer.getClientFileName(apiInterface))
               .build());
     }
