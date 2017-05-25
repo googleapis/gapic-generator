@@ -16,8 +16,9 @@
  */
 'use strict';
 
+var extend = require('extend');
 var gapic = {
- v1: require('./v1'),
+  v1: require('./v1')
 };
 
 const VERSION = require('../package.json').version;
@@ -41,15 +42,16 @@ const VERSION = require('../package.json').version;
  *
  * Service comment may include special characters: <>&"`'@.
  *
- * @param {Object=} options - The optional parameters.
+ * @param {object=} options - [Configuration object](#/docs).
  * @param {number=} options.port - The port on which to connect to the remote host.
- * @param {String=} options.servicePath - The domain name of the API remote host.
+ * @param {string=} options.servicePath - The domain name of the API remote host.
  */
 function libraryV1(options) {
   // Define the header options.
-  options = options || {};
-  options.libName = 'gccl';
-  options.libVersion = VERSION;
+  options = extend({}, options, {
+    libName: 'gccl',
+    libVersion: VERSION
+  });
 
   // Create the image annotator client with the provided options.
   var client = gapic.v1(options).libraryServiceClient(options);

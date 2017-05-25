@@ -22,8 +22,9 @@
 @end
 
 @private imports(index)
+  var extend = require('extend');
   var gapic = {
-   {@index.apiVersion}: require('./{@index.apiVersion}'),
+    {@index.apiVersion}: require('./{@index.apiVersion}')
   };
 @end
 
@@ -44,15 +45,16 @@
     *
     {@comments(@service.doc.lines)}
     *
-    * @@param {Object=} options - The optional parameters.
+    * @@param {object=} options - [Configuration object](#/docs).
     * @@param {number=} options.port - The port on which to connect to the remote host.
-    * @@param {String=} options.servicePath - The domain name of the API remote host.
+    * @@param {string=} options.servicePath - The domain name of the API remote host.
     */
    function {@service.localName}(options) {
      // Define the header options.
-     options = options || {};
-     options.libName = 'gccl';
-     options.libVersion = VERSION;
+     options = extend({}, options, {
+       libName: 'gccl',
+       libVersion: VERSION
+     });
 
      // Create the image annotator client with the provided options.
      var client = gapic.{@version}(options).{@service.clientName}(options);
