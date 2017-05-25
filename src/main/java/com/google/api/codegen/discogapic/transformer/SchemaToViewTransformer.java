@@ -16,9 +16,12 @@ package com.google.api.codegen.discogapic.transformer;
 
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.discovery.Document;
+import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.viewmodel.ViewModel;
 import java.util.List;
 
 public interface SchemaToViewTransformer {
-  List<ViewModel> transform(Document document, GapicProductConfig productConfig);
+  List<ViewModel> transform(Document document, Schema schema, GapicProductConfig productConfig);
+
+  List<String> getTemplateFileNames();
 }
