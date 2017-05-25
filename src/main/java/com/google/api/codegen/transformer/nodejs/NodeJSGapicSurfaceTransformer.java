@@ -28,7 +28,6 @@ import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.nodejs.NodeJSUtils;
 import com.google.api.codegen.transformer.BatchingTransformer;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
-import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
@@ -92,25 +91,15 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
   public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
     Iterable<Interface> apiInterfaces = new InterfaceView().getElementIterable(model);
     ImmutableList.Builder<ViewModel> models = ImmutableList.builder();
-    NodeJSSurfaceNamer surfaceNamer =
-        new NodeJSSurfaceNamer(productConfig.getPackageName(), NodeJSUtils.isGcloud(productConfig));
-    models.addAll(generateIndexViews(apiInterfaces, surfaceNamer, productConfig));
-    models.addAll(generateApiClasses(model, productConfig, surfaceNamer));
+    models.addAll(generateIndexViews(apiInterfaces, productConfig));
+    models.addAll(generateApiClasses(model, productConfig));
     return models.build();
   }
 
-  private List<ViewModel> generateApiClasses(
-      Model model, GapicProductConfig productConfig, NodeJSSurfaceNamer surfaceNamer) {
+  private List<ViewModel> generateApiClasses(Model model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ViewModel> models = ImmutableList.builder();
-    FeatureConfig featureConfig = new NodeJSFeatureConfig();
     for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
-      ModelTypeTable modelTypeTable =
-          new ModelTypeTable(
-              new JSTypeTable(productConfig.getPackageName()),
-              new NodeJSModelTypeNameConverter(productConfig.getPackageName()));
-      GapicInterfaceContext context =
-          GapicInterfaceContext.create(
-              apiInterface, productConfig, modelTypeTable, surfaceNamer, featureConfig);
+      GapicInterfaceContext context = createContext(apiInterface, productConfig);
       models.add(generateApiClass(context));
     }
     return models.build();
@@ -256,12 +245,10 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private List<ViewModel> generateIndexViews(
-      Iterable<Interface> apiInterfaces,
-      NodeJSSurfaceNamer namer,
-      GapicProductConfig productConfig) {
-    FileHeaderTransformer fileHeaderTransformer =
-        new FileHeaderTransformer(new NodeJSImportSectionTransformer());
+      Iterable<Interface> apiInterfaces, GapicProductConfig productConfig) {
     ArrayList<ViewModel> indexViews = new ArrayList<>();
+    NodeJSSurfaceNamer namer =
+        new NodeJSSurfaceNamer(productConfig.getPackageName(), NodeJSUtils.isGcloud(productConfig));
     String version = namer.getApiWrapperModuleVersion();
     boolean hasVersion = version != null && !version.isEmpty();
     ArrayList<VersionIndexRequireView> requireViews = new ArrayList<>();
@@ -269,14 +256,19 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
       Name serviceName = namer.getReducedServiceName(apiInterface);
       String localName =
           hasVersion ? serviceName.join(version).toLowerCamel() : serviceName.toLowerCamel();
-      requireViews.add(
+      GapicInterfaceContext context = createContext(apiInterface, productConfig);
+      VersionIndexRequireView require =
           VersionIndexRequireView.newBuilder()
               .clientName(
                   namer.getApiWrapperVariableName(productConfig.getInterfaceConfig(apiInterface)))
               .serviceName(serviceName.toLowerCamel())
               .localName(localName)
+              .doc(
+                  serviceTransformer.generateServiceDoc(
+                      context, generateApiMethods(context).get(0)))
               .fileName(namer.getClientFileName(apiInterface))
-              .build());
+              .build();
+      requireViews.add(require);
     }
     String indexOutputPath = hasVersion ? "src/" + version + "/index.js" : "src/index.js";
     VersionIndexView.Builder indexViewbuilder =
@@ -312,5 +304,17 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
       indexViews.add(versionIndexViewBuilder.build());
     }
     return indexViews;
+  }
+
+  private GapicInterfaceContext createContext(
+      Interface apiInterface, GapicProductConfig productConfig) {
+    return GapicInterfaceContext.create(
+        apiInterface,
+        productConfig,
+        new ModelTypeTable(
+            new JSTypeTable(productConfig.getPackageName()),
+            new NodeJSModelTypeNameConverter(productConfig.getPackageName())),
+        new NodeJSSurfaceNamer(productConfig.getPackageName(), NodeJSUtils.isGcloud(productConfig)),
+        new NodeJSFeatureConfig());
   }
 }
