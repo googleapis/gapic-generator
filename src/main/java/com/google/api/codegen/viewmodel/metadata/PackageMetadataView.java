@@ -51,6 +51,8 @@ public abstract class PackageMetadataView implements ViewModel {
   @Nullable
   public abstract String identifier();
 
+  public abstract String apiSummary();
+
   public abstract VersionBound packageVersionBound();
 
   public abstract VersionBound gaxVersionBound();
@@ -172,6 +174,9 @@ public abstract class PackageMetadataView implements ViewModel {
     public abstract Builder authVersionBound(VersionBound val);
 
     public abstract Builder serviceName(String val);
+
+    /** The descriptive summary of the api. */
+    public abstract Builder apiSummary(String val);
 
     /** The full name of the API, including branding. E.g., "Stackdriver Logging". */
     public abstract Builder fullName(String val);
