@@ -21,9 +21,21 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * An enumeration of link formats found in proto files. Each element of the enumeration is
- * associated with a {@link Pattern} object that must contain exactly two groups matching the link
- * title and link url.
+ * An collection of known link patterns found in proto files. The LinkPattern class provides an easy
+ * way to create Transformation objects for these link patterns into a particular format.
+ *
+ * <p>The format may contain standard Java string format tokens, or the special tokens $TITLE and
+ * $URL.
+ *
+ * <p>An example creating a Transformation for a relative link would be:
+ *
+ * <pre>
+ * <code>
+ * Transformation transformation = LinkPattern.RELATIVE
+ *    .withUrlPrefix("https://cloud.google.com")
+ *    .toFormat("[$TITLE]($URL)"));
+ * </code>
+ * </pre>
  */
 public class LinkPattern {
   public static LinkPattern ABSOLUTE = new LinkPattern(CommentPatterns.ABSOLUTE_LINK_PATTERN, "");
