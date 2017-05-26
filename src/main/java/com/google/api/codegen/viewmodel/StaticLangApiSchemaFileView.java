@@ -8,7 +8,7 @@ import com.google.auto.value.AutoValue;
  */
 @AutoValue
 public abstract class StaticLangApiSchemaFileView implements ViewModel {
-  public abstract StaticLangApiSchemaClassView schema();
+  public abstract StaticLangApiSchemaView schema();
 
   public abstract FileHeaderView fileHeader();
 
@@ -29,7 +29,7 @@ public abstract class StaticLangApiSchemaFileView implements ViewModel {
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract StaticLangApiSchemaFileView.Builder schema(StaticLangApiSchemaClassView val);
+    public abstract StaticLangApiSchemaFileView.Builder schema(StaticLangApiSchemaView val);
 
     public abstract StaticLangApiSchemaFileView.Builder templateFileName(String val);
 
