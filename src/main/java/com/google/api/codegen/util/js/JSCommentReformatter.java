@@ -16,7 +16,7 @@ package com.google.api.codegen.util.js;
 
 import com.google.api.codegen.util.CommentReformatter;
 import com.google.api.codegen.util.CommentTransformer;
-import com.google.api.codegen.util.ProtoLinkPattern;
+import com.google.api.codegen.util.LinkPattern;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.common.collect.ImmutableSet;
@@ -25,8 +25,11 @@ public class JSCommentReformatter implements CommentReformatter {
 
   private CommentTransformer transformer =
       CommentTransformer.newBuilder()
-          .transform(ProtoLinkPattern.PROTO.createTransformation("{@link %s}"))
-          .transform(ProtoLinkPattern.CLOUD.createTransformation("[%s](%s)"))
+          .transform(LinkPattern.PROTO.toFormat("{@link $TITLE}"))
+          .transform(
+              LinkPattern.RELATIVE
+                  .withUrlPrefix(CommentTransformer.CLOUD_URL_PREFIX)
+                  .toFormat("[$TITLE]($URL)"))
           .build();
 
   @Override

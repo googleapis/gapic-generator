@@ -16,7 +16,7 @@ package com.google.api.codegen.util.php;
 
 import com.google.api.codegen.util.CommentReformatter;
 import com.google.api.codegen.util.CommentTransformer;
-import com.google.api.codegen.util.ProtoLinkPattern;
+import com.google.api.codegen.util.LinkPattern;
 import java.util.regex.Pattern;
 
 public class PhpCommentReformatter implements CommentReformatter {
@@ -27,7 +27,10 @@ public class PhpCommentReformatter implements CommentReformatter {
       CommentTransformer.newBuilder()
           .replace(ASTERISK_PATTERN, "&#42;")
           .replace(AMPERSAND_PATTERN, "&#64;")
-          .transform(ProtoLinkPattern.CLOUD.createTransformation("[%s](%s)"))
+          .transform(
+              LinkPattern.RELATIVE
+                  .withUrlPrefix(CommentTransformer.CLOUD_URL_PREFIX)
+                  .toFormat("[$TITLE]($URL)"))
           .build();
 
   @Override

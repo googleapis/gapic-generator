@@ -25,20 +25,26 @@ import java.util.regex.Pattern;
  * associated with a {@link Pattern} object that must contain exactly two groups matching the link
  * title and link url.
  */
-public enum ProtoLinkPattern {
-  ABSOLUTE(CommentPatterns.ABSOLUTE_LINK_PATTERN, ""),
-  CLOUD(CommentPatterns.CLOUD_LINK_PATTERN, CommentTransformer.CLOUD_URL_PREFIX),
-  PROTO(CommentPatterns.PROTO_LINK_PATTERN, "");
+public class LinkPattern {
+  public static LinkPattern ABSOLUTE = new LinkPattern(CommentPatterns.ABSOLUTE_LINK_PATTERN, "");
+  public static LinkPattern RELATIVE = new LinkPattern(CommentPatterns.RELATIVE_LINK_PATTERN, "");
+  public static LinkPattern PROTO = new LinkPattern(CommentPatterns.PROTO_LINK_PATTERN, "");
 
   private Pattern pattern;
   private String urlPrefix;
 
-  ProtoLinkPattern(Pattern pattern, String urlPrefix) {
+  private LinkPattern(Pattern pattern, String urlPrefix) {
     this.pattern = pattern;
     this.urlPrefix = urlPrefix;
   }
 
-  public Transformation createTransformation(final String linkFormat) {
+  public LinkPattern withUrlPrefix(String urlPrefix) {
+    return new LinkPattern(pattern, urlPrefix);
+  }
+
+  public Transformation toFormat(String linkFormat) {
+    final String finalLinkFormat =
+        linkFormat.replaceAll("\\$TITLE", "%1\\$s").replaceAll("\\$URL", "%2\\$s");
     return new Transformation(
         pattern,
         new Function<String, String>() {
@@ -48,7 +54,7 @@ public enum ProtoLinkPattern {
             matcher.find();
             String title = matcher.group(1);
             String url = urlPrefix + matcher.group(2);
-            return Matcher.quoteReplacement(String.format(linkFormat, title, url));
+            return Matcher.quoteReplacement(String.format(finalLinkFormat, title, url));
           }
         });
   }
