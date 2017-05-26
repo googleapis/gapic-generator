@@ -17,7 +17,7 @@ public abstract class SimplePropertyView {
   public abstract String name();
 
   // The escaped class name for this Schema.
-  public abstract String type();
+  public abstract String typeName();
 
   @Nullable
   public abstract Boolean repeated();
@@ -30,7 +30,7 @@ public abstract class SimplePropertyView {
   public abstract static class Builder {
     public abstract SimplePropertyView.Builder name(String val);
 
-    public abstract SimplePropertyView.Builder type(String val);
+    public abstract SimplePropertyView.Builder typeName(String val);
 
     public abstract SimplePropertyView.Builder repeated(Boolean val);
 

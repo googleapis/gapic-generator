@@ -5,441 +5,125 @@
   {@renderFileHeader(apiFile.fileHeader)}
 
   @@Generated("by GAPIC")
-  @@AutoValue
-  public class {@apiFile.schema.typeName} implements Serializable {
+  @@BetaApi
+  public final class {@apiFile.schema.typeName} implements Serializable {
     {@members(apiFile.schema)}
+    {@constructor(apiFile.schema)}
+    {@getters(apiFile.schema)}
+    {@newBuilder(apiFile.schema)}
     {@builder(apiFile.schema)}
+    {@toString(apiFile.schema)}
+    {@equalsMethod(apiFile.schema)}
+    {@hashCode(apiFile.schema)}
+  }
+@end
+
+@private toString(xschema)
+  @@Override
+    public String toString() {
+      return "{@xschema.typeName}{"
+      @join property : xschema.properties
+          + "{@property.name}=" + {@property.name} + ", "
+      @end
+          + "}";
+  }
+@end
+
+@private equalsMethod(xschema)
+   @@Override
+   public boolean equals(Object o) {
+       if (o == this) {
+         return true;
+       }
+       if (o instanceof {@xschema.typeName}) {
+         {@xschema.typeName} that = ({@xschema.typeName}) o;
+         return true
+         @join property : xschema.properties
+            && (this.{@property.name}.equals(that.{@property.name}()))
+         @end
+       }
+         return false;
+       }
+  }
+@end
+
+@private hashCode(xschema)
+  @@Override
+  public int hashCode() {
+    int h = 1;
+    @join property : xschema.properties
+      h *= 1000003;
+      h ^= this.{@property.name}.hashCode();
+    @end
+    return h;
+  }
+@end
+
+@private newBuilder(xschema)
+  public static Builder newBuilder() {
+    return new AutoValue_{@xschema.typeName}.Builder();
+  }
+@end
+
+@private getters(xschema)
+  @join property : xschema.properties
+    public String {@property.typeName}() {
+      return {@property.typeName};
+    }
+    {@""}
+  @end
+@end
+
+@private constructor(xschema)
+  private {@xschema.typeName}(
+    {@paramList{xschema.properties}) {
+    @join property : xschema.properties
+      this.{@property.typeName} = {@property.name};
+      {@""}
+    @end
   }
 @end
 
 @private members(xschema)
   @join property : xschema.properties
-    private final {@property.type} {@property.name};
+    private final {@property.typeName} {@property.name};
     {@""}
   @end
 @end
 
 @private builder(xschema)
-  @@AutoValue.Builder
-  public abstract static class Builder {
-    {@builderMembers(xschema)}
+  public static class Builder {
+    {@members(xschema)}
+    Builder() {}
+    Builder(@{xschema.typeName} source) {
+    @join property : xschema.properties
+      this.{@property.name} = source.{@property.name};
+      {@""}
+    @end
+    }
+
+    public Builder
+    @join property : xschema.properties
+      public Builder {@property.name}(@{property.type} @{property.name}) {
+        this.{@property.name} = {@property.name};
+        return this;
+      {@""}
+      }
+    @end
+
+    public @{xschema.typeName} build() {
+     return new @{xschema.typeName}(
+     @join property : xschema.properties on ", "
+        this.{@property.name}
+     @end
+     ;
+    }
   }
 @end
 
 @private builderMembers(xschema)
   @join property : xschema.properties
-    public abstract {@xschema.typeName}.Builder {@property.name}({@property.type} val);
+    public abstract {@xschema.typeName}.Builder {@property.name}({@property.typeName} val);
     {@""}
-  @end
-@end
-
-
-
-@private formatResourceFunction(function)
-  /**
-   * Formats a string containing the fully-qualified path to represent
-   * a {@function.entityName} resource.
-   */
-  public static final String {@function.name}(\
-      {@formatResourceFunctionParams(function.resourceIdParams)}) {
-    return {@function.pathTemplateName}.instantiate(
-        {@pathTemplateArgs(function.resourceIdParams)});
-  }
-  {@""}
-@end
-
-@private formatResourceFunctionParams(resourceIdParams)
-  @join param : resourceIdParams on ", "
-    String {@param.name}
-  @end
-@end
-
-@private pathTemplateArgs(resourceIdParams)
-  @join param : resourceIdParams on ",".add(BREAK)
-    "{@param.templateKey}", {@param.name}
-  @end
-@end
-
-@private parseResourceFunction(function)
-  /**
-   * Parses the {@function.outputResourceId} from the given fully-qualified path which
-   * represents a {@function.entityName} resource.
-   */
-  public static final String {@function.name}(String {@function.entityNameParamName}) {
-    return {@function.pathTemplateName}.parse({@function.entityNameParamName})\
-      .get("{@function.outputResourceId}");
-  }
-  {@""}
-@end
-
-@private constructors(xapiClass)
-  @if xapiClass.hasDefaultInstance
-    /**
-     * Constructs an instance of {@xapiClass.name} with default settings.
-     */
-    public static final {@xapiClass.name} create() throws IOException {
-      return create({@xapiClass.settingsClassName}.defaultBuilder().build());
-    }
-    {@""}
-  @end
-
-  /**
-   * Constructs an instance of {@xapiClass.name}, using the given settings.
-   * The channels are created based on the settings passed in, or defaults for any
-   * settings that are not set.
-   */
-  public static final {@xapiClass.name} create({@xapiClass.settingsClassName} settings) throws IOException {
-    return new {@xapiClass.name}(settings);
-  }
-
-  /**
-   * Constructs an instance of {@xapiClass.name}, using the given settings.
-   * This is protected so that it easy to make a subclass, but otherwise, the static
-   * factory methods should be preferred.
-   */
-  protected {@xapiClass.name}({@xapiClass.settingsClassName} settings) throws IOException {
-    this.settings = settings;
-
-    ClientContext clientContext = ClientContext.create(settings);
-
-    @if xapiClass.hasLongRunningOperations
-      FixedExecutorProvider executorProvider = FixedExecutorProvider.create(this.executor);
-      FixedChannelProvider channelProvider = FixedChannelProvider.create(this.channel);
-      OperationsSettings operationsSettings =
-          OperationsSettings.defaultBuilder()
-              .setExecutorProvider(executorProvider)
-              .setChannelProvider(channelProvider)
-              .setCredentialsProvider(credentialsProvider)
-              .build();
-      this.operationsClient = OperationsClient.create(operationsSettings);
-    @end
-
-    @join apiCallable : xapiClass.apiCallableMembers
-      @switch apiCallable.type
-      @case "SimpleApiCallable"
-        this.{@apiCallable.name} = UnaryCallable.create(settings.{@apiCallable.settingsFunctionName}(), clientContext);
-      @case "PagedApiCallable"
-        this.{@apiCallable.name} =
-            UnaryCallable.createPagedVariant(settings.{@apiCallable.settingsFunctionName}(), clientContext);
-      @case "BatchingApiCallable"
-        this.{@apiCallable.name} = UnaryCallable.create(settings.{@apiCallable.settingsFunctionName}(), clientContext);
-      @case "StreamingApiCallable"
-        this.{@apiCallable.name} = StreamingCallable.create(settings.{@apiCallable.settingsFunctionName}(), this.channel);
-      @case "InitialOperationApiCallable"
-        this.{@apiCallable.name} = UnaryCallable.create(settings.{@apiCallable.settingsFunctionName}().getInitialCallSettings(), clientContext);
-      @case "OperationApiCallable"
-        this.{@apiCallable.name} = OperationCallable.create(settings.{@apiCallable.settingsFunctionName}(),\
-            clientContext, this.operationsClient);
-      @default
-        $unhandledCase: {@apiCallable.type}$
-      @end
-    @end
-
-    closeables.addAll(clientContext.getCloseables());
-  }
-  {@""}
-@end
-
-@private memberMethods(xapiClass)
-  public final {@xapiClass.settingsClassName} getSettings() {
-    return settings;
-  }
-
-  @if xapiClass.hasLongRunningOperations
-    /**
-     * Returns the OperationsClient that can be used to query the status of a long-running
-     * operation returned by another API method call.
-     */
-    public final OperationsClient getOperationsClient() {
-      return operationsClient;
-    }
-  @end
-  {@""}
-@end
-
-@private apiMethods(xapiClass)
-  @join apiMethod : xapiClass.apiMethods
-    @switch apiMethod.type
-    @case "PagedFlattenedMethod"
-      {@pagedFlattenedMethod(apiMethod)}
-    @case "PagedRequestObjectMethod"
-      {@pagedRequestObjectMethod(apiMethod)}
-    @case "PagedCallableMethod"
-      {@pagedCallableMethod(apiMethod)}
-    @case "UnpagedListCallableMethod"
-      {@unpagedListCallableMethod(apiMethod)}
-    @case "FlattenedMethod"
-      {@flattenedMethod(apiMethod)}
-    @case "RequestObjectMethod"
-      {@requestObjectMethod(apiMethod)}
-    @case "CallableMethod"
-    # TODO create a GrpcStreaming ApiMethodType
-      @if apiMethod.isStreaming
-        {@streamingCallableMethod(apiMethod)}
-      @else
-        {@callableMethod(apiMethod)}
-      @end
-    @case "AsyncOperationFlattenedMethod"
-      {@asyncOperationFlattenedMethod(apiMethod)}
-    @case "AsyncOperationRequestObjectMethod"
-      {@asyncOperationRequestObjectMethod(apiMethod)}
-    @case "OperationCallableMethod"
-      {@operationCallableMethod(apiMethod)}
-    @default
-      $unhandledCase: {@apiMethod.getClass.getSimpleName}$
-    @end
-    {@BREAK}
-  @end
-@end
-
-@private cleanupSection()
-  /**
-   * Initiates an orderly shutdown in which preexisting calls continue but new calls are immediately
-   * cancelled.
-   */
-  @@Override
-  public final void close() throws Exception {
-    for (AutoCloseable closeable : closeables) {
-      closeable.close();
-    }
-  }
-
-@end
-
-@private pagedFlattenedMethod(apiMethod)
-  @let coreSampleCode = pagedIterableMethodSampleCode(apiMethod)
-    {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
-  @end
-  @if apiMethod.releaseLevelAnnotation
-    {@apiMethod.releaseLevelAnnotation}
-
-  @end
-  {@apiMethod.visibility} final {@apiMethod.responseTypeName} {@apiMethod.name}({@paramList(apiMethod.methodParams)}) {
-    @join pathTemplateCheck : apiMethod.pathTemplateChecks
-      {@pathTemplateCheckLine(pathTemplateCheck)}
-    @end
-    {@apiMethod.serviceRequestTypeName} request =
-        {@apiMethod.serviceRequestTypeName}.newBuilder()
-        {@builderSetCalls(apiMethod.requestObjectParams)}
-        .build();
-    return {@apiMethod.name}(request);
-  }
-@end
-
-@private pagedRequestObjectMethod(apiMethod)
-  @let coreSampleCode = pagedIterableMethodSampleCode(apiMethod)
-    {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
-  @end
-  @if apiMethod.releaseLevelAnnotation
-    {@apiMethod.releaseLevelAnnotation}
-
-  @end
-  {@apiMethod.requestObjectMethod.accessModifier} final {@apiMethod.responseTypeName} \
-      {@apiMethod.name}({@apiMethod.serviceRequestTypeName} request) {
-    return {@apiMethod.requestObjectMethod.callableMethodName}()
-        .call(request);
-  }
-@end
-
-@private pagedCallableMethod(apiMethod)
-  @let coreSampleCode = pagedCallableMethodSampleCode(apiMethod)
-    {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
-  @end
-  {@callableMethodImpl(apiMethod)}
-@end
-
-@private unpagedListCallableMethod(apiMethod)
-  @let coreSampleCode = unpagedListCallableMethodSampleCode(apiMethod)
-    {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
-  @end
-  {@callableMethodImpl(apiMethod)}
-@end
-
-@private flattenedMethod(apiMethod)
-  @let coreSampleCode = syncMethodSampleCode(apiMethod)
-    {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
-  @end
-  @if apiMethod.releaseLevelAnnotation
-    {@apiMethod.releaseLevelAnnotation}
-
-  @end
-  {@apiMethod.visibility} final {@apiMethod.responseTypeName} {@apiMethod.name}(\
-       {@paramList(apiMethod.methodParams)}) {
-    {@flattenedRequestBuildingCode(apiMethod)}
-    @if apiMethod.hasReturnValue
-      return {@apiMethod.name}(request);
-    @else
-      {@apiMethod.name}(request);
-    @end
-  }
-@end
-
-@private requestObjectMethod(apiMethod)
-  @let coreSampleCode = syncMethodSampleCode(apiMethod)
-    {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
-  @end
-  @if apiMethod.releaseLevelAnnotation
-    {@apiMethod.releaseLevelAnnotation}
-
-  @end
-  {@apiMethod.requestObjectMethod.accessModifier} final {@apiMethod.responseTypeName} \
-      {@apiMethod.name}({@apiMethod.serviceRequestTypeName} request) {
-    @if apiMethod.hasReturnValue
-      return {@apiMethod.requestObjectMethod.callableMethodName}().call(request);
-    @else
-      {@apiMethod.requestObjectMethod.callableMethodName}().call(request);
-    @end
-  }
-@end
-
-@private callableMethod(apiMethod)
-  @let coreSampleCode = callableMethodSampleCode(apiMethod)
-    {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
-  @end
-  {@callableMethodImpl(apiMethod)}
-@end
-
-@private callableMethodImpl(apiMethod)
-  @if apiMethod.releaseLevelAnnotation
-    {@apiMethod.releaseLevelAnnotation}
-
-  @end
-  {@apiMethod.visibility} final UnaryCallable<{@apiMethod.serviceRequestTypeName}, \
-      {@apiMethod.responseTypeName}> {@apiMethod.name}() {
-    return {@apiMethod.callableMethod.callableName};
-  }
-@end
-
-@private streamingCallableMethod(apiMethod)
-  @let coreSampleCode = streamingCallableMethodSampleCode(apiMethod)
-    {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
-  @end
-  @if apiMethod.releaseLevelAnnotation
-    {@apiMethod.releaseLevelAnnotation}
-
-  @end
-  {@apiMethod.visibility} final StreamingCallable<{@apiMethod.serviceRequestTypeName}, \
-      {@apiMethod.responseTypeName}> {@apiMethod.name}() {
-    return {@apiMethod.callableMethod.callableName};
-  }
-@end
-
-@private asyncOperationFlattenedMethod(apiMethod)
-  @let coreSampleCode = asyncOperationMethodSampleCode(apiMethod)
-    {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
-  @end
-  @if apiMethod.releaseLevelAnnotation
-    {@apiMethod.releaseLevelAnnotation}
-
-  @end
-  {@apiMethod.visibility} final OperationFuture<{@apiMethod.responseTypeName}> {@apiMethod.name}(\
-       {@paramList(apiMethod.methodParams)}) {
-    {@flattenedRequestBuildingCode(apiMethod)}
-    return {@apiMethod.name}(request);
-  }
-@end
-
-@private asyncOperationRequestObjectMethod(apiMethod)
-  @let coreSampleCode = asyncOperationMethodSampleCode(apiMethod)
-    {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
-  @end
-  @if apiMethod.releaseLevelAnnotation
-    {@apiMethod.releaseLevelAnnotation}
-
-  @end
-  {@apiMethod.requestObjectMethod.accessModifier} final OperationFuture<{@apiMethod.responseTypeName}> \
-      {@apiMethod.name}({@apiMethod.serviceRequestTypeName} request) {
-    return {@apiMethod.requestObjectMethod.callableMethodName}().futureCall(request);
-  }
-@end
-
-@private operationCallableMethod(apiMethod)
-  @let coreSampleCode = asyncOperationCallableMethodSampleCode(apiMethod)
-    {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
-  @end
-  @if apiMethod.releaseLevelAnnotation
-    {@apiMethod.releaseLevelAnnotation}
-
-  @end
-  {@apiMethod.visibility} final OperationCallable<{@apiMethod.serviceRequestTypeName}, \
-      {@apiMethod.responseTypeName}> {@apiMethod.name}() {
-    return {@apiMethod.callableMethod.callableName};
-  }
-@end
-
-@private flattenedRequestBuildingCode(apiMethod)
-  @join pathTemplateCheck : apiMethod.pathTemplateChecks
-    {@pathTemplateCheckLine(pathTemplateCheck)}
-  @end
-
-  {@apiMethod.serviceRequestTypeName} request =
-      {@apiMethod.serviceRequestTypeName}.newBuilder()
-      {@builderSetCalls(apiMethod.requestObjectParams)}
-      .build();
-@end
-
-@private methodDoc(apiMethodDoc, methodSampleCode)
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-  /**
-  @if apiMethodDoc.mainDocLines
-    @join commentLine : apiMethodDoc.mainDocLines
-      {@""} * {@commentLine}
-    @end
-  @else
-    {@""} *
-  @end
-   *
-   * Sample code:
-   * <pre><code>
-  @join sampleLine : util.getDocLines(methodSampleCode)
-    {@""} * {@sampleLine}
-  @end
-   * </code></pre>
-  @if apiMethodDoc.paramDocs
-    {@""} *
-    @join doc : apiMethodDoc.paramDocs
-      {@paramDoc(doc)}
-    @end
-  @end
-  @if apiMethodDoc.throwsDocLines
-    @join commentLine : apiMethodDoc.throwsDocLines
-      {@""} * {@commentLine}
-    @end
-  @end
-   */
-  {@EMPTY}
-@end
-
-@private paramDoc(doc)
-  @switch doc.type
-  @case "SimpleParamDocView"
-    {@simpleParamDoc(doc)}
-  @default
-    $unhandledCase: {@doc.type}$
-  @end
-@end
-
-@private simpleParamDoc(doc)
-  @if doc.lines
-    {@""} * @@param {@doc.paramName} {@doc.firstLine}
-    @if doc.remainingLines
-      @join commentLine : doc.remainingLines
-        {@""} * {@commentLine}
-      @end
-    @end
-  @else
-    {@""} * @@param {@doc.paramName}
-  @end
-@end
-
-@private builderSetCalls(requestObjectParams)
-  @join requestObjectParam : requestObjectParams
-    @if requestObjectParam.hasTransformParamFunction
-      .{@requestObjectParam.setCallName}(\
-        {@requestObjectParam.name} == null ? null : \
-        {@requestObjectParam.transformParamFunctionName}({@requestObjectParam.name}))
-    @else
-      .{@requestObjectParam.setCallName}({@requestObjectParam.name})
-    @end
   @end
 @end

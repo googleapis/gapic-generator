@@ -123,7 +123,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements SchemaToViewTransf
     schemaView.className(schemaName);
     schemaView.defaultValue(schema.defaultValue());
 
-    // Map each property name to the Java type of the property.
+    // Map each property name to the Java typeName of the property.
     List<SimplePropertyView> properties = new LinkedList<>();
     for (Map.Entry<String, Schema> propertyEntry : schema.properties().entrySet()) {
       String propertyName = propertyEntry.getKey();
@@ -131,9 +131,9 @@ public class JavaDiscoGapicSchemaToViewTransformer implements SchemaToViewTransf
       SimplePropertyView.Builder simpleProperty = SimplePropertyView.newBuilder()
           .name(propertyName).repeated(property.repeated());
       if (property.reference().isEmpty()) {
-        simpleProperty.type(typeToJavaType(property.type(), property.format(), propertyName));
+        simpleProperty.typeName(typeToJavaType(property.type(), property.format(), propertyName));
       } else {
-        simpleProperty.type(property.reference());
+        simpleProperty.typeName(property.reference());
       }
       properties.add(simpleProperty.build());
     }
@@ -145,17 +145,17 @@ public class JavaDiscoGapicSchemaToViewTransformer implements SchemaToViewTransf
   private void addApiImports(DiscoGapicInterfaceContext context) {
     ModelTypeTable typeTable = context.getModelTypeTable();
     typeTable.saveNicknameFor("com.google.api.core.BetaApi");
-    typeTable.saveNicknameFor("java.util.ArrayList");
+    typeTable.saveNicknameFor("com.google.common.collect.ImmutableList;");
     typeTable.saveNicknameFor("java.util.List");
     typeTable.saveNicknameFor("javax.annotation.Generated");
   }
 
-  // Return the corresponding Java identifier for a given Discovery doc type and format.
+  // Return the corresponding Java identifier for a given Discovery doc typeName and format.
   // https://developers.google.com/discovery/v1/type-format.
   private String typeToJavaType(Schema.Type type, Schema.Format format, String name) {
     switch (type) {
       case ARRAY:
-        return String.format("List<%s>", name);
+        return String.format("ImmutableList<%s>", name);
       case INTEGER:
         switch (format) {
           case INT32:
@@ -163,7 +163,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements SchemaToViewTransf
           case UINT32:
             return "Long";
           default:
-            System.err.println("Discovery doc had an INTEGER type that was not Integer/Long.");
+            System.err.println("Discovery doc had an INTEGER typeName that was not Integer/Long.");
         }
       case NUMBER:
         switch (format) {
@@ -172,7 +172,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements SchemaToViewTransf
           case FLOAT:
             return "Float";
           default:
-            System.err.println("Discovery doc had a NUMBER type that was not Float/Double.");
+            System.err.println("Discovery doc had a NUMBER typeName that was not Float/Double.");
         }
       case BOOLEAN:
         return "Boolean";
@@ -181,7 +181,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements SchemaToViewTransf
       case OBJECT:
         return "Object";
       default:
-        System.err.println("Discovery doc had an unaccounted for type/format.");
+        System.err.println("Discovery doc had an unaccounted for typeName/format.");
     }
     return null;
   }
