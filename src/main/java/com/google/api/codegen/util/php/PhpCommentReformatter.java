@@ -23,13 +23,15 @@ public class PhpCommentReformatter implements CommentReformatter {
   public static final Pattern ASTERISK_PATTERN = Pattern.compile("\\*");
   public static final Pattern AMPERSAND_PATTERN = Pattern.compile("@");
 
+  private CommentTransformer transformer =
+      CommentTransformer.newBuilder()
+          .replace(ASTERISK_PATTERN, "&#42;")
+          .replace(AMPERSAND_PATTERN, "&#64;")
+          .transform(ProtoLinkPattern.CLOUD.createTransformation("[%s](%s)"))
+          .build();
+
   @Override
   public String reformat(String comment) {
-    return CommentTransformer.of(comment)
-        .replace(ASTERISK_PATTERN, "&#42;")
-        .replace(AMPERSAND_PATTERN, "&#64;")
-        .transform(ProtoLinkPattern.CLOUD.createTransformation("[%s](%s)"))
-        .toString()
-        .trim();
+    return transformer.transform(comment).trim();
   }
 }

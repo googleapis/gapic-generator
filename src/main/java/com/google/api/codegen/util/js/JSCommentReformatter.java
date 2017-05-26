@@ -23,13 +23,15 @@ import com.google.common.collect.ImmutableSet;
 
 public class JSCommentReformatter implements CommentReformatter {
 
+  private CommentTransformer transformer =
+      CommentTransformer.newBuilder()
+          .transform(ProtoLinkPattern.PROTO.createTransformation("{@link %s}"))
+          .transform(ProtoLinkPattern.CLOUD.createTransformation("[%s](%s)"))
+          .build();
+
   @Override
   public String reformat(String comment) {
-    return CommentTransformer.of(comment)
-        .transform(ProtoLinkPattern.PROTO.createTransformation("{@link %s}"))
-        .transform(ProtoLinkPattern.CLOUD.createTransformation("[%s](%s)"))
-        .toString()
-        .trim();
+    return transformer.transform(comment).trim();
   }
 
   public String getLinkedElementName(ProtoElement element) {

@@ -22,6 +22,14 @@ import com.google.common.base.Splitter;
 
 public class PythonCommentReformatter implements CommentReformatter {
 
+  private CommentTransformer transformer =
+      CommentTransformer.newBuilder()
+          .replace(CommentPatterns.BACK_QUOTE_PATTERN, "``")
+          .transform(ProtoLinkPattern.PROTO.createTransformation("``%s``"))
+          .transform(ProtoLinkPattern.ABSOLUTE.createTransformation("`%s <%s>`_"))
+          .transform(ProtoLinkPattern.CLOUD.createTransformation("`%s <%s>`_"))
+          .build();
+
   @Override
   public String reformat(String comment) {
     boolean inCodeBlock = false;
@@ -34,7 +42,7 @@ public class PythonCommentReformatter implements CommentReformatter {
         if (!(line.trim().isEmpty()
             || CommentPatterns.CODE_BLOCK_PATTERN.matcher(line).matches())) {
           inCodeBlock = false;
-          line = applyTransformations(line);
+          line = transformer.transform(line);
         }
 
       } else if (CommentPatterns.CODE_BLOCK_PATTERN.matcher(line).matches()) {
@@ -42,7 +50,7 @@ public class PythonCommentReformatter implements CommentReformatter {
         line = "::\n\n" + line;
 
       } else {
-        line = applyTransformations(line);
+        line = transformer.transform(line);
       }
 
       if (!first) {
@@ -52,14 +60,5 @@ public class PythonCommentReformatter implements CommentReformatter {
       sb.append(line.replace("\"", "\\\""));
     }
     return sb.toString().trim();
-  }
-
-  private String applyTransformations(String line) {
-    return CommentTransformer.of(line)
-        .replace(CommentPatterns.BACK_QUOTE_PATTERN, "``")
-        .transform(ProtoLinkPattern.PROTO.createTransformation("``%s``"))
-        .transform(ProtoLinkPattern.ABSOLUTE.createTransformation("`%s <%s>`_"))
-        .transform(ProtoLinkPattern.CLOUD.createTransformation("`%s <%s>`_"))
-        .toString();
   }
 }

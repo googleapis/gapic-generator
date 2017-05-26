@@ -39,6 +39,15 @@ public class RubyCommentReformatter implements CommentReformatter {
             }
           });
 
+  private CommentTransformer transformer =
+      CommentTransformer.newBuilder()
+          .replace(CommentPatterns.BACK_QUOTE_PATTERN, "+")
+          .transform(PROTO_TO_RUBY_DOC_TRANSFORMATION)
+          .transform(ProtoLinkPattern.CLOUD.createTransformation("{%s}[%s]"))
+          .transform(ProtoLinkPattern.ABSOLUTE.createTransformation("{%s}[%s]"))
+          .scopedReplace(CommentPatterns.HEADLINE_PATTERN, "#", "=")
+          .build();
+
   @Override
   public String reformat(String comment) {
     StringBuffer sb = new StringBuffer();
@@ -63,21 +72,11 @@ public class RubyCommentReformatter implements CommentReformatter {
         line = line.trim();
         sb.append(Strings.repeat(" ", listIndent));
       }
-      sb.append(applyTransformations(line)).append("\n");
+      sb.append(transformer.transform(line)).append("\n");
       followsListItem = matchesList;
       followsBlankLine = line.isEmpty();
     }
     return sb.toString().trim();
-  }
-
-  private String applyTransformations(String line) {
-    return CommentTransformer.of(line)
-        .replace(CommentPatterns.BACK_QUOTE_PATTERN, "+")
-        .transform(PROTO_TO_RUBY_DOC_TRANSFORMATION)
-        .transform(ProtoLinkPattern.CLOUD.createTransformation("{%s}[%s]"))
-        .transform(ProtoLinkPattern.ABSOLUTE.createTransformation("{%s}[%s]"))
-        .scopedReplace(CommentPatterns.HEADLINE_PATTERN, "#", "=")
-        .toString();
   }
 
   private static String protoToRubyDoc(String comment) {

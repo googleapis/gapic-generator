@@ -15,6 +15,7 @@
 package com.google.api.codegen.util;
 
 import com.google.common.base.Function;
+import com.google.common.collect.ImmutableList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,42 +23,62 @@ public class CommentTransformer {
 
   public static String CLOUD_URL_PREFIX = "https://cloud.google.com";
 
-  private String comment;
+  private ImmutableList<Transformation> transformations;
 
-  private CommentTransformer(String comment) {
-    this.comment = comment;
+  private CommentTransformer(ImmutableList<Transformation> transformations) {
+    this.transformations = transformations;
   }
 
-  public static CommentTransformer of(String comment) {
-    return new CommentTransformer(comment);
-  }
-
-  public CommentTransformer replace(Pattern pattern, String replacement) {
-    comment = pattern.matcher(comment).replaceAll(replacement);
-    return this;
-  }
-
-  public CommentTransformer scopedReplace(
-      Pattern pattern, final String target, final String replacement) {
-    return transform(
-        new Transformation(
-            pattern,
-            new Function<String, String>() {
-              @Override
-              public String apply(String matchedString) {
-                return matchedString.replace(target, replacement);
-              }
-            }));
-  }
-
-  public CommentTransformer transform(Transformation transformation) {
-    comment = transformation.apply(comment);
-    return this;
-  }
-
-  @Override
-  public String toString() {
+  public String transform(String comment) {
+    for (Transformation transformation : transformations) {
+      comment = transformation.apply(comment);
+    }
     return comment;
+  }
+
+  public static Builder newBuilder() {
+    return new Builder();
+  }
+
+  public static class Builder {
+
+    private ImmutableList.Builder<Transformation> transformations = ImmutableList.builder();
+
+    private Builder() {}
+
+    public Builder replace(Pattern pattern, final String replacement) {
+      transformations.add(
+          new Transformation(
+              pattern,
+              new Function<String, String>() {
+                @Override
+                public String apply(String s) {
+                  return replacement;
+                }
+              }));
+      return this;
+    }
+
+    public Builder scopedReplace(Pattern pattern, final String target, final String replacement) {
+      return transform(
+          new Transformation(
+              pattern,
+              new Function<String, String>() {
+                @Override
+                public String apply(String matchedString) {
+                  return matchedString.replace(target, replacement);
+                }
+              }));
+    }
+
+    public Builder transform(Transformation transformation) {
+      transformations.add(transformation);
+      return this;
+    }
+
+    public CommentTransformer build() {
+      return new CommentTransformer(transformations.build());
+    }
   }
 
   public static class Transformation {
