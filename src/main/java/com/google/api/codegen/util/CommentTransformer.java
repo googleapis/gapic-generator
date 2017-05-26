@@ -37,6 +37,19 @@ public class CommentTransformer {
     return this;
   }
 
+  public CommentTransformer scopedReplace(
+      Pattern pattern, final String target, final String replacement) {
+    return transform(
+        new Transformation(
+            pattern,
+            new Function<String, String>() {
+              @Override
+              public String apply(String matchedString) {
+                return matchedString.replace(target, replacement);
+              }
+            }));
+  }
+
   public CommentTransformer transform(Transformation transformation) {
     comment = transformation.apply(comment);
     return this;
@@ -49,9 +62,9 @@ public class CommentTransformer {
 
   public static class Transformation {
     private Pattern pattern;
-    private Function<Matcher, String> replacementFunction;
+    private Function<String, String> replacementFunction;
 
-    public Transformation(Pattern pattern, Function<Matcher, String> replacementFunction) {
+    public Transformation(Pattern pattern, Function<String, String> replacementFunction) {
       this.pattern = pattern;
       this.replacementFunction = replacementFunction;
     }
@@ -60,7 +73,7 @@ public class CommentTransformer {
       StringBuffer sb = new StringBuffer();
       Matcher m = pattern.matcher(comment);
       while (m.find()) {
-        m.appendReplacement(sb, replacementFunction.apply(m));
+        m.appendReplacement(sb, replacementFunction.apply(m.group()));
       }
       m.appendTail(sb);
       return sb.toString();

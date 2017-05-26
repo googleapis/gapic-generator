@@ -30,20 +30,12 @@ public class RubyCommentReformatter implements CommentReformatter {
   private static Transformation PROTO_TO_RUBY_DOC_TRANSFORMATION =
       new Transformation(
           CommentPatterns.PROTO_LINK_PATTERN,
-          new Function<Matcher, String>() {
+          new Function<String, String>() {
             @Override
-            public String apply(Matcher matcher) {
+            public String apply(String matchedString) {
+              Matcher matcher = CommentPatterns.PROTO_LINK_PATTERN.matcher(matchedString);
+              matcher.find();
               return Matcher.quoteReplacement(protoToRubyDoc(matcher.group(1)));
-            }
-          });
-
-  private static Transformation HEADLINE_TRANSFORMATION =
-      new Transformation(
-          CommentPatterns.HEADLINE_PATTERN,
-          new Function<Matcher, String>() {
-            @Override
-            public String apply(Matcher matcher) {
-              return matcher.group().replace("#", "=");
             }
           });
 
@@ -84,7 +76,7 @@ public class RubyCommentReformatter implements CommentReformatter {
         .transform(PROTO_TO_RUBY_DOC_TRANSFORMATION)
         .transform(ProtoLinkPattern.CLOUD.createTransformation("{%s}[%s]"))
         .transform(ProtoLinkPattern.ABSOLUTE.createTransformation("{%s}[%s]"))
-        .transform(HEADLINE_TRANSFORMATION)
+        .scopedReplace(CommentPatterns.HEADLINE_PATTERN, "#", "=")
         .toString();
   }
 

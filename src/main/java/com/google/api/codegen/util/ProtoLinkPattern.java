@@ -41,9 +41,11 @@ public enum ProtoLinkPattern {
   public Transformation createTransformation(final String linkFormat) {
     return new Transformation(
         pattern,
-        new Function<Matcher, String>() {
+        new Function<String, String>() {
           @Override
-          public String apply(Matcher matcher) {
+          public String apply(String matchedString) {
+            Matcher matcher = pattern.matcher(matchedString);
+            matcher.find();
             String title = matcher.group(1);
             String url = urlPrefix + matcher.group(2);
             return Matcher.quoteReplacement(String.format(linkFormat, title, url));
