@@ -38,14 +38,15 @@
      }
      if (o instanceof {@xschema.typeName}) {
        {@xschema.typeName} that = ({@xschema.typeName}) o;
-       return true
-       @join property : xschema.properties
-          && (this.{@property.name}.equals(that.{@property.name}()))
+       return
+       @join property : xschema.properties on "&&"
+
+       this.{@property.name}.equals(that.{@property.name}())
        @end
+       ;
      }
-       return false;
-     }
-  }
+     return false;
+   }
 
 @end
 
@@ -86,7 +87,7 @@
       @end
     ) {
     @join property : xschema.properties
-      this.{@property.typeName} = {@property.name};
+      this.{@property.name} = {@property.name};
     @end
   }
 
@@ -100,15 +101,18 @@
 
 @private builder(xschema)
   public static class Builder {
-    {@members(xschema)}
-    Builder() {}
-    Builder(@{xschema.typeName} source) {
     @join property : xschema.properties
-      this.{@property.name} = source.{@property.name};
+      private {@property.typeName} {@property.name};
     @end
+
+    Builder() {}
+
+    Builder({@xschema.typeName} source) {
+      @join property : xschema.properties
+        this.{@property.name} = source.{@property.name};
+      @end
     }
 
-    public Builder
     @join property : xschema.properties
       public Builder {@property.name}({@property.typeName} {@property.name}) {
         this.{@property.name} = {@property.name};
@@ -121,7 +125,7 @@
       return new {@xschema.typeName}(
         @join property : xschema.properties on ", "
 
-        {@property.typeName} {@property.name}
+        {@property.name}
         @end
       );
     }
