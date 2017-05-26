@@ -15,16 +15,26 @@
 package com.google.api.codegen.util.php;
 
 import com.google.api.codegen.util.CommentReformatter;
-import com.google.common.escape.Escaper;
-import com.google.common.escape.Escapers;
+import com.google.api.codegen.util.CommentTransformer;
+import com.google.api.codegen.util.LinkPattern;
+import java.util.regex.Pattern;
 
 public class PhpCommentReformatter implements CommentReformatter {
-  /** Escaper for formatting PHP doc strings. */
-  private static final Escaper PHP_ESCAPER =
-      Escapers.builder().addEscape('*', "&#42;").addEscape('@', "&#64;").build();
+  public static final Pattern ASTERISK_PATTERN = Pattern.compile("\\*");
+  public static final Pattern AMPERSAND_PATTERN = Pattern.compile("@");
+
+  private CommentTransformer transformer =
+      CommentTransformer.newBuilder()
+          .replace(ASTERISK_PATTERN, "&#42;")
+          .replace(AMPERSAND_PATTERN, "&#64;")
+          .transform(
+              LinkPattern.RELATIVE
+                  .withUrlPrefix(CommentTransformer.CLOUD_URL_PREFIX)
+                  .toFormat("[$TITLE]($URL)"))
+          .build();
 
   @Override
   public String reformat(String comment) {
-    return PHP_ESCAPER.escape(comment).trim();
+    return transformer.transform(comment).trim();
   }
 }
