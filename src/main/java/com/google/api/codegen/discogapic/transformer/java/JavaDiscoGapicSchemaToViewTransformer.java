@@ -19,7 +19,8 @@ import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.discogapic.DiscoGapicInterfaceContext;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.discovery.Document;
-import com.google.api.codegen.viewmodel.StaticLangApiSchemaClassView;
+import com.google.api.codegen.discovery.Schema;
+import com.google.api.codegen.viewmodel.StaticLangApiSchemaView;
 import com.google.api.codegen.viewmodel.StaticLangApiSchemaFileView;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
@@ -30,12 +31,12 @@ import com.google.api.codegen.transformer.java.JavaFeatureConfig;
 import com.google.api.codegen.transformer.java.JavaModelTypeNameConverter;
 import com.google.api.codegen.transformer.java.JavaSurfaceNamer;
 import com.google.api.codegen.util.java.JavaTypeTable;
-import com.google.api.codegen.viewmodel.StaticLangApiFileView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /* Creates the ViewModel for a Discovery Doc Schema Java class. */
 public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTransformer {
@@ -63,27 +64,6 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
         SCHEMA_TEMPLATE_FILENAME);
   }
 
-//  @Override
-//  public List<ViewModel> transform(Document document, GapicProductConfig productConfig) {
-//    List<ViewModel> surfaceDocs = new ArrayList<>();
-//    SurfaceNamer namer = new JavaSurfaceNamer(productConfig.getPackageName());
-//
-//    List<ServiceDocView> serviceDocs = new ArrayList<>();
-//
-//    DiscoGapicInterfaceContext context =
-//        DiscoGapicInterfaceContext.create(
-//            document,
-//            productConfig,
-//            createTypeTable(productConfig.getPackageName()),
-//            namer,
-//            JavaFeatureConfig.newBuilder().enableStringFormatFunctions(false).build());
-//    StaticLangApiFileView apiFile = generateApiFile(context);
-//    surfaceDocs.add(apiFile);
-//
-//    serviceDocs.add(apiFile.api().doc());
-//
-//    return surfaceDocs;
-//  }
 
   @Override
   public List<ViewModel> transform(Document document, GapicProductConfig productConfig) {
@@ -97,9 +77,13 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
             createTypeTable(productConfig.getPackageName()),
             namer,
             JavaFeatureConfig.newBuilder().enableStringFormatFunctions(false).build());
-    StaticLangApiFileView apiFile = generateApiFile(context);
 
-    surfaceSchemas.add(apiFile);
+    StaticLangApiSchemaFileView apiFile;
+    for (Map.Entry<String, Schema> entry : context.getDocument().schemas().entrySet()) {
+      apiFile = generateSchemaFile(context, entry.getKey(), entry.getValue());
+      surfaceSchemas.add(apiFile);
+    }
+
 
     return surfaceSchemas;
   }
@@ -110,12 +94,13 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
         new JavaModelTypeNameConverter(implicitPackageName));
   }
 
-  private StaticLangApiSchemaFileView generateApiFile(DiscoGapicInterfaceContext context) {
+  private StaticLangApiSchemaFileView generateSchemaFile(DiscoGapicInterfaceContext context,
+      String schemaName, Schema schema) {
     StaticLangApiSchemaFileView.Builder apiFile = StaticLangApiSchemaFileView.newBuilder();
 
     apiFile.templateFileName(SCHEMA_TEMPLATE_FILENAME);
 
-    apiFile.schema(generateApiClass(context));
+    apiFile.schema(generateSchemaClass(context, schemaName, schema));
 
     String outputPath = pathMapper.getOutputPath(null, context.getProductConfig());
     String className = context.getNamer().getApiWrapperClassName(context.getInterfaceConfig());
@@ -127,24 +112,26 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     return apiFile.build();
   }
 
-  private StaticLangApiSchemaClassView generateApiClass(DiscoGapicInterfaceContext context) {
+  private StaticLangApiSchemaView generateSchemaClass(DiscoGapicInterfaceContext context,
+      String schemaName, Schema schema) {
     addApiImports(context);
+    List<StaticLangApiSchemaView> schemaViews = new ArrayList<>();
 
-    List<StaticLangApiSchemaClassView> schemas = new ArrayList<>();
+    StaticLangApiSchemaView.Builder schemaView = StaticLangApiSchemaView.newBuilder();
 
-    StaticLangApiSchemaClassView.Builder xapiClass = StaticLangApiSchemaClassView.newBuilder();
+    schemaView.typeName(schemaName);
+    schemaView.type(schema.type());
+    // TODO(andrealin): apply Java naming format.
+    schemaView.className(schemaName);
+    schemaView.defaultValue(schema.defaultValue());
+//    schemaView.enumValues(schema.)
 
-    String name = context.getNamer().getApiWrapperClassName(context.getInterfaceConfig());
-    xapiClass.name(name);
-
-    return xapiClass.build();
+    return schemaView.build();
   }
 
   private void addApiImports(DiscoGapicInterfaceContext context) {
     ModelTypeTable typeTable = context.getModelTypeTable();
     typeTable.saveNicknameFor("com.google.api.core.BetaApi");
-    typeTable.saveNicknameFor("java.io.Closeable");
-    typeTable.saveNicknameFor("java.io.IOException");
     typeTable.saveNicknameFor("java.util.ArrayList");
     typeTable.saveNicknameFor("java.util.List");
     typeTable.saveNicknameFor("javax.annotation.Generated");
