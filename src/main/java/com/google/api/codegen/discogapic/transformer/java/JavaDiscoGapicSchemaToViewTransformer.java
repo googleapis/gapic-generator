@@ -20,6 +20,7 @@ import com.google.api.codegen.discogapic.DiscoGapicInterfaceContext;
 import com.google.api.codegen.discogapic.transformer.SchemaToViewTransformer;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Schema;
+import com.google.api.codegen.viewmodel.SimplePropertyView;
 import com.google.api.codegen.viewmodel.StaticLangApiSchemaView;
 import com.google.api.codegen.viewmodel.StaticLangApiSchemaFileView;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
@@ -35,6 +36,7 @@ import com.google.api.codegen.viewmodel.ViewModel;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -112,7 +114,6 @@ public class JavaDiscoGapicSchemaToViewTransformer implements SchemaToViewTransf
   private StaticLangApiSchemaView generateSchemaClass(DiscoGapicInterfaceContext context,
       String schemaName, Schema schema) {
     addApiImports(context);
-    List<StaticLangApiSchemaView> schemaViews = new ArrayList<>();
 
     StaticLangApiSchemaView.Builder schemaView = StaticLangApiSchemaView.newBuilder();
 
@@ -121,7 +122,22 @@ public class JavaDiscoGapicSchemaToViewTransformer implements SchemaToViewTransf
     // TODO(andrealin): apply Java naming format.
     schemaView.className(schemaName);
     schemaView.defaultValue(schema.defaultValue());
-//    schemaView.enumValues(schema.)
+
+    // Map each property name to the Java type of the property.
+    List<SimplePropertyView> properties = new LinkedList<>();
+    for (Map.Entry<String, Schema> propertyEntry : schema.properties().entrySet()) {
+      String propertyName = propertyEntry.getKey();
+      Schema property = propertyEntry.getValue();
+      SimplePropertyView.Builder simpleProperty = SimplePropertyView.newBuilder()
+          .name(propertyName).repeated(property.repeated());
+      if (property.reference().isEmpty()) {
+        simpleProperty.type(typeToJavaType(property.type(), property.format(), propertyName));
+      } else {
+        simpleProperty.type(property.reference());
+      }
+      properties.add(simpleProperty.build());
+    }
+    schemaView.properties(properties);
 
     return schemaView.build();
   }
@@ -133,4 +149,41 @@ public class JavaDiscoGapicSchemaToViewTransformer implements SchemaToViewTransf
     typeTable.saveNicknameFor("java.util.List");
     typeTable.saveNicknameFor("javax.annotation.Generated");
   }
+
+  // Return the corresponding Java identifier for a given Discovery doc type and format.
+  // https://developers.google.com/discovery/v1/type-format.
+  private String typeToJavaType(Schema.Type type, Schema.Format format, String name) {
+    switch (type) {
+      case ARRAY:
+        return String.format("List<%s>", name);
+      case INTEGER:
+        switch (format) {
+          case INT32:
+            return "Integer";
+          case UINT32:
+            return "Long";
+          default:
+            System.err.println("Discovery doc had an INTEGER type that was not Integer/Long.");
+        }
+      case NUMBER:
+        switch (format) {
+          case DOUBLE:
+            return "Double";
+          case FLOAT:
+            return "Float";
+          default:
+            System.err.println("Discovery doc had a NUMBER type that was not Float/Double.");
+        }
+      case BOOLEAN:
+        return "Boolean";
+      case STRING:
+        return "String";
+      case OBJECT:
+        return "Object";
+      default:
+        System.err.println("Discovery doc had an unaccounted for type/format.");
+    }
+    return null;
+  }
+
 }

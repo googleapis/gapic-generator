@@ -40,7 +40,7 @@ public abstract class StaticLangApiSchemaView implements ViewModel {
 
   // There can be arbitrarily nested fields inside of this field.
   @Nullable
-  public abstract List<StaticLangApiSchemaView> properties();
+  public abstract List<SimplePropertyView> properties();
 
   @Nullable
   // The typeName of a Schema that contains the full representation of this schema.
@@ -77,7 +77,7 @@ public abstract class StaticLangApiSchemaView implements ViewModel {
 
     public abstract StaticLangApiSchemaView.Builder repeated(Boolean val);
 
-    public abstract StaticLangApiSchemaView.Builder properties(List<StaticLangApiSchemaView> val);
+    public abstract StaticLangApiSchemaView.Builder properties(List<SimplePropertyView> val);
 
     public abstract StaticLangApiSchemaView.Builder ref(StaticLangApiSchemaView val);
 
