@@ -27,24 +27,26 @@
       @end
           + "}";
   }
+
 @end
 
 @private equalsMethod(xschema)
    @@Override
    public boolean equals(Object o) {
-       if (o == this) {
-         return true;
-       }
-       if (o instanceof {@xschema.typeName}) {
-         {@xschema.typeName} that = ({@xschema.typeName}) o;
-         return true
-         @join property : xschema.properties
-            && (this.{@property.name}.equals(that.{@property.name}()))
-         @end
-       }
-         return false;
-       }
+     if (o == this) {
+       return true;
+     }
+     if (o instanceof {@xschema.typeName}) {
+       {@xschema.typeName} that = ({@xschema.typeName}) o;
+       return true
+       @join property : xschema.properties
+          && (this.{@property.name}.equals(that.{@property.name}()))
+       @end
+     }
+       return false;
+     }
   }
+
 @end
 
 @private hashCode(xschema)
@@ -57,18 +59,20 @@
     @end
     return h;
   }
+
 @end
 
 @private newBuilder(xschema)
   public static Builder newBuilder() {
-    return new AutoValue_{@xschema.typeName}.Builder();
+    return new {@xschema.typeName}.Builder();
   }
+
 @end
 
 @private getters(xschema)
   @join property : xschema.properties
-    public String {@property.typeName}() {
-      return {@property.typeName};
+    public {@property.typeName} {@property.name}() {
+      return {@property.name};
     }
     {@""}
   @end
@@ -76,18 +80,21 @@
 
 @private constructor(xschema)
   private {@xschema.typeName}(
-    {@paramList{xschema.properties}) {
+      @join property : xschema.properties on ", "
+
+      {@property.typeName} {@property.name}
+      @end
+    ) {
     @join property : xschema.properties
       this.{@property.typeName} = {@property.name};
-      {@""}
     @end
   }
+
 @end
 
 @private members(xschema)
   @join property : xschema.properties
     private final {@property.typeName} {@property.name};
-    {@""}
   @end
 @end
 
@@ -98,27 +105,28 @@
     Builder(@{xschema.typeName} source) {
     @join property : xschema.properties
       this.{@property.name} = source.{@property.name};
-      {@""}
     @end
     }
 
     public Builder
     @join property : xschema.properties
-      public Builder {@property.name}(@{property.type} @{property.name}) {
+      public Builder {@property.name}({@property.typeName} {@property.name}) {
         this.{@property.name} = {@property.name};
         return this;
-      {@""}
       }
+
     @end
 
-    public @{xschema.typeName} build() {
-     return new @{xschema.typeName}(
-     @join property : xschema.properties on ", "
-        this.{@property.name}
-     @end
-     ;
+    public {@xschema.typeName} build() {
+      return new {@xschema.typeName}(
+        @join property : xschema.properties on ", "
+
+        {@property.typeName} {@property.name}
+        @end
+      );
     }
   }
+
 @end
 
 @private builderMembers(xschema)
