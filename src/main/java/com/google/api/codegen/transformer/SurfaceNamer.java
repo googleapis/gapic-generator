@@ -576,7 +576,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The name of the class that implements a particular proto interface. */
   public String getApiWrapperClassName(InterfaceConfig interfaceConfig) {
-    return publicClassName(Name.upperCamel(getInterfaceName(interfaceConfig), "Client"));
+    return publicClassName(Name.anyCamel(getInterfaceName(interfaceConfig), "Client"));
   }
 
   /** The name of the implementation class that implements a particular proto interface. */
@@ -592,8 +592,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /**
    * The name of the settings class for a particular proto interface; not used in most languages.
    */
-  public String getApiSettingsClassName(GapicInterfaceConfig interfaceConfig) {
-    return publicClassName(Name.upperCamel(getInterfaceName(interfaceConfig), "Settings"));
+  public String getApiSettingsClassName(InterfaceConfig interfaceConfig) {
+    return publicClassName(Name.anyCamel(getInterfaceName(interfaceConfig), "Settings"));
   }
 
   /** The name of the class that contains paged list response wrappers. */

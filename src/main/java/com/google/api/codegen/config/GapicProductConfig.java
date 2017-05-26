@@ -22,6 +22,8 @@ import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.LanguageSettingsProto;
 import com.google.api.codegen.LicenseHeaderProto;
 import com.google.api.codegen.ResourceNameTreatment;
+import com.google.api.codegen.discogapic.DiscoGapicInterfaceConfig;
+import com.google.api.codegen.discovery.Document;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
@@ -50,7 +52,7 @@ import javax.annotation.Nullable;
  */
 @AutoValue
 public abstract class GapicProductConfig implements ProductConfig {
-  abstract ImmutableMap<String, GapicInterfaceConfig> getInterfaceConfigMap();
+  abstract ImmutableMap<String, InterfaceConfig> getInterfaceConfigMap();
 
   /** Returns the package name. */
   public abstract String getPackageName();
@@ -107,7 +109,7 @@ public abstract class GapicProductConfig implements ProductConfig {
       settings = LanguageSettingsProto.getDefaultInstance();
     }
 
-    ImmutableMap<String, GapicInterfaceConfig> interfaceConfigMap =
+    ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
         createInterfaceConfigMap(
             model.getDiagCollector(),
             configProto,
@@ -150,16 +152,26 @@ public abstract class GapicProductConfig implements ProductConfig {
     }
   }
 
+  @Nullable
+  public static GapicProductConfig create(Document document, ConfigProto configProto) {
+    ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
+        ImmutableMap.<String, InterfaceConfig>builder()
+            .put(document.name(), DiscoGapicInterfaceConfig.createInterfaceConfig(document))
+            .build();
+    // TODO actually load data
+    return createDummyInstance(interfaceConfigMap, "", "", null);
+  }
+
   /** Creates an GapicProductConfig with no content. Exposed for testing. */
   @VisibleForTesting
   public static GapicProductConfig createDummyInstance() {
-    return createDummyInstance(ImmutableMap.<String, GapicInterfaceConfig>of(), "", "", null);
+    return createDummyInstance(ImmutableMap.<String, InterfaceConfig>of(), "", "", null);
   }
 
   /** Creates an GapicProductConfig with fixed content. Exposed for testing. */
   @VisibleForTesting
   public static GapicProductConfig createDummyInstance(
-      ImmutableMap<String, GapicInterfaceConfig> interfaceConfigMap,
+      ImmutableMap<String, InterfaceConfig> interfaceConfigMap,
       String packageName,
       String domainLayerLocation,
       ResourceNameMessageConfigs messageConfigs) {
@@ -175,15 +187,15 @@ public abstract class GapicProductConfig implements ProductConfig {
             messageConfigs, ImmutableMap.<String, ResourceNameConfig>of()));
   }
 
-  private static ImmutableMap<String, GapicInterfaceConfig> createInterfaceConfigMap(
+  private static ImmutableMap<String, InterfaceConfig> createInterfaceConfigMap(
       DiagCollector diagCollector,
       ConfigProto configProto,
       LanguageSettingsProto languageSettings,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       SymbolTable symbolTable) {
-    ImmutableMap.Builder<String, GapicInterfaceConfig> interfaceConfigMap =
-        ImmutableMap.<String, GapicInterfaceConfig>builder();
+    ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap =
+        ImmutableMap.<String, InterfaceConfig>builder();
     for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
       Interface apiInterface = symbolTable.lookupInterface(interfaceConfigProto.getName());
       if (apiInterface == null || !apiInterface.isReachable()) {
@@ -385,7 +397,11 @@ public abstract class GapicProductConfig implements ProductConfig {
 
   /** Returns the GapicInterfaceConfig for the given API interface. */
   public GapicInterfaceConfig getInterfaceConfig(Interface apiInterface) {
-    return getInterfaceConfigMap().get(apiInterface.getFullName());
+    return (GapicInterfaceConfig) getInterfaceConfigMap().get(apiInterface.getFullName());
+  }
+
+  public InterfaceConfig getInterfaceConfig(String fullName) {
+    return getInterfaceConfigMap().get(fullName);
   }
 
   public Iterable<SingleResourceNameConfig> getSingleResourceNameConfigs() {
