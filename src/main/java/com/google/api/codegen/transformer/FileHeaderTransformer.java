@@ -46,7 +46,10 @@ public class FileHeaderTransformer {
     fileHeader.localExamplePackageName(namer.getLocalExamplePackageName());
     fileHeader.importSection(importSection);
     fileHeader.version(namer.getApiWrapperModuleVersion());
-    fileHeader.generatorVersion(GeneratorVersionProvider.getGeneratorVersion());
+
+    //TODO remove
+    fileHeader.generatorVersion("0.1337");
+//    fileHeader.generatorVersion(GeneratorVersionProvider.getGeneratorVersion());
     fileHeader.modules(namer.getApiModules());
 
     return fileHeader.build();

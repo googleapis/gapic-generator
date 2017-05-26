@@ -21,7 +21,7 @@ import com.google.api.codegen.viewmodel.ViewModel;
 import java.util.List;
 
 public interface SchemaToViewTransformer {
-  List<ViewModel> transform(Document document, Schema schema, GapicProductConfig productConfig);
+  List<ViewModel> transform(Document document, GapicProductConfig productConfig);
 
   List<String> getTemplateFileNames();
 }

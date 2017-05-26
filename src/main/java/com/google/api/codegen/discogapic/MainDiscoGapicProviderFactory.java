@@ -16,6 +16,7 @@ package com.google.api.codegen.discogapic;
 
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.discogapic.transformer.java.JavaDiscoGapicSchemaToViewTransformer;
 import com.google.api.codegen.discogapic.transformer.java.JavaDiscoGapicSurfaceTransformer;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.gapic.CommonGapicCodePathMapper;
@@ -56,6 +57,8 @@ public class MainDiscoGapicProviderFactory implements DiscoGapicProviderFactory 
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new JavaRenderingUtil()))
                 .setDocumentToViewTransformer(
                     new JavaDiscoGapicSurfaceTransformer(javaPathMapper, packageConfig))
+                .setSchemaToViewTransformer(
+                    new JavaDiscoGapicSchemaToViewTransformer(javaPathMapper, packageConfig))
                 .build();
 
         providers.add(mainProvider);

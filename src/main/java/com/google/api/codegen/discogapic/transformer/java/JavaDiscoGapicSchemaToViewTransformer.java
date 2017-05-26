@@ -17,7 +17,7 @@ package com.google.api.codegen.discogapic.transformer.java;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.discogapic.DiscoGapicInterfaceContext;
-import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
+import com.google.api.codegen.discogapic.transformer.SchemaToViewTransformer;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.viewmodel.StaticLangApiSchemaView;
@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.Map;
 
 /* Creates the ViewModel for a Discovery Doc Schema Java class. */
-public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTransformer {
+public class JavaDiscoGapicSchemaToViewTransformer implements SchemaToViewTransformer {
   private final GapicCodePathMapper pathMapper;
   private final StandardImportSectionTransformer importSectionTransformer =
       new StandardImportSectionTransformer();
@@ -48,7 +48,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
 
   private static final String XAPI_TEMPLATE_FILENAME = "java/main.snip";
   private static final String PACKAGE_INFO_TEMPLATE_FILENAME = "java/package-info.snip";
-  private static final String SCHEMA_TEMPLATE_FILENAME = "java/schema.snip";
+  private static final String SCHEMA_TEMPLATE_FILENAME = "java/disco_schema.snip";
 
   public JavaDiscoGapicSchemaToViewTransformer(
       GapicCodePathMapper pathMapper, PackageMetadataConfig packageMetadataConfig) {
@@ -83,8 +83,6 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       apiFile = generateSchemaFile(context, entry.getKey(), entry.getValue());
       surfaceSchemas.add(apiFile);
     }
-
-
     return surfaceSchemas;
   }
 
@@ -103,8 +101,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     apiFile.schema(generateSchemaClass(context, schemaName, schema));
 
     String outputPath = pathMapper.getOutputPath(null, context.getProductConfig());
-    String className = context.getNamer().getApiWrapperClassName(context.getInterfaceConfig());
-    apiFile.outputPath(outputPath + File.separator + className + ".java");
+    apiFile.outputPath(outputPath + File.separator + schemaName + ".java");
 
     // must be done as the last step to catch all imports
     apiFile.fileHeader(fileHeaderTransformer.generateFileHeader(context));
