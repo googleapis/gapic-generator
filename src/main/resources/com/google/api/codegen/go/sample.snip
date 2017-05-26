@@ -199,7 +199,7 @@
 @private optionalFieldCallChain(class)
   @join field : class.optionalFields on EMPTY
     # Array types must be expanded if set on the request body.
-    # There's not really a good way to do this at the transformer level, so we do it here.
+    # There's not really a good way to do this at the documentTransformer level, so we do it here.
     @if field.isArray
       .{@field.setterFuncName}({@field.name}...)
     @else

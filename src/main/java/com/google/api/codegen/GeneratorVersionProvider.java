@@ -27,7 +27,7 @@ public class GeneratorVersionProvider {
     try {
       properties.load(
           GeneratorVersionProvider.class
-              .getResourceAsStream("/com/google/api/codegen/codegen.properties"));
+              .getResourceAsStream("/build/resources/main/com/google/api/codegen/codegen.properties"));
       version = properties.getProperty("version");
     } catch (IOException e) {
       e.printStackTrace(System.err);
