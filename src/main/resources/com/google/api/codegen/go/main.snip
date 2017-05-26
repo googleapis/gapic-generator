@@ -104,7 +104,13 @@
 
             c.LROClient, err = lroauto.NewOperationsClient(ctx, option.WithGRPCConn(conn))
             if err != nil {
-                panic("unexpected error creating LRO client: " + err.Error())
+                // This error "should not happen", since we are just reusing old connection
+                // and never actually need to dial.
+                // If this does happen, we could leak conn. However, we cannot close conn:
+                // If the user invoked the function with option.WithGRPCConn,
+                // we would close a connection that's still in use.
+                // TODO(pongad): investigate error conditions.
+                return nil, err
             }
         @end
         return c, nil
