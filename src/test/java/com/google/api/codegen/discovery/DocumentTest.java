@@ -16,9 +16,7 @@ package com.google.api.codegen.discovery;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.api.codegen.discovery.Schema.Type;
 import com.google.common.truth.Truth;
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils.IO;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -38,19 +36,6 @@ public class DocumentTest {
     JsonNode root = mapper.readTree(reader);
 
     return Document.from(new DiscoveryNode(root));
-  }
-
-  @Test
-  public void testDocumentFromComputeJson() throws IOException {
-    String filename = "src/test/java/com/google/api/codegen/testdata/discoveries/compute.v1.json";
-    Document document = document(filename);
-
-    Map<String, Schema> schemas = document.schemas();
-
-    Truth.assertThat(schemas.get("TargetPoolsRemoveHealthCheckRequest").type()).isEqualTo(Type.OBJECT);
-    Truth.assertThat(schemas.get("TargetPoolsRemoveHealthCheckRequest").properties()
-        .get("healthChecks").type()).isEqualTo(Type.ARRAY);
-
   }
 
   @Test

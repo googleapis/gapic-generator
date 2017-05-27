@@ -49,9 +49,6 @@ public class DiscoGapicProvider {
     return documentTransformer.getTemplateFileNames();
   }
 
-  public List<String> getSchemaSnippetFileNames() {
-    return schemaTransfomer.getTemplateFileNames();
-  }
 
   public Map<String, Doc> generate() {
     Map<String, Doc> results = new TreeMap<>();

@@ -62,14 +62,12 @@ public class JavaDiscoGapicSchemaToViewTransformer implements SchemaToViewTransf
     // TODO use packageMetadataConfig
   }
 
-  @Override
   public List<String> getTemplateFileNames() {
     return Arrays.asList(
         XAPI_TEMPLATE_FILENAME,
         PACKAGE_INFO_TEMPLATE_FILENAME,
         SCHEMA_TEMPLATE_FILENAME);
   }
-
 
   @Override
   public List<ViewModel> transform(Document document, GapicProductConfig productConfig) {
