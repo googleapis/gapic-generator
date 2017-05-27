@@ -2,36 +2,33 @@
   @# -*- ruby -*-
   @# encoding: utf-8
 
-  Gem::Specification.new do |s|
-    s.name          = "{@metadata.identifier}"
-    s.version       = "{@metadata.packageVersionBound.lower}"
+  Gem::Specification.new do |gem|
+    gem.name          = "{@metadata.identifier}"
+    gem.version       = "{@metadata.packageVersionBound.lower}"
 
-    s.authors       = ["{@metadata.author}"]
-    s.description   = "{@metadata.fullName} client for Ruby."
-    s.email         = "{@metadata.email}"
-    s.files         = Dir.glob(File.join("lib", "**", "*.rb"))
-    s.files        += Dir.glob(File.join('lib', '**', '*.json'))
-    s.files        += %w(Rakefile README.md LICENSE)
-    s.homepage      = "{@metadata.homepage}"
-    s.license       = "{@metadata.licenseName}"
-    s.platform      = Gem::Platform::RUBY
-    s.require_paths = ["lib"]
-    s.required_ruby_version = ">= 2.0.0"
-    s.requirements << "libgrpc ~> 1.0 needs to be installed"
-    s.summary       = "GRPC library for {@metadata.fullName}"
+    gem.authors       = ["{@metadata.author}"]
+    gem.email         = "{@metadata.email}"
+    gem.description   = "{@metadata.identifier} is the official library for {@metadata.fullName}."
+    gem.summary       = "API Client library for {@metadata.fullName}"
+    gem.homepage      = "{@metadata.homepage}"
+    gem.license       = "{@metadata.licenseName}"
 
-    s.add_dependency "grpc", "~> {@metadata.grpcVersionBound.lower}"
-    s.add_dependency "googleauth", "~> {@metadata.authVersionBound.lower}"
-    s.add_dependency "google-gax", "~> {@metadata.gaxVersionBound.lower}"
+    gem.platform      = Gem::Platform::RUBY
+
+    gem.files         = `git ls-files -- lib/*`.split("\n") +
+                        ["README.md", "LICENSE", ".yardopts"]
+    gem.require_paths = ["lib"]
+
+    gem.required_ruby_version = ">= 2.0.0"
+
+    gem.add_dependency "google-gax", "~> {@metadata.gaxVersionBound.lower}"
     @join packageDep : metadata.protoPackageDependencies
-      s.add_dependency "{@packageDep.name}", "~> {@packageDep.versionBound.lower}"
+      gem.add_dependency "{@packageDep.name}", "~> {@packageDep.versionBound.lower}"
     @end
 
-    s.add_development_dependency "bundler", "~> 1.9"
-    s.add_development_dependency "rake", "~> 10.4"
-    s.add_development_dependency "rubocop", "~> 0.32"
-    s.add_development_dependency "simplecov", "~> 0.9"
-    s.add_development_dependency "minitest", "~> 5.10"
+    gem.add_development_dependency "minitest", "~> 5.10"
+    gem.add_development_dependency "rubocop", "<= 0.35.1"
+    gem.add_development_dependency "simplecov", "~> 0.9"
   end
 
 @end

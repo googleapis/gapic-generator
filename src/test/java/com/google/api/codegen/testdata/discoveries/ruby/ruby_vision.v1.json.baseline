@@ -16,7 +16,6 @@
 
 require 'googleauth'
 require 'google/apis/vision_v1'
-require 'json'
 
 service = Google::Apis::VisionV1::VisionService.new
 
@@ -29,4 +28,4 @@ request_body = Google::Apis::VisionV1::BatchAnnotateImagesRequest.new
 response = service.annotate_image(request_body)
 
 # TODO: Change code below to process the `response` object:
-puts JSON.pretty_generate(response)
+puts response.to_json

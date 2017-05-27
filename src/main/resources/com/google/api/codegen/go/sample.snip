@@ -46,12 +46,15 @@
       {@class.clientVarName} := &http.Client{}
     @case "APPLICATION_DEFAULT_CREDENTIALS"
       {@class.clientVarName}, err := google.DefaultClient({@class.contextVarName}, {@class.servicePackageName}.CloudPlatformScope)
+      if err != nil {
+        log.Fatal(err)
+      }
     @default
       {@class.clientVarName}, err := {@class.getClientFuncName}({@class.contextVarName})
+      if err != nil {
+        log.Fatal(err)
+      }
     @end
-    if err != nil {
-      log.Fatal(err)
-    }
 
     {@class.serviceVarName}, err := {@class.servicePackageName}.New({@class.clientVarName})
     if err != nil {

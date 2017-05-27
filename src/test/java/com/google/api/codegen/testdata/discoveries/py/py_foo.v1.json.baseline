@@ -10,9 +10,10 @@ BEFORE RUNNING:
 """
 from pprint import pprint
 
+import httplib2
 from googleapiclient import discovery
 
-service = discovery.build('foo', 'v1', discoveryServiceUrl='localhost:8080/$discovery/foo?version=v1')
+service = discovery.build('foo', 'v1', http=httplib2.Http(timeout=60), discoveryServiceUrl='localhost:8080/$discovery/foo?version=v1')
 
 request = service.baz().get()
 response = request.execute()

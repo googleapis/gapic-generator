@@ -1,13 +1,29 @@
 @snippet generate(metadata)
   {
-    "url": "{@metadata.homepage}",
+    "repository": "GoogleCloudPlatform/google-cloud-node",
     "name": "{@metadata.identifier}",
     "version": "{@metadata.packageVersionBound.lower}",
     "author": "{@metadata.author}",
     "description": "{@metadata.fullName} client for Node.js",
     "main": "src/index.js",
     "files": [
-      "src"
+      "src",
+      "AUTHORS",
+      "CONTRIBUTING",
+      "COPYING"
+    ],
+    "keywords": [
+      "google apis client",
+      "google api client",
+      "google apis",
+      "google api",
+      "google",
+      "google cloud platform",
+      "google cloud",
+      "cloud",
+      "google {@metadata.shortName}",
+      "{@metadata.shortName}",
+      "{@metadata.fullName}"
     ],
     "dependencies": {
       @join packageDep : metadata.protoPackageDependencies
@@ -20,15 +36,16 @@
       "extend": "^3.0.0"
     },
     "devDependencies": {
-      "mocha": "3.2.0",
-      "through2": "2.0.3"
+      "mocha": "^3.2.0",
+      "through2": "^2.0.3"
+    },
+    "scripts": {
+      "test": "mocha",
+      "publish-module": "node ../../scripts/publish.js {@metadata.shortName}"
     },
     "license": "{@metadata.licenseName}",
     "engines": {
-      "node": ">=0.12.0"
-    },
-    "scripts": {
-      "test": "mocha"
+      "node": ">=4.0.0"
     }
   }
 

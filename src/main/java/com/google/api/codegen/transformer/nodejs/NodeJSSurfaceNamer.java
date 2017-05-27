@@ -21,12 +21,14 @@ import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
+import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.Synchronicity;
+import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.js.JSCommentReformatter;
@@ -40,9 +42,11 @@ import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -464,5 +468,26 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
         return getNotImplementedString(
             "SurfaceNamer.getStreamTypeName(GrpcStreamingType." + type.toString() + ")");
     }
+  }
+
+  @Override
+  public String injectRandomStringGeneratorCode(String randomString) {
+    String delimiter = ",";
+    String[] split =
+        CommonRenderingUtil.stripQuotes(randomString)
+            .replace(
+                InitFieldConfig.RANDOM_TOKEN, delimiter + InitFieldConfig.RANDOM_TOKEN + delimiter)
+            .split(delimiter);
+    ArrayList<String> stringParts = new ArrayList<>();
+    for (String token : split) {
+      if (token.length() > 0) {
+        if (token.equals(InitFieldConfig.RANDOM_TOKEN)) {
+          stringParts.add("Date.now().toString()");
+        } else {
+          stringParts.add("\"" + token + "\"");
+        }
+      }
+    }
+    return Joiner.on(" + ").join(stringParts);
   }
 }
