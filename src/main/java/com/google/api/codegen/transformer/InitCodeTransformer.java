@@ -273,6 +273,7 @@ public class InitCodeTransformer {
 
     String typeName = typeTable.getAndSaveNicknameFor(item.getType());
     surfaceLine.typeName(typeName);
+    surfaceLine.fullyQualifiedTypeName(typeTable.getFullNameFor(item.getType()));
     surfaceLine.typeConstructor(namer.getTypeConstructor(typeName));
 
     surfaceLine.fieldSettings(getFieldSettings(context, item.getChildren().values()));
@@ -391,6 +392,8 @@ public class InitCodeTransformer {
 
         initValue.apiWrapperName(
             context.getNamer().getApiWrapperClassName(context.getInterfaceConfig()));
+        initValue.fullyQualifiedApiWrapperName(
+            context.getNamer().getFullyQualifiedApiWrapperClassName(context.getInterfaceConfig()));
         initValue.formatFunctionName(
             context
                 .getNamer()

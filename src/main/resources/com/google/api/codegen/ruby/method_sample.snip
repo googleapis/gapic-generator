@@ -16,9 +16,7 @@
 @end
 
 @snippet sampleCodeCore(apiMethod)
-  {@aliasSection(apiMethod.initCode.importSection)}
-
-  {@apiMethod.apiVariableName} = {@apiMethod.apiClassName}.new
+  {@apiMethod.apiVariableName} = {@apiMethod.fullyQualifiedApiClassName}.new
   @if apiMethod.initCode.lines
     {@initCode(apiMethod.initCode)}
   @end
@@ -35,15 +33,6 @@
     @end
   @end
 @end
-
-@snippet aliasSection(importSection)
-  @join fileImport : importSection.appImports
-    @join alias : fileImport.types
-      {@alias.nickname} = {@alias.fullName}
-    @end
-  @end
-@end
-
 
 @private longRunningMethodSampleCode(apiMethod)
 

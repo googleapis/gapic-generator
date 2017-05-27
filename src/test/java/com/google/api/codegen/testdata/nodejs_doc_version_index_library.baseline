@@ -1,12 +1,12 @@
 ============== file: src/index.js ==============
 /*
- * Copyright 2016 Google Inc. All rights reserved.
+ * Copyright 2017, Google Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,5 +16,49 @@
  */
 'use strict';
 
-module.exports.v1 = require('./v1');
+var extend = require('extend');
+var gapic = {
+  v1: require('./v1')
+};
 
+const VERSION = require('../package.json').version;
+
+/**
+ * Create an libraryServiceClient with additional helpers for common
+ * tasks.
+ *
+ * This API represents a simple digital library.  It lets you manage Shelf
+ * resources and Book resources in the library. It defines the following
+ * resource model:
+ *
+ * - The API has a collection of {@link Shelf}
+ *   resources, named ``bookShelves/*``
+ *
+ * - Each Shelf has a collection of {@link Book}
+ *   resources, named `bookShelves/*/books/*`
+ *
+ * Check out [cloud docs!](https://cloud.google.com/library/example/link).
+ * This is [not a cloud link](http://www.google.com).
+ *
+ * Service comment may include special characters: <>&"`'@.
+ *
+ * @param {object=} options - [Configuration object](#/docs).
+ * @param {number=} options.port - The port on which to connect to
+ *     the remote host.
+ * @param {string=} options.servicePath - The domain name of the
+ *     API remote host.
+ */
+function libraryV1(options) {
+  // Define the header options.
+  options = extend({}, options, {
+    libName: 'gccl',
+    libVersion: VERSION
+  });
+
+  // Create the image annotator client with the provided options.
+  var client = gapic.v1(options).libraryServiceClient(options);
+  return client;
+}
+
+module.exports = libraryV1;
+module.exports.v1 = libraryV1;

@@ -11,7 +11,9 @@
   )
 
   import (
+    "strconv"
     "testing"
+    "time"
 
     "cloud.google.com/go/internal/testutil"
     "golang.org/x/net/context"
@@ -20,6 +22,8 @@
   )
 
   var _ = iterator.Done
+  var _ = strconv.FormatUint
+  var _ = time.Now
 
   func {@view.name}(t *testing.T) {
     if testing.Short() {
@@ -32,8 +36,7 @@
     }
 
     projectId := testutil.ProjID()
-    uidSpace := testutil.NewUIDSpace("{@view.name}")
-    _, _ = projectId, uidSpace
+    _ = projectId
 
     c, err := {@view.method.serviceConstructorName}(ctx, option.WithTokenSource(ts))
     if err != nil {

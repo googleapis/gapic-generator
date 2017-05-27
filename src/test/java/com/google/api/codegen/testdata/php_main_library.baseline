@@ -91,7 +91,7 @@ use google\tagger\v1\LabelerGrpcClient;
  * - Each Shelf has a collection of [Book][google.example.library.v1.Book]
  *   resources, named `bookShelves/&#42;/books/&#42;`
  *
- * Check out [cloud docs!](/library/example/link).
+ * Check out [cloud docs!](https://cloud.google.com/library/example/link).
  * This is [not a cloud link](http://www.google.com).
  *
  * Service comment may include special characters: <>&"`'&#64;.
@@ -443,12 +443,10 @@ class LibraryServiceClient
         if (array_key_exists('operationsClient', $options)) {
             $this->operationsClient = $options['operationsClient'];
         } else {
-            $this->operationsClient = new OperationsClient([
-                'serviceAddress' => $options['serviceAddress'],
-                'scopes' => $options['scopes'],
-                'libName' => $options['libName'],
-                'libVersion' => $options['libVersion'],
-            ]);
+            $operationsClientOptions = $options;
+            unset($operationsClientOptions['timeoutMillis']);
+            unset($operationsClientOptions['retryingOverride']);
+            $this->operationsClient = new OperationsClient($operationsClientOptions);
         }
 
         $gapicVersion = $options['libVersion'] ?: self::getGapicVersion();
