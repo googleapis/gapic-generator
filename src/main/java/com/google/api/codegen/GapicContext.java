@@ -117,6 +117,14 @@ public class GapicContext extends CodegenContext {
     return !method.getRequestStreaming() && !method.getResponseStreaming();
   }
 
+  /**
+   * Returns true when the method supports retrying. By default, all supported methods support
+   * retrying. TODO: when isSupported is removed, this should return true.
+   */
+  public boolean isRetryingSupported(Method method) {
+    return isSupported(method);
+  }
+
   /** Returns a list of RPC methods supported by the context. */
   public List<Method> getSupportedMethods(Interface apiInterface) {
     List<Method> simples = new ArrayList<>(apiInterface.getMethods().size());

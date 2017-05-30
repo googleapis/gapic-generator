@@ -88,12 +88,12 @@
                 retryCodesName = methodConfig.getRetryCodesConfigName, \
                 retryParamsName = methodConfig.getRetrySettingsConfigName
             "{@method.getSimpleName}": {
-              @if or(and(retryCodesName, retryParamsName), isBatching)
+              @if or(and(and(retryCodesName, retryParamsName), context.isRetryingSupported(method)), isBatching)
                 "timeout_millis": {@timeout},
               @else
                 "timeout_millis": {@timeout}
               @end
-              @if and(retryCodesName, retryParamsName)
+              @if and(and(retryCodesName, retryParamsName), context.isRetryingSupported(method))
                   "retry_codes_name": "{@retryCodesName}",
                   @if isBatching
                       "retry_params_name": "{@retryParamsName}",
