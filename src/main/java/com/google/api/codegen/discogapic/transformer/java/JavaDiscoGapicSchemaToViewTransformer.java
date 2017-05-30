@@ -53,7 +53,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements SchemaToViewTransf
 
   private static final String XAPI_TEMPLATE_FILENAME = "java/main.snip";
   private static final String PACKAGE_INFO_TEMPLATE_FILENAME = "java/package-info.snip";
-  private static final String SCHEMA_TEMPLATE_FILENAME = "java/disco_schema.snip";
+  private static final String SCHEMA_TEMPLATE_FILENAME = "java/message.snip";
 
   public JavaDiscoGapicSchemaToViewTransformer(
       GapicCodePathMapper pathMapper, PackageMetadataConfig packageMetadataConfig) {
