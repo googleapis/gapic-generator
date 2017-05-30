@@ -19,6 +19,7 @@ import com.google.api.codegen.ProtoFileView;
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.clientconfig.ClientConfigGapicContext;
 import com.google.api.codegen.clientconfig.ClientConfigSnippetSetRunner;
+import com.google.api.codegen.clientconfig.php.PhpClientConfigGapicContext;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.nodejs.NodeJSCodePathMapper;
@@ -260,7 +261,7 @@ public class MainGapicProviderFactory
             CommonGapicProvider.<Interface>newBuilder()
                 .setModel(model)
                 .setView(new InterfaceView())
-                .setContext(new ClientConfigGapicContext(model, productConfig))
+                .setContext(new PhpClientConfigGapicContext(model, productConfig))
                 .setSnippetSetRunner(
                     new ClientConfigSnippetSetRunner<Interface>(
                         SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
