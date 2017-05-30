@@ -105,7 +105,7 @@
     tasks.uploadArchives.dependsOn(failUploadArchives)
   }
 
-  task checkOutGhPages {
+  task checkOutGhPages << {
     if (!new File('tmp_gh-pages').exists()) {
       exec {
         commandLine 'git', 'clone', '--branch', 'gh-pages',
@@ -152,6 +152,7 @@
   task updateDocsWithCurrentVersion {
     dependsOn 'createApiDocsRedirect'
   }
+
 @end
 
 @private dependencies(metadata)
@@ -161,12 +162,12 @@
       compile "com.google.protobuf:protobuf-java:{@metadata.protoVersionBound.lower}"
       compile "com.google.api:api-common:{@metadata.apiCommonVersionBound.lower}"
       @join dependency : metadata.protoPackageDependencies
-        compile "com.google.api.grpc:{@dependency.name}:{@dependency.versionBound.lower}"
+        compile project(":{@dependency.name}")
       @end
     @case "GRPC"
       compile "io.grpc:grpc-stub:{@metadata.grpcVersionBound.lower}"
       compile "io.grpc:grpc-protobuf:{@metadata.grpcVersionBound.lower}"
-      compile "com.google.api.grpc:{@metadata.protoPackageName}:{@metadata.packageVersionBound.lower}"
+      compile project(":{@metadata.protoPackageName}")
     @default
       $unhandledCase: {@metadata.generationLayer}$
     @end

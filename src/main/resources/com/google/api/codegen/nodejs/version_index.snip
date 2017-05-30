@@ -1,11 +1,88 @@
 @extends "nodejs/common.snip"
 
 @snippet generate(index)
+  {@header(index.fileHeader)}
+
+  {@imports(index)}
+
+  {@constants()}
+
+  {@clients(index)}
+
+  {@exports(index)}
+@end
+
+@private header(fileHeader)
   /*
-   {@copyright()}
+   {@comments(fileHeader.copyrightLines)}
+   *
+   {@comments(fileHeader.licenseLines)}
    */
   'use strict';
+@end
 
-  module.exports.{@index.apiVersion} = require('./{@index.apiVersion}');
+@private imports(index)
+  var extend = require('extend');
+  var gapic = {
+    {@index.apiVersion}: require('./{@index.apiVersion}')
+  };
+@end
 
+@private constants()
+   const VERSION = require('../package.json').version;
+ @end
+
+@private clients(index)
+  @join service : index.requireViews on BREAK.add(BREAK)
+    {@client(service, index.apiVersion)}
+  @end
+@end
+
+@private client(service, version)
+   /**
+    * Create an {@service.clientName} with additional helpers for common
+    * tasks.
+    *
+    {@comments(@service.doc.lines)}
+    *
+    * @@param {object=} options - [Configuration object](#/docs).
+    * @@param {number=} options.port - The port on which to connect to
+    *     the remote host.
+    * @@param {string=} options.servicePath - The domain name of the
+    *     API remote host.
+    */
+   function {@service.localName}(options) {
+     // Define the header options.
+     options = extend({}, options, {
+       libName: 'gccl',
+       libVersion: VERSION
+     });
+
+     // Create the image annotator client with the provided options.
+     var client = gapic.{@version}(options).{@service.clientName}(options);
+     return client;
+   }
+@end
+
+@private exports(index)
+  @if index.hasMultipleServices
+    {@multipleServicesExports(index.requireViews, index.apiVersion)}
+  @else
+    {@singleServiceExport(index.primaryService, index.apiVersion)}
+  @end
+@end
+
+@private multipleServicesExports(services, version)
+  @join service : services
+    module.exports.{@service.serviceName} = {@service.localName};
+  @end
+
+  @join service : services
+    module.exports.{@version}.{@service.serviceName} = {@service.localName};
+  @end
+@end
+
+@private singleServiceExport(service, version)
+  module.exports = {@service.localName};
+  module.exports.{@version} = {@service.localName};
 @end

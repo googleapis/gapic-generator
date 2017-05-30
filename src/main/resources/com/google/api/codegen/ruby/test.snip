@@ -58,12 +58,8 @@
     @join test : testClass.testCases
 
       describe '{@test.clientMethodName}' do
-        custom_error = CustomTestError.new "Custom test error for {@test.serviceConstructorName}#{@test.clientMethodName}."
+        custom_error = CustomTestError.new "Custom test error for {@test.fullyQualifiedServiceClassName}#{@test.clientMethodName}."
 
-        @if {@aliasSection(test.initCode.importSection)}
-          {@aliasSection(test.mockResponse.initCode.importSection)}
-
-        @end
         {@testCase(test)}
 
         {@errorTestCase(test)}
@@ -130,7 +126,7 @@
     mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
 
     {@test.grpcStubCallString}.stub(:new, mock_stub) do
-      client = {@test.serviceConstructorName}.new
+      client = {@test.fullyQualifiedServiceClassName}.new
 
       @# Call method
       {@methodCallWithResponse(test)}
@@ -160,7 +156,7 @@
     mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
 
     {@test.grpcStubCallString}.stub(:new, mock_stub) do
-      client = {@test.serviceConstructorName}.new
+      client = {@test.fullyQualifiedServiceClassName}.new
 
       @# Call method
       {@methodCallWithResponse(test)}
@@ -198,7 +194,7 @@
     mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
 
     {@test.grpcStubCallString}.stub(:new, mock_stub) do
-      client = {@test.serviceConstructorName}.new
+      client = {@test.fullyQualifiedServiceClassName}.new
 
       @# Call method
       {@methodCallWithResponse(test)}
@@ -216,7 +212,7 @@
     @end
     @# Create expected grpc response
     operation_error = Google::Rpc::Status.new(
-      message: 'Operation error for {@test.serviceConstructorName}#{@test.clientMethodName}.'
+      message: 'Operation error for {@test.fullyQualifiedServiceClassName}#{@test.clientMethodName}.'
     )
     operation = Google::Longrunning::Operation.new(
       name: 'operations/{@test.name}',
@@ -229,7 +225,7 @@
     mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
 
     {@test.grpcStubCallString}.stub(:new, mock_stub) do
-      client = {@test.serviceConstructorName}.new
+      client = {@test.fullyQualifiedServiceClassName}.new
 
       @# Call method
       {@methodCallWithResponse(test)}
@@ -256,7 +252,7 @@
     mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
 
     {@test.grpcStubCallString}.stub(:new, mock_stub) do
-      client = {@test.serviceConstructorName}.new
+      client = {@test.fullyQualifiedServiceClassName}.new
 
       @# Call method
       {@methodCallWithResponse(test)}
@@ -283,7 +279,7 @@
     mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
 
     {@test.grpcStubCallString}.stub(:new, mock_stub) do
-      client = {@test.serviceConstructorName}.new
+      client = {@test.fullyQualifiedServiceClassName}.new
 
       @# Call method
       {@clientStreamingCall(test)}
@@ -311,7 +307,7 @@
     mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
 
     {@test.grpcStubCallString}.stub(:new, mock_stub) do
-      client = {@test.serviceConstructorName}.new
+      client = {@test.fullyQualifiedServiceClassName}.new
 
       @# Call method
       {@clientStreamingCall(test)}
@@ -335,7 +331,7 @@
     mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
 
     {@test.grpcStubCallString}.stub(:new, mock_stub) do
-      client = {@test.serviceConstructorName}.new
+      client = {@test.fullyQualifiedServiceClassName}.new
 
       @# Call method
       err = assert_raises Google::Gax::GaxError do
@@ -358,7 +354,7 @@
     mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
 
     {@test.grpcStubCallString}.stub(:new, mock_stub) do
-      client = {@test.serviceConstructorName}.new
+      client = {@test.fullyQualifiedServiceClassName}.new
 
       @# Call method
       err = assert_raises Google::Gax::GaxError do
@@ -462,11 +458,7 @@
 @end
 
 @private expectedValue(assert)
-  @if assert.hasEnumTypeName
-    {@assert.enumTypeName}.lookup({@assert.expectedValueIdentifier})
-  @else
-    {@assert.expectedValueIdentifier}
-  @end
+  {@assert.expectedValueIdentifier}
 @end
 
 @private methodCallWithResponse(test)
