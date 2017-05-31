@@ -28,6 +28,7 @@ import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.java.JavaFeatureConfig;
 import com.google.api.codegen.transformer.java.JavaModelTypeNameConverter;
 import com.google.api.codegen.transformer.java.JavaSurfaceNamer;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaTypeTable;
@@ -51,6 +52,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       new StandardImportSectionTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(importSectionTransformer);
+  private final JavaNameFormatter nameFormatter = new JavaNameFormatter();
 
   private static final String XAPI_TEMPLATE_FILENAME = "java/main.snip";
   private static final String PACKAGE_INFO_TEMPLATE_FILENAME = "java/package-info.snip";
@@ -136,18 +138,17 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     // Map each property name to the Java typeName of the property.
     List<SimplePropertyView> properties = new LinkedList<>();
     for (Map.Entry<String, Schema> propertyEntry : schema.properties().entrySet()) {
-      String propertyName = schemaSymbolTable.getNewSymbol(propertyEntry.getKey());
+      String propertyString = schemaSymbolTable.getNewSymbol(propertyEntry.getKey());
       Schema property = propertyEntry.getValue();
       SimplePropertyView.Builder simpleProperty =
-          SimplePropertyView.newBuilder().name(propertyName);
+          SimplePropertyView.newBuilder().name(propertyString);
       simpleProperty.typeName(typeToJavaType(property));
 
       // TODO(andrealin) use a surface namer for the getter/setter.
       FieldCopyView.Builder getterAndSetter = FieldCopyView.newBuilder();
-      String upperCasePropertyName =
-          propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1);
-      getterAndSetter.fieldGetFunction("get" + upperCasePropertyName);
-      getterAndSetter.fieldSetFunction("set" + upperCasePropertyName);
+      Name propertyName = Name.anyCamel(propertyString);
+      getterAndSetter.fieldGetFunction(nameFormatter.publicMethodName(Name.from("get").join(propertyName)));
+      getterAndSetter.fieldSetFunction(nameFormatter.publicMethodName(Name.from("set").join(propertyName)));
       simpleProperty.fieldCopyView(getterAndSetter.build());
       properties.add(simpleProperty.build());
     }
