@@ -23,8 +23,8 @@ import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.viewmodel.SimplePropertyView;
-import com.google.api.codegen.viewmodel.StaticLangApiSchemaView;
-import com.google.api.codegen.viewmodel.StaticLangApiSchemaFileView;
+import com.google.api.codegen.viewmodel.StaticLangApiMessageFileView;
+import com.google.api.codegen.viewmodel.StaticLangApiMessageView;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -83,7 +83,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements SchemaToViewTransf
             namer,
             JavaFeatureConfig.newBuilder().enableStringFormatFunctions(false).build());
 
-    StaticLangApiSchemaFileView apiFile;
+    StaticLangApiMessageFileView apiFile;
     for (Map.Entry<String, Schema> entry : context.getDocument().schemas().entrySet()) {
       apiFile = generateSchemaFile(context, entry.getKey(), entry.getValue(), docSymbolTable);
       surfaceSchemas.add(apiFile);
@@ -97,9 +97,9 @@ public class JavaDiscoGapicSchemaToViewTransformer implements SchemaToViewTransf
         new JavaModelTypeNameConverter(implicitPackageName));
   }
 
-  private StaticLangApiSchemaFileView generateSchemaFile(DiscoGapicInterfaceContext context,
+  private StaticLangApiMessageFileView generateSchemaFile(DiscoGapicInterfaceContext context,
       String schemaName, Schema schema, SymbolTable docSymbolTable) {
-    StaticLangApiSchemaFileView.Builder apiFile = StaticLangApiSchemaFileView.newBuilder();
+    StaticLangApiMessageFileView.Builder apiFile = StaticLangApiMessageFileView.newBuilder();
     // Escape any schema's field names that are Java keywords.
     SymbolTable schemaSymbolTable = SymbolTable.fromSeed(JavaNameFormatter.RESERVED_IDENTIFIER_SET);
 
@@ -116,11 +116,11 @@ public class JavaDiscoGapicSchemaToViewTransformer implements SchemaToViewTransf
     return apiFile.build();
   }
 
-  private StaticLangApiSchemaView generateSchemaClass(DiscoGapicInterfaceContext context,
+  private StaticLangApiMessageView generateSchemaClass(DiscoGapicInterfaceContext context,
       String schemaName, Schema schema, SymbolTable schemaSymbolTable) {
     addApiImports(context);
 
-    StaticLangApiSchemaView.Builder schemaView = StaticLangApiSchemaView.newBuilder();
+    StaticLangApiMessageView.Builder schemaView = StaticLangApiMessageView.newBuilder();
 
     schemaView.typeName(schemaName);
     schemaView.type(schema.type());

@@ -14,7 +14,7 @@ import javax.annotation.Nullable;
  * https://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.7.
  */
 @AutoValue
-public abstract class StaticLangApiSchemaView implements ViewModel {
+public abstract class StaticLangApiMessageView implements ViewModel {
 
   // The possibly-transformed ID of the schema from the Discovery Doc
   public abstract String typeName();
@@ -52,30 +52,30 @@ public abstract class StaticLangApiSchemaView implements ViewModel {
   @Nullable
   public abstract String outputPath();
 
-  public static StaticLangApiSchemaView.Builder newBuilder() {
-    return new AutoValue_StaticLangApiSchemaView.Builder();
+  public static StaticLangApiMessageView.Builder newBuilder() {
+    return new AutoValue_StaticLangApiMessageView.Builder();
   }
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract StaticLangApiSchemaView.Builder typeName(String val);
+    public abstract StaticLangApiMessageView.Builder typeName(String val);
 
-    public abstract StaticLangApiSchemaView.Builder className(String val);
+    public abstract StaticLangApiMessageView.Builder className(String val);
 
-    public abstract StaticLangApiSchemaView.Builder type(Schema.Type val);
+    public abstract StaticLangApiMessageView.Builder type(Schema.Type val);
 
-    public abstract StaticLangApiSchemaView.Builder description(String val);
+    public abstract StaticLangApiMessageView.Builder description(String val);
 
-    public abstract StaticLangApiSchemaView.Builder defaultValue(String val);
+    public abstract StaticLangApiMessageView.Builder defaultValue(String val);
 
-    public abstract StaticLangApiSchemaView.Builder enumValues(List<String> val);
+    public abstract StaticLangApiMessageView.Builder enumValues(List<String> val);
 
-    public abstract StaticLangApiSchemaView.Builder properties(List<SimplePropertyView> val);
+    public abstract StaticLangApiMessageView.Builder properties(List<SimplePropertyView> val);
 
-    public abstract StaticLangApiSchemaView.Builder templateFileName(String val);
+    public abstract StaticLangApiMessageView.Builder templateFileName(String val);
 
-    public abstract StaticLangApiSchemaView.Builder outputPath(String val);
+    public abstract StaticLangApiMessageView.Builder outputPath(String val);
 
-    public abstract StaticLangApiSchemaView build();
+    public abstract StaticLangApiMessageView build();
   }
 }
