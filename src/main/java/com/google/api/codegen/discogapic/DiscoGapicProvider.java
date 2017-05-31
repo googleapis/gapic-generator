@@ -16,7 +16,6 @@ package com.google.api.codegen.discogapic;
 
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
-import com.google.api.codegen.discogapic.transformer.SchemaToViewTransformer;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -30,54 +29,30 @@ public class DiscoGapicProvider {
   private final GapicProductConfig productConfig;
   private final CommonSnippetSetRunner snippetSetRunner;
   private final DocumentToViewTransformer documentTransformer;
-  private final SchemaToViewTransformer schemaTransfomer;
 
   private DiscoGapicProvider(
       Document document,
       GapicProductConfig productConfig,
       CommonSnippetSetRunner snippetSetRunner,
-      DocumentToViewTransformer documentTransformer,
-      SchemaToViewTransformer schemaTransfomer) {
+      DocumentToViewTransformer documentTransformer) {
     this.document = document;
     this.productConfig = productConfig;
     this.snippetSetRunner = snippetSetRunner;
     this.documentTransformer = documentTransformer;
-    this.schemaTransfomer = schemaTransfomer;
   }
 
   public List<String> getSnippetFileNames() {
     return documentTransformer.getTemplateFileNames();
   }
 
-
   public Map<String, Doc> generate() {
     Map<String, Doc> results = new TreeMap<>();
     results.putAll(generate(null));
-    results.putAll(generateSchemas(null));
     return results;
   }
 
   public Map<String, Doc> generate(String snippetFileName) {
     List<ViewModel> surfaceDocs = documentTransformer.transform(document, productConfig);
-
-    Map<String, Doc> docs = new TreeMap<>();
-    for (ViewModel surfaceDoc : surfaceDocs) {
-      if (snippetFileName != null && !surfaceDoc.templateFileName().equals(snippetFileName)) {
-        continue;
-      }
-      Doc doc = snippetSetRunner.generate(surfaceDoc);
-      if (doc == null) {
-        // generation failed; failures are captured in the model.
-        continue;
-      }
-      docs.put(surfaceDoc.outputPath(), doc);
-    }
-
-    return docs;
-  }
-
-  public Map<String, Doc> generateSchemas(String snippetFileName) {
-    List<ViewModel> surfaceDocs = schemaTransfomer.transform(document, productConfig);
 
     Map<String, Doc> docs = new TreeMap<>();
     for (ViewModel surfaceDoc : surfaceDocs) {
@@ -104,7 +79,6 @@ public class DiscoGapicProvider {
     private GapicProductConfig productConfig;
     private CommonSnippetSetRunner snippetSetRunner;
     private DocumentToViewTransformer documentTransformer;
-    private SchemaToViewTransformer schemaTransfomer;
 
     private Builder() {}
 
@@ -128,13 +102,8 @@ public class DiscoGapicProvider {
       return this;
     }
 
-    public Builder setSchemaToViewTransformer(SchemaToViewTransformer schemaTransfomer) {
-      this.schemaTransfomer = schemaTransfomer;
-      return this;
-    }
-
     public DiscoGapicProvider build() {
-      return new DiscoGapicProvider(document, productConfig, snippetSetRunner, documentTransformer, schemaTransfomer);
+      return new DiscoGapicProvider(document, productConfig, snippetSetRunner, documentTransformer);
     }
   }
 }
