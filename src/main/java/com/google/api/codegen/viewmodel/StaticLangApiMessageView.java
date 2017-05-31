@@ -21,9 +21,9 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 /**
- * This ViewModel defines the structure of a generic message.
+ * This ViewModel defines the view model structure of a generic message.
  *
- * <p>For example, this can be used to model a Discovery Document's "schemas", "properties",
+ * <p>For example, this can be used to represent a Discovery Document's "schemas", "properties",
  * "additionalProperties", and "items".
  *
  * <p>This contains a subset of properties in the JSON Schema
