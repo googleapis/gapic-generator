@@ -17,7 +17,7 @@ package com.google.api.codegen.discogapic.transformer.java;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.discogapic.DiscoGapicInterfaceContext;
-import com.google.api.codegen.discogapic.transformer.SchemaToViewTransformer;
+import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.util.SymbolTable;
@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.Map;
 
 /* Creates the ViewModel for a Discovery Doc Schema Java class. */
-public class JavaDiscoGapicSchemaToViewTransformer implements SchemaToViewTransformer {
+public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTransformer {
   private final GapicCodePathMapper pathMapper;
   private final PackageMetadataConfig packageConfig;
   private final StandardImportSectionTransformer importSectionTransformer =
