@@ -145,13 +145,11 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       simpleProperty.typeName(typeToJavaType(property));
 
       // TODO(andrealin) use a surface namer for the getter/setter.
-      FieldCopyView.Builder getterAndSetter = FieldCopyView.newBuilder();
       Name propertyName = Name.anyCamel(propertyString);
-      getterAndSetter.fieldGetFunction(
+      simpleProperty.fieldGetFunction(
           nameFormatter.publicMethodName(Name.from("get").join(propertyName)));
-      getterAndSetter.fieldSetFunction(
+      simpleProperty.fieldSetFunction(
           nameFormatter.publicMethodName(Name.from("set").join(propertyName)));
-      simpleProperty.fieldCopyView(getterAndSetter.build());
       properties.add(simpleProperty.build());
     }
     schemaView.properties(properties);

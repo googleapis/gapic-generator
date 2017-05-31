@@ -33,9 +33,13 @@ public abstract class SimplePropertyView {
   // The escaped type name for this Schema.
   public abstract String typeName();
 
-  // For static languages, names for getters and setters.
+  // For static languages, name for getter function.
   @Nullable
-  public abstract FieldCopyView fieldCopyView();
+  public abstract String fieldGetFunction();
+
+  // For static languages, name for setter function.
+  @Nullable
+  public abstract String fieldSetFunction();
 
   public static SimplePropertyView.Builder newBuilder() {
     return new AutoValue_SimplePropertyView.Builder();
@@ -47,7 +51,9 @@ public abstract class SimplePropertyView {
 
     public abstract SimplePropertyView.Builder typeName(String val);
 
-    public abstract SimplePropertyView.Builder fieldCopyView(FieldCopyView val);
+    public abstract SimplePropertyView.Builder fieldGetFunction(String val);
+
+    public abstract SimplePropertyView.Builder fieldSetFunction(String val);
 
     public abstract SimplePropertyView build();
   }
