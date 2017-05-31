@@ -100,6 +100,7 @@ public class PackageMetadataTransformer {
         .licenseName(packageConfig.licenseName())
         .fullName(model.getServiceConfig().getTitle())
         .discoveryApiName(discoveryApiName)
+        .apiSummary(model.getServiceConfig().getDocumentation().getSummary())
         .hasMultipleServices(false);
   }
 

@@ -24,6 +24,7 @@ import (
     "cloud.google.com/go/iam"
     "cloud.google.com/go/internal/version"
     "cloud.google.com/go/longrunning"
+    lroauto "cloud.google.com/go/longrunning/autogen"
     gax "github.com/googleapis/gax-go"
     "golang.org/x/net/context"
     "google.golang.org/api/iterator"
@@ -133,6 +134,11 @@ type Client struct {
     client librarypb.LibraryServiceClient
     labelerClient taggerpb.LabelerClient
 
+    // LROClient is used internally to handle longrunning operations.
+    // It is exposed so that its CallOptions can be modified if required.
+    // Users should not Close this client.
+    LROClient *lroauto.OperationsClient
+
     // The call options for this service.
     CallOptions *CallOptions
 
@@ -171,6 +177,17 @@ func NewClient(ctx context.Context, opts ...option.ClientOption) (*Client, error
         labelerClient: taggerpb.NewLabelerClient(conn),
     }
     c.SetGoogleClientInfo()
+
+    c.LROClient, err = lroauto.NewOperationsClient(ctx, option.WithGRPCConn(conn))
+    if err != nil {
+        // This error "should not happen", since we are just reusing old connection
+        // and never actually need to dial.
+        // If this does happen, we could leak conn. However, we cannot close conn:
+        // If the user invoked the function with option.WithGRPCConn,
+        // we would close a connection that's still in use.
+        // TODO(pongad): investigate error conditions.
+        return nil, err
+    }
     return c, nil
 }
 
@@ -685,8 +702,7 @@ func (c *Client) GetBigBook(ctx context.Context, req *librarypb.GetBookRequest, 
         return nil, err
     }
     return &GetBigBookOperation{
-        lro: longrunning.InternalNewOperation(c.Connection(), resp),
-        xGoogHeader: c.xGoogHeader,
+        lro: longrunning.InternalNewOperation(c.LROClient, resp),
     }, nil
 }
 
@@ -704,8 +720,7 @@ func (c *Client) GetBigNothing(ctx context.Context, req *librarypb.GetBookReques
         return nil, err
     }
     return &GetBigNothingOperation{
-        lro: longrunning.InternalNewOperation(c.Connection(), resp),
-        xGoogHeader: c.xGoogHeader,
+        lro: longrunning.InternalNewOperation(c.LROClient, resp),
     }, nil
 }
 
@@ -856,27 +871,22 @@ func (it *StringIterator) takeBuf() interface{} {
 // GetBigBookOperation manages a long-running operation from GetBigBook.
 type GetBigBookOperation struct {
     lro *longrunning.Operation
-
-    // The metadata to be sent with each request.
-    xGoogHeader []string
 }
 
 // GetBigBookOperation returns a new GetBigBookOperation from a given name.
 // The name must be that of a previously created GetBigBookOperation, possibly from a different process.
 func (c *Client) GetBigBookOperation(name string) *GetBigBookOperation {
     return &GetBigBookOperation{
-        lro: longrunning.InternalNewOperation(c.Connection(), &longrunningpb.Operation{Name: name}),
-        xGoogHeader: c.xGoogHeader,
+        lro: longrunning.InternalNewOperation(c.LROClient, &longrunningpb.Operation{Name: name}),
     }
 }
 
 // Wait blocks until the long-running operation is completed, returning the response and any errors encountered.
 //
 // See documentation of Poll for error-handling information.
-func (op *GetBigBookOperation) Wait(ctx context.Context) (*librarypb.Book, error) {
+func (op *GetBigBookOperation) Wait(ctx context.Context, opts ...gax.CallOption) (*librarypb.Book, error) {
     var resp librarypb.Book
-    ctx = insertXGoog(ctx, op.xGoogHeader)
-    if err := op.lro.Wait(ctx, &resp); err != nil {
+    if err := op.lro.Wait(ctx, &resp, opts...); err != nil {
         return nil, err
     }
     return &resp, nil
@@ -891,10 +901,9 @@ func (op *GetBigBookOperation) Wait(ctx context.Context) (*librarypb.Book, error
 // If Poll succeeds and the operation has completed successfully,
 // op.Done will return true, and the response of the operation is returned.
 // If Poll succeeds and the operation has not completed, the returned response and error are both nil.
-func (op *GetBigBookOperation) Poll(ctx context.Context) (*librarypb.Book, error) {
+func (op *GetBigBookOperation) Poll(ctx context.Context, opts ...gax.CallOption) (*librarypb.Book, error) {
     var resp librarypb.Book
-    ctx = insertXGoog(ctx, op.xGoogHeader)
-    if err := op.lro.Poll(ctx, &resp); err != nil {
+    if err := op.lro.Poll(ctx, &resp, opts...); err != nil {
         return nil, err
     }
     if !op.Done() {
@@ -933,34 +942,28 @@ func (op *GetBigBookOperation) Name() string {
 // Clients can use Poll or other methods to check whether the cancellation succeeded or whether the operation
 // completed despite cancellation. On successful cancellation, the operation is not deleted;
 // instead, op.Poll returns an error with code Canceled.
-func (op *GetBigBookOperation) Cancel(ctx context.Context) error {
-    ctx = insertXGoog(ctx, op.xGoogHeader)
-    return op.lro.Cancel(ctx)
+func (op *GetBigBookOperation) Cancel(ctx context.Context, opts ...gax.CallOption) error {
+    return op.lro.Cancel(ctx, opts...)
 }
 
-// GetBigNothingOperation manages a long-running operation with no result.
+// GetBigNothingOperation manages a long-running operation from GetBigNothing.
 type GetBigNothingOperation struct {
     lro *longrunning.Operation
-
-    // The metadata to be sent with each request.
-    xGoogHeader []string
 }
 
 // GetBigNothingOperation returns a new GetBigNothingOperation from a given name.
 // The name must be that of a previously created GetBigNothingOperation, possibly from a different process.
 func (c *Client) GetBigNothingOperation(name string) *GetBigNothingOperation {
     return &GetBigNothingOperation{
-        lro: longrunning.InternalNewOperation(c.Connection(), &longrunningpb.Operation{Name: name}),
-        xGoogHeader: c.xGoogHeader,
+        lro: longrunning.InternalNewOperation(c.LROClient, &longrunningpb.Operation{Name: name}),
     }
 }
 
 // Wait blocks until the long-running operation is completed, returning any error encountered.
 //
 // See documentation of Poll for error-handling information.
-func (op *GetBigNothingOperation) Wait(ctx context.Context) error {
-    ctx = insertXGoog(ctx, op.xGoogHeader)
-    return op.lro.Wait(ctx, nil)
+func (op *GetBigNothingOperation) Wait(ctx context.Context, opts ...gax.CallOption) error {
+    return op.lro.Wait(ctx, nil, opts...)
 }
 
 // Poll fetches the latest state of the long-running operation.
@@ -970,9 +973,8 @@ func (op *GetBigNothingOperation) Wait(ctx context.Context) error {
 // If Poll fails, the error is returned and op is unmodified. If Poll succeeds and
 // the operation has completed with failure, the error is returned and op.Done will return true.
 // If Poll succeeds and the operation has completed successfully, op.Done will return true.
-func (op *GetBigNothingOperation) Poll(ctx context.Context) error {
-    ctx = insertXGoog(ctx, op.xGoogHeader)
-    return op.lro.Poll(ctx, nil)
+func (op *GetBigNothingOperation) Poll(ctx context.Context, opts ...gax.CallOption) error {
+    return op.lro.Poll(ctx, nil, opts...)
 }
 
 // Metadata returns metadata associated with the long-running operation.
@@ -1004,7 +1006,6 @@ func (op *GetBigNothingOperation) Name() string {
 // Delete deletes a long-running operation.
 // This method indicates that the client is no longer interested in the operation result.
 // It does not cancel the operation.
-func (op *GetBigNothingOperation) Delete(ctx context.Context) error {
-    ctx = insertXGoog(ctx, op.xGoogHeader)
-    return op.lro.Delete(ctx)
+func (op *GetBigNothingOperation) Delete(ctx context.Context, opts ...gax.CallOption) error {
+    return op.lro.Delete(ctx, opts...)
 }

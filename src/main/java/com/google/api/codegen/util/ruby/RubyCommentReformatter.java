@@ -16,12 +16,40 @@ package com.google.api.codegen.util.ruby;
 
 import com.google.api.codegen.CommentPatterns;
 import com.google.api.codegen.util.CommentReformatter;
+import com.google.api.codegen.util.CommentTransformer;
+import com.google.api.codegen.util.CommentTransformer.Transformation;
+import com.google.api.codegen.util.LinkPattern;
+import com.google.common.base.Function;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import java.util.regex.Matcher;
 
 public class RubyCommentReformatter implements CommentReformatter {
   private static final String BULLET = "* ";
+
+  private static Transformation PROTO_TO_RUBY_DOC_TRANSFORMATION =
+      new Transformation(
+          CommentPatterns.PROTO_LINK_PATTERN,
+          new Function<String, String>() {
+            @Override
+            public String apply(String matchedString) {
+              Matcher matcher = CommentPatterns.PROTO_LINK_PATTERN.matcher(matchedString);
+              matcher.find();
+              return Matcher.quoteReplacement(protoToRubyDoc(matcher.group(1)));
+            }
+          });
+
+  private CommentTransformer transformer =
+      CommentTransformer.newBuilder()
+          .replace(CommentPatterns.BACK_QUOTE_PATTERN, "+")
+          .transform(PROTO_TO_RUBY_DOC_TRANSFORMATION)
+          .transform(
+              LinkPattern.RELATIVE
+                  .withUrlPrefix(CommentTransformer.CLOUD_URL_PREFIX)
+                  .toFormat("{$TITLE}[$URL]"))
+          .transform(LinkPattern.ABSOLUTE.toFormat("{$TITLE}[$URL]"))
+          .scopedReplace(CommentPatterns.HEADLINE_PATTERN, "#", "=")
+          .build();
 
   @Override
   public String reformat(String comment) {
@@ -47,39 +75,14 @@ public class RubyCommentReformatter implements CommentReformatter {
         line = line.trim();
         sb.append(Strings.repeat(" ", listIndent));
       }
-      sb.append(applyTransformations(line)).append("\n");
+      sb.append(transformer.transform(line)).append("\n");
       followsListItem = matchesList;
       followsBlankLine = line.isEmpty();
     }
     return sb.toString().trim();
   }
 
-  private String applyTransformations(String line) {
-    line = CommentPatterns.BACK_QUOTE_PATTERN.matcher(line).replaceAll("+");
-    line = reformatProtoMarkdownLinks(line);
-    line = reformatCloudMarkdownLinks(line);
-    line = reformatAbsoluteMarkdownLinks(line);
-    line = reformatHeadline(line);
-    return line;
-  }
-
-  /** Returns a string with all proto markdown links formatted to RDoc style. */
-  private String reformatProtoMarkdownLinks(String comment) {
-    StringBuffer sb = new StringBuffer();
-    Matcher m = CommentPatterns.PROTO_LINK_PATTERN.matcher(comment);
-    if (!m.find()) {
-      return comment;
-    }
-    do {
-      // proto display name may contain '$' which needs to be escaped using Matcher.quoteReplacement
-      m.appendReplacement(
-          sb, Matcher.quoteReplacement(String.format("%s", protoToRubyDoc(m.group(1)))));
-    } while (m.find());
-    m.appendTail(sb);
-    return sb.toString();
-  }
-
-  private String protoToRubyDoc(String comment) {
+  private static String protoToRubyDoc(String comment) {
     boolean messageFound = false;
     boolean isFirstSegment = true;
     String result = "";
@@ -99,50 +102,5 @@ public class RubyCommentReformatter implements CommentReformatter {
       isFirstSegment = false;
     }
     return result;
-  }
-
-  /** Returns a string with all cloud markdown links formatted to RDoc style. */
-  private String reformatCloudMarkdownLinks(String comment) {
-    StringBuffer sb = new StringBuffer();
-    Matcher m = CommentPatterns.CLOUD_LINK_PATTERN.matcher(comment);
-    if (!m.find()) {
-      return comment;
-    }
-    do {
-      String url = "https://cloud.google.com" + m.group(2);
-      // cloud markdown links may contain '$' which needs to be escaped using Matcher.quoteReplacement
-      m.appendReplacement(sb, Matcher.quoteReplacement(String.format("{%s}[%s]", m.group(1), url)));
-    } while (m.find());
-    m.appendTail(sb);
-    return sb.toString();
-  }
-
-  /** Returns a string with all absolute markdown links formatted to RDoc style. */
-  private String reformatAbsoluteMarkdownLinks(String comment) {
-    StringBuffer sb = new StringBuffer();
-    Matcher m = CommentPatterns.ABSOLUTE_LINK_PATTERN.matcher(comment);
-    if (!m.find()) {
-      return comment;
-    }
-    do {
-      // absolute markdown links may contain '$' which needs to be escaped using Matcher.quoteReplacement
-      m.appendReplacement(
-          sb, Matcher.quoteReplacement(String.format("{%s}[%s]", m.group(1), m.group(2))));
-    } while (m.find());
-    m.appendTail(sb);
-    return sb.toString();
-  }
-
-  private String reformatHeadline(String comment) {
-    StringBuffer sb = new StringBuffer();
-    Matcher m = CommentPatterns.HEADLINE_PATTERN.matcher(comment);
-    if (!m.find()) {
-      return comment;
-    }
-    do {
-      m.appendReplacement(sb, m.group().replace("#", "="));
-    } while (m.find());
-    m.appendTail(sb);
-    return sb.toString();
   }
 }
