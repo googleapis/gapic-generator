@@ -17,12 +17,14 @@ package com.google.api.codegen.discovery.config.ruby;
 import com.google.api.codegen.discovery.config.TypeNameGenerator;
 import com.google.api.codegen.ruby.RubyApiaryNameMap;
 import com.google.api.codegen.util.Name;
+import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.io.Files;
 import com.google.common.io.Resources;
+import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import org.yaml.snakeyaml.Yaml;
@@ -32,20 +34,24 @@ public class RubyTypeNameGenerator extends TypeNameGenerator {
   private String apiName;
   private final ImmutableMap<String, String> NAME_MAP;
 
-  public RubyTypeNameGenerator() {
+  public RubyTypeNameGenerator(File rubyNamesFile) {
     try {
-      NAME_MAP = getMethodNameMap();
+      NAME_MAP = getMethodNameMap(rubyNamesFile);
     } catch (IOException e) {
       throw new IllegalStateException(e);
     }
   }
 
   @SuppressWarnings("unchecked")
-  private ImmutableMap<String, String> getMethodNameMap() throws IOException {
-    String data =
-        Resources.toString(
-            Resources.getResource(RubyApiaryNameMap.class, "apiary_names.yaml"),
-            StandardCharsets.UTF_8);
+  private ImmutableMap<String, String> getMethodNameMap(File rubyNamesFile) throws IOException {
+    String data;
+    if (rubyNamesFile != null) {
+      data = Files.toString(rubyNamesFile, Charsets.UTF_8);
+    } else {
+      data =
+          Resources.toString(
+              Resources.getResource(RubyApiaryNameMap.class, "apiary_names.yaml"), Charsets.UTF_8);
+    }
     // Unchecked cast here.
     return ImmutableMap.copyOf((Map<String, String>) (new Yaml().load(data)));
   }
