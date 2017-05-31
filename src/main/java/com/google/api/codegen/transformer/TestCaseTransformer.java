@@ -30,6 +30,7 @@ import com.google.api.codegen.viewmodel.ResourceNameInitValueView;
 import com.google.api.codegen.viewmodel.ResourceNameOneofInitValueView;
 import com.google.api.codegen.viewmodel.SimpleInitCodeLineView;
 import com.google.api.codegen.viewmodel.SimpleInitValueView;
+import com.google.api.codegen.viewmodel.testing.GrpcStreamingResponseView;
 import com.google.api.codegen.viewmodel.testing.MockGrpcResponseView;
 import com.google.api.codegen.viewmodel.testing.PageStreamingResponseView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
@@ -102,6 +103,7 @@ public class TestCaseTransformer {
         .name(namer.getTestCaseName(testNameTable, method))
         .nameWithException(namer.getExceptionTestCaseName(testNameTable, method))
         .pageStreamingResponseViews(createPageStreamingResponseViews(methodContext))
+        .grpcStreamingResponseView(createGrpcStreamingResponseView(methodContext))
         .requestTypeName(methodContext.getTypeTable().getAndSaveNicknameFor(method.getInputType()))
         .responseTypeName(responseTypeName)
         .serviceConstructorName(
@@ -163,6 +165,28 @@ public class TestCaseTransformer {
     return pageStreamingResponseViews;
   }
 
+  private GrpcStreamingResponseView createGrpcStreamingResponseView(
+      GapicMethodContext methodContext) {
+    GapicMethodConfig methodConfig = methodContext.getMethodConfig();
+    if (!methodConfig.isGrpcStreaming() || !methodConfig.getGrpcStreaming().hasResourceField()) {
+      return GrpcStreamingResponseView.newBuilder().build();
+    }
+
+    Field resourcesField = methodConfig.getGrpcStreaming().getResourcesField();
+    String resourceTypeName =
+        methodContext.getTypeTable().getAndSaveNicknameForElementType(resourcesField.getType());
+    String resourcesFieldGetterName =
+        methodContext
+            .getNamer()
+            .getFieldGetFunctionName(
+                resourcesField.getType(), Name.from(resourcesField.getSimpleName()));
+
+    return GrpcStreamingResponseView.newBuilder()
+        .resourceTypeName(resourceTypeName)
+        .resourcesFieldGetterName(resourcesFieldGetterName)
+        .build();
+  }
+
   private MockGrpcResponseView createMockResponseView(
       GapicMethodContext methodContext, SymbolTable symbolTable) {
     InitCodeView initCodeView =
@@ -222,6 +246,13 @@ public class TestCaseTransformer {
       if (config.getSubresponseField() != null) {
         String subResponseFieldName = config.getSubresponseField().getSimpleName();
         additionalSubTrees.add(InitCodeNode.createSingletonList(subResponseFieldName));
+      }
+    }
+    if (context.getMethodConfig().isGrpcStreaming()) {
+      GrpcStreamingConfig grpcConfig = context.getMethodConfig().getGrpcStreaming();
+      if (grpcConfig.hasResourceField()) {
+        String resourceFieldName = grpcConfig.getResourcesField().getSimpleName();
+        additionalSubTrees.add(InitCodeNode.createSingletonList(resourceFieldName));
       }
     }
     return additionalSubTrees;

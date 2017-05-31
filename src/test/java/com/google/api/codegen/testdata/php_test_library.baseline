@@ -25,8 +25,10 @@ namespace Google\Tests\Example\Library\V1;
 
 use Google\Example\Library\V1\LibraryServiceClient;
 use \Google\GAX\ApiException;
+use \Google\GAX\BidiStream;
 use \Google\GAX\GrpcCredentialsHelper;
 use \Google\GAX\LongRunning\OperationsClient;
+use \Google\GAX\ServerStream;
 use \Google\GAX\Testing\LongRunning\MockOperationsImpl;
 use \Google\GAX\Testing\MockStubTrait;
 use \Grpc;
@@ -41,6 +43,7 @@ use \google\example\library\v1\CreateBookRequest;
 use \google\example\library\v1\CreateShelfRequest;
 use \google\example\library\v1\DeleteBookRequest;
 use \google\example\library\v1\DeleteShelfRequest;
+use \google\example\library\v1\DiscussBookRequest;
 use \google\example\library\v1\FindRelatedBooksRequest;
 use \google\example\library\v1\FindRelatedBooksResponse;
 use \google\example\library\v1\GetBookFromAnywhereRequest;
@@ -61,6 +64,9 @@ use \google\example\library\v1\PublishSeriesResponse;
 use \google\example\library\v1\SeriesUuid;
 use \google\example\library\v1\Shelf;
 use \google\example\library\v1\SomeMessage2\SomeMessage3\Alignment;
+use \google\example\library\v1\StreamBooksRequest;
+use \google\example\library\v1\StreamShelvesRequest;
+use \google\example\library\v1\StreamShelvesResponse;
 use \google\example\library\v1\TestOptionalRequiredFlatteningParamsRequest;
 use \google\example\library\v1\TestOptionalRequiredFlatteningParamsRequest\InnerEnum;
 use \google\example\library\v1\TestOptionalRequiredFlatteningParamsRequest\InnerMessage;
@@ -1301,6 +1307,253 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
             // If the $client method call did not throw, fail the test
             $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($status->details, $ex->getMessage());
+        }
+
+        // Call getReceivedCalls to ensure the stub is exhausted
+        $grpcStub->getReceivedCalls();
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function streamShelvesTest()
+    {
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        // Mock response
+        $shelvesElement = new Shelf();
+        $shelves = [$shelvesElement];
+        $expectedResponse = new StreamShelvesResponse();
+        foreach ($shelves as $elem) {
+            $expectedResponse->addShelves($elem);
+        }
+        $grpcStub->addResponse($expectedResponse);
+        $grpcStub->addResponse($expectedResponse);
+
+        // Mock request
+
+
+        $serverStream = $client->streamShelves();
+        $this->assertInstanceOf(ServerStream::class, $serverStream);
+
+        $responseList = iterator_to_array($serverStream->readAll());
+        $this->assertEquals([$expectedResponse, $expectedResponse], $responseList);
+
+        $actualRequests = $grpcStub->getReceivedCalls();
+        $this->assertSame(1, count($actualRequests));
+        $actualFuncCall = $actualRequests[0]->getFuncCall();
+        $actualRequestObject = $actualRequests[0]->getRequestObject();
+        $this->assertSame('/google.example.library.v1.LibraryService/StreamShelves', $actualFuncCall);
+
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function streamShelvesExceptionTest()
+    {
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
+
+        $status = new stdClass();
+        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->details = 'internal error';
+
+        $grpcStub->setStreamingStatus($status);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        // Mock request
+
+
+        $serverStream = $client->streamShelves();
+        $results = $serverStream->readAll();
+
+        try {
+            iterator_to_array($results);
+            // If the close stream method call did not throw, fail the test
+            $this->fail("Expected an ApiException, but no exception was thrown.");
+        }  catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($status->details, $ex->getMessage());
+        }
+
+        // Call getReceivedCalls to ensure the stub is exhausted
+        $grpcStub->getReceivedCalls();
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function streamBooksTest()
+    {
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        // Mock response
+        $name2 = "name2-1052831874";
+        $author = "author-1406328437";
+        $title = "title110371416";
+        $read = true;
+        $expectedResponse = new Book();
+        $expectedResponse->setName($name2);
+        $expectedResponse->setAuthor($author);
+        $expectedResponse->setTitle($title);
+        $expectedResponse->setRead($read);
+        $grpcStub->addResponse($expectedResponse);
+        $grpcStub->addResponse($expectedResponse);
+
+        // Mock request
+        $name = "name3373707";
+
+        $serverStream = $client->streamBooks($name);
+        $this->assertInstanceOf(ServerStream::class, $serverStream);
+
+        $responseList = iterator_to_array($serverStream->readAll());
+        $this->assertEquals([$expectedResponse, $expectedResponse], $responseList);
+
+        $actualRequests = $grpcStub->getReceivedCalls();
+        $this->assertSame(1, count($actualRequests));
+        $actualFuncCall = $actualRequests[0]->getFuncCall();
+        $actualRequestObject = $actualRequests[0]->getRequestObject();
+        $this->assertSame('/google.example.library.v1.LibraryService/StreamBooks', $actualFuncCall);
+
+        $this->assertEquals($name, $actualRequestObject->getName());
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function streamBooksExceptionTest()
+    {
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
+
+        $status = new stdClass();
+        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->details = 'internal error';
+
+        $grpcStub->setStreamingStatus($status);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        // Mock request
+        $name = "name3373707";
+
+        $serverStream = $client->streamBooks($name);
+        $results = $serverStream->readAll();
+
+        try {
+            iterator_to_array($results);
+            // If the close stream method call did not throw, fail the test
+            $this->fail("Expected an ApiException, but no exception was thrown.");
+        }  catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($status->details, $ex->getMessage());
+        }
+
+        // Call getReceivedCalls to ensure the stub is exhausted
+        $grpcStub->getReceivedCalls();
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function discussBookTest()
+    {
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        // Mock response
+        $userName = "userName339340927";
+        $comment = "95";
+        $expectedResponse = new Comment();
+        $expectedResponse->setUserName($userName);
+        $expectedResponse->setComment($comment);
+        $grpcStub->addResponse($expectedResponse);
+        $grpcStub->addResponse($expectedResponse);
+        $grpcStub->addResponse($expectedResponse);
+
+        // Mock request
+        $name = "name3373707";
+        $request = new DiscussBookRequest();
+        $request->setName($name);
+
+        $bidi = $client->discussBook();
+        $this->assertInstanceOf(BidiStream::class, $bidi);
+
+        $bidi->write($request);
+        $responses = [];
+        $responses[] = $bidi->read();
+
+        $bidi->writeAll([$request, $request]);
+        foreach ($bidi->closeWriteAndReadAll() as $response) {
+            $responses[] = $response;
+        }
+
+        $this->assertEquals([$expectedResponse, $expectedResponse, $expectedResponse], $responses);
+
+        $createStreamRequests = $grpcStub->getReceivedCalls();
+        $this->assertSame(1, count($createStreamRequests));
+        $streamFuncCall = $createStreamRequests[0]->getFuncCall();
+        $streamRequestObject = $createStreamRequests[0]->getRequestObject();
+        $this->assertSame('/google.example.library.v1.LibraryService/DiscussBook', $streamFuncCall);
+        $this->assertNull($streamRequestObject);
+
+        $callObjects = $grpcStub->getCallObjects();
+        $this->assertSame(1, count($callObjects));
+        $bidiCall = $callObjects[0];
+
+        $writeRequests = $bidiCall->getReceivedCalls();
+        $this->assertSame(3, count($writeRequests));
+        foreach ($writeRequests as $writeRequest) {
+
+            $this->assertEquals($name, $writeRequest->getName());
+        }
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function discussBookExceptionTest()
+    {
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
+
+        $status = new stdClass();
+        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->details = 'internal error';
+
+        $grpcStub->setStreamingStatus($status);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        $bidi = $client->discussBook();
+        $results = $bidi->closeWriteAndReadAll();
+
+        try {
+            iterator_to_array($results);
+            // If the close stream method call did not throw, fail the test
+            $this->fail("Expected an ApiException, but no exception was thrown.");
+        }  catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($status->details, $ex->getMessage());
         }

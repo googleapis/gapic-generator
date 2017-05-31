@@ -59,11 +59,193 @@
 
 @private testCase(test)
     @switch test.grpcStreamingType
+    @case "BidiStreaming"
+        {@bidiStreamingTestCase(test)}
+    @case "ServerStreaming"
+        {@serverStreamingTestCase(test)}
     @case "NonStreaming"
         {@nonStreamingOptionalArrayTestCase(test)}
     @default
         $unhandled case: {@test.grpcStreamingType}$
     @end
+@end
+
+@private bidiStreamingTestCase(test)
+    /**
+     * @@test
+     */
+    public function {@test.name}()
+    {
+        $grpcStub = $this->createStub([$this, 'create{@test.mockGrpcStubTypeName}']);
+        $client = $this->createClient('{@test.createStubFunctionName}', $grpcStub);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        // Mock response
+        @if test.hasReturnValue
+            {@initCode(test.mockResponse.initCode)}
+        @else
+            $expectedResponse = new EmptyC();
+        @end
+        $grpcStub->addResponse($expectedResponse);
+        $grpcStub->addResponse($expectedResponse);
+        $grpcStub->addResponse($expectedResponse);
+
+        // Mock request
+        {@initCode(test.initCode)}
+
+        $bidi = $client->{@test.clientMethodName}();
+        $this->assertInstanceOf(BidiStream::class, $bidi);
+
+        $bidi->write($request);
+        $responses = [];
+        $responses[] = $bidi->read();
+
+        $bidi->writeAll([$request, $request]);
+        foreach ($bidi->closeWriteAndReadAll() as $response) {
+            $responses[] = $response;
+        }
+
+        @if test.grpcStreamingResponseView.hasResourcesField
+            $expectedResource = $expectedResponse->{@test.grpcStreamingResponseView.resourcesFieldGetterName}()[0];
+            $this->assertEquals([$expectedResource, $expectedResource, $expectedResource], $responses);
+        @else
+            $this->assertEquals([$expectedResponse, $expectedResponse, $expectedResponse], $responses);
+        @end
+
+        $createStreamRequests = $grpcStub->getReceivedCalls();
+        $this->assertSame(1, count($createStreamRequests));
+        $streamFuncCall = $createStreamRequests[0]->getFuncCall();
+        $streamRequestObject = $createStreamRequests[0]->getRequestObject();
+        $this->assertSame('{@test.grpcStubCallString}', $streamFuncCall);
+        $this->assertNull($streamRequestObject);
+
+        $callObjects = $grpcStub->getCallObjects();
+        $this->assertSame(1, count($callObjects));
+        $bidiCall = $callObjects[0];
+
+        $writeRequests = $bidiCall->getReceivedCalls();
+        $this->assertSame(3, count($writeRequests));
+        foreach ($writeRequests as $writeRequest) {
+
+            @join assert : test.asserts
+                @if assert.hasExpectedValueTransformFunction
+                    $this->assertEquals({@assert.expectedValueTransformFunction}(\
+                        ${@assert.expectedValueIdentifier}), \
+                        $writeRequest->{@assert.actualValueGetter}());
+                @else
+                    $this->assertEquals(${@assert.expectedValueIdentifier}, \
+                        $writeRequest->{@assert.actualValueGetter}());
+                @end
+            @end
+        }
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @@test
+     */
+    public function {@test.nameWithException}()
+    {
+        $grpcStub = $this->createStub([$this, 'create{@test.mockGrpcStubTypeName}']);
+        $client = $this->createClient('{@test.createStubFunctionName}', $grpcStub);
+
+        $status = new stdClass();
+        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->details = 'internal error';
+
+        $grpcStub->setStreamingStatus($status);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        $bidi = $client->{@test.clientMethodName}();
+        $results = $bidi->closeWriteAndReadAll();
+
+        try {
+            iterator_to_array($results);
+            // If the close stream method call did not throw, fail the test
+            $this->fail("Expected an ApiException, but no exception was thrown.");
+        }  catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($status->details, $ex->getMessage());
+        }
+
+        // Call getReceivedCalls to ensure the stub is exhausted
+        $grpcStub->getReceivedCalls();
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+@end
+
+@private serverStreamingTestCase(test)
+    /**
+     * @@test
+     */
+    public function {@test.name}()
+    {
+        $grpcStub = $this->createStub([$this, 'create{@test.mockGrpcStubTypeName}']);
+        $client = $this->createClient('{@test.createStubFunctionName}', $grpcStub);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        // Mock response
+        @if test.hasReturnValue
+            {@initCode(test.mockResponse.initCode)}
+        @else
+            $expectedResponse = new EmptyC();
+        @end
+        $grpcStub->addResponse($expectedResponse);
+        $grpcStub->addResponse($expectedResponse);
+
+        // Mock request
+        {@initCode(test.initCode)}
+
+        $serverStream = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
+        $this->assertInstanceOf(ServerStream::class, $serverStream);
+
+        $responseList = iterator_to_array($serverStream->readAll());
+        $this->assertEquals([$expectedResponse, $expectedResponse], $responseList);
+
+        {@singleCallSuccessAsserts(test)}
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @@test
+     */
+    public function {@test.nameWithException}()
+    {
+        $grpcStub = $this->createStub([$this, 'create{@test.mockGrpcStubTypeName}']);
+        $client = $this->createClient('{@test.createStubFunctionName}', $grpcStub);
+
+        $status = new stdClass();
+        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->details = 'internal error';
+
+        $grpcStub->setStreamingStatus($status);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        // Mock request
+        {@initCode(test.initCode)}
+
+        $serverStream = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
+        $results = $serverStream->readAll();
+
+        try {
+            iterator_to_array($results);
+            // If the close stream method call did not throw, fail the test
+            $this->fail("Expected an ApiException, but no exception was thrown.");
+        }  catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($status->details, $ex->getMessage());
+        }
+
+        // Call getReceivedCalls to ensure the stub is exhausted
+        $grpcStub->getReceivedCalls();
+        $this->assertTrue($grpcStub->isExhausted());
+    }
 @end
 
 @private nonStreamingOptionalArrayTestCase(test)

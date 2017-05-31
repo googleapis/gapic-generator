@@ -39,6 +39,8 @@ public abstract class TestCaseView {
 
   public abstract List<PageStreamingResponseView> pageStreamingResponseViews();
 
+  public abstract GrpcStreamingResponseView grpcStreamingResponseView();
+
   public abstract String name();
 
   public abstract String nameWithException();
@@ -93,6 +95,8 @@ public abstract class TestCaseView {
     public abstract Builder responseTypeName(String val);
 
     public abstract Builder pageStreamingResponseViews(List<PageStreamingResponseView> val);
+
+    public abstract Builder grpcStreamingResponseView(GrpcStreamingResponseView val);
 
     public abstract Builder hasRequestParameters(boolean val);
 

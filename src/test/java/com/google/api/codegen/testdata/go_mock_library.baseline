@@ -1559,7 +1559,11 @@ func TestLibraryServiceUpdateBookIndexError(t *testing.T) {
     }
 }
 func TestLibraryServiceStreamShelves(t *testing.T) {
-    var expectedResponse *librarypb.StreamShelvesResponse = &librarypb.StreamShelvesResponse{}
+    var shelvesElement *librarypb.Shelf = &librarypb.Shelf{}
+    var shelves = []*librarypb.Shelf{shelvesElement}
+    var expectedResponse = &librarypb.StreamShelvesResponse{
+        Shelves: shelves,
+    }
 
     mockLibrary.err = nil
     mockLibrary.reqs = nil

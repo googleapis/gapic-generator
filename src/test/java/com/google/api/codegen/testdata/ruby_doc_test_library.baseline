@@ -1112,7 +1112,9 @@ describe Library::V1::LibraryServiceClient do
       request = Google::Example::Library::V1::StreamShelvesRequest.new
 
       # Create expected grpc response
-      expected_response = Google::Example::Library::V1::StreamShelvesResponse.new
+      shelves_element = Google::Example::Library::V1::Shelf.new
+      shelves = [shelves_element]
+      expected_response = Google::Example::Library::V1::StreamShelvesResponse.new(shelves: shelves)
 
       # Mock Grpc layer
       mock_method = proc do |request|
