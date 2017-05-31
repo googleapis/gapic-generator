@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.discovery;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nullable;
 
 /**
  * A representation of a Discovery Document.
@@ -29,7 +31,7 @@ import java.util.Map;
  * example, this class combines all methods in the Discovery Document into one list for convenience.
  */
 @AutoValue
-public abstract class Document {
+public abstract class Document implements Node {
 
   // TODO(saicheems): Assert that all references link to a valid schema?
 
@@ -45,6 +47,7 @@ public abstract class Document {
   public static Document from(DiscoveryNode root) {
     AuthType authType;
     DiscoveryNode scopesNode = root.getObject("auth").getObject("oauth2").getObject("scopes");
+    Document thisDocument = Document.empty();
     if (scopesNode.isEmpty()) {
       authType = AuthType.API_KEY;
     } else if (scopesNode.has(CLOUD_PLATFORM_SCOPE)) {
@@ -54,8 +57,8 @@ public abstract class Document {
     }
     String canonicalName = root.getString("canonicalName");
     String description = root.getString("description");
-    Map<String, Schema> schemas = parseSchemas(root);
-    List<Method> methods = parseMethods(root, "");
+    Map<String, Schema> schemas = parseSchemas(root, thisDocument);
+    List<Method> methods = parseMethods(root, "", thisDocument);
     Collections.sort(methods); // Ensure methods are ordered alphabetically by their ID.
     String name = root.getString("name");
     if (canonicalName.isEmpty()) {
@@ -68,7 +71,9 @@ public abstract class Document {
     String version = root.getString("version");
     boolean versionModule = root.getBoolean("version_module");
 
-    return new AutoValue_Document(
+    thisDocument = new AutoValue_Document(
+        null,
+        null,
         "", // authInstructionsUrl (only intended to be overridden).
         authType,
         canonicalName,
@@ -83,6 +88,28 @@ public abstract class Document {
         title,
         version,
         versionModule);
+
+    return thisDocument;
+  }
+
+  public static Document empty() {
+    return new AutoValue_Document(
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        false);
   }
 
   /**
@@ -105,7 +132,7 @@ public abstract class Document {
     return schema;
   }
 
-  private static List<Method> parseMethods(DiscoveryNode root, String path) {
+  private static List<Method> parseMethods(DiscoveryNode root, String path, Node parentNode) {
     List<Method> methods = new ArrayList<>();
     DiscoveryNode methodsNode = root.getObject("methods");
     List<String> resourceNames = methodsNode.getFieldNames();
@@ -113,24 +140,33 @@ public abstract class Document {
       path += ".";
     }
     for (String name : resourceNames) {
-      methods.add(Method.from(methodsNode.getObject(name), path + "methods." + name));
+      methods.add(Method.from(methodsNode.getObject(name), path + "methods." + name, parentNode));
     }
     DiscoveryNode resourcesNode = root.getObject("resources");
     resourceNames = resourcesNode.getFieldNames();
     for (String name : resourceNames) {
-      methods.addAll(parseMethods(resourcesNode.getObject(name), path + "resources." + name));
+      methods.addAll(parseMethods(resourcesNode.getObject(name), path + "resources." + name, parentNode));
     }
     return methods;
   }
 
-  private static Map<String, Schema> parseSchemas(DiscoveryNode root) {
+  private static Map<String, Schema> parseSchemas(DiscoveryNode root, Node parentNode) {
     Map<String, Schema> schemas = new HashMap<>();
     DiscoveryNode schemasNode = root.getObject("schemas");
     for (String name : schemasNode.getFieldNames()) {
-      schemas.put(name, Schema.from(schemasNode.getObject(name), "schemas." + name));
+      schemas.put(name, Schema.from(schemasNode.getObject(name), "schemas." + name, parentNode));
     }
     return schemas;
   }
+
+  /** @return the auth instructions URL. */
+  @JsonIgnore
+  @Nullable
+  public abstract Node parent();
+
+  /** @return whether or not to version the module. */
+  @JsonProperty("id")
+  public abstract String id();
 
   /** @return the auth instructions URL. */
   @JsonProperty("authInstructionsUrl")

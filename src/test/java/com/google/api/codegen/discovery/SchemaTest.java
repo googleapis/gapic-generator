@@ -34,7 +34,7 @@ public class SchemaTest {
     ObjectMapper mapper = new ObjectMapper();
     JsonNode root = mapper.readTree(reader);
 
-    Schema schema = Schema.from(new DiscoveryNode(root), "root");
+    Schema schema = Schema.from(new DiscoveryNode(root), "root", null);
 
     Truth.assertThat(schema.description()).isEqualTo("My Foo.");
     Truth.assertThat(schema.id()).isEqualTo("Foo");
@@ -105,6 +105,6 @@ public class SchemaTest {
 
   @Test
   public void testSchemaFromEmptyNode() {
-    Truth.assertThat(Schema.from(new DiscoveryNode(null), "").type()).isEqualTo(Schema.Type.EMPTY);
+    Truth.assertThat(Schema.from(new DiscoveryNode(null), "", null).type()).isEqualTo(Schema.Type.EMPTY);
   }
 }

@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
  * <p>Note that this class is not necessarily a 1-1 mapping of the official specification.
  */
 @AutoValue
-public abstract class Schema {
+public abstract class Schema implements Node {
 
   /**
    * Returns true if this schema contains a property with the given name.
@@ -42,14 +42,18 @@ public abstract class Schema {
    *
    * @param root the root node to parse.
    * @param path the full path to this node (ex: "methods.foo.parameters.bar").
+   * @param parentNode the immediate parent node of this object.
    * @return a schema.
    */
-  public static Schema from(DiscoveryNode root, String path) {
+  public static Schema from(DiscoveryNode root, String path, Node parentNode) {
     if (root.isEmpty()) {
       return empty();
     }
+
+    Schema thisSchema = Schema.empty();
+
     Schema additionalProperties =
-        Schema.from(root.getObject("additionalProperties"), path + ".additionalProperties");
+        Schema.from(root.getObject("additionalProperties"), path + ".additionalProperties", thisSchema);
     if (additionalProperties.type() == Type.EMPTY && additionalProperties.reference().isEmpty()) {
       additionalProperties = null;
     }
@@ -58,7 +62,7 @@ public abstract class Schema {
     Format format = Format.getEnum(root.getString("format"));
     String id = root.getString("id");
     boolean isEnum = !root.getArray("enum").isEmpty();
-    Schema items = Schema.from(root.getObject("items"), path + ".items");
+    Schema items = Schema.from(root.getObject("items"), path + ".items", thisSchema);
     if (items.type() == Type.EMPTY && items.reference().isEmpty()) {
       items = null;
     }
@@ -69,7 +73,7 @@ public abstract class Schema {
     DiscoveryNode propertiesNode = root.getObject("properties");
     for (String name : propertiesNode.getFieldNames()) {
       properties.put(
-          name, Schema.from(propertiesNode.getObject(name), path + ".properties." + name));
+          name, Schema.from(propertiesNode.getObject(name), path + ".properties." + name, thisSchema));
     }
 
     String reference = root.getString("$ref");
@@ -77,7 +81,8 @@ public abstract class Schema {
     boolean required = root.getBoolean("required");
     Type type = Type.getEnum(root.getString("type"));
 
-    return new AutoValue_Schema(
+    thisSchema = new AutoValue_Schema(
+        parentNode,
         additionalProperties,
         defaultValue,
         description,
@@ -93,10 +98,13 @@ public abstract class Schema {
         repeated,
         required,
         type);
+
+    return thisSchema;
   }
 
   public static Schema empty() {
     return new AutoValue_Schema(
+        null,
         null,
         "",
         "",
@@ -113,6 +121,10 @@ public abstract class Schema {
         false,
         Type.EMPTY);
   }
+
+  /** @return the {@link Node} that contains this Schema. */
+  @Nullable
+  public abstract Node parent();
 
   /** @return the schema of the additionalProperties, or null if none. */
   @Nullable

@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
  * <p>Note that this class is not necessarily a 1-1 mapping of the official specification.
  */
 @AutoValue
-public abstract class Method implements Comparable<Method> {
+public abstract class Method implements Comparable<Method>, Node{
 
   /**
    * Returns a method constructed from root.
@@ -37,7 +37,7 @@ public abstract class Method implements Comparable<Method> {
    * @param path the full path to this node (ex: "resources.foo.methods.bar").
    * @return a method.
    */
-  public static Method from(DiscoveryNode root, String path) {
+  public static Method from(DiscoveryNode root, String path, Node parentNode) {
     String description = root.getString("description");
     String httpMethod = root.getString("httpMethod");
     String id = root.getString("id");
@@ -46,10 +46,12 @@ public abstract class Method implements Comparable<Method> {
       parameterOrder.add(nameNode.asText());
     }
 
+    Method thisMethod = Method.empty();
+
     DiscoveryNode parametersNode = root.getObject("parameters");
     HashMap<String, Schema> parameters = new HashMap<>();
     for (String name : root.getObject("parameters").getFieldNames()) {
-      Schema schema = Schema.from(parametersNode.getObject(name), path + ".parameters." + name);
+      Schema schema = Schema.from(parametersNode.getObject(name), path + ".parameters." + name, thisMethod);
       // TODO: Remove these checks once we're sure that parameters can't be objects/arrays.
       // This is based on the assumption that these types can't be serialized as a query or path parameter.
       Preconditions.checkState(schema.type() != Schema.Type.ANY);
@@ -58,11 +60,11 @@ public abstract class Method implements Comparable<Method> {
       parameters.put(name, schema);
     }
 
-    Schema request = Schema.from(root.getObject("request"), path + ".request");
+    Schema request = Schema.from(root.getObject("request"), path + ".request", thisMethod);
     if (request.reference().isEmpty()) {
       request = null;
     }
-    Schema response = Schema.from(root.getObject("response"), path + ".response");
+    Schema response = Schema.from(root.getObject("response"), path + ".response", thisMethod);
     if (response.reference().isEmpty()) {
       response = null;
     }
@@ -73,7 +75,8 @@ public abstract class Method implements Comparable<Method> {
     boolean supportsMediaDownload = root.getBoolean("supportsMediaDownload");
     boolean supportsMediaUpload = root.getBoolean("supportsMediaUpload");
 
-    return new AutoValue_Method(
+    thisMethod = new AutoValue_Method(
+        parentNode,
         description,
         httpMethod,
         id,
@@ -85,12 +88,33 @@ public abstract class Method implements Comparable<Method> {
         scopes,
         supportsMediaDownload,
         supportsMediaUpload);
+
+    return  thisMethod;
+  }
+
+  public static Method empty() {
+    return new AutoValue_Method( null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        false,
+        false
+        );
   }
 
   @Override
   public int compareTo(Method other) {
     return id().compareTo(other.id());
   }
+
+  /** @return the description. */
+  public abstract Node parent();
 
   /** @return the description. */
   public abstract String description();

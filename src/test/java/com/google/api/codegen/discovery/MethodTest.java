@@ -35,7 +35,7 @@ public class MethodTest {
     ObjectMapper mapper = new ObjectMapper();
     JsonNode root = mapper.readTree(reader);
 
-    Method method = Method.from(new DiscoveryNode(root), "root");
+    Method method = Method.from(new DiscoveryNode(root), "root", null);
 
     Truth.assertThat(method.description()).isEqualTo("Get a baz!");
     Truth.assertThat(method.httpMethod()).isEqualTo("GET");
