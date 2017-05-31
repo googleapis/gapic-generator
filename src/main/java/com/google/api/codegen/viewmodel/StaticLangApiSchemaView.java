@@ -29,22 +29,17 @@ public abstract class StaticLangApiSchemaView implements ViewModel {
   public abstract String description();
 
   @Nullable
+  // TODO(andrealin) Populate and render this field.
   public abstract String defaultValue();
 
   @Nullable
   // Assume all Discovery doc enums are Strings.
+  // TODO(andrealin) Populate and render this field.
   public abstract List<String> enumValues();
-
-  @Nullable
-  public abstract Boolean repeated();
 
   // There can be arbitrarily nested fields inside of this field.
   @Nullable
   public abstract List<SimplePropertyView> properties();
-
-  @Nullable
-  // The typeName of a Schema that contains the full representation of this schema.
-  public abstract StaticLangApiSchemaView ref();
 
   @Override
   public String resourceRoot() {
@@ -75,11 +70,7 @@ public abstract class StaticLangApiSchemaView implements ViewModel {
 
     public abstract StaticLangApiSchemaView.Builder enumValues(List<String> val);
 
-    public abstract StaticLangApiSchemaView.Builder repeated(Boolean val);
-
     public abstract StaticLangApiSchemaView.Builder properties(List<SimplePropertyView> val);
-
-    public abstract StaticLangApiSchemaView.Builder ref(StaticLangApiSchemaView val);
 
     public abstract StaticLangApiSchemaView.Builder templateFileName(String val);
 
