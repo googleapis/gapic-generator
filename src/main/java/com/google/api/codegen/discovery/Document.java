@@ -18,7 +18,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -72,22 +71,23 @@ public abstract class Document implements Node {
     String id = root.getString("id");
     boolean versionModule = root.getBoolean("version_module");
 
-    Document thisDocument = new AutoValue_Document(
-        id,
-        "", // authInstructionsUrl (only intended to be overridden).
-        authType,
-        canonicalName,
-        description,
-        "", // discoveryDocUrl (only intended to be overridden).
-        methods,
-        name,
-        revision,
-        rootUrl,
-        schemas,
-        servicePath,
-        title,
-        version,
-        versionModule);
+    Document thisDocument =
+        new AutoValue_Document(
+            id,
+            "", // authInstructionsUrl (only intended to be overridden).
+            authType,
+            canonicalName,
+            description,
+            "", // discoveryDocUrl (only intended to be overridden).
+            methods,
+            name,
+            revision,
+            rootUrl,
+            schemas,
+            servicePath,
+            title,
+            version,
+            versionModule);
 
     for (Schema schema : schemas.values()) {
       schema.setParent(thisDocument);
@@ -147,9 +147,7 @@ public abstract class Document implements Node {
   }
 
   /** @return the auth instructions URL. */
-  @JsonIgnore
-  @Nullable
-  private Node parent;
+  @JsonIgnore @Nullable private Node parent;
 
   public Node parent() {
     return parent;

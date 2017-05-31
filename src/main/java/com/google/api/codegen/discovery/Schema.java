@@ -38,7 +38,6 @@ public abstract class Schema implements Node {
     return properties().keySet().contains(name);
   }
 
-
   /**
    * Returns a schema constructed from root, or an empty schema if root has no children.
    *
@@ -90,22 +89,23 @@ public abstract class Schema implements Node {
     boolean required = root.getBoolean("required");
     Type type = Type.getEnum(root.getString("type"));
 
-    Schema thisSchema = new AutoValue_Schema(
-        additionalProperties,
-        defaultValue,
-        description,
-        format,
-        id,
-        isEnum,
-        items,
-        location,
-        path,
-        pattern,
-        properties,
-        reference,
-        repeated,
-        required,
-        type);
+    Schema thisSchema =
+        new AutoValue_Schema(
+            additionalProperties,
+            defaultValue,
+            description,
+            format,
+            id,
+            isEnum,
+            items,
+            location,
+            path,
+            pattern,
+            properties,
+            reference,
+            repeated,
+            required,
+            type);
     thisSchema.parent = parent;
     if (items != null) {
       items.setParent(thisSchema);
@@ -139,10 +139,7 @@ public abstract class Schema implements Node {
         Type.EMPTY);
   }
 
-
-  @JsonIgnore
-  @Nullable
-  private Node parent;
+  @JsonIgnore @Nullable private Node parent;
 
   /** @return the {@link Node} that contains this Schema. */
   @Nullable
@@ -153,7 +150,6 @@ public abstract class Schema implements Node {
   void setParent(Node parent) {
     this.parent = parent;
   }
-
 
   /** @return the schema of the additionalProperties, or null if none. */
   @Nullable

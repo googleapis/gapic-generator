@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
  * <p>Note that this class is not necessarily a 1-1 mapping of the official specification.
  */
 @AutoValue
-public abstract class Method implements Comparable<Method>, Node{
+public abstract class Method implements Comparable<Method>, Node {
 
   /**
    * Returns a method constructed from root.
@@ -84,52 +84,41 @@ public abstract class Method implements Comparable<Method>, Node{
     boolean supportsMediaDownload = root.getBoolean("supportsMediaDownload");
     boolean supportsMediaUpload = root.getBoolean("supportsMediaUpload");
 
-    Method thisMethod = new AutoValue_Method(
-        description,
-        httpMethod,
-        id,
-        parameterOrder,
-        parameters,
-        path,
-        request,
-        response,
-        scopes,
-        supportsMediaDownload,
-        supportsMediaUpload);
+    Method thisMethod =
+        new AutoValue_Method(
+            description,
+            httpMethod,
+            id,
+            parameterOrder,
+            parameters,
+            path,
+            request,
+            response,
+            scopes,
+            supportsMediaDownload,
+            supportsMediaUpload);
 
     thisMethod.parent = parent;
     if (request != null) {
       request.setParent(thisMethod);
-    } if (response != null) {
+    }
+    if (response != null) {
       response.setParent(thisMethod);
     }
     for (Schema schema : parameters.values()) {
       schema.setParent(thisMethod);
     }
-    return  thisMethod;
+    return thisMethod;
   }
 
   public static Method empty() {
-    return new AutoValue_Method(
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        false,
-        false
-        );
+    return new AutoValue_Method(null, null, null, null, null, null, null, null, null, false, false);
   }
 
   @Override
   public int compareTo(Method other) {
     return id().compareTo(other.id());
   }
-
 
   /** @return the parent Node. */
   private Node parent;

@@ -105,6 +105,7 @@ public class SchemaTest {
 
   @Test
   public void testSchemaFromEmptyNode() {
-    Truth.assertThat(Schema.from(new DiscoveryNode(null), "", null).type()).isEqualTo(Schema.Type.EMPTY);
+    Truth.assertThat(Schema.from(new DiscoveryNode(null), "", null).type())
+        .isEqualTo(Schema.Type.EMPTY);
   }
 }
