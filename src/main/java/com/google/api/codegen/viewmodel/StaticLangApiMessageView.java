@@ -21,8 +21,10 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 /**
- * This ViewModel defines the structure of a Discovery doc's "schemas", "properties",
- * "additionalProperties", and "items".
+ * This ViewModel defines the structure of a generic message.
+ *
+ * <p>For example, this can be used to model a Discovery Document's "schemas", "properties",
+ * "additionalProperties", and "items".</p>
  *
  * <p>This contains a subset of properties in the JSON Schema
  * https://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.7.
@@ -33,8 +35,6 @@ public abstract class StaticLangApiMessageView implements ViewModel {
   // The possibly-transformed ID of the schema from the Discovery Doc
   public abstract String typeName();
 
-  // The escaped class name for this Schema.
-  public abstract String className();
 
   // The type of this schema.
   public abstract Schema.Type type();
@@ -73,8 +73,6 @@ public abstract class StaticLangApiMessageView implements ViewModel {
   @AutoValue.Builder
   public abstract static class Builder {
     public abstract StaticLangApiMessageView.Builder typeName(String val);
-
-    public abstract StaticLangApiMessageView.Builder className(String val);
 
     public abstract StaticLangApiMessageView.Builder type(Schema.Type val);
 

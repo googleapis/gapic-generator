@@ -20,13 +20,13 @@
 
 @private toString(schema)
   @@Override
-    public String toString() {
-      return "{@schema.typeName}{"
-      @join property : schema.properties on " + \", \""
+  public String toString() {
+    return "{@schema.typeName}{"
+    @join property : schema.properties on " + \", \""
 
-          + "{@property.name}=" + {@property.name}
-      @end
-          + "}";
+        + "{@property.name}=" + {@property.name}
+    @end
+        + "}";
   }
 
 @end
@@ -73,7 +73,7 @@
 
 @private getters(schema)
   @join property : schema.properties
-    public {@property.typeName} get{@property.capitalizedName}() {
+    public {@property.typeName} {@property.fieldCopyView.fieldGetFunction}() {
       return {@property.name};
     }
     {@""}
@@ -115,11 +115,11 @@
     }
 
     @join property : schema.properties
-      public {@property.typeName} get{@property.capitalizedName}() {
+      public {@property.typeName} {@property.fieldCopyView.fieldGetFunction}() {
         return {@property.name};
       }
 
-      public Builder set{@property.capitalizedName}({@property.typeName} {@property.name}) {
+      public Builder {@property.fieldCopyView.fieldSetFunction}({@property.typeName} {@property.name}) {
         this.{@property.name} = {@property.name};
         return this;
       }

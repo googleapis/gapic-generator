@@ -50,7 +50,7 @@ public class MainDiscoGapicProviderFactory implements DiscoGapicProviderFactory 
                 .setPrefix("src/main/java")
                 .setShouldAppendPackage(true)
                 .build();
-        DiscoGapicProvider mainClientProvider =
+        DiscoGapicProvider clientProvider =
             DiscoGapicProvider.newBuilder()
                 .setDocument(document)
                 .setProductConfig(productConfig)
@@ -67,7 +67,7 @@ public class MainDiscoGapicProviderFactory implements DiscoGapicProviderFactory 
                     new JavaDiscoGapicSchemaToViewTransformer(javaPathMapper, packageConfig))
                 .build();
 
-        providers.add(mainClientProvider);
+        providers.add(clientProvider);
         providers.add(messageProvider);
       }
       return providers;

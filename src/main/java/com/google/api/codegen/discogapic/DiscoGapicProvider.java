@@ -28,31 +28,29 @@ public class DiscoGapicProvider {
   private final Document document;
   private final GapicProductConfig productConfig;
   private final CommonSnippetSetRunner snippetSetRunner;
-  private final DocumentToViewTransformer documentTransformer;
+  private final DocumentToViewTransformer transformer;
 
   private DiscoGapicProvider(
       Document document,
       GapicProductConfig productConfig,
       CommonSnippetSetRunner snippetSetRunner,
-      DocumentToViewTransformer documentTransformer) {
+      DocumentToViewTransformer transformer) {
     this.document = document;
     this.productConfig = productConfig;
     this.snippetSetRunner = snippetSetRunner;
-    this.documentTransformer = documentTransformer;
+    this.transformer = transformer;
   }
 
   public List<String> getSnippetFileNames() {
-    return documentTransformer.getTemplateFileNames();
+    return transformer.getTemplateFileNames();
   }
 
   public Map<String, Doc> generate() {
-    Map<String, Doc> results = new TreeMap<>();
-    results.putAll(generate(null));
-    return results;
+    return generate(null);
   }
 
   public Map<String, Doc> generate(String snippetFileName) {
-    List<ViewModel> surfaceDocs = documentTransformer.transform(document, productConfig);
+    List<ViewModel> surfaceDocs = transformer.transform(document, productConfig);
 
     Map<String, Doc> docs = new TreeMap<>();
     for (ViewModel surfaceDoc : surfaceDocs) {
@@ -78,7 +76,7 @@ public class DiscoGapicProvider {
     private Document document;
     private GapicProductConfig productConfig;
     private CommonSnippetSetRunner snippetSetRunner;
-    private DocumentToViewTransformer documentTransformer;
+    private DocumentToViewTransformer transformer;
 
     private Builder() {}
 
@@ -98,12 +96,12 @@ public class DiscoGapicProvider {
     }
 
     public Builder setDocumentToViewTransformer(DocumentToViewTransformer transformer) {
-      this.documentTransformer = transformer;
+      this.transformer = transformer;
       return this;
     }
 
     public DiscoGapicProvider build() {
-      return new DiscoGapicProvider(document, productConfig, snippetSetRunner, documentTransformer);
+      return new DiscoGapicProvider(document, productConfig, snippetSetRunner, transformer);
     }
   }
 }

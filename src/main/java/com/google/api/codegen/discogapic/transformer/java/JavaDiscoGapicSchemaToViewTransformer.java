@@ -31,6 +31,7 @@ import com.google.api.codegen.transformer.java.JavaSurfaceNamer;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaTypeTable;
+import com.google.api.codegen.viewmodel.FieldCopyView;
 import com.google.api.codegen.viewmodel.SimplePropertyView;
 import com.google.api.codegen.viewmodel.StaticLangApiMessageFileView;
 import com.google.api.codegen.viewmodel.StaticLangApiMessageView;
@@ -130,7 +131,6 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     schemaView.type(schema.type());
     // TODO(andrealin): apply Java naming format.
     // TODO(andrealin): use symbol table to make sure Schema names aren't Java keywords.
-    schemaView.className(schemaName);
     schemaView.defaultValue(schema.defaultValue());
 
     // Map each property name to the Java typeName of the property.
@@ -139,12 +139,15 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       String propertyName = schemaSymbolTable.getNewSymbol(propertyEntry.getKey());
       Schema property = propertyEntry.getValue();
       SimplePropertyView.Builder simpleProperty =
-          SimplePropertyView.newBuilder().name(propertyName).repeated(property.repeated());
+          SimplePropertyView.newBuilder().name(propertyName);
       simpleProperty.typeName(typeToJavaType(property));
 
-      // Property class name is Capitalized
-      simpleProperty.capitalizedName(
-          propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1));
+      // TODO(andrealin) use a surface namer for the getter/setter.
+      FieldCopyView.Builder getterAndSetter = FieldCopyView.newBuilder();
+      String upperCasePropertyName = propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1);
+      getterAndSetter.fieldGetFunction("get" + upperCasePropertyName);
+      getterAndSetter.fieldSetFunction("set" + upperCasePropertyName);
+      simpleProperty.fieldCopyView(getterAndSetter.build());
       properties.add(simpleProperty.build());
     }
     schemaView.properties(properties);
