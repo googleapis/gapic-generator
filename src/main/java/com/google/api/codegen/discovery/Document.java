@@ -18,6 +18,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -47,7 +48,6 @@ public abstract class Document implements Node {
   public static Document from(DiscoveryNode root) {
     AuthType authType;
     DiscoveryNode scopesNode = root.getObject("auth").getObject("oauth2").getObject("scopes");
-    Document thisDocument = Document.empty();
     if (scopesNode.isEmpty()) {
       authType = AuthType.API_KEY;
     } else if (scopesNode.has(CLOUD_PLATFORM_SCOPE)) {
@@ -57,8 +57,8 @@ public abstract class Document implements Node {
     }
     String canonicalName = root.getString("canonicalName");
     String description = root.getString("description");
-    Map<String, Schema> schemas = parseSchemas(root, thisDocument);
-    List<Method> methods = parseMethods(root, "", thisDocument);
+    Map<String, Schema> schemas = parseSchemas(root);
+    List<Method> methods = parseMethods(root, "");
     Collections.sort(methods); // Ensure methods are ordered alphabetically by their ID.
     String name = root.getString("name");
     if (canonicalName.isEmpty()) {
@@ -69,11 +69,11 @@ public abstract class Document implements Node {
     String servicePath = root.getString("servicePath");
     String title = root.getString("title");
     String version = root.getString("version");
+    String id = root.getString("id");
     boolean versionModule = root.getBoolean("version_module");
 
-    thisDocument = new AutoValue_Document(
-        null,
-        null,
+    Document thisDocument = new AutoValue_Document(
+        id,
         "", // authInstructionsUrl (only intended to be overridden).
         authType,
         canonicalName,
@@ -89,27 +89,14 @@ public abstract class Document implements Node {
         version,
         versionModule);
 
-    return thisDocument;
-  }
+    for (Schema schema : schemas.values()) {
+      schema.setParent(thisDocument);
+    }
+    for (Method method : methods) {
+      method.setParent(thisDocument);
+    }
 
-  public static Document empty() {
-    return new AutoValue_Document(
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        false);
+    return thisDocument;
   }
 
   /**
@@ -132,7 +119,7 @@ public abstract class Document implements Node {
     return schema;
   }
 
-  private static List<Method> parseMethods(DiscoveryNode root, String path, Node parentNode) {
+  private static List<Method> parseMethods(DiscoveryNode root, String path) {
     List<Method> methods = new ArrayList<>();
     DiscoveryNode methodsNode = root.getObject("methods");
     List<String> resourceNames = methodsNode.getFieldNames();
@@ -140,21 +127,21 @@ public abstract class Document implements Node {
       path += ".";
     }
     for (String name : resourceNames) {
-      methods.add(Method.from(methodsNode.getObject(name), path + "methods." + name, parentNode));
+      methods.add(Method.from(methodsNode.getObject(name), path + "methods." + name));
     }
     DiscoveryNode resourcesNode = root.getObject("resources");
     resourceNames = resourcesNode.getFieldNames();
     for (String name : resourceNames) {
-      methods.addAll(parseMethods(resourcesNode.getObject(name), path + "resources." + name, parentNode));
+      methods.addAll(parseMethods(resourcesNode.getObject(name), path + "resources." + name));
     }
     return methods;
   }
 
-  private static Map<String, Schema> parseSchemas(DiscoveryNode root, Node parentNode) {
+  private static Map<String, Schema> parseSchemas(DiscoveryNode root) {
     Map<String, Schema> schemas = new HashMap<>();
     DiscoveryNode schemasNode = root.getObject("schemas");
     for (String name : schemasNode.getFieldNames()) {
-      schemas.put(name, Schema.from(schemasNode.getObject(name), "schemas." + name, parentNode));
+      schemas.put(name, Schema.from(schemasNode.getObject(name), "schemas." + name));
     }
     return schemas;
   }
@@ -162,7 +149,16 @@ public abstract class Document implements Node {
   /** @return the auth instructions URL. */
   @JsonIgnore
   @Nullable
-  public abstract Node parent();
+  private Node parent;
+
+  public Node parent() {
+    return parent;
+  }
+
+  // Package private for use by other Node objects.
+  void setParent(Node parent) {
+    this.parent = parent;
+  }
 
   /** @return whether or not to version the module. */
   @JsonProperty("id")
