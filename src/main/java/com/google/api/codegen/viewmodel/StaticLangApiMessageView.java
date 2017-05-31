@@ -24,7 +24,7 @@ import javax.annotation.Nullable;
  * This ViewModel defines the structure of a generic message.
  *
  * <p>For example, this can be used to model a Discovery Document's "schemas", "properties",
- * "additionalProperties", and "items".</p>
+ * "additionalProperties", and "items".
  *
  * <p>This contains a subset of properties in the JSON Schema
  * https://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.7.
@@ -34,7 +34,6 @@ public abstract class StaticLangApiMessageView implements ViewModel {
 
   // The possibly-transformed ID of the schema from the Discovery Doc
   public abstract String typeName();
-
 
   // The type of this schema.
   public abstract Schema.Type type();

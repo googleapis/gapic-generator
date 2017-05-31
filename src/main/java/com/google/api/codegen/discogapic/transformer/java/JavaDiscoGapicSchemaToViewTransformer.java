@@ -144,7 +144,8 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
 
       // TODO(andrealin) use a surface namer for the getter/setter.
       FieldCopyView.Builder getterAndSetter = FieldCopyView.newBuilder();
-      String upperCasePropertyName = propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1);
+      String upperCasePropertyName =
+          propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1);
       getterAndSetter.fieldGetFunction("get" + upperCasePropertyName);
       getterAndSetter.fieldSetFunction("set" + upperCasePropertyName);
       simpleProperty.fieldCopyView(getterAndSetter.build());
