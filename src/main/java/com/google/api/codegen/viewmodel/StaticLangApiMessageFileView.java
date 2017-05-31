@@ -3,9 +3,7 @@ package com.google.api.codegen.viewmodel;
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.auto.value.AutoValue;
 
-/**
- * ViewModel representing a the file containing a Discovery doc schema.
- */
+/** ViewModel representing a the file containing a Discovery doc schema. */
 @AutoValue
 public abstract class StaticLangApiMessageFileView implements ViewModel {
   public abstract StaticLangApiMessageView schema();

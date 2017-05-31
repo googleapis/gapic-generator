@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
  * This ViewModel defines the structure of a Discovery doc's "schemas", "properties",
  * "additionalProperties", and "items".
  *
- * This contains a subset of properties in the JSON Schema
+ * <p>This contains a subset of properties in the JSON Schema
  * https://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.7.
  */
 @AutoValue

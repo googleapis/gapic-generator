@@ -45,7 +45,6 @@ public class DiscoGapicProvider {
     return documentTransformer.getTemplateFileNames();
   }
 
-
   public Map<String, Doc> generate() {
     Map<String, Doc> results = new TreeMap<>();
     results.putAll(generate(null));
