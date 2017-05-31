@@ -136,7 +136,10 @@ public class JavaDiscoGapicSchemaToViewTransformer implements SchemaToViewTransf
       Schema property = propertyEntry.getValue();
       SimplePropertyView.Builder simpleProperty = SimplePropertyView.newBuilder()
           .name(propertyName).repeated(property.repeated());
-      simpleProperty.typeName(typeToJavaType(propertyName, property));
+      simpleProperty.typeName(typeToJavaType(property));
+
+      // Property class name is Capitalized
+      simpleProperty.capitalizedName(propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1));
       properties.add(simpleProperty.build());
     }
     schemaView.properties(properties);
@@ -154,14 +157,14 @@ public class JavaDiscoGapicSchemaToViewTransformer implements SchemaToViewTransf
 
   // Return the corresponding Java identifier for a given Discovery doc typeName and format.
   // https://developers.google.com/discovery/v1/type-format.
-  private String typeToJavaType(String name, Schema schema) {
+  private String typeToJavaType(Schema schema) {
     if (!schema.reference().isEmpty()) {
       return schema.reference();
     }
 
     switch (schema.type()) {
       case ARRAY:
-        return String.format("List<%s>", typeToJavaType(name, schema.items()));
+        return String.format("List<%s>", typeToJavaType(schema.items()));
       case INTEGER:
         switch (schema.format()) {
           case INT32:
