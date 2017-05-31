@@ -16,8 +16,12 @@ public abstract class SimplePropertyView {
   // The possibly-transformed ID of the schema from the Discovery Doc
   public abstract String name();
 
-  // The escaped class name for this Schema.
+  // The escaped type name for this Schema.
   public abstract String typeName();
+
+  // For static languages, ex "Field" for use in the getter method "getField()".
+  @Nullable
+  public abstract String capitalizedName();
 
   @Nullable
   public abstract Boolean repeated();
@@ -31,6 +35,8 @@ public abstract class SimplePropertyView {
     public abstract SimplePropertyView.Builder name(String val);
 
     public abstract SimplePropertyView.Builder typeName(String val);
+
+    public abstract SimplePropertyView.Builder capitalizedName(String val);
 
     public abstract SimplePropertyView.Builder repeated(Boolean val);
 

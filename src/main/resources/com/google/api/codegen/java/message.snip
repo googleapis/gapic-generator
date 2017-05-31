@@ -73,7 +73,7 @@
 
 @private getters(schema)
   @join property : schema.properties
-    public {@property.typeName} {@property.name}() {
+    public {@property.typeName} get{@property.capitalizedName}() {
       return {@property.name};
     }
     {@""}
@@ -82,10 +82,10 @@
 
 @private constructor(schema)
   private {@schema.typeName}(
-      @join property : schema.properties on ", "
+    @join property : schema.properties on ", "
 
-        {@property.typeName} {@property.name}
-      @end
+      {@property.typeName} {@property.name}
+    @end
     ) {
     @join property : schema.properties
       this.{@property.name} = {@property.name};
@@ -115,7 +115,11 @@
     }
 
     @join property : schema.properties
-      public Builder {@property.name}({@property.typeName} {@property.name}) {
+      public {@property.typeName} get{@property.capitalizedName}() {
+        return {@property.name};
+      }
+
+      public Builder set{@property.capitalizedName}({@property.typeName} {@property.name}) {
         this.{@property.name} = {@property.name};
         return this;
       }
