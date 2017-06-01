@@ -19,6 +19,7 @@ import com.google.api.codegen.ProtoFileView;
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.clientconfig.ClientConfigGapicContext;
 import com.google.api.codegen.clientconfig.ClientConfigSnippetSetRunner;
+import com.google.api.codegen.clientconfig.php.PhpClientConfigGapicContext;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.nodejs.NodeJSCodePathMapper;
@@ -32,6 +33,7 @@ import com.google.api.codegen.transformer.csharp.CSharpGapicClientTransformer;
 import com.google.api.codegen.transformer.csharp.CSharpGapicSnippetsTransformer;
 import com.google.api.codegen.transformer.go.GoGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.go.GoGapicSurfaceTransformer;
+import com.google.api.codegen.transformer.java.JavaGapicMetadataTransformer;
 import com.google.api.codegen.transformer.java.JavaGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.java.JavaGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.nodejs.NodeJSGapicSurfaceDocTransformer;
@@ -167,6 +169,16 @@ public class MainGapicProviderFactory
                 .build();
 
         providers.add(mainProvider);
+
+        GapicProvider<? extends Object> metadataProvider =
+            ViewModelGapicProvider.newBuilder()
+                .setModel(model)
+                .setProductConfig(productConfig)
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new JavaRenderingUtil()))
+                .setModelToViewTransformer(new JavaGapicMetadataTransformer(packageConfig))
+                .build();
+
+        providers.add(metadataProvider);
       }
       if (generatorConfig.enableTestGenerator()) {
         GapicCodePathMapper javaTestPathMapper =
@@ -260,7 +272,7 @@ public class MainGapicProviderFactory
             CommonGapicProvider.<Interface>newBuilder()
                 .setModel(model)
                 .setView(new InterfaceView())
-                .setContext(new ClientConfigGapicContext(model, productConfig))
+                .setContext(new PhpClientConfigGapicContext(model, productConfig))
                 .setSnippetSetRunner(
                     new ClientConfigSnippetSetRunner<Interface>(
                         SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
@@ -431,7 +443,7 @@ public class MainGapicProviderFactory
           providers.add(messageProvider);
         }
       }
-      if (generatorConfig.enableTestGenerator() && id.equals(RUBY)) {
+      if (generatorConfig.enableTestGenerator()) {
         GapicCodePathMapper rubyTestPathMapper =
             CommonGapicCodePathMapper.newBuilder()
                 .setPrefix("test")

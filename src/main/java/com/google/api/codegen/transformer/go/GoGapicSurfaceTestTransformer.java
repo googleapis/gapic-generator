@@ -27,6 +27,7 @@ import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.MockServiceTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.TestCaseTransformer;
 import com.google.api.codegen.util.SymbolTable;
@@ -34,23 +35,27 @@ import com.google.api.codegen.util.testing.StandardValueProducer;
 import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.codegen.util.testing.ValueProducer;
 import com.google.api.codegen.viewmodel.ClientMethodType;
+import com.google.api.codegen.viewmodel.FileHeaderView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.testing.ClientTestClassView;
 import com.google.api.codegen.viewmodel.testing.MockCombinedView;
 import com.google.api.codegen.viewmodel.testing.MockServiceImplView;
 import com.google.api.codegen.viewmodel.testing.MockServiceUsageView;
+import com.google.api.codegen.viewmodel.testing.SmokeTestClassView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private static final String MOCK_SERVICE_TEMPLATE_FILE = "go/mock.snip";
+  private static final String SMOKE_TEST_TEMPLATE_FILE = "go/smoke.snip";
 
   private final ValueProducer valueProducer = new StandardValueProducer();
   private final GoImportSectionTransformer importSectionTransformer =
@@ -65,14 +70,27 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
   @Override
   public List<String> getTemplateFileNames() {
-    return Collections.singletonList(MOCK_SERVICE_TEMPLATE_FILE);
+    return Arrays.asList(MOCK_SERVICE_TEMPLATE_FILE, SMOKE_TEST_TEMPLATE_FILE);
   }
 
   @Override
   public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
-    List<ViewModel> models = new ArrayList<ViewModel>();
     GoSurfaceNamer namer = new GoSurfaceNamer(productConfig.getPackageName());
+    List<ViewModel> models = new ArrayList<ViewModel>();
     models.add(generateMockServiceView(model, productConfig, namer));
+
+    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+      GapicInterfaceContext context =
+          GapicInterfaceContext.create(
+              apiInterface,
+              productConfig,
+              GoGapicSurfaceTransformer.createTypeTable(),
+              namer,
+              featureConfig);
+      if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
+        models.add(createSmokeTestClassView(context));
+      }
+    }
     return models;
   }
 
@@ -149,5 +167,41 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
               methodContext, testNameTable, initCodeContext, clientMethodType));
     }
     return testCaseViews;
+  }
+
+  private SmokeTestClassView createSmokeTestClassView(GapicInterfaceContext context) {
+    SurfaceNamer namer = context.getNamer();
+
+    Method method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
+    GapicMethodContext methodContext = context.asRequestMethodContext(method);
+
+    SmokeTestClassView.Builder testClass = SmokeTestClassView.newBuilder();
+    TestCaseView testCaseView = testCaseTransformer.createSmokeTestCaseView(methodContext);
+
+    testClass.apiSettingsClassName(namer.getApiSettingsClassName(context.getInterfaceConfig()));
+    testClass.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
+    testClass.name(namer.getSmokeTestClassName(context.getInterfaceConfig()));
+    testClass.outputPath(
+        context.getProductConfig().getPackageName()
+            + File.separator
+            + method.getSimpleName()
+            + "_smoke_test.go");
+    testClass.templateFileName(SMOKE_TEST_TEMPLATE_FILE);
+    testClass.apiMethod(
+        new StaticLangApiMethodTransformer().generateRequestObjectMethod(methodContext));
+    testClass.method(testCaseView);
+    testClass.requireProjectId(
+        testCaseTransformer.requireProjectIdInSmokeTest(
+            testCaseView.initCode(), context.getNamer()));
+
+    // The shared code above add imports both for input and output.
+    // Since we use short decls, we don't need to import anything for output.
+    context.getModelTypeTable().getImports().clear();
+    context.getModelTypeTable().getAndSaveNicknameFor(method.getInputType());
+
+    FileHeaderView fileHeader = fileHeaderTransformer.generateFileHeader(context);
+    testClass.fileHeader(fileHeader);
+
+    return testClass.build();
   }
 }

@@ -39,6 +39,7 @@ import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -81,11 +82,14 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
           .put(NODEJS, NodeJSTypeNameGenerator.class)
           .put(PHP, PhpTypeNameGenerator.class)
           .put(PYTHON, PythonTypeNameGenerator.class)
-          .put(RUBY, RubyTypeNameGenerator.class)
           .build();
 
   public static DiscoveryProvider defaultCreate(
-      Service service, ApiaryConfig apiaryConfig, List<JsonNode> sampleConfigOverrides, String id) {
+      Service service,
+      ApiaryConfig apiaryConfig,
+      List<JsonNode> sampleConfigOverrides,
+      File rubyNamesFile,
+      String id) {
     // Use nodes corresponding to language pattern fields matching current language.
     List<JsonNode> overrides = new ArrayList<JsonNode>();
     // Sort patterns to ensure deterministic ordering of overrides
@@ -103,7 +107,11 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
     TypeNameGenerator typeNameGenerator = null;
     try {
       sampleMethodToViewTransformer = SAMPLE_METHOD_TO_VIEW_TRANSFORMER_MAP.get(id).newInstance();
-      typeNameGenerator = TYPE_NAME_GENERATOR_MAP.get(id).newInstance();
+      if (id.equals(RUBY)) {
+        typeNameGenerator = new RubyTypeNameGenerator(rubyNamesFile);
+      } else {
+        typeNameGenerator = TYPE_NAME_GENERATOR_MAP.get(id).newInstance();
+      }
     } catch (InstantiationException | IllegalAccessException e) {
       throw new RuntimeException(e);
     }
@@ -130,7 +138,11 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
 
   @Override
   public DiscoveryProvider create(
-      Service service, ApiaryConfig apiaryConfig, List<JsonNode> sampleConfigOverrides, String id) {
-    return defaultCreate(service, apiaryConfig, sampleConfigOverrides, id);
+      Service service,
+      ApiaryConfig apiaryConfig,
+      List<JsonNode> sampleConfigOverrides,
+      File rubyNamesFile,
+      String id) {
+    return defaultCreate(service, apiaryConfig, sampleConfigOverrides, rubyNamesFile, id);
   }
 }

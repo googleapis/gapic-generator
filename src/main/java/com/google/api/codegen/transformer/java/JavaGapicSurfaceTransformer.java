@@ -82,6 +82,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
       new FileHeaderTransformer(importSectionTransformer);
   private final RetryDefinitionsTransformer retryDefinitionsTransformer =
       new RetryDefinitionsTransformer();
+  private final ProductServiceConfig productServiceConfig = new ProductServiceConfig();
 
   private static final String XAPI_TEMPLATE_FILENAME = "java/main.snip";
   private static final String XSETTINGS_TEMPLATE_FILENAME = "java/settings.snip";
@@ -383,10 +384,11 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     xsettingsClass.doc(generateSettingsDoc(context, exampleApiMethod));
     String name = namer.getApiSettingsClassName(context.getInterfaceConfig());
     xsettingsClass.name(name);
-    ProductServiceConfig productServiceConfig = new ProductServiceConfig();
-    xsettingsClass.serviceAddress(productServiceConfig.getServiceAddress(context.getInterface()));
+    xsettingsClass.serviceAddress(
+        productServiceConfig.getServiceAddress(context.getInterface().getModel()));
     xsettingsClass.servicePort(productServiceConfig.getServicePort());
-    xsettingsClass.authScopes(productServiceConfig.getAuthScopes(context.getInterface()));
+    xsettingsClass.authScopes(
+        productServiceConfig.getAuthScopes(context.getInterface().getModel()));
 
     List<ApiCallSettingsView> apiCallSettings =
         apiCallableTransformer.generateCallSettings(context);
@@ -421,6 +423,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     packageInfo.serviceTitle(model.getServiceConfig().getTitle());
     packageInfo.serviceDocs(serviceDocs);
     packageInfo.domainLayerLocation(productConfig.getDomainLayerLocation());
+    packageInfo.authScopes(productServiceConfig.getAuthScopes(model));
 
     packageInfo.fileHeader(
         fileHeaderTransformer.generateFileHeader(
@@ -438,7 +441,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("com.google.api.core.BetaApi");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.ChannelAndExecutor");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryCallable");
-    typeTable.saveNicknameFor("com.google.api.gax.protobuf.PathTemplate");
+    typeTable.saveNicknameFor("com.google.api.pathtemplate.PathTemplate");
     typeTable.saveNicknameFor("io.grpc.ManagedChannel");
     typeTable.saveNicknameFor("java.io.Closeable");
     typeTable.saveNicknameFor("java.io.IOException");
@@ -479,7 +482,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("com.google.common.collect.Sets");
     typeTable.saveNicknameFor("io.grpc.ManagedChannel");
     typeTable.saveNicknameFor("io.grpc.Status");
-    typeTable.saveNicknameFor("org.joda.time.Duration");
+    typeTable.saveNicknameFor("org.threeten.bp.Duration");
     typeTable.saveNicknameFor("java.io.IOException");
     typeTable.saveNicknameFor("java.util.List");
     typeTable.saveNicknameFor("java.util.concurrent.ScheduledExecutorService");
@@ -542,7 +545,8 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     SurfaceNamer namer = context.getNamer();
     SettingsDocView.Builder settingsDoc = SettingsDocView.newBuilder();
     ProductServiceConfig productServiceConfig = new ProductServiceConfig();
-    settingsDoc.serviceAddress(productServiceConfig.getServiceAddress(context.getInterface()));
+    settingsDoc.serviceAddress(
+        productServiceConfig.getServiceAddress(context.getInterface().getModel()));
     settingsDoc.servicePort(productServiceConfig.getServicePort());
     settingsDoc.exampleApiMethodName(exampleApiMethod.name());
     settingsDoc.exampleApiMethodSettingsGetter(exampleApiMethod.settingsGetterName());

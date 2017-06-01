@@ -24,7 +24,7 @@ public final class CommentPatterns {
   public static final Pattern BACK_QUOTE_PATTERN = Pattern.compile("(?<!`)``?(?!`)");
   public static final Pattern ABSOLUTE_LINK_PATTERN =
       Pattern.compile("\\[([^\\]]+)\\]\\((\\p{Alpha}+:[^\\)]+)\\)");
-  public static final Pattern CLOUD_LINK_PATTERN =
+  public static final Pattern RELATIVE_LINK_PATTERN =
       Pattern.compile("\\[([^\\]]+)\\]\\(((?!\\p{Alpha}+:)[^\\)]+)\\)");
   public static final Pattern PROTO_LINK_PATTERN =
       Pattern.compile("\\[([^\\]]+)\\]\\[([A-Za-z_][A-Za-z_.0-9]*)?\\]");

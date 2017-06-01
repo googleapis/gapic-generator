@@ -27,28 +27,30 @@ import org.junit.Test;
 
 public class SchemaTest {
   @Test
-  public void testSchema() throws IOException {
-    String file = "src/test/java/com/google/api/codegen/discoverytestdata/schema.json";
+  public void testSchemaFromJson() throws IOException {
+    String file = "src/test/java/com/google/api/codegen/discoverytestdata/schema_.json";
     Reader reader = new InputStreamReader(new FileInputStream(new File(file)));
 
     ObjectMapper mapper = new ObjectMapper();
     JsonNode root = mapper.readTree(reader);
 
-    Schema schema = Schema.from(new DiscoveryNode(root));
+    Schema schema = Schema.from(new DiscoveryNode(root), "root");
 
     Truth.assertThat(schema.description()).isEqualTo("My Foo.");
     Truth.assertThat(schema.id()).isEqualTo("Foo");
     Truth.assertThat(schema.location()).isEqualTo("bar");
     Truth.assertThat(schema.pattern()).isEqualTo(".*");
     Truth.assertThat(schema.reference()).isEqualTo("Baz");
-    Truth.assertThat(schema.repeated()).isTrue();
     Truth.assertThat(schema.required()).isTrue();
     Truth.assertThat(schema.type()).isEqualTo(Schema.Type.OBJECT);
 
     Map<String, Schema> properties = schema.properties();
 
     Truth.assertThat(properties.get("any").type()).isEqualTo(Schema.Type.ANY);
+
     Truth.assertThat(properties.get("array").type()).isEqualTo(Schema.Type.ARRAY);
+    Truth.assertThat(properties.get("array").items().type()).isEqualTo(Schema.Type.STRING);
+
     Truth.assertThat(properties.get("boolean").type()).isEqualTo(Schema.Type.BOOLEAN);
 
     Truth.assertThat(properties.get("byte").type()).isEqualTo(Schema.Type.STRING);
@@ -67,6 +69,9 @@ public class SchemaTest {
     Truth.assertThat(properties.get("empty").type()).isEqualTo(Schema.Type.EMPTY);
     Truth.assertThat(properties.get("empty").format()).isEqualTo(Schema.Format.EMPTY);
 
+    Truth.assertThat(properties.get("enum").type()).isEqualTo(Schema.Type.STRING);
+    Truth.assertThat(properties.get("enum").isEnum()).isTrue();
+
     Truth.assertThat(properties.get("float").type()).isEqualTo(Schema.Type.NUMBER);
     Truth.assertThat(properties.get("float").format()).isEqualTo(Schema.Format.FLOAT);
 
@@ -80,10 +85,26 @@ public class SchemaTest {
         .isEqualTo(Schema.Type.STRING);
     Truth.assertThat(properties.get("object").type()).isEqualTo(Schema.Type.OBJECT);
 
+    Truth.assertThat(properties.get("repeated").type()).isEqualTo(Schema.Type.STRING);
+    Truth.assertThat(properties.get("repeated").repeated()).isTrue();
+
     Truth.assertThat(properties.get("uint32").type()).isEqualTo(Schema.Type.INTEGER);
     Truth.assertThat(properties.get("uint32").format()).isEqualTo(Schema.Format.UINT32);
 
     Truth.assertThat(properties.get("uint64").type()).isEqualTo(Schema.Type.STRING);
     Truth.assertThat(properties.get("uint64").format()).isEqualTo(Schema.Format.UINT64);
+
+    // Test path.
+    Truth.assertThat(schema.path()).isEqualTo("root");
+    Truth.assertThat(schema.properties().get("array").path()).isEqualTo("root.properties.array");
+    Truth.assertThat(schema.properties().get("array").items().path())
+        .isEqualTo("root.properties.array.items");
+    Truth.assertThat(schema.properties().get("object").additionalProperties().path())
+        .isEqualTo("root.properties.object.additionalProperties");
+  }
+
+  @Test
+  public void testSchemaFromEmptyNode() {
+    Truth.assertThat(Schema.from(new DiscoveryNode(null), "").type()).isEqualTo(Schema.Type.EMPTY);
   }
 }

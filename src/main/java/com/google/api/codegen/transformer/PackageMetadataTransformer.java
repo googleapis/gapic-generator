@@ -20,11 +20,7 @@ import com.google.api.codegen.config.VersionBound;
 import com.google.api.codegen.viewmodel.metadata.PackageDependencyView;
 import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
 import com.google.api.tools.framework.model.Model;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /** Constructs a partial ViewModel for producing package metadata related views */
 public class PackageMetadataTransformer {
@@ -88,7 +84,12 @@ public class PackageMetadataTransformer {
         .gaxVersionBound(packageConfig.gaxVersionBound(language))
         .grpcVersionBound(packageConfig.grpcVersionBound(language))
         .protoVersionBound(packageConfig.protoVersionBound(language))
-        .protoPackageDependencies(protoPackageDependencies)
+        .protoPackageDependencies(
+            getDependencies(
+                packageConfig.protoPackageDependencies(language), whitelistedDependencies))
+        .protoPackageTestDependencies(
+            getDependencies(
+                packageConfig.protoPackageTestDependencies(language), whitelistedDependencies))
         .authVersionBound(packageConfig.authVersionBound(language))
         .protoPackageName("proto-" + packageConfig.packageName(language))
         .gapicPackageName("gapic-" + packageConfig.packageName(language))
@@ -99,6 +100,24 @@ public class PackageMetadataTransformer {
         .licenseName(packageConfig.licenseName())
         .fullName(model.getServiceConfig().getTitle())
         .discoveryApiName(discoveryApiName)
+        .apiSummary(model.getServiceConfig().getDocumentation().getSummary())
         .hasMultipleServices(false);
+  }
+
+  private List<PackageDependencyView> getDependencies(
+      Map<String, VersionBound> dependencies, Set<String> whitelistedDependencies) {
+    List<PackageDependencyView> protoPackageDependencies = new ArrayList<>();
+    if (dependencies != null) {
+      Map<String, VersionBound> dependenciesCopy = new HashMap<>(dependencies);
+      if (whitelistedDependencies != null) {
+        dependenciesCopy.keySet().retainAll(whitelistedDependencies);
+      }
+      for (Map.Entry<String, VersionBound> entry : dependenciesCopy.entrySet())
+        protoPackageDependencies.add(
+            PackageDependencyView.create(entry.getKey(), entry.getValue()));
+      // Ensures deterministic test results.
+      Collections.sort(protoPackageDependencies);
+    }
+    return protoPackageDependencies;
   }
 }

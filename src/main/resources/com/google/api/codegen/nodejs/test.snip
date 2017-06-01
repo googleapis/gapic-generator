@@ -3,7 +3,9 @@
 
 @snippet generate(apiTest)
   /*
-   {@copyright()}
+   {@comments(apiTest.fileHeader.copyrightLines)}
+   *
+   {@comments(apiTest.fileHeader.licenseLines)}
    */
 
   {@header(apiTest)}
@@ -24,7 +26,7 @@
 @private header(apiTest)
   var assert = require('assert');
   @if apiTest.fileHeader.hasVersion
-    var {@apiTest.apiWrapperModuleName} = require('../src/').{@apiTest.fileHeader.version}();
+    var {@apiTest.apiWrapperModuleName} = require('../src/{@apiTest.fileHeader.version}')();
   @else
     var {@apiTest.apiWrapperModuleName} = require('../src/')();
   @end

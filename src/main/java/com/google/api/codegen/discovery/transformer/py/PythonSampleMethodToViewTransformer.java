@@ -117,6 +117,7 @@ public class PythonSampleMethodToViewTransformer implements SampleMethodToViewTr
     discoveryBuildParams.add(String.format("'%s'", config.apiVersion()));
     switch (config.authType()) {
       case NONE:
+        discoveryBuildParams.add("http=httplib2.Http(timeout=60)");
         break;
       case API_KEY:
         discoveryBuildParams.add("developerKey=" + credentialsVarName);

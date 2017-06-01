@@ -26,10 +26,12 @@ import (
 
 import (
     "flag"
+    "fmt"
     "io"
     "log"
     "net"
     "os"
+    "strings"
     "testing"
 
     "github.com/golang/protobuf/proto"
@@ -39,6 +41,7 @@ import (
     status "google.golang.org/genproto/googleapis/rpc/status"
     "google.golang.org/grpc"
     "google.golang.org/grpc/codes"
+    "google.golang.org/grpc/metadata"
 )
 
 var _ = io.EOF
@@ -60,7 +63,11 @@ type mockLibraryServer struct {
     resps []proto.Message
 }
 
-func (s *mockLibraryServer) CreateShelf(_ context.Context, req *librarypb.CreateShelfRequest) (*librarypb.Shelf, error) {
+func (s *mockLibraryServer) CreateShelf(ctx context.Context, req *librarypb.CreateShelfRequest) (*librarypb.Shelf, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
     s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
@@ -68,7 +75,11 @@ func (s *mockLibraryServer) CreateShelf(_ context.Context, req *librarypb.Create
     return s.resps[0].(*librarypb.Shelf), nil
 }
 
-func (s *mockLibraryServer) GetShelf(_ context.Context, req *librarypb.GetShelfRequest) (*librarypb.Shelf, error) {
+func (s *mockLibraryServer) GetShelf(ctx context.Context, req *librarypb.GetShelfRequest) (*librarypb.Shelf, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
     s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
@@ -76,7 +87,11 @@ func (s *mockLibraryServer) GetShelf(_ context.Context, req *librarypb.GetShelfR
     return s.resps[0].(*librarypb.Shelf), nil
 }
 
-func (s *mockLibraryServer) ListShelves(_ context.Context, req *librarypb.ListShelvesRequest) (*librarypb.ListShelvesResponse, error) {
+func (s *mockLibraryServer) ListShelves(ctx context.Context, req *librarypb.ListShelvesRequest) (*librarypb.ListShelvesResponse, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
     s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
@@ -84,7 +99,11 @@ func (s *mockLibraryServer) ListShelves(_ context.Context, req *librarypb.ListSh
     return s.resps[0].(*librarypb.ListShelvesResponse), nil
 }
 
-func (s *mockLibraryServer) DeleteShelf(_ context.Context, req *librarypb.DeleteShelfRequest) (*emptypb.Empty, error) {
+func (s *mockLibraryServer) DeleteShelf(ctx context.Context, req *librarypb.DeleteShelfRequest) (*emptypb.Empty, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
     s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
@@ -92,7 +111,11 @@ func (s *mockLibraryServer) DeleteShelf(_ context.Context, req *librarypb.Delete
     return s.resps[0].(*emptypb.Empty), nil
 }
 
-func (s *mockLibraryServer) MergeShelves(_ context.Context, req *librarypb.MergeShelvesRequest) (*librarypb.Shelf, error) {
+func (s *mockLibraryServer) MergeShelves(ctx context.Context, req *librarypb.MergeShelvesRequest) (*librarypb.Shelf, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
     s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
@@ -100,7 +123,11 @@ func (s *mockLibraryServer) MergeShelves(_ context.Context, req *librarypb.Merge
     return s.resps[0].(*librarypb.Shelf), nil
 }
 
-func (s *mockLibraryServer) CreateBook(_ context.Context, req *librarypb.CreateBookRequest) (*librarypb.Book, error) {
+func (s *mockLibraryServer) CreateBook(ctx context.Context, req *librarypb.CreateBookRequest) (*librarypb.Book, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
     s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
@@ -108,7 +135,11 @@ func (s *mockLibraryServer) CreateBook(_ context.Context, req *librarypb.CreateB
     return s.resps[0].(*librarypb.Book), nil
 }
 
-func (s *mockLibraryServer) PublishSeries(_ context.Context, req *librarypb.PublishSeriesRequest) (*librarypb.PublishSeriesResponse, error) {
+func (s *mockLibraryServer) PublishSeries(ctx context.Context, req *librarypb.PublishSeriesRequest) (*librarypb.PublishSeriesResponse, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
     s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
@@ -116,7 +147,11 @@ func (s *mockLibraryServer) PublishSeries(_ context.Context, req *librarypb.Publ
     return s.resps[0].(*librarypb.PublishSeriesResponse), nil
 }
 
-func (s *mockLibraryServer) GetBook(_ context.Context, req *librarypb.GetBookRequest) (*librarypb.Book, error) {
+func (s *mockLibraryServer) GetBook(ctx context.Context, req *librarypb.GetBookRequest) (*librarypb.Book, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
     s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
@@ -124,7 +159,11 @@ func (s *mockLibraryServer) GetBook(_ context.Context, req *librarypb.GetBookReq
     return s.resps[0].(*librarypb.Book), nil
 }
 
-func (s *mockLibraryServer) ListBooks(_ context.Context, req *librarypb.ListBooksRequest) (*librarypb.ListBooksResponse, error) {
+func (s *mockLibraryServer) ListBooks(ctx context.Context, req *librarypb.ListBooksRequest) (*librarypb.ListBooksResponse, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
     s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
@@ -132,7 +171,11 @@ func (s *mockLibraryServer) ListBooks(_ context.Context, req *librarypb.ListBook
     return s.resps[0].(*librarypb.ListBooksResponse), nil
 }
 
-func (s *mockLibraryServer) DeleteBook(_ context.Context, req *librarypb.DeleteBookRequest) (*emptypb.Empty, error) {
+func (s *mockLibraryServer) DeleteBook(ctx context.Context, req *librarypb.DeleteBookRequest) (*emptypb.Empty, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
     s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
@@ -140,7 +183,11 @@ func (s *mockLibraryServer) DeleteBook(_ context.Context, req *librarypb.DeleteB
     return s.resps[0].(*emptypb.Empty), nil
 }
 
-func (s *mockLibraryServer) UpdateBook(_ context.Context, req *librarypb.UpdateBookRequest) (*librarypb.Book, error) {
+func (s *mockLibraryServer) UpdateBook(ctx context.Context, req *librarypb.UpdateBookRequest) (*librarypb.Book, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
     s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
@@ -148,7 +195,11 @@ func (s *mockLibraryServer) UpdateBook(_ context.Context, req *librarypb.UpdateB
     return s.resps[0].(*librarypb.Book), nil
 }
 
-func (s *mockLibraryServer) MoveBook(_ context.Context, req *librarypb.MoveBookRequest) (*librarypb.Book, error) {
+func (s *mockLibraryServer) MoveBook(ctx context.Context, req *librarypb.MoveBookRequest) (*librarypb.Book, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
     s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
@@ -156,7 +207,11 @@ func (s *mockLibraryServer) MoveBook(_ context.Context, req *librarypb.MoveBookR
     return s.resps[0].(*librarypb.Book), nil
 }
 
-func (s *mockLibraryServer) ListStrings(_ context.Context, req *librarypb.ListStringsRequest) (*librarypb.ListStringsResponse, error) {
+func (s *mockLibraryServer) ListStrings(ctx context.Context, req *librarypb.ListStringsRequest) (*librarypb.ListStringsResponse, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
     s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
@@ -164,7 +219,11 @@ func (s *mockLibraryServer) ListStrings(_ context.Context, req *librarypb.ListSt
     return s.resps[0].(*librarypb.ListStringsResponse), nil
 }
 
-func (s *mockLibraryServer) AddComments(_ context.Context, req *librarypb.AddCommentsRequest) (*emptypb.Empty, error) {
+func (s *mockLibraryServer) AddComments(ctx context.Context, req *librarypb.AddCommentsRequest) (*emptypb.Empty, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
     s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
@@ -172,7 +231,11 @@ func (s *mockLibraryServer) AddComments(_ context.Context, req *librarypb.AddCom
     return s.resps[0].(*emptypb.Empty), nil
 }
 
-func (s *mockLibraryServer) GetBookFromArchive(_ context.Context, req *librarypb.GetBookFromArchiveRequest) (*librarypb.BookFromArchive, error) {
+func (s *mockLibraryServer) GetBookFromArchive(ctx context.Context, req *librarypb.GetBookFromArchiveRequest) (*librarypb.BookFromArchive, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
     s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
@@ -180,7 +243,11 @@ func (s *mockLibraryServer) GetBookFromArchive(_ context.Context, req *librarypb
     return s.resps[0].(*librarypb.BookFromArchive), nil
 }
 
-func (s *mockLibraryServer) GetBookFromAnywhere(_ context.Context, req *librarypb.GetBookFromAnywhereRequest) (*librarypb.BookFromAnywhere, error) {
+func (s *mockLibraryServer) GetBookFromAnywhere(ctx context.Context, req *librarypb.GetBookFromAnywhereRequest) (*librarypb.BookFromAnywhere, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
     s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
@@ -188,7 +255,11 @@ func (s *mockLibraryServer) GetBookFromAnywhere(_ context.Context, req *libraryp
     return s.resps[0].(*librarypb.BookFromAnywhere), nil
 }
 
-func (s *mockLibraryServer) UpdateBookIndex(_ context.Context, req *librarypb.UpdateBookIndexRequest) (*emptypb.Empty, error) {
+func (s *mockLibraryServer) UpdateBookIndex(ctx context.Context, req *librarypb.UpdateBookIndexRequest) (*emptypb.Empty, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
     s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
@@ -197,6 +268,10 @@ func (s *mockLibraryServer) UpdateBookIndex(_ context.Context, req *librarypb.Up
 }
 
 func (s *mockLibraryServer) StreamShelves(req *librarypb.StreamShelvesRequest, stream librarypb.LibraryService_StreamShelvesServer) error {
+    md, _ := metadata.FromIncomingContext(stream.Context())
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
     s.reqs = append(s.reqs, req)
     if s.err != nil {
         return s.err
@@ -210,6 +285,10 @@ func (s *mockLibraryServer) StreamShelves(req *librarypb.StreamShelvesRequest, s
 }
 
 func (s *mockLibraryServer) StreamBooks(req *librarypb.StreamBooksRequest, stream librarypb.LibraryService_StreamBooksServer) error {
+    md, _ := metadata.FromIncomingContext(stream.Context())
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
     s.reqs = append(s.reqs, req)
     if s.err != nil {
         return s.err
@@ -223,6 +302,10 @@ func (s *mockLibraryServer) StreamBooks(req *librarypb.StreamBooksRequest, strea
 }
 
 func (s *mockLibraryServer) DiscussBook(stream librarypb.LibraryService_DiscussBookServer) error {
+    md, _ := metadata.FromIncomingContext(stream.Context())
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
     for {
         if req, err := stream.Recv(); err == io.EOF {
             break
@@ -244,6 +327,10 @@ func (s *mockLibraryServer) DiscussBook(stream librarypb.LibraryService_DiscussB
 }
 
 func (s *mockLibraryServer) MonologAboutBook(stream librarypb.LibraryService_MonologAboutBookServer) error {
+    md, _ := metadata.FromIncomingContext(stream.Context())
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
     for {
         if req, err := stream.Recv(); err == io.EOF {
             break
@@ -259,7 +346,11 @@ func (s *mockLibraryServer) MonologAboutBook(stream librarypb.LibraryService_Mon
     return stream.SendAndClose(s.resps[0].(*librarypb.Comment))
 }
 
-func (s *mockLibraryServer) FindRelatedBooks(_ context.Context, req *librarypb.FindRelatedBooksRequest) (*librarypb.FindRelatedBooksResponse, error) {
+func (s *mockLibraryServer) FindRelatedBooks(ctx context.Context, req *librarypb.FindRelatedBooksRequest) (*librarypb.FindRelatedBooksResponse, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
     s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
@@ -267,7 +358,11 @@ func (s *mockLibraryServer) FindRelatedBooks(_ context.Context, req *librarypb.F
     return s.resps[0].(*librarypb.FindRelatedBooksResponse), nil
 }
 
-func (s *mockLibraryServer) AddTag(_ context.Context, req *taggerpb.AddTagRequest) (*taggerpb.AddTagResponse, error) {
+func (s *mockLibraryServer) AddTag(ctx context.Context, req *taggerpb.AddTagRequest) (*taggerpb.AddTagResponse, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
     s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
@@ -275,7 +370,11 @@ func (s *mockLibraryServer) AddTag(_ context.Context, req *taggerpb.AddTagReques
     return s.resps[0].(*taggerpb.AddTagResponse), nil
 }
 
-func (s *mockLibraryServer) GetBigBook(_ context.Context, req *librarypb.GetBookRequest) (*longrunningpb.Operation, error) {
+func (s *mockLibraryServer) GetBigBook(ctx context.Context, req *librarypb.GetBookRequest) (*longrunningpb.Operation, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
     s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
@@ -283,7 +382,11 @@ func (s *mockLibraryServer) GetBigBook(_ context.Context, req *librarypb.GetBook
     return s.resps[0].(*longrunningpb.Operation), nil
 }
 
-func (s *mockLibraryServer) GetBigNothing(_ context.Context, req *librarypb.GetBookRequest) (*longrunningpb.Operation, error) {
+func (s *mockLibraryServer) GetBigNothing(ctx context.Context, req *librarypb.GetBookRequest) (*longrunningpb.Operation, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
     s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
@@ -291,7 +394,11 @@ func (s *mockLibraryServer) GetBigNothing(_ context.Context, req *librarypb.GetB
     return s.resps[0].(*longrunningpb.Operation), nil
 }
 
-func (s *mockLibraryServer) TestOptionalRequiredFlatteningParams(_ context.Context, req *librarypb.TestOptionalRequiredFlatteningParamsRequest) (*librarypb.TestOptionalRequiredFlatteningParamsResponse, error) {
+func (s *mockLibraryServer) TestOptionalRequiredFlatteningParams(ctx context.Context, req *librarypb.TestOptionalRequiredFlatteningParamsRequest) (*librarypb.TestOptionalRequiredFlatteningParamsResponse, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
     s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
@@ -314,7 +421,11 @@ type mockLabelerServer struct {
     resps []proto.Message
 }
 
-func (s *mockLabelerServer) AddLabel(_ context.Context, req *taggerpb.AddLabelRequest) (*taggerpb.AddLabelResponse, error) {
+func (s *mockLabelerServer) AddLabel(ctx context.Context, req *taggerpb.AddLabelRequest) (*taggerpb.AddLabelResponse, error) {
+    md, _ := metadata.FromIncomingContext(ctx)
+    if xg := md["x-goog-api-client"]; len(xg) == 0 || !strings.Contains(xg[0], "gl-go/") {
+        return nil, fmt.Errorf("x-goog-api-client = %v, expected gl-go key", xg)
+    }
     s.reqs = append(s.reqs, req)
     if s.err != nil {
         return nil, s.err
