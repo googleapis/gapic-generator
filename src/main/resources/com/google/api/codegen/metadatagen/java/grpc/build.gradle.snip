@@ -129,7 +129,8 @@
     }
   }
 
-  task createApiDocsRedirect {
+  // Regenerates the gh-pages branch under tmp_gh-pages
+  task updateDocs {
     dependsOn 'copyFilesToGhPages'
     doLast {
       def outputContent = new File(projectDir.getAbsolutePath() + '/templates/apidocs_index.html.template').text
@@ -150,14 +151,9 @@
     }
   }
 
-  // Regenerates the gh-pages branch under tmp_gh-pages
-  task updateDocs {
-    dependsOn 'createApiDocsRedirect'
-  }
-
   // Regenerates and push the gh-pages branch under tmp_gh-pages
   task updateAndPushDocs {
-    dependsOn 'createApiDocsRedirect'
+    dependsOn 'updateDocs'
     doLast {
       exec {
         workingDir javaDocRoot
