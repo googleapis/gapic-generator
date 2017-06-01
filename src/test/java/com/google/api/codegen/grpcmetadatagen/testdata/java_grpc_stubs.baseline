@@ -336,7 +336,8 @@ task copyFilesToGhPages {
   }
 }
 
-task createApiDocsRedirect {
+// Regenerates the gh-pages branch under tmp_gh-pages
+task updateDocs {
   dependsOn 'copyFilesToGhPages'
   doLast {
     def outputContent = new File(projectDir.getAbsolutePath() + '/templates/apidocs_index.html.template').text
@@ -357,8 +358,15 @@ task createApiDocsRedirect {
   }
 }
 
-// Regenerates the gh-pages branch under tmp_gh-pages, which must be committed separately
-task updateDocsWithCurrentVersion {
-  dependsOn 'createApiDocsRedirect'
+// Regenerates and push the gh-pages branch under tmp_gh-pages
+task updateAndPushDocs {
+  dependsOn 'updateDocs'
+  doLast {
+    exec {
+      workingDir javaDocRoot
+      commandLine 'git', 'push'
+      println "New docs have been pushed to Github for ${packageName} ${project.version}"
+    }
+  }
 }
 
