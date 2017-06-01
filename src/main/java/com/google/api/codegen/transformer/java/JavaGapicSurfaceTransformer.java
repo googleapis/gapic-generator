@@ -439,20 +439,15 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
   private void addApiImports(GapicInterfaceContext context) {
     ModelTypeTable typeTable = context.getModelTypeTable();
     typeTable.saveNicknameFor("com.google.api.core.BetaApi");
-    typeTable.saveNicknameFor("com.google.api.gax.core.CredentialsProvider");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.ChannelAndExecutor");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.ClientContext");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryCallable");
     typeTable.saveNicknameFor("com.google.api.pathtemplate.PathTemplate");
-    typeTable.saveNicknameFor("com.google.auth.Credentials");
-    typeTable.saveNicknameFor("io.grpc.auth.MoreCallCredentials");
-    typeTable.saveNicknameFor("io.grpc.CallCredentials");
     typeTable.saveNicknameFor("io.grpc.ManagedChannel");
     typeTable.saveNicknameFor("java.io.Closeable");
     typeTable.saveNicknameFor("java.io.IOException");
     typeTable.saveNicknameFor("java.util.ArrayList");
-    typeTable.saveNicknameFor("java.util.concurrent.ScheduledExecutorService");
     typeTable.saveNicknameFor("java.util.List");
+    typeTable.saveNicknameFor("java.util.concurrent.ScheduledExecutorService");
     typeTable.saveNicknameFor("javax.annotation.Generated");
 
     if (context.getInterfaceConfig().hasLongRunningOperations()) {
