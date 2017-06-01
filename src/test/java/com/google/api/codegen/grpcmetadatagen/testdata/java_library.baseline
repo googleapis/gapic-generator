@@ -358,8 +358,20 @@ task createApiDocsRedirect {
   }
 }
 
-// Regenerates the gh-pages branch under tmp_gh-pages, which must be committed separately
-task updateDocsWithCurrentVersion {
+// Regenerates the gh-pages branch under tmp_gh-pages
+task updateDocs {
   dependsOn 'createApiDocsRedirect'
+}
+
+// Regenerates and push the gh-pages branch under tmp_gh-pages
+task updateAndPushDocs {
+  dependsOn 'createApiDocsRedirect'
+  doLast {
+    exec {
+      workingDir javaDocRoot
+      commandLine 'git', 'push'
+      println "New docs have been pushed to Github for ${packageName} ${project.version}"
+    }
+  }
 }
 
