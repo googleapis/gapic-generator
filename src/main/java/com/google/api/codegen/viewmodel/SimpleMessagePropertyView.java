@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
  * https://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.7.
  */
 @AutoValue
-public abstract class SimplePropertyView {
+public abstract class SimpleMessagePropertyView {
 
   // The possibly-transformed ID of the schema from the Discovery Doc
   public abstract String name();
@@ -41,20 +41,20 @@ public abstract class SimplePropertyView {
   @Nullable
   public abstract String fieldSetFunction();
 
-  public static SimplePropertyView.Builder newBuilder() {
-    return new AutoValue_SimplePropertyView.Builder();
+  public static SimpleMessagePropertyView.Builder newBuilder() {
+    return new AutoValue_SimpleMessagePropertyView.Builder();
   }
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract SimplePropertyView.Builder name(String val);
+    public abstract SimpleMessagePropertyView.Builder name(String val);
 
-    public abstract SimplePropertyView.Builder typeName(String val);
+    public abstract SimpleMessagePropertyView.Builder typeName(String val);
 
-    public abstract SimplePropertyView.Builder fieldGetFunction(String val);
+    public abstract SimpleMessagePropertyView.Builder fieldGetFunction(String val);
 
-    public abstract SimplePropertyView.Builder fieldSetFunction(String val);
+    public abstract SimpleMessagePropertyView.Builder fieldSetFunction(String val);
 
-    public abstract SimplePropertyView build();
+    public abstract SimpleMessagePropertyView build();
   }
 }

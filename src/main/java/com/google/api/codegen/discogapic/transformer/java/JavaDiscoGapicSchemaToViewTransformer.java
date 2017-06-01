@@ -32,7 +32,7 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaTypeTable;
-import com.google.api.codegen.viewmodel.SimplePropertyView;
+import com.google.api.codegen.viewmodel.SimpleMessagePropertyView;
 import com.google.api.codegen.viewmodel.StaticLangApiMessageFileView;
 import com.google.api.codegen.viewmodel.StaticLangApiMessageView;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -135,12 +135,12 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     schemaView.defaultValue(schema.defaultValue());
 
     // Map each property name to the Java typeName of the property.
-    List<SimplePropertyView> properties = new LinkedList<>();
+    List<SimpleMessagePropertyView> properties = new LinkedList<>();
     for (Map.Entry<String, Schema> propertyEntry : schema.properties().entrySet()) {
       String propertyString = schemaSymbolTable.getNewSymbol(propertyEntry.getKey());
       Schema property = propertyEntry.getValue();
-      SimplePropertyView.Builder simpleProperty =
-          SimplePropertyView.newBuilder().name(propertyString);
+      SimpleMessagePropertyView.Builder simpleProperty =
+          SimpleMessagePropertyView.newBuilder().name(propertyString);
       simpleProperty.typeName(typeToJavaType(property));
 
       // TODO(andrealin) use a surface namer for the getter/setter.

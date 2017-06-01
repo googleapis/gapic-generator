@@ -52,7 +52,7 @@ public abstract class StaticLangApiMessageView implements ViewModel {
 
   // There can be arbitrarily nested fields inside of this field.
   @Nullable
-  public abstract List<SimplePropertyView> properties();
+  public abstract List<SimpleMessagePropertyView> properties();
 
   @Override
   public String resourceRoot() {
@@ -81,7 +81,7 @@ public abstract class StaticLangApiMessageView implements ViewModel {
 
     public abstract StaticLangApiMessageView.Builder enumValues(List<String> val);
 
-    public abstract StaticLangApiMessageView.Builder properties(List<SimplePropertyView> val);
+    public abstract StaticLangApiMessageView.Builder properties(List<SimpleMessagePropertyView> val);
 
     public abstract StaticLangApiMessageView.Builder templateFileName(String val);
 
