@@ -32,7 +32,6 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaTypeTable;
-import com.google.api.codegen.viewmodel.FieldCopyView;
 import com.google.api.codegen.viewmodel.SimplePropertyView;
 import com.google.api.codegen.viewmodel.StaticLangApiMessageFileView;
 import com.google.api.codegen.viewmodel.StaticLangApiMessageView;
@@ -182,7 +181,8 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
           case UINT32:
             return "Long";
           default:
-            System.err.println("Discovery doc had an INTEGER typeName that was not Integer/Long.");
+            throw new IllegalStateException(
+                "Discovery doc had an INTEGER typeName that was not Integer/Long.");
         }
       case NUMBER:
         switch (schema.format()) {
@@ -191,7 +191,8 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
           case FLOAT:
             return "Float";
           default:
-            System.err.println("Discovery doc had a NUMBER typeName that was not Float/Double.");
+            throw new IllegalStateException(
+                "Discovery doc had a NUMBER typeName that was not Float/Double.");
         }
       case BOOLEAN:
         return "Boolean";
@@ -200,8 +201,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       case OBJECT:
         return "Object";
       default:
-        System.err.println("Discovery doc had an unaccounted for typeName/format.");
+        throw new IllegalStateException("Discovery doc had an unaccounted for typeName/format.");
     }
-    return null;
   }
 }
