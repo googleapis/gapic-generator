@@ -81,7 +81,8 @@ public abstract class StaticLangApiMessageView implements ViewModel {
 
     public abstract StaticLangApiMessageView.Builder enumValues(List<String> val);
 
-    public abstract StaticLangApiMessageView.Builder properties(List<SimpleMessagePropertyView> val);
+    public abstract StaticLangApiMessageView.Builder properties(
+        List<SimpleMessagePropertyView> val);
 
     public abstract StaticLangApiMessageView.Builder templateFileName(String val);
 
