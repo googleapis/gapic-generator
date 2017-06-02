@@ -26,12 +26,12 @@ import java.util.Map;
  * methods for importing instances of TypeRef.
  */
 public class DiscoTypeTable {
-  private ModelTypeFormatterImpl typeFormatter;
+  private SchemaTypeFormatterImpl typeFormatter;
   private TypeTable typeTable;
-  private ModelTypeNameConverter typeNameConverter;
+  private SchemaTypeNameConverter typeNameConverter;
 
-  public DiscoTypeTable(TypeTable typeTable, ModelTypeNameConverter typeNameConverter) {
-    this.typeFormatter = new ModelTypeFormatterImpl(typeNameConverter);
+  public DiscoTypeTable(TypeTable typeTable, SchemaTypeNameConverter typeNameConverter) {
+    this.typeFormatter = new SchemaTypeFormatterImpl(typeNameConverter);
     this.typeTable = typeTable;
     this.typeNameConverter = typeNameConverter;
   }

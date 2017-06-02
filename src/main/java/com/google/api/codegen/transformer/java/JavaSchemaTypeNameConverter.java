@@ -18,23 +18,22 @@ import com.google.api.codegen.LanguageUtil;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameType;
-import com.google.api.codegen.transformer.ModelTypeNameConverter;
+import com.google.api.codegen.discovery.Document;
+import com.google.api.codegen.discovery.Schema;
+import com.google.api.codegen.transformer.SchemaTypeNameConverter;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.codegen.util.TypedValue;
 import com.google.api.codegen.util.java.JavaTypeTable;
-import com.google.api.tools.framework.model.EnumValue;
-import com.google.api.tools.framework.model.ProtoElement;
-import com.google.api.tools.framework.model.ProtoFile;
-import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 import java.io.File;
+import javax.print.Doc;
 
-/** The ModelTypeTable for Java. */
-public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
+/** The SchemaTypeTable for Java. */
+public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
 
   /** The package prefix protoc uses if no java package option was provided. */
   private static final String DEFAULT_JAVA_PACKAGE_PREFIX = "com.google.protos";
@@ -81,7 +80,7 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
 
   private TypeNameConverter typeNameConverter;
 
-  public JavaModelTypeNameConverter(String implicitPackageName) {
+  public JavaSchemaTypeNameConverter(String implicitPackageName) {
     this.typeNameConverter = new JavaTypeTable(implicitPackageName);
   }
 
@@ -91,7 +90,7 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
   }
 
   @Override
-  public TypeName getTypeName(TypeRef type) {
+  public TypeName getTypeName(Schema type) {
     if (type.isMap()) {
       TypeName mapTypeName = typeNameConverter.getTypeName("java.util.Map");
       TypeName keyTypeName = getTypeNameForElementType(type.getMapKeyField().getType(), true);
@@ -113,12 +112,17 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
   }
 
   @Override
-  public TypedValue getEnumValue(TypeRef type, EnumValue value) {
+  public TypedValue getEnumValue(Schema type) {
+    return null;
+  }
+
+  @Override
+  public TypedValue getEnumValue(Schema type, EnumValue value) {
     return TypedValue.create(getTypeName(type), "%s." + value.getSimpleName());
   }
 
   @Override
-  public TypeName getTypeNameForElementType(TypeRef type) {
+  public TypeName getTypeNameForElementType(Schema type) {
     return getTypeNameForElementType(type, true);
   }
 
@@ -126,7 +130,7 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
    * Returns the Java representation of a type, without cardinality. If the type is a Java
    * primitive, basicTypeName returns it in unboxed form.
    */
-  private TypeName getTypeNameForElementType(TypeRef type, boolean shouldBoxPrimitives) {
+  private TypeName getTypeNameForElementType(Schema type, boolean shouldBoxPrimitives) {
     String primitiveTypeName = PRIMITIVE_TYPE_MAP.get(type.getKind());
     if (primitiveTypeName != null) {
       if (primitiveTypeName.contains(".")) {
@@ -152,7 +156,7 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
   }
 
   @Override
-  public String renderPrimitiveValue(TypeRef type, String value) {
+  public String renderPrimitiveValue(Schema type, String value) {
     Type primitiveType = type.getKind();
     if (!PRIMITIVE_TYPE_MAP.containsKey(primitiveType)) {
       throw new IllegalArgumentException(
@@ -186,33 +190,30 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
    * initialization.
    */
   @Override
-  public TypedValue getSnippetZeroValue(TypeRef type) {
+  public TypedValue getSnippetZeroValue(Schema schema) {
     // Don't call importAndGetShortestName; we don't need to import these.
-    if (type.isMap()) {
-      return TypedValue.create(typeNameConverter.getTypeName("java.util.HashMap"), "new %s<>()");
-    }
-    if (type.isRepeated()) {
+    if (schema.type() == Schema.Type.ARRAY) {
       return TypedValue.create(typeNameConverter.getTypeName("java.util.ArrayList"), "new %s<>()");
     }
-    if (PRIMITIVE_ZERO_VALUE.containsKey(type.getKind())) {
-      return TypedValue.create(getTypeName(type), PRIMITIVE_ZERO_VALUE.get(type.getKind()));
+    if (PRIMITIVE_ZERO_VALUE.containsKey(schema.type())) {
+      return TypedValue.create(getTypeName(schema), PRIMITIVE_ZERO_VALUE.get(schema.getKind()));
     }
-    if (type.isMessage()) {
-      return TypedValue.create(getTypeName(type), "%s.newBuilder().build()");
+    if (schema.isMessage()) {
+      return TypedValue.create(getTypeName(schema), "%s.newBuilder().build()");
     }
-    if (type.isEnum()) {
-      return getEnumValue(type, type.getEnumType().getValues().get(0));
+    if (schema.isEnum()) {
+      return getEnumValue(schema, schema.getEnumType().getValues().get(0));
     }
-    return TypedValue.create(getTypeName(type), "null");
+    return TypedValue.create(getTypeName(schema), "null");
   }
 
   @Override
-  public TypedValue getImplZeroValue(TypeRef type) {
+  public TypedValue getImplZeroValue(Schema type) {
     return getSnippetZeroValue(type);
   }
 
   @Override
-  public TypeName getTypeName(ProtoElement elem) {
+  public TypeName getTypeName(Schema elem) {
     String packageName = getProtoElementPackage(elem);
     String shortName = getShortName(elem);
     String longName = packageName + "." + shortName;
@@ -221,7 +222,7 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
   }
 
   private TypeName getTypeNameForTypedResourceName(
-      ResourceNameConfig resourceNameConfig, TypeRef type, String typedResourceShortName) {
+      ResourceNameConfig resourceNameConfig, Schema type, String typedResourceShortName) {
     String packageName = getResourceNamePackage(resourceNameConfig);
     String longName = packageName + "." + typedResourceShortName;
 
@@ -271,23 +272,7 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
         typedResourceShortName);
   }
 
-  private static String getShortName(ProtoElement elem) {
-    return elem.getFullName().substring(elem.getFile().getFullName().length() + 1);
-  }
-
-  private static String getProtoElementPackage(ProtoElement elem) {
-    String name = getJavaPackage(elem.getFile());
-    if (!elem.getFile().getProto().getOptions().getJavaMultipleFiles()) {
-      String outerClassName = elem.getFile().getProto().getOptions().getJavaOuterClassname();
-      if (outerClassName.isEmpty()) {
-        outerClassName = getFileClassName(elem.getFile());
-      }
-      name = name + "." + outerClassName;
-    }
-    return name;
-  }
-
-  public static String getJavaPackage(ProtoFile file) {
+  public static String getJavaPackage(Document file) {
     String packageName = file.getProto().getOptions().getJavaPackage();
     if (Strings.isNullOrEmpty(packageName)) {
       return DEFAULT_JAVA_PACKAGE_PREFIX + "." + file.getFullName();
@@ -296,7 +281,7 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
   }
 
   /** Gets the class name for the given proto file. */
-  private static String getFileClassName(ProtoFile file) {
+  private static String getFileClassName(Document file) {
     String baseName = Files.getNameWithoutExtension(new File(file.getSimpleName()).getName());
     return LanguageUtil.lowerUnderscoreToUpperCamel(baseName);
   }

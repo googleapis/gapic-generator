@@ -27,9 +27,6 @@ public interface SchemaTypeNameConverter {
   /** Provides a TypedValue for the given enum TypeRef. */
   TypedValue getEnumValue(Schema type);
 
-  /** Provides a TypeName for the element type of the given TypeRef. */
-  TypeName getTypeNameForElementType(Schema type);
-
   /** Provides a TypeName for the given FieldConfig and resource short name. */
   TypeName getTypeNameForTypedResourceName(FieldConfig fieldConfig, String typedResourceShortName);
 
