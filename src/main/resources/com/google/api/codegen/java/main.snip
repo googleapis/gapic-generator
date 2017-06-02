@@ -101,12 +101,10 @@
    *
    * <pre>
    * <code>
-   * InstantiatingChannelProvider channelProvider =
-   *     {@xapiClassDoc.settingsClassName}.defaultChannelProviderBuilder()
+   * {@xapiClassDoc.settingsClassName} {@xapiClassDoc.settingsVarName} =
+   *     {@xapiClassDoc.settingsClassName}.defaultBuilder()
    *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
    *         .build();
-   * {@xapiClassDoc.settingsClassName} {@xapiClassDoc.settingsVarName} =
-   *     {@xapiClassDoc.settingsClassName}.defaultBuilder().setChannelProvider(channelProvider).build();
    * {@xapiClassDoc.apiClassName} {@xapiClassDoc.apiVarName} =
    *     {@xapiClassDoc.apiClassName}.create({@xapiClassDoc.settingsVarName});
    * </code>
@@ -219,14 +217,21 @@
     ChannelAndExecutor channelAndExecutor = settings.getChannelAndExecutor();
     this.executor = channelAndExecutor.getExecutor();
     this.channel = channelAndExecutor.getChannel();
+    Credentials credentials = settings.getCredentialsProvider().getCredentials();
+
+    ClientContext clientContext =
+        ClientContext.newBuilder()
+            .setExecutor(this.executor)
+            .setChannel(this.channel)
+            .setCredentials(credentials)
+            .build();
 
     @if xapiClass.hasLongRunningOperations
-      FixedExecutorProvider executorProvider = FixedExecutorProvider.create(this.executor);
-      FixedChannelProvider channelProvider = FixedChannelProvider.create(this.channel);
       OperationsSettings operationsSettings =
           OperationsSettings.defaultBuilder()
-              .setExecutorProvider(executorProvider)
-              .setChannelProvider(channelProvider)
+              .setExecutorProvider(FixedExecutorProvider.create(this.executor))
+              .setChannelProvider(FixedChannelProvider.create(this.channel))
+              .setCredentialsProvider(FixedCredentialsProvider.create(credentials))
               .build();
       this.operationsClient = OperationsClient.create(operationsSettings);
     @end
@@ -234,19 +239,19 @@
     @join apiCallable : xapiClass.apiCallableMembers
       @switch apiCallable.type
       @case "SimpleApiCallable"
-        this.{@apiCallable.name} = UnaryCallable.create(settings.{@apiCallable.settingsFunctionName}(), this.channel, this.executor);
+        this.{@apiCallable.name} = UnaryCallable.create(settings.{@apiCallable.settingsFunctionName}(), clientContext);
       @case "PagedApiCallable"
         this.{@apiCallable.name} =
-            UnaryCallable.createPagedVariant(settings.{@apiCallable.settingsFunctionName}(), this.channel, this.executor);
+            UnaryCallable.createPagedVariant(settings.{@apiCallable.settingsFunctionName}(), clientContext);
       @case "BatchingApiCallable"
-        this.{@apiCallable.name} = UnaryCallable.create(settings.{@apiCallable.settingsFunctionName}(), this.channel, this.executor);
+        this.{@apiCallable.name} = UnaryCallable.create(settings.{@apiCallable.settingsFunctionName}(), clientContext);
       @case "StreamingApiCallable"
-        this.{@apiCallable.name} = StreamingCallable.create(settings.{@apiCallable.settingsFunctionName}(), this.channel);
+        this.{@apiCallable.name} = StreamingCallable.create(settings.{@apiCallable.settingsFunctionName}(), clientContext);
       @case "InitialOperationApiCallable"
-        this.{@apiCallable.name} = UnaryCallable.create(settings.{@apiCallable.settingsFunctionName}().getInitialCallSettings(), this.channel, this.executor);
+        this.{@apiCallable.name} = UnaryCallable.create(settings.{@apiCallable.settingsFunctionName}().getInitialCallSettings(), clientContext);
       @case "OperationApiCallable"
         this.{@apiCallable.name} = OperationCallable.create(settings.{@apiCallable.settingsFunctionName}(),\
-            this.channel, this.executor, this.operationsClient);
+            clientContext, this.operationsClient);
       @default
         $unhandledCase: {@apiCallable.type}$
       @end
