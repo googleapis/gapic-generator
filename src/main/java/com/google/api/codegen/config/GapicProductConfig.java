@@ -166,7 +166,6 @@ public abstract class GapicProductConfig implements ProductConfig {
       settings = LanguageSettingsProto.getDefaultInstance();
     }
 
-    // TODO (end copy from above method)
     return createDummyInstance(interfaceConfigMap, settings.getPackageName(), "", null);
   }
 

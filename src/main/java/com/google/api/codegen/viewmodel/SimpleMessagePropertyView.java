@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.viewmodel;
 
+import com.google.api.codegen.SnippetSetRunner;
 import com.google.auto.value.AutoValue;
 import javax.annotation.Nullable;
 
@@ -25,7 +26,7 @@ import javax.annotation.Nullable;
  * https://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.7.
  */
 @AutoValue
-public abstract class SimpleMessagePropertyView {
+public abstract class SimpleMessagePropertyView implements ViewModel {
 
   // The possibly-transformed ID of the schema from the Discovery Doc
   public abstract String name();
@@ -41,6 +42,20 @@ public abstract class SimpleMessagePropertyView {
   @Nullable
   public abstract String fieldSetFunction();
 
+  @Override
+  public String resourceRoot() {
+    return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
+  }
+
+  @Override
+  @Nullable
+  public abstract String templateFileName();
+
+  @Override
+  @Nullable
+  public abstract String outputPath();
+
+
   public static SimpleMessagePropertyView.Builder newBuilder() {
     return new AutoValue_SimpleMessagePropertyView.Builder();
   }
@@ -54,6 +69,10 @@ public abstract class SimpleMessagePropertyView {
     public abstract SimpleMessagePropertyView.Builder fieldGetFunction(String val);
 
     public abstract SimpleMessagePropertyView.Builder fieldSetFunction(String val);
+
+    public abstract SimpleMessagePropertyView.Builder templateFileName(String val);
+
+    public abstract SimpleMessagePropertyView.Builder outputPath(String val);
 
     public abstract SimpleMessagePropertyView build();
   }
