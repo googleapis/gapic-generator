@@ -53,6 +53,8 @@ public class DocumentTest {
     Truth.assertThat(methods.get(0).id()).isEqualTo("myapi.bar.baz.get");
     Truth.assertThat(methods.get(0).parameterOrder()).isEqualTo(Collections.singletonList("p1"));
     Truth.assertThat(methods.get(0).path()).isEqualTo("resources.bar.methods.baz");
+    Truth.assertThat(methods.get(0).parent() instanceof Document);
+    Truth.assertThat(methods.get(0).parent()).isEqualTo(document);
 
     Map<String, Schema> parameters = methods.get(0).parameters();
     Truth.assertThat(parameters.get("p1").type()).isEqualTo(Schema.Type.BOOLEAN);
@@ -60,6 +62,8 @@ public class DocumentTest {
     Truth.assertThat(parameters.get("p1").location()).isEqualTo("query");
     Truth.assertThat(parameters.get("p1").path())
         .isEqualTo("resources.bar.methods.baz.parameters.p1");
+    Truth.assertThat(parameters.get("p1").parent() instanceof Method);
+    Truth.assertThat(parameters.get("p1").parent()).isEqualTo(methods.get(0));
 
     Truth.assertThat(methods.get(1).description()).isEqualTo("Insert a foo.");
     Truth.assertThat(methods.get(1).id()).isEqualTo("myapi.foo.insert");
@@ -79,6 +83,8 @@ public class DocumentTest {
     Truth.assertThat(schemas.get("GetBazRequest").path()).isEqualTo("schemas.GetBazRequest");
     Truth.assertThat(schemas.get("GetBazRequest").properties().get("foo").path())
         .isEqualTo("schemas.GetBazRequest.properties.foo");
+    Truth.assertThat(schemas.get("GetBazRequest").parent() instanceof Document);
+    Truth.assertThat(schemas.get("GetBazRequest").parent()).isEqualTo(document);
 
     Truth.assertThat(schemas.get("Baz").type()).isEqualTo(Schema.Type.STRING);
 
