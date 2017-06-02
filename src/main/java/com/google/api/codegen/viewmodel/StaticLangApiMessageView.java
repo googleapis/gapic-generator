@@ -21,7 +21,9 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 /**
- * This ViewModel defines the structure of a Discovery doc's "schemas", "properties",
+ * This ViewModel defines the view model structure of a generic message.
+ *
+ * <p>For example, this can be used to represent a Discovery Document's "schemas", "properties",
  * "additionalProperties", and "items".
  *
  * <p>This contains a subset of properties in the JSON Schema
@@ -32,9 +34,6 @@ public abstract class StaticLangApiMessageView implements ViewModel {
 
   // The possibly-transformed ID of the schema from the Discovery Doc
   public abstract String typeName();
-
-  // The escaped class name for this Schema.
-  public abstract String className();
 
   // The type of this schema.
   public abstract Schema.Type type();
@@ -53,7 +52,7 @@ public abstract class StaticLangApiMessageView implements ViewModel {
 
   // There can be arbitrarily nested fields inside of this field.
   @Nullable
-  public abstract List<SimplePropertyView> properties();
+  public abstract List<SimpleMessagePropertyView> properties();
 
   @Override
   public String resourceRoot() {
@@ -74,8 +73,6 @@ public abstract class StaticLangApiMessageView implements ViewModel {
   public abstract static class Builder {
     public abstract StaticLangApiMessageView.Builder typeName(String val);
 
-    public abstract StaticLangApiMessageView.Builder className(String val);
-
     public abstract StaticLangApiMessageView.Builder type(Schema.Type val);
 
     public abstract StaticLangApiMessageView.Builder description(String val);
@@ -84,7 +81,8 @@ public abstract class StaticLangApiMessageView implements ViewModel {
 
     public abstract StaticLangApiMessageView.Builder enumValues(List<String> val);
 
-    public abstract StaticLangApiMessageView.Builder properties(List<SimplePropertyView> val);
+    public abstract StaticLangApiMessageView.Builder properties(
+        List<SimpleMessagePropertyView> val);
 
     public abstract StaticLangApiMessageView.Builder templateFileName(String val);
 

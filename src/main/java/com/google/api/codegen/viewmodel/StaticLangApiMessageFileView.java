@@ -17,7 +17,12 @@ package com.google.api.codegen.viewmodel;
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.auto.value.AutoValue;
 
-/** ViewModel representing a the file containing a Discovery doc schema. */
+/**
+ * ViewModel representing the file containing a message.
+ *
+ * <p>For example, this can be used to represent a class file containing a Discovery Document's
+ * schemas".
+ */
 @AutoValue
 public abstract class StaticLangApiMessageFileView implements ViewModel {
   public abstract StaticLangApiMessageView schema();

@@ -28,10 +28,11 @@ import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.java.JavaFeatureConfig;
 import com.google.api.codegen.transformer.java.JavaModelTypeNameConverter;
 import com.google.api.codegen.transformer.java.JavaSurfaceNamer;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaTypeTable;
-import com.google.api.codegen.viewmodel.SimplePropertyView;
+import com.google.api.codegen.viewmodel.SimpleMessagePropertyView;
 import com.google.api.codegen.viewmodel.StaticLangApiMessageFileView;
 import com.google.api.codegen.viewmodel.StaticLangApiMessageView;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -50,6 +51,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       new StandardImportSectionTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(importSectionTransformer);
+  private final JavaNameFormatter nameFormatter = new JavaNameFormatter();
 
   private static final String XAPI_TEMPLATE_FILENAME = "java/main.snip";
   private static final String PACKAGE_INFO_TEMPLATE_FILENAME = "java/package-info.snip";
@@ -130,21 +132,23 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     schemaView.type(schema.type());
     // TODO(andrealin): apply Java naming format.
     // TODO(andrealin): use symbol table to make sure Schema names aren't Java keywords.
-    schemaView.className(schemaName);
     schemaView.defaultValue(schema.defaultValue());
 
     // Map each property name to the Java typeName of the property.
-    List<SimplePropertyView> properties = new LinkedList<>();
+    List<SimpleMessagePropertyView> properties = new LinkedList<>();
     for (Map.Entry<String, Schema> propertyEntry : schema.properties().entrySet()) {
-      String propertyName = schemaSymbolTable.getNewSymbol(propertyEntry.getKey());
+      String propertyString = schemaSymbolTable.getNewSymbol(propertyEntry.getKey());
       Schema property = propertyEntry.getValue();
-      SimplePropertyView.Builder simpleProperty =
-          SimplePropertyView.newBuilder().name(propertyName).repeated(property.repeated());
+      SimpleMessagePropertyView.Builder simpleProperty =
+          SimpleMessagePropertyView.newBuilder().name(propertyString);
       simpleProperty.typeName(typeToJavaType(property));
 
-      // Property class name is Capitalized
-      simpleProperty.capitalizedName(
-          propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1));
+      // TODO(andrealin) use a surface namer for the getter/setter.
+      Name propertyName = Name.anyCamel(propertyString);
+      simpleProperty.fieldGetFunction(
+          nameFormatter.publicMethodName(Name.from("get").join(propertyName)));
+      simpleProperty.fieldSetFunction(
+          nameFormatter.publicMethodName(Name.from("set").join(propertyName)));
       properties.add(simpleProperty.build());
     }
     schemaView.properties(properties);
@@ -177,7 +181,8 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
           case UINT32:
             return "Long";
           default:
-            System.err.println("Discovery doc had an INTEGER typeName that was not Integer/Long.");
+            throw new IllegalStateException(
+                "Discovery doc had an INTEGER typeName that was not Integer/Long.");
         }
       case NUMBER:
         switch (schema.format()) {
@@ -186,7 +191,8 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
           case FLOAT:
             return "Float";
           default:
-            System.err.println("Discovery doc had a NUMBER typeName that was not Float/Double.");
+            throw new IllegalStateException(
+                "Discovery doc had a NUMBER typeName that was not Float/Double.");
         }
       case BOOLEAN:
         return "Boolean";
@@ -195,8 +201,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       case OBJECT:
         return "Object";
       default:
-        System.err.println("Discovery doc had an unaccounted for typeName/format.");
+        throw new IllegalStateException("Discovery doc had an unaccounted for typeName/format.");
     }
-    return null;
   }
 }

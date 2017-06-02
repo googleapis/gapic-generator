@@ -20,13 +20,13 @@
 
 @private toString(schema)
   @@Override
-    public String toString() {
-      return "{@schema.typeName}{"
-      @join property : schema.properties on " + \", \""
+  public String toString() {
+    return "{@schema.typeName}{"
+    @join property : schema.properties on " + \", \""
 
-          + "{@property.name}=" + {@property.name}
-      @end
-          + "}";
+        + "{@property.name}=" + {@property.name}
+    @end
+        + "}";
   }
 
 @end
@@ -42,7 +42,7 @@
       return
       @join property : schema.properties on "&&"
 
-        this.{@property.name}.equals(that.{@property.name}())
+        this.{@property.name}.equals(that.{@property.fieldGetFunction}())
       @end
       ;
     }
@@ -73,7 +73,7 @@
 
 @private getters(schema)
   @join property : schema.properties
-    public {@property.typeName} get{@property.capitalizedName}() {
+    public {@property.typeName} {@property.fieldGetFunction}() {
       return {@property.name};
     }
     {@""}
@@ -115,11 +115,11 @@
     }
 
     @join property : schema.properties
-      public {@property.typeName} get{@property.capitalizedName}() {
+      public {@property.typeName} {@property.fieldGetFunction}() {
         return {@property.name};
       }
 
-      public Builder set{@property.capitalizedName}({@property.typeName} {@property.name}) {
+      public Builder {@property.fieldSetFunction}({@property.typeName} {@property.name}) {
         this.{@property.name} = {@property.name};
         return this;
       }

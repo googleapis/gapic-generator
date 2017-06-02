@@ -46,9 +46,7 @@ public class FileHeaderTransformer {
     fileHeader.localExamplePackageName(namer.getLocalExamplePackageName());
     fileHeader.importSection(importSection);
     fileHeader.version(namer.getApiWrapperModuleVersion());
-
-    fileHeader.generatorVersion("Don't commit this file.");
-//    fileHeader.generatorVersion(GeneratorVersionProvider.getGeneratorVersion());
+    fileHeader.generatorVersion(GeneratorVersionProvider.getGeneratorVersion());
     fileHeader.modules(namer.getApiModules());
 
     return fileHeader.build();
