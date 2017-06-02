@@ -39,38 +39,6 @@ public class DiscoTypeTable {
   public String getImplicitPackageFullNameFor(String shortName) {
     return typeFormatter.getImplicitPackageFullNameFor(shortName);
   }
-//
-//  public String getFullNameFor(TypeRef type) {
-//    return typeFormatter.getFullNameFor(type);
-//  }
-//
-//  public String getFullNameFor(ProtoElement element) {
-//    return typeFormatter.getFullNameFor(element);
-//  }
-//
-//  public String getFullNameForElementType(TypeRef type) {
-//    return typeFormatter.getFullNameForElementType(type);
-//  }
-//
-//  public String getNicknameFor(TypeRef type) {
-//    return typeFormatter.getNicknameFor(type);
-//  }
-//
-//  public String renderPrimitiveValue(TypeRef type, String value) {
-//    return typeFormatter.renderPrimitiveValue(type, value);
-//  }
-//
-//  /** Returns the enum value string */
-//  public String getEnumValue(TypeRef type, String value) {
-//    for (EnumValue enumValue : type.getEnumType().getValues()) {
-//      if (enumValue.getSimpleName().equals(value)) {
-//        return typeNameConverter
-//            .getEnumValue(type, enumValue)
-//            .getValueAndSaveTypeNicknameIn(typeTable);
-//      }
-//    }
-//    throw new IllegalArgumentException("Unrecognized enum value: " + value);
-//  }
 
   /** Creates a new DiscoTypeTable of the same concrete type, but with an empty import set. */
   public DiscoTypeTable cloneEmpty() {
@@ -140,7 +108,7 @@ public class DiscoTypeTable {
    * the type.
    */
   public String getAndSaveNicknameForElementType(Schema schema) {
-    return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeNameForElementType(schema));
+    return typeTable.getAndSaveNicknameFor(typeNameConverter.getAndSaveNicknameFor(schema));
   }
 
   public String getAndSaveNicknameForContainer(

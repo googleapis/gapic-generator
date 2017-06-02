@@ -20,63 +20,69 @@ import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Schema;
+import com.google.api.codegen.discovery.Schema.Type;
 import com.google.api.codegen.transformer.SchemaTypeNameConverter;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.codegen.util.TypedValue;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
-import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 import java.io.File;
-import javax.print.Doc;
 
 /** The SchemaTypeTable for Java. */
 public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
 
   /** The package prefix protoc uses if no java package option was provided. */
-  private static final String DEFAULT_JAVA_PACKAGE_PREFIX = "com.google.protos";
+  // TODO(andrealin): Find a better default package name.
+  private static final String DEFAULT_JAVA_PACKAGE_PREFIX = "com.google.api.resourcenames";
 
-  /** A map from primitive types in proto to Java counterparts. */
-  private static final ImmutableMap<Type, String> PRIMITIVE_TYPE_MAP =
-      ImmutableMap.<Type, String>builder()
-          .put(Type.TYPE_BOOL, "boolean")
-          .put(Type.TYPE_DOUBLE, "double")
-          .put(Type.TYPE_FLOAT, "float")
-          .put(Type.TYPE_INT64, "long")
-          .put(Type.TYPE_UINT64, "long")
-          .put(Type.TYPE_SINT64, "long")
-          .put(Type.TYPE_FIXED64, "long")
-          .put(Type.TYPE_SFIXED64, "long")
-          .put(Type.TYPE_INT32, "int")
-          .put(Type.TYPE_UINT32, "int")
-          .put(Type.TYPE_SINT32, "int")
-          .put(Type.TYPE_FIXED32, "int")
-          .put(Type.TYPE_SFIXED32, "int")
-          .put(Type.TYPE_STRING, "java.lang.String")
-          .put(Type.TYPE_BYTES, "com.google.protobuf.ByteString")
-          .build();
+  private static String getPrimitive(Schema schema) {
+    switch (schema.type()) {
+      case INTEGER:
+        switch (schema.format()) {
+          case INT32:
+            return "int";
+          case UINT32:
+          default:
+            return "long";
+        }
+      case NUMBER:
+        switch (schema.format()) {
+          case FLOAT:
+            return "float";
+          case DOUBLE:
+          default:
+            return "double";
+        }
+      case BOOLEAN:
+        return "boolean";
+      case STRING:
+        return "String";
+      default:
+        return null;
+    }
+  }
+
 
   /** A map from primitive types in proto to zero values in Java. */
-  private static final ImmutableMap<Type, String> PRIMITIVE_ZERO_VALUE =
-      ImmutableMap.<Type, String>builder()
-          .put(Type.TYPE_BOOL, "false")
-          .put(Type.TYPE_DOUBLE, "0.0")
-          .put(Type.TYPE_FLOAT, "0.0F")
-          .put(Type.TYPE_INT64, "0L")
-          .put(Type.TYPE_UINT64, "0L")
-          .put(Type.TYPE_SINT64, "0L")
-          .put(Type.TYPE_FIXED64, "0L")
-          .put(Type.TYPE_SFIXED64, "0L")
-          .put(Type.TYPE_INT32, "0")
-          .put(Type.TYPE_UINT32, "0")
-          .put(Type.TYPE_SINT32, "0")
-          .put(Type.TYPE_FIXED32, "0")
-          .put(Type.TYPE_SFIXED32, "0")
-          .put(Type.TYPE_STRING, "\"\"")
-          .put(Type.TYPE_BYTES, "ByteString.copyFromUtf8(\"\")")
-          .build();
+  private static String getPrimitiveZeroValue(Schema schema) {
+    String primitiveType = getPrimitive(schema);
+    if (primitiveType == null) {
+      return null;
+    }
+    if (primitiveType.equals("boolean")) {
+      return "false";
+    }
+    if (primitiveType.equals("int") || primitiveType.equals("long")
+        || primitiveType.equals("double") || primitiveType.equals("float")) {
+      return "0";
+    }
+    if (primitiveType.equals("String")) {
+      return "\"\"";
+    }
+    throw new IllegalArgumentException("Schema is of unknown type.");
+  }
 
   private TypeNameConverter typeNameConverter;
 
@@ -90,35 +96,20 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
   }
 
   @Override
-  public TypeName getTypeName(Schema type) {
-    if (type.isMap()) {
-      TypeName mapTypeName = typeNameConverter.getTypeName("java.util.Map");
-      TypeName keyTypeName = getTypeNameForElementType(type.getMapKeyField().getType(), true);
-      TypeName valueTypeName = getTypeNameForElementType(type.getMapValueField().getType(), true);
-      return new TypeName(
-          mapTypeName.getFullName(),
-          mapTypeName.getNickname(),
-          "%s<%i, %i>",
-          keyTypeName,
-          valueTypeName);
-    } else if (type.isRepeated()) {
+  public TypeName getTypeName(Schema schema) {
+    if (schema.type() == Type.ARRAY) {
       TypeName listTypeName = typeNameConverter.getTypeName("java.util.List");
-      TypeName elementTypeName = getTypeNameForElementType(type, true);
+      TypeName elementTypeName = getTypeNameForElementType(schema, true);
       return new TypeName(
           listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", elementTypeName);
     } else {
-      return getTypeNameForElementType(type, false);
+      return getTypeNameForElementType(schema, false);
     }
   }
 
   @Override
-  public TypedValue getEnumValue(Schema type) {
-    return null;
-  }
-
-  @Override
-  public TypedValue getEnumValue(Schema type, EnumValue value) {
-    return TypedValue.create(getTypeName(type), "%s." + value.getSimpleName());
+  public TypedValue getEnumValue(Schema schema, String value) {
+    return TypedValue.create(getTypeName(schema), "%s." + value);
   }
 
   @Override
@@ -130,8 +121,8 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
    * Returns the Java representation of a type, without cardinality. If the type is a Java
    * primitive, basicTypeName returns it in unboxed form.
    */
-  private TypeName getTypeNameForElementType(Schema type, boolean shouldBoxPrimitives) {
-    String primitiveTypeName = PRIMITIVE_TYPE_MAP.get(type.getKind());
+  private TypeName getTypeNameForElementType(Schema schema, boolean shouldBoxPrimitives) {
+    String primitiveTypeName = getPrimitiveZeroValue(schema);
     if (primitiveTypeName != null) {
       if (primitiveTypeName.contains(".")) {
         // Fully qualified type name, use regular type name resolver. Can skip boxing logic
@@ -145,42 +136,35 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
         }
       }
     }
-    switch (type.getKind()) {
-      case TYPE_MESSAGE:
-        return getTypeName(type.getMessageType());
-      case TYPE_ENUM:
-        return getTypeName(type.getEnumType());
-      default:
-        throw new IllegalArgumentException("unknown type kind: " + type.getKind());
-    }
+
+    String packageName = getProtoElementPackage(schema);
+    String shortName = getShortName(schema);
+    String longName = packageName + "." + shortName;
+
+    return new TypeName(longName, shortName);
   }
 
   @Override
-  public String renderPrimitiveValue(Schema type, String value) {
-    Type primitiveType = type.getKind();
-    if (!PRIMITIVE_TYPE_MAP.containsKey(primitiveType)) {
+  public String renderPrimitiveValue(Schema schema, String value) {
+    String primitiveType = getPrimitive(schema);
+    if (primitiveType == null) {
       throw new IllegalArgumentException(
           "Initial values are only supported for primitive types, got type "
-              + type
+              + schema
               + ", with value "
               + value);
     }
-    switch (primitiveType) {
-      case TYPE_BOOL:
-        return value.toLowerCase();
-      case TYPE_FLOAT:
-        return value + "F";
-      case TYPE_INT64:
-      case TYPE_UINT64:
-        return value + "L";
-      case TYPE_STRING:
-        return "\"" + value + "\"";
-      case TYPE_BYTES:
-        return "ByteString.copyFromUtf8(\"" + value + "\")";
-      default:
-        // Types that do not need to be modified (e.g. TYPE_INT32) are handled here
-        return value;
+    if (primitiveType.equals("boolean")) {
+      return value.toLowerCase();
     }
+    if (primitiveType.equals("int") || primitiveType.equals("long")
+        || primitiveType.equals("double") || primitiveType.equals("float")) {
+      return value;
+    }
+    if (primitiveType.equals("String")) {
+      return "\"" + value + "\"";
+    }
+    throw new IllegalArgumentException("Schema is of unknown type.");
   }
 
   /**
@@ -195,14 +179,11 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
     if (schema.type() == Schema.Type.ARRAY) {
       return TypedValue.create(typeNameConverter.getTypeName("java.util.ArrayList"), "new %s<>()");
     }
-    if (PRIMITIVE_ZERO_VALUE.containsKey(schema.type())) {
-      return TypedValue.create(getTypeName(schema), PRIMITIVE_ZERO_VALUE.get(schema.getKind()));
+    if (getPrimitive(schema) != null) {
+      return TypedValue.create(getTypeName(schema), getPrimitiveZeroValue(schema));
     }
-    if (schema.isMessage()) {
+    if (schema.type() == Type.OBJECT) {
       return TypedValue.create(getTypeName(schema), "%s.newBuilder().build()");
-    }
-    if (schema.isEnum()) {
-      return getEnumValue(schema, schema.getEnumType().getValues().get(0));
     }
     return TypedValue.create(getTypeName(schema), "null");
   }
@@ -212,25 +193,14 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
     return getSnippetZeroValue(type);
   }
 
-  @Override
-  public TypeName getTypeName(Schema elem) {
-    String packageName = getProtoElementPackage(elem);
-    String shortName = getShortName(elem);
-    String longName = packageName + "." + shortName;
-
-    return new TypeName(longName, shortName);
-  }
-
   private TypeName getTypeNameForTypedResourceName(
-      ResourceNameConfig resourceNameConfig, Schema type, String typedResourceShortName) {
+      ResourceNameConfig resourceNameConfig, Schema schema, String typedResourceShortName) {
     String packageName = getResourceNamePackage(resourceNameConfig);
     String longName = packageName + "." + typedResourceShortName;
 
     TypeName simpleTypeName = new TypeName(longName, typedResourceShortName);
 
-    if (type.isMap()) {
-      throw new IllegalArgumentException("Map type not supported for typed resource name");
-    } else if (type.isRepeated()) {
+    if (schema.type() == Type.ARRAY) {
       TypeName listTypeName = typeNameConverter.getTypeName("java.util.List");
       return new TypeName(
           listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", simpleTypeName);
@@ -273,9 +243,9 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
   }
 
   public static String getJavaPackage(Document file) {
-    String packageName = file.getProto().getOptions().getJavaPackage();
+    String packageName = String.format("com.google.cloud.%s.spi.v1.resources", file.name());
     if (Strings.isNullOrEmpty(packageName)) {
-      return DEFAULT_JAVA_PACKAGE_PREFIX + "." + file.getFullName();
+      return DEFAULT_JAVA_PACKAGE_PREFIX + "." + file.name();
     }
     return packageName;
   }

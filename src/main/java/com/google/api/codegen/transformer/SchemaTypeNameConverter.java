@@ -24,9 +24,6 @@ public interface SchemaTypeNameConverter {
   /** Provides a TypeName for the given TypeRef. */
   TypeName getTypeName(Schema type);
 
-  /** Provides a TypedValue for the given enum TypeRef. */
-  TypedValue getEnumValue(Schema type);
-
   /** Provides a TypeName for the given FieldConfig and resource short name. */
   TypeName getTypeNameForTypedResourceName(FieldConfig fieldConfig, String typedResourceShortName);
 
@@ -47,11 +44,19 @@ public interface SchemaTypeNameConverter {
   TypedValue getSnippetZeroValue(Schema schema);
 
   /**
+   * Provides a TypedValue containing the zero value of the given type, plus the TypeName of the
+   * type; suitable for use within code snippets.
+   */
+  TypedValue getEnumValue(Schema schema, String value);
+
+  /**
    * Provides a TypedValue containing the zero value of the given type, for use internally within
    * the vkit layer; plus the TypeName of the type. This will often return the same value as {@link
    * #getSnippetZeroValue(Schema)}.
    */
   TypedValue getImplZeroValue(Schema schema);
+
+  TypeName getTypeNameForElementType(Schema type);
 
   /** Renders the given value if it is a primitive type. */
   String renderPrimitiveValue(Schema schema, String value);
