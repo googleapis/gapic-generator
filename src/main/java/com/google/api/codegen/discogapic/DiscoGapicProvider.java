@@ -28,21 +28,17 @@ public class DiscoGapicProvider {
   private final Document document;
   private final GapicProductConfig productConfig;
   private final CommonSnippetSetRunner snippetSetRunner;
-  private final DocumentToViewTransformer transformer;
+  private final List<DocumentToViewTransformer> transformers;
 
   private DiscoGapicProvider(
       Document document,
       GapicProductConfig productConfig,
       CommonSnippetSetRunner snippetSetRunner,
-      DocumentToViewTransformer transformer) {
+      List<DocumentToViewTransformer> transformers) {
     this.document = document;
     this.productConfig = productConfig;
     this.snippetSetRunner = snippetSetRunner;
-    this.transformer = transformer;
-  }
-
-  public List<String> getSnippetFileNames() {
-    return transformer.getTemplateFileNames();
+    this.transformers = transformers;
   }
 
   public Map<String, Doc> generate() {
@@ -50,19 +46,22 @@ public class DiscoGapicProvider {
   }
 
   public Map<String, Doc> generate(String snippetFileName) {
-    List<ViewModel> surfaceDocs = transformer.transform(document, productConfig);
-
     Map<String, Doc> docs = new TreeMap<>();
-    for (ViewModel surfaceDoc : surfaceDocs) {
-      if (snippetFileName != null && !surfaceDoc.templateFileName().equals(snippetFileName)) {
-        continue;
+
+    for (DocumentToViewTransformer transformer : transformers) {
+      List<ViewModel> surfaceDocs = transformer.transform(document, productConfig);
+
+      for (ViewModel surfaceDoc : surfaceDocs) {
+        if (snippetFileName != null && !surfaceDoc.templateFileName().equals(snippetFileName)) {
+          continue;
+        }
+        Doc doc = snippetSetRunner.generate(surfaceDoc);
+        if (doc == null) {
+          // generation failed; failures are captured in the model.
+          continue;
+        }
+        docs.put(surfaceDoc.outputPath(), doc);
       }
-      Doc doc = snippetSetRunner.generate(surfaceDoc);
-      if (doc == null) {
-        // generation failed; failures are captured in the model.
-        continue;
-      }
-      docs.put(surfaceDoc.outputPath(), doc);
     }
 
     return docs;
@@ -76,7 +75,7 @@ public class DiscoGapicProvider {
     private Document document;
     private GapicProductConfig productConfig;
     private CommonSnippetSetRunner snippetSetRunner;
-    private DocumentToViewTransformer transformer;
+    private List<DocumentToViewTransformer> transformers;
 
     private Builder() {}
 
@@ -95,13 +94,13 @@ public class DiscoGapicProvider {
       return this;
     }
 
-    public Builder setDocumentToViewTransformer(DocumentToViewTransformer transformer) {
-      this.transformer = transformer;
+    public Builder setDocumentToViewTransformers(List<DocumentToViewTransformer> transformers) {
+      this.transformers = transformers;
       return this;
     }
 
     public DiscoGapicProvider build() {
-      return new DiscoGapicProvider(document, productConfig, snippetSetRunner, transformer);
+      return new DiscoGapicProvider(document, productConfig, snippetSetRunner, transformers);
     }
   }
 }

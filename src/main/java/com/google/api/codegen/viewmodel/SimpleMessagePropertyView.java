@@ -55,7 +55,6 @@ public abstract class SimpleMessagePropertyView implements ViewModel {
   @Nullable
   public abstract String outputPath();
 
-
   public static SimpleMessagePropertyView.Builder newBuilder() {
     return new AutoValue_SimpleMessagePropertyView.Builder();
   }

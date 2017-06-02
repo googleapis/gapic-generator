@@ -16,6 +16,7 @@ package com.google.api.codegen.discogapic;
 
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.discogapic.transformer.java.JavaDiscoGapicSchemaToViewTransformer;
 import com.google.api.codegen.discogapic.transformer.java.JavaDiscoGapicSurfaceTransformer;
 import com.google.api.codegen.discovery.Document;
@@ -25,6 +26,7 @@ import com.google.api.codegen.gapic.GapicGeneratorConfig;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.util.java.JavaRenderingUtil;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.lang3.NotImplementedException;
 
@@ -50,25 +52,19 @@ public class MainDiscoGapicProviderFactory implements DiscoGapicProviderFactory 
                 .setPrefix("src/main/java")
                 .setShouldAppendPackage(true)
                 .build();
-        DiscoGapicProvider clientProvider =
+        List<DocumentToViewTransformer> transformers =
+            Arrays.asList(
+                new JavaDiscoGapicSurfaceTransformer(javaPathMapper, packageConfig),
+                new JavaDiscoGapicSchemaToViewTransformer(javaPathMapper, packageConfig));
+        DiscoGapicProvider provider =
             DiscoGapicProvider.newBuilder()
                 .setDocument(document)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new JavaRenderingUtil()))
-                .setDocumentToViewTransformer(
-                    new JavaDiscoGapicSurfaceTransformer(javaPathMapper, packageConfig))
-                .build();
-        DiscoGapicProvider messageProvider =
-            DiscoGapicProvider.newBuilder()
-                .setDocument(document)
-                .setProductConfig(productConfig)
-                .setSnippetSetRunner(new CommonSnippetSetRunner(new JavaRenderingUtil()))
-                .setDocumentToViewTransformer(
-                    new JavaDiscoGapicSchemaToViewTransformer(javaPathMapper, packageConfig))
+                .setDocumentToViewTransformers(transformers)
                 .build();
 
-        providers.add(clientProvider);
-        providers.add(messageProvider);
+        providers.add(provider);
       }
       return providers;
 
