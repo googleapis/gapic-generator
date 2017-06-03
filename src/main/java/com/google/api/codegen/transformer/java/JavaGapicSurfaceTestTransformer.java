@@ -109,14 +109,29 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
   ///////////////////////////////////// Smoke Test ///////////////////////////////////////
 
   private SmokeTestClassView createSmokeTestClassView(GapicInterfaceContext context) {
-    addSmokeTestImports(context);
-
     String outputPath =
         pathMapper.getOutputPath(context.getInterface(), context.getProductConfig());
     SurfaceNamer namer = context.getNamer();
     String name = namer.getSmokeTestClassName(context.getInterfaceConfig());
 
+    SmokeTestClassView.Builder testClass = createSmokeTestClassViewBuilder(context);
+    testClass.name(name);
+    testClass.outputPath(namer.getSourceFilePath(outputPath, name));
+    return testClass.build();
+  }
+
+  /**
+   * Package-private
+   *
+   * <p>A helper method that creates a partially initialized builder that can be customized and
+   * build the smoke test class view later.
+   */
+  SmokeTestClassView.Builder createSmokeTestClassViewBuilder(GapicInterfaceContext context) {
+    addSmokeTestImports(context);
+
     Method method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
+    SurfaceNamer namer = context.getNamer();
+
     FlatteningConfig flatteningGroup =
         testCaseTransformer.getSmokeTestFlatteningGroup(
             context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
@@ -128,8 +143,6 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
     testClass.apiSettingsClassName(namer.getApiSettingsClassName(context.getInterfaceConfig()));
     testClass.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
-    testClass.name(name);
-    testClass.outputPath(namer.getSourceFilePath(outputPath, name));
     testClass.templateFileName(SMOKE_TEST_TEMPLATE_FILE);
     // TODO: Java needs to be refactored to use ApiMethodView instead
     testClass.apiMethod(
@@ -143,7 +156,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     FileHeaderView fileHeader = fileHeaderTransformer.generateFileHeader(context);
     testClass.fileHeader(fileHeader);
 
-    return testClass.build();
+    return testClass;
   }
 
   ///////////////////////////////////// Unit Test /////////////////////////////////////////
@@ -291,8 +304,8 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
   /////////////////////////////////// General Helpers //////////////////////////////////////
 
-  private GapicInterfaceContext createContext(
-      Interface apiInterface, GapicProductConfig productConfig) {
+  /** Package-private */
+  GapicInterfaceContext createContext(Interface apiInterface, GapicProductConfig productConfig) {
     ModelTypeTable typeTable =
         new ModelTypeTable(
             new JavaTypeTable(productConfig.getPackageName()),
@@ -337,7 +350,8 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     }
   }
 
-  private void addSmokeTestImports(GapicInterfaceContext context) {
+  /** Package-private */
+  void addSmokeTestImports(GapicInterfaceContext context) {
     ModelTypeTable typeTable = context.getModelTypeTable();
     typeTable.saveNicknameFor("java.util.logging.Level");
     typeTable.saveNicknameFor("java.util.logging.Logger");

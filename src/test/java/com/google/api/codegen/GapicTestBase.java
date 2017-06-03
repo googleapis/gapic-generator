@@ -142,7 +142,7 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
             .build();
     List<GapicProvider<? extends Object>> providers =
         MainGapicProviderFactory.defaultCreate(
-            model, productConfig, generatorConfig, packageConfig);
+            model, productConfig, generatorConfig, packageConfig, "");
     List<Object[]> testArgs = new ArrayList<>();
     for (GapicProvider<? extends Object> provider : providers) {
       for (String snippetFileName : provider.getSnippetFileNames()) {
@@ -191,7 +191,7 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
             .build();
     List<GapicProvider<? extends Object>> providers =
         MainGapicProviderFactory.defaultCreate(
-            model, productConfig, generatorConfig, packageConfig);
+            model, productConfig, generatorConfig, packageConfig, "");
     GapicProvider<? extends Object> testedProvider = null;
     for (GapicProvider<? extends Object> provider : providers) {
       for (String snippetFileName : provider.getSnippetFileNames()) {

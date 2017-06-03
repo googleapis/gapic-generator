@@ -16,6 +16,7 @@ package com.google.api.codegen.viewmodel.metadata;
 
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.config.VersionBound;
+import com.google.api.codegen.grpcmetadatagen.DependencyType;
 import com.google.api.codegen.grpcmetadatagen.GenerationLayer;
 import com.google.api.codegen.grpcmetadatagen.PackageType;
 import com.google.api.codegen.viewmodel.ApiMethodView;
@@ -43,6 +44,9 @@ public abstract class PackageMetadataView implements ViewModel {
   public abstract PackageType packageType();
 
   @Nullable
+  public abstract DependencyType dependencyType();
+
+  @Nullable
   public abstract GenerationLayer generationLayer();
 
   @Nullable
@@ -59,6 +63,9 @@ public abstract class PackageMetadataView implements ViewModel {
 
   @Nullable
   public abstract VersionBound gaxVersionBound();
+
+  @Nullable
+  public abstract VersionBound gaxGrpcVersionBound();
 
   @Nullable
   public abstract VersionBound grpcVersionBound();
@@ -152,6 +159,12 @@ public abstract class PackageMetadataView implements ViewModel {
   @Nullable
   public abstract String versioningDocumentationLink();
 
+  @Nullable
+  public abstract String sampleAppName();
+
+  @Nullable
+  public abstract String sampleAppPackage();
+
   public static Builder newBuilder() {
     return new AutoValue_PackageMetadataView.Builder().hasSmokeTests(false);
   }
@@ -168,11 +181,15 @@ public abstract class PackageMetadataView implements ViewModel {
 
     public abstract Builder packageType(PackageType val);
 
+    public abstract Builder dependencyType(DependencyType val);
+
     public abstract Builder generationLayer(GenerationLayer val);
 
     public abstract Builder packageVersionBound(VersionBound val);
 
     public abstract Builder gaxVersionBound(VersionBound val);
+
+    public abstract Builder gaxGrpcVersionBound(VersionBound val);
 
     public abstract Builder grpcVersionBound(VersionBound val);
 
@@ -273,6 +290,12 @@ public abstract class PackageMetadataView implements ViewModel {
 
     /** Link to the semantic versioning information of the metapackage. */
     public abstract Builder versioningDocumentationLink(String s);
+
+    /** Class name of the sample application. */
+    public abstract Builder sampleAppName(String s);
+
+    /** Package name of the sample application. */
+    public abstract Builder sampleAppPackage(String s);
 
     public abstract PackageMetadataView build();
   }

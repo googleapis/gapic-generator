@@ -21,6 +21,7 @@ import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.tools.ToolOptions;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,9 +33,18 @@ public class JavaGrpcMetadataProvider implements GrpcMetadataProvider {
   private final JavaPackageMetadataTransformer transformer;
   private final JavaPackageCopier copier;
 
+  private static final ImmutableList<String> STATIC_FILES =
+      ImmutableList.of(
+          "gradlew",
+          "gradle/wrapper/gradle-wrapper.jar",
+          "gradle/wrapper/gradle-wrapper.properties",
+          "gradlew.bat",
+          "PUBLISHING.md",
+          "templates/apidocs_index.html.template");
+
   public JavaGrpcMetadataProvider(JavaPackageMetadataTransformer transformer, ToolOptions options) {
     this.transformer = transformer;
-    this.copier = new JavaPackageCopier(options);
+    this.copier = new JavaPackageCopier(STATIC_FILES, options);
   }
 
   @Override

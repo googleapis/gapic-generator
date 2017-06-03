@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.grpcmetadatagen.java;
 
+import com.google.api.codegen.gapic.StaticFileRunner;
 import com.google.api.codegen.grpcmetadatagen.GrpcMetadataGenerator;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.tools.ToolOptions;
@@ -28,18 +29,13 @@ import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.List;
 
 /** Responsible for copying package files and static meta-data files for Java */
-public class JavaPackageCopier {
+public class JavaPackageCopier implements StaticFileRunner {
   private static final String RESOURCE_DIR = "/com/google/api/codegen/metadatagen/java/grpc/";
-  private static final ImmutableList<String> STATIC_FILES =
-      ImmutableList.of(
-          "gradlew",
-          "gradle/wrapper/gradle-wrapper.jar",
-          "gradle/wrapper/gradle-wrapper.properties",
-          "gradlew.bat",
-          "PUBLISHING.md",
-          "templates/apidocs_index.html.template");
+
+  private final ImmutableList<String> staticFiles;
 
   private final String inputDir;
   private final String outputDir;
@@ -62,22 +58,29 @@ public class JavaPackageCopier {
     }
   }
 
-  public JavaPackageCopier(ToolOptions options) {
+  public JavaPackageCopier(List<String> staticFiles, ToolOptions options) {
     this.inputDir = options.get(GrpcMetadataGenerator.INPUT_DIR);
     this.outputDir = options.get(GrpcMetadataGenerator.OUTPUT_DIR);
+    this.staticFiles = ImmutableList.copyOf(staticFiles);
+  }
+
+  public JavaPackageCopier(List<String> staticFiles, String outputDir) {
+    this.inputDir = null;
+    this.outputDir = outputDir;
+    this.staticFiles = ImmutableList.copyOf(staticFiles);
   }
 
   public ImmutableMap<String, Doc> run() throws IOException {
-    ImmutableMap.Builder<String, Doc> docBuilder = new ImmutableMap.Builder<String, Doc>();
-
-    // Copy all files in the input dir
-    Path inputPath = Paths.get(inputDir);
-    Path outputPath = Paths.get(outputDir);
-    JavaPackageFileVisitor visitor = new JavaPackageFileVisitor(inputPath, outputPath);
-    Files.walkFileTree(inputPath, visitor);
+    if (inputDir != null) {
+      // Copy all files in the input dir
+      Path inputPath = Paths.get(inputDir);
+      Path outputPath = Paths.get(outputDir);
+      JavaPackageFileVisitor visitor = new JavaPackageFileVisitor(inputPath, outputPath);
+      Files.walkFileTree(inputPath, visitor);
+    }
 
     // Copy static files
-    for (String staticFile : STATIC_FILES) {
+    for (String staticFile : staticFiles) {
       Path staticFilePath = Paths.get(staticFile);
       URL input =
           JavaPackageCopier.class.getResource(Paths.get(RESOURCE_DIR, staticFile).toString());
@@ -90,7 +93,9 @@ public class JavaPackageCopier {
           StandardCopyOption.REPLACE_EXISTING,
           StandardCopyOption.COPY_ATTRIBUTES);
     }
-    return docBuilder.build();
+
+    // No docs returned since all files are statically copied.
+    return new ImmutableMap.Builder<String, Doc>().build();
   }
 
   private void createDirectoryIfNecessary(Path staticFilePath, String outputDir)

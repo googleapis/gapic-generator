@@ -601,6 +601,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return publicClassName(Name.upperCamel("PagedResponseWrappers"));
   }
 
+  /** The sample application class name. */
+  public String getSampleAppClassName() {
+    return publicClassName(Name.upperCamel("SampleApp"));
+  }
+
   /**
    * The type name of the Grpc service class This needs to match what Grpc generates for the
    * particular language.

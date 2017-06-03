@@ -23,6 +23,7 @@ import java.util.List;
 @AutoValue
 public abstract class GapicGeneratorConfig {
   public static final String ARTIFACT_SURFACE = "surface";
+  public static final String ARTIFACT_SAMPLE_APP = "sample_app";
   public static final String ARTIFACT_TEST = "test";
 
   public abstract List<String> enabledArtifacts();
@@ -30,7 +31,13 @@ public abstract class GapicGeneratorConfig {
   public abstract String id();
 
   public boolean enableSurfaceGenerator() {
-    return enabledArtifacts().isEmpty() || enabledArtifacts().contains(ARTIFACT_SURFACE);
+    return enabledArtifacts().isEmpty()
+        || enabledArtifacts().contains(ARTIFACT_SURFACE)
+        || enableSampleAppGenerator();
+  }
+
+  public boolean enableSampleAppGenerator() {
+    return enabledArtifacts().contains(ARTIFACT_SAMPLE_APP);
   }
 
   public boolean enableTestGenerator() {
