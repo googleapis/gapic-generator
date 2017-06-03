@@ -111,10 +111,6 @@ public abstract class Method implements Comparable<Method>, Node {
     return thisMethod;
   }
 
-  public static Method empty() {
-    return new AutoValue_Method(null, null, null, null, null, null, null, null, null, false, false);
-  }
-
   @Override
   public int compareTo(Method other) {
     return id().compareTo(other.id());
