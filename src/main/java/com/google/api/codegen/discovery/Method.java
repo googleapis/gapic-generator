@@ -34,21 +34,19 @@ public abstract class Method implements Comparable<Method>, Node {
    * Returns a method constructed from root.
    *
    * @param root the root node to parse.
-   * @param path the full path to this node (ex: "resources.foo.methods.bar").
    * @return a method.
    */
-  static Method from(DiscoveryNode root, String path) {
-    return Method.from(root, path, null);
+  static Method from(DiscoveryNode root) {
+    return Method.from(root, null);
   }
 
   /**
    * Returns a method constructed from root.
    *
    * @param root the root node to parse.
-   * @param path the full path to this node (ex: "resources.foo.methods.bar").
    * @return a method.
    */
-  public static Method from(DiscoveryNode root, String path, Node parent) {
+  public static Method from(DiscoveryNode root, Node parent) {
     String description = root.getString("description");
     String httpMethod = root.getString("httpMethod");
     String id = root.getString("id");
@@ -60,7 +58,7 @@ public abstract class Method implements Comparable<Method>, Node {
     DiscoveryNode parametersNode = root.getObject("parameters");
     HashMap<String, Schema> parameters = new HashMap<>();
     for (String name : root.getObject("parameters").getFieldNames()) {
-      Schema schema = Schema.from(parametersNode.getObject(name), path + ".parameters." + name);
+      Schema schema = Schema.from(parametersNode.getObject(name));
       // TODO: Remove these checks once we're sure that parameters can't be objects/arrays.
       // This is based on the assumption that these types can't be serialized as a query or path parameter.
       Preconditions.checkState(schema.type() != Schema.Type.ANY);
@@ -69,11 +67,11 @@ public abstract class Method implements Comparable<Method>, Node {
       parameters.put(name, schema);
     }
 
-    Schema request = Schema.from(root.getObject("request"), path + ".request");
+    Schema request = Schema.from(root.getObject("request"));
     if (request.reference().isEmpty()) {
       request = null;
     }
-    Schema response = Schema.from(root.getObject("response"), path + ".response");
+    Schema response = Schema.from(root.getObject("response"));
     if (response.reference().isEmpty()) {
       response = null;
     }
@@ -91,7 +89,6 @@ public abstract class Method implements Comparable<Method>, Node {
             id,
             parameterOrder,
             parameters,
-            path,
             request,
             response,
             scopes,
@@ -141,9 +138,6 @@ public abstract class Method implements Comparable<Method>, Node {
 
   /** @return the map of parameter names to schemas. */
   public abstract Map<String, Schema> parameters();
-
-  /** @return the fully qualified path to this method. */
-  public abstract String path();
 
   /** @return the request schema, or null if none. */
   @Nullable

@@ -52,7 +52,6 @@ public class DocumentTest {
     Truth.assertThat(methods.get(0).description()).isEqualTo("Get a baz.");
     Truth.assertThat(methods.get(0).id()).isEqualTo("myapi.bar.baz.get");
     Truth.assertThat(methods.get(0).parameterOrder()).isEqualTo(Collections.singletonList("p1"));
-    Truth.assertThat(methods.get(0).path()).isEqualTo("resources.bar.methods.baz");
     Truth.assertThat(methods.get(0).parent() instanceof Document);
     Truth.assertThat(methods.get(0).parent()).isEqualTo(document);
 
@@ -60,8 +59,6 @@ public class DocumentTest {
     Truth.assertThat(parameters.get("p1").type()).isEqualTo(Schema.Type.BOOLEAN);
     Truth.assertThat(parameters.get("p1").required()).isTrue();
     Truth.assertThat(parameters.get("p1").location()).isEqualTo("query");
-    Truth.assertThat(parameters.get("p1").path())
-        .isEqualTo("resources.bar.methods.baz.parameters.p1");
     Truth.assertThat(parameters.get("p1").parent() instanceof Method);
     Truth.assertThat(parameters.get("p1").parent()).isEqualTo(methods.get(0));
 
@@ -70,7 +67,6 @@ public class DocumentTest {
     Truth.assertThat(methods.get(1).parameters().isEmpty()).isTrue();
     Truth.assertThat(methods.get(1).request()).isNull();
     Truth.assertThat(methods.get(1).response()).isNull();
-    Truth.assertThat(methods.get(1).path()).isEqualTo("methods.foo");
     Truth.assertThat(methods.get(1).id()).isEqualTo("myapi.foo.insert");
 
     Truth.assertThat(document.name()).isEqualTo("myapi");
@@ -81,11 +77,8 @@ public class DocumentTest {
     Map<String, Schema> schemas = document.schemas();
 
     Truth.assertThat(schemas.get("GetBazRequest").type()).isEqualTo(Schema.Type.STRING);
-    Truth.assertThat(schemas.get("GetBazRequest").path()).isEqualTo("schemas.GetBazRequest");
     Truth.assertThat(schemas.get("GetBazRequest").properties().get("foo").parent())
         .isEqualTo(schemas.get("GetBazRequest"));
-    Truth.assertThat(schemas.get("GetBazRequest").properties().get("foo").path())
-        .isEqualTo("schemas.GetBazRequest.properties.foo");
     Truth.assertThat(schemas.get("GetBazRequest").parent() instanceof Document);
     Truth.assertThat(schemas.get("GetBazRequest").parent()).isEqualTo(document);
 

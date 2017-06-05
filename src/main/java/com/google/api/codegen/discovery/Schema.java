@@ -42,26 +42,23 @@ public abstract class Schema implements Node {
    * Returns a schema constructed from root, or an empty schema if root has no children.
    *
    * @param root the root node to parse.
-   * @param path the full path to this node (ex: "methods.foo.parameters.bar").
    * @return a schema.
    */
-  static Schema from(DiscoveryNode root, String path) {
-    return Schema.from(root, path, null);
+  static Schema from(DiscoveryNode root) {
+    return Schema.from(root, null);
   }
 
   /**
    * Returns a schema constructed from root, or an empty schema if root has no children.
    *
    * @param root the root node to parse.
-   * @param path the full path to this node (ex: "methods.foo.parameters.bar").
    * @return a schema.
    */
-  public static Schema from(DiscoveryNode root, String path, Node parent) {
+  public static Schema from(DiscoveryNode root, Node parent) {
     if (root.isEmpty()) {
       return empty();
     }
-    Schema additionalProperties =
-        Schema.from(root.getObject("additionalProperties"), path + ".additionalProperties");
+    Schema additionalProperties = Schema.from(root.getObject("additionalProperties"));
     if (additionalProperties.type() == Type.EMPTY && additionalProperties.reference().isEmpty()) {
       additionalProperties = null;
     }
@@ -70,7 +67,7 @@ public abstract class Schema implements Node {
     Format format = Format.getEnum(root.getString("format"));
     String id = root.getString("id");
     boolean isEnum = !root.getArray("enum").isEmpty();
-    Schema items = Schema.from(root.getObject("items"), path + ".items");
+    Schema items = Schema.from(root.getObject("items"));
     if (items.type() == Type.EMPTY && items.reference().isEmpty()) {
       items = null;
     }
@@ -80,8 +77,7 @@ public abstract class Schema implements Node {
     Map<String, Schema> properties = new HashMap<>();
     DiscoveryNode propertiesNode = root.getObject("properties");
     for (String name : propertiesNode.getFieldNames()) {
-      properties.put(
-          name, Schema.from(propertiesNode.getObject(name), path + ".properties." + name));
+      properties.put(name, Schema.from(propertiesNode.getObject(name)));
     }
 
     String reference = root.getString("$ref");
@@ -99,7 +95,6 @@ public abstract class Schema implements Node {
             isEnum,
             items,
             location,
-            path,
             pattern,
             properties,
             reference,
@@ -129,7 +124,6 @@ public abstract class Schema implements Node {
         "",
         false,
         null,
-        "",
         "",
         "",
         new HashMap<String, Schema>(),
@@ -178,9 +172,6 @@ public abstract class Schema implements Node {
 
   /** @return the location. */
   public abstract String location();
-
-  /** @return the fully qualified path to this schema. */
-  public abstract String path();
 
   /** @return the pattern. */
   public abstract String pattern();

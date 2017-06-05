@@ -58,7 +58,7 @@ public abstract class Document implements Node {
     String description = root.getString("description");
     String id = root.getString("id");
     Map<String, Schema> schemas = parseSchemas(root);
-    List<Method> methods = parseMethods(root, "");
+    List<Method> methods = parseMethods(root);
     Collections.sort(methods); // Ensure methods are ordered alphabetically by their ID.
     String name = root.getString("name");
     if (canonicalName.isEmpty()) {
@@ -119,20 +119,17 @@ public abstract class Document implements Node {
     return schema;
   }
 
-  private static List<Method> parseMethods(DiscoveryNode root, String path) {
+  private static List<Method> parseMethods(DiscoveryNode root) {
     List<Method> methods = new ArrayList<>();
     DiscoveryNode methodsNode = root.getObject("methods");
     List<String> resourceNames = methodsNode.getFieldNames();
-    if (!path.isEmpty()) {
-      path += ".";
-    }
     for (String name : resourceNames) {
-      methods.add(Method.from(methodsNode.getObject(name), path + "methods." + name));
+      methods.add(Method.from(methodsNode.getObject(name)));
     }
     DiscoveryNode resourcesNode = root.getObject("resources");
     resourceNames = resourcesNode.getFieldNames();
     for (String name : resourceNames) {
-      methods.addAll(parseMethods(resourcesNode.getObject(name), path + "resources." + name));
+      methods.addAll(parseMethods(resourcesNode.getObject(name)));
     }
     return methods;
   }
@@ -141,7 +138,7 @@ public abstract class Document implements Node {
     Map<String, Schema> schemas = new HashMap<>();
     DiscoveryNode schemasNode = root.getObject("schemas");
     for (String name : schemasNode.getFieldNames()) {
-      schemas.put(name, Schema.from(schemasNode.getObject(name), "schemas." + name));
+      schemas.put(name, Schema.from(schemasNode.getObject(name)));
     }
     return schemas;
   }
