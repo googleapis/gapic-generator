@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.discovery;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nullable;
 
 /**
  * A representation of a Discovery Document.
@@ -29,7 +31,7 @@ import java.util.Map;
  * example, this class combines all methods in the Discovery Document into one list for convenience.
  */
 @AutoValue
-public abstract class Document {
+public abstract class Document implements Node {
 
   // TODO(saicheems): Assert that all references link to a valid schema?
 
@@ -54,8 +56,9 @@ public abstract class Document {
     }
     String canonicalName = root.getString("canonicalName");
     String description = root.getString("description");
+    String id = root.getString("id");
     Map<String, Schema> schemas = parseSchemas(root);
-    List<Method> methods = parseMethods(root, "");
+    List<Method> methods = parseMethods(root);
     Collections.sort(methods); // Ensure methods are ordered alphabetically by their ID.
     String name = root.getString("name");
     if (canonicalName.isEmpty()) {
@@ -68,21 +71,32 @@ public abstract class Document {
     String version = root.getString("version");
     boolean versionModule = root.getBoolean("version_module");
 
-    return new AutoValue_Document(
-        "", // authInstructionsUrl (only intended to be overridden).
-        authType,
-        canonicalName,
-        description,
-        "", // discoveryDocUrl (only intended to be overridden).
-        methods,
-        name,
-        revision,
-        rootUrl,
-        schemas,
-        servicePath,
-        title,
-        version,
-        versionModule);
+    Document thisDocument =
+        new AutoValue_Document(
+            "", // authInstructionsUrl (only intended to be overridden).
+            authType,
+            canonicalName,
+            description,
+            "", // discoveryDocUrl (only intended to be overridden).
+            id,
+            methods,
+            name,
+            revision,
+            rootUrl,
+            schemas,
+            servicePath,
+            title,
+            version,
+            versionModule);
+
+    for (Schema schema : schemas.values()) {
+      schema.setParent(thisDocument);
+    }
+    for (Method method : methods) {
+      method.setParent(thisDocument);
+    }
+
+    return thisDocument;
   }
 
   /**
@@ -105,20 +119,17 @@ public abstract class Document {
     return schema;
   }
 
-  private static List<Method> parseMethods(DiscoveryNode root, String path) {
+  private static List<Method> parseMethods(DiscoveryNode root) {
     List<Method> methods = new ArrayList<>();
     DiscoveryNode methodsNode = root.getObject("methods");
     List<String> resourceNames = methodsNode.getFieldNames();
-    if (!path.isEmpty()) {
-      path += ".";
-    }
     for (String name : resourceNames) {
-      methods.add(Method.from(methodsNode.getObject(name), path + "methods." + name));
+      methods.add(Method.from(methodsNode.getObject(name), null));
     }
     DiscoveryNode resourcesNode = root.getObject("resources");
     resourceNames = resourcesNode.getFieldNames();
     for (String name : resourceNames) {
-      methods.addAll(parseMethods(resourcesNode.getObject(name), path + "resources." + name));
+      methods.addAll(parseMethods(resourcesNode.getObject(name)));
     }
     return methods;
   }
@@ -127,9 +138,21 @@ public abstract class Document {
     Map<String, Schema> schemas = new HashMap<>();
     DiscoveryNode schemasNode = root.getObject("schemas");
     for (String name : schemasNode.getFieldNames()) {
-      schemas.put(name, Schema.from(schemasNode.getObject(name), "schemas." + name));
+      schemas.put(name, Schema.from(schemasNode.getObject(name), null));
     }
     return schemas;
+  }
+
+  /** @return the parent Node that contains this node. */
+  @JsonIgnore @Nullable private Node parent;
+
+  public Node parent() {
+    return parent;
+  }
+
+  // Package private for use by other Node objects.
+  void setParent(Node parent) {
+    this.parent = parent;
   }
 
   /** @return the auth instructions URL. */
@@ -151,6 +174,11 @@ public abstract class Document {
   /** @return the discovery document URL. */
   @JsonProperty("discoveryDocUrl")
   public abstract String discoveryDocUrl();
+
+  /** @return the ID of the Discovery document for the API. */
+  @Override
+  @JsonProperty("id")
+  public abstract String id();
 
   /** @return the list of all methods. */
   @JsonProperty("methods")
