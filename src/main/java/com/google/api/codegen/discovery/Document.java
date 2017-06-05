@@ -56,6 +56,7 @@ public abstract class Document implements Node {
     }
     String canonicalName = root.getString("canonicalName");
     String description = root.getString("description");
+    String id = root.getString("id");
     Map<String, Schema> schemas = parseSchemas(root);
     List<Method> methods = parseMethods(root, "");
     Collections.sort(methods); // Ensure methods are ordered alphabetically by their ID.
@@ -68,17 +69,16 @@ public abstract class Document implements Node {
     String servicePath = root.getString("servicePath");
     String title = root.getString("title");
     String version = root.getString("version");
-    String id = root.getString("id");
     boolean versionModule = root.getBoolean("version_module");
 
     Document thisDocument =
         new AutoValue_Document(
-            id,
             "", // authInstructionsUrl (only intended to be overridden).
             authType,
             canonicalName,
             description,
             "", // discoveryDocUrl (only intended to be overridden).
+            id,
             methods,
             name,
             revision,
@@ -146,7 +146,7 @@ public abstract class Document implements Node {
     return schemas;
   }
 
-  /** @return the auth instructions URL. */
+  /** @return the parent Node that contains this node. */
   @JsonIgnore @Nullable private Node parent;
 
   public Node parent() {
@@ -157,10 +157,6 @@ public abstract class Document implements Node {
   void setParent(Node parent) {
     this.parent = parent;
   }
-
-  /** @return whether or not to version the module. */
-  @JsonProperty("id")
-  public abstract String id();
 
   /** @return the auth instructions URL. */
   @JsonProperty("authInstructionsUrl")
@@ -181,6 +177,11 @@ public abstract class Document implements Node {
   /** @return the discovery document URL. */
   @JsonProperty("discoveryDocUrl")
   public abstract String discoveryDocUrl();
+
+  /** @return the ID of the Discovery document for the API. */
+  @Override
+  @JsonProperty("id")
+  public abstract String id();
 
   /** @return the list of all methods. */
   @JsonProperty("methods")

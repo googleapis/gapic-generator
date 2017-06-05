@@ -71,6 +71,7 @@ public class DocumentTest {
     Truth.assertThat(methods.get(1).request()).isNull();
     Truth.assertThat(methods.get(1).response()).isNull();
     Truth.assertThat(methods.get(1).path()).isEqualTo("methods.foo");
+    Truth.assertThat(methods.get(1).id()).isEqualTo("myapi.foo.insert");
 
     Truth.assertThat(document.name()).isEqualTo("myapi");
     Truth.assertThat(document.canonicalName()).isEqualTo("My API");
@@ -81,6 +82,8 @@ public class DocumentTest {
 
     Truth.assertThat(schemas.get("GetBazRequest").type()).isEqualTo(Schema.Type.STRING);
     Truth.assertThat(schemas.get("GetBazRequest").path()).isEqualTo("schemas.GetBazRequest");
+    Truth.assertThat(schemas.get("GetBazRequest").properties().get("foo").parent())
+        .isEqualTo(schemas.get("GetBazRequest"));
     Truth.assertThat(schemas.get("GetBazRequest").properties().get("foo").path())
         .isEqualTo("schemas.GetBazRequest.properties.foo");
     Truth.assertThat(schemas.get("GetBazRequest").parent() instanceof Document);

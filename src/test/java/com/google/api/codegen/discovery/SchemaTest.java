@@ -96,11 +96,18 @@ public class SchemaTest {
 
     // Test path.
     Truth.assertThat(schema.path()).isEqualTo("root");
+    Truth.assertThat(schema.id()).isEqualTo("Foo");
     Truth.assertThat(schema.properties().get("array").path()).isEqualTo("root.properties.array");
+    Truth.assertThat(schema.properties().get("array").parent()).isEqualTo(schema);
     Truth.assertThat(schema.properties().get("array").items().path())
         .isEqualTo("root.properties.array.items");
+    Truth.assertThat(schema.properties().get("array").items().parent())
+        .isEqualTo(schema.properties().get("array"));
+
     Truth.assertThat(schema.properties().get("object").additionalProperties().path())
         .isEqualTo("root.properties.object.additionalProperties");
+    Truth.assertThat(schema.properties().get("object").additionalProperties().parent())
+        .isEqualTo(schema.properties().get("object"));
   }
 
   @Test
