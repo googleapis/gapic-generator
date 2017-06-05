@@ -36,16 +36,6 @@ public abstract class Method implements Comparable<Method>, Node {
    * @param root the root node to parse.
    * @return a method.
    */
-  static Method from(DiscoveryNode root) {
-    return Method.from(root, null);
-  }
-
-  /**
-   * Returns a method constructed from root.
-   *
-   * @param root the root node to parse.
-   * @return a method.
-   */
   public static Method from(DiscoveryNode root, Node parent) {
     String description = root.getString("description");
     String httpMethod = root.getString("httpMethod");
@@ -58,7 +48,7 @@ public abstract class Method implements Comparable<Method>, Node {
     DiscoveryNode parametersNode = root.getObject("parameters");
     HashMap<String, Schema> parameters = new HashMap<>();
     for (String name : root.getObject("parameters").getFieldNames()) {
-      Schema schema = Schema.from(parametersNode.getObject(name));
+      Schema schema = Schema.from(parametersNode.getObject(name), null);
       // TODO: Remove these checks once we're sure that parameters can't be objects/arrays.
       // This is based on the assumption that these types can't be serialized as a query or path parameter.
       Preconditions.checkState(schema.type() != Schema.Type.ANY);
@@ -67,11 +57,11 @@ public abstract class Method implements Comparable<Method>, Node {
       parameters.put(name, schema);
     }
 
-    Schema request = Schema.from(root.getObject("request"));
+    Schema request = Schema.from(root.getObject("request"), null);
     if (request.reference().isEmpty()) {
       request = null;
     }
-    Schema response = Schema.from(root.getObject("response"));
+    Schema response = Schema.from(root.getObject("response"), null);
     if (response.reference().isEmpty()) {
       response = null;
     }
