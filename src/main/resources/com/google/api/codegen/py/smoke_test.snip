@@ -1,0 +1,47 @@
+@extends "py/common.snip"
+@extends "py/method_sample.snip"
+
+@snippet generate(smokeTest)
+    {@header(smokeTest.fileHeader)}
+
+    {@testBody(smokeTest)}
+@end
+
+@private header(fileHeader)
+    {@licenseSection(fileHeader)}
+
+    {@moduleDocstring()}
+    {@renderImportSection(fileHeader.importSection)}
+@end
+
+@private moduleDocstring()
+    """Smoke tests."""
+@end
+
+@private testBody(smokeTest)
+    class {@smokeTest.name}(unittest.TestCase):
+
+        def test_{@smokeTest.apiMethod.name}(self):
+            @if smokeTest.requireProjectId
+                parser = argparse.ArgumentParser(\
+                    description='Verify the build with a smoke test.')
+                parser.add_argument('project_id', metavar='PROJECT-ID', \
+                    nargs='1', help='Id of your test project', required=True)
+                args = parser.parse_args()
+                project_id = args.project_id
+            @end
+
+            client = {@smokeTest.apiVariableName}.{@smokeTest.apiClassName}()
+            {@initCode(smokeTest.apiMethod.initCode)}
+            @if smokeTest.apiMethod.hasReturnValue
+                response = {@testMethodCall(smokeTest.apiMethod)}
+                print(response)
+            @else
+                {@testMethodCall(smokeTest.apiMethod)}
+            @end
+@end
+
+@private testMethodCall(apiMethod)
+    client.{@apiMethod.name}(\
+        {@fieldSettingArgList(apiMethod.initCode.fieldSettings)})
+@end
