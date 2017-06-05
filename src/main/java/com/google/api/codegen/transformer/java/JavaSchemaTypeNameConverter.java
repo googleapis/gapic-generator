@@ -245,12 +245,15 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
     }
   }
 
+
+
   @Override
   public TypeName getTypeNameForTypedResourceName(
       FieldConfig fieldConfig, String typedResourceShortName) {
     return getTypeNameForTypedResourceName(
         fieldConfig.getResourceNameConfig(),
-        fieldConfig.getField().getType(),
+//        fieldConfig.getField().getType(),
+        null,
         typedResourceShortName);
   }
 
@@ -259,7 +262,8 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
       FieldConfig fieldConfig, String typedResourceShortName) {
     return getTypeNameForTypedResourceName(
         fieldConfig.getResourceNameConfig(),
-        fieldConfig.getField().getType().makeOptional(),
+//        fieldConfig.getField().getType().makeOptional(),
+        null,
         typedResourceShortName);
   }
 
@@ -271,9 +275,4 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
     return packageName;
   }
 
-  /** Gets the class name for the given proto file. */
-  private static String getFileClassName(Document file) {
-    String baseName = Files.getNameWithoutExtension(new File(file.getSimpleName()).getName());
-    return LanguageUtil.lowerUnderscoreToUpperCamel(baseName);
-  }
 }
