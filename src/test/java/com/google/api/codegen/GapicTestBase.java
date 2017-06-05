@@ -15,6 +15,7 @@
 package com.google.api.codegen;
 
 import com.google.api.Service;
+import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.gapic.GapicGeneratorConfig;
@@ -33,6 +34,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -138,7 +140,7 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
     GapicGeneratorConfig generatorConfig =
         GapicGeneratorConfig.newBuilder()
             .id(idForFactory)
-            .enabledArtifacts(new ArrayList<String>())
+            .enabledArtifacts(Arrays.asList("surface", "test", "sample_app"))
             .build();
     List<GapicProvider<? extends Object>> providers =
         MainGapicProviderFactory.defaultCreate(
@@ -184,10 +186,15 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
       return null;
     }
 
+    List<String> enabledArtifacts = Arrays.asList();
+    if (hasSmokeTestConfig(productConfig)) {
+      enabledArtifacts = Arrays.asList("surface", "test", "sample_app");
+    }
+
     GapicGeneratorConfig generatorConfig =
         GapicGeneratorConfig.newBuilder()
             .id(idForFactory)
-            .enabledArtifacts(new ArrayList<String>())
+            .enabledArtifacts(enabledArtifacts)
             .build();
     List<GapicProvider<? extends Object>> providers =
         MainGapicProviderFactory.defaultCreate(
@@ -205,14 +212,29 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
       }
     }
 
-    Map<String, Doc> output = testedProvider.generate(snippetName);
-    if (output == null) {
-      // Report diagnosis to baseline file.
-      for (Diag diag : model.getDiagCollector().getDiags()) {
-        testOutput().println(diag.toString());
+    if (testedProvider != null) {
+      Map<String, Doc> output = testedProvider.generate(snippetName);
+      if (output == null) {
+        // Report diagnosis to baseline file.
+        for (Diag diag : model.getDiagCollector().getDiags()) {
+          testOutput().println(diag.toString());
+        }
       }
+
+      return output;
+    } else {
+      testOutput().printf("%s generation is not enabled for this test case.\n", snippetName);
     }
 
-    return output;
+    return null;
+  }
+
+  private static boolean hasSmokeTestConfig(GapicProductConfig productConfig) {
+    for (GapicInterfaceConfig config : productConfig.getInterfaceConfigMap().values()) {
+      if (config.getSmokeTestConfig() != null) {
+        return true;
+      }
+    }
+    return false;
   }
 }

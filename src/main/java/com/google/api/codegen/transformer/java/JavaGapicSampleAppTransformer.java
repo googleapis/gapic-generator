@@ -23,6 +23,7 @@ import com.google.api.codegen.viewmodel.testing.SmokeTestClassView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.Lists;
+import java.util.ArrayList;
 import java.util.List;
 
 /** Responsible for producing sample application related views for Java GAPIC clients */
@@ -43,12 +44,11 @@ public class JavaGapicSampleAppTransformer implements ModelToViewTransformer {
   @Override
   public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
     GapicInterfaceContext context = getSampleContext(model, productConfig);
-    if (context == null) {
-      throw new IllegalArgumentException(
-          "At lease one smoke test config is required for the sample application "
-              + "generation but zero is found.");
+    if (context != null) {
+      return Lists.newArrayList(createSampleClassView(context));
+    } else {
+      return new ArrayList<>();
     }
-    return Lists.newArrayList(createSampleClassView(context));
   }
 
   @Override
@@ -64,7 +64,7 @@ public class JavaGapicSampleAppTransformer implements ModelToViewTransformer {
         return testTransformer.createContext(apiInterface, productConfig);
       }
     }
-    return null;
+    throw new IllegalArgumentException("No smoke test config is found.");
   }
 
   private ViewModel createSampleClassView(GapicInterfaceContext context) {

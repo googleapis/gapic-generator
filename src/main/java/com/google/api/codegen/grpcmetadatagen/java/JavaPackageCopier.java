@@ -16,10 +16,8 @@ package com.google.api.codegen.grpcmetadatagen.java;
 
 import com.google.api.codegen.gapic.StaticFileRunner;
 import com.google.api.codegen.grpcmetadatagen.GrpcMetadataGenerator;
-import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.FileVisitResult;
@@ -70,7 +68,7 @@ public class JavaPackageCopier implements StaticFileRunner {
     this.staticFiles = ImmutableList.copyOf(staticFiles);
   }
 
-  public ImmutableMap<String, Doc> run() throws IOException {
+  public void run() throws IOException {
     if (inputDir != null) {
       // Copy all files in the input dir
       Path inputPath = Paths.get(inputDir);
@@ -93,9 +91,6 @@ public class JavaPackageCopier implements StaticFileRunner {
           StandardCopyOption.REPLACE_EXISTING,
           StandardCopyOption.COPY_ATTRIBUTES);
     }
-
-    // No docs returned since all files are statically copied.
-    return new ImmutableMap.Builder<String, Doc>().build();
   }
 
   private void createDirectoryIfNecessary(Path staticFilePath, String outputDir)

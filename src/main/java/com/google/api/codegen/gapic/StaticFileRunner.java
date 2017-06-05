@@ -14,13 +14,11 @@
  */
 package com.google.api.codegen.gapic;
 
-import com.google.api.tools.framework.snippet.Doc;
-import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 
 /** A runner interface that executes tasks of handling static files (e.g. copy) */
 public interface StaticFileRunner {
 
-  /** Execute the tasks and returns the resulting docs if any */
-  public ImmutableMap<String, Doc> run() throws IOException;
+  /** Executes the static file handling task */
+  public void run() throws IOException;
 }

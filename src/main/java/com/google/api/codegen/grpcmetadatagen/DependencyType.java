@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,13 @@ package com.google.api.codegen.grpcmetadatagen;
 /**
  * Indicates the type of dependency.
  *
- * <p>Currently we support two types of the dependency: (1) Local dependency: The dependency that is
- * stored in a local build system (2) Release depdendency: The dependency that is released to a
- * remote packaging system such as Maven Central
+ * <p>Currently we support two types of the dependency:
+ *
+ * <ol>
+ *   <li> (1) Local dependency: The dependency that is stored in a local build system
+ *   <li> (2) Release dependency: The dependency that is released to a remote packaging system such
+ *       as Maven Central
+ * </ol>
  */
 public enum DependencyType {
   /** Local dependency */

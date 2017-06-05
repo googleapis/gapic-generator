@@ -50,7 +50,7 @@ public class JavaGrpcMetadataProvider implements GrpcMetadataProvider {
   @Override
   public Map<String, Doc> generate(Model model, PackageMetadataConfig config) throws IOException {
     ImmutableMap.Builder<String, Doc> docs = new ImmutableMap.Builder<String, Doc>();
-    docs.putAll(copier.run());
+    copier.run();
 
     ArrayList<PackageMetadataView> metadataViews = new ArrayList<>();
     metadataViews.addAll(transformer.transform(model, config));

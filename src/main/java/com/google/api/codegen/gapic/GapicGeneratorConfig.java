@@ -31,9 +31,7 @@ public abstract class GapicGeneratorConfig {
   public abstract String id();
 
   public boolean enableSurfaceGenerator() {
-    return enabledArtifacts().isEmpty()
-        || enabledArtifacts().contains(ARTIFACT_SURFACE)
-        || enableSampleAppGenerator();
+    return enabledArtifacts().isEmpty() || enabledArtifacts().contains(ARTIFACT_SURFACE);
   }
 
   public boolean enableSampleAppGenerator() {

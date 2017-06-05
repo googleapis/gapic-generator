@@ -35,12 +35,12 @@ public class JavaGapicMetadataTransformer extends JavaPackageMetadataTransformer
     implements ModelToViewTransformer {
   private static final String GAPIC_BUILD_TEMPLATE_FILENAME = "java/build_gapic.gradle.snip";
   private static final String SAMPLE_BUILD_TEMPLATE_FILENAME = "java/sample.gradle.snip";
-  private final Map<String, String> snippetsOutput;
 
   private final PackageMetadataConfig packageConfig;
   private final GapicGeneratorConfig generatorConfig;
   private final GapicProductConfig productConfig;
   private final GapicCodePathMapper pathMapper;
+  private final Map<String, String> snippetsOutput;
 
   public JavaGapicMetadataTransformer(
       GapicCodePathMapper pathMapper,
@@ -53,13 +53,8 @@ public class JavaGapicMetadataTransformer extends JavaPackageMetadataTransformer
     this.pathMapper = pathMapper;
 
     if (generatorConfig.enableSampleAppGenerator()) {
-      // Only includes sample build file if the sample application generation is enabled
-      this.snippetsOutput =
-          ImmutableMap.of(
-              GAPIC_BUILD_TEMPLATE_FILENAME,
-              "build.gradle",
-              SAMPLE_BUILD_TEMPLATE_FILENAME,
-              "sample.gradle");
+      // Includes sample build file if the sample application generation is enabled
+      this.snippetsOutput = ImmutableMap.of(SAMPLE_BUILD_TEMPLATE_FILENAME, "build.gradle");
     } else {
       this.snippetsOutput = ImmutableMap.of(GAPIC_BUILD_TEMPLATE_FILENAME, "build.gradle");
     }
