@@ -37,7 +37,7 @@ public abstract class Method implements Comparable<Method>, Node {
    * @param path the full path to this node (ex: "resources.foo.methods.bar").
    * @return a method.
    */
-  public static Method from(DiscoveryNode root, String path) {
+  static Method from(DiscoveryNode root, String path) {
     return Method.from(root, path, null);
   }
 

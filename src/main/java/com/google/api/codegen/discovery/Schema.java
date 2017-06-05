@@ -45,7 +45,7 @@ public abstract class Schema implements Node {
    * @param path the full path to this node (ex: "methods.foo.parameters.bar").
    * @return a schema.
    */
-  public static Schema from(DiscoveryNode root, String path) {
+  static Schema from(DiscoveryNode root, String path) {
     return Schema.from(root, path, null);
   }
 
