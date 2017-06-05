@@ -137,11 +137,30 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
       }
     }
 
-    String packageName = getProtoElementPackage(schema);
-    String shortName = getShortName(schema);
+    String packageName = getSchemaPackage(schema);
+    // TODO(andrealin): typetable?
+    String shortName = schema.id();
     String longName = packageName + "." + shortName;
 
     return new TypeName(longName, shortName);
+  }
+
+  private static String getSchemaPackage(Schema schema) {
+    String packageName;
+    // TODO(andrealin): uncomment when "Nodeify" PR gets checked in.
+//    Node parent = schema.getParent();
+//    while(parent != null && !(parent instanceof Document)) {
+//      parent = parent.getParent();
+//    }
+//    if (parent == null) {
+//      packageName = DEFAULT_JAVA_PACKAGE_PREFIX;
+//    } else {
+//      packageName = getJavaPackage(((Document) parent).name());
+//    }
+    packageName = "com.google.cloud.cloud.spi.v1.resources";
+
+    // TODO(andrealin) outer class name.
+    return packageName;
   }
 
   @Override
@@ -217,7 +236,9 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
       case FIXED:
       case SINGLE:
       case ONEOF:
-        return getJavaPackage(resourceNameConfig.getAssignedProtoFile());
+// TODO(andrealin): Figure out how the proto config works??
+//        return getJavaPackage(resourceNameConfig.getAssignedProtoFile());
+        return "com.google.cloud.compute.spi.v1.resourcenames";
       case NONE:
       default:
         throw new IllegalArgumentException("Unexpected ResourceNameType: " + resourceNameType);
