@@ -62,7 +62,7 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
               getTestDataLocator().findTestData(discoveryDocFileName).getPath(),
               gapicConfigFilePaths,
               null,
-              null);
+              new LinkedList<String>());
     } catch (IOException e) {
       throw new IllegalArgumentException("Problem creating DiscoGapic generator.");
     }
