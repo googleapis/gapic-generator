@@ -23,11 +23,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-/** Java discovery doc fragment generator baseline tests. */
+/** Java discovery doc message and client generator baseline tests. */
 @RunWith(Parameterized.class)
-public class JavaDiscoGapicMessageGeneratorTest extends DiscoGapicTestBase {
+public class JavaDiscoGapicGeneratorTest extends DiscoGapicTestBase {
 
-  public JavaDiscoGapicMessageGeneratorTest(
+  public JavaDiscoGapicGeneratorTest(
       String name, String discoveryDocFileName, String[] gapicConfigFileNames) {
     super(name, discoveryDocFileName, gapicConfigFileNames);
   }

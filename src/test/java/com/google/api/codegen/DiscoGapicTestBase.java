@@ -28,7 +28,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-/** Base class for code generator baseline tests. */
+/** Base class for Discovery code generator baseline tests. */
 public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
 
   // Wiring
