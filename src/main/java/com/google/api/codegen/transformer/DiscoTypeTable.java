@@ -108,7 +108,7 @@ public class DiscoTypeTable {
    * the type.
    */
   public String getAndSaveNicknameForElementType(Schema schema) {
-    return typeTable.getAndSaveNicknameFor(typeNameConverter.getAndSaveNicknameFor(schema));
+    return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeNameForElementType(schema));
   }
 
   public String getAndSaveNicknameForContainer(
@@ -122,7 +122,7 @@ public class DiscoTypeTable {
    * zero value for that type.
    */
   public String getSnippetZeroValueAndSaveNicknameFor(Schema schema) {
-    return typeNameConverter.getSnippetZeroValue(schema.type(), schema.format()).getValueAndSaveTypeNicknameIn(typeTable);
+    return typeNameConverter.getSnippetZeroValue(schema).getValueAndSaveTypeNicknameIn(typeTable);
   }
 
   public String getImplZeroValueAndSaveNicknameFor(Schema schema) {
