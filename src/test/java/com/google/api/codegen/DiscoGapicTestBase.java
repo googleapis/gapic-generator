@@ -127,7 +127,7 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
 
   @Override
   protected String baselineFileName() {
-    return name + ".disco_gen" + ".baseline";
+    return name + ".baseline";
   }
 
   static final class DiscoveryFile implements FileFilter {
