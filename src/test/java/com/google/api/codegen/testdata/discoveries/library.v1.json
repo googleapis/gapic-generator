@@ -1,0 +1,636 @@
+{
+  "kind": "discovery#restDescription",
+  "discoveryVersion": "v1",
+  "id": "library:v1",
+  "name": "library",
+  "version": "v1",
+  "revision": "0",
+  "title": "Google Example Library API",
+  "description": "A simple Google Example Library API.",
+  "ownerDomain": "google.com",
+  "ownerName": "Google",
+  "icons": {
+    "x16": "https://www.gstatic.com/images/branding/product/1x/googleg_16dp.png",
+    "x32": "https://www.gstatic.com/images/branding/product/1x/googleg_32dp.png"
+  },
+  "documentationLink": "",
+  "protocol": "rest",
+  "rootUrl": "https://library-example.googleapis.com",
+  "servicePath": "",
+  "baseUrl": "https://library-example.googleapis.com",
+  "exponentialBackoffDefault": true,
+  "version_module": true,
+  "parameters": {
+    "alt": {
+      "type": "string",
+      "description": "Data format for the response.",
+      "default": "json",
+      "enum": [
+        "json",
+        "media"
+      ],
+      "enumDescriptions": [
+        "Responses with Content-Type of application/json",
+        "Media download with context dependend Content-Type"
+      ],
+      "location": "query"
+    }
+  },
+  "auth": {
+    "oauth2": {
+      "scopes": {
+        "https://www.googleapis.com/auth/userinfo.email": {
+          "description": "No description provided."
+        },
+        "https://www.googleapis.com/auth/xapi": {
+          "description": "No description provided."
+        },
+        "https://www.googleapis.com/auth/xapi.zoo": {
+          "description": "No description provided."
+        }
+      }
+    }
+  },
+  "schemas": {
+    "Shelf": {
+      "id": "Shelf",
+      "description": "A Shelf contains a collection of books with a theme.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "The resource name of the shelf.\nShelf names have the form `shelves/{shelf_id}`.",
+          "type": "string"
+        },
+        "theme": {
+          "description": "The theme of the shelf",
+          "type": "string"
+        },
+        "internalTheme": {
+          "description": "Internal theme that is visible to trusted testers only.",
+          "type": "string"
+        }
+      }
+    },
+    "ListShelvesResponse": {
+      "id": "ListShelvesResponse",
+      "description": "Request message for LibraryService.ListShelves.",
+      "type": "object",
+      "properties": {
+        "shelves": {
+          "description": "The list of shelves.",
+          "type": "array",
+          "items": {
+            "$ref": "Shelf"
+          }
+        },
+        "nextPageToken": {
+          "description": "A token to retrieve next page of results.\nPass this value in the\n[ListShelvesRequest.page_token][google.example.library.v1.ListShelvesRequest.page_token]\nfield in the subsequent call to `ListShelves` method to retrieve the next\npage of results.",
+          "type": "string"
+        }
+      }
+    },
+    "Empty": {
+      "id": "Empty",
+      "description": "A generic empty message that you can re-use to avoid defining duplicated\nempty messages in your APIs. A typical example is to use it as the request\nor the response type of an API method. For instance:\n\n    service Foo {\n      rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty);\n    }\n",
+      "type": "object",
+      "properties": {
+      }
+    },
+    "MergeShelvesRequest": {
+      "id": "MergeShelvesRequest",
+      "description": "Describes the shelf being removed (other_shelf_name) and updated\n(name) in this merge.",
+      "type": "object",
+      "properties": {
+        "otherShelfName": {
+          "description": "The name of the shelf we're removing books from and deleting.",
+          "type": "string"
+        }
+      }
+    },
+    "Book": {
+      "id": "Book",
+      "description": "A single book in the library.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "The resource name of the book.\nBook names have the form `shelves/{shelf_id}/books/{book_id}`.",
+          "type": "string"
+        },
+        "author": {
+          "description": "The name of the book author.",
+          "type": "string"
+        },
+        "title": {
+          "description": "The title of the book.",
+          "type": "string"
+        },
+        "read": {
+          "description": "Value indicating whether the book has been read.",
+          "type": "boolean"
+        },
+        "rating": {
+
+          "type": "string",
+          "enum": [
+            "GOOD",
+            "BAD"
+          ]
+        },
+        "anyValue": {
+          "description": "For testing all well-known types.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "any",
+            "description": "Properties of the object. Contains field @ype with type URL."
+          }
+        },
+        "structValue": {
+
+          "type": "object",
+          "additionalProperties": {
+            "type": "any",
+            "description": "Properties of the object."
+          }
+        },
+        "timeValue": {
+
+          "type": "string",
+          "format": "google-datetime"
+        },
+        "durationValue": {
+
+          "type": "string",
+          "format": "google-duration"
+        },
+        "fieldMaskValue": {
+
+          "type": "string",
+          "format": "google-fieldmask"
+        },
+        "int32Value": {
+
+          "type": "integer",
+          "format": "int32"
+        },
+        "uint32Value": {
+
+          "type": "integer",
+          "format": "uint32"
+        },
+        "int64Value": {
+
+          "type": "string",
+          "format": "int64"
+        },
+        "uint64Value": {
+
+          "type": "string",
+          "format": "uint64"
+        },
+        "floatValue": {
+
+          "type": "number",
+          "format": "float"
+        },
+        "doubleValue": {
+
+          "type": "number",
+          "format": "double"
+        },
+        "stringValue": {
+
+          "type": "string"
+        },
+        "boolValue": {
+
+          "type": "boolean"
+        },
+        "bytesValue": {
+
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "ListBooksResponse": {
+      "id": "ListBooksResponse",
+      "description": "Response message for LibraryService.ListBooks.",
+      "type": "object",
+      "properties": {
+        "books": {
+          "description": "The list of books.",
+          "type": "array",
+          "items": {
+            "$ref": "Book"
+          }
+        },
+        "nextPageToken": {
+          "description": "A token to retrieve next page of results.\nPass this value in the\n[ListBooksRequest.page_token][google.example.library.v1.ListBooksRequest.page_token]\nfield in the subsequent call to `ListBooks` method to retrieve the next\npage of results.",
+          "type": "string"
+        }
+      }
+    },
+    "MoveBookRequest": {
+      "id": "MoveBookRequest",
+      "description": "Describes what book to move (name) and what shelf we're moving it\nto (other_shelf_name).",
+      "type": "object",
+      "properties": {
+        "otherShelfName": {
+          "description": "The name of the destination shelf.",
+          "type": "string"
+        }
+      }
+    }
+  },
+  "resources": {
+    "shelves": {
+      "methods": {
+        "create": {
+          "id": "library.shelves.create",
+          "path": "v1/shelves",
+          "httpMethod": "POST",
+          "description": "Creates a shelf, and returns the new Shelf.",
+          "parameters": {
+          },
+          "parameterOrder": [
+          ],
+          "request": {
+            "$ref": "Shelf"
+          },
+          "response": {
+            "$ref": "Shelf"
+          },
+          "scopes": [
+            "https://www.googleapis.com/auth/userinfo.email",
+            "https://www.googleapis.com/auth/xapi"
+          ]
+        },
+        "get": {
+          "id": "library.shelves.get",
+          "path": "v1/shelves/{shelvesId}",
+          "httpMethod": "GET",
+          "description": "Gets a shelf.",
+          "parameters": {
+            "shelvesId": {
+              "description": "Part of `name`. The name of the shelf to retrieve.",
+              "location": "path",
+              "required": true,
+              "type": "string"
+            }
+          },
+          "parameterOrder": [
+            "shelvesId"
+          ],
+          "response": {
+            "$ref": "Shelf"
+          },
+          "scopes": [
+            "https://www.googleapis.com/auth/xapi.zoo"
+          ]
+        },
+        "list": {
+          "id": "library.shelves.list",
+          "path": "v1/shelves",
+          "httpMethod": "GET",
+          "description": "Lists shelves.",
+          "parameters": {
+            "pageSize": {
+              "description": "Requested page size. Server may return fewer shelves than requested.\nIf unspecified, server will pick an appropriate default.",
+              "location": "query",
+              "type": "integer",
+              "format": "int32"
+            },
+            "pageToken": {
+              "description": "A token identifying a page of results the server should return.\nTypically, this is the value of\n[ListShelvesResponse.next_page_token][google.example.library.v1.ListShelvesResponse.next_page_token]\nreturned from the previous call to `ListShelves` method.",
+              "location": "query",
+              "type": "string"
+            }
+          },
+          "parameterOrder": [
+            "pageSize",
+            "pageToken"
+          ],
+          "response": {
+            "$ref": "ListShelvesResponse"
+          },
+          "scopes": [
+            "https://www.googleapis.com/auth/xapi.zoo"
+          ]
+        },
+        "delete": {
+          "id": "library.shelves.delete",
+          "path": "v1/shelves/{shelvesId}",
+          "httpMethod": "DELETE",
+          "description": "Deletes a shelf.",
+          "parameters": {
+            "shelvesId": {
+              "description": "Part of `name`. The name of the shelf to delete.",
+              "location": "path",
+              "required": true,
+              "type": "string"
+            }
+          },
+          "parameterOrder": [
+            "shelvesId"
+          ],
+          "response": {
+            "$ref": "Empty"
+          },
+          "scopes": [
+            "https://www.googleapis.com/auth/xapi.zoo"
+          ]
+        },
+        "merge": {
+          "id": "library.shelves.merge",
+          "path": "v1/shelves/{shelvesId}:merge",
+          "httpMethod": "POST",
+          "description": "Merges two shelves by adding all books from the shelf named\n`other_shelf_name` to shelf `name`, and deletes\n`other_shelf_name`. Returns the updated shelf.",
+          "parameters": {
+            "shelvesId": {
+              "description": "Part of `name`. The name of the shelf we're adding books to.",
+              "location": "path",
+              "required": true,
+              "type": "string"
+            }
+          },
+          "parameterOrder": [
+            "shelvesId"
+          ],
+          "request": {
+            "$ref": "MergeShelvesRequest"
+          },
+          "response": {
+            "$ref": "Shelf"
+          },
+          "scopes": [
+            "https://www.googleapis.com/auth/xapi.zoo"
+          ]
+        }
+      }
+    ,
+      "resources": {
+        "books": {
+          "methods": {
+            "create": {
+              "id": "library.shelves.books.create",
+              "path": "v1/shelves/{shelvesId}/books",
+              "httpMethod": "POST",
+              "description": "Creates a book.",
+              "parameters": {
+                "shelvesId": {
+                  "description": "Part of `name`. The name of the shelf in which the book is created.",
+                  "location": "path",
+                  "required": true,
+                  "type": "string"
+                }
+              },
+              "parameterOrder": [
+                "shelvesId"
+              ],
+              "request": {
+                "$ref": "Book"
+              },
+              "response": {
+                "$ref": "Book"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/xapi.zoo"
+              ]
+            },
+            "get": {
+              "id": "library.shelves.books.get",
+              "path": "v1/shelves/{shelvesId}/books/{booksId}",
+              "httpMethod": "GET",
+              "description": "Gets a book.",
+              "parameters": {
+                "shelvesId": {
+                  "description": "Part of `name`. The name of the book to retrieve.",
+                  "location": "path",
+                  "required": true,
+                  "type": "string"
+                },
+                "booksId": {
+                  "description": "Part of `name`. See documentation of `shelvesId`.",
+                  "location": "path",
+                  "required": true,
+                  "type": "string"
+                }
+              },
+              "parameterOrder": [
+                "shelvesId",
+                "booksId"
+              ],
+              "response": {
+                "$ref": "Book"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/xapi.zoo"
+              ]
+            },
+            "list": {
+              "id": "library.shelves.books.list",
+              "path": "v1/shelves/{shelvesId}/books",
+              "httpMethod": "GET",
+              "description": "Lists books in a shelf.",
+              "parameters": {
+                "shelvesId": {
+                  "description": "Part of `name`. The name of the shelf whose books we'd like to list.",
+                  "location": "path",
+                  "required": true,
+                  "type": "string"
+                },
+                "pageSize": {
+                  "description": "Requested page size. Server may return fewer books than requested.\nIf unspecified, server will pick an appropriate default.",
+                  "location": "query",
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "pageToken": {
+                  "description": "A token identifying a page of results the server should return.\nTypically, this is the value of\n[ListBooksResponse.next_page_token][google.example.library.v1.ListBooksResponse.next_page_token].\nreturned from the previous call to `ListBooks` method.",
+                  "location": "query",
+                  "type": "string"
+                }
+              },
+              "parameterOrder": [
+                "shelvesId",
+                "pageSize",
+                "pageToken"
+              ],
+              "response": {
+                "$ref": "ListBooksResponse"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/xapi.zoo"
+              ]
+            },
+            "delete": {
+              "id": "library.shelves.books.delete",
+              "path": "v1/shelves/{shelvesId}/books/{booksId}",
+              "httpMethod": "DELETE",
+              "description": "Deletes a book.",
+              "parameters": {
+                "shelvesId": {
+                  "description": "Part of `name`. The name of the book to delete.",
+                  "location": "path",
+                  "required": true,
+                  "type": "string"
+                },
+                "booksId": {
+                  "description": "Part of `name`. See documentation of `shelvesId`.",
+                  "location": "path",
+                  "required": true,
+                  "type": "string"
+                }
+              },
+              "parameterOrder": [
+                "shelvesId",
+                "booksId"
+              ],
+              "response": {
+                "$ref": "Empty"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/xapi.zoo"
+              ]
+            },
+            "update": {
+              "id": "library.shelves.books.update",
+              "path": "v1/shelves/{shelvesId}/books/{booksId}",
+              "httpMethod": "PUT",
+              "description": "Updates a book.",
+              "parameters": {
+                "shelvesId": {
+                  "description": "Part of `name`. The name of the book to update.",
+                  "location": "path",
+                  "required": true,
+                  "type": "string"
+                },
+                "booksId": {
+                  "description": "Part of `name`. See documentation of `shelvesId`.",
+                  "location": "path",
+                  "required": true,
+                  "type": "string"
+                }
+              },
+              "parameterOrder": [
+                "shelvesId",
+                "booksId"
+              ],
+              "request": {
+                "$ref": "Book"
+              },
+              "response": {
+                "$ref": "Book"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/xapi.zoo"
+              ]
+            },
+            "move": {
+              "id": "library.shelves.books.move",
+              "path": "v1/shelves/{shelvesId}/books/{booksId}:move",
+              "httpMethod": "POST",
+              "description": "Moves a book to another shelf, and returns the new book.",
+              "parameters": {
+                "shelvesId": {
+                  "description": "Part of `name`. The name of the book to move.",
+                  "location": "path",
+                  "required": true,
+                  "type": "string"
+                },
+                "booksId": {
+                  "description": "Part of `name`. See documentation of `shelvesId`.",
+                  "location": "path",
+                  "required": true,
+                  "type": "string"
+                }
+              },
+              "parameterOrder": [
+                "shelvesId",
+                "booksId"
+              ],
+              "request": {
+                "$ref": "MoveBookRequest"
+              },
+              "response": {
+                "$ref": "Book"
+              },
+              "scopes": [
+                "https://www.googleapis.com/auth/xapi.zoo"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "media": {
+      "methods": {
+        "upload": {
+          "id": "library.media.upload",
+          "path": "v1/media/{+resourceName}",
+          "httpMethod": "POST",
+          "description": "Method for media upload. Upload is supported on\nthe URI `/upload/v1/media/{+name}`.",
+          "parameters": {
+            "resourceName": {
+              "description": "Name of the media that is being downloaded.  See\n[][ByteStream.ReadRequest.resource_name].",
+              "location": "path",
+              "required": true,
+              "pattern": "^.*$",
+              "type": "string"
+            }
+          },
+          "parameterOrder": [
+            "resourceName"
+          ],
+          "supportsMediaUpload": true,
+          "mediaUpload": {
+            "accept": [
+              "*/*"
+            ],
+            "protocols": {
+              "simple": {
+                "multipart": true,
+                "path": "/upload/v1/media/{+resourceName}"
+              }
+            }
+          },
+          "request": {
+            "$ref": "Media"
+          },
+          "response": {
+            "$ref": "Media"
+          },
+          "scopes": [
+            "https://www.googleapis.com/auth/userinfo.email"
+          ]
+        },
+        "download": {
+          "id": "library.media.download",
+          "path": "v1/media/{+resourceName}",
+          "httpMethod": "GET",
+          "description": "Method for media download. Download is supported\non the URI `/v1/media/{+name}?alt\u003dmedia`.",
+          "parameters": {
+            "resourceName": {
+              "description": "Name of the media that is being downloaded.  See\n[][ByteStream.ReadRequest.resource_name].",
+              "location": "path",
+              "required": true,
+              "pattern": "^.*$",
+              "type": "string"
+            }
+          },
+          "parameterOrder": [
+            "resourceName"
+          ],
+          "supportsMediaDownload": true,
+          "response": {
+            "$ref": "Media"
+          },
+          "scopes": [
+            "https://www.googleapis.com/auth/userinfo.email"
+          ]
+        }
+      }
+    }
+  },
+  "basePath": ""
+}
