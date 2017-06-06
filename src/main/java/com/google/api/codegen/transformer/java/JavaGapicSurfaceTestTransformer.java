@@ -311,24 +311,25 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
   private void addUnitTestImports(GapicInterfaceContext context) {
     ModelTypeTable typeTable = context.getModelTypeTable();
+    typeTable.saveNicknameFor("com.google.api.gax.core.NoCredentialsProvider");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.ApiException");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.testing.MockGrpcService");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.testing.MockServiceHelper");
+    typeTable.saveNicknameFor("com.google.common.collect.Lists");
+    typeTable.saveNicknameFor("com.google.protobuf.GeneratedMessageV3");
+    typeTable.saveNicknameFor("io.grpc.Status");
+    typeTable.saveNicknameFor("io.grpc.StatusRuntimeException");
+    typeTable.saveNicknameFor("java.io.IOException");
+    typeTable.saveNicknameFor("java.util.ArrayList");
+    typeTable.saveNicknameFor("java.util.Arrays");
+    typeTable.saveNicknameFor("java.util.concurrent.ExecutionException");
+    typeTable.saveNicknameFor("java.util.List");
     typeTable.saveNicknameFor("org.junit.After");
     typeTable.saveNicknameFor("org.junit.AfterClass");
     typeTable.saveNicknameFor("org.junit.Assert");
     typeTable.saveNicknameFor("org.junit.Before");
     typeTable.saveNicknameFor("org.junit.BeforeClass");
     typeTable.saveNicknameFor("org.junit.Test");
-    typeTable.saveNicknameFor("java.io.IOException");
-    typeTable.saveNicknameFor("java.util.ArrayList");
-    typeTable.saveNicknameFor("java.util.Arrays");
-    typeTable.saveNicknameFor("java.util.List");
-    typeTable.saveNicknameFor("java.util.concurrent.ExecutionException");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.testing.MockServiceHelper");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.testing.MockGrpcService");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.ApiException");
-    typeTable.saveNicknameFor("com.google.common.collect.Lists");
-    typeTable.saveNicknameFor("com.google.protobuf.GeneratedMessageV3");
-    typeTable.saveNicknameFor("io.grpc.Status");
-    typeTable.saveNicknameFor("io.grpc.StatusRuntimeException");
     if (context.getInterfaceConfig().hasPageStreamingMethods()) {
       typeTable.saveNicknameFor("com.google.api.gax.core.PagedListResponse");
     }
