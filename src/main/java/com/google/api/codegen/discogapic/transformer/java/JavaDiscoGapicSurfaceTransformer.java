@@ -77,14 +77,26 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
     SurfaceNamer namer = new JavaSurfaceNamer(productConfig.getPackageName());
 
     List<ServiceDocView> serviceDocs = new ArrayList<>();
+    DiscoTypeTable discoTypeTable = createTypeTable(productConfig.getPackageName());
 
+//    DiscoGapicInterfaceContext context =
+//        DiscoGapicInterfaceContext.create(
+//            document,
+//            productConfig,
+//            discoTypeTable,
+//            namer,
+//            JavaFeatureConfig.newBuilder().enableStringFormatFunctions(false).build());
     DiscoGapicInterfaceContext context =
         DiscoGapicInterfaceContext.create(
             document,
             productConfig,
             createTypeTable(productConfig.getPackageName()),
+            new JavaDiscoGapicNamer(),
             namer,
-            JavaFeatureConfig.newBuilder().enableStringFormatFunctions(false).build());
+            JavaFeatureConfig.newBuilder().enableStringFormatFunctions(false).build()
+        );
+
+
     StaticLangApiFileView apiFile = generateApiFile(context);
     surfaceDocs.add(apiFile);
 

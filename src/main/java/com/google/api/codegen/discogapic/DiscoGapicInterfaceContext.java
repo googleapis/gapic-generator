@@ -16,6 +16,7 @@ package com.google.api.codegen.discogapic;
 
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.transformer.DiscoTypeTable;
 import com.google.api.codegen.transformer.FeatureConfig;
@@ -31,10 +32,11 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
       Document document,
       GapicProductConfig productConfig,
       DiscoTypeTable typeTable,
-      SurfaceNamer namer,
+      DiscoGapicNamer discoGapicNamer,
+      SurfaceNamer surfaceNamer,
       FeatureConfig featureConfig) {
     return new AutoValue_DiscoGapicInterfaceContext(
-        document, productConfig, typeTable, namer, featureConfig);
+        document, productConfig, typeTable, discoGapicNamer, surfaceNamer, featureConfig);
   }
 
   public abstract Document getDocument();
@@ -44,13 +46,16 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
 
   public abstract DiscoTypeTable getDiscoTypeTable();
 
+  public abstract DiscoGapicNamer getDiscoGapicNamer();
+
+  @Override
+  public abstract SurfaceNamer getNamer();
+
   @Override
   public TypeTable getTypeTable() {
     return getDiscoTypeTable().getTypeTable();
   }
 
-  @Override
-  public abstract SurfaceNamer getNamer();
 
   public abstract FeatureConfig getFeatureConfig();
 
@@ -59,6 +64,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
         getDocument(),
         getProductConfig(),
         getDiscoTypeTable().cloneEmpty(),
+        getDiscoGapicNamer(),
         getNamer(),
         getFeatureConfig());
   }

@@ -24,11 +24,9 @@ import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.DiscoTypeTable;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
-import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.java.JavaFeatureConfig;
 import com.google.api.codegen.transformer.java.JavaSchemaTypeNameConverter;
 import com.google.api.codegen.transformer.java.JavaSurfaceNamer;
-import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaTypeTable;
@@ -72,7 +70,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
   @Override
   public List<ViewModel> transform(Document document, GapicProductConfig productConfig) {
     List<ViewModel> surfaceSchemas = new ArrayList<>();
-    SurfaceNamer namer = new JavaSurfaceNamer(productConfig.getPackageName());
+    JavaDiscoGapicNamer discoGapicNamer = new JavaDiscoGapicNamer();
     SymbolTable docSymbolTable = SymbolTable.fromSeed(JavaNameFormatter.RESERVED_IDENTIFIER_SET);
 
     DiscoGapicInterfaceContext context =
@@ -80,7 +78,8 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
             document,
             productConfig,
             createTypeTable(productConfig.getPackageName()),
-            namer,
+            discoGapicNamer,
+            new JavaSurfaceNamer(productConfig.getPackageName()),
             JavaFeatureConfig.newBuilder().enableStringFormatFunctions(false).build());
 
     StaticLangApiMessageFileView apiFile;
@@ -130,7 +129,6 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
 
     schemaView.typeName(schemaName);
     schemaView.type(schema.type());
-    // TODO(andrealin): apply Java naming format.
     // TODO(andrealin): use symbol table to make sure Schema names aren't Java keywords.
     schemaView.defaultValue(schema.defaultValue());
 
@@ -141,14 +139,16 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       Schema property = propertyEntry.getValue();
       SimpleMessagePropertyView.Builder simpleProperty =
           SimpleMessagePropertyView.newBuilder().name(propertyString);
-      simpleProperty.typeName(typeToJavaType(property));
+//      simpleProperty.typeName(typeToJavaType(property));
+      String typeName = context.getDiscoTypeTable().getAndSaveNicknameForElementType(property);
+      simpleProperty.typeName(typeName);
+      simpleProperty.fieldGetFunction(context.getDiscoGapicNamer().getResourceGetterName(propertyString));
+      simpleProperty.fieldGetFunction(context.getDiscoGapicNamer().getResourceSetterName(propertyString));
 
-      // TODO(andrealin) use a surface namer for the getter/setter.
-      Name propertyName = Name.anyCamel(propertyString);
-      simpleProperty.fieldGetFunction(
-          nameFormatter.publicMethodName(Name.from("get").join(propertyName)));
-      simpleProperty.fieldSetFunction(
-          nameFormatter.publicMethodName(Name.from("set").join(propertyName)));
+//      simpleProperty.fieldGetFunction(
+//          nameFormatter.publicMethodName(Name.from("get").join(propertyName)));
+//      simpleProperty.fieldSetFunction(
+//          nameFormatter.publicMethodName(Name.from("set").join(propertyName)));
       properties.add(simpleProperty.build());
     }
     schemaView.properties(properties);
@@ -166,42 +166,42 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
 
   // Return the corresponding Java identifier for a given Discovery doc typeName and format.
   // https://developers.google.com/discovery/v1/type-format.
-  private String typeToJavaType(Schema schema) {
-    if (!schema.reference().isEmpty()) {
-      return schema.reference();
-    }
-
-    switch (schema.type()) {
-      case ARRAY:
-        return String.format("List<%s>", typeToJavaType(schema.items()));
-      case INTEGER:
-        switch (schema.format()) {
-          case INT32:
-            return "Integer";
-          case UINT32:
-            return "Long";
-          default:
-            throw new IllegalStateException(
-                "Discovery doc had an INTEGER typeName that was not Integer/Long.");
-        }
-      case NUMBER:
-        switch (schema.format()) {
-          case DOUBLE:
-            return "Double";
-          case FLOAT:
-            return "Float";
-          default:
-            throw new IllegalStateException(
-                "Discovery doc had a NUMBER typeName that was not Float/Double.");
-        }
-      case BOOLEAN:
-        return "Boolean";
-      case STRING:
-        return "String";
-      case OBJECT:
-        return "Object";
-      default:
-        throw new IllegalStateException("Discovery doc had an unaccounted for typeName/format.");
-    }
-  }
+//  private String typeToJavaType(Schema schema) {
+//    if (!schema.reference().isEmpty()) {
+//      return schema.reference();
+//    }
+//
+//    switch (schema.type()) {
+//      case ARRAY:
+//        return String.format("List<%s>", typeToJavaType(schema.items()));
+//      case INTEGER:
+//        switch (schema.format()) {
+//          case INT32:
+//            return "Integer";
+//          case UINT32:
+//            return "Long";
+//          default:
+//            throw new IllegalStateException(
+//                "Discovery doc had an INTEGER typeName that was not Integer/Long.");
+//        }
+//      case NUMBER:
+//        switch (schema.format()) {
+//          case DOUBLE:
+//            return "Double";
+//          case FLOAT:
+//            return "Float";
+//          default:
+//            throw new IllegalStateException(
+//                "Discovery doc had a NUMBER typeName that was not Float/Double.");
+//        }
+//      case BOOLEAN:
+//        return "Boolean";
+//      case STRING:
+//        return "String";
+//      case OBJECT:
+//        return "Object";
+//      default:
+//        throw new IllegalStateException("Discovery doc had an unaccounted for typeName/format.");
+//    }
+//  }
 }
