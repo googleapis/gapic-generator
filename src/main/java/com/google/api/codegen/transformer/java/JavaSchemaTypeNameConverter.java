@@ -120,7 +120,7 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
    * primitive, basicTypeName returns it in unboxed form.
    */
   private TypeName getTypeNameForElementType(Schema schema, boolean shouldBoxPrimitives) {
-    String primitiveTypeName = getPrimitiveZeroValue(schema);
+    String primitiveTypeName = getPrimitive(schema);
     if (primitiveTypeName != null) {
       if (primitiveTypeName.contains(".")) {
         // Fully qualified type name, use regular type name resolver. Can skip boxing logic
