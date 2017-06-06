@@ -91,6 +91,7 @@ public class DiscoGapicGeneratorApi {
   }
 
   @VisibleForTesting
+  /** From config filepaths, constructs the DiscoGapicProviders to run. */
   static List<DiscoGapicProvider> getProviders(String discoveryDocPath,
       List<String> configFileNames, String packageConfigFile, List<String> enabledArtifacts)
       throws IOException {
@@ -144,7 +145,6 @@ public class DiscoGapicGeneratorApi {
     List<String> configFileNames = options.get(GENERATOR_CONFIG_FILES);
     String packageConfigFile = options.get(PACKAGE_CONFIG_FILE);
     List<String> enabledArtifacts = options.get(ENABLED_ARTIFACTS);
-
 
     List<DiscoGapicProvider> providers =
         getProviders(discoveryDocPath, configFileNames, packageConfigFile, enabledArtifacts);
