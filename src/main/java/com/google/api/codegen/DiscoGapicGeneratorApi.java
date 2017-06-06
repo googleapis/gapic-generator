@@ -46,7 +46,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -90,8 +89,8 @@ public class DiscoGapicGeneratorApi {
     this.options = options;
   }
 
+  /** From config file paths, constructs the DiscoGapicProviders to run. */
   @VisibleForTesting
-  /** From config filepaths, constructs the DiscoGapicProviders to run. */
   static List<DiscoGapicProvider> getProviders(
       String discoveryDocPath,
       List<String> configFileNames,
@@ -132,7 +131,7 @@ public class DiscoGapicGeneratorApi {
 
     DiscoGapicProviderFactory providerFactory = createProviderFactory(factory);
     GapicGeneratorConfig generatorConfig =
-        GapicGeneratorConfig.newBuilder().id(id).enabledArtifacts(new LinkedList<String>()).build();
+        GapicGeneratorConfig.newBuilder().id(id).enabledArtifacts(enabledArtifacts).build();
 
     return providerFactory.create(document, productConfig, generatorConfig, packageConfig);
   }
