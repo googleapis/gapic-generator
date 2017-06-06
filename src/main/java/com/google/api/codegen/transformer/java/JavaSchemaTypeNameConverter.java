@@ -18,6 +18,7 @@ import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.discovery.Document;
+import com.google.api.codegen.discovery.Node;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.discovery.Schema.Type;
 import com.google.api.codegen.transformer.SchemaTypeNameConverter;
@@ -145,17 +146,15 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
 
   private static String getSchemaPackage(Schema schema) {
     String packageName;
-    // TODO(andrealin): uncomment when "Nodeify" PR gets checked in.
-    //    Node parent = schema.getParent();
-    //    while(parent != null && !(parent instanceof Document)) {
-    //      parent = parent.getParent();
-    //    }
-    //    if (parent == null) {
-    //      packageName = DEFAULT_JAVA_PACKAGE_PREFIX;
-    //    } else {
-    //      packageName = getJavaPackage(((Document) parent).name());
-    //    }
-    packageName = "com.google.cloud.cloud.spi.v1.resources";
+        Node parent = schema.parent();
+        while(parent != null && !(parent instanceof Document)) {
+          parent = parent.parent();
+        }
+        if (parent == null) {
+          packageName = DEFAULT_JAVA_PACKAGE_PREFIX;
+        } else {
+          packageName = getJavaPackage((Document) parent);
+        }
 
     // TODO(andrealin) outer class name.
     return packageName;
@@ -266,7 +265,8 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
   }
 
   public static String getJavaPackage(Document file) {
-    String packageName = String.format("com.google.cloud.%s.spi.v1.resources", file.name());
+    String packageName = String.format("com.google.cloud.%s.spi.%s.resources", file.name(),
+        file.version());
     if (Strings.isNullOrEmpty(packageName)) {
       return DEFAULT_JAVA_PACKAGE_PREFIX + "." + file.name();
     }
