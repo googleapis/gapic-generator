@@ -19,7 +19,7 @@ import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypedValue;
 
-/** ModelTypeNameConverter maps TypeRef instances to TypeName instances. */
+/** SchemaTypeNameConverter maps TypeRef instances to TypeName instances. */
 public interface SchemaTypeNameConverter {
   /** Provides a TypeName for the given TypeRef. */
   TypeName getTypeName(Schema type);

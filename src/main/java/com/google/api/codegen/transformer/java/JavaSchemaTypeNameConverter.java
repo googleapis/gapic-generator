@@ -27,7 +27,7 @@ import com.google.api.codegen.util.TypedValue;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.common.base.Strings;
 
-/** The SchemaTypeTable for Java. */
+/** The Schema TypeName converter for Java. */
 public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
 
   /** The package prefix protoc uses if no java package option was provided. */
