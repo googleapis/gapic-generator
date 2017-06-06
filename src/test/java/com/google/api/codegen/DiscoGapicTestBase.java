@@ -133,7 +133,7 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
   static final class DiscoveryFile implements FileFilter {
     @Override
     public boolean accept(File file) {
-      return file.isFile() && file.getName().endsWith("compute.v1.json");
+      return file.isFile() && file.getName().endsWith("library.v1.json");
     }
   }
 }
