@@ -18,6 +18,7 @@ import com.google.api.codegen.discogapic.DiscoGapicProvider;
 import com.google.api.tools.framework.model.SimpleDiagCollector;
 import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
 import com.google.api.tools.framework.snippet.Doc;
+import com.google.common.collect.ImmutableList;
 import com.google.common.io.Files;
 import com.google.protobuf.MessageOrBuilder;
 import java.io.File;
@@ -40,6 +41,7 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
 
   private final String name;
   private final String discoveryDocFileName;
+  private final List<String> gapicConfigFilePaths = new LinkedList<>();
   private final String[] gapicConfigFileNames;
   protected ConfigProto config;
   List<DiscoGapicProvider> discoGapicProviders;
@@ -49,13 +51,14 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
     this.name = name;
     this.discoveryDocFileName = discoveryDocFileName;
     this.gapicConfigFileNames = gapicConfigFileNames;
+
+    for (String fileName : gapicConfigFileNames) {
+      gapicConfigFilePaths.add(getTestDataLocator().findTestData(fileName).getFile());
+    }
+
   }
 
   protected void setupDiscovery() {
-    List<String> gapicConfigFilePaths = new LinkedList<>();
-    for (String fileName : gapicConfigFileNames) {
-      gapicConfigFilePaths.add(getTestDataLocator().findTestData(fileName).toString());
-    }
     try {
       discoGapicProviders = DiscoGapicGeneratorApi.getProviders(
           getTestDataLocator().findTestData(discoveryDocFileName).getPath(),
@@ -74,14 +77,10 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
 
   @Override
   protected Object run() {
-    GeneratorProto generator = config.getGenerator();
-
-    String id = generator.getId();
-
     try {
       discoGapicProviders = DiscoGapicGeneratorApi.getProviders(
           getTestDataLocator().findTestData(discoveryDocFileName).getPath(),
-          Arrays.asList(gapicConfigFileNames), null, null);
+          gapicConfigFilePaths, null, new LinkedList<String>());
     } catch (IOException e) {
       throw new IllegalArgumentException("Problem creating DiscoGapic generator.");
     }
@@ -128,7 +127,7 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
 
   @Override
   protected String baselineFileName() {
-    return name + ".baseline";
+    return name + ".disco_gen" + ".baseline";
   }
 
   static final class DiscoveryFile implements FileFilter {

@@ -25,7 +25,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 /** Java discovery doc fragment generator baseline tests. */
 @RunWith(Parameterized.class)
-public class JavaDiscoveryMessageGeneratorTest extends DiscoveryGeneratorTestBase {
+public class JavaDiscoveryMessageGeneratorTest extends DiscoGapicTestBase {
 
   public JavaDiscoveryMessageGeneratorTest(
       String name, String discoveryDocFileName, String[] gapicConfigFileNames) {
@@ -49,7 +49,7 @@ public class JavaDiscoveryMessageGeneratorTest extends DiscoveryGeneratorTestBas
           new Object[] {
             "java_" + fileName,
             "discoveries/" + fileName,
-            new String[] {"com/google/api/codegen/java/java_discovery.yaml"}
+            new String[] {"com/google/api/codegen/java/java_discogapic.yaml"}
           });
     }
     return builder.build();
@@ -64,7 +64,7 @@ public class JavaDiscoveryMessageGeneratorTest extends DiscoveryGeneratorTestBas
   // =====
 
   @Test
-  public void fragments() throws Exception {
+  public void messages() throws Exception {
     test();
   }
 }
