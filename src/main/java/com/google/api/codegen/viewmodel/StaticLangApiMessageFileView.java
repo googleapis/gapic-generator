@@ -21,7 +21,7 @@ import com.google.auto.value.AutoValue;
  * ViewModel representing the file containing a message.
  *
  * <p>For example, this can be used to represent a class file containing a Discovery Document's
- * schemas".
+ * schemas.
  */
 @AutoValue
 public abstract class StaticLangApiMessageFileView implements ViewModel {
