@@ -22,8 +22,8 @@
  "servicePath": "foo/",
  "batchPath": "batch",
  "schemas": {
-  "Baz": {
-   "id": "Baz",
+  "Bar": {
+   "id": "Bar",
    "type": "object",
    "properties": {
     "foobar": {
@@ -37,7 +37,7 @@
   "bar": {
    "methods": {
     "get": {
-     "id": "bar.baz.get",
+     "id": "foo.bar.get",
      "path": "v1/bar",
      "httpMethod": "GET",
      "description": "Get a thing!",
@@ -45,11 +45,16 @@
       "foobar": {
        "type": "string",
        "description": "A string.",
-       "location": "query"
+       "location": "query",
+       "repeated": true,
+       "required": true
       }
      },
+     "parameterOrder": [
+      "foobar"
+     ],
      "response": {
-      "$ref": "Baz"
+      "$ref": "Bar"
      }
     }
    }

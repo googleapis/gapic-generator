@@ -12,6 +12,7 @@ using Google.Apis.Foo.v1;
 using Google.Apis.Services;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 
 using Data = Google.Apis.Foo.v1.Data;
 
@@ -23,11 +24,15 @@ namespace FooSample
         {
             FooService fooService = new FooService(new BaseClientService.Initializer());
 
-            BazResource.GetRequest request = fooService.Baz.Get();
+            // A string.
+            List<string> foobar = new List<string>();  // TODO: Update placeholder value.
+            foobar.add(" ");
+
+            BarResource.GetRequest request = fooService.Bar.Get(foobar);
 
             // To execute asynchronously in an async method, replace `request.Execute()` as shown:
-            Data.Baz response = request.Execute();
-            // Data.Baz response = await request.ExecuteAsync();
+            Data.Bar response = request.Execute();
+            // Data.Bar response = await request.ExecuteAsync();
 
             // TODO: Change code below to process the `response` object:
             Console.WriteLine(JsonConvert.SerializeObject(response));

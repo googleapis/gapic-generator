@@ -207,7 +207,14 @@
 
 
     @end
-    {@field.typeName} {@field.name} = {@field.defaultValue};  // TODO: Update placeholder value.
+    @if field.isArray
+        {@field.typeName} {@field.name} = new {@field.typeName}();  // TODO: Update placeholder value.
+        @if field.defaultValue
+            {@field.name}.add({@field.defaultValue});
+        @end
+    @else
+        {@field.typeName} {@field.name} = {@field.defaultValue};  // TODO: Update placeholder value.
+    @end
     @if field.example
         // {@field.example}
     @end

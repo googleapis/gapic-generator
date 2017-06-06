@@ -223,8 +223,8 @@ public class CSharpSampleMethodToViewTransformer implements SampleMethodToViewTr
       typeName = typedValue.getTypeName().getNickname();
       defaultValue = String.format(typedValue.getValuePattern(), typeName);
     } else {
-      if (!Strings.isNullOrEmpty(field.defaultValue())) {
-        defaultValue = field.defaultValue();
+      if (!Strings.isNullOrEmpty(field.defaultValue()) || typeInfo.isArray()) {
+        defaultValue = Strings.nullToEmpty(field.defaultValue());
       } else {
         defaultValue = typeTable.getZeroValueAndSaveNicknameFor(typeInfo);
       }
@@ -237,6 +237,7 @@ public class CSharpSampleMethodToViewTransformer implements SampleMethodToViewTr
         .example(field.example())
         .description(field.description())
         .setterFuncName(namer.getRequestBodyFieldSetterName(field.name()))
+        .isArray(typeInfo.isArray())
         .required(field.required())
         .build();
   }

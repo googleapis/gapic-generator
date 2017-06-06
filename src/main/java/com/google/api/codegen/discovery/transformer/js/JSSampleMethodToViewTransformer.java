@@ -173,7 +173,7 @@ public class JSSampleMethodToViewTransformer implements SampleMethodToViewTransf
 
   private SampleFieldView createSampleFieldView(FieldInfo field, SampleTypeTable typeTable) {
     String defaultValue = typeTable.getZeroValueAndSaveNicknameFor(field.type());
-    if (!Strings.isNullOrEmpty(field.defaultValue())) {
+    if (!Strings.isNullOrEmpty(field.defaultValue()) && !field.type().isArray()) {
       defaultValue = field.defaultValue();
     }
     return SampleFieldView.newBuilder()

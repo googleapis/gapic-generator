@@ -15,16 +15,21 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.foo.Foo;
-import com.google.api.services.foo.model.Baz;
+import com.google.api.services.foo.model.Bar;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FooExample {
   public static void main(String args[]) throws IOException, GeneralSecurityException {
-    Foo fooService = createFooService();
-    Foo.Baz.Get request = fooService.baz().get();
+    // A string.
+    List<String> foobar = new ArrayList<>();  // TODO: Update placeholder value.
 
-    Baz response = request.execute();
+    Foo fooService = createFooService();
+    Foo.Bar.Get request = fooService.bar().get(foobar);
+
+    Bar response = request.execute();
 
     // TODO: Change code below to process the `response` object:
     System.out.println(response);

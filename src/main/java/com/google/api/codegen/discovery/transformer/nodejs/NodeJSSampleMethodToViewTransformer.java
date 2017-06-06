@@ -194,7 +194,7 @@ public class NodeJSSampleMethodToViewTransformer implements SampleMethodToViewTr
       name = name + "_";
     }
     String defaultValue;
-    if (!Strings.isNullOrEmpty(field.defaultValue())) {
+    if (!Strings.isNullOrEmpty(field.defaultValue()) && !field.type().isArray()) {
       defaultValue = field.defaultValue();
     } else {
       defaultValue = typeTable.getZeroValueAndSaveNicknameFor(field.type());

@@ -194,7 +194,7 @@ public class RubySampleMethodToViewTransformer implements SampleMethodToViewTran
     SampleTypeTable typeTable = context.getSampleTypeTable();
     String name = namer.getFieldVarName(field.name());
     String defaultValue;
-    if (!Strings.isNullOrEmpty(field.defaultValue())) {
+    if (!Strings.isNullOrEmpty(field.defaultValue()) && !field.type().isArray()) {
       defaultValue = field.defaultValue();
     } else {
       defaultValue = typeTable.getZeroValueAndSaveNicknameFor(field.type());
