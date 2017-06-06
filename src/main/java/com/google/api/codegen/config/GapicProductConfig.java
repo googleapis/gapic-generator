@@ -159,7 +159,14 @@ public abstract class GapicProductConfig implements ProductConfig {
             .put(document.name(), DiscoGapicInterfaceConfig.createInterfaceConfig(document))
             .build();
     // TODO actually load data
-    return createDummyInstance(interfaceConfigMap, "", "", null);
+
+    LanguageSettingsProto settings =
+        configProto.getLanguageSettings().get(configProto.getLanguage());
+    if (settings == null) {
+      settings = LanguageSettingsProto.getDefaultInstance();
+    }
+
+    return createDummyInstance(interfaceConfigMap, settings.getPackageName(), "", null);
   }
 
   /** Creates an GapicProductConfig with no content. Exposed for testing. */
