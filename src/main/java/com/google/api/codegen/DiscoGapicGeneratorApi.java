@@ -49,7 +49,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import javax.print.DocFlavor.STRING;
 
 public class DiscoGapicGeneratorApi {
   public static final Option<String> DISCOVERY_DOC =
@@ -93,8 +92,11 @@ public class DiscoGapicGeneratorApi {
 
   @VisibleForTesting
   /** From config filepaths, constructs the DiscoGapicProviders to run. */
-  static List<DiscoGapicProvider> getProviders(String discoveryDocPath,
-      List<String> configFileNames, String packageConfigFile, List<String> enabledArtifacts)
+  static List<DiscoGapicProvider> getProviders(
+      String discoveryDocPath,
+      List<String> configFileNames,
+      String packageConfigFile,
+      List<String> enabledArtifacts)
       throws IOException {
     if (!new File(discoveryDocPath).exists()) {
       throw new IOException("File not found: " + discoveryDocPath);
@@ -119,9 +121,7 @@ public class DiscoGapicGeneratorApi {
     PackageMetadataConfig packageConfig = null;
     if (!Strings.isNullOrEmpty(packageConfigFile)) {
       String contents =
-          new String(
-              Files.readAllBytes(Paths.get(packageConfigFile)),
-              StandardCharsets.UTF_8);
+          new String(Files.readAllBytes(Paths.get(packageConfigFile)), StandardCharsets.UTF_8);
       packageConfig = PackageMetadataConfig.createFromString(contents);
     }
     GeneratorProto generator = configProto.getGenerator();
@@ -132,10 +132,7 @@ public class DiscoGapicGeneratorApi {
 
     DiscoGapicProviderFactory providerFactory = createProviderFactory(factory);
     GapicGeneratorConfig generatorConfig =
-        GapicGeneratorConfig.newBuilder()
-            .id(id)
-            .enabledArtifacts(new LinkedList<String>())
-            .build();
+        GapicGeneratorConfig.newBuilder().id(id).enabledArtifacts(new LinkedList<String>()).build();
 
     return providerFactory.create(document, productConfig, generatorConfig, packageConfig);
   }
