@@ -18,14 +18,12 @@ import com.google.api.codegen.discogapic.DiscoGapicProvider;
 import com.google.api.tools.framework.model.SimpleDiagCollector;
 import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
 import com.google.api.tools.framework.snippet.Doc;
-import com.google.common.collect.ImmutableList;
 import com.google.common.io.Files;
 import com.google.protobuf.MessageOrBuilder;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -55,14 +53,16 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
     for (String fileName : gapicConfigFileNames) {
       gapicConfigFilePaths.add(getTestDataLocator().findTestData(fileName).getFile());
     }
-
   }
 
   protected void setupDiscovery() {
     try {
-      discoGapicProviders = DiscoGapicGeneratorApi.getProviders(
-          getTestDataLocator().findTestData(discoveryDocFileName).getPath(),
-          gapicConfigFilePaths, null, null);
+      discoGapicProviders =
+          DiscoGapicGeneratorApi.getProviders(
+              getTestDataLocator().findTestData(discoveryDocFileName).getPath(),
+              gapicConfigFilePaths,
+              null,
+              null);
     } catch (IOException e) {
       throw new IllegalArgumentException("Problem creating DiscoGapic generator.");
     }
@@ -78,9 +78,12 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
   @Override
   protected Object run() {
     try {
-      discoGapicProviders = DiscoGapicGeneratorApi.getProviders(
-          getTestDataLocator().findTestData(discoveryDocFileName).getPath(),
-          gapicConfigFilePaths, null, new LinkedList<String>());
+      discoGapicProviders =
+          DiscoGapicGeneratorApi.getProviders(
+              getTestDataLocator().findTestData(discoveryDocFileName).getPath(),
+              gapicConfigFilePaths,
+              null,
+              new LinkedList<String>());
     } catch (IOException e) {
       throw new IllegalArgumentException("Problem creating DiscoGapic generator.");
     }
