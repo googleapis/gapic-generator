@@ -15,8 +15,6 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.discovery.Schema;
-import com.google.api.tools.framework.model.ProtoElement;
-import com.google.api.tools.framework.model.TypeRef;
 
 /** Default implementation of SchemaTypeFormatter. */
 public class SchemaTypeFormatterImpl implements SchemaTypeFormatter {

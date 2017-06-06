@@ -21,12 +21,12 @@ import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
+import com.google.api.codegen.transformer.DiscoTypeTable;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
-import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.java.JavaFeatureConfig;
-import com.google.api.codegen.transformer.java.JavaModelTypeNameConverter;
+import com.google.api.codegen.transformer.java.JavaSchemaTypeNameConverter;
 import com.google.api.codegen.transformer.java.JavaSurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
@@ -91,10 +91,10 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     return surfaceSchemas;
   }
 
-  private ModelTypeTable createTypeTable(String implicitPackageName) {
-    return new ModelTypeTable(
+  private DiscoTypeTable createTypeTable(String implicitPackageName) {
+    return new DiscoTypeTable(
         new JavaTypeTable(implicitPackageName),
-        new JavaModelTypeNameConverter(implicitPackageName));
+        new JavaSchemaTypeNameConverter(implicitPackageName));
   }
 
   private StaticLangApiMessageFileView generateSchemaFile(
@@ -157,7 +157,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
   }
 
   private void addApiImports(DiscoGapicInterfaceContext context) {
-    ModelTypeTable typeTable = context.getModelTypeTable();
+    DiscoTypeTable typeTable = context.getDiscoTypeTable();
     typeTable.saveNicknameFor("com.google.api.core.BetaApi");
     typeTable.saveNicknameFor("java.io.Serializable");
     typeTable.saveNicknameFor("java.util.List");

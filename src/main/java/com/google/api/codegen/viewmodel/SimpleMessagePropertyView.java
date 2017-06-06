@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.viewmodel;
 
-import com.google.api.codegen.SnippetSetRunner;
 import com.google.auto.value.AutoValue;
 import javax.annotation.Nullable;
 

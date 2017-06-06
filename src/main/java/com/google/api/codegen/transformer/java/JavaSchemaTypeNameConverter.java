@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer.java;
 
-import com.google.api.codegen.LanguageUtil;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameType;
@@ -27,8 +26,6 @@ import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.codegen.util.TypedValue;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.common.base.Strings;
-import com.google.common.io.Files;
-import java.io.File;
 
 /** The SchemaTypeTable for Java. */
 public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
@@ -64,7 +61,6 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
     }
   }
 
-
   /** A map from primitive types in proto to zero values in Java. */
   private static String getPrimitiveZeroValue(Schema schema) {
     String primitiveType = getPrimitive(schema);
@@ -74,8 +70,10 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
     if (primitiveType.equals("boolean")) {
       return "false";
     }
-    if (primitiveType.equals("int") || primitiveType.equals("long")
-        || primitiveType.equals("double") || primitiveType.equals("float")) {
+    if (primitiveType.equals("int")
+        || primitiveType.equals("long")
+        || primitiveType.equals("double")
+        || primitiveType.equals("float")) {
       return "0";
     }
     if (primitiveType.equals("String")) {
@@ -148,15 +146,15 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
   private static String getSchemaPackage(Schema schema) {
     String packageName;
     // TODO(andrealin): uncomment when "Nodeify" PR gets checked in.
-//    Node parent = schema.getParent();
-//    while(parent != null && !(parent instanceof Document)) {
-//      parent = parent.getParent();
-//    }
-//    if (parent == null) {
-//      packageName = DEFAULT_JAVA_PACKAGE_PREFIX;
-//    } else {
-//      packageName = getJavaPackage(((Document) parent).name());
-//    }
+    //    Node parent = schema.getParent();
+    //    while(parent != null && !(parent instanceof Document)) {
+    //      parent = parent.getParent();
+    //    }
+    //    if (parent == null) {
+    //      packageName = DEFAULT_JAVA_PACKAGE_PREFIX;
+    //    } else {
+    //      packageName = getJavaPackage(((Document) parent).name());
+    //    }
     packageName = "com.google.cloud.cloud.spi.v1.resources";
 
     // TODO(andrealin) outer class name.
@@ -176,8 +174,10 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
     if (primitiveType.equals("boolean")) {
       return value.toLowerCase();
     }
-    if (primitiveType.equals("int") || primitiveType.equals("long")
-        || primitiveType.equals("double") || primitiveType.equals("float")) {
+    if (primitiveType.equals("int")
+        || primitiveType.equals("long")
+        || primitiveType.equals("double")
+        || primitiveType.equals("float")) {
       return value;
     }
     if (primitiveType.equals("String")) {
@@ -236,8 +236,8 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
       case FIXED:
       case SINGLE:
       case ONEOF:
-// TODO(andrealin): Figure out how the proto config works??
-//        return getJavaPackage(resourceNameConfig.getAssignedProtoFile());
+        // TODO(andrealin): Figure out how the proto config works??
+        //        return getJavaPackage(resourceNameConfig.getAssignedProtoFile());
         return "com.google.cloud.compute.spi.v1.resourcenames";
       case NONE:
       default:
@@ -245,14 +245,12 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
     }
   }
 
-
-
   @Override
   public TypeName getTypeNameForTypedResourceName(
       FieldConfig fieldConfig, String typedResourceShortName) {
     return getTypeNameForTypedResourceName(
         fieldConfig.getResourceNameConfig(),
-//        fieldConfig.getField().getType(),
+        //        fieldConfig.getField().getType(),
         null,
         typedResourceShortName);
   }
@@ -262,7 +260,7 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
       FieldConfig fieldConfig, String typedResourceShortName) {
     return getTypeNameForTypedResourceName(
         fieldConfig.getResourceNameConfig(),
-//        fieldConfig.getField().getType().makeOptional(),
+        //        fieldConfig.getField().getType().makeOptional(),
         null,
         typedResourceShortName);
   }
@@ -274,5 +272,4 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
     }
     return packageName;
   }
-
 }
