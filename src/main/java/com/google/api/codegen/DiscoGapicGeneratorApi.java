@@ -46,6 +46,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.print.DocFlavor.STRING;
@@ -133,10 +134,10 @@ public class DiscoGapicGeneratorApi {
     GapicGeneratorConfig generatorConfig =
         GapicGeneratorConfig.newBuilder()
             .id(id)
-            .enabledArtifacts(enabledArtifacts)
+            .enabledArtifacts(new LinkedList<String>())
             .build();
 
-    return  providerFactory.create(document, productConfig, generatorConfig, packageConfig);
+    return providerFactory.create(document, productConfig, generatorConfig, packageConfig);
   }
 
   public void run() throws Exception {
