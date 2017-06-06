@@ -25,9 +25,9 @@ import org.junit.runners.Parameterized.Parameters;
 
 /** Java discovery doc fragment generator baseline tests. */
 @RunWith(Parameterized.class)
-public class JavaDiscoveryMessageGeneratorTest extends DiscoGapicTestBase {
+public class JavaDiscoGapicMessageGeneratorTest extends DiscoGapicTestBase {
 
-  public JavaDiscoveryMessageGeneratorTest(
+  public JavaDiscoGapicMessageGeneratorTest(
       String name, String discoveryDocFileName, String[] gapicConfigFileNames) {
     super(name, discoveryDocFileName, gapicConfigFileNames);
   }

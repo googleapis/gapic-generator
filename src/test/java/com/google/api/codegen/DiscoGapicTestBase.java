@@ -32,8 +32,6 @@ import java.util.regex.Pattern;
 /** Base class for code generator baseline tests. */
 public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
 
-  private static final Pattern BASELINE_PATTERN = Pattern.compile("(\\w+)\\[(\\w+)\\]");
-
   // Wiring
   // ======
 
