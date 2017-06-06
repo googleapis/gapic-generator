@@ -143,7 +143,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       String typeName = context.getDiscoTypeTable().getAndSaveNicknameForElementType(property);
       simpleProperty.typeName(typeName);
       simpleProperty.fieldGetFunction(context.getDiscoGapicNamer().getResourceGetterName(propertyString));
-      simpleProperty.fieldGetFunction(context.getDiscoGapicNamer().getResourceSetterName(propertyString));
+      simpleProperty.fieldSetFunction(context.getDiscoGapicNamer().getResourceSetterName(propertyString));
 
 //      simpleProperty.fieldGetFunction(
 //          nameFormatter.publicMethodName(Name.from("get").join(propertyName)));
