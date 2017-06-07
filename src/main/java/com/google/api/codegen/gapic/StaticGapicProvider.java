@@ -34,7 +34,7 @@ public class StaticGapicProvider<E> implements GapicProvider<E> {
     try {
       staticFileRunner.run();
     } catch (IOException e) {
-      e.printStackTrace();
+      throw new RuntimeException(e);
     }
     return new HashMap<>();
   }

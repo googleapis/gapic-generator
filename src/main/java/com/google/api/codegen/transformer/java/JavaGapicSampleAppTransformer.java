@@ -31,7 +31,7 @@ public class JavaGapicSampleAppTransformer implements ModelToViewTransformer {
 
   // Reuse the smoke test template since the sample application is almost the same as the smoke test class.
   // (with a few exceptions such as class name)
-  private static String SMOKE_TEST_TEMPLATE_FILE = "java/smoke_test.snip";
+  private static String SAMPLE_TEMPLATE_FILE = "java/smoke_sample.snip";
 
   private final GapicCodePathMapper pathMapper;
   private final JavaGapicSurfaceTestTransformer testTransformer;
@@ -53,7 +53,7 @@ public class JavaGapicSampleAppTransformer implements ModelToViewTransformer {
 
   @Override
   public List<String> getTemplateFileNames() {
-    return Lists.newArrayList(SMOKE_TEST_TEMPLATE_FILE);
+    return Lists.newArrayList(SAMPLE_TEMPLATE_FILE);
   }
 
   public GapicInterfaceContext getSampleContext(Model model, GapicProductConfig productConfig) {
