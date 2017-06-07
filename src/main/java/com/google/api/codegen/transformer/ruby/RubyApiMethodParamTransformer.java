@@ -113,11 +113,20 @@ public class RubyApiMethodParamTransformer implements ApiMethodParamTransformer 
             "resources in a page.");
       } else {
         docLines.addAll(namer.getDocLines(field));
-        if (field.getType().isMessage()) {
-          docLines.add(
-              String.format(
-                  "A hash of the same form as `%s`",
-                  context.getTypeTable().getFullNameFor(field.getType())));
+        boolean isMessageField = field.getType().isMessage() && !field.getType().isMap();
+        boolean isMapContainingMessage =
+            field.getType().isMap() && field.getType().getMapValueField().getType().isMessage();
+        if (isMessageField || isMapContainingMessage) {
+          String messageType;
+          if (isMapContainingMessage) {
+            messageType =
+                context
+                    .getTypeTable()
+                    .getFullNameForElementType(field.getType().getMapValueField().getType());
+          } else {
+            messageType = context.getTypeTable().getFullNameForElementType(field.getType());
+          }
+          docLines.add(String.format("A hash of the same form as `%s`", messageType));
           docLines.add("can also be provided.");
         }
       }
