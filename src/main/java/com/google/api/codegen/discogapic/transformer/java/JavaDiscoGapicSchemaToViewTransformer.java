@@ -73,7 +73,6 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
   public List<ViewModel> transform(Document document, GapicProductConfig productConfig) {
     List<ViewModel> surfaceSchemas = new ArrayList<>();
     JavaDiscoGapicNamer discoGapicNamer = new JavaDiscoGapicNamer();
-    SymbolTable docSymbolTable = SymbolTable.fromSeed(JavaNameFormatter.RESERVED_IDENTIFIER_SET);
 
     DiscoGapicInterfaceContext context =
         DiscoGapicInterfaceContext.create(
@@ -86,7 +85,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
 
     StaticLangApiMessageFileView apiFile;
     for (Map.Entry<String, Schema> entry : context.getDocument().schemas().entrySet()) {
-      apiFile = generateSchemaFile(context, entry.getKey(), entry.getValue(), docSymbolTable);
+      apiFile = generateSchemaFile(context, entry.getKey(), entry.getValue());
       surfaceSchemas.add(apiFile);
     }
     return surfaceSchemas;
@@ -101,8 +100,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
   private StaticLangApiMessageFileView generateSchemaFile(
       DiscoGapicInterfaceContext context,
       String schemaName,
-      Schema schema,
-      SymbolTable docSymbolTable) {
+      Schema schema) {
     StaticLangApiMessageFileView.Builder apiFile = StaticLangApiMessageFileView.newBuilder();
     // Escape any schema's field names that are Java keywords.
     SymbolTable schemaSymbolTable = SymbolTable.fromSeed(JavaNameFormatter.RESERVED_IDENTIFIER_SET);
