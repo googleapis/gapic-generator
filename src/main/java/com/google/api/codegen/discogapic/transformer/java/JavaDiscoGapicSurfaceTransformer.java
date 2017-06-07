@@ -85,9 +85,7 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
             createTypeTable(productConfig.getPackageName()),
             new JavaDiscoGapicNamer(),
             namer,
-            JavaFeatureConfig.newBuilder().enableStringFormatFunctions(false).build()
-        );
-
+            JavaFeatureConfig.newBuilder().enableStringFormatFunctions(false).build());
 
     StaticLangApiFileView apiFile = generateApiFile(context);
     surfaceDocs.add(apiFile);

@@ -57,7 +57,6 @@ public class DiscoGapicNamer extends NameFormatterDelegator {
     return localVarName(Name.upperCamel(resourceTypeName));
   }
 
-
   public String getRequestBodyFieldSetterName(String fieldName) {
     return publicMethodName(Name.lowerCamel("set", fieldName));
   }
@@ -67,5 +66,4 @@ public class DiscoGapicNamer extends NameFormatterDelegator {
   public String getResponseVarName() {
     return localVarName(Name.lowerCamel("response"));
   }
-
 }

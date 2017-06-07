@@ -134,27 +134,32 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
           return new TypeName(primitiveTypeName);
         }
       }
+    } else if (schema.type() == Type.ARRAY) {
+      TypeName listTypeName = typeNameConverter.getTypeName("java.util.List");
+      TypeName elementTypeName = getTypeNameForElementType(schema.items(), true);
+      return new TypeName(
+          listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", elementTypeName);
+    } else {
+
+      String packageName = getSchemaPackage(schema);
+      String shortName = schema.id().isEmpty() ? schema.reference() : schema.id();
+      String longName = packageName + "." + shortName;
+
+      return new TypeName(longName, shortName);
     }
-
-    String packageName = getSchemaPackage(schema);
-    // TODO(andrealin): typetable?
-    String shortName = schema.id();
-    String longName = packageName + "." + shortName;
-
-    return new TypeName(longName, shortName);
   }
 
   private static String getSchemaPackage(Schema schema) {
     String packageName;
-        Node parent = schema.parent();
-        while(parent != null && !(parent instanceof Document)) {
-          parent = parent.parent();
-        }
-        if (parent == null) {
-          packageName = DEFAULT_JAVA_PACKAGE_PREFIX;
-        } else {
-          packageName = getJavaPackage((Document) parent);
-        }
+    Node parent = schema.parent();
+    while (parent != null && !(parent instanceof Document)) {
+      parent = parent.parent();
+    }
+    if (parent == null) {
+      packageName = DEFAULT_JAVA_PACKAGE_PREFIX;
+    } else {
+      packageName = getJavaPackage((Document) parent);
+    }
 
     // TODO(andrealin) outer class name.
     return packageName;
@@ -265,8 +270,8 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
   }
 
   public static String getJavaPackage(Document file) {
-    String packageName = String.format("com.google.cloud.%s.spi.%s.resources", file.name(),
-        file.version());
+    String packageName =
+        String.format("com.google.cloud.%s.spi.%s.resources", file.name(), file.version());
     if (Strings.isNullOrEmpty(packageName)) {
       return DEFAULT_JAVA_PACKAGE_PREFIX + "." + file.name();
     }

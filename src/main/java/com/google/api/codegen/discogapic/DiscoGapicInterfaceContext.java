@@ -26,6 +26,10 @@ import com.google.api.codegen.util.TypeTable;
 import com.google.api.tools.framework.model.Method;
 import com.google.auto.value.AutoValue;
 
+/**
+ * The context for transforming a Discovery Doc API into a view model to use for client library
+ * generation.
+ */
 @AutoValue
 public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   public static DiscoGapicInterfaceContext create(
@@ -55,7 +59,6 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   public TypeTable getTypeTable() {
     return getDiscoTypeTable().getTypeTable();
   }
-
 
   public abstract FeatureConfig getFeatureConfig();
 
