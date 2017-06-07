@@ -27,6 +27,7 @@ import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.java.JavaFeatureConfig;
 import com.google.api.codegen.transformer.java.JavaSchemaTypeNameConverter;
 import com.google.api.codegen.transformer.java.JavaSurfaceNamer;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaTypeTable;
@@ -85,7 +86,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
 
     StaticLangApiMessageFileView apiFile;
     for (Map.Entry<String, Schema> entry : context.getDocument().schemas().entrySet()) {
-      apiFile = generateSchemaFile(context, entry.getKey(), entry.getValue());
+      apiFile = generateSchemaFile(context, entry.getValue());
       surfaceSchemas.add(apiFile);
     }
     return surfaceSchemas;
@@ -99,7 +100,6 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
 
   private StaticLangApiMessageFileView generateSchemaFile(
       DiscoGapicInterfaceContext context,
-      String schemaName,
       Schema schema) {
     StaticLangApiMessageFileView.Builder apiFile = StaticLangApiMessageFileView.newBuilder();
     // Escape any schema's field names that are Java keywords.
@@ -107,10 +107,11 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
 
     apiFile.templateFileName(SCHEMA_TEMPLATE_FILENAME);
 
-    apiFile.schema(generateSchemaClass(context, schemaName, schema, schemaSymbolTable));
+    StaticLangApiMessageView messageView =  generateSchemaClass(context, schema, schemaSymbolTable);
+    apiFile.schema(messageView);
 
     String outputPath = pathMapper.getOutputPath(null, context.getProductConfig());
-    apiFile.outputPath(outputPath + File.separator + schemaName + ".java");
+    apiFile.outputPath(outputPath + File.separator + messageView.typeName() + ".java");
 
     // must be done as the last step to catch all imports
     apiFile.fileHeader(fileHeaderTransformer.generateFileHeader(context));
@@ -120,14 +121,13 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
 
   private StaticLangApiMessageView generateSchemaClass(
       DiscoGapicInterfaceContext context,
-      String schemaName,
       Schema schema,
       SymbolTable schemaSymbolTable) {
     addApiImports(context);
 
     StaticLangApiMessageView.Builder schemaView = StaticLangApiMessageView.newBuilder();
 
-    schemaView.typeName(schemaName);
+    schemaView.typeName(nameFormatter.publicClassName(Name.anyCamel(schema.id())));
     schemaView.type(schema.type());
     // TODO(andrealin): use symbol table to make sure Schema names aren't Java keywords.
     schemaView.defaultValue(schema.defaultValue());
