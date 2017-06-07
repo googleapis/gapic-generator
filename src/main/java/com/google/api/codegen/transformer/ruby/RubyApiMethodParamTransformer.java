@@ -113,6 +113,13 @@ public class RubyApiMethodParamTransformer implements ApiMethodParamTransformer 
             "resources in a page.");
       } else {
         docLines.addAll(namer.getDocLines(field));
+        if (field.getType().isMessage()) {
+          docLines.add(
+              String.format(
+                  "A hash of the same form as `%s`",
+                  context.getTypeTable().getFullNameFor(field.getType())));
+          docLines.add("can also be provided.");
+        }
       }
       paramDoc.lines(docLines.build());
       docs.add(paramDoc.build());
