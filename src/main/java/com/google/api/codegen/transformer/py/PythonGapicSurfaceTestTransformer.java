@@ -59,7 +59,7 @@ import java.util.List;
 
 /**
  * Transforms the model into API tests for Python. Responsible for producing a list of
- * ClientTestFileViews for unit tests and a SmokeTestClassView for smoke tests.
+ * ClientTestFileViews for unit tests and a SmokeTestClassViews for smoke tests.
  */
 public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private static final String SMOKE_TEST_TEMPLATE_FILE = "py/smoke_test.snip";
@@ -214,7 +214,6 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
     GapicMethodContext flattenedMethodContext =
         context.asFlattenedMethodContext(method, flatteningGroup);
 
-    SmokeTestClassView.Builder testClass = SmokeTestClassView.newBuilder();
     // TODO: we need to remove testCaseView after we switch to use apiMethodView for smoke test
     // testCaseView not in use by Python for smoke test.
     TestCaseView testCaseView = testCaseTransformer.createSmokeTestCaseView(flattenedMethodContext);
@@ -224,8 +223,10 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
     boolean requireProjectId =
         testCaseTransformer.requireProjectIdInSmokeTest(
             apiMethodView.initCode(), context.getNamer());
+    ImportSectionView importSection =
+        importSectionTransformer.generateSmokeTestImportSection(context, requireProjectId);
 
-    testClass
+    return SmokeTestClassView.newBuilder()
         .apiSettingsClassName(namer.getApiSettingsClassName(context.getInterfaceConfig()))
         .apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()))
         .apiVariableName(namer.getApiWrapperVariableName(context.getInterfaceConfig()))
@@ -234,15 +235,11 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
         .templateFileName(SMOKE_TEST_TEMPLATE_FILE)
         .apiMethod(apiMethodView)
         .method(testCaseView)
-        .requireProjectId(requireProjectId);
-
-    ImportSectionView importSection =
-        importSectionTransformer.generateSmokeTestImportSection(context, requireProjectId);
-    testClass.fileHeader(
-        fileHeaderTransformer.generateFileHeader(
-            context.getProductConfig(), importSection, testPackageNamer));
-
-    return testClass.build();
+        .requireProjectId(requireProjectId)
+        .fileHeader(
+            fileHeaderTransformer.generateFileHeader(
+                context.getProductConfig(), importSection, testPackageNamer))
+        .build();
   }
 
   private OptionalArrayMethodView createSmokeTestCaseApiMethodView(GapicMethodContext context) {
