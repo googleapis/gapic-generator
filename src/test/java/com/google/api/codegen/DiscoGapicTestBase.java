@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -73,7 +74,7 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
   }
 
   @Override
-  protected Object run() {
+  protected Map<String, Doc> run() {
     try {
       discoGapicProviders =
           DiscoGapicGeneratorApi.getProviders(
@@ -85,15 +86,13 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
       throw new IllegalArgumentException("Problem creating DiscoGapic generator.");
     }
 
-    Doc outputDiscoveryImporter = Doc.EMPTY;
+    Map<String, Doc> outputDocs = new LinkedHashMap<>();
 
     for (DiscoGapicProvider provider : discoGapicProviders) {
       Map<String, Doc> docs = provider.generate();
-      for (Doc doc : docs.values()) {
-        outputDiscoveryImporter = Doc.joinWith(Doc.BREAK, outputDiscoveryImporter, doc);
-      }
+      outputDocs.putAll(docs);
     }
-    return Doc.vgroup(outputDiscoveryImporter);
+    return outputDocs;
   }
 
   @Override
@@ -109,7 +108,16 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
     // Run test specific logic.
     Object result = run();
 
-    testOutput().println(displayValue(result));
+    if (result instanceof Map) {
+      @SuppressWarnings("unchecked")
+      Map<String, Object> map = (Map<String, Object>) result;
+      for (Map.Entry<String, Object> entry : map.entrySet()) {
+        testOutput().printf("============== file: %s ==============%n", entry.getKey());
+        testOutput().println(displayValue(entry.getValue()));
+      }
+    } else {
+      testOutput().println(displayValue(result));
+    }
   }
 
   private String displayValue(Object value) throws IOException {
