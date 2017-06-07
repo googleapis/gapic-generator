@@ -12,20 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.discovery;
+package com.google.api.codegen.discogapic.transformer.java;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.google.api.Service;
-import com.google.api.codegen.ApiaryConfig;
-import java.io.File;
-import java.util.List;
+import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
+import com.google.api.codegen.util.java.JavaNameFormatter;
 
-/** A factory for DiscoveryProviders which perform code generation. */
-public interface DiscoveryProviderFactory {
-  DiscoveryProvider create(
-      Service service,
-      ApiaryConfig apiaryConfig,
-      List<JsonNode> sampleConfigOverrides,
-      File rubyNamesFile,
-      String id);
+class JavaDiscoGapicNamer extends DiscoGapicNamer {
+
+  public JavaDiscoGapicNamer() {
+    super(new JavaNameFormatter());
+  }
 }

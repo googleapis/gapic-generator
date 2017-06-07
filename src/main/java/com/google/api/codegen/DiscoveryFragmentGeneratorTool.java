@@ -69,6 +69,13 @@ public class DiscoveryFragmentGeneratorTool {
             .hasArg()
             .argName("AUTH-INSTRUCTIONS")
             .build());
+    options.addOption(
+        Option.builder()
+            .longOpt("ruby_names_file")
+            .desc("A Ruby names file.")
+            .hasArg()
+            .argName("RUBY-NAMES-FILE")
+            .build());
 
     CommandLine cl = (new DefaultParser()).parse(options, args);
     if (cl.hasOption("help")) {
@@ -81,24 +88,27 @@ public class DiscoveryFragmentGeneratorTool {
         cl.getOptionValues("gapic_yaml"),
         cl.getOptionValue("overrides", ""),
         cl.getOptionValue("output", ""),
-        cl.getOptionValue("auth_instructions", ""));
+        cl.getOptionValue("auth_instructions", ""),
+        cl.getOptionValue("ruby_names_file", ""));
   }
 
   private static void generate(
       String discoveryDoc,
       String[] generatorConfigs,
-      String overridesFile,
+      String overrideFiles,
       String outputDirectory,
-      String authInstructions)
+      String authInstructions,
+      String rubyNamesFile)
       throws Exception {
 
     ToolOptions options = ToolOptions.create();
     options.set(DiscoveryFragmentGeneratorApi.DISCOVERY_DOC, discoveryDoc);
     options.set(
         DiscoveryFragmentGeneratorApi.GENERATOR_CONFIG_FILES, Arrays.asList(generatorConfigs));
-    options.set(DiscoveryFragmentGeneratorApi.OVERRIDE_FILES, overridesFile);
+    options.set(DiscoveryFragmentGeneratorApi.OVERRIDE_FILES, overrideFiles);
     options.set(DiscoveryFragmentGeneratorApi.OUTPUT_FILE, outputDirectory);
     options.set(DiscoveryFragmentGeneratorApi.AUTH_INSTRUCTIONS_URL, authInstructions);
+    options.set(DiscoveryFragmentGeneratorApi.RUBY_NAMES_FILE, rubyNamesFile);
     DiscoveryFragmentGeneratorApi generator = new DiscoveryFragmentGeneratorApi(options);
     generator.run();
   }

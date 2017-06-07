@@ -42,6 +42,8 @@ public abstract class PackageMetadataConfig {
   private static final String CONFIG_KEY_DEFAULT = "default";
   private static final ImmutableMap<TargetLanguage, String> DEFAULT_PROTO_PACKAGE_PREFIX =
       ImmutableMap.<TargetLanguage, String>builder().put(TargetLanguage.JAVA, "proto-").build();
+  private static final ImmutableMap<TargetLanguage, String> TEST_PROTO_PACKAGE_PREFIX =
+      ImmutableMap.<TargetLanguage, String>builder().put(TargetLanguage.JAVA, "grpc-").build();
 
   protected abstract Map<TargetLanguage, VersionBound> gaxVersionBound();
 
@@ -58,6 +60,9 @@ public abstract class PackageMetadataConfig {
   protected abstract Map<TargetLanguage, String> packageName();
 
   protected abstract Map<TargetLanguage, Map<String, VersionBound>> protoPackageDependencies();
+
+  @Nullable
+  protected abstract Map<TargetLanguage, Map<String, VersionBound>> protoPackageTestDependencies();
 
   protected abstract Map<TargetLanguage, ReleaseLevel> releaseLevel();
 
@@ -97,6 +102,17 @@ public abstract class PackageMetadataConfig {
   /** The versions of the proto packages that this package depends on. Configured per language. */
   public Map<String, VersionBound> protoPackageDependencies(TargetLanguage language) {
     return protoPackageDependencies().get(language);
+  }
+
+  /**
+   * The versions of the proto packages that this package depends on for tests. Configured per
+   * language.
+   */
+  public Map<String, VersionBound> protoPackageTestDependencies(TargetLanguage language) {
+    if (protoPackageTestDependencies() != null) {
+      return protoPackageTestDependencies().get(language);
+    }
+    return null;
   }
 
   /** The development status of the client library. Configured per language. */
@@ -170,6 +186,9 @@ public abstract class PackageMetadataConfig {
 
     abstract Builder protoPackageDependencies(Map<TargetLanguage, Map<String, VersionBound>> val);
 
+    abstract Builder protoPackageTestDependencies(
+        Map<TargetLanguage, Map<String, VersionBound>> val);
+
     abstract Builder releaseLevel(Map<TargetLanguage, ReleaseLevel> val);
 
     abstract Builder shortName(String val);
@@ -226,42 +245,50 @@ public abstract class PackageMetadataConfig {
     Yaml yaml = new Yaml();
     Map<String, Object> configMap = (Map<String, Object>) yaml.load(yamlContents);
 
-    return newBuilder()
-        .gaxVersionBound(
-            createVersionMap((Map<String, Map<String, String>>) configMap.get("gax_version")))
-        .grpcVersionBound(
-            createVersionMap((Map<String, Map<String, String>>) configMap.get("grpc_version")))
-        .protoVersionBound(
-            createVersionMap((Map<String, Map<String, String>>) configMap.get("proto_version")))
-        .authVersionBound(
-            createVersionMap((Map<String, Map<String, String>>) configMap.get("auth_version")))
-        .generatedPackageVersionBound(
-            createVersionMap(
-                (Map<String, Map<String, String>>) configMap.get("generated_package_version")))
-        .apiCommonVersionBound(
-            createVersionMap(
-                (Map<String, Map<String, String>>) configMap.get("api_common_version")))
-        .releaseLevel(createReleaseLevelMap((Map<String, String>) configMap.get("release_level")))
-        .protoPackageDependencies(createProtoPackageDependencies(configMap))
-        .packageName(buildMapWithDefault((Map<String, String>) configMap.get("package_name")))
-        .shortName((String) configMap.get("short_name"))
-        .packageType(PackageType.of((String) configMap.get("package_type")))
-        .generationLayer(GenerationLayer.of((String) configMap.get("generation_layer")))
-        .apiVersion((String) configMap.get("major_version"))
-        .protoPath((String) configMap.get("proto_path"))
-        .author((String) configMap.get("author"))
-        .email((String) configMap.get("email"))
-        .homepage((String) configMap.get("homepage"))
-        .licenseName((String) configMap.get("license"))
-        .gapicConfigName((String) configMap.get("gapic_config_name"))
-        .build();
+    Builder builder =
+        newBuilder()
+            .gaxVersionBound(
+                createVersionMap((Map<String, Map<String, String>>) configMap.get("gax_version")))
+            .grpcVersionBound(
+                createVersionMap((Map<String, Map<String, String>>) configMap.get("grpc_version")))
+            .protoVersionBound(
+                createVersionMap((Map<String, Map<String, String>>) configMap.get("proto_version")))
+            .authVersionBound(
+                createVersionMap((Map<String, Map<String, String>>) configMap.get("auth_version")))
+            .generatedPackageVersionBound(
+                createVersionMap(
+                    (Map<String, Map<String, String>>) configMap.get("generated_package_version")))
+            .apiCommonVersionBound(
+                createVersionMap(
+                    (Map<String, Map<String, String>>) configMap.get("api_common_version")))
+            .releaseLevel(
+                createReleaseLevelMap((Map<String, String>) configMap.get("release_level")))
+            .protoPackageDependencies(
+                createProtoPackageDependencies(
+                    configMap, "proto_deps", DEFAULT_PROTO_PACKAGE_PREFIX))
+            .packageName(buildMapWithDefault((Map<String, String>) configMap.get("package_name")))
+            .shortName((String) configMap.get("short_name"))
+            .packageType(PackageType.of((String) configMap.get("package_type")))
+            .generationLayer(GenerationLayer.of((String) configMap.get("generation_layer")))
+            .apiVersion((String) configMap.get("major_version"))
+            .protoPath((String) configMap.get("proto_path"))
+            .author((String) configMap.get("author"))
+            .email((String) configMap.get("email"))
+            .homepage((String) configMap.get("homepage"))
+            .licenseName((String) configMap.get("license"))
+            .gapicConfigName((String) configMap.get("gapic_config_name"));
+    if (configMap.containsKey("proto_test_deps")) {
+      builder.protoPackageTestDependencies(
+          createProtoPackageDependencies(configMap, "proto_test_deps", TEST_PROTO_PACKAGE_PREFIX));
+    }
+    return builder.build();
   }
 
   @SuppressWarnings("unchecked")
   private static Map<TargetLanguage, Map<String, VersionBound>> createProtoPackageDependencies(
-      Map<String, Object> configMap) {
+      Map<String, Object> configMap, String key, ImmutableMap<TargetLanguage, String> prefixMap) {
     Map<TargetLanguage, Map<String, VersionBound>> packageDependencies = new HashMap<>();
-    List<String> packages = (List<String>) configMap.get("proto_deps");
+    List<String> packages = (List<String>) configMap.get(key);
 
     for (String packageName : packages) {
       Map<String, Map<String, String>> config =
@@ -282,7 +309,8 @@ public abstract class PackageMetadataConfig {
 
         String packageNameForLanguage = entry.getValue().get("name_override");
         if (packageNameForLanguage == null) {
-          packageNameForLanguage = getDefaultProtoPackageName(entry.getKey(), packageName);
+          packageNameForLanguage =
+              getDefaultProtoPackageName(entry.getKey(), packageName, prefixMap);
         }
         VersionBound version =
             VersionBound.create(entry.getValue().get("lower"), entry.getValue().get("upper"));
@@ -293,9 +321,10 @@ public abstract class PackageMetadataConfig {
     return packageDependencies;
   }
 
-  private static String getDefaultProtoPackageName(TargetLanguage language, String packageName) {
-    if (DEFAULT_PROTO_PACKAGE_PREFIX.containsKey(language)) {
-      return DEFAULT_PROTO_PACKAGE_PREFIX.get(language) + packageName;
+  private static String getDefaultProtoPackageName(
+      TargetLanguage language, String packageName, ImmutableMap<TargetLanguage, String> prefixMap) {
+    if (prefixMap.containsKey(language)) {
+      return prefixMap.get(language) + packageName;
     }
     return packageName;
   }

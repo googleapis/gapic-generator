@@ -28,19 +28,25 @@ public class JavaPackageMetadataNamer extends PackageMetadataNamer {
   }
 
   private static String getMetadataIdentifier(String packageName, GenerationLayer generationLayer) {
-    switch (generationLayer) {
-      case PROTO:
-        return "proto-" + packageName;
-      case GRPC:
-        return "grpc-" + packageName;
-      default:
-        return packageName;
+    if (generationLayer != null) {
+      switch (generationLayer) {
+        case PROTO:
+          return "proto-" + packageName;
+        case GRPC:
+          return "grpc-" + packageName;
+      }
     }
+    return packageName;
   }
 
   @Override
   public String getProtoPackageName() {
     return getMetadataIdentifier(packageName, GenerationLayer.PROTO);
+  }
+
+  @Override
+  public String getGrpcPackageName() {
+    return getMetadataIdentifier(packageName, GenerationLayer.GRPC);
   }
 
   @Override
