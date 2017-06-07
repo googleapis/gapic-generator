@@ -17,9 +17,7 @@
 package com.google.gcloud.pubsub.spi;
 
 import com.google.api.core.BetaApi;
-import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.grpc.ChannelAndExecutor;
-import com.google.api.gax.grpc.ClientContext;
 import com.google.api.gax.grpc.FixedChannelProvider;
 import com.google.api.gax.grpc.FixedExecutorProvider;
 import com.google.api.gax.grpc.OperationCallable;
@@ -28,7 +26,6 @@ import com.google.api.gax.grpc.StreamingCallable;
 import com.google.api.gax.grpc.UnaryCallable;
 import com.google.api.pathtemplate.PathTemplate;
 import com.google.api.resourcenames.ResourceName;
-import com.google.auth.Credentials;
 import com.google.example.library.v1.AddCommentsRequest;
 import com.google.example.library.v1.ArchivedBookName;
 import com.google.example.library.v1.Book;
@@ -85,9 +82,7 @@ import com.google.tagger.v1.AddLabelRequest;
 import com.google.tagger.v1.AddLabelResponse;
 import com.google.tagger.v1.AddTagRequest;
 import com.google.tagger.v1.AddTagResponse;
-import io.grpc.CallCredentials;
 import io.grpc.ManagedChannel;
-import io.grpc.auth.MoreCallCredentials;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -156,10 +151,12 @@ import javax.annotation.Generated;
  *
  * <pre>
  * <code>
- * LibrarySettings librarySettings =
- *     LibrarySettings.defaultBuilder()
+ * InstantiatingChannelProvider channelProvider =
+ *     LibrarySettings.defaultChannelProviderBuilder()
  *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
  *         .build();
+ * LibrarySettings librarySettings =
+ *     LibrarySettings.defaultBuilder().setChannelProvider(channelProvider).build();
  * LibraryClient libraryClient =
  *     LibraryClient.create(librarySettings);
  * </code>
@@ -168,6 +165,8 @@ import javax.annotation.Generated;
 @Generated("by GAPIC")
 public class LibraryClient implements AutoCloseable {
   private final LibrarySettings settings;
+  private final ScheduledExecutorService executor;
+  private final ManagedChannel channel;
   private final OperationsClient operationsClient;
   private final List<AutoCloseable> closeables = new ArrayList<>();
 
@@ -230,8 +229,9 @@ public class LibraryClient implements AutoCloseable {
    */
   protected LibraryClient(LibrarySettings settings) throws IOException {
     this.settings = settings;
-
-    ClientContext clientContext = ClientContext.create(settings);
+    ChannelAndExecutor channelAndExecutor = settings.getChannelAndExecutor();
+    this.executor = channelAndExecutor.getExecutor();
+    this.channel = channelAndExecutor.getChannel();
 
     FixedExecutorProvider executorProvider = FixedExecutorProvider.create(this.executor);
     FixedChannelProvider channelProvider = FixedChannelProvider.create(this.channel);
@@ -239,49 +239,65 @@ public class LibraryClient implements AutoCloseable {
         OperationsSettings.defaultBuilder()
             .setExecutorProvider(executorProvider)
             .setChannelProvider(channelProvider)
-            .setCredentialsProvider(credentialsProvider)
             .build();
     this.operationsClient = OperationsClient.create(operationsSettings);
 
-    this.createShelfCallable = UnaryCallable.create(settings.createShelfSettings(), clientContext);
-    this.getShelfCallable = UnaryCallable.create(settings.getShelfSettings(), clientContext);
-    this.listShelvesCallable = UnaryCallable.create(settings.listShelvesSettings(), clientContext);
+    this.createShelfCallable = UnaryCallable.create(settings.createShelfSettings(), this.channel, this.executor);
+    this.getShelfCallable = UnaryCallable.create(settings.getShelfSettings(), this.channel, this.executor);
+    this.listShelvesCallable = UnaryCallable.create(settings.listShelvesSettings(), this.channel, this.executor);
     this.listShelvesPagedCallable =
-        UnaryCallable.createPagedVariant(settings.listShelvesSettings(), clientContext);
-    this.deleteShelfCallable = UnaryCallable.create(settings.deleteShelfSettings(), clientContext);
-    this.mergeShelvesCallable = UnaryCallable.create(settings.mergeShelvesSettings(), clientContext);
-    this.createBookCallable = UnaryCallable.create(settings.createBookSettings(), clientContext);
-    this.publishSeriesCallable = UnaryCallable.create(settings.publishSeriesSettings(), clientContext);
-    this.getBookCallable = UnaryCallable.create(settings.getBookSettings(), clientContext);
-    this.listBooksCallable = UnaryCallable.create(settings.listBooksSettings(), clientContext);
+        UnaryCallable.createPagedVariant(settings.listShelvesSettings(), this.channel, this.executor);
+    this.deleteShelfCallable = UnaryCallable.create(settings.deleteShelfSettings(), this.channel, this.executor);
+    this.mergeShelvesCallable = UnaryCallable.create(settings.mergeShelvesSettings(), this.channel, this.executor);
+    this.createBookCallable = UnaryCallable.create(settings.createBookSettings(), this.channel, this.executor);
+    this.publishSeriesCallable = UnaryCallable.create(settings.publishSeriesSettings(), this.channel, this.executor);
+    this.getBookCallable = UnaryCallable.create(settings.getBookSettings(), this.channel, this.executor);
+    this.listBooksCallable = UnaryCallable.create(settings.listBooksSettings(), this.channel, this.executor);
     this.listBooksPagedCallable =
-        UnaryCallable.createPagedVariant(settings.listBooksSettings(), clientContext);
-    this.deleteBookCallable = UnaryCallable.create(settings.deleteBookSettings(), clientContext);
-    this.updateBookCallable = UnaryCallable.create(settings.updateBookSettings(), clientContext);
-    this.moveBookCallable = UnaryCallable.create(settings.moveBookSettings(), clientContext);
-    this.listStringsCallable = UnaryCallable.create(settings.listStringsSettings(), clientContext);
+        UnaryCallable.createPagedVariant(settings.listBooksSettings(), this.channel, this.executor);
+    this.deleteBookCallable = UnaryCallable.create(settings.deleteBookSettings(), this.channel, this.executor);
+    this.updateBookCallable = UnaryCallable.create(settings.updateBookSettings(), this.channel, this.executor);
+    this.moveBookCallable = UnaryCallable.create(settings.moveBookSettings(), this.channel, this.executor);
+    this.listStringsCallable = UnaryCallable.create(settings.listStringsSettings(), this.channel, this.executor);
     this.listStringsPagedCallable =
-        UnaryCallable.createPagedVariant(settings.listStringsSettings(), clientContext);
-    this.addCommentsCallable = UnaryCallable.create(settings.addCommentsSettings(), clientContext);
-    this.getBookFromArchiveCallable = UnaryCallable.create(settings.getBookFromArchiveSettings(), clientContext);
-    this.getBookFromAnywhereCallable = UnaryCallable.create(settings.getBookFromAnywhereSettings(), clientContext);
-    this.updateBookIndexCallable = UnaryCallable.create(settings.updateBookIndexSettings(), clientContext);
+        UnaryCallable.createPagedVariant(settings.listStringsSettings(), this.channel, this.executor);
+    this.addCommentsCallable = UnaryCallable.create(settings.addCommentsSettings(), this.channel, this.executor);
+    this.getBookFromArchiveCallable = UnaryCallable.create(settings.getBookFromArchiveSettings(), this.channel, this.executor);
+    this.getBookFromAnywhereCallable = UnaryCallable.create(settings.getBookFromAnywhereSettings(), this.channel, this.executor);
+    this.updateBookIndexCallable = UnaryCallable.create(settings.updateBookIndexSettings(), this.channel, this.executor);
     this.streamShelvesCallable = StreamingCallable.create(settings.streamShelvesSettings(), this.channel);
     this.streamBooksCallable = StreamingCallable.create(settings.streamBooksSettings(), this.channel);
     this.discussBookCallable = StreamingCallable.create(settings.discussBookSettings(), this.channel);
     this.monologAboutBookCallable = StreamingCallable.create(settings.monologAboutBookSettings(), this.channel);
-    this.findRelatedBooksCallable = UnaryCallable.create(settings.findRelatedBooksSettings(), clientContext);
+    this.findRelatedBooksCallable = UnaryCallable.create(settings.findRelatedBooksSettings(), this.channel, this.executor);
     this.findRelatedBooksPagedCallable =
-        UnaryCallable.createPagedVariant(settings.findRelatedBooksSettings(), clientContext);
-    this.addTagCallable = UnaryCallable.create(settings.addTagSettings(), clientContext);
-    this.addLabelCallable = UnaryCallable.create(settings.addLabelSettings(), clientContext);
-    this.getBigBookCallable = UnaryCallable.create(settings.getBigBookSettings().getInitialCallSettings(), clientContext);
-    this.getBigBookOperationCallable = OperationCallable.create(settings.getBigBookSettings(),clientContext, this.operationsClient);
-    this.getBigNothingCallable = UnaryCallable.create(settings.getBigNothingSettings().getInitialCallSettings(), clientContext);
-    this.getBigNothingOperationCallable = OperationCallable.create(settings.getBigNothingSettings(),clientContext, this.operationsClient);
-    this.testOptionalRequiredFlatteningParamsCallable = UnaryCallable.create(settings.testOptionalRequiredFlatteningParamsSettings(), clientContext);
+        UnaryCallable.createPagedVariant(settings.findRelatedBooksSettings(), this.channel, this.executor);
+    this.addTagCallable = UnaryCallable.create(settings.addTagSettings(), this.channel, this.executor);
+    this.addLabelCallable = UnaryCallable.create(settings.addLabelSettings(), this.channel, this.executor);
+    this.getBigBookCallable = UnaryCallable.create(settings.getBigBookSettings().getInitialCallSettings(), this.channel, this.executor);
+    this.getBigBookOperationCallable = OperationCallable.create(settings.getBigBookSettings(),this.channel, this.executor, this.operationsClient);
+    this.getBigNothingCallable = UnaryCallable.create(settings.getBigNothingSettings().getInitialCallSettings(), this.channel, this.executor);
+    this.getBigNothingOperationCallable = OperationCallable.create(settings.getBigNothingSettings(),this.channel, this.executor, this.operationsClient);
+    this.testOptionalRequiredFlatteningParamsCallable = UnaryCallable.create(settings.testOptionalRequiredFlatteningParamsSettings(), this.channel, this.executor);
 
-    closeables.addAll(clientContext.getCloseables());
+    if (settings.getChannelProvider().shouldAutoClose()) {
+      closeables.add(
+        new Closeable() {
+          @Override
+          public void close() throws IOException {
+            channel.shutdown();
+          }
+        });
+    }
+    if (settings.getExecutorProvider().shouldAutoClose()) {
+      closeables.add(
+        new Closeable() {
+          @Override
+          public void close() throws IOException {
+            executor.shutdown();
+          }
+        });
+    }
   }
 
   public final LibrarySettings getSettings() {
@@ -1793,7 +1809,7 @@ public class LibraryClient implements AutoCloseable {
    *
    *   StreamShelvesRequest request = StreamShelvesRequest.newBuilder().build();
    *
-   *   libraryClient.streamShelvesCallable().serverStreamingCall(request, responseObserver)});
+   *   libraryClient.streamShelvesCallable().serverStreamingCall(request, responseObserver));
    * }
    * </code></pre>
    */
@@ -1832,7 +1848,7 @@ public class LibraryClient implements AutoCloseable {
    *     .setName(name)
    *     .build();
    *
-   *   libraryClient.streamBooksCallable().serverStreamingCall(request, responseObserver)});
+   *   libraryClient.streamBooksCallable().serverStreamingCall(request, responseObserver));
    * }
    * </code></pre>
    */
@@ -1866,7 +1882,7 @@ public class LibraryClient implements AutoCloseable {
    *         }
    *       };
    *   ApiStreamObserver&lt;StreamingRecognizeRequest&gt; requestObserver =
-   *       libraryClient.discussBookCallable().bidiStreamingCall(responseObserver)});
+   *       libraryClient.discussBookCallable().bidiStreamingCall(responseObserver));
    *
    *   String name = "";
    *   DiscussBookRequest request = DiscussBookRequest.newBuilder()
@@ -1906,7 +1922,7 @@ public class LibraryClient implements AutoCloseable {
    *         }
    *       };
    *   ApiStreamObserver&lt;StreamingRecognizeRequest&gt; requestObserver =
-   *       libraryClient.monologAboutBookCallable().clientStreamingCall(responseObserver)});
+   *       libraryClient.monologAboutBookCallable().clientStreamingCall(responseObserver));
    *
    *   String name = "";
    *   DiscussBookRequest request = DiscussBookRequest.newBuilder()
