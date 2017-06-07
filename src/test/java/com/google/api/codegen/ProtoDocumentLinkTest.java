@@ -50,9 +50,9 @@ public class ProtoDocumentLinkTest {
   public void testRubyCommentReformatter() {
     RubyCommentReformatter commentReformatter = new RubyCommentReformatter();
     Truth.assertThat(commentReformatter.reformat("[Shelf][google.example.library.v1.Shelf]"))
-        .isEqualTo("{Shelf}[rdoc-ref:google.example.library.v1.Shelf]");
+        .isEqualTo("{Shelf}[rdoc-ref:Google::Example::Library::V1::Shelf]");
     Truth.assertThat(commentReformatter.reformat("[$Shelf][google.example.library.v1.Shelf]"))
-        .isEqualTo("{$Shelf}[rdoc-ref:google.example.library.v1.Shelf]");
+        .isEqualTo("{$Shelf}[rdoc-ref:Google::Example::Library::V1::Shelf]");
 
     // Cloud link may contain special character '$'
     Truth.assertThat(commentReformatter.reformat("[cloud docs!](/library/example/link)"))

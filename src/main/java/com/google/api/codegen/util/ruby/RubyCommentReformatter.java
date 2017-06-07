@@ -35,11 +35,15 @@ public class RubyCommentReformatter implements CommentReformatter {
             public String apply(String matchedString) {
               Matcher matcher = CommentPatterns.PROTO_LINK_PATTERN.matcher(matchedString);
               matcher.find();
-              String title = Matcher.quoteReplacement(protoToRubyDoc(matcher.group(1)));
-              String ref =
-                  Matcher.quoteReplacement(
-                      matcher.group(2) == null ? matcher.group(1) : matcher.group(2));
-              return String.format("{%s}[rdoc-ref:%s]", title, ref);
+              String title = matcher.group(1);
+              String ref = matcher.group(2);
+              if (ref == null) {
+                ref = title;
+              }
+              return String.format(
+                  "{%s}[rdoc-ref:%s]",
+                  Matcher.quoteReplacement(protoToRubyDoc(title)),
+                  Matcher.quoteReplacement(protoToRubyDoc(ref)));
             }
           });
 
