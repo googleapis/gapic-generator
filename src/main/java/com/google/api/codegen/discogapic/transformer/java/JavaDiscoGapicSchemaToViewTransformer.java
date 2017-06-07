@@ -153,7 +153,6 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
           nameFormatter.publicMethodName(Name.from("set").join(propertyName)));
       properties.add(simpleProperty.build());
     }
-    // TODO(andrealin): implement sorting in a conventional way.
     Collections.sort(
         properties,
         new Comparator<SimpleMessagePropertyView>() {
