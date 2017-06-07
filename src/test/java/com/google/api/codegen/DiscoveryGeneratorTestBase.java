@@ -109,7 +109,7 @@ public abstract class DiscoveryGeneratorTestBase extends ConfigBaselineTestCase 
     }
     DiscoveryProvider provider =
         MainDiscoveryProviderFactory.defaultCreate(
-            discoveryImporter.getService(), discoveryImporter.getConfig(), overrides, id);
+            discoveryImporter.getService(), discoveryImporter.getConfig(), overrides, null, id);
 
     Doc output = Doc.EMPTY;
     for (Api api : discoveryImporter.getService().getApisList()) {

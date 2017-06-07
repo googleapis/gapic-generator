@@ -83,6 +83,9 @@ public class DiscoveryFragmentGeneratorApi {
           "An @-delimited map of language to auth instructions URL: lang:URL@lang:URL@...",
           "");
 
+  public static final Option<String> RUBY_NAMES_FILE =
+      ToolOptions.createOption(String.class, "ruby_names_file", "A Ruby names file.", "");
+
   private final ToolOptions options;
   private final String dataPath;
 
@@ -133,9 +136,11 @@ public class DiscoveryFragmentGeneratorApi {
     ApiaryConfig apiaryConfig = discovery.getConfig();
     apiaryConfig.setAuthInstructionsUrl(parseAuthInstructionsUrl(authInstructions, id));
 
+    File rubyNamesFile = new File(options.get(RUBY_NAMES_FILE));
+
     DiscoveryProviderFactory providerFactory = createProviderFactory(factory);
     DiscoveryProvider provider =
-        providerFactory.create(discovery.getService(), apiaryConfig, overrides, id);
+        providerFactory.create(discovery.getService(), apiaryConfig, overrides, rubyNamesFile, id);
 
     for (Api api : discovery.getService().getApisList()) {
       for (Method method : api.getMethodsList()) {
