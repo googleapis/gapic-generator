@@ -99,15 +99,14 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
   }
 
   private StaticLangApiMessageFileView generateSchemaFile(
-      DiscoGapicInterfaceContext context,
-      Schema schema) {
+      DiscoGapicInterfaceContext context, Schema schema) {
     StaticLangApiMessageFileView.Builder apiFile = StaticLangApiMessageFileView.newBuilder();
     // Escape any schema's field names that are Java keywords.
     SymbolTable schemaSymbolTable = SymbolTable.fromSeed(JavaNameFormatter.RESERVED_IDENTIFIER_SET);
 
     apiFile.templateFileName(SCHEMA_TEMPLATE_FILENAME);
 
-    StaticLangApiMessageView messageView =  generateSchemaClass(context, schema, schemaSymbolTable);
+    StaticLangApiMessageView messageView = generateSchemaClass(context, schema, schemaSymbolTable);
     apiFile.schema(messageView);
 
     String outputPath = pathMapper.getOutputPath(null, context.getProductConfig());
@@ -120,9 +119,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
   }
 
   private StaticLangApiMessageView generateSchemaClass(
-      DiscoGapicInterfaceContext context,
-      Schema schema,
-      SymbolTable schemaSymbolTable) {
+      DiscoGapicInterfaceContext context, Schema schema, SymbolTable schemaSymbolTable) {
     addApiImports(context);
 
     StaticLangApiMessageView.Builder schemaView = StaticLangApiMessageView.newBuilder();
