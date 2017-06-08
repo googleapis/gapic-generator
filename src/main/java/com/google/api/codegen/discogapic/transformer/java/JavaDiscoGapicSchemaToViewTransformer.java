@@ -105,6 +105,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
 
     apiFile.templateFileName(SCHEMA_TEMPLATE_FILENAME);
 
+    addApiImports(context);
     StaticLangApiMessageView messageView = generateSchemaClass(context, null, schema);
     apiFile.schema(messageView);
 
@@ -119,7 +120,6 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
 
   private StaticLangApiMessageView generateSchemaClass(
       DiscoGapicInterfaceContext context, String key, Schema schema) {
-    addApiImports(context);
 
     SymbolTable schemaSymbolTable = SymbolTable.fromSeed(JavaNameFormatter.RESERVED_IDENTIFIER_SET);
 
@@ -145,23 +145,26 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
           context
               .getDiscoTypeTable()
               .getAndSaveNicknameForElementType(propertyString, property, schemaName));
-      if (!property.properties().isEmpty()
-          || (property.type() == Type.ARRAY && property.items().properties().isEmpty())) {
-        // Recursively create the nested schema views.
-        List<StaticLangApiMessageView> childSchemas = new LinkedList<>();
-        for (Map.Entry<String, Schema> childPropertyEntry : property.properties().entrySet()) {
-          childSchemas.add(
-              generateSchemaClass(
-                  context, childPropertyEntry.getKey(), childPropertyEntry.getValue()));
-        }
-        simpleProperty.properties(childSchemas);
-      }
+      List<StaticLangApiMessageView> childSchemas = new LinkedList<>();
       simpleProperty.fieldGetFunction(
           context.getDiscoGapicNamer().getResourceGetterName(propertyString));
       simpleProperty.fieldSetFunction(
           context.getDiscoGapicNamer().getResourceSetterName(propertyString));
       simpleProperty.type(property.type());
       simpleProperty.name(property.id().isEmpty() ? propertyString : property.id());
+
+      if (!property.properties().isEmpty()
+          || (property.type() == Type.ARRAY && !property.items().properties().isEmpty())) {
+        // Recursively create the nested schema views.
+
+        for (Map.Entry<String, Schema> childPropertyEntry : property.properties().entrySet()) {
+          childSchemas.add(
+              generateSchemaClass(
+                  context, childPropertyEntry.getKey(), childPropertyEntry.getValue()));
+        }
+      }
+      simpleProperty.properties(childSchemas);
+
       properties.add(simpleProperty.build());
     }
     Collections.sort(
