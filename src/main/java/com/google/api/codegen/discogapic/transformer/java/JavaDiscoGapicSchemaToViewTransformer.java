@@ -31,7 +31,6 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaTypeTable;
-import com.google.api.codegen.viewmodel.SimpleMessagePropertyView;
 import com.google.api.codegen.viewmodel.StaticLangApiMessageFileView;
 import com.google.api.codegen.viewmodel.StaticLangApiMessageView;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -95,7 +94,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
   private DiscoTypeTable createTypeTable(String implicitPackageName) {
     return new DiscoTypeTable(
         new JavaTypeTable(implicitPackageName),
-        new JavaSchemaTypeNameConverter(implicitPackageName));
+        new JavaSchemaTypeNameConverter(implicitPackageName, nameFormatter));
   }
 
   private StaticLangApiMessageFileView generateSchemaFile(
@@ -130,25 +129,27 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     schemaView.defaultValue(schema.defaultValue());
 
     // Map each property name to the Java typeName of the property.
-    List<SimpleMessagePropertyView> properties = new LinkedList<>();
+    List<StaticLangApiMessageView> properties = new LinkedList<>();
     for (Map.Entry<String, Schema> propertyEntry : schema.properties().entrySet()) {
       String propertyString = schemaSymbolTable.getNewSymbol(propertyEntry.getKey());
       Schema property = propertyEntry.getValue();
-      SimpleMessagePropertyView.Builder simpleProperty =
-          SimpleMessagePropertyView.newBuilder().name(propertyString);
+      StaticLangApiMessageView.Builder simpleProperty =
+          StaticLangApiMessageView.newBuilder().name(propertyString);
       simpleProperty.typeName(
-          context.getDiscoTypeTable().getAndSaveNicknameForElementType(property));
+          context.getDiscoTypeTable().getAndSaveNicknameForElementType(propertyString, property));
       simpleProperty.fieldGetFunction(
           context.getDiscoGapicNamer().getResourceGetterName(propertyString));
       simpleProperty.fieldSetFunction(
           context.getDiscoGapicNamer().getResourceSetterName(propertyString));
+      simpleProperty.type(property.type());
+      simpleProperty.name(property.id().isEmpty() ? propertyString : property.id());
       properties.add(simpleProperty.build());
     }
     Collections.sort(
         properties,
-        new Comparator<SimpleMessagePropertyView>() {
+        new Comparator<StaticLangApiMessageView>() {
           @Override
-          public int compare(SimpleMessagePropertyView o1, SimpleMessagePropertyView o2) {
+          public int compare(StaticLangApiMessageView o1, StaticLangApiMessageView o2) {
             return String.CASE_INSENSITIVE_ORDER.compare(o1.name(), o2.name());
           };
         });

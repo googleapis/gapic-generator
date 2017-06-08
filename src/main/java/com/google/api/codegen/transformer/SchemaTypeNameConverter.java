@@ -22,7 +22,7 @@ import com.google.api.codegen.util.TypedValue;
 /** SchemaTypeNameConverter maps TypeRef instances to TypeName instances. */
 public interface SchemaTypeNameConverter {
   /** Provides a TypeName for the given TypeRef. */
-  TypeName getTypeName(Schema type);
+  TypeName getTypeName(String key, Schema type);
 
   /** Provides a TypeName for the given FieldConfig and resource short name. */
   TypeName getTypeNameForTypedResourceName(FieldConfig fieldConfig, String typedResourceShortName);
@@ -56,7 +56,7 @@ public interface SchemaTypeNameConverter {
    */
   TypedValue getImplZeroValue(Schema schema);
 
-  TypeName getTypeNameForElementType(Schema type);
+  TypeName getTypeNameForElementType(String key, Schema type);
 
   /** Renders the given value if it is a primitive type. */
   String renderPrimitiveValue(Schema schema, String value);

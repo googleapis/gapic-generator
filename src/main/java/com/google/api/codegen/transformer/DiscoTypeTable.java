@@ -74,18 +74,23 @@ public class DiscoTypeTable {
    * Computes the nickname for the given type, adds the full name to the import set, and returns the
    * nickname.
    */
-  public String getAndSaveNicknameFor(Schema schema) {
-    return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeName(schema));
+  public String getAndSaveNicknameFor(String key, Schema schema) {
+    return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeName(key, schema));
   }
 
   /**
-   * This function will compute the nickname for the element type, add the full name to the import
-   * set, and then return the nickname. If the given type is repeated, then the element type is the
-   * contained type; if the type is not a repeated type, then the element type is the boxed form of
-   * the type.
+   * For a given schema, add the full name to the import set, and then return the nickname.
+   *
+   * @param key The String that maps to the given schema. If schema.id() is empty, then the nickname
+   *     will be based off this key.
+   * @param schema The schema to save and get the nickname for.
+   * @return nickname for the schema.
+   *     <p>If the given schema type is an array, then the element type is the contained type;
+   *     otherwise the element type is the boxed form of the type.
    */
-  public String getAndSaveNicknameForElementType(Schema schema) {
-    return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeNameForElementType(schema));
+  public String getAndSaveNicknameForElementType(String key, Schema schema) {
+    return typeTable.getAndSaveNicknameFor(
+        typeNameConverter.getTypeNameForElementType(key, schema));
   }
 
   /** Returns the imports accumulated so far. */
