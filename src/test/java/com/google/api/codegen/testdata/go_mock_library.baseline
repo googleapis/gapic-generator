@@ -541,7 +541,7 @@ func TestLibraryServiceGetShelf(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = LibraryShelfPath("[SHELF_ID]")
+    var formattedName string = ShelfPath("[SHELF_ID]")
     var options string = "options-1249474914"
     var request = &librarypb.GetShelfRequest{
         Name: formattedName,
@@ -572,7 +572,7 @@ func TestLibraryServiceGetShelfError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = grpc.Errorf(errCode, "test error")
 
-    var formattedName string = LibraryShelfPath("[SHELF_ID]")
+    var formattedName string = ShelfPath("[SHELF_ID]")
     var options string = "options-1249474914"
     var request = &librarypb.GetShelfRequest{
         Name: formattedName,
@@ -663,7 +663,7 @@ func TestLibraryServiceDeleteShelf(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = LibraryShelfPath("[SHELF_ID]")
+    var formattedName string = ShelfPath("[SHELF_ID]")
     var request = &librarypb.DeleteShelfRequest{
         Name: formattedName,
     }
@@ -689,7 +689,7 @@ func TestLibraryServiceDeleteShelfError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = grpc.Errorf(errCode, "test error")
 
-    var formattedName string = LibraryShelfPath("[SHELF_ID]")
+    var formattedName string = ShelfPath("[SHELF_ID]")
     var request = &librarypb.DeleteShelfRequest{
         Name: formattedName,
     }
@@ -720,8 +720,8 @@ func TestLibraryServiceMergeShelves(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = LibraryShelfPath("[SHELF_ID]")
-    var formattedOtherShelfName string = LibraryShelfPath("[SHELF_ID]")
+    var formattedName string = ShelfPath("[SHELF_ID]")
+    var formattedOtherShelfName string = ShelfPath("[SHELF_ID]")
     var request = &librarypb.MergeShelvesRequest{
         Name: formattedName,
         OtherShelfName: formattedOtherShelfName,
@@ -751,8 +751,8 @@ func TestLibraryServiceMergeShelvesError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = grpc.Errorf(errCode, "test error")
 
-    var formattedName string = LibraryShelfPath("[SHELF_ID]")
-    var formattedOtherShelfName string = LibraryShelfPath("[SHELF_ID]")
+    var formattedName string = ShelfPath("[SHELF_ID]")
+    var formattedOtherShelfName string = ShelfPath("[SHELF_ID]")
     var request = &librarypb.MergeShelvesRequest{
         Name: formattedName,
         OtherShelfName: formattedOtherShelfName,
@@ -787,7 +787,7 @@ func TestLibraryServiceCreateBook(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = LibraryShelfPath("[SHELF_ID]")
+    var formattedName string = ShelfPath("[SHELF_ID]")
     var book *librarypb.Book = &librarypb.Book{}
     var request = &librarypb.CreateBookRequest{
         Name: formattedName,
@@ -818,7 +818,7 @@ func TestLibraryServiceCreateBookError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = grpc.Errorf(errCode, "test error")
 
-    var formattedName string = LibraryShelfPath("[SHELF_ID]")
+    var formattedName string = ShelfPath("[SHELF_ID]")
     var book *librarypb.Book = &librarypb.Book{}
     var request = &librarypb.CreateBookRequest{
         Name: formattedName,
@@ -930,7 +930,7 @@ func TestLibraryServiceGetBook(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
+    var formattedName string = BookPath("[SHELF_ID]", "[BOOK_ID]")
     var request = &librarypb.GetBookRequest{
         Name: formattedName,
     }
@@ -959,7 +959,7 @@ func TestLibraryServiceGetBookError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = grpc.Errorf(errCode, "test error")
 
-    var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
+    var formattedName string = BookPath("[SHELF_ID]", "[BOOK_ID]")
     var request = &librarypb.GetBookRequest{
         Name: formattedName,
     }
@@ -990,7 +990,7 @@ func TestLibraryServiceListBooks(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = LibraryShelfPath("[SHELF_ID]")
+    var formattedName string = ShelfPath("[SHELF_ID]")
     var request = &librarypb.ListBooksRequest{
         Name: formattedName,
     }
@@ -1029,7 +1029,7 @@ func TestLibraryServiceListBooksError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = grpc.Errorf(errCode, "test error")
 
-    var formattedName string = LibraryShelfPath("[SHELF_ID]")
+    var formattedName string = ShelfPath("[SHELF_ID]")
     var request = &librarypb.ListBooksRequest{
         Name: formattedName,
     }
@@ -1054,7 +1054,7 @@ func TestLibraryServiceDeleteBook(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
+    var formattedName string = BookPath("[SHELF_ID]", "[BOOK_ID]")
     var request = &librarypb.DeleteBookRequest{
         Name: formattedName,
     }
@@ -1080,7 +1080,7 @@ func TestLibraryServiceDeleteBookError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = grpc.Errorf(errCode, "test error")
 
-    var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
+    var formattedName string = BookPath("[SHELF_ID]", "[BOOK_ID]")
     var request = &librarypb.DeleteBookRequest{
         Name: formattedName,
     }
@@ -1113,7 +1113,7 @@ func TestLibraryServiceUpdateBook(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
+    var formattedName string = BookPath("[SHELF_ID]", "[BOOK_ID]")
     var book *librarypb.Book = &librarypb.Book{}
     var request = &librarypb.UpdateBookRequest{
         Name: formattedName,
@@ -1144,7 +1144,7 @@ func TestLibraryServiceUpdateBookError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = grpc.Errorf(errCode, "test error")
 
-    var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
+    var formattedName string = BookPath("[SHELF_ID]", "[BOOK_ID]")
     var book *librarypb.Book = &librarypb.Book{}
     var request = &librarypb.UpdateBookRequest{
         Name: formattedName,
@@ -1180,8 +1180,8 @@ func TestLibraryServiceMoveBook(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
-    var formattedOtherShelfName string = LibraryShelfPath("[SHELF_ID]")
+    var formattedName string = BookPath("[SHELF_ID]", "[BOOK_ID]")
+    var formattedOtherShelfName string = ShelfPath("[SHELF_ID]")
     var request = &librarypb.MoveBookRequest{
         Name: formattedName,
         OtherShelfName: formattedOtherShelfName,
@@ -1211,8 +1211,8 @@ func TestLibraryServiceMoveBookError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = grpc.Errorf(errCode, "test error")
 
-    var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
-    var formattedOtherShelfName string = LibraryShelfPath("[SHELF_ID]")
+    var formattedName string = BookPath("[SHELF_ID]", "[BOOK_ID]")
+    var formattedOtherShelfName string = ShelfPath("[SHELF_ID]")
     var request = &librarypb.MoveBookRequest{
         Name: formattedName,
         OtherShelfName: formattedOtherShelfName,
@@ -1302,7 +1302,7 @@ func TestLibraryServiceAddComments(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
+    var formattedName string = BookPath("[SHELF_ID]", "[BOOK_ID]")
     var comment []byte = []byte("95")
     var stage librarypb.Comment_Stage = librarypb.Comment_UNSET
     var alignment librarypb.SomeMessage2_SomeMessage3_Alignment = librarypb.SomeMessage2_SomeMessage3_CHAR
@@ -1338,7 +1338,7 @@ func TestLibraryServiceAddCommentsError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = grpc.Errorf(errCode, "test error")
 
-    var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
+    var formattedName string = BookPath("[SHELF_ID]", "[BOOK_ID]")
     var comment []byte = []byte("95")
     var stage librarypb.Comment_Stage = librarypb.Comment_UNSET
     var alignment librarypb.SomeMessage2_SomeMessage3_Alignment = librarypb.SomeMessage2_SomeMessage3_CHAR
@@ -1381,7 +1381,7 @@ func TestLibraryServiceGetBookFromArchive(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = LibraryArchivedBookPath("[ARCHIVE_PATH]", "[BOOK_ID]")
+    var formattedName string = ArchivedBookPath("[ARCHIVE_PATH]", "[BOOK_ID]")
     var request = &librarypb.GetBookFromArchiveRequest{
         Name: formattedName,
     }
@@ -1410,7 +1410,7 @@ func TestLibraryServiceGetBookFromArchiveError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = grpc.Errorf(errCode, "test error")
 
-    var formattedName string = LibraryArchivedBookPath("[ARCHIVE_PATH]", "[BOOK_ID]")
+    var formattedName string = ArchivedBookPath("[ARCHIVE_PATH]", "[BOOK_ID]")
     var request = &librarypb.GetBookFromArchiveRequest{
         Name: formattedName,
     }
@@ -1444,8 +1444,8 @@ func TestLibraryServiceGetBookFromAnywhere(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
-    var formattedAltBookName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
+    var formattedName string = BookPath("[SHELF_ID]", "[BOOK_ID]")
+    var formattedAltBookName string = BookPath("[SHELF_ID]", "[BOOK_ID]")
     var request = &librarypb.GetBookFromAnywhereRequest{
         Name: formattedName,
         AltBookName: formattedAltBookName,
@@ -1475,8 +1475,8 @@ func TestLibraryServiceGetBookFromAnywhereError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = grpc.Errorf(errCode, "test error")
 
-    var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
-    var formattedAltBookName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
+    var formattedName string = BookPath("[SHELF_ID]", "[BOOK_ID]")
+    var formattedAltBookName string = BookPath("[SHELF_ID]", "[BOOK_ID]")
     var request = &librarypb.GetBookFromAnywhereRequest{
         Name: formattedName,
         AltBookName: formattedAltBookName,
@@ -1502,7 +1502,7 @@ func TestLibraryServiceUpdateBookIndex(t *testing.T) {
 
     mockLibrary.resps = append(mockLibrary.resps[:0], expectedResponse)
 
-    var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
+    var formattedName string = BookPath("[SHELF_ID]", "[BOOK_ID]")
     var indexName string = "default index"
     var indexMapItem string = "indexMapItem1918721251"
     var indexMap = map[string]string{
@@ -1535,7 +1535,7 @@ func TestLibraryServiceUpdateBookIndexError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLibrary.err = grpc.Errorf(errCode, "test error")
 
-    var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
+    var formattedName string = BookPath("[SHELF_ID]", "[BOOK_ID]")
     var indexName string = "default index"
     var indexMapItem string = "indexMapItem1918721251"
     var indexMap = map[string]string{
@@ -1915,7 +1915,7 @@ func TestLabelerAddLabel(t *testing.T) {
 
     mockLabeler.resps = append(mockLabeler.resps[:0], expectedResponse)
 
-    var formattedResource string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
+    var formattedResource string = BookPath("[SHELF_ID]", "[BOOK_ID]")
     var label string = "label102727412"
     var request = &taggerpb.AddLabelRequest{
         Resource: formattedResource,
@@ -1946,7 +1946,7 @@ func TestLabelerAddLabelError(t *testing.T) {
     errCode := codes.PermissionDenied
     mockLabeler.err = grpc.Errorf(errCode, "test error")
 
-    var formattedResource string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
+    var formattedResource string = BookPath("[SHELF_ID]", "[BOOK_ID]")
     var label string = "label102727412"
     var request = &taggerpb.AddLabelRequest{
         Resource: formattedResource,
@@ -1990,7 +1990,7 @@ func TestLibraryServiceGetBigBook(t *testing.T) {
         Result: &longrunningpb.Operation_Response{ Response: any },
     })
 
-    var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
+    var formattedName string = BookPath("[SHELF_ID]", "[BOOK_ID]")
     var request = &librarypb.GetBookRequest{
         Name: formattedName,
     }
@@ -2033,7 +2033,7 @@ func TestLibraryServiceGetBigBookError(t *testing.T) {
         },
     })
 
-    var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
+    var formattedName string = BookPath("[SHELF_ID]", "[BOOK_ID]")
     var request = &librarypb.GetBookRequest{
         Name: formattedName,
     }
@@ -2070,7 +2070,7 @@ func TestLibraryServiceGetBigNothing(t *testing.T) {
         Result: &longrunningpb.Operation_Response{ Response: any },
     })
 
-    var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
+    var formattedName string = BookPath("[SHELF_ID]", "[BOOK_ID]")
     var request = &librarypb.GetBookRequest{
         Name: formattedName,
     }
@@ -2110,7 +2110,7 @@ func TestLibraryServiceGetBigNothingError(t *testing.T) {
         },
     })
 
-    var formattedName string = LibraryBookPath("[SHELF_ID]", "[BOOK_ID]")
+    var formattedName string = BookPath("[SHELF_ID]", "[BOOK_ID]")
     var request = &librarypb.GetBookRequest{
         Name: formattedName,
     }
