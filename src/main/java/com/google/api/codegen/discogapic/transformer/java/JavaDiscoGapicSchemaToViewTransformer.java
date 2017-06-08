@@ -129,7 +129,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     String schemaName = schema.id().isEmpty() ? key : schema.id();
     String propertyString =
         nameFormatter.privateFieldName(Name.anyCamel(schemaSymbolTable.getNewSymbol(schemaName)));
-    schemaView.typeName(propertyString);
+    schemaView.name(propertyString);
     schemaView.type(schema.type());
     schemaView.defaultValue(schema.defaultValue());
     schemaView.description(schema.description());
