@@ -69,7 +69,7 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
         CodegenTestUtil.readConfig(
             new SimpleDiagCollector(), getTestDataLocator(), gapicConfigFileNames);
     if (config == null) {
-      return;
+      throw new IllegalArgumentException("Problem fetching or parsing Gapic config files.");
     }
   }
 
