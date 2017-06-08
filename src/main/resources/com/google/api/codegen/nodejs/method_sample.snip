@@ -35,10 +35,25 @@
 @snippet sampleCode(apiMethod)
     @switch apiMethod.type.toString
     @case "OptionalArrayMethod"
-        {@optionalArrayMethodSampleCode(apiMethod)}
+        {@optionalArrayMethodSampleCode(apiMethod, empty())}
     @case "PagedOptionalArrayMethod"
         {@initCode(apiMethod)}
-        {@pagedOptionalArrayMethodSampleCode(apiMethod)}
+        {@pagedOptionalArrayMethodSampleCode(apiMethod, empty())}
+    @default
+        $unhandledCase: {@apiMethod.type.toString}$
+    @end
+@end
+
+@private empty()
+@end
+
+@snippet sampleCode(apiMethod, additionalCallback)
+    @switch apiMethod.type.toString
+    @case "OptionalArrayMethod"
+        {@optionalArrayMethodSampleCode(apiMethod, additionalCallback)}
+    @case "PagedOptionalArrayMethod"
+        {@initCode(apiMethod)}
+        {@pagedOptionalArrayMethodSampleCode(apiMethod, additionalCallback)}
     @default
         $unhandledCase: {@apiMethod.type.toString}$
     @end
@@ -53,21 +68,29 @@
     });
 @end
 
-@private clientStreamingSampleCode(apiMethod)
+@private clientStreamingSampleCode(apiMethod, additionalCallback)
     var stream = {@apiMethod.apiModuleName}.{@apiMethod.name}(function(err, response) {
         if (err) {
             console.error(err);
             return;
         }
-        // doThingsWith(response)
+        @if additionalCallback
+          {@additionalCallback}();
+        @else
+          // doThingsWith(response)
+        @end
     });
     {@initCode(apiMethod)}
     {@sampleWriteStreamingRequest(apiMethod)}
 @end
 
-@private bidiStreamingSampleCode(apiMethod)
+@private bidiStreamingSampleCode(apiMethod, additionalCallback)
     var stream = {@apiMethod.apiModuleName}.{@apiMethod.name}().on('data', function(response) {
-        // doThingsWith(response);
+        @if additionalCallback
+            {@additionalCallback}();
+        @else
+            // doThingsWith(response)
+        @end
     });
     {@initCode(apiMethod)}
     {@sampleWriteStreamingRequest(apiMethod)}
@@ -78,28 +101,32 @@
     stream.write(request);
 @end
 
-@private optionalArrayMethodSampleCode(apiMethod)
+@private optionalArrayMethodSampleCode(apiMethod, additionalCallback)
     @switch apiMethod.grpcStreamingType.toString
     @case "ServerStreaming"
         {@initCode(apiMethod)}
         {@methodCallSampleCode(apiMethod)}.on('data', function(response) {
+          @if additionalCallback
+            {@additionalCallback}();
+          @else
             // doThingsWith(response)
+          @end
         });
     @case "ClientStreaming"
-        {@clientStreamingSampleCode(apiMethod)}
+        {@clientStreamingSampleCode(apiMethod, additionalCallback)}
     @case "BidiStreaming"
-        {@bidiStreamingSampleCode(apiMethod)}
+        {@bidiStreamingSampleCode(apiMethod, additionalCallback)}
     @case "NonStreaming"
         {@initCode(apiMethod)}
         @if apiMethod.hasReturnValue
-            {@methodCallSampleCodeWithReturnValue(apiMethod)};
+            {@methodCallSampleCodeWithReturnValue(apiMethod, additionalCallback)}
         @else
-            {@methodCallSampleCodeWithoutReturnValue(apiMethod)};
+            {@methodCallSampleCodeWithoutReturnValue(apiMethod, additionalCallback)}
         @end
     @end
 @end
 
-@private pagedOptionalArrayMethodSampleCode(apiMethod)
+@private pagedOptionalArrayMethodSampleCode(apiMethod, additionalCallback)
     // Iterate over all elements.
     {@methodCallSampleCodePrefix(apiMethod)}.then(function(responses) {
         var resources = responses[0];
@@ -111,7 +138,7 @@
     });
 
     // Or obtain the paged response.
-    {@methodCallSampleCodeForPagedResponse(apiMethod)}
+    {@methodCallSampleCodeForPagedResponse(apiMethod, additionalCallback)}
 @end
 
 @private methodCallSampleCode(apiMethod)
@@ -126,7 +153,7 @@
     @end
 @end
 
-@private methodCallSampleCodeForPagedResponse(apiMethod)
+@private methodCallSampleCodeForPagedResponse(apiMethod, additionalCallback)
     var options = {autoPaginate: false};
     function callback(responses) {
         // The actual resources in a response.
@@ -145,6 +172,9 @@
     }
     {@apiMethod.apiModuleName}.{@apiMethod.name}({@sampleMethodCallArgListAndComma(apiMethod)}options)
         .then(callback)
+        @if additionalCallback
+            .then({@additionalCallback})
+        @end
         .catch(function(err) {
             console.error(err);
         });
@@ -159,7 +189,7 @@
     @end
 @end
 
-@private methodCallSampleCodeWithReturnValue(apiMethod)
+@private methodCallSampleCodeWithReturnValue(apiMethod, additionalCallback)
     @if apiMethod.isLongRunningOperation
 
         // Handle the operation using the promise pattern.
@@ -178,9 +208,16 @@
 
             // The response of the api call returning the complete operation.
             var finalApiResponse = responses[2];
-        }).catch(function(err) {
-            console.error(err);
-        });
+        @if additionalCallback
+            }).then(additionalCallback)
+            .catch(function(err) {
+                console.error(err);
+            });
+        @else
+            }).catch(function(err) {
+                console.error(err);
+            });
+        @end
 
         // Handle the operation using the event emitter pattern.
         {@methodCallSampleCodePrefix(apiMethod)}.then(function(responses) {
@@ -203,23 +240,45 @@
             operation.on('error', function(err) {
               // throw(err);
             })
-        }).catch(function(err) {
-            console.error(err);
-        })
+        @if additionalCallback
+            }).then(additionalCallback)
+            .catch(function(err) {
+                console.error(err);
+            });
+        @else
+            }).catch(function(err) {
+                console.error(err);
+            });
+        @end
     @else
-      {@methodCallSampleCodePrefix(apiMethod)}.then(function(responses) {
-          var response = responses[0];
-          // doThingsWith(response)
-      }).catch(function(err) {
-          console.error(err);
-      })
+        {@methodCallSampleCodePrefix(apiMethod)}.then(function(responses) {
+            var response = responses[0];
+            // doThingsWith(response)
+        @if additionalCallback
+            }).then(additionalCallback)
+            .catch(function(err) {
+                console.error(err);
+            });
+        @else
+            }).catch(function(err) {
+                console.error(err);
+            });
+        @end
     @end
 @end
 
-@private methodCallSampleCodeWithoutReturnValue(apiMethod)
-    {@methodCallSampleCodePrefix(apiMethod)}.catch(function(err) {
-        console.error(err);
-    })
+@private methodCallSampleCodeWithoutReturnValue(apiMethod, additionalCallback)
+    @if additionalCallback
+        {@methodCallSampleCodePrefix(apiMethod)}
+          .then(additionalCallback)
+          .catch(function(err) {
+              console.error(err);
+          });
+    @else
+        {@methodCallSampleCodePrefix(apiMethod)}.catch(function(err) {
+            console.error(err);
+        });
+    @end
 @end
 
 @private initCode(apiMethod)

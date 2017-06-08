@@ -1,0 +1,35 @@
+@extends "nodejs/method_sample.snip"
+
+@snippet generate(smokeTest)
+  {@header(smokeTest.fileHeader)}
+
+  {@smokeTest(smokeTest)}
+@end
+
+@private header(fileHeader)
+  /*
+   {@comments(fileHeader.copyrightLines)}
+   *
+   {@comments(fileHeader.licenseLines)}
+   */
+  'use strict';
+@end
+
+@private smokeTest(smokeTest)
+  describe('{@smokeTest.name}', function() {
+    it('successfully makes a call to the service', function({@mochaCompletedCallback()}) {
+      @if smokeTest.requireProjectId
+        if (!process.env.SMOKE_TEST_PROJECT) {
+          throw new Error("Usage: SMOKE_TEST_PROJECT=<project_id> node #{$0}");
+        }
+        var projectId = process.env.SMOKE_TEST_PROJECT;
+      @end
+
+      {@decorateSampleCode(smokeTest.apiMethod, sampleCode(smokeTest.apiMethod, mochaCompletedCallback()))}
+    });
+  });
+@end
+
+@private mochaCompletedCallback()
+  done
+@end
