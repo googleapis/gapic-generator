@@ -21,12 +21,11 @@ import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
+import com.google.api.codegen.transformer.DiscoTypeTable;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
-import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
-import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.java.JavaFeatureConfig;
-import com.google.api.codegen.transformer.java.JavaModelTypeNameConverter;
+import com.google.api.codegen.transformer.java.JavaSchemaTypeNameConverter;
 import com.google.api.codegen.transformer.java.JavaSurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
@@ -74,46 +73,44 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
   @Override
   public List<ViewModel> transform(Document document, GapicProductConfig productConfig) {
     List<ViewModel> surfaceSchemas = new ArrayList<>();
-    SurfaceNamer namer = new JavaSurfaceNamer(productConfig.getPackageName());
-    SymbolTable docSymbolTable = SymbolTable.fromSeed(JavaNameFormatter.RESERVED_IDENTIFIER_SET);
+    JavaDiscoGapicNamer discoGapicNamer = new JavaDiscoGapicNamer();
 
     DiscoGapicInterfaceContext context =
         DiscoGapicInterfaceContext.create(
             document,
             productConfig,
             createTypeTable(productConfig.getPackageName()),
-            namer,
+            discoGapicNamer,
+            new JavaSurfaceNamer(productConfig.getPackageName()),
             JavaFeatureConfig.newBuilder().enableStringFormatFunctions(false).build());
 
     StaticLangApiMessageFileView apiFile;
     for (Map.Entry<String, Schema> entry : context.getDocument().schemas().entrySet()) {
-      apiFile = generateSchemaFile(context, entry.getKey(), entry.getValue(), docSymbolTable);
+      apiFile = generateSchemaFile(context, entry.getValue());
       surfaceSchemas.add(apiFile);
     }
     return surfaceSchemas;
   }
 
-  private ModelTypeTable createTypeTable(String implicitPackageName) {
-    return new ModelTypeTable(
+  private DiscoTypeTable createTypeTable(String implicitPackageName) {
+    return new DiscoTypeTable(
         new JavaTypeTable(implicitPackageName),
-        new JavaModelTypeNameConverter(implicitPackageName));
+        new JavaSchemaTypeNameConverter(implicitPackageName));
   }
 
   private StaticLangApiMessageFileView generateSchemaFile(
-      DiscoGapicInterfaceContext context,
-      String schemaName,
-      Schema schema,
-      SymbolTable docSymbolTable) {
+      DiscoGapicInterfaceContext context, Schema schema) {
     StaticLangApiMessageFileView.Builder apiFile = StaticLangApiMessageFileView.newBuilder();
     // Escape any schema's field names that are Java keywords.
     SymbolTable schemaSymbolTable = SymbolTable.fromSeed(JavaNameFormatter.RESERVED_IDENTIFIER_SET);
 
     apiFile.templateFileName(SCHEMA_TEMPLATE_FILENAME);
 
-    apiFile.schema(generateSchemaClass(context, schemaName, schema, schemaSymbolTable));
+    StaticLangApiMessageView messageView = generateSchemaClass(context, schema, schemaSymbolTable);
+    apiFile.schema(messageView);
 
     String outputPath = pathMapper.getOutputPath(null, context.getProductConfig());
-    apiFile.outputPath(outputPath + File.separator + schemaName + ".java");
+    apiFile.outputPath(outputPath + File.separator + messageView.typeName() + ".java");
 
     // must be done as the last step to catch all imports
     apiFile.fileHeader(fileHeaderTransformer.generateFileHeader(context));
@@ -122,17 +119,13 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
   }
 
   private StaticLangApiMessageView generateSchemaClass(
-      DiscoGapicInterfaceContext context,
-      String schemaName,
-      Schema schema,
-      SymbolTable schemaSymbolTable) {
+      DiscoGapicInterfaceContext context, Schema schema, SymbolTable schemaSymbolTable) {
     addApiImports(context);
 
     StaticLangApiMessageView.Builder schemaView = StaticLangApiMessageView.newBuilder();
 
-    schemaView.typeName(schemaName);
+    schemaView.typeName(nameFormatter.publicClassName(Name.anyCamel(schema.id())));
     schemaView.type(schema.type());
-    // TODO(andrealin): apply Java naming format.
     // TODO(andrealin): use symbol table to make sure Schema names aren't Java keywords.
     schemaView.defaultValue(schema.defaultValue());
 
@@ -143,14 +136,12 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       Schema property = propertyEntry.getValue();
       SimpleMessagePropertyView.Builder simpleProperty =
           SimpleMessagePropertyView.newBuilder().name(propertyString);
-      simpleProperty.typeName(typeToJavaType(property));
-
-      // TODO(andrealin) use a surface namer for the getter/setter.
-      Name propertyName = Name.anyCamel(propertyString);
+      simpleProperty.typeName(
+          context.getDiscoTypeTable().getAndSaveNicknameForElementType(property));
       simpleProperty.fieldGetFunction(
-          nameFormatter.publicMethodName(Name.from("get").join(propertyName)));
+          context.getDiscoGapicNamer().getResourceGetterName(propertyString));
       simpleProperty.fieldSetFunction(
-          nameFormatter.publicMethodName(Name.from("set").join(propertyName)));
+          context.getDiscoGapicNamer().getResourceSetterName(propertyString));
       properties.add(simpleProperty.build());
     }
     Collections.sort(
@@ -167,51 +158,10 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
   }
 
   private void addApiImports(DiscoGapicInterfaceContext context) {
-    ModelTypeTable typeTable = context.getModelTypeTable();
+    DiscoTypeTable typeTable = context.getDiscoTypeTable();
     typeTable.saveNicknameFor("com.google.api.core.BetaApi");
     typeTable.saveNicknameFor("java.io.Serializable");
     typeTable.saveNicknameFor("java.util.List");
     typeTable.saveNicknameFor("javax.annotation.Generated");
-  }
-
-  // Return the corresponding Java identifier for a given Discovery doc typeName and format.
-  // https://developers.google.com/discovery/v1/type-format.
-  private String typeToJavaType(Schema schema) {
-    if (!schema.reference().isEmpty()) {
-      return schema.reference();
-    }
-
-    switch (schema.type()) {
-      case ARRAY:
-        return String.format("List<%s>", typeToJavaType(schema.items()));
-      case INTEGER:
-        switch (schema.format()) {
-          case INT32:
-            return "Integer";
-          case UINT32:
-            return "Long";
-          default:
-            throw new IllegalStateException(
-                "Discovery doc had an INTEGER typeName that was not Integer/Long.");
-        }
-      case NUMBER:
-        switch (schema.format()) {
-          case DOUBLE:
-            return "Double";
-          case FLOAT:
-            return "Float";
-          default:
-            throw new IllegalStateException(
-                "Discovery doc had a NUMBER typeName that was not Float/Double.");
-        }
-      case BOOLEAN:
-        return "Boolean";
-      case STRING:
-        return "String";
-      case OBJECT:
-        return "Object";
-      default:
-        throw new IllegalStateException("Discovery doc had an unaccounted for typeName/format.");
-    }
   }
 }

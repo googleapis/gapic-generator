@@ -12,16 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.discovery.transformer;
+package com.google.api.codegen.discogapic.transformer.java;
 
-import com.google.api.codegen.discovery.config.SampleConfig;
-import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.protobuf.Method;
+import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
+import com.google.api.codegen.util.java.JavaNameFormatter;
 
-/*
- * Transforms a Method into a ViewModel instance that can be rendered by a template engine.
- */
-public interface SchemaToViewTransformer {
+class JavaDiscoGapicNamer extends DiscoGapicNamer {
 
-  ViewModel transform(Method method, SampleConfig sampleConfig);
+  public JavaDiscoGapicNamer() {
+    super(new JavaNameFormatter());
+  }
 }
