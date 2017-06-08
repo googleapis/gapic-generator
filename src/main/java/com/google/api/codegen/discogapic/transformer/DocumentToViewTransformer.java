@@ -20,7 +20,10 @@ import com.google.api.codegen.viewmodel.ViewModel;
 import java.util.List;
 
 public interface DocumentToViewTransformer {
+
+  /** Generate a list of ViewModels from a given Document model. */
   List<ViewModel> transform(Document document, GapicProductConfig productConfig);
 
+  /** Return the list of filenames of View templates to be applied to the transformed ViewModels. */
   List<String> getTemplateFileNames();
 }

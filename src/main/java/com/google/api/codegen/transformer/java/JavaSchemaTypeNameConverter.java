@@ -149,7 +149,6 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
       String packageName = getSchemaPackage(schema);
       String shortName = "";
       if (!schema.id().isEmpty()) {
-        // Top-level schema.
         shortName = schema.id();
       } else if (!schema.reference().isEmpty()) {
         shortName = schema.reference();

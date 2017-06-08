@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,7 +69,7 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
         CodegenTestUtil.readConfig(
             new SimpleDiagCollector(), getTestDataLocator(), gapicConfigFileNames);
     if (config == null) {
-      return;
+      throw new IllegalArgumentException("Problem fetching or parsing Gapic config files.");
     }
   }
 
