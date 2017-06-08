@@ -5,7 +5,7 @@
 package ;
 
 import com.google.api.core.BetaApi;
-import com.google.cloudbilling.v1.ProjectBillingInfo;
+import com.google.cloudbilling.v1.BillingAccount;
 import java.io.Serializable;
 import java.util.List;
 import javax.annotation.Generated;
@@ -16,6 +16,7 @@ public final class BillingAccount implements Serializable {
   private final String displayName;
   private final String name;
   private final Boolean open;
+
   private BillingAccount(
 
     String displayName,
@@ -132,7 +133,6 @@ public final class BillingAccount implements Serializable {
     h ^= this.open.hashCode();
     return h;
   }
-
 }
 ============== file: src/main/java/CloudbillingClient.java ==============
 /*
@@ -238,7 +238,7 @@ package ;
 
 import com.google.api.core.BetaApi;
 import com.google.cloudbilling.v1.BillingAccount;
-import com.google.cloudbilling.v1.ProjectBillingInfo;
+import com.google.cloudbilling.v1.ListBillingAccountsResponse;
 import java.io.Serializable;
 import java.util.List;
 import javax.annotation.Generated;
@@ -248,6 +248,7 @@ import javax.annotation.Generated;
 public final class ListBillingAccountsResponse implements Serializable {
   private final List<BillingAccount> billingAccounts;
   private final String nextPageToken;
+
   private ListBillingAccountsResponse(
 
     List<BillingAccount> billingAccounts,
@@ -342,7 +343,6 @@ public final class ListBillingAccountsResponse implements Serializable {
     h ^= this.nextPageToken.hashCode();
     return h;
   }
-
 }
 ============== file: src/main/java/ListProjectBillingInfoResponse.java ==============
 /*
@@ -352,6 +352,8 @@ package ;
 
 import com.google.api.core.BetaApi;
 import com.google.cloudbilling.v1.BillingAccount;
+import com.google.cloudbilling.v1.ListBillingAccountsResponse;
+import com.google.cloudbilling.v1.ListProjectBillingInfoResponse;
 import com.google.cloudbilling.v1.ProjectBillingInfo;
 import java.io.Serializable;
 import java.util.List;
@@ -362,6 +364,7 @@ import javax.annotation.Generated;
 public final class ListProjectBillingInfoResponse implements Serializable {
   private final String nextPageToken;
   private final List<ProjectBillingInfo> projectBillingInfo;
+
   private ListProjectBillingInfoResponse(
 
     String nextPageToken,
@@ -456,7 +459,6 @@ public final class ListProjectBillingInfoResponse implements Serializable {
     h ^= this.projectBillingInfo.hashCode();
     return h;
   }
-
 }
 ============== file: src/main/java/ProjectBillingInfo.java ==============
 /*
@@ -466,6 +468,8 @@ package ;
 
 import com.google.api.core.BetaApi;
 import com.google.cloudbilling.v1.BillingAccount;
+import com.google.cloudbilling.v1.ListBillingAccountsResponse;
+import com.google.cloudbilling.v1.ListProjectBillingInfoResponse;
 import com.google.cloudbilling.v1.ProjectBillingInfo;
 import java.io.Serializable;
 import java.util.List;
@@ -478,6 +482,7 @@ public final class ProjectBillingInfo implements Serializable {
   private final Boolean billingEnabled;
   private final String name;
   private final String projectId;
+
   private ProjectBillingInfo(
 
     String billingAccountName,
@@ -616,5 +621,4 @@ public final class ProjectBillingInfo implements Serializable {
     h ^= this.projectId.hashCode();
     return h;
   }
-
 }
