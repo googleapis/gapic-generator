@@ -63,7 +63,6 @@ public abstract class StaticLangApiMessageView {
   public abstract String fieldSetFunction();
 
   // There can be arbitrarily nested fields inside of this field.
-  @Nullable
   public abstract List<StaticLangApiMessageView> properties();
 
   public static StaticLangApiMessageView.Builder newBuilder() {
