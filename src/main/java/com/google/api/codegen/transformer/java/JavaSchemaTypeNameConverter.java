@@ -165,7 +165,7 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
         packageName =
             packageName
                 + "."
-                + nameFormatter.publicClassName(Name.upperCamel(parentName)).toString();
+                + nameFormatter.publicClassName(Name.anyCamel(parentName)).toString();
       }
       String longName = packageName + "." + shortName;
 

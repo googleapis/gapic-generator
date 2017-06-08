@@ -48,7 +48,6 @@ public abstract class StaticLangApiMessageView {
   public abstract List<String> enumValues();
 
   // The possibly-transformed ID of the schema from the Discovery Doc
-  @Nullable
   public abstract String name();
 
   // The escaped type name for this Schema.

@@ -20,7 +20,6 @@ import com.google.api.codegen.discogapic.DiscoGapicInterfaceContext;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Schema;
-import com.google.api.codegen.discovery.Schema.Type;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.DiscoTypeTable;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
@@ -40,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -106,7 +106,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     apiFile.templateFileName(SCHEMA_TEMPLATE_FILENAME);
 
     addApiImports(context);
-    StaticLangApiMessageView messageView = generateSchemaClass(context, null, schema);
+    StaticLangApiMessageView messageView = generateSchemaClass(context, null, schema, null);
     apiFile.schema(messageView);
 
     String outputPath = pathMapper.getOutputPath(null, context.getProductConfig());
@@ -119,54 +119,42 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
   }
 
   private StaticLangApiMessageView generateSchemaClass(
-      DiscoGapicInterfaceContext context, String key, Schema schema) {
+      DiscoGapicInterfaceContext context, String key, Schema schema, String parentName) {
 
+    // TODO(andrealin): Probably don't need to create a new SymbolTable for every method invocation.
     SymbolTable schemaSymbolTable = SymbolTable.fromSeed(JavaNameFormatter.RESERVED_IDENTIFIER_SET);
 
     StaticLangApiMessageView.Builder schemaView = StaticLangApiMessageView.newBuilder();
 
-    String schemaName =
-        nameFormatter.publicClassName(Name.anyCamel(schema.id().isEmpty() ? key : schema.id()));
-
-    schemaView.typeName(schemaName);
+    String schemaName = schema.id().isEmpty() ? key : schema.id();
+    String propertyString =
+        nameFormatter.privateFieldName(Name.anyCamel(schemaSymbolTable.getNewSymbol(schemaName)));
+    schemaView.typeName(propertyString);
     schemaView.type(schema.type());
-    // TODO(andrealin): use symbol table to make sure Schema names aren't Java keywords.
     schemaView.defaultValue(schema.defaultValue());
     schemaView.description(schema.description());
+    schemaView.typeName(
+        context
+            .getDiscoTypeTable()
+            .getAndSaveNicknameForElementType(key, schema, propertyString));
+    schemaView.fieldGetFunction(
+        context.getDiscoGapicNamer().getResourceGetterName(propertyString));
+    schemaView.fieldSetFunction(
+        context.getDiscoGapicNamer().getResourceSetterName(propertyString));
 
     // Map each property name to the Java typeName of the property.
     List<StaticLangApiMessageView> properties = new LinkedList<>();
-    for (Map.Entry<String, Schema> propertyEntry : schema.properties().entrySet()) {
-      String propertyString = schemaSymbolTable.getNewSymbol(propertyEntry.getKey());
-      Schema property = propertyEntry.getValue();
-      StaticLangApiMessageView.Builder simpleProperty =
-          StaticLangApiMessageView.newBuilder().name(propertyString);
-      simpleProperty.typeName(
-          context
-              .getDiscoTypeTable()
-              .getAndSaveNicknameForElementType(propertyString, property, schemaName));
-      List<StaticLangApiMessageView> childSchemas = new LinkedList<>();
-      simpleProperty.fieldGetFunction(
-          context.getDiscoGapicNamer().getResourceGetterName(propertyString));
-      simpleProperty.fieldSetFunction(
-          context.getDiscoGapicNamer().getResourceSetterName(propertyString));
-      simpleProperty.type(property.type());
-      simpleProperty.name(property.id().isEmpty() ? propertyString : property.id());
-
-      if (!property.properties().isEmpty()
-          || (property.type() == Type.ARRAY && !property.items().properties().isEmpty())) {
-        // Recursively create the nested schema views.
-
-        for (Map.Entry<String, Schema> childPropertyEntry : property.properties().entrySet()) {
-          childSchemas.add(
-              generateSchemaClass(
-                  context, childPropertyEntry.getKey(), childPropertyEntry.getValue()));
-        }
-      }
-      simpleProperty.properties(childSchemas);
-
-      properties.add(simpleProperty.build());
+    Map<String, Schema> schemaProperties = new HashMap<>();
+    schemaProperties.putAll(schema.properties());
+    if (schema.items() != null && schema.items().properties() != null) {
+      schemaProperties.putAll(schema.items().properties());
     }
+    for (Map.Entry<String, Schema> propertyEntry : schemaProperties.entrySet()) {
+      properties.add(
+          generateSchemaClass(
+              context, propertyEntry.getKey(), propertyEntry.getValue(), parentName));
+    }
+
     Collections.sort(
         properties,
         new Comparator<StaticLangApiMessageView>() {
