@@ -30,6 +30,7 @@ import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.api.tools.framework.tools.ToolOptions.Option;
 import com.google.api.tools.framework.tools.ToolUtil;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -88,9 +89,14 @@ public class DiscoGapicGeneratorApi {
     this.options = options;
   }
 
-  public void run() throws Exception {
-
-    String discoveryDocPath = options.get(DISCOVERY_DOC);
+  /** From config file paths, constructs the DiscoGapicProviders to run. */
+  @VisibleForTesting
+  static List<DiscoGapicProvider> getProviders(
+      String discoveryDocPath,
+      List<String> configFileNames,
+      String packageConfigFile,
+      List<String> enabledArtifacts)
+      throws IOException {
     if (!new File(discoveryDocPath).exists()) {
       throw new IOException("File not found: " + discoveryDocPath);
     }
@@ -102,23 +108,19 @@ public class DiscoGapicGeneratorApi {
     Document document = Document.from(new DiscoveryNode(root));
 
     // Read the YAML config and convert it to proto.
-    List<String> configFileNames = options.get(GENERATOR_CONFIG_FILES);
     if (configFileNames.size() == 0) {
-      System.err.println(String.format("--%s must be provided", GENERATOR_CONFIG_FILES.name()));
-      return;
+      throw new IOException(String.format("--%s must be provided", GENERATOR_CONFIG_FILES.name()));
     }
 
     ConfigProto configProto = loadConfigFromFiles(configFileNames);
     if (configProto == null) {
-      return;
+      throw new IOException("Failed to load config proto.");
     }
 
     PackageMetadataConfig packageConfig = null;
-    if (!Strings.isNullOrEmpty(options.get(PACKAGE_CONFIG_FILE))) {
+    if (!Strings.isNullOrEmpty(packageConfigFile)) {
       String contents =
-          new String(
-              Files.readAllBytes(Paths.get(options.get(PACKAGE_CONFIG_FILE))),
-              StandardCharsets.UTF_8);
+          new String(Files.readAllBytes(Paths.get(packageConfigFile)), StandardCharsets.UTF_8);
       packageConfig = PackageMetadataConfig.createFromString(contents);
     }
     GeneratorProto generator = configProto.getGenerator();
@@ -129,13 +131,21 @@ public class DiscoGapicGeneratorApi {
 
     DiscoGapicProviderFactory providerFactory = createProviderFactory(factory);
     GapicGeneratorConfig generatorConfig =
-        GapicGeneratorConfig.newBuilder()
-            .id(id)
-            .enabledArtifacts(options.get(ENABLED_ARTIFACTS))
-            .build();
+        GapicGeneratorConfig.newBuilder().id(id).enabledArtifacts(enabledArtifacts).build();
+
+    return providerFactory.create(document, productConfig, generatorConfig, packageConfig);
+  }
+
+  public void run() throws Exception {
+
+    String discoveryDocPath = options.get(DISCOVERY_DOC);
+    List<String> configFileNames = options.get(GENERATOR_CONFIG_FILES);
+    String packageConfigFile = options.get(PACKAGE_CONFIG_FILE);
+    List<String> enabledArtifacts = options.get(ENABLED_ARTIFACTS);
 
     List<DiscoGapicProvider> providers =
-        providerFactory.create(document, productConfig, generatorConfig, packageConfig);
+        getProviders(discoveryDocPath, configFileNames, packageConfigFile, enabledArtifacts);
+
     String outputFile = options.get(OUTPUT_FILE);
     Map<String, Doc> outputFiles = Maps.newHashMap();
     for (DiscoGapicProvider provider : providers) {
@@ -162,7 +172,7 @@ public class DiscoGapicGeneratorApi {
     return provider;
   }
 
-  private List<File> pathsToFiles(List<String> configFileNames) {
+  private static List<File> pathsToFiles(List<String> configFileNames) {
     List<File> files = new ArrayList<>();
 
     for (String configFileName : configFileNames) {
@@ -172,7 +182,7 @@ public class DiscoGapicGeneratorApi {
     return files;
   }
 
-  private ConfigProto loadConfigFromFiles(List<String> configFileNames) {
+  private static ConfigProto loadConfigFromFiles(List<String> configFileNames) {
     List<File> configFiles = pathsToFiles(configFileNames);
     DiagCollector diagCollector = new SimpleDiagCollector();
     ImmutableMap<String, Message> supportedConfigTypes =

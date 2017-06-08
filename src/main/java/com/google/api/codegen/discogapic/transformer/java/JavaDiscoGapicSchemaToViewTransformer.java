@@ -39,6 +39,8 @@ import com.google.api.codegen.viewmodel.ViewModel;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -151,6 +153,14 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
           nameFormatter.publicMethodName(Name.from("set").join(propertyName)));
       properties.add(simpleProperty.build());
     }
+    Collections.sort(
+        properties,
+        new Comparator<SimpleMessagePropertyView>() {
+          @Override
+          public int compare(SimpleMessagePropertyView o1, SimpleMessagePropertyView o2) {
+            return String.CASE_INSENSITIVE_ORDER.compare(o1.name(), o2.name());
+          };
+        });
     schemaView.properties(properties);
 
     return schemaView.build();
