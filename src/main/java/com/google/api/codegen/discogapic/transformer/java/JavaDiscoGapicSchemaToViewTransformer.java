@@ -85,8 +85,17 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
             JavaFeatureConfig.newBuilder().enableStringFormatFunctions(false).build());
 
     StaticLangApiMessageFileView apiFile;
-    for (Map.Entry<String, Schema> entry : context.getDocument().schemas().entrySet()) {
-      apiFile = generateSchemaFile(context, entry.getValue());
+    // Explicitly order schemas for uniformity across JDKs.
+    final List<Schema> schemas = new LinkedList<>(context.getDocument().schemas().values());
+    Collections.sort(schemas, new Comparator<Schema>() {
+      @Override
+      public int compare(Schema o1, Schema o2) {
+        return String.CASE_INSENSITIVE_ORDER.compare(o1.id(), o2.id());
+      }
+    });
+
+    for (Schema schema : schemas) {
+      apiFile = generateSchemaFile(context, schema);
       surfaceSchemas.add(apiFile);
     }
     return surfaceSchemas;
