@@ -22,23 +22,28 @@
     class {@smokeTest.name}(unittest.TestCase):
 
         def test_{@smokeTest.apiMethod.name}(self):
-            @if smokeTest.requireProjectId
-                parser = argparse.ArgumentParser(\
-                    description='Verify the build with a smoke test.')
-                parser.add_argument('project_id', metavar='PROJECT-ID', \
-                    nargs='1', help='Id of your test project', required=True)
-                args = parser.parse_args()
-                project_id = args.project_id
-            @end
+            try:
+                @if smokeTest.requireProjectId
+                    parser = argparse.ArgumentParser(\
+                        description='Verify the build with a smoke test.')
+                    parser.add_argument('project_id', metavar='PROJECT-ID', \
+                        nargs='1', help='Id of your test project', required=True)
+                    args = parser.parse_args()
+                    project_id = args.project_id
+                @end
 
-            client = {@smokeTest.apiVariableName}.{@smokeTest.apiClassName}()
-            {@initCode(smokeTest.apiMethod.initCode)}
-            @if smokeTest.apiMethod.hasReturnValue
-                response = {@testMethodCall(smokeTest.apiMethod)}
-                print(response)
-            @else
-                {@testMethodCall(smokeTest.apiMethod)}
-            @end
+                client = {@smokeTest.apiVariableName}.{@smokeTest.apiClassName}()
+                {@initCode(smokeTest.apiMethod.initCode)}
+                @if smokeTest.apiMethod.hasReturnValue
+                    response = {@testMethodCall(smokeTest.apiMethod)}
+                    print(response)
+                @else
+                    {@testMethodCall(smokeTest.apiMethod)}
+                @end
+                print('OK')
+            except Exception as e:
+                print('Failed with exception:')
+                print(e)
 @end
 
 @private testMethodCall(apiMethod)
