@@ -31,14 +31,12 @@ public class SchemaTypeFormatterImpl implements SchemaTypeFormatter {
 
   @Override
   public String getFullNameFor(Schema type) {
-    // TODO(andrealin)
-    return null;
+    return typeNameConverter.getTypeNameForElementType(type).getFullName();
   }
 
   @Override
   public String getNicknameFor(Schema type) {
-    // TODO(andrealin)
-    return null;
+    return typeNameConverter.getTypeName(type).getNickname();
   }
 
   @Override

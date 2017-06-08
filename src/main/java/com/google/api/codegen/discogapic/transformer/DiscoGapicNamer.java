@@ -17,7 +17,6 @@ package com.google.api.codegen.discogapic.transformer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NameFormatter;
 import com.google.api.codegen.util.NameFormatterDelegator;
-import com.google.common.base.Strings;
 
 /** Provides language-specific names for variables and classes. */
 public class DiscoGapicNamer extends NameFormatterDelegator {
@@ -26,14 +25,9 @@ public class DiscoGapicNamer extends NameFormatterDelegator {
     super(nameFormatter);
   }
 
-  /** Returns the variable name of the service. */
-  public String getServiceVarName(String apiTypeName) {
-    return localVarName(Name.upperCamel(apiTypeName, "Service"));
-  }
-
   /** Returns the variable name for a field. */
   public String getFieldVarName(String fieldName) {
-    return localVarName(Name.lowerCamel(fieldName));
+    return privateFieldName(Name.anyCamel(fieldName));
   }
 
   /** Returns the resource getter method name for a resource field. */
@@ -45,25 +39,5 @@ public class DiscoGapicNamer extends NameFormatterDelegator {
     return publicMethodName(Name.anyCamel("set", fieldName));
   }
 
-  /**
-   * Returns the variable name for a resource field.
-   *
-   * <p>If resourceTypeName is an empty string, "item" is returned.
-   */
-  public String getResourceVarName(String resourceTypeName) {
-    if (Strings.isNullOrEmpty(resourceTypeName)) {
-      return localVarName(Name.lowerCamel("item"));
-    }
-    return localVarName(Name.upperCamel(resourceTypeName));
-  }
-
-  public String getRequestBodyFieldSetterName(String fieldName) {
-    return publicMethodName(Name.lowerCamel("set", fieldName));
-  }
-
-  // TODO(andrealin): var names for response and request objects.
-  /** Returns the variable name of the response. */
-  public String getResponseVarName() {
-    return localVarName(Name.lowerCamel("response"));
-  }
+  //TODO(andrealin): Naming methods for requests, responses, service name.
 }

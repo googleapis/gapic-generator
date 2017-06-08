@@ -15,8 +15,6 @@
 package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.ResourceNameConfig;
-import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Node;
 import com.google.api.codegen.discovery.Schema;
@@ -32,8 +30,7 @@ import com.google.common.base.Strings;
 public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
 
   /** The package prefix protoc uses if no java package option was provided. */
-  // TODO(andrealin): Find a better default package name.
-  private static final String DEFAULT_JAVA_PACKAGE_PREFIX = "com.google.api.resourcenames";
+  private static final String DEFAULT_JAVA_PACKAGE_PREFIX = "com.google.protos";
 
   private static String getPrimitive(Schema schema) {
     switch (schema.type()) {
@@ -56,7 +53,7 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
       case BOOLEAN:
         return "boolean";
       case STRING:
-        return "String";
+        return "java.lang.String";
       default:
         return null;
     }
@@ -140,9 +137,20 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
       return new TypeName(
           listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", elementTypeName);
     } else {
-
       String packageName = getSchemaPackage(schema);
-      String shortName = schema.id().isEmpty() ? schema.reference() : schema.id();
+      String shortName = "";
+      if (!schema.id().isEmpty()) {
+        shortName = schema.id();
+      } else if (!schema.reference().isEmpty()) {
+        shortName = schema.reference();
+      } else if (schema.additionalProperties() != null
+          && !schema.additionalProperties().reference().isEmpty()) {
+        shortName = schema.additionalProperties().reference();
+      } else {
+        // TODO(andrealin): Treat nested schemas as inner classes.
+        shortName = "Object";
+        packageName = "java.lang";
+      }
       String longName = packageName + "." + shortName;
 
       return new TypeName(longName, shortName);
@@ -161,7 +169,6 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
       packageName = getJavaPackage((Document) parent);
     }
 
-    // TODO(andrealin) outer class name.
     return packageName;
   }
 
@@ -216,62 +223,22 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
     return getSnippetZeroValue(type);
   }
 
-  private TypeName getTypeNameForTypedResourceName(
-      ResourceNameConfig resourceNameConfig, Schema schema, String typedResourceShortName) {
-    String packageName = getResourceNamePackage(resourceNameConfig);
-    String longName = packageName + "." + typedResourceShortName;
-
-    TypeName simpleTypeName = new TypeName(longName, typedResourceShortName);
-
-    if (schema.type() == Type.ARRAY) {
-      TypeName listTypeName = typeNameConverter.getTypeName("java.util.List");
-      return new TypeName(
-          listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", simpleTypeName);
-    } else {
-      return simpleTypeName;
-    }
-  }
-
-  private static String getResourceNamePackage(ResourceNameConfig resourceNameConfig) {
-    ResourceNameType resourceNameType = resourceNameConfig.getResourceNameType();
-    switch (resourceNameType) {
-      case ANY:
-        return "com.google.api.resourcenames";
-      case FIXED:
-      case SINGLE:
-      case ONEOF:
-        // TODO(andrealin): Figure out how the proto config works??
-        //        return getJavaPackage(resourceNameConfig.getAssignedProtoFile());
-        return "com.google.cloud.compute.spi.v1.resourcenames";
-      case NONE:
-      default:
-        throw new IllegalArgumentException("Unexpected ResourceNameType: " + resourceNameType);
-    }
-  }
-
   @Override
   public TypeName getTypeNameForTypedResourceName(
       FieldConfig fieldConfig, String typedResourceShortName) {
-    return getTypeNameForTypedResourceName(
-        fieldConfig.getResourceNameConfig(),
-        //        fieldConfig.getField().getType(),
-        null,
-        typedResourceShortName);
+    // TODO(andrealin)
+    return null;
   }
 
   @Override
   public TypeName getTypeNameForResourceNameElementType(
       FieldConfig fieldConfig, String typedResourceShortName) {
-    return getTypeNameForTypedResourceName(
-        fieldConfig.getResourceNameConfig(),
-        //        fieldConfig.getField().getType().makeOptional(),
-        null,
-        typedResourceShortName);
+    // TODO(andrealin)
+    return null;
   }
 
   public static String getJavaPackage(Document file) {
-    String packageName =
-        String.format("com.google.cloud.%s.spi.%s.resources", file.name(), file.version());
+    String packageName = String.format("com.google.%s.%s", file.name(), file.version());
     if (Strings.isNullOrEmpty(packageName)) {
       return DEFAULT_JAVA_PACKAGE_PREFIX + "." + file.name();
     }

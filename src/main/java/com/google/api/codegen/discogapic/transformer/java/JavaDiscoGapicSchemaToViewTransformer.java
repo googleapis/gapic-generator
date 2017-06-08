@@ -136,8 +136,8 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       Schema property = propertyEntry.getValue();
       SimpleMessagePropertyView.Builder simpleProperty =
           SimpleMessagePropertyView.newBuilder().name(propertyString);
-      String typeName = context.getDiscoTypeTable().getAndSaveNicknameForElementType(property);
-      simpleProperty.typeName(typeName);
+      simpleProperty.typeName(
+          context.getDiscoTypeTable().getAndSaveNicknameForElementType(property));
       simpleProperty.fieldGetFunction(
           context.getDiscoGapicNamer().getResourceGetterName(propertyString));
       simpleProperty.fieldSetFunction(

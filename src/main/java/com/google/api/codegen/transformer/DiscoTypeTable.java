@@ -14,10 +14,8 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.util.TypeAlias;
-import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
 import java.util.Map;
 
@@ -80,27 +78,6 @@ public class DiscoTypeTable {
     return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeName(schema));
   }
 
-  /*
-   * Computes the nickname for the given FieldConfig, and ResourceName. Adds the full name to
-   * the import set, and returns the nickname.
-   */
-  public String getAndSaveNicknameForTypedResourceName(
-      FieldConfig fieldConfig, String typedResourceShortName) {
-    return typeTable.getAndSaveNicknameFor(
-        typeNameConverter.getTypeNameForTypedResourceName(fieldConfig, typedResourceShortName));
-  }
-
-  /*
-   * Computes the nickname for the element type given FieldConfig, and ResourceName. Adds the full
-   * name to the import set, and returns the nickname.
-   */
-  public String getAndSaveNicknameForResourceNameElementType(
-      FieldConfig fieldConfig, String typedResourceShortName) {
-    return typeTable.getAndSaveNicknameFor(
-        typeNameConverter.getTypeNameForResourceNameElementType(
-            fieldConfig, typedResourceShortName));
-  }
-
   /**
    * This function will compute the nickname for the element type, add the full name to the import
    * set, and then return the nickname. If the given type is repeated, then the element type is the
@@ -109,24 +86,6 @@ public class DiscoTypeTable {
    */
   public String getAndSaveNicknameForElementType(Schema schema) {
     return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeNameForElementType(schema));
-  }
-
-  public String getAndSaveNicknameForContainer(
-      String containerFullName, String... elementFullNames) {
-    TypeName completeTypeName = typeTable.getContainerTypeName(containerFullName, elementFullNames);
-    return typeTable.getAndSaveNicknameFor(completeTypeName);
-  }
-
-  /**
-   * If the given type is not implicitly imported, the add it to the import set, then return the
-   * zero value for that type.
-   */
-  public String getSnippetZeroValueAndSaveNicknameFor(Schema schema) {
-    return typeNameConverter.getSnippetZeroValue(schema).getValueAndSaveTypeNicknameIn(typeTable);
-  }
-
-  public String getImplZeroValueAndSaveNicknameFor(Schema schema) {
-    return typeNameConverter.getImplZeroValue(schema).getValueAndSaveTypeNicknameIn(typeTable);
   }
 
   /** Returns the imports accumulated so far. */
