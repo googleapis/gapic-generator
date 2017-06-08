@@ -30,10 +30,6 @@ import javax.annotation.Nullable;
  */
 @AutoValue
 public abstract class StaticLangApiMessageView {
-
-  // The type of this schema.
-  public abstract Schema.Type type();
-
   @Nullable
   // TODO(andrealin) Populate and render this field.
   public abstract String description();
@@ -50,8 +46,11 @@ public abstract class StaticLangApiMessageView {
   // The possibly-transformed ID of the schema from the Discovery Doc
   public abstract String name();
 
-  // The escaped type name for this Schema.
+  // The type name for this Schema when rendered as a field in a parent Schema, e.g. "List<Operation>".
   public abstract String typeName();
+
+  // The type name for this Schema when rendered as a class name, e.g. "Operation".
+  public abstract String innerTypeName();
 
   // For static languages, name for getter function.
   @Nullable
@@ -74,13 +73,13 @@ public abstract class StaticLangApiMessageView {
 
     public abstract StaticLangApiMessageView.Builder name(String val);
 
-    public abstract StaticLangApiMessageView.Builder type(Schema.Type val);
-
     public abstract StaticLangApiMessageView.Builder description(String val);
 
     public abstract StaticLangApiMessageView.Builder defaultValue(String val);
 
     public abstract StaticLangApiMessageView.Builder enumValues(List<String> val);
+
+    public abstract StaticLangApiMessageView.Builder innerTypeName(String val);
 
     public abstract StaticLangApiMessageView.Builder fieldGetFunction(String val);
 

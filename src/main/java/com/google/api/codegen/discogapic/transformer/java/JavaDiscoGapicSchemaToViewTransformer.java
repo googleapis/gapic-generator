@@ -126,23 +126,26 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
 
     StaticLangApiMessageView.Builder schemaView = StaticLangApiMessageView.newBuilder();
 
-    String schemaName = schema.id().isEmpty() ? key : schema.id();
-    String propertyString =
-        nameFormatter.privateFieldName(Name.anyCamel(schemaSymbolTable.getNewSymbol(schemaName)));
-    schemaView.name(propertyString);
-    schemaView.type(schema.type());
+    String schemaId = schema.id().isEmpty() ? key : schema.id();
+    String schemaName =
+        nameFormatter.privateFieldName(Name.anyCamel(schemaSymbolTable.getNewSymbol(schemaId)));
+    schemaView.name(schemaName);
     schemaView.defaultValue(schema.defaultValue());
     schemaView.description(schema.description());
     schemaView.typeName(
         context
             .getDiscoTypeTable()
-            .getAndSaveNicknameForElementType(key, schema, propertyString));
+            .getAndSaveNicknameForElementType(key, schema, parentName));
+    schemaView.innerTypeName(
+        context
+            .getDiscoTypeTable()
+            .getAndSaveNicknameForElementType(key, schema, parentName));
     schemaView.fieldGetFunction(
-        context.getDiscoGapicNamer().getResourceGetterName(propertyString));
+        context.getDiscoGapicNamer().getResourceGetterName(schemaName));
     schemaView.fieldSetFunction(
-        context.getDiscoGapicNamer().getResourceSetterName(propertyString));
+        context.getDiscoGapicNamer().getResourceSetterName(schemaName));
 
-    // Map each property name to the Java typeName of the property.
+    // Generate a Schema view from each property.
     List<StaticLangApiMessageView> properties = new LinkedList<>();
     Map<String, Schema> schemaProperties = new HashMap<>();
     schemaProperties.putAll(schema.properties());
@@ -152,9 +155,8 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     for (Map.Entry<String, Schema> propertyEntry : schemaProperties.entrySet()) {
       properties.add(
           generateSchemaClass(
-              context, propertyEntry.getKey(), propertyEntry.getValue(), parentName));
+              context, propertyEntry.getKey(), propertyEntry.getValue(), schemaName));
     }
-
     Collections.sort(
         properties,
         new Comparator<StaticLangApiMessageView>() {
