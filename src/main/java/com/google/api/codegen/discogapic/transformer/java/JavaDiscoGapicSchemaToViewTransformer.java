@@ -133,17 +133,11 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     schemaView.defaultValue(schema.defaultValue());
     schemaView.description(schema.description());
     schemaView.typeName(
-        context
-            .getDiscoTypeTable()
-            .getAndSaveNicknameForElementType(key, schema, parentName));
+        context.getDiscoTypeTable().getAndSaveNicknameForElementType(key, schema, parentName));
     schemaView.innerTypeName(
-        context
-            .getDiscoTypeTable()
-            .getAndSaveNicknameForElementType(key, schema, parentName));
-    schemaView.fieldGetFunction(
-        context.getDiscoGapicNamer().getResourceGetterName(schemaName));
-    schemaView.fieldSetFunction(
-        context.getDiscoGapicNamer().getResourceSetterName(schemaName));
+        context.getDiscoTypeTable().getAndSaveNicknameForElementType(key, schema, parentName));
+    schemaView.fieldGetFunction(context.getDiscoGapicNamer().getResourceGetterName(schemaName));
+    schemaView.fieldSetFunction(context.getDiscoGapicNamer().getResourceSetterName(schemaName));
 
     // Generate a Schema view from each property.
     List<StaticLangApiMessageView> properties = new LinkedList<>();
