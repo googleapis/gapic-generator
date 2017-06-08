@@ -88,9 +88,9 @@ public class DiscoTypeTable {
    *     <p>If the given schema type is an array, then the element type is the contained type;
    *     otherwise the element type is the boxed form of the type.
    */
-  public String getAndSaveNicknameForElementType(String key, Schema schema) {
+  public String getAndSaveNicknameForElementType(String key, Schema schema, String parentName) {
     return typeTable.getAndSaveNicknameFor(
-        typeNameConverter.getTypeNameForElementType(key, schema));
+        typeNameConverter.getTypeNameForElementType(key, schema, parentName));
   }
 
   /** Returns the imports accumulated so far. */

@@ -20,6 +20,7 @@ import com.google.api.codegen.discovery.Node;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.discovery.Schema.Type;
 import com.google.api.codegen.transformer.SchemaTypeNameConverter;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.codegen.util.TypedValue;
@@ -111,8 +112,8 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
   }
 
   @Override
-  public TypeName getTypeNameForElementType(String key, Schema type) {
-    return getTypeNameForElementType(key, type, null, true);
+  public TypeName getTypeNameForElementType(String key, Schema type, String parentName) {
+    return getTypeNameForElementType(key, type, parentName, true);
   }
 
   /**
@@ -121,11 +122,11 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
    *
    * @param key String that maps to this schema, in the JSON.
    * @param schema The Schema to generate a TypeName from.
-   * @param outerSchema The TypeName of the parent Schema that encloses this Schema.
+   * @param parentName The TypeName of the parent Schema that encloses this Schema.
    *     <p>This method will be recursively called on the given schema's children.
    */
   private TypeName getTypeNameForElementType(
-      String key, Schema schema, TypeName outerSchema, boolean shouldBoxPrimitives) {
+      String key, Schema schema, String parentName, boolean shouldBoxPrimitives) {
     String primitiveTypeName = getPrimitive(schema);
     if (primitiveTypeName != null) {
       if (primitiveTypeName.contains(".")) {
@@ -141,7 +142,7 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
       }
     } else if (schema.type() == Type.ARRAY) {
       TypeName listTypeName = typeNameConverter.getTypeName("java.util.List");
-      TypeName elementTypeName = getTypeNameForElementType("", schema.items(), outerSchema, true);
+      TypeName elementTypeName = getTypeNameForElementType(key, schema.items(), parentName, true);
       return new TypeName(
           listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", elementTypeName);
     } else {
@@ -157,14 +158,14 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
         shortName = schema.additionalProperties().reference();
       } else {
         // TODO(andrealin): Treat nested schemas as inner classes.
-        shortName = "Object";
-        packageName = "java.lang";
+        //        shortName = "Object";
+        //        packageName = "java.lang";
 
-        //        shortName = key;
-
-        //        shortName = nameFormatter.publicClassName(
-        //            Name.from(schema.parent().id(), key.toUpperCase()));
-        //        packageName = packageName + schema.parent().id();
+        shortName = nameFormatter.publicClassName(Name.anyCamel(key));
+        packageName =
+            packageName
+                + "."
+                + nameFormatter.publicClassName(Name.upperCamel(parentName)).toString();
       }
       String longName = packageName + "." + shortName;
 

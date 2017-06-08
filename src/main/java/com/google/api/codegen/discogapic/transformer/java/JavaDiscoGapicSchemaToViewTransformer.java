@@ -20,6 +20,7 @@ import com.google.api.codegen.discogapic.DiscoGapicInterfaceContext;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Schema;
+import com.google.api.codegen.discovery.Schema.Type;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.DiscoTypeTable;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
@@ -101,11 +102,10 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       DiscoGapicInterfaceContext context, Schema schema) {
     StaticLangApiMessageFileView.Builder apiFile = StaticLangApiMessageFileView.newBuilder();
     // Escape any schema's field names that are Java keywords.
-    SymbolTable schemaSymbolTable = SymbolTable.fromSeed(JavaNameFormatter.RESERVED_IDENTIFIER_SET);
 
     apiFile.templateFileName(SCHEMA_TEMPLATE_FILENAME);
 
-    StaticLangApiMessageView messageView = generateSchemaClass(context, schema, schemaSymbolTable);
+    StaticLangApiMessageView messageView = generateSchemaClass(context, null, schema);
     apiFile.schema(messageView);
 
     String outputPath = pathMapper.getOutputPath(null, context.getProductConfig());
@@ -118,15 +118,21 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
   }
 
   private StaticLangApiMessageView generateSchemaClass(
-      DiscoGapicInterfaceContext context, Schema schema, SymbolTable schemaSymbolTable) {
+      DiscoGapicInterfaceContext context, String key, Schema schema) {
     addApiImports(context);
+
+    SymbolTable schemaSymbolTable = SymbolTable.fromSeed(JavaNameFormatter.RESERVED_IDENTIFIER_SET);
 
     StaticLangApiMessageView.Builder schemaView = StaticLangApiMessageView.newBuilder();
 
-    schemaView.typeName(nameFormatter.publicClassName(Name.anyCamel(schema.id())));
+    String schemaName =
+        nameFormatter.publicClassName(Name.anyCamel(schema.id().isEmpty() ? key : schema.id()));
+
+    schemaView.typeName(schemaName);
     schemaView.type(schema.type());
     // TODO(andrealin): use symbol table to make sure Schema names aren't Java keywords.
     schemaView.defaultValue(schema.defaultValue());
+    schemaView.description(schema.description());
 
     // Map each property name to the Java typeName of the property.
     List<StaticLangApiMessageView> properties = new LinkedList<>();
@@ -136,7 +142,20 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       StaticLangApiMessageView.Builder simpleProperty =
           StaticLangApiMessageView.newBuilder().name(propertyString);
       simpleProperty.typeName(
-          context.getDiscoTypeTable().getAndSaveNicknameForElementType(propertyString, property));
+          context
+              .getDiscoTypeTable()
+              .getAndSaveNicknameForElementType(propertyString, property, schemaName));
+      if (!property.properties().isEmpty()
+          || (property.type() == Type.ARRAY && property.items().properties().isEmpty())) {
+        // Recursively create the nested schema views.
+        List<StaticLangApiMessageView> childSchemas = new LinkedList<>();
+        for (Map.Entry<String, Schema> childPropertyEntry : property.properties().entrySet()) {
+          childSchemas.add(
+              generateSchemaClass(
+                  context, childPropertyEntry.getKey(), childPropertyEntry.getValue()));
+        }
+        simpleProperty.properties(childSchemas);
+      }
       simpleProperty.fieldGetFunction(
           context.getDiscoGapicNamer().getResourceGetterName(propertyString));
       simpleProperty.fieldSetFunction(

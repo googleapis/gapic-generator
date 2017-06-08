@@ -31,7 +31,7 @@ public class SchemaTypeFormatterImpl implements SchemaTypeFormatter {
 
   @Override
   public String getFullNameFor(Schema type) {
-    return typeNameConverter.getTypeNameForElementType(null, type).getFullName();
+    return typeNameConverter.getTypeNameForElementType(null, type, null).getFullName();
   }
 
   @Override
