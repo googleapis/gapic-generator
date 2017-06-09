@@ -32,7 +32,7 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
   /** The package prefix protoc uses if no java package option was provided. */
   private static final String DEFAULT_JAVA_PACKAGE_PREFIX = "com.google.discovery";
 
-  private static String getPrimitive(Schema schema) {
+  private static String getPrimitiveTypeName(Schema schema) {
     switch (schema.type()) {
       case INTEGER:
         switch (schema.format()) {
@@ -61,7 +61,7 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
 
   /** A map from primitive types in proto to zero values in Java. */
   private static String getPrimitiveZeroValue(Schema schema) {
-    String primitiveType = getPrimitive(schema);
+    String primitiveType = getPrimitiveTypeName(schema);
     if (primitiveType == null) {
       return null;
     }
@@ -118,7 +118,7 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
    * primitive, basicTypeName returns it in unboxed form.
    */
   private TypeName getTypeNameForElementType(Schema schema, boolean shouldBoxPrimitives) {
-    String primitiveTypeName = getPrimitive(schema);
+    String primitiveTypeName = getPrimitiveTypeName(schema);
     if (primitiveTypeName != null) {
       if (primitiveTypeName.contains(".")) {
         // Fully qualified type name, use regular type name resolver. Can skip boxing logic
@@ -174,7 +174,7 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
 
   @Override
   public String renderPrimitiveValue(Schema schema, String value) {
-    String primitiveType = getPrimitive(schema);
+    String primitiveType = getPrimitiveTypeName(schema);
     if (primitiveType == null) {
       throw new IllegalArgumentException(
           "Initial values are only supported for primitive types, got type "
@@ -209,7 +209,7 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
     if (schema.type() == Schema.Type.ARRAY) {
       return TypedValue.create(typeNameConverter.getTypeName("java.util.ArrayList"), "new %s<>()");
     }
-    if (getPrimitive(schema) != null) {
+    if (getPrimitiveTypeName(schema) != null) {
       return TypedValue.create(getTypeName(schema), getPrimitiveZeroValue(schema));
     }
     if (schema.type() == Type.OBJECT) {
