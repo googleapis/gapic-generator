@@ -30,7 +30,7 @@ import com.google.common.base.Strings;
 public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
 
   /** The package prefix protoc uses if no java package option was provided. */
-  private static final String DEFAULT_JAVA_PACKAGE_PREFIX = "com.google.protos";
+  private static final String DEFAULT_JAVA_PACKAGE_PREFIX = "com.google.discovery";
 
   private static String getPrimitive(Schema schema) {
     switch (schema.type()) {
