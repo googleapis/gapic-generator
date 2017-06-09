@@ -80,6 +80,13 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
   /** The name of the service exported by the package. */
   public abstract String packageServiceName();
 
+  @Nullable
+  public abstract String apiVersion();
+
+  public boolean hasApiVersion() {
+    return apiVersion() != null;
+  }
+
   public static Builder newBuilder() {
     return new AutoValue_OptionalArrayMethodView.Builder();
   }
@@ -147,6 +154,8 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
     /** The name of the service exported by the package. */
     public abstract Builder packageServiceName(String val);
+
+    public abstract Builder apiVersion(String val);
 
     public abstract OptionalArrayMethodView build();
   }

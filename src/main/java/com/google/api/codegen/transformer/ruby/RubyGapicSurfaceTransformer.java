@@ -155,7 +155,6 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.toolkitVersion(GeneratorVersionProvider.getGeneratorVersion());
     xapiClass.packageVersion(
         packageConfig.generatedPackageVersionBound(TargetLanguage.RUBY).lower());
-    xapiClass.packageServiceName(namer.getPackageServiceName(context.getInterface()));
 
     return xapiClass.build();
   }

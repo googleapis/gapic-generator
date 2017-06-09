@@ -1,6 +1,24 @@
 @extends "nodejs/common.snip"
 
 @snippet decorateSampleCode(apiMethod, coreSampleCode)
+    @if apiMethod.hasApiVersion
+        @if apiMethod.packageHasMultipleServices
+            var {@apiMethod.apiModuleName} = require('{@apiMethod.packageName}').{@apiMethd.packageServiceName}.{@apiMethod.apiVersion}({
+              // optional auth parameters.
+            });
+        @else
+            var {@apiMethod.apiModuleName} = require('{@apiMethod.packageName}').{@apiMethod.apiVersion}({
+              // optional auth parameters.
+            });
+        @end
+
+        {@coreSampleCode}
+    @else
+        {@decorateSampleCodeUnversioned(apiMethod, coreSampleCode)}
+    @end
+@end
+
+@snippet decorateSampleCodeUnversioned(apiMethod, coreSampleCode)
     @if apiMethod.packageHasMultipleServices
         var {@apiMethod.apiModuleName} = require('{@apiMethod.packageName}').{@apiMethd.packageServiceName}({
           // optional auth parameters.
@@ -13,8 +31,6 @@
 
     {@coreSampleCode}
 @end
-
-
 
 @snippet sampleCode(apiMethod)
     @switch apiMethod.type.toString

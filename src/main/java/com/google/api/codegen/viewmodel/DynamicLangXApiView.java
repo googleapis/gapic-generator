@@ -103,6 +103,7 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
   public abstract boolean packageHasMultipleServices();
 
+  @Nullable
   public abstract String packageServiceName();
 
   @Nullable
@@ -190,6 +191,7 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
     public abstract Builder packageHasMultipleServices(boolean val);
 
+    /** The name of the property of the api export that exports this service. Used in Node.js. */
     public abstract Builder packageServiceName(String val);
 
     public abstract Builder validDescriptorsNames(List<String> strings);

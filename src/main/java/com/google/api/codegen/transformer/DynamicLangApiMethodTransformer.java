@@ -121,6 +121,7 @@ public class DynamicLangApiMethodTransformer {
     apiMethod.packageName(namer.getPackageName());
     apiMethod.packageHasMultipleServices(packageHasMultipleServices);
     apiMethod.packageServiceName(namer.getPackageServiceName(context.getInterface()));
+    apiMethod.apiVersion(namer.getApiWrapperModuleVersion());
     apiMethod.longRunningView(
         context.getMethodConfig().isLongRunningOperation()
             ? lroTransformer.generateDetailView(context)

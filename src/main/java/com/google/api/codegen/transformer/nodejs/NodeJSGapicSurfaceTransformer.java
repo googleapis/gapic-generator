@@ -55,7 +55,6 @@ import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Iterators;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,7 +100,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
   private List<ViewModel> generateApiClasses(Model model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ViewModel> models = ImmutableList.builder();
     Iterable<Interface> interfaces = new InterfaceView().getElementIterable(model);
-    boolean hasMultipleServices = Iterators.size(interfaces.iterator()) > 1;
+    boolean hasMultipleServices = Iterables.size(interfaces) > 1;
     for (Interface apiInterface : interfaces) {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
       models.add(generateApiClass(context, hasMultipleServices));
