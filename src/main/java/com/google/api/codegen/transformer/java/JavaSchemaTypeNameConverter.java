@@ -30,13 +30,23 @@ import com.google.common.base.Strings;
 
 /** The Schema TypeName converter for Java. */
 public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
+
+  /** The package prefix protoc uses if no java package option was provided. */
+  private static final String DEFAULT_JAVA_PACKAGE_PREFIX = "com.google.discovery";
+
   private TypeNameConverter typeNameConverter;
   private JavaNameFormatter nameFormatter;
 
-  /** The package prefix protoc uses if no java package option was provided. */
-  private static final String DEFAULT_JAVA_PACKAGE_PREFIX = "com.google.protos";
+  public JavaSchemaTypeNameConverter(String implicitPackageName, JavaNameFormatter nameFormatter) {
+    this.typeNameConverter = new JavaTypeTable(implicitPackageName);
+    this.nameFormatter = nameFormatter;
+  }
 
-  private static String getPrimitive(Schema schema) {
+  public JavaSchemaTypeNameConverter(String implicitPackageName) {
+    this.typeNameConverter = new JavaTypeTable(implicitPackageName);
+  }
+
+  private static String getPrimitiveTypeName(Schema schema) {
     switch (schema.type()) {
       case INTEGER:
         switch (schema.format()) {
@@ -65,7 +75,7 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
 
   /** A map from primitive types in proto to zero values in Java. */
   private static String getPrimitiveZeroValue(Schema schema) {
-    String primitiveType = getPrimitive(schema);
+    String primitiveType = getPrimitiveTypeName(schema);
     if (primitiveType == null) {
       return null;
     }
@@ -82,11 +92,6 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
       return "\"\"";
     }
     throw new IllegalArgumentException("Schema is of unknown type.");
-  }
-
-  public JavaSchemaTypeNameConverter(String implicitPackageName, JavaNameFormatter nameFormatter) {
-    this.typeNameConverter = new JavaTypeTable(implicitPackageName);
-    this.nameFormatter = nameFormatter;
   }
 
   @Override
@@ -127,7 +132,7 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
    */
   private TypeName getTypeNameForElementType(
       String key, Schema schema, String parentName, boolean shouldBoxPrimitives) {
-    String primitiveTypeName = getPrimitive(schema);
+    String primitiveTypeName = getPrimitiveTypeName(schema);
     if (primitiveTypeName != null) {
       if (primitiveTypeName.contains(".")) {
         // Fully qualified type name, use regular type name resolver. Can skip boxing logic
@@ -141,6 +146,7 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
         }
       }
     } else if (schema.type() == Type.ARRAY) {
+      // TODO(andrealin): ensure that this handles arrays of arrays.
       TypeName listTypeName = typeNameConverter.getTypeName("java.util.List");
       TypeName elementTypeName = getTypeNameForElementType(key, schema.items(), parentName, true);
       return new TypeName(
@@ -187,7 +193,7 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
 
   @Override
   public String renderPrimitiveValue(Schema schema, String value) {
-    String primitiveType = getPrimitive(schema);
+    String primitiveType = getPrimitiveTypeName(schema);
     if (primitiveType == null) {
       throw new IllegalArgumentException(
           "Initial values are only supported for primitive types, got type "
@@ -221,7 +227,7 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
     if (schema.type() == Schema.Type.ARRAY) {
       return TypedValue.create(typeNameConverter.getTypeName("java.util.ArrayList"), "new %s<>()");
     }
-    if (getPrimitive(schema) != null) {
+    if (getPrimitiveTypeName(schema) != null) {
       return TypedValue.create(getTypeName(null, schema), getPrimitiveZeroValue(schema));
     }
     if (schema.type() == Type.OBJECT) {
@@ -250,6 +256,7 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
   }
 
   public static String getJavaPackage(Document file) {
+    // TODO(andrealin): Get this from options instead of hardcoded name.
     String packageName = String.format("com.google.%s.%s", file.name(), file.version());
     if (Strings.isNullOrEmpty(packageName)) {
       return DEFAULT_JAVA_PACKAGE_PREFIX + "." + file.name();

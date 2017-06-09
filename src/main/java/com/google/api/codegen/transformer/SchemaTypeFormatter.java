@@ -17,8 +17,8 @@ package com.google.api.codegen.transformer;
 import com.google.api.codegen.discovery.Schema;
 
 /**
- * A read-only interface for mapping TypeRef instances to a corresponding String representation for
- * a particular language.
+ * A read-only interface for mapping Schema instances to a corresponding String representation for a
+ * particular language.
  *
  * <p>Passing this type ensures that mutable functionality in derived classes won't be called.
  */

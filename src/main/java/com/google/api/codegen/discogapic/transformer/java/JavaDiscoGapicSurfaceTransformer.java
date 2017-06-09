@@ -21,8 +21,8 @@ import com.google.api.codegen.discogapic.DiscoGapicInterfaceContext;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
-import com.google.api.codegen.transformer.DiscoTypeTable;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
+import com.google.api.codegen.transformer.SchemaTypeTable;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.java.JavaFeatureConfig;
@@ -97,8 +97,8 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
     return surfaceDocs;
   }
 
-  private DiscoTypeTable createTypeTable(String implicitPackageName) {
-    return new DiscoTypeTable(
+  private SchemaTypeTable createTypeTable(String implicitPackageName) {
+    return new SchemaTypeTable(
         new JavaTypeTable(implicitPackageName),
         new JavaSchemaTypeNameConverter(implicitPackageName, nameFormatter));
   }
@@ -144,7 +144,7 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
   }
 
   private void addApiImports(DiscoGapicInterfaceContext context) {
-    DiscoTypeTable typeTable = context.getDiscoTypeTable();
+    SchemaTypeTable typeTable = context.getSchemaTypeTable();
     // TODO several of these can be deleted (e.g. DiscoGapic doesn't use grpc)
     typeTable.saveNicknameFor("com.google.api.core.BetaApi");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.ChannelAndExecutor");

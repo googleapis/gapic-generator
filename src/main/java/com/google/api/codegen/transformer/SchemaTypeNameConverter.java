@@ -19,9 +19,9 @@ import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypedValue;
 
-/** SchemaTypeNameConverter maps TypeRef instances to TypeName instances. */
+/** SchemaTypeNameConverter maps Schema instances to TypeName instances. */
 public interface SchemaTypeNameConverter {
-  /** Provides a TypeName for the given TypeRef. */
+  /** Provides a TypeName for the given Schema. */
   TypeName getTypeName(String key, Schema type);
 
   /** Provides a TypeName for the given FieldConfig and resource short name. */

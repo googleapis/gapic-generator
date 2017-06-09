@@ -21,8 +21,8 @@ import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
-import com.google.api.codegen.transformer.DiscoTypeTable;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
+import com.google.api.codegen.transformer.SchemaTypeTable;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.java.JavaFeatureConfig;
 import com.google.api.codegen.transformer.java.JavaSchemaTypeNameConverter;
@@ -104,8 +104,8 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     return surfaceSchemas;
   }
 
-  private DiscoTypeTable createTypeTable(String implicitPackageName) {
-    return new DiscoTypeTable(
+  private SchemaTypeTable createTypeTable(String implicitPackageName) {
+    return new SchemaTypeTable(
         new JavaTypeTable(implicitPackageName),
         new JavaSchemaTypeNameConverter(implicitPackageName, nameFormatter));
   }
@@ -145,9 +145,9 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     schemaView.defaultValue(schema.defaultValue());
     schemaView.description(schema.description());
     schemaView.typeName(
-        context.getDiscoTypeTable().getAndSaveNicknameForElementType(key, schema, parentName));
+        context.getSchemaTypeTable().getAndSaveNicknameForElementType(key, schema, parentName));
     schemaView.innerTypeName(
-        context.getDiscoTypeTable().getAndSaveNicknameForElementType(key, schema, parentName));
+        context.getSchemaTypeTable().getAndSaveNicknameForElementType(key, schema, parentName));
     schemaView.fieldGetFunction(context.getDiscoGapicNamer().getResourceGetterName(schemaName));
     schemaView.fieldSetFunction(context.getDiscoGapicNamer().getResourceSetterName(schemaName));
 
@@ -177,7 +177,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
   }
 
   private void addApiImports(DiscoGapicInterfaceContext context) {
-    DiscoTypeTable typeTable = context.getDiscoTypeTable();
+    SchemaTypeTable typeTable = context.getSchemaTypeTable();
     typeTable.saveNicknameFor("com.google.api.core.BetaApi");
     typeTable.saveNicknameFor("java.io.Serializable");
     typeTable.saveNicknameFor("java.util.List");
