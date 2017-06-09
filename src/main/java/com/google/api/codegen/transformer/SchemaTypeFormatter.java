@@ -32,6 +32,8 @@ public interface SchemaTypeFormatter {
   /** Returns the nickname for the given type (without adding the full name to the import set). */
   String getNicknameFor(Schema type);
 
+  String getFullNameFor(String key, Schema type, String parentName);
+
   /** Renders the primitive value of the given type. */
   String renderPrimitiveValue(Schema type, String key);
 }

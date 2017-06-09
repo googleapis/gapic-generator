@@ -23,7 +23,7 @@ import java.util.Map;
  * A SchemaTypeTable manages the imports for a set of fully-qualified type names, and provides
  * helper methods for importing instances of Schema.
  */
-public class SchemaTypeTable {
+public class SchemaTypeTable implements SchemaTypeFormatter {
   private SchemaTypeFormatterImpl typeFormatter;
   private TypeTable typeTable;
   private SchemaTypeNameConverter typeNameConverter;
@@ -34,6 +34,27 @@ public class SchemaTypeTable {
     this.typeNameConverter = typeNameConverter;
   }
 
+  @Override
+  public String renderPrimitiveValue(Schema type, String value) {
+    return typeFormatter.renderPrimitiveValue(type, value);
+  }
+
+  @Override
+  public String getFullNameFor(Schema type) {
+    return this.getFullNameFor(null, type, null);
+  }
+
+  @Override
+  public String getFullNameFor(String key, Schema type, String parentName) {
+    return typeFormatter.getFullNameFor(key, type, parentName);
+  }
+
+  @Override
+  public String getNicknameFor(Schema type) {
+    return typeFormatter.getNicknameFor(type);
+  }
+
+  @Override
   public String getImplicitPackageFullNameFor(String shortName) {
     return typeFormatter.getImplicitPackageFullNameFor(shortName);
   }
