@@ -440,20 +440,23 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     ModelTypeTable typeTable = context.getModelTypeTable();
     typeTable.saveNicknameFor("com.google.api.core.BetaApi");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.ChannelAndExecutor");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.ClientContext");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryCallable");
     typeTable.saveNicknameFor("com.google.api.pathtemplate.PathTemplate");
+    typeTable.saveNicknameFor("com.google.auth.Credentials");
     typeTable.saveNicknameFor("io.grpc.ManagedChannel");
     typeTable.saveNicknameFor("java.io.Closeable");
     typeTable.saveNicknameFor("java.io.IOException");
     typeTable.saveNicknameFor("java.util.ArrayList");
-    typeTable.saveNicknameFor("java.util.List");
     typeTable.saveNicknameFor("java.util.concurrent.ScheduledExecutorService");
+    typeTable.saveNicknameFor("java.util.List");
     typeTable.saveNicknameFor("javax.annotation.Generated");
 
     if (context.getInterfaceConfig().hasLongRunningOperations()) {
-      typeTable.saveNicknameFor("com.google.api.gax.grpc.OperationFuture");
+      typeTable.saveNicknameFor("com.google.api.gax.core.FixedCredentialsProvider");
       typeTable.saveNicknameFor("com.google.api.gax.grpc.FixedChannelProvider");
       typeTable.saveNicknameFor("com.google.api.gax.grpc.FixedExecutorProvider");
+      typeTable.saveNicknameFor("com.google.api.gax.grpc.OperationFuture");
       typeTable.saveNicknameFor("com.google.longrunning.OperationsClient");
       typeTable.saveNicknameFor("com.google.longrunning.OperationsSettings");
     }
