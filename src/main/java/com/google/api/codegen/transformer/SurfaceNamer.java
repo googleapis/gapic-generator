@@ -700,6 +700,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getParamTypeName");
   }
 
+  /** The type name for the message property */
+  public String getMessagePropertyTypeName(ModelTypeTable typeTable, TypeRef type) {
+    return getParamTypeName(typeTable, type);
+  }
+
   /** The type name for retry settings. */
   public String getRetrySettingsTypeName() {
     return getNotImplementedString("SurfaceNamer.getRetrySettingsClassName");

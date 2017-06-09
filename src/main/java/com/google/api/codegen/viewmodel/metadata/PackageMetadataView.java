@@ -108,6 +108,9 @@ public abstract class PackageMetadataView implements ViewModel {
   @Nullable
   public abstract String versionPath();
 
+  @Nullable
+  public abstract String versionNamespace();
+
   public abstract String author();
 
   public abstract String email();
@@ -233,7 +236,11 @@ public abstract class PackageMetadataView implements ViewModel {
     /** The path to the API protos in the googleapis repo. */
     public abstract Builder protoPath(String val);
 
+    /* The path to the generated version index file. */
     public abstract Builder versionPath(String val);
+
+    /** The namespace of the services found within this package. */
+    public abstract Builder versionNamespace(String val);
 
     /** The author of the package. */
     public abstract Builder author(String val);
