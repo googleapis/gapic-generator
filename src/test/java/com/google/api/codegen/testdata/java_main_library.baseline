@@ -17,18 +17,13 @@
 package com.google.gcloud.pubsub.v1;
 
 import com.google.api.core.BetaApi;
-import com.google.api.gax.core.FixedCredentialsProvider;
-import com.google.api.gax.grpc.ChannelAndExecutor;
-import com.google.api.gax.grpc.ClientContext;
-import com.google.api.gax.grpc.FixedChannelProvider;
-import com.google.api.gax.grpc.FixedExecutorProvider;
-import com.google.api.gax.grpc.OperationCallable;
-import com.google.api.gax.grpc.OperationFuture;
-import com.google.api.gax.grpc.StreamingCallable;
-import com.google.api.gax.grpc.UnaryCallable;
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.rpc.OperationCallable;
+import com.google.api.gax.rpc.OperationFuture;
+import com.google.api.gax.rpc.StreamingCallable;
+import com.google.api.gax.rpc.UnaryCallable;
 import com.google.api.pathtemplate.PathTemplate;
 import com.google.api.resourcenames.ResourceName;
-import com.google.auth.Credentials;
 import com.google.example.library.v1.AddCommentsRequest;
 import com.google.example.library.v1.ArchivedBookName;
 import com.google.example.library.v1.Book;
@@ -76,9 +71,9 @@ import static com.google.gcloud.pubsub.v1.PagedResponseWrappers.FindRelatedBooks
 import static com.google.gcloud.pubsub.v1.PagedResponseWrappers.ListBooksPagedResponse;
 import static com.google.gcloud.pubsub.v1.PagedResponseWrappers.ListShelvesPagedResponse;
 import static com.google.gcloud.pubsub.v1.PagedResponseWrappers.ListStringsPagedResponse;
+import com.google.gcloud.pubsub.v1.stub.LibraryServiceStub;
 import com.google.longrunning.Operation;
 import com.google.longrunning.OperationsClient;
-import com.google.longrunning.OperationsSettings;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.google.protobuf.FieldMask;
@@ -86,13 +81,11 @@ import com.google.tagger.v1.AddLabelRequest;
 import com.google.tagger.v1.AddLabelResponse;
 import com.google.tagger.v1.AddTagRequest;
 import com.google.tagger.v1.AddTagResponse;
-import io.grpc.ManagedChannel;
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import javax.annotation.Generated;
 
 // AUTO-GENERATED DOCUMENTATION AND SERVICE
@@ -164,47 +157,11 @@ import javax.annotation.Generated;
  * </code>
  * </pre>
  */
-@Generated("by GAPIC")
-public class LibraryClient implements AutoCloseable {
+@Generated("by GAPIC v0.0.5")
+public class LibraryClient implements BackgroundResource {
   private final LibrarySettings settings;
-  private final ScheduledExecutorService executor;
-  private final ManagedChannel channel;
+  private final LibraryServiceStub stub;
   private final OperationsClient operationsClient;
-  private final List<AutoCloseable> closeables = new ArrayList<>();
-
-  private final UnaryCallable<CreateShelfRequest, Shelf> createShelfCallable;
-  private final UnaryCallable<GetShelfRequest, Shelf> getShelfCallable;
-  private final UnaryCallable<ListShelvesRequest, ListShelvesResponse> listShelvesCallable;
-  private final UnaryCallable<ListShelvesRequest, ListShelvesPagedResponse> listShelvesPagedCallable;
-  private final UnaryCallable<DeleteShelfRequest, Empty> deleteShelfCallable;
-  private final UnaryCallable<MergeShelvesRequest, Shelf> mergeShelvesCallable;
-  private final UnaryCallable<CreateBookRequest, Book> createBookCallable;
-  private final UnaryCallable<PublishSeriesRequest, PublishSeriesResponse> publishSeriesCallable;
-  private final UnaryCallable<GetBookRequest, Book> getBookCallable;
-  private final UnaryCallable<ListBooksRequest, ListBooksResponse> listBooksCallable;
-  private final UnaryCallable<ListBooksRequest, ListBooksPagedResponse> listBooksPagedCallable;
-  private final UnaryCallable<DeleteBookRequest, Empty> deleteBookCallable;
-  private final UnaryCallable<UpdateBookRequest, Book> updateBookCallable;
-  private final UnaryCallable<MoveBookRequest, Book> moveBookCallable;
-  private final UnaryCallable<ListStringsRequest, ListStringsResponse> listStringsCallable;
-  private final UnaryCallable<ListStringsRequest, ListStringsPagedResponse> listStringsPagedCallable;
-  private final UnaryCallable<AddCommentsRequest, Empty> addCommentsCallable;
-  private final UnaryCallable<GetBookFromArchiveRequest, BookFromArchive> getBookFromArchiveCallable;
-  private final UnaryCallable<GetBookFromAnywhereRequest, BookFromAnywhere> getBookFromAnywhereCallable;
-  private final UnaryCallable<UpdateBookIndexRequest, Empty> updateBookIndexCallable;
-  private final StreamingCallable<StreamShelvesRequest, StreamShelvesResponse> streamShelvesCallable;
-  private final StreamingCallable<StreamBooksRequest, Book> streamBooksCallable;
-  private final StreamingCallable<DiscussBookRequest, Comment> discussBookCallable;
-  private final StreamingCallable<DiscussBookRequest, Comment> monologAboutBookCallable;
-  private final UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksCallable;
-  private final UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksPagedResponse> findRelatedBooksPagedCallable;
-  private final UnaryCallable<AddTagRequest, AddTagResponse> addTagCallable;
-  private final UnaryCallable<AddLabelRequest, AddLabelResponse> addLabelCallable;
-  private final UnaryCallable<GetBookRequest, Operation> getBigBookCallable;
-  private final OperationCallable<GetBookRequest, Book, GetBigBookMetadata> getBigBookOperationCallable;
-  private final UnaryCallable<GetBookRequest, Operation> getBigNothingCallable;
-  private final OperationCallable<GetBookRequest, Empty, GetBigBookMetadata> getBigNothingOperationCallable;
-  private final UnaryCallable<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsCallable;
 
 
 
@@ -225,92 +182,36 @@ public class LibraryClient implements AutoCloseable {
   }
 
   /**
+   * Constructs an instance of LibraryClient, using the given stub for making calls. This is for
+   * advanced usage - prefer to use LibrarySettings}.
+   */
+  public static final LibraryClient create(LibraryServiceStub stub) {
+    return new LibraryClient(stub);
+  }
+
+  /**
    * Constructs an instance of LibraryClient, using the given settings.
    * This is protected so that it easy to make a subclass, but otherwise, the static
    * factory methods should be preferred.
    */
   protected LibraryClient(LibrarySettings settings) throws IOException {
     this.settings = settings;
-    ChannelAndExecutor channelAndExecutor = settings.getChannelAndExecutor();
-    this.executor = channelAndExecutor.getExecutor();
-    this.channel = channelAndExecutor.getChannel();
-    Credentials credentials = settings.getCredentialsProvider().getCredentials();
+    this.stub = settings.createStub();
+    this.operationsClient = OperationsClient.create(this.stub.getOperationsStub());
+  }
 
-    ClientContext clientContext =
-        ClientContext.newBuilder()
-            .setExecutor(this.executor)
-            .setChannel(this.channel)
-            .setCredentials(credentials)
-            .build();
-
-    OperationsSettings operationsSettings =
-        OperationsSettings.defaultBuilder()
-            .setExecutorProvider(FixedExecutorProvider.create(this.executor))
-            .setChannelProvider(FixedChannelProvider.create(this.channel))
-            .setCredentialsProvider(FixedCredentialsProvider.create(credentials))
-            .build();
-    this.operationsClient = OperationsClient.create(operationsSettings);
-
-    this.createShelfCallable = UnaryCallable.create(settings.createShelfSettings(), clientContext);
-    this.getShelfCallable = UnaryCallable.create(settings.getShelfSettings(), clientContext);
-    this.listShelvesCallable = UnaryCallable.create(settings.listShelvesSettings(), clientContext);
-    this.listShelvesPagedCallable =
-        UnaryCallable.createPagedVariant(settings.listShelvesSettings(), clientContext);
-    this.deleteShelfCallable = UnaryCallable.create(settings.deleteShelfSettings(), clientContext);
-    this.mergeShelvesCallable = UnaryCallable.create(settings.mergeShelvesSettings(), clientContext);
-    this.createBookCallable = UnaryCallable.create(settings.createBookSettings(), clientContext);
-    this.publishSeriesCallable = UnaryCallable.create(settings.publishSeriesSettings(), clientContext);
-    this.getBookCallable = UnaryCallable.create(settings.getBookSettings(), clientContext);
-    this.listBooksCallable = UnaryCallable.create(settings.listBooksSettings(), clientContext);
-    this.listBooksPagedCallable =
-        UnaryCallable.createPagedVariant(settings.listBooksSettings(), clientContext);
-    this.deleteBookCallable = UnaryCallable.create(settings.deleteBookSettings(), clientContext);
-    this.updateBookCallable = UnaryCallable.create(settings.updateBookSettings(), clientContext);
-    this.moveBookCallable = UnaryCallable.create(settings.moveBookSettings(), clientContext);
-    this.listStringsCallable = UnaryCallable.create(settings.listStringsSettings(), clientContext);
-    this.listStringsPagedCallable =
-        UnaryCallable.createPagedVariant(settings.listStringsSettings(), clientContext);
-    this.addCommentsCallable = UnaryCallable.create(settings.addCommentsSettings(), clientContext);
-    this.getBookFromArchiveCallable = UnaryCallable.create(settings.getBookFromArchiveSettings(), clientContext);
-    this.getBookFromAnywhereCallable = UnaryCallable.create(settings.getBookFromAnywhereSettings(), clientContext);
-    this.updateBookIndexCallable = UnaryCallable.create(settings.updateBookIndexSettings(), clientContext);
-    this.streamShelvesCallable = StreamingCallable.create(settings.streamShelvesSettings(), clientContext);
-    this.streamBooksCallable = StreamingCallable.create(settings.streamBooksSettings(), clientContext);
-    this.discussBookCallable = StreamingCallable.create(settings.discussBookSettings(), clientContext);
-    this.monologAboutBookCallable = StreamingCallable.create(settings.monologAboutBookSettings(), clientContext);
-    this.findRelatedBooksCallable = UnaryCallable.create(settings.findRelatedBooksSettings(), clientContext);
-    this.findRelatedBooksPagedCallable =
-        UnaryCallable.createPagedVariant(settings.findRelatedBooksSettings(), clientContext);
-    this.addTagCallable = UnaryCallable.create(settings.addTagSettings(), clientContext);
-    this.addLabelCallable = UnaryCallable.create(settings.addLabelSettings(), clientContext);
-    this.getBigBookCallable = UnaryCallable.create(settings.getBigBookSettings().getInitialCallSettings(), clientContext);
-    this.getBigBookOperationCallable = OperationCallable.create(settings.getBigBookSettings(),clientContext, this.operationsClient);
-    this.getBigNothingCallable = UnaryCallable.create(settings.getBigNothingSettings().getInitialCallSettings(), clientContext);
-    this.getBigNothingOperationCallable = OperationCallable.create(settings.getBigNothingSettings(),clientContext, this.operationsClient);
-    this.testOptionalRequiredFlatteningParamsCallable = UnaryCallable.create(settings.testOptionalRequiredFlatteningParamsSettings(), clientContext);
-
-    if (settings.getChannelProvider().shouldAutoClose()) {
-      closeables.add(
-        new Closeable() {
-          @Override
-          public void close() throws IOException {
-            channel.shutdown();
-          }
-        });
-    }
-    if (settings.getExecutorProvider().shouldAutoClose()) {
-      closeables.add(
-        new Closeable() {
-          @Override
-          public void close() throws IOException {
-            executor.shutdown();
-          }
-        });
-    }
+  protected LibraryClient(LibraryServiceStub stub) {
+    this.settings = null;
+    this.stub = stub;
+    this.operationsClient = OperationsClient.create(this.stub.getOperationsStub());
   }
 
   public final LibrarySettings getSettings() {
     return settings;
+  }
+
+  public LibraryServiceStub getStub() {
+    return stub;
   }
 
   /**
@@ -335,7 +236,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    *
    * @param shelf The shelf to create.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Shelf createShelf(Shelf shelf) {
 
@@ -363,7 +264,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   private final Shelf createShelf(CreateShelfRequest request) {
     return createShelfCallable().call(request);
@@ -388,7 +289,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    */
   public final UnaryCallable<CreateShelfRequest, Shelf> createShelfCallable() {
-    return createShelfCallable;
+    return stub.createShelfCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -404,7 +305,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    *
    * @param name The name of the shelf to retrieve.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Shelf getShelf(ShelfName name) {
 
@@ -430,7 +331,7 @@ public class LibraryClient implements AutoCloseable {
    *
    * @param name The name of the shelf to retrieve.
    * @param message Field to verify that message-type query parameter gets flattened.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Shelf getShelf(String name, SomeMessage message) {
 
@@ -459,7 +360,7 @@ public class LibraryClient implements AutoCloseable {
    * @param name The name of the shelf to retrieve.
    * @param message Field to verify that message-type query parameter gets flattened.
    * @param stringBuilder
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Shelf getShelf(String name, SomeMessage message, com.google.example.library.v1.StringBuilder stringBuilder) {
 
@@ -490,7 +391,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Shelf getShelf(GetShelfRequest request) {
     return getShelfCallable().call(request);
@@ -516,7 +417,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    */
   public final UnaryCallable<GetShelfRequest, Shelf> getShelfCallable() {
-    return getShelfCallable;
+    return stub.getShelfCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -532,7 +433,7 @@ public class LibraryClient implements AutoCloseable {
    *   }
    * }
    * </code></pre>
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final ListShelvesPagedResponse listShelves() {
     ListShelvesRequest request =
@@ -557,7 +458,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   private final ListShelvesPagedResponse listShelves(ListShelvesRequest request) {
     return listShelvesPagedCallable()
@@ -581,7 +482,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    */
   public final UnaryCallable<ListShelvesRequest, ListShelvesPagedResponse> listShelvesPagedCallable() {
-    return listShelvesPagedCallable;
+    return stub.listShelvesPagedCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -608,7 +509,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    */
   public final UnaryCallable<ListShelvesRequest, ListShelvesResponse> listShelvesCallable() {
-    return listShelvesCallable;
+    return stub.listShelvesCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -624,7 +525,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    *
    * @param name The name of the shelf to delete.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final void deleteShelf(ShelfName name) {
 
@@ -651,7 +552,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   private final void deleteShelf(DeleteShelfRequest request) {
     deleteShelfCallable().call(request);
@@ -675,7 +576,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    */
   public final UnaryCallable<DeleteShelfRequest, Empty> deleteShelfCallable() {
-    return deleteShelfCallable;
+    return stub.deleteShelfCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -695,7 +596,7 @@ public class LibraryClient implements AutoCloseable {
    *
    * @param name The name of the shelf we're adding books to.
    * @param otherShelfName The name of the shelf we're removing books from and deleting.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Shelf mergeShelves(ShelfName name, ShelfName otherShelfName) {
 
@@ -727,7 +628,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Shelf mergeShelves(MergeShelvesRequest request) {
     return mergeShelvesCallable().call(request);
@@ -755,7 +656,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    */
   public final UnaryCallable<MergeShelvesRequest, Shelf> mergeShelvesCallable() {
-    return mergeShelvesCallable;
+    return stub.mergeShelvesCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -773,7 +674,7 @@ public class LibraryClient implements AutoCloseable {
    *
    * @param name The name of the shelf in which the book is created.
    * @param book The book to create.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Book createBook(String name, Book book) {
 
@@ -803,7 +704,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Book createBook(CreateBookRequest request) {
     return createBookCallable().call(request);
@@ -829,7 +730,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    */
   public final UnaryCallable<CreateBookRequest, Book> createBookCallable() {
-    return createBookCallable;
+    return stub.createBookCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -854,7 +755,7 @@ public class LibraryClient implements AutoCloseable {
    * @param books The books to publish in the series.
    * @param edition The edition of the series
    * @param seriesUuid Uniquely identifies the series to the publishing house.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final PublishSeriesResponse publishSeries(Shelf shelf, List<Book> books, int edition, SeriesUuid seriesUuid) {
 
@@ -891,7 +792,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final PublishSeriesResponse publishSeries(PublishSeriesRequest request) {
     return publishSeriesCallable().call(request);
@@ -922,7 +823,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    */
   public final UnaryCallable<PublishSeriesRequest, PublishSeriesResponse> publishSeriesCallable() {
-    return publishSeriesCallable;
+    return stub.publishSeriesCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -938,7 +839,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    *
    * @param name The name of the book to retrieve.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Book getBook(BookName name) {
 
@@ -965,7 +866,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   private final Book getBook(GetBookRequest request) {
     return getBookCallable().call(request);
@@ -989,7 +890,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    */
   public final UnaryCallable<GetBookRequest, Book> getBookCallable() {
-    return getBookCallable;
+    return stub.getBookCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -1009,7 +910,7 @@ public class LibraryClient implements AutoCloseable {
    *
    * @param name The name of the shelf whose books we'd like to list.
    * @param filter To test python built-in wrapping.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final ListBooksPagedResponse listBooks(ShelfName name, String filter) {
     ListBooksRequest request =
@@ -1038,7 +939,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final ListBooksPagedResponse listBooks(ListBooksRequest request) {
     return listBooksPagedCallable()
@@ -1065,7 +966,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    */
   public final UnaryCallable<ListBooksRequest, ListBooksPagedResponse> listBooksPagedCallable() {
-    return listBooksPagedCallable;
+    return stub.listBooksPagedCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -1095,7 +996,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    */
   public final UnaryCallable<ListBooksRequest, ListBooksResponse> listBooksCallable() {
-    return listBooksCallable;
+    return stub.listBooksCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -1111,7 +1012,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    *
    * @param name The name of the book to delete.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final void deleteBook(BookName name) {
 
@@ -1138,7 +1039,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   private final void deleteBook(DeleteBookRequest request) {
     deleteBookCallable().call(request);
@@ -1162,7 +1063,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    */
   public final UnaryCallable<DeleteBookRequest, Empty> deleteBookCallable() {
-    return deleteBookCallable;
+    return stub.deleteBookCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -1180,7 +1081,7 @@ public class LibraryClient implements AutoCloseable {
    *
    * @param name The name of the book to update.
    * @param book The book to update with.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Book updateBook(BookName name, Book book) {
 
@@ -1211,7 +1112,7 @@ public class LibraryClient implements AutoCloseable {
    * @param book The book to update with.
    * @param updateMask A field mask to apply, rendered as an HTTP parameter.
    * @param physicalMask To test Python import clash resolution.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Book updateBook(BookName name, Book book, FieldMask updateMask, com.google.example.library.v1.FieldMask physicalMask) {
 
@@ -1243,7 +1144,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Book updateBook(UpdateBookRequest request) {
     return updateBookCallable().call(request);
@@ -1269,7 +1170,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    */
   public final UnaryCallable<UpdateBookRequest, Book> updateBookCallable() {
-    return updateBookCallable;
+    return stub.updateBookCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -1287,7 +1188,7 @@ public class LibraryClient implements AutoCloseable {
    *
    * @param name The name of the book to move.
    * @param otherShelfName The name of the destination shelf.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Book moveBook(BookName name, ShelfName otherShelfName) {
 
@@ -1317,7 +1218,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final Book moveBook(MoveBookRequest request) {
     return moveBookCallable().call(request);
@@ -1343,7 +1244,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    */
   public final UnaryCallable<MoveBookRequest, Book> moveBookCallable() {
-    return moveBookCallable;
+    return stub.moveBookCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -1359,7 +1260,7 @@ public class LibraryClient implements AutoCloseable {
    *   }
    * }
    * </code></pre>
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final ListStringsPagedResponse listStrings() {
     ListStringsRequest request =
@@ -1384,7 +1285,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    *
    * @param name
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final ListStringsPagedResponse listStrings(ResourceName name) {
     ListStringsRequest request =
@@ -1409,7 +1310,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   private final ListStringsPagedResponse listStrings(ListStringsRequest request) {
     return listStringsPagedCallable()
@@ -1433,7 +1334,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    */
   public final UnaryCallable<ListStringsRequest, ListStringsPagedResponse> listStringsPagedCallable() {
-    return listStringsPagedCallable;
+    return stub.listStringsPagedCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -1460,7 +1361,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    */
   public final UnaryCallable<ListStringsRequest, ListStringsResponse> listStringsCallable() {
-    return listStringsCallable;
+    return stub.listStringsCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -1486,7 +1387,7 @@ public class LibraryClient implements AutoCloseable {
    *
    * @param name
    * @param comments
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final void addComments(String name, List<Comment> comments) {
 
@@ -1524,7 +1425,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final void addComments(AddCommentsRequest request) {
     addCommentsCallable().call(request);
@@ -1558,7 +1459,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    */
   public final UnaryCallable<AddCommentsRequest, Empty> addCommentsCallable() {
-    return addCommentsCallable;
+    return stub.addCommentsCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -1574,7 +1475,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    *
    * @param name The name of the book to retrieve.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final BookFromArchive getBookFromArchive(ArchivedBookName name) {
 
@@ -1601,7 +1502,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   private final BookFromArchive getBookFromArchive(GetBookFromArchiveRequest request) {
     return getBookFromArchiveCallable().call(request);
@@ -1625,7 +1526,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    */
   public final UnaryCallable<GetBookFromArchiveRequest, BookFromArchive> getBookFromArchiveCallable() {
-    return getBookFromArchiveCallable;
+    return stub.getBookFromArchiveCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -1644,7 +1545,7 @@ public class LibraryClient implements AutoCloseable {
    * @param name The name of the book to retrieve.
    * @param altBookName An alternate book name, used to test restricting flattened field to a
    * single resource name type in a oneof.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final BookFromAnywhere getBookFromAnywhere(BookNameOneof name, BookName altBookName) {
 
@@ -1674,7 +1575,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   private final BookFromAnywhere getBookFromAnywhere(GetBookFromAnywhereRequest request) {
     return getBookFromAnywhereCallable().call(request);
@@ -1700,7 +1601,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    */
   public final UnaryCallable<GetBookFromAnywhereRequest, BookFromAnywhere> getBookFromAnywhereCallable() {
-    return getBookFromAnywhereCallable;
+    return stub.getBookFromAnywhereCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -1722,7 +1623,7 @@ public class LibraryClient implements AutoCloseable {
    * @param name The name of the book to update.
    * @param indexName The name of the index for the book
    * @param indexMap The index to update the book with
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final void updateBookIndex(BookName name, String indexName, Map<String, String> indexMap) {
 
@@ -1757,7 +1658,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final void updateBookIndex(UpdateBookIndexRequest request) {
     updateBookIndexCallable().call(request);
@@ -1787,7 +1688,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    */
   public final UnaryCallable<UpdateBookIndexRequest, Empty> updateBookIndexCallable() {
-    return updateBookIndexCallable;
+    return stub.updateBookIndexCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -1823,7 +1724,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    */
   public final StreamingCallable<StreamShelvesRequest, StreamShelvesResponse> streamShelvesCallable() {
-    return streamShelvesCallable;
+    return stub.streamShelvesCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -1862,7 +1763,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    */
   public final StreamingCallable<StreamBooksRequest, Book> streamBooksCallable() {
-    return streamBooksCallable;
+    return stub.streamBooksCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -1902,7 +1803,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    */
   public final StreamingCallable<DiscussBookRequest, Comment> discussBookCallable() {
-    return discussBookCallable;
+    return stub.discussBookCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -1942,7 +1843,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    */
   public final StreamingCallable<DiscussBookRequest, Comment> monologAboutBookCallable() {
-    return monologAboutBookCallable;
+    return stub.monologAboutBookCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -1963,7 +1864,7 @@ public class LibraryClient implements AutoCloseable {
    *
    * @param names
    * @param shelves
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final FindRelatedBooksPagedResponse findRelatedBooks(List<BookName> names, List<ShelfName> shelves) {
     FindRelatedBooksRequest request =
@@ -1995,7 +1896,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   private final FindRelatedBooksPagedResponse findRelatedBooks(FindRelatedBooksRequest request) {
     return findRelatedBooksPagedCallable()
@@ -2025,7 +1926,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    */
   public final UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksPagedResponse> findRelatedBooksPagedCallable() {
-    return findRelatedBooksPagedCallable;
+    return stub.findRelatedBooksPagedCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -2058,7 +1959,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    */
   public final UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksCallable() {
-    return findRelatedBooksCallable;
+    return stub.findRelatedBooksCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -2078,7 +1979,7 @@ public class LibraryClient implements AutoCloseable {
    * Resource is usually specified as a path, such as,
    * projects/{project}/zones/{zone}/disks/{disk}.
    * @param tag REQUIRED: The tag to add.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final AddTagResponse addTag(String resource, String tag) {
 
@@ -2108,7 +2009,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final AddTagResponse addTag(AddTagRequest request) {
     return addTagCallable().call(request);
@@ -2134,7 +2035,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    */
   public final UnaryCallable<AddTagRequest, AddTagResponse> addTagCallable() {
-    return addTagCallable;
+    return stub.addTagCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -2154,7 +2055,7 @@ public class LibraryClient implements AutoCloseable {
    * Resource is usually specified as a path, such as,
    * projects/{project}/zones/{zone}/disks/{disk}.
    * @param label REQUIRED: The label to add.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   @Deprecated
   /* package-private */ final AddLabelResponse addLabel(String resource, String label) {
@@ -2185,7 +2086,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   @Deprecated
   /* package-private */ final AddLabelResponse addLabel(AddLabelRequest request) {
@@ -2213,7 +2114,7 @@ public class LibraryClient implements AutoCloseable {
    */
   @Deprecated
   /* package-private */ final UnaryCallable<AddLabelRequest, AddLabelResponse> addLabelCallable() {
-    return addLabelCallable;
+    return stub.addLabelCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -2229,9 +2130,9 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    *
    * @param name The name of the book to retrieve.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final OperationFuture<Book, GetBigBookMetadata> getBigBookAsync(BookName name) {
+  public final OperationFuture<Book, GetBigBookMetadata, Operation> getBigBookAsync(BookName name) {
 
     GetBookRequest request =
         GetBookRequest.newBuilder()
@@ -2256,9 +2157,9 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final OperationFuture<Book, GetBigBookMetadata> getBigBookAsync(GetBookRequest request) {
+  public final OperationFuture<Book, GetBigBookMetadata, Operation> getBigBookAsync(GetBookRequest request) {
     return getBigBookOperationCallable().futureCall(request);
   }
 
@@ -2279,8 +2180,8 @@ public class LibraryClient implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final OperationCallable<GetBookRequest, Book, GetBigBookMetadata> getBigBookOperationCallable() {
-    return getBigBookOperationCallable;
+  public final OperationCallable<GetBookRequest, Book, GetBigBookMetadata, Operation> getBigBookOperationCallable() {
+    return stub.getBigBookOperationCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -2301,7 +2202,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    */
   public final UnaryCallable<GetBookRequest, Operation> getBigBookCallable() {
-    return getBigBookCallable;
+    return stub.getBigBookCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -2317,9 +2218,9 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    *
    * @param name The name of the book to retrieve.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final OperationFuture<Empty, GetBigBookMetadata> getBigNothingAsync(BookName name) {
+  public final OperationFuture<Empty, GetBigBookMetadata, Operation> getBigNothingAsync(BookName name) {
 
     GetBookRequest request =
         GetBookRequest.newBuilder()
@@ -2344,9 +2245,9 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final OperationFuture<Empty, GetBigBookMetadata> getBigNothingAsync(GetBookRequest request) {
+  public final OperationFuture<Empty, GetBigBookMetadata, Operation> getBigNothingAsync(GetBookRequest request) {
     return getBigNothingOperationCallable().futureCall(request);
   }
 
@@ -2367,8 +2268,8 @@ public class LibraryClient implements AutoCloseable {
    * }
    * </code></pre>
    */
-  public final OperationCallable<GetBookRequest, Empty, GetBigBookMetadata> getBigNothingOperationCallable() {
-    return getBigNothingOperationCallable;
+  public final OperationCallable<GetBookRequest, Empty, GetBigBookMetadata, Operation> getBigNothingOperationCallable() {
+    return stub.getBigNothingOperationCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -2389,7 +2290,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    */
   public final UnaryCallable<GetBookRequest, Operation> getBigNothingCallable() {
-    return getBigNothingCallable;
+    return stub.getBigNothingCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -2403,7 +2304,7 @@ public class LibraryClient implements AutoCloseable {
    *   TestOptionalRequiredFlatteningParamsResponse response = libraryClient.testOptionalRequiredFlatteningParams();
    * }
    * </code></pre>
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final TestOptionalRequiredFlatteningParamsResponse testOptionalRequiredFlatteningParams() {
 
@@ -2533,7 +2434,7 @@ public class LibraryClient implements AutoCloseable {
    * @param optionalRepeatedFixed32
    * @param optionalRepeatedFixed64
    * @param optionalMap
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final TestOptionalRequiredFlatteningParamsResponse testOptionalRequiredFlatteningParams(int requiredSingularInt32, long requiredSingularInt64, float requiredSingularFloat, double requiredSingularDouble, boolean requiredSingularBool, TestOptionalRequiredFlatteningParamsRequest.InnerEnum requiredSingularEnum, String requiredSingularString, ByteString requiredSingularBytes, TestOptionalRequiredFlatteningParamsRequest.InnerMessage requiredSingularMessage, BookName requiredSingularResourceName, BookNameOneof requiredSingularResourceNameOneof, int requiredSingularFixed32, long requiredSingularFixed64, List<Integer> requiredRepeatedInt32, List<Long> requiredRepeatedInt64, List<Float> requiredRepeatedFloat, List<Double> requiredRepeatedDouble, List<Boolean> requiredRepeatedBool, List<TestOptionalRequiredFlatteningParamsRequest.InnerEnum> requiredRepeatedEnum, List<String> requiredRepeatedString, List<ByteString> requiredRepeatedBytes, List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> requiredRepeatedMessage, List<BookName> requiredRepeatedResourceName, List<BookNameOneof> requiredRepeatedResourceNameOneof, List<Integer> requiredRepeatedFixed32, List<Long> requiredRepeatedFixed64, Map<Integer, String> requiredMap, int optionalSingularInt32, long optionalSingularInt64, float optionalSingularFloat, double optionalSingularDouble, boolean optionalSingularBool, TestOptionalRequiredFlatteningParamsRequest.InnerEnum optionalSingularEnum, String optionalSingularString, ByteString optionalSingularBytes, TestOptionalRequiredFlatteningParamsRequest.InnerMessage optionalSingularMessage, BookName optionalSingularResourceName, BookNameOneof optionalSingularResourceNameOneof, int optionalSingularFixed32, long optionalSingularFixed64, List<Integer> optionalRepeatedInt32, List<Long> optionalRepeatedInt64, List<Float> optionalRepeatedFloat, List<Double> optionalRepeatedDouble, List<Boolean> optionalRepeatedBool, List<TestOptionalRequiredFlatteningParamsRequest.InnerEnum> optionalRepeatedEnum, List<String> optionalRepeatedString, List<ByteString> optionalRepeatedBytes, List<TestOptionalRequiredFlatteningParamsRequest.InnerMessage> optionalRepeatedMessage, List<BookName> optionalRepeatedResourceName, List<BookNameOneof> optionalRepeatedResourceNameOneof, List<Integer> optionalRepeatedFixed32, List<Long> optionalRepeatedFixed64, Map<Integer, String> optionalMap) {
 
@@ -2665,7 +2566,7 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   public final TestOptionalRequiredFlatteningParamsResponse testOptionalRequiredFlatteningParams(TestOptionalRequiredFlatteningParamsRequest request) {
     return testOptionalRequiredFlatteningParamsCallable().call(request);
@@ -2741,18 +2642,37 @@ public class LibraryClient implements AutoCloseable {
    * </code></pre>
    */
   public final UnaryCallable<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsCallable() {
-    return testOptionalRequiredFlatteningParamsCallable;
+    return stub.testOptionalRequiredFlatteningParamsCallable();
   }
 
-  /**
-   * Initiates an orderly shutdown in which preexisting calls continue but new calls are immediately
-   * cancelled.
-   */
   @Override
   public final void close() throws Exception {
-    for (AutoCloseable closeable : closeables) {
-      closeable.close();
-    }
+    stub.close();
+  }
+
+  @Override
+  public void shutdown() {
+    stub.shutdown();
+  }
+
+  @Override
+  public boolean isShutdown() {
+    return stub.isShutdown();
+  }
+
+  @Override
+  public boolean isTerminated() {
+    return stub.isTerminated();
+  }
+
+  @Override
+  public void shutdownNow() {
+    stub.shutdownNow();
+  }
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+    return stub.awaitTermination(duration, unit);
   }
 
 }

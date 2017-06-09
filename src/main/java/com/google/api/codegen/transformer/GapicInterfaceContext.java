@@ -107,6 +107,16 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
         getFeatureConfig());
   }
 
+  public GapicInterfaceContext withNewTypeTable(String packageName) {
+    return create(
+        getInterface(),
+        getProductConfig(),
+        // getPackageMetadataConfig(),
+        getModelTypeTable().cloneEmpty(packageName),
+        getNamer().cloneWithPackageName(packageName),
+        getFeatureConfig());
+  }
+
   public GapicInterfaceConfig getInterfaceConfig() {
     return getProductConfig().getInterfaceConfig(getInterface());
   }
