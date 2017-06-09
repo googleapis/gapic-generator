@@ -137,7 +137,7 @@
 
       @if test.hasReturnValue
         // Mock response
-        {@initCodeLines(test.mockResponse.initCode)}
+        {@initCodeLines(localClientName(), test.mockResponse.initCode)}
 
       @end
       // Mock Grpc layer
@@ -171,7 +171,7 @@
       {@commonInit(test, moduleName)}
 
       // Mock response
-      {@initCodeLines(test.mockResponse.initCode)}
+      {@initCodeLines(localClientName(), test.mockResponse.initCode)}
 
       // Mock Grpc layer
       client._{@test.clientMethodName} = mockLongRunningGrpcMethod(request, expectedResponse);
@@ -212,7 +212,7 @@
       {@commonInit(test, moduleName)}
 
       // Mock response
-      {@initCodeLines(test.mockResponse.initCode)}
+      {@initCodeLines(localClientName(), test.mockResponse.initCode)}
 
       // Mock Grpc layer
       client._{@test.clientMethodName} = function(actualRequest, options, callback) {
@@ -241,7 +241,7 @@
       {@commonInit(test, moduleName)}
 
       // Mock response
-      {@initCodeLines(test.mockResponse.initCode)}
+      {@initCodeLines(localClientName(), test.mockResponse.initCode)}
 
       // Mock Grpc layer
       @switch test.grpcStreamingType
@@ -332,8 +332,13 @@
 @private commonInit(test, moduleName)
   var client = {@moduleName}.{@test.serviceConstructorName}();
   // Mock request
-  {@initCodeLines(test.initCode)}
+  {@initCodeLines(localClientName(), test.initCode)}
 @end
+
+@private localClientName()
+  client
+@end
+
 
 @private assertError()
   assert(err instanceof Error);

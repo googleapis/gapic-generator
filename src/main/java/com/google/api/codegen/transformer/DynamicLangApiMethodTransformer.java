@@ -54,6 +54,11 @@ public class DynamicLangApiMethodTransformer {
   }
 
   public OptionalArrayMethodView generateMethod(GapicMethodContext context) {
+    return generateMethod(context, false);
+  }
+
+  public OptionalArrayMethodView generateMethod(
+      GapicMethodContext context, boolean packageHasMultipleServices) {
     SurfaceNamer namer = context.getNamer();
     OptionalArrayMethodView.Builder apiMethod = OptionalArrayMethodView.newBuilder();
 
@@ -113,6 +118,9 @@ public class DynamicLangApiMethodTransformer {
         grpcStreamingType.equals(GrpcStreamingType.NonStreaming)
             || grpcStreamingType.equals(GrpcStreamingType.ServerStreaming));
 
+    apiMethod.packageName(namer.getPackageName());
+    apiMethod.packageHasMultipleServices(packageHasMultipleServices);
+    apiMethod.packageServiceName(namer.getPackageServiceName(context.getInterface()));
     apiMethod.longRunningView(
         context.getMethodConfig().isLongRunningOperation()
             ? lroTransformer.generateDetailView(context)

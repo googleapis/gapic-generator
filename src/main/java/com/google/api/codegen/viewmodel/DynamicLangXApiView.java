@@ -101,6 +101,10 @@ public abstract class DynamicLangXApiView implements ViewModel {
   @Nullable
   public abstract String packageVersion();
 
+  public abstract boolean packageHasMultipleServices();
+
+  public abstract String packageServiceName();
+
   @Nullable
   public abstract List<String> validDescriptorsNames();
 
@@ -115,7 +119,9 @@ public abstract class DynamicLangXApiView implements ViewModel {
   }
 
   public static Builder newBuilder() {
-    return new AutoValue_DynamicLangXApiView.Builder().isGcloud(false);
+    return new AutoValue_DynamicLangXApiView.Builder()
+        .isGcloud(false)
+        .packageHasMultipleServices(false);
   }
 
   @AutoValue.Builder
@@ -181,6 +187,10 @@ public abstract class DynamicLangXApiView implements ViewModel {
     public abstract Builder toolkitVersion(String val);
 
     public abstract Builder packageVersion(String val);
+
+    public abstract Builder packageHasMultipleServices(boolean val);
+
+    public abstract Builder packageServiceName(String val);
 
     public abstract Builder validDescriptorsNames(List<String> strings);
 

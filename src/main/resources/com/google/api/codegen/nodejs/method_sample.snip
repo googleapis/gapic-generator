@@ -1,9 +1,20 @@
 @extends "nodejs/common.snip"
 
 @snippet decorateSampleCode(apiMethod, coreSampleCode)
-    var client = {@apiMethod.apiModuleName}.{@apiMethod.apiVariableName}();
+    @if apiMethod.packageHasMultipleServices
+        var {@apiMethod.apiModuleName} = require('{@apiMethod.packageName}').{@apiMethd.packageServiceName}({
+          // optional auth parameters.
+        });
+    @else
+        var {@apiMethod.apiModuleName} = require('{@apiMethod.packageName}')({
+          // optional auth parameters.
+        });
+    @end
+
     {@coreSampleCode}
 @end
+
+
 
 @snippet sampleCode(apiMethod)
     @switch apiMethod.type.toString
@@ -19,7 +30,7 @@
 
 @snippet sampleCodePageStreaming(apiMethod)
     {@initCode(apiMethod)}
-    client.{@apiMethod.name}Stream({@sampleMethodCallArgList(apiMethod)}).on('data', function(element) {
+    {@apiMethod.apiModuleName}.{@apiMethod.name}Stream({@sampleMethodCallArgList(apiMethod)}).on('data', function(element) {
         // doThingsWith(element)
     }).on('error', function(err) {
         console.error(err);
@@ -27,7 +38,7 @@
 @end
 
 @private clientStreamingSampleCode(apiMethod)
-    var stream = client.{@apiMethod.name}(function(err, response) {
+    var stream = {@apiMethod.apiModuleName}.{@apiMethod.name}(function(err, response) {
         if (err) {
             console.error(err);
             return;
@@ -39,7 +50,7 @@
 @end
 
 @private bidiStreamingSampleCode(apiMethod)
-    var stream = client.{@apiMethod.name}().on('data', function(response) {
+    var stream = {@apiMethod.apiModuleName}.{@apiMethod.name}().on('data', function(response) {
         // doThingsWith(response);
     });
     {@initCode(apiMethod)}
@@ -88,7 +99,7 @@
 @end
 
 @private methodCallSampleCode(apiMethod)
-    client.{@apiMethod.name}(\
+    {@apiMethod.apiModuleName}.{@apiMethod.name}(\
         {@sampleMethodCallArgList(apiMethod)})
 @end
 
@@ -113,10 +124,10 @@
         }
         if (nextRequest) {
             // Fetch the next page.
-            return client.{@apiMethod.name}(nextRequest, options).then(callback);
+            return {@apiMethod.apiModuleName}.{@apiMethod.name}(nextRequest, options).then(callback);
         }
     }
-    client.{@apiMethod.name}({@sampleMethodCallArgListAndComma(apiMethod)}options)
+    {@apiMethod.apiModuleName}.{@apiMethod.name}({@sampleMethodCallArgListAndComma(apiMethod)}options)
         .then(callback)
         .catch(function(err) {
             console.error(err);
@@ -125,10 +136,10 @@
 
 @private methodCallSampleCodePrefix(apiMethod)
     @if sampleMethodCallArgList(apiMethod)
-        client.{@apiMethod.name}(\
+        {@apiMethod.apiModuleName}.{@apiMethod.name}(\
             {@sampleMethodCallArgList(apiMethod)})
     @else
-        client.{@apiMethod.name}()
+        {@apiMethod.apiModuleName}.{@apiMethod.name}()
     @end
 @end
 
@@ -196,13 +207,13 @@
 @end
 
 @private initCode(apiMethod)
-    {@initCodeLines(apiMethod.initCode)}
+    {@initCodeLines(apiMethod.apiModuleName, apiMethod.initCode)}
     @if initializeRequestObject(apiMethod)
         {@initializeRequestObject(apiMethod)}
     @end
 @end
 
-@snippet initCodeLines(initCode)
+@snippet initCodeLines(apiModuleName, initCode)
     @join line : initCode.lines
         @switch line.lineType.toString
         @case "StructureInitLine"
@@ -212,7 +223,7 @@
         @case "MapInitLine"
             {@initLineMap(line)}
         @case "SimpleInitLine"
-            {@initLineSimple(line)}
+            {@initLineSimple(apiModuleName, line)}
         @default
             $unhandledCase: {@line.lineType.toString}$
         @end
@@ -247,16 +258,16 @@
     @end
 @end
 
-@private initLineSimple(line)
-    var {@line.identifier} = {@renderInitValue(line.initValue)};
+@private initLineSimple(apiModuleName, line)
+    var {@line.identifier} = {@renderInitValue(apiModuleName, line.initValue)};
 @end
 
-@private renderInitValue(initValue)
+@private renderInitValue(apiModuleName, initValue)
     @switch initValue.type
     @case "SimpleInitValueView"
         {@initValue.initialValue}
     @case "FormattedInitValueView"
-        client.{@initValue.formatFunctionName}({@varList(initValue.formatArgs)})
+        {@apiModuleName}.{@initValue.formatFunctionName}({@varList(initValue.formatArgs)})
     @default
         $unhandledCase: {@initValue.type}$
     @end

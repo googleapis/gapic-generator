@@ -95,10 +95,9 @@ var ALL_SCOPES = [
  * @see {@link libraryServiceClient}
  *
  * @example
- * var libraryV1 = require('@google-cloud/library').v1({
+ * var library = require('@google-cloud/library')({
  *   // optional auth parameters.
  * });
- * var client = libraryV1.libraryServiceClient();
  *
  * @class
  */
@@ -370,9 +369,11 @@ LibraryServiceClient.prototype.getProjectId = function(callback) {
  *
  * @example
  *
- * var client = libraryV1.libraryServiceClient();
+ * var library = require('@google-cloud/library')({
+ *   // optional auth parameters.
+ * });
  * var shelf = {};
- * client.createShelf({shelf: shelf}).then(function(responses) {
+ * library.createShelf({shelf: shelf}).then(function(responses) {
  *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
@@ -419,14 +420,16 @@ LibraryServiceClient.prototype.createShelf = function(request, options, callback
  *
  * @example
  *
- * var client = libraryV1.libraryServiceClient();
- * var formattedName = client.shelfPath("[SHELF_ID]");
+ * var library = require('@google-cloud/library')({
+ *   // optional auth parameters.
+ * });
+ * var formattedName = library.shelfPath("[SHELF_ID]");
  * var options = '';
  * var request = {
  *     name: formattedName,
  *     options: options
  * };
- * client.getShelf(request).then(function(responses) {
+ * library.getShelf(request).then(function(responses) {
  *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
@@ -475,10 +478,12 @@ LibraryServiceClient.prototype.getShelf = function(request, options, callback) {
  *
  * @example
  *
- * var client = libraryV1.libraryServiceClient();
+ * var library = require('@google-cloud/library')({
+ *   // optional auth parameters.
+ * });
  *
  * // Iterate over all elements.
- * client.listShelves({}).then(function(responses) {
+ * library.listShelves({}).then(function(responses) {
  *     var resources = responses[0];
  *     for (var i = 0; i < resources.length; ++i) {
  *         // doThingsWith(resources[i])
@@ -501,10 +506,10 @@ LibraryServiceClient.prototype.getShelf = function(request, options, callback) {
  *     }
  *     if (nextRequest) {
  *         // Fetch the next page.
- *         return client.listShelves(nextRequest, options).then(callback);
+ *         return library.listShelves(nextRequest, options).then(callback);
  *     }
  * }
- * client.listShelves({}, options)
+ * library.listShelves({}, options)
  *     .then(callback)
  *     .catch(function(err) {
  *         console.error(err);
@@ -547,9 +552,11 @@ LibraryServiceClient.prototype.listShelves = function(request, options, callback
  *
  * @example
  *
- * var client = libraryV1.libraryServiceClient();
+ * var library = require('@google-cloud/library')({
+ *   // optional auth parameters.
+ * });
  *
- * client.listShelvesStream({}).on('data', function(element) {
+ * library.listShelvesStream({}).on('data', function(element) {
  *     // doThingsWith(element)
  * }).on('error', function(err) {
  *     console.error(err);
@@ -582,9 +589,11 @@ LibraryServiceClient.prototype.listShelvesStream = function(request, options) {
  *
  * @example
  *
- * var client = libraryV1.libraryServiceClient();
- * var formattedName = client.shelfPath("[SHELF_ID]");
- * client.deleteShelf({name: formattedName}).catch(function(err) {
+ * var library = require('@google-cloud/library')({
+ *   // optional auth parameters.
+ * });
+ * var formattedName = library.shelfPath("[SHELF_ID]");
+ * library.deleteShelf({name: formattedName}).catch(function(err) {
  *     console.error(err);
  * });
  */
@@ -624,14 +633,16 @@ LibraryServiceClient.prototype.deleteShelf = function(request, options, callback
  *
  * @example
  *
- * var client = libraryV1.libraryServiceClient();
- * var formattedName = client.shelfPath("[SHELF_ID]");
- * var formattedOtherShelfName = client.shelfPath("[SHELF_ID]");
+ * var library = require('@google-cloud/library')({
+ *   // optional auth parameters.
+ * });
+ * var formattedName = library.shelfPath("[SHELF_ID]");
+ * var formattedOtherShelfName = library.shelfPath("[SHELF_ID]");
  * var request = {
  *     name: formattedName,
  *     otherShelfName: formattedOtherShelfName
  * };
- * client.mergeShelves(request).then(function(responses) {
+ * library.mergeShelves(request).then(function(responses) {
  *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
@@ -674,14 +685,16 @@ LibraryServiceClient.prototype.mergeShelves = function(request, options, callbac
  *
  * @example
  *
- * var client = libraryV1.libraryServiceClient();
- * var formattedName = client.shelfPath("[SHELF_ID]");
+ * var library = require('@google-cloud/library')({
+ *   // optional auth parameters.
+ * });
+ * var formattedName = library.shelfPath("[SHELF_ID]");
  * var book = {};
  * var request = {
  *     name: formattedName,
  *     book: book
  * };
- * client.createBook(request).then(function(responses) {
+ * library.createBook(request).then(function(responses) {
  *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
@@ -734,7 +747,9 @@ LibraryServiceClient.prototype.createBook = function(request, options, callback)
  *
  * @example
  *
- * var client = libraryV1.libraryServiceClient();
+ * var library = require('@google-cloud/library')({
+ *   // optional auth parameters.
+ * });
  * var shelf = {};
  * var books = [];
  * var seriesString = 'foobar';
@@ -746,7 +761,7 @@ LibraryServiceClient.prototype.createBook = function(request, options, callback)
  *     books: books,
  *     seriesUuid: seriesUuid
  * };
- * client.publishSeries(request).then(function(responses) {
+ * library.publishSeries(request).then(function(responses) {
  *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
@@ -785,9 +800,11 @@ LibraryServiceClient.prototype.publishSeries = function(request, options, callba
  *
  * @example
  *
- * var client = libraryV1.libraryServiceClient();
- * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
- * client.getBook({name: formattedName}).then(function(responses) {
+ * var library = require('@google-cloud/library')({
+ *   // optional auth parameters.
+ * });
+ * var formattedName = library.bookPath("[SHELF_ID]", "[BOOK_ID]");
+ * library.getBook({name: formattedName}).then(function(responses) {
  *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
@@ -846,10 +863,12 @@ LibraryServiceClient.prototype.getBook = function(request, options, callback) {
  *
  * @example
  *
- * var client = libraryV1.libraryServiceClient();
- * var formattedName = client.shelfPath("[SHELF_ID]");
+ * var library = require('@google-cloud/library')({
+ *   // optional auth parameters.
+ * });
+ * var formattedName = library.shelfPath("[SHELF_ID]");
  * // Iterate over all elements.
- * client.listBooks({name: formattedName}).then(function(responses) {
+ * library.listBooks({name: formattedName}).then(function(responses) {
  *     var resources = responses[0];
  *     for (var i = 0; i < resources.length; ++i) {
  *         // doThingsWith(resources[i])
@@ -872,10 +891,10 @@ LibraryServiceClient.prototype.getBook = function(request, options, callback) {
  *     }
  *     if (nextRequest) {
  *         // Fetch the next page.
- *         return client.listBooks(nextRequest, options).then(callback);
+ *         return library.listBooks(nextRequest, options).then(callback);
  *     }
  * }
- * client.listBooks({name: formattedName}, options)
+ * library.listBooks({name: formattedName}, options)
  *     .then(callback)
  *     .catch(function(err) {
  *         console.error(err);
@@ -926,9 +945,11 @@ LibraryServiceClient.prototype.listBooks = function(request, options, callback) 
  *
  * @example
  *
- * var client = libraryV1.libraryServiceClient();
- * var formattedName = client.shelfPath("[SHELF_ID]");
- * client.listBooksStream({name: formattedName}).on('data', function(element) {
+ * var library = require('@google-cloud/library')({
+ *   // optional auth parameters.
+ * });
+ * var formattedName = library.shelfPath("[SHELF_ID]");
+ * library.listBooksStream({name: formattedName}).on('data', function(element) {
  *     // doThingsWith(element)
  * }).on('error', function(err) {
  *     console.error(err);
@@ -959,9 +980,11 @@ LibraryServiceClient.prototype.listBooksStream = function(request, options) {
  *
  * @example
  *
- * var client = libraryV1.libraryServiceClient();
- * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
- * client.deleteBook({name: formattedName}).catch(function(err) {
+ * var library = require('@google-cloud/library')({
+ *   // optional auth parameters.
+ * });
+ * var formattedName = library.bookPath("[SHELF_ID]", "[BOOK_ID]");
+ * library.deleteBook({name: formattedName}).catch(function(err) {
  *     console.error(err);
  * });
  */
@@ -1009,14 +1032,16 @@ LibraryServiceClient.prototype.deleteBook = function(request, options, callback)
  *
  * @example
  *
- * var client = libraryV1.libraryServiceClient();
- * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+ * var library = require('@google-cloud/library')({
+ *   // optional auth parameters.
+ * });
+ * var formattedName = library.bookPath("[SHELF_ID]", "[BOOK_ID]");
  * var book = {};
  * var request = {
  *     name: formattedName,
  *     book: book
  * };
- * client.updateBook(request).then(function(responses) {
+ * library.updateBook(request).then(function(responses) {
  *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
@@ -1057,14 +1082,16 @@ LibraryServiceClient.prototype.updateBook = function(request, options, callback)
  *
  * @example
  *
- * var client = libraryV1.libraryServiceClient();
- * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
- * var formattedOtherShelfName = client.shelfPath("[SHELF_ID]");
+ * var library = require('@google-cloud/library')({
+ *   // optional auth parameters.
+ * });
+ * var formattedName = library.bookPath("[SHELF_ID]", "[BOOK_ID]");
+ * var formattedOtherShelfName = library.shelfPath("[SHELF_ID]");
  * var request = {
  *     name: formattedName,
  *     otherShelfName: formattedOtherShelfName
  * };
- * client.moveBook(request).then(function(responses) {
+ * library.moveBook(request).then(function(responses) {
  *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
@@ -1120,10 +1147,12 @@ LibraryServiceClient.prototype.moveBook = function(request, options, callback) {
  *
  * @example
  *
- * var client = libraryV1.libraryServiceClient();
+ * var library = require('@google-cloud/library')({
+ *   // optional auth parameters.
+ * });
  *
  * // Iterate over all elements.
- * client.listStrings({}).then(function(responses) {
+ * library.listStrings({}).then(function(responses) {
  *     var resources = responses[0];
  *     for (var i = 0; i < resources.length; ++i) {
  *         // doThingsWith(resources[i])
@@ -1146,10 +1175,10 @@ LibraryServiceClient.prototype.moveBook = function(request, options, callback) {
  *     }
  *     if (nextRequest) {
  *         // Fetch the next page.
- *         return client.listStrings(nextRequest, options).then(callback);
+ *         return library.listStrings(nextRequest, options).then(callback);
  *     }
  * }
- * client.listStrings({}, options)
+ * library.listStrings({}, options)
  *     .then(callback)
  *     .catch(function(err) {
  *         console.error(err);
@@ -1197,9 +1226,11 @@ LibraryServiceClient.prototype.listStrings = function(request, options, callback
  *
  * @example
  *
- * var client = libraryV1.libraryServiceClient();
+ * var library = require('@google-cloud/library')({
+ *   // optional auth parameters.
+ * });
  *
- * client.listStringsStream({}).on('data', function(element) {
+ * library.listStringsStream({}).on('data', function(element) {
  *     // doThingsWith(element)
  * }).on('error', function(err) {
  *     console.error(err);
@@ -1231,8 +1262,10 @@ LibraryServiceClient.prototype.listStringsStream = function(request, options) {
  *
  * @example
  *
- * var client = libraryV1.libraryServiceClient();
- * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+ * var library = require('@google-cloud/library')({
+ *   // optional auth parameters.
+ * });
+ * var formattedName = library.bookPath("[SHELF_ID]", "[BOOK_ID]");
  * var comment = '';
  * var stage = libraryV1.Comment.Stage.UNSET;
  * var alignment = libraryV1.SomeMessage2.SomeMessage3.Alignment.CHAR;
@@ -1246,7 +1279,7 @@ LibraryServiceClient.prototype.listStringsStream = function(request, options) {
  *     name: formattedName,
  *     comments: comments
  * };
- * client.addComments(request).catch(function(err) {
+ * library.addComments(request).catch(function(err) {
  *     console.error(err);
  * });
  */
@@ -1282,9 +1315,11 @@ LibraryServiceClient.prototype.addComments = function(request, options, callback
  *
  * @example
  *
- * var client = libraryV1.libraryServiceClient();
- * var formattedName = client.archivedBookPath("[ARCHIVE_PATH]", "[BOOK_ID]");
- * client.getBookFromArchive({name: formattedName}).then(function(responses) {
+ * var library = require('@google-cloud/library')({
+ *   // optional auth parameters.
+ * });
+ * var formattedName = library.archivedBookPath("[ARCHIVE_PATH]", "[BOOK_ID]");
+ * library.getBookFromArchive({name: formattedName}).then(function(responses) {
  *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
@@ -1326,14 +1361,16 @@ LibraryServiceClient.prototype.getBookFromArchive = function(request, options, c
  *
  * @example
  *
- * var client = libraryV1.libraryServiceClient();
- * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
- * var formattedAltBookName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+ * var library = require('@google-cloud/library')({
+ *   // optional auth parameters.
+ * });
+ * var formattedName = library.bookPath("[SHELF_ID]", "[BOOK_ID]");
+ * var formattedAltBookName = library.bookPath("[SHELF_ID]", "[BOOK_ID]");
  * var request = {
  *     name: formattedName,
  *     altBookName: formattedAltBookName
  * };
- * client.getBookFromAnywhere(request).then(function(responses) {
+ * library.getBookFromAnywhere(request).then(function(responses) {
  *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
@@ -1373,8 +1410,10 @@ LibraryServiceClient.prototype.getBookFromAnywhere = function(request, options, 
  *
  * @example
  *
- * var client = libraryV1.libraryServiceClient();
- * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+ * var library = require('@google-cloud/library')({
+ *   // optional auth parameters.
+ * });
+ * var formattedName = library.bookPath("[SHELF_ID]", "[BOOK_ID]");
  * var indexName = 'default index';
  * var indexMapItem = '';
  * var indexMap = {'default_key' : indexMapItem,};
@@ -1383,7 +1422,7 @@ LibraryServiceClient.prototype.getBookFromAnywhere = function(request, options, 
  *     indexName: indexName,
  *     indexMap: indexMap
  * };
- * client.updateBookIndex(request).catch(function(err) {
+ * library.updateBookIndex(request).catch(function(err) {
  *     console.error(err);
  * });
  */
@@ -1413,9 +1452,11 @@ LibraryServiceClient.prototype.updateBookIndex = function(request, options, call
  *
  * @example
  *
- * var client = libraryV1.libraryServiceClient();
+ * var library = require('@google-cloud/library')({
+ *   // optional auth parameters.
+ * });
  *
- * client.streamShelves({}).on('data', function(response) {
+ * library.streamShelves({}).on('data', function(response) {
  *     // doThingsWith(response)
  * });
  */
@@ -1445,9 +1486,11 @@ LibraryServiceClient.prototype.streamShelves = function(request, options) {
  *
  * @example
  *
- * var client = libraryV1.libraryServiceClient();
+ * var library = require('@google-cloud/library')({
+ *   // optional auth parameters.
+ * });
  * var name = '';
- * client.streamBooks({name: name}).on('data', function(response) {
+ * library.streamBooks({name: name}).on('data', function(response) {
  *     // doThingsWith(response)
  * });
  */
@@ -1473,8 +1516,10 @@ LibraryServiceClient.prototype.streamBooks = function(request, options) {
  *
  * @example
  *
- * var client = libraryV1.libraryServiceClient();
- * var stream = client.discussBook().on('data', function(response) {
+ * var library = require('@google-cloud/library')({
+ *   // optional auth parameters.
+ * });
+ * var stream = library.discussBook().on('data', function(response) {
  *     // doThingsWith(response);
  * });
  * var name = '';
@@ -1508,8 +1553,10 @@ LibraryServiceClient.prototype.discussBook = function(options) {
  *
  * @example
  *
- * var client = libraryV1.libraryServiceClient();
- * var stream = client.monologAboutBook(function(err, response) {
+ * var library = require('@google-cloud/library')({
+ *   // optional auth parameters.
+ * });
+ * var stream = library.monologAboutBook(function(err, response) {
  *     if (err) {
  *         console.error(err);
  *         return;
@@ -1571,7 +1618,9 @@ LibraryServiceClient.prototype.monologAboutBook = function(options, callback) {
  *
  * @example
  *
- * var client = libraryV1.libraryServiceClient();
+ * var library = require('@google-cloud/library')({
+ *   // optional auth parameters.
+ * });
  * var namesElement = '';
  * var names = [namesElement];
  * var shelves = [];
@@ -1580,7 +1629,7 @@ LibraryServiceClient.prototype.monologAboutBook = function(options, callback) {
  *     shelves: shelves
  * };
  * // Iterate over all elements.
- * client.findRelatedBooks(request).then(function(responses) {
+ * library.findRelatedBooks(request).then(function(responses) {
  *     var resources = responses[0];
  *     for (var i = 0; i < resources.length; ++i) {
  *         // doThingsWith(resources[i])
@@ -1603,10 +1652,10 @@ LibraryServiceClient.prototype.monologAboutBook = function(options, callback) {
  *     }
  *     if (nextRequest) {
  *         // Fetch the next page.
- *         return client.findRelatedBooks(nextRequest, options).then(callback);
+ *         return library.findRelatedBooks(nextRequest, options).then(callback);
  *     }
  * }
- * client.findRelatedBooks(request, options)
+ * library.findRelatedBooks(request, options)
  *     .then(callback)
  *     .catch(function(err) {
  *         console.error(err);
@@ -1655,7 +1704,9 @@ LibraryServiceClient.prototype.findRelatedBooks = function(request, options, cal
  *
  * @example
  *
- * var client = libraryV1.libraryServiceClient();
+ * var library = require('@google-cloud/library')({
+ *   // optional auth parameters.
+ * });
  * var namesElement = '';
  * var names = [namesElement];
  * var shelves = [];
@@ -1663,7 +1714,7 @@ LibraryServiceClient.prototype.findRelatedBooks = function(request, options, cal
  *     names: names,
  *     shelves: shelves
  * };
- * client.findRelatedBooksStream(request).on('data', function(element) {
+ * library.findRelatedBooksStream(request).on('data', function(element) {
  *     // doThingsWith(element)
  * }).on('error', function(err) {
  *     console.error(err);
@@ -1701,14 +1752,16 @@ LibraryServiceClient.prototype.findRelatedBooksStream = function(request, option
  *
  * @example
  *
- * var client = libraryV1.libraryServiceClient();
- * var formattedResource = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+ * var library = require('@google-cloud/library')({
+ *   // optional auth parameters.
+ * });
+ * var formattedResource = library.bookPath("[SHELF_ID]", "[BOOK_ID]");
  * var tag = '';
  * var request = {
  *     resource: formattedResource,
  *     tag: tag
  * };
- * client.addTag(request).then(function(responses) {
+ * library.addTag(request).then(function(responses) {
  *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
@@ -1751,14 +1804,16 @@ LibraryServiceClient.prototype.addTag = function(request, options, callback) {
  *
  * @example
  *
- * var client = libraryV1.libraryServiceClient();
- * var formattedResource = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+ * var library = require('@google-cloud/library')({
+ *   // optional auth parameters.
+ * });
+ * var formattedResource = library.bookPath("[SHELF_ID]", "[BOOK_ID]");
  * var label = '';
  * var request = {
  *     resource: formattedResource,
  *     label: label
  * };
- * client.addLabel(request).then(function(responses) {
+ * library.addLabel(request).then(function(responses) {
  *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {
@@ -1797,11 +1852,13 @@ LibraryServiceClient.prototype.addLabel = function(request, options, callback) {
  *
  * @example
  *
- * var client = libraryV1.libraryServiceClient();
- * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+ * var library = require('@google-cloud/library')({
+ *   // optional auth parameters.
+ * });
+ * var formattedName = library.bookPath("[SHELF_ID]", "[BOOK_ID]");
  *
  * // Handle the operation using the promise pattern.
- * client.getBigBook({name: formattedName}).then(function(responses) {
+ * library.getBigBook({name: formattedName}).then(function(responses) {
  *     var operation = responses[0];
  *     var initialApiResponse = responses[1];
  *
@@ -1821,7 +1878,7 @@ LibraryServiceClient.prototype.addLabel = function(request, options, callback) {
  * });
  *
  * // Handle the operation using the event emitter pattern.
- * client.getBigBook({name: formattedName}).then(function(responses) {
+ * library.getBigBook({name: formattedName}).then(function(responses) {
  *     var operation = responses[0];
  *     var initialApiResponse = responses[1];
  *
@@ -1877,11 +1934,13 @@ LibraryServiceClient.prototype.getBigBook = function(request, options, callback)
  *
  * @example
  *
- * var client = libraryV1.libraryServiceClient();
- * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+ * var library = require('@google-cloud/library')({
+ *   // optional auth parameters.
+ * });
+ * var formattedName = library.bookPath("[SHELF_ID]", "[BOOK_ID]");
  *
  * // Handle the operation using the promise pattern.
- * client.getBigNothing({name: formattedName}).then(function(responses) {
+ * library.getBigNothing({name: formattedName}).then(function(responses) {
  *     var operation = responses[0];
  *     var initialApiResponse = responses[1];
  *
@@ -1901,7 +1960,7 @@ LibraryServiceClient.prototype.getBigBook = function(request, options, callback)
  * });
  *
  * // Handle the operation using the event emitter pattern.
- * client.getBigNothing({name: formattedName}).then(function(responses) {
+ * library.getBigNothing({name: formattedName}).then(function(responses) {
  *     var operation = responses[0];
  *     var initialApiResponse = responses[1];
  *
@@ -2017,7 +2076,9 @@ LibraryServiceClient.prototype.getBigNothing = function(request, options, callba
  *
  * @example
  *
- * var client = libraryV1.libraryServiceClient();
+ * var library = require('@google-cloud/library')({
+ *   // optional auth parameters.
+ * });
  * var requiredSingularInt32 = 0;
  * var requiredSingularInt64 = 0;
  * var requiredSingularFloat = 0.0;
@@ -2074,7 +2135,7 @@ LibraryServiceClient.prototype.getBigNothing = function(request, options, callba
  *     requiredRepeatedFixed64: requiredRepeatedFixed64,
  *     requiredMap: requiredMap
  * };
- * client.testOptionalRequiredFlatteningParams(request).then(function(responses) {
+ * library.testOptionalRequiredFlatteningParams(request).then(function(responses) {
  *     var response = responses[0];
  *     // doThingsWith(response)
  * }).catch(function(err) {

@@ -109,6 +109,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return Name.upperCamel(name);
   }
 
+  /** Returns the service name exported by the package */
+  public String getPackageServiceName(Interface apiInterface) {
+    return getNotImplementedString("SurfaceNamer.getPackageServiceName");
+  }
+
   /** Human-friendly name of this API interface */
   public String getServicePhraseName(Interface apiInterface) {
     return Name.upperCamel(apiInterface.getSimpleName()).toPhrase();

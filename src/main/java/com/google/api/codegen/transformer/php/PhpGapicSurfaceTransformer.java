@@ -158,6 +158,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.fileHeader(fileHeaderTransformer.generateFileHeader(context));
 
     xapiClass.outputPath(outputPath + "/" + name + ".php");
+    xapiClass.packageServiceName(namer.getPackageServiceName(context.getInterface()));
 
     surfaceData.add(xapiClass.build());
 
