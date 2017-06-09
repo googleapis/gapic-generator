@@ -86,8 +86,6 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
     throw new IllegalArgumentException("Schema is of unknown type.");
   }
 
-
-
   @Override
   public TypeName getTypeNameInImplicitPackage(String shortName) {
     return typeNameConverter.getTypeNameInImplicitPackage(shortName);
