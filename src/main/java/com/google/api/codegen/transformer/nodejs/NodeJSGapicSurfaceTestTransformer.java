@@ -49,6 +49,7 @@ import com.google.api.codegen.viewmodel.testing.TestCaseView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
+import com.google.common.base.Strings;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -126,10 +127,17 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
               .build());
     }
 
+    String outputPath = "test";
+    outputPath += File.separator;
+    outputPath +=
+        Strings.isNullOrEmpty(namer.getApiWrapperModuleVersion())
+            ? "gapic"
+            : "gapic-" + namer.getApiWrapperModuleVersion();
+    outputPath += ".test.js";
     ImportSectionView importSection =
         importSectionTransformer.generateImportSection(typeTable.getImports());
     return MockCombinedView.newBuilder()
-        .outputPath("test" + File.separator + "test.js")
+        .outputPath(outputPath)
         .serviceImpls(impls)
         .mockServices(new ArrayList<MockServiceUsageView>())
         .testClasses(testClasses)
