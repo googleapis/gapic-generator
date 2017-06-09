@@ -21,7 +21,7 @@ import java.util.Map;
 
 /**
  * A SchemaTypeTable manages the imports for a set of fully-qualified type names, and provides helper
- * methods for importing instances of TypeRef.
+ * methods for importing instances of Schema.
  */
 public class SchemaTypeTable {
   private SchemaTypeFormatterImpl typeFormatter;
