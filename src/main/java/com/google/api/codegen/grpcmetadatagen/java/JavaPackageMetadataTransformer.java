@@ -49,11 +49,11 @@ public abstract class JavaPackageMetadataTransformer {
             config.packageName(TargetLanguage.JAVA), config.generationLayer());
 
     ArrayList<PackageMetadataView.Builder> viewBuilders = new ArrayList<>();
-    for (String template : getSnippetsOutput().keySet()) {
+    for (Map.Entry<String, String> entry : getSnippetsOutput().entrySet()) {
       PackageMetadataView.Builder viewBuilder =
           metadataTransformer
               .generateMetadataView(
-                  config, model, template, getSnippetsOutput().get(template), TargetLanguage.JAVA)
+                  config, model, entry.getKey(), entry.getValue(), TargetLanguage.JAVA)
               .identifier(namer.getMetadataIdentifier())
               .protoPackageName(namer.getProtoPackageName())
               .grpcPackageName(namer.getGrpcPackageName())

@@ -16,8 +16,7 @@ package com.google.api.codegen.gapic;
 
 import com.google.api.tools.framework.snippet.Doc;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -36,18 +35,18 @@ public class StaticGapicProvider<E> implements GapicProvider<E> {
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
-    return new HashMap<>();
+    return Collections.emptyMap();
   }
 
   @Override
   public List<String> getSnippetFileNames() {
     // Static provider does not support snippet files
-    return new ArrayList<>();
+    return Collections.emptyList();
   }
 
   @Override
   public Map<String, Doc> generate(String snippetFileName) {
     // Static provider does not support snippet files
-    return new HashMap<>();
+    return Collections.emptyMap();
   }
 }
