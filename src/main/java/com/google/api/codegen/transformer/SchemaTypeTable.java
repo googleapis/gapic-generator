@@ -59,6 +59,11 @@ public class SchemaTypeTable implements SchemaTypeFormatter {
     return typeFormatter.getImplicitPackageFullNameFor(shortName);
   }
 
+  @Override
+  public String getInnerTypeNameFor(String key, Schema schema, String parentName) {
+    return typeFormatter.getInnerTypeNameFor(key, schema, parentName);
+  }
+
   /** Creates a new SchemaTypeTable of the same concrete type, but with an empty import set. */
   public SchemaTypeTable cloneEmpty() {
     return new SchemaTypeTable(typeTable.cloneEmpty(), typeNameConverter);

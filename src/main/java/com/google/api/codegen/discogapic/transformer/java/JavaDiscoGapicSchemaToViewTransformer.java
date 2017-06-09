@@ -20,6 +20,7 @@ import com.google.api.codegen.discogapic.DiscoGapicInterfaceContext;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Schema;
+import com.google.api.codegen.discovery.Schema.Type;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.SchemaTypeTable;
@@ -144,12 +145,17 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     schemaView.name(schemaName);
     schemaView.defaultValue(schema.defaultValue());
     schemaView.description(schema.description());
-    schemaView.typeName(
-        context.getSchemaTypeTable().getAndSaveNicknameForElementType(key, schema, parentName));
-    schemaView.innerTypeName(
-        context.getSchemaTypeTable().getAndSaveNicknameForElementType(key, schema, parentName));
     schemaView.fieldGetFunction(context.getDiscoGapicNamer().getResourceGetterName(schemaName));
     schemaView.fieldSetFunction(context.getDiscoGapicNamer().getResourceSetterName(schemaName));
+    String schemaTypeName =
+        context.getSchemaTypeTable().getAndSaveNicknameForElementType(key, schema, parentName);
+    schemaView.typeName(schemaTypeName);
+    if (schema.type() == Type.ARRAY) {
+      schemaView.innerTypeName(
+          context.getSchemaTypeTable().getInnerTypeNameFor(key, schema, parentName));
+    } else {
+      schemaView.innerTypeName(schemaTypeName);
+    }
 
     // Generate a Schema view from each property.
     List<StaticLangApiMessageView> properties = new LinkedList<>();
