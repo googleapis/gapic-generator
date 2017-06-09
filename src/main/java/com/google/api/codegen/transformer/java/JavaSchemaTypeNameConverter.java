@@ -32,6 +32,12 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
   /** The package prefix protoc uses if no java package option was provided. */
   private static final String DEFAULT_JAVA_PACKAGE_PREFIX = "com.google.discovery";
 
+  private TypeNameConverter typeNameConverter;
+
+  public JavaSchemaTypeNameConverter(String implicitPackageName) {
+    this.typeNameConverter = new JavaTypeTable(implicitPackageName);
+  }
+
   private static String getPrimitiveTypeName(Schema schema) {
     switch (schema.type()) {
       case INTEGER:
@@ -80,11 +86,7 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
     throw new IllegalArgumentException("Schema is of unknown type.");
   }
 
-  private TypeNameConverter typeNameConverter;
 
-  public JavaSchemaTypeNameConverter(String implicitPackageName) {
-    this.typeNameConverter = new JavaTypeTable(implicitPackageName);
-  }
 
   @Override
   public TypeName getTypeNameInImplicitPackage(String shortName) {
