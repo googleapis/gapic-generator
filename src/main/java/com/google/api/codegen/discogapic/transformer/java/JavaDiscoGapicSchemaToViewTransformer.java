@@ -17,6 +17,7 @@ package com.google.api.codegen.discogapic.transformer.java;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.discogapic.DiscoGapicInterfaceContext;
+import com.google.api.codegen.discogapic.SchemaInterfaceContext;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Schema;
@@ -112,17 +113,21 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
   }
 
   private StaticLangApiMessageFileView generateSchemaFile(
-      DiscoGapicInterfaceContext context, Schema schema) {
+      DiscoGapicInterfaceContext documentContext, Schema schema) {
     StaticLangApiMessageFileView.Builder apiFile = StaticLangApiMessageFileView.newBuilder();
     // Escape any schema's field names that are Java keywords.
 
     apiFile.templateFileName(SCHEMA_TEMPLATE_FILENAME);
 
-    addApiImports(context);
-    StaticLangApiMessageView messageView = generateSchemaClass(context, null, schema, null);
+    SchemaInterfaceContext context = SchemaInterfaceContext.create(schema,
+        documentContext.getSchemaTypeTable().cloneEmpty(), documentContext);
+
+    addApiImports(context.getSchemaTypeTable());
+
+    StaticLangApiMessageView messageView = generateSchemaClass(context, null, schema, null, context.getSchemaTypeTable());
     apiFile.schema(messageView);
 
-    String outputPath = pathMapper.getOutputPath(null, context.getProductConfig());
+    String outputPath = pathMapper.getOutputPath(null, documentContext.getProductConfig());
     apiFile.outputPath(outputPath + File.separator + messageView.typeName() + ".java");
 
     // must be done as the last step to catch all imports
@@ -132,7 +137,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
   }
 
   private StaticLangApiMessageView generateSchemaClass(
-      DiscoGapicInterfaceContext context, String key, Schema schema, String parentName) {
+      SchemaInterfaceContext context, String key, Schema schema, String parentName, SchemaTypeTable schemaTypeTable) {
 
     // TODO(andrealin): Probably don't need to create a new SymbolTable for every method invocation.
     SymbolTable schemaSymbolTable = SymbolTable.fromSeed(JavaNameFormatter.RESERVED_IDENTIFIER_SET);
@@ -148,11 +153,13 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     schemaView.fieldGetFunction(context.getDiscoGapicNamer().getResourceGetterName(schemaName));
     schemaView.fieldSetFunction(context.getDiscoGapicNamer().getResourceSetterName(schemaName));
     String schemaTypeName =
-        context.getSchemaTypeTable().getAndSaveNicknameForElementType(key, schema, parentName);
+        schemaTypeTable.getAndSaveNicknameForElementType(key, schema, parentName);
+    // TODO (andrealin): Does the Document type table need to save the nickname?
+    context.getDocumentTypeTable().getAndSaveNicknameForElementType(key, schema, parentName);
     schemaView.typeName(schemaTypeName);
     if (schema.type() == Type.ARRAY) {
       schemaView.innerTypeName(
-          context.getSchemaTypeTable().getInnerTypeNameFor(key, schema, parentName));
+          schemaTypeTable.getInnerTypeNameFor(key, schema, parentName));
     } else {
       schemaView.innerTypeName(schemaTypeName);
     }
@@ -167,7 +174,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     for (Map.Entry<String, Schema> propertyEntry : schemaProperties.entrySet()) {
       properties.add(
           generateSchemaClass(
-              context, propertyEntry.getKey(), propertyEntry.getValue(), schemaName));
+              context, propertyEntry.getKey(), propertyEntry.getValue(), schemaName, schemaTypeTable));
     }
     Collections.sort(
         properties,
@@ -182,8 +189,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     return schemaView.build();
   }
 
-  private void addApiImports(DiscoGapicInterfaceContext context) {
-    SchemaTypeTable typeTable = context.getSchemaTypeTable();
+  private void addApiImports(SchemaTypeTable typeTable) {
     typeTable.saveNicknameFor("com.google.api.core.BetaApi");
     typeTable.saveNicknameFor("java.io.Serializable");
     typeTable.saveNicknameFor("java.util.List");

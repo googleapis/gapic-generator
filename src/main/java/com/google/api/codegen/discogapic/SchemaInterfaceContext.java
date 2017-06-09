@@ -14,10 +14,13 @@
  */
 package com.google.api.codegen.discogapic;
 
+import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.ProductConfig;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Document;
+import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.SchemaTypeTable;
@@ -27,52 +30,60 @@ import com.google.api.tools.framework.model.Method;
 import com.google.auto.value.AutoValue;
 
 /**
- * The context for transforming a Discovery Doc API into a view model to use for client library
- * generation.
+ * The context for transforming a single top-level schema from Discovery Doc API into a top-level
+ * view model for client library generation.
+ *
+ * This context contains a reference to the parent Document context.
  */
 @AutoValue
-public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
-  public static DiscoGapicInterfaceContext create(
-      Document document,
-      GapicProductConfig productConfig,
+public abstract class SchemaInterfaceContext implements InterfaceContext {
+  public static SchemaInterfaceContext create(
+      Schema schema,
       SchemaTypeTable typeTable,
-      DiscoGapicNamer discoGapicNamer,
-      SurfaceNamer surfaceNamer,
-      FeatureConfig featureConfig) {
-    return new AutoValue_DiscoGapicInterfaceContext(
-        document, productConfig, typeTable, discoGapicNamer, surfaceNamer, featureConfig);
+      DiscoGapicInterfaceContext docContext) {
+    return new AutoValue_SchemaInterfaceContext(
+        schema, typeTable, docContext);
   }
 
-  public abstract Document getDocument();
-
-  @Override
-  public abstract GapicProductConfig getProductConfig();
+  public abstract Schema getSchema();
 
   public abstract SchemaTypeTable getSchemaTypeTable();
 
-  public abstract DiscoGapicNamer getDiscoGapicNamer();
+  /** @return the parent Document-level InterfaceContext. */
+  public abstract DiscoGapicInterfaceContext getDocContext();
+
+  public DiscoGapicNamer getDiscoGapicNamer() {
+    return getDocContext().getDiscoGapicNamer();
+  }
 
   @Override
-  public abstract SurfaceNamer getNamer();
+  public GapicProductConfig getProductConfig() {
+    return getDocContext().getProductConfig();
+  }
+
+  @Override
+  public SurfaceNamer getNamer() {
+    return getDocContext().getNamer();
+  }
 
   @Override
   public TypeTable getTypeTable() {
     return getSchemaTypeTable().getTypeTable();
   }
 
-  public abstract FeatureConfig getFeatureConfig();
+  /** @return the SchemaTypeTable scoped at the Document level. */
+  public SchemaTypeTable getDocumentTypeTable() {
+    return getDocContext().getSchemaTypeTable();
+  }
 
-  public DiscoGapicInterfaceContext withNewTypeTable() {
+  public SchemaInterfaceContext withNewTypeTable() {
     return create(
-        getDocument(),
-        getProductConfig(),
+        getSchema(),
         getSchemaTypeTable().cloneEmpty(),
-        getDiscoGapicNamer(),
-        getNamer(),
-        getFeatureConfig());
+        getDocContext());
   }
 
   public DiscoGapicInterfaceConfig getInterfaceConfig() {
-    return (DiscoGapicInterfaceConfig) getProductConfig().getInterfaceConfig(getDocument().name());
+    return (DiscoGapicInterfaceConfig) getProductConfig().getInterfaceConfig(getSchema().id());
   }
 }
