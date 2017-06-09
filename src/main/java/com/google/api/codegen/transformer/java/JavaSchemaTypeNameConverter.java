@@ -132,6 +132,7 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
         }
       }
     } else if (schema.type() == Type.ARRAY) {
+      // TODO(andrealin): ensure that this handles arrays of arrays.
       TypeName listTypeName = typeNameConverter.getTypeName("java.util.List");
       TypeName elementTypeName = getTypeNameForElementType(schema.items(), true);
       return new TypeName(
