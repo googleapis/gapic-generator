@@ -18,7 +18,7 @@ import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Document;
-import com.google.api.codegen.transformer.DiscoTypeTable;
+import com.google.api.codegen.transformer.SchemaTypeTable;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -35,7 +35,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   public static DiscoGapicInterfaceContext create(
       Document document,
       GapicProductConfig productConfig,
-      DiscoTypeTable typeTable,
+      SchemaTypeTable typeTable,
       DiscoGapicNamer discoGapicNamer,
       SurfaceNamer surfaceNamer,
       FeatureConfig featureConfig) {
@@ -48,7 +48,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   @Override
   public abstract GapicProductConfig getProductConfig();
 
-  public abstract DiscoTypeTable getDiscoTypeTable();
+  public abstract SchemaTypeTable getSchemaTypeTable();
 
   public abstract DiscoGapicNamer getDiscoGapicNamer();
 
@@ -57,7 +57,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
 
   @Override
   public TypeTable getTypeTable() {
-    return getDiscoTypeTable().getTypeTable();
+    return getSchemaTypeTable().getTypeTable();
   }
 
   public abstract FeatureConfig getFeatureConfig();
@@ -66,7 +66,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
     return create(
         getDocument(),
         getProductConfig(),
-        getDiscoTypeTable().cloneEmpty(),
+        getSchemaTypeTable().cloneEmpty(),
         getDiscoGapicNamer(),
         getNamer(),
         getFeatureConfig());

@@ -21,7 +21,7 @@ import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
-import com.google.api.codegen.transformer.DiscoTypeTable;
+import com.google.api.codegen.transformer.SchemaTypeTable;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.java.JavaFeatureConfig;
@@ -103,8 +103,8 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     return surfaceSchemas;
   }
 
-  private DiscoTypeTable createTypeTable(String implicitPackageName) {
-    return new DiscoTypeTable(
+  private SchemaTypeTable createTypeTable(String implicitPackageName) {
+    return new SchemaTypeTable(
         new JavaTypeTable(implicitPackageName),
         new JavaSchemaTypeNameConverter(implicitPackageName));
   }
@@ -148,7 +148,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       SimpleMessagePropertyView.Builder simpleProperty =
           SimpleMessagePropertyView.newBuilder().name(propertyString);
       simpleProperty.typeName(
-          context.getDiscoTypeTable().getAndSaveNicknameForElementType(property));
+          context.getSchemaTypeTable().getAndSaveNicknameForElementType(property));
       simpleProperty.fieldGetFunction(
           context.getDiscoGapicNamer().getResourceGetterName(propertyString));
       simpleProperty.fieldSetFunction(
@@ -169,7 +169,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
   }
 
   private void addApiImports(DiscoGapicInterfaceContext context) {
-    DiscoTypeTable typeTable = context.getDiscoTypeTable();
+    SchemaTypeTable typeTable = context.getSchemaTypeTable();
     typeTable.saveNicknameFor("com.google.api.core.BetaApi");
     typeTable.saveNicknameFor("java.io.Serializable");
     typeTable.saveNicknameFor("java.util.List");

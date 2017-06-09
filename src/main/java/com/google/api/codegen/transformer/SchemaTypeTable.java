@@ -20,15 +20,15 @@ import com.google.api.codegen.util.TypeTable;
 import java.util.Map;
 
 /**
- * A DiscoTypeTable manages the imports for a set of fully-qualified type names, and provides helper
+ * A SchemaTypeTable manages the imports for a set of fully-qualified type names, and provides helper
  * methods for importing instances of TypeRef.
  */
-public class DiscoTypeTable {
+public class SchemaTypeTable {
   private SchemaTypeFormatterImpl typeFormatter;
   private TypeTable typeTable;
   private SchemaTypeNameConverter typeNameConverter;
 
-  public DiscoTypeTable(TypeTable typeTable, SchemaTypeNameConverter typeNameConverter) {
+  public SchemaTypeTable(TypeTable typeTable, SchemaTypeNameConverter typeNameConverter) {
     this.typeFormatter = new SchemaTypeFormatterImpl(typeNameConverter);
     this.typeTable = typeTable;
     this.typeNameConverter = typeNameConverter;
@@ -38,9 +38,9 @@ public class DiscoTypeTable {
     return typeFormatter.getImplicitPackageFullNameFor(shortName);
   }
 
-  /** Creates a new DiscoTypeTable of the same concrete type, but with an empty import set. */
-  public DiscoTypeTable cloneEmpty() {
-    return new DiscoTypeTable(typeTable.cloneEmpty(), typeNameConverter);
+  /** Creates a new SchemaTypeTable of the same concrete type, but with an empty import set. */
+  public SchemaTypeTable cloneEmpty() {
+    return new SchemaTypeTable(typeTable.cloneEmpty(), typeNameConverter);
   }
 
   /** Compute the nickname for the given fullName and save it in the import set. */
