@@ -240,6 +240,7 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
   }
 
   public static String getJavaPackage(Document file) {
+    // TODO(andrealin): Get this from options instead of hardcoded name.
     String packageName = String.format("com.google.%s.%s", file.name(), file.version());
     if (Strings.isNullOrEmpty(packageName)) {
       return DEFAULT_JAVA_PACKAGE_PREFIX + "." + file.name();
