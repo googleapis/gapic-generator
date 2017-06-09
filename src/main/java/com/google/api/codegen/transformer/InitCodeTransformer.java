@@ -133,9 +133,18 @@ public class InitCodeTransformer {
         enumTypeName = methodContext.getTypeTable().getNicknameFor(fieldType);
       }
 
+      String messageTypeName = null;
+      if (fieldType.isMessage() && !fieldType.isRepeated()) {
+        messageTypeName = methodContext.getTypeTable().getFullNameFor(fieldType);
+      }
+
       assertViews.add(
           createAssertView(
-              expectedValueIdentifier, expectedTransformFunction, getterMethod, enumTypeName));
+              expectedValueIdentifier,
+              expectedTransformFunction,
+              getterMethod,
+              enumTypeName,
+              messageTypeName));
     }
     return assertViews;
   }
@@ -161,12 +170,17 @@ public class InitCodeTransformer {
   }
 
   private ClientTestAssertView createAssertView(
-      String expected, String expectedTransformFunction, String actual, String enumTypeName) {
+      String expected,
+      String expectedTransformFunction,
+      String actual,
+      String enumTypeName,
+      String messageTypeName) {
     return ClientTestAssertView.newBuilder()
         .expectedValueIdentifier(expected)
         .expectedValueTransformFunction(expectedTransformFunction)
         .actualValueGetter(actual)
         .enumTypeName(enumTypeName)
+        .messageTypeName(messageTypeName)
         .build();
   }
 
