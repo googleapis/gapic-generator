@@ -55,11 +55,6 @@ public class SchemaTypeTable implements SchemaTypeFormatter {
   }
 
   @Override
-  public String getHardNicknameFor(String key, Schema type, String parentName) {
-    return typeNameConverter.getTypeNameForElementType(key, type, parentName).getNickname();
-  }
-
-  @Override
   public String getImplicitPackageFullNameFor(String shortName) {
     return typeFormatter.getImplicitPackageFullNameFor(shortName);
   }

@@ -35,12 +35,6 @@ public interface SchemaTypeFormatter {
    */
   String getNicknameFor(Schema type);
 
-  /**
-   * Returns the nickname for the given type (without adding the full name to the import set) even
-   * if it clashes with an existing token.
-   */
-  String getHardNicknameFor(String key, Schema type, String parentName);
-
   /** Returns the full name for the given type (without adding the full name to the import set). */
   String getFullNameFor(String key, Schema type, String parentName);
 
