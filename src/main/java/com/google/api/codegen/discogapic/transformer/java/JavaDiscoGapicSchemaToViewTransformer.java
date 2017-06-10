@@ -120,15 +120,17 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
 
     apiFile.templateFileName(SCHEMA_TEMPLATE_FILENAME);
 
-    SchemaInterfaceContext context = SchemaInterfaceContext.create(
-        schema,
-        documentContext.getSchemaTypeTable().cloneEmpty(),
-        SymbolTable.fromSeed(JavaNameFormatter.RESERVED_IDENTIFIER_SET),
-        documentContext);
+    SchemaInterfaceContext context =
+        SchemaInterfaceContext.create(
+            schema,
+            documentContext.getSchemaTypeTable().cloneEmpty(),
+            SymbolTable.fromSeed(JavaNameFormatter.RESERVED_IDENTIFIER_SET),
+            documentContext);
 
     addApiImports(context.getSchemaTypeTable());
 
-    StaticLangApiMessageView messageView = generateSchemaClass(context, null, schema, null, context.getSchemaTypeTable());
+    StaticLangApiMessageView messageView =
+        generateSchemaClass(context, null, schema, null, context.getSchemaTypeTable());
     apiFile.schema(messageView);
 
     String outputPath = pathMapper.getOutputPath(null, documentContext.getProductConfig());
@@ -150,11 +152,12 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
 
     String schemaId = schema.id().isEmpty() ? key : schema.id();
     String schemaName =
-        nameFormatter.privateFieldName(Name.anyCamel(context.getSymbolTable().getNewSymbol(schemaId)));
+        nameFormatter.privateFieldName(
+            Name.anyCamel(context.getSymbolTable().getNewSymbol(schemaId)));
     if (schemaName.equals("Object") || schemaName.equals("String")) {
       throw new IllegalArgumentException(
-          String.format("Schema has name '%s', which clashes with java.lang.* namespace",
-              schemaName));
+          String.format(
+              "Schema has name '%s', which clashes with java.lang.* namespace", schemaName));
     }
     schemaView.name(schemaName);
     schemaView.defaultValue(schema.defaultValue());
@@ -165,8 +168,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
         schemaTypeTable.getAndSaveNicknameForElementType(key, schema, parentName);
     schemaView.typeName(schemaTypeName);
     if (schema.type() == Type.ARRAY) {
-      schemaView.innerTypeName(
-          schemaTypeTable.getInnerTypeNameFor(schemaName, schema, parentName));
+      schemaView.innerTypeName(schemaTypeTable.getInnerTypeNameFor(schemaName, schema, parentName));
     } else {
       schemaView.innerTypeName(schemaTypeName);
     }
@@ -181,7 +183,11 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     for (Map.Entry<String, Schema> propertyEntry : schemaProperties.entrySet()) {
       properties.add(
           generateSchemaClass(
-              context, propertyEntry.getKey(), propertyEntry.getValue(), schemaName, schemaTypeTable));
+              context,
+              propertyEntry.getKey(),
+              propertyEntry.getValue(),
+              schemaName,
+              schemaTypeTable));
     }
     Collections.sort(
         properties,

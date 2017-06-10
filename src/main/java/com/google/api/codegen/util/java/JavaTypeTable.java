@@ -145,8 +145,9 @@ public class JavaTypeTable implements TypeTable {
     if (usedNicknames.contains(alias.getNickname())) {
       // Short name clashes, use long name.
       return alias.getFullName();
-    } else if (!ignoreJavaLangClashes && !alias.getFullName().startsWith(JAVA_LANG_TYPE_PREFIX)
-            && isImplicitImport(alias.getNickname())) {
+    } else if (!ignoreJavaLangClashes
+        && !alias.getFullName().startsWith(JAVA_LANG_TYPE_PREFIX)
+        && isImplicitImport(alias.getNickname())) {
       // Short name clashes with java.lang; use long name.
       return alias.getFullName();
     }
@@ -179,8 +180,10 @@ public class JavaTypeTable implements TypeTable {
     return cleanedImports;
   }
 
-  /** Checks whether the simple type name is implicitly imported from java.lang and memoizes the
-   * result. */
+  /**
+   * Checks whether the simple type name is implicitly imported from java.lang and memoizes the
+   * result.
+   */
   private boolean isImplicitImport(String name) {
     Boolean yes = implicitImports.get(name);
     if (yes != null) {

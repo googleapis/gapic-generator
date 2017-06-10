@@ -16,7 +16,6 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.util.TypeAlias;
-import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
 import java.util.Map;
 

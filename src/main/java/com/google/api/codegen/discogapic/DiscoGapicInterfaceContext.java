@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.discogapic;
 
-import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Document;
@@ -23,7 +22,6 @@ import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.SchemaTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.TypeTable;
-import com.google.api.tools.framework.model.Method;
 import com.google.auto.value.AutoValue;
 
 /**
