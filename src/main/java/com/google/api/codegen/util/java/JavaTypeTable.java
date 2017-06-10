@@ -69,7 +69,7 @@ public class JavaTypeTable implements TypeTable {
 
   @Override
   public TypeTable cloneEmpty() {
-    return new JavaTypeTable(implicitPackageName);
+    return new JavaTypeTable(implicitPackageName, ignoreJavaLangClashes);
   }
 
   @Override
