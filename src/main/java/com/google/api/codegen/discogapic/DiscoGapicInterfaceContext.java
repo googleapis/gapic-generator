@@ -16,25 +16,31 @@ package com.google.api.codegen.discogapic;
 
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.InterfaceContext;
-import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.SchemaTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.TypeTable;
 import com.google.api.tools.framework.model.Method;
 import com.google.auto.value.AutoValue;
 
+/**
+ * The context for transforming a Discovery Doc API into a view model to use for client library
+ * generation.
+ */
 @AutoValue
 public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   public static DiscoGapicInterfaceContext create(
       Document document,
       GapicProductConfig productConfig,
-      ModelTypeTable typeTable,
-      SurfaceNamer namer,
+      SchemaTypeTable typeTable,
+      DiscoGapicNamer discoGapicNamer,
+      SurfaceNamer surfaceNamer,
       FeatureConfig featureConfig) {
     return new AutoValue_DiscoGapicInterfaceContext(
-        document, productConfig, typeTable, namer, featureConfig);
+        document, productConfig, typeTable, discoGapicNamer, surfaceNamer, featureConfig);
   }
 
   public abstract Document getDocument();
@@ -42,15 +48,17 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   @Override
   public abstract GapicProductConfig getProductConfig();
 
-  public abstract ModelTypeTable getModelTypeTable();
+  public abstract SchemaTypeTable getSchemaTypeTable();
 
-  @Override
-  public TypeTable getTypeTable() {
-    return getModelTypeTable().getTypeTable();
-  }
+  public abstract DiscoGapicNamer getDiscoGapicNamer();
 
   @Override
   public abstract SurfaceNamer getNamer();
+
+  @Override
+  public TypeTable getTypeTable() {
+    return getSchemaTypeTable().getTypeTable();
+  }
 
   public abstract FeatureConfig getFeatureConfig();
 
@@ -58,7 +66,8 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
     return create(
         getDocument(),
         getProductConfig(),
-        getModelTypeTable().cloneEmpty(),
+        getSchemaTypeTable().cloneEmpty(),
+        getDiscoGapicNamer(),
         getNamer(),
         getFeatureConfig());
   }
