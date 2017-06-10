@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.util.TypeAlias;
+import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
 import java.util.Map;
 
@@ -52,6 +53,11 @@ public class SchemaTypeTable implements SchemaTypeFormatter {
   @Override
   public String getNicknameFor(Schema type) {
     return typeFormatter.getNicknameFor(type);
+  }
+
+  @Override
+  public String getHardNicknameFor(String key, Schema type, String parentName) {
+    return typeNameConverter.getTypeNameForElementType(key, type, parentName).getNickname();
   }
 
   @Override

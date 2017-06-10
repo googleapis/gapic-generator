@@ -100,6 +100,17 @@ public class JavaNameFormatter implements NameFormatter {
     return name.toOriginal();
   }
 
+  /** Checks whether the simple type name is implicitly imported from java.lang. */
+  public static boolean isJavaLangImport(String name) {
+    // Use reflection to determine whether the name exists in java.lang.
+    try {
+      Class.forName("java.lang." + name);
+      return true;
+    } catch (Exception e) {
+      return false;
+    }
+  }
+
   public static final ImmutableSet<String> RESERVED_IDENTIFIER_SET =
       ImmutableSet.<String>builder()
           .add(

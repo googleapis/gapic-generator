@@ -76,7 +76,10 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
   @Override
   public List<ViewModel> transform(Document document, GapicProductConfig productConfig) {
     List<ViewModel> surfaceDocs = new ArrayList<>();
-    SurfaceNamer namer = new JavaSurfaceNamer(productConfig.getPackageName());
+
+    //TODO(andrealin): set up config for package name: packageName = productConfig.getPackageName()
+    String packageName = "com.google.compute.v1";
+    SurfaceNamer namer = new JavaSurfaceNamer(packageName);
 
     List<ServiceDocView> serviceDocs = new ArrayList<>();
 
@@ -84,7 +87,7 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
         DiscoGapicInterfaceContext.create(
             document,
             productConfig,
-            createTypeTable(productConfig.getPackageName()),
+            createTypeTable(packageName),
             new JavaDiscoGapicNamer(),
             namer,
             JavaFeatureConfig.newBuilder().enableStringFormatFunctions(false).build());

@@ -56,9 +56,15 @@ public class JavaTypeTable implements TypeTable {
           .build();
 
   private final String implicitPackageName;
+  private final boolean ignoreJavaLangClashes;
 
   public JavaTypeTable(String implicitPackageName) {
+    this(implicitPackageName, false);
+  }
+
+  public JavaTypeTable(String implicitPackageName, boolean ignoreJavaLangClashes) {
     this.implicitPackageName = implicitPackageName;
+    this.ignoreJavaLangClashes = ignoreJavaLangClashes;
   }
 
   @Override
@@ -136,10 +142,12 @@ public class JavaTypeTable implements TypeTable {
       // Short name already there.
       return imports.get(alias.getFullName()).getNickname();
     }
-    if (usedNicknames.contains(alias.getNickname())
-        || !alias.getFullName().startsWith(JAVA_LANG_TYPE_PREFIX)
-            && isImplicitImport(alias.getNickname())) {
+    if (usedNicknames.contains(alias.getNickname())) {
       // Short name clashes, use long name.
+      return alias.getFullName();
+    } else if (!ignoreJavaLangClashes && !alias.getFullName().startsWith(JAVA_LANG_TYPE_PREFIX)
+            && isImplicitImport(alias.getNickname())) {
+      // Short name clashes with java.lang; use long name.
       return alias.getFullName();
     }
     imports.put(alias.getFullName(), alias);
@@ -171,19 +179,14 @@ public class JavaTypeTable implements TypeTable {
     return cleanedImports;
   }
 
-  /** Checks whether the simple type name is implicitly imported from java.lang. */
+  /** Checks whether the simple type name is implicitly imported from java.lang and memoizes the
+   * result. */
   private boolean isImplicitImport(String name) {
     Boolean yes = implicitImports.get(name);
     if (yes != null) {
       return yes;
     }
-    // Use reflection to determine whether the name exists in java.lang.
-    try {
-      Class.forName("java.lang." + name);
-      yes = true;
-    } catch (Exception e) {
-      yes = false;
-    }
+    yes = JavaNameFormatter.isJavaLangImport(name);
     implicitImports.put(name, yes);
     return yes;
   }

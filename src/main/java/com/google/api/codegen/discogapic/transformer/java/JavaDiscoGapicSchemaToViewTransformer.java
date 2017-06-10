@@ -108,19 +108,23 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
 
   private SchemaTypeTable createTypeTable(String implicitPackageName) {
     return new SchemaTypeTable(
-        new JavaTypeTable(implicitPackageName),
+        new JavaTypeTable(implicitPackageName, true),
         new JavaSchemaTypeNameConverter(implicitPackageName, nameFormatter));
   }
 
   private StaticLangApiMessageFileView generateSchemaFile(
       DiscoGapicInterfaceContext documentContext, Schema schema) {
     StaticLangApiMessageFileView.Builder apiFile = StaticLangApiMessageFileView.newBuilder();
+
     // Escape any schema's field names that are Java keywords.
 
     apiFile.templateFileName(SCHEMA_TEMPLATE_FILENAME);
 
-    SchemaInterfaceContext context = SchemaInterfaceContext.create(schema,
-        documentContext.getSchemaTypeTable().cloneEmpty(), documentContext);
+    SchemaInterfaceContext context = SchemaInterfaceContext.create(
+        schema,
+        documentContext.getSchemaTypeTable().cloneEmpty(),
+        SymbolTable.fromSeed(JavaNameFormatter.RESERVED_IDENTIFIER_SET),
+        documentContext);
 
     addApiImports(context.getSchemaTypeTable());
 
@@ -137,16 +141,21 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
   }
 
   private StaticLangApiMessageView generateSchemaClass(
-      SchemaInterfaceContext context, String key, Schema schema, String parentName, SchemaTypeTable schemaTypeTable) {
-
-    // TODO(andrealin): Probably don't need to create a new SymbolTable for every method invocation.
-    SymbolTable schemaSymbolTable = SymbolTable.fromSeed(JavaNameFormatter.RESERVED_IDENTIFIER_SET);
-
+      SchemaInterfaceContext context,
+      String key,
+      Schema schema,
+      String parentName,
+      SchemaTypeTable schemaTypeTable) {
     StaticLangApiMessageView.Builder schemaView = StaticLangApiMessageView.newBuilder();
 
     String schemaId = schema.id().isEmpty() ? key : schema.id();
     String schemaName =
-        nameFormatter.privateFieldName(Name.anyCamel(schemaSymbolTable.getNewSymbol(schemaId)));
+        nameFormatter.privateFieldName(Name.anyCamel(context.getSymbolTable().getNewSymbol(schemaId)));
+    if (schemaName.equals("Object") || schemaName.equals("String")) {
+      throw new IllegalArgumentException(
+          String.format("Schema has name '%s', which clashes with java.lang.* namespace",
+              schemaName));
+    }
     schemaView.name(schemaName);
     schemaView.defaultValue(schema.defaultValue());
     schemaView.description(schema.description());
@@ -154,12 +163,10 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     schemaView.fieldSetFunction(context.getDiscoGapicNamer().getResourceSetterName(schemaName));
     String schemaTypeName =
         schemaTypeTable.getAndSaveNicknameForElementType(key, schema, parentName);
-    // TODO (andrealin): Does the Document type table need to save the nickname?
-    context.getDocumentTypeTable().getAndSaveNicknameForElementType(key, schema, parentName);
     schemaView.typeName(schemaTypeName);
     if (schema.type() == Type.ARRAY) {
       schemaView.innerTypeName(
-          schemaTypeTable.getInnerTypeNameFor(key, schema, parentName));
+          schemaTypeTable.getInnerTypeNameFor(schemaName, schema, parentName));
     } else {
       schemaView.innerTypeName(schemaTypeName);
     }
