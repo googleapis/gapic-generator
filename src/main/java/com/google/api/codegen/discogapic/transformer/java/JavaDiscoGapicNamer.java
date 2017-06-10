@@ -12,18 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.discogapic.transformer;
+package com.google.api.codegen.discogapic.transformer.java;
 
-import com.google.api.codegen.config.GapicProductConfig;
-import com.google.api.codegen.discovery.Document;
-import com.google.api.codegen.viewmodel.ViewModel;
-import java.util.List;
+import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
+import com.google.api.codegen.util.java.JavaNameFormatter;
 
-public interface DocumentToViewTransformer {
+class JavaDiscoGapicNamer extends DiscoGapicNamer {
 
-  /** Generate a list of ViewModels from a given Document model. */
-  List<ViewModel> transform(Document document, GapicProductConfig productConfig);
-
-  /** Return the list of filenames of View templates to be applied to the transformed ViewModels. */
-  List<String> getTemplateFileNames();
+  public JavaDiscoGapicNamer() {
+    super(new JavaNameFormatter());
+  }
 }
