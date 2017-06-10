@@ -40,7 +40,7 @@ public interface SchemaTypeFormatter {
 
   /**
    * Returns the inner type name for the given type (without adding the full name to the import
-   * set). If there is no enclosing type, e.g. List<>, then the inner type is the same as the
+   * set). If there is no enclosing type, e.g. List or Map, then the inner type is the same as the
    * nickname.
    */
   String getInnerTypeNameFor(String key, Schema type, String parentName);
