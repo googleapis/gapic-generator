@@ -22,11 +22,11 @@ import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
-import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.SchemaTypeTable;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.java.JavaFeatureConfig;
-import com.google.api.codegen.transformer.java.JavaModelTypeNameConverter;
+import com.google.api.codegen.transformer.java.JavaSchemaTypeNameConverter;
 import com.google.api.codegen.transformer.java.JavaSurfaceNamer;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.ApiCallableView;
@@ -83,6 +83,7 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
             document,
             productConfig,
             createTypeTable(productConfig.getPackageName()),
+            new JavaDiscoGapicNamer(),
             namer,
             JavaFeatureConfig.newBuilder().enableStringFormatFunctions(false).build());
     StaticLangApiFileView apiFile = generateApiFile(context);
@@ -93,10 +94,10 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
     return surfaceDocs;
   }
 
-  private ModelTypeTable createTypeTable(String implicitPackageName) {
-    return new ModelTypeTable(
+  private SchemaTypeTable createTypeTable(String implicitPackageName) {
+    return new SchemaTypeTable(
         new JavaTypeTable(implicitPackageName),
-        new JavaModelTypeNameConverter(implicitPackageName));
+        new JavaSchemaTypeNameConverter(implicitPackageName));
   }
 
   private StaticLangApiFileView generateApiFile(DiscoGapicInterfaceContext context) {
@@ -140,7 +141,7 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
   }
 
   private void addApiImports(DiscoGapicInterfaceContext context) {
-    ModelTypeTable typeTable = context.getModelTypeTable();
+    SchemaTypeTable typeTable = context.getSchemaTypeTable();
     // TODO several of these can be deleted (e.g. DiscoGapic doesn't use grpc)
     typeTable.saveNicknameFor("com.google.api.core.BetaApi");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.ChannelAndExecutor");
