@@ -103,7 +103,7 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
   public TypeName getTypeName(String key, Schema schema) {
     if (schema.type() == Type.ARRAY) {
       TypeName listTypeName = typeNameConverter.getTypeName("java.util.List");
-      TypeName elementTypeName = getTypeNameForElementType("", schema, null, true);
+      TypeName elementTypeName = getTypeNameForElementType(null, schema, null, true);
       return new TypeName(
           listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", elementTypeName);
     } else {
