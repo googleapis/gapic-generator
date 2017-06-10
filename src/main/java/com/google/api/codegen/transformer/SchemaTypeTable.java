@@ -23,7 +23,7 @@ import java.util.Map;
  * A SchemaTypeTable manages the imports for a set of fully-qualified type names, and provides
  * helper methods for importing instances of Schema.
  */
-public class SchemaTypeTable {
+public class SchemaTypeTable implements SchemaTypeFormatter {
   private SchemaTypeFormatterImpl typeFormatter;
   private TypeTable typeTable;
   private SchemaTypeNameConverter typeNameConverter;
@@ -34,8 +34,39 @@ public class SchemaTypeTable {
     this.typeNameConverter = typeNameConverter;
   }
 
+  @Override
+  public String renderPrimitiveValue(Schema type, String value) {
+    return typeFormatter.renderPrimitiveValue(type, value);
+  }
+
+  @Override
+  public String getFullNameFor(Schema type) {
+    return this.getFullNameFor(null, type, null);
+  }
+
+  @Override
+  public String getFullNameFor(String key, Schema type, String parentName) {
+    return typeFormatter.getFullNameFor(key, type, parentName);
+  }
+
+  @Override
+  public String getNicknameFor(Schema type) {
+    return typeFormatter.getNicknameFor(type);
+  }
+
+  @Override
+  public String getHardNicknameFor(String key, Schema type, String parentName) {
+    return typeNameConverter.getTypeNameForElementType(key, type, parentName).getNickname();
+  }
+
+  @Override
   public String getImplicitPackageFullNameFor(String shortName) {
     return typeFormatter.getImplicitPackageFullNameFor(shortName);
+  }
+
+  @Override
+  public String getInnerTypeNameFor(String key, Schema schema, String parentName) {
+    return typeFormatter.getInnerTypeNameFor(key, schema, parentName);
   }
 
   /** Creates a new SchemaTypeTable of the same concrete type, but with an empty import set. */
@@ -74,18 +105,23 @@ public class SchemaTypeTable {
    * Computes the nickname for the given type, adds the full name to the import set, and returns the
    * nickname.
    */
-  public String getAndSaveNicknameFor(Schema schema) {
-    return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeName(schema));
+  public String getAndSaveNicknameFor(String key, Schema schema) {
+    return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeName(key, schema));
   }
 
   /**
-   * This function will compute the nickname for the element type, add the full name to the import
-   * set, and then return the nickname. If the given type is repeated, then the element type is the
-   * contained type; if the type is not a repeated type, then the element type is the boxed form of
-   * the type.
+   * For a given schema, add the full name to the import set, and then return the nickname.
+   *
+   * @param key The String that maps to the given schema. If schema.id() is empty, then the nickname
+   *     will be based off this key.
+   * @param schema The schema to save and get the nickname for.
+   * @return nickname for the schema.
+   *     <p>If the given schema type is an array, then the element type is the contained type;
+   *     otherwise the element type is the boxed form of the type.
    */
-  public String getAndSaveNicknameForElementType(Schema schema) {
-    return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeNameForElementType(schema));
+  public String getAndSaveNicknameForElementType(String key, Schema schema, String parentName) {
+    return typeTable.getAndSaveNicknameFor(
+        typeNameConverter.getTypeNameForElementType(key, schema, parentName));
   }
 
   /** Returns the imports accumulated so far. */

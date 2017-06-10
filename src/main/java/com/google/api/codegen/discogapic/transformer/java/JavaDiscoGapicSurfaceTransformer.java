@@ -28,6 +28,7 @@ import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.java.JavaFeatureConfig;
 import com.google.api.codegen.transformer.java.JavaSchemaTypeNameConverter;
 import com.google.api.codegen.transformer.java.JavaSurfaceNamer;
+import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.ApiCallableView;
 import com.google.api.codegen.viewmodel.FormatResourceFunctionView;
@@ -49,6 +50,7 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
       new StandardImportSectionTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(importSectionTransformer);
+  private final JavaNameFormatter nameFormatter = new JavaNameFormatter();
 
   private static final String XAPI_TEMPLATE_FILENAME = "java/main.snip";
   private static final String XSETTINGS_TEMPLATE_FILENAME = "java/settings.snip";
@@ -74,7 +76,10 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
   @Override
   public List<ViewModel> transform(Document document, GapicProductConfig productConfig) {
     List<ViewModel> surfaceDocs = new ArrayList<>();
-    SurfaceNamer namer = new JavaSurfaceNamer(productConfig.getPackageName());
+
+    //TODO(andrealin): set up config for package name: packageName = productConfig.getPackageName()
+    String packageName = "com.google.compute.v1";
+    SurfaceNamer namer = new JavaSurfaceNamer(packageName);
 
     List<ServiceDocView> serviceDocs = new ArrayList<>();
 
@@ -82,10 +87,11 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
         DiscoGapicInterfaceContext.create(
             document,
             productConfig,
-            createTypeTable(productConfig.getPackageName()),
+            createTypeTable(packageName),
             new JavaDiscoGapicNamer(),
             namer,
             JavaFeatureConfig.newBuilder().enableStringFormatFunctions(false).build());
+
     StaticLangApiFileView apiFile = generateApiFile(context);
     surfaceDocs.add(apiFile);
 
@@ -97,7 +103,7 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
   private SchemaTypeTable createTypeTable(String implicitPackageName) {
     return new SchemaTypeTable(
         new JavaTypeTable(implicitPackageName),
-        new JavaSchemaTypeNameConverter(implicitPackageName));
+        new JavaSchemaTypeNameConverter(implicitPackageName, nameFormatter));
   }
 
   private StaticLangApiFileView generateApiFile(DiscoGapicInterfaceContext context) {
