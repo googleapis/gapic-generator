@@ -134,7 +134,7 @@ public class RubyModelTypeNameConverter implements ModelTypeNameConverter {
     }
     if (type.isMessage()) {
       TypeName typeName = getTypeName(type);
-      return TypedValue.create(typeName, typeName.getFullName() + ".new");
+      return TypedValue.create(typeName, "{}");
     }
     if (type.isEnum()) {
       return getEnumValue(type, type.getEnumType().getValues().get(0));
