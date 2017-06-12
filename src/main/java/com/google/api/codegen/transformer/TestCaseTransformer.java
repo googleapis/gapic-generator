@@ -60,6 +60,8 @@ public class TestCaseTransformer {
 
     String clientMethodName;
     String responseTypeName;
+    String fullyQualifiedResponseTypeName =
+        methodContext.getTypeTable().getFullNameFor(method.getOutputType());
     if (methodConfig.isPageStreaming()) {
       clientMethodName = namer.getApiMethodName(method, methodConfig.getVisibility());
       responseTypeName =
@@ -73,6 +75,10 @@ public class TestCaseTransformer {
           methodContext
               .getTypeTable()
               .getAndSaveNicknameFor(methodConfig.getLongRunningConfig().getReturnType());
+      fullyQualifiedResponseTypeName =
+          methodContext
+              .getTypeTable()
+              .getFullNameFor(methodConfig.getLongRunningConfig().getReturnType());
     } else if (clientMethodType == ClientMethodType.CallableMethod) {
       clientMethodName = namer.getCallableMethodName(method);
       responseTypeName = methodContext.getTypeTable().getAndSaveNicknameFor(method.getOutputType());
@@ -104,6 +110,9 @@ public class TestCaseTransformer {
         .pageStreamingResponseViews(createPageStreamingResponseViews(methodContext))
         .requestTypeName(methodContext.getTypeTable().getAndSaveNicknameFor(method.getInputType()))
         .responseTypeName(responseTypeName)
+        .fullyQualifiedRequestTypeName(
+            methodContext.getTypeTable().getFullNameFor(method.getInputType()))
+        .fullyQualifiedResponseTypeName(fullyQualifiedResponseTypeName)
         .serviceConstructorName(
             namer.getApiWrapperClassConstructorName(methodContext.getInterface()))
         .fullyQualifiedServiceClassName(
