@@ -140,6 +140,7 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
 
   static final class DiscoveryFile implements FileFilter {
     private String api;
+
     public DiscoveryFile(String api) {
       this.api = api;
     }
