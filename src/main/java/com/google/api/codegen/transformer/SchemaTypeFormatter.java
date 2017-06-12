@@ -29,8 +29,21 @@ public interface SchemaTypeFormatter {
   /** Get the full name for the given type. */
   String getFullNameFor(Schema type);
 
-  /** Returns the nickname for the given type (without adding the full name to the import set). */
+  /**
+   * Returns the nickname for the given type (without adding the full name to the import set). If
+   * the nickname clashes with an existing token, return the full name.
+   */
   String getNicknameFor(Schema type);
+
+  /** Returns the full name for the given type (without adding the full name to the import set). */
+  String getFullNameFor(String key, Schema type, String parentName);
+
+  /**
+   * Returns the inner type name for the given type (without adding the full name to the import
+   * set). If there is no enclosing type, e.g. List or Map, then the inner type is the same as the
+   * nickname.
+   */
+  String getInnerTypeNameFor(String key, Schema type, String parentName);
 
   /** Renders the primitive value of the given type. */
   String renderPrimitiveValue(Schema type, String key);

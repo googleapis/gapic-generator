@@ -43,13 +43,16 @@ public class JavaDiscoGapicGeneratorTest extends DiscoGapicTestBase {
             System.getProperty("user.dir"),
             "src/test/java/com/google/api/codegen/testdata/discoveries");
     ImmutableList.Builder<Object[]> builder = ImmutableList.<Object[]>builder();
-    for (File file : dir.listFiles(new DiscoveryFile())) {
+    for (File file : dir.listFiles(new DiscoveryFile("datastore"))) {
       String fileName = file.getName();
       builder.add(
           new Object[] {
             "java_" + fileName,
             "discoveries/" + fileName,
-            new String[] {"com/google/api/codegen/java/java_discogapic.yaml"}
+            new String[] {
+              "com/google/api/codegen/java/java_discogapic.yaml",
+              "com/google/api/codegen/testdata/datastore_gapic.yaml"
+            }
           });
     }
     return builder.build();
