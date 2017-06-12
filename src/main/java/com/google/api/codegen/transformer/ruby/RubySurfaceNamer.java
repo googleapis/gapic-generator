@@ -106,6 +106,39 @@ public class RubySurfaceNamer extends SurfaceNamer {
     if (type.isMap()) {
       String keyTypeName = typeTable.getFullNameForElementType(type.getMapKeyField().getType());
       String valueTypeName = typeTable.getFullNameForElementType(type.getMapValueField().getType());
+      if (type.getMapValueField().getType().isMessage()) {
+        valueTypeName += " | Hash";
+      }
+      return new TypeName(
+              typeTable.getFullNameFor(type),
+              typeTable.getNicknameFor(type),
+              "%s{%i => %i}",
+              new TypeName(keyTypeName),
+              new TypeName(valueTypeName))
+          .getFullName();
+    }
+
+    String elementTypeName = typeTable.getFullNameForElementType(type);
+    if (type.isMessage()) {
+      elementTypeName += " | Hash";
+    }
+    if (type.isRepeated()) {
+      return new TypeName(
+              typeTable.getFullNameFor(type),
+              typeTable.getNicknameFor(type),
+              "%s<%i>",
+              new TypeName(elementTypeName))
+          .getFullName();
+    }
+
+    return elementTypeName;
+  }
+
+  /** The type name for the message property */
+  public String getMessagePropertyTypeName(ModelTypeTable typeTable, TypeRef type) {
+    if (type.isMap()) {
+      String keyTypeName = typeTable.getFullNameForElementType(type.getMapKeyField().getType());
+      String valueTypeName = typeTable.getFullNameForElementType(type.getMapValueField().getType());
       return new TypeName(
               typeTable.getFullNameFor(type),
               typeTable.getNicknameFor(type),

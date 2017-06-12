@@ -51,14 +51,19 @@ public abstract class PackageMetadataView implements ViewModel {
   @Nullable
   public abstract String identifier();
 
+  @Nullable
   public abstract String apiSummary();
 
+  @Nullable
   public abstract VersionBound packageVersionBound();
 
+  @Nullable
   public abstract VersionBound gaxVersionBound();
 
+  @Nullable
   public abstract VersionBound grpcVersionBound();
 
+  @Nullable
   public abstract VersionBound protoVersionBound();
 
   @Nullable
@@ -66,6 +71,9 @@ public abstract class PackageMetadataView implements ViewModel {
 
   @Nullable
   public abstract List<PackageDependencyView> protoPackageDependencies();
+
+  @Nullable
+  public abstract List<PackageDependencyView> protoPackageTestDependencies();
 
   @Nullable
   public abstract VersionBound authVersionBound();
@@ -81,6 +89,9 @@ public abstract class PackageMetadataView implements ViewModel {
 
   public abstract String protoPackageName();
 
+  @Nullable
+  public abstract String grpcPackageName();
+
   public abstract String gapicPackageName();
 
   public abstract String majorVersion();
@@ -89,6 +100,9 @@ public abstract class PackageMetadataView implements ViewModel {
 
   @Nullable
   public abstract String versionPath();
+
+  @Nullable
+  public abstract String versionNamespace();
 
   public abstract String author();
 
@@ -171,6 +185,9 @@ public abstract class PackageMetadataView implements ViewModel {
 
     public abstract Builder protoPackageDependencies(List<PackageDependencyView> val);
 
+    @Nullable
+    public abstract Builder protoPackageTestDependencies(List<PackageDependencyView> val);
+
     public abstract Builder authVersionBound(VersionBound val);
 
     public abstract Builder serviceName(String val);
@@ -190,6 +207,9 @@ public abstract class PackageMetadataView implements ViewModel {
     /** The base name of the proto client library package. E.g., "proto-google-cloud-logging-v1". */
     public abstract Builder protoPackageName(String val);
 
+    /** The base name of the gRPC client library package. E.g., "grpc-google-cloud-logging-v1". */
+    public abstract Builder grpcPackageName(String val);
+
     /** The base name of the GAPIC client library package. E.g., "gapic-google-cloud-logging-v1". */
     public abstract Builder gapicPackageName(String val);
 
@@ -199,7 +219,11 @@ public abstract class PackageMetadataView implements ViewModel {
     /** The path to the API protos in the googleapis repo. */
     public abstract Builder protoPath(String val);
 
+    /* The path to the generated version index file. */
     public abstract Builder versionPath(String val);
+
+    /** The namespace of the services found within this package. */
+    public abstract Builder versionNamespace(String val);
 
     /** The author of the package. */
     public abstract Builder author(String val);

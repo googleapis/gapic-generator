@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+'use strict';
 
 var assert = require('assert');
 var libraryV1 = require('../src/v1')();
@@ -1466,7 +1467,7 @@ function mockLongRunningGrpcMethod(expectedRequest, response, error) {
       promise: function() {
         return new Promise(function(resolve, reject) {
           if (error) {
-            reject(error)
+            reject(error);
           } else {
             resolve([response]);
           }

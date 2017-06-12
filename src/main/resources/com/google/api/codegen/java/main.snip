@@ -169,6 +169,8 @@
 
 @private members(xapiClass)
   private final {@xapiClass.settingsClassName} settings;
+  private final ScheduledExecutorService executor;
+  private final ManagedChannel channel;
   @if xapiClass.hasLongRunningOperations
     private final OperationsClient operationsClient;
   @end
@@ -212,17 +214,24 @@
    */
   protected {@xapiClass.name}({@xapiClass.settingsClassName} settings) throws IOException {
     this.settings = settings;
+    ChannelAndExecutor channelAndExecutor = settings.getChannelAndExecutor();
+    this.executor = channelAndExecutor.getExecutor();
+    this.channel = channelAndExecutor.getChannel();
+    Credentials credentials = settings.getCredentialsProvider().getCredentials();
 
-    ClientContext clientContext = ClientContext.create(settings);
+    ClientContext clientContext =
+        ClientContext.newBuilder()
+            .setExecutor(this.executor)
+            .setChannel(this.channel)
+            .setCredentials(credentials)
+            .build();
 
     @if xapiClass.hasLongRunningOperations
-      FixedExecutorProvider executorProvider = FixedExecutorProvider.create(this.executor);
-      FixedChannelProvider channelProvider = FixedChannelProvider.create(this.channel);
       OperationsSettings operationsSettings =
           OperationsSettings.defaultBuilder()
-              .setExecutorProvider(executorProvider)
-              .setChannelProvider(channelProvider)
-              .setCredentialsProvider(credentialsProvider)
+              .setExecutorProvider(FixedExecutorProvider.create(this.executor))
+              .setChannelProvider(FixedChannelProvider.create(this.channel))
+              .setCredentialsProvider(FixedCredentialsProvider.create(credentials))
               .build();
       this.operationsClient = OperationsClient.create(operationsSettings);
     @end
@@ -237,7 +246,7 @@
       @case "BatchingApiCallable"
         this.{@apiCallable.name} = UnaryCallable.create(settings.{@apiCallable.settingsFunctionName}(), clientContext);
       @case "StreamingApiCallable"
-        this.{@apiCallable.name} = StreamingCallable.create(settings.{@apiCallable.settingsFunctionName}(), this.channel);
+        this.{@apiCallable.name} = StreamingCallable.create(settings.{@apiCallable.settingsFunctionName}(), clientContext);
       @case "InitialOperationApiCallable"
         this.{@apiCallable.name} = UnaryCallable.create(settings.{@apiCallable.settingsFunctionName}().getInitialCallSettings(), clientContext);
       @case "OperationApiCallable"
@@ -248,7 +257,24 @@
       @end
     @end
 
-    closeables.addAll(clientContext.getCloseables());
+    if (settings.getChannelProvider().shouldAutoClose()) {
+      closeables.add(
+        new Closeable() {
+          @@Override
+          public void close() throws IOException {
+            channel.shutdown();
+          }
+        });
+    }
+    if (settings.getExecutorProvider().shouldAutoClose()) {
+      closeables.add(
+        new Closeable() {
+          @@Override
+          public void close() throws IOException {
+            executor.shutdown();
+          }
+        });
+    }
   }
   {@""}
 @end

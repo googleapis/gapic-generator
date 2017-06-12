@@ -16,6 +16,7 @@
  */
 package com.google.gcloud.pubsub.spi;
 
+import com.google.api.gax.core.NoCredentialsProvider;
 import com.google.api.gax.core.PagedListResponse;
 import com.google.api.gax.grpc.ApiException;
 import com.google.api.gax.grpc.ApiStreamObserver;
@@ -124,6 +125,7 @@ public class LibraryClientTest {
     serviceHelper.reset();
     LibrarySettings settings = LibrarySettings.defaultBuilder()
         .setChannelProvider(serviceHelper.createChannelProvider())
+        .setCredentialsProvider(new NoCredentialsProvider())
         .build();
     client = LibraryClient.create(settings);
   }

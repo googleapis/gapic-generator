@@ -17,7 +17,6 @@
 package com.google.gcloud.example;
 
 import com.google.api.core.BetaApi;
-import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.grpc.ChannelAndExecutor;
 import com.google.api.gax.grpc.ClientContext;
 import com.google.api.gax.grpc.UnaryCallable;
@@ -25,9 +24,7 @@ import com.google.api.pathtemplate.PathTemplate;
 import com.google.auth.Credentials;
 import com.google.example.noPathTemplates.v1.IncrementRequest;
 import com.google.protobuf.Empty;
-import io.grpc.CallCredentials;
 import io.grpc.ManagedChannel;
-import io.grpc.auth.MoreCallCredentials;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -93,6 +90,8 @@ import javax.annotation.Generated;
 @BetaApi
 public class NoTemplatesApiServiceClient implements AutoCloseable {
   private final NoTemplatesApiServiceSettings settings;
+  private final ScheduledExecutorService executor;
+  private final ManagedChannel channel;
   private final List<AutoCloseable> closeables = new ArrayList<>();
 
   private final UnaryCallable<IncrementRequest, Empty> incrementCallable;
@@ -116,13 +115,39 @@ public class NoTemplatesApiServiceClient implements AutoCloseable {
    */
   protected NoTemplatesApiServiceClient(NoTemplatesApiServiceSettings settings) throws IOException {
     this.settings = settings;
+    ChannelAndExecutor channelAndExecutor = settings.getChannelAndExecutor();
+    this.executor = channelAndExecutor.getExecutor();
+    this.channel = channelAndExecutor.getChannel();
+    Credentials credentials = settings.getCredentialsProvider().getCredentials();
 
-    ClientContext clientContext = ClientContext.create(settings);
+    ClientContext clientContext =
+        ClientContext.newBuilder()
+            .setExecutor(this.executor)
+            .setChannel(this.channel)
+            .setCredentials(credentials)
+            .build();
 
 
     this.incrementCallable = UnaryCallable.create(settings.incrementSettings(), clientContext);
 
-    closeables.addAll(clientContext.getCloseables());
+    if (settings.getChannelProvider().shouldAutoClose()) {
+      closeables.add(
+        new Closeable() {
+          @Override
+          public void close() throws IOException {
+            channel.shutdown();
+          }
+        });
+    }
+    if (settings.getExecutorProvider().shouldAutoClose()) {
+      closeables.add(
+        new Closeable() {
+          @Override
+          public void close() throws IOException {
+            executor.shutdown();
+          }
+        });
+    }
   }
 
   public final NoTemplatesApiServiceSettings getSettings() {
