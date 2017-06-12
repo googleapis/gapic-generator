@@ -49,8 +49,10 @@ public class JavaDiscoGapicGeneratorTest extends DiscoGapicTestBase {
           new Object[] {
             "java_" + fileName,
             "discoveries/" + fileName,
-            new String[] {"com/google/api/codegen/java/java_discogapic.yaml",
-                "com/google/api/codegen/testdata/datastore_gapic.yaml"}
+            new String[] {
+              "com/google/api/codegen/java/java_discogapic.yaml",
+              "com/google/api/codegen/testdata/datastore_gapic.yaml"
+            }
           });
     }
     return builder.build();
