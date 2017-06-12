@@ -22,6 +22,14 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
+// Example usage: (assuming environment variable BASE is the base directory of the project
+// containing the YAMLs, descriptor set, and output)
+
+// DiscoGapicGeneratorTool \
+//   --gapic_yaml=$BASE/src/main/resources/com/google/api/codegen/java/java_discogapic.yaml \
+//   --gapic_yaml=$BASE/src/main/resources/com/google/api/codegen/testdata/compute_gapic.yaml \
+//   --discovery_doc=$BASE/src/test/java/com/google/api/codegen/testdata/discoveries/compute.v1.json \
+//   --output=output
 public class DiscoGapicGeneratorTool {
   public static void main(String[] args) throws Exception {
     Options options = new Options();

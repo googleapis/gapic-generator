@@ -15,8 +15,6 @@
 package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.discovery.Document;
-import com.google.api.codegen.discovery.Node;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.discovery.Schema.Type;
 import com.google.api.codegen.transformer.SchemaTypeNameConverter;
@@ -26,7 +24,6 @@ import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.codegen.util.TypedValue;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaTypeTable;
-import com.google.common.base.Strings;
 
 /** The Schema TypeName converter for Java. */
 public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
@@ -36,14 +33,16 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
 
   private TypeNameConverter typeNameConverter;
   private JavaNameFormatter nameFormatter;
+  private String implicitPackageName;
 
   public JavaSchemaTypeNameConverter(String implicitPackageName, JavaNameFormatter nameFormatter) {
     this.typeNameConverter = new JavaTypeTable(implicitPackageName);
     this.nameFormatter = nameFormatter;
+    this.implicitPackageName = implicitPackageName;
   }
 
   public JavaSchemaTypeNameConverter(String implicitPackageName) {
-    this.typeNameConverter = new JavaTypeTable(implicitPackageName);
+    this(implicitPackageName, null);
   }
 
   private static String getPrimitiveTypeName(Schema schema) {
@@ -152,7 +151,8 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
       return new TypeName(
           listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", elementTypeName);
     } else {
-      String packageName = getSchemaPackage(schema);
+      String packageName =
+          !implicitPackageName.isEmpty() ? implicitPackageName : DEFAULT_JAVA_PACKAGE_PREFIX;
       String shortName = "";
       if (!schema.id().isEmpty()) {
         shortName = schema.id();
@@ -162,10 +162,6 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
           && !schema.additionalProperties().reference().isEmpty()) {
         shortName = schema.additionalProperties().reference();
       } else {
-        // TODO(andrealin): Treat nested schemas as inner classes.
-        //        shortName = "Object";
-        //        packageName = "java.lang";
-
         shortName = nameFormatter.publicClassName(Name.anyCamel(key));
         packageName =
             packageName + "." + nameFormatter.publicClassName(Name.anyCamel(parentName)).toString();
@@ -174,21 +170,6 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
 
       return new TypeName(longName, shortName);
     }
-  }
-
-  private static String getSchemaPackage(Schema schema) {
-    String packageName;
-    Node parent = schema.parent();
-    while (parent != null && !(parent instanceof Document)) {
-      parent = parent.parent();
-    }
-    if (parent == null) {
-      packageName = DEFAULT_JAVA_PACKAGE_PREFIX;
-    } else {
-      packageName = getJavaPackage((Document) parent);
-    }
-
-    return packageName;
   }
 
   @Override
@@ -253,14 +234,5 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
       FieldConfig fieldConfig, String typedResourceShortName) {
     // TODO(andrealin)
     return null;
-  }
-
-  public static String getJavaPackage(Document file) {
-    // TODO(andrealin): Get this from options instead of hardcoded name.
-    String packageName = String.format("com.google.%s.%s", file.name(), file.version());
-    if (Strings.isNullOrEmpty(packageName)) {
-      return DEFAULT_JAVA_PACKAGE_PREFIX + "." + file.name();
-    }
-    return packageName;
   }
 }
