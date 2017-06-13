@@ -42,10 +42,6 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
     this.nameFormatter = nameFormatter;
   }
 
-  public JavaSchemaTypeNameConverter(String implicitPackageName) {
-    this.typeNameConverter = new JavaTypeTable(implicitPackageName);
-  }
-
   private static String getPrimitiveTypeName(Schema schema) {
     switch (schema.type()) {
       case INTEGER:
