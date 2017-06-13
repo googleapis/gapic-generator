@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.discogapic.transformer.java;
 
+import static com.google.api.codegen.util.java.JavaTypeTable.JavaLangResolution.IGNORE_JAVA_LANG_CLASH;
+
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.discogapic.DiscoGapicInterfaceContext;
@@ -97,7 +99,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
 
   private SchemaTypeTable createTypeTable(String implicitPackageName) {
     return new SchemaTypeTable(
-        new JavaTypeTable(implicitPackageName, true),
+        new JavaTypeTable(implicitPackageName, IGNORE_JAVA_LANG_CLASH),
         new JavaSchemaTypeNameConverter(implicitPackageName, nameFormatter));
   }
 
@@ -119,7 +121,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     addApiImports(context.getSchemaTypeTable());
 
     StaticLangApiMessageView messageView =
-        generateSchemaClass(context, null, schema, null, context.getSchemaTypeTable());
+        generateSchemaClass(context, schema, null, context.getSchemaTypeTable());
     apiFile.schema(messageView);
 
     String outputPath = pathMapper.getOutputPath(null, documentContext.getProductConfig());
@@ -133,13 +135,12 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
 
   private StaticLangApiMessageView generateSchemaClass(
       SchemaInterfaceContext context,
-      String key,
       Schema schema,
       String parentName,
       SchemaTypeTable schemaTypeTable) {
     StaticLangApiMessageView.Builder schemaView = StaticLangApiMessageView.newBuilder();
 
-    String schemaId = schema.id().isEmpty() ? key : schema.id();
+    String schemaId = schema.id().isEmpty() ? schema.key() : schema.id();
     String schemaName =
         nameFormatter.privateFieldName(
             Name.anyCamel(context.getSymbolTable().getNewSymbol(schemaId)));
@@ -154,7 +155,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     schemaView.fieldGetFunction(context.getDiscoGapicNamer().getResourceGetterName(schemaName));
     schemaView.fieldSetFunction(context.getDiscoGapicNamer().getResourceSetterName(schemaName));
     String schemaTypeName =
-        schemaTypeTable.getAndSaveNicknameForElementType(key, schema, parentName);
+        schemaTypeTable.getAndSaveNicknameForElementType(schema.key(), schema, parentName);
     schemaView.typeName(schemaTypeName);
     if (schema.type() == Type.ARRAY) {
       schemaView.innerTypeName(schemaTypeTable.getInnerTypeNameFor(schemaName, schema, parentName));
@@ -169,14 +170,8 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     if (schema.items() != null && schema.items().properties() != null) {
       schemaProperties.putAll(schema.items().properties());
     }
-    for (Map.Entry<String, Schema> propertyEntry : schemaProperties.entrySet()) {
-      properties.add(
-          generateSchemaClass(
-              context,
-              propertyEntry.getKey(),
-              propertyEntry.getValue(),
-              schemaName,
-              schemaTypeTable));
+    for (Schema property : schemaProperties.values()) {
+      properties.add(generateSchemaClass(context, property, schemaName, schemaTypeTable));
     }
     Collections.sort(
         properties,
