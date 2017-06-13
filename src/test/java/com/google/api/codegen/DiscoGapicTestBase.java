@@ -139,9 +139,15 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
   }
 
   static final class DiscoveryFile implements FileFilter {
+    private String api;
+
+    public DiscoveryFile(String api) {
+      this.api = api;
+    }
+
     @Override
     public boolean accept(File file) {
-      return file.isFile() && file.getName().endsWith("cloudbilling.v1.json");
+      return file.isFile() && file.getName().endsWith(api + ".v1.json");
     }
   }
 }
