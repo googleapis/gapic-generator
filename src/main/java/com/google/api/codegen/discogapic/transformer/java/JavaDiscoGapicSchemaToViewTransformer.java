@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.discogapic.transformer.java;
 
+import static com.google.api.codegen.util.java.JavaTypeTable.JavaLangResolution.IGNORE_JAVA_LANG_CLASH;
+
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.discogapic.DiscoGapicInterfaceContext;
@@ -108,7 +110,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
 
   private SchemaTypeTable createTypeTable(String implicitPackageName) {
     return new SchemaTypeTable(
-        new JavaTypeTable(implicitPackageName, true),
+        new JavaTypeTable(implicitPackageName, IGNORE_JAVA_LANG_CLASH),
         new JavaSchemaTypeNameConverter(implicitPackageName, nameFormatter));
   }
 
