@@ -100,38 +100,37 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
   }
 
   @Override
-  public TypeName getTypeName(String key, Schema schema) {
+  public TypeName getTypeName(Schema schema) {
     if (schema.type() == Type.ARRAY) {
       TypeName listTypeName = typeNameConverter.getTypeName("java.util.List");
-      TypeName elementTypeName = getTypeNameForElementType(null, schema, null, true);
+      TypeName elementTypeName = getTypeNameForElementType(schema, null, true);
       return new TypeName(
           listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", elementTypeName);
     } else {
-      return getTypeNameForElementType(key, schema, null, false);
+      return getTypeNameForElementType(schema, null, false);
     }
   }
 
   @Override
   public TypedValue getEnumValue(Schema schema, String value) {
-    return TypedValue.create(getTypeName(null, schema), "%s." + value);
+    return TypedValue.create(getTypeName(schema), "%s." + value);
   }
 
   @Override
-  public TypeName getTypeNameForElementType(String key, Schema type, String parentName) {
-    return getTypeNameForElementType(key, type, parentName, true);
+  public TypeName getTypeNameForElementType(Schema type, String parentName) {
+    return getTypeNameForElementType(type, parentName, true);
   }
 
   /**
    * Returns the Java representation of a type, without cardinality. If the type is a Java
    * primitive, basicTypeName returns it in unboxed form.
    *
-   * @param key String that maps to this schema, in the JSON.
    * @param schema The Schema to generate a TypeName from.
    * @param parentName The TypeName of the parent Schema that encloses this Schema.
    *     <p>This method will be recursively called on the given schema's children.
    */
   private TypeName getTypeNameForElementType(
-      String key, Schema schema, String parentName, boolean shouldBoxPrimitives) {
+      Schema schema, String parentName, boolean shouldBoxPrimitives) {
     String primitiveTypeName = getPrimitiveTypeName(schema);
     if (primitiveTypeName != null) {
       if (primitiveTypeName.contains(".")) {
@@ -148,7 +147,7 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
     } else if (schema.type() == Type.ARRAY) {
       // TODO(andrealin): ensure that this handles arrays of arrays.
       TypeName listTypeName = typeNameConverter.getTypeName("java.util.List");
-      TypeName elementTypeName = getTypeNameForElementType(key, schema.items(), parentName, true);
+      TypeName elementTypeName = getTypeNameForElementType(schema.items(), parentName, true);
       return new TypeName(
           listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", elementTypeName);
     } else {
@@ -162,7 +161,7 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
           && !schema.additionalProperties().reference().isEmpty()) {
         shortName = schema.additionalProperties().reference();
       } else {
-        shortName = nameFormatter.publicClassName(Name.anyCamel(key));
+        shortName = nameFormatter.publicClassName(Name.anyCamel(schema.key()));
         packageName =
             packageName + "." + nameFormatter.publicClassName(Name.anyCamel(parentName)).toString();
       }
@@ -224,12 +223,12 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
       return TypedValue.create(typeNameConverter.getTypeName("java.util.ArrayList"), "new %s<>()");
     }
     if (getPrimitiveTypeName(schema) != null) {
-      return TypedValue.create(getTypeName(null, schema), getPrimitiveZeroValue(schema));
+      return TypedValue.create(getTypeName(schema), getPrimitiveZeroValue(schema));
     }
     if (schema.type() == Type.OBJECT) {
-      return TypedValue.create(getTypeName(null, schema), "%s.newBuilder().build()");
+      return TypedValue.create(getTypeName(schema), "%s.newBuilder().build()");
     }
-    return TypedValue.create(getTypeName(null, schema), "null");
+    return TypedValue.create(getTypeName(schema), "null");
   }
 
   @Override
