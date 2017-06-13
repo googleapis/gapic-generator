@@ -1334,7 +1334,20 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
             $expectedResponse->addShelves($elem);
         }
         $grpcStub->addResponse($expectedResponse);
-        $grpcStub->addResponse($expectedResponse);
+        $shelvesElement2 = new Shelf();
+        $shelves2 = [$shelvesElement2];
+        $expectedResponse2 = new StreamShelvesResponse();
+        foreach ($shelves2 as $elem) {
+            $expectedResponse2->addShelves($elem);
+        }
+        $grpcStub->addResponse($expectedResponse2);
+        $shelvesElement3 = new Shelf();
+        $shelves3 = [$shelvesElement3];
+        $expectedResponse3 = new StreamShelvesResponse();
+        foreach ($shelves3 as $elem) {
+            $expectedResponse3->addShelves($elem);
+        }
+        $grpcStub->addResponse($expectedResponse3);
 
         // Mock request
 
@@ -1342,8 +1355,13 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $serverStream = $client->streamShelves();
         $this->assertInstanceOf(ServerStream::class, $serverStream);
 
-        $responseList = iterator_to_array($serverStream->readAll());
-        $this->assertEquals([$expectedResponse, $expectedResponse], $responseList);
+        $responses = iterator_to_array($serverStream->readAll());
+
+        $expectedResources = [];
+        $expectedResources[] = $expectedResponse->getShelvesList()[0];
+        $expectedResources[] = $expectedResponse2->getShelvesList()[0];
+        $expectedResources[] = $expectedResponse3->getShelvesList()[0];
+        $this->assertEquals($expectedResources, $responses);
 
         $actualRequests = $grpcStub->popReceivedCalls();
         $this->assertSame(1, count($actualRequests));
@@ -1412,7 +1430,26 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $expectedResponse->setTitle($title);
         $expectedResponse->setRead($read);
         $grpcStub->addResponse($expectedResponse);
-        $grpcStub->addResponse($expectedResponse);
+        $name5 = "name5-1052831871";
+        $author2 = "author21433073278";
+        $title2 = "title2-1307248629";
+        $read2 = false;
+        $expectedResponse2 = new Book();
+        $expectedResponse2->setName($name5);
+        $expectedResponse2->setAuthor($author2);
+        $expectedResponse2->setTitle($title2);
+        $expectedResponse2->setRead($read2);
+        $grpcStub->addResponse($expectedResponse2);
+        $name6 = "name6-1052831870";
+        $author3 = "author31433073279";
+        $title3 = "title3-1307248628";
+        $read3 = true;
+        $expectedResponse3 = new Book();
+        $expectedResponse3->setName($name6);
+        $expectedResponse3->setAuthor($author3);
+        $expectedResponse3->setTitle($title3);
+        $expectedResponse3->setRead($read3);
+        $grpcStub->addResponse($expectedResponse3);
 
         // Mock request
         $name = "name3373707";
@@ -1420,8 +1457,13 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $serverStream = $client->streamBooks($name);
         $this->assertInstanceOf(ServerStream::class, $serverStream);
 
-        $responseList = iterator_to_array($serverStream->readAll());
-        $this->assertEquals([$expectedResponse, $expectedResponse], $responseList);
+        $responses = iterator_to_array($serverStream->readAll());
+
+        $expectedResponses = [];
+        $expectedResponses[] = $expectedResponse;
+        $expectedResponses[] = $expectedResponse2;
+        $expectedResponses[] = $expectedResponse3;
+        $this->assertEquals($expectedResponses, $responses);
 
         $actualRequests = $grpcStub->popReceivedCalls();
         $this->assertSame(1, count($actualRequests));
@@ -1487,13 +1529,29 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $expectedResponse->setUserName($userName);
         $expectedResponse->setComment($comment);
         $grpcStub->addResponse($expectedResponse);
-        $grpcStub->addResponse($expectedResponse);
-        $grpcStub->addResponse($expectedResponse);
+        $userName2 = "userName2-310880654";
+        $comment2 = "82";
+        $expectedResponse2 = new Comment();
+        $expectedResponse2->setUserName($userName2);
+        $expectedResponse2->setComment($comment2);
+        $grpcStub->addResponse($expectedResponse2);
+        $userName3 = "userName3-310880653";
+        $comment3 = "83";
+        $expectedResponse3 = new Comment();
+        $expectedResponse3->setUserName($userName3);
+        $expectedResponse3->setComment($comment3);
+        $grpcStub->addResponse($expectedResponse3);
 
         // Mock request
         $name = "name3373707";
         $request = new DiscussBookRequest();
         $request->setName($name);
+        $name2 = "name2-1052831874";
+        $request2 = new DiscussBookRequest();
+        $request2->setName($name2);
+        $name3 = "name3-1052831873";
+        $request3 = new DiscussBookRequest();
+        $request3->setName($name3);
 
         $bidi = $client->discussBook();
         $this->assertInstanceOf(BidiStream::class, $bidi);
@@ -1502,12 +1560,16 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $responses = [];
         $responses[] = $bidi->read();
 
-        $bidi->writeAll([$request, $request]);
+        $bidi->writeAll([$request2, $request3]);
         foreach ($bidi->closeWriteAndReadAll() as $response) {
             $responses[] = $response;
         }
 
-        $this->assertEquals([$expectedResponse, $expectedResponse, $expectedResponse], $responses);
+        $expectedResponses = [];
+        $expectedResponses[] = $expectedResponse;
+        $expectedResponses[] = $expectedResponse2;
+        $expectedResponses[] = $expectedResponse3;
+        $this->assertEquals($expectedResponses, $responses);
 
         $createStreamRequests = $grpcStub->popReceivedCalls();
         $this->assertSame(1, count($createStreamRequests));
@@ -1516,16 +1578,16 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $this->assertSame('/google.example.library.v1.LibraryService/DiscussBook', $streamFuncCall);
         $this->assertNull($streamRequestObject);
 
-        $callObjects = $grpcStub->getCallObjects();
+        $callObjects = $grpcStub->popCallObjects();
         $this->assertSame(1, count($callObjects));
         $bidiCall = $callObjects[0];
 
         $writeRequests = $bidiCall->popReceivedCalls();
-        $this->assertSame(3, count($writeRequests));
-        foreach ($writeRequests as $writeRequest) {
-
-            $this->assertEquals($name, $writeRequest->getName());
-        }
+        $expectedRequests = [];
+        $expectedRequests[] = $request;
+        $expectedRequests[] = $request2;
+        $expectedRequests[] = $request3;
+        $this->assertEquals($expectedRequests, $writeRequests);
 
         $this->assertTrue($grpcStub->isExhausted());
     }

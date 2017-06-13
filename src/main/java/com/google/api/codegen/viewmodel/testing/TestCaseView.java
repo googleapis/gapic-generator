@@ -33,6 +33,10 @@ public abstract class TestCaseView {
 
   public abstract List<ClientTestAssertView> asserts();
 
+  public boolean hasAsserts() {
+    return asserts().size() > 0;
+  }
+
   public abstract String requestTypeName();
 
   public abstract String responseTypeName();
@@ -43,7 +47,7 @@ public abstract class TestCaseView {
 
   public abstract List<PageStreamingResponseView> pageStreamingResponseViews();
 
-  public abstract GrpcStreamingResponseView grpcStreamingResponseView();
+  public abstract GrpcStreamingView grpcStreamingView();
 
   public abstract String name();
 
@@ -104,7 +108,7 @@ public abstract class TestCaseView {
 
     public abstract Builder pageStreamingResponseViews(List<PageStreamingResponseView> val);
 
-    public abstract Builder grpcStreamingResponseView(GrpcStreamingResponseView val);
+    public abstract Builder grpcStreamingView(GrpcStreamingView val);
 
     public abstract Builder hasRequestParameters(boolean val);
 

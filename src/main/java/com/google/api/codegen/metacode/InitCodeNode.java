@@ -314,8 +314,8 @@ public class InitCodeNode {
         break;
       case SimpleInitLine:
         if (!typeRef.isPrimitive() && !typeRef.isEnum()) {
-          throw new IllegalArgumentException(
-              "typeRef " + typeRef + " not compatible with " + lineType);
+          //throw new IllegalArgumentException(
+          //    "typeRef " + typeRef + " not compatible with " + lineType);
         }
         // Fall through to Unknown to check for no children.
       case Unknown:

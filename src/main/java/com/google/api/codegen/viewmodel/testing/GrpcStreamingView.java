@@ -14,11 +14,13 @@
  */
 package com.google.api.codegen.viewmodel.testing;
 
+import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.auto.value.AutoValue;
+import java.util.List;
 import javax.annotation.Nullable;
 
 @AutoValue
-public abstract class GrpcStreamingResponseView {
+public abstract class GrpcStreamingView {
 
   @Nullable
   public abstract String resourceTypeName();
@@ -26,13 +28,18 @@ public abstract class GrpcStreamingResponseView {
   @Nullable
   public abstract String resourcesFieldGetterName();
 
-  @Nullable
   public boolean hasResourcesField() {
     return resourceTypeName() != null;
   }
 
+  @Nullable
+  public abstract List<InitCodeView> requestInitCodeList();
+
+  @Nullable
+  public abstract List<InitCodeView> responseInitCodeList();
+
   public static Builder newBuilder() {
-    return new AutoValue_GrpcStreamingResponseView.Builder();
+    return new AutoValue_GrpcStreamingView.Builder();
   }
 
   @AutoValue.Builder
@@ -42,6 +49,10 @@ public abstract class GrpcStreamingResponseView {
 
     public abstract Builder resourcesFieldGetterName(String val);
 
-    public abstract GrpcStreamingResponseView build();
+    public abstract Builder requestInitCodeList(List<InitCodeView> val);
+
+    public abstract Builder responseInitCodeList(List<InitCodeView> val);
+
+    public abstract GrpcStreamingView build();
   }
 }
