@@ -162,10 +162,6 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
           && !schema.additionalProperties().reference().isEmpty()) {
         shortName = schema.additionalProperties().reference();
       } else {
-        // TODO(andrealin): Treat nested schemas as inner classes.
-        //        shortName = "Object";
-        //        packageName = "java.lang";
-
         shortName = nameFormatter.publicClassName(Name.anyCamel(key));
         packageName =
             packageName + "." + nameFormatter.publicClassName(Name.anyCamel(parentName)).toString();
