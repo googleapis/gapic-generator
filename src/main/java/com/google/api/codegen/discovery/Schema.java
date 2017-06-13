@@ -51,7 +51,7 @@ public abstract class Schema implements Node {
       return empty();
     }
     Schema additionalProperties =
-        Schema.from(root.getObject("additionalProperties"), "additionalProperties", null);
+        Schema.from(root.getObject("additionalProperties"), "", null);
     if (additionalProperties.type() == Type.EMPTY && additionalProperties.reference().isEmpty()) {
       additionalProperties = null;
     }
@@ -60,7 +60,7 @@ public abstract class Schema implements Node {
     Format format = Format.getEnum(root.getString("format"));
     String id = root.getString("id");
     boolean isEnum = !root.getArray("enum").isEmpty();
-    Schema items = Schema.from(root.getObject("items"), "items", null);
+    Schema items = Schema.from(root.getObject("items"), key, null);
     if (items.type() == Type.EMPTY && items.reference().isEmpty()) {
       items = null;
     }
