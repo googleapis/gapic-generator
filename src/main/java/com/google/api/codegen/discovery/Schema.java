@@ -50,8 +50,7 @@ public abstract class Schema implements Node {
     if (root.isEmpty()) {
       return empty();
     }
-    Schema additionalProperties =
-        Schema.from(root.getObject("additionalProperties"), "", null);
+    Schema additionalProperties = Schema.from(root.getObject("additionalProperties"), "", null);
     if (additionalProperties.type() == Type.EMPTY && additionalProperties.reference().isEmpty()) {
       additionalProperties = null;
     }
