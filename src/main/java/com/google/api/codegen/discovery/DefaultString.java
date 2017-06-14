@@ -93,25 +93,19 @@ public class DefaultString {
       return null;
     }
 
-    StringBuilder ret = new StringBuilder();
-    for (int i = 0; i < elems.size(); i++) {
-      Elem elem = elems.get(i);
-
-      if (elem.getType() == ElemType.WILDCARD) {
-        // The index i - 1 will always be valid because the validElems check
-        // above ensures that the first element has the type LITERAL.
-        String literal = elems.get(i - 1).getLiteral();
-        String placeholder = Inflector.singularize(literal);
-        placeholder = LanguageUtil.lowerCamelToLowerUnderscore(placeholder).replace('_', '-');
-        ret.append('/').append(String.format(placeholderFormat, placeholder));
-      } else if (elem.getType() == ElemType.LITERAL) {
-        String literal = elem.getLiteral();
-        ret.append('/').append(literal);
-      } else {
-        throw new IllegalArgumentException("unknown elem type: " + elem.getType());
+    StringBuilder defaultString = new StringBuilder();
+    for (int i = 0; i < elems.size(); i += 2) {
+      String literal = elems.get(i).getLiteral();
+      String placeholder = Inflector.singularize(literal);
+      placeholder = LanguageUtil.lowerCamelToLowerUnderscore(placeholder).replace('_', '-');
+      defaultString.append('/').append(literal);
+      // if i + 1 >= elems.size() then the terminating segment is a literal. In
+      // that case, don't append a placeholder.
+      if (i + 1 < elems.size()) {
+        defaultString.append('/').append(String.format(placeholderFormat, placeholder));
       }
     }
-    return ret.substring(1);
+    return defaultString.substring(1);
   }
 
   /**
