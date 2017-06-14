@@ -225,8 +225,8 @@ public class MainGapicProviderFactory
         providers.add(sampleAppProvider);
 
         // Copy static files for the Java sample application (e.g. gradle wrapper, build files)
-        GapicProvider staticFileProvider =
-            new StaticGapicProvider(
+        GapicProvider<? extends Object> staticFileProvider =
+            new StaticGapicProvider<>(
                 new JavaPackageCopier(JAVA_SAMPLE_APP_STATIC_FILES, outputPath));
         providers.add(staticFileProvider);
       }
