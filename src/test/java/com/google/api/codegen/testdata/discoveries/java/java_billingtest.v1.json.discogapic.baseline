@@ -942,31 +942,31 @@ public final class Operation implements Serializable {
     }
 
     public final class Errors implements Serializable {
-      private final String code2;
+      private final String code;
       private final String location;
-      private final String message2;
+      private final String message;
 
       private Errors(
 
-        String code2,
+        String code,
         String location,
-        String message2
+        String message
         ) {
-        this.code2 = code2;
+        this.code = code;
         this.location = location;
-        this.message2 = message2;
+        this.message = message;
       }
 
-      public String getCode2() {
-        return code2;
+      public String getCode() {
+        return code;
       }
 
       public String getLocation() {
         return location;
       }
 
-      public String getMessage2() {
-        return message2;
+      public String getMessage() {
+        return message;
       }
 
 
@@ -977,24 +977,24 @@ public final class Operation implements Serializable {
       }
 
       public static class Builder {
-        private String code2;
+        private String code;
         private String location;
-        private String message2;
+        private String message;
 
         Builder() {}
 
         Builder(List<Errors> source) {
-          this.code2 = source.code2;
+          this.code = source.code;
           this.location = source.location;
-          this.message2 = source.message2;
+          this.message = source.message;
         }
 
-        public String getCode2() {
-          return code2;
+        public String getCode() {
+          return code;
         }
 
-        public Builder setCode2(String code2) {
-          this.code2 = code2;
+        public Builder setCode(String code) {
+          this.code = code;
           return this;
         }
 
@@ -1007,12 +1007,12 @@ public final class Operation implements Serializable {
           return this;
         }
 
-        public String getMessage2() {
-          return message2;
+        public String getMessage() {
+          return message;
         }
 
-        public Builder setMessage2(String message2) {
-          this.message2 = message2;
+        public Builder setMessage(String message) {
+          this.message = message;
           return this;
         }
 
@@ -1020,9 +1020,9 @@ public final class Operation implements Serializable {
         public List<Errors> build() {
           return new List<Errors>(
 
-            code2,
+            code,
             location,
-            message2
+            message
           );
         }
       }
@@ -1031,9 +1031,9 @@ public final class Operation implements Serializable {
       public String toString() {
         return "List<Errors>{"
 
-        + "code2=" + code2 + ", "
+        + "code=" + code + ", "
         + "location=" + location + ", "
-        + "message2=" + message2
+        + "message=" + message
             + "}";
       }
 
@@ -1046,9 +1046,9 @@ public final class Operation implements Serializable {
           List<Errors> that = (List<Errors>) o;
           return
 
-          this.code2.equals(that.getCode2())&&
+          this.code.equals(that.getCode())&&
           this.location.equals(that.getLocation())&&
-          this.message2.equals(that.getMessage2())
+          this.message.equals(that.getMessage())
           ;
         }
         return false;
@@ -1058,11 +1058,11 @@ public final class Operation implements Serializable {
       public int hashCode() {
         int h = 1;
         h *= 1000003;
-        h ^= this.code2.hashCode();
+        h ^= this.code.hashCode();
         h *= 1000003;
         h ^= this.location.hashCode();
         h *= 1000003;
-        h ^= this.message2.hashCode();
+        h ^= this.message.hashCode();
         return h;
       }
     }
@@ -1135,34 +1135,34 @@ public final class Operation implements Serializable {
 
 
   public final class Warnings implements Serializable {
-    private final String code;
+    private final String code2;
     private final List<Data> data;
-    private final String message;
+    private final String message2;
     private final ProjectBillingInfo projectBillingInfo;
 
     private Warnings(
 
-      String code,
+      String code2,
       List<Data> data,
-      String message,
+      String message2,
       ProjectBillingInfo projectBillingInfo
       ) {
-      this.code = code;
+      this.code2 = code2;
       this.data = data;
-      this.message = message;
+      this.message2 = message2;
       this.projectBillingInfo = projectBillingInfo;
     }
 
-    public String getCode() {
-      return code;
+    public String getCode2() {
+      return code2;
     }
 
     public List<Data> getData() {
       return data;
     }
 
-    public String getMessage() {
-      return message;
+    public String getMessage2() {
+      return message2;
     }
 
     public ProjectBillingInfo getProjectBillingInfo() {
@@ -1278,26 +1278,26 @@ public final class Operation implements Serializable {
     }
 
     public static class Builder {
-      private String code;
+      private String code2;
       private List<Data> data;
-      private String message;
+      private String message2;
       private ProjectBillingInfo projectBillingInfo;
 
       Builder() {}
 
       Builder(List<Warnings> source) {
-        this.code = source.code;
+        this.code2 = source.code2;
         this.data = source.data;
-        this.message = source.message;
+        this.message2 = source.message2;
         this.projectBillingInfo = source.projectBillingInfo;
       }
 
-      public String getCode() {
-        return code;
+      public String getCode2() {
+        return code2;
       }
 
-      public Builder setCode(String code) {
-        this.code = code;
+      public Builder setCode2(String code2) {
+        this.code2 = code2;
         return this;
       }
 
@@ -1310,12 +1310,12 @@ public final class Operation implements Serializable {
         return this;
       }
 
-      public String getMessage() {
-        return message;
+      public String getMessage2() {
+        return message2;
       }
 
-      public Builder setMessage(String message) {
-        this.message = message;
+      public Builder setMessage2(String message2) {
+        this.message2 = message2;
         return this;
       }
 
@@ -1332,9 +1332,9 @@ public final class Operation implements Serializable {
       public List<Warnings> build() {
         return new List<Warnings>(
 
-          code,
+          code2,
           data,
-          message,
+          message2,
           projectBillingInfo
         );
       }
@@ -1344,9 +1344,9 @@ public final class Operation implements Serializable {
     public String toString() {
       return "List<Warnings>{"
 
-      + "code=" + code + ", "
+      + "code2=" + code2 + ", "
       + "data=" + data + ", "
-      + "message=" + message + ", "
+      + "message2=" + message2 + ", "
       + "projectBillingInfo=" + projectBillingInfo
           + "}";
     }
@@ -1360,9 +1360,9 @@ public final class Operation implements Serializable {
         List<Warnings> that = (List<Warnings>) o;
         return
 
-        this.code.equals(that.getCode())&&
+        this.code2.equals(that.getCode2())&&
         this.data.equals(that.getData())&&
-        this.message.equals(that.getMessage())&&
+        this.message2.equals(that.getMessage2())&&
         this.projectBillingInfo.equals(that.getProjectBillingInfo())
         ;
       }
@@ -1373,11 +1373,11 @@ public final class Operation implements Serializable {
     public int hashCode() {
       int h = 1;
       h *= 1000003;
-      h ^= this.code.hashCode();
+      h ^= this.code2.hashCode();
       h *= 1000003;
       h ^= this.data.hashCode();
       h *= 1000003;
-      h ^= this.message.hashCode();
+      h ^= this.message2.hashCode();
       h *= 1000003;
       h ^= this.projectBillingInfo.hashCode();
       return h;
