@@ -26,15 +26,6 @@ public interface SchemaTypeFormatter {
   /** Get the full name for the given short name, using the default package. */
   String getImplicitPackageFullNameFor(String shortName);
 
-  /** Get the full name for the given type. */
-  String getFullNameFor(Schema type);
-
-  /**
-   * Returns the nickname for the given type (without adding the full name to the import set). If
-   * the nickname clashes with an existing token, return the full name.
-   */
-  String getNicknameFor(Schema type);
-
   /** Returns the full name for the given type (without adding the full name to the import set). */
   String getFullNameFor(String escapedSchemaName, Schema type, String parentName);
 
@@ -46,5 +37,5 @@ public interface SchemaTypeFormatter {
   String getInnerTypeNameFor(String escapedSchemaName, Schema type, String parentName);
 
   /** Renders the primitive value of the given type. */
-  String renderPrimitiveValue(Schema type, String escapedSchemaName);
+  String renderPrimitiveValue(Schema type, String value);
 }

@@ -96,25 +96,25 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
   }
 
   @Override
-  public TypeName getTypeName(Schema schema) {
+  public TypeName getTypeName(String escapedSchemaName, Schema schema) {
     if (schema.type() == Type.ARRAY) {
       TypeName listTypeName = typeNameConverter.getTypeName("java.util.List");
-      TypeName elementTypeName = getTypeNameForElementType(schema, null, true);
+      TypeName elementTypeName = getTypeNameForElementType(escapedSchemaName, schema, null, true);
       return new TypeName(
           listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", elementTypeName);
     } else {
-      return getTypeNameForElementType(schema, null, false);
+      return getTypeNameForElementType(escapedSchemaName, schema, null, false);
     }
   }
 
   @Override
-  public TypedValue getEnumValue(Schema schema, String value) {
-    return TypedValue.create(getTypeName(schema), "%s." + value);
+  public TypedValue getEnumValue(String escapedSchemaName, Schema schema, String value) {
+    return TypedValue.create(getTypeName(escapedSchemaName, schema), "%s." + value);
   }
 
   @Override
-  public TypeName getTypeNameForElementType(Schema type, String parentName) {
-    return getTypeNameForElementType(type, parentName, true);
+  public TypeName getTypeNameForElementType(String escapedSchemaName, Schema type, String parentName) {
+    return getTypeNameForElementType(escapedSchemaName, type, parentName, true);
   }
 
   /**
@@ -125,7 +125,7 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
    * @param parentName The TypeName of the parent Schema that encloses this Schema.
    *     <p>This method will be recursively called on the given schema's children.
    */
-  private TypeName getTypeNameForElementType(
+  private TypeName getTypeNameForElementType(String escapedSchemaName,
       Schema schema, String parentName, boolean shouldBoxPrimitives) {
     String primitiveTypeName = getPrimitiveTypeName(schema);
     if (primitiveTypeName != null) {
@@ -143,7 +143,7 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
     } else if (schema.type() == Type.ARRAY) {
       // TODO(andrealin): ensure that this handles arrays of arrays.
       TypeName listTypeName = typeNameConverter.getTypeName("java.util.List");
-      TypeName elementTypeName = getTypeNameForElementType(schema.items(), parentName, true);
+      TypeName elementTypeName = getTypeNameForElementType(escapedSchemaName, schema.items(), parentName, true);
       return new TypeName(
           listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", elementTypeName);
     } else {
@@ -157,7 +157,7 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
           && !schema.additionalProperties().reference().isEmpty()) {
         shortName = schema.additionalProperties().reference();
       } else {
-        shortName = nameFormatter.publicClassName(Name.anyCamel(schema.key()));
+        shortName = nameFormatter.publicClassName(Name.anyCamel(escapedSchemaName));
         packageName =
             packageName + "." + nameFormatter.publicClassName(Name.anyCamel(parentName)).toString();
       }
@@ -214,22 +214,22 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
    * initialization.
    */
   @Override
-  public TypedValue getSnippetZeroValue(Schema schema) {
+  public TypedValue getSnippetZeroValue(String escapedSchemaName, Schema schema) {
     if (schema.type() == Schema.Type.ARRAY) {
       return TypedValue.create(typeNameConverter.getTypeName("java.util.ArrayList"), "new %s<>()");
     }
     if (getPrimitiveTypeName(schema) != null) {
-      return TypedValue.create(getTypeName(schema), getPrimitiveZeroValue(schema));
+      return TypedValue.create(getTypeName(escapedSchemaName, schema), getPrimitiveZeroValue(schema));
     }
     if (schema.type() == Type.OBJECT) {
-      return TypedValue.create(getTypeName(schema), "%s.newBuilder().build()");
+      return TypedValue.create(getTypeName(escapedSchemaName, schema), "%s.newBuilder().build()");
     }
-    return TypedValue.create(getTypeName(schema), "null");
+    return TypedValue.create(getTypeName(escapedSchemaName, schema), "null");
   }
 
   @Override
-  public TypedValue getImplZeroValue(Schema type) {
-    return getSnippetZeroValue(type);
+  public TypedValue getImplZeroValue(String escapedSchemaName, Schema type) {
+    return getSnippetZeroValue(escapedSchemaName, type);
   }
 
   @Override

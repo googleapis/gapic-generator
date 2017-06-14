@@ -40,18 +40,8 @@ public class SchemaTypeTable implements SchemaTypeFormatter {
   }
 
   @Override
-  public String getFullNameFor(Schema type) {
-    return this.getFullNameFor(null, type, null);
-  }
-
-  @Override
   public String getFullNameFor(String escapedSchemaName, Schema type, String parentName) {
     return typeFormatter.getFullNameFor(escapedSchemaName, type, parentName);
-  }
-
-  @Override
-  public String getNicknameFor(Schema type) {
-    return typeFormatter.getNicknameFor(type);
   }
 
   @Override
@@ -101,7 +91,7 @@ public class SchemaTypeTable implements SchemaTypeFormatter {
    * nickname.
    */
   public String getAndSaveNicknameFor(String escapedSchemaName, Schema schema) {
-    return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeName(schema));
+    return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeName(escapedSchemaName, schema));
   }
 
   /**
@@ -117,7 +107,7 @@ public class SchemaTypeTable implements SchemaTypeFormatter {
   public String getAndSaveNicknameForElementType(
       String escapedSchemaName, Schema schema, String parentName) {
     return typeTable.getAndSaveNicknameFor(
-        typeNameConverter.getTypeNameForElementType(schema, parentName));
+        typeNameConverter.getTypeNameForElementType(escapedSchemaName, schema, parentName));
   }
 
   /** Returns the imports accumulated so far. */
