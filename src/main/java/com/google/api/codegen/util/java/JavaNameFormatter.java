@@ -25,8 +25,7 @@ public class JavaNameFormatter implements NameFormatter {
   private String wrapIfKeywordOrBuiltIn(String name) {
     if (name.equals("Object") || name.equals("String")) {
       throw new IllegalArgumentException(
-          String.format(
-              "Name '%s' clashes with java.lang.* namespace", name));
+          String.format("Name '%s' clashes with java.lang.* namespace", name));
     }
     if (RESERVED_IDENTIFIER_SET.contains(name)) {
       return name + "_";
