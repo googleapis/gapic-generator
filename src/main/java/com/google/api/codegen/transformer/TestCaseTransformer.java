@@ -207,11 +207,14 @@ public class TestCaseTransformer {
     return pageStreamingResponseViews;
   }
 
+  /**
+   * Return a list of three InitCodeView objects, including simpleInitCodeView and generating two
+   * additional objects, which will be initialized with different initial values.
+   */
   private List<InitCodeView> createGrpcStreamingInitCodeViews(
       GapicMethodContext methodContext,
       InitCodeContext initCodeContext,
       InitCodeView simpleInitCodeView) {
-    // Generate three InitCodeView objects, which will be initialized with different initial values
     List<InitCodeView> requestInitCodeList = new ArrayList<>();
     requestInitCodeList.add(simpleInitCodeView);
     requestInitCodeList.add(initCodeTransformer.generateInitCode(methodContext, initCodeContext));

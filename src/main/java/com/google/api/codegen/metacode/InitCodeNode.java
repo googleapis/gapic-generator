@@ -313,11 +313,10 @@ public class InitCodeNode {
         }
         break;
       case SimpleInitLine:
-        if (!typeRef.isPrimitive() && !typeRef.isEnum()) {
-          //throw new IllegalArgumentException(
-          //    "typeRef " + typeRef + " not compatible with " + lineType);
+        if (childKeys.size() != 0) {
+          throw new IllegalArgumentException("node with SimpleInitLine type cannot have children");
         }
-        // Fall through to Unknown to check for no children.
+        break;
       case Unknown:
         // Any typeRef is acceptable, but we need to check that there are no children.
         if (childKeys.size() != 0) {
