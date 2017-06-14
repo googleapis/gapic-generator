@@ -18,7 +18,7 @@
 @private initLineStructure(line)
   @switch line.fieldSettings.size.toString
   @case "0"
-    {@line.identifier} = {@line.fullyQualifiedTypeName}.new
+    {@line.identifier} = {}
   @case "1"
     {@singleLineInitStructure(line)}
   @case "2"
@@ -29,13 +29,13 @@
 @end
 
 @private singleLineInitStructure(line)
-    {@line.identifier} = {@line.fullyQualifiedTypeName}.new({@structureFieldsList(line.fieldSettings)})
+    {@line.identifier} = { {@structureFieldsList(line.fieldSettings)} }
 @end
 
 @private multiLineInitStructure(line)
-  {@line.identifier} = {@line.fullyQualifiedTypeName}.new(
+  {@line.identifier} = {
     {@multilineStructureFieldsList(line.fieldSettings)}
-  )
+  }
 @end
 
 @private structureFieldsList(fieldSettings)
