@@ -248,6 +248,25 @@
       },
       "id": "BillingAccount"
     },
+    "Interface": {
+      "description": "Test escaping Java keywords ('Interface' and 'interface' in this case).",
+      "type": "object",
+      "properties": {
+        "Inter": {
+          "description": "First field.",
+          "type": "boolean"
+        },
+        "Face": {
+          "description": "Second field.",
+          "type": "string"
+        },
+        "Interface": {
+          "description": "Test field name that is same as parent name.",
+          "type": "string"
+        }
+      },
+      "id": "Interface"
+    },
     "AttachedDisk": {
       "id": "AttachedDisk",
       "type": "object",
@@ -279,16 +298,8 @@
           "description": "[Input Only] Specifies the parameters for a new disk that will be created alongside the new instance. Use initialization parameters to create boot disks or local SSDs attached to the new instance.\n\nThis property is mutually exclusive with the source property; you can only define one or the other, but not both."
         },
         "interface": {
-          "type": "string",
-          "description": "Specifies the disk interface to use for attaching this disk, which is either SCSI or NVME. The default is SCSI. Persistent disks must always use SCSI and the request will fail if you attempt to attach a persistent disk in any other format than SCSI. Local SSDs can use either NVME or SCSI. For performance characteristics of SCSI over NVMe, see Local SSD performance.",
-          "enum": [
-            "NVME",
-            "SCSI"
-          ],
-          "enumDescriptions": [
-            "",
-            ""
-          ]
+          "$ref": "Interface",
+          "description": "Test escaping Java keyword \"interface\"."
         },
         "kind": {
           "type": "string",

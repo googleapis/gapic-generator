@@ -138,7 +138,8 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       SchemaTypeTable schemaTypeTable) {
     StaticLangApiMessageView.Builder schemaView = StaticLangApiMessageView.newBuilder();
 
-    String schemaId = schema.id().isEmpty() ? schema.key() : schema.id();
+    String schemaId =
+        Name.anyCamel(schema.id().isEmpty() ? schema.key() : schema.id()).toLowerCamel();
     String schemaName =
         nameFormatter.privateFieldName(
             Name.anyCamel(context.getSymbolTable().getNewSymbol(schemaId)));
@@ -153,7 +154,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     schemaView.fieldGetFunction(context.getDiscoGapicNamer().getResourceGetterName(schemaName));
     schemaView.fieldSetFunction(context.getDiscoGapicNamer().getResourceSetterName(schemaName));
     String schemaTypeName =
-        schemaTypeTable.getAndSaveNicknameForElementType(schema.key(), schema, parentName);
+        schemaTypeTable.getAndSaveNicknameForElementType(schemaName, schema, parentName);
     schemaView.typeName(schemaTypeName);
     if (schema.type() == Type.ARRAY) {
       schemaView.innerTypeName(schemaTypeTable.getInnerTypeNameFor(schemaName, schema, parentName));

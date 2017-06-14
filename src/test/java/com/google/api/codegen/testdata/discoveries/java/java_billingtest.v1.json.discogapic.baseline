@@ -30,7 +30,7 @@ public final class AttachedDisk implements Serializable {
   private final CustomerEncryptionKey diskEncryptionKey;
   private final Integer index;
   private final AttachedDiskInitializeParams initializeParams;
-  private final String interface2;
+  private final Interface interface2;
   private final String kind;
   private final List<String> licenses;
   private final String mode;
@@ -45,7 +45,7 @@ public final class AttachedDisk implements Serializable {
     CustomerEncryptionKey diskEncryptionKey,
     Integer index,
     AttachedDiskInitializeParams initializeParams,
-    String interface2,
+    Interface interface2,
     String kind,
     List<String> licenses,
     String mode,
@@ -90,7 +90,7 @@ public final class AttachedDisk implements Serializable {
     return initializeParams;
   }
 
-  public String getInterface2() {
+  public Interface getInterface() {
     return interface2;
   }
 
@@ -137,7 +137,7 @@ public final class AttachedDisk implements Serializable {
     private CustomerEncryptionKey diskEncryptionKey;
     private Integer index;
     private AttachedDiskInitializeParams initializeParams;
-    private String interface2;
+    private Interface interface2;
     private String kind;
     private List<String> licenses;
     private String mode;
@@ -215,11 +215,11 @@ public final class AttachedDisk implements Serializable {
       return this;
     }
 
-    public String getInterface2() {
+    public Interface getInterface() {
       return interface2;
     }
 
-    public Builder setInterface2(String interface2) {
+    public Builder setInterface(Interface interface2) {
       this.interface2 = interface2;
       return this;
     }
@@ -323,7 +323,7 @@ public final class AttachedDisk implements Serializable {
       this.diskEncryptionKey.equals(that.getDiskEncryptionKey())&&
       this.index.equals(that.getIndex())&&
       this.initializeParams.equals(that.getInitializeParams())&&
-      this.interface2.equals(that.getInterface2())&&
+      this.interface2.equals(that.getInterface())&&
       this.kind.equals(that.getKind())&&
       this.licenses.equals(that.getLicenses())&&
       this.mode.equals(that.getMode())&&
@@ -621,6 +621,156 @@ public class BillingtestClient implements AutoCloseable {
     }
   }
 
+}
+============== file: src/main/java/com/google/cloud/billingtest/v1/Interface.java ==============
+/*
+ * Copyright 2017, Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.billingtest.v1;
+
+import com.google.api.core.BetaApi;
+import java.io.Serializable;
+import java.util.List;
+import javax.annotation.Generated;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class Interface implements Serializable {
+  private final String face;
+  private final Boolean inter;
+  private final String interface2;
+
+  private Interface(
+
+    String face,
+    Boolean inter,
+    String interface2
+    ) {
+    this.face = face;
+    this.inter = inter;
+    this.interface2 = interface2;
+  }
+
+  public String getFace() {
+    return face;
+  }
+
+  public Boolean getInter() {
+    return inter;
+  }
+
+  public String getInterface() {
+    return interface2;
+  }
+
+
+
+
+  public static Builder newBuilder() {
+    return new Interface.Builder();
+  }
+
+  public static class Builder {
+    private String face;
+    private Boolean inter;
+    private String interface2;
+
+    Builder() {}
+
+    Builder(Interface source) {
+      this.face = source.face;
+      this.inter = source.inter;
+      this.interface2 = source.interface2;
+    }
+
+    public String getFace() {
+      return face;
+    }
+
+    public Builder setFace(String face) {
+      this.face = face;
+      return this;
+    }
+
+    public Boolean getInter() {
+      return inter;
+    }
+
+    public Builder setInter(Boolean inter) {
+      this.inter = inter;
+      return this;
+    }
+
+    public String getInterface() {
+      return interface2;
+    }
+
+    public Builder setInterface(String interface2) {
+      this.interface2 = interface2;
+      return this;
+    }
+
+
+    public Interface build() {
+      return new Interface(
+
+        face,
+        inter,
+        interface2
+      );
+    }
+  }
+
+  @Override
+  public String toString() {
+    return "Interface{"
+
+    + "face=" + face + ", "
+    + "inter=" + inter + ", "
+    + "interface2=" + interface2
+        + "}";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof Interface) {
+      Interface that = (Interface) o;
+      return
+
+      this.face.equals(that.getFace())&&
+      this.inter.equals(that.getInter())&&
+      this.interface2.equals(that.getInterface())
+      ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    int h = 1;
+    h *= 1000003;
+    h ^= this.face.hashCode();
+    h *= 1000003;
+    h ^= this.inter.hashCode();
+    h *= 1000003;
+    h ^= this.interface2.hashCode();
+    return h;
+  }
 }
 ============== file: src/main/java/com/google/cloud/billingtest/v1/ListBillingAccountsResponse.java ==============
 /*
@@ -1215,7 +1365,7 @@ public final class Operation implements Serializable {
       this.projectBillingInfo = projectBillingInfo;
     }
 
-    public String getCode2() {
+    public String getCode() {
       return code2;
     }
 
@@ -1223,7 +1373,7 @@ public final class Operation implements Serializable {
       return data;
     }
 
-    public String getMessage2() {
+    public String getMessage() {
       return message2;
     }
 
@@ -1354,11 +1504,11 @@ public final class Operation implements Serializable {
         this.projectBillingInfo = source.projectBillingInfo;
       }
 
-      public String getCode2() {
+      public String getCode() {
         return code2;
       }
 
-      public Builder setCode2(String code2) {
+      public Builder setCode(String code2) {
         this.code2 = code2;
         return this;
       }
@@ -1372,11 +1522,11 @@ public final class Operation implements Serializable {
         return this;
       }
 
-      public String getMessage2() {
+      public String getMessage() {
         return message2;
       }
 
-      public Builder setMessage2(String message2) {
+      public Builder setMessage(String message2) {
         this.message2 = message2;
         return this;
       }
@@ -1422,9 +1572,9 @@ public final class Operation implements Serializable {
         Warnings that = (Warnings) o;
         return
 
-        this.code2.equals(that.getCode2())&&
+        this.code2.equals(that.getCode())&&
         this.data.equals(that.getData())&&
-        this.message2.equals(that.getMessage2())&&
+        this.message2.equals(that.getMessage())&&
         this.projectBillingInfo.equals(that.getProjectBillingInfo())
         ;
       }
