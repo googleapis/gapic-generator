@@ -107,10 +107,9 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       DiscoGapicInterfaceContext documentContext, Schema schema) {
     StaticLangApiMessageFileView.Builder apiFile = StaticLangApiMessageFileView.newBuilder();
 
-    // Escape any schema's field names that are Java keywords.
-
     apiFile.templateFileName(SCHEMA_TEMPLATE_FILENAME);
 
+    // Escape any schema's field names that are Java keywords.
     Set<String> reservedKeywords = new HashSet<>();
     reservedKeywords.addAll(JavaNameFormatter.RESERVED_IDENTIFIER_SET);
     reservedKeywords.add("Builder");
@@ -146,9 +145,12 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       SymbolTable symbolTable) {
     StaticLangApiMessageView.Builder schemaView = StaticLangApiMessageView.newBuilder();
 
+    // Child schemas cannot have the same symbols as parent schemas, but sibling schemas can have
+    // the same symbols.
+    SymbolTable symbolTableCopy = symbolTable.clone();
+
     String schemaId =
         Name.anyCamel(schema.id().isEmpty() ? schema.key() : schema.id()).toLowerCamel();
-    SymbolTable symbolTableCopy = symbolTable.clone();
     String schemaName =
         nameFormatter.privateFieldName(Name.anyCamel(symbolTableCopy.getNewSymbol(schemaId)));
     if (schemaName.equals("Object") || schemaName.equals("String")) {
