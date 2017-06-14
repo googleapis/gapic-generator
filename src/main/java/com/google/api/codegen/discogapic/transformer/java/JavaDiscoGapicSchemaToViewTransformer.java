@@ -180,7 +180,6 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
   private void addApiImports(SchemaTypeTable typeTable) {
     typeTable.saveNicknameFor("com.google.api.core.BetaApi");
     typeTable.saveNicknameFor("java.io.Serializable");
-    typeTable.saveNicknameFor("java.util.List");
     typeTable.saveNicknameFor("javax.annotation.Generated");
   }
 }
