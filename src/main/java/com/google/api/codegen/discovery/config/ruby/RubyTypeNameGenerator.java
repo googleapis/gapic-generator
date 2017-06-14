@@ -45,7 +45,7 @@ public class RubyTypeNameGenerator extends TypeNameGenerator {
   @SuppressWarnings("unchecked")
   private ImmutableMap<String, String> getMethodNameMap(File rubyNamesFile) throws IOException {
     String data;
-    if (rubyNamesFile != null) {
+    if (rubyNamesFile != null && rubyNamesFile.exists() && !rubyNamesFile.isDirectory()) {
       data = Files.toString(rubyNamesFile, Charsets.UTF_8);
     } else {
       data =

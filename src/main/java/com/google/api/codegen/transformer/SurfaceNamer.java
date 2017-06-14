@@ -601,6 +601,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return publicClassName(Name.upperCamel("PagedResponseWrappers"));
   }
 
+  /** The sample application class name. */
+  public String getSampleAppClassName() {
+    return publicClassName(Name.upperCamel("SampleApp"));
+  }
+
   /**
    * The type name of the Grpc service class This needs to match what Grpc generates for the
    * particular language.
@@ -693,6 +698,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The type name for the method param */
   public String getParamTypeName(ModelTypeTable typeTable, TypeRef type) {
     return getNotImplementedString("SurfaceNamer.getParamTypeName");
+  }
+
+  /** The type name for the message property */
+  public String getMessagePropertyTypeName(ModelTypeTable typeTable, TypeRef type) {
+    return getParamTypeName(typeTable, type);
   }
 
   /** The type name for retry settings. */
