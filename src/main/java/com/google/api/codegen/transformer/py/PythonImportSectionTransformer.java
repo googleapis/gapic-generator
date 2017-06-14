@@ -123,9 +123,9 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
   private List<ImportFileView> generateSmokeTestStandardImports(boolean requireProjectId) {
     ImmutableList.Builder<ImportFileView> imports = ImmutableList.builder();
     if (requireProjectId) {
-      imports.add(createImport("argparse"), createImport("time"));
+      imports.add(createImport("os"));
     }
-    imports.add(createImport("unittest"));
+    imports.add(createImport("time"), createImport("unittest"));
     return imports.build();
   }
 

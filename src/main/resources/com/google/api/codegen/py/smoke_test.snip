@@ -9,41 +9,26 @@
 
 @private header(fileHeader)
     {@licenseSection(fileHeader)}
-
-    {@moduleDocstring()}
     {@renderImportSection(fileHeader.importSection)}
-@end
-
-@private moduleDocstring()
-    """Smoke tests."""
 @end
 
 @private testBody(smokeTest)
     class {@smokeTest.name}(unittest.TestCase):
 
         def test_{@smokeTest.apiMethod.name}(self):
-            try:
-                @if smokeTest.requireProjectId
-                    parser = argparse.ArgumentParser(\
-                        description='Verify the build with a smoke test.')
-                    parser.add_argument('project_id', metavar='PROJECT-ID', \
-                        nargs='1', help='Id of your test project', required=True)
-                    args = parser.parse_args()
-                    project_id = args.project_id
-                @end
+            @if smokeTest.requireProjectId
+                project_id = os.environ['PROJECT_ID']
+            @end
 
-                client = {@smokeTest.apiVariableName}.{@smokeTest.apiClassName}()
-                {@initCode(smokeTest.apiMethod.initCode)}
-                @if smokeTest.apiMethod.hasReturnValue
-                    response = {@testMethodCall(smokeTest.apiMethod)}
-                    print(response)
-                @else
-                    {@testMethodCall(smokeTest.apiMethod)}
-                @end
-                print('OK')
-            except Exception as e:
-                print('Failed with exception:')
-                print(e)
+            client = {@smokeTest.apiVariableName}.{@smokeTest.apiClassName}()
+            {@initCode(smokeTest.apiMethod.initCode)}
+            @if smokeTest.apiMethod.hasReturnValue
+                response = {@testMethodCall(smokeTest.apiMethod)}
+                print(response)
+            @else
+                {@testMethodCall(smokeTest.apiMethod)}
+            @end
+            print('OK')
 @end
 
 @private testMethodCall(apiMethod)
