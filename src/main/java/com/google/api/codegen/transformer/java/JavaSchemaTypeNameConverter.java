@@ -98,11 +98,11 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
   public TypeName getTypeName(Schema schema) {
     if (schema.type() == Type.ARRAY) {
       TypeName listTypeName = typeNameConverter.getTypeName("java.util.List");
-      TypeName elementTypeName = getTypeNameForElementType(schema, null, true);
+      TypeName elementTypeName = getTypeNameForElementType(schema, true);
       return new TypeName(
           listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", elementTypeName);
     } else {
-      return getTypeNameForElementType(schema, null, false);
+      return getTypeNameForElementType(schema, false);
     }
   }
 
@@ -112,8 +112,8 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
   }
 
   @Override
-  public TypeName getTypeNameForElementType(Schema type, String parentName) {
-    return getTypeNameForElementType(type, parentName, true);
+  public TypeName getTypeNameForElementType(Schema type) {
+    return getTypeNameForElementType(type, true);
   }
 
   /**
@@ -121,11 +121,9 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
    * primitive, basicTypeName returns it in unboxed form.
    *
    * @param schema The Schema to generate a TypeName from.
-   * @param parentName The TypeName of the parent Schema that encloses this Schema.
    *     <p>This method will be recursively called on the given schema's children.
    */
-  private TypeName getTypeNameForElementType(
-      Schema schema, String parentName, boolean shouldBoxPrimitives) {
+  private TypeName getTypeNameForElementType(Schema schema, boolean shouldBoxPrimitives) {
     String primitiveTypeName = getPrimitiveTypeName(schema);
     if (primitiveTypeName != null) {
       if (primitiveTypeName.contains(".")) {
@@ -142,7 +140,7 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
     } else if (schema.type() == Type.ARRAY) {
       // TODO(andrealin): ensure that this handles arrays of arrays.
       TypeName listTypeName = typeNameConverter.getTypeName("java.util.List");
-      TypeName elementTypeName = getTypeNameForElementType(schema.items(), parentName, true);
+      TypeName elementTypeName = getTypeNameForElementType(schema.items(), true);
       return new TypeName(
           listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", elementTypeName);
     } else {
@@ -157,7 +155,13 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
           && !schema.additionalProperties().reference().isEmpty()) {
         shortName = schema.additionalProperties().reference();
       } else {
+        // This schema has a parent Schema.
         shortName = nameFormatter.publicClassName(Name.anyCamel(schema.key()));
+        // TODO(andrealin): If parent is just an "item" Schema, go to grandparent for parentName.
+        String parentName =
+            schema.parent().id().isEmpty()
+                ? ((Schema) schema.parent()).key()
+                : schema.parent().id();
         packageName =
             packageName + "." + nameFormatter.publicClassName(Name.anyCamel(parentName)).toString();
       }

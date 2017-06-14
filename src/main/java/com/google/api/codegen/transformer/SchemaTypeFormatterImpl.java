@@ -30,14 +30,14 @@ public class SchemaTypeFormatterImpl implements SchemaTypeFormatter {
   }
 
   @Override
-  public String getFullNameFor(Schema type, String parentName) {
-    return typeNameConverter.getTypeNameForElementType(type, parentName).getFullName();
+  public String getFullNameFor(Schema type) {
+    return typeNameConverter.getTypeNameForElementType(type).getFullName();
   }
 
   @Override
-  public String getInnerTypeNameFor(Schema type, String parentName) {
+  public String getInnerTypeNameFor(Schema type) {
     return typeNameConverter
-        .getTypeNameForElementType(type, parentName)
+        .getTypeNameForElementType(type)
         .getInnerTypeNames()
         .get(0)
         .getNickname();
