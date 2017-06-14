@@ -40,18 +40,8 @@ public class SchemaTypeTable implements SchemaTypeFormatter {
   }
 
   @Override
-  public String getFullNameFor(Schema type) {
-    return this.getFullNameFor(null, type, null);
-  }
-
-  @Override
-  public String getFullNameFor(String key, Schema type, String parentName) {
-    return typeFormatter.getFullNameFor(key, type, parentName);
-  }
-
-  @Override
-  public String getNicknameFor(Schema type) {
-    return typeFormatter.getNicknameFor(type);
+  public String getFullNameFor(String escapedSchemaName, Schema type, String parentName) {
+    return typeFormatter.getFullNameFor(escapedSchemaName, type, parentName);
   }
 
   @Override
@@ -60,8 +50,8 @@ public class SchemaTypeTable implements SchemaTypeFormatter {
   }
 
   @Override
-  public String getInnerTypeNameFor(String key, Schema schema, String parentName) {
-    return typeFormatter.getInnerTypeNameFor(key, schema, parentName);
+  public String getInnerTypeNameFor(String escapedSchemaName, Schema schema, String parentName) {
+    return typeFormatter.getInnerTypeNameFor(escapedSchemaName, schema, parentName);
   }
 
   /** Creates a new SchemaTypeTable of the same concrete type, but with an empty import set. */
@@ -100,23 +90,24 @@ public class SchemaTypeTable implements SchemaTypeFormatter {
    * Computes the nickname for the given type, adds the full name to the import set, and returns the
    * nickname.
    */
-  public String getAndSaveNicknameFor(String key, Schema schema) {
-    return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeName(schema));
+  public String getAndSaveNicknameFor(String escapedSchemaName, Schema schema) {
+    return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeName(escapedSchemaName, schema));
   }
 
   /**
    * For a given schema, add the full name to the import set, and then return the nickname.
    *
-   * @param key The String that maps to the given schema. If schema.id() is empty, then the nickname
-   *     will be based off this key.
+   * @param escapedSchemaName The String that maps to the given schema. If schema.id() is empty,
+   *     then the nickname will be based off this escapedSchemaName.
    * @param schema The schema to save and get the nickname for.
    * @return nickname for the schema.
    *     <p>If the given schema type is an array, then the element type is the contained type;
    *     otherwise the element type is the boxed form of the type.
    */
-  public String getAndSaveNicknameForElementType(String key, Schema schema, String parentName) {
+  public String getAndSaveNicknameForElementType(
+      String escapedSchemaName, Schema schema, String parentName) {
     return typeTable.getAndSaveNicknameFor(
-        typeNameConverter.getTypeNameForElementType(schema, parentName));
+        typeNameConverter.getTypeNameForElementType(escapedSchemaName, schema, parentName));
   }
 
   /** Returns the imports accumulated so far. */

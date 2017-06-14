@@ -22,7 +22,7 @@ import com.google.api.codegen.util.TypedValue;
 /** SchemaTypeNameConverter maps Schema instances to TypeName instances. */
 public interface SchemaTypeNameConverter {
   /** Provides a TypeName for the given Schema. */
-  TypeName getTypeName(Schema type);
+  TypeName getTypeName(String escapedSchemaName, Schema type);
 
   /** Provides a TypeName for the given FieldConfig and resource short name. */
   TypeName getTypeNameForTypedResourceName(FieldConfig fieldConfig, String typedResourceShortName);
@@ -41,22 +41,22 @@ public interface SchemaTypeNameConverter {
    * Provides a TypedValue containing the zero value of the given type, plus the TypeName of the
    * type; suitable for use within code snippets.
    */
-  TypedValue getSnippetZeroValue(Schema schema);
+  TypedValue getSnippetZeroValue(String escapedSchemaName, Schema schema);
 
   /**
    * Provides a TypedValue containing the zero value of the given type, plus the TypeName of the
    * type; suitable for use within code snippets.
    */
-  TypedValue getEnumValue(Schema schema, String value);
+  TypedValue getEnumValue(String escapedSchemaName, Schema schema, String value);
 
   /**
    * Provides a TypedValue containing the zero value of the given type, for use internally within
    * the vkit layer; plus the TypeName of the type. This will often return the same value as {@link
-   * #getSnippetZeroValue(Schema)}.
+   * #getSnippetZeroValue(String, Schema)}.
    */
-  TypedValue getImplZeroValue(Schema schema);
+  TypedValue getImplZeroValue(String escapedSchemaName, Schema schema);
 
-  TypeName getTypeNameForElementType(Schema type, String parentName);
+  TypeName getTypeNameForElementType(String escapedSchemaName, Schema type, String parentName);
 
   /** Renders the given value if it is a primitive type. */
   String renderPrimitiveValue(Schema schema, String value);
