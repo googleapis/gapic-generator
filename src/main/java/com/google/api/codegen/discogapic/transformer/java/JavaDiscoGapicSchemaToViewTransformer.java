@@ -118,8 +118,6 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       DiscoGapicInterfaceContext documentContext, Schema schema) {
     StaticLangApiMessageFileView.Builder apiFile = StaticLangApiMessageFileView.newBuilder();
 
-    // Escape any schema's field names that are Java keywords.
-
     apiFile.templateFileName(SCHEMA_TEMPLATE_FILENAME);
 
     SchemaInterfaceContext context =
