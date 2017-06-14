@@ -112,8 +112,7 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
   }
 
   @Override
-  public TypeName getTypeNameForElementType(
-      Schema type, String parentName) {
+  public TypeName getTypeNameForElementType(Schema type, String parentName) {
     return getTypeNameForElementType(type, parentName, true);
   }
 
@@ -143,8 +142,7 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
     } else if (schema.type() == Type.ARRAY) {
       // TODO(andrealin): ensure that this handles arrays of arrays.
       TypeName listTypeName = typeNameConverter.getTypeName("java.util.List");
-      TypeName elementTypeName =
-          getTypeNameForElementType(schema.items(), parentName, true);
+      TypeName elementTypeName = getTypeNameForElementType(schema.items(), parentName, true);
       return new TypeName(
           listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", elementTypeName);
     } else {
@@ -206,8 +204,7 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
       return TypedValue.create(typeNameConverter.getTypeName("java.util.ArrayList"), "new %s<>()");
     }
     if (getPrimitiveTypeName(schema) != null) {
-      return TypedValue.create(
-          getTypeName(schema), getPrimitiveZeroValue(schema));
+      return TypedValue.create(getTypeName(schema), getPrimitiveZeroValue(schema));
     }
     if (schema.type() == Type.OBJECT) {
       return TypedValue.create(getTypeName(schema), "%s.newBuilder().build()");
