@@ -41,9 +41,11 @@ import com.google.api.codegen.viewmodel.ViewModel;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 /* Creates the ViewModel for a Discovery Doc Schema Java class. */
@@ -109,11 +111,15 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
 
     apiFile.templateFileName(SCHEMA_TEMPLATE_FILENAME);
 
+    Set<String> reservedKeywords = new HashSet<>();
+    reservedKeywords.addAll(JavaNameFormatter.RESERVED_IDENTIFIER_SET);
+    reservedKeywords.add("Builder");
+
     SchemaInterfaceContext context =
         SchemaInterfaceContext.create(
             schema,
             documentContext.getSchemaTypeTable().cloneEmpty(),
-            SymbolTable.fromSeed(JavaNameFormatter.RESERVED_IDENTIFIER_SET),
+            SymbolTable.fromSeed(reservedKeywords),
             documentContext);
 
     addApiImports(context.getSchemaTypeTable());
