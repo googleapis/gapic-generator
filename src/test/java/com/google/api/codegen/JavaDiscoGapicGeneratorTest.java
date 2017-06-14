@@ -43,7 +43,7 @@ public class JavaDiscoGapicGeneratorTest extends DiscoGapicTestBase {
             System.getProperty("user.dir"),
             "src/test/java/com/google/api/codegen/testdata/discogapic");
     ImmutableList.Builder<Object[]> builder = ImmutableList.<Object[]>builder();
-    for (File file : dir.listFiles(new DiscoveryFile("billing"))) {
+    for (File file : dir.listFiles(new DiscoveryFile("fakebilling"))) {
       String fileName = file.getName();
       builder.add(
           new Object[] {
