@@ -37,6 +37,7 @@ import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.api.codegen.viewmodel.metadata.ReadmeMetadataView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
@@ -99,6 +100,29 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
         .build();
   }
 
+  public ReadmeMetadataView.Builder generateReadmeMetadataView(
+      Model model, GapicProductConfig productConfig, RubyPackageMetadataNamer namer) {
+    return ReadmeMetadataView.newBuilder()
+        .identifier(namer.getMetadataIdentifier())
+        .shortName(packageConfig.shortName())
+        .fullName(model.getServiceConfig().getTitle())
+        .apiSummary(model.getServiceConfig().getDocumentation().getSummary())
+        .gapicPackageName("gapic-" + packageConfig.packageName(TargetLanguage.RUBY))
+        .majorVersion(packageConfig.apiVersion())
+        .hasMultipleServices(false)
+        .developmentStatusTitle(
+            namer.getReleaseAnnotation(packageConfig.releaseLevel(TargetLanguage.RUBY)))
+        .targetLanguage("Ruby")
+        .mainReadmeLink(GITHUB_REPO_HOST + MAIN_README_PATH)
+        .libraryDocumentationLink(
+            GITHUB_DOC_HOST
+                + String.format(
+                    LIB_DOC_PATH, namer.getMetadataIdentifier(), packageConfig.protoPath()))
+        .authDocumentationLink(GITHUB_DOC_HOST + AUTH_DOC_PATH)
+        .versioningDocumentationLink(GITHUB_REPO_HOST + VERSIONING_DOC_PATH)
+        .exampleMethods(generateExampleMethods(model, productConfig));
+  }
+
   private ViewModel generateGemspecView(Model model, RubyPackageMetadataNamer namer) {
     return metadataTransformer
         .generateMetadataView(
@@ -109,7 +133,6 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
 
   private ViewModel generateReadmeView(
       Model model, GapicProductConfig productConfig, RubyPackageMetadataNamer namer) {
-    List<ApiMethodView> exampleMethods = generateExampleMethods(model, productConfig);
     return metadataTransformer
         .generateMetadataView(
             packageConfig, model, README_FILE, README_OUTPUT_FILE, TargetLanguage.RUBY)
@@ -119,17 +142,8 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
                 productConfig,
                 ImportSectionView.newBuilder().build(),
                 new RubySurfaceNamer(productConfig.getPackageName())))
-        .developmentStatusTitle(
-            namer.getReleaseAnnotation(packageConfig.releaseLevel(TargetLanguage.RUBY)))
-        .exampleMethods(exampleMethods)
-        .targetLanguage("Ruby")
-        .mainReadmeLink(GITHUB_REPO_HOST + MAIN_README_PATH)
-        .libraryDocumentationLink(
-            GITHUB_DOC_HOST
-                + String.format(
-                    LIB_DOC_PATH, namer.getMetadataIdentifier(), packageConfig.protoPath()))
-        .authDocumentationLink(GITHUB_DOC_HOST + AUTH_DOC_PATH)
-        .versioningDocumentationLink(GITHUB_REPO_HOST + VERSIONING_DOC_PATH)
+        .readmeMetadata(
+            generateReadmeMetadataView(model, productConfig, namer).moduleName("").build())
         .build();
   }
 

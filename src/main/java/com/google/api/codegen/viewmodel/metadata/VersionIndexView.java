@@ -42,6 +42,9 @@ public abstract class VersionIndexView implements ViewModel {
 
   public abstract String packageVersion();
 
+  @Nullable
+  public abstract List<VersionIndexModuleView> modules();
+
   public abstract List<VersionIndexRequireView> requireViews();
 
   public abstract FileHeaderView fileHeader();
@@ -66,6 +69,8 @@ public abstract class VersionIndexView implements ViewModel {
     public abstract Builder apiVersion(String val);
 
     public abstract Builder packageVersion(String val);
+
+    public abstract Builder modules(List<VersionIndexModuleView> val);
 
     public abstract Builder requireViews(List<VersionIndexRequireView> val);
 

@@ -1,12 +1,59 @@
+@extends "readme.snip"
 @extends "ruby/common.snip"
+@extends "ruby/method_sample.snip"
 
 @snippet generate(index)
-  {@toComments(index.fileHeader.copyrightLines)}
-  #
-  {@toComments(index.fileHeader.licenseLines)}
+  {@license(index.fileHeader)}
+
+  @if index.modules
+    {@modules(index.modules.iterator)}
+  @end
 
   @join requireView : {@index.requireViews}
       require "{@requireView.fileName}"
   @end
 
+@end
+
+@private modules(iterator)
+  @let module = iterator.next
+    @switch module.type
+    @case "ReadmeMetadataView"
+      {@readmeModule(module, iterator)}
+    @case "SimpleModuleView"
+      {@simpleModule(module, iterator)}
+    @end
+  @end
+@end
+
+@private readmeModule(module, iterator)
+  @#@#
+  {@toComments(util.getDocLines(generateReadme(module)))}
+  @#
+  {@simpleModule(module, iterator)}
+@end
+
+@private simpleModule(module, iterator)
+  module {@module.moduleName}
+    @if iterator.hasNext
+      {@modules(iterator)}
+    @end
+  end
+@end
+
+@private generateReadme(metadata)
+  {@readme(metadata, exampleMethods(metadata.exampleMethods), installationLines(metadata))}
+@end
+
+@private exampleMethods(methods)
+  @join method : methods on BREAK
+    @#### {@method.apiClassName}
+    ```rb
+    {@sampleCode_(method)}
+    ```
+  @end
+@end
+
+@private installationLines(metadata)
+  $ gem install {@metadata.identifier}
 @end
