@@ -40,8 +40,8 @@ public class SchemaTypeTable implements SchemaTypeFormatter {
   }
 
   @Override
-  public String getFullNameFor(Schema type, String parentName) {
-    return typeFormatter.getFullNameFor(type, parentName);
+  public String getFullNameFor(Schema type) {
+    return typeFormatter.getFullNameFor(type);
   }
 
   @Override
@@ -50,8 +50,8 @@ public class SchemaTypeTable implements SchemaTypeFormatter {
   }
 
   @Override
-  public String getInnerTypeNameFor(Schema schema, String parentName) {
-    return typeFormatter.getInnerTypeNameFor(schema, parentName);
+  public String getInnerTypeNameFor(Schema schema) {
+    return typeFormatter.getInnerTypeNameFor(schema);
   }
 
   /** Creates a new SchemaTypeTable of the same concrete type, but with an empty import set. */
@@ -102,9 +102,8 @@ public class SchemaTypeTable implements SchemaTypeFormatter {
    *     <p>If the given schema type is an array, then the element type is the contained type;
    *     otherwise the element type is the boxed form of the type.
    */
-  public String getAndSaveNicknameForElementType(Schema schema, String parentName) {
-    return typeTable.getAndSaveNicknameFor(
-        typeNameConverter.getTypeNameForElementType(schema, parentName));
+  public String getAndSaveNicknameForElementType(Schema schema) {
+    return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeNameForElementType(schema));
   }
 
   /** Returns the imports accumulated so far. */

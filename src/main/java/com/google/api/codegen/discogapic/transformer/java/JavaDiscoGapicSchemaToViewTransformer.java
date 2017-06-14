@@ -130,7 +130,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     addApiImports(context.getSchemaTypeTable());
 
     StaticLangApiMessageView messageView =
-        generateSchemaClass(context, schema, null, context.getSchemaTypeTable());
+        generateSchemaClass(context, schema, context.getSchemaTypeTable());
     apiFile.schema(messageView);
 
     String outputPath = pathMapper.getOutputPath(null, documentContext.getProductConfig());
@@ -143,10 +143,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
   }
 
   private StaticLangApiMessageView generateSchemaClass(
-      SchemaInterfaceContext context,
-      Schema schema,
-      String parentName,
-      SchemaTypeTable schemaTypeTable) {
+      SchemaInterfaceContext context, Schema schema, SchemaTypeTable schemaTypeTable) {
     StaticLangApiMessageView.Builder schemaView = StaticLangApiMessageView.newBuilder();
 
     String schemaId = schema.id().isEmpty() ? schema.key() : schema.id();
@@ -158,10 +155,10 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     schemaView.description(schema.description());
     schemaView.fieldGetFunction(context.getDiscoGapicNamer().getResourceGetterName(schemaName));
     schemaView.fieldSetFunction(context.getDiscoGapicNamer().getResourceSetterName(schemaName));
-    String schemaTypeName = schemaTypeTable.getAndSaveNicknameForElementType(schema, parentName);
+    String schemaTypeName = schemaTypeTable.getAndSaveNicknameForElementType(schema);
     schemaView.typeName(schemaTypeName);
     if (schema.type() == Type.ARRAY) {
-      schemaView.innerTypeName(schemaTypeTable.getInnerTypeNameFor(schema, parentName));
+      schemaView.innerTypeName(schemaTypeTable.getInnerTypeNameFor(schema));
     } else {
       schemaView.innerTypeName(schemaTypeName);
     }
@@ -174,7 +171,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       schemaProperties.putAll(schema.items().properties());
     }
     for (Schema property : schemaProperties.values()) {
-      properties.add(generateSchemaClass(context, property, schemaName, schemaTypeTable));
+      properties.add(generateSchemaClass(context, property, schemaTypeTable));
     }
     schemaView.properties(properties);
 
