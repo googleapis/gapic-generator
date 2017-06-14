@@ -24,62 +24,25 @@ import javax.annotation.Generated;
 @Generated("by GAPIC")
 @BetaApi
 public final class AttachedDisk implements Serializable {
-  private final Boolean autoDelete;
-  private final Boolean boot;
-  private final String deviceName;
-  private final CustomerEncryptionKey diskEncryptionKey;
   private final Integer index;
-  private final AttachedDiskInitializeParams initializeParams;
   private final Interface interface2;
-  private final String kind;
   private final List<String> licenses;
   private final String mode;
-  private final String source;
   private final String type;
 
   private AttachedDisk(
 
-    Boolean autoDelete,
-    Boolean boot,
-    String deviceName,
-    CustomerEncryptionKey diskEncryptionKey,
     Integer index,
-    AttachedDiskInitializeParams initializeParams,
     Interface interface2,
-    String kind,
     List<String> licenses,
     String mode,
-    String source,
     String type
     ) {
-    this.autoDelete = autoDelete;
-    this.boot = boot;
-    this.deviceName = deviceName;
-    this.diskEncryptionKey = diskEncryptionKey;
     this.index = index;
-    this.initializeParams = initializeParams;
     this.interface2 = interface2;
-    this.kind = kind;
     this.licenses = licenses;
     this.mode = mode;
-    this.source = source;
     this.type = type;
-  }
-
-  public Boolean getAutoDelete() {
-    return autoDelete;
-  }
-
-  public Boolean getBoot() {
-    return boot;
-  }
-
-  public String getDeviceName() {
-    return deviceName;
-  }
-
-  public CustomerEncryptionKey getDiskEncryptionKey() {
-    return diskEncryptionKey;
   }
 
   public Integer getIndex() {
@@ -94,20 +57,12 @@ public final class AttachedDisk implements Serializable {
     return interface2;
   }
 
-  public String getKind() {
-    return kind;
-  }
-
   public List<String> getLicenses() {
     return licenses;
   }
 
   public String getMode() {
     return mode;
-  }
-
-  public String getSource() {
-    return source;
   }
 
   public String getType() {
@@ -119,82 +74,25 @@ public final class AttachedDisk implements Serializable {
 
 
 
-
-
-
-
-
-
-
   public static Builder newBuilder() {
     return new AttachedDisk.Builder();
   }
 
   public static class Builder {
-    private Boolean autoDelete;
-    private Boolean boot;
-    private String deviceName;
-    private CustomerEncryptionKey diskEncryptionKey;
     private Integer index;
-    private AttachedDiskInitializeParams initializeParams;
     private Interface interface2;
-    private String kind;
     private List<String> licenses;
     private String mode;
-    private String source;
     private String type;
 
     Builder() {}
 
     Builder(AttachedDisk source) {
-      this.autoDelete = source.autoDelete;
-      this.boot = source.boot;
-      this.deviceName = source.deviceName;
-      this.diskEncryptionKey = source.diskEncryptionKey;
       this.index = source.index;
-      this.initializeParams = source.initializeParams;
       this.interface2 = source.interface2;
-      this.kind = source.kind;
       this.licenses = source.licenses;
       this.mode = source.mode;
-      this.source = source.source;
       this.type = source.type;
-    }
-
-    public Boolean getAutoDelete() {
-      return autoDelete;
-    }
-
-    public Builder setAutoDelete(Boolean autoDelete) {
-      this.autoDelete = autoDelete;
-      return this;
-    }
-
-    public Boolean getBoot() {
-      return boot;
-    }
-
-    public Builder setBoot(Boolean boot) {
-      this.boot = boot;
-      return this;
-    }
-
-    public String getDeviceName() {
-      return deviceName;
-    }
-
-    public Builder setDeviceName(String deviceName) {
-      this.deviceName = deviceName;
-      return this;
-    }
-
-    public CustomerEncryptionKey getDiskEncryptionKey() {
-      return diskEncryptionKey;
-    }
-
-    public Builder setDiskEncryptionKey(CustomerEncryptionKey diskEncryptionKey) {
-      this.diskEncryptionKey = diskEncryptionKey;
-      return this;
     }
 
     public Integer getIndex() {
@@ -206,30 +104,12 @@ public final class AttachedDisk implements Serializable {
       return this;
     }
 
-    public AttachedDiskInitializeParams getInitializeParams() {
-      return initializeParams;
-    }
-
-    public Builder setInitializeParams(AttachedDiskInitializeParams initializeParams) {
-      this.initializeParams = initializeParams;
-      return this;
-    }
-
-    public Interface getInterface() {
+    public Interface getInterface2() {
       return interface2;
     }
 
     public Builder setInterface(Interface interface2) {
       this.interface2 = interface2;
-      return this;
-    }
-
-    public String getKind() {
-      return kind;
-    }
-
-    public Builder setKind(String kind) {
-      this.kind = kind;
       return this;
     }
 
@@ -251,15 +131,6 @@ public final class AttachedDisk implements Serializable {
       return this;
     }
 
-    public String getSource() {
-      return source;
-    }
-
-    public Builder setSource(String source) {
-      this.source = source;
-      return this;
-    }
-
     public String getType() {
       return type;
     }
@@ -273,17 +144,10 @@ public final class AttachedDisk implements Serializable {
     public AttachedDisk build() {
       return new AttachedDisk(
 
-        autoDelete,
-        boot,
-        deviceName,
-        diskEncryptionKey,
         index,
-        initializeParams,
         interface2,
-        kind,
         licenses,
         mode,
-        source,
         type
       );
     }
@@ -293,17 +157,10 @@ public final class AttachedDisk implements Serializable {
   public String toString() {
     return "AttachedDisk{"
 
-    + "autoDelete=" + autoDelete + ", "
-    + "boot=" + boot + ", "
-    + "deviceName=" + deviceName + ", "
-    + "diskEncryptionKey=" + diskEncryptionKey + ", "
     + "index=" + index + ", "
-    + "initializeParams=" + initializeParams + ", "
     + "interface2=" + interface2 + ", "
-    + "kind=" + kind + ", "
     + "licenses=" + licenses + ", "
     + "mode=" + mode + ", "
-    + "source=" + source + ", "
     + "type=" + type
         + "}";
   }
@@ -317,17 +174,10 @@ public final class AttachedDisk implements Serializable {
       AttachedDisk that = (AttachedDisk) o;
       return
 
-      this.autoDelete.equals(that.getAutoDelete())&&
-      this.boot.equals(that.getBoot())&&
-      this.deviceName.equals(that.getDeviceName())&&
-      this.diskEncryptionKey.equals(that.getDiskEncryptionKey())&&
       this.index.equals(that.getIndex())&&
-      this.initializeParams.equals(that.getInitializeParams())&&
-      this.interface2.equals(that.getInterface())&&
-      this.kind.equals(that.getKind())&&
+      this.interface2.equals(that.getInterface2())&&
       this.licenses.equals(that.getLicenses())&&
       this.mode.equals(that.getMode())&&
-      this.source.equals(that.getSource())&&
       this.type.equals(that.getType())
       ;
     }
@@ -338,27 +188,13 @@ public final class AttachedDisk implements Serializable {
   public int hashCode() {
     int h = 1;
     h *= 1000003;
-    h ^= this.autoDelete.hashCode();
-    h *= 1000003;
-    h ^= this.boot.hashCode();
-    h *= 1000003;
-    h ^= this.deviceName.hashCode();
-    h *= 1000003;
-    h ^= this.diskEncryptionKey.hashCode();
-    h *= 1000003;
     h ^= this.index.hashCode();
     h *= 1000003;
-    h ^= this.initializeParams.hashCode();
-    h *= 1000003;
     h ^= this.interface2.hashCode();
-    h *= 1000003;
-    h ^= this.kind.hashCode();
     h *= 1000003;
     h ^= this.licenses.hashCode();
     h *= 1000003;
     h ^= this.mode.hashCode();
-    h *= 1000003;
-    h ^= this.source.hashCode();
     h *= 1000003;
     h ^= this.type.hashCode();
     return h;
@@ -384,7 +220,6 @@ package com.google.cloud.billingtest.v1;
 
 import com.google.api.core.BetaApi;
 import java.io.Serializable;
-import java.util.List;
 import javax.annotation.Generated;
 
 @Generated("by GAPIC")
@@ -642,7 +477,6 @@ package com.google.cloud.billingtest.v1;
 
 import com.google.api.core.BetaApi;
 import java.io.Serializable;
-import java.util.List;
 import javax.annotation.Generated;
 
 @Generated("by GAPIC")
@@ -1241,7 +1075,7 @@ public final class Operation implements Serializable {
 
       @Override
       public String toString() {
-        return "List<Errors>{"
+        return "Errors{"
 
         + "code=" + code + ", "
         + "location=" + location + ", "
@@ -1450,7 +1284,7 @@ public final class Operation implements Serializable {
 
       @Override
       public String toString() {
-        return "List<Data>{"
+        return "Data{"
 
         + "key=" + key + ", "
         + "value=" + value
@@ -1554,7 +1388,7 @@ public final class Operation implements Serializable {
 
     @Override
     public String toString() {
-      return "List<Warnings>{"
+      return "Warnings{"
 
       + "code2=" + code2 + ", "
       + "data=" + data + ", "
@@ -1838,7 +1672,6 @@ package com.google.cloud.billingtest.v1;
 
 import com.google.api.core.BetaApi;
 import java.io.Serializable;
-import java.util.List;
 import javax.annotation.Generated;
 
 @Generated("by GAPIC")
