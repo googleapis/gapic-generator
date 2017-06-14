@@ -43,10 +43,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /* Creates the ViewModel for a Discovery Doc Schema Java class. */
 public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTransformer {
@@ -165,7 +165,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
 
     // Generate a Schema view from each property.
     List<StaticLangApiMessageView> properties = new LinkedList<>();
-    Map<String, Schema> schemaProperties = new HashMap<>();
+    Map<String, Schema> schemaProperties = new TreeMap<>();
     schemaProperties.putAll(schema.properties());
     if (schema.items() != null && schema.items().properties() != null) {
       schemaProperties.putAll(schema.items().properties());
@@ -173,14 +173,6 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     for (Schema property : schemaProperties.values()) {
       properties.add(generateSchemaClass(context, property, schemaName, schemaTypeTable));
     }
-    Collections.sort(
-        properties,
-        new Comparator<StaticLangApiMessageView>() {
-          @Override
-          public int compare(StaticLangApiMessageView o1, StaticLangApiMessageView o2) {
-            return String.CASE_INSENSITIVE_ORDER.compare(o1.name(), o2.name());
-          };
-        });
     schemaView.properties(properties);
 
     return schemaView.build();
