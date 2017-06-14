@@ -125,7 +125,8 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     addApiImports(context.getSchemaTypeTable());
 
     StaticLangApiMessageView messageView =
-        generateSchemaClass(context, schema, null, context.getSchemaTypeTable());
+        generateSchemaClass(
+            context, schema, null, context.getSchemaTypeTable(), context.getSymbolTable());
     apiFile.schema(messageView);
 
     String outputPath = pathMapper.getOutputPath(null, documentContext.getProductConfig());
@@ -141,14 +142,15 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       SchemaInterfaceContext context,
       Schema schema,
       String parentName,
-      SchemaTypeTable schemaTypeTable) {
+      SchemaTypeTable schemaTypeTable,
+      SymbolTable symbolTable) {
     StaticLangApiMessageView.Builder schemaView = StaticLangApiMessageView.newBuilder();
 
     String schemaId =
         Name.anyCamel(schema.id().isEmpty() ? schema.key() : schema.id()).toLowerCamel();
+    SymbolTable symbolTableCopy = symbolTable.clone();
     String schemaName =
-        nameFormatter.privateFieldName(
-            Name.anyCamel(context.getSymbolTable().getNewSymbol(schemaId)));
+        nameFormatter.privateFieldName(Name.anyCamel(symbolTableCopy.getNewSymbol(schemaId)));
     if (schemaName.equals("Object") || schemaName.equals("String")) {
       throw new IllegalArgumentException(
           String.format(
@@ -176,7 +178,9 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       schemaProperties.putAll(schema.items().properties());
     }
     for (Schema property : schemaProperties.values()) {
-      properties.add(generateSchemaClass(context, property, schemaName, schemaTypeTable));
+      properties.add(
+          generateSchemaClass(
+              context, property, schemaName, schemaTypeTable, context.getSymbolTable()));
     }
     schemaView.properties(properties);
 

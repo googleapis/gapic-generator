@@ -70,6 +70,15 @@ public class SymbolTable {
     return desiredName + suffix;
   }
 
+  /** @return deep copy of this SymbolTable. */
+  public SymbolTable clone() {
+    Set<String> newTable = new HashSet<>();
+    for (String str : symbolTable) {
+      newTable.add(str);
+    }
+    return SymbolTable.fromSeed(newTable);
+  }
+
   /**
    * Returns the next numeric suffix that makes desiredName unique.
    *

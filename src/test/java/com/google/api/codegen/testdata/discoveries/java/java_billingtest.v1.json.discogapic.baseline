@@ -501,7 +501,7 @@ public final class Interface implements Serializable {
     return inter;
   }
 
-  public String getInterface() {
+  public String getInterface2() {
     return interface2;
   }
 
@@ -543,11 +543,11 @@ public final class Interface implements Serializable {
       return this;
     }
 
-    public String getInterface() {
+    public String getInterface2() {
       return interface2;
     }
 
-    public Builder setInterface(String interface2) {
+    public Builder setInterface2(String interface2) {
       this.interface2 = interface2;
       return this;
     }
@@ -584,7 +584,7 @@ public final class Interface implements Serializable {
 
       this.face.equals(that.getFace())&&
       this.inter.equals(that.getInter())&&
-      this.interface2.equals(that.getInterface())
+      this.interface2.equals(that.getInterface2())
       ;
     }
     return false;
@@ -1177,26 +1177,26 @@ public final class Operation implements Serializable {
 
 
   public final class Warnings implements Serializable {
-    private final String code2;
+    private final String code;
     private final List<Data> data;
-    private final String message2;
+    private final String message;
     private final ProjectBillingInfo projectBillingInfo;
 
     private Warnings(
 
-      String code2,
+      String code,
       List<Data> data,
-      String message2,
+      String message,
       ProjectBillingInfo projectBillingInfo
       ) {
-      this.code2 = code2;
+      this.code = code;
       this.data = data;
-      this.message2 = message2;
+      this.message = message;
       this.projectBillingInfo = projectBillingInfo;
     }
 
     public String getCode() {
-      return code2;
+      return code;
     }
 
     public List<Data> getData() {
@@ -1204,7 +1204,7 @@ public final class Operation implements Serializable {
     }
 
     public String getMessage() {
-      return message2;
+      return message;
     }
 
     public ProjectBillingInfo getProjectBillingInfo() {
@@ -1320,26 +1320,26 @@ public final class Operation implements Serializable {
     }
 
     public static class Builder {
-      private String code2;
+      private String code;
       private List<Data> data;
-      private String message2;
+      private String message;
       private ProjectBillingInfo projectBillingInfo;
 
       Builder() {}
 
       Builder(Warnings source) {
-        this.code2 = source.code2;
+        this.code = source.code;
         this.data = source.data;
-        this.message2 = source.message2;
+        this.message = source.message;
         this.projectBillingInfo = source.projectBillingInfo;
       }
 
       public String getCode() {
-        return code2;
+        return code;
       }
 
-      public Builder setCode(String code2) {
-        this.code2 = code2;
+      public Builder setCode(String code) {
+        this.code = code;
         return this;
       }
 
@@ -1353,11 +1353,11 @@ public final class Operation implements Serializable {
       }
 
       public String getMessage() {
-        return message2;
+        return message;
       }
 
-      public Builder setMessage(String message2) {
-        this.message2 = message2;
+      public Builder setMessage(String message) {
+        this.message = message;
         return this;
       }
 
@@ -1374,9 +1374,9 @@ public final class Operation implements Serializable {
       public Warnings build() {
         return new Warnings(
 
-          code2,
+          code,
           data,
-          message2,
+          message,
           projectBillingInfo
         );
       }
@@ -1386,9 +1386,9 @@ public final class Operation implements Serializable {
     public String toString() {
       return "Warnings{"
 
-      + "code2=" + code2 + ", "
+      + "code=" + code + ", "
       + "data=" + data + ", "
-      + "message2=" + message2 + ", "
+      + "message=" + message + ", "
       + "projectBillingInfo=" + projectBillingInfo
           + "}";
     }
@@ -1402,9 +1402,9 @@ public final class Operation implements Serializable {
         Warnings that = (Warnings) o;
         return
 
-        this.code2.equals(that.getCode())&&
+        this.code.equals(that.getCode())&&
         this.data.equals(that.getData())&&
-        this.message2.equals(that.getMessage())&&
+        this.message.equals(that.getMessage())&&
         this.projectBillingInfo.equals(that.getProjectBillingInfo())
         ;
       }
@@ -1415,11 +1415,11 @@ public final class Operation implements Serializable {
     public int hashCode() {
       int h = 1;
       h *= 1000003;
-      h ^= this.code2.hashCode();
+      h ^= this.code.hashCode();
       h *= 1000003;
       h ^= this.data.hashCode();
       h *= 1000003;
-      h ^= this.message2.hashCode();
+      h ^= this.message.hashCode();
       h *= 1000003;
       h ^= this.projectBillingInfo.hashCode();
       return h;
