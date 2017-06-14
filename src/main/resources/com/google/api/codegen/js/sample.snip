@@ -10,6 +10,10 @@
          https://console.developers.google.com/apis/api/{@class.apiName}
       2. Get access keys for your application. See
          https://developers.google.com/api-client-library/javascript/start/start-js#get-access-keys-for-your-application
+      @if class.auth.instructionsUrl
+        3. For additional information on authentication, see
+           {@class.auth.instructionsUrl}
+      @end
       -->
       <script>
       function {@class.makeApiCallFuncName}() {
@@ -114,16 +118,37 @@
 
       @end
       function {@class.initClientFuncName}() {
+        @if class.auth.type != "NONE"
+          var API_KEY = '';  // TODO: Update placeholder with desired API key.
+
+        @end
+        @switch class.auth.type
+        @case "NONE"
+        @case "API_KEY"
+        @default
+          var CLIENT_ID = '';  // TODO: Update placeholder with desired client ID.
+
+          @if class.auth.isScopesSingular
+            // TODO: Authorize using the following scope:
+          @else
+            // TODO: Authorize using one of the following scopes:
+          @end
+          @join scope : class.auth.scopes
+            //   '{@scope}'
+          @end
+          var SCOPE = '';
+
+        @end
         gapi.client.init({
           @if class.auth.type != "NONE"
-            'apiKey': '',  // TODO: Update placeholder with desired API key.
+            'apiKey': API_KEY,
           @end
           @switch class.auth.type
           @case "NONE"
           @case "API_KEY"
           @default
-            'clientId': '',  // TODO: Update placeholder with desired client ID.
-            'scope': '{@scopeString(class.auth.scopes)}',
+            'clientId': CLIENT_ID,
+            'scope': SCOPE,
           @end
           'discoveryDocs': ['{@class.discoveryDocUrl}'],
         }).then(function() {
@@ -225,11 +250,5 @@
 @private callChain(methodNameComponents)
   @join resource : methodNameComponents on "."
     {@resource}
-  @end
-@end
-
-@private scopeString(scopes)
-  @join scope : scopes on " "
-    {@scope}
   @end
 @end
