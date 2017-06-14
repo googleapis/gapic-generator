@@ -40,8 +40,8 @@ public class SchemaTypeTable implements SchemaTypeFormatter {
   }
 
   @Override
-  public String getFullNameFor(String escapedSchemaName, Schema type, String parentName) {
-    return typeFormatter.getFullNameFor(escapedSchemaName, type, parentName);
+  public String getFullNameFor(Schema type, String parentName) {
+    return typeFormatter.getFullNameFor(type, parentName);
   }
 
   @Override
@@ -50,8 +50,8 @@ public class SchemaTypeTable implements SchemaTypeFormatter {
   }
 
   @Override
-  public String getInnerTypeNameFor(String escapedSchemaName, Schema schema, String parentName) {
-    return typeFormatter.getInnerTypeNameFor(escapedSchemaName, schema, parentName);
+  public String getInnerTypeNameFor(Schema schema, String parentName) {
+    return typeFormatter.getInnerTypeNameFor(schema, parentName);
   }
 
   /** Creates a new SchemaTypeTable of the same concrete type, but with an empty import set. */
@@ -90,25 +90,21 @@ public class SchemaTypeTable implements SchemaTypeFormatter {
    * Computes the nickname for the given type, adds the full name to the import set, and returns the
    * nickname.
    */
-  public String getAndSaveNicknameFor(String escapedSchemaName, Schema schema) {
-    return typeTable.getAndSaveNicknameFor(
-        typeNameConverter.getTypeName(escapedSchemaName, schema));
+  public String getAndSaveNicknameFor(Schema schema) {
+    return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeName(schema));
   }
 
   /**
    * For a given schema, add the full name to the import set, and then return the nickname.
    *
-   * @param escapedSchemaName The String that maps to the given schema. If schema.id() is empty,
-   *     then the nickname will be based off this escapedSchemaName.
    * @param schema The schema to save and get the nickname for.
    * @return nickname for the schema.
    *     <p>If the given schema type is an array, then the element type is the contained type;
    *     otherwise the element type is the boxed form of the type.
    */
-  public String getAndSaveNicknameForElementType(
-      String escapedSchemaName, Schema schema, String parentName) {
+  public String getAndSaveNicknameForElementType(Schema schema, String parentName) {
     return typeTable.getAndSaveNicknameFor(
-        typeNameConverter.getTypeNameForElementType(escapedSchemaName, schema, parentName));
+        typeNameConverter.getTypeNameForElementType(schema, parentName));
   }
 
   /** Returns the imports accumulated so far. */
