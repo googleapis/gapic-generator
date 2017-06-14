@@ -34,6 +34,9 @@ public class PhpModelTypeNameConverter implements ModelTypeNameConverter {
   /** The maximum depth of nested messages supported by PHP type name determination. */
   private static final int MAX_NESTED_DEPTH = 20;
 
+  /** The option number for the proto option specifying the PHP namespace. */
+  private static final int PHP_NAMESPACE_OPTION_NUMBER = 41;
+
   /** A map from primitive types in proto to PHP counterparts. */
   private static final ImmutableMap<Type, String> PRIMITIVE_TYPE_MAP =
       ImmutableMap.<Type, String>builder()
@@ -211,11 +214,11 @@ public class PhpModelTypeNameConverter implements ModelTypeNameConverter {
   }
 
   private static String getPackageOption(ProtoFile file) {
-    if (file.getProto().getOptions().getUnknownFields().hasField(41)) {
+    if (file.getProto().getOptions().getUnknownFields().hasField(PHP_NAMESPACE_OPTION_NUMBER)) {
       return file.getProto()
           .getOptions()
           .getUnknownFields()
-          .getField(41)
+          .getField(PHP_NAMESPACE_OPTION_NUMBER)
           .getLengthDelimitedList()
           .get(0)
           .toStringUtf8();
