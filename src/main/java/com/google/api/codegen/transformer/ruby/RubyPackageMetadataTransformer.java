@@ -114,10 +114,7 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
             namer.getReleaseAnnotation(packageConfig.releaseLevel(TargetLanguage.RUBY)))
         .targetLanguage("Ruby")
         .mainReadmeLink(GITHUB_REPO_HOST + MAIN_README_PATH)
-        .libraryDocumentationLink(
-            GITHUB_DOC_HOST
-                + String.format(
-                    LIB_DOC_PATH, namer.getMetadataIdentifier(), packageConfig.protoPath()))
+        .libraryDocumentationLink("")
         .authDocumentationLink(GITHUB_DOC_HOST + AUTH_DOC_PATH)
         .versioningDocumentationLink(GITHUB_REPO_HOST + VERSIONING_DOC_PATH)
         .exampleMethods(generateExampleMethods(model, productConfig));
@@ -143,7 +140,13 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
                 ImportSectionView.newBuilder().build(),
                 new RubySurfaceNamer(productConfig.getPackageName())))
         .readmeMetadata(
-            generateReadmeMetadataView(model, productConfig, namer).moduleName("").build())
+            generateReadmeMetadataView(model, productConfig, namer)
+                .moduleName("")
+                .libraryDocumentationLink(
+                    GITHUB_DOC_HOST
+                        + String.format(
+                            LIB_DOC_PATH, namer.getMetadataIdentifier(), packageConfig.protoPath()))
+                .build())
         .build();
   }
 

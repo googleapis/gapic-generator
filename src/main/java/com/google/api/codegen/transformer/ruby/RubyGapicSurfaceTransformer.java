@@ -55,6 +55,7 @@ import java.util.List;
 public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
   private static final String VERSION_INDEX_TEMPLATE_FILE = "ruby/version_index.snip";
   private static final String XAPI_TEMPLATE_FILENAME = "ruby/main.snip";
+  private static final int SERVICE_MODULE_RINDEX = 2;
 
   private final GapicCodePathMapper pathMapper;
   private final PackageMetadataConfig packageConfig;
@@ -176,7 +177,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
     List<String> apiModules = namer.getApiModules();
     int moduleCount = apiModules.size();
     for (int i = 0; i < moduleCount; ++i) {
-      if (i == moduleCount - 2) {
+      if (i == moduleCount - SERVICE_MODULE_RINDEX) {
         RubyPackageMetadataTransformer metadataTransformer =
             new RubyPackageMetadataTransformer(packageConfig);
         moduleViews.add(
