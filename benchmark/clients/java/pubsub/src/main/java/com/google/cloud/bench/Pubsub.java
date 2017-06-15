@@ -32,6 +32,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
@@ -90,9 +91,17 @@ public class Pubsub {
                     .build())
             .addOption(Option.builder("cert").required().hasArg().desc("certificate file").build())
             .addOption("ep", "endpoint", true, "endpoint to connect to")
-            .addOption("n", "num_workers", true, "number of threads")
+            .addOption("n", "num_workers", true, "number of concurrent calls")
             .addOption("wd", "warmup_duration", true, "warmup duration in seconds")
             .addOption("d", "duration", true, "test duration in seconds");
+    CommandLine helpCl =
+        new DefaultParser()
+            .parse(new Options().addOption("h", "help", false, "print help message"), args, true);
+    if (helpCl.hasOption('h')) {
+      new HelpFormatter().printHelp("Pubsub -c <client> -cert <cert_file> -n <num_workers>", options);
+      return;
+    }
+
     CommandLine cl = new DefaultParser().parse(options, args);
 
     Settings settings =
