@@ -19,6 +19,7 @@ import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.FileHeaderView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class SmokeTestClassView implements ViewModel {
@@ -28,6 +29,9 @@ public abstract class SmokeTestClassView implements ViewModel {
   public abstract String name();
 
   public abstract String apiClassName();
+
+  @Nullable
+  public abstract String apiVariableName();
 
   public abstract String apiSettingsClassName();
 
@@ -60,6 +64,8 @@ public abstract class SmokeTestClassView implements ViewModel {
     public abstract Builder name(String val);
 
     public abstract Builder apiClassName(String val);
+
+    public abstract Builder apiVariableName(String val);
 
     public abstract Builder apiSettingsClassName(String val);
 
