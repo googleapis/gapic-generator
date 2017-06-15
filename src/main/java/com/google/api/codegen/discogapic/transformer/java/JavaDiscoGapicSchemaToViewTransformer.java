@@ -188,8 +188,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     }
     for (Schema property : schemaProperties) {
       viewProperties.add(generateSchemaClasses(messageViewAccumulator, documentContext, property));
-      if (!property.properties().isEmpty()
-          || (property.items() != null)) {
+      if (!property.properties().isEmpty() || (property.items() != null)) {
         // Add non-primitive-type property to imports.
         schemaTypeTable.getAndSaveNicknameFor(property);
       }
