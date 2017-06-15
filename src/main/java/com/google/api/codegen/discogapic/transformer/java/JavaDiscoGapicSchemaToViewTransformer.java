@@ -14,12 +14,16 @@
  */
 package com.google.api.codegen.discogapic.transformer.java;
 
+import static com.google.api.codegen.util.java.JavaTypeTable.JavaLangResolution.IGNORE_JAVA_LANG_CLASH;
+
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.discogapic.DiscoGapicInterfaceContext;
+import com.google.api.codegen.discogapic.SchemaInterfaceContext;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Schema;
+import com.google.api.codegen.discovery.Schema.Type;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.SchemaTypeTable;
@@ -31,7 +35,6 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaTypeTable;
-import com.google.api.codegen.viewmodel.SimpleMessagePropertyView;
 import com.google.api.codegen.viewmodel.StaticLangApiMessageFileView;
 import com.google.api.codegen.viewmodel.StaticLangApiMessageView;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -43,6 +46,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /* Creates the ViewModel for a Discovery Doc Schema Java class. */
 public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTransformer {
@@ -85,6 +89,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
             JavaFeatureConfig.newBuilder().enableStringFormatFunctions(false).build());
 
     StaticLangApiMessageFileView apiFile;
+
     // TODO(andrealin): Remove this when imports are fixed.
     final List<Schema> schemas = new LinkedList<>(context.getDocument().schemas().values());
     Collections.sort(
@@ -105,22 +110,30 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
 
   private SchemaTypeTable createTypeTable(String implicitPackageName) {
     return new SchemaTypeTable(
-        new JavaTypeTable(implicitPackageName),
-        new JavaSchemaTypeNameConverter(implicitPackageName));
+        new JavaTypeTable(implicitPackageName, IGNORE_JAVA_LANG_CLASH),
+        new JavaSchemaTypeNameConverter(implicitPackageName, nameFormatter));
   }
 
   private StaticLangApiMessageFileView generateSchemaFile(
-      DiscoGapicInterfaceContext context, Schema schema) {
+      DiscoGapicInterfaceContext documentContext, Schema schema) {
     StaticLangApiMessageFileView.Builder apiFile = StaticLangApiMessageFileView.newBuilder();
-    // Escape any schema's field names that are Java keywords.
-    SymbolTable schemaSymbolTable = SymbolTable.fromSeed(JavaNameFormatter.RESERVED_IDENTIFIER_SET);
 
     apiFile.templateFileName(SCHEMA_TEMPLATE_FILENAME);
 
-    StaticLangApiMessageView messageView = generateSchemaClass(context, schema, schemaSymbolTable);
+    SchemaInterfaceContext context =
+        SchemaInterfaceContext.create(
+            schema,
+            documentContext.getSchemaTypeTable().cloneEmpty(),
+            SymbolTable.fromSeed(JavaNameFormatter.RESERVED_IDENTIFIER_SET),
+            documentContext);
+
+    addApiImports(context.getSchemaTypeTable());
+
+    StaticLangApiMessageView messageView =
+        generateSchemaClass(context, schema, context.getSchemaTypeTable());
     apiFile.schema(messageView);
 
-    String outputPath = pathMapper.getOutputPath(null, context.getProductConfig());
+    String outputPath = pathMapper.getOutputPath(null, documentContext.getProductConfig());
     apiFile.outputPath(outputPath + File.separator + messageView.typeName() + ".java");
 
     // must be done as the last step to catch all imports
@@ -130,46 +143,42 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
   }
 
   private StaticLangApiMessageView generateSchemaClass(
-      DiscoGapicInterfaceContext context, Schema schema, SymbolTable schemaSymbolTable) {
-    addApiImports(context);
-
+      SchemaInterfaceContext context, Schema schema, SchemaTypeTable schemaTypeTable) {
     StaticLangApiMessageView.Builder schemaView = StaticLangApiMessageView.newBuilder();
 
-    schemaView.typeName(nameFormatter.publicClassName(Name.anyCamel(schema.id())));
-    schemaView.type(schema.type());
-    // TODO(andrealin): use symbol table to make sure Schema names aren't Java keywords.
+    String schemaId = schema.id().isEmpty() ? schema.key() : schema.id();
+    String schemaName =
+        nameFormatter.privateFieldName(
+            Name.anyCamel(context.getSymbolTable().getNewSymbol(schemaId)));
+    schemaView.name(schemaName);
     schemaView.defaultValue(schema.defaultValue());
-
-    // Map each property name to the Java typeName of the property.
-    List<SimpleMessagePropertyView> properties = new LinkedList<>();
-    for (Map.Entry<String, Schema> propertyEntry : schema.properties().entrySet()) {
-      String propertyString = schemaSymbolTable.getNewSymbol(propertyEntry.getKey());
-      Schema property = propertyEntry.getValue();
-      SimpleMessagePropertyView.Builder simpleProperty =
-          SimpleMessagePropertyView.newBuilder().name(propertyString);
-      simpleProperty.typeName(
-          context.getSchemaTypeTable().getAndSaveNicknameForElementType(property));
-      simpleProperty.fieldGetFunction(
-          context.getDiscoGapicNamer().getResourceGetterName(propertyString));
-      simpleProperty.fieldSetFunction(
-          context.getDiscoGapicNamer().getResourceSetterName(propertyString));
-      properties.add(simpleProperty.build());
+    schemaView.description(schema.description());
+    schemaView.fieldGetFunction(context.getDiscoGapicNamer().getResourceGetterName(schemaName));
+    schemaView.fieldSetFunction(context.getDiscoGapicNamer().getResourceSetterName(schemaName));
+    String schemaTypeName = schemaTypeTable.getAndSaveNicknameForElementType(schema);
+    schemaView.typeName(schemaTypeName);
+    if (schema.type() == Type.ARRAY) {
+      schemaView.innerTypeName(schemaTypeTable.getInnerTypeNameFor(schema));
+    } else {
+      schemaView.innerTypeName(schemaTypeName);
     }
-    Collections.sort(
-        properties,
-        new Comparator<SimpleMessagePropertyView>() {
-          @Override
-          public int compare(SimpleMessagePropertyView o1, SimpleMessagePropertyView o2) {
-            return String.CASE_INSENSITIVE_ORDER.compare(o1.name(), o2.name());
-          };
-        });
+
+    // Generate a Schema view from each property.
+    List<StaticLangApiMessageView> properties = new LinkedList<>();
+    Map<String, Schema> schemaProperties = new TreeMap<>();
+    schemaProperties.putAll(schema.properties());
+    if (schema.items() != null && schema.items().properties() != null) {
+      schemaProperties.putAll(schema.items().properties());
+    }
+    for (Schema property : schemaProperties.values()) {
+      properties.add(generateSchemaClass(context, property, schemaTypeTable));
+    }
     schemaView.properties(properties);
 
     return schemaView.build();
   }
 
-  private void addApiImports(DiscoGapicInterfaceContext context) {
-    SchemaTypeTable typeTable = context.getSchemaTypeTable();
+  private void addApiImports(SchemaTypeTable typeTable) {
     typeTable.saveNicknameFor("com.google.api.core.BetaApi");
     typeTable.saveNicknameFor("java.io.Serializable");
     typeTable.saveNicknameFor("java.util.List");

@@ -6,16 +6,35 @@
 
   @@Generated("by GAPIC")
   @@BetaApi
-  public final class {@apiFile.schema.typeName} implements Serializable {
-    {@members(apiFile.schema)}
-    {@constructor(apiFile.schema)}
-    {@getters(apiFile.schema)}
-    {@newBuilder(apiFile.schema)}
-    {@builder(apiFile.schema)}
-    {@toString(apiFile.schema)}
-    {@equalsMethod(apiFile.schema)}
-    {@hashCode(apiFile.schema)}
+  {@schemaClassDef(apiFile.schema)}
+@end
+
+@private schemaClassDef(schema)
+  public final class {@schema.innerTypeName} implements Serializable {
+    {@members(schema)}
+
+    {@constructor(schema)}
+
+    {@getters(schema)}
+    {@innerSchemas(schema)}
+    {@newBuilder(schema)}
+
+    {@builder(schema)}
+
+    {@toString(schema)}
+
+    {@equalsMethod(schema)}
+
+    {@hashCode(schema)}
   }
+@end
+
+@private innerSchemas(schema)
+  @join property : schema.properties
+    @if {@property.properties}
+      {@schemaClassDef(property)}
+    @end
+  @end
 @end
 
 @private toString(schema)
@@ -28,7 +47,6 @@
     @end
         + "}";
   }
-
 @end
 
 @private equalsMethod(schema)
@@ -48,7 +66,6 @@
     }
     return false;
   }
-
 @end
 
 @private hashCode(schema)
@@ -61,14 +78,12 @@
     @end
     return h;
   }
-
 @end
 
 @private newBuilder(schema)
   public static Builder newBuilder() {
     return new {@schema.typeName}.Builder();
   }
-
 @end
 
 @private getters(schema)
@@ -81,7 +96,7 @@
 @end
 
 @private constructor(schema)
-  private {@schema.typeName}(
+  private {@schema.innerTypeName}(
     @join property : schema.properties on ", "
 
       {@property.typeName} {@property.name}
@@ -91,7 +106,6 @@
       this.{@property.name} = {@property.name};
     @end
   }
-
 @end
 
 @private members(schema)
@@ -135,7 +149,6 @@
       );
     }
   }
-
 @end
 
 @private builderMembers(schema)
