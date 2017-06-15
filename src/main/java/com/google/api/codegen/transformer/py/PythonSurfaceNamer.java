@@ -21,6 +21,7 @@ import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
+import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -39,7 +40,9 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 
 /** The SurfaceNamer for Python. */
 public class PythonSurfaceNamer extends SurfaceNamer {
@@ -239,6 +242,22 @@ public class PythonSurfaceNamer extends SurfaceNamer {
     Name testCaseName =
         symbolTable.getNewSymbol(Name.upperCamel("Test", method.getSimpleName(), "Exception"));
     return publicMethodName(testCaseName);
+  }
+
+  @Override
+  public String injectRandomStringGeneratorCode(String randomString) {
+    Matcher m = InitFieldConfig.RANDOM_TOKEN_PATTERN.matcher(randomString);
+    StringBuffer sb = new StringBuffer();
+    List<String> stringParts = new ArrayList<>();
+    while (m.find()) {
+      m.appendReplacement(sb, "%s");
+      stringParts.add("time.time()");
+    }
+    m.appendTail(sb);
+    if (!stringParts.isEmpty()) {
+      sb.append(".format(").append(Joiner.on(", ").join(stringParts)).append(")");
+    }
+    return sb.toString();
   }
 
   @Override
