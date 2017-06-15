@@ -32,12 +32,22 @@ public abstract class ClientTestAssertView {
   @Nullable
   public abstract String enumTypeName();
 
+  // Message type name is needed for ruby since the value of the init code is in the form of a hash
+  // and will need to be converted to its message type in order to compare with what is in the
+  // request.
+  @Nullable
+  public abstract String messageTypeName();
+
   public boolean hasExpectedValueTransformFunction() {
     return expectedValueTransformFunction() != null;
   }
 
   public boolean hasEnumTypeName() {
     return enumTypeName() != null;
+  }
+
+  public boolean hasMessageTypeName() {
+    return messageTypeName() != null;
   }
 
   public static Builder newBuilder() {
@@ -53,6 +63,8 @@ public abstract class ClientTestAssertView {
     public abstract Builder expectedValueTransformFunction(String val);
 
     public abstract Builder enumTypeName(String val);
+
+    public abstract Builder messageTypeName(String val);
 
     public abstract ClientTestAssertView build();
   }

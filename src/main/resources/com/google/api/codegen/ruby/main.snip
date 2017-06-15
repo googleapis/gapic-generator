@@ -323,7 +323,7 @@
     @if apiMethod.hasRequestParameters
       def {@apiMethod.name} @\
           {@paramList(apiMethod.methodParams)}
-        req = {@apiMethod.requestTypeName}.new({
+        req = {
           @if apiMethod.requiredRequestObjectParams
             @if apiMethod.optionalRequestObjectParamsNoPageToken
               {@namedParameters(apiMethod.requiredRequestObjectParams)},
@@ -334,7 +334,8 @@
           @else
             {@namedParameters(apiMethod.optionalRequestObjectParamsNoPageToken)}
           @end
-        }.delete_if { |_, v| v.nil? })
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, {@apiMethod.requestTypeName})
         {@makeApiCall(apiMethod)}
       end
     @else

@@ -152,8 +152,7 @@
         @if xsettingsClass.hasDefaultServiceAddress
             .setEndpoint(getDefaultEndpoint())
         @end
-        .setGeneratorHeader(DEFAULT_GAPIC_NAME, getGapicVersion())
-        .setCredentialsProvider(defaultCredentialsProviderBuilder().build());
+        .setGeneratorHeader(DEFAULT_GAPIC_NAME, getGapicVersion());
   }
 
   private static String getGapicVersion() {
@@ -256,7 +255,8 @@
 @private constructors(xsettingsClass)
   private {@xsettingsClass.name}(Builder settingsBuilder) throws IOException {
     super(settingsBuilder.getExecutorProvider(),
-          settingsBuilder.getChannelProvider());
+          settingsBuilder.getChannelProvider(),
+          settingsBuilder.getCredentialsProvider());
 
     @join settings : xsettingsClass.callSettings
       {@settings.memberName} = settingsBuilder.{@settings.settingsGetFunction}().build();
@@ -508,6 +508,7 @@
   private Builder() {
     @if xsettingsClass.hasDefaultInstance
       super(defaultChannelProviderBuilder().build());
+      setCredentialsProvider(defaultCredentialsProviderBuilder().build());
     @else
       super((InstantiatingChannelProvider) null);
     @end
@@ -609,6 +610,12 @@
   @@Override
   public Builder setChannelProvider(ChannelProvider channelProvider) {
     super.setChannelProvider(channelProvider);
+    return this;
+  }
+
+  @@Override
+  public Builder setCredentialsProvider(CredentialsProvider credentialsProvider) {
+    super.setCredentialsProvider(credentialsProvider);
     return this;
   }
 

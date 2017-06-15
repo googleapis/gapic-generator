@@ -62,14 +62,22 @@ public class NodeJSGapicSurfaceDocTransformer implements ModelToViewTransformer 
     SurfaceNamer namer =
         new NodeJSSurfaceNamer(productConfig.getPackageName(), NodeJSUtils.isGcloud(productConfig));
     JSCommentReformatter commentReformatter = new JSCommentReformatter();
+
     GrpcDocView.Builder doc = GrpcDocView.newBuilder();
     doc.templateFileName(DOC_TEMPLATE_FILENAME);
-    doc.outputPath("src/doc_" + namer.getProtoFileName(file));
+    doc.outputPath(getOutputPath(namer, file));
     doc.fileHeader(
         fileHeaderTransformer.generateFileHeader(
             productConfig, ImportSectionView.newBuilder().build(), namer));
     doc.elementDocs(grpcElementDocTransformer.generateElementDocs(typeTable, namer, file));
     doc.isExternalFile(commentReformatter.isExternalFile(file));
     return doc.build();
+  }
+
+  private String getOutputPath(SurfaceNamer namer, ProtoFile file) {
+    String version = namer.getApiWrapperModuleVersion();
+    boolean hasVersion = version != null && !version.isEmpty();
+    String path = hasVersion ? "src/" + version + "/doc/" : "src/doc/";
+    return path + "doc_" + namer.getProtoFileName(file);
   }
 }
