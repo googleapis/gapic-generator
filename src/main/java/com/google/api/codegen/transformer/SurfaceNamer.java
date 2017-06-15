@@ -103,8 +103,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
    *
    * <p>For example: "LoggingServiceV2" becomes Name("Logging")
    */
-  public Name getReducedServiceName(Interface apiInterface) {
-    String name = apiInterface.getSimpleName().replaceAll("V[0-9]+$", "");
+  public Name getReducedServiceName(String interfaceSimpleName) {
+    String name = interfaceSimpleName.replaceAll("V[0-9]+$", "");
     name = name.replaceAll("Service$", "");
     return Name.upperCamel(name);
   }
@@ -599,6 +599,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The name of the class that contains paged list response wrappers. */
   public String getPagedResponseWrappersClassName() {
     return publicClassName(Name.upperCamel("PagedResponseWrappers"));
+  }
+
+  /** The sample application class name. */
+  public String getSampleAppClassName() {
+    return publicClassName(Name.upperCamel("SampleApp"));
   }
 
   /**
