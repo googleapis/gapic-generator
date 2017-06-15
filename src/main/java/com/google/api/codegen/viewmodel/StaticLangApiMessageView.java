@@ -14,8 +14,6 @@
  */
 package com.google.api.codegen.viewmodel;
 
-import com.google.api.codegen.SnippetSetRunner;
-import com.google.api.codegen.discovery.Schema;
 import com.google.auto.value.AutoValue;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -30,15 +28,9 @@ import javax.annotation.Nullable;
  * https://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.7.
  */
 @AutoValue
-public abstract class StaticLangApiMessageView implements ViewModel {
-
-  // The possibly-transformed ID of the schema from the Discovery Doc
-  public abstract String typeName();
-
-  // The type of this schema.
-  public abstract Schema.Type type();
-
+public abstract class StaticLangApiMessageView {
   @Nullable
+  // TODO(andrealin) Populate and render this field.
   public abstract String description();
 
   @Nullable
@@ -50,20 +42,25 @@ public abstract class StaticLangApiMessageView implements ViewModel {
   // TODO(andrealin) Populate and render this field.
   public abstract List<String> enumValues();
 
+  // The possibly-transformed ID of the schema from the Discovery Doc
+  public abstract String name();
+
+  // The type name for this Schema when rendered as a field in a parent Schema, e.g. "List<Operation>".
+  public abstract String typeName();
+
+  // The type name for this Schema when rendered as a class name, e.g. "Operation".
+  public abstract String innerTypeName();
+
+  // For static languages, name for getter function.
+  @Nullable
+  public abstract String fieldGetFunction();
+
+  // For static languages, name for setter function.
+  @Nullable
+  public abstract String fieldSetFunction();
+
   // There can be arbitrarily nested fields inside of this field.
-  @Nullable
-  public abstract List<SimpleMessagePropertyView> properties();
-
-  @Override
-  public String resourceRoot() {
-    return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
-  }
-
-  @Nullable
-  public abstract String templateFileName();
-
-  @Nullable
-  public abstract String outputPath();
+  public abstract List<StaticLangApiMessageView> properties();
 
   public static StaticLangApiMessageView.Builder newBuilder() {
     return new AutoValue_StaticLangApiMessageView.Builder();
@@ -73,7 +70,7 @@ public abstract class StaticLangApiMessageView implements ViewModel {
   public abstract static class Builder {
     public abstract StaticLangApiMessageView.Builder typeName(String val);
 
-    public abstract StaticLangApiMessageView.Builder type(Schema.Type val);
+    public abstract StaticLangApiMessageView.Builder name(String val);
 
     public abstract StaticLangApiMessageView.Builder description(String val);
 
@@ -81,12 +78,13 @@ public abstract class StaticLangApiMessageView implements ViewModel {
 
     public abstract StaticLangApiMessageView.Builder enumValues(List<String> val);
 
-    public abstract StaticLangApiMessageView.Builder properties(
-        List<SimpleMessagePropertyView> val);
+    public abstract StaticLangApiMessageView.Builder innerTypeName(String val);
 
-    public abstract StaticLangApiMessageView.Builder templateFileName(String val);
+    public abstract StaticLangApiMessageView.Builder fieldGetFunction(String val);
 
-    public abstract StaticLangApiMessageView.Builder outputPath(String val);
+    public abstract StaticLangApiMessageView.Builder fieldSetFunction(String val);
+
+    public abstract StaticLangApiMessageView.Builder properties(List<StaticLangApiMessageView> val);
 
     public abstract StaticLangApiMessageView build();
   }

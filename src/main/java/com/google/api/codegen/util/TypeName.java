@@ -104,4 +104,12 @@ public class TypeName {
     }
     return result;
   }
+
+  /**
+   * Renders the short name of this type given its pattern, and adds any necessary nicknames to the
+   * given type table.
+   */
+  public List<TypeName> getInnerTypeNames() {
+    return innerTypeNames;
+  }
 }

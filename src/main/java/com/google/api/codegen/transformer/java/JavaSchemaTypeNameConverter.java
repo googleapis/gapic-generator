@@ -20,9 +20,11 @@ import com.google.api.codegen.discovery.Node;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.discovery.Schema.Type;
 import com.google.api.codegen.transformer.SchemaTypeNameConverter;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.codegen.util.TypedValue;
+import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.common.base.Strings;
 
@@ -33,9 +35,11 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
   private static final String DEFAULT_JAVA_PACKAGE_PREFIX = "com.google.discovery";
 
   private TypeNameConverter typeNameConverter;
+  private JavaNameFormatter nameFormatter;
 
-  public JavaSchemaTypeNameConverter(String implicitPackageName) {
+  public JavaSchemaTypeNameConverter(String implicitPackageName, JavaNameFormatter nameFormatter) {
     this.typeNameConverter = new JavaTypeTable(implicitPackageName);
+    this.nameFormatter = nameFormatter;
   }
 
   private static String getPrimitiveTypeName(Schema schema) {
@@ -116,6 +120,9 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
   /**
    * Returns the Java representation of a type, without cardinality. If the type is a Java
    * primitive, basicTypeName returns it in unboxed form.
+   *
+   * @param schema The Schema to generate a TypeName from.
+   *     <p>This method will be recursively called on the given schema's children.
    */
   private TypeName getTypeNameForElementType(Schema schema, boolean shouldBoxPrimitives) {
     String primitiveTypeName = getPrimitiveTypeName(schema);
@@ -148,9 +155,15 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
           && !schema.additionalProperties().reference().isEmpty()) {
         shortName = schema.additionalProperties().reference();
       } else {
-        // TODO(andrealin): Treat nested schemas as inner classes.
-        shortName = "Object";
-        packageName = "java.lang";
+        // This schema has a parent Schema.
+        shortName = nameFormatter.publicClassName(Name.anyCamel(schema.key()));
+        // TODO(andrealin): If parent is just an "item" Schema, go to grandparent for parentName.
+        String parentName =
+            schema.parent().id().isEmpty()
+                ? ((Schema) schema.parent()).key()
+                : schema.parent().id();
+        packageName =
+            packageName + "." + nameFormatter.publicClassName(Name.anyCamel(parentName)).toString();
       }
       String longName = packageName + "." + shortName;
 
@@ -206,7 +219,6 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
    */
   @Override
   public TypedValue getSnippetZeroValue(Schema schema) {
-    // Don't call importAndGetShortestName; we don't need to import these.
     if (schema.type() == Schema.Type.ARRAY) {
       return TypedValue.create(typeNameConverter.getTypeName("java.util.ArrayList"), "new %s<>()");
     }

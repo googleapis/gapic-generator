@@ -118,7 +118,7 @@ public abstract class Document implements Node {
     Map<String, Schema> schemas = new HashMap<>();
     DiscoveryNode schemasNode = root.getObject("schemas");
     for (String name : schemasNode.getFieldNames()) {
-      schemas.put(name, Schema.from(schemasNode.getObject(name), null));
+      schemas.put(name, Schema.from(schemasNode.getObject(name), name, null));
     }
     return schemas;
   }
