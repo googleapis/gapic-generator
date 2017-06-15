@@ -102,7 +102,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     for (Schema schema : context.getDocument().schemas().values()) {
       Map<SchemaInterfaceContext, StaticLangApiMessageView> contextViews =
           new TreeMap<>(SchemaInterfaceContext.comparator);
-      generateSchemaClasses(contextViews, context, schema, SymbolTable.fromSeed(reservedKeywords));
+      generateSchemaClasses(contextViews, context, schema);
       for (Map.Entry<SchemaInterfaceContext, StaticLangApiMessageView> contextView :
           contextViews.entrySet()) {
         surfaceSchemas.add(generateSchemaFile(contextView.getKey(), contextView.getValue()));
@@ -137,20 +137,18 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
   private void generateSchemaClasses(
       Map<SchemaInterfaceContext, StaticLangApiMessageView> messageViewAccumulator,
       DiscoGapicInterfaceContext documentContext,
-      Schema schema,
-      SymbolTable symbolTable) {
+      Schema schema) {
 
     SchemaTypeTable schemaTypeTable = documentContext.getSchemaTypeTable().cloneEmpty();
 
     SchemaInterfaceContext context =
-        SchemaInterfaceContext.create(
-            schema, schemaTypeTable, SymbolTable.fromSeed(reservedKeywords), documentContext);
+        SchemaInterfaceContext.create(schema, schemaTypeTable, documentContext);
 
     StaticLangApiMessageView.Builder schemaView = StaticLangApiMessageView.newBuilder();
 
     // Child schemas cannot have the same symbols as parent schemas, but sibling schemas can have
     // the same symbols.
-    SymbolTable symbolTableCopy = symbolTable.clone();
+    SymbolTable symbolTableCopy = SymbolTable.fromSeed(reservedKeywords);
 
     String schemaId =
         Name.anyCamel(schema.id().isEmpty() ? schema.key() : schema.id()).toLowerCamel();
@@ -181,11 +179,12 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     for (Schema property : schemaProperties.values()) {
       Map<SchemaInterfaceContext, StaticLangApiMessageView> propertyViewAccumulator =
           new TreeMap<>(SchemaInterfaceContext.comparator);
-      generateSchemaClasses(propertyViewAccumulator, documentContext, property, symbolTableCopy);
+      generateSchemaClasses(propertyViewAccumulator, documentContext, property);
       properties.addAll(propertyViewAccumulator.values());
       for (Map.Entry<SchemaInterfaceContext, StaticLangApiMessageView> contextView :
           propertyViewAccumulator.entrySet()) {
-        if (!contextView.getValue().properties().isEmpty()) {
+        if (!contextView.getValue().properties().isEmpty()
+            && contextView.getKey().getSchema().type() != Type.ARRAY) {
           messageViewAccumulator.put(contextView.getKey(), contextView.getValue());
         }
       }

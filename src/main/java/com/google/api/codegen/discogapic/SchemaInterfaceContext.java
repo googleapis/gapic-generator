@@ -20,7 +20,6 @@ import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.SchemaTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.TypeTable;
 import com.google.auto.value.AutoValue;
 import java.util.Comparator;
@@ -34,18 +33,13 @@ import java.util.Comparator;
 @AutoValue
 public abstract class SchemaInterfaceContext implements InterfaceContext {
   public static SchemaInterfaceContext create(
-      Schema schema,
-      SchemaTypeTable typeTable,
-      SymbolTable symbolTable,
-      DiscoGapicInterfaceContext docContext) {
-    return new AutoValue_SchemaInterfaceContext(schema, typeTable, symbolTable, docContext);
+      Schema schema, SchemaTypeTable typeTable, DiscoGapicInterfaceContext docContext) {
+    return new AutoValue_SchemaInterfaceContext(schema, typeTable, docContext);
   }
 
   public abstract Schema getSchema();
 
   public abstract SchemaTypeTable getSchemaTypeTable();
-
-  public abstract SymbolTable getSymbolTable();
 
   /** @return the parent Document-level InterfaceContext. */
   public abstract DiscoGapicInterfaceContext getDocContext();
@@ -75,8 +69,7 @@ public abstract class SchemaInterfaceContext implements InterfaceContext {
   }
 
   public SchemaInterfaceContext withNewTypeTable() {
-    return create(
-        getSchema(), getSchemaTypeTable().cloneEmpty(), getSymbolTable(), getDocContext());
+    return create(getSchema(), getSchemaTypeTable().cloneEmpty(), getDocContext());
   }
 
   public DiscoGapicInterfaceConfig getInterfaceConfig() {
