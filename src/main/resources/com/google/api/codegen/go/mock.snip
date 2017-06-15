@@ -28,6 +28,7 @@
         "google.golang.org/grpc"
         "google.golang.org/grpc/codes"
         "google.golang.org/grpc/metadata"
+        gstatus "google.golang.org/grpc/status"
     )
 
     var _ = io.EOF
@@ -259,14 +260,16 @@
                 },
             })
         @else
-            {@test.mockServiceVarName}.err = grpc.Errorf(errCode, "test error")
+            {@test.mockServiceVarName}.err = gstatus.Error(errCode, "test error")
         @end
 
         {@initCode(test.initCode)}
 
         {@callMock(test)}
 
-        if c := grpc.Code(err); c != errCode {
+        if st, ok := gstatus.FromError(err); !ok {
+            t.Errorf("got error %v, expected grpc error", err)
+        } else if c := st.Code(); c != errCode {
             t.Errorf("got error code %q, want %q", c, errCode)
         }
         @if test.hasReturnValue

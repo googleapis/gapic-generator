@@ -253,7 +253,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
     boolean hasVersion = version != null && !version.isEmpty();
     ArrayList<VersionIndexRequireView> requireViews = new ArrayList<>();
     for (Interface apiInterface : apiInterfaces) {
-      Name serviceName = namer.getReducedServiceName(apiInterface);
+      Name serviceName = namer.getReducedServiceName(apiInterface.getSimpleName());
       String localName =
           hasVersion ? serviceName.join(version).toLowerCamel() : serviceName.toLowerCamel();
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
