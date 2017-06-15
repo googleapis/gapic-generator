@@ -61,7 +61,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
   public String getPathTemplateName(
       Interface apiInterface, SingleResourceNameConfig resourceNameConfig) {
     return inittedConstantName(
-        getReducedServiceName(apiInterface)
+        getReducedServiceName(apiInterface.getSimpleName())
             .join(resourceNameConfig.getEntityName())
             .join("path")
             .join("template"));
@@ -77,7 +77,9 @@ public class GoSurfaceNamer extends SurfaceNamer {
   public String getFormatFunctionName(
       Interface apiInterface, SingleResourceNameConfig resourceNameConfig) {
     return publicMethodName(
-        getReducedServiceName(apiInterface).join(resourceNameConfig.getEntityName()).join("path"));
+        getReducedServiceName(apiInterface.getSimpleName())
+            .join(resourceNameConfig.getEntityName())
+            .join("path"));
   }
 
   @Override
@@ -159,19 +161,26 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getCallSettingsTypeName(Interface apiInterface) {
-    return publicClassName(clientNamePrefix(apiInterface).join("call").join("options"));
+    return publicClassName(
+        clientNamePrefix(apiInterface.getSimpleName()).join("call").join("options"));
   }
 
   @Override
   public String getDefaultApiSettingsFunctionName(Interface apiInterface) {
     return privateMethodName(
-        Name.from("default").join(clientNamePrefix(apiInterface)).join("client").join("options"));
+        Name.from("default")
+            .join(clientNamePrefix(apiInterface.getSimpleName()))
+            .join("client")
+            .join("options"));
   }
 
   @Override
   public String getDefaultCallSettingsFunctionName(Interface apiInterface) {
     return privateMethodName(
-        Name.from("default").join(clientNamePrefix(apiInterface)).join("call").join("options"));
+        Name.from("default")
+            .join(clientNamePrefix(apiInterface.getSimpleName()))
+            .join("call")
+            .join("options"));
   }
 
   @Override
@@ -183,18 +192,23 @@ public class GoSurfaceNamer extends SurfaceNamer {
   public String getApiWrapperClassName(InterfaceConfig interfaceConfig) {
     // TODO support non-Gapic inputs
     GapicInterfaceConfig gapicInterfaceConfig = (GapicInterfaceConfig) interfaceConfig;
-    return publicClassName(clientNamePrefix(gapicInterfaceConfig.getInterface()).join("client"));
+    return publicClassName(
+        clientNamePrefix(gapicInterfaceConfig.getInterface().getSimpleName()).join("client"));
   }
 
   @Override
   public String getApiWrapperClassConstructorName(Interface apiInterface) {
-    return publicMethodName(Name.from("new").join(clientNamePrefix(apiInterface)).join("client"));
+    return publicMethodName(
+        Name.from("new").join(clientNamePrefix(apiInterface.getSimpleName())).join("client"));
   }
 
   @Override
   public String getApiWrapperClassConstructorExampleName(Interface apiInterface) {
     return publicMethodName(
-        Name.from("example").join("new").join(clientNamePrefix(apiInterface)).join("client"));
+        Name.from("example")
+            .join("new")
+            .join(clientNamePrefix(apiInterface.getSimpleName()))
+            .join("client"));
   }
 
   @Override
@@ -226,11 +240,13 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @VisibleForTesting
-  Name clientNamePrefix(Interface apiInterface) {
-    Name name = getReducedServiceName(apiInterface);
+  Name clientNamePrefix(String interfaceSimpleName) {
+    Name name = getReducedServiceName(interfaceSimpleName);
     // If the service name matches the package name, don't include the service name in the prefix.
     // Eg, instead of "library.NewLibraryClient", we want "library.NewClient".
-    if (Name.from(getLocalPackageName()).equals(name)) {
+    // The casing of the service name does not matter.
+    // Elements of the package path are usually all lowercase, even if they are multi-worded.
+    if (name.toLowerCamel().equalsIgnoreCase(getLocalPackageName())) {
       return Name.from();
     }
     return name;
@@ -260,18 +276,22 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getServiceFileName(GapicInterfaceConfig interfaceConfig) {
-    return classFileNameBase(getReducedServiceName(interfaceConfig.getInterface()).join("client"));
+    return classFileNameBase(
+        getReducedServiceName(interfaceConfig.getInterface().getSimpleName()).join("client"));
   }
 
   @Override
   public String getExampleFileName(Interface apiInterface) {
     return classFileNameBase(
-        getReducedServiceName(apiInterface).join("client").join("example").join("test"));
+        getReducedServiceName(apiInterface.getSimpleName())
+            .join("client")
+            .join("example")
+            .join("test"));
   }
 
   @Override
   public String getStubName(Interface apiInterface) {
-    return privateFieldName(clientNamePrefix(apiInterface).join("client"));
+    return privateFieldName(clientNamePrefix(apiInterface.getSimpleName()).join("client"));
   }
 
   @Override
@@ -319,7 +339,9 @@ public class GoSurfaceNamer extends SurfaceNamer {
     // Godoc expects the name to be in format "ExampleMyType_MyMethod";
     // it is the only place we have mixed camel and underscore names.
     return publicMethodName(
-            Name.from("example").join(clientNamePrefix(apiInterface)).join("client"))
+            Name.from("example")
+                .join(clientNamePrefix(apiInterface.getSimpleName()))
+                .join("client"))
         + "_"
         + functionName;
   }
@@ -327,12 +349,13 @@ public class GoSurfaceNamer extends SurfaceNamer {
   @Override
   public String getMockGrpcServiceImplName(Interface apiInterface) {
     return privateClassName(
-        Name.from("mock").join(getReducedServiceName(apiInterface)).join("server"));
+        Name.from("mock").join(getReducedServiceName(apiInterface.getSimpleName())).join("server"));
   }
 
   @Override
   public String getMockServiceVarName(Interface apiInterface) {
-    return localVarName(Name.from("mock").join(getReducedServiceName(apiInterface)));
+    return localVarName(
+        Name.from("mock").join(getReducedServiceName(apiInterface.getSimpleName())));
   }
 
   @Override
