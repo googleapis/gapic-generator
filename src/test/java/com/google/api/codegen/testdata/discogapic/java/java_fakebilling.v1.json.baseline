@@ -786,6 +786,14 @@ public class FakebillingClient implements AutoCloseable {
     ChannelAndExecutor channelAndExecutor = settings.getChannelAndExecutor();
     this.executor = channelAndExecutor.getExecutor();
     this.channel = channelAndExecutor.getChannel();
+    Credentials credentials = settings.getCredentialsProvider().getCredentials();
+
+    ClientContext clientContext =
+        ClientContext.newBuilder()
+            .setExecutor(this.executor)
+            .setChannel(this.channel)
+            .setCredentials(credentials)
+            .build();
 
 
 
