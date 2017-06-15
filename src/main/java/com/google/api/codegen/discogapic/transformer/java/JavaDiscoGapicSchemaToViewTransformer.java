@@ -57,6 +57,12 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(importSectionTransformer);
   private final JavaNameFormatter nameFormatter = new JavaNameFormatter();
+  private static Set<String> reservedKeywords = new HashSet<>();
+
+  static {
+    reservedKeywords.addAll(JavaNameFormatter.RESERVED_IDENTIFIER_SET);
+    reservedKeywords.add("Builder");
+  }
 
   private static final String XAPI_TEMPLATE_FILENAME = "java/main.snip";
   private static final String PACKAGE_INFO_TEMPLATE_FILENAME = "java/package-info.snip";
@@ -88,11 +94,19 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
             new JavaSurfaceNamer(productConfig.getPackageName()),
             JavaFeatureConfig.newBuilder().enableStringFormatFunctions(false).build());
 
-    StaticLangApiMessageFileView apiFile;
+    // Escape any schema's field names that are Java keywords.
+    Set<String> reservedKeywords = new HashSet<>();
+    reservedKeywords.addAll(JavaNameFormatter.RESERVED_IDENTIFIER_SET);
+    reservedKeywords.add("Builder");
 
     for (Schema schema : context.getDocument().schemas().values()) {
-      apiFile = generateSchemaFile(context, schema);
-      surfaceSchemas.add(apiFile);
+      Map<SchemaInterfaceContext, StaticLangApiMessageView> contextViews =
+          new TreeMap<>(SchemaInterfaceContext.comparator);
+      generateSchemaClasses(contextViews, context, schema, SymbolTable.fromSeed(reservedKeywords));
+      for (Map.Entry<SchemaInterfaceContext, StaticLangApiMessageView> contextView :
+          contextViews.entrySet()) {
+        surfaceSchemas.add(generateSchemaFile(contextView.getKey(), contextView.getValue()));
+      }
     }
     return surfaceSchemas;
   }
@@ -103,33 +117,15 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
         new JavaSchemaTypeNameConverter(implicitPackageName, nameFormatter));
   }
 
+  /* Given a message view, creates a top-level message file view. */
   private StaticLangApiMessageFileView generateSchemaFile(
-      DiscoGapicInterfaceContext documentContext, Schema schema) {
+      SchemaInterfaceContext context, StaticLangApiMessageView messageView) {
     StaticLangApiMessageFileView.Builder apiFile = StaticLangApiMessageFileView.newBuilder();
-
     apiFile.templateFileName(SCHEMA_TEMPLATE_FILENAME);
-
-    // Escape any schema's field names that are Java keywords.
-    Set<String> reservedKeywords = new HashSet<>();
-    reservedKeywords.addAll(JavaNameFormatter.RESERVED_IDENTIFIER_SET);
-    reservedKeywords.add("Builder");
-
-    SchemaInterfaceContext context =
-        SchemaInterfaceContext.create(
-            schema,
-            documentContext.getSchemaTypeTable().cloneEmpty(),
-            SymbolTable.fromSeed(reservedKeywords),
-            documentContext);
-
     addApiImports(context.getSchemaTypeTable());
-
-    StaticLangApiMessageView messageView =
-        generateSchemaClass(
-            context, schema, context.getSchemaTypeTable(), context.getSymbolTable());
-
     apiFile.schema(messageView);
 
-    String outputPath = pathMapper.getOutputPath(null, documentContext.getProductConfig());
+    String outputPath = pathMapper.getOutputPath(null, context.getDocContext().getProductConfig());
     apiFile.outputPath(outputPath + File.separator + messageView.typeName() + ".java");
 
     // must be done as the last step to catch all imports
@@ -138,11 +134,17 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     return apiFile.build();
   }
 
-  private StaticLangApiMessageView generateSchemaClass(
-      SchemaInterfaceContext context,
+  private void generateSchemaClasses(
+      Map<SchemaInterfaceContext, StaticLangApiMessageView> messageViewAccumulator,
+      DiscoGapicInterfaceContext documentContext,
       Schema schema,
-      SchemaTypeTable schemaTypeTable,
       SymbolTable symbolTable) {
+
+    SchemaTypeTable schemaTypeTable = documentContext.getSchemaTypeTable().cloneEmpty();
+
+    SchemaInterfaceContext context =
+        SchemaInterfaceContext.create(
+            schema, schemaTypeTable, SymbolTable.fromSeed(reservedKeywords), documentContext);
 
     StaticLangApiMessageView.Builder schemaView = StaticLangApiMessageView.newBuilder();
 
@@ -177,12 +179,20 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       schemaProperties.putAll(schema.items().properties());
     }
     for (Schema property : schemaProperties.values()) {
-      properties.add(
-          generateSchemaClass(context, property, schemaTypeTable, symbolTableCopy));
+      Map<SchemaInterfaceContext, StaticLangApiMessageView> propertyViewAccumulator =
+          new TreeMap<>(SchemaInterfaceContext.comparator);
+      generateSchemaClasses(propertyViewAccumulator, documentContext, property, symbolTableCopy);
+      properties.addAll(propertyViewAccumulator.values());
+      for (Map.Entry<SchemaInterfaceContext, StaticLangApiMessageView> contextView :
+          propertyViewAccumulator.entrySet()) {
+        if (!contextView.getValue().properties().isEmpty()) {
+          messageViewAccumulator.put(contextView.getKey(), contextView.getValue());
+        }
+      }
     }
     schemaView.properties(properties);
 
-    return schemaView.build();
+    messageViewAccumulator.put(context, schemaView.build());
   }
 
   private void addApiImports(SchemaTypeTable typeTable) {

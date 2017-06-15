@@ -23,10 +23,11 @@ import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.TypeTable;
 import com.google.auto.value.AutoValue;
+import java.util.Comparator;
 
 /**
  * The context for transforming a single top-level schema from Discovery Doc API into a top-level
- * view model for client library generation.
+ * view for client library generation.
  *
  * <p>This context contains a reference to the parent Document context.
  */
@@ -81,4 +82,14 @@ public abstract class SchemaInterfaceContext implements InterfaceContext {
   public DiscoGapicInterfaceConfig getInterfaceConfig() {
     return (DiscoGapicInterfaceConfig) getProductConfig().getInterfaceConfig(getSchema().id());
   }
+
+  public static Comparator<SchemaInterfaceContext> comparator =
+      new Comparator<SchemaInterfaceContext>() {
+        @Override
+        public int compare(SchemaInterfaceContext o1, SchemaInterfaceContext o2) {
+          String s1 = o1.getSchema().id().isEmpty() ? o1.getSchema().key() : o1.getSchema().id();
+          String s2 = o2.getSchema().id().isEmpty() ? o2.getSchema().key() : o2.getSchema().id();
+          return String.CASE_INSENSITIVE_ORDER.compare(s1, s2);
+        }
+      };
 }

@@ -60,7 +60,7 @@ public abstract class StaticLangApiMessageView {
   public abstract String fieldSetFunction();
 
   // There can be arbitrarily nested fields inside of this field.
-  public abstract List<SimpleMessagePropertyView> properties();
+  public abstract List<StaticLangApiMessageView> properties();
 
   public static StaticLangApiMessageView.Builder newBuilder() {
     return new AutoValue_StaticLangApiMessageView.Builder();
@@ -84,7 +84,7 @@ public abstract class StaticLangApiMessageView {
 
     public abstract StaticLangApiMessageView.Builder fieldSetFunction(String val);
 
-    public abstract StaticLangApiMessageView.Builder properties(List<SimpleMessagePropertyView> val);
+    public abstract StaticLangApiMessageView.Builder properties(List<StaticLangApiMessageView> val);
 
     public abstract StaticLangApiMessageView build();
   }
