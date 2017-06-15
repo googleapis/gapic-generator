@@ -32,28 +32,35 @@ public abstract class JavaPackageMetadataTransformer {
   protected abstract Map<String, String> getSnippetsOutput();
 
   public List<PackageMetadataView> transform(Model model, PackageMetadataConfig config) {
-    return generateMetadataView(model, config);
+    List<PackageMetadataView> views = new ArrayList<>();
+    for (PackageMetadataView.Builder builder : generateMetadataViewBuilders(model, config)) {
+      views.add(builder.build());
+    }
+    return views;
   }
 
-  private List<PackageMetadataView> generateMetadataView(
+  /**
+   * Creates a partially initialized builders that can be used to build PackageMetadataViews later.
+   */
+  protected final List<PackageMetadataView.Builder> generateMetadataViewBuilders(
       Model model, PackageMetadataConfig config) {
     JavaPackageMetadataNamer namer =
         new JavaPackageMetadataNamer(
             config.packageName(TargetLanguage.JAVA), config.generationLayer());
-    ArrayList<PackageMetadataView> views = new ArrayList<>();
-    for (String template : getSnippetsOutput().keySet()) {
-      PackageMetadataView view =
+
+    ArrayList<PackageMetadataView.Builder> viewBuilders = new ArrayList<>();
+    for (Map.Entry<String, String> entry : getSnippetsOutput().entrySet()) {
+      PackageMetadataView.Builder viewBuilder =
           metadataTransformer
               .generateMetadataView(
-                  config, model, template, getSnippetsOutput().get(template), TargetLanguage.JAVA)
+                  config, model, entry.getKey(), entry.getValue(), TargetLanguage.JAVA)
               .identifier(namer.getMetadataIdentifier())
               .protoPackageName(namer.getProtoPackageName())
               .grpcPackageName(namer.getGrpcPackageName())
               .generationLayer(config.generationLayer())
-              .apiCommonVersionBound(config.apiCommonVersionBound(TargetLanguage.JAVA))
-              .build();
-      views.add(view);
+              .apiCommonVersionBound(config.apiCommonVersionBound(TargetLanguage.JAVA));
+      viewBuilders.add(viewBuilder);
     }
-    return views;
+    return viewBuilders;
   }
 }

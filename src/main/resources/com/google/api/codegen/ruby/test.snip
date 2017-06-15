@@ -119,6 +119,7 @@
     @if test.hasReturnValue
       @# Create expected grpc response
       {@initCode(test.mockResponse.initCode)}
+      expected_response = Google::Gax::to_proto(expected_response, {@test.fullyQualifiedResponseTypeName})
     @end
 
     @# Mock Grpc layer
@@ -150,6 +151,7 @@
     @end
     @# Create expected grpc response
     {@initCode(test.mockResponse.initCode)}
+    expected_response = Google::Gax::to_proto(expected_response, {@test.fullyQualifiedResponseTypeName})
 
     @# Mock Grpc layer
     {@mockUnaryRequest(test)}
@@ -181,6 +183,7 @@
     @end
     @# Create expected grpc response
     {@initCode(test.mockResponse.initCode)}
+    expected_response = Google::Gax::to_proto(expected_response, {@test.fullyQualifiedResponseTypeName})
     result = Google::Protobuf::Any.new
     result.pack(expected_response)
     operation = Google::Longrunning::Operation.new(
@@ -246,6 +249,7 @@
     @end
     @# Create expected grpc response
     {@initCode(test.mockResponse.initCode)}
+    expected_response = Google::Gax::to_proto(expected_response, {@test.fullyQualifiedResponseTypeName})
 
     @# Mock Grpc layer
     {@mockServerStreamingRequest(test)}
@@ -272,6 +276,7 @@
 
       @# Create expected grpc response
       {@initCode(test.mockResponse.initCode)}
+      expected_response = Google::Gax::to_proto(expected_response, {@test.fullyQualifiedResponseTypeName})
     @end
 
     @# Mock Grpc layer
@@ -301,6 +306,7 @@
 
     @# Create expected grpc response
     {@initCode(test.mockResponse.initCode)}
+    expected_response = Google::Gax::to_proto(expected_response, {@test.fullyQualifiedResponseTypeName})
 
     @# Mock Grpc layer
     {@mockBidiStreamingRequest(test)}
@@ -450,15 +456,20 @@
 @end
 
 @private requestAsserts(test)
-   @join assert : test.asserts
-     assert_equal(\
-       {@expectedValue(assert)}, \
-       request.{@assert.actualValueGetter})
-   @end
+  assert_instance_of({@test.fullyQualifiedRequestTypeName}, request)
+  @join assert : test.asserts
+    assert_equal(\
+      {@expectedValue(assert)}, \
+      request.{@assert.actualValueGetter})
+  @end
 @end
 
 @private expectedValue(assert)
-  {@assert.expectedValueIdentifier}
+  @if assert.hasMessageTypeName
+    Google::Gax::to_proto({@assert.expectedValueIdentifier}, {@assert.messageTypeName})
+  @else
+    {@assert.expectedValueIdentifier}
+  @end
 @end
 
 @private methodCallWithResponse(test)
