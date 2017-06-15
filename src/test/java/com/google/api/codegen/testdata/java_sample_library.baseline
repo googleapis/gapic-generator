@@ -1,0 +1,52 @@
+============== file: build.gradle ==============
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+}
+
+apply plugin: 'java'
+apply plugin: 'application'
+
+description = 'Sample client library for google-cloud-library-v1'
+group = "com.google.api"
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+repositories {
+  mavenCentral()
+  mavenLocal()
+}
+
+dependencies {
+  compile project(":grpc-google-cloud-library-v1"),
+    'com.google.api:gax:1.0.0',
+    'com.google.api:gax-grpc:0.18.0',
+    'commons-cli:commons-cli:1.4',
+    'commons-lang:commons-lang:2.6',
+    // This dependency needs to be update-to-date with the version that gRPC expects.
+    'io.netty:netty-tcnative-boringssl-static:1.1.33.Fork26'
+}
+
+sourceSets {
+  main {
+    java {
+      srcDir 'src/main/java'
+    }
+  }
+}
+
+jar {
+  from {
+    (configurations.runtime).collect {
+        it.isDirectory() ? it : zipTree(it)
+    }
+  }
+  manifest {
+    attributes(
+      'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+      'Main-Class': 'com.google.gcloud.pubsub.spi.SampleApp'
+    )
+  }
+}
+

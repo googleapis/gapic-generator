@@ -65,7 +65,7 @@ public class GrpcElementDocTransformer {
     for (Field field : fields) {
       SimpleParamDocView.Builder doc = SimpleParamDocView.newBuilder();
       doc.paramName(namer.getFieldKey(field));
-      doc.typeName(namer.getParamTypeName(typeTable, field.getType()));
+      doc.typeName(namer.getMessagePropertyTypeName(typeTable, field.getType()));
       doc.lines(namer.getDocLines(field));
       propertyDocs.add(doc.build());
     }

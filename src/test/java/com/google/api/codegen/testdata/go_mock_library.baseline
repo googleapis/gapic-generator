@@ -42,6 +42,7 @@ import (
     "google.golang.org/grpc"
     "google.golang.org/grpc/codes"
     "google.golang.org/grpc/metadata"
+    gstatus "google.golang.org/grpc/status"
 )
 
 var _ = io.EOF
@@ -507,7 +508,7 @@ func TestLibraryServiceCreateShelf(t *testing.T) {
 
 func TestLibraryServiceCreateShelfError(t *testing.T) {
     errCode := codes.PermissionDenied
-    mockLibrary.err = grpc.Errorf(errCode, "test error")
+    mockLibrary.err = gstatus.Error(errCode, "test error")
 
     var shelf *librarypb.Shelf = &librarypb.Shelf{}
     var request = &librarypb.CreateShelfRequest{
@@ -521,7 +522,9 @@ func TestLibraryServiceCreateShelfError(t *testing.T) {
 
     resp, err := c.CreateShelf(context.Background(), request)
 
-    if c := grpc.Code(err); c != errCode {
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
         t.Errorf("got error code %q, want %q", c, errCode)
     }
     _ = resp
@@ -570,7 +573,7 @@ func TestLibraryServiceGetShelf(t *testing.T) {
 
 func TestLibraryServiceGetShelfError(t *testing.T) {
     errCode := codes.PermissionDenied
-    mockLibrary.err = grpc.Errorf(errCode, "test error")
+    mockLibrary.err = gstatus.Error(errCode, "test error")
 
     var formattedName string = ShelfPath("[SHELF_ID]")
     var options string = "options-1249474914"
@@ -586,7 +589,9 @@ func TestLibraryServiceGetShelfError(t *testing.T) {
 
     resp, err := c.GetShelf(context.Background(), request)
 
-    if c := grpc.Code(err); c != errCode {
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
         t.Errorf("got error code %q, want %q", c, errCode)
     }
     _ = resp
@@ -639,7 +644,7 @@ func TestLibraryServiceListShelves(t *testing.T) {
 
 func TestLibraryServiceListShelvesError(t *testing.T) {
     errCode := codes.PermissionDenied
-    mockLibrary.err = grpc.Errorf(errCode, "test error")
+    mockLibrary.err = gstatus.Error(errCode, "test error")
 
     var request *librarypb.ListShelvesRequest = &librarypb.ListShelvesRequest{}
 
@@ -650,7 +655,9 @@ func TestLibraryServiceListShelvesError(t *testing.T) {
 
     resp, err := c.ListShelves(context.Background(), request).Next()
 
-    if c := grpc.Code(err); c != errCode {
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
         t.Errorf("got error code %q, want %q", c, errCode)
     }
     _ = resp
@@ -687,7 +694,7 @@ func TestLibraryServiceDeleteShelf(t *testing.T) {
 
 func TestLibraryServiceDeleteShelfError(t *testing.T) {
     errCode := codes.PermissionDenied
-    mockLibrary.err = grpc.Errorf(errCode, "test error")
+    mockLibrary.err = gstatus.Error(errCode, "test error")
 
     var formattedName string = ShelfPath("[SHELF_ID]")
     var request = &librarypb.DeleteShelfRequest{
@@ -701,7 +708,9 @@ func TestLibraryServiceDeleteShelfError(t *testing.T) {
 
     err = c.DeleteShelf(context.Background(), request)
 
-    if c := grpc.Code(err); c != errCode {
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
         t.Errorf("got error code %q, want %q", c, errCode)
     }
 }
@@ -749,7 +758,7 @@ func TestLibraryServiceMergeShelves(t *testing.T) {
 
 func TestLibraryServiceMergeShelvesError(t *testing.T) {
     errCode := codes.PermissionDenied
-    mockLibrary.err = grpc.Errorf(errCode, "test error")
+    mockLibrary.err = gstatus.Error(errCode, "test error")
 
     var formattedName string = ShelfPath("[SHELF_ID]")
     var formattedOtherShelfName string = ShelfPath("[SHELF_ID]")
@@ -765,7 +774,9 @@ func TestLibraryServiceMergeShelvesError(t *testing.T) {
 
     resp, err := c.MergeShelves(context.Background(), request)
 
-    if c := grpc.Code(err); c != errCode {
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
         t.Errorf("got error code %q, want %q", c, errCode)
     }
     _ = resp
@@ -816,7 +827,7 @@ func TestLibraryServiceCreateBook(t *testing.T) {
 
 func TestLibraryServiceCreateBookError(t *testing.T) {
     errCode := codes.PermissionDenied
-    mockLibrary.err = grpc.Errorf(errCode, "test error")
+    mockLibrary.err = gstatus.Error(errCode, "test error")
 
     var formattedName string = ShelfPath("[SHELF_ID]")
     var book *librarypb.Book = &librarypb.Book{}
@@ -832,7 +843,9 @@ func TestLibraryServiceCreateBookError(t *testing.T) {
 
     resp, err := c.CreateBook(context.Background(), request)
 
-    if c := grpc.Code(err); c != errCode {
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
         t.Errorf("got error code %q, want %q", c, errCode)
     }
     _ = resp
@@ -885,7 +898,7 @@ func TestLibraryServicePublishSeries(t *testing.T) {
 
 func TestLibraryServicePublishSeriesError(t *testing.T) {
     errCode := codes.PermissionDenied
-    mockLibrary.err = grpc.Errorf(errCode, "test error")
+    mockLibrary.err = gstatus.Error(errCode, "test error")
 
     var shelf *librarypb.Shelf = &librarypb.Shelf{}
     var books []*librarypb.Book = nil
@@ -908,7 +921,9 @@ func TestLibraryServicePublishSeriesError(t *testing.T) {
 
     resp, err := c.PublishSeries(context.Background(), request)
 
-    if c := grpc.Code(err); c != errCode {
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
         t.Errorf("got error code %q, want %q", c, errCode)
     }
     _ = resp
@@ -957,7 +972,7 @@ func TestLibraryServiceGetBook(t *testing.T) {
 
 func TestLibraryServiceGetBookError(t *testing.T) {
     errCode := codes.PermissionDenied
-    mockLibrary.err = grpc.Errorf(errCode, "test error")
+    mockLibrary.err = gstatus.Error(errCode, "test error")
 
     var formattedName string = BookPath("[SHELF_ID]", "[BOOK_ID]")
     var request = &librarypb.GetBookRequest{
@@ -971,7 +986,9 @@ func TestLibraryServiceGetBookError(t *testing.T) {
 
     resp, err := c.GetBook(context.Background(), request)
 
-    if c := grpc.Code(err); c != errCode {
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
         t.Errorf("got error code %q, want %q", c, errCode)
     }
     _ = resp
@@ -1027,7 +1044,7 @@ func TestLibraryServiceListBooks(t *testing.T) {
 
 func TestLibraryServiceListBooksError(t *testing.T) {
     errCode := codes.PermissionDenied
-    mockLibrary.err = grpc.Errorf(errCode, "test error")
+    mockLibrary.err = gstatus.Error(errCode, "test error")
 
     var formattedName string = ShelfPath("[SHELF_ID]")
     var request = &librarypb.ListBooksRequest{
@@ -1041,7 +1058,9 @@ func TestLibraryServiceListBooksError(t *testing.T) {
 
     resp, err := c.ListBooks(context.Background(), request).Next()
 
-    if c := grpc.Code(err); c != errCode {
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
         t.Errorf("got error code %q, want %q", c, errCode)
     }
     _ = resp
@@ -1078,7 +1097,7 @@ func TestLibraryServiceDeleteBook(t *testing.T) {
 
 func TestLibraryServiceDeleteBookError(t *testing.T) {
     errCode := codes.PermissionDenied
-    mockLibrary.err = grpc.Errorf(errCode, "test error")
+    mockLibrary.err = gstatus.Error(errCode, "test error")
 
     var formattedName string = BookPath("[SHELF_ID]", "[BOOK_ID]")
     var request = &librarypb.DeleteBookRequest{
@@ -1092,7 +1111,9 @@ func TestLibraryServiceDeleteBookError(t *testing.T) {
 
     err = c.DeleteBook(context.Background(), request)
 
-    if c := grpc.Code(err); c != errCode {
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
         t.Errorf("got error code %q, want %q", c, errCode)
     }
 }
@@ -1142,7 +1163,7 @@ func TestLibraryServiceUpdateBook(t *testing.T) {
 
 func TestLibraryServiceUpdateBookError(t *testing.T) {
     errCode := codes.PermissionDenied
-    mockLibrary.err = grpc.Errorf(errCode, "test error")
+    mockLibrary.err = gstatus.Error(errCode, "test error")
 
     var formattedName string = BookPath("[SHELF_ID]", "[BOOK_ID]")
     var book *librarypb.Book = &librarypb.Book{}
@@ -1158,7 +1179,9 @@ func TestLibraryServiceUpdateBookError(t *testing.T) {
 
     resp, err := c.UpdateBook(context.Background(), request)
 
-    if c := grpc.Code(err); c != errCode {
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
         t.Errorf("got error code %q, want %q", c, errCode)
     }
     _ = resp
@@ -1209,7 +1232,7 @@ func TestLibraryServiceMoveBook(t *testing.T) {
 
 func TestLibraryServiceMoveBookError(t *testing.T) {
     errCode := codes.PermissionDenied
-    mockLibrary.err = grpc.Errorf(errCode, "test error")
+    mockLibrary.err = gstatus.Error(errCode, "test error")
 
     var formattedName string = BookPath("[SHELF_ID]", "[BOOK_ID]")
     var formattedOtherShelfName string = ShelfPath("[SHELF_ID]")
@@ -1225,7 +1248,9 @@ func TestLibraryServiceMoveBookError(t *testing.T) {
 
     resp, err := c.MoveBook(context.Background(), request)
 
-    if c := grpc.Code(err); c != errCode {
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
         t.Errorf("got error code %q, want %q", c, errCode)
     }
     _ = resp
@@ -1278,7 +1303,7 @@ func TestLibraryServiceListStrings(t *testing.T) {
 
 func TestLibraryServiceListStringsError(t *testing.T) {
     errCode := codes.PermissionDenied
-    mockLibrary.err = grpc.Errorf(errCode, "test error")
+    mockLibrary.err = gstatus.Error(errCode, "test error")
 
     var request *librarypb.ListStringsRequest = &librarypb.ListStringsRequest{}
 
@@ -1289,7 +1314,9 @@ func TestLibraryServiceListStringsError(t *testing.T) {
 
     resp, err := c.ListStrings(context.Background(), request).Next()
 
-    if c := grpc.Code(err); c != errCode {
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
         t.Errorf("got error code %q, want %q", c, errCode)
     }
     _ = resp
@@ -1336,7 +1363,7 @@ func TestLibraryServiceAddComments(t *testing.T) {
 
 func TestLibraryServiceAddCommentsError(t *testing.T) {
     errCode := codes.PermissionDenied
-    mockLibrary.err = grpc.Errorf(errCode, "test error")
+    mockLibrary.err = gstatus.Error(errCode, "test error")
 
     var formattedName string = BookPath("[SHELF_ID]", "[BOOK_ID]")
     var comment []byte = []byte("95")
@@ -1360,7 +1387,9 @@ func TestLibraryServiceAddCommentsError(t *testing.T) {
 
     err = c.AddComments(context.Background(), request)
 
-    if c := grpc.Code(err); c != errCode {
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
         t.Errorf("got error code %q, want %q", c, errCode)
     }
 }
@@ -1408,7 +1437,7 @@ func TestLibraryServiceGetBookFromArchive(t *testing.T) {
 
 func TestLibraryServiceGetBookFromArchiveError(t *testing.T) {
     errCode := codes.PermissionDenied
-    mockLibrary.err = grpc.Errorf(errCode, "test error")
+    mockLibrary.err = gstatus.Error(errCode, "test error")
 
     var formattedName string = ArchivedBookPath("[ARCHIVE_PATH]", "[BOOK_ID]")
     var request = &librarypb.GetBookFromArchiveRequest{
@@ -1422,7 +1451,9 @@ func TestLibraryServiceGetBookFromArchiveError(t *testing.T) {
 
     resp, err := c.GetBookFromArchive(context.Background(), request)
 
-    if c := grpc.Code(err); c != errCode {
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
         t.Errorf("got error code %q, want %q", c, errCode)
     }
     _ = resp
@@ -1473,7 +1504,7 @@ func TestLibraryServiceGetBookFromAnywhere(t *testing.T) {
 
 func TestLibraryServiceGetBookFromAnywhereError(t *testing.T) {
     errCode := codes.PermissionDenied
-    mockLibrary.err = grpc.Errorf(errCode, "test error")
+    mockLibrary.err = gstatus.Error(errCode, "test error")
 
     var formattedName string = BookPath("[SHELF_ID]", "[BOOK_ID]")
     var formattedAltBookName string = BookPath("[SHELF_ID]", "[BOOK_ID]")
@@ -1489,7 +1520,9 @@ func TestLibraryServiceGetBookFromAnywhereError(t *testing.T) {
 
     resp, err := c.GetBookFromAnywhere(context.Background(), request)
 
-    if c := grpc.Code(err); c != errCode {
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
         t.Errorf("got error code %q, want %q", c, errCode)
     }
     _ = resp
@@ -1533,7 +1566,7 @@ func TestLibraryServiceUpdateBookIndex(t *testing.T) {
 
 func TestLibraryServiceUpdateBookIndexError(t *testing.T) {
     errCode := codes.PermissionDenied
-    mockLibrary.err = grpc.Errorf(errCode, "test error")
+    mockLibrary.err = gstatus.Error(errCode, "test error")
 
     var formattedName string = BookPath("[SHELF_ID]", "[BOOK_ID]")
     var indexName string = "default index"
@@ -1554,7 +1587,9 @@ func TestLibraryServiceUpdateBookIndexError(t *testing.T) {
 
     err = c.UpdateBookIndex(context.Background(), request)
 
-    if c := grpc.Code(err); c != errCode {
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
         t.Errorf("got error code %q, want %q", c, errCode)
     }
 }
@@ -1594,7 +1629,7 @@ func TestLibraryServiceStreamShelves(t *testing.T) {
 
 func TestLibraryServiceStreamShelvesError(t *testing.T) {
     errCode := codes.PermissionDenied
-    mockLibrary.err = grpc.Errorf(errCode, "test error")
+    mockLibrary.err = gstatus.Error(errCode, "test error")
 
     var request *librarypb.StreamShelvesRequest = &librarypb.StreamShelvesRequest{}
 
@@ -1609,7 +1644,9 @@ func TestLibraryServiceStreamShelvesError(t *testing.T) {
     }
     resp, err := stream.Recv()
 
-    if c := grpc.Code(err); c != errCode {
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
         t.Errorf("got error code %q, want %q", c, errCode)
     }
     _ = resp
@@ -1662,7 +1699,7 @@ func TestLibraryServiceStreamBooks(t *testing.T) {
 
 func TestLibraryServiceStreamBooksError(t *testing.T) {
     errCode := codes.PermissionDenied
-    mockLibrary.err = grpc.Errorf(errCode, "test error")
+    mockLibrary.err = gstatus.Error(errCode, "test error")
 
     var name string = "name3373707"
     var request = &librarypb.StreamBooksRequest{
@@ -1680,7 +1717,9 @@ func TestLibraryServiceStreamBooksError(t *testing.T) {
     }
     resp, err := stream.Recv()
 
-    if c := grpc.Code(err); c != errCode {
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
         t.Errorf("got error code %q, want %q", c, errCode)
     }
     _ = resp
@@ -1735,7 +1774,7 @@ func TestLibraryServiceDiscussBook(t *testing.T) {
 
 func TestLibraryServiceDiscussBookError(t *testing.T) {
     errCode := codes.PermissionDenied
-    mockLibrary.err = grpc.Errorf(errCode, "test error")
+    mockLibrary.err = gstatus.Error(errCode, "test error")
 
     var name string = "name3373707"
     var request = &librarypb.DiscussBookRequest{
@@ -1759,7 +1798,9 @@ func TestLibraryServiceDiscussBookError(t *testing.T) {
     }
     resp, err := stream.Recv()
 
-    if c := grpc.Code(err); c != errCode {
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
         t.Errorf("got error code %q, want %q", c, errCode)
     }
     _ = resp
@@ -1808,7 +1849,7 @@ func TestLibraryServiceMonologAboutBook(t *testing.T) {
 
 func TestLibraryServiceMonologAboutBookError(t *testing.T) {
     errCode := codes.PermissionDenied
-    mockLibrary.err = grpc.Errorf(errCode, "test error")
+    mockLibrary.err = gstatus.Error(errCode, "test error")
 
     var name string = "name3373707"
     var request = &librarypb.DiscussBookRequest{
@@ -1826,7 +1867,9 @@ func TestLibraryServiceMonologAboutBookError(t *testing.T) {
     }
     resp, err := stream.CloseAndRecv()
 
-    if c := grpc.Code(err); c != errCode {
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
         t.Errorf("got error code %q, want %q", c, errCode)
     }
     _ = resp
@@ -1885,7 +1928,7 @@ func TestLibraryServiceFindRelatedBooks(t *testing.T) {
 
 func TestLibraryServiceFindRelatedBooksError(t *testing.T) {
     errCode := codes.PermissionDenied
-    mockLibrary.err = grpc.Errorf(errCode, "test error")
+    mockLibrary.err = gstatus.Error(errCode, "test error")
 
     var namesElement string = "namesElement-249113339"
     var names = []string{namesElement}
@@ -1902,7 +1945,9 @@ func TestLibraryServiceFindRelatedBooksError(t *testing.T) {
 
     resp, err := c.FindRelatedBooks(context.Background(), request).Next()
 
-    if c := grpc.Code(err); c != errCode {
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
         t.Errorf("got error code %q, want %q", c, errCode)
     }
     _ = resp
@@ -1944,7 +1989,7 @@ func TestLabelerAddLabel(t *testing.T) {
 
 func TestLabelerAddLabelError(t *testing.T) {
     errCode := codes.PermissionDenied
-    mockLabeler.err = grpc.Errorf(errCode, "test error")
+    mockLabeler.err = gstatus.Error(errCode, "test error")
 
     var formattedResource string = BookPath("[SHELF_ID]", "[BOOK_ID]")
     var label string = "label102727412"
@@ -1960,7 +2005,9 @@ func TestLabelerAddLabelError(t *testing.T) {
 
     resp, err := c.addLabel(context.Background(), request)
 
-    if c := grpc.Code(err); c != errCode {
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
         t.Errorf("got error code %q, want %q", c, errCode)
     }
     _ = resp
@@ -2049,7 +2096,9 @@ func TestLibraryServiceGetBigBookError(t *testing.T) {
     }
     resp, err := respLRO.Wait(context.Background())
 
-    if c := grpc.Code(err); c != errCode {
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
         t.Errorf("got error code %q, want %q", c, errCode)
     }
     _ = resp
@@ -2126,7 +2175,9 @@ func TestLibraryServiceGetBigNothingError(t *testing.T) {
     }
     err = respLRO.Wait(context.Background())
 
-    if c := grpc.Code(err); c != errCode {
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
         t.Errorf("got error code %q, want %q", c, errCode)
     }
 }
@@ -2217,7 +2268,7 @@ func TestLibraryServiceTestOptionalRequiredFlatteningParams(t *testing.T) {
 
 func TestLibraryServiceTestOptionalRequiredFlatteningParamsError(t *testing.T) {
     errCode := codes.PermissionDenied
-    mockLibrary.err = grpc.Errorf(errCode, "test error")
+    mockLibrary.err = gstatus.Error(errCode, "test error")
 
     var requiredSingularInt32 int32 = -72313594
     var requiredSingularInt64 int64 = -72313499
@@ -2283,7 +2334,9 @@ func TestLibraryServiceTestOptionalRequiredFlatteningParamsError(t *testing.T) {
 
     resp, err := c.TestOptionalRequiredFlatteningParams(context.Background(), request)
 
-    if c := grpc.Code(err); c != errCode {
+    if st, ok := gstatus.FromError(err); !ok {
+        t.Errorf("got error %v, expected grpc error", err)
+    } else if c := st.Code(); c != errCode {
         t.Errorf("got error code %q, want %q", c, errCode)
     }
     _ = resp
