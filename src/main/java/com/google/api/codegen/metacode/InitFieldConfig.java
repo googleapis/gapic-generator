@@ -15,6 +15,7 @@
 package com.google.api.codegen.metacode;
 
 import com.google.auto.value.AutoValue;
+import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 
 /*
@@ -24,6 +25,7 @@ import javax.annotation.Nullable;
 public abstract class InitFieldConfig {
   public static final String PROJECT_ID_VARIABLE_NAME = "project_id";
   public static final String RANDOM_TOKEN = "$RANDOM";
+  public static final Pattern RANDOM_TOKEN_PATTERN = Pattern.compile(Pattern.quote(RANDOM_TOKEN));
 
   private static final String PROJECT_ID_TOKEN = "$PROJECT_ID";
 
