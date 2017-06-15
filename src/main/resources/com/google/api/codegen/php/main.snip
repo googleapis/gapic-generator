@@ -34,11 +34,11 @@
 @private serviceDoc(xapiClass)
     @let coreSampleCode = sampleCode(xapiClass.doc.exampleApiMethod), \
          decoratedSampleCode = decorateSampleCode(xapiClass, xapiClass.doc.exampleApiMethod, coreSampleCode)
-        {@renderServiceDoc(xapiClass.doc, decoratedSampleCode)}
+        {@renderServiceDoc(xapiClass.doc, decoratedSampleCode, xapiClass.hasFormatOrParseResourceFunctions)}
     @end
 @end
 
-@private renderServiceDoc(xapiClassDoc, exampleMethodSampleCode)
+@private renderServiceDoc(xapiClassDoc, exampleMethodSampleCode, hasFormatOrParseResourceFunctions)
     /**
      * Service Description: {@xapiClassDoc.firstLine}
     @if xapiClassDoc.remainingLines
@@ -60,10 +60,12 @@
     @end
      * ```
      *
-     * Many parameters require resource names to be formatted in a particular way. To assist
-     * with these names, this class includes a format method for each type of name, and additionally
-     * a parse method to extract the individual identifiers contained within names that are
-     * returned.
+    @if hasFormatOrParseResourceFunctions
+        {@""} * Many parameters require resource names to be formatted in a particular way. To assist
+         * with these names, this class includes a format method for each type of name, and additionally
+         * a parse method to extract the individual identifiers contained within names that are
+         * returned.
+    @end
      */
 @end
 
@@ -141,6 +143,11 @@
     /**
      * Formats a string containing the fully-qualified path to represent
      * a {@function.entityName} resource.
+     *
+    @join param : function.resourceIdParams
+        {@""} * @@param string ${@param.name}
+    @end
+     * @@return string The formatted {@function.entityName} resource.
      */
     public static function {@function.name}(\
             {@formatResourceFunctionParams(function.resourceIdParams)})
@@ -168,6 +175,9 @@
     /**
      * Parses the {@function.outputResourceId} from the given fully-qualified path which
      * represents a {@function.entityName} resource.
+     *
+     * @@param string ${@function.entityNameParamName} The fully-qualified {@function.entityName} resource.
+     * @@return string The extracted {@function.outputResourceId} value.
      */
     public static function {@function.name}(${@function.entityNameParamName})
     {
