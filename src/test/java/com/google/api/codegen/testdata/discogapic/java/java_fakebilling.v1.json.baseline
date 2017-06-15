@@ -49,7 +49,7 @@ public final class AttachedDisk implements Serializable {
     return index;
   }
 
-  public Interface getInterface2() {
+  public Interface getInterface() {
     return interface2;
   }
 
@@ -96,11 +96,11 @@ public final class AttachedDisk implements Serializable {
       return this;
     }
 
-    public Interface getInterface2() {
+    public Interface getInterface() {
       return interface2;
     }
 
-    public Builder setInterface2(Interface interface2) {
+    public Builder setInterface(Interface interface2) {
       this.interface2 = interface2;
       return this;
     }
@@ -167,7 +167,7 @@ public final class AttachedDisk implements Serializable {
       return
 
       this.index.equals(that.getIndex())&&
-      this.interface2.equals(that.getInterface2())&&
+      this.interface2.equals(that.getInterface())&&
       this.licenses.equals(that.getLicenses())&&
       this.mode.equals(that.getMode())&&
       this.type.equals(that.getType())
@@ -218,23 +218,16 @@ import javax.annotation.Generated;
 @Generated("by GAPIC")
 @BetaApi
 public final class BillingAccount implements Serializable {
-  private final String displayName;
   private final String name;
   private final Boolean open;
 
   private BillingAccount(
 
-    String displayName,
     String name,
     Boolean open
     ) {
-    this.displayName = displayName;
     this.name = name;
     this.open = open;
-  }
-
-  public String getDisplayName() {
-    return displayName;
   }
 
   public String getName() {
@@ -251,25 +244,14 @@ public final class BillingAccount implements Serializable {
   }
 
   public static class Builder {
-    private String displayName;
     private String name;
     private Boolean open;
 
     Builder() {}
 
     Builder(BillingAccount source) {
-      this.displayName = source.displayName;
       this.name = source.name;
       this.open = source.open;
-    }
-
-    public String getDisplayName() {
-      return displayName;
-    }
-
-    public Builder setDisplayName(String displayName) {
-      this.displayName = displayName;
-      return this;
     }
 
     public String getName() {
@@ -294,7 +276,6 @@ public final class BillingAccount implements Serializable {
     public BillingAccount build() {
       return new BillingAccount(
 
-        displayName,
         name,
         open
       );
@@ -305,7 +286,6 @@ public final class BillingAccount implements Serializable {
   public String toString() {
     return "BillingAccount{"
 
-    + "displayName=" + displayName + ", "
     + "name=" + name + ", "
     + "open=" + open
         + "}";
@@ -320,7 +300,6 @@ public final class BillingAccount implements Serializable {
       BillingAccount that = (BillingAccount) o;
       return
 
-      this.displayName.equals(that.getDisplayName())&&
       this.name.equals(that.getName())&&
       this.open.equals(that.getOpen())
       ;
@@ -331,8 +310,6 @@ public final class BillingAccount implements Serializable {
   @Override
   public int hashCode() {
     int h = 1;
-    h *= 1000003;
-    h ^= this.displayName.hashCode();
     h *= 1000003;
     h ^= this.name.hashCode();
     h *= 1000003;
@@ -883,7 +860,7 @@ public final class Interface implements Serializable {
     return inter;
   }
 
-  public String getInterface2() {
+  public String getInterface() {
     return interface2;
   }
 
@@ -923,11 +900,11 @@ public final class Interface implements Serializable {
       return this;
     }
 
-    public String getInterface2() {
+    public String getInterface() {
       return interface2;
     }
 
-    public Builder setInterface2(String interface2) {
+    public Builder setInterface(String interface2) {
       this.interface2 = interface2;
       return this;
     }
@@ -964,7 +941,7 @@ public final class Interface implements Serializable {
 
       this.face.equals(that.getFace())&&
       this.inter.equals(that.getInter())&&
-      this.interface2.equals(that.getInterface2())
+      this.interface2.equals(that.getInterface())
       ;
     }
     return false;
@@ -1266,12 +1243,9 @@ public final class Operation implements Serializable {
   private final Error error;
   private final Integer httpErrorStatusCode;
   private final String id;
-  private final String kind;
   private final String name;
   private final String status;
-  private final String targetId;
   private final List<Warnings> warnings;
-  private final String zone;
 
   private Operation(
 
@@ -1280,24 +1254,18 @@ public final class Operation implements Serializable {
     Error error,
     Integer httpErrorStatusCode,
     String id,
-    String kind,
     String name,
     String status,
-    String targetId,
-    List<Warnings> warnings,
-    String zone
+    List<Warnings> warnings
     ) {
     this.creationTimestamp = creationTimestamp;
     this.description = description;
     this.error = error;
     this.httpErrorStatusCode = httpErrorStatusCode;
     this.id = id;
-    this.kind = kind;
     this.name = name;
     this.status = status;
-    this.targetId = targetId;
     this.warnings = warnings;
-    this.zone = zone;
   }
 
   public String getCreationTimestamp() {
@@ -1320,10 +1288,6 @@ public final class Operation implements Serializable {
     return id;
   }
 
-  public String getKind() {
-    return kind;
-  }
-
   public String getName() {
     return name;
   }
@@ -1332,16 +1296,8 @@ public final class Operation implements Serializable {
     return status;
   }
 
-  public String getTargetId() {
-    return targetId;
-  }
-
   public List<Warnings> getWarnings() {
     return warnings;
-  }
-
-  public String getZone() {
-    return zone;
   }
 
 
@@ -1355,12 +1311,9 @@ public final class Operation implements Serializable {
     private Error error;
     private Integer httpErrorStatusCode;
     private String id;
-    private String kind;
     private String name;
     private String status;
-    private String targetId;
     private List<Warnings> warnings;
-    private String zone;
 
     Builder() {}
 
@@ -1370,12 +1323,9 @@ public final class Operation implements Serializable {
       this.error = source.error;
       this.httpErrorStatusCode = source.httpErrorStatusCode;
       this.id = source.id;
-      this.kind = source.kind;
       this.name = source.name;
       this.status = source.status;
-      this.targetId = source.targetId;
       this.warnings = source.warnings;
-      this.zone = source.zone;
     }
 
     public String getCreationTimestamp() {
@@ -1423,15 +1373,6 @@ public final class Operation implements Serializable {
       return this;
     }
 
-    public String getKind() {
-      return kind;
-    }
-
-    public Builder setKind(String kind) {
-      this.kind = kind;
-      return this;
-    }
-
     public String getName() {
       return name;
     }
@@ -1450,30 +1391,12 @@ public final class Operation implements Serializable {
       return this;
     }
 
-    public String getTargetId() {
-      return targetId;
-    }
-
-    public Builder setTargetId(String targetId) {
-      this.targetId = targetId;
-      return this;
-    }
-
     public List<Warnings> getWarnings() {
       return warnings;
     }
 
     public Builder setWarnings(List<Warnings> warnings) {
       this.warnings = warnings;
-      return this;
-    }
-
-    public String getZone() {
-      return zone;
-    }
-
-    public Builder setZone(String zone) {
-      this.zone = zone;
       return this;
     }
 
@@ -1486,12 +1409,9 @@ public final class Operation implements Serializable {
         error,
         httpErrorStatusCode,
         id,
-        kind,
         name,
         status,
-        targetId,
-        warnings,
-        zone
+        warnings
       );
     }
   }
@@ -1505,12 +1425,9 @@ public final class Operation implements Serializable {
     + "error=" + error + ", "
     + "httpErrorStatusCode=" + httpErrorStatusCode + ", "
     + "id=" + id + ", "
-    + "kind=" + kind + ", "
     + "name=" + name + ", "
     + "status=" + status + ", "
-    + "targetId=" + targetId + ", "
-    + "warnings=" + warnings + ", "
-    + "zone=" + zone
+    + "warnings=" + warnings
         + "}";
   }
 
@@ -1528,12 +1445,9 @@ public final class Operation implements Serializable {
       this.error.equals(that.getError())&&
       this.httpErrorStatusCode.equals(that.getHttpErrorStatusCode())&&
       this.id.equals(that.getId())&&
-      this.kind.equals(that.getKind())&&
       this.name.equals(that.getName())&&
       this.status.equals(that.getStatus())&&
-      this.targetId.equals(that.getTargetId())&&
-      this.warnings.equals(that.getWarnings())&&
-      this.zone.equals(that.getZone())
+      this.warnings.equals(that.getWarnings())
       ;
     }
     return false;
@@ -1553,17 +1467,11 @@ public final class Operation implements Serializable {
     h *= 1000003;
     h ^= this.id.hashCode();
     h *= 1000003;
-    h ^= this.kind.hashCode();
-    h *= 1000003;
     h ^= this.name.hashCode();
     h *= 1000003;
     h ^= this.status.hashCode();
     h *= 1000003;
-    h ^= this.targetId.hashCode();
-    h *= 1000003;
     h ^= this.warnings.hashCode();
-    h *= 1000003;
-    h ^= this.zone.hashCode();
     return h;
   }
 }
@@ -1593,34 +1501,20 @@ import javax.annotation.Generated;
 @Generated("by GAPIC")
 @BetaApi
 public final class ProjectBillingInfo implements Serializable {
-  private final String billingAccountName;
   private final Boolean billingEnabled;
-  private final String name;
   private final String projectId;
 
   private ProjectBillingInfo(
 
-    String billingAccountName,
     Boolean billingEnabled,
-    String name,
     String projectId
     ) {
-    this.billingAccountName = billingAccountName;
     this.billingEnabled = billingEnabled;
-    this.name = name;
     this.projectId = projectId;
-  }
-
-  public String getBillingAccountName() {
-    return billingAccountName;
   }
 
   public Boolean getBillingEnabled() {
     return billingEnabled;
-  }
-
-  public String getName() {
-    return name;
   }
 
   public String getProjectId() {
@@ -1633,27 +1527,14 @@ public final class ProjectBillingInfo implements Serializable {
   }
 
   public static class Builder {
-    private String billingAccountName;
     private Boolean billingEnabled;
-    private String name;
     private String projectId;
 
     Builder() {}
 
     Builder(ProjectBillingInfo source) {
-      this.billingAccountName = source.billingAccountName;
       this.billingEnabled = source.billingEnabled;
-      this.name = source.name;
       this.projectId = source.projectId;
-    }
-
-    public String getBillingAccountName() {
-      return billingAccountName;
-    }
-
-    public Builder setBillingAccountName(String billingAccountName) {
-      this.billingAccountName = billingAccountName;
-      return this;
     }
 
     public Boolean getBillingEnabled() {
@@ -1662,15 +1543,6 @@ public final class ProjectBillingInfo implements Serializable {
 
     public Builder setBillingEnabled(Boolean billingEnabled) {
       this.billingEnabled = billingEnabled;
-      return this;
-    }
-
-    public String getName() {
-      return name;
-    }
-
-    public Builder setName(String name) {
-      this.name = name;
       return this;
     }
 
@@ -1687,9 +1559,7 @@ public final class ProjectBillingInfo implements Serializable {
     public ProjectBillingInfo build() {
       return new ProjectBillingInfo(
 
-        billingAccountName,
         billingEnabled,
-        name,
         projectId
       );
     }
@@ -1699,9 +1569,7 @@ public final class ProjectBillingInfo implements Serializable {
   public String toString() {
     return "ProjectBillingInfo{"
 
-    + "billingAccountName=" + billingAccountName + ", "
     + "billingEnabled=" + billingEnabled + ", "
-    + "name=" + name + ", "
     + "projectId=" + projectId
         + "}";
   }
@@ -1715,9 +1583,7 @@ public final class ProjectBillingInfo implements Serializable {
       ProjectBillingInfo that = (ProjectBillingInfo) o;
       return
 
-      this.billingAccountName.equals(that.getBillingAccountName())&&
       this.billingEnabled.equals(that.getBillingEnabled())&&
-      this.name.equals(that.getName())&&
       this.projectId.equals(that.getProjectId())
       ;
     }
@@ -1728,11 +1594,7 @@ public final class ProjectBillingInfo implements Serializable {
   public int hashCode() {
     int h = 1;
     h *= 1000003;
-    h ^= this.billingAccountName.hashCode();
-    h *= 1000003;
     h ^= this.billingEnabled.hashCode();
-    h *= 1000003;
-    h ^= this.name.hashCode();
     h *= 1000003;
     h ^= this.projectId.hashCode();
     return h;
