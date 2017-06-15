@@ -23,7 +23,7 @@ import java.util.Map;
  * A SchemaTypeTable manages the imports for a set of fully-qualified type names, and provides
  * helper methods for importing instances of Schema.
  */
-public class SchemaTypeTable {
+public class SchemaTypeTable implements SchemaTypeFormatter {
   private SchemaTypeFormatterImpl typeFormatter;
   private TypeTable typeTable;
   private SchemaTypeNameConverter typeNameConverter;
@@ -34,8 +34,24 @@ public class SchemaTypeTable {
     this.typeNameConverter = typeNameConverter;
   }
 
+  @Override
+  public String renderPrimitiveValue(Schema type, String value) {
+    return typeFormatter.renderPrimitiveValue(type, value);
+  }
+
+  @Override
+  public String getFullNameFor(Schema type) {
+    return typeFormatter.getFullNameFor(type);
+  }
+
+  @Override
   public String getImplicitPackageFullNameFor(String shortName) {
     return typeFormatter.getImplicitPackageFullNameFor(shortName);
+  }
+
+  @Override
+  public String getInnerTypeNameFor(Schema schema) {
+    return typeFormatter.getInnerTypeNameFor(schema);
   }
 
   /** Creates a new SchemaTypeTable of the same concrete type, but with an empty import set. */
@@ -79,10 +95,12 @@ public class SchemaTypeTable {
   }
 
   /**
-   * This function will compute the nickname for the element type, add the full name to the import
-   * set, and then return the nickname. If the given type is repeated, then the element type is the
-   * contained type; if the type is not a repeated type, then the element type is the boxed form of
-   * the type.
+   * For a given schema, add the full name to the import set, and then return the nickname.
+   *
+   * @param schema The schema to save and get the nickname for.
+   * @return nickname for the schema.
+   *     <p>If the given schema type is an array, then the element type is the contained type;
+   *     otherwise the element type is the boxed form of the type.
    */
   public String getAndSaveNicknameForElementType(Schema schema) {
     return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeNameForElementType(schema));

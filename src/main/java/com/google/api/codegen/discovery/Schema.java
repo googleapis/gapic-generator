@@ -42,13 +42,15 @@ public abstract class Schema implements Node {
    * Returns a schema constructed from root, or an empty schema if root has no children.
    *
    * @param root the root node to parse.
+   * @param key in the parent node's schema map, the key that maps to this schema.
+   * @param parent the parent of this schema.
    * @return a schema.
    */
-  public static Schema from(DiscoveryNode root, Node parent) {
+  public static Schema from(DiscoveryNode root, String key, Node parent) {
     if (root.isEmpty()) {
       return empty();
     }
-    Schema additionalProperties = Schema.from(root.getObject("additionalProperties"), null);
+    Schema additionalProperties = Schema.from(root.getObject("additionalProperties"), "", null);
     if (additionalProperties.type() == Type.EMPTY && additionalProperties.reference().isEmpty()) {
       additionalProperties = null;
     }
@@ -57,7 +59,7 @@ public abstract class Schema implements Node {
     Format format = Format.getEnum(root.getString("format"));
     String id = root.getString("id");
     boolean isEnum = !root.getArray("enum").isEmpty();
-    Schema items = Schema.from(root.getObject("items"), null);
+    Schema items = Schema.from(root.getObject("items"), key, null);
     if (items.type() == Type.EMPTY && items.reference().isEmpty()) {
       items = null;
     }
@@ -67,7 +69,7 @@ public abstract class Schema implements Node {
     Map<String, Schema> properties = new HashMap<>();
     DiscoveryNode propertiesNode = root.getObject("properties");
     for (String name : propertiesNode.getFieldNames()) {
-      properties.put(name, Schema.from(propertiesNode.getObject(name), null));
+      properties.put(name, Schema.from(propertiesNode.getObject(name), name, null));
     }
 
     String reference = root.getString("$ref");
@@ -84,6 +86,7 @@ public abstract class Schema implements Node {
             id,
             isEnum,
             items,
+            key,
             location,
             pattern,
             properties,
@@ -114,6 +117,7 @@ public abstract class Schema implements Node {
         "",
         false,
         null,
+        "",
         "",
         "",
         new HashMap<String, Schema>(),
@@ -159,6 +163,9 @@ public abstract class Schema implements Node {
    */
   @Nullable
   public abstract Schema items();
+
+  /** @return the key that this object's parent uses to map to this Schema. */
+  public abstract String key();
 
   /** @return the location. */
   public abstract String location();
