@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
  * https://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.7.
  */
 @AutoValue
-public abstract class StaticLangApiMessageView {
+public abstract class StaticLangApiMessageView implements Comparable<StaticLangApiMessageView> {
   @Nullable
   // TODO(andrealin) Populate and render this field.
   public abstract String description();
@@ -87,5 +87,9 @@ public abstract class StaticLangApiMessageView {
     public abstract StaticLangApiMessageView.Builder properties(List<StaticLangApiMessageView> val);
 
     public abstract StaticLangApiMessageView build();
+  }
+
+  public int compareTo(StaticLangApiMessageView o) {
+    return this.name().compareTo(o.name());
   }
 }

@@ -156,14 +156,8 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
         shortName = schema.additionalProperties().reference();
       } else {
         // This schema has a parent Schema.
+        // TODO(andrealin): Consider "ParentChild" instead of "Child" if inner classes clash.
         shortName = nameFormatter.publicClassName(Name.anyCamel(schema.key()));
-        // TODO(andrealin): If parent is just an "item" Schema, go to grandparent for parentName.
-        String parentName =
-            schema.parent().id().isEmpty()
-                ? ((Schema) schema.parent()).key()
-                : schema.parent().id();
-        packageName =
-            packageName + "." + nameFormatter.publicClassName(Name.anyCamel(parentName)).toString();
       }
       String longName = packageName + "." + shortName;
 

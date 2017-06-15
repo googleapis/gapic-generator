@@ -41,6 +41,8 @@ import com.google.api.codegen.viewmodel.ViewModel;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -108,6 +110,14 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
         surfaceSchemas.add(generateSchemaFile(contextView.getKey(), contextView.getValue()));
       }
     }
+    Collections.sort(
+        surfaceSchemas,
+        new Comparator<ViewModel>() {
+          @Override
+          public int compare(ViewModel o1, ViewModel o2) {
+            return String.CASE_INSENSITIVE_ORDER.compare(o1.outputPath(), o2.outputPath());
+          }
+        });
     return surfaceSchemas;
   }
 
@@ -126,7 +136,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     apiFile.schema(messageView);
 
     String outputPath = pathMapper.getOutputPath(null, context.getDocContext().getProductConfig());
-    apiFile.outputPath(outputPath + File.separator + messageView.typeName() + ".java");
+    apiFile.outputPath(outputPath + File.separator + messageView.innerTypeName() + ".java");
 
     // must be done as the last step to catch all imports
     apiFile.fileHeader(fileHeaderTransformer.generateFileHeader(context));
@@ -134,7 +144,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     return apiFile.build();
   }
 
-  private void generateSchemaClasses(
+  private StaticLangApiMessageView generateSchemaClasses(
       Map<SchemaInterfaceContext, StaticLangApiMessageView> messageViewAccumulator,
       DiscoGapicInterfaceContext documentContext,
       Schema schema) {
@@ -170,28 +180,29 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     }
 
     // Generate a Schema view from each property.
-    List<StaticLangApiMessageView> properties = new LinkedList<>();
-    Map<String, Schema> schemaProperties = new TreeMap<>();
-    schemaProperties.putAll(schema.properties());
-    if (schema.items() != null && schema.items().properties() != null) {
-      schemaProperties.putAll(schema.items().properties());
+    List<StaticLangApiMessageView> viewProperties = new LinkedList<>();
+    List<Schema> schemaProperties = new LinkedList<>();
+    schemaProperties.addAll(schema.properties().values());
+    if (schema.items() != null) {
+      schemaProperties.addAll(schema.items().properties().values());
     }
-    for (Schema property : schemaProperties.values()) {
-      Map<SchemaInterfaceContext, StaticLangApiMessageView> propertyViewAccumulator =
-          new TreeMap<>(SchemaInterfaceContext.comparator);
-      generateSchemaClasses(propertyViewAccumulator, documentContext, property);
-      properties.addAll(propertyViewAccumulator.values());
-      for (Map.Entry<SchemaInterfaceContext, StaticLangApiMessageView> contextView :
-          propertyViewAccumulator.entrySet()) {
-        if (!contextView.getValue().properties().isEmpty()
-            && contextView.getKey().getSchema().type() != Type.ARRAY) {
-          messageViewAccumulator.put(contextView.getKey(), contextView.getValue());
-        }
+    for (Schema property : schemaProperties) {
+      viewProperties.add(generateSchemaClasses(messageViewAccumulator, documentContext, property));
+      if (!property.properties().isEmpty()
+          || (property.items() != null && !property.items().properties().isEmpty())) {
+        // Add non-primitive-type property to imports.
+        schemaTypeTable.getAndSaveNicknameFor(property);
       }
     }
-    schemaView.properties(properties);
+    Collections.sort(viewProperties);
+    schemaView.properties(viewProperties);
 
-    messageViewAccumulator.put(context, schemaView.build());
+    if (!schema.properties().isEmpty()
+        || (schema.items() != null && !schema.items().properties().isEmpty())) {
+      // This is a top-level Schema, so add it to list of file ViewModels for rendering.
+      messageViewAccumulator.put(context, schemaView.build());
+    }
+    return schemaView.build();
   }
 
   private void addApiImports(SchemaTypeTable typeTable) {
