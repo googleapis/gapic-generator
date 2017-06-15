@@ -15,8 +15,10 @@
 package com.google.api.codegen.discogapic;
 
 import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.SmokeTestConfig;
 import com.google.api.codegen.discovery.Document;
 import com.google.auto.value.AutoValue;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
@@ -24,7 +26,11 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
   @Override
   public abstract String getName();
 
+  @Override
+  @Nullable
+  public abstract SmokeTestConfig getSmokeTestConfig();
+
   public static DiscoGapicInterfaceConfig createInterfaceConfig(Document document) {
-    return new AutoValue_DiscoGapicInterfaceConfig(document.name());
+    return new AutoValue_DiscoGapicInterfaceConfig(document.name(), null);
   }
 }

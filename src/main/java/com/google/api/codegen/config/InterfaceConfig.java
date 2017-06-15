@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.config;
 
+import javax.annotation.Nullable;
+
 /**
  * InterfaceConfig represents the client code-gen config for an API interface in an input-agnostic
  * way.
@@ -22,4 +24,7 @@ public interface InterfaceConfig {
   String getName();
 
   String getRawName();
+
+  @Nullable
+  SmokeTestConfig getSmokeTestConfig();
 }
