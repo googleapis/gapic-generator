@@ -215,7 +215,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
       if (methodContext.getMethodConfig().getGrpcStreamingType()
           == GrpcStreamingType.ClientStreaming) {
-        //TODO: Add unit test generation for ClientStreaming methods
+        // TODO: Add unit test generation for ClientStreaming methods
         // Issue: https://github.com/googleapis/toolkit/issues/946
         continue;
       }

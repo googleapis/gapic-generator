@@ -102,9 +102,8 @@ public class TestCaseTransformer {
     MockGrpcResponseView mockGrpcResponseView =
         createMockResponseView(methodContext, responseInitCodeContext);
 
-    GrpcStreamingView grpcStreamingView = GrpcStreamingView.newBuilder().build();
+    GrpcStreamingView grpcStreamingView = null;
     if (methodConfig.isGrpcStreaming()) {
-
       String resourceTypeName = null;
       String resourcesFieldGetterName = null;
       if (methodConfig.getGrpcStreaming().hasResourceField()) {
@@ -112,10 +111,8 @@ public class TestCaseTransformer {
         resourceTypeName =
             methodContext.getTypeTable().getAndSaveNicknameForElementType(resourcesField.getType());
         resourcesFieldGetterName =
-            methodContext
-                .getNamer()
-                .getFieldGetFunctionName(
-                    resourcesField.getType(), Name.from(resourcesField.getSimpleName()));
+            namer.getFieldGetFunctionName(
+                resourcesField.getType(), Name.from(resourcesField.getSimpleName()));
       }
 
       grpcStreamingView =
@@ -283,9 +280,9 @@ public class TestCaseTransformer {
       }
     }
     if (context.getMethodConfig().isGrpcStreaming()) {
-      GrpcStreamingConfig grpcConfig = context.getMethodConfig().getGrpcStreaming();
-      if (grpcConfig.hasResourceField()) {
-        String resourceFieldName = grpcConfig.getResourcesField().getSimpleName();
+      GrpcStreamingConfig streamingConfig = context.getMethodConfig().getGrpcStreaming();
+      if (streamingConfig.hasResourceField()) {
+        String resourceFieldName = streamingConfig.getResourcesField().getSimpleName();
         additionalSubTrees.add(InitCodeNode.createSingletonList(resourceFieldName));
       }
     }

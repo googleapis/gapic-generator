@@ -19,6 +19,7 @@ import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.auto.value.AutoValue;
 import java.util.List;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class TestCaseView {
@@ -47,6 +48,7 @@ public abstract class TestCaseView {
 
   public abstract List<PageStreamingResponseView> pageStreamingResponseViews();
 
+  @Nullable
   public abstract GrpcStreamingView grpcStreamingView();
 
   public abstract String name();
