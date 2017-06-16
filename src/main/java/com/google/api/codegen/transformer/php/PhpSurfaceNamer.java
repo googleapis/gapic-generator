@@ -110,11 +110,11 @@ public class PhpSurfaceNamer extends SurfaceNamer {
       case NonStreaming:
         return getModelTypeFormatter().getFullNameFor(method.getOutputType());
       case BidiStreaming:
-        return "\\Google\\GAX\\BidiStreamingResponse";
+        return "\\Google\\GAX\\BidiStream";
       case ClientStreaming:
-        return "\\Google\\GAX\\ClientStreamingResponse";
+        return "\\Google\\GAX\\ClientStream";
       case ServerStreaming:
-        return "\\Google\\GAX\\ServerStreamingResponse";
+        return "\\Google\\GAX\\ServerStream";
       default:
         return getNotImplementedString(
             "SurfaceNamer.getDynamicReturnTypeName grpcStreamingType:"
