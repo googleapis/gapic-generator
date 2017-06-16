@@ -133,14 +133,14 @@ public class CodeGeneratorApi extends ToolDriverBase {
               .enabledArtifacts(options.get(ENABLED_ARTIFACTS))
               .build();
 
+      String outputPath = options.get(OUTPUT_FILE);
       List<GapicProvider<? extends Object>> providers =
-          providerFactory.create(model, productConfig, generatorConfig, packageConfig);
-      String outputFile = options.get(OUTPUT_FILE);
+          providerFactory.create(model, productConfig, generatorConfig, packageConfig, outputPath);
       Map<String, Doc> outputFiles = Maps.newHashMap();
       for (GapicProvider<? extends Object> provider : providers) {
         outputFiles.putAll(provider.generate());
       }
-      writeCodeGenOutput(outputFiles, outputFile);
+      writeCodeGenOutput(outputFiles, outputPath);
     }
   }
 

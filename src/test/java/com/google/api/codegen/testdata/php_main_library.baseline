@@ -25,6 +25,8 @@
  * EXPERIMENTAL: this client library class has not yet been declared beta. This class may change
  * more frequently than those which have been declared beta or 1.0, including changes which break
  * backwards compatibility.
+ *
+ * @experimental
  */
 
 namespace Google\Example\Library\V1;
@@ -86,10 +88,10 @@ use google\tagger\v1\LabelerGrpcClient;
  * resource model:
  *
  * - The API has a collection of [Shelf][google.example.library.v1.Shelf]
- *   resources, named ``bookShelves/&#42;``
+ *   resources, named ``bookShelves/*``
  *
  * - Each Shelf has a collection of [Book][google.example.library.v1.Book]
- *   resources, named `bookShelves/&#42;/books/&#42;`
+ *   resources, named `bookShelves/&#42;/books/*`
  *
  * Check out [cloud docs!](https://cloud.google.com/library/example/link).
  * This is [not a cloud link](http://www.google.com).
@@ -117,6 +119,7 @@ use google\tagger\v1\LabelerGrpcClient;
  * with these names, this class includes a format method for each type of name, and additionally
  * a parse method to extract the individual identifiers contained within names that are
  * returned.
+ * @experimental
  */
 class LibraryServiceClient
 {
@@ -160,6 +163,10 @@ class LibraryServiceClient
     /**
      * Formats a string containing the fully-qualified path to represent
      * a shelf resource.
+     *
+     * @param string $shelfId
+     * @return string The formatted shelf resource.
+     * @experimental
      */
     public static function formatShelfName($shelfId)
     {
@@ -171,6 +178,11 @@ class LibraryServiceClient
     /**
      * Formats a string containing the fully-qualified path to represent
      * a book resource.
+     *
+     * @param string $shelfId
+     * @param string $bookId
+     * @return string The formatted book resource.
+     * @experimental
      */
     public static function formatBookName($shelfId, $bookId)
     {
@@ -183,6 +195,12 @@ class LibraryServiceClient
     /**
      * Formats a string containing the fully-qualified path to represent
      * a return resource.
+     *
+     * @param string $shelf
+     * @param string $book
+     * @param string $return
+     * @return string The formatted return resource.
+     * @experimental
      */
     public static function formatReturnName($shelf, $book, $return)
     {
@@ -196,6 +214,10 @@ class LibraryServiceClient
     /**
      * Parses the shelf_id from the given fully-qualified path which
      * represents a shelf resource.
+     *
+     * @param string $shelfName The fully-qualified shelf resource.
+     * @return string The extracted shelf_id value.
+     * @experimental
      */
     public static function parseShelfIdFromShelfName($shelfName)
     {
@@ -205,6 +227,10 @@ class LibraryServiceClient
     /**
      * Parses the shelf_id from the given fully-qualified path which
      * represents a book resource.
+     *
+     * @param string $bookName The fully-qualified book resource.
+     * @return string The extracted shelf_id value.
+     * @experimental
      */
     public static function parseShelfIdFromBookName($bookName)
     {
@@ -214,6 +240,10 @@ class LibraryServiceClient
     /**
      * Parses the book_id from the given fully-qualified path which
      * represents a book resource.
+     *
+     * @param string $bookName The fully-qualified book resource.
+     * @return string The extracted book_id value.
+     * @experimental
      */
     public static function parseBookIdFromBookName($bookName)
     {
@@ -223,6 +253,10 @@ class LibraryServiceClient
     /**
      * Parses the shelf from the given fully-qualified path which
      * represents a return resource.
+     *
+     * @param string $returnName The fully-qualified return resource.
+     * @return string The extracted shelf value.
+     * @experimental
      */
     public static function parseShelfFromReturnName($returnName)
     {
@@ -232,6 +266,10 @@ class LibraryServiceClient
     /**
      * Parses the book from the given fully-qualified path which
      * represents a return resource.
+     *
+     * @param string $returnName The fully-qualified return resource.
+     * @return string The extracted book value.
+     * @experimental
      */
     public static function parseBookFromReturnName($returnName)
     {
@@ -241,6 +279,10 @@ class LibraryServiceClient
     /**
      * Parses the return from the given fully-qualified path which
      * represents a return resource.
+     *
+     * @param string $returnName The fully-qualified return resource.
+     * @return string The extracted return value.
+     * @experimental
      */
     public static function parseReturnFromReturnName($returnName)
     {
@@ -363,6 +405,7 @@ class LibraryServiceClient
      * Return an OperationsClient object with the same endpoint as $this.
      *
      * @return \Google\GAX\LongRunning\OperationsClient
+     * @experimental
      */
     public function getOperationsClient()
     {
@@ -378,8 +421,8 @@ class LibraryServiceClient
      *
      * @param string $operationName The name of the long running operation
      * @param string $methodName The name of the method used to start the operation
-     *
      * @return \Google\GAX\OperationResponse
+     * @experimental
      */
     public function resumeOperation($operationName, $methodName = null)
     {
@@ -423,6 +466,7 @@ class LibraryServiceClient
      *                              A CredentialsLoader object created using the
      *                              Google\Auth library.
      * }
+     * @experimental
      */
     public function __construct($options = [])
     {
@@ -571,6 +615,7 @@ class LibraryServiceClient
      * @return \google\example\library\v1\Shelf
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function createShelf($shelf, $optionalArgs = [])
     {
@@ -621,6 +666,7 @@ class LibraryServiceClient
      * @return \google\example\library\v1\Shelf
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function getShelf($name, $options, $optionalArgs = [])
     {
@@ -689,6 +735,7 @@ class LibraryServiceClient
      * @return \Google\GAX\PagedListResponse
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function listShelves($optionalArgs = [])
     {
@@ -734,6 +781,7 @@ class LibraryServiceClient
      * }
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function deleteShelf($name, $optionalArgs = [])
     {
@@ -783,6 +831,7 @@ class LibraryServiceClient
      * @return \google\example\library\v1\Shelf
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function mergeShelves($name, $otherShelfName, $optionalArgs = [])
     {
@@ -831,6 +880,7 @@ class LibraryServiceClient
      * @return \google\example\library\v1\Book
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function createBook($name, $book, $optionalArgs = [])
     {
@@ -887,6 +937,7 @@ class LibraryServiceClient
      * @return \google\example\library\v1\PublishSeriesResponse
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function publishSeries($shelf, $books, $seriesUuid, $optionalArgs = [])
     {
@@ -942,6 +993,7 @@ class LibraryServiceClient
      * @return \google\example\library\v1\Book
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function getBook($name, $optionalArgs = [])
     {
@@ -1010,6 +1062,7 @@ class LibraryServiceClient
      * @return \Google\GAX\PagedListResponse
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function listBooks($name, $optionalArgs = [])
     {
@@ -1062,6 +1115,7 @@ class LibraryServiceClient
      * }
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function deleteBook($name, $optionalArgs = [])
     {
@@ -1113,6 +1167,7 @@ class LibraryServiceClient
      * @return \google\example\library\v1\Book
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function updateBook($name, $book, $optionalArgs = [])
     {
@@ -1167,6 +1222,7 @@ class LibraryServiceClient
      * @return \google\example\library\v1\Book
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function moveBook($name, $otherShelfName, $optionalArgs = [])
     {
@@ -1234,6 +1290,7 @@ class LibraryServiceClient
      * @return \Google\GAX\PagedListResponse
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function listStrings($optionalArgs = [])
     {
@@ -1294,6 +1351,7 @@ class LibraryServiceClient
      * }
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function addComments($name, $comments, $optionalArgs = [])
     {
@@ -1342,6 +1400,7 @@ class LibraryServiceClient
      * @return \google\example\library\v1\BookFromArchive
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function getBookFromArchive($name, $optionalArgs = [])
     {
@@ -1390,6 +1449,7 @@ class LibraryServiceClient
      * @return \google\example\library\v1\BookFromAnywhere
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function getBookFromAnywhere($name, $altBookName, $optionalArgs = [])
     {
@@ -1439,6 +1499,7 @@ class LibraryServiceClient
      * }
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function updateBookIndex($name, $indexName, $indexMap, $optionalArgs = [])
     {
@@ -1485,9 +1546,10 @@ class LibraryServiceClient
      *          Timeout to use for this call.
      * }
      *
-     * @return \Google\GAX\ServerStreamingResponse
+     * @return \Google\GAX\ServerStream
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function streamShelves($optionalArgs = [])
     {
@@ -1530,9 +1592,10 @@ class LibraryServiceClient
      *          Timeout to use for this call.
      * }
      *
-     * @return \Google\GAX\ServerStreamingResponse
+     * @return \Google\GAX\ServerStream
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function streamBooks($name, $optionalArgs = [])
     {
@@ -1598,9 +1661,10 @@ class LibraryServiceClient
      *          Timeout to use for this call.
      * }
      *
-     * @return \Google\GAX\BidiStreamingResponse
+     * @return \Google\GAX\BidiStream
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function discussBook($optionalArgs = [])
     {
@@ -1651,9 +1715,10 @@ class LibraryServiceClient
      *          Timeout to use for this call.
      * }
      *
-     * @return \Google\GAX\ClientStreamingResponse
+     * @return \Google\GAX\ClientStream
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function monologAboutBook($optionalArgs = [])
     {
@@ -1720,6 +1785,7 @@ class LibraryServiceClient
      * @return \Google\GAX\PagedListResponse
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function findRelatedBooks($names, $shelves, $optionalArgs = [])
     {
@@ -1780,6 +1846,7 @@ class LibraryServiceClient
      * @return \google\tagger\v1\AddTagResponse
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function addTag($resource, $tag, $optionalArgs = [])
     {
@@ -1830,6 +1897,7 @@ class LibraryServiceClient
      * @return \google\tagger\v1\AddLabelResponse
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function addLabel($resource, $label, $optionalArgs = [])
     {
@@ -1901,6 +1969,7 @@ class LibraryServiceClient
      * @return \google\longrunning\Operation
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function getBigBook($name, $optionalArgs = [])
     {
@@ -1969,6 +2038,7 @@ class LibraryServiceClient
      * @return \google\longrunning\Operation
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function getBigNothing($name, $optionalArgs = [])
     {
@@ -2031,7 +2101,7 @@ class LibraryServiceClient
      * @param float $requiredSingularFloat
      * @param float $requiredSingularDouble
      * @param bool $requiredSingularBool
-     * @param InnerEnum $requiredSingularEnum
+     * @param int $requiredSingularEnum For allowed values, use constants defined on {@see \google\example\library\v1\TestOptionalRequiredFlatteningParamsRequest\InnerEnum}
      * @param string $requiredSingularString
      * @param string $requiredSingularBytes
      * @param InnerMessage $requiredSingularMessage
@@ -2044,7 +2114,7 @@ class LibraryServiceClient
      * @param float[] $requiredRepeatedFloat
      * @param float[] $requiredRepeatedDouble
      * @param bool[] $requiredRepeatedBool
-     * @param InnerEnum[] $requiredRepeatedEnum
+     * @param int[] $requiredRepeatedEnum For allowed values, use constants defined on {@see \google\example\library\v1\TestOptionalRequiredFlatteningParamsRequest\InnerEnum}
      * @param string[] $requiredRepeatedString
      * @param string[] $requiredRepeatedBytes
      * @param InnerMessage[] $requiredRepeatedMessage
@@ -2060,7 +2130,8 @@ class LibraryServiceClient
      *     @type float $optionalSingularFloat
      *     @type float $optionalSingularDouble
      *     @type bool $optionalSingularBool
-     *     @type InnerEnum $optionalSingularEnum
+     *     @type int $optionalSingularEnum
+     *          For allowed values, use constants defined on {@see \google\example\library\v1\TestOptionalRequiredFlatteningParamsRequest\InnerEnum}
      *     @type string $optionalSingularString
      *     @type string $optionalSingularBytes
      *     @type InnerMessage $optionalSingularMessage
@@ -2073,7 +2144,8 @@ class LibraryServiceClient
      *     @type float[] $optionalRepeatedFloat
      *     @type float[] $optionalRepeatedDouble
      *     @type bool[] $optionalRepeatedBool
-     *     @type InnerEnum[] $optionalRepeatedEnum
+     *     @type int[] $optionalRepeatedEnum
+     *          For allowed values, use constants defined on {@see \google\example\library\v1\TestOptionalRequiredFlatteningParamsRequest\InnerEnum}
      *     @type string[] $optionalRepeatedString
      *     @type string[] $optionalRepeatedBytes
      *     @type InnerMessage[] $optionalRepeatedMessage
@@ -2093,6 +2165,7 @@ class LibraryServiceClient
      * @return \google\example\library\v1\TestOptionalRequiredFlatteningParamsResponse
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function testOptionalRequiredFlatteningParams($requiredSingularInt32, $requiredSingularInt64, $requiredSingularFloat, $requiredSingularDouble, $requiredSingularBool, $requiredSingularEnum, $requiredSingularString, $requiredSingularBytes, $requiredSingularMessage, $requiredSingularResourceName, $requiredSingularResourceNameOneof, $requiredSingularFixed32, $requiredSingularFixed64, $requiredRepeatedInt32, $requiredRepeatedInt64, $requiredRepeatedFloat, $requiredRepeatedDouble, $requiredRepeatedBool, $requiredRepeatedEnum, $requiredRepeatedString, $requiredRepeatedBytes, $requiredRepeatedMessage, $requiredRepeatedResourceName, $requiredRepeatedResourceNameOneof, $requiredRepeatedFixed32, $requiredRepeatedFixed64, $requiredMap, $optionalArgs = [])
     {
@@ -2276,6 +2349,7 @@ class LibraryServiceClient
     /**
      * Initiates an orderly shutdown in which preexisting calls continue but new
      * calls are immediately cancelled.
+     * @experimental
      */
     public function close()
     {

@@ -16,6 +16,7 @@ package com.google.api.codegen.config;
 
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.TargetLanguage;
+import com.google.api.codegen.grpcmetadatagen.DependencyType;
 import com.google.api.codegen.grpcmetadatagen.GenerationLayer;
 import com.google.api.codegen.grpcmetadatagen.PackageType;
 import com.google.auto.value.AutoValue;
@@ -47,6 +48,8 @@ public abstract class PackageMetadataConfig {
 
   protected abstract Map<TargetLanguage, VersionBound> gaxVersionBound();
 
+  protected abstract Map<TargetLanguage, VersionBound> gaxGrpcVersionBound();
+
   protected abstract Map<TargetLanguage, VersionBound> grpcVersionBound();
 
   protected abstract Map<TargetLanguage, VersionBound> protoVersionBound();
@@ -69,6 +72,11 @@ public abstract class PackageMetadataConfig {
   /** The version of GAX that this package depends on. Configured per language. */
   public VersionBound gaxVersionBound(TargetLanguage language) {
     return gaxVersionBound().get(language);
+  }
+
+  /** The version of GAX Grpc that this package depends on. Configured per language. */
+  public VersionBound gaxGrpcVersionBound(TargetLanguage language) {
+    return gaxGrpcVersionBound().get(language);
   }
 
   /** The version of api-common that this package depends on. Only used by Java */
@@ -136,6 +144,10 @@ public abstract class PackageMetadataConfig {
   @Nullable
   public abstract PackageType packageType();
 
+  /** Returns the type of the dependency */
+  @Nullable
+  public abstract DependencyType dependencyType();
+
   @Nullable
   public abstract GenerationLayer generationLayer();
 
@@ -172,6 +184,8 @@ public abstract class PackageMetadataConfig {
   protected abstract static class Builder {
     abstract Builder gaxVersionBound(Map<TargetLanguage, VersionBound> val);
 
+    abstract Builder gaxGrpcVersionBound(Map<TargetLanguage, VersionBound> val);
+
     abstract Builder grpcVersionBound(Map<TargetLanguage, VersionBound> val);
 
     abstract Builder protoVersionBound(Map<TargetLanguage, VersionBound> val);
@@ -194,6 +208,8 @@ public abstract class PackageMetadataConfig {
     abstract Builder shortName(String val);
 
     abstract Builder packageType(PackageType val);
+
+    abstract Builder dependencyType(DependencyType val);
 
     abstract Builder generationLayer(GenerationLayer val);
 
@@ -219,6 +235,7 @@ public abstract class PackageMetadataConfig {
   public static PackageMetadataConfig createDummyPackageMetadataConfig() {
     return newBuilder()
         .gaxVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
+        .gaxGrpcVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
         .grpcVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
         .protoVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
         .packageName(ImmutableMap.<TargetLanguage, String>of())
@@ -229,6 +246,7 @@ public abstract class PackageMetadataConfig {
         .releaseLevel(ImmutableMap.<TargetLanguage, ReleaseLevel>of())
         .shortName("")
         .packageType(PackageType.GRPC_CLIENT)
+        .dependencyType(DependencyType.RELEASE)
         .generationLayer(GenerationLayer.PROTO)
         .apiVersion("")
         .protoPath("")
@@ -249,6 +267,9 @@ public abstract class PackageMetadataConfig {
         newBuilder()
             .gaxVersionBound(
                 createVersionMap((Map<String, Map<String, String>>) configMap.get("gax_version")))
+            .gaxGrpcVersionBound(
+                createVersionMap(
+                    (Map<String, Map<String, String>>) configMap.get("gax_grpc_version")))
             .grpcVersionBound(
                 createVersionMap((Map<String, Map<String, String>>) configMap.get("grpc_version")))
             .protoVersionBound(
@@ -269,6 +290,7 @@ public abstract class PackageMetadataConfig {
             .packageName(buildMapWithDefault((Map<String, String>) configMap.get("package_name")))
             .shortName((String) configMap.get("short_name"))
             .packageType(PackageType.of((String) configMap.get("package_type")))
+            .dependencyType(DependencyType.of((String) configMap.get("dependency_type")))
             .generationLayer(GenerationLayer.of((String) configMap.get("generation_layer")))
             .apiVersion((String) configMap.get("major_version"))
             .protoPath((String) configMap.get("proto_path"))
