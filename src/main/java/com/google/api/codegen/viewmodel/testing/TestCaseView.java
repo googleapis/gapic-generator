@@ -34,10 +34,6 @@ public abstract class TestCaseView {
 
   public abstract List<ClientTestAssertView> asserts();
 
-  public boolean hasAsserts() {
-    return asserts().size() > 0;
-  }
-
   public abstract String requestTypeName();
 
   public abstract String responseTypeName();
