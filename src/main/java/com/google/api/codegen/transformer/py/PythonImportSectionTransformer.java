@@ -56,6 +56,15 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
         .build();
   }
 
+  public ImportSectionView generateSmokeTestImportSection(
+      GapicInterfaceContext context, boolean requireProjectId) {
+    return ImportSectionView.newBuilder()
+        .standardImports(generateSmokeTestStandardImports(requireProjectId))
+        .externalImports(ImmutableList.<ImportFileView>of())
+        .appImports(generateTestAppImports(context))
+        .build();
+  }
+
   private List<ImportFileView> generateInitCodeAppImports(
       GapicMethodContext context, Iterable<InitCodeNode> specItemNodes) {
     return ImmutableList.<ImportFileView>builder()
@@ -109,6 +118,15 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
 
   private List<ImportFileView> generateTestStandardImports() {
     return ImmutableList.of(createImport("mock"), createImport("unittest"));
+  }
+
+  private List<ImportFileView> generateSmokeTestStandardImports(boolean requireProjectId) {
+    ImmutableList.Builder<ImportFileView> imports = ImmutableList.builder();
+    if (requireProjectId) {
+      imports.add(createImport("os"));
+    }
+    imports.add(createImport("time"), createImport("unittest"));
+    return imports.build();
   }
 
   private List<ImportFileView> generateTestExternalImports(GapicInterfaceContext context) {
