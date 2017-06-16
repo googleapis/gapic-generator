@@ -97,9 +97,6 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
             JavaFeatureConfig.newBuilder().enableStringFormatFunctions(false).build());
 
     // Escape any schema's field names that are Java keywords.
-    Set<String> reservedKeywords = new HashSet<>();
-    reservedKeywords.addAll(JavaNameFormatter.RESERVED_IDENTIFIER_SET);
-    reservedKeywords.add("Builder");
 
     for (Schema schema : context.getDocument().schemas().values()) {
       Map<SchemaInterfaceContext, StaticLangApiMessageView> contextViews =
