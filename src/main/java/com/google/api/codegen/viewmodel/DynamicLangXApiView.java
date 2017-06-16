@@ -45,6 +45,10 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
   public abstract List<ParseResourceFunctionView> parseResourceFunctions();
 
+  public boolean hasFormatOrParseResourceFunctions() {
+    return formatResourceFunctions().size() > 0 || parseResourceFunctions().size() > 0;
+  }
+
   public abstract List<PathTemplateGetterFunctionView> pathTemplateGetterFunctions();
 
   public abstract List<PageStreamingDescriptorView> pageStreamingDescriptors();
