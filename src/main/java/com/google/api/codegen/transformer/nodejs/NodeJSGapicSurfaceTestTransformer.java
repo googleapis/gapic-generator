@@ -127,17 +127,10 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
               .build());
     }
 
-    String outputPath = "test";
-    outputPath += File.separator;
-    outputPath +=
-        Strings.isNullOrEmpty(namer.getApiWrapperModuleVersion())
-            ? "gapic"
-            : "gapic-" + namer.getApiWrapperModuleVersion();
-    outputPath += ".test.js";
     ImportSectionView importSection =
         importSectionTransformer.generateImportSection(typeTable.getImports());
     return MockCombinedView.newBuilder()
-        .outputPath(outputPath)
+        .outputPath(testCaseOutputFile(namer))
         .serviceImpls(impls)
         .mockServices(new ArrayList<MockServiceUsageView>())
         .testClasses(testClasses)
@@ -145,6 +138,15 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
         .templateFileName(TEST_TEMPLATE_FILE)
         .fileHeader(fileHeaderTransformer.generateFileHeader(productConfig, importSection, namer))
         .build();
+  }
+
+  private String testCaseOutputFile(SurfaceNamer namer) {
+    String outputPath = "test";
+    String fileName =
+        Strings.isNullOrEmpty(namer.getApiWrapperModuleVersion())
+            ? "gapic.js"
+            : "gapic-" + namer.getApiWrapperModuleVersion() + ".js";
+    return outputPath + File.separator + fileName;
   }
 
   private List<TestCaseView> createTestCaseViews(GapicInterfaceContext context) {
