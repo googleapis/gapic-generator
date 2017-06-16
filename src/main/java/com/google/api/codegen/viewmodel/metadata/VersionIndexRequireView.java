@@ -32,6 +32,10 @@ public abstract class VersionIndexRequireView {
   @Nullable
   public abstract ServiceDocView doc();
 
+  /** The name of the class that ties in the helper functions to a client partial veneers. */
+  @Nullable
+  public abstract String helpersClassName();
+
   public abstract String fileName();
 
   public static Builder newBuilder() {
@@ -47,6 +51,8 @@ public abstract class VersionIndexRequireView {
     public abstract Builder localName(String val);
 
     public abstract Builder doc(ServiceDocView val);
+
+    public abstract Builder helpersClassName(String val);
 
     public abstract Builder fileName(String val);
 

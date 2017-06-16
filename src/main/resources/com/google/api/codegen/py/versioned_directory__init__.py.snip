@@ -1,0 +1,48 @@
+@extends "py/common.snip"
+
+@snippet generate(view)
+    {@header(view.fileHeader)}
+
+    {@body(view.requireViews)}
+@end
+
+@private header(fileHeader)
+    {@licenseSection(fileHeader)}
+
+    {@renderImportSection(fileHeader.importSection)}
+@end
+
+@private licenseSection(fileHeader)
+    @join line : fileHeader.copyrightLines
+        @# {@line}
+    @end
+    {@BREAK}@#
+    @join line : fileHeader.licenseLines
+        @# {@line}
+    @end
+@end
+
+@private body(requireViews)
+    {@clients(requireViews)}
+
+
+    {@exports(requireViews)}
+@end
+
+@private clients(requireViews)
+    @join view : requireViews on BREAK.add(BREAK)
+        class {@view.localName}({@view.helpersClassName}, {@view.clientName}):
+                __doc__ = {@view.clientName}.__doc__
+                enums = enums
+    @end
+@end
+
+@private exports(requireViews)
+    __all__ = (
+        'enums',
+        'types',
+        @join view : requireViews on ",".add(BREAK)
+            '{@view.localName}'
+        @end
+    )
+@end

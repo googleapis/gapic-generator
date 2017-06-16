@@ -14,22 +14,34 @@
  */
 package com.google.api.codegen.transformer.py;
 
+import com.google.api.codegen.InterfaceView;
+import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.ImportSectionTransformer;
 import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.TypeAlias;
+import com.google.api.codegen.util.py.PythonTypeTable;
 import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ImportTypeView;
+import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.MessageType;
+import com.google.api.tools.framework.model.Model;
+import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -62,6 +74,26 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
         .standardImports(generateSmokeTestStandardImports(requireProjectId))
         .externalImports(ImmutableList.<ImportFileView>of())
         .appImports(generateTestAppImports(context))
+        .build();
+  }
+
+  public ImportSectionView generateTypesImportSection(
+      Model model, GapicProductConfig productConfig, SurfaceNamer namer) {
+    return ImportSectionView.newBuilder()
+        .appImports(generateTypesProtoImports(model, productConfig, namer))
+        .externalImports(generateTypesExternalImports())
+        .standardImports(generateTypesStandardImports())
+        .build();
+  }
+
+  public ImportSectionView generateVersionedInitImportSection(
+      Model model,
+      GapicProductConfig productConfig,
+      PackageMetadataConfig packageConfig,
+      SurfaceNamer namer) {
+    return ImportSectionView.newBuilder()
+        .appImports(generateVersionedInitAppImports(model, productConfig, packageConfig, namer))
+        .standardImports(generateVersionedInitStandardImports())
         .build();
   }
 
@@ -149,6 +181,101 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
       }
     }
     return new ArrayList<>(appImports);
+  }
+
+  private List<ImportFileView> generateTypesProtoImports(
+      Model model, GapicProductConfig productConfig, SurfaceNamer namer) {
+    ModelTypeTable typeTable = emptyTypeTable(productConfig);
+    Set<ImportFileView> imports = new TreeSet<>(importFileViewComparator());
+
+    // Save proto file import names to the type table for disambiguation.
+    Set<ProtoFile> protoFileDependencies = getProtofileDependencies(model);
+    populateTypeTable(protoFileDependencies, typeTable);
+
+    // Get disambiguated imports.
+    for (Map.Entry<String, TypeAlias> entry : typeTable.getImports().entrySet()) {
+      imports.add(generateAppImport(entry.getKey(), entry.getValue().getNickname()));
+    }
+    return ImmutableList.<ImportFileView>builder().addAll(imports).build();
+  }
+
+  private ModelTypeTable emptyTypeTable(GapicProductConfig productConfig) {
+    return new ModelTypeTable(
+        new PythonTypeTable(productConfig.getPackageName()),
+        new PythonModelTypeNameConverter(productConfig.getPackageName()));
+  }
+
+  private List<ImportFileView> generateTypesExternalImports() {
+    return ImmutableList.of(createImport("google.gax.utils.messages", "get_messages"));
+  }
+
+  private List<ImportFileView> generateTypesStandardImports() {
+    return ImmutableList.of(createImport("__future__", "absoulute_import"), createImport("sys"));
+  }
+
+  private void populateTypeTable(Set<ProtoFile> protoFileDependencies, ModelTypeTable typeTable) {
+    for (ProtoFile protoFile : protoFileDependencies) {
+      // For python, adding a single message from the proto file to the type table will populate
+      // the type table with the correct imports.
+      ImmutableList<MessageType> messages = protoFile.getMessages();
+      if (!messages.isEmpty()) {
+        typeTable.getAndSaveNicknameFor(TypeRef.of(messages.get(0)));
+      }
+    }
+  }
+
+  private Set<ProtoFile> getProtofileDependencies(Model model) {
+    // Set up BFS.
+    Iterable<Interface> apiInterfaces = new InterfaceView().getElementIterable(model);
+    Queue<ProtoFile> protoFileQueue = new LinkedList<>();
+    for (Interface apiInterface : apiInterfaces) {
+      protoFileQueue.add(apiInterface.getFile());
+    }
+
+    // BFS to get all proto dependencies.
+    Set<ProtoFile> seenFiles = new HashSet<>();
+    while (!protoFileQueue.isEmpty()) {
+      ProtoFile current = protoFileQueue.remove();
+      seenFiles.add(current);
+      for (ProtoFile protoFile : current.getDependencies()) {
+        if (!seenFiles.contains(protoFile)) {
+          protoFileQueue.add(protoFile);
+        }
+      }
+    }
+    return seenFiles;
+  }
+
+  private List<ImportFileView> generateVersionedInitStandardImports() {
+    return ImmutableList.of(createImport("__future__", "absoulte_import"));
+  }
+
+  private List<ImportFileView> generateVersionedInitAppImports(
+      Model model,
+      GapicProductConfig productConfig,
+      PackageMetadataConfig packageConfig,
+      SurfaceNamer namer) {
+
+    Iterable<Interface> apiInterfaces = new InterfaceView().getElementIterable(model);
+    ModelTypeTable typeTable = emptyTypeTable(productConfig);
+    for (Interface apiInterface : apiInterfaces) {
+      namer.getAndSaveNicknameForGrpcClientTypeName(typeTable, apiInterface);
+    }
+
+    Set<ImportFileView> imports = new TreeSet<>(importFileViewComparator());
+    // TODO: (landrito) Make this only generate the enums module if there are enums to export.
+    imports.add(createImport(productConfig.getPackageName(), "enums"));
+    String packageNamespace = namer.getPackageNamespace(packageConfig.apiVersion());
+    imports.add(
+        createImport(
+            packageNamespace + ".helpers", namer.getHelpersClassName(packageConfig.shortName())));
+    imports.add(
+        createImport(
+            namer.getVersionedDirectoryNamespace(apiInterfaces.iterator().next()), "types"));
+    for (Map.Entry<String, TypeAlias> entry : typeTable.getImports().entrySet()) {
+      imports.add(generateAppImport(entry.getKey(), entry.getValue().getNickname()));
+    }
+    return ImmutableList.<ImportFileView>builder().addAll(imports).build();
   }
 
   /**

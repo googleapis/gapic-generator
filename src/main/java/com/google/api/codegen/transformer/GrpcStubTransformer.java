@@ -53,6 +53,7 @@ public class GrpcStubTransformer {
 
     stub.name(namer.getStubName(targetInterface));
     stub.fullyQualifiedType(namer.getFullyQualifiedStubType(targetInterface));
+    stub.type(namer.getStubType(targetInterface));
     stub.createStubFunctionName(namer.getCreateStubFunctionName(targetInterface));
     String grpcClientTypeName =
         namer.getAndSaveNicknameForGrpcClientTypeName(context.getModelTypeTable(), targetInterface);

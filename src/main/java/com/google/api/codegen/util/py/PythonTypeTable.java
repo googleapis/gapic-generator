@@ -79,7 +79,7 @@ public class PythonTypeTable implements TypeTable {
 
   @Override
   public NamePath getNamePath(String fullName) {
-    return NamePath.doubleColoned(fullName);
+    return NamePath.dotted(fullName);
   }
 
   @Override

@@ -38,6 +38,9 @@ public abstract class VersionIndexView implements ViewModel {
   @Nullable
   public abstract VersionIndexRequireView primaryService();
 
+  @Nullable
+  public abstract String namespace();
+
   public abstract String apiVersion();
 
   public abstract String packageVersion();
@@ -62,6 +65,8 @@ public abstract class VersionIndexView implements ViewModel {
     public abstract Builder templateFileName(String val);
 
     public abstract Builder primaryService(VersionIndexRequireView val);
+
+    public abstract Builder namespace(String val);
 
     public abstract Builder apiVersion(String val);
 
