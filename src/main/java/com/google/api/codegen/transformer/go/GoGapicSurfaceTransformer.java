@@ -388,6 +388,10 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
                   ImportKind.PAGE_STREAM,
                   ImmutableList.<String>of("math;;;", "google.golang.org/api/iterator;;;"))
               .put(
+                  ImportContext.EXAMPLE,
+                  ImportKind.PAGE_STREAM,
+                  ImmutableList.<String>of("google.golang.org/api/iterator;;;"))
+              .put(
                   ImportContext.CLIENT,
                   ImportKind.LRO,
                   ImmutableList.<String>of(
