@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer.php;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.php.PhpGapicCodePathMapper;
@@ -212,9 +213,17 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
     for (Method method : context.getSupportedMethods()) {
       GapicMethodContext methodContext = context.asRequestMethodContext(method);
 
-      if (methodContext.getMethodConfig().isGrpcStreaming()) {
-        // TODO(shinfan): Remove this check once grpc streaming is supported by test
+      if (methodContext.getMethodConfig().getGrpcStreamingType()
+          == GrpcStreamingType.ClientStreaming) {
+        // TODO: Add unit test generation for ClientStreaming methods
+        // Issue: https://github.com/googleapis/toolkit/issues/946
         continue;
+      }
+
+      InitCodeOutputType initCodeOutputType = InitCodeOutputType.FieldList;
+      if (methodContext.getMethodConfig().getGrpcStreamingType()
+          == GrpcStreamingType.BidiStreaming) {
+        initCodeOutputType = InitCodeOutputType.SingleObject;
       }
 
       ClientMethodType clientMethodType = ClientMethodType.OptionalArrayMethod;
@@ -233,7 +242,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
               .initFieldConfigStrings(methodContext.getMethodConfig().getSampleCodeInitFields())
               .initValueConfigMap(InitCodeTransformer.createCollectionMap(methodContext))
               .initFields(FieldConfig.toFieldIterable(fieldConfigs))
-              .outputType(InitCodeOutputType.FieldList)
+              .outputType(initCodeOutputType)
               .fieldConfigMap(FieldConfig.toFieldConfigMap(fieldConfigs))
               .valueGenerator(valueGenerator)
               .build();
@@ -247,6 +256,8 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
   private void addUnitTestImports(ModelTypeTable typeTable) {
     typeTable.saveNicknameFor("\\Google\\GAX\\ApiException");
+    typeTable.saveNicknameFor("\\Google\\GAX\\BidiStream");
+    typeTable.saveNicknameFor("\\Google\\GAX\\ServerStream");
     typeTable.saveNicknameFor("\\Google\\GAX\\GrpcCredentialsHelper");
     typeTable.saveNicknameFor("\\Google\\GAX\\LongRunning\\OperationsClient");
     typeTable.saveNicknameFor("\\Google\\GAX\\Testing\\MockStubTrait");

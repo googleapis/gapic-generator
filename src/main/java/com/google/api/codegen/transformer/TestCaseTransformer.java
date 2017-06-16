@@ -30,6 +30,7 @@ import com.google.api.codegen.viewmodel.ResourceNameInitValueView;
 import com.google.api.codegen.viewmodel.ResourceNameOneofInitValueView;
 import com.google.api.codegen.viewmodel.SimpleInitCodeLineView;
 import com.google.api.codegen.viewmodel.SimpleInitValueView;
+import com.google.api.codegen.viewmodel.testing.GrpcStreamingView;
 import com.google.api.codegen.viewmodel.testing.MockGrpcResponseView;
 import com.google.api.codegen.viewmodel.testing.PageStreamingResponseView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
@@ -96,6 +97,36 @@ public class TestCaseTransformer {
           !ServiceMessages.s_isEmptyType(methodConfig.getLongRunningConfig().getReturnType());
     }
 
+    InitCodeContext responseInitCodeContext =
+        createResponseInitCodeContext(methodContext, initCodeContext.symbolTable());
+    MockGrpcResponseView mockGrpcResponseView =
+        createMockResponseView(methodContext, responseInitCodeContext);
+
+    GrpcStreamingView grpcStreamingView = null;
+    if (methodConfig.isGrpcStreaming()) {
+      String resourceTypeName = null;
+      String resourcesFieldGetterName = null;
+      if (methodConfig.getGrpcStreaming().hasResourceField()) {
+        Field resourcesField = methodConfig.getGrpcStreaming().getResourcesField();
+        resourceTypeName =
+            methodContext.getTypeTable().getAndSaveNicknameForElementType(resourcesField.getType());
+        resourcesFieldGetterName =
+            namer.getFieldGetFunctionName(
+                resourcesField.getType(), Name.from(resourcesField.getSimpleName()));
+      }
+
+      grpcStreamingView =
+          GrpcStreamingView.newBuilder()
+              .resourceTypeName(resourceTypeName)
+              .resourcesFieldGetterName(resourcesFieldGetterName)
+              .requestInitCodeList(
+                  createGrpcStreamingInitCodeViews(methodContext, initCodeContext, initCode))
+              .responseInitCodeList(
+                  createGrpcStreamingInitCodeViews(
+                      methodContext, responseInitCodeContext, mockGrpcResponseView.initCode()))
+              .build();
+    }
+
     return TestCaseView.newBuilder()
         .asserts(initCodeTransformer.generateRequestAssertViews(methodContext, initCodeContext))
         .clientMethodType(clientMethodType)
@@ -103,11 +134,12 @@ public class TestCaseTransformer {
         .hasRequestParameters(hasRequestParameters)
         .hasReturnValue(hasReturnValue)
         .initCode(initCode)
-        .mockResponse(createMockResponseView(methodContext, initCodeContext.symbolTable()))
+        .mockResponse(mockGrpcResponseView)
         .mockServiceVarName(namer.getMockServiceVarName(methodContext.getTargetInterface()))
         .name(namer.getTestCaseName(testNameTable, method))
         .nameWithException(namer.getExceptionTestCaseName(testNameTable, method))
         .pageStreamingResponseViews(createPageStreamingResponseViews(methodContext))
+        .grpcStreamingView(grpcStreamingView)
         .requestTypeName(methodContext.getTypeTable().getAndSaveNicknameFor(method.getInputType()))
         .responseTypeName(responseTypeName)
         .fullyQualifiedRequestTypeName(
@@ -172,12 +204,26 @@ public class TestCaseTransformer {
     return pageStreamingResponseViews;
   }
 
-  private MockGrpcResponseView createMockResponseView(
-      GapicMethodContext methodContext, SymbolTable symbolTable) {
-    InitCodeView initCodeView =
-        initCodeTransformer.generateInitCode(
-            methodContext, createResponseInitCodeContext(methodContext, symbolTable));
+  /**
+   * Return a list of three InitCodeView objects, including simpleInitCodeView and generating two
+   * additional objects, which will be initialized with different initial values.
+   */
+  private List<InitCodeView> createGrpcStreamingInitCodeViews(
+      GapicMethodContext methodContext,
+      InitCodeContext initCodeContext,
+      InitCodeView simpleInitCodeView) {
+    List<InitCodeView> requestInitCodeList = new ArrayList<>();
+    requestInitCodeList.add(simpleInitCodeView);
+    requestInitCodeList.add(initCodeTransformer.generateInitCode(methodContext, initCodeContext));
+    requestInitCodeList.add(initCodeTransformer.generateInitCode(methodContext, initCodeContext));
+    return requestInitCodeList;
+  }
 
+  private MockGrpcResponseView createMockResponseView(
+      GapicMethodContext methodContext, InitCodeContext responseInitCodeContext) {
+
+    InitCodeView initCodeView =
+        initCodeTransformer.generateInitCode(methodContext, responseInitCodeContext);
     String typeName =
         methodContext
             .getTypeTable()
@@ -231,6 +277,13 @@ public class TestCaseTransformer {
       if (config.getSubresponseField() != null) {
         String subResponseFieldName = config.getSubresponseField().getSimpleName();
         additionalSubTrees.add(InitCodeNode.createSingletonList(subResponseFieldName));
+      }
+    }
+    if (context.getMethodConfig().isGrpcStreaming()) {
+      GrpcStreamingConfig streamingConfig = context.getMethodConfig().getGrpcStreaming();
+      if (streamingConfig.hasResourceField()) {
+        String resourceFieldName = streamingConfig.getResourcesField().getSimpleName();
+        additionalSubTrees.add(InitCodeNode.createSingletonList(resourceFieldName));
       }
     }
     return additionalSubTrees;
