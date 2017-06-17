@@ -20,12 +20,12 @@ import com.google.api.codegen.util.LinkPattern;
 import java.util.regex.Pattern;
 
 public class PhpCommentReformatter implements CommentReformatter {
-  public static final Pattern ASTERISK_PATTERN = Pattern.compile("\\*");
+  public static final Pattern CLOSE_COMMENT_PATTERN = Pattern.compile("\\*/");
   public static final Pattern AMPERSAND_PATTERN = Pattern.compile("@");
 
   private CommentTransformer transformer =
       CommentTransformer.newBuilder()
-          .replace(ASTERISK_PATTERN, "&#42;")
+          .replace(CLOSE_COMMENT_PATTERN, "&#42;/")
           .replace(AMPERSAND_PATTERN, "&#64;")
           .transform(
               LinkPattern.RELATIVE

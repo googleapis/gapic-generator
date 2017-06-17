@@ -865,7 +865,9 @@ class TestLibraryServiceClient(unittest.TestCase):
         client = library_service_client.LibraryServiceClient()
 
         # Mock response
-        expected_response = library_pb2.StreamShelvesResponse()
+        shelves_element = library_pb2.Shelf()
+        shelves = [shelves_element]
+        expected_response = library_pb2.StreamShelvesResponse(shelves=shelves)
         grpc_stub.StreamShelves.return_value = iter([expected_response])
 
         response = client.stream_shelves()
@@ -1401,3 +1403,4 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub.TestOptionalRequiredFlatteningParams.side_effect = CustomException()
 
         self.assertRaises(errors.GaxError, client.test_optional_required_flattening_params, required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, required_repeated_resource_name, required_repeated_resource_name_oneof, required_repeated_fixed32, required_repeated_fixed64, required_map)
+
