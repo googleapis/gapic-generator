@@ -123,7 +123,19 @@ public class GoSurfaceNamer extends SurfaceNamer {
   @Override
   public String getAndSaveOperationResponseTypeName(
       Method method, ModelTypeTable typeTable, GapicMethodConfig methodConfig) {
-    return publicClassName(Name.upperCamel(method.getSimpleName()).join("operation"));
+    return getAndSaveOperationResponseTypeName(method.getSimpleName());
+  }
+
+  @VisibleForTesting
+  String getAndSaveOperationResponseTypeName(String methodName) {
+    Name name = Name.upperCamel(methodName);
+    if (methodName.endsWith("Operation")) {
+      // Avoid creating funny names like "CreateStuffOperationOperation".
+      name = name.join("handle");
+    } else {
+      name = name.join("operation");
+    }
+    return publicClassName(name);
   }
 
   @Override
