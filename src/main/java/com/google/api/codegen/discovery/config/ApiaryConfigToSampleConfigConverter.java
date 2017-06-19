@@ -83,7 +83,8 @@ public class ApiaryConfigToSampleConfigConverter {
         .methods(methods)
         .authType(apiaryConfig.getAuthType())
         .authInstructionsUrl(apiaryConfig.getAuthInstructionsUrl())
-        .discoveryDocUrl(typeNameGenerator.getDiscoveryDocUrl(apiName, apiVersion))
+        .discoveryDocUrl(
+            typeNameGenerator.getDiscoveryDocUrl(apiName, apiVersion, apiaryConfig.getRootUrl()))
         .build();
   }
 
