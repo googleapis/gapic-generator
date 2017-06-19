@@ -20,31 +20,26 @@ import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.SchemaTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.TypeTable;
 import com.google.auto.value.AutoValue;
+import java.util.Comparator;
 
 /**
  * The context for transforming a single top-level schema from Discovery Doc API into a top-level
- * view model for client library generation.
+ * view for client library generation.
  *
  * <p>This context contains a reference to the parent Document context.
  */
 @AutoValue
 public abstract class SchemaInterfaceContext implements InterfaceContext {
   public static SchemaInterfaceContext create(
-      Schema schema,
-      SchemaTypeTable typeTable,
-      SymbolTable symbolTable,
-      DiscoGapicInterfaceContext docContext) {
-    return new AutoValue_SchemaInterfaceContext(schema, typeTable, symbolTable, docContext);
+      Schema schema, SchemaTypeTable typeTable, DiscoGapicInterfaceContext docContext) {
+    return new AutoValue_SchemaInterfaceContext(schema, typeTable, docContext);
   }
 
   public abstract Schema getSchema();
 
   public abstract SchemaTypeTable getSchemaTypeTable();
-
-  public abstract SymbolTable getSymbolTable();
 
   /** @return the parent Document-level InterfaceContext. */
   public abstract DiscoGapicInterfaceContext getDocContext();
@@ -74,11 +69,20 @@ public abstract class SchemaInterfaceContext implements InterfaceContext {
   }
 
   public SchemaInterfaceContext withNewTypeTable() {
-    return create(
-        getSchema(), getSchemaTypeTable().cloneEmpty(), getSymbolTable(), getDocContext());
+    return create(getSchema(), getSchemaTypeTable().cloneEmpty(), getDocContext());
   }
 
   public DiscoGapicInterfaceConfig getInterfaceConfig() {
     return (DiscoGapicInterfaceConfig) getProductConfig().getInterfaceConfig(getSchema().id());
   }
+
+  public static Comparator<SchemaInterfaceContext> comparator =
+      new Comparator<SchemaInterfaceContext>() {
+        @Override
+        public int compare(SchemaInterfaceContext o1, SchemaInterfaceContext o2) {
+          String s1 = o1.getSchema().id().isEmpty() ? o1.getSchema().key() : o1.getSchema().id();
+          String s2 = o2.getSchema().id().isEmpty() ? o2.getSchema().key() : o2.getSchema().id();
+          return String.CASE_INSENSITIVE_ORDER.compare(s1, s2);
+        }
+      };
 }
