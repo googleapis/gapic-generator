@@ -16,13 +16,9 @@ package com.google.api.codegen.transformer.go;
 
 import com.google.api.codegen.util.Name;
 import com.google.common.truth.Truth;
-import org.junit.ClassRule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 
 public class GoSurfaceNamerTest {
-  @ClassRule public static TemporaryFolder tempDir = new TemporaryFolder();
-
   @Test
   public void testClientNamePrefix() {
     GoSurfaceNamer namer = new GoSurfaceNamer("cloud.google.com/go/gopher/apiv1");
@@ -43,5 +39,14 @@ public class GoSurfaceNamerTest {
     // use the service name as the prefix.
     Truth.assertThat(namer.getReducedServiceName("Guru")).isEqualTo(Name.from("guru"));
     Truth.assertThat(namer.clientNamePrefix("Guru")).isEqualTo(Name.from("guru"));
+  }
+
+  @Test
+  public void testOperationName() {
+    GoSurfaceNamer namer = new GoSurfaceNamer("cloud.google.com/go/gopher/apiv1");
+    Truth.assertThat(namer.getAndSaveOperationResponseTypeName("CreateStuff"))
+        .isEqualTo("CreateStuffOperation");
+    Truth.assertThat(namer.getAndSaveOperationResponseTypeName("CreateStuffOperation"))
+        .isEqualTo("CreateStuffOperationHandle");
   }
 }

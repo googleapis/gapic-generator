@@ -250,7 +250,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
     StringBuffer sb = new StringBuffer();
     List<String> stringParts = new ArrayList<>();
     while (m.find()) {
-      m.appendReplacement(sb, "%s");
+      m.appendReplacement(sb, "{" + stringParts.size() + "}");
       stringParts.add("time.time()");
     }
     m.appendTail(sb);

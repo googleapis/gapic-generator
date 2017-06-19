@@ -30,7 +30,7 @@ class LibraryServiceSmokeTest(unittest.TestCase):
         project_id = os.environ['PROJECT_ID']
 
         client = library_service_client.LibraryServiceClient()
-        name = client.book_path("testShelf-%s".format(time.time()), project_id)
+        name = client.book_path("testShelf-{0}".format(time.time()), project_id)
         rating = enums.Book.Rating.GOOD
         book = library_pb2.Book(rating=rating)
         response = client.update_book(name, book)
