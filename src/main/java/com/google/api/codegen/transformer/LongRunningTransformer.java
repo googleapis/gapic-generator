@@ -18,12 +18,14 @@ import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.LongRunningConfig;
 import com.google.api.codegen.config.VisibilityConfig;
+import com.google.api.codegen.viewmodel.LongRunningConfigView;
 import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
 import com.google.api.tools.framework.model.Method;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 
 public class LongRunningTransformer {
+
   public List<LongRunningOperationDetailView> generateDetailViews(GapicInterfaceContext context) {
     ImmutableList.Builder<LongRunningOperationDetailView> views = ImmutableList.builder();
     for (Method method : context.getLongRunningMethods()) {
@@ -54,6 +56,22 @@ public class LongRunningTransformer {
         .metadataTypeName(metadataTypeName)
         .implementsDelete(lroConfig.implementsDelete())
         .implementsCancel(lroConfig.implementsCancel())
+        .build();
+  }
+
+  public LongRunningConfigView generateConfigView(GapicMethodContext context) {
+    GapicMethodConfig methodConfig = context.getMethodConfig();
+    ModelTypeTable typeTable = context.getTypeTable();
+    LongRunningConfig longRunningConfig = methodConfig.getLongRunningConfig();
+    return LongRunningConfigView.newBuilder()
+        .operationResultTypeName(
+            typeTable.getAndSaveNicknameForElementType(longRunningConfig.getReturnType()))
+        .operationMetadataTypeName(
+            typeTable.getAndSaveNicknameForElementType(longRunningConfig.getMetadataType()))
+        .operationInitialPollDelay(longRunningConfig.getInitialPollDelay())
+        .operationPollDelayMultiplier(longRunningConfig.getPollDelayMultiplier())
+        .operationMaxPollDelay(longRunningConfig.getMaxPollDelay())
+        .operationTotalPollTimeout(longRunningConfig.getTotalPollTimeout())
         .build();
   }
 }

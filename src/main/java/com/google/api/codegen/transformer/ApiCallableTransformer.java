@@ -32,15 +32,16 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.joda.time.Duration;
 
 public class ApiCallableTransformer {
   private final BatchingTransformer batchingTransformer;
   private final RetryDefinitionsTransformer retryDefinitionsTransformer;
+  private final LongRunningTransformer longRunningTransformer;
 
   public ApiCallableTransformer() {
     this.batchingTransformer = new BatchingTransformer();
     this.retryDefinitionsTransformer = new RetryDefinitionsTransformer();
+    this.longRunningTransformer = new LongRunningTransformer();
   }
 
   public List<ApiCallableView> generateStaticLangApiCallables(GapicInterfaceContext context) {
@@ -227,8 +228,6 @@ public class ApiCallableTransformer {
         namer.getNotImplementedString(notImplementedPrefix + "pagedListResponseFactoryName"));
     settings.batchingDescriptorName(
         namer.getNotImplementedString(notImplementedPrefix + "batchingDescriptorName"));
-    settings.operationResultTypeName(
-        namer.getNotImplementedString(notImplementedPrefix + "operationResultTypeName"));
 
     if (methodConfig.isGrpcStreaming()) {
       settings.type(ApiCallableImplType.StreamingApiCallable);
@@ -255,13 +254,7 @@ public class ApiCallableTransformer {
       settings.batchingConfig(batchingTransformer.generateBatchingConfig(context));
     } else if (methodConfig.isLongRunningOperation()) {
       settings.type(ApiCallableImplType.OperationApiCallable);
-      TypeRef operationResultType = methodConfig.getLongRunningConfig().getReturnType();
-      settings.operationResultTypeName(
-          typeTable.getAndSaveNicknameForElementType(operationResultType));
-      Duration pollingInterval = methodConfig.getLongRunningConfig().getPollingInterval();
-      if (pollingInterval != null) {
-        settings.operationPollingIntervalMillis(Long.toString(pollingInterval.getMillis()));
-      }
+      settings.longRunningConfig(longRunningTransformer.generateConfigView(context));
     } else {
       settings.type(ApiCallableImplType.SimpleApiCallable);
     }
