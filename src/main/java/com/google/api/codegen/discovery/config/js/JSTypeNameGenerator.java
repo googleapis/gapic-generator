@@ -47,11 +47,13 @@ public class JSTypeNameGenerator extends TypeNameGenerator {
       throw new IllegalArgumentException(String.format("malformed URL: %s", rootUrl));
     }
     String host = uri.getHost();
-    // The host is either of the form "www.googleapis.com" or "www.{apiName}.googleapis.com".
+    // The host is either of the form "www.googleapis.com" or "www.[a-z]+.googleapis.com".
     if (host.equals("www.googleapis.com")) {
       return String.format("https://%s/discovery/v1/apis/%s/%s/rest", host, apiName, apiVersion);
-    } else {
+    } else if (host.matches("[a-z]+\\.googleapis\\.com")) {
       return String.format("https://%s/$discovery/rest?version=%s", host, apiVersion);
+    } else {
+      throw new IllegalArgumentException(String.format("Unexpected host format: %s", host));
     }
   }
 }
