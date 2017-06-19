@@ -118,7 +118,6 @@ public class MainGapicProviderFactory
         GapicCodePathMapper pathMapper =
             CommonGapicCodePathMapper.newBuilder()
                 .setPrefix("")
-                .setShouldAppendPackage(true)
                 .setPackageFilePathNameFormatter(new CSharpNameFormatter())
                 .build();
         GapicProvider<? extends Object> mainProvider =
