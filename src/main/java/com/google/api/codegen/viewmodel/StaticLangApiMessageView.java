@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
  * https://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.7.
  */
 @AutoValue
-public abstract class StaticLangApiMessageView {
+public abstract class StaticLangApiMessageView implements Comparable<StaticLangApiMessageView> {
   @Nullable
   // TODO(andrealin) Populate and render this field.
   public abstract String description();
@@ -45,7 +45,7 @@ public abstract class StaticLangApiMessageView {
   // The possibly-transformed ID of the schema from the Discovery Doc
   public abstract String name();
 
-  // The type name for this Schema when rendered as a field in a parent Schema, e.g. "List<Operation>".
+  // The type name for this Schema when rendered as a field in its parent Schema, e.g. "List<Operation>".
   public abstract String typeName();
 
   // The type name for this Schema when rendered as a class name, e.g. "Operation".
@@ -87,5 +87,9 @@ public abstract class StaticLangApiMessageView {
     public abstract StaticLangApiMessageView.Builder properties(List<StaticLangApiMessageView> val);
 
     public abstract StaticLangApiMessageView build();
+  }
+
+  public int compareTo(StaticLangApiMessageView o) {
+    return this.name().compareTo(o.name());
   }
 }

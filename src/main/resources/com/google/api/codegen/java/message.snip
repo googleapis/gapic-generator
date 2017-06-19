@@ -16,7 +16,7 @@
     {@constructor(schema)}
 
     {@getters(schema)}
-    {@innerSchemas(schema)}
+
     {@newBuilder(schema)}
 
     {@builder(schema)}
@@ -27,20 +27,13 @@
 
     {@hashCode(schema)}
   }
-@end
 
-@private innerSchemas(schema)
-  @join property : schema.properties
-    @if {@property.properties}
-      {@schemaClassDef(property)}
-    @end
-  @end
 @end
 
 @private toString(schema)
   @@Override
   public String toString() {
-    return "{@schema.typeName}{"
+    return "{@schema.innerTypeName}{"
     @join property : schema.properties on " + \", \""
 
         + "{@property.name}=" + {@property.name}
@@ -55,8 +48,8 @@
     if (o == this) {
       return true;
     }
-    if (o instanceof {@schema.typeName}) {
-      {@schema.typeName} that = ({@schema.typeName}) o;
+    if (o instanceof {@schema.innerTypeName}) {
+      {@schema.innerTypeName} that = ({@schema.innerTypeName}) o;
       return
       @join property : schema.properties on "&&"
 
@@ -82,7 +75,7 @@
 
 @private newBuilder(schema)
   public static Builder newBuilder() {
-    return new {@schema.typeName}.Builder();
+    return new {@schema.innerTypeName}.Builder();
   }
 @end
 
@@ -122,7 +115,7 @@
 
     Builder() {}
 
-    Builder({@schema.typeName} source) {
+    Builder({@schema.innerTypeName} source) {
       @join property : schema.properties
         this.{@property.name} = source.{@property.name};
       @end
@@ -140,8 +133,8 @@
 
     @end
 
-    public {@schema.typeName} build() {
-      return new {@schema.typeName}(
+    public {@schema.innerTypeName} build() {
+      return new {@schema.innerTypeName}(
         @join property : schema.properties on ", "
 
           {@property.name}
