@@ -77,7 +77,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
   public String getFormatFunctionName(
       Interface apiInterface, SingleResourceNameConfig resourceNameConfig) {
     return publicMethodName(
-        getReducedServiceName(apiInterface.getSimpleName())
+        clientNamePrefix(apiInterface.getSimpleName())
             .join(resourceNameConfig.getEntityName())
             .join("path"));
   }
