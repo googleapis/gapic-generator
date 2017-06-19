@@ -1,12 +1,22 @@
 ============== file: src/main/java/com/google/cloud/fakebilling/v1/AttachedDisk.java ==============
 /*
+ * Copyright 2017, Google Inc. All rights reserved.
  *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
-import com.google.fakebilling.v1.AttachedDisk;
-import com.google.fakebilling.v1.Interface;
 import java.io.Serializable;
 import java.util.List;
 import javax.annotation.Generated;
@@ -54,10 +64,6 @@ public final class AttachedDisk implements Serializable {
   public String getType() {
     return type;
   }
-
-
-
-
 
 
   public static Builder newBuilder() {
@@ -186,16 +192,27 @@ public final class AttachedDisk implements Serializable {
     return h;
   }
 }
+
 ============== file: src/main/java/com/google/cloud/fakebilling/v1/BillingAccount.java ==============
 /*
+ * Copyright 2017, Google Inc. All rights reserved.
  *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
-import com.google.fakebilling.v1.BillingAccount;
 import java.io.Serializable;
-import java.util.List;
 import javax.annotation.Generated;
 
 @Generated("by GAPIC")
@@ -220,7 +237,6 @@ public final class BillingAccount implements Serializable {
   public Boolean getOpen() {
     return open;
   }
-
 
 
   public static Builder newBuilder() {
@@ -301,11 +317,402 @@ public final class BillingAccount implements Serializable {
     return h;
   }
 }
+
+============== file: src/main/java/com/google/cloud/fakebilling/v1/Data.java ==============
+/*
+ * Copyright 2017, Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.fakebilling.v1;
+
+import com.google.api.core.BetaApi;
+import java.io.Serializable;
+import java.util.List;
+import javax.annotation.Generated;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class Data implements Serializable {
+  private final String key;
+  private final String value;
+
+  private Data(
+
+    String key,
+    String value
+    ) {
+    this.key = key;
+    this.value = value;
+  }
+
+  public String getKey() {
+    return key;
+  }
+
+  public String getValue() {
+    return value;
+  }
+
+
+  public static Builder newBuilder() {
+    return new Data.Builder();
+  }
+
+  public static class Builder {
+    private String key;
+    private String value;
+
+    Builder() {}
+
+    Builder(Data source) {
+      this.key = source.key;
+      this.value = source.value;
+    }
+
+    public String getKey() {
+      return key;
+    }
+
+    public Builder setKey(String key) {
+      this.key = key;
+      return this;
+    }
+
+    public String getValue() {
+      return value;
+    }
+
+    public Builder setValue(String value) {
+      this.value = value;
+      return this;
+    }
+
+
+    public Data build() {
+      return new Data(
+
+        key,
+        value
+      );
+    }
+  }
+
+  @Override
+  public String toString() {
+    return "Data{"
+
+    + "key=" + key + ", "
+    + "value=" + value
+        + "}";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof Data) {
+      Data that = (Data) o;
+      return
+
+      this.key.equals(that.getKey())&&
+      this.value.equals(that.getValue())
+      ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    int h = 1;
+    h *= 1000003;
+    h ^= this.key.hashCode();
+    h *= 1000003;
+    h ^= this.value.hashCode();
+    return h;
+  }
+}
+
+============== file: src/main/java/com/google/cloud/fakebilling/v1/Error.java ==============
+/*
+ * Copyright 2017, Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.fakebilling.v1;
+
+import com.google.api.core.BetaApi;
+import java.io.Serializable;
+import java.util.List;
+import javax.annotation.Generated;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class Error implements Serializable {
+  private final List<Errors> errors;
+
+  private Error(
+
+    List<Errors> errors
+    ) {
+    this.errors = errors;
+  }
+
+  public List<Errors> getErrors() {
+    return errors;
+  }
+
+
+  public static Builder newBuilder() {
+    return new Error.Builder();
+  }
+
+  public static class Builder {
+    private List<Errors> errors;
+
+    Builder() {}
+
+    Builder(Error source) {
+      this.errors = source.errors;
+    }
+
+    public List<Errors> getErrors() {
+      return errors;
+    }
+
+    public Builder setErrors(List<Errors> errors) {
+      this.errors = errors;
+      return this;
+    }
+
+
+    public Error build() {
+      return new Error(
+
+        errors
+      );
+    }
+  }
+
+  @Override
+  public String toString() {
+    return "Error{"
+
+    + "errors=" + errors
+        + "}";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof Error) {
+      Error that = (Error) o;
+      return
+
+      this.errors.equals(that.getErrors())
+      ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    int h = 1;
+    h *= 1000003;
+    h ^= this.errors.hashCode();
+    return h;
+  }
+}
+
+============== file: src/main/java/com/google/cloud/fakebilling/v1/Errors.java ==============
+/*
+ * Copyright 2017, Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.fakebilling.v1;
+
+import com.google.api.core.BetaApi;
+import java.io.Serializable;
+import java.util.List;
+import javax.annotation.Generated;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class Errors implements Serializable {
+  private final String code;
+  private final String location;
+  private final String message;
+
+  private Errors(
+
+    String code,
+    String location,
+    String message
+    ) {
+    this.code = code;
+    this.location = location;
+    this.message = message;
+  }
+
+  public String getCode() {
+    return code;
+  }
+
+  public String getLocation() {
+    return location;
+  }
+
+  public String getMessage() {
+    return message;
+  }
+
+
+  public static Builder newBuilder() {
+    return new Errors.Builder();
+  }
+
+  public static class Builder {
+    private String code;
+    private String location;
+    private String message;
+
+    Builder() {}
+
+    Builder(Errors source) {
+      this.code = source.code;
+      this.location = source.location;
+      this.message = source.message;
+    }
+
+    public String getCode() {
+      return code;
+    }
+
+    public Builder setCode(String code) {
+      this.code = code;
+      return this;
+    }
+
+    public String getLocation() {
+      return location;
+    }
+
+    public Builder setLocation(String location) {
+      this.location = location;
+      return this;
+    }
+
+    public String getMessage() {
+      return message;
+    }
+
+    public Builder setMessage(String message) {
+      this.message = message;
+      return this;
+    }
+
+
+    public Errors build() {
+      return new Errors(
+
+        code,
+        location,
+        message
+      );
+    }
+  }
+
+  @Override
+  public String toString() {
+    return "Errors{"
+
+    + "code=" + code + ", "
+    + "location=" + location + ", "
+    + "message=" + message
+        + "}";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof Errors) {
+      Errors that = (Errors) o;
+      return
+
+      this.code.equals(that.getCode())&&
+      this.location.equals(that.getLocation())&&
+      this.message.equals(that.getMessage())
+      ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    int h = 1;
+    h *= 1000003;
+    h ^= this.code.hashCode();
+    h *= 1000003;
+    h ^= this.location.hashCode();
+    h *= 1000003;
+    h ^= this.message.hashCode();
+    return h;
+  }
+}
+
 ============== file: src/main/java/com/google/cloud/fakebilling/v1/FakebillingClient.java ==============
 /*
+ * Copyright 2017, Google Inc. All rights reserved.
  *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-package com.google.compute.v1;
+package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.api.gax.grpc.ChannelAndExecutor;
@@ -407,14 +814,24 @@ public class FakebillingClient implements AutoCloseable {
 }
 ============== file: src/main/java/com/google/cloud/fakebilling/v1/Interface.java ==============
 /*
+ * Copyright 2017, Google Inc. All rights reserved.
  *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
-import com.google.fakebilling.v1.Interface;
 import java.io.Serializable;
-import java.util.List;
 import javax.annotation.Generated;
 
 @Generated("by GAPIC")
@@ -446,8 +863,6 @@ public final class Interface implements Serializable {
   public String getInterface() {
     return interface2;
   }
-
-
 
 
   public static Builder newBuilder() {
@@ -544,15 +959,26 @@ public final class Interface implements Serializable {
     return h;
   }
 }
+
 ============== file: src/main/java/com/google/cloud/fakebilling/v1/ListBillingAccountsResponse.java ==============
 /*
+ * Copyright 2017, Google Inc. All rights reserved.
  *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
-import com.google.fakebilling.v1.BillingAccount;
-import com.google.fakebilling.v1.ListBillingAccountsResponse;
 import java.io.Serializable;
 import java.util.List;
 import javax.annotation.Generated;
@@ -579,7 +1005,6 @@ public final class ListBillingAccountsResponse implements Serializable {
   public String getNextPageToken() {
     return nextPageToken;
   }
-
 
 
   public static Builder newBuilder() {
@@ -660,15 +1085,26 @@ public final class ListBillingAccountsResponse implements Serializable {
     return h;
   }
 }
+
 ============== file: src/main/java/com/google/cloud/fakebilling/v1/ListProjectBillingInfoResponse.java ==============
 /*
+ * Copyright 2017, Google Inc. All rights reserved.
  *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
-import com.google.fakebilling.v1.ListProjectBillingInfoResponse;
-import com.google.fakebilling.v1.ProjectBillingInfo;
 import java.io.Serializable;
 import java.util.List;
 import javax.annotation.Generated;
@@ -695,7 +1131,6 @@ public final class ListProjectBillingInfoResponse implements Serializable {
   public List<ProjectBillingInfo> getProjectBillingInfo() {
     return projectBillingInfo;
   }
-
 
 
   public static Builder newBuilder() {
@@ -776,19 +1211,26 @@ public final class ListProjectBillingInfoResponse implements Serializable {
     return h;
   }
 }
+
 ============== file: src/main/java/com/google/cloud/fakebilling/v1/Operation.java ==============
 /*
+ * Copyright 2017, Google Inc. All rights reserved.
  *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
-import com.google.fakebilling.v1.Data.Data;
-import com.google.fakebilling.v1.Errors.Errors;
-import com.google.fakebilling.v1.Operation;
-import com.google.fakebilling.v1.Operation.Error;
-import com.google.fakebilling.v1.ProjectBillingInfo;
-import com.google.fakebilling.v1.Warnings.Warnings;
 import java.io.Serializable;
 import java.util.List;
 import javax.annotation.Generated;
@@ -859,461 +1301,6 @@ public final class Operation implements Serializable {
   }
 
 
-
-  public final class Error implements Serializable {
-    private final List<Errors> errors;
-
-    private Error(
-
-      List<Errors> errors
-      ) {
-      this.errors = errors;
-    }
-
-    public List<Errors> getErrors() {
-      return errors;
-    }
-
-    public final class Errors implements Serializable {
-      private final String code;
-      private final String location;
-      private final String message;
-
-      private Errors(
-
-        String code,
-        String location,
-        String message
-        ) {
-        this.code = code;
-        this.location = location;
-        this.message = message;
-      }
-
-      public String getCode() {
-        return code;
-      }
-
-      public String getLocation() {
-        return location;
-      }
-
-      public String getMessage() {
-        return message;
-      }
-
-
-
-
-      public static Builder newBuilder() {
-        return new List<Errors>.Builder();
-      }
-
-      public static class Builder {
-        private String code;
-        private String location;
-        private String message;
-
-        Builder() {}
-
-        Builder(List<Errors> source) {
-          this.code = source.code;
-          this.location = source.location;
-          this.message = source.message;
-        }
-
-        public String getCode() {
-          return code;
-        }
-
-        public Builder setCode(String code) {
-          this.code = code;
-          return this;
-        }
-
-        public String getLocation() {
-          return location;
-        }
-
-        public Builder setLocation(String location) {
-          this.location = location;
-          return this;
-        }
-
-        public String getMessage() {
-          return message;
-        }
-
-        public Builder setMessage(String message) {
-          this.message = message;
-          return this;
-        }
-
-
-        public List<Errors> build() {
-          return new List<Errors>(
-
-            code,
-            location,
-            message
-          );
-        }
-      }
-
-      @Override
-      public String toString() {
-        return "List<Errors>{"
-
-        + "code=" + code + ", "
-        + "location=" + location + ", "
-        + "message=" + message
-            + "}";
-      }
-
-      @Override
-      public boolean equals(Object o) {
-        if (o == this) {
-          return true;
-        }
-        if (o instanceof List<Errors>) {
-          List<Errors> that = (List<Errors>) o;
-          return
-
-          this.code.equals(that.getCode())&&
-          this.location.equals(that.getLocation())&&
-          this.message.equals(that.getMessage())
-          ;
-        }
-        return false;
-      }
-
-      @Override
-      public int hashCode() {
-        int h = 1;
-        h *= 1000003;
-        h ^= this.code.hashCode();
-        h *= 1000003;
-        h ^= this.location.hashCode();
-        h *= 1000003;
-        h ^= this.message.hashCode();
-        return h;
-      }
-    }
-    public static Builder newBuilder() {
-      return new Error.Builder();
-    }
-
-    public static class Builder {
-      private List<Errors> errors;
-
-      Builder() {}
-
-      Builder(Error source) {
-        this.errors = source.errors;
-      }
-
-      public List<Errors> getErrors() {
-        return errors;
-      }
-
-      public Builder setErrors(List<Errors> errors) {
-        this.errors = errors;
-        return this;
-      }
-
-
-      public Error build() {
-        return new Error(
-
-          errors
-        );
-      }
-    }
-
-    @Override
-    public String toString() {
-      return "Error{"
-
-      + "errors=" + errors
-          + "}";
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof Error) {
-        Error that = (Error) o;
-        return
-
-        this.errors.equals(that.getErrors())
-        ;
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      int h = 1;
-      h *= 1000003;
-      h ^= this.errors.hashCode();
-      return h;
-    }
-  }
-
-
-
-
-  public final class Warnings implements Serializable {
-    private final String code2;
-    private final List<Data> data;
-    private final String message2;
-    private final ProjectBillingInfo projectBillingInfo;
-
-    private Warnings(
-
-      String code2,
-      List<Data> data,
-      String message2,
-      ProjectBillingInfo projectBillingInfo
-      ) {
-      this.code2 = code2;
-      this.data = data;
-      this.message2 = message2;
-      this.projectBillingInfo = projectBillingInfo;
-    }
-
-    public String getCode() {
-      return code2;
-    }
-
-    public List<Data> getData() {
-      return data;
-    }
-
-    public String getMessage() {
-      return message2;
-    }
-
-    public ProjectBillingInfo getProjectBillingInfo() {
-      return projectBillingInfo;
-    }
-
-
-    public final class Data implements Serializable {
-      private final String key;
-      private final String value;
-
-      private Data(
-
-        String key,
-        String value
-        ) {
-        this.key = key;
-        this.value = value;
-      }
-
-      public String getKey() {
-        return key;
-      }
-
-      public String getValue() {
-        return value;
-      }
-
-
-
-      public static Builder newBuilder() {
-        return new List<Data>.Builder();
-      }
-
-      public static class Builder {
-        private String key;
-        private String value;
-
-        Builder() {}
-
-        Builder(List<Data> source) {
-          this.key = source.key;
-          this.value = source.value;
-        }
-
-        public String getKey() {
-          return key;
-        }
-
-        public Builder setKey(String key) {
-          this.key = key;
-          return this;
-        }
-
-        public String getValue() {
-          return value;
-        }
-
-        public Builder setValue(String value) {
-          this.value = value;
-          return this;
-        }
-
-
-        public List<Data> build() {
-          return new List<Data>(
-
-            key,
-            value
-          );
-        }
-      }
-
-      @Override
-      public String toString() {
-        return "List<Data>{"
-
-        + "key=" + key + ", "
-        + "value=" + value
-            + "}";
-      }
-
-      @Override
-      public boolean equals(Object o) {
-        if (o == this) {
-          return true;
-        }
-        if (o instanceof List<Data>) {
-          List<Data> that = (List<Data>) o;
-          return
-
-          this.key.equals(that.getKey())&&
-          this.value.equals(that.getValue())
-          ;
-        }
-        return false;
-      }
-
-      @Override
-      public int hashCode() {
-        int h = 1;
-        h *= 1000003;
-        h ^= this.key.hashCode();
-        h *= 1000003;
-        h ^= this.value.hashCode();
-        return h;
-      }
-    }
-
-
-    public static Builder newBuilder() {
-      return new List<Warnings>.Builder();
-    }
-
-    public static class Builder {
-      private String code2;
-      private List<Data> data;
-      private String message2;
-      private ProjectBillingInfo projectBillingInfo;
-
-      Builder() {}
-
-      Builder(List<Warnings> source) {
-        this.code2 = source.code2;
-        this.data = source.data;
-        this.message2 = source.message2;
-        this.projectBillingInfo = source.projectBillingInfo;
-      }
-
-      public String getCode() {
-        return code2;
-      }
-
-      public Builder setCode(String code2) {
-        this.code2 = code2;
-        return this;
-      }
-
-      public List<Data> getData() {
-        return data;
-      }
-
-      public Builder setData(List<Data> data) {
-        this.data = data;
-        return this;
-      }
-
-      public String getMessage() {
-        return message2;
-      }
-
-      public Builder setMessage(String message2) {
-        this.message2 = message2;
-        return this;
-      }
-
-      public ProjectBillingInfo getProjectBillingInfo() {
-        return projectBillingInfo;
-      }
-
-      public Builder setProjectBillingInfo(ProjectBillingInfo projectBillingInfo) {
-        this.projectBillingInfo = projectBillingInfo;
-        return this;
-      }
-
-
-      public List<Warnings> build() {
-        return new List<Warnings>(
-
-          code2,
-          data,
-          message2,
-          projectBillingInfo
-        );
-      }
-    }
-
-    @Override
-    public String toString() {
-      return "List<Warnings>{"
-
-      + "code2=" + code2 + ", "
-      + "data=" + data + ", "
-      + "message2=" + message2 + ", "
-      + "projectBillingInfo=" + projectBillingInfo
-          + "}";
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o == this) {
-        return true;
-      }
-      if (o instanceof List<Warnings>) {
-        List<Warnings> that = (List<Warnings>) o;
-        return
-
-        this.code2.equals(that.getCode())&&
-        this.data.equals(that.getData())&&
-        this.message2.equals(that.getMessage())&&
-        this.projectBillingInfo.equals(that.getProjectBillingInfo())
-        ;
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      int h = 1;
-      h *= 1000003;
-      h ^= this.code2.hashCode();
-      h *= 1000003;
-      h ^= this.data.hashCode();
-      h *= 1000003;
-      h ^= this.message2.hashCode();
-      h *= 1000003;
-      h ^= this.projectBillingInfo.hashCode();
-      return h;
-    }
-  }
   public static Builder newBuilder() {
     return new Operation.Builder();
   }
@@ -1488,16 +1475,27 @@ public final class Operation implements Serializable {
     return h;
   }
 }
+
 ============== file: src/main/java/com/google/cloud/fakebilling/v1/ProjectBillingInfo.java ==============
 /*
+ * Copyright 2017, Google Inc. All rights reserved.
  *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
-import com.google.fakebilling.v1.ProjectBillingInfo;
 import java.io.Serializable;
-import java.util.List;
 import javax.annotation.Generated;
 
 @Generated("by GAPIC")
@@ -1522,7 +1520,6 @@ public final class ProjectBillingInfo implements Serializable {
   public String getProjectId() {
     return projectId;
   }
-
 
 
   public static Builder newBuilder() {
@@ -1603,3 +1600,176 @@ public final class ProjectBillingInfo implements Serializable {
     return h;
   }
 }
+
+============== file: src/main/java/com/google/cloud/fakebilling/v1/Warnings.java ==============
+/*
+ * Copyright 2017, Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.fakebilling.v1;
+
+import com.google.api.core.BetaApi;
+import java.io.Serializable;
+import java.util.List;
+import javax.annotation.Generated;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class Warnings implements Serializable {
+  private final String code;
+  private final List<Data> data;
+  private final String message;
+  private final ProjectBillingInfo projectBillingInfo;
+
+  private Warnings(
+
+    String code,
+    List<Data> data,
+    String message,
+    ProjectBillingInfo projectBillingInfo
+    ) {
+    this.code = code;
+    this.data = data;
+    this.message = message;
+    this.projectBillingInfo = projectBillingInfo;
+  }
+
+  public String getCode() {
+    return code;
+  }
+
+  public List<Data> getData() {
+    return data;
+  }
+
+  public String getMessage() {
+    return message;
+  }
+
+  public ProjectBillingInfo getProjectBillingInfo() {
+    return projectBillingInfo;
+  }
+
+
+  public static Builder newBuilder() {
+    return new Warnings.Builder();
+  }
+
+  public static class Builder {
+    private String code;
+    private List<Data> data;
+    private String message;
+    private ProjectBillingInfo projectBillingInfo;
+
+    Builder() {}
+
+    Builder(Warnings source) {
+      this.code = source.code;
+      this.data = source.data;
+      this.message = source.message;
+      this.projectBillingInfo = source.projectBillingInfo;
+    }
+
+    public String getCode() {
+      return code;
+    }
+
+    public Builder setCode(String code) {
+      this.code = code;
+      return this;
+    }
+
+    public List<Data> getData() {
+      return data;
+    }
+
+    public Builder setData(List<Data> data) {
+      this.data = data;
+      return this;
+    }
+
+    public String getMessage() {
+      return message;
+    }
+
+    public Builder setMessage(String message) {
+      this.message = message;
+      return this;
+    }
+
+    public ProjectBillingInfo getProjectBillingInfo() {
+      return projectBillingInfo;
+    }
+
+    public Builder setProjectBillingInfo(ProjectBillingInfo projectBillingInfo) {
+      this.projectBillingInfo = projectBillingInfo;
+      return this;
+    }
+
+
+    public Warnings build() {
+      return new Warnings(
+
+        code,
+        data,
+        message,
+        projectBillingInfo
+      );
+    }
+  }
+
+  @Override
+  public String toString() {
+    return "Warnings{"
+
+    + "code=" + code + ", "
+    + "data=" + data + ", "
+    + "message=" + message + ", "
+    + "projectBillingInfo=" + projectBillingInfo
+        + "}";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof Warnings) {
+      Warnings that = (Warnings) o;
+      return
+
+      this.code.equals(that.getCode())&&
+      this.data.equals(that.getData())&&
+      this.message.equals(that.getMessage())&&
+      this.projectBillingInfo.equals(that.getProjectBillingInfo())
+      ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    int h = 1;
+    h *= 1000003;
+    h ^= this.code.hashCode();
+    h *= 1000003;
+    h ^= this.data.hashCode();
+    h *= 1000003;
+    h ^= this.message.hashCode();
+    h *= 1000003;
+    h ^= this.projectBillingInfo.hashCode();
+    return h;
+  }
+}
+

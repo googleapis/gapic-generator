@@ -15,6 +15,7 @@
 package com.google.api.codegen.discogapic;
 
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.transformer.FeatureConfig;
@@ -70,7 +71,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
         getFeatureConfig());
   }
 
-  public DiscoGapicInterfaceConfig getInterfaceConfig() {
-    return (DiscoGapicInterfaceConfig) getProductConfig().getInterfaceConfig(getDocument().name());
+  public InterfaceConfig getInterfaceConfig() {
+    return getProductConfig().getInterfaceConfig(getDocument().name());
   }
 }

@@ -159,7 +159,10 @@ public abstract class GapicProductConfig implements ProductConfig {
         ImmutableMap.<String, InterfaceConfig>builder()
             .put(document.name(), DiscoGapicInterfaceConfig.createInterfaceConfig(document))
             .build();
-    // TODO actually load data
+    // TODO (andrealin): load messageConfigs
+    ResourceNameMessageConfigs messageConfigs = null;
+    // TODO (andrealin): load resourceNameConfigs
+    ImmutableMap<String, ResourceNameConfig> resourceNameConfigs = ImmutableMap.of();
 
     LanguageSettingsProto settings =
         configProto.getLanguageSettings().get(configProto.getLanguage());
@@ -167,7 +170,32 @@ public abstract class GapicProductConfig implements ProductConfig {
       settings = LanguageSettingsProto.getDefaultInstance();
     }
 
-    return createDummyInstance(interfaceConfigMap, settings.getPackageName(), "", null);
+    ImmutableList<String> copyrightLines = null;
+    ImmutableList<String> licenseLines = null;
+    try {
+      LicenseHeaderProto licenseHeader =
+          configProto
+              .getLicenseHeader()
+              .toBuilder()
+              .mergeFrom(settings.getLicenseHeaderOverride())
+              .build();
+      copyrightLines = getResourceLines(licenseHeader.getCopyrightFile());
+      licenseLines = getResourceLines(licenseHeader.getLicenseFile());
+    } catch (IOException e) {
+      // TODO(andrealin): use a DiagCollector to store all the errors.
+      e.printStackTrace(System.err);
+      throw new RuntimeException(e);
+    }
+
+    return new AutoValue_GapicProductConfig(
+        interfaceConfigMap,
+        settings.getPackageName(),
+        settings.getDomainLayerLocation(),
+        messageConfigs,
+        copyrightLines,
+        licenseLines,
+        resourceNameConfigs,
+        createResponseFieldConfigMap(messageConfigs, resourceNameConfigs));
   }
 
   /** Creates an GapicProductConfig with no content. Exposed for testing. */
