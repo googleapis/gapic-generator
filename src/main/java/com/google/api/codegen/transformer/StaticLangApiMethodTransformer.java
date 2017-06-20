@@ -430,6 +430,7 @@ public class StaticLangApiMethodTransformer {
     }
     TypeRef returnType = context.getMethodConfig().getLongRunningConfig().getReturnType();
     methodViewBuilder.responseTypeName(context.getTypeTable().getAndSaveNicknameFor(returnType));
+    methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
 
     return methodViewBuilder.type(ClientMethodType.AsyncOperationRequestObjectMethod).build();
   }

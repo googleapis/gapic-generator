@@ -201,9 +201,9 @@ public class LibraryClient implements AutoCloseable {
   private final UnaryCallable<AddTagRequest, AddTagResponse> addTagCallable;
   private final UnaryCallable<AddLabelRequest, AddLabelResponse> addLabelCallable;
   private final UnaryCallable<GetBookRequest, Operation> getBigBookCallable;
-  private final OperationCallable<GetBookRequest, Book> getBigBookOperationCallable;
+  private final OperationCallable<GetBookRequest, Book, GetBigBookMetadata> getBigBookOperationCallable;
   private final UnaryCallable<GetBookRequest, Operation> getBigNothingCallable;
-  private final OperationCallable<GetBookRequest, Empty> getBigNothingOperationCallable;
+  private final OperationCallable<GetBookRequest, Empty, GetBigBookMetadata> getBigNothingOperationCallable;
   private final UnaryCallable<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsCallable;
 
 
@@ -2258,7 +2258,7 @@ public class LibraryClient implements AutoCloseable {
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public final OperationFuture<Book> getBigBookAsync(GetBookRequest request) {
+  public final OperationFuture<Book, GetBigBookMetadata> getBigBookAsync(GetBookRequest request) {
     return getBigBookOperationCallable().futureCall(request);
   }
 
@@ -2346,7 +2346,7 @@ public class LibraryClient implements AutoCloseable {
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public final OperationFuture<Empty> getBigNothingAsync(GetBookRequest request) {
+  public final OperationFuture<Empty, GetBigBookMetadata> getBigNothingAsync(GetBookRequest request) {
     return getBigNothingOperationCallable().futureCall(request);
   }
 

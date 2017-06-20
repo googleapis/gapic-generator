@@ -15,12 +15,12 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.GapicMethodConfig;
-import com.google.api.codegen.config.LongRunningConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.viewmodel.ApiCallSettingsView;
 import com.google.api.codegen.viewmodel.ApiCallableImplType;
 import com.google.api.codegen.viewmodel.ApiCallableView;
+import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
 import com.google.api.codegen.viewmodel.RetryCodesDefinitionView;
 import com.google.api.codegen.viewmodel.RetryParamsDefinitionView;
 import com.google.api.codegen.viewmodel.ServiceMethodType;
@@ -34,14 +34,15 @@ import java.util.List;
 import java.util.Map;
 
 public class ApiCallableTransformer {
+
   private final BatchingTransformer batchingTransformer;
   private final RetryDefinitionsTransformer retryDefinitionsTransformer;
-  private final LongRunningTransformer longRunningTransformer;
+  private final LongRunningTransformer lroTransformer;
 
   public ApiCallableTransformer() {
     this.batchingTransformer = new BatchingTransformer();
     this.retryDefinitionsTransformer = new RetryDefinitionsTransformer();
-    this.longRunningTransformer = new LongRunningTransformer();
+    this.lroTransformer = new LongRunningTransformer();
   }
 
   public List<ApiCallableView> generateStaticLangApiCallables(GapicInterfaceContext context) {
@@ -157,18 +158,16 @@ public class ApiCallableTransformer {
     GapicMethodConfig methodConfig = context.getMethodConfig();
     SurfaceNamer namer = context.getNamer();
 
-    LongRunningConfig longRunning = methodConfig.getLongRunningConfig();
-
     ApiCallableView.Builder operationApiCallableBuilder = ApiCallableView.newBuilder();
     operationApiCallableBuilder.type(ApiCallableImplType.OperationApiCallable);
     operationApiCallableBuilder.interfaceTypeName(
         namer.getApiCallableTypeName(ServiceMethodType.LongRunningMethod));
 
-    String operationResponseTypeName = typeTable.getAndSaveNicknameFor(longRunning.getReturnType());
+    LongRunningOperationDetailView lroView = lroTransformer.generateDetailView(context);
 
     operationApiCallableBuilder.requestTypeName(
         typeTable.getAndSaveNicknameFor(method.getInputType()));
-    operationApiCallableBuilder.responseTypeName(operationResponseTypeName);
+    operationApiCallableBuilder.responseTypeName(lroView.operationPayloadTypeName());
     operationApiCallableBuilder.name(namer.getOperationCallableName(method));
     operationApiCallableBuilder.methodName(
         namer.getApiMethodName(method, context.getMethodConfig().getVisibility()));
@@ -177,6 +176,7 @@ public class ApiCallableTransformer {
     operationApiCallableBuilder.memberName(namer.getSettingsMemberName(method));
     operationApiCallableBuilder.settingsFunctionName(namer.getSettingsFunctionName(method));
     operationApiCallableBuilder.grpcClientVarName(namer.getReroutedGrpcClientVarName(methodConfig));
+    operationApiCallableBuilder.metadataTypeName(lroView.metadataTypeName());
 
     return operationApiCallableBuilder.build();
   }
@@ -254,7 +254,7 @@ public class ApiCallableTransformer {
       settings.batchingConfig(batchingTransformer.generateBatchingConfig(context));
     } else if (methodConfig.isLongRunningOperation()) {
       settings.type(ApiCallableImplType.OperationApiCallable);
-      settings.operationMethod(longRunningTransformer.generateDetailView(context));
+      settings.operationMethod(lroTransformer.generateDetailView(context));
     } else {
       settings.type(ApiCallableImplType.SimpleApiCallable);
     }

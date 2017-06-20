@@ -183,8 +183,13 @@
 @end
 
 @private apiCallableMember(apiCallable)
+  @if apiCallable.hasMetadataTypeName
+    private final {@apiCallable.interfaceTypeName}<{@apiCallable.requestTypeName}, \
+      {@apiCallable.responseTypeName}, {@apiCallable.metadataTypeName}> {@apiCallable.name};
+  @else
   private final {@apiCallable.interfaceTypeName}<{@apiCallable.requestTypeName}, \
     {@apiCallable.responseTypeName}> {@apiCallable.name};
+  @end
 @end
 
 @private constructors(xapiClass)
@@ -487,7 +492,8 @@
     {@apiMethod.releaseLevelAnnotation}
 
   @end
-  {@apiMethod.requestObjectMethod.accessModifier} final OperationFuture<{@apiMethod.responseTypeName}> \
+  {@apiMethod.requestObjectMethod.accessModifier} final OperationFuture<\
+      {@apiMethod.responseTypeName}, {@apiMethod.operationMethod.metadataTypeName}> \
       {@apiMethod.name}({@apiMethod.serviceRequestTypeName} request) {
     return {@apiMethod.requestObjectMethod.callableMethodName}().futureCall(request);
   }
