@@ -254,7 +254,7 @@ public class ApiCallableTransformer {
       settings.batchingConfig(batchingTransformer.generateBatchingConfig(context));
     } else if (methodConfig.isLongRunningOperation()) {
       settings.type(ApiCallableImplType.OperationApiCallable);
-      settings.longRunningConfig(longRunningTransformer.generateConfigView(context));
+      settings.operationMethod(longRunningTransformer.generateDetailView(context));
     } else {
       settings.type(ApiCallableImplType.SimpleApiCallable);
     }

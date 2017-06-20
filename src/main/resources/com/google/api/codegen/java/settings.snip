@@ -205,8 +205,8 @@
           {@settings.responseTypeName}> {@settings.memberName};
     @case "OperationApiCallable"
       private final OperationCallSettings<{@settings.requestTypeName}, \
-          {@settings.longRunningConfig.operationResultTypeName}, \
-          {@settings.longRunningConfig.operationMetadataTypeName}> {@settings.memberName};
+          {@settings.operationMethod.operationPayloadTypeName}, \
+          {@settings.operationMethod.metadataTypeName}> {@settings.memberName};
     @default
       $unhandledCase: {@settings.type}$
     @end
@@ -243,8 +243,8 @@
       }
     @case "OperationApiCallable"
       public OperationCallSettings<{@settings.requestTypeName}, \
-            {@settings.longRunningConfig.operationResultTypeName}, \
-            {@settings.longRunningConfig.operationMetadataTypeName}> \
+            {@settings.operationMethod.operationPayloadTypeName}, \
+            {@settings.operationMethod.metadataTypeName}> \
             {@settings.settingsGetFunction}() {
         return {@settings.memberName};
       }
@@ -461,8 +461,8 @@
           {@settings.responseTypeName}> {@settings.memberName};
     @case "OperationApiCallable"
           private final OperationCallSettings.Builder<{@settings.requestTypeName}, \
-              {@settings.longRunningConfig.operationResultTypeName}, \
-              {@settings.longRunningConfig.operationMetadataTypeName}> {@settings.memberName};
+              {@settings.operationMethod.operationPayloadTypeName}, \
+              {@settings.operationMethod.metadataTypeName}> {@settings.memberName};
     @default
       $unhandledCase: {@settings.type.toString}$
     @end
@@ -582,18 +582,18 @@
                   .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
                   .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"))
                   .build())
-          .setResponseClass({@settings.longRunningConfig.operationResultTypeName}.class)
-          .setMetadataClass({@settings.longRunningConfig.operationMetadataTypeName}.class)
+          .setResponseClass({@settings.operationMethod.operationPayloadTypeName}.class)
+          .setMetadataClass({@settings.operationMethod.metadataTypeName}.class)
           .setPollingAlgorithm(
               OperationTimedPollAlgorithm.create(
                   RetrySettings.newBuilder()
-                     .setInitialRetryDelay(Duration.ofMillis({@settings.longRunningConfig.operationInitialPollDelay.getMillis}L))
-                     .setRetryDelayMultiplier({@settings.longRunningConfig.operationPollDelayMultiplier})
-                     .setMaxRetryDelay(Duration.ofMillis({@settings.longRunningConfig.operationMaxPollDelay.getMillis}L))
+                     .setInitialRetryDelay(Duration.ofMillis({@settings.operationMethod.initialPollDelay}L))
+                     .setRetryDelayMultiplier({@settings.operationMethod.pollDelayMultiplier})
+                     .setMaxRetryDelay(Duration.ofMillis({@settings.operationMethod.maxPollDelay}L))
                      .setInitialRpcTimeout(Duration.ZERO) // ignored
                      .setRpcTimeoutMultiplier(1.0) // ignored
                      .setMaxRpcTimeout(Duration.ZERO) // ignored
-                     .setTotalTimeout(Duration.ofMillis({@settings.longRunningConfig.operationTotalPollTimeout.getMillis}L))
+                     .setTotalTimeout(Duration.ofMillis({@settings.operationMethod.totalPollTimeout}L))
                      .build()));
     @end
 
@@ -673,8 +673,8 @@
       }
     @case "OperationApiCallable"
       public OperationCallSettings.Builder<{@settings.requestTypeName}, \
-          {@settings.longRunningConfig.operationResultTypeName}, \
-          {@settings.longRunningConfig.operationMetadataTypeName}> \
+          {@settings.operationMethod.operationPayloadTypeName}, \
+          {@settings.operationMethod.metadataTypeName}> \
           {@settings.settingsGetFunction}() {
         return {@settings.memberName};
       }

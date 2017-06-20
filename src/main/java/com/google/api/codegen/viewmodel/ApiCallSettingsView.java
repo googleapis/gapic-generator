@@ -72,7 +72,7 @@ public abstract class ApiCallSettingsView {
   public abstract BatchingConfigView batchingConfig();
 
   @Nullable
-  public abstract LongRunningConfigView longRunningConfig();
+  public abstract LongRunningOperationDetailView operationMethod();
 
   public abstract Builder toBuilder();
 
@@ -127,7 +127,7 @@ public abstract class ApiCallSettingsView {
 
     public abstract Builder retryParamsView(RetryParamsDefinitionView val);
 
-    public abstract Builder longRunningConfig(LongRunningConfigView val);
+    public abstract Builder operationMethod(LongRunningOperationDetailView val);
 
     public abstract ApiCallSettingsView build();
   }

@@ -471,8 +471,9 @@
     {@apiMethod.releaseLevelAnnotation}
 
   @end
-  {@apiMethod.visibility} final OperationFuture<{@apiMethod.responseTypeName}> {@apiMethod.name}(\
-       {@paramList(apiMethod.methodParams)}) {
+  {@apiMethod.visibility} final OperationFuture<{@apiMethod.responseTypeName}, \
+      {@apiMethod.operationMethod.metadataTypeName}> {@apiMethod.name}(\
+      {@paramList(apiMethod.methodParams)}) {
     {@flattenedRequestBuildingCode(apiMethod)}
     return {@apiMethod.name}(request);
   }
@@ -501,7 +502,8 @@
 
   @end
   {@apiMethod.visibility} final OperationCallable<{@apiMethod.serviceRequestTypeName}, \
-      {@apiMethod.responseTypeName}> {@apiMethod.name}() {
+      {@apiMethod.responseTypeName}, {@apiMethod.operationMethod.metadataTypeName}> \
+      {@apiMethod.name}() {
     return {@apiMethod.callableMethod.callableName};
   }
 @end
