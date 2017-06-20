@@ -1,4 +1,4 @@
-============== file: src/test/java/com/google/gcloud/pubsub/spi/LibraryClientTest.java ==============
+============== file: src/test/java/com/google/gcloud/pubsub/v1/LibraryClientTest.java ==============
 /*
  * Copyright 2017, Google Inc. All rights reserved.
  *
@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.gcloud.pubsub.spi;
+package com.google.gcloud.pubsub.v1;
 
 import com.google.api.gax.core.NoCredentialsProvider;
 import com.google.api.gax.core.PagedListResponse;
@@ -70,10 +70,10 @@ import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse;
 import com.google.example.library.v1.UpdateBookIndexRequest;
 import com.google.example.library.v1.UpdateBookRequest;
-import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.FindRelatedBooksPagedResponse;
-import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.ListBooksPagedResponse;
-import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.ListShelvesPagedResponse;
-import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.ListStringsPagedResponse;
+import static com.google.gcloud.pubsub.v1.PagedResponseWrappers.FindRelatedBooksPagedResponse;
+import static com.google.gcloud.pubsub.v1.PagedResponseWrappers.ListBooksPagedResponse;
+import static com.google.gcloud.pubsub.v1.PagedResponseWrappers.ListShelvesPagedResponse;
+import static com.google.gcloud.pubsub.v1.PagedResponseWrappers.ListStringsPagedResponse;
 import com.google.longrunning.Operation;
 import com.google.protobuf.Any;
 import com.google.protobuf.ByteString;
@@ -1083,7 +1083,11 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void streamShelvesTest() throws Exception {
-    StreamShelvesResponse expectedResponse = StreamShelvesResponse.newBuilder().build();
+    Shelf shelvesElement = Shelf.newBuilder().build();
+    List<Shelf> shelves = Arrays.asList(shelvesElement);
+    StreamShelvesResponse expectedResponse = StreamShelvesResponse.newBuilder()
+      .addAllShelves(shelves)
+      .build();
     mockLibraryService.addResponse(expectedResponse);
     StreamShelvesRequest request = StreamShelvesRequest.newBuilder().build();
 

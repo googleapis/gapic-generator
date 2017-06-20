@@ -15,6 +15,8 @@
 package com.google.api.codegen.discovery.config.js;
 
 import com.google.api.codegen.discovery.config.TypeNameGenerator;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 public class JSTypeNameGenerator extends TypeNameGenerator {
@@ -37,8 +39,21 @@ public class JSTypeNameGenerator extends TypeNameGenerator {
   }
 
   @Override
-  public String getDiscoveryDocUrl(String apiName, String apiVersion) {
-    return String.format(
-        "https://content.googleapis.com/discovery/v1/apis/%s/%s/rest", apiName, apiVersion);
+  public String getDiscoveryDocUrl(String apiName, String apiVersion, String rootUrl) {
+    URI uri;
+    try {
+      uri = new URI(rootUrl);
+    } catch (URISyntaxException e) {
+      throw new IllegalArgumentException(String.format("malformed URL: %s", rootUrl));
+    }
+    String host = uri.getHost();
+    // The host is either of the form "www.googleapis.com" or "www.[a-z]+.googleapis.com".
+    if (host.equals("www.googleapis.com")) {
+      return String.format("https://%s/discovery/v1/apis/%s/%s/rest", host, apiName, apiVersion);
+    } else if (host.matches("[a-z]+\\.googleapis\\.com")) {
+      return String.format("https://%s/$discovery/rest?version=%s", host, apiVersion);
+    } else {
+      throw new IllegalArgumentException(String.format("Unexpected host format: %s", host));
+    }
   }
 }
