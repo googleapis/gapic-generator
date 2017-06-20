@@ -172,7 +172,13 @@
       compile "com.google.protobuf:protobuf-java:{@metadata.protoVersionBound.lower}"
       compile "com.google.api:api-common:{@metadata.apiCommonVersionBound.lower}"
       @join dependency : metadata.protoPackageDependencies
-        compile project(":{@dependency.name}")
+        @switch metadata.dependencyType
+        @case "RELEASE"
+          compile "com.google.api.grpc:{@dependency.name}:{@dependency.versionBound.lower}"
+        @case "LOCAL"
+          compile project(":{@dependency.name}")
+        @default
+        @end
       @end
     @case "GRPC"
       compile "io.grpc:grpc-stub:{@metadata.grpcVersionBound.lower}"

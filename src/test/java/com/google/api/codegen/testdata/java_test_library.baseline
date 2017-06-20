@@ -1083,7 +1083,11 @@ public class LibraryClientTest {
   @Test
   @SuppressWarnings("all")
   public void streamShelvesTest() throws Exception {
-    StreamShelvesResponse expectedResponse = StreamShelvesResponse.newBuilder().build();
+    Shelf shelvesElement = Shelf.newBuilder().build();
+    List<Shelf> shelves = Arrays.asList(shelvesElement);
+    StreamShelvesResponse expectedResponse = StreamShelvesResponse.newBuilder()
+      .addAllShelves(shelves)
+      .build();
     mockLibraryService.addResponse(expectedResponse);
     StreamShelvesRequest request = StreamShelvesRequest.newBuilder().build();
 

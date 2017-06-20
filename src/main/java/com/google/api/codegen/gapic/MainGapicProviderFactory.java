@@ -22,6 +22,7 @@ import com.google.api.codegen.clientconfig.ClientConfigSnippetSetRunner;
 import com.google.api.codegen.clientconfig.php.PhpClientConfigGapicContext;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.grpcmetadatagen.java.JavaPackageCopier;
 import com.google.api.codegen.nodejs.NodeJSCodePathMapper;
 import com.google.api.codegen.php.PhpGapicCodePathMapper;
 import com.google.api.codegen.py.PythonGapicContext;
@@ -34,6 +35,7 @@ import com.google.api.codegen.transformer.csharp.CSharpGapicSnippetsTransformer;
 import com.google.api.codegen.transformer.go.GoGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.go.GoGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.java.JavaGapicMetadataTransformer;
+import com.google.api.codegen.transformer.java.JavaGapicSampleAppTransformer;
 import com.google.api.codegen.transformer.java.JavaGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.java.JavaGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.nodejs.NodeJSGapicSurfaceDocTransformer;
@@ -79,12 +81,21 @@ public class MainGapicProviderFactory
   public static final String RUBY = "ruby";
   public static final String RUBY_DOC = "ruby_doc";
 
+  private static final ImmutableList<String> JAVA_SAMPLE_APP_STATIC_FILES =
+      ImmutableList.of(
+          "gradlew",
+          "gradle/wrapper/gradle-wrapper.jar",
+          "gradle/wrapper/gradle-wrapper.properties",
+          "gradlew.bat",
+          "settings.gradle");
+
   /** Create the GapicProviders based on the given id */
   public static List<GapicProvider<? extends Object>> defaultCreate(
       Model model,
       GapicProductConfig productConfig,
       GapicGeneratorConfig generatorConfig,
-      PackageMetadataConfig packageConfig) {
+      PackageMetadataConfig packageConfig,
+      String outputPath) {
 
     ArrayList<GapicProvider<? extends Object>> providers = new ArrayList<>();
     String id = generatorConfig.id();
@@ -107,7 +118,6 @@ public class MainGapicProviderFactory
         GapicCodePathMapper pathMapper =
             CommonGapicCodePathMapper.newBuilder()
                 .setPrefix("")
-                .setShouldAppendPackage(true)
                 .setPackageFilePathNameFormatter(new CSharpNameFormatter())
                 .build();
         GapicProvider<? extends Object> mainProvider =
@@ -175,7 +185,9 @@ public class MainGapicProviderFactory
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new JavaRenderingUtil()))
-                .setModelToViewTransformer(new JavaGapicMetadataTransformer(packageConfig))
+                .setModelToViewTransformer(
+                    new JavaGapicMetadataTransformer(
+                        javaPathMapper, productConfig, packageConfig, generatorConfig))
                 .build();
 
         providers.add(metadataProvider);
@@ -194,6 +206,28 @@ public class MainGapicProviderFactory
                 .setModelToViewTransformer(new JavaGapicSurfaceTestTransformer(javaTestPathMapper))
                 .build();
         providers.add(testProvider);
+      }
+      if (generatorConfig.enableSampleAppGenerator()) {
+        GapicCodePathMapper javaSampleAppPathMapper =
+            CommonGapicCodePathMapper.newBuilder()
+                .setPrefix("src/main/java")
+                .setShouldAppendPackage(true)
+                .build();
+        GapicProvider<? extends Object> sampleAppProvider =
+            ViewModelGapicProvider.newBuilder()
+                .setModel(model)
+                .setProductConfig(productConfig)
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+                .setModelToViewTransformer(
+                    new JavaGapicSampleAppTransformer(javaSampleAppPathMapper))
+                .build();
+        providers.add(sampleAppProvider);
+
+        // Copy static files for the Java sample application (e.g. gradle wrapper, build files)
+        GapicProvider<? extends Object> staticFileProvider =
+            new StaticGapicProvider<>(
+                new JavaPackageCopier(JAVA_SAMPLE_APP_STATIC_FILES, outputPath));
+        providers.add(staticFileProvider);
       }
       return providers;
 
@@ -475,7 +509,8 @@ public class MainGapicProviderFactory
       Model model,
       GapicProductConfig productConfig,
       GapicGeneratorConfig generatorConfig,
-      PackageMetadataConfig packageConfig) {
-    return defaultCreate(model, productConfig, generatorConfig, packageConfig);
+      PackageMetadataConfig packageConfig,
+      String outputPath) {
+    return defaultCreate(model, productConfig, generatorConfig, packageConfig, outputPath);
   }
 }
