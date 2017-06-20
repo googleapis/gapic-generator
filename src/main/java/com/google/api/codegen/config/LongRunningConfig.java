@@ -44,7 +44,7 @@ public abstract class LongRunningConfig {
   public abstract Duration getInitialPollDelay();
 
   /**
-   * Returns multiplier used to gradually increase delay between subsequent polls untill it reaches
+   * Returns multiplier used to gradually increase delay between subsequent polls until it reaches
    * maximum poll delay.
    */
   public abstract double getPollDelayMultiplier();
