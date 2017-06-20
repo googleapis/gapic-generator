@@ -99,8 +99,15 @@ public class JavaSurfaceNamer extends SurfaceNamer {
       Method method, ModelTypeTable typeTable, GapicMethodConfig methodConfig) {
     String responseTypeName =
         typeTable.getFullNameFor(methodConfig.getLongRunningConfig().getReturnType());
+    String metadataTypeName =
+        typeTable.getFullNameFor(methodConfig.getLongRunningConfig().getMetadataType());
     return typeTable.getAndSaveNicknameForContainer(
-        "com.google.api.gax.grpc.OperationFuture", responseTypeName);
+        "com.google.api.gax.grpc.OperationFuture", responseTypeName, metadataTypeName);
+  }
+
+  @Override
+  public String getLongRunningOperationTypeName(ModelTypeTable typeTable, TypeRef type) {
+    return typeTable.getAndSaveNicknameForElementType(type);
   }
 
   @Override

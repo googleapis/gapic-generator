@@ -520,6 +520,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     }
     if (context.getInterfaceConfig().hasLongRunningOperations()) {
       typeTable.saveNicknameFor("com.google.api.gax.grpc.OperationCallSettings");
+      typeTable.saveNicknameFor("com.google.api.gax.grpc.OperationTimedPollAlgorithm");
     }
   }
 
