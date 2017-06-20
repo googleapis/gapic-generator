@@ -41,9 +41,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /** The SurfaceNamer for Java. */
 public class JavaSurfaceNamer extends SurfaceNamer {
+
+  private final Pattern versionPattern = Pattern.compile("^v\\d+");
 
   public JavaSurfaceNamer(String packageName) {
     super(
@@ -226,12 +229,11 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   @Override
   public String getPackagePath() {
     List<String> packagePath = Splitter.on(".").splitToList(getPackageName());
-    int spiIndex = packagePath.indexOf("spi");
-    if (spiIndex != -1) {
-      // Remove the "spi.{version}" suffix
-      return Joiner.on("/").join(packagePath.subList(0, spiIndex));
-    } else {
-      return Joiner.on("/").join(packagePath);
+    int endIndex = packagePath.size();
+    // strip off the last leg of the path if it is a version
+    if (versionPattern.matcher(packagePath.get(packagePath.size() - 1)).find()) {
+      endIndex--;
     }
+    return Joiner.on("/").join(packagePath.subList(0, endIndex));
   }
 }
