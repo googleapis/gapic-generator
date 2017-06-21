@@ -1,7 +1,7 @@
 type: com.google.api.codegen.ConfigProto
 language_settings:
   java:
-    package_name: com.google.gcloud.pubsub.spi
+    package_name: com.google.gcloud.pubsub.v1
     interface_names:
       google.example.library.v1.LibraryService: Library
   python:
@@ -538,7 +538,10 @@ interfaces:
       return_type: google.example.library.v1.Book
       metadata_type: google.example.library.v1.GetBigBookMetadata
       implements_cancel: true
-      polling_interval_millis: 300000
+      initial_poll_delay_millis: 3000
+      poll_delay_multiplier: 1.3
+      max_poll_delay_millis: 30000
+      total_poll_timeout_millis: 86400000
   - name: GetBigNothing
     flattening:
       groups:
@@ -557,6 +560,10 @@ interfaces:
       return_type: google.protobuf.Empty
       metadata_type: google.example.library.v1.GetBigBookMetadata
       implements_delete: true
+      initial_poll_delay_millis: 3000
+      poll_delay_multiplier: 1.3
+      max_poll_delay_millis: 60000
+      total_poll_timeout_millis: 600000
   - name: TestOptionalRequiredFlatteningParams
     flattening:
       groups:
