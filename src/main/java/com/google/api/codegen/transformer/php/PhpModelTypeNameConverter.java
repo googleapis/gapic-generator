@@ -24,7 +24,6 @@ import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.tools.framework.model.EnumValue;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.ProtoElement;
-import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
@@ -196,34 +195,14 @@ public class PhpModelTypeNameConverter implements ModelTypeNameConverter {
     }
     String[] components = fullName.split("\\.");
     StringBuilder builder = new StringBuilder();
-
-    String packageName = getPackageOption(elem.getFile());
-    if (packageName == null) {
-      for (int index = 0; index < components.length - 1; index++) {
-        builder
-            .append('\\')
-            .append(components[index].substring(0, 1).toUpperCase())
-            .append(components[index].substring(1));
-      }
-    } else {
-      builder.append('\\').append(packageName);
+    for (int index = 0; index < components.length - 1; index++) {
+      builder
+          .append('\\')
+          .append(components[index].substring(0, 1).toUpperCase())
+          .append(components[index].substring(1));
     }
-
     builder.append('\\').append(components[components.length - 1]);
     return builder.toString();
-  }
-
-  private static String getPackageOption(ProtoFile file) {
-    if (file.getProto().getOptions().getUnknownFields().hasField(PHP_NAMESPACE_OPTION_NUMBER)) {
-      return file.getProto()
-          .getOptions()
-          .getUnknownFields()
-          .getField(PHP_NAMESPACE_OPTION_NUMBER)
-          .getLengthDelimitedList()
-          .get(0)
-          .toStringUtf8();
-    }
-    return null;
   }
 
   /**
