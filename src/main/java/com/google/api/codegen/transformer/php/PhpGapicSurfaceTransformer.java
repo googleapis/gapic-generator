@@ -183,6 +183,10 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
               .metadataTypeName(context.getModelTypeTable().getFullNameFor(metadataType))
               .implementsCancel(true)
               .implementsDelete(true)
+              .initialPollDelay(lroConfig.getInitialPollDelay().getMillis())
+              .pollDelayMultiplier(lroConfig.getPollDelayMultiplier())
+              .maxPollDelay(lroConfig.getMaxPollDelay().getMillis())
+              .totalPollTimeout(lroConfig.getTotalPollTimeout().getMillis())
               .build());
     }
 
