@@ -22,7 +22,7 @@ function grpc_get($host, $port, $creds)
 
   return function($top) use($client, $meta) {
     $req = new GetTopicRequest();
-    $req->setTopic("foo");
+    $req->setTopic($top);
     list($resp, $status) = $client->getTopic($req, $meta)->wait();
     return $resp;
   };
@@ -59,7 +59,7 @@ $fn = $getfn($host, $port, $creds);
 $warmtime = intval(isset($options['warmup_time']) ? $options['warmup_time'] : '60');
 $runtime = intval(isset($options['run_time']) ? $options['run_time'] : '60');
 
-define("TOPIC", "projects/benchmark-project/topics/benchmark-topic");
+const TOPIC = "projects/benchmark-project/topics/benchmark-topic";
 
 $start = microtime(true);
 $warmend = $start + $warmtime;
