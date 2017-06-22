@@ -16,6 +16,7 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.auto.value.AutoValue;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class ApiCallableView {
@@ -26,6 +27,13 @@ public abstract class ApiCallableView {
   public abstract String requestTypeName();
 
   public abstract String responseTypeName();
+
+  @Nullable
+  public abstract String metadataTypeName();
+
+  public boolean hasMetadataTypeName() {
+    return metadataTypeName() != null;
+  }
 
   public abstract GrpcStreamingType grpcStreamingType();
 
@@ -60,6 +68,8 @@ public abstract class ApiCallableView {
     public abstract Builder requestTypeName(String name);
 
     public abstract Builder responseTypeName(String name);
+
+    public abstract Builder metadataTypeName(String name);
 
     public abstract Builder grpcStreamingType(GrpcStreamingType val);
 

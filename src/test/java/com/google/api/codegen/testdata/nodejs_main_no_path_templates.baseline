@@ -162,7 +162,10 @@ function NoTemplatesApiServiceClientBuilder(gaxGrpc) {
     return new NoTemplatesApiServiceClientBuilder(gaxGrpc);
   }
 
-  var noTemplatesApiServiceClient = require('grpc-google-cloud-example-v1').client;
+  var noTemplatesApiServiceClient = gaxGrpc.load([{
+    root: require('path').join(__dirname, '..', 'proto'),
+    file: 'no_path_templates.proto'
+  }]);
   extend(this, noTemplatesApiServiceClient.google.cloud.example.v1);
 
 

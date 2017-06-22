@@ -205,7 +205,8 @@
           {@settings.responseTypeName}> {@settings.memberName};
     @case "OperationApiCallable"
       private final OperationCallSettings<{@settings.requestTypeName}, \
-          {@settings.operationResultTypeName}> {@settings.memberName};
+          {@settings.operationMethod.operationPayloadTypeName}, \
+          {@settings.operationMethod.metadataTypeName}> {@settings.memberName};
     @default
       $unhandledCase: {@settings.type}$
     @end
@@ -242,7 +243,9 @@
       }
     @case "OperationApiCallable"
       public OperationCallSettings<{@settings.requestTypeName}, \
-            {@settings.operationResultTypeName}> {@settings.settingsGetFunction}() {
+            {@settings.operationMethod.operationPayloadTypeName}, \
+            {@settings.operationMethod.metadataTypeName}> \
+            {@settings.settingsGetFunction}() {
         return {@settings.memberName};
       }
     @default
@@ -458,7 +461,8 @@
           {@settings.responseTypeName}> {@settings.memberName};
     @case "OperationApiCallable"
           private final OperationCallSettings.Builder<{@settings.requestTypeName}, \
-              {@settings.operationResultTypeName}> {@settings.memberName};
+              {@settings.operationMethod.operationPayloadTypeName}, \
+              {@settings.operationMethod.metadataTypeName}> {@settings.memberName};
     @default
       $unhandledCase: {@settings.type.toString}$
     @end
@@ -529,13 +533,7 @@
       @case "StreamingApiCallable"
         {@settings.memberName} = StreamingCallSettings.newBuilder({@settings.grpcMethodConstant});
       @case "OperationApiCallable"
-        {@settings.memberName} = OperationCallSettings.newBuilder(
-            {@settings.grpcMethodConstant},
-            {@settings.operationResultTypeName}.class);
-        @if settings.hasPollingInterval
-          {@settings.memberName}.setPollingInterval(Duration.ofMillis({@settings.operationPollingIntervalMillis}));
-        @end
-
+        {@settings.memberName} = OperationCallSettings.newBuilder();
       @default
         $unhandledCase: {@settings.type.toString}$
       @end
@@ -577,9 +575,26 @@
           .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("{@settings.retryParamsName}"));
     @end
     @join settings : xsettingsClass.longRunningCallSettings
-      builder.{@settings.settingsGetFunction}().getInitialCallSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("{@settings.retryCodesName}"))
-          .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("{@settings.retryParamsName}"));
+      builder
+          .{@settings.settingsGetFunction}()
+          .setInitialCallSettings(
+              SimpleCallSettings.newBuilder({@settings.grpcMethodConstant})
+                  .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
+                  .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"))
+                  .build())
+          .setResponseClass({@settings.operationMethod.operationPayloadTypeName}.class)
+          .setMetadataClass({@settings.operationMethod.metadataTypeName}.class)
+          .setPollingAlgorithm(
+              OperationTimedPollAlgorithm.create(
+                  RetrySettings.newBuilder()
+                     .setInitialRetryDelay(Duration.ofMillis({@settings.operationMethod.initialPollDelay}L))
+                     .setRetryDelayMultiplier({@settings.operationMethod.pollDelayMultiplier})
+                     .setMaxRetryDelay(Duration.ofMillis({@settings.operationMethod.maxPollDelay}L))
+                     .setInitialRpcTimeout(Duration.ZERO) // ignored
+                     .setRpcTimeoutMultiplier(1.0) // ignored
+                     .setMaxRpcTimeout(Duration.ZERO) // ignored
+                     .setTotalTimeout(Duration.ofMillis({@settings.operationMethod.totalPollTimeout}L))
+                     .build()));
     @end
 
     return builder;
@@ -658,7 +673,9 @@
       }
     @case "OperationApiCallable"
       public OperationCallSettings.Builder<{@settings.requestTypeName}, \
-          {@settings.operationResultTypeName}> {@settings.settingsGetFunction}() {
+          {@settings.operationMethod.operationPayloadTypeName}, \
+          {@settings.operationMethod.metadataTypeName}> \
+          {@settings.settingsGetFunction}() {
         return {@settings.memberName};
       }
     @default

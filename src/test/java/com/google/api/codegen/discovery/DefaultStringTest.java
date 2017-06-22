@@ -31,6 +31,9 @@ public class DefaultStringTest {
 
     def = DefaultString.getNonTrivialPlaceholder("bar", "my-%s");
     Truth.assertThat(def).isEqualTo("");
+
+    def = DefaultString.getNonTrivialPlaceholder("^projects/[^/]*/topics$", "my-%s");
+    Truth.assertThat(def).isEqualTo("projects/my-project/topics");
   }
 
   @Test
@@ -40,8 +43,7 @@ public class DefaultStringTest {
           null,
           "abc",
           "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
-          "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
-          "^projects/[^/]*/topics$"
+          "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?"
         };
 
     for (String s : invalid) {

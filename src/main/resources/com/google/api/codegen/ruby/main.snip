@@ -255,10 +255,6 @@
 
     {@createResourceFunction(function)}
   @end
-  @join function : xapiClass.parseResourceFunctions
-
-      {@createMatchFunctions(function)}
-  @end
 @end
 
 @private createResourceFunction(function)
@@ -284,15 +280,6 @@
   @join param: params on {@","}.add(BREAK)
     :"{@param.templateKey}" => {@param.name}
   @end
-@end
-
-@private createMatchFunctions(function)
-  @# Parses the {@function.outputResourceId} from a {@function.entityName} resource.
-  @# @@param {@function.entityNameParamName} [String]
-  @# @@return [String]
-  def self.{@function.name} {@function.entityNameParamName}
-    {@function.pathTemplateName}.match({@function.entityNameParamName})["{@function.outputResourceId}"]
-  end
 @end
 
 @private serviceMethodsSection(xapiClass)
