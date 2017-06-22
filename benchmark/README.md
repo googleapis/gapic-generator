@@ -52,3 +52,12 @@ To run:
 `go run clients/go/local.go -cert <cert_file> -client <client> -num_workers <num_workers>`
 
 For the help menu, run `go run clients/go/local.go -help`.
+
+# PHP
+Benchmark for PHP is located at `clients/php/local.php`.
+To install dependencies:
+`composer install`
+To run:
+`php local.go -cert <cert_file> -client <client>`
+
+PHP does not support async calls.
