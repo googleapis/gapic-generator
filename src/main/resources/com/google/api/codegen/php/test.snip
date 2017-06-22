@@ -378,7 +378,8 @@
 
         // Mock response
         $incompleteOperation = new Operation();
-        $incompleteOperation->setName('operations/{@test.name}')->setDone(false);
+        $incompleteOperation->setName('operations/{@test.name}');
+        $incompleteOperation->setDone(false);
         $grpcStub->addResponse($incompleteOperation);
         @if test.hasReturnValue
             {@initCode(test.mockResponse.initCode)}
@@ -388,7 +389,9 @@
         $anyResponse = new Any();
         $anyResponse->setValue($expectedResponse->serializeToString());
         $completeOperation = new Operation();
-        $completeOperation->setName('operations/{@test.name}')->setDone(true)->setResponse($anyResponse);
+        $completeOperation->setName('operations/{@test.name}');
+        $completeOperation->setDone(true);
+        $completeOperation->setResponse($anyResponse);
         $operationsStub->addResponse($completeOperation);
 
         @if test.hasRequestParameters
@@ -447,7 +450,8 @@
 
         // Mock response
         $incompleteOperation = new Operation();
-        $incompleteOperation->setName('operations/{@test.name}')->setDone(false);
+        $incompleteOperation->setName('operations/{@test.name}');
+        $incompleteOperation->setDone(false);
         $grpcStub->addResponse($incompleteOperation);
 
         {@createErrorStatus()}
