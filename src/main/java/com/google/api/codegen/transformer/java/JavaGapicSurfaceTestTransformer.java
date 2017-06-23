@@ -351,7 +351,8 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     }
   }
 
-  private void addSmokeTestImports(GapicInterfaceContext context) {
+  /** package-private */
+  void addSmokeTestImports(GapicInterfaceContext context) {
     ModelTypeTable typeTable = context.getModelTypeTable();
     typeTable.saveNicknameFor("java.util.logging.Level");
     typeTable.saveNicknameFor("java.util.logging.Logger");
