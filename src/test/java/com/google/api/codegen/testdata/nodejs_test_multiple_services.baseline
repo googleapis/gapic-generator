@@ -23,10 +23,10 @@ var FAKE_STATUS_CODE = 1;
 var error = new Error();
 error.code = FAKE_STATUS_CODE;
 
-describe('NoTemplatesApiServiceClient', function() {
+describe('IncrementerServiceClient', function() {
   describe('increment', function() {
     it('invokes increment without error', function(done) {
-      var client = example();
+      var client = example.v1.incrementer();
 
       // Mock request
       var request = {};
@@ -41,7 +41,7 @@ describe('NoTemplatesApiServiceClient', function() {
     });
 
     it('invokes increment with error', function(done) {
-      var client = example();
+      var client = example.v1.incrementer();
 
       // Mock request
       var request = {};
@@ -50,6 +50,41 @@ describe('NoTemplatesApiServiceClient', function() {
       client._increment = mockSimpleGrpcMethod(request, null, error);
 
       client.increment(request, function(err) {
+        assert(err instanceof Error);
+        assert.equal(err.code, FAKE_STATUS_CODE);
+        done();
+      });
+    });
+  });
+
+});
+describe('DecrementerServiceClient', function() {
+  describe('decrement', function() {
+    it('invokes decrement without error', function(done) {
+      var client = example.v1.decrementer();
+
+      // Mock request
+      var request = {};
+
+      // Mock Grpc layer
+      client._decrement = mockSimpleGrpcMethod(request);
+
+      client.decrement(request, function(err) {
+        assert.ifError(err);
+        done();
+      });
+    });
+
+    it('invokes decrement with error', function(done) {
+      var client = example.v1.decrementer();
+
+      // Mock request
+      var request = {};
+
+      // Mock Grpc layer
+      client._decrement = mockSimpleGrpcMethod(request, null, error);
+
+      client.decrement(request, function(err) {
         assert(err instanceof Error);
         assert.equal(err.code, FAKE_STATUS_CODE);
         done();

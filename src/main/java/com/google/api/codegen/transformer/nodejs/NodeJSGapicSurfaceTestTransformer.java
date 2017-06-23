@@ -49,6 +49,7 @@ import com.google.api.codegen.viewmodel.testing.TestCaseView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
+import com.google.common.collect.Iterables;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -106,7 +107,8 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
               .grpcMethods(mockServiceTransformer.createMockGrpcMethodViews(context))
               .build());
     }
-    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+    Iterable<Interface> apiInterfaces = new InterfaceView().getElementIterable(model);
+    for (Interface apiInterface : apiInterfaces) {
       // We don't need any imports here.
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
@@ -122,6 +124,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
                       "NodeJSGapicSurfaceTestTransformer.generateTestView - name"))
               .testCases(createTestCaseViews(context))
               .apiHasLongRunningMethods(context.getInterfaceConfig().hasLongRunningOperations())
+              .packageServiceName(namer.getPackageServiceName(apiInterface))
               .mockServices(Collections.<MockServiceUsageView>emptyList())
               .build());
     }
@@ -135,6 +138,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
         .testClasses(testClasses)
         .apiWrapperModuleName(namer.getApiWrapperModuleName())
         .templateFileName(TEST_TEMPLATE_FILE)
+        .packageHasMultipleServices(Iterables.size(apiInterfaces) > 1)
         .fileHeader(fileHeaderTransformer.generateFileHeader(productConfig, importSection, namer))
         .build();
   }

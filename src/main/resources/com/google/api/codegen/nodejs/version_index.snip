@@ -9,6 +9,8 @@
 
   {@clients(index)}
 
+  {@protos(index)}
+
   {@exports(index)}
 @end
 
@@ -26,6 +28,7 @@
   var gapic = {
     {@index.apiVersion}: require('./{@index.apiVersion}')
   };
+  var gaxGrpc = require('google-gax').grpc();
 @end
 
 @private constants()
@@ -64,6 +67,25 @@
    }
 @end
 
+@private protos(index)
+  var {@index.apiVersion}Protos = {};
+
+  @join stub : index.stubs on BREAK.add(BREAK)
+    {@messages(index.isGcloud, index.apiVersion, stub)}
+  @end
+@end
+
+@private messages(isGcloud, version, stub)
+  @if isGcloud
+    extend({@version}Protos, gaxGrpc.load([{
+      root: require('google-proto-files')('..'),
+      file: '{@stub.protoFileName}'
+    }]).{@stub.namespace});
+  @else
+    extend({@version}Protos, require('{@stub.grpcClientImportName}').client.{@stub.namespace});
+  @end
+@end
+
 @private exports(index)
   @if index.hasMultipleServices
     {@multipleServicesExports(index.requireViews, index.apiVersion)}
@@ -77,12 +99,19 @@
     module.exports.{@service.serviceName} = {@service.localName};
   @end
 
+  module.exports.types = {@version}Protos;
+
+  module.exports.{@version} = {};
   @join service : services
     module.exports.{@version}.{@service.serviceName} = {@service.localName};
   @end
+  module.exports.{@version}.types = {@version}Protos;
 @end
 
 @private singleServiceExport(service, version)
   module.exports = {@service.localName};
+  module.exports.types = {@version}Protos;
+  module.exports.{@version} = {};
   module.exports.{@version} = {@service.localName};
+  module.exports.{@version}.types = {@version}Protos;
 @end

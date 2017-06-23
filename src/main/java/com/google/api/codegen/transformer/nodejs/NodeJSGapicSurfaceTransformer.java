@@ -43,6 +43,7 @@ import com.google.api.codegen.util.js.JSTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.DynamicLangXApiView;
 import com.google.api.codegen.viewmodel.GrpcStreamingDetailView;
+import com.google.api.codegen.viewmodel.GrpcStubView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
 import com.google.api.codegen.viewmodel.PathTemplateGetterFunctionView;
@@ -306,6 +307,8 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
               .requireViews(requireViews)
               .primaryService(requireViews.get(0))
               .apiVersion(version)
+              .stubs(versionIndexStubs(apiInterfaces, productConfig))
+              .isGcloud(NodeJSUtils.isGcloud(productConfig))
               .packageVersion(
                   packageConfig.generatedPackageVersionBound(TargetLanguage.NODEJS).lower())
               .fileHeader(
@@ -314,6 +317,16 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
       indexViews.add(versionIndexViewBuilder.build());
     }
     return indexViews;
+  }
+
+  private List<GrpcStubView> versionIndexStubs(
+      Iterable<Interface> apiInterfaces, GapicProductConfig productConfig) {
+    ImmutableList.Builder<GrpcStubView> stubs = ImmutableList.builder();
+    for (Interface apiInterface : apiInterfaces) {
+      stubs.addAll(
+          grpcStubTransformer.generateGrpcStubs(createContext(apiInterface, productConfig)));
+    }
+    return stubs.build();
   }
 
   private GapicInterfaceContext createContext(
