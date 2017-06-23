@@ -804,6 +804,7 @@ public class StaticLangApiMethodTransformer {
 
     String setCallName = namer.getFieldSetFunctionName(featureConfig, fieldConfig);
     String addCallName = namer.getFieldAddFunctionName(field);
+    String getCallName = namer.getFieldGetFunctionName(field);
     String transformParamFunctionName = null;
     if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)
         && fieldConfig.hasDifferentMessageResourceNameConfig()) {
@@ -818,6 +819,7 @@ public class StaticLangApiMethodTransformer {
     param.elementTypeName(elementTypeName);
     param.setCallName(setCallName);
     param.addCallName(addCallName);
+    param.getCallName(getCallName);
     param.transformParamFunctionName(transformParamFunctionName);
     param.isMap(field.getType().isMap());
     param.isArray(!field.getType().isMap() && field.getType().isRepeated());

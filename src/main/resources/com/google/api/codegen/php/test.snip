@@ -8,7 +8,7 @@
      * @@group {@apiTest.testClass.apiName}
      * @@group grpc
      */
-    class {@apiTest.testClass.name} extends PHPUnit_Framework_TestCase
+    class {@apiTest.testClass.name} extends GeneratedTest
     {
         {@setupMethods(apiTest.testClass)}
         @join test : apiTest.testClass.testCases
@@ -378,17 +378,20 @@
 
         // Mock response
         $incompleteOperation = new Operation();
-        $incompleteOperation->setName('operations/{@test.name}')->setDone(false);
+        $incompleteOperation->setName('operations/{@test.name}');
+        $incompleteOperation->setDone(false);
         $grpcStub->addResponse($incompleteOperation);
         @if test.hasReturnValue
             {@initCode(test.mockResponse.initCode)}
         @else
-            $expectedResponse = new EmptyC();
+            $expectedResponse = new GPBEmpty();
         @end
         $anyResponse = new Any();
-        $anyResponse->setValue($expectedResponse->serialize());
+        $anyResponse->setValue($expectedResponse->serializeToString());
         $completeOperation = new Operation();
-        $completeOperation->setName('operations/{@test.name}')->setDone(true)->setResponse($anyResponse);
+        $completeOperation->setName('operations/{@test.name}');
+        $completeOperation->setDone(true);
+        $completeOperation->setResponse($anyResponse);
         $operationsStub->addResponse($completeOperation);
 
         @if test.hasRequestParameters
@@ -447,7 +450,8 @@
 
         // Mock response
         $incompleteOperation = new Operation();
-        $incompleteOperation->setName('operations/{@test.name}')->setDone(false);
+        $incompleteOperation->setName('operations/{@test.name}');
+        $incompleteOperation->setDone(false);
         $grpcStub->addResponse($incompleteOperation);
 
         {@createErrorStatus()}
@@ -482,6 +486,14 @@
     }
 @end
 
+@private assertFunction(assert)
+    @if assert.isArray
+        assertRepeatedFieldEquals
+    @else
+        assertEquals
+    @end
+@end
+
 @private singleCallTestSetup(test)
     $grpcStub = $this->createStub([$this, 'create{@test.mockGrpcStubTypeName}']);
     $client = $this->createClient('{@test.createStubFunctionName}', $grpcStub);
@@ -492,7 +504,7 @@
     @if test.hasReturnValue
         {@initCode(test.mockResponse.initCode)}
     @else
-        $expectedResponse = new EmptyC();
+        $expectedResponse = new GPBEmpty();
     @end
     $grpcStub->addResponse($expectedResponse);
 
@@ -512,11 +524,11 @@
 
     @join assert : test.asserts
         @if assert.hasExpectedValueTransformFunction
-            $this->assertEquals({@assert.expectedValueTransformFunction}(\
+            $this->{@assertFunction(assert)}({@assert.expectedValueTransformFunction}(\
                 ${@assert.expectedValueIdentifier}), \
                 $actualRequestObject->{@assert.actualValueGetter}());
         @else
-            $this->assertEquals(${@assert.expectedValueIdentifier}, \
+            $this->{@assertFunction(assert)}(${@assert.expectedValueIdentifier}, \
                 $actualRequestObject->{@assert.actualValueGetter}());
         @end
     @end
@@ -533,11 +545,11 @@
     $this->assertSame('{@test.grpcStubCallString}', $actualApiFuncCall);
     @join assert : test.asserts
         @if assert.hasExpectedValueTransformFunction
-            $this->assertEquals({@assert.expectedValueTransformFunction}(\
+            $this->{@assertFunction(assert)}({@assert.expectedValueTransformFunction}(\
                 ${@assert.expectedValueIdentifier}), \
                 $actualApiRequestObject->{@assert.actualValueGetter}());
         @else
-            $this->assertEquals(${@assert.expectedValueIdentifier}, \
+            $this->{@assertFunction(assert)}(${@assert.expectedValueIdentifier}, \
                 $actualApiRequestObject->{@assert.actualValueGetter}());
         @end
     @end

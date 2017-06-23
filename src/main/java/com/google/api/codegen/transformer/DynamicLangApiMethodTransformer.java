@@ -193,6 +193,7 @@ public class DynamicLangApiMethodTransformer {
     param.elementTypeName(typeTable.getAndSaveNicknameForElementType(field.getType()));
     param.setCallName(namer.getFieldSetFunctionName(featureConfig, fieldConfig));
     param.addCallName(namer.getFieldAddFunctionName(field));
+    param.getCallName(namer.getFieldGetFunctionName(featureConfig, fieldConfig));
     param.isMap(field.getType().isMap());
     param.isArray(!field.getType().isMap() && field.getType().isRepeated());
     param.isPrimitive(namer.isPrimitive(field.getType()));
