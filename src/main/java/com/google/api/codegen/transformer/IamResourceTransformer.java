@@ -39,7 +39,8 @@ public class IamResourceTransformer {
               .exampleName(
                   context
                       .getNamer()
-                      .getIamResourceGetterFunctionExampleName(context.getInterface(), field))
+                      .getIamResourceGetterFunctionExampleName(
+                          context.getInterface().getSimpleName(), field))
               .fieldName(context.getNamer().publicFieldName(Name.from(field.getSimpleName())))
               .resourceTypeName(resourceTypeName)
               .resourceConstructorName(context.getNamer().getTypeConstructor(resourceTypeName))

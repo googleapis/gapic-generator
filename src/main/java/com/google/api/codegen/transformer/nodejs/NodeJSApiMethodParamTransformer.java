@@ -20,7 +20,6 @@ import com.google.api.codegen.transformer.ApiMethodParamTransformer;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
-import com.google.api.codegen.util.js.JSCommentReformatter;
 import com.google.api.codegen.viewmodel.DynamicLangDefaultableParamView;
 import com.google.api.codegen.viewmodel.ParamDocView;
 import com.google.api.codegen.viewmodel.SimpleParamDocView;
@@ -28,7 +27,6 @@ import com.google.common.collect.ImmutableList;
 import java.util.List;
 
 public class NodeJSApiMethodParamTransformer implements ApiMethodParamTransformer {
-  private static JSCommentReformatter commentReformatter = new JSCommentReformatter();
 
   @Override
   public List<DynamicLangDefaultableParamView> generateMethodParams(GapicMethodContext context) {
@@ -46,7 +44,7 @@ public class NodeJSApiMethodParamTransformer implements ApiMethodParamTransforme
 
   private List<DynamicLangDefaultableParamView> generateDefaultableParams(
       GapicMethodContext context) {
-    if (context.getMethod().getRequestStreaming()) {
+    if (context.getMethodModel().getRequestStreaming()) {
       return ImmutableList.of();
     }
     ImmutableList.Builder<DynamicLangDefaultableParamView> methodParams = ImmutableList.builder();
@@ -64,7 +62,7 @@ public class NodeJSApiMethodParamTransformer implements ApiMethodParamTransforme
   @Override
   public List<ParamDocView> generateParamDocs(GapicMethodContext context) {
     ImmutableList.Builder<ParamDocView> docs = ImmutableList.builder();
-    if (!context.getMethod().getRequestStreaming()) {
+    if (!context.getMethodModel().getRequestStreaming()) {
       docs.add(generateRequestObjectParamDoc(context));
       docs.addAll(
           generateMethodParamDocs(context, context.getMethodConfig().getRequiredFields(), false));

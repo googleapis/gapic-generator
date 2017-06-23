@@ -15,17 +15,14 @@
 package com.google.api.codegen.discogapic;
 
 import com.google.api.codegen.config.GapicProductConfig;
-import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.transformer.DiscoGapicInterfaceContext;
 import com.google.api.codegen.transformer.ImportTypeTable;
-import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.SchemaTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.transformer.TransformationContext;
 import com.google.auto.value.AutoValue;
 import java.util.Comparator;
-import javax.annotation.Nullable;
-
 /**
  * The context for transforming a single top-level schema from Discovery Doc API into a top-level
  * view for client library generation.
@@ -33,7 +30,7 @@ import javax.annotation.Nullable;
  * <p>This context contains a reference to the parent Document context.
  */
 @AutoValue
-public abstract class SchemaInterfaceContext implements InterfaceContext {
+public abstract class SchemaTransformationContext implements TransformationContext {
   /**
    * Create a context for transforming a schema.
    *
@@ -41,9 +38,9 @@ public abstract class SchemaInterfaceContext implements InterfaceContext {
    * @param typeTable Manages the imports for the schema view.
    * @param docContext The context for the parent Document.
    */
-  public static SchemaInterfaceContext create(
+  public static SchemaTransformationContext create(
       String id, SchemaTypeTable typeTable, DiscoGapicInterfaceContext docContext) {
-    return new AutoValue_SchemaInterfaceContext(id, typeTable, docContext);
+    return new AutoValue_SchemaTransformationContext(id, typeTable, docContext);
   }
 
   public abstract String id();
@@ -72,17 +69,11 @@ public abstract class SchemaInterfaceContext implements InterfaceContext {
     return getSchemaTypeTable();
   }
 
-  public static Comparator<SchemaInterfaceContext> comparator =
-      new Comparator<SchemaInterfaceContext>() {
+  public static Comparator<SchemaTransformationContext> comparator =
+      new Comparator<SchemaTransformationContext>() {
         @Override
-        public int compare(SchemaInterfaceContext o1, SchemaInterfaceContext o2) {
+        public int compare(SchemaTransformationContext o1, SchemaTransformationContext o2) {
           return String.CASE_INSENSITIVE_ORDER.compare(o1.id(), o2.id());
         }
       };
-
-  @Nullable
-  @Override
-  public InterfaceConfig getInterfaceConfig() {
-    return null;
-  }
 }

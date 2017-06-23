@@ -34,6 +34,9 @@ public interface ImportTypeTable extends TypeFormatter {
   /** Creates a new ModelTypeTable of the same concrete type, but with an empty import set. */
   ImportTypeTable cloneEmpty();
 
+  /** Creates a new ModelTypeTable of the same concrete type, but with an empty import set. */
+  ImportTypeTable cloneEmpty(String packageName);
+
   /** Compute the nickname for the given fullName and save it in the import set. */
   void saveNicknameFor(String fullName);
 

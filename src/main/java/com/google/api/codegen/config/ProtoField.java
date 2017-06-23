@@ -20,6 +20,7 @@ import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYP
 
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.util.Name;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Oneof;
@@ -53,6 +54,11 @@ public class ProtoField implements FieldType {
   @Override
   public String getFullName() {
     return protoField.getFullName();
+  }
+
+  @Override
+  public Name asName() {
+    return Name.from(protoField.getSimpleName());
   }
 
   @Override
