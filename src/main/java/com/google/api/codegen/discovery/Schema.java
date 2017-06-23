@@ -16,6 +16,8 @@ package com.google.api.codegen.discovery;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.auto.value.AutoValue;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Nullable;
@@ -27,6 +29,32 @@ import javax.annotation.Nullable;
  */
 @AutoValue
 public abstract class Schema implements Node {
+
+  /**
+   * Returns the schema this schema references, or this if this schema references no other.
+   *
+   * <p>If the reference property of a schema is non-empty, then it references another schema. This
+   * method returns the schema that this schema eventually references by walking back to a parent
+   * document. If the given schema does not reference another schema, this schema is returned.
+   *
+   * @return the first non-reference schema, or this if this schema references no other.
+   */
+  public Schema dereference() {
+    if (!Strings.isNullOrEmpty(reference())) {
+      Node document = parent;
+      while (document != null && !(document instanceof Document)) {
+        document = document.parent();
+      }
+      if (document != null) {
+        Schema schema = ((Document) document).schemas().get(reference());
+        // If a document is an eventual parent of this schema, then reference() must be a key in the
+        // document's "schemas" object.
+        Preconditions.checkState(schema != null);
+        return schema;
+      }
+    }
+    return this;
+  }
 
   /**
    * Returns true if this schema contains a property with the given name.
