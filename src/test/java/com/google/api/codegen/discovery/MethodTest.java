@@ -35,7 +35,7 @@ public class MethodTest {
     ObjectMapper mapper = new ObjectMapper();
     JsonNode root = mapper.readTree(reader);
 
-    Method method = Method.from(new DiscoveryNode(root), "root");
+    Method method = Method.from(new DiscoveryNode(root), null);
 
     Truth.assertThat(method.description()).isEqualTo("Get a baz!");
     Truth.assertThat(method.httpMethod()).isEqualTo("GET");
@@ -46,7 +46,7 @@ public class MethodTest {
     Truth.assertThat(parameters.get("p1").type()).isEqualTo(Schema.Type.STRING);
     Truth.assertThat(parameters.get("p1").required()).isTrue();
     Truth.assertThat(parameters.get("p1").location()).isEqualTo("path");
-    Truth.assertThat(parameters.get("p1").path()).isEqualTo("root.parameters.p1");
+    Truth.assertThat(parameters.get("p1").parent().id()).isEqualTo("foo.bar.baz.get");
 
     Truth.assertThat(parameters.get("p2").type()).isEqualTo(Schema.Type.STRING);
     Truth.assertThat(parameters.get("p2").location()).isEqualTo("query");
@@ -57,8 +57,8 @@ public class MethodTest {
     Truth.assertThat(method.request().reference()).isEqualTo("GetBazRequest");
     Truth.assertThat(method.response().reference()).isEqualTo("Baz");
 
-    Truth.assertThat(method.request().path()).isEqualTo("root.request");
-    Truth.assertThat(method.response().path()).isEqualTo("root.response");
+    Truth.assertThat(method.request().parent().id()).isEqualTo("foo.bar.baz.get");
+    Truth.assertThat(method.response().parent().id()).isEqualTo("foo.bar.baz.get");
 
     Truth.assertThat(method.scopes())
         .isEqualTo(Arrays.asList("https://www.example.com/foo", "https://www.example.com/bar"));
