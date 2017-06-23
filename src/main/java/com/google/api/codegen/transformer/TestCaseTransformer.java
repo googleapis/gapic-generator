@@ -55,7 +55,7 @@ public class TestCaseTransformer {
       InitCodeContext initCodeContext,
       ClientMethodType clientMethodType) {
     Method method = methodContext.getMethod();
-    GapicMethodConfig methodConfig = methodContext.getMethodConfig();
+    MethodConfig methodConfig = methodContext.getMethodConfig();
     SurfaceNamer namer = methodContext.getNamer();
 
     String clientMethodName;
@@ -126,7 +126,7 @@ public class TestCaseTransformer {
 
   private List<PageStreamingResponseView> createPageStreamingResponseViews(
       GapicMethodContext methodContext) {
-    GapicMethodConfig methodConfig = methodContext.getMethodConfig();
+    MethodConfig methodConfig = methodContext.getMethodConfig();
     SurfaceNamer namer = methodContext.getNamer();
 
     List<PageStreamingResponseView> pageStreamingResponseViews =
@@ -237,7 +237,7 @@ public class TestCaseTransformer {
   }
 
   public TestCaseView createSmokeTestCaseView(GapicMethodContext context) {
-    GapicMethodConfig methodConfig = context.getMethodConfig();
+    MethodConfig methodConfig = context.getMethodConfig();
     ClientMethodType methodType;
 
     if (methodConfig.isPageStreaming()) {
@@ -321,7 +321,7 @@ public class TestCaseTransformer {
   }
 
   public FlatteningConfig getSmokeTestFlatteningGroup(
-      GapicMethodConfig methodConfig, SmokeTestConfig smokeTestConfig) {
+      MethodConfig methodConfig, SmokeTestConfig smokeTestConfig) {
     for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
       if (flatteningGroup.getFlatteningName().equals(smokeTestConfig.getFlatteningName())) {
         return flatteningGroup;

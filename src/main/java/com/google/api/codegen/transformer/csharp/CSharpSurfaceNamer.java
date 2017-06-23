@@ -16,13 +16,13 @@ package com.google.api.codegen.transformer.csharp;
 
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.GapicInterfaceConfig;
-import com.google.api.codegen.config.GapicMethodConfig;
+import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.config.SingleResourceNameConfig;
-import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
+import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -144,12 +144,12 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFullyQualifiedApiWrapperClassName(GapicInterfaceConfig interfaceConfig) {
+  public String getFullyQualifiedApiWrapperClassName(InterfaceConfig interfaceConfig) {
     return getPackageName() + "." + getApiWrapperClassName(interfaceConfig);
   }
 
   @Override
-  public String getStaticLangReturnTypeName(Method method, GapicMethodConfig methodConfig) {
+  public String getStaticLangReturnTypeName(Method method, MethodConfig methodConfig) {
     if (ServiceMessages.s_isEmptyType(method.getOutputType())) {
       return "void";
     }
@@ -157,7 +157,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getStaticLangAsyncReturnTypeName(Method method, GapicMethodConfig methodConfig) {
+  public String getStaticLangAsyncReturnTypeName(Method method, MethodConfig methodConfig) {
     if (ServiceMessages.s_isEmptyType(method.getOutputType())) {
       return "System.Threading.Tasks.Task";
     }
@@ -167,8 +167,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getStaticLangCallerAsyncReturnTypeName(
-      Method method, GapicMethodConfig methodConfig) {
+  public String getStaticLangCallerAsyncReturnTypeName(Method method, MethodConfig methodConfig) {
     // Same as sync because of 'await'
     return getStaticLangReturnTypeName(method, methodConfig);
   }
@@ -323,7 +322,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getReroutedGrpcClientVarName(GapicMethodConfig methodConfig) {
+  public String getReroutedGrpcClientVarName(MethodConfig methodConfig) {
     String reroute = methodConfig.getRerouteToGrpcInterface();
     if (reroute == null) {
       return "GrpcClient";
@@ -334,7 +333,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getReroutedGrpcMethodName(GapicMethodConfig methodConfig) {
+  public String getReroutedGrpcMethodName(MethodConfig methodConfig) {
     List<String> reroutes = Splitter.on('.').splitToList(methodConfig.getRerouteToGrpcInterface());
     return Name.anyCamel("create", reroutes.get(reroutes.size() - 1), "client").toUpperCamel();
   }
@@ -393,7 +392,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getAndSaveOperationResponseTypeName(
-      Method method, ModelTypeTable typeTable, GapicMethodConfig methodConfig) {
+      Method method, ModelTypeTable typeTable, MethodConfig methodConfig) {
     String responseTypeName =
         typeTable.getFullNameFor(methodConfig.getLongRunningConfig().getReturnType());
     String metaTypeName =
@@ -427,7 +426,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public List<String> getReturnDocLines(
-      GapicInterfaceContext context, GapicMethodConfig methodConfig, Synchronicity synchronicity) {
+      InterfaceContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
     if (methodConfig.isPageStreaming()) {
       TypeRef resourceType = methodConfig.getPageStreaming().getResourcesField().getType();
       String resourceTypeName =

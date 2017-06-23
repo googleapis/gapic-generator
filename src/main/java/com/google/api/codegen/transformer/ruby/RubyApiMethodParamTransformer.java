@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.transformer.ruby;
 
-import com.google.api.codegen.config.GapicMethodConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.transformer.ApiMethodParamTransformer;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -35,7 +35,7 @@ public class RubyApiMethodParamTransformer implements ApiMethodParamTransformer 
       param.defaultValue("");
       methodParams.add(param.build());
     } else {
-      GapicMethodConfig methodConfig = context.getMethodConfig();
+      MethodConfig methodConfig = context.getMethodConfig();
       for (Field field : methodConfig.getRequiredFields()) {
         DynamicLangDefaultableParamView.Builder param =
             DynamicLangDefaultableParamView.newBuilder();
@@ -93,7 +93,7 @@ public class RubyApiMethodParamTransformer implements ApiMethodParamTransformer 
   private List<ParamDocView> generateMethodParamDocs(
       GapicMethodContext context, Iterable<Field> fields) {
     SurfaceNamer namer = context.getNamer();
-    GapicMethodConfig methodConfig = context.getMethodConfig();
+    MethodConfig methodConfig = context.getMethodConfig();
     ImmutableList.Builder<ParamDocView> docs = ImmutableList.builder();
     for (Field field : fields) {
       if (isRequestTokenParam(methodConfig, field)) {
@@ -136,13 +136,13 @@ public class RubyApiMethodParamTransformer implements ApiMethodParamTransformer 
     return docs.build();
   }
 
-  private boolean isPageSizeParam(GapicMethodConfig methodConfig, Field field) {
+  private boolean isPageSizeParam(MethodConfig methodConfig, Field field) {
     return methodConfig.isPageStreaming()
         && methodConfig.getPageStreaming().hasPageSizeField()
         && field.equals(methodConfig.getPageStreaming().getPageSizeField());
   }
 
-  private boolean isRequestTokenParam(GapicMethodConfig methodConfig, Field field) {
+  private boolean isRequestTokenParam(MethodConfig methodConfig, Field field) {
     return methodConfig.isPageStreaming()
         && field.equals(methodConfig.getPageStreaming().getRequestTokenField());
   }

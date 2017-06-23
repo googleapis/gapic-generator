@@ -15,7 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.BatchingConfig;
-import com.google.api.codegen.config.GapicMethodConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.BatchingConfigView;
 import com.google.api.codegen.viewmodel.BatchingDescriptorClassView;
@@ -58,7 +58,7 @@ public class BatchingTransformer {
     List<BatchingDescriptorClassView> descriptors = new ArrayList<>();
 
     for (Method method : context.getInterface().getMethods()) {
-      GapicMethodConfig methodConfig = context.getMethodConfig(method);
+      MethodConfig methodConfig = context.getMethodConfig(method);
       if (!methodConfig.isBatching()) {
         continue;
       }

@@ -16,14 +16,14 @@ package com.google.api.codegen.transformer.nodejs;
 
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.GapicInterfaceConfig;
-import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
+import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.FeatureConfig;
-import com.google.api.codegen.transformer.GapicInterfaceContext;
+import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -145,7 +145,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getDynamicLangReturnTypeName(Method method, GapicMethodConfig methodConfig) {
+  public String getDynamicLangReturnTypeName(Method method, MethodConfig methodConfig) {
     if (new ServiceMessages().isEmptyType(method.getOutputType())) {
       return "";
     }
@@ -182,7 +182,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   /** Return JSDoc callback comment and return type comment for the given method. */
   @Override
   public List<String> getReturnDocLines(
-      GapicInterfaceContext context, GapicMethodConfig methodConfig, Synchronicity synchronicity) {
+      InterfaceContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
     Method method = methodConfig.getMethod();
     if (method.getRequestStreaming() && method.getResponseStreaming()) {
       return bidiStreamingReturnDocLines(method);
@@ -232,8 +232,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     return "a " + getParamTypeNoCardinality(typeTable, typeRef).toLowerCase();
   }
 
-  private List<String> returnCallbackDocLines(
-      ModelTypeTable typeTable, GapicMethodConfig methodConfig) {
+  private List<String> returnCallbackDocLines(ModelTypeTable typeTable, MethodConfig methodConfig) {
     String returnTypeDoc = returnTypeDoc(typeTable, methodConfig);
     Method method = methodConfig.getMethod();
     String classInfo = getParamTypeName(typeTable, method.getOutputType());
@@ -265,8 +264,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     return callbackLines.build();
   }
 
-  private List<String> returnObjectDocLines(
-      ModelTypeTable typeTable, GapicMethodConfig methodConfig) {
+  private List<String> returnObjectDocLines(ModelTypeTable typeTable, MethodConfig methodConfig) {
     String returnTypeDoc = returnTypeDoc(typeTable, methodConfig);
     Method method = methodConfig.getMethod();
     ImmutableList.Builder<String> returnMessageLines = ImmutableList.builder();
@@ -322,7 +320,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     return message.getFullName().equals("google.protobuf.Empty");
   }
 
-  private String returnTypeDoc(ModelTypeTable typeTable, GapicMethodConfig methodConfig) {
+  private String returnTypeDoc(ModelTypeTable typeTable, MethodConfig methodConfig) {
     String returnTypeDoc = "";
     if (methodConfig.isPageStreaming()) {
       returnTypeDoc = "Array of ";
@@ -417,10 +415,8 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getServiceFileName(GapicInterfaceConfig interfaceConfig) {
-    return Name.upperCamel(interfaceConfig.getInterface().getSimpleName())
-            .join("client")
-            .toLowerUnderscore()
+  public String getServiceFileName(InterfaceConfig interfaceConfig) {
+    return Name.upperCamel(interfaceConfig.getSimpleName()).join("client").toLowerUnderscore()
         + ".js";
   }
 

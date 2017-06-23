@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@ package com.google.api.codegen.config;
 
 import com.google.api.codegen.BatchingConfigProto;
 import com.google.api.codegen.FlatteningConfigProto;
-import com.google.api.codegen.FlatteningGroupProto;
 import com.google.api.codegen.LongRunningConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.PageStreamingConfigProto;
@@ -28,7 +27,6 @@ import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
-import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.SimpleLocation;
@@ -37,67 +35,42 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.protobuf.Empty;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.joda.time.Duration;
 
-/**
- * GapicMethodConfig represents the code-gen config for a method, and includes the specification of
- * features like page streaming and parameter flattening.
- */
+/** Created by andrealin on 6/15/17. */
 @AutoValue
-public abstract class GapicMethodConfig extends MethodConfig {
-  public abstract Method getMethod();
+public abstract class DiscoGapicMethodConfig extends MethodConfig {
+  @Override
+  public boolean isGrpcStreaming() {
+    return false;
+  }
+
+  @Override
+  public String getRerouteToGrpcInterface() {
+    return null;
+  }
+
+  @Override
+  /** Returns the grpc streaming configuration of the method. */
+  public GrpcStreamingType getGrpcStreamingType() {
+    return GrpcStreamingType.NonStreaming;
+  }
 
   @Nullable
-  public abstract PageStreamingConfig getPageStreaming();
-
-  @Nullable
-  public abstract GrpcStreamingConfig getGrpcStreaming();
-
-  @Nullable
-  public abstract ImmutableList<FlatteningConfig> getFlatteningConfigs();
-
-  public abstract String getRetryCodesConfigName();
-
-  public abstract String getRetrySettingsConfigName();
-
-  public abstract Duration getTimeout();
-
-  public abstract Iterable<FieldConfig> getRequiredFieldConfigs();
-
-  public abstract Iterable<FieldConfig> getOptionalFieldConfigs();
-
-  public abstract ResourceNameTreatment getDefaultResourceNameTreatment();
-
-  @Nullable
-  public abstract BatchingConfig getBatching();
-
-  public abstract boolean hasRequestObjectMethod();
-
-  public abstract ImmutableMap<String, String> getFieldNamePatterns();
-
-  public abstract List<String> getSampleCodeInitFields();
-
-  @Nullable
-  public abstract String getRerouteToGrpcInterface();
-
-  public abstract VisibilityConfig getVisibility();
-
-  public abstract ReleaseLevel getReleaseLevel();
-
-  @Nullable
-  public abstract LongRunningConfig getLongRunningConfig();
+  public GrpcStreamingConfig getGrpcStreaming() {
+    return null;
+  }
 
   /**
-   * Creates an instance of GapicMethodConfig based on MethodConfigProto, linking it up with the
-   * provided method. On errors, null will be returned, and diagnostics are reported to the diag
+   * Creates an instance of DiscoGapicMethodConfig based on MethodConfigProto, linking it up with
+   * the provided method. On errors, null will be returned, and diagnostics are reported to the diag
    * collector.
    */
   @Nullable
-  public static GapicMethodConfig createMethodConfig(
+  public static DiscoGapicMethodConfig createDiscoGapicMethodConfig(
       DiagCollector diagCollector,
       String language,
       MethodConfigProto methodConfigProto,
@@ -121,19 +94,6 @@ public abstract class GapicMethodConfig extends MethodConfig {
     }
 
     GrpcStreamingConfig grpcStreaming = null;
-    if (isGrpcStreamingMethod(method)) {
-      if (PageStreamingConfigProto.getDefaultInstance()
-          .equals(methodConfigProto.getGrpcStreaming())) {
-        grpcStreaming = GrpcStreamingConfig.createGrpcStreaming(diagCollector, method);
-      } else {
-        grpcStreaming =
-            GrpcStreamingConfig.createGrpcStreaming(
-                diagCollector, methodConfigProto.getGrpcStreaming(), method);
-        if (grpcStreaming == null) {
-          error = true;
-        }
-      }
-    }
 
     ImmutableList<FlatteningConfig> flattening = null;
     if (!FlatteningConfigProto.getDefaultInstance().equals(methodConfigProto.getFlattening())) {
@@ -199,22 +159,23 @@ public abstract class GapicMethodConfig extends MethodConfig {
     }
 
     Iterable<FieldConfig> requiredFieldConfigs =
-        createFieldNameConfigs(
+        GapicMethodConfig.createFieldNameConfigs(
             diagCollector,
             messageConfigs,
             defaultResourceNameTreatment,
             fieldNamePatterns,
             resourceNameConfigs,
-            getRequiredFields(diagCollector, method, methodConfigProto.getRequiredFieldsList()));
+            GapicMethodConfig.getRequiredFields(
+                diagCollector, method, methodConfigProto.getRequiredFieldsList()));
 
     Iterable<FieldConfig> optionalFieldConfigs =
-        createFieldNameConfigs(
+        GapicMethodConfig.createFieldNameConfigs(
             diagCollector,
             messageConfigs,
             defaultResourceNameTreatment,
             fieldNamePatterns,
             resourceNameConfigs,
-            getOptionalFields(method, methodConfigProto.getRequiredFieldsList()));
+            GapicMethodConfig.getOptionalFields(method, methodConfigProto.getRequiredFieldsList()));
 
     List<String> sampleCodeInitFields = new ArrayList<>();
     sampleCodeInitFields.addAll(methodConfigProto.getRequiredFieldsList());
@@ -250,10 +211,9 @@ public abstract class GapicMethodConfig extends MethodConfig {
     if (error) {
       return null;
     } else {
-      return new AutoValue_GapicMethodConfig(
+      return new AutoValue_DiscoGapicMethodConfig(
           method,
           pageStreaming,
-          grpcStreaming,
           flattening,
           retryCodesName,
           retryParamsName,
@@ -265,149 +225,10 @@ public abstract class GapicMethodConfig extends MethodConfig {
           hasRequestObjectMethod,
           fieldNamePatterns,
           sampleCodeInitFields,
-          rerouteToGrpcInterface,
           visibility,
           releaseLevel,
           longRunningConfig);
     }
-  }
-
-  @Nullable
-  static ImmutableList<FlatteningConfig> createFlattening(
-      DiagCollector diagCollector,
-      ResourceNameMessageConfigs messageConfigs,
-      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      MethodConfigProto methodConfigProto,
-      Method method) {
-    boolean missing = false;
-    ImmutableList.Builder<FlatteningConfig> flatteningGroupsBuilder = ImmutableList.builder();
-    for (FlatteningGroupProto flatteningGroup : methodConfigProto.getFlattening().getGroupsList()) {
-      FlatteningConfig groupConfig =
-          FlatteningConfig.createFlattening(
-              diagCollector,
-              messageConfigs,
-              resourceNameConfigs,
-              methodConfigProto,
-              flatteningGroup,
-              method);
-      if (groupConfig == null) {
-        missing = true;
-      } else {
-        flatteningGroupsBuilder.add(groupConfig);
-      }
-    }
-    if (missing) {
-      return null;
-    }
-
-    return flatteningGroupsBuilder.build();
-  }
-
-  static Iterable<Field> getRequiredFields(
-      DiagCollector diagCollector, Method method, List<String> requiredFieldNames) {
-    ImmutableList.Builder<Field> fieldsBuilder = ImmutableList.builder();
-    for (String fieldName : requiredFieldNames) {
-      Field requiredField = method.getInputMessage().lookupField(fieldName);
-      if (requiredField == null) {
-        diagCollector.addDiag(
-            Diag.error(
-                SimpleLocation.TOPLEVEL,
-                "Required field '%s' not found (in method %s)",
-                fieldName,
-                method.getFullName()));
-        return null;
-      }
-      fieldsBuilder.add(requiredField);
-    }
-    return fieldsBuilder.build();
-  }
-
-  static Iterable<Field> getOptionalFields(Method method, List<String> requiredFieldNames) {
-    ImmutableList.Builder<Field> fieldsBuilder = ImmutableList.builder();
-    for (Field field : method.getInputType().getMessageType().getFields()) {
-      if (requiredFieldNames.contains(field.getSimpleName())) {
-        continue;
-      }
-      fieldsBuilder.add(field);
-    }
-    return fieldsBuilder.build();
-  }
-
-  static Iterable<FieldConfig> createFieldNameConfigs(
-      DiagCollector diagCollector,
-      ResourceNameMessageConfigs messageConfigs,
-      ResourceNameTreatment defaultResourceNameTreatment,
-      ImmutableMap<String, String> fieldNamePatterns,
-      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      Iterable<Field> fields) {
-    ImmutableList.Builder<FieldConfig> fieldConfigsBuilder = ImmutableList.builder();
-    for (Field field : fields) {
-      fieldConfigsBuilder.add(
-          FieldConfig.createFieldConfig(
-              diagCollector,
-              messageConfigs,
-              fieldNamePatterns,
-              resourceNameConfigs,
-              field,
-              null,
-              defaultResourceNameTreatment));
-    }
-    return fieldConfigsBuilder.build();
-  }
-
-  /** Returns true if the method is a streaming method */
-  public static boolean isGrpcStreamingMethod(Method method) {
-    return method.getRequestStreaming() || method.getResponseStreaming();
-  }
-
-  /** Returns true if the method returns google.protobuf.empty message */
-  public static boolean isReturnEmptyMessageMethod(Method method) {
-    MessageType returnMessageType = method.getOutputMessage();
-    return Empty.getDescriptor().getFullName().equals(returnMessageType.getFullName());
-  }
-
-  /** Returns true if this method has page streaming configured. */
-  public boolean isPageStreaming() {
-    return getPageStreaming() != null;
-  }
-
-  /** Returns true if this method has grpc streaming configured. */
-  public boolean isGrpcStreaming() {
-    return getGrpcStreaming() != null;
-  }
-
-  @Override
-  /** Returns the grpc streaming configuration of the method. */
-  public GrpcStreamingType getGrpcStreamingType() {
-    if (isGrpcStreaming()) {
-      return getGrpcStreaming().getType();
-    } else {
-      return GrpcStreamingType.NonStreaming;
-    }
-  }
-
-  /** Returns true if this method has flattening configured. */
-  public boolean isFlattening() {
-    return getFlatteningConfigs() != null;
-  }
-
-  /** Returns true if this method has batching configured. */
-  public boolean isBatching() {
-    return getBatching() != null;
-  }
-
-  public boolean isLongRunningOperation() {
-    return getLongRunningConfig() != null;
-  }
-
-  @Override
-  public Iterable<Field> getRequiredFields() {
-    return FieldConfig.toFieldIterable(getRequiredFieldConfigs());
-  }
-
-  @Override
-  public Iterable<Field> getOptionalFields() {
-    return FieldConfig.toFieldIterable(getOptionalFieldConfigs());
   }
 
   /** Return the list of "one of" instances associated with the fields. */

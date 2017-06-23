@@ -16,8 +16,9 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicInterfaceConfig;
-import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
@@ -28,13 +29,13 @@ import javax.annotation.Nullable;
 @AutoValue
 public abstract class GapicMethodContext {
   public static GapicMethodContext create(
-      GapicInterfaceContext surfaceTransformerContext,
+      InterfaceContext surfaceTransformerContext,
       Interface apiInterface,
       GapicProductConfig productConfig,
       ModelTypeTable typeTable,
       SurfaceNamer namer,
       Method method,
-      GapicMethodConfig methodConfig,
+      MethodConfig methodConfig,
       FlatteningConfig flatteningConfig,
       FeatureConfig featureConfig) {
     return new AutoValue_GapicMethodContext(
@@ -49,7 +50,7 @@ public abstract class GapicMethodContext {
         featureConfig);
   }
 
-  public abstract GapicInterfaceContext getSurfaceTransformerContext();
+  public abstract InterfaceContext getSurfaceTransformerContext();
 
   public abstract Interface getInterface();
 
@@ -61,7 +62,7 @@ public abstract class GapicMethodContext {
 
   public abstract Method getMethod();
 
-  public abstract GapicMethodConfig getMethodConfig();
+  public abstract MethodConfig getMethodConfig();
 
   @Nullable
   public abstract FlatteningConfig getFlatteningConfig();
@@ -77,7 +78,7 @@ public abstract class GapicMethodContext {
         getInterface(), getMethodConfig().getRerouteToGrpcInterface());
   }
 
-  public GapicInterfaceConfig getInterfaceConfig() {
+  public InterfaceConfig getInterfaceConfig() {
     return getProductConfig().getInterfaceConfig(getInterface());
   }
 

@@ -17,10 +17,11 @@ package com.google.api.codegen.discogapic.transformer.java;
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.discogapic.DiscoGapicInterfaceContext;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
+import com.google.api.codegen.transformer.ApiCallableTransformer;
+import com.google.api.codegen.transformer.DiscoGapicInterfaceContext;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.SchemaTypeTable;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
@@ -30,7 +31,6 @@ import com.google.api.codegen.transformer.java.JavaSchemaTypeNameConverter;
 import com.google.api.codegen.transformer.java.JavaSurfaceNamer;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaTypeTable;
-import com.google.api.codegen.viewmodel.ApiCallableView;
 import com.google.api.codegen.viewmodel.FormatResourceFunctionView;
 import com.google.api.codegen.viewmodel.ParseResourceFunctionView;
 import com.google.api.codegen.viewmodel.PathTemplateView;
@@ -44,13 +44,26 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/** The ModelToViewTransformer to transform a Document into the standard GAPIC surface in Java. */
 public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransformer {
   private final GapicCodePathMapper pathMapper;
+  private final PackageMetadataConfig packageMetadataConfig;
   private final StandardImportSectionTransformer importSectionTransformer =
       new StandardImportSectionTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(importSectionTransformer);
   private final JavaNameFormatter nameFormatter = new JavaNameFormatter();
+
+  //  private final ServiceTransformer serviceTransformer = new ServiceTransformer();
+  //  private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
+  private final ApiCallableTransformer apiCallableTransformer = new ApiCallableTransformer();
+  //  private final StaticLangApiMethodTransformer apiMethodTransformer =
+  //      new StaticLangApiMethodTransformer();
+  //  private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
+  //  private final BatchingTransformer batchingTransformer = new BatchingTransformer();
+  //  private final RetryDefinitionsTransformer retryDefinitionsTransformer =
+  //      new RetryDefinitionsTransformer();
+  //  private final ProductServiceConfig productServiceConfig = new ProductServiceConfig();
 
   private static final String XAPI_TEMPLATE_FILENAME = "java/main.snip";
   private static final String XSETTINGS_TEMPLATE_FILENAME = "java/settings.snip";
@@ -62,6 +75,7 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
       GapicCodePathMapper pathMapper, PackageMetadataConfig packageMetadataConfig) {
     this.pathMapper = pathMapper;
     // TODO use packageMetadataConfig
+    this.packageMetadataConfig = packageMetadataConfig;
   }
 
   @Override
@@ -76,7 +90,6 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
   @Override
   public List<ViewModel> transform(Document document, GapicProductConfig productConfig) {
     List<ViewModel> surfaceDocs = new ArrayList<>();
-
     SurfaceNamer namer = new JavaSurfaceNamer(productConfig.getPackageName());
 
     List<ServiceDocView> serviceDocs = new ArrayList<>();
@@ -133,7 +146,7 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
     xapiClass.name(name);
     xapiClass.settingsClassName(
         context.getNamer().getApiSettingsClassName(context.getInterfaceConfig()));
-    xapiClass.apiCallableMembers(new ArrayList<ApiCallableView>());
+    xapiClass.apiCallableMembers(apiCallableTransformer.generateStaticLangApiCallables(context));
     xapiClass.pathTemplates(new ArrayList<PathTemplateView>());
     xapiClass.formatResourceFunctions(new ArrayList<FormatResourceFunctionView>());
     xapiClass.parseResourceFunctions(new ArrayList<ParseResourceFunctionView>());
@@ -150,7 +163,8 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
     typeTable.saveNicknameFor("com.google.api.core.BetaApi");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.ChannelAndExecutor");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryCallable");
-    typeTable.saveNicknameFor("com.google.api.pathtemplate.PathTemplate");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.ClientContext");
+    typeTable.saveNicknameFor("com.google.auth.Credentials");
     typeTable.saveNicknameFor("io.grpc.ManagedChannel");
     typeTable.saveNicknameFor("java.io.Closeable");
     typeTable.saveNicknameFor("java.io.IOException");

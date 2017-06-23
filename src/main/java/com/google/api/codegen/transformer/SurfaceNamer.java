@@ -16,10 +16,9 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.GapicInterfaceConfig;
-import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig;
 import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.OneofConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.ResourceNameConfig;
@@ -294,7 +293,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The method name to create a rerouted gRPC client. Used in C# */
-  public String getReroutedGrpcMethodName(GapicMethodConfig methodConfig) {
+  public String getReroutedGrpcMethodName(MethodConfig methodConfig) {
     return getNotImplementedString("SurfaceNamer.getReroutedGrpcMethodName");
   }
 
@@ -489,7 +488,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * The name of a variable that holds an instance of the class that implements a particular proto
    * interface.
    */
-  public String getApiWrapperVariableName(GapicInterfaceConfig interfaceConfig) {
+  public String getApiWrapperVariableName(InterfaceConfig interfaceConfig) {
     return localVarName(Name.upperCamel(getInterfaceName(interfaceConfig), "Client"));
   }
 
@@ -497,7 +496,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * The name of a variable that holds the settings class for a particular proto interface; not used
    * in most languages.
    */
-  public String getApiSettingsVariableName(GapicInterfaceConfig interfaceConfig) {
+  public String getApiSettingsVariableName(InterfaceConfig interfaceConfig) {
     return localVarName(Name.upperCamel(getInterfaceName(interfaceConfig), "Settings"));
   }
 
@@ -505,7 +504,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * The name of the builder class for the settings class for a particular proto interface; not used
    * in most languages.
    */
-  public String getApiSettingsBuilderVarName(GapicInterfaceConfig interfaceConfig) {
+  public String getApiSettingsBuilderVarName(InterfaceConfig interfaceConfig) {
     return localVarName(Name.upperCamel(getInterfaceName(interfaceConfig), "SettingsBuilder"));
   }
 
@@ -515,7 +514,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The variable name of the rerouted gRPC client. Used in C# */
-  public String getReroutedGrpcClientVarName(GapicMethodConfig methodConfig) {
+  public String getReroutedGrpcClientVarName(MethodConfig methodConfig) {
     return getNotImplementedString("SurfaceNamer.getGrpcClientName");
   }
 
@@ -625,7 +624,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    *
    * <p>TODO: Support the general pattern of package + class name in NameFormatter.
    */
-  public String getFullyQualifiedApiWrapperClassName(GapicInterfaceConfig interfaceConfig) {
+  public String getFullyQualifiedApiWrapperClassName(InterfaceConfig interfaceConfig) {
     return getNotImplementedString("SurfaceNamer.getFullyQualifiedApiWrapperClassName");
   }
 
@@ -716,22 +715,22 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The return type name in a dynamic language for the given method. */
-  public String getDynamicLangReturnTypeName(Method method, GapicMethodConfig methodConfig) {
+  public String getDynamicLangReturnTypeName(Method method, MethodConfig methodConfig) {
     return getNotImplementedString("SurfaceNamer.getDynamicReturnTypeName");
   }
 
   /** The return type name in a static language for the given method. */
-  public String getStaticLangReturnTypeName(Method method, GapicMethodConfig methodConfig) {
+  public String getStaticLangReturnTypeName(Method method, MethodConfig methodConfig) {
     return getNotImplementedString("SurfaceNamer.getStaticLangReturnTypeName");
   }
 
   /** The return type name in a static language that is used by the caller */
-  public String getStaticLangCallerReturnTypeName(Method method, GapicMethodConfig methodConfig) {
+  public String getStaticLangCallerReturnTypeName(Method method, MethodConfig methodConfig) {
     return getStaticLangReturnTypeName(method, methodConfig);
   }
 
   /** The async return type name in a static language for the given method. */
-  public String getStaticLangAsyncReturnTypeName(Method method, GapicMethodConfig methodConfig) {
+  public String getStaticLangAsyncReturnTypeName(Method method, MethodConfig methodConfig) {
     return getNotImplementedString("SurfaceNamer.getStaticLangAsyncReturnTypeName");
   }
 
@@ -740,7 +739,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * given type table, and returns it.
    */
   public String getAndSaveOperationResponseTypeName(
-      Method method, ModelTypeTable typeTable, GapicMethodConfig methodConfig) {
+      Method method, ModelTypeTable typeTable, MethodConfig methodConfig) {
     return getNotImplementedString("SurfaceNamer.getAndSaveOperationResponseTypeName");
   }
 
@@ -753,8 +752,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The async return type name in a static language that is used by the caller */
-  public String getStaticLangCallerAsyncReturnTypeName(
-      Method method, GapicMethodConfig methodConfig) {
+  public String getStaticLangCallerAsyncReturnTypeName(Method method, MethodConfig methodConfig) {
     return getStaticLangAsyncReturnTypeName(method, methodConfig);
   }
 
@@ -1122,18 +1120,18 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** Provides the doc lines for the given method element in the current language. */
-  public List<String> getDocLines(Method method, GapicMethodConfig methodConfig) {
+  public List<String> getDocLines(Method method, MethodConfig methodConfig) {
     return getDocLines(method);
   }
 
   /** The doc lines that declare what exception(s) are thrown for an API method. */
-  public List<String> getThrowsDocLines(GapicMethodConfig methodConfig) {
+  public List<String> getThrowsDocLines(MethodConfig methodConfig) {
     return new ArrayList<>();
   }
 
   /** The doc lines that describe the return value for an API method. */
   public List<String> getReturnDocLines(
-      GapicInterfaceContext context, GapicMethodConfig methodConfig, Synchronicity synchronicity) {
+      InterfaceContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
     return Collections.singletonList(getNotImplementedString("SurfaceNamer.getReturnDocLines"));
   }
 
@@ -1159,7 +1157,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   //////////////////////////////////////// File names ////////////////////////////////////////////
 
   /** The file name for an API interface. */
-  public String getServiceFileName(GapicInterfaceConfig interfaceConfig) {
+  public String getServiceFileName(InterfaceConfig interfaceConfig) {
     return getNotImplementedString("SurfaceNamer.getServiceFileName");
   }
 
@@ -1192,12 +1190,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The unit test class name for the given API interface. */
-  public String getUnitTestClassName(GapicInterfaceConfig interfaceConfig) {
+  public String getUnitTestClassName(InterfaceConfig interfaceConfig) {
     return publicClassName(Name.upperCamel(getInterfaceName(interfaceConfig), "Client", "Test"));
   }
 
   /** The smoke test class name for the given API interface. */
-  public String getSmokeTestClassName(GapicInterfaceConfig interfaceConfig) {
+  public String getSmokeTestClassName(InterfaceConfig interfaceConfig) {
     return publicClassName(Name.upperCamel(getInterfaceName(interfaceConfig), "Smoke", "Test"));
   }
 
@@ -1288,12 +1286,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
   ////////////////////////////////////////// Utility /////////////////////////////////////////////
 
   /** Indicates whether the specified method supports retry settings. */
-  public boolean methodHasRetrySettings(GapicMethodConfig methodConfig) {
+  public boolean methodHasRetrySettings(MethodConfig methodConfig) {
     return true;
   }
 
   /** Indicates whether the specified method supports timeout settings. */
-  public boolean methodHasTimeoutSettings(GapicMethodConfig methodConfig) {
+  public boolean methodHasTimeoutSettings(MethodConfig methodConfig) {
     return true;
   }
 

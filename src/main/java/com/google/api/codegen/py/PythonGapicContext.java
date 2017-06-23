@@ -19,6 +19,7 @@ import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
@@ -307,8 +308,7 @@ public class PythonGapicContext extends GapicContext {
    */
   public String returnTypeComment(
       Interface apiInterface, Method method, PythonImportHandler importHandler) {
-    GapicMethodConfig config =
-        getApiConfig().getInterfaceConfig(apiInterface).getMethodConfig(method);
+    MethodConfig config = getApiConfig().getInterfaceConfig(apiInterface).getMethodConfig(method);
     if (GapicMethodConfig.isReturnEmptyMessageMethod(method)) {
       return "";
     }
@@ -332,7 +332,7 @@ public class PythonGapicContext extends GapicContext {
   }
 
   private String returnTypeCommentPath(
-      Method method, GapicMethodConfig config, PythonImportHandler importHandler) {
+      Method method, MethodConfig config, PythonImportHandler importHandler) {
     if (config.isLongRunningOperation()) {
       return "google.gax._OperationFuture";
     }
@@ -364,8 +364,7 @@ public class PythonGapicContext extends GapicContext {
   }
 
   public String throwsComment(Interface apiInterface, Method method) {
-    GapicMethodConfig config =
-        getApiConfig().getInterfaceConfig(apiInterface).getMethodConfig(method);
+    MethodConfig config = getApiConfig().getInterfaceConfig(apiInterface).getMethodConfig(method);
     StringBuilder contentBuilder = new StringBuilder();
     contentBuilder.append("\nRaises:\n  :exc:`google.gax.errors.GaxError` if the RPC is aborted.");
     if (Iterables.size(config.getRequiredFields()) > 0
@@ -386,7 +385,7 @@ public class PythonGapicContext extends GapicContext {
 
   /** Get required (non-optional) fields. */
   public List<Field> getRequiredFields(Interface apiInterface, Method method) {
-    GapicMethodConfig methodConfig =
+    MethodConfig methodConfig =
         getApiConfig().getInterfaceConfig(apiInterface).getMethodConfig(method);
     return Lists.newArrayList(methodConfig.getRequiredFields());
   }
@@ -491,7 +490,7 @@ public class PythonGapicContext extends GapicContext {
 
   public List<Interface> getStubInterfaces(Interface apiInterface) {
     Map<String, Interface> interfaces = new TreeMap<>();
-    for (GapicMethodConfig methodConfig :
+    for (MethodConfig methodConfig :
         getApiConfig().getInterfaceConfig(apiInterface).getMethodConfigs()) {
       String rerouteToGrpcInterface = methodConfig.getRerouteToGrpcInterface();
       Interface target =
@@ -506,7 +505,7 @@ public class PythonGapicContext extends GapicContext {
   }
 
   public String stubNameForMethod(Interface apiInterface, Method method) {
-    GapicMethodConfig methodConfig =
+    MethodConfig methodConfig =
         getApiConfig().getInterfaceConfig(apiInterface).getMethodConfig(method);
     String rerouteToGrpcInterface = methodConfig.getRerouteToGrpcInterface();
     Interface target =

@@ -15,9 +15,8 @@
 package com.google.api.codegen.transformer.go;
 
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.GapicInterfaceConfig;
-import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.OneofConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
@@ -83,7 +82,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getStaticLangReturnTypeName(Method method, GapicMethodConfig methodConfig) {
+  public String getStaticLangReturnTypeName(Method method, MethodConfig methodConfig) {
     return converter.getTypeName(method.getOutputType()).getFullName();
   }
 
@@ -93,7 +92,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public List<String> getDocLines(Method method, GapicMethodConfig methodConfig) {
+  public List<String> getDocLines(Method method, MethodConfig methodConfig) {
     String text = DocumentationUtil.getDescription(method);
     text = lowerFirstLetter(text);
     return super.getDocLines(getApiMethodName(method, methodConfig.getVisibility()) + " " + text);
@@ -122,7 +121,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getAndSaveOperationResponseTypeName(
-      Method method, ModelTypeTable typeTable, GapicMethodConfig methodConfig) {
+      Method method, ModelTypeTable typeTable, MethodConfig methodConfig) {
     return publicClassName(Name.upperCamel(method.getSimpleName()).join("operation"));
   }
 
@@ -191,9 +190,8 @@ public class GoSurfaceNamer extends SurfaceNamer {
   @Override
   public String getApiWrapperClassName(InterfaceConfig interfaceConfig) {
     // TODO support non-Gapic inputs
-    GapicInterfaceConfig gapicInterfaceConfig = (GapicInterfaceConfig) interfaceConfig;
-    return publicClassName(
-        clientNamePrefix(gapicInterfaceConfig.getInterface().getSimpleName()).join("client"));
+    InterfaceConfig InterfaceConfig = (InterfaceConfig) interfaceConfig;
+    return publicClassName(clientNamePrefix(InterfaceConfig.getSimpleName()).join("client"));
   }
 
   @Override
@@ -275,9 +273,8 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getServiceFileName(GapicInterfaceConfig interfaceConfig) {
-    return classFileNameBase(
-        getReducedServiceName(interfaceConfig.getInterface().getSimpleName()).join("client"));
+  public String getServiceFileName(InterfaceConfig interfaceConfig) {
+    return classFileNameBase(getReducedServiceName(interfaceConfig.getSimpleName()).join("client"));
   }
 
   @Override
@@ -389,7 +386,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getSmokeTestClassName(GapicInterfaceConfig interfaceConfig) {
+  public String getSmokeTestClassName(InterfaceConfig interfaceConfig) {
     // Go smoke test is a just a method; return method name instead.
     return publicMethodName(Name.upperCamel("Test", getInterfaceName(interfaceConfig), "Smoke"));
   }

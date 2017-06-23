@@ -16,7 +16,7 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.GapicMethodConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.metacode.InitCodeContext;
@@ -843,7 +843,7 @@ public class StaticLangApiMethodTransformer {
       paramDoc.typeName(context.getTypeTable().getAndSaveNicknameFor(field.getType()));
 
       List<String> docLines = null;
-      GapicMethodConfig methodConfig = context.getMethodConfig();
+      MethodConfig methodConfig = context.getMethodConfig();
       if (methodConfig.isPageStreaming()
           && methodConfig.getPageStreaming().hasPageSizeField()
           && field.equals(methodConfig.getPageStreaming().getPageSizeField())) {

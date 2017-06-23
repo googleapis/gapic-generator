@@ -15,8 +15,8 @@
 package com.google.api.codegen;
 
 import com.google.api.codegen.config.GapicInterfaceConfig;
-import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.ProductServiceConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
@@ -95,8 +95,7 @@ public class GapicContext extends CodegenContext {
    * Returns the list of optional fields from the given GapicMethodConfig, excluding the Page Token
    * field
    */
-  public List<Field> removePageTokenFromFields(
-      Iterable<Field> fields, GapicMethodConfig methodConfig) {
+  public List<Field> removePageTokenFromFields(Iterable<Field> fields, MethodConfig methodConfig) {
     List<Field> newFields = new ArrayList<>();
     for (Field field : fields) {
       if (methodConfig.isPageStreaming()
@@ -147,7 +146,7 @@ public class GapicContext extends CodegenContext {
           "Service not configured in GAPIC config: " + apiInterface.getFullName());
     }
     List<Method> methods = new ArrayList<>(interfaceConfig.getMethodConfigs().size());
-    for (GapicMethodConfig methodConfig : interfaceConfig.getMethodConfigs()) {
+    for (MethodConfig methodConfig : interfaceConfig.getMethodConfigs()) {
       Method method = methodConfig.getMethod();
       if (isSupported(method)) {
         methods.add(method);

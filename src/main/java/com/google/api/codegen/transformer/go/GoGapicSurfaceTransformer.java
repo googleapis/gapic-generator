@@ -16,9 +16,9 @@ package com.google.api.codegen.transformer.go;
 
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.ServiceMessages;
-import com.google.api.codegen.config.GapicInterfaceConfig;
-import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.ProductServiceConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
@@ -255,7 +255,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
       GapicInterfaceContext context, List<Method> methods) {
     List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
     for (Method method : methods) {
-      GapicMethodConfig methodConfig = context.getMethodConfig(method);
+      MethodConfig methodConfig = context.getMethodConfig(method);
       GapicMethodContext methodContext = context.asRequestMethodContext(method);
 
       if (method.getRequestStreaming() || method.getResponseStreaming()) {
@@ -277,7 +277,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
       GapicInterfaceContext context, List<Method> methods) {
     Set<RetryConfigDefinitionView.Name> retryNames = new HashSet<>();
     for (Method method : methods) {
-      GapicMethodConfig conf = context.getMethodConfig(method);
+      MethodConfig conf = context.getMethodConfig(method);
       retryNames.add(
           RetryConfigDefinitionView.Name.create(
               conf.getRetrySettingsConfigName(), conf.getRetryCodesConfigName()));
@@ -352,13 +352,13 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private Set<ImportKind> getImportKinds(
-      GapicInterfaceConfig interfaceConfig, Collection<Method> methods) {
+      InterfaceConfig interfaceConfig, Collection<Method> methods) {
     EnumSet<ImportKind> kinds = EnumSet.noneOf(ImportKind.class);
     for (Method method : methods) {
       if (method.getResponseStreaming()) {
         kinds.add(ImportKind.SERVER_STREAM);
       }
-      GapicMethodConfig methodConfig = interfaceConfig.getMethodConfig(method);
+      MethodConfig methodConfig = interfaceConfig.getMethodConfig(method);
       if (methodConfig.isLongRunningOperation()) {
         kinds.add(ImportKind.LRO);
       }

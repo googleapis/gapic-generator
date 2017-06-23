@@ -16,8 +16,8 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.util.Name;
@@ -125,7 +125,7 @@ public class DynamicLangApiMethodTransformer {
     ApiMethodDocView.Builder docBuilder = ApiMethodDocView.newBuilder();
     SurfaceNamer surfaceNamer = context.getNamer();
     Method method = context.getMethod();
-    GapicMethodConfig methodConfig = context.getMethodConfig();
+    MethodConfig methodConfig = context.getMethodConfig();
 
     docBuilder.mainDocLines(surfaceNamer.getDocLines(method, methodConfig));
     docBuilder.paramDocs(apiMethodParamTransformer.generateParamDocs(context));
@@ -155,7 +155,7 @@ public class DynamicLangApiMethodTransformer {
 
   private Iterable<FieldConfig> removePageTokenFieldConfig(
       GapicMethodContext context, Iterable<FieldConfig> fieldConfigs) {
-    GapicMethodConfig methodConfig = context.getMethodConfig();
+    MethodConfig methodConfig = context.getMethodConfig();
     if (methodConfig == null || !methodConfig.isPageStreaming()) {
       return fieldConfigs;
     }

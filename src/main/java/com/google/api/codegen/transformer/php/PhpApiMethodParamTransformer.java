@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.transformer.php;
 
-import com.google.api.codegen.config.GapicMethodConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.transformer.ApiMethodParamTransformer;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.util.Name;
@@ -76,7 +76,7 @@ public class PhpApiMethodParamTransformer implements ApiMethodParamTransformer {
     if (context.getMethod().getRequestStreaming()) {
       return ImmutableList.<ParamDocView>of();
     }
-    GapicMethodConfig methodConfig = context.getMethodConfig();
+    MethodConfig methodConfig = context.getMethodConfig();
     ImmutableList.Builder<ParamDocView> paramDocs = ImmutableList.builder();
     for (Field field : fields) {
       SimpleParamDocView.Builder paramDoc = SimpleParamDocView.newBuilder();

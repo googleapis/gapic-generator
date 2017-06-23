@@ -14,13 +14,16 @@
  */
 package com.google.api.codegen.discogapic;
 
+import com.google.api.codegen.config.DiscoGapicInterfaceConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Schema;
+import com.google.api.codegen.transformer.DiscoGapicInterfaceContext;
 import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.SchemaTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.TypeTable;
+import com.google.api.tools.framework.model.Interface;
 import com.google.auto.value.AutoValue;
 import java.util.Comparator;
 
@@ -33,8 +36,11 @@ import java.util.Comparator;
 @AutoValue
 public abstract class SchemaInterfaceContext implements InterfaceContext {
   public static SchemaInterfaceContext create(
-      Schema schema, SchemaTypeTable typeTable, DiscoGapicInterfaceContext docContext) {
-    return new AutoValue_SchemaInterfaceContext(schema, typeTable, docContext);
+      Interface interface0,
+      Schema schema,
+      SchemaTypeTable typeTable,
+      DiscoGapicInterfaceContext docContext) {
+    return new AutoValue_SchemaInterfaceContext(interface0, null, schema, typeTable, docContext);
   }
 
   public abstract Schema getSchema();
@@ -69,7 +75,7 @@ public abstract class SchemaInterfaceContext implements InterfaceContext {
   }
 
   public SchemaInterfaceContext withNewTypeTable() {
-    return create(getSchema(), getSchemaTypeTable().cloneEmpty(), getDocContext());
+    return create(getInterface(), getSchema(), getSchemaTypeTable().cloneEmpty(), getDocContext());
   }
 
   public DiscoGapicInterfaceConfig getInterfaceConfig() {

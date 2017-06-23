@@ -14,8 +14,8 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.LongRunningConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.viewmodel.ApiCallSettingsView;
@@ -44,6 +44,21 @@ public class ApiCallableTransformer {
   }
 
   public List<ApiCallableView> generateStaticLangApiCallables(GapicInterfaceContext context) {
+    List<ApiCallableView> callableMembers = new ArrayList<>();
+    boolean excludeMixins = !context.getFeatureConfig().enableMixins();
+
+    for (Method method : context.getSupportedMethods()) {
+      if (excludeMixins && context.getMethodConfig(method).getRerouteToGrpcInterface() != null) {
+        continue;
+      }
+      callableMembers.addAll(
+          generateStaticLangApiCallables(context.asRequestMethodContext(method)));
+    }
+
+    return callableMembers;
+  }
+
+  public List<ApiCallableView> generateStaticLangApiCallables(DiscoGapicInterfaceContext context) {
     List<ApiCallableView> callableMembers = new ArrayList<>();
     boolean excludeMixins = !context.getFeatureConfig().enableMixins();
 
@@ -87,7 +102,7 @@ public class ApiCallableTransformer {
   private ApiCallableView generateMainApiCallable(GapicMethodContext context) {
     ModelTypeTable typeTable = context.getTypeTable();
     Method method = context.getMethod();
-    GapicMethodConfig methodConfig = context.getMethodConfig();
+    MethodConfig methodConfig = context.getMethodConfig();
     SurfaceNamer namer = context.getNamer();
 
     ApiCallableView.Builder apiCallableBuilder = ApiCallableView.newBuilder();
@@ -122,7 +137,7 @@ public class ApiCallableTransformer {
   private ApiCallableView generatePagedApiCallable(GapicMethodContext context) {
     ModelTypeTable typeTable = context.getTypeTable();
     Method method = context.getMethod();
-    GapicMethodConfig methodConfig = context.getMethodConfig();
+    MethodConfig methodConfig = context.getMethodConfig();
     SurfaceNamer namer = context.getNamer();
 
     PageStreamingConfig pageStreaming = methodConfig.getPageStreaming();
@@ -153,7 +168,7 @@ public class ApiCallableTransformer {
   private ApiCallableView generateOperationApiCallable(GapicMethodContext context) {
     ModelTypeTable typeTable = context.getTypeTable();
     Method method = context.getMethod();
-    GapicMethodConfig methodConfig = context.getMethodConfig();
+    MethodConfig methodConfig = context.getMethodConfig();
     SurfaceNamer namer = context.getNamer();
 
     LongRunningConfig longRunning = methodConfig.getLongRunningConfig();
@@ -184,7 +199,7 @@ public class ApiCallableTransformer {
     SurfaceNamer namer = context.getNamer();
     ModelTypeTable typeTable = context.getTypeTable();
     Method method = context.getMethod();
-    GapicMethodConfig methodConfig = context.getMethodConfig();
+    MethodConfig methodConfig = context.getMethodConfig();
     Map<String, RetryCodesDefinitionView> retryCodesByKey = new HashMap<>();
     for (RetryCodesDefinitionView retryCodes :
         retryDefinitionsTransformer.generateRetryCodesDefinitions(

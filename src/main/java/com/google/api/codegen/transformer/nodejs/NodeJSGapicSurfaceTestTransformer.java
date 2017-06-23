@@ -16,9 +16,9 @@ package com.google.api.codegen.transformer.nodejs;
 
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.nodejs.NodeJSUtils;
@@ -174,7 +174,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
     return testCaseViews;
   }
 
-  private ClientMethodType getMethodType(GapicMethodConfig config) {
+  private ClientMethodType getMethodType(MethodConfig config) {
     ClientMethodType clientMethodType = ClientMethodType.RequestObjectMethod;
     if (config.isPageStreaming()) {
       clientMethodType = ClientMethodType.PagedRequestObjectMethod;

@@ -27,8 +27,7 @@ import java.util.Map.Entry;
 /** RetryDefinitionsTransformer generates retry definitions from a service model. */
 public class RetryDefinitionsTransformer {
 
-  public List<RetryCodesDefinitionView> generateRetryCodesDefinitions(
-      GapicInterfaceContext context) {
+  public List<RetryCodesDefinitionView> generateRetryCodesDefinitions(InterfaceContext context) {
     List<RetryCodesDefinitionView> definitions = new ArrayList<>();
 
     final SurfaceNamer namer = context.getNamer();
@@ -51,8 +50,7 @@ public class RetryDefinitionsTransformer {
     return definitions;
   }
 
-  public List<RetryParamsDefinitionView> generateRetryParamsDefinitions(
-      GapicInterfaceContext context) {
+  public List<RetryParamsDefinitionView> generateRetryParamsDefinitions(InterfaceContext context) {
     List<RetryParamsDefinitionView> definitions = new ArrayList<>();
 
     SurfaceNamer namer = context.getNamer();

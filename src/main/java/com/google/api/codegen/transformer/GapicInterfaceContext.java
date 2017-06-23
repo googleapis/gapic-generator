@@ -16,9 +16,10 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.FlatteningConfig;
-import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.util.TypeTable;
 import com.google.api.tools.framework.model.Interface;
@@ -60,8 +61,8 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
       if (!apiInterface.isReachable()) {
         continue;
       }
-      GapicInterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
-      for (GapicMethodConfig methodConfig : interfaceConfig.getMethodConfigs()) {
+      InterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
+      for (MethodConfig methodConfig : interfaceConfig.getMethodConfigs()) {
         String reroute = methodConfig.getRerouteToGrpcInterface();
         if (!Strings.isNullOrEmpty(reroute)) {
           Interface targetInterface = model.getSymbolTable().lookupInterface(reroute);
@@ -107,25 +108,24 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
         getFeatureConfig());
   }
 
-  public GapicInterfaceConfig getInterfaceConfig() {
+  public InterfaceConfig getInterfaceConfig() {
     return getProductConfig().getInterfaceConfig(getInterface());
   }
 
   /**
-   * Returns the GapicMethodConfig object of the given gRPC method.
+   * Returns the MethodConfig object of the given gRPC method.
    *
-   * <p>If the method is a gRPC re-route method, returns the GapicMethodConfig of the original
-   * method.
+   * <p>If the method is a gRPC re-route method, returns the MethodConfig of the original method.
    */
-  public GapicMethodConfig getMethodConfig(Method method) {
+  public MethodConfig getMethodConfig(Method method) {
     Interface originalInterface = getInterface();
     if (getGrpcRerouteMap().containsKey(originalInterface)) {
       originalInterface = getGrpcRerouteMap().get(originalInterface);
     }
-    GapicInterfaceConfig originalGapicInterfaceConfig =
+    InterfaceConfig originalInterfaceConfig =
         getProductConfig().getInterfaceConfig(originalInterface);
-    if (originalGapicInterfaceConfig != null) {
-      return originalGapicInterfaceConfig.getMethodConfig(method);
+    if (originalInterfaceConfig != null) {
+      return originalInterfaceConfig.getMethodConfig(method);
     } else {
       throw new IllegalArgumentException(
           "Interface config does not exist for method: " + method.getSimpleName());
@@ -175,7 +175,7 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
   /** Returns a list of supported methods, configured by FeatureConfig. */
   public List<Method> getSupportedMethods() {
     List<Method> methods = new ArrayList<>(getInterfaceConfig().getMethodConfigs().size());
-    for (GapicMethodConfig methodConfig : getInterfaceConfig().getMethodConfigs()) {
+    for (MethodConfig methodConfig : getInterfaceConfig().getMethodConfigs()) {
       Method method = methodConfig.getMethod();
       if (isSupported(method)) {
         methods.add(method);
@@ -190,7 +190,7 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
    */
   public List<Method> getPublicMethods() {
     List<Method> methods = new ArrayList<>(getInterfaceConfig().getMethodConfigs().size());
-    for (GapicMethodConfig methodConfig : getInterfaceConfig().getMethodConfigs()) {
+    for (MethodConfig methodConfig : getInterfaceConfig().getMethodConfigs()) {
       Method method = methodConfig.getMethod();
       VisibilityConfig visibility = getInterfaceConfig().getMethodConfig(method).getVisibility();
       if (isSupported(method) && visibility == VisibilityConfig.PUBLIC) {

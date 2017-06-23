@@ -14,8 +14,8 @@
  */
 package com.google.api.codegen.py;
 
-import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.py.PythonImport.ImportType;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
@@ -88,7 +88,7 @@ public class PythonImportHandler {
     }
 
     // Add method request-type imports.
-    for (GapicMethodConfig methodConfig :
+    for (MethodConfig methodConfig :
         productConfig.getInterfaceConfig(apiInterface).getMethodConfigs()) {
       // Add the import for gax.utils.oneof if and only if there is at
       // least one "one of" argument set.

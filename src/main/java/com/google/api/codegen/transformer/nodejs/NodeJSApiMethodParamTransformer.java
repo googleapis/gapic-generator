@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.transformer.nodejs;
 
-import com.google.api.codegen.config.GapicMethodConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.transformer.ApiMethodParamTransformer;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -76,7 +76,7 @@ public class NodeJSApiMethodParamTransformer implements ApiMethodParamTransforme
   }
 
   private ParamDocView generateRequestObjectParamDoc(GapicMethodContext context) {
-    GapicMethodConfig methodConfig = context.getMethodConfig();
+    MethodConfig methodConfig = context.getMethodConfig();
     SimpleParamDocView.Builder paramDoc = SimpleParamDocView.newBuilder();
     paramDoc.paramName(context.getNamer().localVarName(Name.from("request")));
     paramDoc.lines(ImmutableList.of("The request object that will be sent."));
@@ -104,7 +104,7 @@ public class NodeJSApiMethodParamTransformer implements ApiMethodParamTransforme
     return paramDoc.build();
   }
 
-  private List<Field> removePageTokenFromFields(GapicMethodConfig methodConfig) {
+  private List<Field> removePageTokenFromFields(MethodConfig methodConfig) {
     ImmutableList.Builder<Field> newFields = ImmutableList.builder();
     for (Field field : methodConfig.getOptionalFields()) {
       if (methodConfig.isPageStreaming()
@@ -119,7 +119,7 @@ public class NodeJSApiMethodParamTransformer implements ApiMethodParamTransforme
   private List<ParamDocView> generateMethodParamDocs(
       GapicMethodContext context, Iterable<Field> fields, boolean isOptional) {
     SurfaceNamer namer = context.getNamer();
-    GapicMethodConfig methodConfig = context.getMethodConfig();
+    MethodConfig methodConfig = context.getMethodConfig();
     ImmutableList.Builder<ParamDocView> docs = ImmutableList.builder();
     for (Field field : fields) {
       if (isRequestTokenParam(methodConfig, field)) {
@@ -150,12 +150,12 @@ public class NodeJSApiMethodParamTransformer implements ApiMethodParamTransforme
     return docs.build();
   }
 
-  private boolean isRequestTokenParam(GapicMethodConfig methodConfig, Field field) {
+  private boolean isRequestTokenParam(MethodConfig methodConfig, Field field) {
     return methodConfig.isPageStreaming()
         && field.equals(methodConfig.getPageStreaming().getRequestTokenField());
   }
 
-  private boolean isPageSizeParam(GapicMethodConfig methodConfig, Field field) {
+  private boolean isPageSizeParam(MethodConfig methodConfig, Field field) {
     return methodConfig.isPageStreaming()
         && methodConfig.getPageStreaming().hasPageSizeField()
         && field.equals(methodConfig.getPageStreaming().getPageSizeField());

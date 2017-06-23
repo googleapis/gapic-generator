@@ -14,6 +14,13 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.gax.core.RetrySettings;
+import com.google.api.tools.framework.model.Method;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import io.grpc.Status.Code;
+import java.util.List;
 import javax.annotation.Nullable;
 
 /**
@@ -23,6 +30,38 @@ import javax.annotation.Nullable;
 public interface InterfaceConfig {
   String getName();
 
+  String getSimpleName();
+
   @Nullable
   SmokeTestConfig getSmokeTestConfig();
+
+  List<? extends MethodConfig> getMethodConfigs();
+
+  ImmutableMap<String, ImmutableSet<Code>> getRetryCodesDefinition();
+
+  ImmutableMap<String, RetrySettings> getRetrySettingsDefinition();
+
+  ImmutableList<String> getRequiredConstructorParams();
+
+  String getManualDoc();
+
+  MethodConfig getMethodConfig(Method method);
+
+  boolean hasPageStreamingMethods();
+
+  boolean hasLongRunningOperations();
+
+  boolean hasDefaultServiceAddress();
+
+  boolean hasDefaultServiceScopes();
+
+  boolean hasBatchingMethods();
+
+  boolean hasGrpcStreamingMethods();
+
+  boolean hasDefaultInstance();
+
+  ImmutableList<SingleResourceNameConfig> getSingleResourceNameConfigs();
+
+  boolean hasInterfaceNameOverride();
 }

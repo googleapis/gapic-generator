@@ -17,21 +17,24 @@ package com.google.api.codegen.config;
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.CollectionOneofProto;
 import com.google.api.codegen.ConfigProto;
+import com.google.api.codegen.DocumentSymbolTableBuilder;
 import com.google.api.codegen.FixedResourceNameValueProto;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.LanguageSettingsProto;
 import com.google.api.codegen.LicenseHeaderProto;
 import com.google.api.codegen.ResourceNameTreatment;
-import com.google.api.codegen.discogapic.DiscoGapicInterfaceConfig;
 import com.google.api.codegen.discovery.Document;
+import com.google.api.tools.framework.model.BoundedDiagCollector;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.model.SymbolTable;
+import com.google.api.tools.framework.model.TypeRef;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Charsets;
@@ -39,11 +42,16 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Maps;
 import com.google.common.io.CharStreams;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import javax.annotation.Nullable;
 
 /**
@@ -154,10 +162,12 @@ public abstract class GapicProductConfig implements ProductConfig {
 
   @Nullable
   public static GapicProductConfig create(Document document, ConfigProto configProto) {
-    ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
-        ImmutableMap.<String, InterfaceConfig>builder()
-            .put(document.name(), DiscoGapicInterfaceConfig.createInterfaceConfig(document))
-            .build();
+    //    ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
+    //        ImmutableMap.<String, InterfaceConfig>builder()
+    //            .put(document.name(), DiscoGapicInterfaceConfig.createInterfaceConfig(document))
+    //            .build();
+    // Get the proto file containing the first interface listed in the config proto, and use it as
+    // the assigned file for generated resource names, and to get the default message namespace
     // TODO (andrealin): load messageConfigs
     ResourceNameMessageConfigs messageConfigs = null;
     // TODO (andrealin): load resourceNameConfigs
@@ -169,8 +179,27 @@ public abstract class GapicProductConfig implements ProductConfig {
       settings = LanguageSettingsProto.getDefaultInstance();
     }
 
-    ImmutableList<String> copyrightLines = null;
-    ImmutableList<String> licenseLines = null;
+    DocumentSymbolTableBuilder symbolTableBuilder = new DocumentSymbolTableBuilder(document);
+    SymbolTable symbolTable = symbolTableBuilder.create(configProto);
+
+    Map<String, Interface> interfaces = Maps.newLinkedHashMap();
+    Map<String, TypeRef> types = Maps.newLinkedHashMap();
+    Map<String, List<Method>> methods = Maps.newLinkedHashMap();
+    Set<String> fieldNames = new HashSet<>();
+    Set<String> packageNames = new HashSet<>();
+
+    ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
+        createDiscoGapicInterfaceConfigMap(
+            document,
+            new BoundedDiagCollector(),
+            configProto,
+            settings,
+            null,
+            resourceNameConfigs,
+            symbolTable);
+
+    ImmutableList<String> copyrightLines;
+    ImmutableList<String> licenseLines;
     try {
       LicenseHeaderProto licenseHeader =
           configProto
@@ -229,8 +258,7 @@ public abstract class GapicProductConfig implements ProductConfig {
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       SymbolTable symbolTable) {
-    ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap =
-        ImmutableMap.<String, InterfaceConfig>builder();
+    ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap = ImmutableMap.builder();
     for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
       Interface apiInterface = symbolTable.lookupInterface(interfaceConfigProto.getName());
       if (apiInterface == null || !apiInterface.isReachable()) {
@@ -253,6 +281,42 @@ public abstract class GapicProductConfig implements ProductConfig {
               interfaceNameOverride,
               messageConfigs,
               resourceNameConfigs);
+      if (interfaceConfig == null) {
+        continue;
+      }
+      interfaceConfigMap.put(interfaceConfigProto.getName(), interfaceConfig);
+    }
+
+    if (diagCollector.getErrorCount() > 0) {
+      return null;
+    } else {
+      return interfaceConfigMap.build();
+    }
+  }
+
+  private static ImmutableMap<String, InterfaceConfig> createDiscoGapicInterfaceConfigMap(
+      Document document,
+      DiagCollector diagCollector,
+      ConfigProto configProto,
+      LanguageSettingsProto languageSettings,
+      ResourceNameMessageConfigs messageConfigs,
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
+      SymbolTable symbolTable) {
+    ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap = ImmutableMap.builder();
+    for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
+      String interfaceNameOverride =
+          languageSettings.getInterfaceNames().get(interfaceConfigProto.getName());
+
+      DiscoGapicInterfaceConfig interfaceConfig =
+          DiscoGapicInterfaceConfig.createInterfaceConfig(
+              document,
+              diagCollector,
+              configProto.getLanguage(),
+              interfaceConfigProto,
+              interfaceNameOverride,
+              messageConfigs,
+              resourceNameConfigs,
+              symbolTable);
       if (interfaceConfig == null) {
         continue;
       }
