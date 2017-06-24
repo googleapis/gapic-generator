@@ -76,14 +76,17 @@
 @end
 
 @private messages(isGcloud, version, stub)
-  @if isGcloud
     extend({@version}Protos, gaxGrpc.load([{
-      root: require('google-proto-files')('..'),
+      @if isGcloud
+        root: require('google-proto-files')('..'),
+      @else
+        # This does not follow the import in main.snip since version index is not generated
+        # for unversioned Apis. This will be changed when top level indexes are supported
+        # for unversioned Apis.
+        root: require('path').join(__dirname, '..', '..', 'proto'),
+      @end
       file: '{@stub.protoFileName}'
     }]).{@stub.namespace});
-  @else
-    extend({@version}Protos, require('{@stub.grpcClientImportName}').client.{@stub.namespace});
-  @end
 @end
 
 @private exports(index)
@@ -111,7 +114,6 @@
 @private singleServiceExport(service, version)
   module.exports = {@service.localName};
   module.exports.types = {@version}Protos;
-  module.exports.{@version} = {};
   module.exports.{@version} = {@service.localName};
   module.exports.{@version}.types = {@version}Protos;
 @end

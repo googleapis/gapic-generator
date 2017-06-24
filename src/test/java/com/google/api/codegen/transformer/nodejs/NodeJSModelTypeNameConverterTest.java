@@ -38,6 +38,6 @@ public class NodeJSModelTypeNameConverterTest {
             converter
                 .getEnumValue(type, value)
                 .getValueAndSaveTypeNicknameIn(new JSTypeTable(packageName)))
-        .isEqualTo("libraryV1.Book.Rating.GOOD");
+        .isEqualTo("library.v1.types.Book.Rating.GOOD");
   }
 }
