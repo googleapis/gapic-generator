@@ -136,7 +136,7 @@ public class DocumentSymbolTableBuilder extends Visitor {
 
   @VisitsBefore
   void visit(EnumType enumType) {
-    // Add the enum modelType to the set of known types.
+    // Add the enum type to the set of known types.
     addType(enumType.getLocation(), enumType.getFullName(), TypeRef.of(enumType));
 
     // Build the field-by-name map for this enum type.

@@ -204,7 +204,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     }
   }
 
-  private static ImmutableMap<String, ImmutableSet<Status.Code>> createRetryCodesDefinition(
+  static ImmutableMap<String, ImmutableSet<Status.Code>> createRetryCodesDefinition(
       DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto) {
     ImmutableMap.Builder<String, ImmutableSet<Status.Code>> builder =
         ImmutableMap.<String, ImmutableSet<Status.Code>>builder();
@@ -230,7 +230,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     return builder.build();
   }
 
-  private static ImmutableMap<String, RetrySettings> createRetrySettingsDefinition(
+  static ImmutableMap<String, RetrySettings> createRetrySettingsDefinition(
       DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto) {
     ImmutableMap.Builder<String, RetrySettings> builder =
         ImmutableMap.<String, RetrySettings>builder();
@@ -306,7 +306,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     }
   }
 
-  private static <T> List<T> createMethodConfigs(
+  static <T> List<T> createMethodConfigs(
       ImmutableMap<String, T> methodConfigMap, InterfaceConfigProto interfaceConfigProto) {
     List<T> methodConfigs = new ArrayList<>();
     for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {
