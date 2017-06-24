@@ -303,22 +303,18 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getParamTypeName(ImportTypeTable typeTable, FieldType type) {
+  public String getParamTypeName(ModelTypeTable typeTable, TypeRef type) {
     String cardinalityComment = "";
     if (type.getCardinality() == TypeRef.Cardinality.REPEATED) {
       if (type.isMap()) {
-        String keyType = getParamTypeName(typeTable, type.getMapKeyField());
-        String valueType = getParamTypeName(typeTable, type.getMapValueField());
+        String keyType = getParamTypeName(typeTable, type.getMapKeyField().getType());
+        String valueType = getParamTypeName(typeTable, type.getMapValueField().getType());
         return String.format("Object.<%s, %s>", keyType, valueType);
       } else {
         cardinalityComment = "[]";
       }
     }
-
-    return String.format(
-        "%s%s",
-        getParamTypeNoCardinality(typeTable, type.getProtoBasedField().getType()),
-        cardinalityComment);
+    return String.format("%s%s", getParamTypeNoCardinality(typeTable, type), cardinalityComment);
   }
 
   private boolean isProtobufEmpty(MessageType message) {
