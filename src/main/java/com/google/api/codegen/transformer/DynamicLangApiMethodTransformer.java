@@ -27,7 +27,6 @@ import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.RequestObjectParamView;
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Method;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
@@ -160,8 +159,7 @@ public class DynamicLangApiMethodTransformer {
     if (methodConfig == null || !methodConfig.isPageStreaming()) {
       return fieldConfigs;
     }
-    final FieldType requestTokenField =
-        methodConfig.getPageStreaming().getRequestTokenField();
+    final FieldType requestTokenField = methodConfig.getPageStreaming().getRequestTokenField();
     return Iterables.filter(
         fieldConfigs,
         new Predicate<FieldConfig>() {
