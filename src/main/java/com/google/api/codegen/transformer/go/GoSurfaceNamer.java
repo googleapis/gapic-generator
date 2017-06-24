@@ -21,6 +21,7 @@ import com.google.api.codegen.config.OneofConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
+import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -107,11 +108,9 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getAndSavePagedResponseTypeName(
-      Method method, ModelTypeTable typeTable, FieldConfig resourcesFieldConfig) {
+      Method method, ImportTypeTable typeTable, FieldConfig resourcesFieldConfig) {
     String typeName =
-        converter
-            .getTypeNameForElementType(resourcesFieldConfig.getField().getType())
-            .getNickname();
+        converter.getTypeNameForElementType(resourcesFieldConfig.getField()).getNickname();
     int dotIndex = typeName.indexOf('.');
     if (dotIndex >= 0) {
       typeName = typeName.substring(dotIndex + 1);
@@ -121,7 +120,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getAndSaveOperationResponseTypeName(
-      Method method, ModelTypeTable typeTable, MethodConfig methodConfig) {
+      Method method, ImportTypeTable typeTable, MethodConfig methodConfig) {
     return publicClassName(Name.upperCamel(method.getSimpleName()).join("operation"));
   }
 
@@ -190,8 +189,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
   @Override
   public String getApiWrapperClassName(InterfaceConfig interfaceConfig) {
     // TODO support non-Gapic inputs
-    InterfaceConfig InterfaceConfig = (InterfaceConfig) interfaceConfig;
-    return publicClassName(clientNamePrefix(InterfaceConfig.getSimpleName()).join("client"));
+    return publicClassName(clientNamePrefix(interfaceConfig.getSimpleName()).join("client"));
   }
 
   @Override
@@ -306,7 +304,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getGrpcStreamingApiReturnTypeName(Method method, ModelTypeTable typeTable) {
+  public String getGrpcStreamingApiReturnTypeName(Method method, ImportTypeTable typeTable) {
     // Unsafe string manipulation: The name looks like "LibraryService_StreamShelvesClient",
     // neither camel or underscore.
     return converter.getTypeName(method.getParent()).getNickname()

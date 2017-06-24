@@ -72,9 +72,8 @@ public class PageStreamingTransformer {
 
     PageStreamingDescriptorClassView.Builder desc = PageStreamingDescriptorClassView.newBuilder();
 
-    Field resourceField = pageStreaming.getResourcesField();
+    Field resourceField = pageStreaming.getResourcesField().getProtoBasedField();
     FieldConfig resourceFieldConfig = pageStreaming.getResourcesFieldConfig();
-    TypeRef resourceType = resourceField.getType();
 
     desc.name(namer.getPageStreamingDescriptorConstName(method));
     desc.typeName(namer.getAndSavePagedResponseTypeName(method, typeTable, resourceFieldConfig));
@@ -82,7 +81,7 @@ public class PageStreamingTransformer {
     desc.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));
     desc.resourceTypeName(typeTable.getAndSaveNicknameForElementType(resourceField.getType()));
 
-    TypeRef tokenType = pageStreaming.getResponseTokenField().getType();
+    TypeRef tokenType = pageStreaming.getResponseTokenField().getProtoBasedField().getType();
     desc.tokenTypeName(typeTable.getAndSaveNicknameFor(tokenType));
     desc.defaultTokenValue(context.getTypeTable().getSnippetZeroValueAndSaveNicknameFor(tokenType));
 
@@ -118,7 +117,7 @@ public class PageStreamingTransformer {
     ModelTypeTable typeTable = context.getTypeTable();
     Method method = context.getMethod();
     PageStreamingConfig pageStreaming = context.getMethodConfig().getPageStreaming();
-    Field resourceField = pageStreaming.getResourcesField();
+    Field resourceField = pageStreaming.getResourcesField().getProtoBasedField();
     FieldConfig resourceFieldConfig = pageStreaming.getResourcesFieldConfig();
 
     PagedListResponseFactoryClassView.Builder factory =

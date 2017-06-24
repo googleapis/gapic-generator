@@ -17,12 +17,13 @@ package com.google.api.codegen.transformer.java;
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.metacode.InitFieldConfig;
+import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
-import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
@@ -65,8 +66,8 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public boolean shouldImportRequestObjectParamElementType(Field field) {
-    if (Field.IS_MAP.apply(field)) {
+  public boolean shouldImportRequestObjectParamElementType(FieldType field) {
+    if (Field.IS_MAP.apply(field.getProtoBasedField())) {
       return false;
     } else {
       return true;
@@ -93,7 +94,7 @@ public class JavaSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getAndSaveOperationResponseTypeName(
-      Method method, ModelTypeTable typeTable, MethodConfig methodConfig) {
+      Method method, ImportTypeTable typeTable, MethodConfig methodConfig) {
     String responseTypeName =
         typeTable.getFullNameFor(methodConfig.getLongRunningConfig().getReturnType());
     return typeTable.getAndSaveNicknameForContainer(
@@ -116,7 +117,7 @@ public class JavaSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getResourceTypeParseMethodName(
-      ModelTypeTable typeTable, FieldConfig resourceFieldConfig) {
+      ImportTypeTable typeTable, FieldConfig resourceFieldConfig) {
     String resourceTypeName = getAndSaveElementResourceTypeName(typeTable, resourceFieldConfig);
     String concreteResourceTypeName;
     if (resourceFieldConfig.getResourceNameType() == ResourceNameType.ANY) {
@@ -129,7 +130,7 @@ public class JavaSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getAndSavePagedResponseTypeName(
-      Method method, ModelTypeTable typeTable, FieldConfig resourceFieldConfig) {
+      Method method, ImportTypeTable typeTable, FieldConfig resourceFieldConfig) {
     // TODO(michaelbausor) make sure this uses the typeTable correctly
 
     String fullPackageWrapperName =
@@ -141,18 +142,19 @@ public class JavaSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getPagedResponseTypeInnerName(
-      Method method, ModelTypeTable typeTable, Field resourceField) {
+      Method method, ImportTypeTable typeTable, FieldType resourceField) {
     return publicClassName(Name.upperCamel(method.getSimpleName(), "PagedResponse"));
   }
 
   @Override
-  public String getPageTypeInnerName(Method method, ModelTypeTable typeTable, Field resourceField) {
+  public String getPageTypeInnerName(
+      Method method, ImportTypeTable typeTable, FieldType resourceField) {
     return publicClassName(Name.upperCamel(method.getSimpleName(), "Page"));
   }
 
   @Override
   public String getFixedSizeCollectionTypeInnerName(
-      Method method, ModelTypeTable typeTable, Field resourceField) {
+      Method method, ImportTypeTable typeTable, FieldType resourceField) {
     return publicClassName(Name.upperCamel(method.getSimpleName(), "FixedSizeCollection"));
   }
 

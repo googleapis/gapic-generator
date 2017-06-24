@@ -26,7 +26,6 @@ import com.google.api.codegen.VisibilityProto;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.SimpleLocation;
@@ -234,14 +233,6 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
   /** Return the list of "one of" instances associated with the fields. */
   public Iterable<Oneof> getOneofs() {
     ImmutableSet.Builder<Oneof> answer = ImmutableSet.builder();
-
-    for (Field field : getOptionalFields()) {
-      if (field.getOneof() == null) {
-        continue;
-      }
-      answer.add(field.getOneof());
-    }
-
     return answer.build();
   }
 }

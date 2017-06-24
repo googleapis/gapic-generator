@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer.nodejs;
 
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
@@ -23,6 +24,7 @@ import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.FeatureConfig;
+import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -36,7 +38,6 @@ import com.google.api.codegen.util.js.JSNameFormatter;
 import com.google.api.codegen.util.js.JSTypeTable;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.EnumType;
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
@@ -135,8 +136,8 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public boolean shouldImportRequestObjectParamType(Field field) {
-    return field.getType().isMap();
+  public boolean shouldImportRequestObjectParamType(FieldType field) {
+    return field.isMap();
   }
 
   @Override
@@ -165,7 +166,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getFieldGetFunctionName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
-    Field field = fieldConfig.getField();
+    FieldType field = fieldConfig.getField();
     return Name.from(field.getSimpleName()).toLowerCamel();
   }
 
@@ -221,7 +222,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getTypeNameDoc(ModelTypeTable typeTable, TypeRef typeRef) {
+  public String getTypeNameDoc(ImportTypeTable typeTable, TypeRef typeRef) {
     if (typeRef.isMessage()) {
       return "an object representing "
           + commentReformatter.getLinkedElementName(typeRef.getMessageType());
@@ -232,10 +233,11 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     return "a " + getParamTypeNoCardinality(typeTable, typeRef).toLowerCase();
   }
 
-  private List<String> returnCallbackDocLines(ModelTypeTable typeTable, MethodConfig methodConfig) {
+  private List<String> returnCallbackDocLines(
+      ImportTypeTable typeTable, MethodConfig methodConfig) {
     String returnTypeDoc = returnTypeDoc(typeTable, methodConfig);
     Method method = methodConfig.getMethod();
-    String classInfo = getParamTypeName(typeTable, method.getOutputType());
+    String classInfo = getParamTypeName((ModelTypeTable) typeTable, method.getOutputType());
     String callbackType;
     if (isProtobufEmpty(method.getOutputMessage())) {
       callbackType = "function(?Error)";
@@ -264,7 +266,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     return callbackLines.build();
   }
 
-  private List<String> returnObjectDocLines(ModelTypeTable typeTable, MethodConfig methodConfig) {
+  private List<String> returnObjectDocLines(ImportTypeTable typeTable, MethodConfig methodConfig) {
     String returnTypeDoc = returnTypeDoc(typeTable, methodConfig);
     Method method = methodConfig.getMethod();
     ImmutableList.Builder<String> returnMessageLines = ImmutableList.builder();
@@ -301,37 +303,46 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getParamTypeName(ModelTypeTable typeTable, TypeRef type) {
+  public String getParamTypeName(ImportTypeTable typeTable, FieldType type) {
     String cardinalityComment = "";
     if (type.getCardinality() == TypeRef.Cardinality.REPEATED) {
       if (type.isMap()) {
-        String keyType = getParamTypeName(typeTable, type.getMapKeyField().getType());
-        String valueType = getParamTypeName(typeTable, type.getMapValueField().getType());
+        String keyType = getParamTypeName(typeTable, type.getMapKeyField());
+        String valueType = getParamTypeName(typeTable, type.getMapValueField());
         return String.format("Object.<%s, %s>", keyType, valueType);
       } else {
         cardinalityComment = "[]";
       }
     }
 
-    return String.format("%s%s", getParamTypeNoCardinality(typeTable, type), cardinalityComment);
+    return String.format(
+        "%s%s",
+        getParamTypeNoCardinality(typeTable, type.getProtoBasedField().getType()),
+        cardinalityComment);
   }
 
   private boolean isProtobufEmpty(MessageType message) {
     return message.getFullName().equals("google.protobuf.Empty");
   }
 
-  private String returnTypeDoc(ModelTypeTable typeTable, MethodConfig methodConfig) {
+  private String returnTypeDoc(ImportTypeTable typeTable, MethodConfig methodConfig) {
     String returnTypeDoc = "";
     if (methodConfig.isPageStreaming()) {
       returnTypeDoc = "Array of ";
-      TypeRef resourcesType = methodConfig.getPageStreaming().getResourcesField().getType();
+      FieldType resourcesType = methodConfig.getPageStreaming().getResourcesField();
       if (resourcesType.isMessage()) {
-        returnTypeDoc += commentReformatter.getLinkedElementName(resourcesType.getMessageType());
+        returnTypeDoc +=
+            commentReformatter.getLinkedElementName(
+                resourcesType.getProtoBasedField().getType().getMessageType());
       } else if (resourcesType.isEnum()) {
-        returnTypeDoc += commentReformatter.getLinkedElementName(resourcesType.getEnumType());
+        returnTypeDoc +=
+            commentReformatter.getLinkedElementName(
+                resourcesType.getProtoBasedField().getType().getEnumType());
       } else {
         // Converting to lowercase because "String" is capitalized in NodeJSModelTypeNameConverter.
-        returnTypeDoc += getParamTypeNoCardinality(typeTable, resourcesType).toLowerCase();
+        returnTypeDoc +=
+            getParamTypeNoCardinality(typeTable, resourcesType.getProtoBasedField().getType())
+                .toLowerCase();
       }
     } else if (methodConfig.isLongRunningOperation()) {
       returnTypeDoc =
@@ -342,7 +353,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     return returnTypeDoc;
   }
 
-  private String getParamTypeNoCardinality(ModelTypeTable typeTable, TypeRef type) {
+  private String getParamTypeNoCardinality(ImportTypeTable typeTable, TypeRef type) {
     if (type.isMessage()) {
       return "Object";
     } else if (type.isEnum()) {
@@ -367,9 +378,10 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public List<String> getDocLines(Field field) {
+  public List<String> getDocLines(FieldType field) {
     ImmutableList.Builder<String> lines = ImmutableList.builder();
-    List<String> fieldDocLines = getDocLines(DocumentationUtil.getScopedDescription(field));
+    List<String> fieldDocLines =
+        getDocLines(DocumentationUtil.getScopedDescription(field.getProtoBasedField()));
     String extraFieldDescription = getExtraFieldDescription(field);
 
     lines.addAll(fieldDocLines);
@@ -383,21 +395,23 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     return lines.build();
   }
 
-  private String getExtraFieldDescription(Field field) {
-    boolean fieldIsMessage = field.getType().isMessage() && !field.getType().isMap();
-    boolean fieldIsEnum = field.getType().isEnum();
+  private String getExtraFieldDescription(FieldType field) {
+    boolean fieldIsMessage = field.isMessage() && !field.isMap();
+    boolean fieldIsEnum = field.isEnum();
     if (fieldIsMessage) {
       return "This object should have the same structure as "
-          + commentReformatter.getLinkedElementName(field.getType().getMessageType());
+          + commentReformatter.getLinkedElementName(
+              field.getProtoBasedField().getType().getMessageType());
     } else if (fieldIsEnum) {
       return "The number should be among the values of "
-          + commentReformatter.getLinkedElementName(field.getType().getEnumType());
+          + commentReformatter.getLinkedElementName(
+              field.getProtoBasedField().getType().getEnumType());
     }
     return "";
   }
 
   @Override
-  public String getMessageTypeName(ModelTypeTable typeTable, MessageType message) {
+  public String getMessageTypeName(ImportTypeTable typeTable, MessageType message) {
     // JSTypeTable produces nicknames which are qualified with the a packagePrefix which needs
     // to be stripped from the message type name.
     List<String> messageNames =
@@ -406,7 +420,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getEnumTypeName(ModelTypeTable typeTable, EnumType enumType) {
+  public String getEnumTypeName(ImportTypeTable typeTable, EnumType enumType) {
     // JSTypeTable produces nicknames which are qualified with the a packagePrefix which needs
     // to be stripped from the enum type name.
     List<String> enumNames =

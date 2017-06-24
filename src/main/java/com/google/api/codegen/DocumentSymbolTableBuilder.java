@@ -39,7 +39,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Visitor which creates the symbol table for a Document model. Reports errors for duplicate declarations.
+ * Visitor which creates the symbol table for a Document model. Reports errors for duplicate
+ * declarations.
  */
 public class DocumentSymbolTableBuilder extends Visitor {
 
@@ -76,8 +77,7 @@ public class DocumentSymbolTableBuilder extends Visitor {
     }
     if (method.httpMethod().toUpperCase().equals("GET")) {
       methodDescriptorBuilder.setOptions(
-          MethodOptions.newBuilder()
-              .setIdempotencyLevel(IDEMPOTENT).build());
+          MethodOptions.newBuilder().setIdempotencyLevel(IDEMPOTENT).build());
     }
     //    optional MethodOptions options = 4;
     //
@@ -136,7 +136,7 @@ public class DocumentSymbolTableBuilder extends Visitor {
 
   @VisitsBefore
   void visit(EnumType enumType) {
-    // Add the enum type to the set of known types.
+    // Add the enum modelType to the set of known types.
     addType(enumType.getLocation(), enumType.getFullName(), TypeRef.of(enumType));
 
     // Build the field-by-name map for this enum type.

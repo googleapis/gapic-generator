@@ -37,5 +37,5 @@ public interface InterfaceContext {
   InterfaceConfig getInterfaceConfig();
 
   @Nullable
-  ModelTypeTable getModelTypeTable();
+  ImportTypeTable getModelTypeTable();
 }

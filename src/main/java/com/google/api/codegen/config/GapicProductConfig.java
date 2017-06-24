@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.codegen.ApiModel;
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.CollectionOneofProto;
 import com.google.api.codegen.ConfigProto;
@@ -27,7 +28,6 @@ import com.google.api.codegen.discovery.Document;
 import com.google.api.tools.framework.model.BoundedDiagCollector;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
@@ -98,18 +98,19 @@ public abstract class GapicProductConfig implements ProductConfig {
   @Nullable
   public static GapicProductConfig create(Model model, ConfigProto configProto) {
 
+    ApiModel apiModel = new ApiModel(model);
     // Get the proto file containing the first interface listed in the config proto, and use it as
     // the assigned file for generated resource names, and to get the default message namespace
     ProtoFile file =
-        model.getSymbolTable().lookupInterface(configProto.getInterfaces(0).getName()).getFile();
+        apiModel.getSymbolTable().lookupInterface(configProto.getInterfaces(0).getName()).getFile();
     String defaultPackage = file.getProto().getPackage();
 
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
-            model, configProto, defaultPackage);
+            apiModel, configProto, defaultPackage);
 
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
-        createResourceNameConfigs(model.getDiagCollector(), configProto, file);
+        createResourceNameConfigs(apiModel.getDiagCollector(), configProto, file);
 
     LanguageSettingsProto settings =
         configProto.getLanguageSettings().get(configProto.getLanguage());
@@ -119,12 +120,12 @@ public abstract class GapicProductConfig implements ProductConfig {
 
     ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
         createInterfaceConfigMap(
-            model.getDiagCollector(),
+            apiModel.getDiagCollector(),
             configProto,
             settings,
             messageConfigs,
             resourceNameConfigs,
-            model.getSymbolTable());
+            apiModel.getSymbolTable());
 
     ImmutableList<String> copyrightLines = null;
     ImmutableList<String> licenseLines = null;
@@ -135,10 +136,10 @@ public abstract class GapicProductConfig implements ProductConfig {
               .toBuilder()
               .mergeFrom(settings.getLicenseHeaderOverride())
               .build();
-      copyrightLines = loadCopyrightLines(model.getDiagCollector(), licenseHeader);
-      licenseLines = loadLicenseLines(model.getDiagCollector(), licenseHeader);
+      copyrightLines = loadCopyrightLines(apiModel.getDiagCollector(), licenseHeader);
+      licenseLines = loadLicenseLines(apiModel.getDiagCollector(), licenseHeader);
     } catch (Exception e) {
-      model
+      apiModel
           .getDiagCollector()
           .addDiag(Diag.error(SimpleLocation.TOPLEVEL, "Exception: %s", e.getMessage()));
       e.printStackTrace(System.err);
@@ -485,7 +486,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     if (messageConfig == null) {
       return builder.build();
     }
-    for (Field field : messageConfig.getFieldsWithResourceNamesByMessage().values()) {
+    for (FieldType field : messageConfig.getFieldsWithResourceNamesByMessage().values()) {
       builder.put(
           field.getFullName(),
           FieldConfig.createMessageFieldConfig(

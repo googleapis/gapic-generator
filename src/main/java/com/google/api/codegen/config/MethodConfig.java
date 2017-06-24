@@ -112,11 +112,11 @@ public abstract class MethodConfig {
     return flatteningGroupsBuilder.build();
   }
 
-  static Iterable<Field> getRequiredFields(
+  static Iterable<FieldType> getRequiredFields(
       DiagCollector diagCollector, Method method, List<String> requiredFieldNames) {
-    ImmutableList.Builder<Field> fieldsBuilder = ImmutableList.builder();
+    ImmutableList.Builder<FieldType> fieldsBuilder = ImmutableList.builder();
     for (String fieldName : requiredFieldNames) {
-      Field requiredField = method.getInputMessage().lookupField(fieldName);
+      FieldType requiredField = new FieldType(method.getInputMessage().lookupField(fieldName));
       if (requiredField == null) {
         diagCollector.addDiag(
             Diag.error(
@@ -131,13 +131,13 @@ public abstract class MethodConfig {
     return fieldsBuilder.build();
   }
 
-  static Iterable<Field> getOptionalFields(Method method, List<String> requiredFieldNames) {
-    ImmutableList.Builder<Field> fieldsBuilder = ImmutableList.builder();
+  static Iterable<FieldType> getOptionalFields(Method method, List<String> requiredFieldNames) {
+    ImmutableList.Builder<FieldType> fieldsBuilder = ImmutableList.builder();
     for (Field field : method.getInputType().getMessageType().getFields()) {
       if (requiredFieldNames.contains(field.getSimpleName())) {
         continue;
       }
-      fieldsBuilder.add(field);
+      fieldsBuilder.add(new FieldType(field));
     }
     return fieldsBuilder.build();
   }
@@ -148,9 +148,9 @@ public abstract class MethodConfig {
       ResourceNameTreatment defaultResourceNameTreatment,
       ImmutableMap<String, String> fieldNamePatterns,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      Iterable<Field> fields) {
+      Iterable<FieldType> fields) {
     ImmutableList.Builder<FieldConfig> fieldConfigsBuilder = ImmutableList.builder();
-    for (Field field : fields) {
+    for (FieldType field : fields) {
       fieldConfigsBuilder.add(
           FieldConfig.createFieldConfig(
               diagCollector,
@@ -208,23 +208,23 @@ public abstract class MethodConfig {
     return getLongRunningConfig() != null;
   }
 
-  public Iterable<Field> getRequiredFields() {
-    return FieldConfig.toFieldIterable(getRequiredFieldConfigs());
+  public Iterable<FieldType> getRequiredFields() {
+    return FieldConfig.toFieldTypeIterable(getRequiredFieldConfigs());
   }
 
-  public Iterable<Field> getOptionalFields() {
-    return FieldConfig.toFieldIterable(getOptionalFieldConfigs());
+  public Iterable<FieldType> getOptionalFields() {
+    return FieldConfig.toFieldTypeIterable(getOptionalFieldConfigs());
   }
 
   /** Return the list of "one of" instances associated with the fields. */
   public Iterable<Oneof> getOneofs() {
     ImmutableSet.Builder<Oneof> answer = ImmutableSet.builder();
 
-    for (Field field : getOptionalFields()) {
-      if (field.getOneof() == null) {
+    for (FieldType field : getOptionalFields()) {
+      if (field.getProtoBasedField().getOneof() == null) {
         continue;
       }
-      answer.add(field.getOneof());
+      answer.add(field.getProtoBasedField().getOneof());
     }
 
     return answer.build();

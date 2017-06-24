@@ -18,6 +18,7 @@ import com.google.api.codegen.GeneratorVersionProvider;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.TargetLanguage;
+import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig;
 import com.google.api.codegen.config.LongRunningConfig;
@@ -204,7 +205,9 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
       String resourcesFieldGetFunction = null;
       if (grpcStreamingConfig.hasResourceField()) {
         resourcesFieldGetFunction =
-            context.getNamer().getFieldGetFunctionName(grpcStreamingConfig.getResourcesField());
+            context
+                .getNamer()
+                .getFieldGetFunctionName(new FieldType(grpcStreamingConfig.getResourcesField()));
       }
 
       result.add(

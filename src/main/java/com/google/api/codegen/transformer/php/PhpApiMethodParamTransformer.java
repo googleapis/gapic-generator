@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer.php;
 
+import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.transformer.ApiMethodParamTransformer;
 import com.google.api.codegen.transformer.GapicMethodContext;
@@ -22,7 +23,6 @@ import com.google.api.codegen.viewmodel.DynamicLangDefaultableParamView;
 import com.google.api.codegen.viewmodel.MapParamDocView;
 import com.google.api.codegen.viewmodel.ParamDocView;
 import com.google.api.codegen.viewmodel.SimpleParamDocView;
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
@@ -60,7 +60,7 @@ public class PhpApiMethodParamTransformer implements ApiMethodParamTransformer {
       return ImmutableList.<DynamicLangDefaultableParamView>of();
     }
     ImmutableList.Builder<DynamicLangDefaultableParamView> methodParams = ImmutableList.builder();
-    for (Field field : context.getMethodConfig().getRequiredFields()) {
+    for (FieldType field : context.getMethodConfig().getRequiredFields()) {
       DynamicLangDefaultableParamView param =
           DynamicLangDefaultableParamView.newBuilder()
               .name(context.getNamer().getVariableName(field))
@@ -72,16 +72,16 @@ public class PhpApiMethodParamTransformer implements ApiMethodParamTransformer {
   }
 
   private List<ParamDocView> getMethodParamDocs(
-      GapicMethodContext context, Iterable<Field> fields) {
+      GapicMethodContext context, Iterable<FieldType> fields) {
     if (context.getMethod().getRequestStreaming()) {
-      return ImmutableList.<ParamDocView>of();
+      return ImmutableList.of();
     }
     MethodConfig methodConfig = context.getMethodConfig();
     ImmutableList.Builder<ParamDocView> paramDocs = ImmutableList.builder();
-    for (Field field : fields) {
+    for (FieldType field : fields) {
       SimpleParamDocView.Builder paramDoc = SimpleParamDocView.newBuilder();
       paramDoc.paramName(context.getNamer().getVariableName(field));
-      paramDoc.typeName(context.getTypeTable().getAndSaveNicknameFor(field.getType()));
+      paramDoc.typeName(context.getTypeTable().getAndSaveNicknameFor(field));
 
       ImmutableList.Builder<String> docLines = ImmutableList.builder();
       if (methodConfig.isPageStreaming()
@@ -110,7 +110,7 @@ public class PhpApiMethodParamTransformer implements ApiMethodParamTransformer {
   }
 
   private ParamDocView getOptionalArrayParamDoc(
-      GapicMethodContext context, Iterable<Field> fields) {
+      GapicMethodContext context, Iterable<FieldType> fields) {
     MapParamDocView.Builder paramDoc = MapParamDocView.newBuilder();
 
     Name optionalArgsName = Name.from("optional", "args");

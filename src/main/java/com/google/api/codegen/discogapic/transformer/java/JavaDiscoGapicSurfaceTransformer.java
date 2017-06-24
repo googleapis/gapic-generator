@@ -90,6 +90,7 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
   @Override
   public List<ViewModel> transform(Document document, GapicProductConfig productConfig) {
     List<ViewModel> surfaceDocs = new ArrayList<>();
+
     SurfaceNamer namer = new JavaSurfaceNamer(productConfig.getPackageName());
 
     List<ServiceDocView> serviceDocs = new ArrayList<>();

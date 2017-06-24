@@ -95,7 +95,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
 
   @Override
   public String getName() {
-    return hasInterfaceNameOverride() ? getInterfaceNameOverride() : getSimpleName();
+    return hasInterfaceNameOverride() ? getInterfaceNameOverride() : getInterface().getSimpleName();
   }
 
   public boolean hasInterfaceNameOverride() {
@@ -192,7 +192,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     }
   }
 
-  static SmokeTestConfig createSmokeTestConfig(
+  private static SmokeTestConfig createSmokeTestConfig(
       DiagCollector diagCollector,
       Interface apiInterface,
       InterfaceConfigProto interfaceConfigProto) {
@@ -204,7 +204,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     }
   }
 
-  static ImmutableMap<String, ImmutableSet<Status.Code>> createRetryCodesDefinition(
+  private static ImmutableMap<String, ImmutableSet<Status.Code>> createRetryCodesDefinition(
       DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto) {
     ImmutableMap.Builder<String, ImmutableSet<Status.Code>> builder =
         ImmutableMap.<String, ImmutableSet<Status.Code>>builder();
@@ -230,7 +230,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     return builder.build();
   }
 
-  static ImmutableMap<String, RetrySettings> createRetrySettingsDefinition(
+  private static ImmutableMap<String, RetrySettings> createRetrySettingsDefinition(
       DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto) {
     ImmutableMap.Builder<String, RetrySettings> builder =
         ImmutableMap.<String, RetrySettings>builder();
@@ -306,7 +306,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     }
   }
 
-  static <T> List<T> createMethodConfigs(
+  private static <T> List<T> createMethodConfigs(
       ImmutableMap<String, T> methodConfigMap, InterfaceConfigProto interfaceConfigProto) {
     List<T> methodConfigs = new ArrayList<>();
     for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {

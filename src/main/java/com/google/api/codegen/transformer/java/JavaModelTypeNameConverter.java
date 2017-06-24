@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.LanguageUtil;
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
@@ -34,7 +35,7 @@ import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 import java.io.File;
 
 /** The ModelTypeTable for Java. */
-public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
+public class JavaModelTypeNameConverter extends ModelTypeNameConverter {
 
   /** The package prefix protoc uses if no java package option was provided. */
   private static final String DEFAULT_JAVA_PACKAGE_PREFIX = "com.google.protos";
@@ -221,7 +222,7 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
   }
 
   private TypeName getTypeNameForTypedResourceName(
-      ResourceNameConfig resourceNameConfig, TypeRef type, String typedResourceShortName) {
+      ResourceNameConfig resourceNameConfig, FieldType type, String typedResourceShortName) {
     String packageName = getResourceNamePackage(resourceNameConfig);
     String longName = packageName + "." + typedResourceShortName;
 
@@ -257,18 +258,18 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
   public TypeName getTypeNameForTypedResourceName(
       FieldConfig fieldConfig, String typedResourceShortName) {
     return getTypeNameForTypedResourceName(
-        fieldConfig.getResourceNameConfig(),
-        fieldConfig.getField().getType(),
-        typedResourceShortName);
+        fieldConfig.getResourceNameConfig(), fieldConfig.getField(), typedResourceShortName);
   }
 
   @Override
   public TypeName getTypeNameForResourceNameElementType(
       FieldConfig fieldConfig, String typedResourceShortName) {
+    fieldConfig
+        .getField()
+        .getProtoBasedField()
+        .setType(fieldConfig.getField().getProtoBasedField().getType().makeOptional());
     return getTypeNameForTypedResourceName(
-        fieldConfig.getResourceNameConfig(),
-        fieldConfig.getField().getType().makeOptional(),
-        typedResourceShortName);
+        fieldConfig.getResourceNameConfig(), fieldConfig.getField(), typedResourceShortName);
   }
 
   private static String getShortName(ProtoElement elem) {

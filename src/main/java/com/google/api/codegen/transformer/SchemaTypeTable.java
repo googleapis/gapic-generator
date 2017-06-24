@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeTable;
@@ -37,6 +38,11 @@ public class SchemaTypeTable implements SchemaTypeFormatter {
   @Override
   public String renderPrimitiveValue(Schema type, String value) {
     return typeFormatter.renderPrimitiveValue(type, value);
+  }
+
+  @Override
+  public String getNicknameFor(Schema type) {
+    return typeNameConverter.getTypeName(type).getNickname();
   }
 
   @Override
@@ -104,6 +110,34 @@ public class SchemaTypeTable implements SchemaTypeFormatter {
    */
   public String getAndSaveNicknameForElementType(Schema schema) {
     return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeNameForElementType(schema));
+  }
+
+  public String getFullNameForElementType(Schema type) {
+    return typeFormatter.getFullNameFor(type);
+  }
+
+  /** Get the full name for the given type. */
+  @Override
+  public String getFullNameFor(FieldType type) {
+    return getFullNameFor(type.getSchemaField());
+  }
+
+  /** Get the full name for the element type of the given type. */
+  @Override
+  public String getFullNameForElementType(FieldType type) {
+    return getFullNameForElementType(type.getSchemaField());
+  }
+
+  /** Returns the nickname for the given type (without adding the full name to the import set). */
+  @Override
+  public String getNicknameFor(FieldType type) {
+    return typeFormatter.getNicknameFor(type);
+  }
+
+  /** Renders the primitive value of the given type. */
+  @Override
+  public String renderPrimitiveValue(FieldType type, String key) {
+    return renderPrimitiveValue(type.getSchemaField(), key);
   }
 
   /** Returns the imports accumulated so far. */

@@ -75,7 +75,7 @@ public abstract class FlatteningConfig {
               messageConfigs,
               methodConfigProto.getFieldNamePatterns(),
               resourceNameConfigs,
-              parameterField,
+              new FieldType(parameterField),
               flatteningGroup.getParameterResourceNameTreatment().get(parameter),
               defaultResourceNameTreatment);
       if (fieldConfig == null) {
@@ -96,8 +96,8 @@ public abstract class FlatteningConfig {
     return getFlattenedFieldConfigs().get(fieldSimpleName);
   }
 
-  public Iterable<Field> getFlattenedFields() {
-    return FieldConfig.toFieldIterable(getFlattenedFieldConfigs().values());
+  public Iterable<FieldType> getFlattenedFields() {
+    return FieldConfig.toFieldTypeIterable(getFlattenedFieldConfigs().values());
   }
 
   public Iterable<String> getParameterList() {

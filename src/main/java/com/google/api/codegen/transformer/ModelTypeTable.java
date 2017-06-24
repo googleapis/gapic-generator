@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
@@ -27,7 +28,7 @@ import java.util.Map;
  * A ModelTypeTable manages the imports for a set of fully-qualified type names, and provides helper
  * methods for importing instances of TypeRef.
  */
-public class ModelTypeTable implements ModelTypeFormatter {
+public class ModelTypeTable implements ImportTypeTable {
   private ModelTypeFormatterImpl typeFormatter;
   private TypeTable typeTable;
   private ModelTypeNameConverter typeNameConverter;
@@ -80,6 +81,11 @@ public class ModelTypeTable implements ModelTypeFormatter {
     throw new IllegalArgumentException("Unrecognized enum value: " + value);
   }
 
+  /** Returns the enum value string */
+  public String getEnumValue(FieldType type, String value) {
+    return getEnumValue(type.getProtoBasedField().getType(), value);
+  }
+
   /** Creates a new ModelTypeTable of the same concrete type, but with an empty import set. */
   public ModelTypeTable cloneEmpty() {
     return new ModelTypeTable(typeTable.cloneEmpty(), typeNameConverter);
@@ -120,6 +126,14 @@ public class ModelTypeTable implements ModelTypeFormatter {
     return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeName(type));
   }
 
+  /**
+   * Computes the nickname for the given type, adds the full name to the import set, and returns the
+   * nickname.
+   */
+  public String getAndSaveNicknameFor(FieldType type) {
+    return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeName(type));
+  }
+
   /*
    * Computes the nickname for the given FieldConfig, and ResourceName. Adds the full name to
    * the import set, and returns the nickname.
@@ -151,6 +165,16 @@ public class ModelTypeTable implements ModelTypeFormatter {
     return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeNameForElementType(type));
   }
 
+  /**
+   * This function will compute the nickname for the element type, add the full name to the import
+   * set, and then return the nickname. If the given type is repeated, then the element type is the
+   * contained type; if the type is not a repeated type, then the element type is the boxed form of
+   * the type.
+   */
+  public String getAndSaveNicknameForElementType(FieldType type) {
+    return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeNameForElementType(type));
+  }
+
   public String getAndSaveNicknameForContainer(
       String containerFullName, String... elementFullNames) {
     TypeName completeTypeName = typeTable.getContainerTypeName(containerFullName, elementFullNames);
@@ -165,8 +189,36 @@ public class ModelTypeTable implements ModelTypeFormatter {
     return typeNameConverter.getSnippetZeroValue(type).getValueAndSaveTypeNicknameIn(typeTable);
   }
 
-  public String getImplZeroValueAndSaveNicknameFor(TypeRef type) {
+  /**
+   * If the given type is not implicitly imported, the add it to the import set, then return the
+   * zero value for that type.
+   */
+  public String getSnippetZeroValueAndSaveNicknameFor(FieldType type) {
+    return typeNameConverter.getSnippetZeroValue(type).getValueAndSaveTypeNicknameIn(typeTable);
+  }
+
+  public String getImplZeroValueAndSaveNicknameFor(FieldType type) {
     return typeNameConverter.getImplZeroValue(type).getValueAndSaveTypeNicknameIn(typeTable);
+  }
+
+  /** Get the full name for the given type. */
+  public String getFullNameFor(FieldType type) {
+    return getFullNameFor(type.getProtoBasedField().getType());
+  }
+
+  /** Get the full name for the element type of the given type. */
+  public String getFullNameForElementType(FieldType type) {
+    return getFullNameForElementType(type.getProtoBasedField().getType());
+  }
+
+  /** Returns the nickname for the given type (without adding the full name to the import set). */
+  public String getNicknameFor(FieldType type) {
+    return getNicknameFor(type.getProtoBasedField().getType());
+  }
+
+  /** Renders the primitive value of the given type. */
+  public String renderPrimitiveValue(FieldType type, String key) {
+    return renderPrimitiveValue(type.getProtoBasedField().getType(), key);
   }
 
   /** Returns the imports accumulated so far. */

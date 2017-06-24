@@ -54,15 +54,15 @@ public class ApiModel {
   private final Model model;
 
   public enum ModelType {
-    DOCUMENT,
-    MODEL
+    DISCOVERY,
+    PROTO
   }
 
   // Constructors enforce the exactly-one-source precondition of this class.
 
   /** Create an ApiModel from a Discovery document. */
   public ApiModel(@Nonnull Document document, @Nonnull SymbolTable docSymbolTable) {
-    this.modelType = ModelType.DOCUMENT;
+    this.modelType = ModelType.DISCOVERY;
     this.document = document;
     this.docSymbolTable = docSymbolTable;
     this.docDiagCollector = new BoundedDiagCollector();
@@ -71,7 +71,7 @@ public class ApiModel {
 
   /** Create an ApiModel from a protobuf that defines an API model. */
   public ApiModel(@Nonnull Model model) {
-    this.modelType = ModelType.MODEL;
+    this.modelType = ModelType.PROTO;
     this.model = model;
     this.docSymbolTable = null;
     this.document = null;
@@ -97,9 +97,9 @@ public class ApiModel {
 
   public SymbolTable getSymbolTable() {
     switch (getModelType()) {
-      case MODEL:
+      case PROTO:
         return model.getSymbolTable();
-      case DOCUMENT:
+      case DISCOVERY:
         return docSymbolTable;
       default:
         return null;
@@ -108,9 +108,9 @@ public class ApiModel {
 
   public DiagCollector getDiagCollector() {
     switch (getModelType()) {
-      case MODEL:
+      case PROTO:
         return model.getDiagCollector();
-      case DOCUMENT:
+      case DISCOVERY:
         return docDiagCollector;
       default:
         return null;
@@ -129,10 +129,10 @@ public class ApiModel {
   /** Sets the service config from a config source. */
   public void setServiceConfig(ConfigSource source) {
     switch (getModelType()) {
-      case MODEL:
+      case PROTO:
         model.setServiceConfig(source);
         break;
-      case DOCUMENT:
+      case DISCOVERY:
         this.serviceConfig = source;
         break;
     }
@@ -161,10 +161,10 @@ public class ApiModel {
     // TODO(andrealin): Fill in builtDataPath.
     Set<FileWrapper> configFiles = ApiModel.parseConfigFiles(options, "", getDiagCollector());
 
-    if (modelType == ModelType.MODEL) {
+    if (modelType == ModelType.PROTO) {
       ToolUtil.setupModelConfigs(model, configFiles);
       return;
-    } else if (modelType == ModelType.DOCUMENT) {
+    } else if (modelType == ModelType.DISCOVERY) {
       // This is cribbed from Model.setConfigSources().
 
       ImmutableList.Builder<ConfigSource> builder = ImmutableList.builder();

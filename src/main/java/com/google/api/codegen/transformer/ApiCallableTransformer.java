@@ -254,7 +254,8 @@ public class ApiCallableTransformer {
       settings.grpcStreamingType(methodConfig.getGrpcStreaming().getType());
     } else if (methodConfig.isPageStreaming()) {
       settings.type(ApiCallableImplType.PagedApiCallable);
-      Field resourceField = methodConfig.getPageStreaming().getResourcesField();
+      Field resourceField =
+          methodConfig.getPageStreaming().getResourcesField().getProtoBasedField();
       settings.resourceTypeName(
           typeTable.getAndSaveNicknameForElementType(resourceField.getType()));
       settings.pagedListResponseTypeName(

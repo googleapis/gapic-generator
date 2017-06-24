@@ -158,7 +158,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
               .suggestedName(Name.from("request"))
               .initFieldConfigStrings(methodContext.getMethodConfig().getSampleCodeInitFields())
               .initValueConfigMap(InitCodeTransformer.createCollectionMap(methodContext))
-              .initFields(FieldConfig.toFieldIterable(fieldConfigs))
+              .initFields(FieldConfig.toFieldTypeIterable(fieldConfigs))
               .outputType(InitCodeOutputType.SingleObject)
               .fieldConfigMap(FieldConfig.toFieldConfigMap(fieldConfigs))
               .valueGenerator(valueGenerator)

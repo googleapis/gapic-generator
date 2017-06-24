@@ -25,7 +25,6 @@ import com.google.api.gax.core.RetrySettings;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
-import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.model.SymbolTable;
@@ -44,7 +43,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
   private static final String SERVICE_ADDRESS_PARAM = "service_address";
   private static final String SCOPES_PARAM = "scopes";
   private static final ImmutableSet<String> CONSTRUCTOR_PARAMS =
-      ImmutableSet.<String>of(SERVICE_ADDRESS_PARAM, SCOPES_PARAM);
+      ImmutableSet.of(SERVICE_ADDRESS_PARAM, SCOPES_PARAM);
 
   @Override
   public String getName() {
@@ -64,7 +63,6 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
   public boolean hasInterfaceNameOverride() {
     return getInterfaceNameOverride() != null;
   }
-
 
   @Override
   @Nullable
@@ -180,7 +178,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
         ImmutableMap.builder();
 
     for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {
-//      Method method = document.methods().(methodConfigProto.getName());
+      //      Method method = document.methods().(methodConfigProto.getName());
       Method method = symbolTable.lookupMethodSimpleName(methodConfigProto.getName()).get(0);
       if (method == null) {
         diagCollector.addDiag(

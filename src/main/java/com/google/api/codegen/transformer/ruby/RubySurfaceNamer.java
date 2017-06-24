@@ -16,12 +16,14 @@ package com.google.api.codegen.transformer.ruby;
 
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.FeatureConfig;
+import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -102,11 +104,11 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getParamTypeName(ModelTypeTable typeTable, TypeRef type) {
+  public String getParamTypeName(ImportTypeTable typeTable, FieldType type) {
     if (type.isMap()) {
-      String keyTypeName = typeTable.getFullNameForElementType(type.getMapKeyField().getType());
-      String valueTypeName = typeTable.getFullNameForElementType(type.getMapValueField().getType());
-      if (type.getMapValueField().getType().isMessage()) {
+      String keyTypeName = typeTable.getFullNameForElementType(type.getMapKeyField());
+      String valueTypeName = typeTable.getFullNameForElementType(type.getMapValueField());
+      if (type.getMapValueField().isMessage()) {
         valueTypeName += " | Hash";
       }
       return new TypeName(
@@ -173,7 +175,8 @@ public class RubySurfaceNamer extends SurfaceNamer {
     }
 
     if (methodConfig.isPageStreaming()) {
-      TypeRef resourceType = methodConfig.getPageStreaming().getResourcesField().getType();
+      TypeRef resourceType =
+          methodConfig.getPageStreaming().getResourcesField().getProtoBasedField().getType();
       String resourceTypeName = getModelTypeFormatter().getFullNameForElementType(resourceType);
       return "Google::Gax::PagedEnumerable<" + resourceTypeName + ">";
     }
@@ -217,7 +220,8 @@ public class RubySurfaceNamer extends SurfaceNamer {
     }
 
     if (methodConfig.isPageStreaming()) {
-      TypeRef resourceType = methodConfig.getPageStreaming().getResourcesField().getType();
+      TypeRef resourceType =
+          methodConfig.getPageStreaming().getResourcesField().getProtoBasedField().getType();
       String resourceTypeName = getModelTypeFormatter().getFullNameForElementType(resourceType);
       return ImmutableList.of(
           "An enumerable of " + resourceTypeName + " instances.",

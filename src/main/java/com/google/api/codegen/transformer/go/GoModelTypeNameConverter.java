@@ -32,7 +32,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class GoModelTypeNameConverter implements ModelTypeNameConverter {
+public class GoModelTypeNameConverter extends ModelTypeNameConverter {
 
   /** The import path for generated pb.go files for core-proto files. */
   private static final String CORE_PROTO_BASE = "google.golang.org/genproto/";

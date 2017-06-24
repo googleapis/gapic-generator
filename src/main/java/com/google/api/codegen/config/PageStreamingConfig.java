@@ -29,12 +29,12 @@ import javax.annotation.Nullable;
 /** PageStreamingConfig represents the page streaming configuration for a method. */
 @AutoValue
 public abstract class PageStreamingConfig {
-  public abstract Field getRequestTokenField();
+  public abstract FieldType getRequestTokenField();
 
   @Nullable
-  public abstract Field getPageSizeField();
+  public abstract FieldType getPageSizeField();
 
-  public abstract Field getResponseTokenField();
+  public abstract FieldType getResponseTokenField();
 
   public abstract FieldConfig getResourcesFieldConfig();
 
@@ -118,7 +118,10 @@ public abstract class PageStreamingConfig {
       return null;
     }
     return new AutoValue_PageStreamingConfig(
-        requestTokenField, pageSizeField, responseTokenField, resourcesFieldConfig);
+        new FieldType(requestTokenField),
+        new FieldType(pageSizeField),
+        new FieldType(responseTokenField),
+        resourcesFieldConfig);
   }
 
   /** Returns whether there is a field for page size. */
@@ -126,7 +129,7 @@ public abstract class PageStreamingConfig {
     return getPageSizeField() != null;
   }
 
-  public Field getResourcesField() {
+  public FieldType getResourcesField() {
     return getResourcesFieldConfig().getField();
   }
 

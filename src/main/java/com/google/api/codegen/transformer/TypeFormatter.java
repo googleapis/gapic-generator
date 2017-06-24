@@ -14,8 +14,7 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.tools.framework.model.ProtoElement;
-import com.google.api.tools.framework.model.TypeRef;
+import com.google.api.codegen.config.FieldType;
 
 /**
  * A read-only interface for mapping TypeRef instances to a corresponding String representation for
@@ -23,22 +22,19 @@ import com.google.api.tools.framework.model.TypeRef;
  *
  * <p>Passing this type ensures that mutable functionality in derived classes won't be called.
  */
-public interface ModelTypeFormatter extends TypeFormatter {
+public interface TypeFormatter {
   /** Get the full name for the given short name, using the default package. */
   String getImplicitPackageFullNameFor(String shortName);
 
   /** Get the full name for the given type. */
-  String getFullNameFor(TypeRef type);
-
-  /** Get the full name for the given proto element. */
-  String getFullNameFor(ProtoElement element);
+  String getFullNameFor(FieldType type);
 
   /** Get the full name for the element type of the given type. */
-  String getFullNameForElementType(TypeRef type);
+  String getFullNameForElementType(FieldType type);
 
   /** Returns the nickname for the given type (without adding the full name to the import set). */
-  String getNicknameFor(TypeRef type);
+  String getNicknameFor(FieldType type);
 
   /** Renders the primitive value of the given type. */
-  String renderPrimitiveValue(TypeRef type, String key);
+  String renderPrimitiveValue(FieldType type, String key);
 }

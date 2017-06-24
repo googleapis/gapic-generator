@@ -137,7 +137,7 @@ public class TestCaseTransformer {
     }
 
     FieldConfig resourcesFieldConfig = methodConfig.getPageStreaming().getResourcesFieldConfig();
-    Field resourcesField = resourcesFieldConfig.getField();
+    Field resourcesField = resourcesFieldConfig.getField().getProtoBasedField();
     String resourceTypeName =
         methodContext.getTypeTable().getAndSaveNicknameForElementType(resourcesField.getType());
     String resourcesFieldGetterName =
@@ -187,14 +187,14 @@ public class TestCaseTransformer {
 
   private InitCodeContext createResponseInitCodeContext(
       GapicMethodContext context, SymbolTable symbolTable) {
-    ArrayList<Field> primitiveFields = new ArrayList<>();
+    ArrayList<FieldType> primitiveFields = new ArrayList<>();
     TypeRef outputType = context.getMethod().getOutputType();
     if (context.getMethodConfig().isLongRunningOperation()) {
       outputType = context.getMethodConfig().getLongRunningConfig().getReturnType();
     }
     for (Field field : outputType.getMessageType().getFields()) {
       if (field.getType().isPrimitive() && !field.getType().isRepeated()) {
-        primitiveFields.add(field);
+        primitiveFields.add(new FieldType(field));
       }
     }
     return InitCodeContext.newBuilder()
@@ -203,7 +203,7 @@ public class TestCaseTransformer {
         .suggestedName(Name.from("expected_response"))
         .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
         .initValueConfigMap(ImmutableMap.<String, InitValueConfig>of())
-        .initFields(primitiveFields)
+        .initFields((primitiveFields))
         .fieldConfigMap(context.getProductConfig().getDefaultResourceNameFieldConfigMap())
         .valueGenerator(valueGenerator)
         .additionalInitCodeNodes(createMockResponseAdditionalSubTrees(context))

@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.discovery.Schema;
 
 /** Default implementation of SchemaTypeFormatter. */
@@ -46,5 +47,31 @@ public class SchemaTypeFormatterImpl implements SchemaTypeFormatter {
   @Override
   public String renderPrimitiveValue(Schema type, String value) {
     return typeNameConverter.renderPrimitiveValue(type, value);
+  }
+
+  @Override
+  public String getNicknameFor(Schema type) {
+    return typeNameConverter.getTypeName(type).getNickname();
+  }
+
+  @Override
+  public String getFullNameFor(FieldType type) {
+    return getFullNameFor(type.getSchemaField());
+  }
+
+  @Override
+  public String getFullNameForElementType(FieldType type) {
+    return getFullNameFor(type);
+  }
+
+  @Override
+  public String renderPrimitiveValue(FieldType type, String value) {
+    return renderPrimitiveValue(type.getSchemaField(), value);
+  }
+
+  /** Returns the nickname for the given type (without adding the full name to the import set). */
+  @Override
+  public String getNicknameFor(FieldType type) {
+    return getNicknameFor(type.getSchemaField());
   }
 }

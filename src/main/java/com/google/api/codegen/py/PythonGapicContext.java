@@ -16,6 +16,8 @@ package com.google.api.codegen.py;
 
 import com.google.api.codegen.GapicContext;
 import com.google.api.codegen.TargetLanguage;
+import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
@@ -217,7 +219,9 @@ public class PythonGapicContext extends GapicContext {
     if (type.getCardinality() == Cardinality.REPEATED) {
       if (type.isMap()) {
         prefix =
-            String.format("dict[%s -> ", fieldTypeComment(type.getMapKeyField(), importHandler));
+            String.format(
+                "dict[%s -> ",
+                fieldTypeComment(new FieldType(type.getMapKeyField()), importHandler));
       } else {
         prefix = "list[";
       }
@@ -230,8 +234,8 @@ public class PythonGapicContext extends GapicContext {
   }
 
   /** Returns type information for a field in Sphinx docstring style. */
-  private String fieldTypeComment(Field field, PythonImportHandler importHandler) {
-    return typeComment(field.getType(), importHandler);
+  private String fieldTypeComment(FieldType field, PythonImportHandler importHandler) {
+    return typeComment(field.getProtoBasedField().getType(), importHandler);
   }
 
   private String enumClassName(EnumType enumType) {
@@ -368,7 +372,10 @@ public class PythonGapicContext extends GapicContext {
     StringBuilder contentBuilder = new StringBuilder();
     contentBuilder.append("\nRaises:\n  :exc:`google.gax.errors.GaxError` if the RPC is aborted.");
     if (Iterables.size(config.getRequiredFields()) > 0
-        || Iterables.size(removePageTokenFromFields(config.getOptionalFields(), config)) > 0) {
+        || Iterables.size(
+                removePageTokenFromFields(
+                    FieldConfig.toFieldIterableFromFieldType(config.getOptionalFields()), config))
+            > 0) {
       contentBuilder.append("\n  :exc:`ValueError` if the parameters are invalid.");
     }
     return contentBuilder.toString();
@@ -384,7 +391,7 @@ public class PythonGapicContext extends GapicContext {
   }
 
   /** Get required (non-optional) fields. */
-  public List<Field> getRequiredFields(Interface apiInterface, Method method) {
+  public List<FieldType> getRequiredFields(Interface apiInterface, Method method) {
     MethodConfig methodConfig =
         getApiConfig().getInterfaceConfig(apiInterface).getMethodConfig(method);
     return Lists.newArrayList(methodConfig.getRequiredFields());

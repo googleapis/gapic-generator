@@ -16,12 +16,14 @@ package com.google.api.codegen.transformer.csharp;
 
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.transformer.GapicMethodContext;
+import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -198,7 +200,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getResourceNameFieldGetFunctionName(FieldConfig fieldConfig) {
-    TypeRef type = fieldConfig.getField().getType();
+    TypeRef type = fieldConfig.getField().getProtoBasedField().getType();
     String fieldName = fieldConfig.getField().getSimpleName();
     Name identifier = Name.from(fieldName);
     Name resourceName;
@@ -257,7 +259,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   private String getResourceTypeName(ModelTypeTable typeTable, FieldConfig resourceFieldConfig) {
     if (resourceFieldConfig.getResourceNameConfig() == null) {
-      return typeTable.getAndSaveNicknameForElementType(resourceFieldConfig.getField().getType());
+      return typeTable.getAndSaveNicknameForElementType(resourceFieldConfig.getField());
     } else {
       return getAndSaveElementResourceTypeName(typeTable, resourceFieldConfig);
     }
@@ -276,43 +278,47 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getAndSavePagedResponseTypeName(
-      Method method, ModelTypeTable typeTable, FieldConfig resourceFieldConfig) {
+      Method method, ImportTypeTable typeTable, FieldConfig resourceFieldConfig) {
+    ModelTypeTable modelTypeTable = (ModelTypeTable) typeTable;
 
-    String inputTypeName = typeTable.getAndSaveNicknameForElementType(method.getInputType());
-    String outputTypeName = typeTable.getAndSaveNicknameForElementType(method.getOutputType());
-    String resourceTypeName = getResourceTypeName(typeTable, resourceFieldConfig);
+    String inputTypeName = modelTypeTable.getAndSaveNicknameForElementType(method.getInputType());
+    String outputTypeName = modelTypeTable.getAndSaveNicknameForElementType(method.getOutputType());
+    String resourceTypeName = getResourceTypeName(modelTypeTable, resourceFieldConfig);
     return typeTable.getAndSaveNicknameForContainer(
         "Google.Api.Gax.PagedEnumerable", inputTypeName, outputTypeName, resourceTypeName);
   }
 
   @Override
   public String getAndSaveAsyncPagedResponseTypeName(
-      Method method, ModelTypeTable typeTable, FieldConfig resourceFieldConfig) {
+      Method method, ImportTypeTable typeTable, FieldConfig resourceFieldConfig) {
+    ModelTypeTable modelTypeTable = (ModelTypeTable) typeTable;
 
-    String inputTypeName = typeTable.getAndSaveNicknameForElementType(method.getInputType());
-    String outputTypeName = typeTable.getAndSaveNicknameForElementType(method.getOutputType());
-    String resourceTypeName = getResourceTypeName(typeTable, resourceFieldConfig);
+    String inputTypeName = modelTypeTable.getAndSaveNicknameForElementType(method.getInputType());
+    String outputTypeName = modelTypeTable.getAndSaveNicknameForElementType(method.getOutputType());
+    String resourceTypeName = getResourceTypeName(modelTypeTable, resourceFieldConfig);
     return typeTable.getAndSaveNicknameForContainer(
         "Google.Api.Gax.PagedAsyncEnumerable", inputTypeName, outputTypeName, resourceTypeName);
   }
 
   @Override
   public String getAndSaveCallerPagedResponseTypeName(
-      Method method, ModelTypeTable typeTable, FieldConfig resourceFieldConfig) {
+      Method method, ImportTypeTable typeTable, FieldConfig resourceFieldConfig) {
+    ModelTypeTable modelTypeTable = (ModelTypeTable) typeTable;
 
-    String outputTypeName = typeTable.getAndSaveNicknameForElementType(method.getOutputType());
-    String resourceTypeName = getResourceTypeName(typeTable, resourceFieldConfig);
+    String outputTypeName = modelTypeTable.getAndSaveNicknameForElementType(method.getOutputType());
+    String resourceTypeName = getResourceTypeName(modelTypeTable, resourceFieldConfig);
     return typeTable.getAndSaveNicknameForContainer(
         "Google.Api.Gax.PagedEnumerable", outputTypeName, resourceTypeName);
   }
 
   @Override
   public String getAndSaveCallerAsyncPagedResponseTypeName(
-      Method method, ModelTypeTable typeTable, FieldConfig resourceFieldConfig) {
+      Method method, ImportTypeTable typeTable, FieldConfig resourceFieldConfig) {
+    ModelTypeTable modelTypeTable = (ModelTypeTable) typeTable;
 
-    String outputTypeName = typeTable.getAndSaveNicknameForElementType(method.getOutputType());
-    String resourceTypeName = getResourceTypeName(typeTable, resourceFieldConfig);
-    return typeTable.getAndSaveNicknameForContainer(
+    String outputTypeName = modelTypeTable.getAndSaveNicknameForElementType(method.getOutputType());
+    String resourceTypeName = getResourceTypeName(modelTypeTable, resourceFieldConfig);
+    return modelTypeTable.getAndSaveNicknameForContainer(
         "Google.Api.Gax.PagedAsyncEnumerable", outputTypeName, resourceTypeName);
   }
 
@@ -392,7 +398,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getAndSaveOperationResponseTypeName(
-      Method method, ModelTypeTable typeTable, MethodConfig methodConfig) {
+      Method method, ImportTypeTable typeTable, MethodConfig methodConfig) {
     String responseTypeName =
         typeTable.getFullNameFor(methodConfig.getLongRunningConfig().getReturnType());
     String metaTypeName =
@@ -402,7 +408,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getGrpcStreamingApiReturnTypeName(Method method, ModelTypeTable typeTable) {
+  public String getGrpcStreamingApiReturnTypeName(Method method, ImportTypeTable typeTable) {
     if (method.getRequestStreaming() && method.getResponseStreaming()) {
       // Bidirectional streaming
       return typeTable.getAndSaveNicknameForContainer(
@@ -428,7 +434,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   public List<String> getReturnDocLines(
       InterfaceContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
     if (methodConfig.isPageStreaming()) {
-      TypeRef resourceType = methodConfig.getPageStreaming().getResourcesField().getType();
+      FieldType resourceType = methodConfig.getPageStreaming().getResourcesField();
       String resourceTypeName =
           context.getModelTypeTable().getAndSaveNicknameForElementType(resourceType);
       switch (synchronicity) {
@@ -455,13 +461,13 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getResourceOneofCreateMethod(ModelTypeTable typeTable, FieldConfig fieldConfig) {
+  public String getResourceOneofCreateMethod(ImportTypeTable typeTable, FieldConfig fieldConfig) {
     String result = super.getResourceOneofCreateMethod(typeTable, fieldConfig);
     return result.replaceFirst("IEnumerable<(\\w*)>(\\..*)", "$1$2");
   }
 
   @Override
-  public String makePrimitiveTypeNullable(String typeName, TypeRef type) {
+  public String makePrimitiveTypeNullable(String typeName, FieldType type) {
     return isPrimitive(type) ? typeName + "?" : typeName;
   }
 
@@ -494,7 +500,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   @Override
   public String getOptionalFieldDefaultValue(FieldConfig fieldConfig, GapicMethodContext context) {
     // Need to provide defaults for primitives, enums, strings, and repeated (including maps)
-    TypeRef type = fieldConfig.getField().getType();
+    FieldType type = fieldConfig.getField();
     if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
       if (type.isRepeated()) {
         TypeName elementTypeName =

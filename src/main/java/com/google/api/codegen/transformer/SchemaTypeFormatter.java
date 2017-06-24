@@ -22,7 +22,7 @@ import com.google.api.codegen.discovery.Schema;
  *
  * <p>Passing this type ensures that mutable functionality in derived classes won't be called.
  */
-public interface SchemaTypeFormatter {
+public interface SchemaTypeFormatter extends TypeFormatter {
   /** Get the full name for the given short name, using the default package. */
   String getImplicitPackageFullNameFor(String shortName);
 
@@ -38,4 +38,6 @@ public interface SchemaTypeFormatter {
 
   /** Renders the primitive value of the given type. */
   String renderPrimitiveValue(Schema type, String value);
+
+  String getNicknameFor(Schema type);
 }

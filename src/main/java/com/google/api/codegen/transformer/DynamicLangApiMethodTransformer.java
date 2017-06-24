@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.metacode.InitCodeContext;
@@ -137,7 +138,7 @@ public class DynamicLangApiMethodTransformer {
       docBuilder.pageStreamingResourceTypeName(
           surfaceNamer.getTypeNameDoc(
               context.getTypeTable(),
-              methodConfig.getPageStreaming().getResourcesField().getType()));
+              methodConfig.getPageStreaming().getResourcesField().getProtoBasedField().getType()));
     }
     docBuilder.throwsDocLines(surfaceNamer.getThrowsDocLines(methodConfig));
 
@@ -159,7 +160,8 @@ public class DynamicLangApiMethodTransformer {
     if (methodConfig == null || !methodConfig.isPageStreaming()) {
       return fieldConfigs;
     }
-    final Field requestTokenField = methodConfig.getPageStreaming().getRequestTokenField();
+    final Field requestTokenField =
+        methodConfig.getPageStreaming().getRequestTokenField().getProtoBasedField();
     return Iterables.filter(
         fieldConfigs,
         new Predicate<FieldConfig>() {
@@ -175,11 +177,11 @@ public class DynamicLangApiMethodTransformer {
     SurfaceNamer namer = context.getNamer();
     FeatureConfig featureConfig = context.getFeatureConfig();
     ModelTypeTable typeTable = context.getTypeTable();
-    Field field = fieldConfig.getField();
+    FieldType field = fieldConfig.getField();
 
-    Iterable<Field> requiredFields = context.getMethodConfig().getRequiredFields();
+    Iterable<FieldType> requiredFields = context.getMethodConfig().getRequiredFields();
     boolean isRequired = false;
-    for (Field f : requiredFields) {
+    for (FieldType f : requiredFields) {
       if (f.getSimpleName().equals(field.getSimpleName())) {
         isRequired = true;
       }
@@ -189,13 +191,16 @@ public class DynamicLangApiMethodTransformer {
     param.name(namer.getVariableName(field));
     param.keyName(namer.getFieldKey(field));
     param.nameAsMethodName(namer.getFieldGetFunctionName(featureConfig, fieldConfig));
-    param.typeName(typeTable.getAndSaveNicknameFor(field.getType()));
-    param.elementTypeName(typeTable.getAndSaveNicknameForElementType(field.getType()));
+    param.typeName(typeTable.getAndSaveNicknameFor(field.getProtoBasedField().getType()));
+    param.elementTypeName(
+        typeTable.getAndSaveNicknameForElementType(field.getProtoBasedField().getType()));
     param.setCallName(namer.getFieldSetFunctionName(featureConfig, fieldConfig));
     param.addCallName(namer.getFieldAddFunctionName(field));
-    param.isMap(field.getType().isMap());
-    param.isArray(!field.getType().isMap() && field.getType().isRepeated());
-    param.isPrimitive(namer.isPrimitive(field.getType()));
+    param.isMap(field.getProtoBasedField().getType().isMap());
+    param.isArray(
+        !field.getProtoBasedField().getType().isMap()
+            && field.getProtoBasedField().getType().isRepeated());
+    param.isPrimitive(namer.isPrimitive(field.getProtoBasedField().getType()));
     param.isOptional(!isRequired);
     if (!isRequired) {
       param.optionalDefault(namer.getOptionalFieldDefaultValue(fieldConfig, context));
@@ -212,7 +217,7 @@ public class DynamicLangApiMethodTransformer {
         .suggestedName(Name.from("request"))
         .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
         .initValueConfigMap(InitCodeTransformer.createCollectionMap(context))
-        .initFields(FieldConfig.toFieldIterable(fieldConfigs))
+        .initFields(FieldConfig.toFieldTypeIterable(fieldConfigs))
         .outputType(initCodeOutputType)
         .fieldConfigMap(FieldConfig.toFieldConfigMap(fieldConfigs))
         .build();

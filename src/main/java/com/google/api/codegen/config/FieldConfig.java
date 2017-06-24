@@ -15,6 +15,7 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.ResourceNameTreatment;
+import com.google.api.codegen.discovery.Schema;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
@@ -30,7 +31,7 @@ import javax.annotation.Nullable;
 /** FieldConfig represents a configuration for a Field, derived from the GAPIC config. */
 @AutoValue
 public abstract class FieldConfig {
-  public abstract Field getField();
+  public abstract FieldType getField();
 
   public abstract ResourceNameTreatment getResourceNameTreatment();
 
@@ -55,7 +56,7 @@ public abstract class FieldConfig {
   }
 
   private static FieldConfig createFieldConfig(
-      Field field,
+      FieldType field,
       ResourceNameTreatment resourceNameTreatment,
       ResourceNameConfig resourceNameConfig,
       ResourceNameConfig messageResourceNameConfig) {
@@ -74,7 +75,29 @@ public abstract class FieldConfig {
 
   /** Creates a FieldConfig for the given Field with ResourceNameTreatment set to None. */
   public static FieldConfig createDefaultFieldConfig(Field field) {
-    return FieldConfig.createFieldConfig(field, ResourceNameTreatment.NONE, null, null);
+    return FieldConfig.createFieldConfig(
+        new FieldType(field), ResourceNameTreatment.NONE, null, null);
+  }
+
+  /** Creates a FieldConfig for the given Field with ResourceNameTreatment set to None. */
+  public static FieldConfig createDefaultFieldConfig(Schema schema) {
+    return FieldConfig.createFieldConfig(
+        new FieldType(schema), ResourceNameTreatment.NONE, null, null);
+  }
+
+  public static FieldConfig createMessageFieldConfig(
+      ResourceNameMessageConfigs messageConfigs,
+      Map<String, ResourceNameConfig> resourceNameConfigs,
+      FieldType field,
+      ResourceNameTreatment defaultResourceNameTreatment) {
+    return createFieldConfig(
+        null,
+        messageConfigs,
+        null,
+        resourceNameConfigs,
+        field,
+        ResourceNameTreatment.UNSET_TREATMENT,
+        defaultResourceNameTreatment);
   }
 
   public static FieldConfig createMessageFieldConfig(
@@ -87,7 +110,22 @@ public abstract class FieldConfig {
         messageConfigs,
         null,
         resourceNameConfigs,
-        field,
+        new FieldType(field),
+        ResourceNameTreatment.UNSET_TREATMENT,
+        defaultResourceNameTreatment);
+  }
+
+  public static FieldConfig createMessageFieldConfig(
+      ResourceNameMessageConfigs messageConfigs,
+      Map<String, ResourceNameConfig> resourceNameConfigs,
+      Schema field,
+      ResourceNameTreatment defaultResourceNameTreatment) {
+    return createFieldConfig(
+        null,
+        messageConfigs,
+        null,
+        resourceNameConfigs,
+        new FieldType(field),
         ResourceNameTreatment.UNSET_TREATMENT,
         defaultResourceNameTreatment);
   }
@@ -98,7 +136,7 @@ public abstract class FieldConfig {
       ResourceNameMessageConfigs messageConfigs,
       Map<String, String> fieldNamePatterns,
       Map<String, ResourceNameConfig> resourceNameConfigs,
-      Field field,
+      FieldType field,
       ResourceNameTreatment treatment,
       ResourceNameTreatment defaultResourceNameTreatment) {
     String messageFieldEntityName = null;
@@ -228,7 +266,7 @@ public abstract class FieldConfig {
    */
   public static void validate(
       ResourceNameMessageConfigs messageConfigs,
-      Field field,
+      FieldType field,
       ResourceNameTreatment treatment,
       ResourceNameConfig resourceNameConfig) {
     switch (treatment) {
@@ -257,11 +295,29 @@ public abstract class FieldConfig {
     }
   }
 
-  private static Function<FieldConfig, Field> selectFieldFunction() {
-    return new Function<FieldConfig, Field>() {
+  private static Function<FieldConfig, FieldType> selectFieldFunction() {
+    return new Function<FieldConfig, FieldType>() {
       @Override
-      public Field apply(FieldConfig fieldConfig) {
+      public FieldType apply(FieldConfig fieldConfig) {
         return fieldConfig.getField();
+      }
+    };
+  }
+
+  private static Function<Field, FieldType> createFieldTypeFunction() {
+    return new Function<Field, FieldType>() {
+      @Override
+      public FieldType apply(Field field) {
+        return new FieldType(field);
+      }
+    };
+  }
+
+  private static Function<FieldType, Field> selectFieldFromFieldTypeFunction() {
+    return new Function<FieldType, Field>() {
+      @Override
+      public Field apply(FieldType field) {
+        return field.getProtoBasedField();
       }
     };
   }
@@ -275,8 +331,16 @@ public abstract class FieldConfig {
     };
   }
 
-  public static Iterable<Field> toFieldIterable(Iterable<FieldConfig> fieldConfigs) {
+  public static Iterable<FieldType> toFieldTypeIterable(Iterable<FieldConfig> fieldConfigs) {
     return Iterables.transform(fieldConfigs, selectFieldFunction());
+  }
+
+  public static Iterable<FieldType> toFieldTypeIterableFromField(Iterable<Field> fieldConfigs) {
+    return Iterables.transform(fieldConfigs, createFieldTypeFunction());
+  }
+
+  public static Iterable<Field> toFieldIterableFromFieldType(Iterable<FieldType> fieldTypes) {
+    return Iterables.transform(fieldTypes, selectFieldFromFieldTypeFunction());
   }
 
   public static ImmutableMap<String, FieldConfig> toFieldConfigMap(

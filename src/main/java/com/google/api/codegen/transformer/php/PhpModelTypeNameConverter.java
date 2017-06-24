@@ -26,7 +26,7 @@ import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
-public class PhpModelTypeNameConverter implements ModelTypeNameConverter {
+public class PhpModelTypeNameConverter extends ModelTypeNameConverter {
 
   /** A map from primitive types in proto to PHP counterparts. */
   private static final ImmutableMap<Type, String> PRIMITIVE_TYPE_MAP =
