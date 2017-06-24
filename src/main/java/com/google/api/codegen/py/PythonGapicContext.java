@@ -16,7 +16,6 @@ package com.google.api.codegen.py;
 
 import com.google.api.codegen.GapicContext;
 import com.google.api.codegen.TargetLanguage;
-import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicMethodConfig;
@@ -372,10 +371,7 @@ public class PythonGapicContext extends GapicContext {
     StringBuilder contentBuilder = new StringBuilder();
     contentBuilder.append("\nRaises:\n  :exc:`google.gax.errors.GaxError` if the RPC is aborted.");
     if (Iterables.size(config.getRequiredFields()) > 0
-        || Iterables.size(
-                removePageTokenFromFields(
-                    FieldConfig.toFieldIterableFromFieldType(config.getOptionalFields()), config))
-            > 0) {
+        || Iterables.size(removePageTokenFromFields(config.getOptionalFields(), config)) > 0) {
       contentBuilder.append("\n  :exc:`ValueError` if the parameters are invalid.");
     }
     return contentBuilder.toString();
