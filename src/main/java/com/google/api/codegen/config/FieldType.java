@@ -22,6 +22,7 @@ import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.discovery.Schema.Type;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
+import com.google.common.base.Preconditions;
 import javax.annotation.Nullable;
 
 /** Created by andrealin on 6/22/17. */
@@ -34,11 +35,13 @@ public class FieldType {
   public final ModelType modelType;
 
   public FieldType(Field protoBasedField) {
+    Preconditions.checkNotNull(protoBasedField);
     this.protoBasedField = protoBasedField;
     modelType = PROTO;
   }
 
   public FieldType(Schema schemaField) {
+    Preconditions.checkNotNull(schemaField);
     this.schemaField = schemaField;
     modelType = DISCOVERY;
   }

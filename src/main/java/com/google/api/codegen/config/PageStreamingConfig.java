@@ -119,7 +119,7 @@ public abstract class PageStreamingConfig {
     }
     return new AutoValue_PageStreamingConfig(
         new FieldType(requestTokenField),
-        new FieldType(pageSizeField),
+        pageSizeField == null ? null : new FieldType(pageSizeField),
         new FieldType(responseTokenField),
         resourcesFieldConfig);
   }

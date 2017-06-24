@@ -160,8 +160,8 @@ public class DynamicLangApiMethodTransformer {
     if (methodConfig == null || !methodConfig.isPageStreaming()) {
       return fieldConfigs;
     }
-    final Field requestTokenField =
-        methodConfig.getPageStreaming().getRequestTokenField().getProtoBasedField();
+    final FieldType requestTokenField =
+        methodConfig.getPageStreaming().getRequestTokenField();
     return Iterables.filter(
         fieldConfigs,
         new Predicate<FieldConfig>() {
