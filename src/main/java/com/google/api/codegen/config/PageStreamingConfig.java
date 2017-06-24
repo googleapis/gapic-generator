@@ -126,7 +126,7 @@ public abstract class PageStreamingConfig {
 
   /** Returns whether there is a field for page size. */
   public boolean hasPageSizeField() {
-    return getPageSizeField() != null;
+    return getPageSizeField() != null && !getPageSizeField().isEmpty();
   }
 
   public FieldType getResourcesField() {

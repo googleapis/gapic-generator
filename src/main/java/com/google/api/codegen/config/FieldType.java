@@ -198,4 +198,8 @@ public class FieldType {
         throw new IllegalArgumentException("Unhandled model type.");
     }
   }
+
+  public boolean isEmpty() {
+    return protoBasedField == null && schemaField == null;
+  }
 }
