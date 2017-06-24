@@ -248,6 +248,10 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
               .metadataTypeName(context.getModelTypeTable().getFullNameFor(metadataType))
               .implementsCancel(true)
               .implementsDelete(true)
+              .initialPollDelay(lroConfig.getInitialPollDelay().getMillis())
+              .pollDelayMultiplier(lroConfig.getPollDelayMultiplier())
+              .maxPollDelay(lroConfig.getMaxPollDelay().getMillis())
+              .totalPollTimeout(lroConfig.getTotalPollTimeout().getMillis())
               .build());
     }
 
@@ -264,7 +268,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
     ArrayList<VersionIndexRequireView> requireViews = new ArrayList<>();
     boolean packageHasMultipleServices = Iterables.size(apiInterfaces) > 1;
     for (Interface apiInterface : apiInterfaces) {
-      Name serviceName = namer.getReducedServiceName(apiInterface);
+      Name serviceName = namer.getReducedServiceName(apiInterface.getSimpleName());
       String localName =
           hasVersion ? serviceName.join(version).toLowerCamel() : serviceName.toLowerCamel();
       GapicInterfaceContext context = createContext(apiInterface, productConfig);

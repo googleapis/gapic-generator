@@ -102,6 +102,7 @@ public class CSharpCommonTransformer {
         .typeName(typeName)
         .setCallName("")
         .addCallName("")
+        .getCallName("")
         .isMap(false)
         .isArray(false)
         .isPrimitive(false)

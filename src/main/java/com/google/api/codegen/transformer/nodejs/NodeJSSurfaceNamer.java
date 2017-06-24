@@ -91,7 +91,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getPackageServiceName(Interface apiInterface) {
-    return getReducedServiceName(apiInterface).toLowerCamel();
+    return getReducedServiceName(apiInterface.getSimpleName()).toLowerCamel();
   }
 
   @Override

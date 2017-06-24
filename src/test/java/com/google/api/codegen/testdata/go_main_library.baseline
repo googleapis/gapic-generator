@@ -211,8 +211,8 @@ func (c *Client) SetGoogleClientInfo(keyval ...string) {
     c.xGoogHeader = []string{gax.XGoogHeader(kv...)}
 }
 
-// LibraryShelfPath returns the path for the shelf resource.
-func LibraryShelfPath(shelfId string) string {
+// ShelfPath returns the path for the shelf resource.
+func ShelfPath(shelfId string) string {
     path, err := libraryShelfPathTemplate.Render(map[string]string{
         "shelf_id": shelfId,
     })
@@ -222,8 +222,8 @@ func LibraryShelfPath(shelfId string) string {
     return path
 }
 
-// LibraryBookPath returns the path for the book resource.
-func LibraryBookPath(shelfId, bookId string) string {
+// BookPath returns the path for the book resource.
+func BookPath(shelfId, bookId string) string {
     path, err := libraryBookPathTemplate.Render(map[string]string{
         "shelf_id": shelfId,
         "book_id": bookId,
@@ -234,8 +234,8 @@ func LibraryBookPath(shelfId, bookId string) string {
     return path
 }
 
-// LibraryReturnPath returns the path for the return resource.
-func LibraryReturnPath(shelf, book, return_ string) string {
+// ReturnPath returns the path for the return resource.
+func ReturnPath(shelf, book, return_ string) string {
     path, err := libraryReturnPathTemplate.Render(map[string]string{
         "shelf": shelf,
         "book": book,
