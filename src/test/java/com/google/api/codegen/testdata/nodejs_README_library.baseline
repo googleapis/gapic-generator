@@ -20,13 +20,14 @@ $ npm install --save @google-cloud/library
 ### Preview
 #### LibraryServiceClient
 ```js
- var libraryV1 = require('@google-cloud/library').v1({
-   // optional auth parameters.
+ var library = require('@google-cloud/library');
+
+ var client = library({
+    // optional auth parameters.
  });
 
- var client = libraryV1.libraryServiceClient();
  var formattedName = client.bookPath("testShelf-" + Date.now().toString(), projectId);
- var rating = libraryV1.Book.Rating.GOOD;
+ var rating = library.v1.types.Book.Rating.GOOD;
  var book = {
      rating : rating
  };

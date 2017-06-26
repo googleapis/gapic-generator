@@ -73,6 +73,20 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
   public abstract boolean isSingularRequestMethod();
 
+  public abstract String packageName();
+
+  public abstract boolean packageHasMultipleServices();
+
+  /** The name of the service exported by the package. */
+  public abstract String packageServiceName();
+
+  @Nullable
+  public abstract String apiVersion();
+
+  public boolean hasApiVersion() {
+    return apiVersion() != null;
+  }
+
   public static Builder newBuilder() {
     return new AutoValue_OptionalArrayMethodView.Builder();
   }
@@ -133,6 +147,15 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
     public abstract Builder longRunningView(LongRunningOperationDetailView val);
 
     public abstract Builder isSingularRequestMethod(boolean val);
+
+    public abstract Builder packageName(String val);
+
+    public abstract Builder packageHasMultipleServices(boolean val);
+
+    /** The name of the service exported by the package. */
+    public abstract Builder packageServiceName(String val);
+
+    public abstract Builder apiVersion(String val);
 
     public abstract OptionalArrayMethodView build();
   }
