@@ -35,9 +35,15 @@ public abstract class SmokeTestClassView implements ViewModel {
 
   public abstract String apiSettingsClassName();
 
+  @Nullable
   public abstract ApiMethodView apiMethod();
 
+  @Nullable
   public abstract TestCaseView method();
+
+  public boolean hasMethod() {
+    return method() != null;
+  }
 
   public abstract boolean requireProjectId();
 
