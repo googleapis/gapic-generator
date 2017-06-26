@@ -183,8 +183,13 @@
 @end
 
 @private apiCallableMember(apiCallable)
-  private final {@apiCallable.interfaceTypeName}<{@apiCallable.requestTypeName}, \
-    {@apiCallable.responseTypeName}> {@apiCallable.name};
+  @if apiCallable.hasMetadataTypeName
+    private final {@apiCallable.interfaceTypeName}<{@apiCallable.requestTypeName}, \
+      {@apiCallable.responseTypeName}, {@apiCallable.metadataTypeName}> {@apiCallable.name};
+  @else
+    private final {@apiCallable.interfaceTypeName}<{@apiCallable.requestTypeName}, \
+      {@apiCallable.responseTypeName}> {@apiCallable.name};
+  @end
 @end
 
 @private constructors(xapiClass)
@@ -471,8 +476,9 @@
     {@apiMethod.releaseLevelAnnotation}
 
   @end
-  {@apiMethod.visibility} final OperationFuture<{@apiMethod.responseTypeName}> {@apiMethod.name}(\
-       {@paramList(apiMethod.methodParams)}) {
+  {@apiMethod.visibility} final OperationFuture<{@apiMethod.responseTypeName}, \
+      {@apiMethod.operationMethod.metadataTypeName}> {@apiMethod.name}(\
+      {@paramList(apiMethod.methodParams)}) {
     {@flattenedRequestBuildingCode(apiMethod)}
     return {@apiMethod.name}(request);
   }
@@ -486,7 +492,8 @@
     {@apiMethod.releaseLevelAnnotation}
 
   @end
-  {@apiMethod.requestObjectMethod.accessModifier} final OperationFuture<{@apiMethod.responseTypeName}> \
+  {@apiMethod.requestObjectMethod.accessModifier} final OperationFuture<\
+      {@apiMethod.responseTypeName}, {@apiMethod.operationMethod.metadataTypeName}> \
       {@apiMethod.name}({@apiMethod.serviceRequestTypeName} request) {
     return {@apiMethod.requestObjectMethod.callableMethodName}().futureCall(request);
   }
@@ -501,7 +508,8 @@
 
   @end
   {@apiMethod.visibility} final OperationCallable<{@apiMethod.serviceRequestTypeName}, \
-      {@apiMethod.responseTypeName}> {@apiMethod.name}() {
+      {@apiMethod.responseTypeName}, {@apiMethod.operationMethod.metadataTypeName}> \
+      {@apiMethod.name}() {
     return {@apiMethod.callableMethod.callableName};
   }
 @end

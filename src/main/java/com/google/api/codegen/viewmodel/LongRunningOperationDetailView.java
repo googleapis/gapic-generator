@@ -35,6 +35,14 @@ public abstract class LongRunningOperationDetailView {
 
   public abstract String methodName();
 
+  public abstract long initialPollDelay();
+
+  public abstract double pollDelayMultiplier();
+
+  public abstract long maxPollDelay();
+
+  public abstract long totalPollTimeout();
+
   public static Builder newBuilder() {
     return new AutoValue_LongRunningOperationDetailView.Builder();
   }
@@ -56,6 +64,14 @@ public abstract class LongRunningOperationDetailView {
     public abstract Builder implementsCancel(boolean val);
 
     public abstract Builder methodName(String val);
+
+    public abstract Builder initialPollDelay(long initialDelay);
+
+    public abstract Builder pollDelayMultiplier(double multiplier);
+
+    public abstract Builder maxPollDelay(long maxDelay);
+
+    public abstract Builder totalPollTimeout(long totalTimeout);
 
     public abstract LongRunningOperationDetailView build();
   }

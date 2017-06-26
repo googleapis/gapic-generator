@@ -55,6 +55,7 @@ import com.google.api.codegen.viewmodel.testing.TestCaseView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import java.io.File;
@@ -116,7 +117,8 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
               .grpcMethods(mockServiceTransformer.createMockGrpcMethodViews(context))
               .build());
     }
-    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+    Iterable<Interface> apiInterfaces = new InterfaceView().getElementIterable(model);
+    for (Interface apiInterface : apiInterfaces) {
       // We don't need any imports here.
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
@@ -132,6 +134,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
                       "NodeJSGapicSurfaceTestTransformer.generateTestView - name"))
               .testCases(createTestCaseViews(context))
               .apiHasLongRunningMethods(context.getInterfaceConfig().hasLongRunningOperations())
+              .packageServiceName(namer.getPackageServiceName(apiInterface))
               .mockServices(Collections.<MockServiceUsageView>emptyList())
               .build());
     }
@@ -139,14 +142,24 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
     ImportSectionView importSection =
         importSectionTransformer.generateImportSection(typeTable.getImports());
     return MockCombinedView.newBuilder()
-        .outputPath("test" + File.separator + "test.js")
+        .outputPath(testCaseOutputFile(namer))
         .serviceImpls(impls)
         .mockServices(new ArrayList<MockServiceUsageView>())
         .testClasses(testClasses)
         .apiWrapperModuleName(namer.getApiWrapperModuleName())
         .templateFileName(TEST_TEMPLATE_FILE)
+        .packageHasMultipleServices(Iterables.size(apiInterfaces) > 1)
         .fileHeader(fileHeaderTransformer.generateFileHeader(productConfig, importSection, namer))
         .build();
+  }
+
+  private String testCaseOutputFile(SurfaceNamer namer) {
+    String outputPath = "test";
+    String fileName =
+        Strings.isNullOrEmpty(namer.getApiWrapperModuleVersion())
+            ? "gapic.js"
+            : "gapic-" + namer.getApiWrapperModuleVersion() + ".js";
+    return outputPath + File.separator + fileName;
   }
 
   private List<TestCaseView> createTestCaseViews(GapicInterfaceContext context) {

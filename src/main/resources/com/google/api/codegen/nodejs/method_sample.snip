@@ -2,12 +2,14 @@
 
 @snippet decorateSampleCode(apiMethod, coreSampleCode)
     @if apiMethod.hasApiVersion
+        var {@apiMethod.apiModuleName} = require('{@apiMethod.packageName}');
+
         @if apiMethod.packageHasMultipleServices
-            var {@apiMethod.apiModuleName} = require('{@apiMethod.packageName}').{@apiMethod.apiVersion}.{@apiMethod.packageServiceName}({
+            var client = {@apiMethod.apiModuleName}.{@apiMethod.apiVersion}.{@apiMethod.packageServiceName}({
               // optional auth parameters.
             });
         @else
-            var {@apiMethod.apiModuleName} = require('{@apiMethod.packageName}').{@apiMethod.apiVersion}({
+            var client = {@apiMethod.apiModuleName}.{@apiMethod.apiVersion}({
               // optional auth parameters.
             });
         @end
@@ -19,13 +21,15 @@
 @end
 
 @snippet decorateSampleCodeUnversioned(apiMethod, coreSampleCode)
+    var {@apiMethod.apiModuleName} = require('{@apiMethod.packageName}');
+
     @if apiMethod.packageHasMultipleServices
-        var {@apiMethod.apiModuleName} = require('{@apiMethod.packageName}').{@apiMethod.packageServiceName}({
-          // optional auth parameters.
+        var client = {@apiMethod.apiModuleName}.{@apiMethod.packageServiceName}({
+           // optional auth parameters.
         });
     @else
-        var {@apiMethod.apiModuleName} = require('{@apiMethod.packageName}')({
-          // optional auth parameters.
+        var client = {@apiMethod.apiModuleName}({
+           // optional auth parameters.
         });
     @end
 
@@ -61,7 +65,7 @@
 
 @snippet sampleCodePageStreaming(apiMethod)
     {@initCode(apiMethod)}
-    {@apiMethod.apiModuleName}.{@apiMethod.name}Stream({@sampleMethodCallArgList(apiMethod)}).on('data', function(element) {
+    client.{@apiMethod.name}Stream({@sampleMethodCallArgList(apiMethod)}).on('data', function(element) {
         // doThingsWith(element)
     }).on('error', function(err) {
         console.error(err);
@@ -69,7 +73,7 @@
 @end
 
 @private clientStreamingSampleCode(apiMethod, additionalCallback)
-    var stream = {@apiMethod.apiModuleName}.{@apiMethod.name}(function(err, response) {
+    var stream = client.{@apiMethod.name}(function(err, response) {
         if (err) {
             console.error(err);
             return;
@@ -85,7 +89,7 @@
 @end
 
 @private bidiStreamingSampleCode(apiMethod, additionalCallback)
-    var stream = {@apiMethod.apiModuleName}.{@apiMethod.name}().on('data', function(response) {
+    var stream = client.{@apiMethod.name}().on('data', function(response) {
         @if additionalCallback
             {@additionalCallback}();
         @else
@@ -142,7 +146,7 @@
 @end
 
 @private methodCallSampleCode(apiMethod)
-    {@apiMethod.apiModuleName}.{@apiMethod.name}(\
+    client.{@apiMethod.name}(\
         {@sampleMethodCallArgList(apiMethod)})
 @end
 
@@ -167,10 +171,10 @@
         }
         if (nextRequest) {
             // Fetch the next page.
-            return {@apiMethod.apiModuleName}.{@apiMethod.name}(nextRequest, options).then(callback);
+            return client.{@apiMethod.name}(nextRequest, options).then(callback);
         }
     }
-    {@apiMethod.apiModuleName}.{@apiMethod.name}({@sampleMethodCallArgListAndComma(apiMethod)}options)
+    client.{@apiMethod.name}({@sampleMethodCallArgListAndComma(apiMethod)}options)
         .then(callback)
         @if additionalCallback
             .then({@additionalCallback})
@@ -182,10 +186,10 @@
 
 @private methodCallSampleCodePrefix(apiMethod)
     @if sampleMethodCallArgList(apiMethod)
-        {@apiMethod.apiModuleName}.{@apiMethod.name}(\
+        client.{@apiMethod.name}(\
             {@sampleMethodCallArgList(apiMethod)})
     @else
-        {@apiMethod.apiModuleName}.{@apiMethod.name}()
+        client.{@apiMethod.name}()
     @end
 @end
 
@@ -282,13 +286,13 @@
 @end
 
 @private initCode(apiMethod)
-    {@initCodeLines(apiMethod.apiModuleName, apiMethod.initCode)}
+    {@initCodeLines(apiMethod.initCode)}
     @if initializeRequestObject(apiMethod)
         {@initializeRequestObject(apiMethod)}
     @end
 @end
 
-@snippet initCodeLines(apiModuleName, initCode)
+@snippet initCodeLines(initCode)
     @join line : initCode.lines
         @switch line.lineType.toString
         @case "StructureInitLine"
@@ -298,7 +302,7 @@
         @case "MapInitLine"
             {@initLineMap(line)}
         @case "SimpleInitLine"
-            {@initLineSimple(apiModuleName, line)}
+            {@initLineSimple(line)}
         @default
             $unhandledCase: {@line.lineType.toString}$
         @end
@@ -333,16 +337,16 @@
     @end
 @end
 
-@private initLineSimple(apiModuleName, line)
-    var {@line.identifier} = {@renderInitValue(apiModuleName, line.initValue)};
+@private initLineSimple(line)
+    var {@line.identifier} = {@renderInitValue(line.initValue)};
 @end
 
-@private renderInitValue(apiModuleName, initValue)
+@private renderInitValue(initValue)
     @switch initValue.type
     @case "SimpleInitValueView"
         {@initValue.initialValue}
     @case "FormattedInitValueView"
-        {@apiModuleName}.{@initValue.formatFunctionName}({@varList(initValue.formatArgs)})
+        client.{@initValue.formatFunctionName}({@varList(initValue.formatArgs)})
     @default
         $unhandledCase: {@initValue.type}$
     @end

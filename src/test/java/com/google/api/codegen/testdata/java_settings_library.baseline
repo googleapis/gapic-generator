@@ -1,4 +1,4 @@
-============== file: src/main/java/com/google/gcloud/pubsub/spi/LibrarySettings.java ==============
+============== file: src/main/java/com/google/gcloud/pubsub/v1/LibrarySettings.java ==============
 /*
  * Copyright 2017, Google Inc. All rights reserved.
  *
@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.gcloud.pubsub.spi;
+package com.google.gcloud.pubsub.v1;
 
 import com.google.api.core.ApiFuture;
 import com.google.api.core.BetaApi;
@@ -38,6 +38,8 @@ import com.google.api.gax.grpc.ExecutorProvider;
 import com.google.api.gax.grpc.InstantiatingChannelProvider;
 import com.google.api.gax.grpc.InstantiatingExecutorProvider;
 import com.google.api.gax.grpc.OperationCallSettings;
+import com.google.api.gax.grpc.OperationFuture;
+import com.google.api.gax.grpc.OperationTimedPollAlgorithm;
 import com.google.api.gax.grpc.PageContext;
 import com.google.api.gax.grpc.PagedCallSettings;
 import com.google.api.gax.grpc.PagedListDescriptor;
@@ -66,6 +68,7 @@ import com.google.example.library.v1.DeleteShelfRequest;
 import com.google.example.library.v1.DiscussBookRequest;
 import com.google.example.library.v1.FindRelatedBooksRequest;
 import com.google.example.library.v1.FindRelatedBooksResponse;
+import com.google.example.library.v1.GetBigBookMetadata;
 import com.google.example.library.v1.GetBookFromAnywhereRequest;
 import com.google.example.library.v1.GetBookFromArchiveRequest;
 import com.google.example.library.v1.GetBookRequest;
@@ -89,10 +92,10 @@ import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse;
 import com.google.example.library.v1.UpdateBookIndexRequest;
 import com.google.example.library.v1.UpdateBookRequest;
-import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.FindRelatedBooksPagedResponse;
-import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.ListBooksPagedResponse;
-import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.ListShelvesPagedResponse;
-import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.ListStringsPagedResponse;
+import static com.google.gcloud.pubsub.v1.PagedResponseWrappers.FindRelatedBooksPagedResponse;
+import static com.google.gcloud.pubsub.v1.PagedResponseWrappers.ListBooksPagedResponse;
+import static com.google.gcloud.pubsub.v1.PagedResponseWrappers.ListShelvesPagedResponse;
+import static com.google.gcloud.pubsub.v1.PagedResponseWrappers.ListStringsPagedResponse;
 import com.google.longrunning.Operation;
 import com.google.protobuf.Empty;
 import com.google.tagger.v1.AddLabelRequest;
@@ -342,8 +345,8 @@ public class LibrarySettings extends ClientSettings {
   private final PagedCallSettings<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings;
   private final SimpleCallSettings<AddTagRequest, AddTagResponse> addTagSettings;
   private final SimpleCallSettings<AddLabelRequest, AddLabelResponse> addLabelSettings;
-  private final OperationCallSettings<GetBookRequest, Book> getBigBookSettings;
-  private final OperationCallSettings<GetBookRequest, Empty> getBigNothingSettings;
+  private final OperationCallSettings<GetBookRequest, Book, GetBigBookMetadata> getBigBookSettings;
+  private final OperationCallSettings<GetBookRequest, Empty, GetBigBookMetadata> getBigNothingSettings;
   private final SimpleCallSettings<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings;
 
   /**
@@ -517,14 +520,14 @@ public class LibrarySettings extends ClientSettings {
   /**
    * Returns the object with the settings used for calls to getBigBook.
    */
-  public OperationCallSettings<GetBookRequest, Book> getBigBookSettings() {
+  public OperationCallSettings<GetBookRequest, Book, GetBigBookMetadata> getBigBookSettings() {
     return getBigBookSettings;
   }
 
   /**
    * Returns the object with the settings used for calls to getBigNothing.
    */
-  public OperationCallSettings<GetBookRequest, Empty> getBigNothingSettings() {
+  public OperationCallSettings<GetBookRequest, Empty, GetBigBookMetadata> getBigNothingSettings() {
     return getBigNothingSettings;
   }
 
@@ -980,8 +983,8 @@ public class LibrarySettings extends ClientSettings {
     private final PagedCallSettings.Builder<FindRelatedBooksRequest, FindRelatedBooksResponse, FindRelatedBooksPagedResponse> findRelatedBooksSettings;
     private final SimpleCallSettings.Builder<AddTagRequest, AddTagResponse> addTagSettings;
     private final SimpleCallSettings.Builder<AddLabelRequest, AddLabelResponse> addLabelSettings;
-    private final OperationCallSettings.Builder<GetBookRequest, Book> getBigBookSettings;
-    private final OperationCallSettings.Builder<GetBookRequest, Empty> getBigNothingSettings;
+    private final OperationCallSettings.Builder<GetBookRequest, Book, GetBigBookMetadata> getBigBookSettings;
+    private final OperationCallSettings.Builder<GetBookRequest, Empty, GetBigBookMetadata> getBigNothingSettings;
     private final SimpleCallSettings.Builder<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsSettings;
 
     private static final ImmutableMap<String, ImmutableSet<Status.Code>> RETRYABLE_CODE_DEFINITIONS;
@@ -1080,16 +1083,9 @@ public class LibrarySettings extends ClientSettings {
 
       addLabelSettings = SimpleCallSettings.newBuilder(METHOD_ADD_LABEL);
 
-      getBigBookSettings = OperationCallSettings.newBuilder(
-          METHOD_GET_BIG_BOOK,
-          Book.class);
-      getBigBookSettings.setPollingInterval(Duration.ofMillis(300000));
+      getBigBookSettings = OperationCallSettings.newBuilder();
 
-
-      getBigNothingSettings = OperationCallSettings.newBuilder(
-          METHOD_GET_BIG_NOTHING,
-          Empty.class);
-
+      getBigNothingSettings = OperationCallSettings.newBuilder();
 
       testOptionalRequiredFlatteningParamsSettings = SimpleCallSettings.newBuilder(METHOD_TEST_OPTIONAL_REQUIRED_FLATTENING_PARAMS);
 
@@ -1220,12 +1216,46 @@ public class LibrarySettings extends ClientSettings {
       builder.testOptionalRequiredFlatteningParamsSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
-      builder.getBigBookSettings().getInitialCallSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
-          .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
-      builder.getBigNothingSettings().getInitialCallSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
-          .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
+      builder
+          .getBigBookSettings()
+          .setInitialCallSettings(
+              SimpleCallSettings.newBuilder(METHOD_GET_BIG_BOOK)
+                  .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
+                  .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"))
+                  .build())
+          .setResponseClass(Book.class)
+          .setMetadataClass(GetBigBookMetadata.class)
+          .setPollingAlgorithm(
+              OperationTimedPollAlgorithm.create(
+                  RetrySettings.newBuilder()
+                     .setInitialRetryDelay(Duration.ofMillis(3000L))
+                     .setRetryDelayMultiplier(1.3)
+                     .setMaxRetryDelay(Duration.ofMillis(30000L))
+                     .setInitialRpcTimeout(Duration.ZERO) // ignored
+                     .setRpcTimeoutMultiplier(1.0) // ignored
+                     .setMaxRpcTimeout(Duration.ZERO) // ignored
+                     .setTotalTimeout(Duration.ofMillis(86400000L))
+                     .build()));
+      builder
+          .getBigNothingSettings()
+          .setInitialCallSettings(
+              SimpleCallSettings.newBuilder(METHOD_GET_BIG_NOTHING)
+                  .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
+                  .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"))
+                  .build())
+          .setResponseClass(Empty.class)
+          .setMetadataClass(GetBigBookMetadata.class)
+          .setPollingAlgorithm(
+              OperationTimedPollAlgorithm.create(
+                  RetrySettings.newBuilder()
+                     .setInitialRetryDelay(Duration.ofMillis(3000L))
+                     .setRetryDelayMultiplier(1.3)
+                     .setMaxRetryDelay(Duration.ofMillis(60000L))
+                     .setInitialRpcTimeout(Duration.ZERO) // ignored
+                     .setRpcTimeoutMultiplier(1.0) // ignored
+                     .setMaxRpcTimeout(Duration.ZERO) // ignored
+                     .setTotalTimeout(Duration.ofMillis(600000L))
+                     .build()));
 
       return builder;
     }
@@ -1487,14 +1517,14 @@ public class LibrarySettings extends ClientSettings {
     /**
      * Returns the builder for the settings used for calls to getBigBook.
      */
-    public OperationCallSettings.Builder<GetBookRequest, Book> getBigBookSettings() {
+    public OperationCallSettings.Builder<GetBookRequest, Book, GetBigBookMetadata> getBigBookSettings() {
       return getBigBookSettings;
     }
 
     /**
      * Returns the builder for the settings used for calls to getBigNothing.
      */
-    public OperationCallSettings.Builder<GetBookRequest, Empty> getBigNothingSettings() {
+    public OperationCallSettings.Builder<GetBookRequest, Empty, GetBigBookMetadata> getBigNothingSettings() {
       return getBigNothingSettings;
     }
 

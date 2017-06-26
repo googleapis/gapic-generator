@@ -46,6 +46,7 @@ var ALL_SCOPES = [
 ];
 
 /**
+<<<<<<< HEAD
  * This will be created through a builder function which can be obtained by the module.
  * See the following example of how to initialize the module and how to access to the builder.
  * @see {@link noTemplatesApiServiceClient}
@@ -54,6 +55,8 @@ var ALL_SCOPES = [
  * var example = require('example')({
  *   // optional auth parameters.
  * });
+=======
+>>>>>>> 00938c2e4d2a6e769c5b80187d6798c3d8461962
  *
  * @class
  */
@@ -136,9 +139,18 @@ NoTemplatesApiServiceClient.prototype.getProjectId = function(callback) {
  *
  * @example
  *
+<<<<<<< HEAD
  * var example = require('example')({
  *   // optional auth parameters.
  * });
+=======
+ * var example = require('example');
+ *
+ * var client = example({
+ *    // optional auth parameters.
+ * });
+ *
+>>>>>>> 00938c2e4d2a6e769c5b80187d6798c3d8461962
  *
  * example.increment({}).catch(function(err) {
  *     console.error(err);
@@ -163,7 +175,10 @@ function NoTemplatesApiServiceClientBuilder(gaxGrpc) {
     return new NoTemplatesApiServiceClientBuilder(gaxGrpc);
   }
 
-  var noTemplatesApiServiceClient = require('grpc-google-cloud-example-v1').client;
+  var noTemplatesApiServiceClient = gaxGrpc.load([{
+    root: require('path').join(__dirname, '..', 'proto'),
+    file: 'no_path_templates.proto'
+  }]);
   extend(this, noTemplatesApiServiceClient.google.cloud.example.v1);
 
 

@@ -28,17 +28,19 @@
      * EXPERIMENTAL: this client library class has not yet been declared beta. This class may change
      * more frequently than those which have been declared beta or 1.0, including changes which break
      * backwards compatibility.
+     *
+     * @@experimental
      */
 @end
 
 @private serviceDoc(xapiClass)
     @let coreSampleCode = sampleCode(xapiClass.doc.exampleApiMethod), \
          decoratedSampleCode = decorateSampleCode(xapiClass, xapiClass.doc.exampleApiMethod, coreSampleCode)
-        {@renderServiceDoc(xapiClass.doc, decoratedSampleCode)}
+        {@renderServiceDoc(xapiClass.doc, decoratedSampleCode, xapiClass.hasFormatOrParseResourceFunctions)}
     @end
 @end
 
-@private renderServiceDoc(xapiClassDoc, exampleMethodSampleCode)
+@private renderServiceDoc(xapiClassDoc, exampleMethodSampleCode, hasFormatOrParseResourceFunctions)
     /**
      * Service Description: {@xapiClassDoc.firstLine}
     @if xapiClassDoc.remainingLines
@@ -60,10 +62,13 @@
     @end
      * ```
      *
-     * Many parameters require resource names to be formatted in a particular way. To assist
-     * with these names, this class includes a format method for each type of name, and additionally
-     * a parse method to extract the individual identifiers contained within names that are
-     * returned.
+    @if hasFormatOrParseResourceFunctions
+        {@""} * Many parameters require resource names to be formatted in a particular way. To assist
+         * with these names, this class includes a format method for each type of name, and additionally
+         * a parse method to extract the individual identifiers contained within names that are
+         * returned.
+    @end
+     * @@experimental
      */
 @end
 
@@ -141,6 +146,12 @@
     /**
      * Formats a string containing the fully-qualified path to represent
      * a {@function.entityName} resource.
+     *
+    @join param : function.resourceIdParams
+        {@""} * @@param string ${@param.name}
+    @end
+     * @@return string The formatted {@function.entityName} resource.
+     * @@experimental
      */
     public static function {@function.name}(\
             {@formatResourceFunctionParams(function.resourceIdParams)})
@@ -168,6 +179,10 @@
     /**
      * Parses the {@function.outputResourceId} from the given fully-qualified path which
      * represents a {@function.entityName} resource.
+     *
+     * @@param string ${@function.entityNameParamName} The fully-qualified {@function.entityName} resource.
+     * @@return string The extracted {@function.outputResourceId} value.
+     * @@experimental
      */
     public static function {@function.name}(${@function.entityNameParamName})
     {
@@ -196,12 +211,14 @@
             @join descriptor : xapiClass.pageStreamingDescriptors
                 ${@descriptor.varName} =
                         new PageStreamingDescriptor([
-                            'requestPageTokenField' => '{@descriptor.requestTokenFieldName}',
+                            'requestPageTokenGetMethod' => '{@descriptor.requestTokenGetMethodName}',
+                            'requestPageTokenSetMethod' => '{@descriptor.requestTokenSetMethodName}',
                             @if descriptor.requestHasPageSizeField
-                                'requestPageSizeField' => '{@descriptor.requestPageSizeFieldName}',
+                                'requestPageSizeGetMethod' => '{@descriptor.requestPageSizeGetMethodName}',
+                                'requestPageSizeSetMethod' => '{@descriptor.requestPageSizeSetMethodName}',
                             @end
-                            'responsePageTokenField' => '{@descriptor.responseTokenFieldName}',
-                            'resourceField' => '{@descriptor.resourcesFieldName}',
+                            'responsePageTokenGetMethod' => '{@descriptor.responseTokenGetMethodName}',
+                            'resourcesGetMethod' => '{@descriptor.resourcesGetMethodName}',
                         ]);
             @end
 
@@ -273,6 +290,7 @@
          * Return an OperationsClient object with the same endpoint as $this.
          *
          * @@return \Google\GAX\LongRunning\OperationsClient
+         * @@experimental
          */
         public function getOperationsClient()
         {
@@ -288,8 +306,8 @@
          *
          * @@param string $operationName The name of the long running operation
          * @@param string $methodName The name of the method used to start the operation
-         *
          * @@return \Google\GAX\OperationResponse
+         * @@experimental
          */
         public function resumeOperation($operationName, $methodName = null)
         {
@@ -355,6 +373,7 @@
          * @@throws ValidationException Throws a ValidationException if required arguments are missing
          *                             from the $options array.
      @end
+     * @@experimental
      */
     public function __construct($options = [])
     {
@@ -512,36 +531,12 @@
 @end
 
 @private setRequiredFieldCall(param)
-    @if param.isMap
-        foreach (${@param.name} as $key => $value) {
-            $request->{@param.addCallName}((new {@param.elementTypeName}())->setKey($key)->setValue($value));
-        }
-    @else
-        @if param.isArray
-            foreach (${@param.name} as $elem) {
-                $request->{@param.addCallName}($elem);
-            }
-        @else
-            $request->{@param.setCallName}(${@param.name});
-        @end
-    @end
+    $request->{@param.setCallName}(${@param.name});
 @end
 
 @private setOptionalFieldCall(param)
     if (isset($optionalArgs['{@param.name}'])) {
-        @if param.isMap
-            foreach ($optionalArgs['{@param.name}'] as $key => $value) {
-                $request->{@param.addCallName}((new {@param.elementTypeName}())->setKey($key)->setValue($value));
-            }
-        @else
-            @if param.isArray
-                foreach ($optionalArgs['{@param.name}'] as $elem) {
-                    $request->{@param.addCallName}($elem);
-                }
-            @else
-                $request->{@param.setCallName}($optionalArgs['{@param.name}']);
-            @end
-        @end
+        $request->{@param.setCallName}($optionalArgs['{@param.name}']);
     }
 @end
 
@@ -573,6 +568,7 @@
     @end
      *
      * @@throws \Google\GAX\ApiException if the remote call fails
+     * @@experimental
      */
     {@""}
 @end
@@ -629,6 +625,7 @@
     /**
      * Initiates an orderly shutdown in which preexisting calls continue but new
      * calls are immediately cancelled.
+     * @@experimental
      */
     public function close()
     {

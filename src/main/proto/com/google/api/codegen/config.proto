@@ -505,6 +505,16 @@ message LongRunningConfigProto {
   // Whether or not the server implements cancel.
   bool implements_cancel = 4;
 
-  // The interval of polling, in milliseconds.
-  uint64 polling_interval_millis = 5;
+  // Initial delay after which first poll request will be made.
+  uint64 initial_poll_delay_millis = 5;
+
+  // Multiplier to gradually increase delay between subsequent polls until it
+  // reaches max_poll_delay_millis.
+  double poll_delay_multiplier = 6;
+
+  // Maximum time between two subsequent poll requests.
+  uint64 max_poll_delay_millis = 7;
+
+  // Total polling timeout.
+  uint64 total_poll_timeout_millis = 8;
 }

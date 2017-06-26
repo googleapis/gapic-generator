@@ -24,65 +24,72 @@
 namespace Google\Tests\Example\Library\V1;
 
 use Google\Example\Library\V1\LibraryServiceClient;
-use \Google\GAX\ApiException;
-use \Google\GAX\GrpcCredentialsHelper;
-use \Google\GAX\LongRunning\OperationsClient;
-use \Google\GAX\Testing\LongRunning\MockOperationsImpl;
-use \Google\GAX\Testing\MockStubTrait;
-use \Grpc;
-use \PHPUnit_Framework_TestCase;
-use \google\example\library\v1\AddCommentsRequest;
-use \google\example\library\v1\Book;
-use \google\example\library\v1\BookFromAnywhere;
-use \google\example\library\v1\BookFromArchive;
-use \google\example\library\v1\Comment;
-use \google\example\library\v1\Comment\Stage;
-use \google\example\library\v1\CreateBookRequest;
-use \google\example\library\v1\CreateShelfRequest;
-use \google\example\library\v1\DeleteBookRequest;
-use \google\example\library\v1\DeleteShelfRequest;
-use \google\example\library\v1\FindRelatedBooksRequest;
-use \google\example\library\v1\FindRelatedBooksResponse;
-use \google\example\library\v1\GetBookFromAnywhereRequest;
-use \google\example\library\v1\GetBookFromArchiveRequest;
-use \google\example\library\v1\GetBookRequest;
-use \google\example\library\v1\GetShelfRequest;
-use \google\example\library\v1\LibraryServiceGrpcClient;
-use \google\example\library\v1\ListBooksRequest;
-use \google\example\library\v1\ListBooksResponse;
-use \google\example\library\v1\ListShelvesRequest;
-use \google\example\library\v1\ListShelvesResponse;
-use \google\example\library\v1\ListStringsRequest;
-use \google\example\library\v1\ListStringsResponse;
-use \google\example\library\v1\MergeShelvesRequest;
-use \google\example\library\v1\MoveBookRequest;
-use \google\example\library\v1\PublishSeriesRequest;
-use \google\example\library\v1\PublishSeriesResponse;
-use \google\example\library\v1\SeriesUuid;
-use \google\example\library\v1\Shelf;
-use \google\example\library\v1\SomeMessage2\SomeMessage3\Alignment;
-use \google\example\library\v1\TestOptionalRequiredFlatteningParamsRequest;
-use \google\example\library\v1\TestOptionalRequiredFlatteningParamsRequest\InnerEnum;
-use \google\example\library\v1\TestOptionalRequiredFlatteningParamsRequest\InnerMessage;
-use \google\example\library\v1\TestOptionalRequiredFlatteningParamsResponse;
-use \google\example\library\v1\UpdateBookIndexRequest;
-use \google\example\library\v1\UpdateBookRequest;
-use \google\longrunning\GetOperationRequest;
-use \google\longrunning\Operation;
-use \google\protobuf\Any;
-use \google\protobuf\EmptyC;
-use \google\tagger\v1\AddLabelRequest;
-use \google\tagger\v1\AddLabelResponse;
-use \google\tagger\v1\AddTagRequest;
-use \google\tagger\v1\AddTagResponse;
-use \google\tagger\v1\LabelerGrpcClient;
-use \stdClass;
+use Google\Example\Library\V1\AddCommentsRequest;
+use Google\Example\Library\V1\Book;
+use Google\Example\Library\V1\BookFromAnywhere;
+use Google\Example\Library\V1\BookFromArchive;
+use Google\Example\Library\V1\Comment;
+use Google\Example\Library\V1\Comment_Stage as Stage;
+use Google\Example\Library\V1\CreateBookRequest;
+use Google\Example\Library\V1\CreateShelfRequest;
+use Google\Example\Library\V1\DeleteBookRequest;
+use Google\Example\Library\V1\DeleteShelfRequest;
+use Google\Example\Library\V1\DiscussBookRequest;
+use Google\Example\Library\V1\FindRelatedBooksRequest;
+use Google\Example\Library\V1\FindRelatedBooksResponse;
+use Google\Example\Library\V1\GetBookFromAnywhereRequest;
+use Google\Example\Library\V1\GetBookFromArchiveRequest;
+use Google\Example\Library\V1\GetBookRequest;
+use Google\Example\Library\V1\GetShelfRequest;
+use Google\Example\Library\V1\LibraryServiceGrpcClient;
+use Google\Example\Library\V1\ListBooksRequest;
+use Google\Example\Library\V1\ListBooksResponse;
+use Google\Example\Library\V1\ListShelvesRequest;
+use Google\Example\Library\V1\ListShelvesResponse;
+use Google\Example\Library\V1\ListStringsRequest;
+use Google\Example\Library\V1\ListStringsResponse;
+use Google\Example\Library\V1\MergeShelvesRequest;
+use Google\Example\Library\V1\MoveBookRequest;
+use Google\Example\Library\V1\PublishSeriesRequest;
+use Google\Example\Library\V1\PublishSeriesResponse;
+use Google\Example\Library\V1\SeriesUuid;
+use Google\Example\Library\V1\Shelf;
+use Google\Example\Library\V1\SomeMessage2_SomeMessage3_Alignment as Alignment;
+use Google\Example\Library\V1\StreamBooksRequest;
+use Google\Example\Library\V1\StreamShelvesRequest;
+use Google\Example\Library\V1\StreamShelvesResponse;
+use Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest;
+use Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest_InnerEnum as InnerEnum;
+use Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest_InnerMessage as InnerMessage;
+use Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsResponse;
+use Google\Example\Library\V1\UpdateBookIndexRequest;
+use Google\Example\Library\V1\UpdateBookRequest;
+use Google\GAX\ApiException;
+use Google\GAX\BidiStream;
+use Google\GAX\GrpcCredentialsHelper;
+use Google\GAX\LongRunning\OperationsClient;
+use Google\GAX\ServerStream;
+use Google\GAX\Testing\GeneratedTest;
+use Google\GAX\Testing\LongRunning\MockOperationsImpl;
+use Google\GAX\Testing\MockStubTrait;
+use Google\Longrunning\GetOperationRequest;
+use Google\Longrunning\Operation;
+use Google\Protobuf\Any;
+use Google\Protobuf\GPBEmpty;
+use Google\Tagger\V1\AddLabelRequest;
+use Google\Tagger\V1\AddLabelResponse;
+use Google\Tagger\V1\AddTagRequest;
+use Google\Tagger\V1\AddTagResponse;
+use Google\Tagger\V1\LabelerGrpcClient;
+use Grpc;
+use PHPUnit_Framework_TestCase;
+use stdClass;
 
 /**
  * @group library
  * @group grpc
  */
-class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
+class LibraryServiceClientTest extends GeneratedTest
 {
     public function createMockLibraryServiceImpl($hostname, $opts)
     {
@@ -145,7 +152,7 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
 
         $response = $client->createShelf($shelf);
         $this->assertEquals($expectedResponse, $response);
-        $actualRequests = $grpcStub->getReceivedCalls();
+        $actualRequests = $grpcStub->popReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
@@ -169,6 +176,13 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $status = new stdClass();
         $status->code = Grpc\STATUS_DATA_LOSS;
         $status->details = 'internal error';
+
+        $expectedExceptionMessage = json_encode([
+           "message" => "internal error",
+           "code" => Grpc\STATUS_DATA_LOSS,
+           "status" => "DATA_LOSS",
+           "details" => [],
+        ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
         // Mock request
@@ -180,11 +194,11 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
             $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
-            $this->assertEquals($status->details, $ex->getMessage());
+            $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
         }
 
-        // Call getReceivedCalls to ensure the stub is exhausted
-        $grpcStub->getReceivedCalls();
+        // Call popReceivedCalls to ensure the stub is exhausted
+        $grpcStub->popReceivedCalls();
         $this->assertTrue($grpcStub->isExhausted());
     }
 
@@ -214,7 +228,7 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
 
         $response = $client->getShelf($formattedName, $options);
         $this->assertEquals($expectedResponse, $response);
-        $actualRequests = $grpcStub->getReceivedCalls();
+        $actualRequests = $grpcStub->popReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
@@ -239,6 +253,13 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $status = new stdClass();
         $status->code = Grpc\STATUS_DATA_LOSS;
         $status->details = 'internal error';
+
+        $expectedExceptionMessage = json_encode([
+           "message" => "internal error",
+           "code" => Grpc\STATUS_DATA_LOSS,
+           "status" => "DATA_LOSS",
+           "details" => [],
+        ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
         // Mock request
@@ -251,11 +272,11 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
             $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
-            $this->assertEquals($status->details, $ex->getMessage());
+            $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
         }
 
-        // Call getReceivedCalls to ensure the stub is exhausted
-        $grpcStub->getReceivedCalls();
+        // Call popReceivedCalls to ensure the stub is exhausted
+        $grpcStub->popReceivedCalls();
         $this->assertTrue($grpcStub->isExhausted());
     }
 
@@ -275,18 +296,16 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $shelves = [$shelvesElement];
         $expectedResponse = new ListShelvesResponse();
         $expectedResponse->setNextPageToken($nextPageToken);
-        foreach ($shelves as $elem) {
-            $expectedResponse->addShelves($elem);
-        }
+        $expectedResponse->setShelves($shelves);
         $grpcStub->addResponse($expectedResponse);
 
         $response = $client->listShelves();
         $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
         $resources = iterator_to_array($response->iterateAllElements());
         $this->assertSame(1, count($resources));
-        $this->assertEquals($expectedResponse->getShelvesList()[0], $resources[0]);
+        $this->assertEquals($expectedResponse->getShelves()[0], $resources[0]);
 
-        $actualRequests = $grpcStub->getReceivedCalls();
+        $actualRequests = $grpcStub->popReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
@@ -308,6 +327,13 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $status = new stdClass();
         $status->code = Grpc\STATUS_DATA_LOSS;
         $status->details = 'internal error';
+
+        $expectedExceptionMessage = json_encode([
+           "message" => "internal error",
+           "code" => Grpc\STATUS_DATA_LOSS,
+           "status" => "DATA_LOSS",
+           "details" => [],
+        ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
         try {
@@ -316,11 +342,11 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
             $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
-            $this->assertEquals($status->details, $ex->getMessage());
+            $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
         }
 
-        // Call getReceivedCalls to ensure the stub is exhausted
-        $grpcStub->getReceivedCalls();
+        // Call popReceivedCalls to ensure the stub is exhausted
+        $grpcStub->popReceivedCalls();
         $this->assertTrue($grpcStub->isExhausted());
     }
 
@@ -335,14 +361,14 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($grpcStub->isExhausted());
 
         // Mock response
-        $expectedResponse = new EmptyC();
+        $expectedResponse = new GPBEmpty();
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
         $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
 
         $client->deleteShelf($formattedName);
-        $actualRequests = $grpcStub->getReceivedCalls();
+        $actualRequests = $grpcStub->popReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
@@ -366,6 +392,13 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $status = new stdClass();
         $status->code = Grpc\STATUS_DATA_LOSS;
         $status->details = 'internal error';
+
+        $expectedExceptionMessage = json_encode([
+           "message" => "internal error",
+           "code" => Grpc\STATUS_DATA_LOSS,
+           "status" => "DATA_LOSS",
+           "details" => [],
+        ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
         // Mock request
@@ -377,11 +410,11 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
             $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
-            $this->assertEquals($status->details, $ex->getMessage());
+            $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
         }
 
-        // Call getReceivedCalls to ensure the stub is exhausted
-        $grpcStub->getReceivedCalls();
+        // Call popReceivedCalls to ensure the stub is exhausted
+        $grpcStub->popReceivedCalls();
         $this->assertTrue($grpcStub->isExhausted());
     }
 
@@ -411,7 +444,7 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
 
         $response = $client->mergeShelves($formattedName, $formattedOtherShelfName);
         $this->assertEquals($expectedResponse, $response);
-        $actualRequests = $grpcStub->getReceivedCalls();
+        $actualRequests = $grpcStub->popReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
@@ -436,6 +469,13 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $status = new stdClass();
         $status->code = Grpc\STATUS_DATA_LOSS;
         $status->details = 'internal error';
+
+        $expectedExceptionMessage = json_encode([
+           "message" => "internal error",
+           "code" => Grpc\STATUS_DATA_LOSS,
+           "status" => "DATA_LOSS",
+           "details" => [],
+        ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
         // Mock request
@@ -448,11 +488,11 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
             $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
-            $this->assertEquals($status->details, $ex->getMessage());
+            $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
         }
 
-        // Call getReceivedCalls to ensure the stub is exhausted
-        $grpcStub->getReceivedCalls();
+        // Call popReceivedCalls to ensure the stub is exhausted
+        $grpcStub->popReceivedCalls();
         $this->assertTrue($grpcStub->isExhausted());
     }
 
@@ -484,7 +524,7 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
 
         $response = $client->createBook($formattedName, $book);
         $this->assertEquals($expectedResponse, $response);
-        $actualRequests = $grpcStub->getReceivedCalls();
+        $actualRequests = $grpcStub->popReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
@@ -509,6 +549,13 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $status = new stdClass();
         $status->code = Grpc\STATUS_DATA_LOSS;
         $status->details = 'internal error';
+
+        $expectedExceptionMessage = json_encode([
+           "message" => "internal error",
+           "code" => Grpc\STATUS_DATA_LOSS,
+           "status" => "DATA_LOSS",
+           "details" => [],
+        ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
         // Mock request
@@ -521,11 +568,11 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
             $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
-            $this->assertEquals($status->details, $ex->getMessage());
+            $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
         }
 
-        // Call getReceivedCalls to ensure the stub is exhausted
-        $grpcStub->getReceivedCalls();
+        // Call popReceivedCalls to ensure the stub is exhausted
+        $grpcStub->popReceivedCalls();
         $this->assertTrue($grpcStub->isExhausted());
     }
 
@@ -543,9 +590,7 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $bookNamesElement = "bookNamesElement1491670575";
         $bookNames = [$bookNamesElement];
         $expectedResponse = new PublishSeriesResponse();
-        foreach ($bookNames as $elem) {
-            $expectedResponse->addBookNames($elem);
-        }
+        $expectedResponse->setBookNames($bookNames);
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
@@ -557,14 +602,14 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
 
         $response = $client->publishSeries($shelf, $books, $seriesUuid);
         $this->assertEquals($expectedResponse, $response);
-        $actualRequests = $grpcStub->getReceivedCalls();
+        $actualRequests = $grpcStub->popReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/PublishSeries', $actualFuncCall);
 
         $this->assertEquals($shelf, $actualRequestObject->getShelf());
-        $this->assertEquals($books, $actualRequestObject->getBooksList());
+        $this->assertRepeatedFieldEquals($books, $actualRequestObject->getBooks());
         $this->assertEquals($seriesUuid, $actualRequestObject->getSeriesUuid());
 
         $this->assertTrue($grpcStub->isExhausted());
@@ -583,6 +628,13 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $status = new stdClass();
         $status->code = Grpc\STATUS_DATA_LOSS;
         $status->details = 'internal error';
+
+        $expectedExceptionMessage = json_encode([
+           "message" => "internal error",
+           "code" => Grpc\STATUS_DATA_LOSS,
+           "status" => "DATA_LOSS",
+           "details" => [],
+        ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
         // Mock request
@@ -598,11 +650,11 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
             $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
-            $this->assertEquals($status->details, $ex->getMessage());
+            $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
         }
 
-        // Call getReceivedCalls to ensure the stub is exhausted
-        $grpcStub->getReceivedCalls();
+        // Call popReceivedCalls to ensure the stub is exhausted
+        $grpcStub->popReceivedCalls();
         $this->assertTrue($grpcStub->isExhausted());
     }
 
@@ -633,7 +685,7 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
 
         $response = $client->getBook($formattedName);
         $this->assertEquals($expectedResponse, $response);
-        $actualRequests = $grpcStub->getReceivedCalls();
+        $actualRequests = $grpcStub->popReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
@@ -657,6 +709,13 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $status = new stdClass();
         $status->code = Grpc\STATUS_DATA_LOSS;
         $status->details = 'internal error';
+
+        $expectedExceptionMessage = json_encode([
+           "message" => "internal error",
+           "code" => Grpc\STATUS_DATA_LOSS,
+           "status" => "DATA_LOSS",
+           "details" => [],
+        ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
         // Mock request
@@ -668,11 +727,11 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
             $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
-            $this->assertEquals($status->details, $ex->getMessage());
+            $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
         }
 
-        // Call getReceivedCalls to ensure the stub is exhausted
-        $grpcStub->getReceivedCalls();
+        // Call popReceivedCalls to ensure the stub is exhausted
+        $grpcStub->popReceivedCalls();
         $this->assertTrue($grpcStub->isExhausted());
     }
 
@@ -692,9 +751,7 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $books = [$booksElement];
         $expectedResponse = new ListBooksResponse();
         $expectedResponse->setNextPageToken($nextPageToken);
-        foreach ($books as $elem) {
-            $expectedResponse->addBooks($elem);
-        }
+        $expectedResponse->setBooks($books);
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
@@ -704,9 +761,9 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
         $resources = iterator_to_array($response->iterateAllElements());
         $this->assertSame(1, count($resources));
-        $this->assertEquals($expectedResponse->getBooksList()[0], $resources[0]);
+        $this->assertEquals($expectedResponse->getBooks()[0], $resources[0]);
 
-        $actualRequests = $grpcStub->getReceivedCalls();
+        $actualRequests = $grpcStub->popReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
@@ -729,6 +786,13 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $status = new stdClass();
         $status->code = Grpc\STATUS_DATA_LOSS;
         $status->details = 'internal error';
+
+        $expectedExceptionMessage = json_encode([
+           "message" => "internal error",
+           "code" => Grpc\STATUS_DATA_LOSS,
+           "status" => "DATA_LOSS",
+           "details" => [],
+        ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
         // Mock request
@@ -740,11 +804,11 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
             $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
-            $this->assertEquals($status->details, $ex->getMessage());
+            $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
         }
 
-        // Call getReceivedCalls to ensure the stub is exhausted
-        $grpcStub->getReceivedCalls();
+        // Call popReceivedCalls to ensure the stub is exhausted
+        $grpcStub->popReceivedCalls();
         $this->assertTrue($grpcStub->isExhausted());
     }
 
@@ -759,14 +823,14 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($grpcStub->isExhausted());
 
         // Mock response
-        $expectedResponse = new EmptyC();
+        $expectedResponse = new GPBEmpty();
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
         $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
 
         $client->deleteBook($formattedName);
-        $actualRequests = $grpcStub->getReceivedCalls();
+        $actualRequests = $grpcStub->popReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
@@ -790,6 +854,13 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $status = new stdClass();
         $status->code = Grpc\STATUS_DATA_LOSS;
         $status->details = 'internal error';
+
+        $expectedExceptionMessage = json_encode([
+           "message" => "internal error",
+           "code" => Grpc\STATUS_DATA_LOSS,
+           "status" => "DATA_LOSS",
+           "details" => [],
+        ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
         // Mock request
@@ -801,11 +872,11 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
             $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
-            $this->assertEquals($status->details, $ex->getMessage());
+            $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
         }
 
-        // Call getReceivedCalls to ensure the stub is exhausted
-        $grpcStub->getReceivedCalls();
+        // Call popReceivedCalls to ensure the stub is exhausted
+        $grpcStub->popReceivedCalls();
         $this->assertTrue($grpcStub->isExhausted());
     }
 
@@ -837,7 +908,7 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
 
         $response = $client->updateBook($formattedName, $book);
         $this->assertEquals($expectedResponse, $response);
-        $actualRequests = $grpcStub->getReceivedCalls();
+        $actualRequests = $grpcStub->popReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
@@ -862,6 +933,13 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $status = new stdClass();
         $status->code = Grpc\STATUS_DATA_LOSS;
         $status->details = 'internal error';
+
+        $expectedExceptionMessage = json_encode([
+           "message" => "internal error",
+           "code" => Grpc\STATUS_DATA_LOSS,
+           "status" => "DATA_LOSS",
+           "details" => [],
+        ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
         // Mock request
@@ -874,11 +952,11 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
             $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
-            $this->assertEquals($status->details, $ex->getMessage());
+            $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
         }
 
-        // Call getReceivedCalls to ensure the stub is exhausted
-        $grpcStub->getReceivedCalls();
+        // Call popReceivedCalls to ensure the stub is exhausted
+        $grpcStub->popReceivedCalls();
         $this->assertTrue($grpcStub->isExhausted());
     }
 
@@ -910,7 +988,7 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
 
         $response = $client->moveBook($formattedName, $formattedOtherShelfName);
         $this->assertEquals($expectedResponse, $response);
-        $actualRequests = $grpcStub->getReceivedCalls();
+        $actualRequests = $grpcStub->popReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
@@ -935,6 +1013,13 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $status = new stdClass();
         $status->code = Grpc\STATUS_DATA_LOSS;
         $status->details = 'internal error';
+
+        $expectedExceptionMessage = json_encode([
+           "message" => "internal error",
+           "code" => Grpc\STATUS_DATA_LOSS,
+           "status" => "DATA_LOSS",
+           "details" => [],
+        ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
         // Mock request
@@ -947,11 +1032,11 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
             $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
-            $this->assertEquals($status->details, $ex->getMessage());
+            $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
         }
 
-        // Call getReceivedCalls to ensure the stub is exhausted
-        $grpcStub->getReceivedCalls();
+        // Call popReceivedCalls to ensure the stub is exhausted
+        $grpcStub->popReceivedCalls();
         $this->assertTrue($grpcStub->isExhausted());
     }
 
@@ -971,18 +1056,16 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $strings = [$stringsElement];
         $expectedResponse = new ListStringsResponse();
         $expectedResponse->setNextPageToken($nextPageToken);
-        foreach ($strings as $elem) {
-            $expectedResponse->addStrings($elem);
-        }
+        $expectedResponse->setStrings($strings);
         $grpcStub->addResponse($expectedResponse);
 
         $response = $client->listStrings();
         $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
         $resources = iterator_to_array($response->iterateAllElements());
         $this->assertSame(1, count($resources));
-        $this->assertEquals($expectedResponse->getStringsList()[0], $resources[0]);
+        $this->assertEquals($expectedResponse->getStrings()[0], $resources[0]);
 
-        $actualRequests = $grpcStub->getReceivedCalls();
+        $actualRequests = $grpcStub->popReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
@@ -1004,6 +1087,13 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $status = new stdClass();
         $status->code = Grpc\STATUS_DATA_LOSS;
         $status->details = 'internal error';
+
+        $expectedExceptionMessage = json_encode([
+           "message" => "internal error",
+           "code" => Grpc\STATUS_DATA_LOSS,
+           "status" => "DATA_LOSS",
+           "details" => [],
+        ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
         try {
@@ -1012,11 +1102,11 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
             $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
-            $this->assertEquals($status->details, $ex->getMessage());
+            $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
         }
 
-        // Call getReceivedCalls to ensure the stub is exhausted
-        $grpcStub->getReceivedCalls();
+        // Call popReceivedCalls to ensure the stub is exhausted
+        $grpcStub->popReceivedCalls();
         $this->assertTrue($grpcStub->isExhausted());
     }
 
@@ -1031,7 +1121,7 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($grpcStub->isExhausted());
 
         // Mock response
-        $expectedResponse = new EmptyC();
+        $expectedResponse = new GPBEmpty();
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
@@ -1046,14 +1136,14 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $comments = [$commentsElement];
 
         $client->addComments($formattedName, $comments);
-        $actualRequests = $grpcStub->getReceivedCalls();
+        $actualRequests = $grpcStub->popReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/AddComments', $actualFuncCall);
 
         $this->assertEquals($formattedName, $actualRequestObject->getName());
-        $this->assertEquals($comments, $actualRequestObject->getCommentsList());
+        $this->assertRepeatedFieldEquals($comments, $actualRequestObject->getComments());
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -1071,6 +1161,13 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $status = new stdClass();
         $status->code = Grpc\STATUS_DATA_LOSS;
         $status->details = 'internal error';
+
+        $expectedExceptionMessage = json_encode([
+           "message" => "internal error",
+           "code" => Grpc\STATUS_DATA_LOSS,
+           "status" => "DATA_LOSS",
+           "details" => [],
+        ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
         // Mock request
@@ -1090,11 +1187,11 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
             $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
-            $this->assertEquals($status->details, $ex->getMessage());
+            $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
         }
 
-        // Call getReceivedCalls to ensure the stub is exhausted
-        $grpcStub->getReceivedCalls();
+        // Call popReceivedCalls to ensure the stub is exhausted
+        $grpcStub->popReceivedCalls();
         $this->assertTrue($grpcStub->isExhausted());
     }
 
@@ -1125,7 +1222,7 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
 
         $response = $client->getBookFromArchive($formattedName);
         $this->assertEquals($expectedResponse, $response);
-        $actualRequests = $grpcStub->getReceivedCalls();
+        $actualRequests = $grpcStub->popReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
@@ -1149,6 +1246,13 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $status = new stdClass();
         $status->code = Grpc\STATUS_DATA_LOSS;
         $status->details = 'internal error';
+
+        $expectedExceptionMessage = json_encode([
+           "message" => "internal error",
+           "code" => Grpc\STATUS_DATA_LOSS,
+           "status" => "DATA_LOSS",
+           "details" => [],
+        ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
         // Mock request
@@ -1160,11 +1264,11 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
             $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
-            $this->assertEquals($status->details, $ex->getMessage());
+            $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
         }
 
-        // Call getReceivedCalls to ensure the stub is exhausted
-        $grpcStub->getReceivedCalls();
+        // Call popReceivedCalls to ensure the stub is exhausted
+        $grpcStub->popReceivedCalls();
         $this->assertTrue($grpcStub->isExhausted());
     }
 
@@ -1196,7 +1300,7 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
 
         $response = $client->getBookFromAnywhere($formattedName, $formattedAltBookName);
         $this->assertEquals($expectedResponse, $response);
-        $actualRequests = $grpcStub->getReceivedCalls();
+        $actualRequests = $grpcStub->popReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
@@ -1221,6 +1325,13 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $status = new stdClass();
         $status->code = Grpc\STATUS_DATA_LOSS;
         $status->details = 'internal error';
+
+        $expectedExceptionMessage = json_encode([
+           "message" => "internal error",
+           "code" => Grpc\STATUS_DATA_LOSS,
+           "status" => "DATA_LOSS",
+           "details" => [],
+        ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
         // Mock request
@@ -1233,11 +1344,11 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
             $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
-            $this->assertEquals($status->details, $ex->getMessage());
+            $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
         }
 
-        // Call getReceivedCalls to ensure the stub is exhausted
-        $grpcStub->getReceivedCalls();
+        // Call popReceivedCalls to ensure the stub is exhausted
+        $grpcStub->popReceivedCalls();
         $this->assertTrue($grpcStub->isExhausted());
     }
 
@@ -1252,7 +1363,7 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($grpcStub->isExhausted());
 
         // Mock response
-        $expectedResponse = new EmptyC();
+        $expectedResponse = new GPBEmpty();
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
@@ -1262,7 +1373,7 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $indexMap = ["default_key" => $indexMapItem,];
 
         $client->updateBookIndex($formattedName, $indexName, $indexMap);
-        $actualRequests = $grpcStub->getReceivedCalls();
+        $actualRequests = $grpcStub->popReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
@@ -1288,6 +1399,13 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $status = new stdClass();
         $status->code = Grpc\STATUS_DATA_LOSS;
         $status->details = 'internal error';
+
+        $expectedExceptionMessage = json_encode([
+           "message" => "internal error",
+           "code" => Grpc\STATUS_DATA_LOSS,
+           "status" => "DATA_LOSS",
+           "details" => [],
+        ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
         // Mock request
@@ -1302,11 +1420,335 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
             $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
-            $this->assertEquals($status->details, $ex->getMessage());
+            $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
         }
 
-        // Call getReceivedCalls to ensure the stub is exhausted
-        $grpcStub->getReceivedCalls();
+        // Call popReceivedCalls to ensure the stub is exhausted
+        $grpcStub->popReceivedCalls();
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function streamShelvesTest()
+    {
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        // Mock response
+        $shelvesElement = new Shelf();
+        $shelves = [$shelvesElement];
+        $expectedResponse = new StreamShelvesResponse();
+        $expectedResponse->setShelves($shelves);
+        $grpcStub->addResponse($expectedResponse);
+        $shelvesElement2 = new Shelf();
+        $shelves2 = [$shelvesElement2];
+        $expectedResponse2 = new StreamShelvesResponse();
+        $expectedResponse2->setShelves($shelves2);
+        $grpcStub->addResponse($expectedResponse2);
+        $shelvesElement3 = new Shelf();
+        $shelves3 = [$shelvesElement3];
+        $expectedResponse3 = new StreamShelvesResponse();
+        $expectedResponse3->setShelves($shelves3);
+        $grpcStub->addResponse($expectedResponse3);
+
+        // Mock request
+
+
+        $serverStream = $client->streamShelves();
+        $this->assertInstanceOf(ServerStream::class, $serverStream);
+
+        $responses = iterator_to_array($serverStream->readAll());
+
+        $expectedResources = [];
+        $expectedResources[] = $expectedResponse->getShelves()[0];
+        $expectedResources[] = $expectedResponse2->getShelves()[0];
+        $expectedResources[] = $expectedResponse3->getShelves()[0];
+        $this->assertEquals($expectedResources, $responses);
+
+        $actualRequests = $grpcStub->popReceivedCalls();
+        $this->assertSame(1, count($actualRequests));
+        $actualFuncCall = $actualRequests[0]->getFuncCall();
+        $actualRequestObject = $actualRequests[0]->getRequestObject();
+        $this->assertSame('/google.example.library.v1.LibraryService/StreamShelves', $actualFuncCall);
+
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function streamShelvesExceptionTest()
+    {
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
+
+        $status = new stdClass();
+        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->details = 'internal error';
+
+        $expectedExceptionMessage = json_encode([
+           "message" => "internal error",
+           "code" => Grpc\STATUS_DATA_LOSS,
+           "status" => "DATA_LOSS",
+           "details" => [],
+        ], JSON_PRETTY_PRINT);
+
+        $grpcStub->setStreamingStatus($status);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        // Mock request
+
+
+        $serverStream = $client->streamShelves();
+        $results = $serverStream->readAll();
+
+        try {
+            iterator_to_array($results);
+            // If the close stream method call did not throw, fail the test
+            $this->fail("Expected an ApiException, but no exception was thrown.");
+        }  catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
+        }
+
+        // Call popReceivedCalls to ensure the stub is exhausted
+        $grpcStub->popReceivedCalls();
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function streamBooksTest()
+    {
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        // Mock response
+        $name2 = "name2-1052831874";
+        $author = "author-1406328437";
+        $title = "title110371416";
+        $read = true;
+        $expectedResponse = new Book();
+        $expectedResponse->setName($name2);
+        $expectedResponse->setAuthor($author);
+        $expectedResponse->setTitle($title);
+        $expectedResponse->setRead($read);
+        $grpcStub->addResponse($expectedResponse);
+        $name5 = "name5-1052831871";
+        $author2 = "author21433073278";
+        $title2 = "title2-1307248629";
+        $read2 = false;
+        $expectedResponse2 = new Book();
+        $expectedResponse2->setName($name5);
+        $expectedResponse2->setAuthor($author2);
+        $expectedResponse2->setTitle($title2);
+        $expectedResponse2->setRead($read2);
+        $grpcStub->addResponse($expectedResponse2);
+        $name6 = "name6-1052831870";
+        $author3 = "author31433073279";
+        $title3 = "title3-1307248628";
+        $read3 = true;
+        $expectedResponse3 = new Book();
+        $expectedResponse3->setName($name6);
+        $expectedResponse3->setAuthor($author3);
+        $expectedResponse3->setTitle($title3);
+        $expectedResponse3->setRead($read3);
+        $grpcStub->addResponse($expectedResponse3);
+
+        // Mock request
+        $name = "name3373707";
+
+        $serverStream = $client->streamBooks($name);
+        $this->assertInstanceOf(ServerStream::class, $serverStream);
+
+        $responses = iterator_to_array($serverStream->readAll());
+
+        $expectedResponses = [];
+        $expectedResponses[] = $expectedResponse;
+        $expectedResponses[] = $expectedResponse2;
+        $expectedResponses[] = $expectedResponse3;
+        $this->assertEquals($expectedResponses, $responses);
+
+        $actualRequests = $grpcStub->popReceivedCalls();
+        $this->assertSame(1, count($actualRequests));
+        $actualFuncCall = $actualRequests[0]->getFuncCall();
+        $actualRequestObject = $actualRequests[0]->getRequestObject();
+        $this->assertSame('/google.example.library.v1.LibraryService/StreamBooks', $actualFuncCall);
+
+        $this->assertEquals($name, $actualRequestObject->getName());
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function streamBooksExceptionTest()
+    {
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
+
+        $status = new stdClass();
+        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->details = 'internal error';
+
+        $expectedExceptionMessage = json_encode([
+           "message" => "internal error",
+           "code" => Grpc\STATUS_DATA_LOSS,
+           "status" => "DATA_LOSS",
+           "details" => [],
+        ], JSON_PRETTY_PRINT);
+
+        $grpcStub->setStreamingStatus($status);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        // Mock request
+        $name = "name3373707";
+
+        $serverStream = $client->streamBooks($name);
+        $results = $serverStream->readAll();
+
+        try {
+            iterator_to_array($results);
+            // If the close stream method call did not throw, fail the test
+            $this->fail("Expected an ApiException, but no exception was thrown.");
+        }  catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
+        }
+
+        // Call popReceivedCalls to ensure the stub is exhausted
+        $grpcStub->popReceivedCalls();
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function discussBookTest()
+    {
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        // Mock response
+        $userName = "userName339340927";
+        $comment = "95";
+        $expectedResponse = new Comment();
+        $expectedResponse->setUserName($userName);
+        $expectedResponse->setComment($comment);
+        $grpcStub->addResponse($expectedResponse);
+        $userName2 = "userName2-310880654";
+        $comment2 = "82";
+        $expectedResponse2 = new Comment();
+        $expectedResponse2->setUserName($userName2);
+        $expectedResponse2->setComment($comment2);
+        $grpcStub->addResponse($expectedResponse2);
+        $userName3 = "userName3-310880653";
+        $comment3 = "83";
+        $expectedResponse3 = new Comment();
+        $expectedResponse3->setUserName($userName3);
+        $expectedResponse3->setComment($comment3);
+        $grpcStub->addResponse($expectedResponse3);
+
+        // Mock request
+        $name = "name3373707";
+        $request = new DiscussBookRequest();
+        $request->setName($name);
+        $name2 = "name2-1052831874";
+        $request2 = new DiscussBookRequest();
+        $request2->setName($name2);
+        $name3 = "name3-1052831873";
+        $request3 = new DiscussBookRequest();
+        $request3->setName($name3);
+
+        $bidi = $client->discussBook();
+        $this->assertInstanceOf(BidiStream::class, $bidi);
+
+        $bidi->write($request);
+        $responses = [];
+        $responses[] = $bidi->read();
+
+        $bidi->writeAll([$request2, $request3]);
+        foreach ($bidi->closeWriteAndReadAll() as $response) {
+            $responses[] = $response;
+        }
+
+        $expectedResponses = [];
+        $expectedResponses[] = $expectedResponse;
+        $expectedResponses[] = $expectedResponse2;
+        $expectedResponses[] = $expectedResponse3;
+        $this->assertEquals($expectedResponses, $responses);
+
+        $createStreamRequests = $grpcStub->popReceivedCalls();
+        $this->assertSame(1, count($createStreamRequests));
+        $streamFuncCall = $createStreamRequests[0]->getFuncCall();
+        $streamRequestObject = $createStreamRequests[0]->getRequestObject();
+        $this->assertSame('/google.example.library.v1.LibraryService/DiscussBook', $streamFuncCall);
+        $this->assertNull($streamRequestObject);
+
+        $callObjects = $grpcStub->popCallObjects();
+        $this->assertSame(1, count($callObjects));
+        $bidiCall = $callObjects[0];
+
+        $writeRequests = $bidiCall->popReceivedCalls();
+        $expectedRequests = [];
+        $expectedRequests[] = $request;
+        $expectedRequests[] = $request2;
+        $expectedRequests[] = $request3;
+        $this->assertEquals($expectedRequests, $writeRequests);
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function discussBookExceptionTest()
+    {
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
+
+        $status = new stdClass();
+        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->details = 'internal error';
+
+        $expectedExceptionMessage = json_encode([
+           "message" => "internal error",
+           "code" => Grpc\STATUS_DATA_LOSS,
+           "status" => "DATA_LOSS",
+           "details" => [],
+        ], JSON_PRETTY_PRINT);
+
+        $grpcStub->setStreamingStatus($status);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        $bidi = $client->discussBook();
+        $results = $bidi->closeWriteAndReadAll();
+
+        try {
+            iterator_to_array($results);
+            // If the close stream method call did not throw, fail the test
+            $this->fail("Expected an ApiException, but no exception was thrown.");
+        }  catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
+        }
+
+        // Call popReceivedCalls to ensure the stub is exhausted
+        $grpcStub->popReceivedCalls();
         $this->assertTrue($grpcStub->isExhausted());
     }
 
@@ -1326,9 +1768,7 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $names2 = [$namesElement2];
         $expectedResponse = new FindRelatedBooksResponse();
         $expectedResponse->setNextPageToken($nextPageToken);
-        foreach ($names2 as $elem) {
-            $expectedResponse->addNames($elem);
-        }
+        $expectedResponse->setNames($names2);
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
@@ -1340,16 +1780,16 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
         $resources = iterator_to_array($response->iterateAllElements());
         $this->assertSame(1, count($resources));
-        $this->assertEquals($expectedResponse->getNamesList()[0], $resources[0]);
+        $this->assertEquals($expectedResponse->getNames()[0], $resources[0]);
 
-        $actualRequests = $grpcStub->getReceivedCalls();
+        $actualRequests = $grpcStub->popReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/FindRelatedBooks', $actualFuncCall);
 
-        $this->assertEquals($names, $actualRequestObject->getNamesList());
-        $this->assertEquals($shelves, $actualRequestObject->getShelvesList());
+        $this->assertRepeatedFieldEquals($names, $actualRequestObject->getNames());
+        $this->assertRepeatedFieldEquals($shelves, $actualRequestObject->getShelves());
         $this->assertTrue($grpcStub->isExhausted());
     }
 
@@ -1366,6 +1806,13 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $status = new stdClass();
         $status->code = Grpc\STATUS_DATA_LOSS;
         $status->details = 'internal error';
+
+        $expectedExceptionMessage = json_encode([
+           "message" => "internal error",
+           "code" => Grpc\STATUS_DATA_LOSS,
+           "status" => "DATA_LOSS",
+           "details" => [],
+        ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
         // Mock request
@@ -1379,11 +1826,11 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
             $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
-            $this->assertEquals($status->details, $ex->getMessage());
+            $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
         }
 
-        // Call getReceivedCalls to ensure the stub is exhausted
-        $grpcStub->getReceivedCalls();
+        // Call popReceivedCalls to ensure the stub is exhausted
+        $grpcStub->popReceivedCalls();
         $this->assertTrue($grpcStub->isExhausted());
     }
 
@@ -1407,7 +1854,7 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
 
         $response = $client->addTag($formattedResource, $tag);
         $this->assertEquals($expectedResponse, $response);
-        $actualRequests = $grpcStub->getReceivedCalls();
+        $actualRequests = $grpcStub->popReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
@@ -1432,6 +1879,13 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $status = new stdClass();
         $status->code = Grpc\STATUS_DATA_LOSS;
         $status->details = 'internal error';
+
+        $expectedExceptionMessage = json_encode([
+           "message" => "internal error",
+           "code" => Grpc\STATUS_DATA_LOSS,
+           "status" => "DATA_LOSS",
+           "details" => [],
+        ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
         // Mock request
@@ -1444,11 +1898,11 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
             $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
-            $this->assertEquals($status->details, $ex->getMessage());
+            $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
         }
 
-        // Call getReceivedCalls to ensure the stub is exhausted
-        $grpcStub->getReceivedCalls();
+        // Call popReceivedCalls to ensure the stub is exhausted
+        $grpcStub->popReceivedCalls();
         $this->assertTrue($grpcStub->isExhausted());
     }
 
@@ -1472,7 +1926,7 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
 
         $response = $client->addLabel($formattedResource, $label);
         $this->assertEquals($expectedResponse, $response);
-        $actualRequests = $grpcStub->getReceivedCalls();
+        $actualRequests = $grpcStub->popReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
@@ -1497,6 +1951,13 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $status = new stdClass();
         $status->code = Grpc\STATUS_DATA_LOSS;
         $status->details = 'internal error';
+
+        $expectedExceptionMessage = json_encode([
+           "message" => "internal error",
+           "code" => Grpc\STATUS_DATA_LOSS,
+           "status" => "DATA_LOSS",
+           "details" => [],
+        ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
         // Mock request
@@ -1509,11 +1970,11 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
             $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
-            $this->assertEquals($status->details, $ex->getMessage());
+            $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
         }
 
-        // Call getReceivedCalls to ensure the stub is exhausted
-        $grpcStub->getReceivedCalls();
+        // Call popReceivedCalls to ensure the stub is exhausted
+        $grpcStub->popReceivedCalls();
         $this->assertTrue($grpcStub->isExhausted());
     }
 
@@ -1540,7 +2001,8 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
 
         // Mock response
         $incompleteOperation = new Operation();
-        $incompleteOperation->setName('operations/getBigBookTest')->setDone(false);
+        $incompleteOperation->setName('operations/getBigBookTest');
+        $incompleteOperation->setDone(false);
         $grpcStub->addResponse($incompleteOperation);
         $name2 = "name2-1052831874";
         $author = "author-1406328437";
@@ -1552,9 +2014,11 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $expectedResponse->setTitle($title);
         $expectedResponse->setRead($read);
         $anyResponse = new Any();
-        $anyResponse->setValue($expectedResponse->serialize());
+        $anyResponse->setValue($expectedResponse->serializeToString());
         $completeOperation = new Operation();
-        $completeOperation->setName('operations/getBigBookTest')->setDone(true)->setResponse($anyResponse);
+        $completeOperation->setName('operations/getBigBookTest');
+        $completeOperation->setDone(true);
+        $completeOperation->setResponse($anyResponse);
         $operationsStub->addResponse($completeOperation);
 
         // Mock request
@@ -1563,9 +2027,9 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $response = $client->getBigBook($formattedName);
         $this->assertFalse($response->isDone());
         $this->assertNull($response->getResult());
-        $apiRequests = $grpcStub->getReceivedCalls();
+        $apiRequests = $grpcStub->popReceivedCalls();
         $this->assertSame(1, count($apiRequests));
-        $operationsRequestsEmpty = $operationsStub->getReceivedCalls();
+        $operationsRequestsEmpty = $operationsStub->popReceivedCalls();
         $this->assertSame(0, count($operationsRequestsEmpty));
 
         $actualApiFuncCall = $apiRequests[0]->getFuncCall();
@@ -1579,9 +2043,9 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $response->pollUntilComplete();
         $this->assertTrue($response->isDone());
         $this->assertEquals($expectedResponse, $response->getResult());
-        $apiRequestsEmpty = $grpcStub->getReceivedCalls();
+        $apiRequestsEmpty = $grpcStub->popReceivedCalls();
         $this->assertSame(0, count($apiRequestsEmpty));
-        $operationsRequests = $operationsStub->getReceivedCalls();
+        $operationsRequests = $operationsStub->popReceivedCalls();
         $this->assertSame(1, count($operationsRequests));
 
         $actualOperationsFuncCall = $operationsRequests[0]->getFuncCall();
@@ -1616,12 +2080,20 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
 
         // Mock response
         $incompleteOperation = new Operation();
-        $incompleteOperation->setName('operations/getBigBookTest')->setDone(false);
+        $incompleteOperation->setName('operations/getBigBookTest');
+        $incompleteOperation->setDone(false);
         $grpcStub->addResponse($incompleteOperation);
 
         $status = new stdClass();
         $status->code = Grpc\STATUS_DATA_LOSS;
         $status->details = 'internal error';
+
+        $expectedExceptionMessage = json_encode([
+           "message" => "internal error",
+           "code" => Grpc\STATUS_DATA_LOSS,
+           "status" => "DATA_LOSS",
+           "details" => [],
+        ], JSON_PRETTY_PRINT);
         $operationsStub->addResponse(null, $status);
 
         // Mock request
@@ -1640,12 +2112,12 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
             $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
-            $this->assertEquals($status->details, $ex->getMessage());
+            $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
         }
 
-        // Call getReceivedCalls to ensure the stubs are exhausted
-        $grpcStub->getReceivedCalls();
-        $operationsStub->getReceivedCalls();
+        // Call popReceivedCalls to ensure the stubs are exhausted
+        $grpcStub->popReceivedCalls();
+        $operationsStub->popReceivedCalls();
         $this->assertTrue($grpcStub->isExhausted());
         $this->assertTrue($operationsStub->isExhausted());
     }
@@ -1673,13 +2145,16 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
 
         // Mock response
         $incompleteOperation = new Operation();
-        $incompleteOperation->setName('operations/getBigNothingTest')->setDone(false);
+        $incompleteOperation->setName('operations/getBigNothingTest');
+        $incompleteOperation->setDone(false);
         $grpcStub->addResponse($incompleteOperation);
-        $expectedResponse = new EmptyC();
+        $expectedResponse = new GPBEmpty();
         $anyResponse = new Any();
-        $anyResponse->setValue($expectedResponse->serialize());
+        $anyResponse->setValue($expectedResponse->serializeToString());
         $completeOperation = new Operation();
-        $completeOperation->setName('operations/getBigNothingTest')->setDone(true)->setResponse($anyResponse);
+        $completeOperation->setName('operations/getBigNothingTest');
+        $completeOperation->setDone(true);
+        $completeOperation->setResponse($anyResponse);
         $operationsStub->addResponse($completeOperation);
 
         // Mock request
@@ -1688,9 +2163,9 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $response = $client->getBigNothing($formattedName);
         $this->assertFalse($response->isDone());
         $this->assertNull($response->getResult());
-        $apiRequests = $grpcStub->getReceivedCalls();
+        $apiRequests = $grpcStub->popReceivedCalls();
         $this->assertSame(1, count($apiRequests));
-        $operationsRequestsEmpty = $operationsStub->getReceivedCalls();
+        $operationsRequestsEmpty = $operationsStub->popReceivedCalls();
         $this->assertSame(0, count($operationsRequestsEmpty));
 
         $actualApiFuncCall = $apiRequests[0]->getFuncCall();
@@ -1704,9 +2179,9 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $response->pollUntilComplete();
         $this->assertTrue($response->isDone());
         $this->assertEquals($expectedResponse, $response->getResult());
-        $apiRequestsEmpty = $grpcStub->getReceivedCalls();
+        $apiRequestsEmpty = $grpcStub->popReceivedCalls();
         $this->assertSame(0, count($apiRequestsEmpty));
-        $operationsRequests = $operationsStub->getReceivedCalls();
+        $operationsRequests = $operationsStub->popReceivedCalls();
         $this->assertSame(1, count($operationsRequests));
 
         $actualOperationsFuncCall = $operationsRequests[0]->getFuncCall();
@@ -1741,12 +2216,20 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
 
         // Mock response
         $incompleteOperation = new Operation();
-        $incompleteOperation->setName('operations/getBigNothingTest')->setDone(false);
+        $incompleteOperation->setName('operations/getBigNothingTest');
+        $incompleteOperation->setDone(false);
         $grpcStub->addResponse($incompleteOperation);
 
         $status = new stdClass();
         $status->code = Grpc\STATUS_DATA_LOSS;
         $status->details = 'internal error';
+
+        $expectedExceptionMessage = json_encode([
+           "message" => "internal error",
+           "code" => Grpc\STATUS_DATA_LOSS,
+           "status" => "DATA_LOSS",
+           "details" => [],
+        ], JSON_PRETTY_PRINT);
         $operationsStub->addResponse(null, $status);
 
         // Mock request
@@ -1765,12 +2248,12 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
             $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
-            $this->assertEquals($status->details, $ex->getMessage());
+            $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
         }
 
-        // Call getReceivedCalls to ensure the stubs are exhausted
-        $grpcStub->getReceivedCalls();
-        $operationsStub->getReceivedCalls();
+        // Call popReceivedCalls to ensure the stubs are exhausted
+        $grpcStub->popReceivedCalls();
+        $operationsStub->popReceivedCalls();
         $this->assertTrue($grpcStub->isExhausted());
         $this->assertTrue($operationsStub->isExhausted());
     }
@@ -1820,7 +2303,7 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
 
         $response = $client->testOptionalRequiredFlatteningParams($requiredSingularInt32, $requiredSingularInt64, $requiredSingularFloat, $requiredSingularDouble, $requiredSingularBool, $requiredSingularEnum, $requiredSingularString, $requiredSingularBytes, $requiredSingularMessage, $requiredSingularResourceName, $requiredSingularResourceNameOneof, $requiredSingularFixed32, $requiredSingularFixed64, $requiredRepeatedInt32, $requiredRepeatedInt64, $requiredRepeatedFloat, $requiredRepeatedDouble, $requiredRepeatedBool, $requiredRepeatedEnum, $requiredRepeatedString, $requiredRepeatedBytes, $requiredRepeatedMessage, $formattedRequiredRepeatedResourceName, $formattedRequiredRepeatedResourceNameOneof, $requiredRepeatedFixed32, $requiredRepeatedFixed64, $requiredMap);
         $this->assertEquals($expectedResponse, $response);
-        $actualRequests = $grpcStub->getReceivedCalls();
+        $actualRequests = $grpcStub->popReceivedCalls();
         $this->assertSame(1, count($actualRequests));
         $actualFuncCall = $actualRequests[0]->getFuncCall();
         $actualRequestObject = $actualRequests[0]->getRequestObject();
@@ -1839,19 +2322,19 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($requiredSingularResourceNameOneof, $actualRequestObject->getRequiredSingularResourceNameOneof());
         $this->assertEquals($requiredSingularFixed32, $actualRequestObject->getRequiredSingularFixed32());
         $this->assertEquals($requiredSingularFixed64, $actualRequestObject->getRequiredSingularFixed64());
-        $this->assertEquals($requiredRepeatedInt32, $actualRequestObject->getRequiredRepeatedInt32List());
-        $this->assertEquals($requiredRepeatedInt64, $actualRequestObject->getRequiredRepeatedInt64List());
-        $this->assertEquals($requiredRepeatedFloat, $actualRequestObject->getRequiredRepeatedFloatList());
-        $this->assertEquals($requiredRepeatedDouble, $actualRequestObject->getRequiredRepeatedDoubleList());
-        $this->assertEquals($requiredRepeatedBool, $actualRequestObject->getRequiredRepeatedBoolList());
-        $this->assertEquals($requiredRepeatedEnum, $actualRequestObject->getRequiredRepeatedEnumList());
-        $this->assertEquals($requiredRepeatedString, $actualRequestObject->getRequiredRepeatedStringList());
-        $this->assertEquals($requiredRepeatedBytes, $actualRequestObject->getRequiredRepeatedBytesList());
-        $this->assertEquals($requiredRepeatedMessage, $actualRequestObject->getRequiredRepeatedMessageList());
-        $this->assertEquals($formattedRequiredRepeatedResourceName, $actualRequestObject->getRequiredRepeatedResourceNameList());
-        $this->assertEquals($formattedRequiredRepeatedResourceNameOneof, $actualRequestObject->getRequiredRepeatedResourceNameOneofList());
-        $this->assertEquals($requiredRepeatedFixed32, $actualRequestObject->getRequiredRepeatedFixed32List());
-        $this->assertEquals($requiredRepeatedFixed64, $actualRequestObject->getRequiredRepeatedFixed64List());
+        $this->assertRepeatedFieldEquals($requiredRepeatedInt32, $actualRequestObject->getRequiredRepeatedInt32());
+        $this->assertRepeatedFieldEquals($requiredRepeatedInt64, $actualRequestObject->getRequiredRepeatedInt64());
+        $this->assertRepeatedFieldEquals($requiredRepeatedFloat, $actualRequestObject->getRequiredRepeatedFloat());
+        $this->assertRepeatedFieldEquals($requiredRepeatedDouble, $actualRequestObject->getRequiredRepeatedDouble());
+        $this->assertRepeatedFieldEquals($requiredRepeatedBool, $actualRequestObject->getRequiredRepeatedBool());
+        $this->assertRepeatedFieldEquals($requiredRepeatedEnum, $actualRequestObject->getRequiredRepeatedEnum());
+        $this->assertRepeatedFieldEquals($requiredRepeatedString, $actualRequestObject->getRequiredRepeatedString());
+        $this->assertRepeatedFieldEquals($requiredRepeatedBytes, $actualRequestObject->getRequiredRepeatedBytes());
+        $this->assertRepeatedFieldEquals($requiredRepeatedMessage, $actualRequestObject->getRequiredRepeatedMessage());
+        $this->assertRepeatedFieldEquals($formattedRequiredRepeatedResourceName, $actualRequestObject->getRequiredRepeatedResourceName());
+        $this->assertRepeatedFieldEquals($formattedRequiredRepeatedResourceNameOneof, $actualRequestObject->getRequiredRepeatedResourceNameOneof());
+        $this->assertRepeatedFieldEquals($requiredRepeatedFixed32, $actualRequestObject->getRequiredRepeatedFixed32());
+        $this->assertRepeatedFieldEquals($requiredRepeatedFixed64, $actualRequestObject->getRequiredRepeatedFixed64());
         $this->assertEquals($requiredMap, $actualRequestObject->getRequiredMap());
 
         $this->assertTrue($grpcStub->isExhausted());
@@ -1870,6 +2353,13 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
         $status = new stdClass();
         $status->code = Grpc\STATUS_DATA_LOSS;
         $status->details = 'internal error';
+
+        $expectedExceptionMessage = json_encode([
+           "message" => "internal error",
+           "code" => Grpc\STATUS_DATA_LOSS,
+           "status" => "DATA_LOSS",
+           "details" => [],
+        ], JSON_PRETTY_PRINT);
         $grpcStub->addResponse(null, $status);
 
         // Mock request
@@ -1907,11 +2397,11 @@ class LibraryServiceClientTest extends PHPUnit_Framework_TestCase
             $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
-            $this->assertEquals($status->details, $ex->getMessage());
+            $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
         }
 
-        // Call getReceivedCalls to ensure the stub is exhausted
-        $grpcStub->getReceivedCalls();
+        // Call popReceivedCalls to ensure the stub is exhausted
+        $grpcStub->popReceivedCalls();
         $this->assertTrue($grpcStub->isExhausted());
     }
 
