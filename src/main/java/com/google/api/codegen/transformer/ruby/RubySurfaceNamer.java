@@ -137,7 +137,10 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   /** The type name for the message property */
-  public String getMessagePropertyTypeName(ModelTypeTable typeTable, TypeRef type) {
+  @Override
+  public String getMessagePropertyTypeName(ImportTypeTable importTypeTable, FieldType fieldType) {
+    ModelTypeTable typeTable = (ModelTypeTable) importTypeTable;
+    TypeRef type = fieldType.getProtoBasedField().getType();
     if (type.isMap()) {
       String keyTypeName = typeTable.getFullNameForElementType(type.getMapKeyField().getType());
       String valueTypeName = typeTable.getFullNameForElementType(type.getMapValueField().getType());

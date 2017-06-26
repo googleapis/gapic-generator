@@ -202,6 +202,20 @@ public class FieldType {
     }
   }
 
+  @Override
+  public String toString() {
+    String fieldString = "";
+    switch (modelType) {
+      case DISCOVERY:
+        fieldString = getSchemaField().toString();
+        break;
+      case PROTO:
+        fieldString = getProtoBasedField().toString();
+        break;
+    }
+    return String.format("FieldType (%s): {%s}", modelType, fieldString);
+  }
+
   public boolean isEmpty() {
     return protoBasedField == null && schemaField == null;
   }
