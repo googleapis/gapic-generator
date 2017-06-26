@@ -14,7 +14,10 @@
  */
 package com.google.api.codegen.discovery;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.auto.value.AutoValue;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Nullable;
@@ -25,7 +28,33 @@ import javax.annotation.Nullable;
  * <p>Note that this class is not necessarily a 1-1 mapping of the official specification.
  */
 @AutoValue
-public abstract class Schema {
+public abstract class Schema implements Node {
+
+  /**
+   * Returns the schema this schema references, or this if this schema references no other.
+   *
+   * <p>If the reference property of a schema is non-empty, then it references another schema. This
+   * method returns the schema that this schema eventually references by walking back to a parent
+   * document. If the given schema does not reference another schema, this schema is returned.
+   *
+   * @return the first non-reference schema, or this if this schema references no other.
+   */
+  public Schema dereference() {
+    if (!Strings.isNullOrEmpty(reference())) {
+      Node document = parent;
+      while (document != null && !(document instanceof Document)) {
+        document = document.parent();
+      }
+      if (document != null) {
+        Schema schema = ((Document) document).schemas().get(reference());
+        // If a document is an eventual parent of this schema, then reference() must be a key in the
+        // document's "schemas" object.
+        Preconditions.checkState(schema != null);
+        return schema;
+      }
+    }
+    return this;
+  }
 
   /**
    * Returns true if this schema contains a property with the given name.
@@ -41,15 +70,13 @@ public abstract class Schema {
    * Returns a schema constructed from root, or an empty schema if root has no children.
    *
    * @param root the root node to parse.
-   * @param path the full path to this node (ex: "methods.foo.parameters.bar").
    * @return a schema.
    */
-  public static Schema from(DiscoveryNode root, String path) {
+  public static Schema from(DiscoveryNode root, Node parent) {
     if (root.isEmpty()) {
       return empty();
     }
-    Schema additionalProperties =
-        Schema.from(root.getObject("additionalProperties"), path + ".additionalProperties");
+    Schema additionalProperties = Schema.from(root.getObject("additionalProperties"), null);
     if (additionalProperties.type() == Type.EMPTY && additionalProperties.reference().isEmpty()) {
       additionalProperties = null;
     }
@@ -58,7 +85,7 @@ public abstract class Schema {
     Format format = Format.getEnum(root.getString("format"));
     String id = root.getString("id");
     boolean isEnum = !root.getArray("enum").isEmpty();
-    Schema items = Schema.from(root.getObject("items"), path + ".items");
+    Schema items = Schema.from(root.getObject("items"), null);
     if (items.type() == Type.EMPTY && items.reference().isEmpty()) {
       items = null;
     }
@@ -68,8 +95,7 @@ public abstract class Schema {
     Map<String, Schema> properties = new HashMap<>();
     DiscoveryNode propertiesNode = root.getObject("properties");
     for (String name : propertiesNode.getFieldNames()) {
-      properties.put(
-          name, Schema.from(propertiesNode.getObject(name), path + ".properties." + name));
+      properties.put(name, Schema.from(propertiesNode.getObject(name), null));
     }
 
     String reference = root.getString("$ref");
@@ -77,22 +103,34 @@ public abstract class Schema {
     boolean required = root.getBoolean("required");
     Type type = Type.getEnum(root.getString("type"));
 
-    return new AutoValue_Schema(
-        additionalProperties,
-        defaultValue,
-        description,
-        format,
-        id,
-        isEnum,
-        items,
-        location,
-        path,
-        pattern,
-        properties,
-        reference,
-        repeated,
-        required,
-        type);
+    Schema thisSchema =
+        new AutoValue_Schema(
+            additionalProperties,
+            defaultValue,
+            description,
+            format,
+            id,
+            isEnum,
+            items,
+            location,
+            pattern,
+            properties,
+            reference,
+            repeated,
+            required,
+            type);
+    thisSchema.parent = parent;
+    if (items != null) {
+      items.setParent(thisSchema);
+    }
+    for (Schema schema : properties.values()) {
+      schema.setParent(thisSchema);
+    }
+    if (additionalProperties != null) {
+      additionalProperties.setParent(thisSchema);
+    }
+
+    return thisSchema;
   }
 
   public static Schema empty() {
@@ -106,12 +144,23 @@ public abstract class Schema {
         null,
         "",
         "",
-        "",
         new HashMap<String, Schema>(),
         "",
         false,
         false,
         Type.EMPTY);
+  }
+
+  @JsonIgnore @Nullable private Node parent;
+
+  /** @return the {@link Node} that contains this Schema. */
+  @Nullable
+  public Node parent() {
+    return parent;
+  }
+
+  void setParent(Node parent) {
+    this.parent = parent;
   }
 
   /** @return the schema of the additionalProperties, or null if none. */
@@ -141,9 +190,6 @@ public abstract class Schema {
 
   /** @return the location. */
   public abstract String location();
-
-  /** @return the fully qualified path to this schema. */
-  public abstract String path();
 
   /** @return the pattern. */
   public abstract String pattern();

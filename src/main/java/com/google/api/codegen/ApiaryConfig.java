@@ -138,6 +138,9 @@ public class ApiaryConfig {
   /** Maps API names to an AuthType override. */
   private Map<String, AuthType> authOverrides = new HashMap<>();
 
+  /** The root URL. */
+  private String rootUrl;
+
   /**
    * If present in the scope list, indicates that the API supports application default credentials
    * based auth.
@@ -164,6 +167,10 @@ public class ApiaryConfig {
 
   public String getAuthInstructionsUrl() {
     return Strings.nullToEmpty(authInstructionsUrl);
+  }
+
+  public String getRootUrl() {
+    return Strings.nullToEmpty(rootUrl);
   }
 
   public ListMultimap<String, String> getMethodParams() {
@@ -268,6 +275,10 @@ public class ApiaryConfig {
 
   public void setAuthInstructionsUrl(String authInstructionsUrl) {
     this.authInstructionsUrl = authInstructionsUrl;
+  }
+
+  public void setRootUrl(String rootUrl) {
+    this.rootUrl = rootUrl;
   }
 
   /** @return the ordered list of parameters accepted by the given method */

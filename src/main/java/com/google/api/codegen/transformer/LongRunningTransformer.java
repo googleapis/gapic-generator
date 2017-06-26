@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableList;
 import java.util.List;
 
 public class LongRunningTransformer {
+
   public List<LongRunningOperationDetailView> generateDetailViews(GapicInterfaceContext context) {
     ImmutableList.Builder<LongRunningOperationDetailView> views = ImmutableList.builder();
     for (Method method : context.getLongRunningMethods()) {
@@ -54,6 +55,10 @@ public class LongRunningTransformer {
         .metadataTypeName(metadataTypeName)
         .implementsDelete(lroConfig.implementsDelete())
         .implementsCancel(lroConfig.implementsCancel())
+        .initialPollDelay(lroConfig.getInitialPollDelay().getMillis())
+        .pollDelayMultiplier(lroConfig.getPollDelayMultiplier())
+        .maxPollDelay(lroConfig.getMaxPollDelay().getMillis())
+        .totalPollTimeout(lroConfig.getTotalPollTimeout().getMillis())
         .build();
   }
 }

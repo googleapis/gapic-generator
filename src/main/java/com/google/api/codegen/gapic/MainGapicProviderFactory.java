@@ -118,7 +118,6 @@ public class MainGapicProviderFactory
         GapicCodePathMapper pathMapper =
             CommonGapicCodePathMapper.newBuilder()
                 .setPrefix("")
-                .setShouldAppendPackage(true)
                 .setPackageFilePathNameFormatter(new CSharpNameFormatter())
                 .build();
         GapicProvider<? extends Object> mainProvider =
@@ -277,7 +276,7 @@ public class MainGapicProviderFactory
           providers.add(messageProvider);
         }
       }
-      if (generatorConfig.enableTestGenerator() && id.equals(NODEJS)) {
+      if (generatorConfig.enableTestGenerator()) {
         GapicProvider<? extends Object> testProvider =
             ViewModelGapicProvider.newBuilder()
                 .setModel(model)

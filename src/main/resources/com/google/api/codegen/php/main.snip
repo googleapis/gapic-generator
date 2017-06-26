@@ -211,12 +211,14 @@
             @join descriptor : xapiClass.pageStreamingDescriptors
                 ${@descriptor.varName} =
                         new PageStreamingDescriptor([
-                            'requestPageTokenField' => '{@descriptor.requestTokenFieldName}',
+                            'requestPageTokenGetMethod' => '{@descriptor.requestTokenGetMethodName}',
+                            'requestPageTokenSetMethod' => '{@descriptor.requestTokenSetMethodName}',
                             @if descriptor.requestHasPageSizeField
-                                'requestPageSizeField' => '{@descriptor.requestPageSizeFieldName}',
+                                'requestPageSizeGetMethod' => '{@descriptor.requestPageSizeGetMethodName}',
+                                'requestPageSizeSetMethod' => '{@descriptor.requestPageSizeSetMethodName}',
                             @end
-                            'responsePageTokenField' => '{@descriptor.responseTokenFieldName}',
-                            'resourceField' => '{@descriptor.resourcesFieldName}',
+                            'responsePageTokenGetMethod' => '{@descriptor.responseTokenGetMethodName}',
+                            'resourcesGetMethod' => '{@descriptor.resourcesGetMethodName}',
                         ]);
             @end
 
@@ -529,36 +531,12 @@
 @end
 
 @private setRequiredFieldCall(param)
-    @if param.isMap
-        foreach (${@param.name} as $key => $value) {
-            $request->{@param.addCallName}((new {@param.elementTypeName}())->setKey($key)->setValue($value));
-        }
-    @else
-        @if param.isArray
-            foreach (${@param.name} as $elem) {
-                $request->{@param.addCallName}($elem);
-            }
-        @else
-            $request->{@param.setCallName}(${@param.name});
-        @end
-    @end
+    $request->{@param.setCallName}(${@param.name});
 @end
 
 @private setOptionalFieldCall(param)
     if (isset($optionalArgs['{@param.name}'])) {
-        @if param.isMap
-            foreach ($optionalArgs['{@param.name}'] as $key => $value) {
-                $request->{@param.addCallName}((new {@param.elementTypeName}())->setKey($key)->setValue($value));
-            }
-        @else
-            @if param.isArray
-                foreach ($optionalArgs['{@param.name}'] as $elem) {
-                    $request->{@param.addCallName}($elem);
-                }
-            @else
-                $request->{@param.setCallName}($optionalArgs['{@param.name}']);
-            @end
-        @end
+        $request->{@param.setCallName}($optionalArgs['{@param.name}']);
     }
 @end
 
