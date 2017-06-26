@@ -54,6 +54,11 @@ public class DynamicLangApiMethodTransformer {
   }
 
   public OptionalArrayMethodView generateMethod(GapicMethodContext context) {
+    return generateMethod(context, false);
+  }
+
+  public OptionalArrayMethodView generateMethod(
+      GapicMethodContext context, boolean packageHasMultipleServices) {
     SurfaceNamer namer = context.getNamer();
     OptionalArrayMethodView.Builder apiMethod = OptionalArrayMethodView.newBuilder();
 
@@ -113,6 +118,10 @@ public class DynamicLangApiMethodTransformer {
         grpcStreamingType.equals(GrpcStreamingType.NonStreaming)
             || grpcStreamingType.equals(GrpcStreamingType.ServerStreaming));
 
+    apiMethod.packageName(namer.getPackageName());
+    apiMethod.packageHasMultipleServices(packageHasMultipleServices);
+    apiMethod.packageServiceName(namer.getPackageServiceName(context.getInterface()));
+    apiMethod.apiVersion(namer.getApiWrapperModuleVersion());
     apiMethod.longRunningView(
         context.getMethodConfig().isLongRunningOperation()
             ? lroTransformer.generateDetailView(context)
@@ -193,6 +202,7 @@ public class DynamicLangApiMethodTransformer {
     param.elementTypeName(typeTable.getAndSaveNicknameForElementType(field.getType()));
     param.setCallName(namer.getFieldSetFunctionName(featureConfig, fieldConfig));
     param.addCallName(namer.getFieldAddFunctionName(field));
+    param.getCallName(namer.getFieldGetFunctionName(featureConfig, fieldConfig));
     param.isMap(field.getType().isMap());
     param.isArray(!field.getType().isMap() && field.getType().isRepeated());
     param.isPrimitive(namer.isPrimitive(field.getType()));

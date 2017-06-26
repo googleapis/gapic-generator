@@ -33,14 +33,17 @@ public class TypeName {
 
   /** Creates a type alias with the given fullName and nickname. */
   public TypeName(String fullName, String nickname) {
-    this.topLevelAlias = TypeAlias.create(fullName, nickname);
-    this.pattern = null;
-    this.innerTypeNames = Arrays.asList();
+    this(TypeAlias.create(fullName, nickname));
   }
 
   /** Creates a type alias for a static inner type with the given fullName and nickname. */
   public TypeName(String fullName, String nickname, String parentTypeName) {
-    this.topLevelAlias = TypeAlias.create(fullName, nickname, parentTypeName);
+    this(TypeAlias.create(fullName, nickname, parentTypeName));
+  }
+
+  /** Creates a TypeName with a given TypeAlias. */
+  public TypeName(TypeAlias typeAlias) {
+    this.topLevelAlias = typeAlias;
     this.pattern = null;
     this.innerTypeNames = Arrays.asList();
   }

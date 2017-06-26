@@ -24,6 +24,8 @@ public abstract class FieldSettingView {
 
   public abstract String fieldAddFunction();
 
+  public abstract String fieldGetFunction();
+
   public abstract String identifier();
 
   public abstract InitCodeLineView initCodeLine();
@@ -52,6 +54,8 @@ public abstract class FieldSettingView {
     public abstract Builder fieldSetFunction(String val);
 
     public abstract Builder fieldAddFunction(String val);
+
+    public abstract Builder fieldGetFunction(String val);
 
     public abstract Builder identifier(String val);
 

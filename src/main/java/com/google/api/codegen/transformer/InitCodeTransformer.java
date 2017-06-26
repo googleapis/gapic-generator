@@ -127,6 +127,10 @@ public class InitCodeTransformer {
             namer.getResourceOneofCreateMethod(methodContext.getTypeTable(), fieldConfig);
       }
 
+      boolean isArray =
+          fieldConfig.getField().getType().isRepeated()
+              && !fieldConfig.getField().getType().isMap();
+
       String enumTypeName = null;
       TypeRef fieldType = fieldItemTree.getType();
       if (fieldType.isEnum() && !fieldType.isRepeated()) {
@@ -142,6 +146,7 @@ public class InitCodeTransformer {
           createAssertView(
               expectedValueIdentifier,
               expectedTransformFunction,
+              isArray,
               getterMethod,
               enumTypeName,
               messageTypeName));
@@ -172,11 +177,13 @@ public class InitCodeTransformer {
   private ClientTestAssertView createAssertView(
       String expected,
       String expectedTransformFunction,
+      boolean isArray,
       String actual,
       String enumTypeName,
       String messageTypeName) {
     return ClientTestAssertView.newBuilder()
         .expectedValueIdentifier(expected)
+        .isArray(isArray)
         .expectedValueTransformFunction(expectedTransformFunction)
         .actualValueGetter(actual)
         .enumTypeName(enumTypeName)
@@ -515,6 +522,8 @@ public class InitCodeTransformer {
       }
       fieldSetting.fieldAddFunction(
           namer.getFieldAddFunctionName(item.getType(), Name.from(item.getKey())));
+      fieldSetting.fieldGetFunction(
+          namer.getFieldGetFunctionName(item.getType(), Name.from(item.getKey())));
 
       fieldSetting.identifier(getVariableName(context, item));
       fieldSetting.initCodeLine(generateSurfaceInitCodeLine(context, item));
