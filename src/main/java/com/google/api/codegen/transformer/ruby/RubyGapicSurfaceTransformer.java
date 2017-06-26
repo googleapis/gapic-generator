@@ -43,6 +43,7 @@ import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
 import com.google.api.codegen.viewmodel.PathTemplateGetterFunctionView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.metadata.SimpleModuleView;
+import com.google.api.codegen.viewmodel.metadata.TocContentView;
 import com.google.api.codegen.viewmodel.metadata.TocModuleView;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexModuleView;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexRequireView;
@@ -50,6 +51,7 @@ import com.google.api.codegen.viewmodel.metadata.VersionIndexView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 
@@ -175,8 +177,16 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private ViewModel generateVersionIndexView(Model model, GapicProductConfig productConfig) {
     SurfaceNamer namer = new RubySurfaceNamer(productConfig.getPackageName());
+    RubyPackageMetadataTransformer metadataTransformer =
+        new RubyPackageMetadataTransformer(packageConfig);
+    RubyPackageMetadataNamer packageNamer =
+        new RubyPackageMetadataNamer(productConfig.getPackageName());
+    List<String> apiModules = namer.getApiModules();
+    int moduleCount = apiModules.size();
+    String version = apiModules.get(moduleCount - VERSION_MODULE_RINDEX).toLowerCase();
 
     ImmutableList.Builder<VersionIndexRequireView> requireViews = ImmutableList.builder();
+    ImmutableList.Builder<TocContentView> tocContents = ImmutableList.builder();
     Iterable<Interface> interfaces = new InterfaceView().getElementIterable(model);
     for (Interface apiInterface : interfaces) {
       GapicInterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
@@ -185,28 +195,27 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
               .clientName(namer.getFullyQualifiedApiWrapperClassName(interfaceConfig))
               .fileName(namer.getServiceFileName(interfaceConfig))
               .build());
+      tocContents.add(
+          metadataTransformer.generateTocContent(
+              model, packageNamer, version, namer.getApiWrapperClassName(interfaceConfig)));
     }
+    tocContents.add(
+        metadataTransformer.generateDataTypeTocContent(
+            Joiner.on("::").join(apiModules), packageNamer, version));
 
     ImmutableList.Builder<VersionIndexModuleView> moduleViews = ImmutableList.builder();
-    List<String> apiModules = namer.getApiModules();
-    int moduleCount = apiModules.size();
     for (int i = 0; i < moduleCount; ++i) {
       if (i == moduleCount - VERSION_MODULE_RINDEX) {
         moduleViews.add(
             TocModuleView.newBuilder()
                 .moduleName(apiModules.get(i))
                 .fullName(model.getServiceConfig().getTitle())
-                .requireViews(requireViews.build())
+                .contents(tocContents.build())
                 .build());
       } else if (i == moduleCount - SERVICE_MODULE_RINDEX) {
-        RubyPackageMetadataTransformer metadataTransformer =
-            new RubyPackageMetadataTransformer(packageConfig);
         moduleViews.add(
             metadataTransformer
-                .generateReadmeMetadataView(
-                    model,
-                    productConfig,
-                    new RubyPackageMetadataNamer(productConfig.getPackageName()))
+                .generateReadmeMetadataView(model, productConfig, packageNamer)
                 .moduleName(apiModules.get(i))
                 .build());
       } else {

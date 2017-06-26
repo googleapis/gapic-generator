@@ -16,32 +16,27 @@
 package com.google.api.codegen.viewmodel.metadata;
 
 import com.google.auto.value.AutoValue;
-import java.util.List;
 
 @AutoValue
-public abstract class TocModuleView implements VersionIndexModuleView {
-  public abstract String moduleName();
+public abstract class TocContentView {
+  public abstract String name();
 
-  public abstract String fullName();
+  public abstract String description();
 
-  public abstract List<TocContentView> contents();
+  public abstract String link();
 
   public static Builder newBuilder() {
-    return new AutoValue_TocModuleView.Builder();
-  }
-
-  public String type() {
-    return TocModuleView.class.getSimpleName();
+    return new AutoValue_TocContentView.Builder();
   }
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder moduleName(String val);
+    public abstract Builder name(String val);
 
-    public abstract Builder fullName(String val);
+    public abstract Builder description(String val);
 
-    public abstract Builder contents(List<TocContentView> val);
+    public abstract Builder link(String val);
 
-    public abstract TocModuleView build();
+    public abstract TocContentView build();
   }
 }
