@@ -1,7 +1,38 @@
 @extends "nodejs/common.snip"
 
 @snippet decorateSampleCode(apiMethod, coreSampleCode)
-    var client = {@apiMethod.apiModuleName}.{@apiMethod.apiVariableName}();
+    @if apiMethod.hasApiVersion
+        var {@apiMethod.apiModuleName} = require('{@apiMethod.packageName}');
+
+        @if apiMethod.packageHasMultipleServices
+            var client = {@apiMethod.apiModuleName}.{@apiMethod.apiVersion}.{@apiMethod.packageServiceName}({
+              // optional auth parameters.
+            });
+        @else
+            var client = {@apiMethod.apiModuleName}.{@apiMethod.apiVersion}({
+              // optional auth parameters.
+            });
+        @end
+
+        {@coreSampleCode}
+    @else
+        {@decorateSampleCodeUnversioned(apiMethod, coreSampleCode)}
+    @end
+@end
+
+@snippet decorateSampleCodeUnversioned(apiMethod, coreSampleCode)
+    var {@apiMethod.apiModuleName} = require('{@apiMethod.packageName}');
+
+    @if apiMethod.packageHasMultipleServices
+        var client = {@apiMethod.apiModuleName}.{@apiMethod.packageServiceName}({
+           // optional auth parameters.
+        });
+    @else
+        var client = {@apiMethod.apiModuleName}({
+           // optional auth parameters.
+        });
+    @end
+
     {@coreSampleCode}
 @end
 

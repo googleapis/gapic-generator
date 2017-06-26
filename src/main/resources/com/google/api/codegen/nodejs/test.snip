@@ -14,7 +14,7 @@
   @join testClass : apiTest.testClasses
     describe('{@testClass.apiClassName}', function() {
       @join test : testClass.testCases
-        {@testCase(test, apiTest.apiWrapperModuleName)}
+        {@testCase(test, testClass, apiTest)}
 
       @end
     });
@@ -26,11 +26,7 @@
 
 @private header(apiTest)
   var assert = require('assert');
-  @if apiTest.fileHeader.hasVersion
-    var {@apiTest.apiWrapperModuleName} = require('../src/{@apiTest.fileHeader.version}')();
-  @else
-    var {@apiTest.apiWrapperModuleName} = require('../src/')();
-  @end
+  var {@apiTest.apiWrapperModuleName} = require('../src');
   @if apiTest.hasGrpcStreaming
     var through2 = require('through2');
   @end
@@ -108,32 +104,32 @@
   @end
 @end
 
-@private testCase(test, moduleName)
+@private testCase(test, testClass, apiTest)
   @switch test.grpcStreamingType
   @case "NonStreaming"
     @switch test.clientMethodType
     @case "RequestObjectMethod"
-      {@requestObjectTestCase(test, moduleName)}
+      {@requestObjectTestCase(test, testClass, apiTest)}
     @case "PagedRequestObjectMethod"
-      {@pagedRequestObjectTestCase(test, moduleName)}
+      {@pagedRequestObjectTestCase(test, testClass, apiTest)}
     @case "OperationCallableMethod"
-      {@operationTestCase(test, moduleName)}
+      {@operationTestCase(test, testClass, apiTest)}
     @default
       $unhandled case: {@test.clientMethodType.toString}$
     @end
   @case "ServerStreaming"
-    {@streamingTestCase(test, moduleName)}
+    {@streamingTestCase(test, testClass, apiTest)}
   @case "BidiStreaming"
-    {@streamingTestCase(test, moduleName)}
+    {@streamingTestCase(test, testClass, apiTest)}
   @default
     $unhandled case: {@test.grpcStreamingType.toString}$
   @end
 @end
 
-@private requestObjectTestCase(test, moduleName)
+@private requestObjectTestCase(test, testClass, apiTest)
   describe('{@test.clientMethodName}', function() {
     it('invokes {@test.clientMethodName} without error', function(done) {
-      {@commonInit(test, moduleName)}
+      {@commonInit(test, testClass, apiTest)}
 
       @if test.hasReturnValue
         // Mock response
@@ -161,14 +157,14 @@
       @end
     });
 
-    {@simpleTestWithError(test, moduleName)}
+    {@simpleTestWithError(test, testClass, apiTest)}
   });
 @end
 
-@private operationTestCase(test, moduleName)
+@private operationTestCase(test, testClass, apiTest)
   describe('{@test.clientMethodName}', function() {
     it('invokes {@test.clientMethodName} without error', function(done) {
-      {@commonInit(test, moduleName)}
+      {@commonInit(test, testClass, apiTest)}
 
       // Mock response
       {@initCodeLines(test.mockResponse.initCode)}
@@ -188,7 +184,7 @@
     });
 
     it('invokes {@test.clientMethodName} with error', function(done) {
-      {@commonInit(test, moduleName)}
+      {@commonInit(test, testClass, apiTest)}
 
       // Mock Grpc layer
       client._{@test.clientMethodName} = mockLongRunningGrpcMethod(request, null, error);
@@ -206,10 +202,10 @@
   });
 @end
 
-@private pagedRequestObjectTestCase(test, moduleName)
+@private pagedRequestObjectTestCase(test, testClass, apiTest)
   describe('{@test.clientMethodName}', function() {
     it('invokes {@test.clientMethodName} without error', function(done) {
-      {@commonInit(test, moduleName)}
+      {@commonInit(test, testClass, apiTest)}
 
       // Mock response
       {@initCodeLines(test.mockResponse.initCode)}
@@ -231,14 +227,14 @@
       });
     });
 
-    {@simpleTestWithError(test, moduleName)}
+    {@simpleTestWithError(test, testClass, apiTest)}
   });
 @end
 
-@private streamingTestCase(test, moduleName)
+@private streamingTestCase(test, testClass, apiTest)
   describe('{@test.clientMethodName}', function() {
     it('invokes {@test.clientMethodName} without error', function(done) {
-      {@commonInit(test, moduleName)}
+      {@commonInit(test, testClass, apiTest)}
 
       // Mock response
       {@initCodeLines(test.mockResponse.initCode)}
@@ -274,7 +270,7 @@
     });
 
     it('invokes {@test.clientMethodName} with error', function(done) {
-      {@commonInit(test, moduleName)}
+      {@commonInit(test, testClass, apiTest)}
 
       // Mock Grpc layer
       @switch test.grpcStreamingType
@@ -308,9 +304,9 @@
   });
 @end
 
-@private simpleTestWithError(test, moduleName)
+@private simpleTestWithError(test, testClass, apiTest)
   it('invokes {@test.clientMethodName} with error', function(done) {
-    {@commonInit(test, moduleName)}
+    {@commonInit(test, testClass, apiTest)}
 
     // Mock Grpc layer
     client._{@test.clientMethodName} = mockSimpleGrpcMethod(request, null, error);
@@ -329,10 +325,27 @@
   });
 @end
 
-@private commonInit(test, moduleName)
-  var client = {@moduleName}.{@test.serviceConstructorName}();
+@private commonInit(test, testClass, apiTest)
+  {@clientInit(testClass, apiTest)}
+
   // Mock request
   {@initCodeLines(test.initCode)}
+@end
+
+@private clientInit(testClass, apiTest)
+  @if apiTest.fileHeader.hasVersion
+    var client = {@apiTest.apiWrapperModuleName}.{@apiTest.fileHeader.version}{@clientBuilderCall(testClass, apiTest)};
+  @else
+    var client = {@apiTest.apiWrapperModuleName}{@clientBuilderCall(testClass, apiTest)};
+  @end
+@end
+
+@private clientBuilderCall(testClass, apiTest)
+  @if apiTest.packageHasMultipleServices
+    .{@testClass.packageServiceName}()
+  @else
+    ()
+  @end
 @end
 
 @private assertError()
