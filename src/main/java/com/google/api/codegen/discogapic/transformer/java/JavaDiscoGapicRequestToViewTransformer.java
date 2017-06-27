@@ -20,7 +20,6 @@ import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.discogapic.DiscoGapicInterfaceContext;
 import com.google.api.codegen.discogapic.RequestInterfaceContext;
-import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Method;
@@ -40,7 +39,9 @@ import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.SimpleParamView;
 import com.google.api.codegen.viewmodel.StaticLangApiHttpRequestFileView;
 import com.google.api.codegen.viewmodel.StaticLangApiHttpRequestView;
+import com.google.api.codegen.viewmodel.StaticMemberView;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.common.collect.ImmutableMap;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,7 +50,9 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import org.apache.commons.lang3.StringUtils;
 
 /* Creates the ViewModel for a Discovery Doc request object Java class. */
 public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTransformer {
@@ -61,6 +64,24 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
       new FileHeaderTransformer(importSectionTransformer);
   private final JavaNameFormatter nameFormatter = new JavaNameFormatter();
   private static Set<String> reservedKeywords = new HashSet<>();
+
+  /**
+   * Query parameters that may be accepted by any method. See
+   * https://cloud.google.com/compute/docs/reference/parameters.
+   */
+  private static final Map<String, String> STANDARD_QUERY_PARAMS;
+
+  static {
+    ImmutableMap.Builder<String, String> queryParams = ImmutableMap.builder();
+    queryParams.put("access_token", "String");
+    queryParams.put("callback", "String");
+    queryParams.put("fields", "String");
+    queryParams.put("key", "String");
+    queryParams.put("prettyPrint", "String");
+    queryParams.put("quotaUser", "String");
+    queryParams.put("userIp", "String");
+    STANDARD_QUERY_PARAMS = queryParams.build();
+  }
 
   static {
     reservedKeywords.addAll(JavaNameFormatter.RESERVED_IDENTIFIER_SET);
@@ -101,7 +122,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
 
     for (Method method : context.getDocument().methods()) {
       RequestInterfaceContext requestContext =
-          RequestInterfaceContext.create(context, method, context.getTypeTable());
+          RequestInterfaceContext.create(context, method, context.getSchemaTypeTable());
       StaticLangApiHttpRequestView requestView = generateRequestClass(requestContext, method);
       surfaceRequests.add(generateRequestFile(requestContext, requestView));
     }
@@ -138,12 +159,9 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
       RequestInterfaceContext context, Method method) {
     StaticLangApiHttpRequestView.Builder requestView = StaticLangApiHttpRequestView.newBuilder();
 
-    // Child schemas cannot have the same symbols as parent schemas, but sibling schemas can have
-    // the same symbols.
-    //     TODO(andrealin): can there just be a global Symbol Table for each API?
     SymbolTable symbolTable = SymbolTable.fromSeed(reservedKeywords);
 
-    String requestClassId = context.getDiscoGapicNamer().getSimpleName(method.id());
+    String requestClassId = context.getDiscoGapicNamer().getRequestName(method.id());
     String requestName =
         nameFormatter.privateFieldName(Name.anyCamel(symbolTable.getNewSymbol(requestClassId)));
 
@@ -151,48 +169,81 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     requestView.description(method.description());
 
     //    String requestTypeName = typeTable.getAndSaveNicknameForElementType(method.id());
-    String requestTypeName = requestClassId;
+    String requestTypeName = nameFormatter.publicClassName(Name.anyCamel(requestClassId));
     requestView.typeName(requestTypeName);
 
-    // Set query params.
     List<SimpleParamView> paramViews = new LinkedList<>();
     for (String str : method.parameterOrder()) {
       Schema param = method.parameters().get(str);
-      paramViews.add(schemaToParamView(context.getDiscoGapicNamer(), param));
+      paramViews.add(schemaToParamView(context, param, symbolTable));
     }
     requestView.queryParams(paramViews);
 
-    // Set request and response objects.
     if (method.request() != null) {
-      requestView.requestObject(schemaToParamView(context.getDiscoGapicNamer(), method.request()));
+      requestView.requestObject(schemaToParamView(context, method.request(), symbolTable));
     }
     if (method.response() != null) {
-      requestView.responseObject(
-          schemaToParamView(context.getDiscoGapicNamer(), method.response()));
+      requestView.responseObject(schemaToParamView(context, method.response(), symbolTable));
     }
 
-    requestView.scopes(method.scopes());
-    requestView.httpMethod(method.httpMethod());
-    requestView.path(method.path());
+    List<StaticMemberView> staticFinalMembers = new LinkedList<>();
+    StringBuilder scopesString = new StringBuilder("ImmutableList.<String>of(\"");
+    scopesString.append(StringUtils.join(method.scopes().iterator(), "\", \""));
+    scopesString.append("\")");
+    staticFinalMembers.add(
+        StaticMemberView.newBuilder()
+            .description("Available OAuth 2.0 scopes.")
+            .name("scopes")
+            .typeName("List<String>")
+            .value(scopesString.toString())
+            .build());
+    staticFinalMembers.add(
+        StaticMemberView.newBuilder()
+            .description("HTTP method used by this method.")
+            .name("httpMethod")
+            .typeName("String")
+            .value(String.format("\"%s\"", method.httpMethod()))
+            .build());
+    staticFinalMembers.add(
+        StaticMemberView.newBuilder()
+            .description("The URI path of this REST method.")
+            .name("path")
+            .typeName("String")
+            .value(String.format("\"%s\"", method.path()))
+            .build());
+    staticFinalMembers.add(
+        StaticMemberView.newBuilder()
+            .description("")
+            .name("DEFAULT_INSTANCE")
+            .typeName(requestTypeName)
+            .value(String.format("new %s()", requestTypeName))
+            .build());
+    requestView.staticFinalMembers(staticFinalMembers);
 
     return requestView.build();
   }
 
   // Transforms a request/response Schema object into a SimpleParamView.
-  private SimpleParamView schemaToParamView(DiscoGapicNamer namer, Schema schema) {
+  private SimpleParamView schemaToParamView(
+      RequestInterfaceContext context, Schema schema, SymbolTable symbolTable) {
     SimpleParamView.Builder paramView = SimpleParamView.newBuilder();
     paramView.description(schema.description());
-    paramView.name(schema.getIdentifier());
-    paramView.typeName(schema.type().toString());
+    paramView.name(symbolTable.getNewSymbol(schema.getIdentifier()));
+    paramView.typeName(context.getSchemaTypeTable().getAndSaveNicknameFor(schema));
     paramView.isRequired(schema.required());
-    paramView.getterFunction(namer.getResourceGetterName(schema.getIdentifier()));
-    paramView.setterFunction(namer.getResourceSetterName(schema.getIdentifier()));
+    paramView.getterFunction(
+        context.getDiscoGapicNamer().getResourceGetterName(schema.getIdentifier()));
+    paramView.setterFunction(
+        context.getDiscoGapicNamer().getResourceSetterName(schema.getIdentifier()));
     return paramView.build();
   }
 
   private void addApiImports(TypeTable typeTable) {
     typeTable.getAndSaveNicknameFor("com.google.api.core.BetaApi");
+    typeTable.getAndSaveNicknameFor("com.google.common.collect.ImmutableList");
+    typeTable.getAndSaveNicknameFor("com.google.common.collect.ImmutableMap");
     typeTable.getAndSaveNicknameFor("java.io.Serializable");
+    typeTable.getAndSaveNicknameFor("java.util.List");
     typeTable.getAndSaveNicknameFor("javax.annotation.Generated");
   }
 

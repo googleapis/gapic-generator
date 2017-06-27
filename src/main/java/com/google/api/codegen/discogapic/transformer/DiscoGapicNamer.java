@@ -43,9 +43,23 @@ public class DiscoGapicNamer extends NameFormatterDelegator {
    * Returns the last substring after the input is split by periods. Ex: Input
    * "compute.addresses.aggregatedList" returns "aggregatedList".
    */
-  public String getSimpleName(String fieldName) {
-    String[] pieces = fieldName.split("\\.");
-    return privateFieldName(Name.anyCamel(pieces[pieces.length - 1]));
+  public String[] getMethodNamePieces(String longMethodName) {
+    String[] pieces = longMethodName.split("\\.");
+    if (pieces.length < 3) {
+      throw new IllegalArgumentException(
+          "Fully qualified method name must be in the form [api].[resource].[method]");
+    }
+    return pieces;
+  }
+
+  /**
+   * Returns the last substring after the input is split by periods. Ex: Input
+   * "compute.addresses.aggregatedList" returns "aggregatedList".
+   */
+  public String getRequestName(String fullMethodName) {
+    String[] pieces = getMethodNamePieces(fullMethodName);
+    return privateFieldName(
+        Name.anyCamel(pieces[pieces.length - 2], pieces[pieces.length - 1], "http", "request"));
   }
 
   //TODO(andrealin): Naming methods for requests, responses, service name.

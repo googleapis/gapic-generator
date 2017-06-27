@@ -18,6 +18,7 @@ import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.transformer.InterfaceContext;
+import com.google.api.codegen.transformer.SchemaTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.TypeTable;
 import com.google.auto.value.AutoValue;
@@ -32,7 +33,7 @@ import java.util.Comparator;
 @AutoValue
 public abstract class RequestInterfaceContext implements InterfaceContext {
   public static RequestInterfaceContext create(
-      DiscoGapicInterfaceContext docContext, Method method, TypeTable typeTable) {
+      DiscoGapicInterfaceContext docContext, Method method, SchemaTypeTable typeTable) {
     return new AutoValue_RequestInterfaceContext(method, docContext, typeTable);
   }
 
@@ -45,7 +46,11 @@ public abstract class RequestInterfaceContext implements InterfaceContext {
     return getDocContext().getDiscoGapicNamer();
   }
 
-  public abstract TypeTable getTypeTable();
+  public abstract SchemaTypeTable getSchemaTypeTable();
+
+  public TypeTable getTypeTable() {
+    return getSchemaTypeTable().getTypeTable();
+  }
 
   @Override
   public GapicProductConfig getProductConfig() {

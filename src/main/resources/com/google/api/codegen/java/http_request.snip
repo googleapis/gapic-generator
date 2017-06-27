@@ -10,7 +10,7 @@
 @end
 
 @private requestClassDef(request)
-  public final class {@request.typeName} implements Serializable {
+  public final class {@request.typeName} {
     {@members(request)}
 
     {@constructor(request)}
@@ -30,13 +30,25 @@
 
 @end
 
+@private members(request)
+  @join field : request.staticFinalMembers
+    private static final {@field.typeName} {@field.name} = {@field.value};
+  @end
+
+  private ImmutableMap<String, String> queryParams;
+
+  @if request.hasRequestObject
+    private {@request.requestObject.typeName} {@request.requestObject.name};
+  @end
+@end
+
 @private toString(request)
   @@Override
   public String toString() {
     return "{@request.typeName}{"
-    @join property : request.properties on " + \", \""
+    @join param : request.queryParams on " + \", \""
 
-        + "{@property.name}=" + {@property.name}
+        + "{@param.name}=" + {@param.name}
     @end
         + "}";
   }
@@ -51,9 +63,9 @@
     if (o instanceof {@request.typeName}) {
       {@request.typeName} that = ({@request.typeName}) o;
       return
-      @join property : request.properties on "&&"
+      @join param : request.queryParams on "&&"
 
-        this.{@property.name}.equals(that.{@property.getterFunction}())
+        this.{@param.name}.equals(that.{@param.getterFunction}())
       @end
       ;
     }
@@ -65,9 +77,9 @@
   @@Override
   public int hashCode() {
     int h = 1;
-    @join property : request.properties
+    @join param : request.queryParams
       h *= 1000003;
-      h ^= this.{@property.name}.hashCode();
+      h ^= this.{@param.name}.hashCode();
     @end
     return h;
   }
@@ -80,54 +92,55 @@
 @end
 
 @private getters(request)
-  @join property : request.properties
-    public {@property.typeName} {@property.getterFunction}() {
-      return {@property.name};
+  public ImmutableMap<String, String> queryParams() {
+    return queryParams;
+  }
+
+  @if request.hasRequestObject
+   public {@request.requestObject.typeName} {@request.requestObject.getterFunction}() {
+      return {@request.requestObject.name};
     }
-    {@""}
   @end
 @end
 
 @private constructor(request)
   private {@request.typeName}(
-    @join property : request.properties on ", "
-
-      {@property.typeName} {@property.name}
+    ImmutableMap<String, String> queryParams
+    @if request.hasRequestObject
+      , {@request.requestObject.typeName} {@request.requestObject.name}
     @end
     ) {
-    @join property : request.properties
-      this.{@property.name} = {@property.name};
-    @end
-  }
-@end
-
-@private members(request)
-  @join property : request.properties
-    private final {@property.typeName} {@property.name};
-  @end
+      this.queryParams = queryParams;
+      @if request.hasRequestObject
+        this.{@request.requestObject.name} = {@request.requestObject.name};
+      @end
+    }
 @end
 
 @private builder(request)
   public static class Builder {
-    @join property : request.properties
-      private {@property.typeName} {@property.name};
+    @join param : request.queryParams
+      private {@param.typeName} {@param.name};
+    @end
+    @if request.hasRequestObject
+      private {@request.requestObject.typeName} {@request.requestObject.name}
     @end
 
     Builder() {}
 
     Builder({@request.typeName} source) {
-      @join property : request.properties
-        this.{@property.name} = source.{@property.name};
+      @join param : request.queryParams
+        this.{@param.name} = source.{@param.name};
       @end
     }
 
-    @join property : request.properties
-      public {@property.typeName} {@property.getterFunction}() {
-        return {@property.name};
+    @join param : request.queryParams
+      public {@param.typeName} {@param.getterFunction}() {
+        return {@param.name};
       }
 
-      public Builder {@property.setterFunction}({@property.typeName} {@property.name}) {
-        this.{@property.name} = {@property.name};
+      public Builder {@param.setterFunction}({@param.typeName} {@param.name}) {
+        this.{@param.name} = {@param.name};
         return this;
       }
 
@@ -135,9 +148,9 @@
 
     public {@request.typeName} build() {
       return new {@request.typeName}(
-        @join property : request.properties on ", "
+        @join param : request.queryParams on ", "
 
-          {@property.name}
+          {@param.name}
         @end
       );
     }
@@ -145,8 +158,8 @@
 @end
 
 @private builderMembers(request)
-  @join property : request.properties
-    public abstract {@request.typeName}.Builder {@property.name}({@property.typeName} val);
+  @join param : request.queryParams
+    public abstract {@request.typeName}.Builder {@param.name}({@param.typeName} val);
     {@""}
   @end
 @end

@@ -34,7 +34,7 @@ public abstract class StaticLangApiHttpRequestView
   // TODO(andrealin) Populate and render this field.
   public abstract String description();
 
-  // The possibly-transformed ID of the schema from the Discovery Doc
+  // The possibly-transformed ID of the schema from the Discovery Doc.
   public abstract String name();
 
   // The type name for this Schema.
@@ -50,14 +50,7 @@ public abstract class StaticLangApiHttpRequestView
   // The response object, e.g. a Disk object returned after a GetDisk.
   public abstract SimpleParamView responseObject();
 
-  // The URI path of this REST method. Should be used in conjunction with the servicePath property at the API-level.
-  public abstract String path();
-
-  // HTTP method used by this method, e.g. "PUT".
-  public abstract String httpMethod();
-
-  // OAuth 2.0 scopes applicable to this method.
-  public abstract List<String> scopes();
+  public abstract List<StaticMemberView> staticFinalMembers();
 
   // If there is a non-null request object.
   public boolean hasRequestObject() {
@@ -87,11 +80,8 @@ public abstract class StaticLangApiHttpRequestView
 
     public abstract StaticLangApiHttpRequestView.Builder responseObject(SimpleParamView val);
 
-    public abstract StaticLangApiHttpRequestView.Builder path(String val);
-
-    public abstract StaticLangApiHttpRequestView.Builder httpMethod(String val);
-
-    public abstract StaticLangApiHttpRequestView.Builder scopes(List<String> val);
+    public abstract StaticLangApiHttpRequestView.Builder staticFinalMembers(
+        List<StaticMemberView> val);
 
     public abstract StaticLangApiHttpRequestView build();
   }
