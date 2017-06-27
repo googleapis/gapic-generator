@@ -122,6 +122,8 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
                       Name.upperCamelKeepUpperAcronyms(apiInterface.getSimpleName())))
               .testCases(createTestCaseViews(context))
               .apiHasLongRunningMethods(context.getInterfaceConfig().hasLongRunningOperations())
+              .hasDefaultServiceAddress(context.getInterfaceConfig().hasDefaultServiceAddress())
+              .hasDefaultServiceScopes(context.getInterfaceConfig().hasDefaultServiceScopes())
               .mockServices(ImmutableList.<MockServiceUsageView>of())
               .build();
 

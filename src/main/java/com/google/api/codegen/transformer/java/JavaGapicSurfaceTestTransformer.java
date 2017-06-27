@@ -179,6 +179,9 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         mockServiceTransformer.createMockServices(
             context.getNamer(), context.getModel(), context.getProductConfig()));
 
+    testClass.hasDefaultServiceAddress(context.getInterfaceConfig().hasDefaultServiceAddress());
+    testClass.hasDefaultServiceScopes(context.getInterfaceConfig().hasDefaultServiceScopes());
+
     ClientTestFileView.Builder testFile = ClientTestFileView.newBuilder();
     testFile.testClass(testClass.build());
     testFile.outputPath(namer.getSourceFilePath(outputPath, name));
