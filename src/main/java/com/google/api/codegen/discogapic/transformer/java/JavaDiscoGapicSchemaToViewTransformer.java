@@ -157,8 +157,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     // the same symbols.
     SymbolTable symbolTableCopy = SymbolTable.fromSeed(reservedKeywords);
 
-    String schemaId =
-        Name.anyCamel(schema.id().isEmpty() ? schema.key() : schema.id()).toLowerCamel();
+    String schemaId = Name.anyCamel(schema.getIdentifier()).toLowerCamel();
     String schemaName =
         nameFormatter.privateFieldName(Name.anyCamel(symbolTableCopy.getNewSymbol(schemaId)));
 
