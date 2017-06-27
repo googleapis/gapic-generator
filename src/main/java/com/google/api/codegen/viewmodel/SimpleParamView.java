@@ -14,13 +14,11 @@
  */
 package com.google.api.codegen.viewmodel;
 
-import com.google.api.codegen.discovery.Schema;
 import com.google.auto.value.AutoValue;
-import java.util.List;
 import javax.annotation.Nullable;
 
 /**
- * This ViewModel defines the view model structure of a generic HTTP request.
+ * This ViewModel defines the view model structure of a generic message.
  *
  * <p>For example, this can be used to represent a Discovery Document's "schemas", "properties",
  * "additionalProperties", and "items".
@@ -29,7 +27,7 @@ import javax.annotation.Nullable;
  * https://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.7.
  */
 @AutoValue
-public abstract class StaticLangHttpRequestView implements Comparable<StaticLangHttpRequestView> {
+public abstract class SimpleParamView implements Comparable<SimpleParamView> {
   @Nullable
   // TODO(andrealin) Populate and render this field.
   public abstract String description();
@@ -37,35 +35,41 @@ public abstract class StaticLangHttpRequestView implements Comparable<StaticLang
   // The possibly-transformed ID of the schema from the Discovery Doc
   public abstract String name();
 
-  // The type name for this Schema.
+  // The type of this object; most likely a String.
   public abstract String typeName();
 
-  public abstract List<SimpleQueryParamView> queryParams();
-
+  // For static languages, name for getter function.
   @Nullable
-  // The object to include in the request, e.g. the Disk to be inserted for a CreateDisk operation.
-  public abstract Schema requestObject();
+  public abstract String getterFunction();
 
-  public static StaticLangHttpRequestView.Builder newBuilder() {
-    return new AutoValue_StaticLangHttpRequestView.Builder();
+  // For static languages, name for setter function.
+  @Nullable
+  public abstract String setterFunction();
+
+  public abstract boolean isRequired();
+
+  public static SimpleParamView.Builder newBuilder() {
+    return new AutoValue_SimpleParamView.Builder();
   }
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract StaticLangHttpRequestView.Builder description(String val);
+    public abstract SimpleParamView.Builder typeName(String val);
 
-    public abstract StaticLangHttpRequestView.Builder name(String val);
+    public abstract SimpleParamView.Builder name(String val);
 
-    public abstract StaticLangHttpRequestView.Builder typeName(String val);
+    public abstract SimpleParamView.Builder description(String val);
 
-    public abstract StaticLangHttpRequestView.Builder queryParams(List<SimpleQueryParamView> val);
+    public abstract SimpleParamView.Builder getterFunction(String val);
 
-    public abstract StaticLangHttpRequestView.Builder requestObject(Schema val);
+    public abstract SimpleParamView.Builder setterFunction(String val);
 
-    public abstract StaticLangHttpRequestView build();
+    public abstract SimpleParamView.Builder isRequired(boolean val);
+
+    public abstract SimpleParamView build();
   }
 
-  public int compareTo(StaticLangHttpRequestView o) {
+  public int compareTo(SimpleParamView o) {
     return this.name().compareTo(o.name());
   }
 }
