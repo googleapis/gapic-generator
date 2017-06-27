@@ -1,0 +1,152 @@
+@extends "java/common.snip"
+@extends "java/method_sample.snip"
+
+@snippet generate(apiFile)
+  {@renderFileHeader(apiFile.fileHeader)}
+
+  @@Generated("by GAPIC")
+  @@BetaApi
+  {@requestClassDef(apiFile.request)}
+@end
+
+@private requestClassDef(request)
+  public final class {@request.typeName} implements Serializable {
+    {@members(request)}
+
+    {@constructor(request)}
+
+    {@getters(request)}
+
+    {@newBuilder(request)}
+
+    {@builder(request)}
+
+    {@toString(request)}
+
+    {@equalsMethod(request)}
+
+    {@hashCode(request)}
+  }
+
+@end
+
+@private toString(request)
+  @@Override
+  public String toString() {
+    return "{@request.typeName}{"
+    @join property : request.properties on " + \", \""
+
+        + "{@property.name}=" + {@property.name}
+    @end
+        + "}";
+  }
+@end
+
+@private equalsMethod(request)
+  @@Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof {@request.typeName}) {
+      {@request.typeName} that = ({@request.typeName}) o;
+      return
+      @join property : request.properties on "&&"
+
+        this.{@property.name}.equals(that.{@property.getterFunction}())
+      @end
+      ;
+    }
+    return false;
+  }
+@end
+
+@private hashCode(request)
+  @@Override
+  public int hashCode() {
+    int h = 1;
+    @join property : request.properties
+      h *= 1000003;
+      h ^= this.{@property.name}.hashCode();
+    @end
+    return h;
+  }
+@end
+
+@private newBuilder(request)
+  public static Builder newBuilder() {
+    return new {@request.typeName}.Builder();
+  }
+@end
+
+@private getters(request)
+  @join property : request.properties
+    public {@property.typeName} {@property.getterFunction}() {
+      return {@property.name};
+    }
+    {@""}
+  @end
+@end
+
+@private constructor(request)
+  private {@request.typeName}(
+    @join property : request.properties on ", "
+
+      {@property.typeName} {@property.name}
+    @end
+    ) {
+    @join property : request.properties
+      this.{@property.name} = {@property.name};
+    @end
+  }
+@end
+
+@private members(request)
+  @join property : request.properties
+    private final {@property.typeName} {@property.name};
+  @end
+@end
+
+@private builder(request)
+  public static class Builder {
+    @join property : request.properties
+      private {@property.typeName} {@property.name};
+    @end
+
+    Builder() {}
+
+    Builder({@request.typeName} source) {
+      @join property : request.properties
+        this.{@property.name} = source.{@property.name};
+      @end
+    }
+
+    @join property : request.properties
+      public {@property.typeName} {@property.getterFunction}() {
+        return {@property.name};
+      }
+
+      public Builder {@property.setterFunction}({@property.typeName} {@property.name}) {
+        this.{@property.name} = {@property.name};
+        return this;
+      }
+
+    @end
+
+    public {@request.typeName} build() {
+      return new {@request.typeName}(
+        @join property : request.properties on ", "
+
+          {@property.name}
+        @end
+      );
+    }
+  }
+@end
+
+@private builderMembers(request)
+  @join property : request.properties
+    public abstract {@request.typeName}.Builder {@property.name}({@property.typeName} val);
+    {@""}
+  @end
+@end
