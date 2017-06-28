@@ -13,7 +13,7 @@
   public final class {@request.typeName} {
     {@members(request)}
 
-    {@constructor(request)}
+    {@constructors(request)}
 
     {@getters(request)}
 
@@ -103,7 +103,7 @@
   @end
 @end
 
-@private constructor(request)
+@private constructors(request)
   private {@request.typeName}(
     ImmutableMap<String, String> queryParams
     @if request.hasRequestObject
@@ -115,6 +115,9 @@
         this.{@request.requestObject.name} = {@request.requestObject.name};
       @end
     }
+  private {@request.typeName}() {
+    this.queryParams = ImmutableMap.<String, String>Builder
+  }
 @end
 
 @private builder(request)
