@@ -152,8 +152,10 @@
 
 @snippet methodCallSampleCodeForPagedResponseIterative(apiMethod, additionalCallback)
     // Iterate over all elements.
-    {@initCode(apiMethod)}
+    @if initCode(apiMethod)
+      {@initCode(apiMethod)}
 
+    @end
     {@methodCallSampleCodePrefix(apiMethod)}.then(function(responses) {
         var resources = responses[0];
         for (var i = 0; i < resources.length; ++i) {
@@ -172,8 +174,11 @@
 
 @snippet methodCallSampleCodeForPagedResponse(apiMethod, additionalCallback)
     // Or obtain the paged response.
-    # TODO(landrito) figure out how to remove this repition for method samples.
-    {@initCode(apiMethod)}
+    # TODO(landrito) figure out how to remove this repetition for method samples.
+    @if initCode(apiMethod)
+      {@initCode(apiMethod)}
+
+    @end
 
     var options = {autoPaginate: false};
     function callback(responses) {
