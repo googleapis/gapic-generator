@@ -32,11 +32,23 @@ public class DiscoGapicNamer extends NameFormatterDelegator {
 
   /** Returns the resource getter method name for a resource field. */
   public String getResourceGetterName(String fieldName) {
-    return publicMethodName(Name.anyCamel("get", fieldName));
+    Name name;
+    if (fieldName.contains("_")) {
+      name = Name.anyCamel(fieldName.split("_"));
+    } else {
+      name = Name.anyCamel(fieldName);
+    }
+    return publicMethodName(Name.anyCamel("get").join(name));
   }
   /** Returns the resource getter method name for a resource field. */
   public String getResourceSetterName(String fieldName) {
-    return publicMethodName(Name.anyCamel("set", fieldName));
+    Name name;
+    if (fieldName.contains("_")) {
+      name = Name.anyCamel(fieldName.split("_"));
+    } else {
+      name = Name.anyCamel(fieldName);
+    }
+    return publicMethodName(Name.anyCamel("set").join(name));
   }
 
   /**

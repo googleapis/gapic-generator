@@ -31,14 +31,25 @@
 @end
 
 @private members(request)
-  @join field : request.staticFinalMembers
-    private static final {@field.typeName} {@field.name} = {@field.value};
-  @end
-
-  private ImmutableMap<String, String> queryParams;
+  private static final {@request.typeName} DEFAULT_INSTANCE = new {@request.typeName}();
 
   @if request.hasRequestObject
     private {@request.requestObject.typeName} {@request.requestObject.name};
+  @end
+
+  {@paramMembers(request.queryParams, "queryParams", "Query")}
+
+  {@paramMembers(request.pathParams, "pathParams", "Path")}
+@end
+
+@private paramMembers(params, paramsVariableName, paramsName)
+  private final ImmutableListMultimap<String, String> {@paramsVariableName};
+
+  @if params
+    // {@paramsName} parameters.
+    @join param : params
+      private {@param.typeName} {@param.name};
+    @end
   @end
 @end
 
@@ -46,9 +57,17 @@
   @@Override
   public String toString() {
     return "{@request.typeName}{"
-    @join param : request.queryParams on " + \", \""
-
+    @join param : request.queryParams on " + \", \"".add(BREAK)
         + "{@param.name}=" + {@param.name}
+    @end
+    @if request.pathParams
+      " + \", \""
+      @join param : request.pathParams on " + \", \"".add(BREAK)
+          + "{@param.name}=" + {@param.name}
+      @end
+    @end
+    @if request.hasRequestObject
+      " + \", \"{@request.requestObject.name}=" + {@request.requestObject.name}
     @end
         + "}";
   }
@@ -63,8 +82,7 @@
     if (o instanceof {@request.typeName}) {
       {@request.typeName} that = ({@request.typeName}) o;
       return
-      @join param : request.queryParams on "&&"
-
+      @join param : request.queryParams on "&&".add(BREAK)
         this.{@param.name}.equals(that.{@param.getterFunction}())
       @end
       ;
@@ -92,8 +110,16 @@
 @end
 
 @private getters(request)
-  public ImmutableMap<String, String> queryParams() {
+  // A list of key-value pairs, where each key is a query parameter and the value is the value
+  // of the parameter. A key may appear multiple times, in the case of repeatable parameters.
+  public ImmutableListMultimap<String, String> getQueryParams() {
     return queryParams;
+  }
+
+  // A list of key-value pairs, where each key is a path parameter and the value is the value
+  // of the parameter. A key may appear multiple times, in the case of repeatable parameters
+  public ImmutableListMultimap<String, String> getPathParams() {
+    return pathParams;
   }
 
   @if request.hasRequestObject
@@ -101,22 +127,79 @@
       return {@request.requestObject.name};
     }
   @end
+
+  @join param : request.queryParams
+    public {@param.typeName} {@param.getterFunction} () {
+      return {@param.name};
+    }
+  @end
+
+  @join param : request.pathParams
+    public {@param.typeName} {@param.getterFunction} () {
+      return {@param.name};
+    }
+  @end
 @end
 
 @private constructors(request)
   private {@request.typeName}(
-    ImmutableMap<String, String> queryParams
-    @if request.hasRequestObject
-      , {@request.requestObject.typeName} {@request.requestObject.name}
-    @end
-    ) {
-      this.queryParams = queryParams;
-      @if request.hasRequestObject
-        this.{@request.requestObject.name} = {@request.requestObject.name};
+      @join param : request.queryParams on ",".add(BREAK)
+        {@param.typeName} {@param.name}
       @end
-    }
+      @if request.pathParams
+      ,
+      @join param : request.pathParams on ",".add(BREAK)
+        {@param.typeName} {@param.name}
+      @end
+      @end
+      @if request.hasRequestObject
+        , {@request.requestObject.typeName} {@request.requestObject.name}
+      @end
+      ) {
+    @join param : request.queryParams
+      this.{@param.name} = {@param.name};
+    @end
+    @join param : request.pathParams
+      this.{@param.name} = {@param.name};
+    @end
+    @if request.hasRequestObject
+      this.{@request.requestObject.name} = {@request.requestObject.name};
+    @end
+
+    ImmutableListMultimap.Builder pathParams = ImmutableListMultimap.builder();
+    ImmutableListMultimap.Builder queryParams = ImmutableListMultimap.builder();
+
+    @join param : request.pathParams
+      if ({@param.name} != null) {
+        @if {@param.canRepeat}
+          for (String s : foo) {
+            pathParams.put("{@param.name}", {@param.name}.toString());
+          }
+        @else
+          pathParams.put("{@param.name}", {@param.name}.toString());
+        @end
+      }
+    @end
+
+    @join param : request.queryParams
+      if ({@param.name} != null) {
+        @if {@param.canRepeat}
+          for (String s : foo) {
+            queryParams.put("{@param.name}", {@param.name}.toString());
+          }
+        @else
+          queryParams.put("{@param.name}", {@param.name}.toString());
+        @end
+      }
+    @end
+
+    this.pathParams = pathParams.build();
+    this.queryParams = queryParams.build();
+  }
+
   private {@request.typeName}() {
-    this.queryParams = ImmutableMap.<String, String>Builder
+     this.queryParams = (new ImmutableListMultimap.Builder()).build();
+     this.pathParams = (new ImmutableListMultimap.Builder()).build();
   }
 @end
 
@@ -143,7 +226,17 @@
       }
 
       public Builder {@param.setterFunction}({@param.typeName} {@param.name}) {
-        this.{@param.name} = {@param.name};
+        @if @param.isRequired
+          if ({@param.name} == null) {
+            throw new IllegalArgumentException("\"{@param.name}\" is a required parameter.");
+          }
+        @end
+        @if param.canRepeat
+          this.{@param.name} = new LinkedList<>();
+          this.{@param.name}.addAll({@param.name});
+        @else
+          this.{@param.name} = {@param.name};
+        @end
         return this;
       }
 
@@ -158,6 +251,11 @@
       );
     }
   }
+@end
+
+@private operateOnTwo(function, first, second)
+  {@function(first)}
+  {@function(second)}
 @end
 
 @private builderMembers(request)

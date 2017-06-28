@@ -48,6 +48,8 @@ public abstract class SimpleParamView implements Comparable<SimpleParamView> {
 
   public abstract boolean isRequired();
 
+  public abstract boolean canRepeat();
+
   public static SimpleParamView.Builder newBuilder() {
     return new AutoValue_SimpleParamView.Builder();
   }
@@ -65,6 +67,8 @@ public abstract class SimpleParamView implements Comparable<SimpleParamView> {
     public abstract SimpleParamView.Builder setterFunction(String val);
 
     public abstract SimpleParamView.Builder isRequired(boolean val);
+
+    public abstract SimpleParamView.Builder canRepeat(boolean val);
 
     public abstract SimpleParamView build();
   }

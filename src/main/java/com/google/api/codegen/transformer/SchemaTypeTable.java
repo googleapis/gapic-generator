@@ -95,15 +95,12 @@ public class SchemaTypeTable implements SchemaTypeFormatter {
   }
 
   /**
-   * For a given schema, add the full name to the import set, and then return the nickname.
-   *
-   * @param schema The schema to save and get the nickname for.
-   * @return nickname for the schema.
-   *     <p>If the given schema type is an array, then the element type is the contained type;
-   *     otherwise the element type is the boxed form of the type.
+   * Computes the nickname for the given type, adds the full name to the import set, and returns the
+   * nickname.
    */
-  public String getAndSaveNicknameForElementType(Schema schema) {
-    return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeNameForElementType(schema));
+  public String getAndSaveNicknameFor(Schema schema, boolean shouldBoxPrimitives) {
+    return typeTable.getAndSaveNicknameFor(
+        typeNameConverter.getTypeName(schema, shouldBoxPrimitives));
   }
 
   /** Returns the imports accumulated so far. */
