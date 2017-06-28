@@ -15,6 +15,8 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableList.Builder;
 import java.util.List;
 import javax.annotation.Nullable;
 
@@ -43,6 +45,19 @@ public abstract class StaticLangApiHttpRequestView
   public abstract List<SimpleParamView> queryParams();
 
   public abstract List<SimpleParamView> pathParams();
+
+  private ImmutableList<SimpleParamView> allParams;
+
+  public List<SimpleParamView> allParams() {
+    if (allParams != null) {
+      return allParams;
+    }
+    ImmutableList.Builder<SimpleParamView> builder = new ImmutableList.Builder<>();
+    builder.addAll(pathParams());
+    builder.addAll(queryParams());
+    allParams = builder.build();
+    return allParams;
+  }
 
   @Nullable
   // The object to include in the request, e.g. the Disk to be inserted for a CreateDisk operation.
