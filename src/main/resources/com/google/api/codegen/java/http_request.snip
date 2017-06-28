@@ -61,7 +61,7 @@
             + "{@param.name}=" + {@param.name}
         @end
         @if request.hasRequestObject
-          " + \", \"{@request.requestObject.name}=" + {@request.requestObject.name}
+         + ", {@request.requestObject.name}=" + {@request.requestObject.name}
         @end
         + "}";
   }
@@ -182,7 +182,7 @@
       private {@param.typeName} {@param.name};
     @end
     @if request.hasRequestObject
-      private {@request.requestObject.typeName} {@request.requestObject.name}
+      private {@request.requestObject.typeName} {@request.requestObject.name};
     @end
 
     Builder() {}
@@ -200,6 +200,9 @@
       return new {@request.typeName}(
           @join param : request.allParams on ", ".add(BREAK)
             {@param.name}
+          @end
+          @if request.hasRequestObject
+            , {@request.requestObject.name}
           @end
       );
     }
