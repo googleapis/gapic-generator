@@ -22,9 +22,7 @@ import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.PackageMetadataNamer;
 import com.google.api.codegen.transformer.PackageMetadataTransformer;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
-import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -47,8 +45,7 @@ public class PhpPackageMetadataTransformer implements ModelToViewTransformer {
 
   @Override
   public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
-    Iterable<Interface> apiInterfaces = new InterfaceView().getElementIterable(model);
-    boolean hasMultipleInterfaces = Iterables.size(apiInterfaces) > 1;
+    boolean hasMultipleInterfaces = new InterfaceView().hasMultipleServices(model);
     List<ViewModel> models = new ArrayList<ViewModel>();
     PhpPackageMetadataNamer namer =
         new PhpPackageMetadataNamer(

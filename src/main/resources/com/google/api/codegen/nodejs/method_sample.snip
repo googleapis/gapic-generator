@@ -72,13 +72,17 @@
 
 @private clientStreamingSampleCode(apiMethod, additionalCallback)
     var stream = client.{@apiMethod.name}(function(err, response) {
-        if (err) {
-            console.error(err);
-            return;
-        }
         @if additionalCallback
+          if (err) {
+              {@additionalCallback}(err);
+              return;
+          }
           {@additionalCallback}();
         @else
+          if (err) {
+              console.error(err);
+              return;
+          }
           // doThingsWith(response)
         @end
     });
@@ -129,7 +133,7 @@
 @end
 
 @private pagedOptionalArrayMethodSampleCode(apiMethod, additionalCallback)
-    {@methodCallSampleCodeForPagedResponsePromise(apiMethod, additionalCallback)}
+    {@methodCallSampleCodeForPagedResponseIterative(apiMethod, additionalCallback)}
 
     {@methodCallSampleCodeForPagedResponse(apiMethod, additionalCallback)}
 @end
@@ -146,7 +150,7 @@
     @end
 @end
 
-@snippet methodCallSampleCodeForPagedResponsePromise(apiMethod, additionalCallback)
+@snippet methodCallSampleCodeForPagedResponseIterative(apiMethod, additionalCallback)
     // Iterate over all elements.
     {@initCode(apiMethod)}
 
@@ -158,9 +162,7 @@
     @if additionalCallback
         })
         .then({@additionalCallback})
-        .catch(function(err) {
-            console.error(err);
-        });
+        .catch({@additionalCallback});
     @else
         }).catch(function(err) {
             console.error(err);
@@ -193,10 +195,12 @@
         .then(callback)
         @if additionalCallback
             .then({@additionalCallback})
+            .catch({@additionalCallback});
+        @else
+            .catch(function(err) {
+                console.error(err);
+            });
         @end
-        .catch(function(err) {
-            console.error(err);
-        });
 @end
 
 @private methodCallSampleCodePrefix(apiMethod)
@@ -228,10 +232,9 @@
             // The response of the api call returning the complete operation.
             var finalApiResponse = responses[2];
         @if additionalCallback
-            }).then(additionalCallback)
-            .catch(function(err) {
-                console.error(err);
-            });
+            })
+            .then({@additionalCallback})
+            .catch({@additonalCallback});
         @else
             }).catch(function(err) {
                 console.error(err);
@@ -260,10 +263,9 @@
               // throw(err);
             })
         @if additionalCallback
-            }).then(additionalCallback)
-            .catch(function(err) {
-                console.error(err);
-            });
+            })
+            .then({@additionalCallback})
+            .catch({@additionalCallback});
         @else
             }).catch(function(err) {
                 console.error(err);
@@ -274,10 +276,9 @@
             var response = responses[0];
             // doThingsWith(response)
         @if additionalCallback
-            }).then(additionalCallback)
-            .catch(function(err) {
-                console.error(err);
-            });
+            })
+            .then({@additionalCallback})
+            .catch({@additionalCallback});
         @else
             }).catch(function(err) {
                 console.error(err);
@@ -289,10 +290,8 @@
 @private methodCallSampleCodeWithoutReturnValue(apiMethod, additionalCallback)
     @if additionalCallback
         {@methodCallSampleCodePrefix(apiMethod)}
-          .then(additionalCallback)
-          .catch(function(err) {
-              console.error(err);
-          });
+          .then({@additionalCallback})
+          .catch({@additonalCallback});
     @else
         {@methodCallSampleCodePrefix(apiMethod)}.catch(function(err) {
             console.error(err);

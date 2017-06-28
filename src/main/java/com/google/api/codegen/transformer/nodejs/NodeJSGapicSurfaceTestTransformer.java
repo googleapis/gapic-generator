@@ -57,7 +57,6 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -67,6 +66,7 @@ import java.util.List;
 public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private static final String TEST_TEMPLATE_FILE = "nodejs/test.snip";
   private static final String SMOKE_TEST_TEMPLATE_FILE = "nodejs/smoke_test.snip";
+  private static final String SMOKE_TEST_OUTPUT_BASE_PATH = "smoke-test";
 
   private final ValueProducer valueProducer = new StandardValueProducer();
   private final StandardImportSectionTransformer importSectionTransformer =
@@ -117,8 +117,8 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
               .grpcMethods(mockServiceTransformer.createMockGrpcMethodViews(context))
               .build());
     }
-    Iterable<Interface> apiInterfaces = new InterfaceView().getElementIterable(model);
-    for (Interface apiInterface : apiInterfaces) {
+    InterfaceView interfaceView = new InterfaceView();
+    for (Interface apiInterface : interfaceView.getElementIterable(model)) {
       // We don't need any imports here.
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
@@ -148,7 +148,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
         .testClasses(testClasses)
         .apiWrapperModuleName(namer.getApiWrapperModuleName())
         .templateFileName(TEST_TEMPLATE_FILE)
-        .packageHasMultipleServices(Iterables.size(apiInterfaces) > 1)
+        .packageHasMultipleServices(interfaceView.hasMultipleServices(model))
         .fileHeader(fileHeaderTransformer.generateFileHeader(productConfig, importSection, namer))
         .build();
   }
@@ -211,19 +211,18 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
 
   private List<ViewModel> createSmokeTestViews(Model model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ViewModel> views = ImmutableList.builder();
-    Iterable<Interface> interfaces = new InterfaceView().getElementIterable(model);
-    boolean packageHasManyServices = Iterables.size(interfaces) > 1;
-    for (Interface apiInterface : interfaces) {
+    InterfaceView interfaceView = new InterfaceView();
+    for (Interface apiInterface : interfaceView.getElementIterable(model)) {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
       if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
-        views.add(createSmokeTestClassView(context, packageHasManyServices));
+        views.add(createSmokeTestClassView(context, interfaceView.hasMultipleServices(model)));
       }
     }
     return views.build();
   }
 
   private SmokeTestClassView createSmokeTestClassView(
-      GapicInterfaceContext context, boolean packageHasManyServices) {
+      GapicInterfaceContext context, boolean packageHasMultipleServices) {
     SurfaceNamer namer = context.getNamer();
     String name = namer.getSmokeTestClassName(context.getInterfaceConfig());
 
@@ -237,12 +236,12 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
     SmokeTestClassView.Builder testClass = SmokeTestClassView.newBuilder();
     TestCaseView testCaseView = testCaseTransformer.createSmokeTestCaseView(flattenedMethodContext);
     OptionalArrayMethodView apiMethodView =
-        createSmokeTestCaseApiMethodView(flattenedMethodContext, packageHasManyServices);
+        createSmokeTestCaseApiMethodView(flattenedMethodContext, packageHasMultipleServices);
 
     testClass.apiSettingsClassName(namer.getApiSettingsClassName(context.getInterfaceConfig()));
     testClass.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
     testClass.name(name);
-    testClass.outputPath(namer.getSourceFilePath("smoke-test", name));
+    testClass.outputPath(namer.getSourceFilePath(SMOKE_TEST_OUTPUT_BASE_PATH, name));
     testClass.templateFileName(SMOKE_TEST_TEMPLATE_FILE);
     testClass.apiMethod(apiMethodView);
     testClass.method(testCaseView);
@@ -257,10 +256,10 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
   }
 
   private OptionalArrayMethodView createSmokeTestCaseApiMethodView(
-      GapicMethodContext context, boolean packageHasManyServices) {
+      GapicMethodContext context, boolean packageHasMultipleServices) {
     OptionalArrayMethodView initialApiMethodView =
         new DynamicLangApiMethodTransformer(new NodeJSApiMethodParamTransformer())
-            .generateMethod(context, packageHasManyServices);
+            .generateMethod(context, packageHasMultipleServices);
 
     OptionalArrayMethodView.Builder apiMethodView = initialApiMethodView.toBuilder();
 
@@ -269,9 +268,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
         initCodeTransformer.generateInitCode(
             context, testCaseTransformer.createSmokeTestInitContext(context));
     apiMethodView.initCode(initCodeView);
-
     apiMethodView.packageName("../src");
-
     return apiMethodView.build();
   }
 
