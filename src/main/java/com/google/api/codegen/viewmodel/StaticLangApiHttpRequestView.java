@@ -42,6 +42,8 @@ public abstract class StaticLangApiHttpRequestView
 
   public abstract List<SimpleParamView> queryParams();
 
+  public abstract List<SimpleParamView> pathParams();
+
   @Nullable
   // The object to include in the request, e.g. the Disk to be inserted for a CreateDisk operation.
   public abstract SimpleParamView requestObject();
@@ -49,8 +51,6 @@ public abstract class StaticLangApiHttpRequestView
   @Nullable
   // The response object, e.g. a Disk object returned after a GetDisk.
   public abstract SimpleParamView responseObject();
-
-  public abstract List<StaticMemberView> staticFinalMembers();
 
   // If there is a non-null request object.
   public boolean hasRequestObject() {
@@ -76,12 +76,11 @@ public abstract class StaticLangApiHttpRequestView
 
     public abstract StaticLangApiHttpRequestView.Builder queryParams(List<SimpleParamView> val);
 
+    public abstract StaticLangApiHttpRequestView.Builder pathParams(List<SimpleParamView> val);
+
     public abstract StaticLangApiHttpRequestView.Builder requestObject(SimpleParamView val);
 
     public abstract StaticLangApiHttpRequestView.Builder responseObject(SimpleParamView val);
-
-    public abstract StaticLangApiHttpRequestView.Builder staticFinalMembers(
-        List<StaticMemberView> val);
 
     public abstract StaticLangApiHttpRequestView build();
   }
