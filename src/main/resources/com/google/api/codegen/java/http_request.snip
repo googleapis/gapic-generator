@@ -57,12 +57,12 @@
   @@Override
   public String toString() {
     return "{@request.typeName}{"
-    @join param : request.allParams on " + \", \"".add(BREAK)
-        + "{@param.name}=" + {@param.name}
-    @end
-    @if request.hasRequestObject
-      " + \", \"{@request.requestObject.name}=" + {@request.requestObject.name}
-    @end
+        @join param : request.allParams on " + \", \"".add(BREAK)
+            + "{@param.name}=" + {@param.name}
+        @end
+        @if request.hasRequestObject
+          " + \", \"{@request.requestObject.name}=" + {@request.requestObject.name}
+        @end
         + "}";
   }
 @end
@@ -76,10 +76,10 @@
     if (o instanceof {@request.typeName}) {
       {@request.typeName} that = ({@request.typeName}) o;
       return
-      @join param : request.allParams on "&&".add(BREAK)
-        this.{@param.name}.equals(that.{@param.getterFunction}())
-      @end
-      ;
+          @join param : request.allParams on "&&".add(BREAK)
+            this.{@param.name}.equals(that.{@param.getterFunction}())
+          @end
+          ;
     }
     return false;
   }
@@ -157,8 +157,8 @@
   }
 
   private {@request.typeName}() {
-     this.queryParams = (new ImmutableListMultimap.Builder()).build();
-     this.pathParams = (new ImmutableListMultimap.Builder()).build();
+    this.queryParams = (new ImmutableListMultimap.Builder()).build();
+    this.pathParams = (new ImmutableListMultimap.Builder()).build();
   }
 @end
 
@@ -189,7 +189,7 @@
 
     Builder({@request.typeName} source) {
       @join param : request.allParams
-        this.{@param.name} = source.{@param.name};
+        this.{@param.name} = source.{@param.getterFunction}();
       @end
     }
 
@@ -198,21 +198,20 @@
 
     public {@request.typeName} build() {
       return new {@request.typeName}(
-        @join param : request.allParams on ", ".add(BREAK)
-          {@param.name}
-        @end
+          @join param : request.allParams on ", ".add(BREAK)
+            {@param.name}
+          @end
       );
     }
 
     public Builder clone() {
       Builder newBuilder = new Builder();
       @join param : request.allParams
-        if ({@param.name} != null}) {
+        if ({@param.name} != null) {
           newBuilder.{@param.setterFunction}(this.{@param.name});
         }
       @end
       return newBuilder;
-      );
     }
   }
 @end
