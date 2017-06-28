@@ -57,14 +57,8 @@
   @@Override
   public String toString() {
     return "{@request.typeName}{"
-    @join param : request.queryParams on " + \", \"".add(BREAK)
+    @join param : request.allParams on " + \", \"".add(BREAK)
         + "{@param.name}=" + {@param.name}
-    @end
-    @if request.pathParams
-      " + \", \""
-      @join param : request.pathParams on " + \", \"".add(BREAK)
-          + "{@param.name}=" + {@param.name}
-      @end
     @end
     @if request.hasRequestObject
       " + \", \"{@request.requestObject.name}=" + {@request.requestObject.name}
@@ -82,7 +76,7 @@
     if (o instanceof {@request.typeName}) {
       {@request.typeName} that = ({@request.typeName}) o;
       return
-      @join param : request.queryParams on "&&".add(BREAK)
+      @join param : request.allParams on "&&".add(BREAK)
         this.{@param.name}.equals(that.{@param.getterFunction}())
       @end
       ;
@@ -95,7 +89,7 @@
   @@Override
   public int hashCode() {
     int h = 1;
-    @join param : request.queryParams
+    @join param : request.allParams
       h *= 1000003;
       h ^= this.{@param.name}.hashCode();
     @end
@@ -128,13 +122,7 @@
     }
   @end
 
-  @join param : request.queryParams
-    public {@param.typeName} {@param.getterFunction} () {
-      return {@param.name};
-    }
-  @end
-
-  @join param : request.pathParams
+  @join param : request.allParams
     public {@param.typeName} {@param.getterFunction} () {
       return {@param.name};
     }
@@ -143,23 +131,15 @@
 
 @private constructors(request)
   private {@request.typeName}(
-      @join param : request.queryParams on ",".add(BREAK)
+      @join param : request.allParams on ",".add(BREAK)
         {@param.typeName} {@param.name}
-      @end
-      @if request.pathParams
-      ,
-      @join param : request.pathParams on ",".add(BREAK)
-        {@param.typeName} {@param.name}
-      @end
       @end
       @if request.hasRequestObject
-        , {@request.requestObject.typeName} {@request.requestObject.name}
+        ,
+        {@request.requestObject.typeName} {@request.requestObject.name}
       @end
       ) {
-    @join param : request.queryParams
-      this.{@param.name} = {@param.name};
-    @end
-    @join param : request.pathParams
+    @join param : request.allParams
       this.{@param.name} = {@param.name};
     @end
     @if request.hasRequestObject
@@ -169,29 +149,8 @@
     ImmutableListMultimap.Builder pathParams = ImmutableListMultimap.builder();
     ImmutableListMultimap.Builder queryParams = ImmutableListMultimap.builder();
 
-    @join param : request.pathParams
-      if ({@param.name} != null) {
-        @if {@param.canRepeat}
-          for (String s : foo) {
-            pathParams.put("{@param.name}", {@param.name}.toString());
-          }
-        @else
-          pathParams.put("{@param.name}", {@param.name}.toString());
-        @end
-      }
-    @end
-
-    @join param : request.queryParams
-      if ({@param.name} != null) {
-        @if {@param.canRepeat}
-          for (String s : foo) {
-            queryParams.put("{@param.name}", {@param.name}.toString());
-          }
-        @else
-          queryParams.put("{@param.name}", {@param.name}.toString());
-        @end
-      }
-    @end
+    {@constructorSetters(request.pathParams, "pathParams")}
+    {@constructorSetters(request.queryParams, "queryParams")}
 
     this.pathParams = pathParams.build();
     this.queryParams = queryParams.build();
@@ -203,9 +162,23 @@
   }
 @end
 
+@private constructorSetters(params, mapName)
+  @join param : params
+    if ({@param.name} != null) {
+      @if {@param.canRepeat}
+        for (String s : foo) {
+          {@mapName}.put("{@param.name}", {@param.name}.toString());
+        }
+      @else
+        {@mapName}.put("{@param.name}", {@param.name}.toString());
+      @end
+    }
+  @end
+@end
+
 @private builder(request)
   public static class Builder {
-    @join param : request.queryParams
+    @join param : request.allParams
       private {@param.typeName} {@param.name};
     @end
     @if request.hasRequestObject
@@ -215,52 +188,55 @@
     Builder() {}
 
     Builder({@request.typeName} source) {
-      @join param : request.queryParams
+      @join param : request.allParams
         this.{@param.name} = source.{@param.name};
       @end
     }
 
-    @join param : request.queryParams
-      public {@param.typeName} {@param.getterFunction}() {
-        return {@param.name};
-      }
-
-      public Builder {@param.setterFunction}({@param.typeName} {@param.name}) {
-        @if @param.isRequired
-          if ({@param.name} == null) {
-            throw new IllegalArgumentException("\"{@param.name}\" is a required parameter.");
-          }
-        @end
-        @if param.canRepeat
-          this.{@param.name} = new LinkedList<>();
-          this.{@param.name}.addAll({@param.name});
-        @else
-          this.{@param.name} = {@param.name};
-        @end
-        return this;
-      }
-
-    @end
+    {@builderGettersSetters(request.queryParams)}
+    {@builderGettersSetters(request.pathParams)}
 
     public {@request.typeName} build() {
       return new {@request.typeName}(
-        @join param : request.queryParams on ", "
-
+        @join param : request.allParams on ", ".add(BREAK)
           {@param.name}
         @end
+      );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      @join param : request.allParams
+        if ({@param.name} != null}) {
+          newBuilder.{@param.setterFunction}(this.{@param.name});
+        }
+      @end
+      return newBuilder;
       );
     }
   }
 @end
 
-@private operateOnTwo(function, first, second)
-  {@function(first)}
-  {@function(second)}
-@end
+@private builderGettersSetters(params)
+  @join param : params
+    public {@param.typeName} {@param.getterFunction}() {
+      return {@param.name};
+    }
 
-@private builderMembers(request)
-  @join param : request.queryParams
-    public abstract {@request.typeName}.Builder {@param.name}({@param.typeName} val);
-    {@""}
+    public Builder {@param.setterFunction}({@param.typeName} {@param.name}) {
+      @if @param.isRequired
+        if ({@param.name} == null) {
+          throw new IllegalArgumentException("\"{@param.name}\" is a required parameter.");
+        }
+      @end
+      @if param.canRepeat
+        this.{@param.name} = new LinkedList<>();
+        this.{@param.name}.addAll({@param.name});
+      @else
+        this.{@param.name} = {@param.name};
+      @end
+      return this;
+    }
+
   @end
 @end
