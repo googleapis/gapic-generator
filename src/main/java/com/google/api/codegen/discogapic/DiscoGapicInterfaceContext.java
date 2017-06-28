@@ -24,7 +24,6 @@ import com.google.api.codegen.transformer.SchemaTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.TypeTable;
 import com.google.auto.value.AutoValue;
-import javax.annotation.Nullable;
 
 /**
  * The context for transforming a Discovery Doc API into a view model to use for client library
@@ -48,7 +47,6 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   @Override
   public abstract GapicProductConfig getProductConfig();
 
-  @Nullable
   public abstract SchemaTypeTable getSchemaTypeTable();
 
   public abstract DiscoGapicNamer getDiscoGapicNamer();
@@ -62,16 +60,6 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   }
 
   public abstract FeatureConfig getFeatureConfig();
-
-  public DiscoGapicInterfaceContext withNewTypeTable() {
-    return create(
-        getDocument(),
-        getProductConfig(),
-        getSchemaTypeTable().cloneEmpty(),
-        getDiscoGapicNamer(),
-        getNamer(),
-        getFeatureConfig());
-  }
 
   public InterfaceConfig getInterfaceConfig() {
     return getProductConfig().getInterfaceConfig(getDocument().name());
