@@ -41,7 +41,6 @@
     @case "OptionalArrayMethod"
         {@optionalArrayMethodSampleCode(apiMethod, empty())}
     @case "PagedOptionalArrayMethod"
-        {@initCode(apiMethod)}
         {@pagedOptionalArrayMethodSampleCode(apiMethod, empty())}
     @default
         $unhandledCase: {@apiMethod.type.toString}$
@@ -56,7 +55,6 @@
     @case "OptionalArrayMethod"
         {@optionalArrayMethodSampleCode(apiMethod, additionalCallback)}
     @case "PagedOptionalArrayMethod"
-        {@initCode(apiMethod)}
         {@pagedOptionalArrayMethodSampleCode(apiMethod, additionalCallback)}
     @default
         $unhandledCase: {@apiMethod.type.toString}$
@@ -131,17 +129,8 @@
 @end
 
 @private pagedOptionalArrayMethodSampleCode(apiMethod, additionalCallback)
-    // Iterate over all elements.
-    {@methodCallSampleCodePrefix(apiMethod)}.then(function(responses) {
-        var resources = responses[0];
-        for (var i = 0; i < resources.length; ++i) {
-            // doThingsWith(resources[i])
-        }
-    }).catch(function(err) {
-        console.error(err);
-    });
+    {@methodCallSampleCodeForPagedResponsePromise(apiMethod, additionalCallback)}
 
-    // Or obtain the paged response.
     {@methodCallSampleCodeForPagedResponse(apiMethod, additionalCallback)}
 @end
 
@@ -157,7 +146,33 @@
     @end
 @end
 
-@private methodCallSampleCodeForPagedResponse(apiMethod, additionalCallback)
+@snippet methodCallSampleCodeForPagedResponsePromise(apiMethod, additionalCallback)
+    // Iterate over all elements.
+    {@initCode(apiMethod)}
+
+    {@methodCallSampleCodePrefix(apiMethod)}.then(function(responses) {
+        var resources = responses[0];
+        for (var i = 0; i < resources.length; ++i) {
+            // doThingsWith(resources[i])
+        }
+    @if additionalCallback
+        })
+        .then({@additionalCallback})
+        .catch(function(err) {
+            console.error(err);
+        });
+    @else
+        }).catch(function(err) {
+            console.error(err);
+        });
+    @end
+@end
+
+@snippet methodCallSampleCodeForPagedResponse(apiMethod, additionalCallback)
+    // Or obtain the paged response.
+    # TODO(landrito) figure out how to remove this repition for method samples.
+    {@initCode(apiMethod)}
+
     var options = {autoPaginate: false};
     function callback(responses) {
         // The actual resources in a response.

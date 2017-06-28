@@ -17,17 +17,20 @@
 'use strict';
 
 describe('LibraryServiceSmokeTest', function() {
-  it('successfully makes a call to the service', function(done) {
-    if (!process.env.SMOKE_TEST_PROJECT) {
-      throw new Error("Usage: SMOKE_TEST_PROJECT=<project_id> node #{$0}");
-    }
-    var projectId = process.env.SMOKE_TEST_PROJECT;
+  if (!process.env.SMOKE_TEST_PROJECT) {
+    throw new Error("Usage: SMOKE_TEST_PROJECT=<project_id> node #{$0}");
+  }
+  var projectId = process.env.SMOKE_TEST_PROJECT;
 
-    var library = require('../src').v1({
+  it('successfully makes a call to the service', function(done) {
+    var library = require('../src');
+
+    var client = library.v1({
       // optional auth parameters.
     });
-    var formattedName = library.bookPath("testShelf-" + Date.now().toString(), projectId);
-    var rating = libraryV1.Book.Rating.GOOD;
+
+    var formattedName = client.bookPath("testShelf-" + Date.now().toString(), projectId);
+    var rating = library.v1.types.Book.Rating.GOOD;
     var book = {
         rating : rating
     };
@@ -35,7 +38,7 @@ describe('LibraryServiceSmokeTest', function() {
         name: formattedName,
         book: book
     };
-    library.updateBook(request).then(function(responses) {
+    client.updateBook(request).then(function(responses) {
         var response = responses[0];
         // doThingsWith(response)
     }).then(additionalCallback)

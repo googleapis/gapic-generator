@@ -17,17 +17,36 @@
 
 @private smokeTest(smokeTest)
   describe('{@smokeTest.name}', function() {
-    it('successfully makes a call to the service', function({@mochaCompletedCallback()}) {
-      @if smokeTest.requireProjectId
-        if (!process.env.SMOKE_TEST_PROJECT) {
-          throw new Error("Usage: SMOKE_TEST_PROJECT=<project_id> node #{$0}");
-        }
-        var projectId = process.env.SMOKE_TEST_PROJECT;
-      @end
+    @if smokeTest.requireProjectId
+      if (!process.env.SMOKE_TEST_PROJECT) {
+        throw new Error("Usage: SMOKE_TEST_PROJECT=<project_id> node #{$0}");
+      }
+      var projectId = process.env.SMOKE_TEST_PROJECT;
+    @end
 
-      {@decorateSampleCode(smokeTest.apiMethod, sampleCode(smokeTest.apiMethod, mochaCompletedCallback()))}
-    });
+    @switch smokeTest.apiMethod.type.toString
+    @case "OptionalArrayMethod"
+        {@smokeTestBody(smokeTest, \
+          "successfully makes a call to the service", \
+          {@sampleCode(smokeTest.apiMethod, mochaCompletedCallback()))}}
+    @case "PagedOptionalArrayMethod"
+        {@smokeTestBody(smokeTest, \
+          "successfully makes a call to the service using promises", \
+          {@methodCallSampleCodeForPagedResponsePromise(smokeTest.apiMethod, mochaCompletedCallback())})}
+
+        {@smokeTestBody(smokeTest, \
+          "successfully makes a call to the service using callbacks", \
+          {@methodCallSampleCodeForPagedResponse(smokeTest.apiMethod, mochaCompletedCallback())})}
+    @default
+        $unhandledCase: {@smokeTest.apiMethod.type.toString}$
+    @end
   });
+@end
+
+@private smokeTestBody(smokeTest, description, sampleCode)
+ it('{@description}', function({@mochaCompletedCallback()}) {
+   {@decorateSampleCode(smokeTest.apiMethod, {@sampleCode})}
+ });
 @end
 
 @private mochaCompletedCallback()
