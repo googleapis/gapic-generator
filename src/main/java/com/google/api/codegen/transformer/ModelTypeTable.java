@@ -28,7 +28,7 @@ import java.util.Map;
  * A ModelTypeTable manages the imports for a set of fully-qualified type names, and provides helper
  * methods for importing instances of TypeRef.
  */
-public class ModelTypeTable implements ImportTypeTable {
+public class ModelTypeTable implements ImportTypeTable, ModelTypeFormatter {
   private ModelTypeFormatterImpl typeFormatter;
   private TypeTable typeTable;
   private ModelTypeNameConverter typeNameConverter;

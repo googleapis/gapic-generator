@@ -355,7 +355,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     } else if (type.isEnum()) {
       return "number";
     } else {
-      return typeTable.getFullNameForElementType(type);
+      return ((ModelTypeTable) typeTable).getFullNameForElementType(type);
     }
   }
 
@@ -411,7 +411,8 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     // JSTypeTable produces nicknames which are qualified with the a packagePrefix which needs
     // to be stripped from the message type name.
     List<String> messageNames =
-        Arrays.asList(typeTable.getNicknameFor(TypeRef.of(message)).split("\\."));
+        Arrays.asList(
+            ((ModelTypeTable) typeTable).getNicknameFor(TypeRef.of(message)).split("\\."));
     return messageNames.get(messageNames.size() - 1);
   }
 
@@ -420,7 +421,8 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     // JSTypeTable produces nicknames which are qualified with the a packagePrefix which needs
     // to be stripped from the enum type name.
     List<String> enumNames =
-        Arrays.asList(typeTable.getNicknameFor(TypeRef.of(enumType)).split("\\."));
+        Arrays.asList(
+            ((ModelTypeTable) typeTable).getNicknameFor(TypeRef.of(enumType)).split("\\."));
     return enumNames.get(enumNames.size() - 1);
   }
 

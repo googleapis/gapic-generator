@@ -988,11 +988,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   public String getMessageTypeName(ImportTypeTable typeTable, MessageType message) {
-    return typeTable.getNicknameFor(TypeRef.of(message));
+    return ((ModelTypeTable) typeTable).getNicknameFor(TypeRef.of(message));
   }
 
   public String getEnumTypeName(ImportTypeTable typeTable, EnumType enumType) {
-    return typeTable.getNicknameFor(TypeRef.of(enumType));
+    return ((ModelTypeTable) typeTable).getNicknameFor(TypeRef.of(enumType));
   }
 
   public String getStreamTypeName(GrpcStreamingConfig.GrpcStreamingType type) {

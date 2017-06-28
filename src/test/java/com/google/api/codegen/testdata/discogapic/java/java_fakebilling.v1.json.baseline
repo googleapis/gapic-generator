@@ -318,6 +318,720 @@ public final class BillingAccount implements Serializable {
   }
 }
 
+============== file: src/main/java/com/google/cloud/fakebilling/v1/BillingAccountsGetHttpRequest.java ==============
+/*
+ * Copyright 2017, Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.fakebilling.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.common.collect.ImmutableListMultimap;
+import java.util.LinkedList;
+import java.util.List;
+import javax.annotation.Generated;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class BillingAccountsGetHttpRequest {
+  private static final BillingAccountsGetHttpRequest DEFAULT_INSTANCE = new BillingAccountsGetHttpRequest();
+
+
+  private final ImmutableListMultimap<String, String> queryParams;
+
+  // Query parameters.
+  private String access_token;
+  private String callback;
+  private String fields;
+  private String key;
+  private String prettyPrint;
+  private String quotaUser;
+  private String userIp;
+
+  private final ImmutableListMultimap<String, String> pathParams;
+
+  // Path parameters.
+  private String name;
+
+  private BillingAccountsGetHttpRequest(
+      String name,
+      String access_token,
+      String callback,
+      String fields,
+      String key,
+      String prettyPrint,
+      String quotaUser,
+      String userIp
+      ) {
+    this.name = name;
+    this.access_token = access_token;
+    this.callback = callback;
+    this.fields = fields;
+    this.key = key;
+    this.prettyPrint = prettyPrint;
+    this.quotaUser = quotaUser;
+    this.userIp = userIp;
+
+    ImmutableListMultimap.Builder pathParams = ImmutableListMultimap.builder();
+    ImmutableListMultimap.Builder queryParams = ImmutableListMultimap.builder();
+
+    if (name != null) {
+      pathParams.put("name", name.toString());
+    }
+    if (access_token != null) {
+      queryParams.put("access_token", access_token.toString());
+    }
+    if (callback != null) {
+      queryParams.put("callback", callback.toString());
+    }
+    if (fields != null) {
+      queryParams.put("fields", fields.toString());
+    }
+    if (key != null) {
+      queryParams.put("key", key.toString());
+    }
+    if (prettyPrint != null) {
+      queryParams.put("prettyPrint", prettyPrint.toString());
+    }
+    if (quotaUser != null) {
+      queryParams.put("quotaUser", quotaUser.toString());
+    }
+    if (userIp != null) {
+      queryParams.put("userIp", userIp.toString());
+    }
+
+    this.pathParams = pathParams.build();
+    this.queryParams = queryParams.build();
+  }
+
+  private BillingAccountsGetHttpRequest() {
+    this.queryParams = (new ImmutableListMultimap.Builder()).build();
+    this.pathParams = (new ImmutableListMultimap.Builder()).build();
+  }
+
+  // A list of key-value pairs, where each key is a query parameter and the value is the value
+  // of the parameter. A key may appear multiple times, in the case of repeatable parameters.
+  public ImmutableListMultimap<String, String> getQueryParams() {
+    return queryParams;
+  }
+
+  // A list of key-value pairs, where each key is a path parameter and the value is the value
+  // of the parameter. A key may appear multiple times, in the case of repeatable parameters
+  public ImmutableListMultimap<String, String> getPathParams() {
+    return pathParams;
+  }
+
+
+  public String getName () {
+    return name;
+  }
+  public String getAccessToken () {
+    return access_token;
+  }
+  public String getCallback () {
+    return callback;
+  }
+  public String getFields () {
+    return fields;
+  }
+  public String getKey () {
+    return key;
+  }
+  public String getPrettyPrint () {
+    return prettyPrint;
+  }
+  public String getQuotaUser () {
+    return quotaUser;
+  }
+  public String getUserIp () {
+    return userIp;
+  }
+
+  public static Builder newBuilder() {
+    return new BillingAccountsGetHttpRequest.Builder();
+  }
+
+  public static class Builder {
+    private String name;
+    private String access_token;
+    private String callback;
+    private String fields;
+    private String key;
+    private String prettyPrint;
+    private String quotaUser;
+    private String userIp;
+
+    Builder() {}
+
+    Builder(BillingAccountsGetHttpRequest source) {
+      this.name = source.getName();
+      this.access_token = source.getAccessToken();
+      this.callback = source.getCallback();
+      this.fields = source.getFields();
+      this.key = source.getKey();
+      this.prettyPrint = source.getPrettyPrint();
+      this.quotaUser = source.getQuotaUser();
+      this.userIp = source.getUserIp();
+    }
+
+    public String getAccessToken() {
+      return access_token;
+    }
+
+    public Builder setAccessToken(String access_token) {
+      this.access_token = access_token;
+      return this;
+    }
+
+    public String getCallback() {
+      return callback;
+    }
+
+    public Builder setCallback(String callback) {
+      this.callback = callback;
+      return this;
+    }
+
+    public String getFields() {
+      return fields;
+    }
+
+    public Builder setFields(String fields) {
+      this.fields = fields;
+      return this;
+    }
+
+    public String getKey() {
+      return key;
+    }
+
+    public Builder setKey(String key) {
+      this.key = key;
+      return this;
+    }
+
+    public String getPrettyPrint() {
+      return prettyPrint;
+    }
+
+    public Builder setPrettyPrint(String prettyPrint) {
+      this.prettyPrint = prettyPrint;
+      return this;
+    }
+
+    public String getQuotaUser() {
+      return quotaUser;
+    }
+
+    public Builder setQuotaUser(String quotaUser) {
+      this.quotaUser = quotaUser;
+      return this;
+    }
+
+    public String getUserIp() {
+      return userIp;
+    }
+
+    public Builder setUserIp(String userIp) {
+      this.userIp = userIp;
+      return this;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public Builder setName(String name) {
+      if (name == null) {
+        throw new IllegalArgumentException("\"name\" is a required parameter.");
+      }
+      this.name = name;
+      return this;
+    }
+
+
+    public BillingAccountsGetHttpRequest build() {
+      return new BillingAccountsGetHttpRequest(
+          name,
+          access_token,
+          callback,
+          fields,
+          key,
+          prettyPrint,
+          quotaUser,
+          userIp
+      );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      if (name != null) {
+        newBuilder.setName(this.name);
+      }
+      if (access_token != null) {
+        newBuilder.setAccessToken(this.access_token);
+      }
+      if (callback != null) {
+        newBuilder.setCallback(this.callback);
+      }
+      if (fields != null) {
+        newBuilder.setFields(this.fields);
+      }
+      if (key != null) {
+        newBuilder.setKey(this.key);
+      }
+      if (prettyPrint != null) {
+        newBuilder.setPrettyPrint(this.prettyPrint);
+      }
+      if (quotaUser != null) {
+        newBuilder.setQuotaUser(this.quotaUser);
+      }
+      if (userIp != null) {
+        newBuilder.setUserIp(this.userIp);
+      }
+      return newBuilder;
+    }
+  }
+
+  @Override
+  public String toString() {
+    return "BillingAccountsGetHttpRequest{"
+        + "name=" + name + ", "
+        + "access_token=" + access_token + ", "
+        + "callback=" + callback + ", "
+        + "fields=" + fields + ", "
+        + "key=" + key + ", "
+        + "prettyPrint=" + prettyPrint + ", "
+        + "quotaUser=" + quotaUser + ", "
+        + "userIp=" + userIp
+        + "}";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof BillingAccountsGetHttpRequest) {
+      BillingAccountsGetHttpRequest that = (BillingAccountsGetHttpRequest) o;
+      return
+          this.name.equals(that.getName())&&
+          this.access_token.equals(that.getAccessToken())&&
+          this.callback.equals(that.getCallback())&&
+          this.fields.equals(that.getFields())&&
+          this.key.equals(that.getKey())&&
+          this.prettyPrint.equals(that.getPrettyPrint())&&
+          this.quotaUser.equals(that.getQuotaUser())&&
+          this.userIp.equals(that.getUserIp())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    int h = 1;
+    h *= 1000003;
+    h ^= this.name.hashCode();
+    h *= 1000003;
+    h ^= this.access_token.hashCode();
+    h *= 1000003;
+    h ^= this.callback.hashCode();
+    h *= 1000003;
+    h ^= this.fields.hashCode();
+    h *= 1000003;
+    h ^= this.key.hashCode();
+    h *= 1000003;
+    h ^= this.prettyPrint.hashCode();
+    h *= 1000003;
+    h ^= this.quotaUser.hashCode();
+    h *= 1000003;
+    h ^= this.userIp.hashCode();
+    return h;
+  }
+}
+
+============== file: src/main/java/com/google/cloud/fakebilling/v1/BillingAccountsListHttpRequest.java ==============
+/*
+ * Copyright 2017, Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.fakebilling.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.common.collect.ImmutableListMultimap;
+import java.util.LinkedList;
+import java.util.List;
+import javax.annotation.Generated;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class BillingAccountsListHttpRequest {
+  private static final BillingAccountsListHttpRequest DEFAULT_INSTANCE = new BillingAccountsListHttpRequest();
+
+
+  private final ImmutableListMultimap<String, String> queryParams;
+
+  // Query parameters.
+  private String access_token;
+  private String callback;
+  private String fields;
+  private String key;
+  private String prettyPrint;
+  private String quotaUser;
+  private String userIp;
+  private Integer pageSize;
+  private String pageToken;
+
+  private final ImmutableListMultimap<String, String> pathParams;
+
+
+  private BillingAccountsListHttpRequest(
+      String access_token,
+      String callback,
+      String fields,
+      String key,
+      String prettyPrint,
+      String quotaUser,
+      String userIp,
+      Integer pageSize,
+      String pageToken
+      ) {
+    this.access_token = access_token;
+    this.callback = callback;
+    this.fields = fields;
+    this.key = key;
+    this.prettyPrint = prettyPrint;
+    this.quotaUser = quotaUser;
+    this.userIp = userIp;
+    this.pageSize = pageSize;
+    this.pageToken = pageToken;
+
+    ImmutableListMultimap.Builder pathParams = ImmutableListMultimap.builder();
+    ImmutableListMultimap.Builder queryParams = ImmutableListMultimap.builder();
+
+
+    if (access_token != null) {
+      queryParams.put("access_token", access_token.toString());
+    }
+    if (callback != null) {
+      queryParams.put("callback", callback.toString());
+    }
+    if (fields != null) {
+      queryParams.put("fields", fields.toString());
+    }
+    if (key != null) {
+      queryParams.put("key", key.toString());
+    }
+    if (prettyPrint != null) {
+      queryParams.put("prettyPrint", prettyPrint.toString());
+    }
+    if (quotaUser != null) {
+      queryParams.put("quotaUser", quotaUser.toString());
+    }
+    if (userIp != null) {
+      queryParams.put("userIp", userIp.toString());
+    }
+    if (pageSize != null) {
+      queryParams.put("pageSize", pageSize.toString());
+    }
+    if (pageToken != null) {
+      queryParams.put("pageToken", pageToken.toString());
+    }
+
+    this.pathParams = pathParams.build();
+    this.queryParams = queryParams.build();
+  }
+
+  private BillingAccountsListHttpRequest() {
+    this.queryParams = (new ImmutableListMultimap.Builder()).build();
+    this.pathParams = (new ImmutableListMultimap.Builder()).build();
+  }
+
+  // A list of key-value pairs, where each key is a query parameter and the value is the value
+  // of the parameter. A key may appear multiple times, in the case of repeatable parameters.
+  public ImmutableListMultimap<String, String> getQueryParams() {
+    return queryParams;
+  }
+
+  // A list of key-value pairs, where each key is a path parameter and the value is the value
+  // of the parameter. A key may appear multiple times, in the case of repeatable parameters
+  public ImmutableListMultimap<String, String> getPathParams() {
+    return pathParams;
+  }
+
+
+  public String getAccessToken () {
+    return access_token;
+  }
+  public String getCallback () {
+    return callback;
+  }
+  public String getFields () {
+    return fields;
+  }
+  public String getKey () {
+    return key;
+  }
+  public String getPrettyPrint () {
+    return prettyPrint;
+  }
+  public String getQuotaUser () {
+    return quotaUser;
+  }
+  public String getUserIp () {
+    return userIp;
+  }
+  public Integer getPageSize () {
+    return pageSize;
+  }
+  public String getPageToken () {
+    return pageToken;
+  }
+
+  public static Builder newBuilder() {
+    return new BillingAccountsListHttpRequest.Builder();
+  }
+
+  public static class Builder {
+    private String access_token;
+    private String callback;
+    private String fields;
+    private String key;
+    private String prettyPrint;
+    private String quotaUser;
+    private String userIp;
+    private Integer pageSize;
+    private String pageToken;
+
+    Builder() {}
+
+    Builder(BillingAccountsListHttpRequest source) {
+      this.access_token = source.getAccessToken();
+      this.callback = source.getCallback();
+      this.fields = source.getFields();
+      this.key = source.getKey();
+      this.prettyPrint = source.getPrettyPrint();
+      this.quotaUser = source.getQuotaUser();
+      this.userIp = source.getUserIp();
+      this.pageSize = source.getPageSize();
+      this.pageToken = source.getPageToken();
+    }
+
+    public String getAccessToken() {
+      return access_token;
+    }
+
+    public Builder setAccessToken(String access_token) {
+      this.access_token = access_token;
+      return this;
+    }
+
+    public String getCallback() {
+      return callback;
+    }
+
+    public Builder setCallback(String callback) {
+      this.callback = callback;
+      return this;
+    }
+
+    public String getFields() {
+      return fields;
+    }
+
+    public Builder setFields(String fields) {
+      this.fields = fields;
+      return this;
+    }
+
+    public String getKey() {
+      return key;
+    }
+
+    public Builder setKey(String key) {
+      this.key = key;
+      return this;
+    }
+
+    public String getPrettyPrint() {
+      return prettyPrint;
+    }
+
+    public Builder setPrettyPrint(String prettyPrint) {
+      this.prettyPrint = prettyPrint;
+      return this;
+    }
+
+    public String getQuotaUser() {
+      return quotaUser;
+    }
+
+    public Builder setQuotaUser(String quotaUser) {
+      this.quotaUser = quotaUser;
+      return this;
+    }
+
+    public String getUserIp() {
+      return userIp;
+    }
+
+    public Builder setUserIp(String userIp) {
+      this.userIp = userIp;
+      return this;
+    }
+
+    public Integer getPageSize() {
+      return pageSize;
+    }
+
+    public Builder setPageSize(Integer pageSize) {
+      this.pageSize = pageSize;
+      return this;
+    }
+
+    public String getPageToken() {
+      return pageToken;
+    }
+
+    public Builder setPageToken(String pageToken) {
+      this.pageToken = pageToken;
+      return this;
+    }
+
+
+
+    public BillingAccountsListHttpRequest build() {
+      return new BillingAccountsListHttpRequest(
+          access_token,
+          callback,
+          fields,
+          key,
+          prettyPrint,
+          quotaUser,
+          userIp,
+          pageSize,
+          pageToken
+      );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      if (access_token != null) {
+        newBuilder.setAccessToken(this.access_token);
+      }
+      if (callback != null) {
+        newBuilder.setCallback(this.callback);
+      }
+      if (fields != null) {
+        newBuilder.setFields(this.fields);
+      }
+      if (key != null) {
+        newBuilder.setKey(this.key);
+      }
+      if (prettyPrint != null) {
+        newBuilder.setPrettyPrint(this.prettyPrint);
+      }
+      if (quotaUser != null) {
+        newBuilder.setQuotaUser(this.quotaUser);
+      }
+      if (userIp != null) {
+        newBuilder.setUserIp(this.userIp);
+      }
+      if (pageSize != null) {
+        newBuilder.setPageSize(this.pageSize);
+      }
+      if (pageToken != null) {
+        newBuilder.setPageToken(this.pageToken);
+      }
+      return newBuilder;
+    }
+  }
+
+  @Override
+  public String toString() {
+    return "BillingAccountsListHttpRequest{"
+        + "access_token=" + access_token + ", "
+        + "callback=" + callback + ", "
+        + "fields=" + fields + ", "
+        + "key=" + key + ", "
+        + "prettyPrint=" + prettyPrint + ", "
+        + "quotaUser=" + quotaUser + ", "
+        + "userIp=" + userIp + ", "
+        + "pageSize=" + pageSize + ", "
+        + "pageToken=" + pageToken
+        + "}";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof BillingAccountsListHttpRequest) {
+      BillingAccountsListHttpRequest that = (BillingAccountsListHttpRequest) o;
+      return
+          this.access_token.equals(that.getAccessToken())&&
+          this.callback.equals(that.getCallback())&&
+          this.fields.equals(that.getFields())&&
+          this.key.equals(that.getKey())&&
+          this.prettyPrint.equals(that.getPrettyPrint())&&
+          this.quotaUser.equals(that.getQuotaUser())&&
+          this.userIp.equals(that.getUserIp())&&
+          this.pageSize.equals(that.getPageSize())&&
+          this.pageToken.equals(that.getPageToken())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    int h = 1;
+    h *= 1000003;
+    h ^= this.access_token.hashCode();
+    h *= 1000003;
+    h ^= this.callback.hashCode();
+    h *= 1000003;
+    h ^= this.fields.hashCode();
+    h *= 1000003;
+    h ^= this.key.hashCode();
+    h *= 1000003;
+    h ^= this.prettyPrint.hashCode();
+    h *= 1000003;
+    h ^= this.quotaUser.hashCode();
+    h *= 1000003;
+    h ^= this.userIp.hashCode();
+    h *= 1000003;
+    h ^= this.pageSize.hashCode();
+    h *= 1000003;
+    h ^= this.pageToken.hashCode();
+    return h;
+  }
+}
+
 ============== file: src/main/java/com/google/cloud/fakebilling/v1/Data.java ==============
 /*
  * Copyright 2017, Google Inc. All rights reserved.
@@ -1598,6 +2312,1104 @@ public final class ProjectBillingInfo implements Serializable {
     h ^= this.billingEnabled.hashCode();
     h *= 1000003;
     h ^= this.projectId.hashCode();
+    return h;
+  }
+}
+
+============== file: src/main/java/com/google/cloud/fakebilling/v1/ProjectsGetBillingInfoHttpRequest.java ==============
+/*
+ * Copyright 2017, Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.fakebilling.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.common.collect.ImmutableListMultimap;
+import java.util.LinkedList;
+import java.util.List;
+import javax.annotation.Generated;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class ProjectsGetBillingInfoHttpRequest {
+  private static final ProjectsGetBillingInfoHttpRequest DEFAULT_INSTANCE = new ProjectsGetBillingInfoHttpRequest();
+
+
+  private final ImmutableListMultimap<String, String> queryParams;
+
+  // Query parameters.
+  private String access_token;
+  private String callback;
+  private String fields;
+  private String key;
+  private String prettyPrint;
+  private String quotaUser;
+  private String userIp;
+
+  private final ImmutableListMultimap<String, String> pathParams;
+
+  // Path parameters.
+  private String name;
+
+  private ProjectsGetBillingInfoHttpRequest(
+      String name,
+      String access_token,
+      String callback,
+      String fields,
+      String key,
+      String prettyPrint,
+      String quotaUser,
+      String userIp
+      ) {
+    this.name = name;
+    this.access_token = access_token;
+    this.callback = callback;
+    this.fields = fields;
+    this.key = key;
+    this.prettyPrint = prettyPrint;
+    this.quotaUser = quotaUser;
+    this.userIp = userIp;
+
+    ImmutableListMultimap.Builder pathParams = ImmutableListMultimap.builder();
+    ImmutableListMultimap.Builder queryParams = ImmutableListMultimap.builder();
+
+    if (name != null) {
+      pathParams.put("name", name.toString());
+    }
+    if (access_token != null) {
+      queryParams.put("access_token", access_token.toString());
+    }
+    if (callback != null) {
+      queryParams.put("callback", callback.toString());
+    }
+    if (fields != null) {
+      queryParams.put("fields", fields.toString());
+    }
+    if (key != null) {
+      queryParams.put("key", key.toString());
+    }
+    if (prettyPrint != null) {
+      queryParams.put("prettyPrint", prettyPrint.toString());
+    }
+    if (quotaUser != null) {
+      queryParams.put("quotaUser", quotaUser.toString());
+    }
+    if (userIp != null) {
+      queryParams.put("userIp", userIp.toString());
+    }
+
+    this.pathParams = pathParams.build();
+    this.queryParams = queryParams.build();
+  }
+
+  private ProjectsGetBillingInfoHttpRequest() {
+    this.queryParams = (new ImmutableListMultimap.Builder()).build();
+    this.pathParams = (new ImmutableListMultimap.Builder()).build();
+  }
+
+  // A list of key-value pairs, where each key is a query parameter and the value is the value
+  // of the parameter. A key may appear multiple times, in the case of repeatable parameters.
+  public ImmutableListMultimap<String, String> getQueryParams() {
+    return queryParams;
+  }
+
+  // A list of key-value pairs, where each key is a path parameter and the value is the value
+  // of the parameter. A key may appear multiple times, in the case of repeatable parameters
+  public ImmutableListMultimap<String, String> getPathParams() {
+    return pathParams;
+  }
+
+
+  public String getName () {
+    return name;
+  }
+  public String getAccessToken () {
+    return access_token;
+  }
+  public String getCallback () {
+    return callback;
+  }
+  public String getFields () {
+    return fields;
+  }
+  public String getKey () {
+    return key;
+  }
+  public String getPrettyPrint () {
+    return prettyPrint;
+  }
+  public String getQuotaUser () {
+    return quotaUser;
+  }
+  public String getUserIp () {
+    return userIp;
+  }
+
+  public static Builder newBuilder() {
+    return new ProjectsGetBillingInfoHttpRequest.Builder();
+  }
+
+  public static class Builder {
+    private String name;
+    private String access_token;
+    private String callback;
+    private String fields;
+    private String key;
+    private String prettyPrint;
+    private String quotaUser;
+    private String userIp;
+
+    Builder() {}
+
+    Builder(ProjectsGetBillingInfoHttpRequest source) {
+      this.name = source.getName();
+      this.access_token = source.getAccessToken();
+      this.callback = source.getCallback();
+      this.fields = source.getFields();
+      this.key = source.getKey();
+      this.prettyPrint = source.getPrettyPrint();
+      this.quotaUser = source.getQuotaUser();
+      this.userIp = source.getUserIp();
+    }
+
+    public String getAccessToken() {
+      return access_token;
+    }
+
+    public Builder setAccessToken(String access_token) {
+      this.access_token = access_token;
+      return this;
+    }
+
+    public String getCallback() {
+      return callback;
+    }
+
+    public Builder setCallback(String callback) {
+      this.callback = callback;
+      return this;
+    }
+
+    public String getFields() {
+      return fields;
+    }
+
+    public Builder setFields(String fields) {
+      this.fields = fields;
+      return this;
+    }
+
+    public String getKey() {
+      return key;
+    }
+
+    public Builder setKey(String key) {
+      this.key = key;
+      return this;
+    }
+
+    public String getPrettyPrint() {
+      return prettyPrint;
+    }
+
+    public Builder setPrettyPrint(String prettyPrint) {
+      this.prettyPrint = prettyPrint;
+      return this;
+    }
+
+    public String getQuotaUser() {
+      return quotaUser;
+    }
+
+    public Builder setQuotaUser(String quotaUser) {
+      this.quotaUser = quotaUser;
+      return this;
+    }
+
+    public String getUserIp() {
+      return userIp;
+    }
+
+    public Builder setUserIp(String userIp) {
+      this.userIp = userIp;
+      return this;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public Builder setName(String name) {
+      if (name == null) {
+        throw new IllegalArgumentException("\"name\" is a required parameter.");
+      }
+      this.name = name;
+      return this;
+    }
+
+
+    public ProjectsGetBillingInfoHttpRequest build() {
+      return new ProjectsGetBillingInfoHttpRequest(
+          name,
+          access_token,
+          callback,
+          fields,
+          key,
+          prettyPrint,
+          quotaUser,
+          userIp
+      );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      if (name != null) {
+        newBuilder.setName(this.name);
+      }
+      if (access_token != null) {
+        newBuilder.setAccessToken(this.access_token);
+      }
+      if (callback != null) {
+        newBuilder.setCallback(this.callback);
+      }
+      if (fields != null) {
+        newBuilder.setFields(this.fields);
+      }
+      if (key != null) {
+        newBuilder.setKey(this.key);
+      }
+      if (prettyPrint != null) {
+        newBuilder.setPrettyPrint(this.prettyPrint);
+      }
+      if (quotaUser != null) {
+        newBuilder.setQuotaUser(this.quotaUser);
+      }
+      if (userIp != null) {
+        newBuilder.setUserIp(this.userIp);
+      }
+      return newBuilder;
+    }
+  }
+
+  @Override
+  public String toString() {
+    return "ProjectsGetBillingInfoHttpRequest{"
+        + "name=" + name + ", "
+        + "access_token=" + access_token + ", "
+        + "callback=" + callback + ", "
+        + "fields=" + fields + ", "
+        + "key=" + key + ", "
+        + "prettyPrint=" + prettyPrint + ", "
+        + "quotaUser=" + quotaUser + ", "
+        + "userIp=" + userIp
+        + "}";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof ProjectsGetBillingInfoHttpRequest) {
+      ProjectsGetBillingInfoHttpRequest that = (ProjectsGetBillingInfoHttpRequest) o;
+      return
+          this.name.equals(that.getName())&&
+          this.access_token.equals(that.getAccessToken())&&
+          this.callback.equals(that.getCallback())&&
+          this.fields.equals(that.getFields())&&
+          this.key.equals(that.getKey())&&
+          this.prettyPrint.equals(that.getPrettyPrint())&&
+          this.quotaUser.equals(that.getQuotaUser())&&
+          this.userIp.equals(that.getUserIp())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    int h = 1;
+    h *= 1000003;
+    h ^= this.name.hashCode();
+    h *= 1000003;
+    h ^= this.access_token.hashCode();
+    h *= 1000003;
+    h ^= this.callback.hashCode();
+    h *= 1000003;
+    h ^= this.fields.hashCode();
+    h *= 1000003;
+    h ^= this.key.hashCode();
+    h *= 1000003;
+    h ^= this.prettyPrint.hashCode();
+    h *= 1000003;
+    h ^= this.quotaUser.hashCode();
+    h *= 1000003;
+    h ^= this.userIp.hashCode();
+    return h;
+  }
+}
+
+============== file: src/main/java/com/google/cloud/fakebilling/v1/ProjectsListHttpRequest.java ==============
+/*
+ * Copyright 2017, Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.fakebilling.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.common.collect.ImmutableListMultimap;
+import java.util.LinkedList;
+import java.util.List;
+import javax.annotation.Generated;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class ProjectsListHttpRequest {
+  private static final ProjectsListHttpRequest DEFAULT_INSTANCE = new ProjectsListHttpRequest();
+
+
+  private final ImmutableListMultimap<String, String> queryParams;
+
+  // Query parameters.
+  private String access_token;
+  private String callback;
+  private String fields;
+  private String key;
+  private String prettyPrint;
+  private String quotaUser;
+  private String userIp;
+  private Integer pageSize;
+  private String pageToken;
+
+  private final ImmutableListMultimap<String, String> pathParams;
+
+  // Path parameters.
+  private String name;
+
+  private ProjectsListHttpRequest(
+      String name,
+      String access_token,
+      String callback,
+      String fields,
+      String key,
+      String prettyPrint,
+      String quotaUser,
+      String userIp,
+      Integer pageSize,
+      String pageToken
+      ) {
+    this.name = name;
+    this.access_token = access_token;
+    this.callback = callback;
+    this.fields = fields;
+    this.key = key;
+    this.prettyPrint = prettyPrint;
+    this.quotaUser = quotaUser;
+    this.userIp = userIp;
+    this.pageSize = pageSize;
+    this.pageToken = pageToken;
+
+    ImmutableListMultimap.Builder pathParams = ImmutableListMultimap.builder();
+    ImmutableListMultimap.Builder queryParams = ImmutableListMultimap.builder();
+
+    if (name != null) {
+      pathParams.put("name", name.toString());
+    }
+    if (access_token != null) {
+      queryParams.put("access_token", access_token.toString());
+    }
+    if (callback != null) {
+      queryParams.put("callback", callback.toString());
+    }
+    if (fields != null) {
+      queryParams.put("fields", fields.toString());
+    }
+    if (key != null) {
+      queryParams.put("key", key.toString());
+    }
+    if (prettyPrint != null) {
+      queryParams.put("prettyPrint", prettyPrint.toString());
+    }
+    if (quotaUser != null) {
+      queryParams.put("quotaUser", quotaUser.toString());
+    }
+    if (userIp != null) {
+      queryParams.put("userIp", userIp.toString());
+    }
+    if (pageSize != null) {
+      queryParams.put("pageSize", pageSize.toString());
+    }
+    if (pageToken != null) {
+      queryParams.put("pageToken", pageToken.toString());
+    }
+
+    this.pathParams = pathParams.build();
+    this.queryParams = queryParams.build();
+  }
+
+  private ProjectsListHttpRequest() {
+    this.queryParams = (new ImmutableListMultimap.Builder()).build();
+    this.pathParams = (new ImmutableListMultimap.Builder()).build();
+  }
+
+  // A list of key-value pairs, where each key is a query parameter and the value is the value
+  // of the parameter. A key may appear multiple times, in the case of repeatable parameters.
+  public ImmutableListMultimap<String, String> getQueryParams() {
+    return queryParams;
+  }
+
+  // A list of key-value pairs, where each key is a path parameter and the value is the value
+  // of the parameter. A key may appear multiple times, in the case of repeatable parameters
+  public ImmutableListMultimap<String, String> getPathParams() {
+    return pathParams;
+  }
+
+
+  public String getName () {
+    return name;
+  }
+  public String getAccessToken () {
+    return access_token;
+  }
+  public String getCallback () {
+    return callback;
+  }
+  public String getFields () {
+    return fields;
+  }
+  public String getKey () {
+    return key;
+  }
+  public String getPrettyPrint () {
+    return prettyPrint;
+  }
+  public String getQuotaUser () {
+    return quotaUser;
+  }
+  public String getUserIp () {
+    return userIp;
+  }
+  public Integer getPageSize () {
+    return pageSize;
+  }
+  public String getPageToken () {
+    return pageToken;
+  }
+
+  public static Builder newBuilder() {
+    return new ProjectsListHttpRequest.Builder();
+  }
+
+  public static class Builder {
+    private String name;
+    private String access_token;
+    private String callback;
+    private String fields;
+    private String key;
+    private String prettyPrint;
+    private String quotaUser;
+    private String userIp;
+    private Integer pageSize;
+    private String pageToken;
+
+    Builder() {}
+
+    Builder(ProjectsListHttpRequest source) {
+      this.name = source.getName();
+      this.access_token = source.getAccessToken();
+      this.callback = source.getCallback();
+      this.fields = source.getFields();
+      this.key = source.getKey();
+      this.prettyPrint = source.getPrettyPrint();
+      this.quotaUser = source.getQuotaUser();
+      this.userIp = source.getUserIp();
+      this.pageSize = source.getPageSize();
+      this.pageToken = source.getPageToken();
+    }
+
+    public String getAccessToken() {
+      return access_token;
+    }
+
+    public Builder setAccessToken(String access_token) {
+      this.access_token = access_token;
+      return this;
+    }
+
+    public String getCallback() {
+      return callback;
+    }
+
+    public Builder setCallback(String callback) {
+      this.callback = callback;
+      return this;
+    }
+
+    public String getFields() {
+      return fields;
+    }
+
+    public Builder setFields(String fields) {
+      this.fields = fields;
+      return this;
+    }
+
+    public String getKey() {
+      return key;
+    }
+
+    public Builder setKey(String key) {
+      this.key = key;
+      return this;
+    }
+
+    public String getPrettyPrint() {
+      return prettyPrint;
+    }
+
+    public Builder setPrettyPrint(String prettyPrint) {
+      this.prettyPrint = prettyPrint;
+      return this;
+    }
+
+    public String getQuotaUser() {
+      return quotaUser;
+    }
+
+    public Builder setQuotaUser(String quotaUser) {
+      this.quotaUser = quotaUser;
+      return this;
+    }
+
+    public String getUserIp() {
+      return userIp;
+    }
+
+    public Builder setUserIp(String userIp) {
+      this.userIp = userIp;
+      return this;
+    }
+
+    public Integer getPageSize() {
+      return pageSize;
+    }
+
+    public Builder setPageSize(Integer pageSize) {
+      this.pageSize = pageSize;
+      return this;
+    }
+
+    public String getPageToken() {
+      return pageToken;
+    }
+
+    public Builder setPageToken(String pageToken) {
+      this.pageToken = pageToken;
+      return this;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public Builder setName(String name) {
+      if (name == null) {
+        throw new IllegalArgumentException("\"name\" is a required parameter.");
+      }
+      this.name = name;
+      return this;
+    }
+
+
+    public ProjectsListHttpRequest build() {
+      return new ProjectsListHttpRequest(
+          name,
+          access_token,
+          callback,
+          fields,
+          key,
+          prettyPrint,
+          quotaUser,
+          userIp,
+          pageSize,
+          pageToken
+      );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      if (name != null) {
+        newBuilder.setName(this.name);
+      }
+      if (access_token != null) {
+        newBuilder.setAccessToken(this.access_token);
+      }
+      if (callback != null) {
+        newBuilder.setCallback(this.callback);
+      }
+      if (fields != null) {
+        newBuilder.setFields(this.fields);
+      }
+      if (key != null) {
+        newBuilder.setKey(this.key);
+      }
+      if (prettyPrint != null) {
+        newBuilder.setPrettyPrint(this.prettyPrint);
+      }
+      if (quotaUser != null) {
+        newBuilder.setQuotaUser(this.quotaUser);
+      }
+      if (userIp != null) {
+        newBuilder.setUserIp(this.userIp);
+      }
+      if (pageSize != null) {
+        newBuilder.setPageSize(this.pageSize);
+      }
+      if (pageToken != null) {
+        newBuilder.setPageToken(this.pageToken);
+      }
+      return newBuilder;
+    }
+  }
+
+  @Override
+  public String toString() {
+    return "ProjectsListHttpRequest{"
+        + "name=" + name + ", "
+        + "access_token=" + access_token + ", "
+        + "callback=" + callback + ", "
+        + "fields=" + fields + ", "
+        + "key=" + key + ", "
+        + "prettyPrint=" + prettyPrint + ", "
+        + "quotaUser=" + quotaUser + ", "
+        + "userIp=" + userIp + ", "
+        + "pageSize=" + pageSize + ", "
+        + "pageToken=" + pageToken
+        + "}";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof ProjectsListHttpRequest) {
+      ProjectsListHttpRequest that = (ProjectsListHttpRequest) o;
+      return
+          this.name.equals(that.getName())&&
+          this.access_token.equals(that.getAccessToken())&&
+          this.callback.equals(that.getCallback())&&
+          this.fields.equals(that.getFields())&&
+          this.key.equals(that.getKey())&&
+          this.prettyPrint.equals(that.getPrettyPrint())&&
+          this.quotaUser.equals(that.getQuotaUser())&&
+          this.userIp.equals(that.getUserIp())&&
+          this.pageSize.equals(that.getPageSize())&&
+          this.pageToken.equals(that.getPageToken())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    int h = 1;
+    h *= 1000003;
+    h ^= this.name.hashCode();
+    h *= 1000003;
+    h ^= this.access_token.hashCode();
+    h *= 1000003;
+    h ^= this.callback.hashCode();
+    h *= 1000003;
+    h ^= this.fields.hashCode();
+    h *= 1000003;
+    h ^= this.key.hashCode();
+    h *= 1000003;
+    h ^= this.prettyPrint.hashCode();
+    h *= 1000003;
+    h ^= this.quotaUser.hashCode();
+    h *= 1000003;
+    h ^= this.userIp.hashCode();
+    h *= 1000003;
+    h ^= this.pageSize.hashCode();
+    h *= 1000003;
+    h ^= this.pageToken.hashCode();
+    return h;
+  }
+}
+
+============== file: src/main/java/com/google/cloud/fakebilling/v1/ProjectsUpdateBillingInfoHttpRequest.java ==============
+/*
+ * Copyright 2017, Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.fakebilling.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.common.collect.ImmutableListMultimap;
+import java.util.LinkedList;
+import java.util.List;
+import javax.annotation.Generated;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class ProjectsUpdateBillingInfoHttpRequest {
+  private static final ProjectsUpdateBillingInfoHttpRequest DEFAULT_INSTANCE = new ProjectsUpdateBillingInfoHttpRequest();
+
+  private ProjectBillingInfo request;
+
+  private final ImmutableListMultimap<String, String> queryParams;
+
+  // Query parameters.
+  private String access_token;
+  private String callback;
+  private String fields;
+  private String key;
+  private String prettyPrint;
+  private String quotaUser;
+  private String userIp;
+
+  private final ImmutableListMultimap<String, String> pathParams;
+
+  // Path parameters.
+  private String name;
+
+  private ProjectsUpdateBillingInfoHttpRequest(
+      String name,
+      String access_token,
+      String callback,
+      String fields,
+      String key,
+      String prettyPrint,
+      String quotaUser,
+      String userIp
+      ,
+      ProjectBillingInfo request
+      ) {
+    this.name = name;
+    this.access_token = access_token;
+    this.callback = callback;
+    this.fields = fields;
+    this.key = key;
+    this.prettyPrint = prettyPrint;
+    this.quotaUser = quotaUser;
+    this.userIp = userIp;
+    this.request = request;
+
+    ImmutableListMultimap.Builder pathParams = ImmutableListMultimap.builder();
+    ImmutableListMultimap.Builder queryParams = ImmutableListMultimap.builder();
+
+    if (name != null) {
+      pathParams.put("name", name.toString());
+    }
+    if (access_token != null) {
+      queryParams.put("access_token", access_token.toString());
+    }
+    if (callback != null) {
+      queryParams.put("callback", callback.toString());
+    }
+    if (fields != null) {
+      queryParams.put("fields", fields.toString());
+    }
+    if (key != null) {
+      queryParams.put("key", key.toString());
+    }
+    if (prettyPrint != null) {
+      queryParams.put("prettyPrint", prettyPrint.toString());
+    }
+    if (quotaUser != null) {
+      queryParams.put("quotaUser", quotaUser.toString());
+    }
+    if (userIp != null) {
+      queryParams.put("userIp", userIp.toString());
+    }
+
+    this.pathParams = pathParams.build();
+    this.queryParams = queryParams.build();
+  }
+
+  private ProjectsUpdateBillingInfoHttpRequest() {
+    this.queryParams = (new ImmutableListMultimap.Builder()).build();
+    this.pathParams = (new ImmutableListMultimap.Builder()).build();
+  }
+
+  // A list of key-value pairs, where each key is a query parameter and the value is the value
+  // of the parameter. A key may appear multiple times, in the case of repeatable parameters.
+  public ImmutableListMultimap<String, String> getQueryParams() {
+    return queryParams;
+  }
+
+  // A list of key-value pairs, where each key is a path parameter and the value is the value
+  // of the parameter. A key may appear multiple times, in the case of repeatable parameters
+  public ImmutableListMultimap<String, String> getPathParams() {
+    return pathParams;
+  }
+
+  public ProjectBillingInfo getRequest() {
+     return request;
+   }
+
+  public String getName () {
+    return name;
+  }
+  public String getAccessToken () {
+    return access_token;
+  }
+  public String getCallback () {
+    return callback;
+  }
+  public String getFields () {
+    return fields;
+  }
+  public String getKey () {
+    return key;
+  }
+  public String getPrettyPrint () {
+    return prettyPrint;
+  }
+  public String getQuotaUser () {
+    return quotaUser;
+  }
+  public String getUserIp () {
+    return userIp;
+  }
+
+  public static Builder newBuilder() {
+    return new ProjectsUpdateBillingInfoHttpRequest.Builder();
+  }
+
+  public static class Builder {
+    private String name;
+    private String access_token;
+    private String callback;
+    private String fields;
+    private String key;
+    private String prettyPrint;
+    private String quotaUser;
+    private String userIp;
+    private ProjectBillingInfo request;
+
+    Builder() {}
+
+    Builder(ProjectsUpdateBillingInfoHttpRequest source) {
+      this.name = source.getName();
+      this.access_token = source.getAccessToken();
+      this.callback = source.getCallback();
+      this.fields = source.getFields();
+      this.key = source.getKey();
+      this.prettyPrint = source.getPrettyPrint();
+      this.quotaUser = source.getQuotaUser();
+      this.userIp = source.getUserIp();
+    }
+
+    public String getAccessToken() {
+      return access_token;
+    }
+
+    public Builder setAccessToken(String access_token) {
+      this.access_token = access_token;
+      return this;
+    }
+
+    public String getCallback() {
+      return callback;
+    }
+
+    public Builder setCallback(String callback) {
+      this.callback = callback;
+      return this;
+    }
+
+    public String getFields() {
+      return fields;
+    }
+
+    public Builder setFields(String fields) {
+      this.fields = fields;
+      return this;
+    }
+
+    public String getKey() {
+      return key;
+    }
+
+    public Builder setKey(String key) {
+      this.key = key;
+      return this;
+    }
+
+    public String getPrettyPrint() {
+      return prettyPrint;
+    }
+
+    public Builder setPrettyPrint(String prettyPrint) {
+      this.prettyPrint = prettyPrint;
+      return this;
+    }
+
+    public String getQuotaUser() {
+      return quotaUser;
+    }
+
+    public Builder setQuotaUser(String quotaUser) {
+      this.quotaUser = quotaUser;
+      return this;
+    }
+
+    public String getUserIp() {
+      return userIp;
+    }
+
+    public Builder setUserIp(String userIp) {
+      this.userIp = userIp;
+      return this;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public Builder setName(String name) {
+      if (name == null) {
+        throw new IllegalArgumentException("\"name\" is a required parameter.");
+      }
+      this.name = name;
+      return this;
+    }
+
+
+    public ProjectsUpdateBillingInfoHttpRequest build() {
+      return new ProjectsUpdateBillingInfoHttpRequest(
+          name,
+          access_token,
+          callback,
+          fields,
+          key,
+          prettyPrint,
+          quotaUser,
+          userIp
+          , request
+      );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      if (name != null) {
+        newBuilder.setName(this.name);
+      }
+      if (access_token != null) {
+        newBuilder.setAccessToken(this.access_token);
+      }
+      if (callback != null) {
+        newBuilder.setCallback(this.callback);
+      }
+      if (fields != null) {
+        newBuilder.setFields(this.fields);
+      }
+      if (key != null) {
+        newBuilder.setKey(this.key);
+      }
+      if (prettyPrint != null) {
+        newBuilder.setPrettyPrint(this.prettyPrint);
+      }
+      if (quotaUser != null) {
+        newBuilder.setQuotaUser(this.quotaUser);
+      }
+      if (userIp != null) {
+        newBuilder.setUserIp(this.userIp);
+      }
+      return newBuilder;
+    }
+  }
+
+  @Override
+  public String toString() {
+    return "ProjectsUpdateBillingInfoHttpRequest{"
+        + "name=" + name + ", "
+        + "access_token=" + access_token + ", "
+        + "callback=" + callback + ", "
+        + "fields=" + fields + ", "
+        + "key=" + key + ", "
+        + "prettyPrint=" + prettyPrint + ", "
+        + "quotaUser=" + quotaUser + ", "
+        + "userIp=" + userIp
+        + ", request=" + request
+        + "}";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof ProjectsUpdateBillingInfoHttpRequest) {
+      ProjectsUpdateBillingInfoHttpRequest that = (ProjectsUpdateBillingInfoHttpRequest) o;
+      return
+          this.name.equals(that.getName())&&
+          this.access_token.equals(that.getAccessToken())&&
+          this.callback.equals(that.getCallback())&&
+          this.fields.equals(that.getFields())&&
+          this.key.equals(that.getKey())&&
+          this.prettyPrint.equals(that.getPrettyPrint())&&
+          this.quotaUser.equals(that.getQuotaUser())&&
+          this.userIp.equals(that.getUserIp())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    int h = 1;
+    h *= 1000003;
+    h ^= this.name.hashCode();
+    h *= 1000003;
+    h ^= this.access_token.hashCode();
+    h *= 1000003;
+    h ^= this.callback.hashCode();
+    h *= 1000003;
+    h ^= this.fields.hashCode();
+    h *= 1000003;
+    h ^= this.key.hashCode();
+    h *= 1000003;
+    h ^= this.prettyPrint.hashCode();
+    h *= 1000003;
+    h ^= this.quotaUser.hashCode();
+    h *= 1000003;
+    h ^= this.userIp.hashCode();
     return h;
   }
 }

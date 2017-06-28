@@ -14,9 +14,11 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.util.TypeAlias;
+import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
 import java.util.Map;
 
@@ -24,7 +26,7 @@ import java.util.Map;
  * A SchemaTypeTable manages the imports for a set of fully-qualified type names, and provides
  * helper methods for importing instances of Schema.
  */
-public class SchemaTypeTable implements SchemaTypeFormatter {
+public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
   private SchemaTypeFormatterImpl typeFormatter;
   private TypeTable typeTable;
   private SchemaTypeNameConverter typeNameConverter;
@@ -60,8 +62,13 @@ public class SchemaTypeTable implements SchemaTypeFormatter {
     return typeFormatter.getInnerTypeNameFor(schema);
   }
 
+  @Override
+  public String getEnumValue(FieldType type, String value) {
+    return getNotImplementedString("SchemaTypeTable.getFullNameFor(TypeRef type)");
+  }
+
   /** Creates a new SchemaTypeTable of the same concrete type, but with an empty import set. */
-  public SchemaTypeTable cloneEmpty() {
+  public ImportTypeTable cloneEmpty() {
     return new SchemaTypeTable(typeTable.cloneEmpty(), typeNameConverter);
   }
 
@@ -101,15 +108,12 @@ public class SchemaTypeTable implements SchemaTypeFormatter {
   }
 
   /**
-   * For a given schema, add the full name to the import set, and then return the nickname.
-   *
-   * @param schema The schema to save and get the nickname for.
-   * @return nickname for the schema.
-   *     <p>If the given schema type is an array, then the element type is the contained type;
-   *     otherwise the element type is the boxed form of the type.
+   * Computes the nickname for the given type, adds the full name to the import set, and returns the
+   * nickname.
    */
-  public String getAndSaveNicknameForElementType(Schema schema) {
-    return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeNameForElementType(schema));
+  public String getAndSaveNicknameFor(Schema schema, boolean shouldBoxPrimitives) {
+    return typeTable.getAndSaveNicknameFor(
+        typeNameConverter.getTypeName(schema, shouldBoxPrimitives));
   }
 
   public String getFullNameForElementType(Schema type) {
@@ -140,6 +144,55 @@ public class SchemaTypeTable implements SchemaTypeFormatter {
     return renderPrimitiveValue(type.getSchemaField(), key);
   }
 
+  @Override
+  /**
+   * Computes the nickname for the given type, adds the full name to the import set, and returns the
+   * nickname.
+   */
+  public String getAndSaveNicknameFor(FieldType type) {
+    return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeName(type.getSchemaField()));
+  }
+
+  @Override
+  public String getAndSaveNicknameForTypedResourceName(
+      FieldConfig fieldConfig, String typedResourceShortName) {
+    return getNotImplementedString(
+        "getAndSaveNicknameForTypedResourceName(FieldConfig fieldConfig, String typedResourceShortName)");
+  }
+
+  @Override
+  public String getAndSaveNicknameForResourceNameElementType(
+      FieldConfig fieldConfig, String typedResourceShortName) {
+    return getNotImplementedString(
+        "SchemaTypeTable.getAndSaveNicknameForResourceNameElementType(FieldConfig fieldConfig, String typedResourceShortName)");
+  }
+
+  @Override
+  public String getAndSaveNicknameForElementType(FieldType type) {
+    return getAndSaveNicknameFor(type.getSchemaField());
+  }
+
+  @Override
+  public String getAndSaveNicknameForContainer(
+      String containerFullName, String... elementFullNames) {
+    TypeName completeTypeName = typeTable.getContainerTypeName(containerFullName, elementFullNames);
+    return typeTable.getAndSaveNicknameFor(completeTypeName);
+  }
+
+  @Override
+  public String getSnippetZeroValueAndSaveNicknameFor(FieldType type) {
+    return typeNameConverter
+        .getSnippetZeroValue(type.getSchemaField())
+        .getValueAndSaveTypeNicknameIn(typeTable);
+  }
+
+  @Override
+  public String getImplZeroValueAndSaveNicknameFor(FieldType type) {
+    return typeNameConverter
+        .getImplZeroValue(type.getSchemaField())
+        .getValueAndSaveTypeNicknameIn(typeTable);
+  }
+
   /** Returns the imports accumulated so far. */
   public Map<String, TypeAlias> getImports() {
     return typeTable.getImports();
@@ -147,5 +200,9 @@ public class SchemaTypeTable implements SchemaTypeFormatter {
 
   public TypeTable getTypeTable() {
     return typeTable;
+  }
+
+  public String getNotImplementedString(String feature) {
+    return "$ NOT IMPLEMENTED: " + feature + " $";
   }
 }

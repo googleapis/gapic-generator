@@ -18,7 +18,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.auto.value.AutoValue;
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -107,6 +106,11 @@ public abstract class Schema implements Node {
     }
 
     return thisSchema;
+  }
+
+  /** @return a non-null identifier for this schema. */
+  public String getIdentifier() {
+    return id().isEmpty() ? key() : id();
   }
 
   public static Schema empty() {
@@ -218,12 +222,6 @@ public abstract class Schema implements Node {
       }
       throw new IllegalArgumentException("unknown type: " + text);
     }
-  }
-
-  /** @return a non-null identifier for this object. */
-  @Nonnull
-  public String getIdentifier() {
-    return id().isEmpty() ? key() : id();
   }
 
   /** The set of formats a schema can represent. */

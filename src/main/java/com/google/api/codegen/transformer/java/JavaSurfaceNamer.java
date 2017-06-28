@@ -24,6 +24,7 @@ import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
+import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
@@ -96,7 +97,8 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   public String getAndSaveOperationResponseTypeName(
       Method method, ImportTypeTable typeTable, MethodConfig methodConfig) {
     String responseTypeName =
-        typeTable.getFullNameFor(methodConfig.getLongRunningConfig().getReturnType());
+        ((ModelTypeTable) typeTable)
+            .getFullNameFor(methodConfig.getLongRunningConfig().getReturnType());
     return typeTable.getAndSaveNicknameForContainer(
         "com.google.api.gax.grpc.OperationFuture", responseTypeName);
   }

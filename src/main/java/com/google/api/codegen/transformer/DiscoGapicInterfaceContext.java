@@ -98,16 +98,6 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
     }
   }
 
-  public DiscoGapicInterfaceContext withNewTypeTable() {
-    return create(
-        getDocument(),
-        getProductConfig(),
-        getSchemaTypeTable().cloneEmpty(),
-        getDiscoGapicNamer(),
-        getNamer(),
-        getFeatureConfig());
-  }
-
   public GapicMethodContext asRequestMethodContext(Method method) {
     return GapicMethodContext.create(
         this,

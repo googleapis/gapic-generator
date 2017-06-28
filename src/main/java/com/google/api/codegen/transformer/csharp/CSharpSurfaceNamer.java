@@ -400,9 +400,11 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   public String getAndSaveOperationResponseTypeName(
       Method method, ImportTypeTable typeTable, MethodConfig methodConfig) {
     String responseTypeName =
-        typeTable.getFullNameFor(methodConfig.getLongRunningConfig().getReturnType());
+        ((ModelTypeTable) typeTable)
+            .getFullNameFor(methodConfig.getLongRunningConfig().getReturnType());
     String metaTypeName =
-        typeTable.getFullNameFor(methodConfig.getLongRunningConfig().getMetadataType());
+        ((ModelTypeTable) typeTable)
+            .getFullNameFor(methodConfig.getLongRunningConfig().getMetadataType());
     return typeTable.getAndSaveNicknameForContainer(
         "Google.LongRunning.Operation", responseTypeName, metaTypeName);
   }
@@ -413,18 +415,19 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
       // Bidirectional streaming
       return typeTable.getAndSaveNicknameForContainer(
           "Grpc.Core.AsyncDuplexStreamingCall",
-          typeTable.getFullNameFor(method.getInputType()),
-          typeTable.getFullNameFor(method.getOutputType()));
+          ((ModelTypeTable) typeTable).getFullNameFor(method.getInputType()),
+          ((ModelTypeTable) typeTable).getFullNameFor(method.getOutputType()));
     } else if (method.getRequestStreaming()) {
       // Client streaming
       return typeTable.getAndSaveNicknameForContainer(
           "Grpc.Core.AsyncClientStreamingCall",
-          typeTable.getFullNameFor(method.getInputType()),
-          typeTable.getFullNameFor(method.getOutputType()));
+          ((ModelTypeTable) typeTable).getFullNameFor(method.getInputType()),
+          ((ModelTypeTable) typeTable).getFullNameFor(method.getOutputType()));
     } else if (method.getResponseStreaming()) {
       // Server streaming
       return typeTable.getAndSaveNicknameForContainer(
-          "Grpc.Core.AsyncServerStreamingCall", typeTable.getFullNameFor(method.getOutputType()));
+          "Grpc.Core.AsyncServerStreamingCall",
+          ((ModelTypeTable) typeTable).getFullNameFor(method.getOutputType()));
     } else {
       throw new IllegalArgumentException("Expected some sort of streaming here.");
     }

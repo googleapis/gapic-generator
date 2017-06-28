@@ -17,8 +17,9 @@ package com.google.api.codegen.discogapic;
 import com.google.api.codegen.config.DiscoGapicInterfaceConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
-import com.google.api.codegen.discovery.Schema;
+import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.transformer.DiscoGapicInterfaceContext;
+import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.SchemaTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -34,24 +35,34 @@ import java.util.Comparator;
  * <p>This context contains a reference to the parent Document context.
  */
 @AutoValue
-public abstract class SchemaInterfaceContext implements InterfaceContext {
-  public static SchemaInterfaceContext create(
-      Interface interface0,
-      Schema schema,
-      SchemaTypeTable typeTable,
-      DiscoGapicInterfaceContext docContext) {
-    return new AutoValue_SchemaInterfaceContext(interface0, null, schema, typeTable, docContext);
+public abstract class RequestInterfaceContext implements InterfaceContext {
+  public static RequestInterfaceContext create(
+      Method method, DiscoGapicInterfaceContext docContext, SchemaTypeTable typeTable) {
+    return new AutoValue_RequestInterfaceContext(method, docContext, typeTable);
   }
 
-  public abstract Schema getSchema();
+  public abstract Method getMethod();
 
-  public abstract SchemaTypeTable getSchemaTypeTable();
+  public Interface getInterface() {
+    return null;
+  }
 
   /** @return the parent Document-level InterfaceContext. */
   public abstract DiscoGapicInterfaceContext getDocContext();
 
   public DiscoGapicNamer getDiscoGapicNamer() {
     return getDocContext().getDiscoGapicNamer();
+  }
+
+  public abstract SchemaTypeTable getSchemaTypeTable();
+
+  public ImportTypeTable getModelTypeTable() {
+    return getSchemaTypeTable();
+  }
+
+  @Override
+  public TypeTable getTypeTable() {
+    return getSchemaTypeTable().getTypeTable();
   }
 
   @Override
@@ -64,26 +75,15 @@ public abstract class SchemaInterfaceContext implements InterfaceContext {
     return getDocContext().getNamer();
   }
 
-  @Override
-  public TypeTable getTypeTable() {
-    return getSchemaTypeTable().getTypeTable();
-  }
-
-  /** @return the SchemaTypeTable scoped at the Document level. */
-  public SchemaTypeTable getDocumentTypeTable() {
-    return getDocContext().getSchemaTypeTable();
-  }
-
   public DiscoGapicInterfaceConfig getInterfaceConfig() {
-    return (DiscoGapicInterfaceConfig) getProductConfig().getInterfaceConfig(getSchema().id());
+    return (DiscoGapicInterfaceConfig) getProductConfig().getInterfaceConfig(getMethod().id());
   }
 
-  public static Comparator<SchemaInterfaceContext> comparator =
-      new Comparator<SchemaInterfaceContext>() {
+  public static Comparator<RequestInterfaceContext> comparator =
+      new Comparator<RequestInterfaceContext>() {
         @Override
-        public int compare(SchemaInterfaceContext o1, SchemaInterfaceContext o2) {
-          return String.CASE_INSENSITIVE_ORDER.compare(
-              o1.getSchema().getIdentifier(), o2.getSchema().getIdentifier());
+        public int compare(RequestInterfaceContext o1, RequestInterfaceContext o2) {
+          return String.CASE_INSENSITIVE_ORDER.compare(o1.getMethod().id(), o2.getMethod().id());
         }
       };
 }
