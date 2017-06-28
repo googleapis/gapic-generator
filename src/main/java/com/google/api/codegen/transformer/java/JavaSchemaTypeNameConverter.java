@@ -100,25 +100,8 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
   }
 
   @Override
-  public TypeName getTypeName(Schema schema, boolean shouldBoxPrimitives) {
-    if (schema.type() == Type.ARRAY || schema.repeated()) {
-      TypeName listTypeName = typeNameConverter.getTypeName("java.util.List");
-      TypeName elementTypeName = getTypeNameForElementType(schema, true);
-      return new TypeName(
-          listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", elementTypeName);
-    } else {
-      return getTypeNameForElementType(schema, shouldBoxPrimitives);
-    }
-  }
-
-  @Override
   public TypedValue getEnumValue(Schema schema, String value) {
     return TypedValue.create(getTypeName(schema), "%s." + value);
-  }
-
-  @Override
-  public TypeName getTypeNameForElementType(Schema type) {
-    return getTypeNameForElementType(type, true);
   }
 
   /**
@@ -128,7 +111,7 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
    * @param schema The Schema to generate a TypeName from.
    *     <p>This method will be recursively called on the given schema's children.
    */
-  private TypeName getTypeNameForElementType(Schema schema, boolean shouldBoxPrimitives) {
+  public TypeName getTypeName(Schema schema, boolean shouldBoxPrimitives) {
     String primitiveTypeName = getPrimitiveTypeName(schema);
     if (primitiveTypeName != null) {
       if (primitiveTypeName.contains(".")) {
@@ -145,7 +128,7 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
     } else if (schema.type() == Type.ARRAY) {
       // TODO(andrealin): ensure that this handles arrays of arrays.
       TypeName listTypeName = typeNameConverter.getTypeName("java.util.List");
-      TypeName elementTypeName = getTypeNameForElementType(schema.items(), true);
+      TypeName elementTypeName = getTypeName(schema.items(), true);
       return new TypeName(
           listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", elementTypeName);
     } else {

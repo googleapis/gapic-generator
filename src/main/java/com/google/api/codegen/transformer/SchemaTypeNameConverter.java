@@ -59,8 +59,6 @@ public interface SchemaTypeNameConverter {
    */
   TypedValue getImplZeroValue(Schema schema);
 
-  TypeName getTypeNameForElementType(Schema type);
-
   /** Renders the given value if it is a primitive type. */
   String renderPrimitiveValue(Schema schema, String value);
 }
