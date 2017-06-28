@@ -243,7 +243,10 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     typeTable.getAndSaveNicknameFor("com.google.common.collect.ImmutableList");
     typeTable.getAndSaveNicknameFor("com.google.common.collect.ImmutableMap");
     typeTable.getAndSaveNicknameFor("java.io.Serializable");
+    typeTable.getAndSaveNicknameFor("java.util.AbstractMap");
+    typeTable.getAndSaveNicknameFor("java.util.LinkedList");
     typeTable.getAndSaveNicknameFor("java.util.List");
+    typeTable.getAndSaveNicknameFor("java.util.Map");
     typeTable.getAndSaveNicknameFor("javax.annotation.Generated");
   }
 
