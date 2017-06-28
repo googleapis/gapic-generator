@@ -96,13 +96,18 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
 
   @Override
   public TypeName getTypeName(Schema schema) {
-    if (schema.type() == Type.ARRAY) {
+    return getTypeName(schema, false);
+  }
+
+  @Override
+  public TypeName getTypeName(Schema schema, boolean shouldBoxPrimitives) {
+    if (schema.type() == Type.ARRAY || schema.repeated()) {
       TypeName listTypeName = typeNameConverter.getTypeName("java.util.List");
       TypeName elementTypeName = getTypeNameForElementType(schema, true);
       return new TypeName(
           listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", elementTypeName);
     } else {
-      return getTypeNameForElementType(schema, false);
+      return getTypeNameForElementType(schema, shouldBoxPrimitives);
     }
   }
 

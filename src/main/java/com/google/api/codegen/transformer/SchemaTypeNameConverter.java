@@ -24,6 +24,9 @@ public interface SchemaTypeNameConverter {
   /** Provides a TypeName for the given Schema. */
   TypeName getTypeName(Schema type);
 
+  /** Provides a TypeName for the given Schema. */
+  TypeName getTypeName(Schema type, boolean shouldBoxPrimitives);
+
   /** Provides a TypeName for the given FieldConfig and resource short name. */
   TypeName getTypeNameForTypedResourceName(FieldConfig fieldConfig, String typedResourceShortName);
 

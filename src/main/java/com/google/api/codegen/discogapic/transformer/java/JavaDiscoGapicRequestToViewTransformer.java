@@ -39,7 +39,6 @@ import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.SimpleParamView;
 import com.google.api.codegen.viewmodel.StaticLangApiHttpRequestFileView;
 import com.google.api.codegen.viewmodel.StaticLangApiHttpRequestView;
-import com.google.api.codegen.viewmodel.StaticMemberView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.common.collect.ImmutableMap;
 import java.io.File;
@@ -52,7 +51,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.apache.commons.lang3.StringUtils;
 
 /* Creates the ViewModel for a Discovery Doc request object Java class. */
 public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTransformer {
@@ -73,13 +71,14 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
 
   static {
     ImmutableMap.Builder<String, String> queryParams = ImmutableMap.builder();
-    queryParams.put("access_token", "String");
-    queryParams.put("callback", "String");
-    queryParams.put("fields", "String");
-    queryParams.put("key", "String");
-    queryParams.put("prettyPrint", "String");
-    queryParams.put("quotaUser", "String");
-    queryParams.put("userIp", "String");
+    queryParams.put("access_token", "OAuth 2.0 token for the current user.");
+    queryParams.put(
+        "callback", "Name of the JavaScript callback function that handles the response.");
+    queryParams.put("fields", "Selector specifying a subset of fields to include in the response.");
+    queryParams.put("key", "API key. Required unless you provide an OAuth 2.0 token.");
+    queryParams.put("prettyPrint", "Returns response with indentations and line breaks.");
+    queryParams.put("quotaUser", "Alternative to userIp.");
+    queryParams.put("userIp", "IP address of the end user for whom the API call is being made.");
     STANDARD_QUERY_PARAMS = queryParams.build();
   }
 
@@ -168,16 +167,44 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     requestView.name(requestName);
     requestView.description(method.description());
 
-    //    String requestTypeName = typeTable.getAndSaveNicknameForElementType(method.id());
     String requestTypeName = nameFormatter.publicClassName(Name.anyCamel(requestClassId));
     requestView.typeName(requestTypeName);
 
-    List<SimpleParamView> paramViews = new LinkedList<>();
-    for (String str : method.parameterOrder()) {
-      Schema param = method.parameters().get(str);
-      paramViews.add(schemaToParamView(context, param, symbolTable));
+    List<SimpleParamView> queryParamViews = new LinkedList<>();
+    List<SimpleParamView> pathParamViews = new LinkedList<>();
+
+    // Add the standard query parameters.
+    for (String param : STANDARD_QUERY_PARAMS.keySet()) {
+      if (method.parameters().containsKey(param)) {
+        continue;
+      }
+      SimpleParamView.Builder paramView = SimpleParamView.newBuilder();
+      paramView.description(STANDARD_QUERY_PARAMS.get(param));
+      paramView.name(symbolTable.getNewSymbol(param));
+      paramView.typeName("String");
+      paramView.isRequired(false);
+      paramView.canRepeat(false);
+      paramView.getterFunction(context.getDiscoGapicNamer().getResourceGetterName(param));
+      paramView.setterFunction(context.getDiscoGapicNamer().getResourceSetterName(param));
+      queryParamViews.add(paramView.build());
     }
-    requestView.queryParams(paramViews);
+
+    for (Map.Entry<String, Schema> entry : method.parameters().entrySet()) {
+      Schema param = entry.getValue();
+      if (param.location().toLowerCase().equals("query")) {
+        queryParamViews.add(schemaToParamView(context, param, symbolTable));
+      } else if (param.location().toLowerCase().equals("path")) {
+        pathParamViews.add(schemaToParamView(context, param, symbolTable));
+      } else {
+        throw new IllegalArgumentException(
+            String.format(
+                "Schema %s has a parameter whose location (\"%s\") is neither \"path\" nor \"query\".",
+                param.getIdentifier(), param.location()));
+      }
+    }
+
+    requestView.queryParams(queryParamViews);
+    requestView.pathParams(pathParamViews);
 
     if (method.request() != null) {
       requestView.requestObject(schemaToParamView(context, method.request(), symbolTable));
@@ -185,40 +212,6 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     if (method.response() != null) {
       requestView.responseObject(schemaToParamView(context, method.response(), symbolTable));
     }
-
-    List<StaticMemberView> staticFinalMembers = new LinkedList<>();
-    StringBuilder scopesString = new StringBuilder("ImmutableList.<String>of(\"");
-    scopesString.append(StringUtils.join(method.scopes().iterator(), "\", \""));
-    scopesString.append("\")");
-    staticFinalMembers.add(
-        StaticMemberView.newBuilder()
-            .description("Available OAuth 2.0 scopes.")
-            .name("scopes")
-            .typeName("List<String>")
-            .value(scopesString.toString())
-            .build());
-    staticFinalMembers.add(
-        StaticMemberView.newBuilder()
-            .description("HTTP method used by this method.")
-            .name("httpMethod")
-            .typeName("String")
-            .value(String.format("\"%s\"", method.httpMethod()))
-            .build());
-    staticFinalMembers.add(
-        StaticMemberView.newBuilder()
-            .description("The URI path of this REST method.")
-            .name("path")
-            .typeName("String")
-            .value(String.format("\"%s\"", method.path()))
-            .build());
-    staticFinalMembers.add(
-        StaticMemberView.newBuilder()
-            .description("")
-            .name("DEFAULT_INSTANCE")
-            .typeName(requestTypeName)
-            .value(String.format("new %s()", requestTypeName))
-            .build());
-    requestView.staticFinalMembers(staticFinalMembers);
 
     return requestView.build();
   }
@@ -229,8 +222,9 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     SimpleParamView.Builder paramView = SimpleParamView.newBuilder();
     paramView.description(schema.description());
     paramView.name(symbolTable.getNewSymbol(schema.getIdentifier()));
-    paramView.typeName(context.getSchemaTypeTable().getAndSaveNicknameFor(schema));
+    paramView.typeName(context.getSchemaTypeTable().getAndSaveNicknameFor(schema, true));
     paramView.isRequired(schema.required());
+    paramView.canRepeat(schema.repeated());
     paramView.getterFunction(
         context.getDiscoGapicNamer().getResourceGetterName(schema.getIdentifier()));
     paramView.setterFunction(
@@ -240,8 +234,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
 
   private void addApiImports(TypeTable typeTable) {
     typeTable.getAndSaveNicknameFor("com.google.api.core.BetaApi");
-    typeTable.getAndSaveNicknameFor("com.google.common.collect.ImmutableList");
-    typeTable.getAndSaveNicknameFor("com.google.common.collect.ImmutableMap");
+    typeTable.getAndSaveNicknameFor("com.google.common.collect.ImmutableListMultimap");
     typeTable.getAndSaveNicknameFor("java.io.Serializable");
     typeTable.getAndSaveNicknameFor("java.util.AbstractMap");
     typeTable.getAndSaveNicknameFor("java.util.LinkedList");
