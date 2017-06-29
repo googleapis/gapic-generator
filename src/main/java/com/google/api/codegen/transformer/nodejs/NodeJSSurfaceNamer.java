@@ -46,6 +46,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -423,6 +424,11 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
             .join("client")
             .toLowerUnderscore()
         + ".js";
+  }
+
+  @Override
+  public String getSourceFilePath(String path, String publicClassName) {
+    return path + File.separator + Name.upperCamel(publicClassName).toLowerUnderscore() + ".js";
   }
 
   @Override

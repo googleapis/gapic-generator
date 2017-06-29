@@ -371,7 +371,8 @@ LibraryServiceClient.prototype.getProjectId = function(callback) {
  * client.createShelf({shelf: shelf}).then(function(responses) {
  *     var response = responses[0];
  *     // doThingsWith(response)
- * }).catch(function(err) {
+ * })
+ * .catch(function(err) {
  *     console.error(err);
  * });
  */
@@ -430,7 +431,8 @@ LibraryServiceClient.prototype.createShelf = function(request, options, callback
  * client.getShelf(request).then(function(responses) {
  *     var response = responses[0];
  *     // doThingsWith(response)
- * }).catch(function(err) {
+ * })
+ * .catch(function(err) {
  *     console.error(err);
  * });
  */
@@ -482,18 +484,19 @@ LibraryServiceClient.prototype.getShelf = function(request, options, callback) {
  *   // optional auth parameters.
  * });
  *
- *
  * // Iterate over all elements.
  * client.listShelves({}).then(function(responses) {
  *     var resources = responses[0];
  *     for (var i = 0; i < resources.length; ++i) {
  *         // doThingsWith(resources[i])
  *     }
- * }).catch(function(err) {
+ * })
+ * .catch(function(err) {
  *     console.error(err);
  * });
  *
  * // Or obtain the paged response.
+ *
  * var options = {autoPaginate: false};
  * function callback(responses) {
  *     // The actual resources in a response.
@@ -560,10 +563,11 @@ LibraryServiceClient.prototype.listShelves = function(request, options, callback
  * });
  *
  *
- * client.listShelvesStream({}).on('data', function(element) {
+ * client.listShelvesStream({})
+ * .on('data', function(element) {
  *     // doThingsWith(element)
  * }).on('error', function(err) {
- *     console.error(err);
+ *     console.log(err);
  * });
  */
 LibraryServiceClient.prototype.listShelvesStream = function(request, options) {
@@ -655,7 +659,8 @@ LibraryServiceClient.prototype.deleteShelf = function(request, options, callback
  * client.mergeShelves(request).then(function(responses) {
  *     var response = responses[0];
  *     // doThingsWith(response)
- * }).catch(function(err) {
+ * })
+ * .catch(function(err) {
  *     console.error(err);
  * });
  */
@@ -710,7 +715,8 @@ LibraryServiceClient.prototype.mergeShelves = function(request, options, callbac
  * client.createBook(request).then(function(responses) {
  *     var response = responses[0];
  *     // doThingsWith(response)
- * }).catch(function(err) {
+ * })
+ * .catch(function(err) {
  *     console.error(err);
  * });
  */
@@ -780,7 +786,8 @@ LibraryServiceClient.prototype.createBook = function(request, options, callback)
  * client.publishSeries(request).then(function(responses) {
  *     var response = responses[0];
  *     // doThingsWith(response)
- * }).catch(function(err) {
+ * })
+ * .catch(function(err) {
  *     console.error(err);
  * });
  */
@@ -826,7 +833,8 @@ LibraryServiceClient.prototype.publishSeries = function(request, options, callba
  * client.getBook({name: formattedName}).then(function(responses) {
  *     var response = responses[0];
  *     // doThingsWith(response)
- * }).catch(function(err) {
+ * })
+ * .catch(function(err) {
  *     console.error(err);
  * });
  */
@@ -888,18 +896,23 @@ LibraryServiceClient.prototype.getBook = function(request, options, callback) {
  *   // optional auth parameters.
  * });
  *
- * var formattedName = client.shelfPath("[SHELF_ID]");
  * // Iterate over all elements.
+ * var formattedName = client.shelfPath("[SHELF_ID]");
+ *
  * client.listBooks({name: formattedName}).then(function(responses) {
  *     var resources = responses[0];
  *     for (var i = 0; i < resources.length; ++i) {
  *         // doThingsWith(resources[i])
  *     }
- * }).catch(function(err) {
+ * })
+ * .catch(function(err) {
  *     console.error(err);
  * });
  *
  * // Or obtain the paged response.
+ * var formattedName = client.shelfPath("[SHELF_ID]");
+ *
+ *
  * var options = {autoPaginate: false};
  * function callback(responses) {
  *     // The actual resources in a response.
@@ -974,10 +987,11 @@ LibraryServiceClient.prototype.listBooks = function(request, options, callback) 
  * });
  *
  * var formattedName = client.shelfPath("[SHELF_ID]");
- * client.listBooksStream({name: formattedName}).on('data', function(element) {
+ * client.listBooksStream({name: formattedName})
+ * .on('data', function(element) {
  *     // doThingsWith(element)
  * }).on('error', function(err) {
- *     console.error(err);
+ *     console.log(err);
  * });
  */
 LibraryServiceClient.prototype.listBooksStream = function(request, options) {
@@ -1075,7 +1089,8 @@ LibraryServiceClient.prototype.deleteBook = function(request, options, callback)
  * client.updateBook(request).then(function(responses) {
  *     var response = responses[0];
  *     // doThingsWith(response)
- * }).catch(function(err) {
+ * })
+ * .catch(function(err) {
  *     console.error(err);
  * });
  */
@@ -1128,7 +1143,8 @@ LibraryServiceClient.prototype.updateBook = function(request, options, callback)
  * client.moveBook(request).then(function(responses) {
  *     var response = responses[0];
  *     // doThingsWith(response)
- * }).catch(function(err) {
+ * })
+ * .catch(function(err) {
  *     console.error(err);
  * });
  */
@@ -1187,18 +1203,19 @@ LibraryServiceClient.prototype.moveBook = function(request, options, callback) {
  *   // optional auth parameters.
  * });
  *
- *
  * // Iterate over all elements.
  * client.listStrings({}).then(function(responses) {
  *     var resources = responses[0];
  *     for (var i = 0; i < resources.length; ++i) {
  *         // doThingsWith(resources[i])
  *     }
- * }).catch(function(err) {
+ * })
+ * .catch(function(err) {
  *     console.error(err);
  * });
  *
  * // Or obtain the paged response.
+ *
  * var options = {autoPaginate: false};
  * function callback(responses) {
  *     // The actual resources in a response.
@@ -1270,10 +1287,11 @@ LibraryServiceClient.prototype.listStrings = function(request, options, callback
  * });
  *
  *
- * client.listStringsStream({}).on('data', function(element) {
+ * client.listStringsStream({})
+ * .on('data', function(element) {
  *     // doThingsWith(element)
  * }).on('error', function(err) {
- *     console.error(err);
+ *     console.log(err);
  * });
  */
 LibraryServiceClient.prototype.listStringsStream = function(request, options) {
@@ -1368,7 +1386,8 @@ LibraryServiceClient.prototype.addComments = function(request, options, callback
  * client.getBookFromArchive({name: formattedName}).then(function(responses) {
  *     var response = responses[0];
  *     // doThingsWith(response)
- * }).catch(function(err) {
+ * })
+ * .catch(function(err) {
  *     console.error(err);
  * });
  */
@@ -1422,7 +1441,8 @@ LibraryServiceClient.prototype.getBookFromArchive = function(request, options, c
  * client.getBookFromAnywhere(request).then(function(responses) {
  *     var response = responses[0];
  *     // doThingsWith(response)
- * }).catch(function(err) {
+ * })
+ * .catch(function(err) {
  *     console.error(err);
  * });
  */
@@ -1512,7 +1532,7 @@ LibraryServiceClient.prototype.updateBookIndex = function(request, options, call
  *
  *
  * client.streamShelves({}).on('data', function(response) {
- *     // doThingsWith(response)
+ *   // doThingsWith(response)
  * });
  */
 LibraryServiceClient.prototype.streamShelves = function(request, options) {
@@ -1549,7 +1569,7 @@ LibraryServiceClient.prototype.streamShelves = function(request, options) {
  *
  * var name = '';
  * client.streamBooks({name: name}).on('data', function(response) {
- *     // doThingsWith(response)
+ *   // doThingsWith(response)
  * });
  */
 LibraryServiceClient.prototype.streamBooks = function(request, options) {
@@ -1581,7 +1601,7 @@ LibraryServiceClient.prototype.streamBooks = function(request, options) {
  * });
  *
  * var stream = client.discussBook().on('data', function(response) {
- *     // doThingsWith(response);
+ *     // doThingsWith(response)
  * });
  * var name = '';
  * var request = {
@@ -1688,6 +1708,7 @@ LibraryServiceClient.prototype.monologAboutBook = function(options, callback) {
  *   // optional auth parameters.
  * });
  *
+ * // Iterate over all elements.
  * var namesElement = '';
  * var names = [namesElement];
  * var shelves = [];
@@ -1695,17 +1716,27 @@ LibraryServiceClient.prototype.monologAboutBook = function(options, callback) {
  *     names: names,
  *     shelves: shelves
  * };
- * // Iterate over all elements.
+ *
  * client.findRelatedBooks(request).then(function(responses) {
  *     var resources = responses[0];
  *     for (var i = 0; i < resources.length; ++i) {
  *         // doThingsWith(resources[i])
  *     }
- * }).catch(function(err) {
+ * })
+ * .catch(function(err) {
  *     console.error(err);
  * });
  *
  * // Or obtain the paged response.
+ * var namesElement = '';
+ * var names = [namesElement];
+ * var shelves = [];
+ * var request = {
+ *     names: names,
+ *     shelves: shelves
+ * };
+ *
+ *
  * var options = {autoPaginate: false};
  * function callback(responses) {
  *     // The actual resources in a response.
@@ -1784,10 +1815,11 @@ LibraryServiceClient.prototype.findRelatedBooks = function(request, options, cal
  *     names: names,
  *     shelves: shelves
  * };
- * client.findRelatedBooksStream(request).on('data', function(element) {
+ * client.findRelatedBooksStream(request)
+ * .on('data', function(element) {
  *     // doThingsWith(element)
  * }).on('error', function(err) {
- *     console.error(err);
+ *     console.log(err);
  * });
  */
 LibraryServiceClient.prototype.findRelatedBooksStream = function(request, options) {
@@ -1837,7 +1869,8 @@ LibraryServiceClient.prototype.findRelatedBooksStream = function(request, option
  * client.addTag(request).then(function(responses) {
  *     var response = responses[0];
  *     // doThingsWith(response)
- * }).catch(function(err) {
+ * })
+ * .catch(function(err) {
  *     console.error(err);
  * });
  */
@@ -1892,7 +1925,8 @@ LibraryServiceClient.prototype.addTag = function(request, options, callback) {
  * client.addLabel(request).then(function(responses) {
  *     var response = responses[0];
  *     // doThingsWith(response)
- * }).catch(function(err) {
+ * })
+ * .catch(function(err) {
  *     console.error(err);
  * });
  */
@@ -1952,9 +1986,12 @@ LibraryServiceClient.prototype.addLabel = function(request, options, callback) {
  *
  *     // The response of the api call returning the complete operation.
  *     var finalApiResponse = responses[2];
- * }).catch(function(err) {
+ * })
+ * .catch(function(err) {
  *     console.error(err);
  * });
+ *
+ * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
  *
  * // Handle the operation using the event emitter pattern.
  * client.getBigBook({name: formattedName}).then(function(responses) {
@@ -1977,7 +2014,8 @@ LibraryServiceClient.prototype.addLabel = function(request, options, callback) {
  *     operation.on('error', function(err) {
  *       // throw(err);
  *     })
- * }).catch(function(err) {
+ * })
+ * .catch(function(err) {
  *     console.error(err);
  * });
  */
@@ -2037,9 +2075,12 @@ LibraryServiceClient.prototype.getBigBook = function(request, options, callback)
  *
  *     // The response of the api call returning the complete operation.
  *     var finalApiResponse = responses[2];
- * }).catch(function(err) {
+ * })
+ * .catch(function(err) {
  *     console.error(err);
  * });
+ *
+ * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
  *
  * // Handle the operation using the event emitter pattern.
  * client.getBigNothing({name: formattedName}).then(function(responses) {
@@ -2062,7 +2103,8 @@ LibraryServiceClient.prototype.getBigBook = function(request, options, callback)
  *     operation.on('error', function(err) {
  *       // throw(err);
  *     })
- * }).catch(function(err) {
+ * })
+ * .catch(function(err) {
  *     console.error(err);
  * });
  */
@@ -2223,7 +2265,8 @@ LibraryServiceClient.prototype.getBigNothing = function(request, options, callba
  * client.testOptionalRequiredFlatteningParams(request).then(function(responses) {
  *     var response = responses[0];
  *     // doThingsWith(response)
- * }).catch(function(err) {
+ * })
+ * .catch(function(err) {
  *     console.error(err);
  * });
  */
