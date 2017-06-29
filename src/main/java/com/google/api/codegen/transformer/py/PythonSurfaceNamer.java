@@ -146,8 +146,8 @@ public class PythonSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getGrpcClientTypeName(Interface apiInterface) {
-    String fullName = getModelTypeFormatter().getFullNameFor(apiInterface) + "Stub";
-    return getTypeNameConverter().getTypeName(fullName).getNickname();
+    String fullName = getModelTypeFormatter().getFullNameFor(apiInterface) + "Client";
+    return getTypeNameConverter().getTypeName(fullName).getFullName();
   }
 
   @Override
@@ -258,6 +258,23 @@ public class PythonSurfaceNamer extends SurfaceNamer {
       sb.append(".format(").append(Joiner.on(", ").join(stringParts)).append(")");
     }
     return sb.toString();
+  }
+
+  public String getVersionedDirectoryNamespace(Interface apiInterface) {
+    String interfaceNamespace = getNamespace(apiInterface);
+    String moduleNamespace = interfaceNamespace.substring(0, interfaceNamespace.lastIndexOf('.'));
+    // Swap the last dot for an underscore.
+    moduleNamespace =
+        moduleNamespace.substring(0, moduleNamespace.lastIndexOf('.'))
+            + '_'
+            + moduleNamespace.substring(moduleNamespace.lastIndexOf('.') + 1);
+    return moduleNamespace;
+  }
+
+  @Override
+  public String getStubType(Interface apiInterface) {
+    String fullName = getModelTypeFormatter().getFullNameFor(apiInterface) + "Stub";
+    return getTypeNameConverter().getTypeName(fullName).getNickname();
   }
 
   @Override

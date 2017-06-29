@@ -46,6 +46,7 @@ import com.google.api.codegen.transformer.php.PhpGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.php.PhpGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.php.PhpPackageMetadataTransformer;
 import com.google.api.codegen.transformer.py.PythonGapicSurfaceTestTransformer;
+import com.google.api.codegen.transformer.py.PythonGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.py.PythonPackageMetadataTransformer;
 import com.google.api.codegen.transformer.ruby.RubyGapicSurfaceDocTransformer;
 import com.google.api.codegen.transformer.ruby.RubyGapicSurfaceTestTransformer;
@@ -354,6 +355,13 @@ public class MainGapicProviderFactory
                 .setSnippetFileNames(Arrays.asList("py/main.snip"))
                 .setCodePathMapper(pythonPathMapper)
                 .build();
+        GapicProvider<? extends Object> surfaceProvider =
+            ViewModelGapicProvider.newBuilder()
+                .setModel(model)
+                .setProductConfig(productConfig)
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+                .setModelToViewTransformer(new PythonGapicSurfaceTransformer(packageConfig))
+                .build();
         // Note: enumProvider implementation doesn't care about the InputElementT view.
         GapicProvider<? extends Object> enumProvider =
             CommonGapicProvider.<Interface>newBuilder()
@@ -380,6 +388,7 @@ public class MainGapicProviderFactory
                 .build();
         providers.add(mainProvider);
         providers.add(clientConfigProvider);
+        providers.add(surfaceProvider);
         providers.add(enumProvider);
 
         if (id.equals(PYTHON_DOC)) {

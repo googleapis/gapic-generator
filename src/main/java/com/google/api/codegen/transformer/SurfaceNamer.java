@@ -164,6 +164,20 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return qualifiedName(namePath.withoutHead());
   }
 
+  /** The namespace of the package. */
+  public String getPackageNamespace(String version) {
+    NamePath namePath = typeNameConverter.getNamePath(packageName);
+    if (namePath.getHead().equals(version)) {
+      return qualifiedName(namePath.withoutHead());
+    }
+    return qualifiedName(namePath);
+  }
+
+  /** The versioned namespace of an api. Example: google.cloud.vision_v1 */
+  public String getVersionedDirectoryNamespace(Interface apiInterface) {
+    return getNotImplementedString("SurfaceNamer.getVersionedDirectoryNamespace");
+  }
+
   /** The modules of the package. */
   public ImmutableList<String> getApiModules() {
     return ImmutableList.<String>of();
@@ -480,6 +494,15 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getByteLengthFunctionName");
   }
 
+  /** The name of the class that ties in the helper functions to a client partial veneers. */
+  public String getHelpersClassName(String apiShortName) {
+    return publicClassName(Name.anyCamel(apiShortName).join("helpers"));
+  }
+
+  /** The name of a stub type of an interface */
+  public String getStubType(Interface apiInterface) {
+    return publicClassName(Name.upperCamel(apiInterface.getSimpleName(), "Stub"));
+  }
   /////////////////////////////////////// Variable names //////////////////////////////////////////
 
   /**

@@ -23,6 +23,8 @@ public abstract class GrpcStubView {
 
   public abstract String fullyQualifiedType();
 
+  public abstract String type();
+
   public abstract String createStubFunctionName();
 
   public abstract String grpcClientVariableName();
@@ -48,6 +50,8 @@ public abstract class GrpcStubView {
     public abstract Builder name(String val);
 
     public abstract Builder fullyQualifiedType(String val);
+
+    public abstract Builder type(String val);
 
     public abstract Builder createStubFunctionName(String val);
 
