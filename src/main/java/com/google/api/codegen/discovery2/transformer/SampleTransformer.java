@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,21 +12,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.discovery;
+package com.google.api.codegen.discovery2.transformer;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.api.Service;
-import com.google.api.codegen.ApiaryConfig;
-import java.io.File;
-import java.util.List;
+import com.google.api.codegen.discovery.Method;
+import com.google.api.codegen.viewmodel.ViewModel;
 
-/** A factory for DiscoveryProviders which perform code generation. */
-public interface DiscoveryProviderFactory {
-  DiscoveryProvider create(
-      Document document,
-      Service service,
-      ApiaryConfig apiaryConfig,
-      List<JsonNode> sampleConfigOverrides,
-      File rubyNamesFile,
-      String id);
+/*
+ * Transforms a Method into a ViewModel.
+ */
+public interface SampleTransformer {
+
+  ViewModel transform(Method method, String authInstructionsUrl, JsonNode override);
 }

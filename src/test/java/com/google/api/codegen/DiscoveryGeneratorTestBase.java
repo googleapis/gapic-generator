@@ -16,7 +16,9 @@ package com.google.api.codegen;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.api.codegen.discovery.DiscoveryNode;
 import com.google.api.codegen.discovery.DiscoveryProvider;
+import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.MainDiscoveryProviderFactory;
 import com.google.api.tools.framework.model.SimpleDiagCollector;
 import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
@@ -51,6 +53,7 @@ public abstract class DiscoveryGeneratorTestBase extends ConfigBaselineTestCase 
   private final JsonNode overridesJson;
   protected ConfigProto config;
   protected DiscoveryImporter discoveryImporter;
+  protected Document document;
 
   public DiscoveryGeneratorTestBase(
       String name, String discoveryDocFileName, String[] gapicConfigFileNames) {
@@ -77,11 +80,12 @@ public abstract class DiscoveryGeneratorTestBase extends ConfigBaselineTestCase 
 
   protected void setupDiscovery() {
     try {
-      discoveryImporter =
-          DiscoveryImporter.parse(
-              new StringReader(
-                  getTestDataLocator()
-                      .readTestData(getTestDataLocator().findTestData(discoveryDocFileName))));
+      String data =
+          getTestDataLocator()
+              .readTestData(getTestDataLocator().findTestData(discoveryDocFileName));
+      discoveryImporter = DiscoveryImporter.parse(new StringReader(data));
+      JsonNode documentNode = new ObjectMapper().readTree(new StringReader(data));
+      document = Document.from(new DiscoveryNode(documentNode));
     } catch (IOException e) {
       throw new IllegalArgumentException("Problem creating Generator", e);
     }
@@ -109,7 +113,12 @@ public abstract class DiscoveryGeneratorTestBase extends ConfigBaselineTestCase 
     }
     DiscoveryProvider provider =
         MainDiscoveryProviderFactory.defaultCreate(
-            discoveryImporter.getService(), discoveryImporter.getConfig(), overrides, null, id);
+            document,
+            discoveryImporter.getService(),
+            discoveryImporter.getConfig(),
+            overrides,
+            null,
+            id);
 
     Doc output = Doc.EMPTY;
     for (Api api : discoveryImporter.getService().getApisList()) {

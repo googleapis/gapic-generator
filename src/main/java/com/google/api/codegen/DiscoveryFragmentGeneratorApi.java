@@ -16,8 +16,10 @@ package com.google.api.codegen;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.api.codegen.discovery.DiscoveryNode;
 import com.google.api.codegen.discovery.DiscoveryProvider;
 import com.google.api.codegen.discovery.DiscoveryProviderFactory;
+import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.util.ClassInstantiator;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleDiagCollector;
@@ -96,10 +98,10 @@ public class DiscoveryFragmentGeneratorApi {
   }
 
   protected void process() throws Exception {
-    DiscoveryImporter discovery =
-        DiscoveryImporter.parse(
-            com.google.common.io.Files.newReader(
-                new File(options.get(DISCOVERY_DOC)), Charset.forName("UTF8")));
+    Path discoveryDocPath = Paths.get(options.get(DISCOVERY_DOC));
+    BufferedReader reader = Files.newBufferedReader(discoveryDocPath, Charset.forName("UTF8"));
+
+    DiscoveryImporter discovery = DiscoveryImporter.parse(reader);
 
     // Read the YAML config and convert it to proto.
     List<String> configFileNames = options.get(GENERATOR_CONFIG_FILES);
@@ -116,9 +118,11 @@ public class DiscoveryFragmentGeneratorApi {
     String[] filenames = options.get(OVERRIDE_FILES).split(",");
     List<JsonNode> overrides = new ArrayList<>();
     for (String filename : filenames) {
+      if (filename.isEmpty()) {
+        continue;
+      }
       try {
-        BufferedReader reader =
-            com.google.common.io.Files.newReader(new File(filename), Charset.forName("UTF8"));
+        reader = Files.newBufferedReader(Paths.get(filename), Charset.forName("UTF8"));
         ObjectMapper mapper = new ObjectMapper();
         overrides.add(mapper.readTree(reader));
       } catch (FileNotFoundException e) {
@@ -138,9 +142,14 @@ public class DiscoveryFragmentGeneratorApi {
 
     File rubyNamesFile = new File(options.get(RUBY_NAMES_FILE));
 
+    reader = Files.newBufferedReader(discoveryDocPath, Charset.forName("UTF8"));
+    JsonNode documentNode = new ObjectMapper().readTree(reader);
+    Document document = Document.from(new DiscoveryNode(documentNode));
+
     DiscoveryProviderFactory providerFactory = createProviderFactory(factory);
     DiscoveryProvider provider =
-        providerFactory.create(discovery.getService(), apiaryConfig, overrides, rubyNamesFile, id);
+        providerFactory.create(
+            document, discovery.getService(), apiaryConfig, overrides, rubyNamesFile, id);
 
     for (Api api : discovery.getService().getApisList()) {
       for (Method method : api.getMethodsList()) {
