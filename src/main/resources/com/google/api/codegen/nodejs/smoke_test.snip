@@ -26,9 +26,21 @@
 
     @switch smokeTest.apiMethod.type.toString
     @case "OptionalArrayMethod"
+      # The longrunning operation and paged methods need to access the samples directly because
+      # the samples have two method calls that need to be wrapped by mocha.
+      @if smokeTest.apiMethod.isLongRunningOperation
         {@smokeTestBody(smokeTest, \
-          "successfully makes a call to the service", \
-          {@sampleCode(smokeTest.apiMethod, mochaCompletedCallback()))}}
+            "successfully makes a call to the service", \
+            {@methodCallSampleCodeLongrunningPromise(smokeTest.apiMethod, additionalCallback)})}
+
+        {@smokeTestBody(smokeTest, \
+            "successfully makes a call to the service", \
+            {@methodCallSampleCodeLongrunningEventEmitter(smokeTest.apiMethod, additionalCallback)})}
+    @else
+        {@smokeTestBody(smokeTest, \
+            "successfully makes a call to the service", \
+            {@sampleCode(smokeTest.apiMethod, mochaCompletedCallback()))}}
+      @end
     @case "PagedOptionalArrayMethod"
         {@smokeTestBody(smokeTest, \
           "successfully makes a call to the service using promises", \

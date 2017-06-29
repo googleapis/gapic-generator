@@ -123,7 +123,6 @@
     @case "BidiStreaming"
         {@bidiStreamingSampleCode(apiMethod, additionalCallback)}
     @case "NonStreaming"
-        {@initCode(apiMethod)}
         @if apiMethod.hasReturnValue
             {@methodCallSampleCodeWithReturnValue(apiMethod, additionalCallback)}
         @else
@@ -161,15 +160,8 @@
         for (var i = 0; i < resources.length; ++i) {
             // doThingsWith(resources[i])
         }
-    @if additionalCallback
-        })
-        .then({@additionalCallback})
-        .catch({@additionalCallback});
-    @else
-        }).catch(function(err) {
-            console.error(err);
-        });
-    @end
+    })
+    {@promiseCallbacks(additionalCallback)}
 @end
 
 @snippet methodCallSampleCodeForPagedResponse(apiMethod, additionalCallback)
@@ -198,14 +190,7 @@
     }
     client.{@apiMethod.name}({@sampleMethodCallArgListAndComma(apiMethod)}options)
         .then(callback)
-        @if additionalCallback
-            .then({@additionalCallback})
-            .catch({@additionalCallback});
-        @else
-            .catch(function(err) {
-                console.error(err);
-            });
-        @end
+        {@promiseCallbacks(additionalCallback)}
 @end
 
 @private methodCallSampleCodePrefix(apiMethod)
@@ -219,84 +204,77 @@
 
 @private methodCallSampleCodeWithReturnValue(apiMethod, additionalCallback)
     @if apiMethod.isLongRunningOperation
+        # TODO(landrito) figure out how to remove initcode repetition for method samples.
+        {@methodCallSampleCodeLongrunningPromise(apiMethod, additionalCallback)}
 
-        // Handle the operation using the promise pattern.
-        {@methodCallSampleCodePrefix(apiMethod)}.then(function(responses) {
-            var operation = responses[0];
-            var initialApiResponse = responses[1];
-
-            // Operation@#promise starts polling for the completion of the LRO.
-            return operation.promise();
-        }).then(function(responses) {
-            // The final result of the operation.
-            var result = responses[0];
-
-            // The metadata value of the completed operation.
-            var metadata = responses[1];
-
-            // The response of the api call returning the complete operation.
-            var finalApiResponse = responses[2];
-        @if additionalCallback
-            })
-            .then({@additionalCallback})
-            .catch({@additonalCallback});
-        @else
-            }).catch(function(err) {
-                console.error(err);
-            });
-        @end
-
-        // Handle the operation using the event emitter pattern.
-        {@methodCallSampleCodePrefix(apiMethod)}.then(function(responses) {
-            var operation = responses[0];
-            var initialApiResponse = responses[1];
-
-            // Adding a listener for the "complete" event starts polling for the
-            // completion of the operation.
-            operation.on('complete', function(result, metadata, finalApiResponse) {
-              // doSomethingWith(result);
-            });
-
-            // Adding a listener for the "progress" event causes the callback to be
-            // called on any change in metadata when the operation is polled.
-            operation.on('progress', function(metadata, apiResponse) {
-              // doSomethingWith(metadata)
-            })
-
-            // Adding a listener for the "error" event handles any errors found during polling.
-            operation.on('error', function(err) {
-              // throw(err);
-            })
-        @if additionalCallback
-            })
-            .then({@additionalCallback})
-            .catch({@additionalCallback});
-        @else
-            }).catch(function(err) {
-                console.error(err);
-            });
-        @end
+        {@methodCallSampleCodeLongrunningEventEmitter(apiMethod, additionalCallback)}
     @else
+        {@initCode(apiMethod)}
         {@methodCallSampleCodePrefix(apiMethod)}.then(function(responses) {
             var response = responses[0];
             // doThingsWith(response)
-        @if additionalCallback
-            })
-            .then({@additionalCallback})
-            .catch({@additionalCallback});
-        @else
-            }).catch(function(err) {
-                console.error(err);
-            });
-        @end
+        })
+        {@promiseCallbacks(additionalCallback)}
     @end
 @end
 
+@snippet methodCallSampleCodeLongrunningPromise(apiMethod, additionalCallback)
+    {@initCode(apiMethod)}
+
+    // Handle the operation using the promise pattern.
+    {@methodCallSampleCodePrefix(apiMethod)}.then(function(responses) {
+        var operation = responses[0];
+        var initialApiResponse = responses[1];
+
+        // Operation@#promise starts polling for the completion of the LRO.
+        return operation.promise();
+    }).then(function(responses) {
+        // The final result of the operation.
+        var result = responses[0];
+
+        // The metadata value of the completed operation.
+        var metadata = responses[1];
+
+        // The response of the api call returning the complete operation.
+        var finalApiResponse = responses[2];
+    })
+    {@promiseCallbacks(additionalCallback)}
+@end
+
+@snippet methodCallSampleCodeLongrunningEventEmitter(apiMethod, additionalCallback)
+    {@initCode(apiMethod)}
+
+    // Handle the operation using the event emitter pattern.
+    {@methodCallSampleCodePrefix(apiMethod)}.then(function(responses) {
+        var operation = responses[0];
+        var initialApiResponse = responses[1];
+
+        // Adding a listener for the "complete" event starts polling for the
+        // completion of the operation.
+        operation.on('complete', function(result, metadata, finalApiResponse) {
+          // doSomethingWith(result);
+        });
+
+        // Adding a listener for the "progress" event causes the callback to be
+        // called on any change in metadata when the operation is polled.
+        operation.on('progress', function(metadata, apiResponse) {
+          // doSomethingWith(metadata)
+        })
+
+        // Adding a listener for the "error" event handles any errors found during polling.
+        operation.on('error', function(err) {
+          // throw(err);
+        })
+    })
+    {@promiseCallbacks(additionalCallback)}
+@end
+
 @private methodCallSampleCodeWithoutReturnValue(apiMethod, additionalCallback)
+    {@initCode(apiMethod)}
     @if additionalCallback
         {@methodCallSampleCodePrefix(apiMethod)}
           .then({@additionalCallback})
-          .catch({@additonalCallback});
+          .catch({@additionalCallback});
     @else
         {@methodCallSampleCodePrefix(apiMethod)}.catch(function(err) {
             console.error(err);
@@ -394,5 +372,16 @@
             {@""}    {@fieldSetting.fieldName}: {@fieldSetting.identifier}
         @end
         };
+    @end
+@end
+
+@private promiseCallbacks(additionalCallback)
+    @if additionalCallback
+        .then({@additionalCallback})
+        .catch({@additionalCallback});
+    @else
+        .catch(function(err) {
+            console.error(err);
+        });
     @end
 @end
