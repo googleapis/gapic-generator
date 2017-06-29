@@ -264,10 +264,6 @@ public class JavaModelTypeNameConverter extends ModelTypeNameConverter {
   @Override
   public TypeName getTypeNameForResourceNameElementType(
       FieldConfig fieldConfig, String typedResourceShortName) {
-    fieldConfig
-        .getField()
-        .getProtoBasedField()
-        .setType(fieldConfig.getField().getProtoBasedField().getType().makeOptional());
     return getTypeNameForTypedResourceName(
         fieldConfig.getResourceNameConfig(), fieldConfig.getField(), typedResourceShortName);
   }

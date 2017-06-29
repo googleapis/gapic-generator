@@ -147,7 +147,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
             interfaceConfigProto.getExperimentalFeatures().getIamResourcesList());
 
     ImmutableList<String> requiredConstructorParams =
-        ImmutableList.copyOf(interfaceConfigProto.getRequiredConstructorParamsList());
+        ImmutableList.<String>copyOf(interfaceConfigProto.getRequiredConstructorParamsList());
     for (String param : interfaceConfigProto.getRequiredConstructorParamsList()) {
       if (!CONSTRUCTOR_PARAMS.contains(param)) {
         diagCollector.addDiag(

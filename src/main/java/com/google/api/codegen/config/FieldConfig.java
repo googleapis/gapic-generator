@@ -317,10 +317,6 @@ public abstract class FieldConfig {
     return Iterables.transform(fieldConfigs, createFieldTypeFunction());
   }
 
-  public static Iterable<Field> toFieldIterableFromFieldType(Iterable<FieldType> fieldTypes) {
-    return Iterables.transform(fieldTypes, selectFieldFromFieldTypeFunction());
-  }
-
   public static ImmutableMap<String, FieldConfig> toFieldConfigMap(
       Iterable<FieldConfig> fieldConfigs) {
     return Maps.uniqueIndex(fieldConfigs, selectFieldLongNameFunction());
