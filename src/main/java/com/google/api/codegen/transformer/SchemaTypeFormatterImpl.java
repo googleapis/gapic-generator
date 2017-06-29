@@ -51,6 +51,11 @@ public class SchemaTypeFormatterImpl implements SchemaTypeFormatter {
   }
 
   @Override
+  public String getNicknameFor(String fullName) {
+    return typeNameConverter.getTypeName(fullName).getNickname();
+  }
+
+  @Override
   public String getFullNameFor(FieldType type) {
     return getFullNameFor(type.getSchemaField());
   }

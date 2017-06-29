@@ -294,8 +294,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
       case PROTO:
         getModelTypeFormatter().getFullNameForElementType(type.getProtoBasedField().getType());
       case DISCOVERY:
-        // TODO(andrealin): IDK??? see how the schema type table handles this?
-        return null;
       default:
         throw new IllegalArgumentException("Unhandled model type.");
     }

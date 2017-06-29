@@ -138,6 +138,12 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
     return typeFormatter.getNicknameFor(type);
   }
 
+  /** Returns the nickname for the given type (without adding the full name to the import set). */
+  @Override
+  public String getNicknameFor(String fullName) {
+    return typeFormatter.getNicknameFor(fullName);
+  }
+
   /** Renders the primitive value of the given type. */
   @Override
   public String renderPrimitiveValue(FieldType type, String key) {

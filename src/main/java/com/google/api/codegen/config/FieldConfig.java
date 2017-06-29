@@ -15,7 +15,6 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.ResourceNameTreatment;
-import com.google.api.codegen.discovery.Schema;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
@@ -79,12 +78,6 @@ public abstract class FieldConfig {
         new FieldType(field), ResourceNameTreatment.NONE, null, null);
   }
 
-  /** Creates a FieldConfig for the given Field with ResourceNameTreatment set to None. */
-  public static FieldConfig createDefaultFieldConfig(Schema schema) {
-    return FieldConfig.createFieldConfig(
-        new FieldType(schema), ResourceNameTreatment.NONE, null, null);
-  }
-
   public static FieldConfig createMessageFieldConfig(
       ResourceNameMessageConfigs messageConfigs,
       Map<String, ResourceNameConfig> resourceNameConfigs,
@@ -104,21 +97,6 @@ public abstract class FieldConfig {
       ResourceNameMessageConfigs messageConfigs,
       Map<String, ResourceNameConfig> resourceNameConfigs,
       Field field,
-      ResourceNameTreatment defaultResourceNameTreatment) {
-    return createFieldConfig(
-        null,
-        messageConfigs,
-        null,
-        resourceNameConfigs,
-        new FieldType(field),
-        ResourceNameTreatment.UNSET_TREATMENT,
-        defaultResourceNameTreatment);
-  }
-
-  public static FieldConfig createMessageFieldConfig(
-      ResourceNameMessageConfigs messageConfigs,
-      Map<String, ResourceNameConfig> resourceNameConfigs,
-      Schema field,
       ResourceNameTreatment defaultResourceNameTreatment) {
     return createFieldConfig(
         null,

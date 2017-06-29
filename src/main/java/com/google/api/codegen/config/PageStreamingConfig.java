@@ -16,6 +16,8 @@ package com.google.api.codegen.config;
 
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.PageStreamingConfigProto;
+import com.google.api.codegen.discogapic.DiscoGapicMethod;
+import com.google.api.codegen.discovery.Schema;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
@@ -121,6 +123,91 @@ public abstract class PageStreamingConfig {
         new FieldType(requestTokenField),
         pageSizeField == null ? null : new FieldType(pageSizeField),
         new FieldType(responseTokenField),
+        resourcesFieldConfig);
+  }
+
+  /**
+   * Creates an instance of PageStreamingConfig based on Discovery Doc, linking it up with the
+   * provided method. On errors, null will be returned, and diagnostics are reported to the diag
+   * collector.
+   *
+   * @param methodDesc Method descriptor for the method to create config for.
+   */
+  @Nullable
+  public static PageStreamingConfig createPageStreaming(
+      DiagCollector diagCollector,
+      ResourceNameMessageConfigs messageConfigs,
+      DiscoGapicMethod methodDesc) {
+    // TODO(andrealin): Put this in yaml file somewhere instead of hardcoding.
+    String pageSizeFieldName = "maxResults";
+    String requestTokenFieldName = "pageToken";
+    String responseTokenFieldName = "nextPageToken";
+
+    Schema requestTokenField = methodDesc.method().parameters().get(requestTokenFieldName);
+    if (requestTokenField == null) {
+      diagCollector.addDiag(
+          Diag.error(
+              SimpleLocation.TOPLEVEL,
+              "Request field missing for page streaming: method = %s, message type = %s, field = %s",
+              methodDesc.getFullName(),
+              methodDesc.requestFullName(),
+              requestTokenFieldName));
+    }
+
+    Schema pageSizeField = methodDesc.method().parameters().get(pageSizeFieldName);
+    if (!Strings.isNullOrEmpty(pageSizeFieldName)) {
+      pageSizeField = methodDesc.method().parameters().get(pageSizeFieldName);
+      if (pageSizeField == null) {
+        diagCollector.addDiag(
+            Diag.error(
+                SimpleLocation.TOPLEVEL,
+                "Request field missing for page streaming: method = %s, message type = %s, field = %s",
+                methodDesc.getFullName(),
+                methodDesc.requestFullName(),
+                pageSizeFieldName));
+      }
+    }
+
+    Schema responseTokenField = methodDesc.method().parameters().get(responseTokenFieldName);
+    if (responseTokenField == null) {
+      diagCollector.addDiag(
+          Diag.error(
+              SimpleLocation.TOPLEVEL,
+              "Response field missing for page streaming: method = %s, message type = %s, field = %s",
+              methodDesc.getFullName(),
+              methodDesc.requestFullName(),
+              responseTokenFieldName));
+    }
+
+    Schema resourcesField = methodDesc.method().response();
+    FieldConfig resourcesFieldConfig;
+    if (resourcesField == null) {
+      diagCollector.addDiag(
+          Diag.error(
+              SimpleLocation.TOPLEVEL,
+              "Resources field missing for page streaming: method = %s, message type = %s, field = %s",
+              methodDesc.getFullName(),
+              methodDesc.requestFullName(),
+              resourcesField.getIdentifier()));
+      resourcesFieldConfig = null;
+    } else {
+      resourcesFieldConfig =
+          FieldConfig.createMessageFieldConfig(
+              messageConfigs,
+              //              resourceNameConfigs,
+              null,
+              new FieldType(
+                  resourcesField, methodDesc.schemaTypeTable().getFullNameFor(resourcesField)),
+              null);
+    }
+
+    if (requestTokenField == null || responseTokenField == null || resourcesFieldConfig == null) {
+      return null;
+    }
+    return new AutoValue_PageStreamingConfig(
+        new FieldType(requestTokenField, requestTokenFieldName),
+        new FieldType(pageSizeField, pageSizeFieldName),
+        new FieldType(responseTokenField, responseTokenFieldName),
         resourcesFieldConfig);
   }
 
