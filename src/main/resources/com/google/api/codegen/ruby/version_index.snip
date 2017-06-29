@@ -20,6 +20,8 @@
     @switch module.type
     @case "ReadmeMetadataView"
       {@readmeModule(module, iterator)}
+    @case "TocModuleView"
+      {@tocModule(module, iterator)}
     @case "SimpleModuleView"
       {@simpleModule(module, iterator)}
     @end
@@ -29,6 +31,23 @@
 @private readmeModule(module, iterator)
   @##
   {@toComments(util.getDocLines(generateReadme(module)))}
+  @#
+  {@simpleModule(module, iterator)}
+@end
+
+@private tocModule(module, iterator)
+  @##
+  @# # {@module.fullName} Contents
+  @#
+  @# | Class | Description |
+  @# | ----- | ----------- |
+  @join content : module.contents
+    @# | [{@content.name}][] | {@content.description} |
+  @end
+  @#
+  @join content : module.contents
+    @# [{@content.name}]: {@content.link}
+  @end
   @#
   {@simpleModule(module, iterator)}
 @end
