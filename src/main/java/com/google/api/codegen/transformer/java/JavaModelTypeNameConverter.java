@@ -222,7 +222,7 @@ public class JavaModelTypeNameConverter extends ModelTypeNameConverter {
   }
 
   private TypeName getTypeNameForTypedResourceName(
-      ResourceNameConfig resourceNameConfig, FieldType type, String typedResourceShortName) {
+      ResourceNameConfig resourceNameConfig, TypeRef type, String typedResourceShortName) {
     String packageName = getResourceNamePackage(resourceNameConfig);
     String longName = packageName + "." + typedResourceShortName;
 
@@ -258,14 +258,16 @@ public class JavaModelTypeNameConverter extends ModelTypeNameConverter {
   public TypeName getTypeNameForTypedResourceName(
       FieldConfig fieldConfig, String typedResourceShortName) {
     return getTypeNameForTypedResourceName(
-        fieldConfig.getResourceNameConfig(), fieldConfig.getField(), typedResourceShortName);
+        fieldConfig.getResourceNameConfig(), fieldConfig.getField().getProtoBasedField().getType(), typedResourceShortName);
   }
 
   @Override
   public TypeName getTypeNameForResourceNameElementType(
       FieldConfig fieldConfig, String typedResourceShortName) {
     return getTypeNameForTypedResourceName(
-        fieldConfig.getResourceNameConfig(), fieldConfig.getField(), typedResourceShortName);
+        fieldConfig.getResourceNameConfig(),
+        fieldConfig.getField().getProtoBasedField().getType().makeOptional(),
+        typedResourceShortName);
   }
 
   private static String getShortName(ProtoElement elem) {
