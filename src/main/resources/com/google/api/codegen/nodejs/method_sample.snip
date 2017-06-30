@@ -165,10 +165,10 @@
     @end
 @end
 
-@snippet methodCallSampleCodeForPagedResponseIterative(apiMethod, additionalCallback)
+@private methodCallSampleCodeForPagedResponseIterative(apiMethod, additionalCallback)
     // Iterate over all elements.
     @if initCode(apiMethod)
-      {@initCode(apiMethod)}
+        {@initCode(apiMethod)}
 
     @end
     {@methodCallSampleCodePrefix(apiMethod)}.then(function(responses) {
@@ -184,14 +184,15 @@
     {@promiseCallbacks(additionalCallback)}
 @end
 
-@snippet methodCallSampleCodeForPagedResponse(apiMethod, additionalCallback)
+@private methodCallSampleCodeForPagedResponse(apiMethod, additionalCallback)
     // Or obtain the paged response.
-    # TODO(landrito) figure out how to remove this repetition for method samples.
     @if initCode(apiMethod)
-      {@initCode(apiMethod)}
+        @if additionalCallback
+          {@initCode(apiMethod)}
+        @else
+        @end
 
     @end
-
     var options = {autoPaginate: false};
     function callback(responses) {
         // The actual resources in a response.
@@ -228,7 +229,6 @@
 
 @private methodCallSampleCodeWithReturnValue(apiMethod, additionalCallback)
     @if apiMethod.isLongRunningOperation
-        # TODO(landrito) figure out how to remove initcode repetition for method samples.
         {@methodCallSampleCodeLongrunningPromise(apiMethod, additionalCallback)}
 
         {@methodCallSampleCodeLongrunningEventEmitter(apiMethod, additionalCallback)}
@@ -246,7 +246,7 @@
     @end
 @end
 
-@snippet methodCallSampleCodeLongrunningPromise(apiMethod, additionalCallback)
+@private methodCallSampleCodeLongrunningPromise(apiMethod, additionalCallback)
     {@initCode(apiMethod)}
 
     // Handle the operation using the promise pattern.
@@ -279,9 +279,12 @@
     {@promiseCallbacks(additionalCallback)}
 @end
 
-@snippet methodCallSampleCodeLongrunningEventEmitter(apiMethod, additionalCallback)
-    {@initCode(apiMethod)}
+@private methodCallSampleCodeLongrunningEventEmitter(apiMethod, additionalCallback)
+    @if additionalCallback
+      {@initCode(apiMethod)}
 
+    @else
+    @end
     // Handle the operation using the event emitter pattern.
     {@methodCallSampleCodePrefix(apiMethod)}.then(function(responses) {
         var operation = responses[0];
