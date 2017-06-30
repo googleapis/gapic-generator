@@ -1,4 +1,4 @@
-============== file: google/cloud/proto/example_v1/types.py ==============
+============== file: google/cloud/proto/example_v1/__init__.py ==============
 # Copyright 2017, Google Inc. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,26 +14,18 @@
 # limitations under the License.
 
 
-from __future__ import absoulute_import
-import sys
+from __future__ import absoulte_import
 
-from google.gax.utils.messages import get_messages
-
-from google.api import http_pb2
+from example.helpers import LibraryHelpers
 from google.cloud.proto.example.v1 import no_path_templates_pb2
-from google.protobuf import descriptor_pb2
-from google.protobuf import empty_pb2
+from google.cloud.proto.example_v1 import types
 
 
-names = []
-for module in (http_pb2
-               no_path_templates_pb2
-               descriptor_pb2
-               empty_pb2):
-    for name, message in get_messages(module).items():
-        message.__module__ = 'google.cloud.proto.example_v1'
-        setattr(sys.modules[__name__], name, message)
-        names.append(name)
+class NoTemplatesAPIServiceClient(LibraryHelpers, no_path_templates_pb2.NoTemplatesAPIServiceClient):
+        __doc__ = no_path_templates_pb2.NoTemplatesAPIServiceClient.__doc__
 
 
-__all__ = tuple(sorted(names))
+__all__ = (
+    'types',
+    'NoTemplatesAPIServiceClient'
+)

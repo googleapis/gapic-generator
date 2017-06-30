@@ -37,11 +37,8 @@ import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -90,9 +87,12 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
       Model model,
       GapicProductConfig productConfig,
       PackageMetadataConfig packageConfig,
-      SurfaceNamer namer) {
+      SurfaceNamer namer,
+      boolean packageHasEnums) {
     return ImportSectionView.newBuilder()
-        .appImports(generateVersionedInitAppImports(model, productConfig, packageConfig, namer))
+        .appImports(
+            generateVersionedInitAppImports(
+                model, productConfig, packageConfig, namer, packageHasEnums))
         .standardImports(generateVersionedInitStandardImports())
         .build();
   }
@@ -189,7 +189,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
     Set<ImportFileView> imports = new TreeSet<>(importFileViewComparator());
 
     // Save proto file import names to the type table for disambiguation.
-    Set<ProtoFile> protoFileDependencies = getProtofileDependencies(model);
+    List<ProtoFile> protoFileDependencies = model.getFiles();
     populateTypeTable(protoFileDependencies, typeTable);
 
     // Get disambiguated imports.
@@ -213,7 +213,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
     return ImmutableList.of(createImport("__future__", "absoulute_import"), createImport("sys"));
   }
 
-  private void populateTypeTable(Set<ProtoFile> protoFileDependencies, ModelTypeTable typeTable) {
+  private void populateTypeTable(List<ProtoFile> protoFileDependencies, ModelTypeTable typeTable) {
     for (ProtoFile protoFile : protoFileDependencies) {
       // For python, adding a single message from the proto file to the type table will populate
       // the type table with the correct imports.
@@ -224,28 +224,6 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
     }
   }
 
-  private Set<ProtoFile> getProtofileDependencies(Model model) {
-    // Set up BFS.
-    Iterable<Interface> apiInterfaces = new InterfaceView().getElementIterable(model);
-    Queue<ProtoFile> protoFileQueue = new LinkedList<>();
-    for (Interface apiInterface : apiInterfaces) {
-      protoFileQueue.add(apiInterface.getFile());
-    }
-
-    // BFS to get all proto dependencies.
-    Set<ProtoFile> seenFiles = new HashSet<>();
-    while (!protoFileQueue.isEmpty()) {
-      ProtoFile current = protoFileQueue.remove();
-      seenFiles.add(current);
-      for (ProtoFile protoFile : current.getDependencies()) {
-        if (!seenFiles.contains(protoFile)) {
-          protoFileQueue.add(protoFile);
-        }
-      }
-    }
-    return seenFiles;
-  }
-
   private List<ImportFileView> generateVersionedInitStandardImports() {
     return ImmutableList.of(createImport("__future__", "absoulte_import"));
   }
@@ -254,7 +232,8 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
       Model model,
       GapicProductConfig productConfig,
       PackageMetadataConfig packageConfig,
-      SurfaceNamer namer) {
+      SurfaceNamer namer,
+      boolean packageHasEnums) {
 
     Iterable<Interface> apiInterfaces = new InterfaceView().getElementIterable(model);
     ModelTypeTable typeTable = emptyTypeTable(productConfig);
@@ -263,8 +242,9 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
     }
 
     Set<ImportFileView> imports = new TreeSet<>(importFileViewComparator());
-    // TODO: (landrito) Make this only generate the enums module if there are enums to export.
-    imports.add(createImport(productConfig.getPackageName(), "enums"));
+    if (packageHasEnums) {
+      imports.add(createImport(productConfig.getPackageName(), "enums"));
+    }
     String packageNamespace = namer.getPackageNamespace(packageConfig.apiVersion());
     imports.add(
         createImport(

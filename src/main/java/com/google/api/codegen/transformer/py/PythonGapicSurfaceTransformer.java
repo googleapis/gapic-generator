@@ -29,6 +29,7 @@ import com.google.api.codegen.viewmodel.metadata.VersionIndexRequireView;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
+import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.List;
@@ -88,9 +89,16 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private ViewModel generateVersionedInitView(Model model, GapicProductConfig productConfig) {
     SurfaceNamer namer = new PythonSurfaceNamer(productConfig.getPackageName());
+    boolean packageHasEnums = false;
+    for (TypeRef type : model.getSymbolTable().getDeclaredTypes()) {
+      if (type.isEnum() && type.getEnumType().isReachable()) {
+        packageHasEnums = true;
+        break;
+      }
+    }
     ImportSectionView imports =
         importSectionTransformer.generateVersionedInitImportSection(
-            model, productConfig, packageConfig, namer);
+            model, productConfig, packageConfig, namer, packageHasEnums);
     Iterable<Interface> apiInterfaces = new InterfaceView().getElementIterable(model);
     return VersionIndexView.newBuilder()
         .templateFileName(VERSIONED_INIT_TEMPLATE_FILE)
@@ -100,6 +108,7 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
         .namespace(namer.getVersionedDirectoryNamespace(apiInterfaces.iterator().next()))
         .packageVersion(packageConfig.generatedPackageVersionBound(TargetLanguage.PYTHON).lower())
         .fileHeader(fileHeaderTransformer.generateFileHeader(productConfig, imports, namer))
+        .packageHasEnums(packageHasEnums)
         .build();
   }
 

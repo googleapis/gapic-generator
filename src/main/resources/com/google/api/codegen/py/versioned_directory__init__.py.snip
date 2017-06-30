@@ -3,7 +3,7 @@
 @snippet generate(view)
     {@header(view.fileHeader)}
 
-    {@body(view.requireViews)}
+    {@body(view.packageHasEnums,view.requireViews)}
 @end
 
 @private header(fileHeader)
@@ -22,24 +22,28 @@
     @end
 @end
 
-@private body(requireViews)
-    {@clients(requireViews)}
+@private body(hasEnums, requireViews)
+    {@clients(hasEnums, requireViews)}
 
 
-    {@exports(requireViews)}
+    {@exports(hasEnums,requireViews)}
 @end
 
-@private clients(requireViews)
+@private clients(hasEnums, requireViews)
     @join view : requireViews on BREAK.add(BREAK)
         class {@view.localName}({@view.helpersClassName}, {@view.clientName}):
                 __doc__ = {@view.clientName}.__doc__
-                enums = enums
+                @if hasEnums
+                    enums = enums
+                @end
     @end
 @end
 
-@private exports(requireViews)
+@private exports(hasEnums, requireViews)
     __all__ = (
-        'enums',
+        @if hasEnums
+            'enums',
+        @end
         'types',
         @join view : requireViews on ",".add(BREAK)
             '{@view.localName}'

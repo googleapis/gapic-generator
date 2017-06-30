@@ -49,13 +49,15 @@ public abstract class VersionIndexView implements ViewModel {
 
   public abstract FileHeaderView fileHeader();
 
+  public abstract boolean packageHasEnums();
+
   public boolean hasMultipleServices() {
     return requireViews().size() > 1;
   }
 
   public static Builder newBuilder() {
     // Use v1 as the default version.
-    return new AutoValue_VersionIndexView.Builder().apiVersion("v1");
+    return new AutoValue_VersionIndexView.Builder().apiVersion("v1").packageHasEnums(false);
   }
 
   @AutoValue.Builder
@@ -75,6 +77,8 @@ public abstract class VersionIndexView implements ViewModel {
     public abstract Builder requireViews(List<VersionIndexRequireView> val);
 
     public abstract Builder fileHeader(FileHeaderView val);
+
+    public abstract Builder packageHasEnums(boolean val);
 
     public abstract VersionIndexView build();
   }

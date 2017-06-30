@@ -159,7 +159,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return qualifiedName(namePath.withoutHead());
   }
 
-  /** The namespace of the package. */
+  /** The unversioned namespace of the package. */
   public String getPackageNamespace(String version) {
     NamePath namePath = typeNameConverter.getNamePath(packageName);
     if (namePath.getHead().equals(version)) {
