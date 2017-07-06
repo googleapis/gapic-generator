@@ -113,6 +113,9 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
   public abstract boolean isGcloud();
 
+  @Nullable
+  public abstract CredentialsClassView credentialsClass();
+
   @Override
   public String resourceRoot() {
     return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
@@ -191,6 +194,8 @@ public abstract class DynamicLangXApiView implements ViewModel {
     public abstract Builder constructorName(String val);
 
     public abstract Builder isGcloud(boolean val);
+
+    public abstract Builder credentialsClass(CredentialsClassView val);
 
     public abstract DynamicLangXApiView build();
   }
