@@ -184,8 +184,9 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
                       .toLowerUnderscore())
               .testCases(createTestCaseViews(context))
               .apiHasLongRunningMethods(context.getInterfaceConfig().hasLongRunningOperations())
-              .hasDefaultServiceAddress(context.getInterfaceConfig().hasDefaultServiceAddress())
-              .hasDefaultServiceScopes(context.getInterfaceConfig().hasDefaultServiceScopes())
+              .missingDefaultServiceAddress(
+                  !context.getInterfaceConfig().hasDefaultServiceAddress())
+              .missingDefaultServiceScopes(!context.getInterfaceConfig().hasDefaultServiceScopes())
               .mockServices(mockServiceList)
               .build();
 

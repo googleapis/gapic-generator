@@ -39,10 +39,10 @@
         $grpcCredentialsHelper = new GrpcCredentialsHelper([]);
         return $grpcCredentialsHelper->createStub(
             $createGrpcStub,
-            @if testClass.hasDefaultServiceAddress
-                {@testClass.apiClassName}::SERVICE_ADDRESS,
-            @else
+            @if testClass.missingDefaultServiceAddress
                 'unknown-service-address',
+            @else
+                {@testClass.apiClassName}::SERVICE_ADDRESS,
             @end
             {@testClass.apiClassName}::DEFAULT_SERVICE_PORT
         );

@@ -128,8 +128,9 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
                       "GoGapicSurfaceTestTransformer.generateMockServiceView - name"))
               .testCases(createTestCaseViews(context))
               .apiHasLongRunningMethods(context.getInterfaceConfig().hasLongRunningOperations())
-              .hasDefaultServiceAddress(context.getInterfaceConfig().hasDefaultServiceAddress())
-              .hasDefaultServiceScopes(context.getInterfaceConfig().hasDefaultServiceScopes())
+              .missingDefaultServiceAddress(
+                  !context.getInterfaceConfig().hasDefaultServiceAddress())
+              .missingDefaultServiceScopes(!context.getInterfaceConfig().hasDefaultServiceScopes())
               .mockServices(Collections.<MockServiceUsageView>emptyList())
               .build());
     }
