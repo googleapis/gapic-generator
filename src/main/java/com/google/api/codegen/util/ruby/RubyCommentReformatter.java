@@ -37,13 +37,13 @@ public class RubyCommentReformatter implements CommentReformatter {
               matcher.find();
               String title = matcher.group(1);
               String ref = matcher.group(2);
-              if (ref == null) {
-                ref = title;
+              if (ref == null || ref.equals(title)) {
+                return String.format("{%s}", Matcher.quoteReplacement(protoToRubyDoc(title)));
               }
               return String.format(
-                  "{%s}[rdoc-ref:%s]",
-                  Matcher.quoteReplacement(protoToRubyDoc(title)),
-                  Matcher.quoteReplacement(protoToRubyDoc(ref)));
+                  "{%s %s}",
+                  Matcher.quoteReplacement(protoToRubyDoc(ref)),
+                  Matcher.quoteReplacement(protoToRubyDoc(title)));
             }
           });
 
