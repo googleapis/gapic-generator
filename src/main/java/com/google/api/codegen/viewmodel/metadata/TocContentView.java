@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,44 +12,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.viewmodel;
+
+package com.google.api.codegen.viewmodel.metadata;
 
 import com.google.auto.value.AutoValue;
-import java.util.List;
 
 @AutoValue
-public abstract class PathTemplateGetterFunctionView {
-
+public abstract class TocContentView {
   public abstract String name();
 
-  public abstract String resourceName();
+  public abstract String description();
 
-  public abstract List<PathTemplateArgumentView> args();
-
-  public abstract PathTemplateRenderView render();
-
-  public abstract String pathTemplateName();
-
-  public abstract String pattern();
+  public abstract String link();
 
   public static Builder newBuilder() {
-    return new AutoValue_PathTemplateGetterFunctionView.Builder();
+    return new AutoValue_TocContentView.Builder();
   }
 
   @AutoValue.Builder
   public abstract static class Builder {
     public abstract Builder name(String val);
 
-    public abstract Builder resourceName(String val);
+    public abstract Builder description(String val);
 
-    public abstract Builder pathTemplateName(String val);
+    public abstract Builder link(String val);
 
-    public abstract Builder args(List<PathTemplateArgumentView> val);
-
-    public abstract Builder render(PathTemplateRenderView val);
-
-    public abstract Builder pattern(String val);
-
-    public abstract PathTemplateGetterFunctionView build();
+    public abstract TocContentView build();
   }
 }

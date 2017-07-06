@@ -38,6 +38,7 @@ import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.metadata.ReadmeMetadataView;
+import com.google.api.codegen.viewmodel.metadata.TocContentView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
@@ -118,6 +119,33 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
         .authDocumentationLink(GITHUB_DOC_HOST + AUTH_DOC_PATH)
         .versioningDocumentationLink(GITHUB_REPO_HOST + VERSIONING_DOC_PATH)
         .exampleMethods(generateExampleMethods(model, productConfig));
+  }
+
+  public TocContentView generateTocContent(
+      Model model, RubyPackageMetadataNamer namer, String version, String clientName) {
+    return generateTocContent(
+        model.getServiceConfig().getDocumentation().getSummary(), namer, version, clientName);
+  }
+
+  public TocContentView generateDataTypeTocContent(
+      String apiModule, RubyPackageMetadataNamer namer, String version) {
+    return generateTocContent("Data types for " + apiModule, namer, version, "Data Types");
+  }
+
+  private TocContentView generateTocContent(
+      String description, RubyPackageMetadataNamer namer, String version, String clientName) {
+    return TocContentView.newBuilder()
+        .name(clientName)
+        .description(description)
+        .link(
+            GITHUB_DOC_HOST
+                + String.format(
+                    LIB_DOC_PATH, namer.getMetadataIdentifier(), packageConfig.protoPath())
+                + '/'
+                + version
+                + '/'
+                + clientName.replace(" ", "").toLowerCase())
+        .build();
   }
 
   private ViewModel generateGemspecView(Model model, RubyPackageMetadataNamer namer) {
