@@ -54,8 +54,8 @@ public class RubyCommentReformatter implements CommentReformatter {
           .transform(
               LinkPattern.RELATIVE
                   .withUrlPrefix(CommentTransformer.CLOUD_URL_PREFIX)
-                  .toFormat("{$TITLE}[$URL]"))
-          .transform(LinkPattern.ABSOLUTE.toFormat("{$TITLE}[$URL]"))
+                  .toFormat("{$URL $TITLE}"))
+          .transform(LinkPattern.ABSOLUTE.toFormat("{$URL $TITLE}"))
           .scopedReplace(CommentPatterns.HEADLINE_PATTERN, "#", "=")
           .build();
 
