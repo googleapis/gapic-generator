@@ -9,14 +9,6 @@
         {@renderImportSection(view.fileHeader.importSection)}
     )
 
-    @if view.pathTemplates
-        var (
-            @join pathTemplate : view.pathTemplates
-                {@pathTemplate.name} = gax.MustCompilePathTemplate("{@pathTemplate.pattern}")
-            @end
-        )
-    @end
-
     // {@view.callOptionsTypeName} contains the retry settings for each method of {@view.clientTypeName}.
     type {@view.callOptionsTypeName} struct {
         @join settings : view.callSettings
@@ -139,15 +131,16 @@
     @join getter : view.pathTemplateGetters
         // {@getter.name} returns the path for the {@getter.resourceName} resource.
         func {@getter.name}({@pathTemplateParams(getter.args)} string) string {
-            path, err := {@getter.pathTemplateName}.Render(map[string]string{
-                @join arg : getter.args
-                    "{@arg.templateKey}": {@arg.name},
+            return "" +
+                @join piece : getter.render.pieces
+                    @switch piece.kind
+                    @case "LITERAL"
+                        "{@piece.value}" +
+                    @case "VARIABLE"
+                        {@piece.value} +
+                    @end
                 @end
-            })
-            if err != nil {
-                panic(err)
-            }
-            return path
+                ""
         }
 
     @end
