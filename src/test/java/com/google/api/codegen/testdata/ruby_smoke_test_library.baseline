@@ -29,7 +29,7 @@ describe "LibraryServiceSmokeTest" do
     library_service_client = Library::V1::LibraryServiceClient.new
     formatted_name = Library::V1::LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)
     rating = :GOOD
-    book = Google::Example::Library::V1::Book.new(rating: rating)
+    book = { rating: rating }
     response = library_service_client.update_book(formatted_name, book)
   end
 end

@@ -50,7 +50,8 @@ import javax.annotation.Nullable;
  */
 @AutoValue
 public abstract class GapicProductConfig implements ProductConfig {
-  abstract ImmutableMap<String, GapicInterfaceConfig> getInterfaceConfigMap();
+  /** Returns the interface config map. */
+  public abstract ImmutableMap<String, GapicInterfaceConfig> getInterfaceConfigMap();
 
   /** Returns the package name. */
   public abstract String getPackageName();

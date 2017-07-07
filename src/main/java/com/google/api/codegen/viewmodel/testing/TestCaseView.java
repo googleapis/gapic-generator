@@ -19,6 +19,7 @@ import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.auto.value.AutoValue;
 import java.util.List;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class TestCaseView {
@@ -37,7 +38,14 @@ public abstract class TestCaseView {
 
   public abstract String responseTypeName();
 
+  public abstract String fullyQualifiedRequestTypeName();
+
+  public abstract String fullyQualifiedResponseTypeName();
+
   public abstract List<PageStreamingResponseView> pageStreamingResponseViews();
+
+  @Nullable
+  public abstract GrpcStreamingView grpcStreamingView();
 
   public abstract String name();
 
@@ -92,7 +100,13 @@ public abstract class TestCaseView {
 
     public abstract Builder responseTypeName(String val);
 
+    public abstract Builder fullyQualifiedRequestTypeName(String val);
+
+    public abstract Builder fullyQualifiedResponseTypeName(String val);
+
     public abstract Builder pageStreamingResponseViews(List<PageStreamingResponseView> val);
+
+    public abstract Builder grpcStreamingView(GrpcStreamingView val);
 
     public abstract Builder hasRequestParameters(boolean val);
 

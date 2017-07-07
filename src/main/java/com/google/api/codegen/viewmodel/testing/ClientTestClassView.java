@@ -39,6 +39,13 @@ public abstract class ClientTestClassView {
 
   public abstract boolean apiHasLongRunningMethods();
 
+  @Nullable
+  public abstract String packageServiceName();
+
+  public abstract boolean missingDefaultServiceAddress();
+
+  public abstract boolean missingDefaultServiceScopes();
+
   public static Builder newBuilder() {
     return new AutoValue_ClientTestClassView.Builder();
   }
@@ -61,6 +68,13 @@ public abstract class ClientTestClassView {
     public abstract Builder testCases(List<TestCaseView> val);
 
     public abstract Builder apiHasLongRunningMethods(boolean val);
+
+    /** The name of the property of the api export that exports this service. Used in Node.js. */
+    public abstract Builder packageServiceName(String val);
+
+    public abstract Builder missingDefaultServiceAddress(boolean val);
+
+    public abstract Builder missingDefaultServiceScopes(boolean val);
 
     public abstract ClientTestClassView build();
   }
