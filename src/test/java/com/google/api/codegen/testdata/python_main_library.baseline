@@ -437,7 +437,6 @@ class LibraryServiceClient(object):
           :exc:`google.gax.errors.GaxError` if the RPC is aborted.
           :exc:`ValueError` if the parameters are invalid.
         """
-        # Create the request object.
         request = library_pb2.CreateShelfRequest(
             shelf=shelf)
         return self._create_shelf(request, options)
@@ -474,7 +473,6 @@ class LibraryServiceClient(object):
           :exc:`google.gax.errors.GaxError` if the RPC is aborted.
           :exc:`ValueError` if the parameters are invalid.
         """
-        # Create the request object.
         request = library_pb2.GetShelfRequest(
             name=name,
             options=options_,
@@ -542,7 +540,6 @@ class LibraryServiceClient(object):
           :exc:`google.gax.errors.GaxError` if the RPC is aborted.
           :exc:`ValueError` if the parameters are invalid.
         """
-        # Create the request object.
         request = library_pb2.DeleteShelfRequest(
             name=name)
         self._delete_shelf(request, options)
@@ -577,7 +574,6 @@ class LibraryServiceClient(object):
           :exc:`google.gax.errors.GaxError` if the RPC is aborted.
           :exc:`ValueError` if the parameters are invalid.
         """
-        # Create the request object.
         request = library_pb2.MergeShelvesRequest(
             name=name,
             other_shelf_name=other_shelf_name)
@@ -612,7 +608,6 @@ class LibraryServiceClient(object):
           :exc:`google.gax.errors.GaxError` if the RPC is aborted.
           :exc:`ValueError` if the parameters are invalid.
         """
-        # Create the request object.
         request = library_pb2.CreateBookRequest(
             name=name,
             book=book)
@@ -662,7 +657,6 @@ class LibraryServiceClient(object):
             review_copy=review_copy,
         )
 
-        # Create the request object.
         request = library_pb2.PublishSeriesRequest(
             shelf=shelf,
             books=books,
@@ -696,7 +690,6 @@ class LibraryServiceClient(object):
           :exc:`google.gax.errors.GaxError` if the RPC is aborted.
           :exc:`ValueError` if the parameters are invalid.
         """
-        # Create the request object.
         request = library_pb2.GetBookRequest(
             name=name)
         return self._get_book(request, options)
@@ -704,8 +697,8 @@ class LibraryServiceClient(object):
     def list_books(
             self,
             name,
-            page_size=None,
-            filter_=None,
+            page_size=0,
+            filter_='',
             options=None):
         """
         Lists books in a shelf.
@@ -748,7 +741,6 @@ class LibraryServiceClient(object):
           :exc:`google.gax.errors.GaxError` if the RPC is aborted.
           :exc:`ValueError` if the parameters are invalid.
         """
-        # Create the request object.
         request = library_pb2.ListBooksRequest(
             name=name,
             page_size=page_size,
@@ -777,7 +769,6 @@ class LibraryServiceClient(object):
           :exc:`google.gax.errors.GaxError` if the RPC is aborted.
           :exc:`ValueError` if the parameters are invalid.
         """
-        # Create the request object.
         request = library_pb2.DeleteBookRequest(
             name=name)
         self._delete_book(request, options)
@@ -815,7 +806,6 @@ class LibraryServiceClient(object):
           :exc:`google.gax.errors.GaxError` if the RPC is aborted.
           :exc:`ValueError` if the parameters are invalid.
         """
-        # Create the request object.
         request = library_pb2.UpdateBookRequest(
             name=name,
             book=book,
@@ -851,7 +841,6 @@ class LibraryServiceClient(object):
           :exc:`google.gax.errors.GaxError` if the RPC is aborted.
           :exc:`ValueError` if the parameters are invalid.
         """
-        # Create the request object.
         request = library_pb2.MoveBookRequest(
             name=name,
             other_shelf_name=other_shelf_name)
@@ -859,8 +848,8 @@ class LibraryServiceClient(object):
 
     def list_strings(
             self,
-            name=None,
-            page_size=None,
+            name='',
+            page_size=0,
             options=None):
         """
         Lists a primitive resource. To test go page streaming.
@@ -901,7 +890,6 @@ class LibraryServiceClient(object):
           :exc:`google.gax.errors.GaxError` if the RPC is aborted.
           :exc:`ValueError` if the parameters are invalid.
         """
-        # Create the request object.
         request = library_pb2.ListStringsRequest(
             name=name,
             page_size=page_size)
@@ -938,7 +926,6 @@ class LibraryServiceClient(object):
           :exc:`google.gax.errors.GaxError` if the RPC is aborted.
           :exc:`ValueError` if the parameters are invalid.
         """
-        # Create the request object.
         request = library_pb2.AddCommentsRequest(
             name=name,
             comments=comments)
@@ -969,7 +956,6 @@ class LibraryServiceClient(object):
           :exc:`google.gax.errors.GaxError` if the RPC is aborted.
           :exc:`ValueError` if the parameters are invalid.
         """
-        # Create the request object.
         request = library_pb2.GetBookFromArchiveRequest(
             name=name)
         return self._get_book_from_archive(request, options)
@@ -1003,7 +989,6 @@ class LibraryServiceClient(object):
           :exc:`google.gax.errors.GaxError` if the RPC is aborted.
           :exc:`ValueError` if the parameters are invalid.
         """
-        # Create the request object.
         request = library_pb2.GetBookFromAnywhereRequest(
             name=name,
             alt_book_name=alt_book_name)
@@ -1038,7 +1023,6 @@ class LibraryServiceClient(object):
           :exc:`google.gax.errors.GaxError` if the RPC is aborted.
           :exc:`ValueError` if the parameters are invalid.
         """
-        # Create the request object.
         request = library_pb2.UpdateBookIndexRequest(
             name=name,
             index_name=index_name,
@@ -1100,7 +1084,6 @@ class LibraryServiceClient(object):
           :exc:`google.gax.errors.GaxError` if the RPC is aborted.
           :exc:`ValueError` if the parameters are invalid.
         """
-        # Create the request object.
         request = library_pb2.StreamBooksRequest(
             name=name)
         return self._stream_books(request, options)
@@ -1177,7 +1160,7 @@ class LibraryServiceClient(object):
             self,
             names,
             shelves,
-            page_size=None,
+            page_size=0,
             options=None):
         """
 
@@ -1221,7 +1204,6 @@ class LibraryServiceClient(object):
           :exc:`google.gax.errors.GaxError` if the RPC is aborted.
           :exc:`ValueError` if the parameters are invalid.
         """
-        # Create the request object.
         request = library_pb2.FindRelatedBooksRequest(
             names=names,
             shelves=shelves,
@@ -1258,7 +1240,6 @@ class LibraryServiceClient(object):
           :exc:`google.gax.errors.GaxError` if the RPC is aborted.
           :exc:`ValueError` if the parameters are invalid.
         """
-        # Create the request object.
         request = tagger_pb2.AddTagRequest(
             resource=resource,
             tag=tag)
@@ -1294,7 +1275,6 @@ class LibraryServiceClient(object):
           :exc:`google.gax.errors.GaxError` if the RPC is aborted.
           :exc:`ValueError` if the parameters are invalid.
         """
-        # Create the request object.
         request = tagger_pb2.AddLabelRequest(
             resource=resource,
             label=label)
@@ -1334,7 +1314,6 @@ class LibraryServiceClient(object):
           :exc:`google.gax.errors.GaxError` if the RPC is aborted.
           :exc:`ValueError` if the parameters are invalid.
         """
-        # Create the request object.
         request = library_pb2.GetBookRequest(
             name=name)
         return google.gax._OperationFuture(
@@ -1378,7 +1357,6 @@ class LibraryServiceClient(object):
           :exc:`google.gax.errors.GaxError` if the RPC is aborted.
           :exc:`ValueError` if the parameters are invalid.
         """
-        # Create the request object.
         request = library_pb2.GetBookRequest(
             name=name)
         return google.gax._OperationFuture(
@@ -1417,19 +1395,19 @@ class LibraryServiceClient(object):
             required_repeated_fixed32,
             required_repeated_fixed64,
             required_map,
-            optional_singular_int32=None,
-            optional_singular_int64=None,
-            optional_singular_float=None,
-            optional_singular_double=None,
-            optional_singular_bool=None,
+            optional_singular_int32=0,
+            optional_singular_int64=0,
+            optional_singular_float=0.0,
+            optional_singular_double=0.0,
+            optional_singular_bool=False,
             optional_singular_enum=None,
-            optional_singular_string=None,
-            optional_singular_bytes=None,
+            optional_singular_string='',
+            optional_singular_bytes=b'',
             optional_singular_message=None,
-            optional_singular_resource_name=None,
-            optional_singular_resource_name_oneof=None,
-            optional_singular_fixed32=None,
-            optional_singular_fixed64=None,
+            optional_singular_resource_name='',
+            optional_singular_resource_name_oneof='',
+            optional_singular_fixed32=0,
+            optional_singular_fixed64=0,
             optional_repeated_int32=None,
             optional_repeated_int64=None,
             optional_repeated_float=None,
@@ -1547,7 +1525,6 @@ class LibraryServiceClient(object):
           :exc:`google.gax.errors.GaxError` if the RPC is aborted.
           :exc:`ValueError` if the parameters are invalid.
         """
-        # Create the request object.
         request = library_pb2.TestOptionalRequiredFlatteningParamsRequest(
             required_singular_int32=required_singular_int32,
             required_singular_int64=required_singular_int64,
