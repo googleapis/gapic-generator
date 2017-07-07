@@ -8,7 +8,7 @@
      * @@group {@apiTest.testClass.apiName}
      * @@group grpc
      */
-    class {@apiTest.testClass.name} extends PHPUnit_Framework_TestCase
+    class {@apiTest.testClass.name} extends GeneratedTest
     {
         {@setupMethods(apiTest.testClass)}
         @join test : apiTest.testClass.testCases
@@ -39,7 +39,11 @@
         $grpcCredentialsHelper = new GrpcCredentialsHelper([]);
         return $grpcCredentialsHelper->createStub(
             $createGrpcStub,
-            {@testClass.apiClassName}::SERVICE_ADDRESS,
+            @if testClass.missingDefaultServiceAddress
+                'unknown-service-address',
+            @else
+                {@testClass.apiClassName}::SERVICE_ADDRESS,
+            @end
             {@testClass.apiClassName}::DEFAULT_SERVICE_PORT
         );
     }
@@ -53,17 +57,208 @@
             $createStubFuncName => function ($hostname, $opts) use ($grpcStub) {
                 return $grpcStub;
             },
+            @if testClass.missingDefaultServiceAddress
+                'serviceAddress' => 'unknown-service-address',
+            @end
+            @if testClass.missingDefaultServiceScopes
+                'scopes' => ['unknown-service-scopes'],
+            @end
         ]);
     }
 @end
 
 @private testCase(test)
     @switch test.grpcStreamingType
+    @case "BidiStreaming"
+        {@bidiStreamingTestCase(test)}
+    @case "ServerStreaming"
+        {@serverStreamingTestCase(test)}
     @case "NonStreaming"
         {@nonStreamingOptionalArrayTestCase(test)}
     @default
         $unhandled case: {@test.grpcStreamingType}$
     @end
+@end
+
+@private responseInitCodeStreaming(responseInitCodeList)
+    @join initCodeItem : responseInitCodeList
+        {@initCode(initCodeItem)}
+        @join line : initCodeItem.topLevelLines
+            $grpcStub->addResponse(${@line.identifier});
+        @end
+    @end
+@end
+
+@private responseAssertStreaming(grpcStreamingView)
+    @if grpcStreamingView.hasResourcesField
+        $expectedResources = [];
+        @join initCodeItem : grpcStreamingView.responseInitCodeList
+            @join line : initCodeItem.topLevelLines
+                $expectedResources[] = ${@line.identifier}->{@grpcStreamingView.resourcesFieldGetterName}()[0];
+            @end
+        @end
+        $this->assertEquals($expectedResources, $responses);
+    @else
+        $expectedResponses = [];
+        @join initCodeItem : grpcStreamingView.responseInitCodeList
+            @join line : initCodeItem.topLevelLines
+                $expectedResponses[] = ${@line.identifier};
+            @end
+        @end
+        $this->assertEquals($expectedResponses, $responses);
+    @end
+@end
+
+@private bidiStreamingTestCase(test)
+    /**
+     * @@test
+     */
+    public function {@test.name}()
+    {
+        $grpcStub = $this->createStub([$this, 'create{@test.mockGrpcStubTypeName}']);
+        $client = $this->createClient('{@test.createStubFunctionName}', $grpcStub);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        // Mock response
+        {@responseInitCodeStreaming(test.grpcStreamingView.responseInitCodeList)}
+
+        // Mock request
+        @join initCodeItem : test.grpcStreamingView.requestInitCodeList
+            {@initCode(initCodeItem)}
+        @end
+
+        $bidi = $client->{@test.clientMethodName}();
+        $this->assertInstanceOf(BidiStream::class, $bidi);
+
+        $bidi->write($request);
+        $responses = [];
+        $responses[] = $bidi->read();
+
+        $bidi->writeAll([$request2, $request3]);
+        foreach ($bidi->closeWriteAndReadAll() as $response) {
+            $responses[] = $response;
+        }
+
+        {@responseAssertStreaming(test.grpcStreamingView)}
+
+        $createStreamRequests = $grpcStub->popReceivedCalls();
+        $this->assertSame(1, count($createStreamRequests));
+        $streamFuncCall = $createStreamRequests[0]->getFuncCall();
+        $streamRequestObject = $createStreamRequests[0]->getRequestObject();
+        $this->assertSame('{@test.grpcStubCallString}', $streamFuncCall);
+        $this->assertNull($streamRequestObject);
+
+        $callObjects = $grpcStub->popCallObjects();
+        $this->assertSame(1, count($callObjects));
+        $bidiCall = $callObjects[0];
+
+        $writeRequests = $bidiCall->popReceivedCalls();
+        $expectedRequests = [];
+        @join initCodeItem : test.grpcStreamingView.requestInitCodeList
+            @join line : initCodeItem.topLevelLines
+                $expectedRequests[] = ${@line.identifier};
+            @end
+        @end
+        $this->assertEquals($expectedRequests, $writeRequests);
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @@test
+     */
+    public function {@test.nameWithException}()
+    {
+        $grpcStub = $this->createStub([$this, 'create{@test.mockGrpcStubTypeName}']);
+        $client = $this->createClient('{@test.createStubFunctionName}', $grpcStub);
+
+        {@createErrorStatus()}
+
+        $grpcStub->setStreamingStatus($status);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        $bidi = $client->{@test.clientMethodName}();
+        $results = $bidi->closeWriteAndReadAll();
+
+        try {
+            iterator_to_array($results);
+            // If the close stream method call did not throw, fail the test
+            $this->fail("Expected an ApiException, but no exception was thrown.");
+        }  catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
+        }
+
+        // Call popReceivedCalls to ensure the stub is exhausted
+        $grpcStub->popReceivedCalls();
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+@end
+
+@private serverStreamingTestCase(test)
+    /**
+     * @@test
+     */
+    public function {@test.name}()
+    {
+        $grpcStub = $this->createStub([$this, 'create{@test.mockGrpcStubTypeName}']);
+        $client = $this->createClient('{@test.createStubFunctionName}', $grpcStub);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        // Mock response
+        {@responseInitCodeStreaming(test.grpcStreamingView.responseInitCodeList)}
+
+        // Mock request
+        {@initCode(test.initCode)}
+
+        $serverStream = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
+        $this->assertInstanceOf(ServerStream::class, $serverStream);
+
+        $responses = iterator_to_array($serverStream->readAll());
+
+        {@responseAssertStreaming(test.grpcStreamingView)}
+
+        {@singleCallSuccessAsserts(test)}
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @@test
+     */
+    public function {@test.nameWithException}()
+    {
+        $grpcStub = $this->createStub([$this, 'create{@test.mockGrpcStubTypeName}']);
+        $client = $this->createClient('{@test.createStubFunctionName}', $grpcStub);
+
+        {@createErrorStatus()}
+
+        $grpcStub->setStreamingStatus($status);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        // Mock request
+        {@initCode(test.initCode)}
+
+        $serverStream = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
+        $results = $serverStream->readAll();
+
+        try {
+            iterator_to_array($results);
+            // If the close stream method call did not throw, fail the test
+            $this->fail("Expected an ApiException, but no exception was thrown.");
+        }  catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
+        }
+
+        // Call popReceivedCalls to ensure the stub is exhausted
+        $grpcStub->popReceivedCalls();
+        $this->assertTrue($grpcStub->isExhausted());
+    }
 @end
 
 @private nonStreamingOptionalArrayTestCase(test)
@@ -80,6 +275,19 @@
     @default
         $unhandled case: {@test.clientMethodType}$
     @end
+@end
+
+@private createErrorStatus()
+    $status = new stdClass();
+    $status->code = Grpc\STATUS_DATA_LOSS;
+    $status->details = 'internal error';
+
+    $expectedExceptionMessage = json_encode([
+       "message" => "internal error",
+       "code" => Grpc\STATUS_DATA_LOSS,
+       "status" => "DATA_LOSS",
+       "details" => [],
+    ], JSON_PRETTY_PRINT);
 @end
 
 @private simpleTestCase(test)
@@ -133,9 +341,7 @@
 
         $this->assertTrue($grpcStub->isExhausted());
 
-        $status = new stdClass();
-        $status->code = Grpc\STATUS_DATA_LOSS;
-        $status->details = 'internal error';
+        {@createErrorStatus()}
         $grpcStub->addResponse(null, $status);
 
         @if test.hasRequestParameters
@@ -149,11 +355,11 @@
             $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
-            $this->assertEquals($status->details, $ex->getMessage());
+            $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
         }
 
-        // Call getReceivedCalls to ensure the stub is exhausted
-        $grpcStub->getReceivedCalls();
+        // Call popReceivedCalls to ensure the stub is exhausted
+        $grpcStub->popReceivedCalls();
         $this->assertTrue($grpcStub->isExhausted());
     }
 @end
@@ -182,17 +388,20 @@
 
         // Mock response
         $incompleteOperation = new Operation();
-        $incompleteOperation->setName('operations/{@test.name}')->setDone(false);
+        $incompleteOperation->setName('operations/{@test.name}');
+        $incompleteOperation->setDone(false);
         $grpcStub->addResponse($incompleteOperation);
         @if test.hasReturnValue
             {@initCode(test.mockResponse.initCode)}
         @else
-            $expectedResponse = new EmptyC();
+            $expectedResponse = new GPBEmpty();
         @end
         $anyResponse = new Any();
-        $anyResponse->setValue($expectedResponse->serialize());
+        $anyResponse->setValue($expectedResponse->serializeToString());
         $completeOperation = new Operation();
-        $completeOperation->setName('operations/{@test.name}')->setDone(true)->setResponse($anyResponse);
+        $completeOperation->setName('operations/{@test.name}');
+        $completeOperation->setDone(true);
+        $completeOperation->setResponse($anyResponse);
         $operationsStub->addResponse($completeOperation);
 
         @if test.hasRequestParameters
@@ -211,9 +420,9 @@
         $response->pollUntilComplete();
         $this->assertTrue($response->isDone());
         $this->assertEquals($expectedResponse, $response->getResult());
-        $apiRequestsEmpty = $grpcStub->getReceivedCalls();
+        $apiRequestsEmpty = $grpcStub->popReceivedCalls();
         $this->assertSame(0, count($apiRequestsEmpty));
-        $operationsRequests = $operationsStub->getReceivedCalls();
+        $operationsRequests = $operationsStub->popReceivedCalls();
         $this->assertSame(1, count($operationsRequests));
 
         $actualOperationsFuncCall = $operationsRequests[0]->getFuncCall();
@@ -251,12 +460,11 @@
 
         // Mock response
         $incompleteOperation = new Operation();
-        $incompleteOperation->setName('operations/{@test.name}')->setDone(false);
+        $incompleteOperation->setName('operations/{@test.name}');
+        $incompleteOperation->setDone(false);
         $grpcStub->addResponse($incompleteOperation);
 
-        $status = new stdClass();
-        $status->code = Grpc\STATUS_DATA_LOSS;
-        $status->details = 'internal error';
+        {@createErrorStatus()}
         $operationsStub->addResponse(null, $status);
 
         @if test.hasRequestParameters
@@ -277,15 +485,23 @@
             $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
-            $this->assertEquals($status->details, $ex->getMessage());
+            $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
         }
 
-        // Call getReceivedCalls to ensure the stubs are exhausted
-        $grpcStub->getReceivedCalls();
-        $operationsStub->getReceivedCalls();
+        // Call popReceivedCalls to ensure the stubs are exhausted
+        $grpcStub->popReceivedCalls();
+        $operationsStub->popReceivedCalls();
         $this->assertTrue($grpcStub->isExhausted());
         $this->assertTrue($operationsStub->isExhausted());
     }
+@end
+
+@private assertFunction(assert)
+    @if assert.isArray
+        assertRepeatedFieldEquals
+    @else
+        assertEquals
+    @end
 @end
 
 @private singleCallTestSetup(test)
@@ -298,7 +514,7 @@
     @if test.hasReturnValue
         {@initCode(test.mockResponse.initCode)}
     @else
-        $expectedResponse = new EmptyC();
+        $expectedResponse = new GPBEmpty();
     @end
     $grpcStub->addResponse($expectedResponse);
 
@@ -310,7 +526,7 @@
 @end
 
 @private singleCallSuccessAsserts(test)
-    $actualRequests = $grpcStub->getReceivedCalls();
+    $actualRequests = $grpcStub->popReceivedCalls();
     $this->assertSame(1, count($actualRequests));
     $actualFuncCall = $actualRequests[0]->getFuncCall();
     $actualRequestObject = $actualRequests[0]->getRequestObject();
@@ -318,20 +534,20 @@
 
     @join assert : test.asserts
         @if assert.hasExpectedValueTransformFunction
-            $this->assertEquals({@assert.expectedValueTransformFunction}(\
+            $this->{@assertFunction(assert)}({@assert.expectedValueTransformFunction}(\
                 ${@assert.expectedValueIdentifier}), \
                 $actualRequestObject->{@assert.actualValueGetter}());
         @else
-            $this->assertEquals(${@assert.expectedValueIdentifier}, \
+            $this->{@assertFunction(assert)}(${@assert.expectedValueIdentifier}, \
                 $actualRequestObject->{@assert.actualValueGetter}());
         @end
     @end
 @end
 
 @private lroCallSuccessAsserts(test)
-    $apiRequests = $grpcStub->getReceivedCalls();
+    $apiRequests = $grpcStub->popReceivedCalls();
     $this->assertSame(1, count($apiRequests));
-    $operationsRequestsEmpty = $operationsStub->getReceivedCalls();
+    $operationsRequestsEmpty = $operationsStub->popReceivedCalls();
     $this->assertSame(0, count($operationsRequestsEmpty));
 
     $actualApiFuncCall = $apiRequests[0]->getFuncCall();
@@ -339,11 +555,11 @@
     $this->assertSame('{@test.grpcStubCallString}', $actualApiFuncCall);
     @join assert : test.asserts
         @if assert.hasExpectedValueTransformFunction
-            $this->assertEquals({@assert.expectedValueTransformFunction}(\
+            $this->{@assertFunction(assert)}({@assert.expectedValueTransformFunction}(\
                 ${@assert.expectedValueIdentifier}), \
                 $actualApiRequestObject->{@assert.actualValueGetter}());
         @else
-            $this->assertEquals(${@assert.expectedValueIdentifier}, \
+            $this->{@assertFunction(assert)}(${@assert.expectedValueIdentifier}, \
                 $actualApiRequestObject->{@assert.actualValueGetter}());
         @end
     @end

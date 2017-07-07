@@ -171,7 +171,7 @@ public class TypeNameGenerator {
   }
 
   /** Returns the URL of the discovery doc. */
-  public String getDiscoveryDocUrl(String apiName, String apiVersion) {
+  public String getDiscoveryDocUrl(String apiName, String apiVersion, String rootUrl) {
     return "";
   }
 }

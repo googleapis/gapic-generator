@@ -25,10 +25,47 @@
  * EXPERIMENTAL: this client library class has not yet been declared beta. This class may change
  * more frequently than those which have been declared beta or 1.0, including changes which break
  * backwards compatibility.
+ *
+ * @experimental
  */
 
 namespace Google\Example\Library\V1;
 
+use Google\Example\Library\V1\AddCommentsRequest;
+use Google\Example\Library\V1\Book;
+use Google\Example\Library\V1\Comment;
+use Google\Example\Library\V1\CreateBookRequest;
+use Google\Example\Library\V1\CreateShelfRequest;
+use Google\Example\Library\V1\DeleteBookRequest;
+use Google\Example\Library\V1\DeleteShelfRequest;
+use Google\Example\Library\V1\DiscussBookRequest;
+use Google\Example\Library\V1\FindRelatedBooksRequest;
+use Google\Example\Library\V1\GetBigBookMetadata;
+use Google\Example\Library\V1\GetBookFromAnywhereRequest;
+use Google\Example\Library\V1\GetBookFromArchiveRequest;
+use Google\Example\Library\V1\GetBookRequest;
+use Google\Example\Library\V1\GetShelfRequest;
+use Google\Example\Library\V1\LibraryServiceGrpcClient;
+use Google\Example\Library\V1\ListBooksRequest;
+use Google\Example\Library\V1\ListShelvesRequest;
+use Google\Example\Library\V1\ListStringsRequest;
+use Google\Example\Library\V1\MergeShelvesRequest;
+use Google\Example\Library\V1\MoveBookRequest;
+use Google\Example\Library\V1\PublishSeriesRequest;
+use Google\Example\Library\V1\SeriesUuid;
+use Google\Example\Library\V1\Shelf;
+use Google\Example\Library\V1\SomeMessage;
+use Google\Example\Library\V1\StreamBooksRequest;
+use Google\Example\Library\V1\StreamShelvesRequest;
+use Google\Example\Library\V1\StringBuilder;
+use Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest;
+use Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest_InnerEnum as InnerEnum;
+use Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest_InnerMessage as InnerMessage;
+use Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest_OptionalMapEntry as OptionalMapEntry;
+use Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest_RequiredMapEntry as RequiredMapEntry;
+use Google\Example\Library\V1\UpdateBookIndexRequest;
+use Google\Example\Library\V1\UpdateBookIndexRequest_IndexMapEntry as IndexMapEntry;
+use Google\Example\Library\V1\UpdateBookRequest;
 use Google\GAX\AgentHeaderDescriptor;
 use Google\GAX\ApiCallable;
 use Google\GAX\CallSettings;
@@ -39,46 +76,11 @@ use Google\GAX\OperationResponse;
 use Google\GAX\PageStreamingDescriptor;
 use Google\GAX\PathTemplate;
 use Google\GAX\ValidationException;
-use google\example\library\v1\AddCommentsRequest;
-use google\example\library\v1\Book;
-use google\example\library\v1\Comment;
-use google\example\library\v1\CreateBookRequest;
-use google\example\library\v1\CreateShelfRequest;
-use google\example\library\v1\DeleteBookRequest;
-use google\example\library\v1\DeleteShelfRequest;
-use google\example\library\v1\DiscussBookRequest;
-use google\example\library\v1\FindRelatedBooksRequest;
-use google\example\library\v1\GetBigBookMetadata;
-use google\example\library\v1\GetBookFromAnywhereRequest;
-use google\example\library\v1\GetBookFromArchiveRequest;
-use google\example\library\v1\GetBookRequest;
-use google\example\library\v1\GetShelfRequest;
-use google\example\library\v1\LibraryServiceGrpcClient;
-use google\example\library\v1\ListBooksRequest;
-use google\example\library\v1\ListShelvesRequest;
-use google\example\library\v1\ListStringsRequest;
-use google\example\library\v1\MergeShelvesRequest;
-use google\example\library\v1\MoveBookRequest;
-use google\example\library\v1\PublishSeriesRequest;
-use google\example\library\v1\SeriesUuid;
-use google\example\library\v1\Shelf;
-use google\example\library\v1\SomeMessage;
-use google\example\library\v1\StreamBooksRequest;
-use google\example\library\v1\StreamShelvesRequest;
-use google\example\library\v1\StringBuilder;
-use google\example\library\v1\TestOptionalRequiredFlatteningParamsRequest;
-use google\example\library\v1\TestOptionalRequiredFlatteningParamsRequest\InnerEnum;
-use google\example\library\v1\TestOptionalRequiredFlatteningParamsRequest\InnerMessage;
-use google\example\library\v1\TestOptionalRequiredFlatteningParamsRequest\OptionalMapEntry;
-use google\example\library\v1\TestOptionalRequiredFlatteningParamsRequest\RequiredMapEntry;
-use google\example\library\v1\UpdateBookIndexRequest;
-use google\example\library\v1\UpdateBookIndexRequest\IndexMapEntry;
-use google\example\library\v1\UpdateBookRequest;
-use google\protobuf\EmptyC;
-use google\protobuf\FieldMask;
-use google\tagger\v1\AddLabelRequest;
-use google\tagger\v1\AddTagRequest;
-use google\tagger\v1\LabelerGrpcClient;
+use Google\Protobuf\FieldMask;
+use Google\Protobuf\GPBEmpty;
+use Google\Tagger\V1\AddLabelRequest;
+use Google\Tagger\V1\AddTagRequest;
+use Google\Tagger\V1\LabelerGrpcClient;
 
 /**
  * Service Description: This API represents a simple digital library.  It lets you manage Shelf
@@ -86,10 +88,10 @@ use google\tagger\v1\LabelerGrpcClient;
  * resource model:
  *
  * - The API has a collection of [Shelf][google.example.library.v1.Shelf]
- *   resources, named ``bookShelves/&#42;``
+ *   resources, named ``bookShelves/*``
  *
  * - Each Shelf has a collection of [Book][google.example.library.v1.Book]
- *   resources, named `bookShelves/&#42;/books/&#42;`
+ *   resources, named `bookShelves/&#42;/books/*`
  *
  * Check out [cloud docs!](https://cloud.google.com/library/example/link).
  * This is [not a cloud link](http://www.google.com).
@@ -117,6 +119,7 @@ use google\tagger\v1\LabelerGrpcClient;
  * with these names, this class includes a format method for each type of name, and additionally
  * a parse method to extract the individual identifiers contained within names that are
  * returned.
+ * @experimental
  */
 class LibraryServiceClient
 {
@@ -160,6 +163,10 @@ class LibraryServiceClient
     /**
      * Formats a string containing the fully-qualified path to represent
      * a shelf resource.
+     *
+     * @param string $shelfId
+     * @return string The formatted shelf resource.
+     * @experimental
      */
     public static function formatShelfName($shelfId)
     {
@@ -171,6 +178,11 @@ class LibraryServiceClient
     /**
      * Formats a string containing the fully-qualified path to represent
      * a book resource.
+     *
+     * @param string $shelfId
+     * @param string $bookId
+     * @return string The formatted book resource.
+     * @experimental
      */
     public static function formatBookName($shelfId, $bookId)
     {
@@ -183,6 +195,12 @@ class LibraryServiceClient
     /**
      * Formats a string containing the fully-qualified path to represent
      * a return resource.
+     *
+     * @param string $shelf
+     * @param string $book
+     * @param string $return
+     * @return string The formatted return resource.
+     * @experimental
      */
     public static function formatReturnName($shelf, $book, $return)
     {
@@ -196,6 +214,10 @@ class LibraryServiceClient
     /**
      * Parses the shelf_id from the given fully-qualified path which
      * represents a shelf resource.
+     *
+     * @param string $shelfName The fully-qualified shelf resource.
+     * @return string The extracted shelf_id value.
+     * @experimental
      */
     public static function parseShelfIdFromShelfName($shelfName)
     {
@@ -205,6 +227,10 @@ class LibraryServiceClient
     /**
      * Parses the shelf_id from the given fully-qualified path which
      * represents a book resource.
+     *
+     * @param string $bookName The fully-qualified book resource.
+     * @return string The extracted shelf_id value.
+     * @experimental
      */
     public static function parseShelfIdFromBookName($bookName)
     {
@@ -214,6 +240,10 @@ class LibraryServiceClient
     /**
      * Parses the book_id from the given fully-qualified path which
      * represents a book resource.
+     *
+     * @param string $bookName The fully-qualified book resource.
+     * @return string The extracted book_id value.
+     * @experimental
      */
     public static function parseBookIdFromBookName($bookName)
     {
@@ -223,6 +253,10 @@ class LibraryServiceClient
     /**
      * Parses the shelf from the given fully-qualified path which
      * represents a return resource.
+     *
+     * @param string $returnName The fully-qualified return resource.
+     * @return string The extracted shelf value.
+     * @experimental
      */
     public static function parseShelfFromReturnName($returnName)
     {
@@ -232,6 +266,10 @@ class LibraryServiceClient
     /**
      * Parses the book from the given fully-qualified path which
      * represents a return resource.
+     *
+     * @param string $returnName The fully-qualified return resource.
+     * @return string The extracted book value.
+     * @experimental
      */
     public static function parseBookFromReturnName($returnName)
     {
@@ -241,6 +279,10 @@ class LibraryServiceClient
     /**
      * Parses the return from the given fully-qualified path which
      * represents a return resource.
+     *
+     * @param string $returnName The fully-qualified return resource.
+     * @return string The extracted return value.
+     * @experimental
      */
     public static function parseReturnFromReturnName($returnName)
     {
@@ -279,30 +321,37 @@ class LibraryServiceClient
     {
         $listShelvesPageStreamingDescriptor =
                 new PageStreamingDescriptor([
-                    'requestPageTokenField' => 'page_token',
-                    'responsePageTokenField' => 'next_page_token',
-                    'resourceField' => 'shelves',
+                    'requestPageTokenGetMethod' => 'getPageToken',
+                    'requestPageTokenSetMethod' => 'setPageToken',
+                    'responsePageTokenGetMethod' => 'getNextPageToken',
+                    'resourcesGetMethod' => 'getShelves',
                 ]);
         $listBooksPageStreamingDescriptor =
                 new PageStreamingDescriptor([
-                    'requestPageTokenField' => 'page_token',
-                    'requestPageSizeField' => 'page_size',
-                    'responsePageTokenField' => 'next_page_token',
-                    'resourceField' => 'books',
+                    'requestPageTokenGetMethod' => 'getPageToken',
+                    'requestPageTokenSetMethod' => 'setPageToken',
+                    'requestPageSizeGetMethod' => 'getPageSize',
+                    'requestPageSizeSetMethod' => 'setPageSize',
+                    'responsePageTokenGetMethod' => 'getNextPageToken',
+                    'resourcesGetMethod' => 'getBooks',
                 ]);
         $listStringsPageStreamingDescriptor =
                 new PageStreamingDescriptor([
-                    'requestPageTokenField' => 'page_token',
-                    'requestPageSizeField' => 'page_size',
-                    'responsePageTokenField' => 'next_page_token',
-                    'resourceField' => 'strings',
+                    'requestPageTokenGetMethod' => 'getPageToken',
+                    'requestPageTokenSetMethod' => 'setPageToken',
+                    'requestPageSizeGetMethod' => 'getPageSize',
+                    'requestPageSizeSetMethod' => 'setPageSize',
+                    'responsePageTokenGetMethod' => 'getNextPageToken',
+                    'resourcesGetMethod' => 'getStrings',
                 ]);
         $findRelatedBooksPageStreamingDescriptor =
                 new PageStreamingDescriptor([
-                    'requestPageTokenField' => 'page_token',
-                    'requestPageSizeField' => 'page_size',
-                    'responsePageTokenField' => 'next_page_token',
-                    'resourceField' => 'names',
+                    'requestPageTokenGetMethod' => 'getPageToken',
+                    'requestPageTokenSetMethod' => 'setPageToken',
+                    'requestPageSizeGetMethod' => 'getPageSize',
+                    'requestPageSizeSetMethod' => 'setPageSize',
+                    'responsePageTokenGetMethod' => 'getNextPageToken',
+                    'resourcesGetMethod' => 'getNames',
                 ]);
 
         $pageStreamingDescriptors = [
@@ -319,12 +368,12 @@ class LibraryServiceClient
     {
         return [
             'getBigBook' => [
-                'operationReturnType' => '\google\example\library\v1\Book',
-                'metadataReturnType' => '\google\example\library\v1\GetBigBookMetadata',
+                'operationReturnType' => '\Google\Example\Library\V1\Book',
+                'metadataReturnType' => '\Google\Example\Library\V1\GetBigBookMetadata',
             ],
             'getBigNothing' => [
-                'operationReturnType' => '\google\protobuf\EmptyC',
-                'metadataReturnType' => '\google\example\library\v1\GetBigBookMetadata',
+                'operationReturnType' => '\Google\Protobuf\GPBEmpty',
+                'metadataReturnType' => '\Google\Example\Library\V1\GetBigBookMetadata',
             ],
         ];
     }
@@ -334,7 +383,7 @@ class LibraryServiceClient
         return [
             'streamShelves' => [
                 'grpcStreamingType' => 'ServerStreaming',
-                'resourcesField' => 'getShelvesList',
+                'resourcesGetMethod' => 'getShelves',
             ],
             'streamBooks' => [
                 'grpcStreamingType' => 'ServerStreaming',
@@ -363,6 +412,7 @@ class LibraryServiceClient
      * Return an OperationsClient object with the same endpoint as $this.
      *
      * @return \Google\GAX\LongRunning\OperationsClient
+     * @experimental
      */
     public function getOperationsClient()
     {
@@ -378,8 +428,8 @@ class LibraryServiceClient
      *
      * @param string $operationName The name of the long running operation
      * @param string $methodName The name of the method used to start the operation
-     *
      * @return \Google\GAX\OperationResponse
+     * @experimental
      */
     public function resumeOperation($operationName, $methodName = null)
     {
@@ -423,6 +473,7 @@ class LibraryServiceClient
      *                              A CredentialsLoader object created using the
      *                              Google\Auth library.
      * }
+     * @experimental
      */
     public function __construct($options = [])
     {
@@ -568,9 +619,10 @@ class LibraryServiceClient
      *          is not set.
      * }
      *
-     * @return \google\example\library\v1\Shelf
+     * @return \Google\Example\Library\V1\Shelf
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function createShelf($shelf, $optionalArgs = [])
     {
@@ -618,9 +670,10 @@ class LibraryServiceClient
      *          is not set.
      * }
      *
-     * @return \google\example\library\v1\Shelf
+     * @return \Google\Example\Library\V1\Shelf
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function getShelf($name, $options, $optionalArgs = [])
     {
@@ -689,6 +742,7 @@ class LibraryServiceClient
      * @return \Google\GAX\PagedListResponse
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function listShelves($optionalArgs = [])
     {
@@ -734,6 +788,7 @@ class LibraryServiceClient
      * }
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function deleteShelf($name, $optionalArgs = [])
     {
@@ -780,9 +835,10 @@ class LibraryServiceClient
      *          is not set.
      * }
      *
-     * @return \google\example\library\v1\Shelf
+     * @return \Google\Example\Library\V1\Shelf
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function mergeShelves($name, $otherShelfName, $optionalArgs = [])
     {
@@ -828,9 +884,10 @@ class LibraryServiceClient
      *          is not set.
      * }
      *
-     * @return \google\example\library\v1\Book
+     * @return \Google\Example\Library\V1\Book
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function createBook($name, $book, $optionalArgs = [])
     {
@@ -884,17 +941,16 @@ class LibraryServiceClient
      *          is not set.
      * }
      *
-     * @return \google\example\library\v1\PublishSeriesResponse
+     * @return \Google\Example\Library\V1\PublishSeriesResponse
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function publishSeries($shelf, $books, $seriesUuid, $optionalArgs = [])
     {
         $request = new PublishSeriesRequest();
         $request->setShelf($shelf);
-        foreach ($books as $elem) {
-            $request->addBooks($elem);
-        }
+        $request->setBooks($books);
         $request->setSeriesUuid($seriesUuid);
         if (isset($optionalArgs['edition'])) {
             $request->setEdition($optionalArgs['edition']);
@@ -939,9 +995,10 @@ class LibraryServiceClient
      *          is not set.
      * }
      *
-     * @return \google\example\library\v1\Book
+     * @return \Google\Example\Library\V1\Book
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function getBook($name, $optionalArgs = [])
     {
@@ -1010,6 +1067,7 @@ class LibraryServiceClient
      * @return \Google\GAX\PagedListResponse
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function listBooks($name, $optionalArgs = [])
     {
@@ -1062,6 +1120,7 @@ class LibraryServiceClient
      * }
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function deleteBook($name, $optionalArgs = [])
     {
@@ -1100,7 +1159,7 @@ class LibraryServiceClient
      *     Optional.
      *     @type FieldMask $updateMask
      *          A field mask to apply, rendered as an HTTP parameter.
-     *     @type \google\example\library\v1\FieldMask $physicalMask
+     *     @type \Google\Example\Library\V1\FieldMask $physicalMask
      *          To test Python import clash resolution.
      *     @type \Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
@@ -1110,9 +1169,10 @@ class LibraryServiceClient
      *          is not set.
      * }
      *
-     * @return \google\example\library\v1\Book
+     * @return \Google\Example\Library\V1\Book
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function updateBook($name, $book, $optionalArgs = [])
     {
@@ -1164,9 +1224,10 @@ class LibraryServiceClient
      *          is not set.
      * }
      *
-     * @return \google\example\library\v1\Book
+     * @return \Google\Example\Library\V1\Book
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function moveBook($name, $otherShelfName, $optionalArgs = [])
     {
@@ -1234,6 +1295,7 @@ class LibraryServiceClient
      * @return \Google\GAX\PagedListResponse
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function listStrings($optionalArgs = [])
     {
@@ -1294,14 +1356,13 @@ class LibraryServiceClient
      * }
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function addComments($name, $comments, $optionalArgs = [])
     {
         $request = new AddCommentsRequest();
         $request->setName($name);
-        foreach ($comments as $elem) {
-            $request->addComments($elem);
-        }
+        $request->setComments($comments);
 
         $mergedSettings = $this->defaultCallSettings['addComments']->merge(
             new CallSettings($optionalArgs));
@@ -1339,9 +1400,10 @@ class LibraryServiceClient
      *          is not set.
      * }
      *
-     * @return \google\example\library\v1\BookFromArchive
+     * @return \Google\Example\Library\V1\BookFromArchive
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function getBookFromArchive($name, $optionalArgs = [])
     {
@@ -1387,9 +1449,10 @@ class LibraryServiceClient
      *          is not set.
      * }
      *
-     * @return \google\example\library\v1\BookFromAnywhere
+     * @return \Google\Example\Library\V1\BookFromAnywhere
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function getBookFromAnywhere($name, $altBookName, $optionalArgs = [])
     {
@@ -1439,15 +1502,14 @@ class LibraryServiceClient
      * }
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function updateBookIndex($name, $indexName, $indexMap, $optionalArgs = [])
     {
         $request = new UpdateBookIndexRequest();
         $request->setName($name);
         $request->setIndexName($indexName);
-        foreach ($indexMap as $key => $value) {
-            $request->addIndexMap((new IndexMapEntry())->setKey($key)->setValue($value));
-        }
+        $request->setIndexMap($indexMap);
 
         $mergedSettings = $this->defaultCallSettings['updateBookIndex']->merge(
             new CallSettings($optionalArgs));
@@ -1485,9 +1547,10 @@ class LibraryServiceClient
      *          Timeout to use for this call.
      * }
      *
-     * @return \Google\GAX\ServerStreamingResponse
+     * @return \Google\GAX\ServerStream
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function streamShelves($optionalArgs = [])
     {
@@ -1530,9 +1593,10 @@ class LibraryServiceClient
      *          Timeout to use for this call.
      * }
      *
-     * @return \Google\GAX\ServerStreamingResponse
+     * @return \Google\GAX\ServerStream
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function streamBooks($name, $optionalArgs = [])
     {
@@ -1598,9 +1662,10 @@ class LibraryServiceClient
      *          Timeout to use for this call.
      * }
      *
-     * @return \Google\GAX\BidiStreamingResponse
+     * @return \Google\GAX\BidiStream
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function discussBook($optionalArgs = [])
     {
@@ -1651,9 +1716,10 @@ class LibraryServiceClient
      *          Timeout to use for this call.
      * }
      *
-     * @return \Google\GAX\ClientStreamingResponse
+     * @return \Google\GAX\ClientStream
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function monologAboutBook($optionalArgs = [])
     {
@@ -1720,16 +1786,13 @@ class LibraryServiceClient
      * @return \Google\GAX\PagedListResponse
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function findRelatedBooks($names, $shelves, $optionalArgs = [])
     {
         $request = new FindRelatedBooksRequest();
-        foreach ($names as $elem) {
-            $request->addNames($elem);
-        }
-        foreach ($shelves as $elem) {
-            $request->addShelves($elem);
-        }
+        $request->setNames($names);
+        $request->setShelves($shelves);
         if (isset($optionalArgs['pageSize'])) {
             $request->setPageSize($optionalArgs['pageSize']);
         }
@@ -1777,9 +1840,10 @@ class LibraryServiceClient
      *          is not set.
      * }
      *
-     * @return \google\tagger\v1\AddTagResponse
+     * @return \Google\Tagger\V1\AddTagResponse
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function addTag($resource, $tag, $optionalArgs = [])
     {
@@ -1827,9 +1891,10 @@ class LibraryServiceClient
      *          is not set.
      * }
      *
-     * @return \google\tagger\v1\AddLabelResponse
+     * @return \Google\Tagger\V1\AddLabelResponse
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function addLabel($resource, $label, $optionalArgs = [])
     {
@@ -1898,9 +1963,10 @@ class LibraryServiceClient
      *          is not set.
      * }
      *
-     * @return \google\longrunning\Operation
+     * @return \Google\Longrunning\Operation
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function getBigBook($name, $optionalArgs = [])
     {
@@ -1966,9 +2032,10 @@ class LibraryServiceClient
      *          is not set.
      * }
      *
-     * @return \google\longrunning\Operation
+     * @return \Google\Longrunning\Operation
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function getBigNothing($name, $optionalArgs = [])
     {
@@ -2031,7 +2098,7 @@ class LibraryServiceClient
      * @param float $requiredSingularFloat
      * @param float $requiredSingularDouble
      * @param bool $requiredSingularBool
-     * @param InnerEnum $requiredSingularEnum
+     * @param int $requiredSingularEnum For allowed values, use constants defined on {@see \Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest_InnerEnum}
      * @param string $requiredSingularString
      * @param string $requiredSingularBytes
      * @param InnerMessage $requiredSingularMessage
@@ -2044,7 +2111,7 @@ class LibraryServiceClient
      * @param float[] $requiredRepeatedFloat
      * @param float[] $requiredRepeatedDouble
      * @param bool[] $requiredRepeatedBool
-     * @param InnerEnum[] $requiredRepeatedEnum
+     * @param int[] $requiredRepeatedEnum For allowed values, use constants defined on {@see \Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest_InnerEnum}
      * @param string[] $requiredRepeatedString
      * @param string[] $requiredRepeatedBytes
      * @param InnerMessage[] $requiredRepeatedMessage
@@ -2060,7 +2127,8 @@ class LibraryServiceClient
      *     @type float $optionalSingularFloat
      *     @type float $optionalSingularDouble
      *     @type bool $optionalSingularBool
-     *     @type InnerEnum $optionalSingularEnum
+     *     @type int $optionalSingularEnum
+     *          For allowed values, use constants defined on {@see \Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest_InnerEnum}
      *     @type string $optionalSingularString
      *     @type string $optionalSingularBytes
      *     @type InnerMessage $optionalSingularMessage
@@ -2073,7 +2141,8 @@ class LibraryServiceClient
      *     @type float[] $optionalRepeatedFloat
      *     @type float[] $optionalRepeatedDouble
      *     @type bool[] $optionalRepeatedBool
-     *     @type InnerEnum[] $optionalRepeatedEnum
+     *     @type int[] $optionalRepeatedEnum
+     *          For allowed values, use constants defined on {@see \Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsRequest_InnerEnum}
      *     @type string[] $optionalRepeatedString
      *     @type string[] $optionalRepeatedBytes
      *     @type InnerMessage[] $optionalRepeatedMessage
@@ -2090,9 +2159,10 @@ class LibraryServiceClient
      *          is not set.
      * }
      *
-     * @return \google\example\library\v1\TestOptionalRequiredFlatteningParamsResponse
+     * @return \Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsResponse
      *
      * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
      */
     public function testOptionalRequiredFlatteningParams($requiredSingularInt32, $requiredSingularInt64, $requiredSingularFloat, $requiredSingularDouble, $requiredSingularBool, $requiredSingularEnum, $requiredSingularString, $requiredSingularBytes, $requiredSingularMessage, $requiredSingularResourceName, $requiredSingularResourceNameOneof, $requiredSingularFixed32, $requiredSingularFixed64, $requiredRepeatedInt32, $requiredRepeatedInt64, $requiredRepeatedFloat, $requiredRepeatedDouble, $requiredRepeatedBool, $requiredRepeatedEnum, $requiredRepeatedString, $requiredRepeatedBytes, $requiredRepeatedMessage, $requiredRepeatedResourceName, $requiredRepeatedResourceNameOneof, $requiredRepeatedFixed32, $requiredRepeatedFixed64, $requiredMap, $optionalArgs = [])
     {
@@ -2110,48 +2180,20 @@ class LibraryServiceClient
         $request->setRequiredSingularResourceNameOneof($requiredSingularResourceNameOneof);
         $request->setRequiredSingularFixed32($requiredSingularFixed32);
         $request->setRequiredSingularFixed64($requiredSingularFixed64);
-        foreach ($requiredRepeatedInt32 as $elem) {
-            $request->addRequiredRepeatedInt32($elem);
-        }
-        foreach ($requiredRepeatedInt64 as $elem) {
-            $request->addRequiredRepeatedInt64($elem);
-        }
-        foreach ($requiredRepeatedFloat as $elem) {
-            $request->addRequiredRepeatedFloat($elem);
-        }
-        foreach ($requiredRepeatedDouble as $elem) {
-            $request->addRequiredRepeatedDouble($elem);
-        }
-        foreach ($requiredRepeatedBool as $elem) {
-            $request->addRequiredRepeatedBool($elem);
-        }
-        foreach ($requiredRepeatedEnum as $elem) {
-            $request->addRequiredRepeatedEnum($elem);
-        }
-        foreach ($requiredRepeatedString as $elem) {
-            $request->addRequiredRepeatedString($elem);
-        }
-        foreach ($requiredRepeatedBytes as $elem) {
-            $request->addRequiredRepeatedBytes($elem);
-        }
-        foreach ($requiredRepeatedMessage as $elem) {
-            $request->addRequiredRepeatedMessage($elem);
-        }
-        foreach ($requiredRepeatedResourceName as $elem) {
-            $request->addRequiredRepeatedResourceName($elem);
-        }
-        foreach ($requiredRepeatedResourceNameOneof as $elem) {
-            $request->addRequiredRepeatedResourceNameOneof($elem);
-        }
-        foreach ($requiredRepeatedFixed32 as $elem) {
-            $request->addRequiredRepeatedFixed32($elem);
-        }
-        foreach ($requiredRepeatedFixed64 as $elem) {
-            $request->addRequiredRepeatedFixed64($elem);
-        }
-        foreach ($requiredMap as $key => $value) {
-            $request->addRequiredMap((new RequiredMapEntry())->setKey($key)->setValue($value));
-        }
+        $request->setRequiredRepeatedInt32($requiredRepeatedInt32);
+        $request->setRequiredRepeatedInt64($requiredRepeatedInt64);
+        $request->setRequiredRepeatedFloat($requiredRepeatedFloat);
+        $request->setRequiredRepeatedDouble($requiredRepeatedDouble);
+        $request->setRequiredRepeatedBool($requiredRepeatedBool);
+        $request->setRequiredRepeatedEnum($requiredRepeatedEnum);
+        $request->setRequiredRepeatedString($requiredRepeatedString);
+        $request->setRequiredRepeatedBytes($requiredRepeatedBytes);
+        $request->setRequiredRepeatedMessage($requiredRepeatedMessage);
+        $request->setRequiredRepeatedResourceName($requiredRepeatedResourceName);
+        $request->setRequiredRepeatedResourceNameOneof($requiredRepeatedResourceNameOneof);
+        $request->setRequiredRepeatedFixed32($requiredRepeatedFixed32);
+        $request->setRequiredRepeatedFixed64($requiredRepeatedFixed64);
+        $request->setRequiredMap($requiredMap);
         if (isset($optionalArgs['optionalSingularInt32'])) {
             $request->setOptionalSingularInt32($optionalArgs['optionalSingularInt32']);
         }
@@ -2192,74 +2234,46 @@ class LibraryServiceClient
             $request->setOptionalSingularFixed64($optionalArgs['optionalSingularFixed64']);
         }
         if (isset($optionalArgs['optionalRepeatedInt32'])) {
-            foreach ($optionalArgs['optionalRepeatedInt32'] as $elem) {
-                $request->addOptionalRepeatedInt32($elem);
-            }
+            $request->setOptionalRepeatedInt32($optionalArgs['optionalRepeatedInt32']);
         }
         if (isset($optionalArgs['optionalRepeatedInt64'])) {
-            foreach ($optionalArgs['optionalRepeatedInt64'] as $elem) {
-                $request->addOptionalRepeatedInt64($elem);
-            }
+            $request->setOptionalRepeatedInt64($optionalArgs['optionalRepeatedInt64']);
         }
         if (isset($optionalArgs['optionalRepeatedFloat'])) {
-            foreach ($optionalArgs['optionalRepeatedFloat'] as $elem) {
-                $request->addOptionalRepeatedFloat($elem);
-            }
+            $request->setOptionalRepeatedFloat($optionalArgs['optionalRepeatedFloat']);
         }
         if (isset($optionalArgs['optionalRepeatedDouble'])) {
-            foreach ($optionalArgs['optionalRepeatedDouble'] as $elem) {
-                $request->addOptionalRepeatedDouble($elem);
-            }
+            $request->setOptionalRepeatedDouble($optionalArgs['optionalRepeatedDouble']);
         }
         if (isset($optionalArgs['optionalRepeatedBool'])) {
-            foreach ($optionalArgs['optionalRepeatedBool'] as $elem) {
-                $request->addOptionalRepeatedBool($elem);
-            }
+            $request->setOptionalRepeatedBool($optionalArgs['optionalRepeatedBool']);
         }
         if (isset($optionalArgs['optionalRepeatedEnum'])) {
-            foreach ($optionalArgs['optionalRepeatedEnum'] as $elem) {
-                $request->addOptionalRepeatedEnum($elem);
-            }
+            $request->setOptionalRepeatedEnum($optionalArgs['optionalRepeatedEnum']);
         }
         if (isset($optionalArgs['optionalRepeatedString'])) {
-            foreach ($optionalArgs['optionalRepeatedString'] as $elem) {
-                $request->addOptionalRepeatedString($elem);
-            }
+            $request->setOptionalRepeatedString($optionalArgs['optionalRepeatedString']);
         }
         if (isset($optionalArgs['optionalRepeatedBytes'])) {
-            foreach ($optionalArgs['optionalRepeatedBytes'] as $elem) {
-                $request->addOptionalRepeatedBytes($elem);
-            }
+            $request->setOptionalRepeatedBytes($optionalArgs['optionalRepeatedBytes']);
         }
         if (isset($optionalArgs['optionalRepeatedMessage'])) {
-            foreach ($optionalArgs['optionalRepeatedMessage'] as $elem) {
-                $request->addOptionalRepeatedMessage($elem);
-            }
+            $request->setOptionalRepeatedMessage($optionalArgs['optionalRepeatedMessage']);
         }
         if (isset($optionalArgs['optionalRepeatedResourceName'])) {
-            foreach ($optionalArgs['optionalRepeatedResourceName'] as $elem) {
-                $request->addOptionalRepeatedResourceName($elem);
-            }
+            $request->setOptionalRepeatedResourceName($optionalArgs['optionalRepeatedResourceName']);
         }
         if (isset($optionalArgs['optionalRepeatedResourceNameOneof'])) {
-            foreach ($optionalArgs['optionalRepeatedResourceNameOneof'] as $elem) {
-                $request->addOptionalRepeatedResourceNameOneof($elem);
-            }
+            $request->setOptionalRepeatedResourceNameOneof($optionalArgs['optionalRepeatedResourceNameOneof']);
         }
         if (isset($optionalArgs['optionalRepeatedFixed32'])) {
-            foreach ($optionalArgs['optionalRepeatedFixed32'] as $elem) {
-                $request->addOptionalRepeatedFixed32($elem);
-            }
+            $request->setOptionalRepeatedFixed32($optionalArgs['optionalRepeatedFixed32']);
         }
         if (isset($optionalArgs['optionalRepeatedFixed64'])) {
-            foreach ($optionalArgs['optionalRepeatedFixed64'] as $elem) {
-                $request->addOptionalRepeatedFixed64($elem);
-            }
+            $request->setOptionalRepeatedFixed64($optionalArgs['optionalRepeatedFixed64']);
         }
         if (isset($optionalArgs['optionalMap'])) {
-            foreach ($optionalArgs['optionalMap'] as $key => $value) {
-                $request->addOptionalMap((new OptionalMapEntry())->setKey($key)->setValue($value));
-            }
+            $request->setOptionalMap($optionalArgs['optionalMap']);
         }
 
         $mergedSettings = $this->defaultCallSettings['testOptionalRequiredFlatteningParams']->merge(
@@ -2276,6 +2290,7 @@ class LibraryServiceClient
     /**
      * Initiates an orderly shutdown in which preexisting calls continue but new
      * calls are immediately cancelled.
+     * @experimental
      */
     public function close()
     {

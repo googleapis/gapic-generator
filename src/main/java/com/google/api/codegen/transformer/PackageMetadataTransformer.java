@@ -81,7 +81,9 @@ public class PackageMetadataTransformer {
         .shortName(packageConfig.shortName())
         .gapicConfigName(packageConfig.gapicConfigName())
         .packageType(packageConfig.packageType())
+        .dependencyType(packageConfig.dependencyType())
         .gaxVersionBound(packageConfig.gaxVersionBound(language))
+        .gaxGrpcVersionBound(packageConfig.gaxGrpcVersionBound(language))
         .grpcVersionBound(packageConfig.grpcVersionBound(language))
         .protoVersionBound(packageConfig.protoVersionBound(language))
         .protoPackageDependencies(
@@ -100,7 +102,6 @@ public class PackageMetadataTransformer {
         .licenseName(packageConfig.licenseName())
         .fullName(model.getServiceConfig().getTitle())
         .discoveryApiName(discoveryApiName)
-        .apiSummary(model.getServiceConfig().getDocumentation().getSummary())
         .hasMultipleServices(false);
   }
 

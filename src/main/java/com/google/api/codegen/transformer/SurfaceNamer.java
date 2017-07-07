@@ -103,10 +103,15 @@ public class SurfaceNamer extends NameFormatterDelegator {
    *
    * <p>For example: "LoggingServiceV2" becomes Name("Logging")
    */
-  public Name getReducedServiceName(Interface apiInterface) {
-    String name = apiInterface.getSimpleName().replaceAll("V[0-9]+$", "");
+  public Name getReducedServiceName(String interfaceSimpleName) {
+    String name = interfaceSimpleName.replaceAll("V[0-9]+$", "");
     name = name.replaceAll("Service$", "");
     return Name.upperCamel(name);
+  }
+
+  /** Returns the service name exported by the package */
+  public String getPackageServiceName(Interface apiInterface) {
+    return getNotImplementedString("SurfaceNamer.getPackageServiceName");
   }
 
   /** Human-friendly name of this API interface */
@@ -601,6 +606,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return publicClassName(Name.upperCamel("PagedResponseWrappers"));
   }
 
+  /** The sample application class name. */
+  public String getSampleAppClassName() {
+    return publicClassName(Name.upperCamel("SampleApp"));
+  }
+
   /**
    * The type name of the Grpc service class This needs to match what Grpc generates for the
    * particular language.
@@ -693,6 +703,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The type name for the method param */
   public String getParamTypeName(ModelTypeTable typeTable, TypeRef type) {
     return getNotImplementedString("SurfaceNamer.getParamTypeName");
+  }
+
+  /** The type name for the message property */
+  public String getMessagePropertyTypeName(ModelTypeTable typeTable, TypeRef type) {
+    return getParamTypeName(typeTable, type);
   }
 
   /** The type name for retry settings. */

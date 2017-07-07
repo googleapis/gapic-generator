@@ -61,21 +61,23 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes create_shelf without error' do
       # Create request parameters
-      shelf = Google::Example::Library::V1::Shelf.new
+      shelf = {}
 
       # Create expected grpc response
       name = "name3373707"
       theme = "theme110327241"
       internal_theme = "internalTheme792518087"
-      expected_response = Google::Example::Library::V1::Shelf.new(
+      expected_response = {
         name: name,
         theme: theme,
         internal_theme: internal_theme
-      )
+      }
+      expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::Shelf)
 
       # Mock Grpc layer
       mock_method = proc do |request|
-        assert_equal(shelf, request.shelf)
+        assert_instance_of(Google::Example::Library::V1::CreateShelfRequest, request)
+        assert_equal(Google::Gax::to_proto(shelf, Google::Example::Library::V1::Shelf), request.shelf)
         expected_response
       end
       mock_stub = MockGrpcClientStub.new(:create_shelf, mock_method)
@@ -93,11 +95,12 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes create_shelf with error' do
       # Create request parameters
-      shelf = Google::Example::Library::V1::Shelf.new
+      shelf = {}
 
       # Mock Grpc layer
       mock_method = proc do |request|
-        assert_equal(shelf, request.shelf)
+        assert_instance_of(Google::Example::Library::V1::CreateShelfRequest, request)
+        assert_equal(Google::Gax::to_proto(shelf, Google::Example::Library::V1::Shelf), request.shelf)
         raise custom_error
       end
       mock_stub = MockGrpcClientStub.new(:create_shelf, mock_method)
@@ -128,14 +131,16 @@ describe Library::V1::LibraryServiceClient do
       name_2 = "name2-1052831874"
       theme = "theme110327241"
       internal_theme = "internalTheme792518087"
-      expected_response = Google::Example::Library::V1::Shelf.new(
+      expected_response = {
         name: name_2,
         theme: theme,
         internal_theme: internal_theme
-      )
+      }
+      expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::Shelf)
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::GetShelfRequest, request)
         assert_equal(formatted_name, request.name)
         assert_equal(options_, request.options)
         expected_response
@@ -160,6 +165,7 @@ describe Library::V1::LibraryServiceClient do
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::GetShelfRequest, request)
         assert_equal(formatted_name, request.name)
         assert_equal(options_, request.options)
         raise custom_error
@@ -186,9 +192,10 @@ describe Library::V1::LibraryServiceClient do
     it 'invokes list_shelves without error' do
       # Create expected grpc response
       next_page_token = ""
-      shelves_element = Google::Example::Library::V1::Shelf.new
+      shelves_element = {}
       shelves = [shelves_element]
-      expected_response = Google::Example::Library::V1::ListShelvesResponse.new(next_page_token: next_page_token, shelves: shelves)
+      expected_response = { next_page_token: next_page_token, shelves: shelves }
+      expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::ListShelvesResponse)
 
       # Mock Grpc layer
       mock_method = proc do
@@ -240,6 +247,7 @@ describe Library::V1::LibraryServiceClient do
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::DeleteShelfRequest, request)
         assert_equal(formatted_name, request.name)
         nil
       end
@@ -262,6 +270,7 @@ describe Library::V1::LibraryServiceClient do
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::DeleteShelfRequest, request)
         assert_equal(formatted_name, request.name)
         raise custom_error
       end
@@ -293,14 +302,16 @@ describe Library::V1::LibraryServiceClient do
       name_2 = "name2-1052831874"
       theme = "theme110327241"
       internal_theme = "internalTheme792518087"
-      expected_response = Google::Example::Library::V1::Shelf.new(
+      expected_response = {
         name: name_2,
         theme: theme,
         internal_theme: internal_theme
-      )
+      }
+      expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::Shelf)
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::MergeShelvesRequest, request)
         assert_equal(formatted_name, request.name)
         assert_equal(formatted_other_shelf_name, request.other_shelf_name)
         expected_response
@@ -325,6 +336,7 @@ describe Library::V1::LibraryServiceClient do
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::MergeShelvesRequest, request)
         assert_equal(formatted_name, request.name)
         assert_equal(formatted_other_shelf_name, request.other_shelf_name)
         raise custom_error
@@ -351,24 +363,26 @@ describe Library::V1::LibraryServiceClient do
     it 'invokes create_book without error' do
       # Create request parameters
       formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
-      book = Google::Example::Library::V1::Book.new
+      book = {}
 
       # Create expected grpc response
       name_2 = "name2-1052831874"
       author = "author-1406328437"
       title = "title110371416"
       read = true
-      expected_response = Google::Example::Library::V1::Book.new(
+      expected_response = {
         name: name_2,
         author: author,
         title: title,
         read: read
-      )
+      }
+      expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::Book)
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::CreateBookRequest, request)
         assert_equal(formatted_name, request.name)
-        assert_equal(book, request.book)
+        assert_equal(Google::Gax::to_proto(book, Google::Example::Library::V1::Book), request.book)
         expected_response
       end
       mock_stub = MockGrpcClientStub.new(:create_book, mock_method)
@@ -387,12 +401,13 @@ describe Library::V1::LibraryServiceClient do
     it 'invokes create_book with error' do
       # Create request parameters
       formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
-      book = Google::Example::Library::V1::Book.new
+      book = {}
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::CreateBookRequest, request)
         assert_equal(formatted_name, request.name)
-        assert_equal(book, request.book)
+        assert_equal(Google::Gax::to_proto(book, Google::Example::Library::V1::Book), request.book)
         raise custom_error
       end
       mock_stub = MockGrpcClientStub.new(:create_book, mock_method)
@@ -416,21 +431,23 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes publish_series without error' do
       # Create request parameters
-      shelf = Google::Example::Library::V1::Shelf.new
+      shelf = {}
       books = []
       series_string = "foobar"
-      series_uuid = Google::Example::Library::V1::SeriesUuid.new(series_string: series_string)
+      series_uuid = { series_string: series_string }
 
       # Create expected grpc response
       book_names_element = "bookNamesElement1491670575"
       book_names = [book_names_element]
-      expected_response = Google::Example::Library::V1::PublishSeriesResponse.new(book_names: book_names)
+      expected_response = { book_names: book_names }
+      expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::PublishSeriesResponse)
 
       # Mock Grpc layer
       mock_method = proc do |request|
-        assert_equal(shelf, request.shelf)
+        assert_instance_of(Google::Example::Library::V1::PublishSeriesRequest, request)
+        assert_equal(Google::Gax::to_proto(shelf, Google::Example::Library::V1::Shelf), request.shelf)
         assert_equal(books, request.books)
-        assert_equal(series_uuid, request.series_uuid)
+        assert_equal(Google::Gax::to_proto(series_uuid, Google::Example::Library::V1::SeriesUuid), request.series_uuid)
         expected_response
       end
       mock_stub = MockGrpcClientStub.new(:publish_series, mock_method)
@@ -452,16 +469,17 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes publish_series with error' do
       # Create request parameters
-      shelf = Google::Example::Library::V1::Shelf.new
+      shelf = {}
       books = []
       series_string = "foobar"
-      series_uuid = Google::Example::Library::V1::SeriesUuid.new(series_string: series_string)
+      series_uuid = { series_string: series_string }
 
       # Mock Grpc layer
       mock_method = proc do |request|
-        assert_equal(shelf, request.shelf)
+        assert_instance_of(Google::Example::Library::V1::PublishSeriesRequest, request)
+        assert_equal(Google::Gax::to_proto(shelf, Google::Example::Library::V1::Shelf), request.shelf)
         assert_equal(books, request.books)
-        assert_equal(series_uuid, request.series_uuid)
+        assert_equal(Google::Gax::to_proto(series_uuid, Google::Example::Library::V1::SeriesUuid), request.series_uuid)
         raise custom_error
       end
       mock_stub = MockGrpcClientStub.new(:publish_series, mock_method)
@@ -496,15 +514,17 @@ describe Library::V1::LibraryServiceClient do
       author = "author-1406328437"
       title = "title110371416"
       read = true
-      expected_response = Google::Example::Library::V1::Book.new(
+      expected_response = {
         name: name_2,
         author: author,
         title: title,
         read: read
-      )
+      }
+      expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::Book)
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::GetBookRequest, request)
         assert_equal(formatted_name, request.name)
         expected_response
       end
@@ -527,6 +547,7 @@ describe Library::V1::LibraryServiceClient do
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::GetBookRequest, request)
         assert_equal(formatted_name, request.name)
         raise custom_error
       end
@@ -555,12 +576,14 @@ describe Library::V1::LibraryServiceClient do
 
       # Create expected grpc response
       next_page_token = ""
-      books_element = Google::Example::Library::V1::Book.new
+      books_element = {}
       books = [books_element]
-      expected_response = Google::Example::Library::V1::ListBooksResponse.new(next_page_token: next_page_token, books: books)
+      expected_response = { next_page_token: next_page_token, books: books }
+      expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::ListBooksResponse)
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::ListBooksRequest, request)
         assert_equal(formatted_name, request.name)
         expected_response
       end
@@ -586,6 +609,7 @@ describe Library::V1::LibraryServiceClient do
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::ListBooksRequest, request)
         assert_equal(formatted_name, request.name)
         raise custom_error
       end
@@ -614,6 +638,7 @@ describe Library::V1::LibraryServiceClient do
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::DeleteBookRequest, request)
         assert_equal(formatted_name, request.name)
         nil
       end
@@ -636,6 +661,7 @@ describe Library::V1::LibraryServiceClient do
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::DeleteBookRequest, request)
         assert_equal(formatted_name, request.name)
         raise custom_error
       end
@@ -661,24 +687,26 @@ describe Library::V1::LibraryServiceClient do
     it 'invokes update_book without error' do
       # Create request parameters
       formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
-      book = Google::Example::Library::V1::Book.new
+      book = {}
 
       # Create expected grpc response
       name_2 = "name2-1052831874"
       author = "author-1406328437"
       title = "title110371416"
       read = true
-      expected_response = Google::Example::Library::V1::Book.new(
+      expected_response = {
         name: name_2,
         author: author,
         title: title,
         read: read
-      )
+      }
+      expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::Book)
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::UpdateBookRequest, request)
         assert_equal(formatted_name, request.name)
-        assert_equal(book, request.book)
+        assert_equal(Google::Gax::to_proto(book, Google::Example::Library::V1::Book), request.book)
         expected_response
       end
       mock_stub = MockGrpcClientStub.new(:update_book, mock_method)
@@ -697,12 +725,13 @@ describe Library::V1::LibraryServiceClient do
     it 'invokes update_book with error' do
       # Create request parameters
       formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
-      book = Google::Example::Library::V1::Book.new
+      book = {}
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::UpdateBookRequest, request)
         assert_equal(formatted_name, request.name)
-        assert_equal(book, request.book)
+        assert_equal(Google::Gax::to_proto(book, Google::Example::Library::V1::Book), request.book)
         raise custom_error
       end
       mock_stub = MockGrpcClientStub.new(:update_book, mock_method)
@@ -734,15 +763,17 @@ describe Library::V1::LibraryServiceClient do
       author = "author-1406328437"
       title = "title110371416"
       read = true
-      expected_response = Google::Example::Library::V1::Book.new(
+      expected_response = {
         name: name_2,
         author: author,
         title: title,
         read: read
-      )
+      }
+      expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::Book)
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::MoveBookRequest, request)
         assert_equal(formatted_name, request.name)
         assert_equal(formatted_other_shelf_name, request.other_shelf_name)
         expected_response
@@ -767,6 +798,7 @@ describe Library::V1::LibraryServiceClient do
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::MoveBookRequest, request)
         assert_equal(formatted_name, request.name)
         assert_equal(formatted_other_shelf_name, request.other_shelf_name)
         raise custom_error
@@ -795,7 +827,8 @@ describe Library::V1::LibraryServiceClient do
       next_page_token = ""
       strings_element = "stringsElement474465855"
       strings = [strings_element]
-      expected_response = Google::Example::Library::V1::ListStringsResponse.new(next_page_token: next_page_token, strings: strings)
+      expected_response = { next_page_token: next_page_token, strings: strings }
+      expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::ListStringsResponse)
 
       # Mock Grpc layer
       mock_method = proc do
@@ -847,15 +880,16 @@ describe Library::V1::LibraryServiceClient do
       comment = ''
       stage = :UNSET
       alignment = :CHAR
-      comments_element = Google::Example::Library::V1::Comment.new(
+      comments_element = {
         comment: comment,
         stage: stage,
         alignment: alignment
-      )
+      }
       comments = [comments_element]
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::AddCommentsRequest, request)
         assert_equal(formatted_name, request.name)
         assert_equal(comments, request.comments)
         nil
@@ -879,15 +913,16 @@ describe Library::V1::LibraryServiceClient do
       comment = ''
       stage = :UNSET
       alignment = :CHAR
-      comments_element = Google::Example::Library::V1::Comment.new(
+      comments_element = {
         comment: comment,
         stage: stage,
         alignment: alignment
-      )
+      }
       comments = [comments_element]
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::AddCommentsRequest, request)
         assert_equal(formatted_name, request.name)
         assert_equal(comments, request.comments)
         raise custom_error
@@ -920,15 +955,17 @@ describe Library::V1::LibraryServiceClient do
       author = "author-1406328437"
       title = "title110371416"
       read = true
-      expected_response = Google::Example::Library::V1::BookFromArchive.new(
+      expected_response = {
         name: name_2,
         author: author,
         title: title,
         read: read
-      )
+      }
+      expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::BookFromArchive)
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::GetBookFromArchiveRequest, request)
         assert_equal(formatted_name, request.name)
         expected_response
       end
@@ -951,6 +988,7 @@ describe Library::V1::LibraryServiceClient do
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::GetBookFromArchiveRequest, request)
         assert_equal(formatted_name, request.name)
         raise custom_error
       end
@@ -983,15 +1021,17 @@ describe Library::V1::LibraryServiceClient do
       author = "author-1406328437"
       title = "title110371416"
       read = true
-      expected_response = Google::Example::Library::V1::BookFromAnywhere.new(
+      expected_response = {
         name: name_2,
         author: author,
         title: title,
         read: read
-      )
+      }
+      expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::BookFromAnywhere)
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::GetBookFromAnywhereRequest, request)
         assert_equal(formatted_name, request.name)
         assert_equal(formatted_alt_book_name, request.alt_book_name)
         expected_response
@@ -1016,6 +1056,7 @@ describe Library::V1::LibraryServiceClient do
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::GetBookFromAnywhereRequest, request)
         assert_equal(formatted_name, request.name)
         assert_equal(formatted_alt_book_name, request.alt_book_name)
         raise custom_error
@@ -1048,6 +1089,7 @@ describe Library::V1::LibraryServiceClient do
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::UpdateBookIndexRequest, request)
         assert_equal(formatted_name, request.name)
         assert_equal(index_name, request.index_name)
         assert_equal(index_map, request.index_map)
@@ -1079,6 +1121,7 @@ describe Library::V1::LibraryServiceClient do
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::UpdateBookIndexRequest, request)
         assert_equal(formatted_name, request.name)
         assert_equal(index_name, request.index_name)
         assert_equal(index_map, request.index_map)
@@ -1109,10 +1152,13 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes stream_shelves without error' do
       # Create request parameters
-      request = Google::Example::Library::V1::StreamShelvesRequest.new
+      request = {}
 
       # Create expected grpc response
-      expected_response = Google::Example::Library::V1::StreamShelvesResponse.new
+      shelves_element = {}
+      shelves = [shelves_element]
+      expected_response = { shelves: shelves }
+      expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::StreamShelvesResponse)
 
       # Mock Grpc layer
       mock_method = proc do |request|
@@ -1134,7 +1180,7 @@ describe Library::V1::LibraryServiceClient do
 
     it 'invokes stream_shelves with error' do
       # Create request parameters
-      request = Google::Example::Library::V1::StreamShelvesRequest.new
+      request = {}
 
       # Mock Grpc layer
       mock_method = proc do |request|
@@ -1162,22 +1208,24 @@ describe Library::V1::LibraryServiceClient do
     it 'invokes stream_books without error' do
       # Create request parameters
       name = ''
-      request = Google::Example::Library::V1::StreamBooksRequest.new(name: name)
+      request = { name: name }
 
       # Create expected grpc response
       name_2 = "name2-1052831874"
       author = "author-1406328437"
       title = "title110371416"
       read = true
-      expected_response = Google::Example::Library::V1::Book.new(
+      expected_response = {
         name: name_2,
         author: author,
         title: title,
         read: read
-      )
+      }
+      expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::Book)
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::StreamBooksRequest, request)
         assert_equal(name, request.name)
         [expected_response]
       end
@@ -1198,10 +1246,11 @@ describe Library::V1::LibraryServiceClient do
     it 'invokes stream_books with error' do
       # Create request parameters
       name = ''
-      request = Google::Example::Library::V1::StreamBooksRequest.new(name: name)
+      request = { name: name }
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::StreamBooksRequest, request)
         assert_equal(name, request.name)
         raise custom_error
       end
@@ -1227,16 +1276,18 @@ describe Library::V1::LibraryServiceClient do
     it 'invokes discuss_book without error' do
       # Create request parameters
       name = ''
-      request = Google::Example::Library::V1::DiscussBookRequest.new(name: name)
+      request = { name: name }
 
       # Create expected grpc response
       user_name = "userName339340927"
       comment = "95"
-      expected_response = Google::Example::Library::V1::Comment.new(user_name: user_name, comment: comment)
+      expected_response = { user_name: user_name, comment: comment }
+      expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::Comment)
 
       # Mock Grpc layer
       mock_method = proc do |requests|
         request = requests.first
+        assert_instance_of(Google::Example::Library::V1::DiscussBookRequest, request)
         assert_equal(name, request.name)
         [expected_response]
       end
@@ -1257,11 +1308,12 @@ describe Library::V1::LibraryServiceClient do
     it 'invokes discuss_book with error' do
       # Create request parameters
       name = ''
-      request = Google::Example::Library::V1::DiscussBookRequest.new(name: name)
+      request = { name: name }
 
       # Mock Grpc layer
       mock_method = proc do |requests|
         request = requests.first
+        assert_instance_of(Google::Example::Library::V1::DiscussBookRequest, request)
         assert_equal(name, request.name)
         raise custom_error
       end
@@ -1287,16 +1339,18 @@ describe Library::V1::LibraryServiceClient do
     it 'invokes monolog_about_book without error' do
       # Create request parameters
       name = ''
-      request = Google::Example::Library::V1::DiscussBookRequest.new(name: name)
+      request = { name: name }
 
       # Create expected grpc response
       user_name = "userName339340927"
       comment = "95"
-      expected_response = Google::Example::Library::V1::Comment.new(user_name: user_name, comment: comment)
+      expected_response = { user_name: user_name, comment: comment }
+      expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::Comment)
 
       # Mock Grpc layer
       mock_method = proc do |requests|
         request = requests.first
+        assert_instance_of(Google::Example::Library::V1::DiscussBookRequest, request)
         assert_equal(name, request.name)
         expected_response
       end
@@ -1316,11 +1370,12 @@ describe Library::V1::LibraryServiceClient do
     it 'invokes monolog_about_book with error' do
       # Create request parameters
       name = ''
-      request = Google::Example::Library::V1::DiscussBookRequest.new(name: name)
+      request = { name: name }
 
       # Mock Grpc layer
       mock_method = proc do |requests|
         request = requests.first
+        assert_instance_of(Google::Example::Library::V1::DiscussBookRequest, request)
         assert_equal(name, request.name)
         raise custom_error
       end
@@ -1353,10 +1408,12 @@ describe Library::V1::LibraryServiceClient do
       next_page_token = ""
       names_element_2 = "namesElement21120252792"
       names_2 = [names_element_2]
-      expected_response = Google::Example::Library::V1::FindRelatedBooksResponse.new(next_page_token: next_page_token, names: names_2)
+      expected_response = { next_page_token: next_page_token, names: names_2 }
+      expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::FindRelatedBooksResponse)
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::FindRelatedBooksRequest, request)
         assert_equal(names, request.names)
         assert_equal(shelves, request.shelves)
         expected_response
@@ -1385,6 +1442,7 @@ describe Library::V1::LibraryServiceClient do
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::FindRelatedBooksRequest, request)
         assert_equal(names, request.names)
         assert_equal(shelves, request.shelves)
         raise custom_error
@@ -1414,10 +1472,12 @@ describe Library::V1::LibraryServiceClient do
       tag = ''
 
       # Create expected grpc response
-      expected_response = Google::Tagger::V1::AddTagResponse.new
+      expected_response = {}
+      expected_response = Google::Gax::to_proto(expected_response, Google::Tagger::V1::AddTagResponse)
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Tagger::V1::AddTagRequest, request)
         assert_equal(formatted_resource, request.resource)
         assert_equal(tag, request.tag)
         expected_response
@@ -1442,6 +1502,7 @@ describe Library::V1::LibraryServiceClient do
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Tagger::V1::AddTagRequest, request)
         assert_equal(formatted_resource, request.resource)
         assert_equal(tag, request.tag)
         raise custom_error
@@ -1471,10 +1532,12 @@ describe Library::V1::LibraryServiceClient do
       label = ''
 
       # Create expected grpc response
-      expected_response = Google::Tagger::V1::AddLabelResponse.new
+      expected_response = {}
+      expected_response = Google::Gax::to_proto(expected_response, Google::Tagger::V1::AddLabelResponse)
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Tagger::V1::AddLabelRequest, request)
         assert_equal(formatted_resource, request.resource)
         assert_equal(label, request.label)
         expected_response
@@ -1499,6 +1562,7 @@ describe Library::V1::LibraryServiceClient do
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Tagger::V1::AddLabelRequest, request)
         assert_equal(formatted_resource, request.resource)
         assert_equal(label, request.label)
         raise custom_error
@@ -1531,12 +1595,13 @@ describe Library::V1::LibraryServiceClient do
       author = "author-1406328437"
       title = "title110371416"
       read = true
-      expected_response = Google::Example::Library::V1::Book.new(
+      expected_response = {
         name: name_2,
         author: author,
         title: title,
         read: read
-      )
+      }
+      expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::Book)
       result = Google::Protobuf::Any.new
       result.pack(expected_response)
       operation = Google::Longrunning::Operation.new(
@@ -1547,6 +1612,7 @@ describe Library::V1::LibraryServiceClient do
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::GetBookRequest, request)
         assert_equal(formatted_name, request.name)
         operation
       end
@@ -1579,6 +1645,7 @@ describe Library::V1::LibraryServiceClient do
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::GetBookRequest, request)
         assert_equal(formatted_name, request.name)
         operation
       end
@@ -1602,6 +1669,7 @@ describe Library::V1::LibraryServiceClient do
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::GetBookRequest, request)
         assert_equal(formatted_name, request.name)
         raise custom_error
       end
@@ -1629,7 +1697,8 @@ describe Library::V1::LibraryServiceClient do
       formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
 
       # Create expected grpc response
-      expected_response = Google::Protobuf::Empty.new
+      expected_response = {}
+      expected_response = Google::Gax::to_proto(expected_response, Google::Protobuf::Empty)
       result = Google::Protobuf::Any.new
       result.pack(expected_response)
       operation = Google::Longrunning::Operation.new(
@@ -1640,6 +1709,7 @@ describe Library::V1::LibraryServiceClient do
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::GetBookRequest, request)
         assert_equal(formatted_name, request.name)
         operation
       end
@@ -1672,6 +1742,7 @@ describe Library::V1::LibraryServiceClient do
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::GetBookRequest, request)
         assert_equal(formatted_name, request.name)
         operation
       end
@@ -1695,6 +1766,7 @@ describe Library::V1::LibraryServiceClient do
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::GetBookRequest, request)
         assert_equal(formatted_name, request.name)
         raise custom_error
       end
@@ -1727,7 +1799,7 @@ describe Library::V1::LibraryServiceClient do
       required_singular_enum = :ZERO
       required_singular_string = ''
       required_singular_bytes = ''
-      required_singular_message = Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerMessage.new
+      required_singular_message = {}
       required_singular_resource_name = ''
       required_singular_resource_name_oneof = ''
       required_singular_fixed32 = 0
@@ -1748,10 +1820,12 @@ describe Library::V1::LibraryServiceClient do
       required_map = {}
 
       # Create expected grpc response
-      expected_response = Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsResponse.new
+      expected_response = {}
+      expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsResponse)
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest, request)
         assert_equal(required_singular_int32, request.required_singular_int32)
         assert_equal(required_singular_int64, request.required_singular_int64)
         assert_equal(required_singular_float, request.required_singular_float)
@@ -1760,7 +1834,7 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(required_singular_enum, request.required_singular_enum)
         assert_equal(required_singular_string, request.required_singular_string)
         assert_equal(required_singular_bytes, request.required_singular_bytes)
-        assert_equal(required_singular_message, request.required_singular_message)
+        assert_equal(Google::Gax::to_proto(required_singular_message, Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerMessage), request.required_singular_message)
         assert_equal(required_singular_resource_name, request.required_singular_resource_name)
         assert_equal(required_singular_resource_name_oneof, request.required_singular_resource_name_oneof)
         assert_equal(required_singular_fixed32, request.required_singular_fixed32)
@@ -1832,7 +1906,7 @@ describe Library::V1::LibraryServiceClient do
       required_singular_enum = :ZERO
       required_singular_string = ''
       required_singular_bytes = ''
-      required_singular_message = Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerMessage.new
+      required_singular_message = {}
       required_singular_resource_name = ''
       required_singular_resource_name_oneof = ''
       required_singular_fixed32 = 0
@@ -1854,6 +1928,7 @@ describe Library::V1::LibraryServiceClient do
 
       # Mock Grpc layer
       mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest, request)
         assert_equal(required_singular_int32, request.required_singular_int32)
         assert_equal(required_singular_int64, request.required_singular_int64)
         assert_equal(required_singular_float, request.required_singular_float)
@@ -1862,7 +1937,7 @@ describe Library::V1::LibraryServiceClient do
         assert_equal(required_singular_enum, request.required_singular_enum)
         assert_equal(required_singular_string, request.required_singular_string)
         assert_equal(required_singular_bytes, request.required_singular_bytes)
-        assert_equal(required_singular_message, request.required_singular_message)
+        assert_equal(Google::Gax::to_proto(required_singular_message, Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerMessage), request.required_singular_message)
         assert_equal(required_singular_resource_name, request.required_singular_resource_name)
         assert_equal(required_singular_resource_name_oneof, request.required_singular_resource_name_oneof)
         assert_equal(required_singular_fixed32, request.required_singular_fixed32)

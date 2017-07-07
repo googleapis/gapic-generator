@@ -27,6 +27,7 @@ import com.google.api.codegen.viewmodel.FormatResourceFunctionView;
 import com.google.api.codegen.viewmodel.ParseResourceFunctionView;
 import com.google.api.codegen.viewmodel.PathTemplateArgumentView;
 import com.google.api.codegen.viewmodel.PathTemplateGetterFunctionView;
+import com.google.api.codegen.viewmodel.PathTemplateRenderView;
 import com.google.api.codegen.viewmodel.PathTemplateView;
 import com.google.api.codegen.viewmodel.ResourceIdParamView;
 import com.google.api.codegen.viewmodel.ResourceNameFixedView;
@@ -36,8 +37,10 @@ import com.google.api.codegen.viewmodel.ResourceNameSingleView;
 import com.google.api.codegen.viewmodel.ResourceNameView;
 import com.google.api.codegen.viewmodel.ResourceProtoFieldView;
 import com.google.api.codegen.viewmodel.ResourceProtoView;
+import com.google.api.gax.protobuf.PathTemplate;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ListMultimap;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -49,6 +52,7 @@ import java.util.Map.Entry;
 
 /** PathTemplateTransformer generates view objects for path templates from a service model. */
 public class PathTemplateTransformer {
+  private static final String VAR_PLACE_HOLDER = "__GAPIC_VARIABLE__";
 
   public List<PathTemplateView> generatePathTemplates(GapicInterfaceContext context) {
     List<PathTemplateView> pathTemplates = new ArrayList<>();
@@ -302,10 +306,38 @@ public class PathTemplateTransformer {
         String name = context.getNamer().localVarName(Name.from(templateKey));
         args.add(PathTemplateArgumentView.newBuilder().templateKey(templateKey).name(name).build());
       }
-      function.args(args);
+      function.args(args).render(generateRenderView(resourceNameConfig.getNameTemplate(), args));
       functions.add(function.build());
     }
 
     return functions;
+  }
+
+  private PathTemplateRenderView generateRenderView(
+      PathTemplate template, List<PathTemplateArgumentView> args) {
+    int varNum = template.vars().size();
+    String[] values = new String[varNum];
+    for (int i = 0; i < varNum; i++) {
+      values[i] = VAR_PLACE_HOLDER;
+    }
+    String[] literals = template.withoutVars().encode(values).split(VAR_PLACE_HOLDER);
+
+    PathTemplateRenderView.Piece[] pieces =
+        new PathTemplateRenderView.Piece[literals.length + args.size()];
+    for (int i = 0; i < literals.length; i++) {
+      pieces[2 * i] =
+          PathTemplateRenderView.Piece.builder()
+              .value(literals[i])
+              .kind(PathTemplateRenderView.PieceKind.LITERAL)
+              .build();
+    }
+    for (int i = 0; i < args.size(); i++) {
+      pieces[2 * i + 1] =
+          PathTemplateRenderView.Piece.builder()
+              .value(args.get(i).name())
+              .kind(PathTemplateRenderView.PieceKind.VARIABLE)
+              .build();
+    }
+    return PathTemplateRenderView.builder().pieces(ImmutableList.copyOf(pieces)).build();
   }
 }
