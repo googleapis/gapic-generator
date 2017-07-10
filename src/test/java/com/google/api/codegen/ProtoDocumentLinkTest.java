@@ -50,21 +50,21 @@ public class ProtoDocumentLinkTest {
   public void testRubyCommentReformatter() {
     RubyCommentReformatter commentReformatter = new RubyCommentReformatter();
     Truth.assertThat(commentReformatter.reformat("[Shelf][google.example.library.v1.Shelf]"))
-        .isEqualTo("Shelf");
+        .isEqualTo("{Google::Example::Library::V1::Shelf Shelf}");
     Truth.assertThat(commentReformatter.reformat("[$Shelf][google.example.library.v1.Shelf]"))
-        .isEqualTo("$Shelf");
+        .isEqualTo("{Google::Example::Library::V1::Shelf $Shelf}");
 
     // Cloud link may contain special character '$'
     Truth.assertThat(commentReformatter.reformat("[cloud docs!](/library/example/link)"))
-        .isEqualTo("{cloud docs!}[https://cloud.google.com/library/example/link]");
+        .isEqualTo("[cloud docs!](https://cloud.google.com/library/example/link)");
     Truth.assertThat(commentReformatter.reformat("[cloud docs!](/library/example/link$)"))
-        .isEqualTo("{cloud docs!}[https://cloud.google.com/library/example/link$]");
+        .isEqualTo("[cloud docs!](https://cloud.google.com/library/example/link$)");
 
     // Absolute link may contain special character '$'
     Truth.assertThat(commentReformatter.reformat("[not a cloud link](http://www.google.com)"))
-        .isEqualTo("{not a cloud link}[http://www.google.com]");
+        .isEqualTo("[not a cloud link](http://www.google.com)");
     Truth.assertThat(commentReformatter.reformat("[not a cloud link](http://www.google.com$)"))
-        .isEqualTo("{not a cloud link}[http://www.google.com$]");
+        .isEqualTo("[not a cloud link](http://www.google.com$)");
   }
 
   @Test
