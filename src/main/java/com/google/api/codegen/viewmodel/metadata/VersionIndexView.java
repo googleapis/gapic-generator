@@ -43,6 +43,8 @@ public abstract class VersionIndexView implements ViewModel {
 
   public abstract String packageVersion();
 
+  public abstract String toolkitVersion();
+
   @Nullable
   public abstract List<VersionIndexModuleView> modules();
 
@@ -75,6 +77,8 @@ public abstract class VersionIndexView implements ViewModel {
     public abstract Builder apiVersion(String val);
 
     public abstract Builder packageVersion(String val);
+
+    public abstract Builder toolkitVersion(String val);
 
     public abstract Builder modules(List<VersionIndexModuleView> val);
 
