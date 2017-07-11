@@ -35,7 +35,15 @@ public class RubyCommentReformatter implements CommentReformatter {
             public String apply(String matchedString) {
               Matcher matcher = CommentPatterns.PROTO_LINK_PATTERN.matcher(matchedString);
               matcher.find();
-              return Matcher.quoteReplacement(protoToRubyDoc(matcher.group(1)));
+              String title = matcher.group(1);
+              String ref = matcher.group(2);
+              if (ref == null || ref.equals(title)) {
+                return String.format("{%s}", Matcher.quoteReplacement(protoToRubyDoc(title)));
+              }
+              return String.format(
+                  "{%s %s}",
+                  Matcher.quoteReplacement(protoToRubyDoc(ref)),
+                  Matcher.quoteReplacement(protoToRubyDoc(title)));
             }
           });
 
@@ -46,8 +54,8 @@ public class RubyCommentReformatter implements CommentReformatter {
           .transform(
               LinkPattern.RELATIVE
                   .withUrlPrefix(CommentTransformer.CLOUD_URL_PREFIX)
-                  .toFormat("{$TITLE}[$URL]"))
-          .transform(LinkPattern.ABSOLUTE.toFormat("{$TITLE}[$URL]"))
+                  .toFormat("[$TITLE]($URL)"))
+          .transform(LinkPattern.ABSOLUTE.toFormat("[$TITLE]($URL)"))
           .scopedReplace(CommentPatterns.HEADLINE_PATTERN, "#", "=")
           .build();
 
