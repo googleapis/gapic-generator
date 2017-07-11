@@ -210,7 +210,8 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
     // testCaseView not in use by Ruby for smoke test.
     TestCaseView testCaseView = testCaseTransformer.createSmokeTestCaseView(flattenedMethodContext);
     OptionalArrayMethodView apiMethodView =
-        createSmokeTestCaseApiMethodView(flattenedMethodContext);
+        createSmokeTestCaseApiMethodView(
+            flattenedMethodContext, new InterfaceView().hasMultipleServices(context.getModel()));
 
     testClass.apiSettingsClassName(namer.getApiSettingsClassName(context.getInterfaceConfig()));
     testClass.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
@@ -229,10 +230,11 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
     return testClass.build();
   }
 
-  private OptionalArrayMethodView createSmokeTestCaseApiMethodView(GapicMethodContext context) {
+  private OptionalArrayMethodView createSmokeTestCaseApiMethodView(
+      GapicMethodContext context, boolean packageHasMultipleServices) {
     OptionalArrayMethodView initialApiMethodView =
         new DynamicLangApiMethodTransformer(new RubyApiMethodParamTransformer())
-            .generateMethod(context);
+            .generateMethod(context, packageHasMultipleServices);
 
     OptionalArrayMethodView.Builder apiMethodView = initialApiMethodView.toBuilder();
 

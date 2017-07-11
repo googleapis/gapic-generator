@@ -175,8 +175,12 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private List<ApiMethodView> generateApiMethods(GapicInterfaceContext context) {
     ImmutableList.Builder<ApiMethodView> apiMethods = ImmutableList.builder();
+    boolean packageHasMultipleServices =
+        new InterfaceView().hasMultipleServices(context.getModel());
     for (Method method : context.getSupportedMethods()) {
-      apiMethods.add(apiMethodTransformer.generateMethod(context.asDynamicMethodContext(method)));
+      apiMethods.add(
+          apiMethodTransformer.generateMethod(
+              context.asDynamicMethodContext(method), packageHasMultipleServices));
     }
     return apiMethods.build();
   }
