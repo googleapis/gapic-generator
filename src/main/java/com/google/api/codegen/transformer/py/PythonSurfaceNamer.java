@@ -227,8 +227,14 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getSmokeTestClassName(GapicInterfaceConfig interfaceConfig) {
+    return publicClassName(
+        Name.upperCamelKeepUpperAcronyms("Test", "System", getInterfaceName(interfaceConfig)));
+  }
+
+  @Override
   public String getTestPackageName() {
-    return "test." + getPackageName();
+    return "tests." + getPackageName();
   }
 
   @Override
