@@ -64,7 +64,7 @@ import java.util.Map;
  * from the corresponding transformers/view models without actually rendering the templates.
  */
 public class PythonPackageMetadataTransformer implements ModelToViewTransformer {
-  private static final String TEST_PREFIX = "test.";
+  private static final String TEST_PREFIX = "tests.";
 
   private static final String GITHUB_DOC_HOST =
       "https://googlecloudplatform.github.io/google-cloud-python/stable";
