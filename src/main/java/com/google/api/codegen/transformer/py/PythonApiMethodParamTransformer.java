@@ -23,14 +23,49 @@ import com.google.api.codegen.viewmodel.DynamicLangDefaultableParamView;
 import com.google.api.codegen.viewmodel.ParamDocView;
 import com.google.api.codegen.viewmodel.SimpleParamDocView;
 import com.google.api.tools.framework.model.Field;
+import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 
 public class PythonApiMethodParamTransformer implements ApiMethodParamTransformer {
   @Override
   public List<DynamicLangDefaultableParamView> generateMethodParams(GapicMethodContext context) {
-    // TODO(eoogbe): implement this method when migrating to MVVM
-    return ImmutableList.<DynamicLangDefaultableParamView>of();
+    ImmutableList.Builder<DynamicLangDefaultableParamView> methodParams = ImmutableList.builder();
+    methodParams.add(
+        DynamicLangDefaultableParamView.newBuilder().name("self").defaultValue("").build());
+    if (context.getMethod().getRequestStreaming()) {
+      methodParams.add(
+          DynamicLangDefaultableParamView.newBuilder()
+              .name(context.getNamer().getRequestVariableName(context.getMethod()))
+              .defaultValue("")
+              .build());
+    } else {
+      for (Field field : context.getMethodConfig().getRequiredFields()) {
+        DynamicLangDefaultableParamView.Builder param =
+            DynamicLangDefaultableParamView.newBuilder();
+        param.name(context.getNamer().getVariableName(field));
+        param.defaultValue("");
+        methodParams.add(param.build());
+      }
+      for (Field field : context.getMethodConfig().getOptionalFields()) {
+        if (isRequestTokenParam(context.getMethodConfig(), field)) {
+          continue;
+        }
+        TypeRef type = field.getType();
+        DynamicLangDefaultableParamView.Builder param =
+            DynamicLangDefaultableParamView.newBuilder();
+        param.name(context.getNamer().getVariableName(field));
+        if (type.isRepeated() || type.isMessage() || type.isEnum() || field.getOneof() != null) {
+          param.defaultValue("None");
+        } else {
+          param.defaultValue(context.getTypeTable().getSnippetZeroValueAndSaveNicknameFor(type));
+        }
+        methodParams.add(param.build());
+      }
+    }
+    methodParams.add(
+        DynamicLangDefaultableParamView.newBuilder().name("options").defaultValue("None").build());
+    return methodParams.build();
   }
 
   @Override
