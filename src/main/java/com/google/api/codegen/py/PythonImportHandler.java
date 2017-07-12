@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.py;
 
+import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.py.PythonImport.ImportType;
@@ -103,7 +104,7 @@ public class PythonImportHandler {
         addImportForMessage(methodConfig.getLongRunningConfig().getMetadataType().getMessageType());
       }
 
-      Method method = methodConfig.getMethod();
+      Method method = ((GapicMethodConfig) methodConfig).getMethod();
       addImport(
           method.getInputMessage().getFile(),
           PythonImport.create(
