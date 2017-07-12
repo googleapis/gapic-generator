@@ -354,19 +354,19 @@
     @end
 @end
 
-@private callLine(methodConfig, method, request)
-    @if methodConfig.isLongRunningOperation
+@private callLine(apiMethod)
+    @if apiMethod.isLongRunningOperation
         return google.gax._OperationFuture(
-            self._{@methodName(method)}({@request}, options),
+            self._{@apiMethod.name}({@apiMethod.requestVariableName}, options),
             self.operations_client,
-            {@context.pythonTypeName(methodConfig.getLongRunningConfig.getReturnType, importHandler)},
-            {@context.pythonTypeName(methodConfig.getLongRunningConfig.getMetadataType, importHandler)},
+            {@apiMethod.longRunningView.operationPayloadTypeName},
+            {@apiMethod.longRunningView.metadataTypeName},
             options)
     @else
-        @if methodConfig.isReturnEmptyMessageMethod(method)
-            self._{@methodName(method)}({@request}, options)
+        @if apiMethod.hasReturnValue
+            return self._{@apiMethod.name}({@apiMethod.requestVariableName}, options)
         @else
-            return self._{@methodName(method)}({@request}, options)
+            self._{@apiMethod.name}({@apiMethod.requestVariableName}, options)
         @end
     @end
 @end
@@ -376,84 +376,43 @@
 @end
 
 @private flattenedMethod(service, method)
-    @let methodInputElementPath = importHandler.elementPath(method.getInputMessage, FALSE), \
-             methodView = context.getApiMethodView(service, method), \
-             methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
-             requiredParams = methodConfig.getRequiredFields(), \
-             optionalParams = context.removePageTokenFromFields(methodConfig.getOptionalFields(), methodConfig), \
-             oneOfParams = methodConfig.getOneofs()
-        @if method.getRequestStreaming
-            def {@methodName(method)}(
-                    self,
-                    requests,
-                    options=None):
-                {@methodComments(methodView, methodView.doc)}
-                {@callLine(methodConfig, method, "requests")}
-        @else
-            @if or(requiredParams, optionalParams)
-                def {@methodName(method)}(
-                        self,
-                        @if requiredParams
-                            @if optionalParams
-                                {@requiredParameterNames(requiredParams)},
-                                {@optionalParameterValues(optionalParams)},
-                            @else
-                                {@requiredParameterNames(requiredParams)},
-                            @end
-                        @else
-                            {@optionalParameterValues(optionalParams)},
-                        @end
-                        options=None):
-                    {@methodComments(methodView, methodView.doc)}
-                    @if oneOfParams
-                        {@checkOneOfParams(oneOfParams)}
-                    @end
-                    @# Create the request object.
-                    @if requiredParams
-                        @if optionalParams
-                            request = {@methodInputElementPath}(
-                                {@namedParameters(requiredParams)},
-                                {@namedParameters(optionalParams)})
-                        @else
-                            request = {@methodInputElementPath}(
-                                {@namedParameters(requiredParams)})
-                        @end
+    @let apiMethod = context.getApiMethodView(service, method)
+        def {@apiMethod.name}(
+                {@renderMethodParams(apiMethod.methodParams)}):
+            {@methodComments(apiMethod, apiMethod.doc)}
+            @if apiMethod.isSingularRequestMethod
+                @if apiMethod.oneofParams
+                    {@checkOneOfParams(apiMethod.oneofParams)}
+
+                @end
+                @if apiMethod.optionalRequestObjectParamsNoPageToken
+                    @if apiMethod.requiredRequestObjectParams
+                        request = {@apiMethod.requestTypeName}(
+                            {@requestObjectParams(apiMethod.requiredRequestObjectParams)},
+                            {@requestObjectParams(apiMethod.optionalRequestObjectParamsNoPageToken)})
                     @else
-                        request = {@methodInputElementPath}(
-                            {@namedParameters(optionalParams)})
+                        request = {@apiMethod.requestTypeName}(
+                            {@requestObjectParams(apiMethod.optionalRequestObjectParamsNoPageToken)})
                     @end
-                    {@callLine(methodConfig, method, "request")}
-            @else
-                def {@methodName(method)}(
-                        self,
-                        options=None):
-                    {@methodComments(methodView, methodView.doc)}
-                    # Create the request object.
-                    request = {@methodInputElementPath}()
-                    {@callLine(methodConfig, method, "request")}
+                @else
+                    @if apiMethod.requiredRequestObjectParams
+                        request = {@apiMethod.requestTypeName}(
+                            {@requestObjectParams(apiMethod.requiredRequestObjectParams)})
+                    @else
+                        request = {@apiMethod.requestTypeName}()
+                    @end
+                @end
             @end
-        @end
+            {@callLine(apiMethod)}
     @end
 @end
 
-@private requiredParameterNames(params)
-    @join field : params on ",".add(BREAK)
-        {@context.python.wrapIfKeywordOrBuiltIn({@field.getSimpleName()})}
-    @end
-@end
-
-@private optionalParameterValues(params)
-    @join field : params on ",".add(BREAK)
-        @let paramName = {@context.python.wrapIfKeywordOrBuiltIn(field.getSimpleName())}
-            {@paramName}=None
-        @end
-    @end
-@end
-
-@private namedParameters(params)
-    @join field : params on ",".add(BREAK)
-        @let paramName = {@field.getSimpleName()}
-            {@paramName}={@context.python.wrapIfKeywordOrBuiltIn(field.getSimpleName())}
+@private renderMethodParams(params)
+    @join param : params on ",".add(BREAK)
+        @if param.defaultValue
+            {@param.name}=None
+        @else
+            {@param.name}
         @end
     @end
 @end
@@ -463,10 +422,16 @@
         @# Sanity check: We have some fields which are mutually exclusive;
         @# raise ValueError if more than one is sent.
         oneof.check_oneof(
-            @join oneOfField : oneOf.getFields() on BREAK
-                {@oneOfField.getSimpleName()}={@oneOfField.getSimpleName},
+            @join oneOfField : oneOf on BREAK
+                {@oneOfField}={@oneOfField},
             @end
         )
 
+    @end
+@end
+
+@private requestObjectParams(params)
+    @join param : params on ",".add(BREAK)
+        {@param.keyName}={@param.name}
     @end
 @end
