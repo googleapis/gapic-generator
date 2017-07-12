@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer.go;
 
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.ServiceMessages;
+import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
@@ -155,7 +156,9 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.apiMethods(apiMethods);
 
     view.iamResources(iamResourceTransformer.generateIamResources(context));
-    if (!productConfig.getInterfaceConfig(apiInterface).getIamResources().isEmpty()) {
+    if (!((GapicInterfaceConfig) productConfig.getInterfaceConfig(apiInterface))
+        .getIamResources()
+        .isEmpty()) {
       context.getModelTypeTable().saveNicknameFor("cloud.google.com/go/iam;;;");
     }
 

@@ -58,12 +58,6 @@ interfaces:
     total_timeout_millis: 600000 # 10 minutes
   methods:
   - name: List
-    flattening:
-      groups:
-      - parameters:
-        - billingAccountsId
-    required_fields:
-    - billingAccountsId
     request_object_method: true
     resource_name_treatment: STATIC_TYPES
     page_streaming:
@@ -75,13 +69,14 @@ interfaces:
         resources_field: billingAccountsId
     retry_codes_name: idempotent
     retry_params_name: default
+    timeout_millis: 60000
   - name: Get
     flattening:
       groups:
       - parameters:
-        - resource
+        - name
     required_fields:
-    - resource
+    - name
     request_object_method: false
     retry_codes_name: idempotent
     retry_params_name: default

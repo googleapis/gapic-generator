@@ -67,6 +67,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
   // Only for proto-based SurfaceNamers.
   @Nullable private final ModelTypeFormatter modelTypeFormatter;
 
+  public String[] discoveryMethodNamePieces(com.google.api.codegen.discovery.Method method) {
+    return method.id().split("\\.");
+  }
+
   // Private members in any SurfaceNamer.
   private final TypeNameConverter typeNameConverter;
   private final CommentReformatter commentReformatter;
@@ -346,7 +350,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    *
    * @throws IllegalArgumentException if the field is not a repeated field.
    */
-  public String getFieldCountGetFunctionName(Field field) {
+  public String getFieldCountGetFunctionName(FieldType field) {
     if (field.isRepeated()) {
       return publicMethodName(Name.from("get", field.getSimpleName(), "count"));
     } else {
@@ -360,7 +364,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    *
    * @throws IllegalArgumentException if the field is not a repeated field.
    */
-  public String getByIndexGetFunctionName(Field field) {
+  public String getByIndexGetFunctionName(FieldType field) {
     if (field.isRepeated()) {
       return publicMethodName(Name.from("get", field.getSimpleName()));
     } else {
@@ -386,9 +390,23 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getApiMethodName(Name.upperCamel(method.getSimpleName()), visibility);
   }
 
+  /** The name of the surface method which can call the given API method. */
+  public String getApiMethodName(
+      com.google.api.codegen.discovery.Method method, VisibilityConfig visibility) {
+    return getApiMethodName(Name.upperCamel(discoveryMethodNamePieces(method)), visibility);
+  }
+
   /** The name of the async surface method which can call the given API method. */
   public String getAsyncApiMethodName(Method method, VisibilityConfig visibility) {
     return getApiMethodName(Name.upperCamel(method.getSimpleName()).join("async"), visibility);
+  }
+
+  /** The name of the async surface method which can call the given API method. */
+  public String getAsyncApiMethodName(
+      com.google.api.codegen.discovery.Method method, VisibilityConfig visibility) {
+
+    return getApiMethodName(
+        Name.upperCamel(discoveryMethodNamePieces(method)).join("async"), visibility);
   }
 
   protected String getApiMethodName(Name name, VisibilityConfig visibility) {
@@ -483,6 +501,13 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return privateFieldName(Name.upperCamel(method.getSimpleName(), "PagedCallable"));
   }
 
+  /** The name of the plain callable variant of the given method. */
+  public String getPagedCallableName(com.google.api.codegen.discovery.Method method) {
+    String[] namePieces = discoveryMethodNamePieces(method);
+    namePieces[namePieces.length] = "PagedCallable";
+    return publicMethodName(Name.upperCamel(namePieces));
+  }
+
   /** The name of the paged callable variant of the given method. */
   public String getPagedCallableMethodName(Method method) {
     return publicMethodName(Name.upperCamel(method.getSimpleName(), "PagedCallable"));
@@ -494,8 +519,22 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The name of the plain callable variant of the given method. */
+  public String getCallableMethodName(com.google.api.codegen.discovery.Method method) {
+    String[] namePieces = discoveryMethodNamePieces(method);
+    namePieces[namePieces.length] = "Callable";
+    return publicMethodName(Name.upperCamel(namePieces));
+  }
+
+  /** The name of the plain callable variant of the given method. */
   public String getCallableAsyncMethodName(Method method) {
     return publicMethodName(Name.upperCamel(method.getSimpleName(), "CallableAsync"));
+  }
+
+  /** The name of the plain callable variant of the given method. */
+  public String getCallableAsyncMethodName(com.google.api.codegen.discovery.Method method) {
+    String[] namePieces = discoveryMethodNamePieces(method);
+    namePieces[namePieces.length] = "CallableAsync";
+    return publicMethodName(Name.upperCamel(namePieces));
   }
 
   /** The name of the operation callable variant of the given method. */
@@ -508,6 +547,13 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return privateFieldName(Name.upperCamel(method.getSimpleName(), "Callable"));
   }
 
+  /** The name of the plain callable for the given method. */
+  public String getCallableName(com.google.api.codegen.discovery.Method method) {
+    String[] namePieces = discoveryMethodNamePieces(method);
+    namePieces[namePieces.length] = "Callable";
+    return publicMethodName(Name.upperCamel(namePieces));
+  }
+
   /** The name of the operation callable for the given method. */
   public String getOperationCallableName(Method method) {
     return privateFieldName(Name.upperCamel(method.getSimpleName(), "OperationCallable"));
@@ -518,8 +564,20 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return publicMethodName(Name.upperCamel(method.getSimpleName(), "Settings"));
   }
 
+  /** The name of the plain callable for the given method. */
+  public String getSettingsMemberName(com.google.api.codegen.discovery.Method method) {
+    String[] namePieces = discoveryMethodNamePieces(method);
+    namePieces[namePieces.length] = "Settings";
+    return publicMethodName(Name.upperCamel(namePieces));
+  }
+
   /** The getter function name for the settings for the given method. */
   public String getSettingsFunctionName(Method method) {
+    return getSettingsMemberName(method);
+  }
+
+  /** The getter function name for the settings for the given method. */
+  public String getSettingsFunctionName(com.google.api.codegen.discovery.Method method) {
     return getSettingsMemberName(method);
   }
 
@@ -632,7 +690,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The name of the field. */
-  public String getFieldName(Field field) {
+  public String getFieldName(FieldType field) {
     return publicFieldName(Name.from(field.getSimpleName()));
   }
 
@@ -895,6 +953,17 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getAndSavePagedResponseTypeName");
   }
 
+  /**
+   * Computes the nickname of the paged response type name for the given method and resources field,
+   * saves it in the given type table, and returns it.
+   */
+  public String getAndSavePagedResponseTypeName(
+      com.google.api.codegen.discovery.Method method,
+      ImportTypeTable typeTable,
+      FieldConfig resourcesFieldConfig) {
+    return getNotImplementedString("SurfaceNamer.getAndSavePagedResponseTypeName");
+  }
+
   /** The inner type name of the paged response type for the given method and resources field. */
   public String getPagedResponseTypeInnerName(
       Method method, ImportTypeTable typeTable, FieldType resourcesField) {
@@ -1093,6 +1162,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return inittedConstantName(Name.upperCamel(method.getSimpleName()).join("bundling_desc"));
   }
 
+  /** The name of the constant to hold the batching descriptor for the given method. */
+  public String getBatchingDescriptorConstName(com.google.api.codegen.discovery.Method method) {
+    return inittedConstantName(
+        Name.upperCamel(discoveryMethodNamePieces(method)).join("bundling_desc"));
+  }
+
   /** The key to use in a dictionary for the given method. */
   public String getMethodKey(Method method) {
     return keyName(Name.upperCamel(method.getSimpleName()));
@@ -1156,9 +1231,23 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return inittedConstantName(Name.upperCamel(method.getSimpleName()).join("page_str_desc"));
   }
 
+  /** The name of the constant to hold the page streaming descriptor for the given method. */
+  public String getPageStreamingDescriptorConstName(
+      com.google.api.codegen.discovery.Method method) {
+    return inittedConstantName(
+        Name.upperCamel(discoveryMethodNamePieces(method)).join("page_str_desc"));
+  }
+
   /** The name of the constant to hold the page streaming factory for the given method. */
   public String getPagedListResponseFactoryConstName(Method method) {
     return inittedConstantName(Name.upperCamel(method.getSimpleName()).join("page_str_fact"));
+  }
+
+  /** The name of the constant to hold the page streaming factory for the given method. */
+  public String getPagedListResponseFactoryConstName(
+      com.google.api.codegen.discovery.Method method) {
+    return inittedConstantName(
+        Name.upperCamel(discoveryMethodNamePieces(method)).join("page_str_fact"));
   }
 
   /** The string used to identify the method in the gRPC stub. Not all languages will use this. */

@@ -191,13 +191,7 @@ public abstract class GapicProductConfig implements ProductConfig {
 
     ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
         createDiscoGapicInterfaceConfigMap(
-            document,
-            new BoundedDiagCollector(),
-            configProto,
-            settings,
-            null,
-            resourceNameConfigs,
-            symbolTable);
+            document, new BoundedDiagCollector(), configProto, settings, null, resourceNameConfigs);
 
     ImmutableList<String> copyrightLines;
     ImmutableList<String> licenseLines;
@@ -301,8 +295,7 @@ public abstract class GapicProductConfig implements ProductConfig {
       ConfigProto configProto,
       LanguageSettingsProto languageSettings,
       ResourceNameMessageConfigs messageConfigs,
-      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      SymbolTable symbolTable) {
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs) {
     ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap = ImmutableMap.builder();
     for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
       String interfaceNameOverride =
@@ -316,8 +309,7 @@ public abstract class GapicProductConfig implements ProductConfig {
               interfaceConfigProto,
               interfaceNameOverride,
               messageConfigs,
-              resourceNameConfigs,
-              symbolTable);
+              resourceNameConfigs);
       if (interfaceConfig == null) {
         continue;
       }
@@ -496,8 +488,8 @@ public abstract class GapicProductConfig implements ProductConfig {
   }
 
   /** Returns the GapicInterfaceConfig for the given API interface. */
-  public GapicInterfaceConfig getInterfaceConfig(Interface apiInterface) {
-    return (GapicInterfaceConfig) getInterfaceConfigMap().get(apiInterface.getFullName());
+  public InterfaceConfig getInterfaceConfig(Interface apiInterface) {
+    return getInterfaceConfigMap().get(apiInterface.getFullName());
   }
 
   public InterfaceConfig getInterfaceConfig(String fullName) {

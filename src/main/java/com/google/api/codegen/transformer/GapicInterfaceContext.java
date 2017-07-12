@@ -176,7 +176,7 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
   public List<Method> getSupportedMethods() {
     List<Method> methods = new ArrayList<>(getInterfaceConfig().getMethodConfigs().size());
     for (MethodConfig methodConfig : getInterfaceConfig().getMethodConfigs()) {
-      Method method = methodConfig.getMethod();
+      Method method = ((GapicMethodConfig) methodConfig).getMethod();
       if (isSupported(method)) {
         methods.add(method);
       }
@@ -191,7 +191,7 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
   public List<Method> getPublicMethods() {
     List<Method> methods = new ArrayList<>(getInterfaceConfig().getMethodConfigs().size());
     for (MethodConfig methodConfig : getInterfaceConfig().getMethodConfigs()) {
-      Method method = methodConfig.getMethod();
+      Method method = ((GapicMethodConfig) methodConfig).getMethod();
       VisibilityConfig visibility = getInterfaceConfig().getMethodConfig(method).getVisibility();
       if (isSupported(method) && visibility == VisibilityConfig.PUBLIC) {
         methods.add(method);

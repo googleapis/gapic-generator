@@ -16,7 +16,6 @@ package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.LanguageUtil;
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
@@ -258,7 +257,9 @@ public class JavaModelTypeNameConverter extends ModelTypeNameConverter {
   public TypeName getTypeNameForTypedResourceName(
       FieldConfig fieldConfig, String typedResourceShortName) {
     return getTypeNameForTypedResourceName(
-        fieldConfig.getResourceNameConfig(), fieldConfig.getField().getProtoBasedField().getType(), typedResourceShortName);
+        fieldConfig.getResourceNameConfig(),
+        fieldConfig.getField().getProtoBasedField().getType(),
+        typedResourceShortName);
   }
 
   @Override

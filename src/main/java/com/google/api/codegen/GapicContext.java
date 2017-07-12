@@ -16,6 +16,7 @@ package com.google.api.codegen;
 
 import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.config.GapicInterfaceConfig;
+import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.ProductServiceConfig;
@@ -142,14 +143,15 @@ public class GapicContext extends CodegenContext {
    * rerouting. TODO replace getSupportedMethods with this when all languages are migrated.
    */
   public List<Method> getSupportedMethodsV2(Interface apiInterface) {
-    GapicInterfaceConfig interfaceConfig = getApiConfig().getInterfaceConfig(apiInterface);
+    GapicInterfaceConfig interfaceConfig =
+        (GapicInterfaceConfig) getApiConfig().getInterfaceConfig(apiInterface);
     if (interfaceConfig == null) {
       throw new IllegalStateException(
           "Service not configured in GAPIC config: " + apiInterface.getFullName());
     }
     List<Method> methods = new ArrayList<>(interfaceConfig.getMethodConfigs().size());
     for (MethodConfig methodConfig : interfaceConfig.getMethodConfigs()) {
-      Method method = methodConfig.getMethod();
+      Method method = ((GapicMethodConfig) methodConfig).getMethod();
       if (isSupported(method)) {
         methods.add(method);
       }

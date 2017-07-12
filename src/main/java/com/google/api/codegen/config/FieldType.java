@@ -32,22 +32,17 @@ public class FieldType {
 
   @Nullable Schema schemaField;
 
-  private final String fullName;
-
   public final ModelType modelType;
 
   public FieldType(Field protoBasedField) {
     Preconditions.checkNotNull(protoBasedField);
     this.protoBasedField = protoBasedField;
-    this.fullName = protoBasedField.getFullName();
     modelType = PROTO;
   }
 
-  // TODO(andrealin): may not need schemaFullName
-  public FieldType(Schema schemaField, String schemaFullName) {
+  public FieldType(Schema schemaField) {
     Preconditions.checkNotNull(schemaField);
     this.schemaField = schemaField;
-    this.fullName = schemaFullName;
     modelType = DISCOVERY;
   }
 
@@ -75,7 +70,14 @@ public class FieldType {
   }
 
   public String getFullName() {
-    return fullName;
+    switch (getModelType()) {
+      case PROTO:
+        return protoBasedField.getFullName();
+      case DISCOVERY:
+        return schemaField.getIdentifier();
+      default:
+        throw new IllegalArgumentException("Unhandled model type.");
+    }
   }
 
   public boolean isMap() {

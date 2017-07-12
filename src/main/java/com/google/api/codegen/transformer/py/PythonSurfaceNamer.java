@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer.py;
 
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ServiceMessages;
+import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
@@ -169,7 +170,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   @Override
   public List<String> getReturnDocLines(
       InterfaceContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
-    TypeRef outputType = methodConfig.getMethod().getOutputType();
+    TypeRef outputType = ((GapicMethodConfig) methodConfig).getMethod().getOutputType();
     if (ServiceMessages.s_isEmptyType(outputType)) {
       return ImmutableList.<String>of();
     }
@@ -180,7 +181,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
             : getModelTypeFormatter().getFullNameFor(outputType);
     String classInfo = ":class:`" + returnTypeName + "`";
 
-    if (methodConfig.getMethod().getResponseStreaming()) {
+    if (((GapicMethodConfig) methodConfig).getMethod().getResponseStreaming()) {
       return ImmutableList.of("iterator[" + classInfo + "].");
     }
 

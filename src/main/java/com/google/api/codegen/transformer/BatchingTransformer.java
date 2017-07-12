@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.BatchingConfig;
+import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.BatchingConfigView;
@@ -22,7 +23,6 @@ import com.google.api.codegen.viewmodel.BatchingDescriptorClassView;
 import com.google.api.codegen.viewmodel.BatchingDescriptorView;
 import com.google.api.codegen.viewmodel.BatchingPartitionKeyView;
 import com.google.api.codegen.viewmodel.FieldCopyView;
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.FieldSelector;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
@@ -47,7 +47,8 @@ public class BatchingTransformer {
       }
 
       descriptor.byteLengthFunctionName(
-          namer.getByteLengthFunctionName(batching.getBatchedField().getType()));
+          namer.getByteLengthFunctionName(
+              batching.getBatchedField().getProtoBasedField().getType()));
       descriptors.add(descriptor.build());
     }
     return descriptors.build();
@@ -99,11 +100,11 @@ public class BatchingTransformer {
     Method method = context.getMethod();
     BatchingConfig batching = context.getMethodConfig().getBatching();
 
-    Field batchedField = batching.getBatchedField();
-    TypeRef batchedType = batchedField.getType();
+    FieldType batchedField = batching.getBatchedField();
+    TypeRef batchedType = batchedField.getProtoBasedField().getType();
     Name batchedTypeName = Name.from(batchedField.getSimpleName());
 
-    Field subresponseField = batching.getSubresponseField();
+    FieldType subresponseField = batching.getSubresponseField();
 
     BatchingDescriptorClassView.Builder desc = BatchingDescriptorClassView.newBuilder();
 
@@ -120,7 +121,7 @@ public class BatchingTransformer {
     desc.batchedFieldCountGetFunction(namer.getFieldCountGetFunctionName(batchedField));
 
     if (subresponseField != null) {
-      TypeRef subresponseType = subresponseField.getType();
+      TypeRef subresponseType = subresponseField.getProtoBasedField().getType();
       Name subresponseTypeName = Name.from(subresponseField.getSimpleName());
       desc.subresponseTypeName(typeTable.getAndSaveNicknameFor(subresponseType));
       desc.subresponseByIndexGetFunction(namer.getByIndexGetFunctionName(subresponseField));

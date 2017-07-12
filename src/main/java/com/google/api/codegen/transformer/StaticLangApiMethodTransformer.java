@@ -35,7 +35,6 @@ import com.google.api.codegen.viewmodel.SimpleParamDocView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView.Builder;
 import com.google.api.codegen.viewmodel.UnpagedListCallableMethodDetailView;
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -511,14 +510,14 @@ public class StaticLangApiMethodTransformer {
     String responseTypeName = typeTable.getAndSaveNicknameFor(context.getMethod().getOutputType());
 
     FieldConfig resourceFieldConfig = pageStreaming.getResourcesFieldConfig();
-    Field resourceField = resourceFieldConfig.getField().getProtoBasedField();
+    FieldType resourceField = resourceFieldConfig.getField();
 
     String resourceTypeName;
 
     if (context.getFeatureConfig().useResourceNameFormatOption(resourceFieldConfig)) {
       resourceTypeName = namer.getAndSaveElementResourceTypeName(typeTable, resourceFieldConfig);
     } else {
-      resourceTypeName = typeTable.getAndSaveNicknameForElementType(resourceField.getType());
+      resourceTypeName = typeTable.getAndSaveNicknameForElementType(resourceField);
     }
 
     String iterateMethodName =

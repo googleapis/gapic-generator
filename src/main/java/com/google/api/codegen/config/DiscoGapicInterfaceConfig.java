@@ -17,17 +17,14 @@ package com.google.api.codegen.config;
 import static com.google.api.codegen.config.DiscoGapicMethodConfig.createDiscoGapicMethodConfig;
 
 import com.google.api.codegen.CollectionConfigProto;
-import com.google.api.codegen.IamResourceProto;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.discovery.Document;
+import com.google.api.codegen.discovery.Method;
 import com.google.api.gax.core.RetrySettings;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
-import com.google.api.tools.framework.model.Field;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
-import com.google.api.tools.framework.model.SymbolTable;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -75,8 +72,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
       InterfaceConfigProto interfaceConfigProto,
       String interfaceNameOverride,
       ResourceNameMessageConfigs messageConfigs,
-      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      SymbolTable symbolTable) {
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs) {
 
     ImmutableMap<String, ImmutableSet<Status.Code>> retryCodesDefinition =
         GapicInterfaceConfig.createRetryCodesDefinition(diagCollector, interfaceConfigProto);
@@ -95,20 +91,15 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
               messageConfigs,
               resourceNameConfigs,
               retryCodesDefinition.keySet(),
-              retrySettingsDefinition.keySet(),
-              symbolTable);
+              retrySettingsDefinition.keySet());
       methodConfigs =
           GapicInterfaceConfig.createMethodConfigs(methodConfigMap, interfaceConfigProto);
     }
 
     // TODO(andrealin)  Make non-null smokeTestConfig
-    //    SmokeTestConfig smokeTestConfig =
-    //        createSmokeTestConfig(diagCollector, apiInterface, interfaceConfigProto);
     SmokeTestConfig smokeTestConfig = null;
 
-    ImmutableList<Field> iamResources =
-        createIamResources(
-            document, interfaceConfigProto.getExperimentalFeatures().getIamResourcesList());
+    // TODO(andrealin) IAM permissions configs?
 
     ImmutableList<String> requiredConstructorParams =
         ImmutableList.<String>copyOf(interfaceConfigProto.getRequiredConstructorParamsList());
@@ -156,12 +147,15 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
     //    return new AutoValue_DiscoGapicInterfaceConfig(methodConfigs, document.name(), null);
   }
 
-  /** Creates a list of fields that can be turned into IAM resources */
-  private static ImmutableList<Field> createIamResources(
-      Document document, List<IamResourceProto> resources) {
-    // TODO(andrealin): what is happening
-    ImmutableList.Builder<Field> fields = ImmutableList.builder();
-    return fields.build();
+  private static Method lookupMethod(Document source, String methodName) {
+    for (com.google.api.codegen.discovery.Method method : source.methods()) {
+      String[] methodNamePieces = method.id().split("\\.");
+      String shortMethodName = methodNamePieces[methodNamePieces.length - 1];
+      if (methodName.toLowerCase().equals(shortMethodName)) {
+        return method;
+      }
+    }
+    return null;
   }
 
   private static ImmutableMap<String, DiscoGapicMethodConfig> createMethodConfigMap(
@@ -172,14 +166,14 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       ImmutableSet<String> retryCodesConfigNames,
-      ImmutableSet<String> retryParamsConfigNames,
-      SymbolTable symbolTable) {
+      ImmutableSet<String> retryParamsConfigNames) {
     ImmutableMap.Builder<String, DiscoGapicMethodConfig> methodConfigMapBuilder =
         ImmutableMap.builder();
 
     for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {
-      //      Method method = document.methods().(methodConfigProto.getName());
-      Method method = symbolTable.lookupMethodSimpleName(methodConfigProto.getName()).get(0);
+      com.google.api.codegen.discovery.Method method =
+          lookupMethod(document, methodConfigProto.getName());
+      //      Method method = symbolTable.lookupMethodSimpleName(methodConfigProto.getName()).get(0);
       if (method == null) {
         diagCollector.addDiag(
             Diag.error(
@@ -254,18 +248,26 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
     return false;
   }
 
+  @Override
   public boolean hasDefaultInstance() {
     return getRequiredConstructorParams().size() == 0;
   }
 
   /** Returns the DiscoGapicMethodConfig for the given method. */
-  public MethodConfig getMethodConfig(Method method) {
-    MethodConfig methodConfig = getMethodConfigMap().get(method.getSimpleName());
+  @Override
+  public DiscoGapicMethodConfig getMethodConfig(Method method) {
+    DiscoGapicMethodConfig methodConfig =
+        (DiscoGapicMethodConfig) getMethodConfigMap().get(method.id());
     if (methodConfig == null) {
-      throw new IllegalArgumentException(
-          "no method config for method '" + method.getFullName() + "'");
+      throw new IllegalArgumentException("no method config for method '" + method.id() + "'");
     }
     return methodConfig;
+  }
+
+  @Override
+  @Nullable
+  public MethodConfig getMethodConfig(com.google.api.tools.framework.model.Method method) {
+    return null;
   }
 
   abstract ImmutableMap<String, ? extends MethodConfig> getMethodConfigMap();

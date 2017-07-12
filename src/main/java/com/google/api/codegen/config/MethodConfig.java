@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
+import com.google.api.codegen.discovery.Schema;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
@@ -35,11 +36,10 @@ import javax.annotation.Nullable;
 import org.joda.time.Duration;
 
 /**
- * GapicMethodConfig represents the code-gen config for a method, and includes the specification of
+ * MethodConfig represents the code-gen config for a method, and includes the specification of
  * features like page streaming and parameter flattening.
  */
 public abstract class MethodConfig {
-  public abstract Method getMethod();
 
   @Nullable
   public abstract PageStreamingConfig getPageStreaming();
@@ -112,6 +112,38 @@ public abstract class MethodConfig {
     return flatteningGroupsBuilder.build();
   }
 
+  // TODO(andrealin): This is an exact copy of the above function. gross.
+  @Nullable
+  static ImmutableList<FlatteningConfig> createFlattening(
+      DiagCollector diagCollector,
+      ResourceNameMessageConfigs messageConfigs,
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
+      MethodConfigProto methodConfigProto,
+      com.google.api.codegen.discovery.Method method) {
+    boolean missing = false;
+    ImmutableList.Builder<FlatteningConfig> flatteningGroupsBuilder = ImmutableList.builder();
+    for (FlatteningGroupProto flatteningGroup : methodConfigProto.getFlattening().getGroupsList()) {
+      FlatteningConfig groupConfig =
+          FlatteningConfig.createFlattening(
+              diagCollector,
+              messageConfigs,
+              resourceNameConfigs,
+              methodConfigProto,
+              flatteningGroup,
+              method);
+      if (groupConfig == null) {
+        missing = true;
+      } else {
+        flatteningGroupsBuilder.add(groupConfig);
+      }
+    }
+    if (missing) {
+      return null;
+    }
+
+    return flatteningGroupsBuilder.build();
+  }
+
   static Iterable<FieldType> getRequiredFields(
       DiagCollector diagCollector, Method method, List<String> requiredFieldNames) {
     ImmutableList.Builder<FieldType> fieldsBuilder = ImmutableList.builder();
@@ -131,10 +163,43 @@ public abstract class MethodConfig {
     return fieldsBuilder.build();
   }
 
+  static Iterable<FieldType> getRequiredFields(
+      DiagCollector diagCollector,
+      com.google.api.codegen.discovery.Method method,
+      List<String> requiredFieldNames) {
+    ImmutableList.Builder<FieldType> fieldsBuilder = ImmutableList.builder();
+    for (String fieldName : requiredFieldNames) {
+      Schema requiredField = method.parameters().get(fieldName);
+      if (requiredField == null) {
+        diagCollector.addDiag(
+            Diag.error(
+                SimpleLocation.TOPLEVEL,
+                "Required field '%s' not found (in method %s)",
+                fieldName,
+                method.id()));
+        return null;
+      }
+      fieldsBuilder.add(new FieldType(requiredField));
+    }
+    return fieldsBuilder.build();
+  }
+
   static Iterable<FieldType> getOptionalFields(Method method, List<String> requiredFieldNames) {
     ImmutableList.Builder<FieldType> fieldsBuilder = ImmutableList.builder();
     for (Field field : method.getInputType().getMessageType().getFields()) {
       if (requiredFieldNames.contains(field.getSimpleName())) {
+        continue;
+      }
+      fieldsBuilder.add(new FieldType(field));
+    }
+    return fieldsBuilder.build();
+  }
+
+  static Iterable<FieldType> getOptionalFields(
+      com.google.api.codegen.discovery.Method method, List<String> requiredFieldNames) {
+    ImmutableList.Builder<FieldType> fieldsBuilder = ImmutableList.builder();
+    for (Schema field : method.parameters().values()) {
+      if (requiredFieldNames.contains(field.getIdentifier())) {
         continue;
       }
       fieldsBuilder.add(new FieldType(field));

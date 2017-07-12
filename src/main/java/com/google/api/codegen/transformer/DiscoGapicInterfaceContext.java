@@ -14,16 +14,17 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.config.GapicInterfaceConfig;
+import com.google.api.codegen.config.DiscoGapicInterfaceConfig;
+import com.google.api.codegen.config.DiscoGapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Document;
+import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.util.TypeTable;
 import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import com.google.auto.value.AutoValue;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +73,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   public List<Method> getSupportedMethods() {
     List<Method> methods = new ArrayList<>(getInterfaceConfig().getMethodConfigs().size());
     for (MethodConfig methodConfig : getInterfaceConfig().getMethodConfigs()) {
-      Method method = methodConfig.getMethod();
+      Method method = ((DiscoGapicMethodConfig) methodConfig).getMethod();
       if (isSupported(method)) {
         methods.add(method);
       }
@@ -86,20 +87,20 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   }
 
   /** Returns the GapicMethodConfig for the given method. */
-  public MethodConfig getMethodConfig(Method method) {
+  public DiscoGapicMethodConfig getMethodConfig(Method method) {
     Interface originalInterface = getInterface();
-    GapicInterfaceConfig originalGapicInterfaceConfig =
-        getProductConfig().getInterfaceConfig(originalInterface);
+    DiscoGapicInterfaceConfig originalGapicInterfaceConfig =
+        (DiscoGapicInterfaceConfig) getProductConfig().getInterfaceConfig(originalInterface);
     if (originalGapicInterfaceConfig != null) {
       return originalGapicInterfaceConfig.getMethodConfig(method);
     } else {
       throw new IllegalArgumentException(
-          "Interface config does not exist for method: " + method.getSimpleName());
+          "Interface config does not exist for method: " + method.id());
     }
   }
 
-  public GapicMethodContext asRequestMethodContext(Method method) {
-    return GapicMethodContext.create(
+  public DiscoGapicMethodContext asRequestMethodContext(Method method) {
+    return DiscoGapicMethodContext.create(
         this,
         getInterface(),
         getProductConfig(),

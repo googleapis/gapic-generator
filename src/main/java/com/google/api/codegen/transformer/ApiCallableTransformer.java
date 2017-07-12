@@ -18,6 +18,7 @@ import com.google.api.codegen.config.LongRunningConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.VisibilityConfig;
+import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.viewmodel.ApiCallSettingsView;
 import com.google.api.codegen.viewmodel.ApiCallableImplType;
 import com.google.api.codegen.viewmodel.ApiCallableView;
@@ -62,7 +63,7 @@ public class ApiCallableTransformer {
     List<ApiCallableView> callableMembers = new ArrayList<>();
     boolean excludeMixins = !context.getFeatureConfig().enableMixins();
 
-    for (Method method : context.getSupportedMethods()) {
+    for (com.google.api.codegen.discovery.Method method : context.getSupportedMethods()) {
       if (excludeMixins && context.getMethodConfig(method).getRerouteToGrpcInterface() != null) {
         continue;
       }
@@ -99,6 +100,22 @@ public class ApiCallableTransformer {
     return apiCallables;
   }
 
+  private List<ApiCallableView> generateStaticLangApiCallables(DiscoGapicMethodContext context) {
+    List<ApiCallableView> apiCallables = new ArrayList<>();
+
+    apiCallables.add(generateMainApiCallable(context));
+
+    if (context.getMethodConfig().isPageStreaming()) {
+      apiCallables.add(generatePagedApiCallable(context));
+    }
+
+    if (context.getMethodConfig().isLongRunningOperation()) {
+      apiCallables.add(generateOperationApiCallable(context));
+    }
+
+    return apiCallables;
+  }
+
   private ApiCallableView generateMainApiCallable(GapicMethodContext context) {
     ModelTypeTable typeTable = context.getTypeTable();
     Method method = context.getMethod();
@@ -109,6 +126,42 @@ public class ApiCallableTransformer {
 
     apiCallableBuilder.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
     apiCallableBuilder.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));
+    apiCallableBuilder.name(namer.getCallableName(method));
+    apiCallableBuilder.methodName(
+        namer.getApiMethodName(method, context.getMethodConfig().getVisibility()));
+    apiCallableBuilder.asyncMethodName(
+        namer.getAsyncApiMethodName(method, VisibilityConfig.PUBLIC));
+    apiCallableBuilder.memberName(namer.getSettingsMemberName(method));
+    apiCallableBuilder.settingsFunctionName(context.getNamer().getSettingsFunctionName(method));
+    apiCallableBuilder.grpcClientVarName(namer.getReroutedGrpcClientVarName(methodConfig));
+
+    ApiCallableImplType callableImplType = ApiCallableImplType.SimpleApiCallable;
+    if (methodConfig.isGrpcStreaming()) {
+      callableImplType = ApiCallableImplType.StreamingApiCallable;
+      apiCallableBuilder.grpcStreamingType(methodConfig.getGrpcStreaming().getType());
+    } else if (methodConfig.isBatching()) {
+      callableImplType = ApiCallableImplType.BatchingApiCallable;
+    } else if (methodConfig.isLongRunningOperation()) {
+      callableImplType = ApiCallableImplType.InitialOperationApiCallable;
+    }
+    apiCallableBuilder.type(callableImplType);
+    apiCallableBuilder.interfaceTypeName(
+        namer.getApiCallableTypeName(callableImplType.serviceMethodType()));
+
+    return apiCallableBuilder.build();
+  }
+
+  private ApiCallableView generateMainApiCallable(DiscoGapicMethodContext context) {
+    SchemaTypeTable typeTable = context.getTypeTable();
+    com.google.api.codegen.discovery.Method method = context.getMethod();
+    MethodConfig methodConfig = context.getMethodConfig();
+    SurfaceNamer namer = context.getNamer();
+    DiscoGapicNamer discoGapicNamer = context.getDiscoGapicNamer();
+
+    ApiCallableView.Builder apiCallableBuilder = ApiCallableView.newBuilder();
+
+    apiCallableBuilder.requestTypeName(discoGapicNamer.getRequestName(method.id()));
+    apiCallableBuilder.responseTypeName(typeTable.getAndSaveNicknameFor(method.response()));
     apiCallableBuilder.name(namer.getCallableName(method));
     apiCallableBuilder.methodName(
         namer.getApiMethodName(method, context.getMethodConfig().getVisibility()));
@@ -165,6 +218,38 @@ public class ApiCallableTransformer {
     return pagedApiCallableBuilder.build();
   }
 
+  private ApiCallableView generatePagedApiCallable(DiscoGapicMethodContext context) {
+    ImportTypeTable typeTable = context.getTypeTable();
+    com.google.api.codegen.discovery.Method method = context.getMethod();
+    MethodConfig methodConfig = context.getMethodConfig();
+    SurfaceNamer namer = context.getNamer();
+    DiscoGapicNamer discoGapicNamer = context.getDiscoGapicNamer();
+
+    PageStreamingConfig pageStreaming = methodConfig.getPageStreaming();
+
+    ApiCallableView.Builder pagedApiCallableBuilder = ApiCallableView.newBuilder();
+    pagedApiCallableBuilder.type(ApiCallableImplType.PagedApiCallable);
+    pagedApiCallableBuilder.interfaceTypeName(
+        namer.getApiCallableTypeName(ServiceMethodType.UnaryMethod));
+
+    String pagedResponseTypeName =
+        namer.getAndSavePagedResponseTypeName(
+            method, typeTable, pageStreaming.getResourcesFieldConfig());
+
+    pagedApiCallableBuilder.requestTypeName(discoGapicNamer.getRequestName(method.id()));
+    pagedApiCallableBuilder.responseTypeName(pagedResponseTypeName);
+    pagedApiCallableBuilder.name(namer.getPagedCallableName(method));
+    pagedApiCallableBuilder.methodName(
+        namer.getApiMethodName(method, context.getMethodConfig().getVisibility()));
+    pagedApiCallableBuilder.asyncMethodName(
+        namer.getAsyncApiMethodName(method, VisibilityConfig.PUBLIC));
+    pagedApiCallableBuilder.memberName(namer.getSettingsMemberName(method));
+    pagedApiCallableBuilder.settingsFunctionName(namer.getSettingsFunctionName(method));
+    pagedApiCallableBuilder.grpcClientVarName(namer.getReroutedGrpcClientVarName(methodConfig));
+
+    return pagedApiCallableBuilder.build();
+  }
+
   private ApiCallableView generateOperationApiCallable(GapicMethodContext context) {
     ModelTypeTable typeTable = context.getTypeTable();
     Method method = context.getMethod();
@@ -184,6 +269,33 @@ public class ApiCallableTransformer {
         typeTable.getAndSaveNicknameFor(method.getInputType()));
     operationApiCallableBuilder.responseTypeName(operationResponseTypeName);
     operationApiCallableBuilder.name(namer.getOperationCallableName(method));
+    operationApiCallableBuilder.methodName(
+        namer.getApiMethodName(method, context.getMethodConfig().getVisibility()));
+    operationApiCallableBuilder.asyncMethodName(
+        namer.getAsyncApiMethodName(method, VisibilityConfig.PUBLIC));
+    operationApiCallableBuilder.memberName(namer.getSettingsMemberName(method));
+    operationApiCallableBuilder.settingsFunctionName(namer.getSettingsFunctionName(method));
+    operationApiCallableBuilder.grpcClientVarName(namer.getReroutedGrpcClientVarName(methodConfig));
+
+    return operationApiCallableBuilder.build();
+  }
+
+  private ApiCallableView generateOperationApiCallable(DiscoGapicMethodContext context) {
+    SchemaTypeTable typeTable = context.getTypeTable();
+    com.google.api.codegen.discovery.Method method = context.getMethod();
+    MethodConfig methodConfig = context.getMethodConfig();
+    SurfaceNamer namer = context.getNamer();
+    DiscoGapicNamer discoGapicNamer = context.getDiscoGapicNamer();
+
+    ApiCallableView.Builder operationApiCallableBuilder = ApiCallableView.newBuilder();
+    operationApiCallableBuilder.type(ApiCallableImplType.OperationApiCallable);
+    operationApiCallableBuilder.interfaceTypeName(
+        namer.getApiCallableTypeName(ServiceMethodType.LongRunningMethod));
+
+    String operationResponseTypeName = "Not implemented.";
+
+    operationApiCallableBuilder.requestTypeName(discoGapicNamer.getRequestName(method.id()));
+    operationApiCallableBuilder.responseTypeName(operationResponseTypeName);
     operationApiCallableBuilder.methodName(
         namer.getApiMethodName(method, context.getMethodConfig().getVisibility()));
     operationApiCallableBuilder.asyncMethodName(

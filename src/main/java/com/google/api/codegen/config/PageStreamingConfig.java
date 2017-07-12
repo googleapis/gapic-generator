@@ -16,7 +16,7 @@ package com.google.api.codegen.config;
 
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.PageStreamingConfigProto;
-import com.google.api.codegen.discogapic.DiscoGapicMethod;
+import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
@@ -131,63 +131,70 @@ public abstract class PageStreamingConfig {
    * provided method. On errors, null will be returned, and diagnostics are reported to the diag
    * collector.
    *
-   * @param methodDesc Method descriptor for the method to create config for.
+   * @param method Method descriptor for the method to create config for.
    */
   @Nullable
   public static PageStreamingConfig createPageStreaming(
       DiagCollector diagCollector,
       ResourceNameMessageConfigs messageConfigs,
-      DiscoGapicMethod methodDesc) {
+      com.google.api.codegen.discovery.Method method) {
     // TODO(andrealin): Put this in yaml file somewhere instead of hardcoding.
     String pageSizeFieldName = "maxResults";
     String requestTokenFieldName = "pageToken";
     String responseTokenFieldName = "nextPageToken";
 
-    Schema requestTokenField = methodDesc.method().parameters().get(requestTokenFieldName);
+    Schema requestTokenField = method.parameters().get(requestTokenFieldName);
     if (requestTokenField == null) {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
               "Request field missing for page streaming: method = %s, message type = %s, field = %s",
-              methodDesc.getFullName(),
-              methodDesc.requestFullName(),
+              method.id(),
+              method.id(),
               requestTokenFieldName));
     }
 
-    Schema pageSizeField = methodDesc.method().parameters().get(pageSizeFieldName);
+    Schema pageSizeField = method.parameters().get(pageSizeFieldName);
     if (!Strings.isNullOrEmpty(pageSizeFieldName)) {
-      pageSizeField = methodDesc.method().parameters().get(pageSizeFieldName);
+      pageSizeField = method.parameters().get(pageSizeFieldName);
       if (pageSizeField == null) {
         diagCollector.addDiag(
             Diag.error(
                 SimpleLocation.TOPLEVEL,
                 "Request field missing for page streaming: method = %s, message type = %s, field = %s",
-                methodDesc.getFullName(),
-                methodDesc.requestFullName(),
+                method.id(),
+                method.id(),
                 pageSizeFieldName));
       }
     }
 
-    Schema responseTokenField = methodDesc.method().parameters().get(responseTokenFieldName);
+    Schema responseTokenField = null;
+    if (method.response().hasProperty(responseTokenFieldName)) {
+      responseTokenField = method.response().properties().get(responseTokenFieldName);
+    } else if (!method.response().reference().isEmpty()){
+      Document document = method.getRootDocument();
+      responseTokenField = document.schemas().get(method.response().reference());
+    }
+
     if (responseTokenField == null) {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
               "Response field missing for page streaming: method = %s, message type = %s, field = %s",
-              methodDesc.getFullName(),
-              methodDesc.requestFullName(),
+              method.id(),
+              method.id(),
               responseTokenFieldName));
     }
 
-    Schema resourcesField = methodDesc.method().response();
+    Schema resourcesField = method.response();
     FieldConfig resourcesFieldConfig;
     if (resourcesField == null) {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
               "Resources field missing for page streaming: method = %s, message type = %s, field = %s",
-              methodDesc.getFullName(),
-              methodDesc.requestFullName(),
+              method.id(),
+              method.id(),
               resourcesField.getIdentifier()));
       resourcesFieldConfig = null;
     } else {
@@ -196,8 +203,7 @@ public abstract class PageStreamingConfig {
               messageConfigs,
               //              resourceNameConfigs,
               null,
-              new FieldType(
-                  resourcesField, methodDesc.schemaTypeTable().getFullNameFor(resourcesField)),
+              new FieldType(resourcesField),
               null);
     }
 
@@ -205,9 +211,9 @@ public abstract class PageStreamingConfig {
       return null;
     }
     return new AutoValue_PageStreamingConfig(
-        new FieldType(requestTokenField, requestTokenFieldName),
-        new FieldType(pageSizeField, pageSizeFieldName),
-        new FieldType(responseTokenField, responseTokenFieldName),
+        new FieldType(requestTokenField),
+        new FieldType(pageSizeField),
+        new FieldType(responseTokenField),
         resourcesFieldConfig);
   }
 

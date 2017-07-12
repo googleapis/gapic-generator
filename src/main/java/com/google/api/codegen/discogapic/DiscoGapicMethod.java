@@ -14,10 +14,13 @@
  */
 package com.google.api.codegen.discogapic;
 
+import com.google.api.codegen.discogapic.AutoValue_DiscoGapicMethod.Builder;
 import com.google.api.codegen.discovery.Method;
+import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.transformer.SchemaTypeTable;
 import com.google.api.tools.framework.model.Interface;
 import com.google.auto.value.AutoValue;
+import javax.annotation.Nullable;
 
 /** Represents a method declaration. The REST accessors correspond to the primary REST binding. */
 @AutoValue
@@ -26,14 +29,15 @@ public abstract class DiscoGapicMethod {
   /** @return The underlying Discovery Document model for the method. */
   public abstract Method method();
 
-  /** @return The fully-qualified type name for the inner request object. */
-  public abstract String resourceFullName();
+  /** @return The type of the inner resource object. */
+  public abstract Schema resourceType();
 
-  /** @return The fully-qualified type name for the encapsulating request object. */
-  public abstract String requestFullName();
+  /** @return The type of the encapsulating request object. */
+  public abstract Schema requestType();
 
-  /** @return The fully-qualified type name for the response object. */
-  public abstract String responseFullName();
+  /** @return The type of the response object. */
+  @Nullable
+  public abstract Schema responseType();
 
   /**
    * @return The type table containing the fully qualified names for the resources, requests, and
@@ -42,6 +46,7 @@ public abstract class DiscoGapicMethod {
   public abstract SchemaTypeTable schemaTypeTable();
 
   /** @return ????? hopefully the yaml config. */
+  @Nullable
   public abstract Interface parent();
 
   @Override
@@ -51,5 +56,27 @@ public abstract class DiscoGapicMethod {
 
   public String getFullName() {
     return "method " + method().id();
+  }
+
+  public static Builder newBuilder() {
+    return new AutoValue_DiscoGapicMethod.Builder();
+  }
+
+  @AutoValue.Builder
+  public abstract static class Builder {
+
+    public abstract Builder setMethod(Method method);
+
+    public abstract Builder setResourceType(Schema resource);
+
+    public abstract Builder setRequestType(Schema request);
+
+    public abstract Builder setResponseType(Schema response);
+
+    public abstract Builder setSchemaTypeTable(SchemaTypeTable schemaTypeTable);
+
+    public abstract Builder setParent(Interface parent);
+
+    public abstract DiscoGapicMethod build();
   }
 }

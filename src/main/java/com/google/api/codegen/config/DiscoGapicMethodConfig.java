@@ -16,7 +16,6 @@ package com.google.api.codegen.config;
 
 import com.google.api.codegen.BatchingConfigProto;
 import com.google.api.codegen.FlatteningConfigProto;
-import com.google.api.codegen.LongRunningConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.PageStreamingConfigProto;
 import com.google.api.codegen.ReleaseLevel;
@@ -24,9 +23,9 @@ import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.SurfaceTreatmentProto;
 import com.google.api.codegen.VisibilityProto;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
+import com.google.api.codegen.discovery.Method;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
@@ -42,6 +41,8 @@ import org.joda.time.Duration;
 /** Created by andrealin on 6/15/17. */
 @AutoValue
 public abstract class DiscoGapicMethodConfig extends MethodConfig {
+  public abstract Method getMethod();
+
   @Override
   public boolean isGrpcStreaming() {
     return false;
@@ -73,7 +74,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
       DiagCollector diagCollector,
       String language,
       MethodConfigProto methodConfigProto,
-      Method method,
+      com.google.api.codegen.discovery.Method method,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       ImmutableSet<String> retryCodesConfigNames,
@@ -85,14 +86,11 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
     if (!PageStreamingConfigProto.getDefaultInstance()
         .equals(methodConfigProto.getPageStreaming())) {
       pageStreaming =
-          PageStreamingConfig.createPageStreaming(
-              diagCollector, messageConfigs, resourceNameConfigs, methodConfigProto, method);
+          PageStreamingConfig.createPageStreaming(diagCollector, messageConfigs, method);
       if (pageStreaming == null) {
         error = true;
       }
     }
-
-    GrpcStreamingConfig grpcStreaming = null;
 
     ImmutableList<FlatteningConfig> flattening = null;
     if (!FlatteningConfigProto.getDefaultInstance().equals(methodConfigProto.getFlattening())) {
@@ -120,7 +118,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
               SimpleLocation.TOPLEVEL,
               "Retry codes config used but not defined: '%s' (in method %s)",
               retryCodesName,
-              method.getFullName()));
+              method.id()));
       error = true;
     }
 
@@ -131,7 +129,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
               SimpleLocation.TOPLEVEL,
               "Retry parameters config used but not defined: %s (in method %s)",
               retryParamsName,
-              method.getFullName()));
+              method.id()));
       error = true;
     }
 
@@ -141,7 +139,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
           Diag.error(
               SimpleLocation.TOPLEVEL,
               "Default timeout not found or has invalid value (in method %s)",
-              method.getFullName()));
+              method.id()));
       error = true;
     }
 
@@ -158,23 +156,24 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
     }
 
     Iterable<FieldConfig> requiredFieldConfigs =
-        GapicMethodConfig.createFieldNameConfigs(
+        DiscoGapicMethodConfig.createFieldNameConfigs(
             diagCollector,
             messageConfigs,
             defaultResourceNameTreatment,
             fieldNamePatterns,
             resourceNameConfigs,
-            GapicMethodConfig.getRequiredFields(
+            DiscoGapicMethodConfig.getRequiredFields(
                 diagCollector, method, methodConfigProto.getRequiredFieldsList()));
 
     Iterable<FieldConfig> optionalFieldConfigs =
-        GapicMethodConfig.createFieldNameConfigs(
+        DiscoGapicMethodConfig.createFieldNameConfigs(
             diagCollector,
             messageConfigs,
             defaultResourceNameTreatment,
             fieldNamePatterns,
             resourceNameConfigs,
-            GapicMethodConfig.getOptionalFields(method, methodConfigProto.getRequiredFieldsList()));
+            DiscoGapicMethodConfig.getOptionalFields(
+                method, methodConfigProto.getRequiredFieldsList()));
 
     List<String> sampleCodeInitFields = new ArrayList<>();
     sampleCodeInitFields.addAll(methodConfigProto.getRequiredFieldsList());
@@ -198,20 +197,11 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
     }
 
     LongRunningConfig longRunningConfig = null;
-    if (!LongRunningConfigProto.getDefaultInstance().equals(methodConfigProto.getLongRunning())) {
-      longRunningConfig =
-          LongRunningConfig.createLongRunningConfig(
-              method.getModel(), diagCollector, methodConfigProto.getLongRunning());
-      if (longRunningConfig == null) {
-        error = true;
-      }
-    }
 
     if (error) {
       return null;
     } else {
       return new AutoValue_DiscoGapicMethodConfig(
-          method,
           pageStreaming,
           flattening,
           retryCodesName,
@@ -226,7 +216,8 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
           sampleCodeInitFields,
           visibility,
           releaseLevel,
-          longRunningConfig);
+          longRunningConfig,
+          method);
     }
   }
 

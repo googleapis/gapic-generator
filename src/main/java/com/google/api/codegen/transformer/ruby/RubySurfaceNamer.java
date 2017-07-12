@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer.ruby;
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldType;
+import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
@@ -216,7 +217,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
   @Override
   public List<String> getReturnDocLines(
       InterfaceContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
-    Method method = methodConfig.getMethod();
+    Method method = ((GapicMethodConfig) methodConfig).getMethod();
     if (method.getResponseStreaming()) {
       String classInfo = getModelTypeFormatter().getFullNameForElementType(method.getOutputType());
       return ImmutableList.of("An enumerable of " + classInfo + " instances.", "");

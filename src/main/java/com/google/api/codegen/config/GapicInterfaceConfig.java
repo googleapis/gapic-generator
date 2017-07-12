@@ -326,6 +326,13 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     return methodConfig;
   }
 
+  /** Returns the GapicMethodConfig for the given method. */
+  @Override
+  @Nullable
+  public MethodConfig getMethodConfig(com.google.api.codegen.discovery.Method method) {
+    return null;
+  }
+
   @Override
   public boolean hasDefaultServiceAddress() {
     return !getRequiredConstructorParams().contains(SERVICE_ADDRESS_PARAM);

@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer.nodejs;
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldType;
+import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
@@ -184,16 +185,18 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   @Override
   public List<String> getReturnDocLines(
       InterfaceContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
-    Method method = methodConfig.getMethod();
+    GapicMethodConfig gapicMethodConfig = (GapicMethodConfig) methodConfig;
+    Method method = ((GapicMethodConfig) methodConfig).getMethod();
     if (method.getRequestStreaming() && method.getResponseStreaming()) {
       return bidiStreamingReturnDocLines(method);
     } else if (method.getResponseStreaming()) {
       return responseStreamingReturnDocLines(method);
     }
 
-    List<String> callbackLines = returnCallbackDocLines(context.getModelTypeTable(), methodConfig);
+    List<String> callbackLines =
+        returnCallbackDocLines(context.getModelTypeTable(), gapicMethodConfig);
     List<String> returnObjectLines =
-        returnObjectDocLines(context.getModelTypeTable(), methodConfig);
+        returnObjectDocLines(context.getModelTypeTable(), gapicMethodConfig);
     return ImmutableList.<String>builder().addAll(callbackLines).addAll(returnObjectLines).build();
   }
 
@@ -234,7 +237,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   private List<String> returnCallbackDocLines(
-      ImportTypeTable typeTable, MethodConfig methodConfig) {
+      ImportTypeTable typeTable, GapicMethodConfig methodConfig) {
     String returnTypeDoc = returnTypeDoc(typeTable, methodConfig);
     Method method = methodConfig.getMethod();
     String classInfo = getParamTypeName((ModelTypeTable) typeTable, method.getOutputType());
@@ -266,7 +269,8 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     return callbackLines.build();
   }
 
-  private List<String> returnObjectDocLines(ImportTypeTable typeTable, MethodConfig methodConfig) {
+  private List<String> returnObjectDocLines(
+      ImportTypeTable typeTable, GapicMethodConfig methodConfig) {
     String returnTypeDoc = returnTypeDoc(typeTable, methodConfig);
     Method method = methodConfig.getMethod();
     ImmutableList.Builder<String> returnMessageLines = ImmutableList.builder();
@@ -321,7 +325,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     return message.getFullName().equals("google.protobuf.Empty");
   }
 
-  private String returnTypeDoc(ImportTypeTable typeTable, MethodConfig methodConfig) {
+  private String returnTypeDoc(ImportTypeTable typeTable, GapicMethodConfig methodConfig) {
     String returnTypeDoc = "";
     if (methodConfig.isPageStreaming()) {
       returnTypeDoc = "Array of ";
