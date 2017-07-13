@@ -2,6 +2,9 @@ type: com.google.api.codegen.ConfigProto
 language_settings:
   java:
     package_name: com.google.cloud.fakebilling.v1
+    interface_names:
+      google.fakebilling.v1.Projects: ProjectAdmin
+      google.fakebilling.v1.BillingAccounts: BillingAccountAdmin
   python:
     package_name: google.cloud.gapic.fakebilling.v1
   go:
@@ -57,7 +60,7 @@ interfaces:
     max_rpc_timeout_millis: 12000 # 12 seconds
     total_timeout_millis: 600000 # 10 minutes
   methods:
-  - name: List
+  - name: fakebilling.billingAccounts.list
     request_object_method: true
     resource_name_treatment: STATIC_TYPES
     page_streaming:
@@ -70,7 +73,7 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 60000
-  - name: Get
+  - name: fakebilling.billingAccounts.get
     flattening:
       groups:
       - parameters:
@@ -80,8 +83,6 @@ interfaces:
     request_object_method: false
     retry_codes_name: idempotent
     retry_params_name: default
-    field_name_patterns:
-      resource: ListBillingAccountsResponse
     timeout_millis: 60000
 - name: google.fakebilling.v1.Projects
   lang_doc:
@@ -121,7 +122,7 @@ interfaces:
     max_rpc_timeout_millis: 12000 # 12 seconds
     total_timeout_millis: 600000 # 10 minutes
   methods:
-  - name: UpdateBillingInfo
+  - name: fakebilling.projects.updateBillingInfo
     required_fields:
       - name
     retry_codes_name: idempotent
@@ -131,40 +132,13 @@ interfaces:
     resource_name_treatment: STATIC_TYPES
     field_name_patterns:
       name: name
-  - name: GetBillingInfo
-  - name: BeginTransaction
-resource_name_generation:
-- message_name: Project
-  field_entity_map:
-    name: name
-- message_name: BookFromAnywhere
-  field_entity_map:
-    name: book_oneof
-- message_name: Shelf
-  field_entity_map:
-    name: shelf
-- message_name: GetShelfRequest
-  field_entity_map:
-    name: shelf
-- message_name: DeleteShelfRequest
-  field_entity_map:
-    name: shelf
-- message_name: MergeShelvesRequest
-  field_entity_map:
-    name: shelf
-    other_shelf_name: shelf
-- message_name: CreateBookRequest
-  field_entity_map:
-    name: shelf
-- message_name: GetBookRequest
-  field_entity_map:
-    name: book
-- message_name: ListBooksRequest
-  field_entity_map:
-    name: shelf
-- message_name: UpdateBookRequest
-  field_entity_map:
-    name: book
-- message_name: DeleteBookRequest
-  field_entity_map:
-    name: book
+  - name: fakebilling.projects.getBillingInfo
+    required_fields:
+      - name
+    retry_codes_name: idempotent
+    retry_params_name: default
+    timeout_millis: 10000
+    request_object_method: true
+    resource_name_treatment: STATIC_TYPES
+    field_name_patterns:
+      name: name

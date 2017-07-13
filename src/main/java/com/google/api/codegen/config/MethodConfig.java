@@ -116,8 +116,6 @@ public abstract class MethodConfig {
   @Nullable
   static ImmutableList<FlatteningConfig> createFlattening(
       DiagCollector diagCollector,
-      ResourceNameMessageConfigs messageConfigs,
-      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       MethodConfigProto methodConfigProto,
       com.google.api.codegen.discovery.Method method) {
     boolean missing = false;
@@ -125,12 +123,7 @@ public abstract class MethodConfig {
     for (FlatteningGroupProto flatteningGroup : methodConfigProto.getFlattening().getGroupsList()) {
       FlatteningConfig groupConfig =
           FlatteningConfig.createFlattening(
-              diagCollector,
-              messageConfigs,
-              resourceNameConfigs,
-              methodConfigProto,
-              flatteningGroup,
-              method);
+              diagCollector, methodConfigProto, flatteningGroup, method);
       if (groupConfig == null) {
         missing = true;
       } else {
@@ -163,11 +156,11 @@ public abstract class MethodConfig {
     return fieldsBuilder.build();
   }
 
-  static Iterable<FieldType> getRequiredFields(
+  static Iterable<Schema> getRequiredFields(
       DiagCollector diagCollector,
       com.google.api.codegen.discovery.Method method,
       List<String> requiredFieldNames) {
-    ImmutableList.Builder<FieldType> fieldsBuilder = ImmutableList.builder();
+    ImmutableList.Builder<Schema> fieldsBuilder = ImmutableList.builder();
     for (String fieldName : requiredFieldNames) {
       Schema requiredField = method.parameters().get(fieldName);
       if (requiredField == null) {
@@ -179,7 +172,7 @@ public abstract class MethodConfig {
                 method.id()));
         return null;
       }
-      fieldsBuilder.add(new FieldType(requiredField));
+      fieldsBuilder.add(requiredField);
     }
     return fieldsBuilder.build();
   }
@@ -195,14 +188,14 @@ public abstract class MethodConfig {
     return fieldsBuilder.build();
   }
 
-  static Iterable<FieldType> getOptionalFields(
+  static Iterable<Schema> getOptionalFields(
       com.google.api.codegen.discovery.Method method, List<String> requiredFieldNames) {
-    ImmutableList.Builder<FieldType> fieldsBuilder = ImmutableList.builder();
+    ImmutableList.Builder<Schema> fieldsBuilder = ImmutableList.builder();
     for (Schema field : method.parameters().values()) {
       if (requiredFieldNames.contains(field.getIdentifier())) {
         continue;
       }
-      fieldsBuilder.add(new FieldType(field));
+      fieldsBuilder.add(field);
     }
     return fieldsBuilder.build();
   }
@@ -225,6 +218,15 @@ public abstract class MethodConfig {
               field,
               null,
               defaultResourceNameTreatment));
+    }
+    return fieldConfigsBuilder.build();
+  }
+
+  static Iterable<FieldConfig> createFieldNameConfigs(
+      DiagCollector diagCollector, Iterable<Schema> fields) {
+    ImmutableList.Builder<FieldConfig> fieldConfigsBuilder = ImmutableList.builder();
+    for (Schema field : fields) {
+      fieldConfigsBuilder.add(FieldConfig.createFieldConfig(diagCollector, field));
     }
     return fieldConfigsBuilder.build();
   }

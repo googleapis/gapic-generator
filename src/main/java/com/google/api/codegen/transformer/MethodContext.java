@@ -27,6 +27,7 @@ public interface MethodContext {
 
   InterfaceContext getSurfaceTransformerContext();
 
+  @Nullable
   Interface getInterface();
 
   GapicProductConfig getProductConfig();

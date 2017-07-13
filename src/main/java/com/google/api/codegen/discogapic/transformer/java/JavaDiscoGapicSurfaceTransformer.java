@@ -95,19 +95,21 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
 
     List<ServiceDocView> serviceDocs = new ArrayList<>();
 
-    DiscoGapicInterfaceContext context =
-        DiscoGapicInterfaceContext.create(
-            document,
-            productConfig,
-            createTypeTable(productConfig.getPackageName()),
-            new JavaDiscoGapicNamer(),
-            namer,
-            JavaFeatureConfig.newBuilder().enableStringFormatFunctions(false).build());
+    for (String interfaceName : productConfig.getInterfaceConfigMap().keySet()) {
+      DiscoGapicInterfaceContext context =
+          DiscoGapicInterfaceContext.create(
+              document,
+              interfaceName,
+              productConfig,
+              createTypeTable(productConfig.getPackageName()),
+              new JavaDiscoGapicNamer(),
+              namer,
+              JavaFeatureConfig.newBuilder().enableStringFormatFunctions(false).build());
+      StaticLangApiFileView apiFile = generateApiFile(context);
+      surfaceDocs.add(apiFile);
 
-    StaticLangApiFileView apiFile = generateApiFile(context);
-    surfaceDocs.add(apiFile);
-
-    serviceDocs.add(apiFile.api().doc());
+      serviceDocs.add(apiFile.api().doc());
+    }
 
     return surfaceDocs;
   }
@@ -145,8 +147,7 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
     String name = context.getNamer().getApiWrapperClassName(context.getDocument());
     xapiClass.releaseLevelAnnotation(context.getNamer().getReleaseAnnotation(ReleaseLevel.ALPHA));
     xapiClass.name(name);
-    xapiClass.settingsClassName(
-        context.getNamer().getApiSettingsClassName(context.getDocument()));
+    xapiClass.settingsClassName(context.getNamer().getApiSettingsClassName(context.getDocument()));
     xapiClass.apiCallableMembers(apiCallableTransformer.generateStaticLangApiCallables(context));
     xapiClass.pathTemplates(new ArrayList<PathTemplateView>());
     xapiClass.formatResourceFunctions(new ArrayList<FormatResourceFunctionView>());

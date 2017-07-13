@@ -109,7 +109,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     JavaDiscoGapicNamer discoGapicNamer = new JavaDiscoGapicNamer();
 
     DiscoGapicInterfaceContext context =
-        DiscoGapicInterfaceContext.create(
+        DiscoGapicInterfaceContext.createWithoutInterface(
             document,
             productConfig,
             createTypeTable(productConfig.getPackageName()),

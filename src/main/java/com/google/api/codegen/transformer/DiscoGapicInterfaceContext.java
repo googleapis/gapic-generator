@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.config.DiscoGapicInterfaceConfig;
 import com.google.api.codegen.config.DiscoGapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
@@ -26,6 +25,7 @@ import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.util.TypeTable;
 import com.google.api.tools.framework.model.Interface;
 import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -36,7 +36,7 @@ import javax.annotation.Nullable;
  */
 @AutoValue
 public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
-  public static DiscoGapicInterfaceContext create(
+  public static DiscoGapicInterfaceContext createWithoutInterface(
       Document document,
       GapicProductConfig productConfig,
       SchemaTypeTable typeTable,
@@ -44,7 +44,39 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
       SurfaceNamer surfaceNamer,
       FeatureConfig featureConfig) {
     return new AutoValue_DiscoGapicInterfaceContext(
-        document, productConfig, typeTable, discoGapicNamer, null, surfaceNamer, featureConfig);
+        document,
+        productConfig,
+        typeTable,
+        discoGapicNamer,
+        (new ImmutableList.Builder<Method>()).build(),
+        "",
+        surfaceNamer,
+        featureConfig);
+  }
+
+  public static DiscoGapicInterfaceContext create(
+      Document document,
+      String interfaceName,
+      GapicProductConfig productConfig,
+      SchemaTypeTable typeTable,
+      DiscoGapicNamer discoGapicNamer,
+      SurfaceNamer surfaceNamer,
+      FeatureConfig featureConfig) {
+    ImmutableList.Builder<Method> interfaceMethods = new ImmutableList.Builder<>();
+
+    for (MethodConfig method : productConfig.getInterfaceConfig(interfaceName).getMethodConfigs()) {
+      interfaceMethods.add(((DiscoGapicMethodConfig) method).getMethod());
+    }
+
+    return new AutoValue_DiscoGapicInterfaceContext(
+        document,
+        productConfig,
+        typeTable,
+        discoGapicNamer,
+        interfaceMethods.build(),
+        interfaceName,
+        surfaceNamer,
+        featureConfig);
   }
 
   public abstract Document getDocument();
@@ -57,7 +89,14 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   public abstract DiscoGapicNamer getDiscoGapicNamer();
 
   @Nullable
-  public abstract Interface getInterface();
+  @Override
+  public Interface getInterface() {
+    return null;
+  }
+
+  public abstract List<Method> getInterfaceMethods();
+
+  public abstract String getInterfaceName();
 
   @Override
   public abstract SurfaceNamer getNamer();
@@ -88,15 +127,17 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
 
   /** Returns the GapicMethodConfig for the given method. */
   public DiscoGapicMethodConfig getMethodConfig(Method method) {
-    Interface originalInterface = getInterface();
-    DiscoGapicInterfaceConfig originalGapicInterfaceConfig =
-        (DiscoGapicInterfaceConfig) getProductConfig().getInterfaceConfig(originalInterface);
-    if (originalGapicInterfaceConfig != null) {
-      return originalGapicInterfaceConfig.getMethodConfig(method);
-    } else {
-      throw new IllegalArgumentException(
-          "Interface config does not exist for method: " + method.id());
+    for (InterfaceConfig config : getProductConfig().getInterfaceConfigMap().values()) {
+      for (MethodConfig methodConfig : config.getMethodConfigs()) {
+        DiscoGapicMethodConfig discoMethodConfig = (DiscoGapicMethodConfig) methodConfig;
+        if (discoMethodConfig.getMethod().equals(method)) {
+          return discoMethodConfig;
+        }
+      }
     }
+
+    throw new IllegalArgumentException(
+        "Interface config does not exist for method: " + method.id());
   }
 
   public DiscoGapicMethodContext asRequestMethodContext(Method method) {
@@ -104,7 +145,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
         this,
         getInterface(),
         getProductConfig(),
-        null,
+        getSchemaTypeTable(),
         getNamer(),
         method,
         getMethodConfig(method),
@@ -113,7 +154,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   }
 
   public InterfaceConfig getInterfaceConfig() {
-    return getProductConfig().getInterfaceConfig(getDocument().name());
+    return getProductConfig().getInterfaceConfig(getInterfaceName());
   }
 
   @Nullable

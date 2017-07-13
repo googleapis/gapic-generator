@@ -135,9 +135,7 @@ public abstract class PageStreamingConfig {
    */
   @Nullable
   public static PageStreamingConfig createPageStreaming(
-      DiagCollector diagCollector,
-      ResourceNameMessageConfigs messageConfigs,
-      com.google.api.codegen.discovery.Method method) {
+      DiagCollector diagCollector, com.google.api.codegen.discovery.Method method) {
     // TODO(andrealin): Put this in yaml file somewhere instead of hardcoding.
     String pageSizeFieldName = "maxResults";
     String requestTokenFieldName = "pageToken";
@@ -171,7 +169,7 @@ public abstract class PageStreamingConfig {
     Schema responseTokenField = null;
     if (method.response().hasProperty(responseTokenFieldName)) {
       responseTokenField = method.response().properties().get(responseTokenFieldName);
-    } else if (!method.response().reference().isEmpty()){
+    } else if (!method.response().reference().isEmpty()) {
       Document document = method.getRootDocument();
       responseTokenField = document.schemas().get(method.response().reference());
     }
@@ -198,13 +196,7 @@ public abstract class PageStreamingConfig {
               resourcesField.getIdentifier()));
       resourcesFieldConfig = null;
     } else {
-      resourcesFieldConfig =
-          FieldConfig.createMessageFieldConfig(
-              messageConfigs,
-              //              resourceNameConfigs,
-              null,
-              new FieldType(resourcesField),
-              null);
+      resourcesFieldConfig = FieldConfig.createFieldConfig(diagCollector, resourcesField);
     }
 
     if (requestTokenField == null || responseTokenField == null || resourcesFieldConfig == null) {

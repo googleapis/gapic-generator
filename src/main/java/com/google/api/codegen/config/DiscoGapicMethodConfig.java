@@ -75,8 +75,6 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
       String language,
       MethodConfigProto methodConfigProto,
       com.google.api.codegen.discovery.Method method,
-      ResourceNameMessageConfigs messageConfigs,
-      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       ImmutableSet<String> retryCodesConfigNames,
       ImmutableSet<String> retryParamsConfigNames) {
 
@@ -85,8 +83,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
     PageStreamingConfig pageStreaming = null;
     if (!PageStreamingConfigProto.getDefaultInstance()
         .equals(methodConfigProto.getPageStreaming())) {
-      pageStreaming =
-          PageStreamingConfig.createPageStreaming(diagCollector, messageConfigs, method);
+      pageStreaming = PageStreamingConfig.createPageStreaming(diagCollector, method);
       if (pageStreaming == null) {
         error = true;
       }
@@ -94,9 +91,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
 
     ImmutableList<FlatteningConfig> flattening = null;
     if (!FlatteningConfigProto.getDefaultInstance().equals(methodConfigProto.getFlattening())) {
-      flattening =
-          createFlattening(
-              diagCollector, messageConfigs, resourceNameConfigs, methodConfigProto, method);
+      flattening = createFlattening(diagCollector, methodConfigProto, method);
       if (flattening == null) {
         error = true;
       }
@@ -158,20 +153,12 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
     Iterable<FieldConfig> requiredFieldConfigs =
         DiscoGapicMethodConfig.createFieldNameConfigs(
             diagCollector,
-            messageConfigs,
-            defaultResourceNameTreatment,
-            fieldNamePatterns,
-            resourceNameConfigs,
             DiscoGapicMethodConfig.getRequiredFields(
                 diagCollector, method, methodConfigProto.getRequiredFieldsList()));
 
     Iterable<FieldConfig> optionalFieldConfigs =
         DiscoGapicMethodConfig.createFieldNameConfigs(
             diagCollector,
-            messageConfigs,
-            defaultResourceNameTreatment,
-            fieldNamePatterns,
-            resourceNameConfigs,
             DiscoGapicMethodConfig.getOptionalFields(
                 method, methodConfigProto.getRequiredFieldsList()));
 

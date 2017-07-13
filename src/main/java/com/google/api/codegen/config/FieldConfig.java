@@ -16,6 +16,7 @@ package com.google.api.codegen.config;
 
 import com.google.api.codegen.ApiModel.ModelType;
 import com.google.api.codegen.ResourceNameTreatment;
+import com.google.api.codegen.discovery.Schema;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
@@ -33,6 +34,7 @@ import javax.annotation.Nullable;
 public abstract class FieldConfig {
   public abstract FieldType getField();
 
+  @Nullable
   public abstract ResourceNameTreatment getResourceNameTreatment();
 
   @Nullable
@@ -60,17 +62,21 @@ public abstract class FieldConfig {
       ResourceNameTreatment resourceNameTreatment,
       ResourceNameConfig resourceNameConfig,
       ResourceNameConfig messageResourceNameConfig) {
-    if (field.getModelType().equals(ModelType.PROTO) && resourceNameTreatment != ResourceNameTreatment.NONE && resourceNameConfig == null) {
+    if (resourceNameTreatment != ResourceNameTreatment.NONE && resourceNameConfig == null) {
       throw new IllegalArgumentException(
           "resourceName may only be null if resourceNameTreatment is NONE");
     }
-    if (field.getModelType().equals(ModelType.PROTO) && resourceNameConfig != null
+    if (resourceNameConfig != null
         && resourceNameConfig.getResourceNameType() == ResourceNameType.FIXED) {
       throw new IllegalArgumentException(
           "FieldConfig may not contain a ResourceNameConfig of type " + ResourceNameType.FIXED);
     }
     return new AutoValue_FieldConfig(
         field, resourceNameTreatment, resourceNameConfig, messageResourceNameConfig);
+  }
+
+  public static FieldConfig createFieldConfig(DiagCollector diagCollector, Schema field) {
+    return new AutoValue_FieldConfig(new FieldType(field), ResourceNameTreatment.NONE, null, null);
   }
 
   /** Creates a FieldConfig for the given Field with ResourceNameTreatment set to None. */

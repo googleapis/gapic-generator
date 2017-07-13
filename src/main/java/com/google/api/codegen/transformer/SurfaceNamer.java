@@ -394,7 +394,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The name of the surface method which can call the given API method. */
   public String getApiMethodName(
       com.google.api.codegen.discovery.Method method, VisibilityConfig visibility) {
-    return getApiMethodName(Name.upperCamel(discoveryMethodNamePieces(method)), visibility);
+    return getApiMethodName(Name.anyCamel(discoveryMethodNamePieces(method)), visibility);
   }
 
   /** The name of the async surface method which can call the given API method. */
@@ -405,9 +405,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The name of the async surface method which can call the given API method. */
   public String getAsyncApiMethodName(
       com.google.api.codegen.discovery.Method method, VisibilityConfig visibility) {
-
     return getApiMethodName(
-        Name.upperCamel(discoveryMethodNamePieces(method)).join("async"), visibility);
+        Name.anyCamel(discoveryMethodNamePieces(method)).join("async"), visibility);
   }
 
   protected String getApiMethodName(Name name, VisibilityConfig visibility) {
@@ -504,9 +503,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The name of the plain callable variant of the given method. */
   public String getPagedCallableName(com.google.api.codegen.discovery.Method method) {
-    String[] namePieces = discoveryMethodNamePieces(method);
-    namePieces[namePieces.length] = "PagedCallable";
-    return publicMethodName(Name.upperCamel(namePieces));
+    String[] namePieces = appendToStringArray(discoveryMethodNamePieces(method), "PagedCallable");
+    return privateFieldName(Name.anyCamel(namePieces));
   }
 
   /** The name of the paged callable variant of the given method. */
@@ -521,9 +519,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The name of the plain callable variant of the given method. */
   public String getCallableMethodName(com.google.api.codegen.discovery.Method method) {
-    String[] namePieces = discoveryMethodNamePieces(method);
-    namePieces[namePieces.length] = "Callable";
-    return publicMethodName(Name.upperCamel(namePieces));
+    String[] namePieces = appendToStringArray(discoveryMethodNamePieces(method), "Callable");
+    return publicMethodName(Name.anyCamel(namePieces));
   }
 
   /** The name of the plain callable variant of the given method. */
@@ -533,9 +530,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The name of the plain callable variant of the given method. */
   public String getCallableAsyncMethodName(com.google.api.codegen.discovery.Method method) {
-    String[] namePieces = discoveryMethodNamePieces(method);
-    namePieces[namePieces.length] = "CallableAsync";
-    return publicMethodName(Name.upperCamel(namePieces));
+    String[] namePieces = appendToStringArray(discoveryMethodNamePieces(method), "CallableAsync");
+    return publicMethodName(Name.anyCamel(namePieces));
   }
 
   /** The name of the operation callable variant of the given method. */
@@ -548,11 +544,19 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return privateFieldName(Name.upperCamel(method.getSimpleName(), "Callable"));
   }
 
+  private String[] appendToStringArray(String[] head, String tail) {
+    String[] concatedArray = new String[head.length + 1];
+    for (int i = 0; i < head.length; i++) {
+      concatedArray[i] = head[i];
+    }
+    concatedArray[head.length] = tail;
+    return concatedArray;
+  }
+
   /** The name of the plain callable for the given method. */
   public String getCallableName(com.google.api.codegen.discovery.Method method) {
-    String[] namePieces = discoveryMethodNamePieces(method);
-    namePieces[namePieces.length] = "Callable";
-    return publicMethodName(Name.upperCamel(namePieces));
+    String[] namePieces = appendToStringArray(discoveryMethodNamePieces(method), "Callable");
+    return privateFieldName(Name.anyCamel(namePieces));
   }
 
   /** The name of the operation callable for the given method. */
@@ -567,9 +571,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The name of the plain callable for the given method. */
   public String getSettingsMemberName(com.google.api.codegen.discovery.Method method) {
-    String[] namePieces = discoveryMethodNamePieces(method);
-    namePieces[namePieces.length] = "Settings";
-    return publicMethodName(Name.upperCamel(namePieces));
+    String[] namePieces = appendToStringArray(discoveryMethodNamePieces(method), "Settings");
+    return publicMethodName(Name.anyCamel(namePieces));
   }
 
   /** The getter function name for the settings for the given method. */

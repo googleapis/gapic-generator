@@ -100,8 +100,6 @@ public abstract class FlatteningConfig {
   @Nullable
   public static FlatteningConfig createFlattening(
       DiagCollector diagCollector,
-      ResourceNameMessageConfigs messageConfigs,
-      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       MethodConfigProto methodConfigProto,
       FlatteningGroupProto flatteningGroup,
       com.google.api.codegen.discovery.Method method) {
@@ -121,23 +119,7 @@ public abstract class FlatteningConfig {
         return null;
       }
 
-      ResourceNameTreatment defaultResourceNameTreatment =
-          methodConfigProto.getResourceNameTreatment();
-      if (defaultResourceNameTreatment == null
-          || defaultResourceNameTreatment.equals(ResourceNameTreatment.UNSET_TREATMENT)) {
-        defaultResourceNameTreatment = ResourceNameTreatment.VALIDATE;
-      }
-
-      FieldConfig fieldConfig =
-          FieldConfig.createFieldConfig(
-              diagCollector,
-              messageConfigs,
-              methodConfigProto.getFieldNamePatterns(),
-              resourceNameConfigs,
-              // TODO(andrealin): full name for parameterField?
-              new FieldType(parameterField),
-              flatteningGroup.getParameterResourceNameTreatment().get(parameter),
-              defaultResourceNameTreatment);
+      FieldConfig fieldConfig = FieldConfig.createFieldConfig(diagCollector, parameterField);
       if (fieldConfig == null) {
         missing = true;
       } else {

@@ -21,7 +21,6 @@ import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Method;
-import com.google.api.codegen.util.Name;
 import com.google.api.gax.core.RetrySettings;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
@@ -150,11 +149,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
 
   private static Method lookupMethod(Document source, String methodName) {
     for (com.google.api.codegen.discovery.Method method : source.methods()) {
-      String[] methodNamePieces = method.id().split("\\.");
-      String shortMethodName = methodNamePieces[methodNamePieces.length - 1];
-      Name methodNameName = Name.anyCamel(methodName);
-      Name sourceMethodName = Name.anyCamel(shortMethodName);
-      if (methodNameName.equals(sourceMethodName)) {
+      if (method.id().equals(methodName)) {
         return method;
       }
     }
@@ -189,8 +184,6 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
               language,
               methodConfigProto,
               method,
-              messageConfigs,
-              resourceNameConfigs,
               retryCodesConfigNames,
               retryParamsConfigNames);
       if (methodConfig == null) {
