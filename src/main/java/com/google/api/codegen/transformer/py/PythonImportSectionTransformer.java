@@ -27,6 +27,7 @@ import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +49,12 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
         .build();
   }
 
+  public ImportSectionView generateImportSection(Map<String, TypeAlias> typeImports) {
+    ImportSectionView.Builder importSection = ImportSectionView.newBuilder();
+    importSection.appImports(generateFileHeaderAppImports(typeImports));
+    return importSection.build();
+  }
+
   public ImportSectionView generateTestImportSection(GapicInterfaceContext context) {
     return ImportSectionView.newBuilder()
         .standardImports(generateTestStandardImports())
@@ -63,6 +70,15 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
         .externalImports(ImmutableList.<ImportFileView>of())
         .appImports(generateTestAppImports(context))
         .build();
+  }
+
+  private List<ImportFileView> generateFileHeaderAppImports(Map<String, TypeAlias> typeImports) {
+    List<ImportFileView> appImports = new ArrayList<>();
+    for (Map.Entry<String, TypeAlias> entry : typeImports.entrySet()) {
+      appImports.add(generateAppImport(entry.getKey(), entry.getValue().getNickname()));
+    }
+    Collections.sort(appImports, importFileViewComparator());
+    return appImports;
   }
 
   private List<ImportFileView> generateInitCodeAppImports(

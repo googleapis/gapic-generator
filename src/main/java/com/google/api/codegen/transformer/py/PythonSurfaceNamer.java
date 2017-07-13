@@ -34,7 +34,9 @@ import com.google.api.codegen.util.py.PythonCommentReformatter;
 import com.google.api.codegen.util.py.PythonNameFormatter;
 import com.google.api.codegen.util.py.PythonTypeTable;
 import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
+import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
@@ -86,6 +88,11 @@ public class PythonSurfaceNamer extends SurfaceNamer {
             getPackageName(),
             getApiWrapperVariableName(interfaceConfig),
             getApiWrapperClassName(interfaceConfig));
+  }
+
+  @Override
+  public String getMessageTypeName(ModelTypeTable typeTable, MessageType message) {
+    return publicClassName(Name.upperCamel(message.getSimpleName()));
   }
 
   @Override
@@ -233,6 +240,12 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   @Override
   public String getFieldGetFunctionName(TypeRef type, Name identifier) {
     return publicFieldName(identifier);
+  }
+
+  @Override
+  public String getProtoFileName(ProtoFile file) {
+    String protoFilename = file.getSimpleName();
+    return protoFilename.substring(0, protoFilename.length() - "proto".length()) + "py";
   }
 
   @Override
