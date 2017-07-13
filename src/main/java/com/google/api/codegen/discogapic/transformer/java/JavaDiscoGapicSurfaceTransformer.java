@@ -142,11 +142,11 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
 
     StaticLangApiView.Builder xapiClass = StaticLangApiView.newBuilder();
 
-    String name = context.getNamer().getApiWrapperClassName(context.getInterfaceConfig());
+    String name = context.getNamer().getApiWrapperClassName(context.getDocument());
     xapiClass.releaseLevelAnnotation(context.getNamer().getReleaseAnnotation(ReleaseLevel.ALPHA));
     xapiClass.name(name);
     xapiClass.settingsClassName(
-        context.getNamer().getApiSettingsClassName(context.getInterfaceConfig()));
+        context.getNamer().getApiSettingsClassName(context.getDocument()));
     xapiClass.apiCallableMembers(apiCallableTransformer.generateStaticLangApiCallables(context));
     xapiClass.pathTemplates(new ArrayList<PathTemplateView>());
     xapiClass.formatResourceFunctions(new ArrayList<FormatResourceFunctionView>());

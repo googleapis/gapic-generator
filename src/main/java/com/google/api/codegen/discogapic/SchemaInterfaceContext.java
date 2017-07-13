@@ -26,6 +26,7 @@ import com.google.api.codegen.util.TypeTable;
 import com.google.api.tools.framework.model.Interface;
 import com.google.auto.value.AutoValue;
 import java.util.Comparator;
+import javax.annotation.Nullable;
 
 /**
  * The context for transforming a single top-level schema from Discovery Doc API into a top-level
@@ -40,8 +41,12 @@ public abstract class SchemaInterfaceContext implements InterfaceContext {
       Schema schema,
       SchemaTypeTable typeTable,
       DiscoGapicInterfaceContext docContext) {
-    return new AutoValue_SchemaInterfaceContext(interface0, null, schema, typeTable, docContext);
+    return new AutoValue_SchemaInterfaceContext(null, interface0, schema, typeTable, docContext);
   }
+
+  @Override
+  @Nullable
+  public abstract Interface getInterface();
 
   public abstract Schema getSchema();
 

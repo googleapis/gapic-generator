@@ -17,6 +17,8 @@ package com.google.api.codegen.config;
 import com.google.api.codegen.ApiModel;
 import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.ResourceNameMessageConfigProto;
+import com.google.api.codegen.discovery.Document;
+import com.google.api.codegen.discovery.Schema;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.ProtoFile;
@@ -25,6 +27,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ListMultimap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nullable;
 
@@ -79,8 +82,15 @@ public abstract class ResourceNameMessageConfigs {
             messageResourceTypeConfigMap, fieldsByMessage);
       case DISCOVERY:
         // TODO(andrealin): implementation for Schema.
+        Document document = model.getDocument();
+        for (Map.Entry<String, Schema> schemaEntry : document.schemas().entrySet()) {
+          fieldsByMessage.put(schemaEntry.getKey(), new FieldType(schemaEntry.getValue()));
+        }
+        return new AutoValue_ResourceNameMessageConfigs(
+            messageResourceTypeConfigMap, fieldsByMessage);
       default:
-        throw new IllegalArgumentException("Unhandled model type.");
+//        throw new IllegalArgumentException("Unhandled model type.");
+        return null;
     }
   }
 

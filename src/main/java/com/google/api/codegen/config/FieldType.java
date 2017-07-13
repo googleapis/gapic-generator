@@ -55,7 +55,7 @@ public class FieldType {
       case PROTO:
         return protoBasedField.getSimpleName();
       case DISCOVERY:
-        return schemaField.id().isEmpty() ? schemaField.key() : schemaField.id();
+        return schemaField.getIdentifier();
       default:
         throw new IllegalArgumentException("Unhandled model type.");
     }

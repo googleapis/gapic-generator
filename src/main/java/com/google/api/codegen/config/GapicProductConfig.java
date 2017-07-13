@@ -25,6 +25,7 @@ import com.google.api.codegen.LanguageSettingsProto;
 import com.google.api.codegen.LicenseHeaderProto;
 import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.discovery.Document;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.tools.framework.model.BoundedDiagCollector;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
@@ -170,9 +171,26 @@ public abstract class GapicProductConfig implements ProductConfig {
     // Get the proto file containing the first interface listed in the config proto, and use it as
     // the assigned file for generated resource names, and to get the default message namespace
     // TODO (andrealin): load messageConfigs
-    ResourceNameMessageConfigs messageConfigs = null;
+
+    DocumentSymbolTableBuilder symbolTableBuilder = new DocumentSymbolTableBuilder(document);
+    SymbolTable symbolTable = symbolTableBuilder.create(configProto);
+    ApiModel apiModel = new ApiModel(document, symbolTable);
+    // Get the proto file containing the first interface listed in the config proto, and use it as
+    // the assigned file for generated resource names, and to get the default message namespace
+//    ProtoFile file = apiModel.getSymbolTable().lookupInterface(configProto.getInterfaces(0).getName()).getFile();
+//    String defaultPackage = file.getProto().getPackage();
+
+    // TODO(andrealin): put this in config instead of hard coding it
+    String defaultPackage = "com.google.proto";
+
+    ResourceNameMessageConfigs messageConfigs =
+        ResourceNameMessageConfigs.createMessageResourceTypesConfig(
+            apiModel, configProto, defaultPackage);
     // TODO (andrealin): load resourceNameConfigs
-    ImmutableMap<String, ResourceNameConfig> resourceNameConfigs = ImmutableMap.of();
+    DiagCollector diagCollector = new BoundedDiagCollector();
+//    ImmutableMap<String, ResourceNameConfig> resourceNameConfigs = null;
+    ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
+        createResourceNameConfigs(diagCollector, configProto, null);
 
     LanguageSettingsProto settings =
         configProto.getLanguageSettings().get(configProto.getLanguage());
@@ -180,8 +198,6 @@ public abstract class GapicProductConfig implements ProductConfig {
       settings = LanguageSettingsProto.getDefaultInstance();
     }
 
-    DocumentSymbolTableBuilder symbolTableBuilder = new DocumentSymbolTableBuilder(document);
-    SymbolTable symbolTable = symbolTableBuilder.create(configProto);
 
     Map<String, Interface> interfaces = Maps.newLinkedHashMap();
     Map<String, TypeRef> types = Maps.newLinkedHashMap();
@@ -191,7 +207,7 @@ public abstract class GapicProductConfig implements ProductConfig {
 
     ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
         createDiscoGapicInterfaceConfigMap(
-            document, new BoundedDiagCollector(), configProto, settings, null, resourceNameConfigs);
+            document, new BoundedDiagCollector(), configProto, settings, messageConfigs, resourceNameConfigs);
 
     ImmutableList<String> copyrightLines;
     ImmutableList<String> licenseLines;

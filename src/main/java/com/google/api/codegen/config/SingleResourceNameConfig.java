@@ -15,6 +15,7 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.CollectionConfigProto;
+import com.google.api.codegen.discovery.Document;
 import com.google.api.gax.protobuf.PathTemplate;
 import com.google.api.gax.protobuf.ValidationException;
 import com.google.api.tools.framework.model.Diag;
@@ -22,7 +23,9 @@ import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
+import com.google.common.base.Preconditions;
 import javax.annotation.Nullable;
+import javax.print.Doc;
 
 /** SingleResourceNameConfig represents the collection configuration for a method. */
 @AutoValue
@@ -35,6 +38,7 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
   @Nullable
   public static SingleResourceNameConfig createSingleResourceName(
       DiagCollector diagCollector, CollectionConfigProto collectionConfigProto, ProtoFile file) {
+    Preconditions.checkNotNull(file);
     String namePattern = collectionConfigProto.getNamePattern();
     PathTemplate nameTemplate;
     try {
@@ -58,6 +62,7 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
   public abstract String getEntityName();
 
   @Override
+  @Nullable
   public abstract ProtoFile getAssignedProtoFile();
 
   @Override

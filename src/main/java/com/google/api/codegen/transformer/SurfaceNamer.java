@@ -26,6 +26,7 @@ import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
+import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.util.CommentReformatter;
 import com.google.api.codegen.util.CommonRenderingUtil;
@@ -720,6 +721,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return publicClassName(Name.anyCamel(getInterfaceName(interfaceConfig), "Client"));
   }
 
+  /** The name of the class that implements a particular proto interface. */
+  public String getApiWrapperClassName(Document document) {
+    return publicClassName(Name.anyCamel(document.name(), "Client"));
+  }
+
   /** The name of the implementation class that implements a particular proto interface. */
   public String getApiWrapperClassImplName(Interface apiInterface) {
     return getNotImplementedString("SurfaceNamer.getApiWrapperClassImplName");
@@ -735,6 +741,13 @@ public class SurfaceNamer extends NameFormatterDelegator {
    */
   public String getApiSettingsClassName(InterfaceConfig interfaceConfig) {
     return publicClassName(Name.anyCamel(getInterfaceName(interfaceConfig), "Settings"));
+  }
+
+  /**
+   * The name of the settings class for a particular proto interface; not used in most languages.
+   */
+  public String getApiSettingsClassName(Document document) {
+    return publicClassName(Name.anyCamel(document.name(), "Settings"));
   }
 
   /** The name of the class that contains paged list response wrappers. */
