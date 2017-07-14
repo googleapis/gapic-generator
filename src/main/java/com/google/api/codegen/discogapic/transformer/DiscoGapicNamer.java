@@ -52,8 +52,8 @@ public class DiscoGapicNamer extends NameFormatterDelegator {
   }
 
   /**
-   * Returns the last substring after the input is split by periods. Ex: Input
-   * "compute.addresses.aggregatedList" returns "aggregatedList".
+   * Returns the last substring after the input is split by periods. Ex: Input of
+   * "compute.addresses.aggregatedList" returns the array: ["compute", "addresses", "List"].
    */
   public String[] getMethodNamePieces(String longMethodName) {
     String[] pieces = longMethodName.split("\\.");
