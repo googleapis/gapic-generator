@@ -15,6 +15,8 @@
 
     {@constructors(request)}
 
+    {@populateMapMethod(request)}
+
     {@getters(request)}
 
     {@newBuilder(request)}
@@ -30,6 +32,25 @@
 
 @end
 
+@private populateMapMethod(request)
+  public void populateFieldsInMap(Set<String> fieldNames, Map<String, List<String>> map) {
+    @join param : request.allParams
+      @if param.canRepeat
+        if (fieldNames.contains("{@param.name}")) {
+          map.put("{@param.name}", {@param.name});
+        }
+      @else
+        if (fieldNames.contains("{@param.name}")) {
+          List<String> values = new LinkedList<>();
+          values.add({@param.name});
+          map.put("{@param.name}", values);
+        }
+      @end
+
+    @end
+  }
+@end
+
 @private members(request)
   private static final {@request.typeName} DEFAULT_INSTANCE = new {@request.typeName}();
 
@@ -43,8 +64,6 @@
 @end
 
 @private paramMembers(params, paramsVariableName, paramsName)
-  private final ImmutableListMultimap<String, String> {@paramsVariableName};
-
   @if params
     // {@paramsName} parameters.
     @join param : params
@@ -104,18 +123,6 @@
 @end
 
 @private getters(request)
-  // A list of key-value pairs, where each key is a query parameter and the value is the value
-  // of the parameter. A key may appear multiple times, in the case of repeatable parameters.
-  public ImmutableListMultimap<String, String> getQueryParams() {
-    return queryParams;
-  }
-
-  // A list of key-value pairs, where each key is a path parameter and the value is the value
-  // of the parameter. A key may appear multiple times, in the case of repeatable parameters
-  public ImmutableListMultimap<String, String> getPathParams() {
-    return pathParams;
-  }
-
   @if request.hasRequestObject
    public {@request.requestObject.typeName} {@request.requestObject.getterFunction}() {
       return {@request.requestObject.name};
@@ -145,35 +152,9 @@
     @if request.hasRequestObject
       this.{@request.requestObject.name} = {@request.requestObject.name};
     @end
-
-    ImmutableListMultimap.Builder pathParams = ImmutableListMultimap.builder();
-    ImmutableListMultimap.Builder queryParams = ImmutableListMultimap.builder();
-
-    {@constructorSetters(request.pathParams, "pathParams")}
-    {@constructorSetters(request.queryParams, "queryParams")}
-
-    this.pathParams = pathParams.build();
-    this.queryParams = queryParams.build();
   }
 
-  private {@request.typeName}() {
-    this.queryParams = (new ImmutableListMultimap.Builder()).build();
-    this.pathParams = (new ImmutableListMultimap.Builder()).build();
-  }
-@end
-
-@private constructorSetters(params, mapName)
-  @join param : params
-    if ({@param.name} != null) {
-      @if {@param.canRepeat}
-        for (String s : foo) {
-          {@mapName}.put("{@param.name}", {@param.name}.toString());
-        }
-      @else
-        {@mapName}.put("{@param.name}", {@param.name}.toString());
-      @end
-    }
-  @end
+  private {@request.typeName}() {}
 @end
 
 @private builder(request)
@@ -197,6 +178,14 @@
     {@builderGettersSetters(request.pathParams)}
 
     public {@request.typeName} build() {
+      String missing = "";
+      @join param : request.allParams
+        @if param.isRequired
+          if ({@param.name} == null) {
+            missing += " {@param.name}";
+          }
+        @end
+      @end
       return new {@request.typeName}(
           @join param : request.allParams on ", ".add(BREAK)
             {@param.name}
