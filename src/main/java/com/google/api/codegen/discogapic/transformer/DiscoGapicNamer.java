@@ -79,8 +79,8 @@ public class DiscoGapicNamer {
   }
 
   /**
-   * Returns the last substring after the input is split by periods. Ex: Input of
-   * "compute.addresses.aggregatedList" returns the array: ["compute", "addresses", "List"].
+   * Returns the last substring after the input is split by periods. Ex: Input
+   * "compute.addresses.aggregatedList" returns "aggregatedList".
    */
   public static Name getRequestName(Method method) {
     String[] pieces = method.id().split(regexDelimiter);
