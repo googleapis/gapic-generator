@@ -10,7 +10,7 @@
 @end
 
 @private requestClassDef(request)
-  public final class {@request.typeName} implements Message {
+  public final class {@request.typeName} implements ApiMessage {
     {@members(request)}
 
     {@constructors(request)}
@@ -33,21 +33,23 @@
 @end
 
 @private populateMapMethod(request)
-  public void populateFieldsInMap(Set<String> fieldNames, Map<String, List<String>> map) {
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames, Map<String, List<String>> map) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
     @join param : request.allParams
       @if param.canRepeat
         if (fieldNames.contains("{@param.name}")) {
-          map.put("{@param.name}", {@param.name});
+          fieldMap.put("{@param.name}", {@param.name});
         }
       @else
         if (fieldNames.contains("{@param.name}")) {
-          List<String> values = new LinkedList<>();
-          values.add({@param.name});
-          map.put("{@param.name}", values);
+          if (fieldNames.contains("name")) {
+            fieldMap.put("name", Collections.singletonList(name));
+          }
         }
       @end
 
     @end
+    return fieldMap;
   }
 @end
 
