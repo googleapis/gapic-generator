@@ -220,7 +220,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     SimpleParamView.Builder paramView = SimpleParamView.newBuilder();
     paramView.description(schema.description());
     paramView.name(symbolTable.getNewSymbol(schema.getIdentifier()));
-    paramView.typeName(context.getSchemaTypeTable().getAndSaveNicknameFor(schema, true));
+    paramView.typeName(context.getSchemaTypeTable().getAndSaveNicknameFor(schema));
     paramView.isRequired(schema.required());
     paramView.canRepeat(schema.repeated());
     paramView.getterFunction(

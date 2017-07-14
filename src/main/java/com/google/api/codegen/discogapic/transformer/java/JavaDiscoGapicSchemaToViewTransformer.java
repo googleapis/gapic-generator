@@ -167,7 +167,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     // Getters and setters use unescaped name for better readability on public methods.
     schemaView.fieldGetFunction(context.getDiscoGapicNamer().getResourceGetterName(schemaId));
     schemaView.fieldSetFunction(context.getDiscoGapicNamer().getResourceSetterName(schemaId));
-    String schemaTypeName = schemaTypeTable.getAndSaveNicknameFor(schema, true);
+    String schemaTypeName = schemaTypeTable.getAndSaveNicknameFor(schema);
 
     schemaView.typeName(schemaTypeName);
     if (schema.type() == Type.ARRAY) {
