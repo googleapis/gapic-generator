@@ -157,8 +157,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     // the same symbols.
     SymbolTable symbolTableCopy = SymbolTable.fromSeed(reservedKeywords);
 
-    String schemaId =
-        Name.anyCamel(schema.id().isEmpty() ? schema.key() : schema.id()).toLowerCamel();
+    String schemaId = Name.anyCamel(schema.getIdentifier()).toLowerCamel();
     String schemaName =
         nameFormatter.privateFieldName(Name.anyCamel(symbolTableCopy.getNewSymbol(schemaId)));
 
@@ -168,7 +167,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     // Getters and setters use unescaped name for better readability on public methods.
     schemaView.fieldGetFunction(context.getDiscoGapicNamer().getResourceGetterName(schemaId));
     schemaView.fieldSetFunction(context.getDiscoGapicNamer().getResourceSetterName(schemaId));
-    String schemaTypeName = schemaTypeTable.getAndSaveNicknameForElementType(schema);
+    String schemaTypeName = schemaTypeTable.getAndSaveNicknameFor(schema, true);
 
     schemaView.typeName(schemaTypeName);
     if (schema.type() == Type.ARRAY) {

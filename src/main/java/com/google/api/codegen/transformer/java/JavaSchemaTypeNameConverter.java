@@ -96,24 +96,12 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
 
   @Override
   public TypeName getTypeName(Schema schema) {
-    if (schema.type() == Type.ARRAY) {
-      TypeName listTypeName = typeNameConverter.getTypeName("java.util.List");
-      TypeName elementTypeName = getTypeNameForElementType(schema, true);
-      return new TypeName(
-          listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", elementTypeName);
-    } else {
-      return getTypeNameForElementType(schema, false);
-    }
+    return getTypeName(schema, false);
   }
 
   @Override
   public TypedValue getEnumValue(Schema schema, String value) {
     return TypedValue.create(getTypeName(schema), "%s." + value);
-  }
-
-  @Override
-  public TypeName getTypeNameForElementType(Schema type) {
-    return getTypeNameForElementType(type, true);
   }
 
   /**
@@ -123,24 +111,32 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
    * @param schema The Schema to generate a TypeName from.
    *     <p>This method will be recursively called on the given schema's children.
    */
-  private TypeName getTypeNameForElementType(Schema schema, boolean shouldBoxPrimitives) {
+  public TypeName getTypeName(Schema schema, boolean shouldBoxPrimitives) {
     String primitiveTypeName = getPrimitiveTypeName(schema);
     if (primitiveTypeName != null) {
+      TypeName primitiveType;
       if (primitiveTypeName.contains(".")) {
         // Fully qualified type name, use regular type name resolver. Can skip boxing logic
         // because those types are already boxed.
-        return typeNameConverter.getTypeName(primitiveTypeName);
+        primitiveType = typeNameConverter.getTypeName(primitiveTypeName);
       } else {
         if (shouldBoxPrimitives) {
-          return new TypeName(JavaTypeTable.getBoxedTypeName(primitiveTypeName));
+          primitiveType = new TypeName(JavaTypeTable.getBoxedTypeName(primitiveTypeName));
         } else {
-          return new TypeName(primitiveTypeName);
+          primitiveType = new TypeName(primitiveTypeName);
         }
+      }
+      if (schema.repeated()) {
+        TypeName listTypeName = typeNameConverter.getTypeName("java.util.List");
+        return new TypeName(
+            listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", primitiveType);
+      } else {
+        return primitiveType;
       }
     } else if (schema.type() == Type.ARRAY) {
       // TODO(andrealin): ensure that this handles arrays of arrays.
       TypeName listTypeName = typeNameConverter.getTypeName("java.util.List");
-      TypeName elementTypeName = getTypeNameForElementType(schema.items(), true);
+      TypeName elementTypeName = getTypeName(schema.items(), true);
       return new TypeName(
           listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", elementTypeName);
     } else {
@@ -198,7 +194,7 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
    */
   @Override
   public TypedValue getSnippetZeroValue(Schema schema) {
-    if (schema.type() == Schema.Type.ARRAY) {
+    if (schema.type() == Schema.Type.ARRAY || schema.repeated()) {
       return TypedValue.create(typeNameConverter.getTypeName("java.util.ArrayList"), "new %s<>()");
     }
     if (getPrimitiveTypeName(schema) != null) {

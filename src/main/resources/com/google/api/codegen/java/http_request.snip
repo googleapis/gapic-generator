@@ -1,0 +1,233 @@
+@extends "java/common.snip"
+@extends "java/method_sample.snip"
+
+@snippet generate(apiFile)
+  {@renderFileHeader(apiFile.fileHeader)}
+
+  @@Generated("by GAPIC")
+  @@BetaApi
+  {@requestClassDef(apiFile.request)}
+@end
+
+@private requestClassDef(request)
+  public final class {@request.typeName} implements Message {
+    {@members(request)}
+
+    {@constructors(request)}
+
+    {@populateMapMethod(request)}
+
+    {@getters(request)}
+
+    {@newBuilder(request)}
+
+    {@builder(request)}
+
+    {@toString(request)}
+
+    {@equalsMethod(request)}
+
+    {@hashCode(request)}
+  }
+
+@end
+
+@private populateMapMethod(request)
+  public void populateFieldsInMap(Set<String> fieldNames, Map<String, List<String>> map) {
+    @join param : request.allParams
+      @if param.canRepeat
+        if (fieldNames.contains("{@param.name}")) {
+          map.put("{@param.name}", {@param.name});
+        }
+      @else
+        if (fieldNames.contains("{@param.name}")) {
+          List<String> values = new LinkedList<>();
+          values.add({@param.name});
+          map.put("{@param.name}", values);
+        }
+      @end
+
+    @end
+  }
+@end
+
+@private members(request)
+  private static final {@request.typeName} DEFAULT_INSTANCE = new {@request.typeName}();
+
+  @if request.hasRequestObject
+    private {@request.requestObject.typeName} {@request.requestObject.name};
+  @end
+
+  {@paramMembers(request.queryParams, "queryParams", "Query")}
+
+  {@paramMembers(request.pathParams, "pathParams", "Path")}
+@end
+
+@private paramMembers(params, paramsVariableName, paramsName)
+  @if params
+    // {@paramsName} parameters.
+    @join param : params
+      private {@param.typeName} {@param.name};
+    @end
+  @end
+@end
+
+@private toString(request)
+  @@Override
+  public String toString() {
+    return "{@request.typeName}{"
+        @join param : request.allParams on " + \", \"".add(BREAK)
+            + "{@param.name}=" + {@param.name}
+        @end
+        @if request.hasRequestObject
+         + ", {@request.requestObject.name}=" + {@request.requestObject.name}
+        @end
+        + "}";
+  }
+@end
+
+@private equalsMethod(request)
+  @@Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof {@request.typeName}) {
+      {@request.typeName} that = ({@request.typeName}) o;
+      return
+          @join param : request.allParams on "&&".add(BREAK)
+            this.{@param.name}.equals(that.{@param.getterFunction}())
+          @end
+          ;
+    }
+    return false;
+  }
+@end
+
+@private hashCode(request)
+  @@Override
+  public int hashCode() {
+    int h = 1;
+    @join param : request.allParams
+      h *= 1000003;
+      h ^= this.{@param.name}.hashCode();
+    @end
+    return h;
+  }
+@end
+
+@private newBuilder(request)
+  public static Builder newBuilder() {
+    return new {@request.typeName}.Builder();
+  }
+@end
+
+@private getters(request)
+  @if request.hasRequestObject
+   public {@request.requestObject.typeName} {@request.requestObject.getterFunction}() {
+      return {@request.requestObject.name};
+    }
+  @end
+
+  @join param : request.allParams
+    public {@param.typeName} {@param.getterFunction} () {
+      return {@param.name};
+    }
+  @end
+@end
+
+@private constructors(request)
+  private {@request.typeName}(
+      @join param : request.allParams on ",".add(BREAK)
+        {@param.typeName} {@param.name}
+      @end
+      @if request.hasRequestObject
+        ,
+        {@request.requestObject.typeName} {@request.requestObject.name}
+      @end
+      ) {
+    @join param : request.allParams
+      this.{@param.name} = {@param.name};
+    @end
+    @if request.hasRequestObject
+      this.{@request.requestObject.name} = {@request.requestObject.name};
+    @end
+  }
+
+  private {@request.typeName}() {}
+@end
+
+@private builder(request)
+  public static class Builder {
+    @join param : request.allParams
+      private {@param.typeName} {@param.name};
+    @end
+    @if request.hasRequestObject
+      private {@request.requestObject.typeName} {@request.requestObject.name};
+    @end
+
+    Builder() {}
+
+    Builder({@request.typeName} source) {
+      @join param : request.allParams
+        this.{@param.name} = source.{@param.getterFunction}();
+      @end
+    }
+
+    {@builderGettersSetters(request.queryParams)}
+    {@builderGettersSetters(request.pathParams)}
+
+    public {@request.typeName} build() {
+      String missing = "";
+      @join param : request.allParams
+        @if param.isRequired
+          if ({@param.name} == null) {
+            missing += " {@param.name}";
+          }
+        @end
+      @end
+      return new {@request.typeName}(
+          @join param : request.allParams on ", ".add(BREAK)
+            {@param.name}
+          @end
+          @if request.hasRequestObject
+            , {@request.requestObject.name}
+          @end
+      );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      @join param : request.allParams
+        if ({@param.name} != null) {
+          newBuilder.{@param.setterFunction}(this.{@param.name});
+        }
+      @end
+      return newBuilder;
+    }
+  }
+@end
+
+@private builderGettersSetters(params)
+  @join param : params
+    public {@param.typeName} {@param.getterFunction}() {
+      return {@param.name};
+    }
+
+    public Builder {@param.setterFunction}({@param.typeName} {@param.name}) {
+      @if @param.isRequired
+        if ({@param.name} == null) {
+          throw new IllegalArgumentException("\"{@param.name}\" is a required parameter.");
+        }
+      @end
+      @if param.canRepeat
+        this.{@param.name} = new LinkedList<>();
+        this.{@param.name}.addAll({@param.name});
+      @else
+        this.{@param.name} = {@param.name};
+      @end
+      return this;
+    }
+
+  @end
+@end
