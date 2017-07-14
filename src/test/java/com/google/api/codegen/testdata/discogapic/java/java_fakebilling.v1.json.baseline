@@ -337,18 +337,17 @@ public final class BillingAccount implements Serializable {
 package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
-import com.google.common.collect.ImmutableListMultimap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import javax.annotation.Generated;
 
 @Generated("by GAPIC")
 @BetaApi
-public final class BillingAccountsGetHttpRequest {
+public final class BillingAccountsGetHttpRequest implements Message {
   private static final BillingAccountsGetHttpRequest DEFAULT_INSTANCE = new BillingAccountsGetHttpRequest();
 
-
-  private final ImmutableListMultimap<String, String> queryParams;
 
   // Query parameters.
   private String access_token;
@@ -358,8 +357,7 @@ public final class BillingAccountsGetHttpRequest {
   private String prettyPrint;
   private String quotaUser;
   private String userIp;
-
-  private final ImmutableListMultimap<String, String> pathParams;
+  private List<String> fooRepeated;
 
   // Path parameters.
   private String name;
@@ -372,7 +370,8 @@ public final class BillingAccountsGetHttpRequest {
       String key,
       String prettyPrint,
       String quotaUser,
-      String userIp
+      String userIp,
+      List<String> fooRepeated
       ) {
     this.name = name;
     this.access_token = access_token;
@@ -382,54 +381,55 @@ public final class BillingAccountsGetHttpRequest {
     this.prettyPrint = prettyPrint;
     this.quotaUser = quotaUser;
     this.userIp = userIp;
-
-    ImmutableListMultimap.Builder pathParams = ImmutableListMultimap.builder();
-    ImmutableListMultimap.Builder queryParams = ImmutableListMultimap.builder();
-
-    if (name != null) {
-      pathParams.put("name", name.toString());
-    }
-    if (access_token != null) {
-      queryParams.put("access_token", access_token.toString());
-    }
-    if (callback != null) {
-      queryParams.put("callback", callback.toString());
-    }
-    if (fields != null) {
-      queryParams.put("fields", fields.toString());
-    }
-    if (key != null) {
-      queryParams.put("key", key.toString());
-    }
-    if (prettyPrint != null) {
-      queryParams.put("prettyPrint", prettyPrint.toString());
-    }
-    if (quotaUser != null) {
-      queryParams.put("quotaUser", quotaUser.toString());
-    }
-    if (userIp != null) {
-      queryParams.put("userIp", userIp.toString());
-    }
-
-    this.pathParams = pathParams.build();
-    this.queryParams = queryParams.build();
+    this.fooRepeated = fooRepeated;
   }
 
-  private BillingAccountsGetHttpRequest() {
-    this.queryParams = (new ImmutableListMultimap.Builder()).build();
-    this.pathParams = (new ImmutableListMultimap.Builder()).build();
-  }
+  private BillingAccountsGetHttpRequest() {}
 
-  // A list of key-value pairs, where each key is a query parameter and the value is the value
-  // of the parameter. A key may appear multiple times, in the case of repeatable parameters.
-  public ImmutableListMultimap<String, String> getQueryParams() {
-    return queryParams;
-  }
-
-  // A list of key-value pairs, where each key is a path parameter and the value is the value
-  // of the parameter. A key may appear multiple times, in the case of repeatable parameters
-  public ImmutableListMultimap<String, String> getPathParams() {
-    return pathParams;
+  public void populateFieldsInMap(Set<String> fieldNames, Map<String, List<String>> map) {
+    if (fieldNames.contains("name")) {
+      List<String> values = new LinkedList<>();
+      values.add(name);
+      map.put("name", values);
+    }
+    if (fieldNames.contains("access_token")) {
+      List<String> values = new LinkedList<>();
+      values.add(access_token);
+      map.put("access_token", values);
+    }
+    if (fieldNames.contains("callback")) {
+      List<String> values = new LinkedList<>();
+      values.add(callback);
+      map.put("callback", values);
+    }
+    if (fieldNames.contains("fields")) {
+      List<String> values = new LinkedList<>();
+      values.add(fields);
+      map.put("fields", values);
+    }
+    if (fieldNames.contains("key")) {
+      List<String> values = new LinkedList<>();
+      values.add(key);
+      map.put("key", values);
+    }
+    if (fieldNames.contains("prettyPrint")) {
+      List<String> values = new LinkedList<>();
+      values.add(prettyPrint);
+      map.put("prettyPrint", values);
+    }
+    if (fieldNames.contains("quotaUser")) {
+      List<String> values = new LinkedList<>();
+      values.add(quotaUser);
+      map.put("quotaUser", values);
+    }
+    if (fieldNames.contains("userIp")) {
+      List<String> values = new LinkedList<>();
+      values.add(userIp);
+      map.put("userIp", values);
+    }
+    if (fieldNames.contains("fooRepeated")) {
+      map.put("fooRepeated", fooRepeated);
+    }
   }
 
 
@@ -457,6 +457,9 @@ public final class BillingAccountsGetHttpRequest {
   public String getUserIp () {
     return userIp;
   }
+  public List<String> getFooRepeated () {
+    return fooRepeated;
+  }
 
   public static Builder newBuilder() {
     return new BillingAccountsGetHttpRequest.Builder();
@@ -471,6 +474,7 @@ public final class BillingAccountsGetHttpRequest {
     private String prettyPrint;
     private String quotaUser;
     private String userIp;
+    private List<String> fooRepeated;
 
     Builder() {}
 
@@ -483,6 +487,7 @@ public final class BillingAccountsGetHttpRequest {
       this.prettyPrint = source.getPrettyPrint();
       this.quotaUser = source.getQuotaUser();
       this.userIp = source.getUserIp();
+      this.fooRepeated = source.getFooRepeated();
     }
 
     public String getAccessToken() {
@@ -548,6 +553,16 @@ public final class BillingAccountsGetHttpRequest {
       return this;
     }
 
+    public List<String> getFooRepeated() {
+      return fooRepeated;
+    }
+
+    public Builder setFooRepeated(List<String> fooRepeated) {
+      this.fooRepeated = new LinkedList<>();
+      this.fooRepeated.addAll(fooRepeated);
+      return this;
+    }
+
     public String getName() {
       return name;
     }
@@ -562,6 +577,18 @@ public final class BillingAccountsGetHttpRequest {
 
 
     public BillingAccountsGetHttpRequest build() {
+      String missing = "";
+      if (name == null) {
+        missing += " name";
+      }
+
+
+
+
+
+
+
+
       return new BillingAccountsGetHttpRequest(
           name,
           access_token,
@@ -570,7 +597,8 @@ public final class BillingAccountsGetHttpRequest {
           key,
           prettyPrint,
           quotaUser,
-          userIp
+          userIp,
+          fooRepeated
       );
     }
 
@@ -600,6 +628,9 @@ public final class BillingAccountsGetHttpRequest {
       if (userIp != null) {
         newBuilder.setUserIp(this.userIp);
       }
+      if (fooRepeated != null) {
+        newBuilder.setFooRepeated(this.fooRepeated);
+      }
       return newBuilder;
     }
   }
@@ -614,7 +645,8 @@ public final class BillingAccountsGetHttpRequest {
         + "key=" + key + ", "
         + "prettyPrint=" + prettyPrint + ", "
         + "quotaUser=" + quotaUser + ", "
-        + "userIp=" + userIp
+        + "userIp=" + userIp + ", "
+        + "fooRepeated=" + fooRepeated
         + "}";
   }
 
@@ -633,7 +665,8 @@ public final class BillingAccountsGetHttpRequest {
           this.key.equals(that.getKey())&&
           this.prettyPrint.equals(that.getPrettyPrint())&&
           this.quotaUser.equals(that.getQuotaUser())&&
-          this.userIp.equals(that.getUserIp())
+          this.userIp.equals(that.getUserIp())&&
+          this.fooRepeated.equals(that.getFooRepeated())
           ;
     }
     return false;
@@ -658,6 +691,8 @@ public final class BillingAccountsGetHttpRequest {
     h ^= this.quotaUser.hashCode();
     h *= 1000003;
     h ^= this.userIp.hashCode();
+    h *= 1000003;
+    h ^= this.fooRepeated.hashCode();
     return h;
   }
 }
@@ -681,18 +716,17 @@ public final class BillingAccountsGetHttpRequest {
 package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
-import com.google.common.collect.ImmutableListMultimap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import javax.annotation.Generated;
 
 @Generated("by GAPIC")
 @BetaApi
-public final class BillingAccountsListHttpRequest {
+public final class BillingAccountsListHttpRequest implements Message {
   private static final BillingAccountsListHttpRequest DEFAULT_INSTANCE = new BillingAccountsListHttpRequest();
 
-
-  private final ImmutableListMultimap<String, String> queryParams;
 
   // Query parameters.
   private String access_token;
@@ -704,8 +738,8 @@ public final class BillingAccountsListHttpRequest {
   private String userIp;
   private Integer pageSize;
   private String pageToken;
+  private Long maxResults;
 
-  private final ImmutableListMultimap<String, String> pathParams;
 
 
   private BillingAccountsListHttpRequest(
@@ -717,7 +751,8 @@ public final class BillingAccountsListHttpRequest {
       String quotaUser,
       String userIp,
       Integer pageSize,
-      String pageToken
+      String pageToken,
+      Long maxResults
       ) {
     this.access_token = access_token;
     this.callback = callback;
@@ -728,58 +763,62 @@ public final class BillingAccountsListHttpRequest {
     this.userIp = userIp;
     this.pageSize = pageSize;
     this.pageToken = pageToken;
-
-    ImmutableListMultimap.Builder pathParams = ImmutableListMultimap.builder();
-    ImmutableListMultimap.Builder queryParams = ImmutableListMultimap.builder();
-
-
-    if (access_token != null) {
-      queryParams.put("access_token", access_token.toString());
-    }
-    if (callback != null) {
-      queryParams.put("callback", callback.toString());
-    }
-    if (fields != null) {
-      queryParams.put("fields", fields.toString());
-    }
-    if (key != null) {
-      queryParams.put("key", key.toString());
-    }
-    if (prettyPrint != null) {
-      queryParams.put("prettyPrint", prettyPrint.toString());
-    }
-    if (quotaUser != null) {
-      queryParams.put("quotaUser", quotaUser.toString());
-    }
-    if (userIp != null) {
-      queryParams.put("userIp", userIp.toString());
-    }
-    if (pageSize != null) {
-      queryParams.put("pageSize", pageSize.toString());
-    }
-    if (pageToken != null) {
-      queryParams.put("pageToken", pageToken.toString());
-    }
-
-    this.pathParams = pathParams.build();
-    this.queryParams = queryParams.build();
+    this.maxResults = maxResults;
   }
 
-  private BillingAccountsListHttpRequest() {
-    this.queryParams = (new ImmutableListMultimap.Builder()).build();
-    this.pathParams = (new ImmutableListMultimap.Builder()).build();
-  }
+  private BillingAccountsListHttpRequest() {}
 
-  // A list of key-value pairs, where each key is a query parameter and the value is the value
-  // of the parameter. A key may appear multiple times, in the case of repeatable parameters.
-  public ImmutableListMultimap<String, String> getQueryParams() {
-    return queryParams;
-  }
-
-  // A list of key-value pairs, where each key is a path parameter and the value is the value
-  // of the parameter. A key may appear multiple times, in the case of repeatable parameters
-  public ImmutableListMultimap<String, String> getPathParams() {
-    return pathParams;
+  public void populateFieldsInMap(Set<String> fieldNames, Map<String, List<String>> map) {
+    if (fieldNames.contains("access_token")) {
+      List<String> values = new LinkedList<>();
+      values.add(access_token);
+      map.put("access_token", values);
+    }
+    if (fieldNames.contains("callback")) {
+      List<String> values = new LinkedList<>();
+      values.add(callback);
+      map.put("callback", values);
+    }
+    if (fieldNames.contains("fields")) {
+      List<String> values = new LinkedList<>();
+      values.add(fields);
+      map.put("fields", values);
+    }
+    if (fieldNames.contains("key")) {
+      List<String> values = new LinkedList<>();
+      values.add(key);
+      map.put("key", values);
+    }
+    if (fieldNames.contains("prettyPrint")) {
+      List<String> values = new LinkedList<>();
+      values.add(prettyPrint);
+      map.put("prettyPrint", values);
+    }
+    if (fieldNames.contains("quotaUser")) {
+      List<String> values = new LinkedList<>();
+      values.add(quotaUser);
+      map.put("quotaUser", values);
+    }
+    if (fieldNames.contains("userIp")) {
+      List<String> values = new LinkedList<>();
+      values.add(userIp);
+      map.put("userIp", values);
+    }
+    if (fieldNames.contains("pageSize")) {
+      List<String> values = new LinkedList<>();
+      values.add(pageSize);
+      map.put("pageSize", values);
+    }
+    if (fieldNames.contains("pageToken")) {
+      List<String> values = new LinkedList<>();
+      values.add(pageToken);
+      map.put("pageToken", values);
+    }
+    if (fieldNames.contains("maxResults")) {
+      List<String> values = new LinkedList<>();
+      values.add(maxResults);
+      map.put("maxResults", values);
+    }
   }
 
 
@@ -810,6 +849,9 @@ public final class BillingAccountsListHttpRequest {
   public String getPageToken () {
     return pageToken;
   }
+  public Long getMaxResults () {
+    return maxResults;
+  }
 
   public static Builder newBuilder() {
     return new BillingAccountsListHttpRequest.Builder();
@@ -825,6 +867,7 @@ public final class BillingAccountsListHttpRequest {
     private String userIp;
     private Integer pageSize;
     private String pageToken;
+    private Long maxResults;
 
     Builder() {}
 
@@ -838,6 +881,7 @@ public final class BillingAccountsListHttpRequest {
       this.userIp = source.getUserIp();
       this.pageSize = source.getPageSize();
       this.pageToken = source.getPageToken();
+      this.maxResults = source.getMaxResults();
     }
 
     public String getAccessToken() {
@@ -921,9 +965,28 @@ public final class BillingAccountsListHttpRequest {
       return this;
     }
 
+    public Long getMaxResults() {
+      return maxResults;
+    }
+
+    public Builder setMaxResults(Long maxResults) {
+      this.maxResults = maxResults;
+      return this;
+    }
+
 
 
     public BillingAccountsListHttpRequest build() {
+      String missing = "";
+
+
+
+
+
+
+
+
+
       return new BillingAccountsListHttpRequest(
           access_token,
           callback,
@@ -933,7 +996,8 @@ public final class BillingAccountsListHttpRequest {
           quotaUser,
           userIp,
           pageSize,
-          pageToken
+          pageToken,
+          maxResults
       );
     }
 
@@ -966,6 +1030,9 @@ public final class BillingAccountsListHttpRequest {
       if (pageToken != null) {
         newBuilder.setPageToken(this.pageToken);
       }
+      if (maxResults != null) {
+        newBuilder.setMaxResults(this.maxResults);
+      }
       return newBuilder;
     }
   }
@@ -981,7 +1048,8 @@ public final class BillingAccountsListHttpRequest {
         + "quotaUser=" + quotaUser + ", "
         + "userIp=" + userIp + ", "
         + "pageSize=" + pageSize + ", "
-        + "pageToken=" + pageToken
+        + "pageToken=" + pageToken + ", "
+        + "maxResults=" + maxResults
         + "}";
   }
 
@@ -1001,7 +1069,8 @@ public final class BillingAccountsListHttpRequest {
           this.quotaUser.equals(that.getQuotaUser())&&
           this.userIp.equals(that.getUserIp())&&
           this.pageSize.equals(that.getPageSize())&&
-          this.pageToken.equals(that.getPageToken())
+          this.pageToken.equals(that.getPageToken())&&
+          this.maxResults.equals(that.getMaxResults())
           ;
     }
     return false;
@@ -1028,6 +1097,8 @@ public final class BillingAccountsListHttpRequest {
     h ^= this.pageSize.hashCode();
     h *= 1000003;
     h ^= this.pageToken.hashCode();
+    h *= 1000003;
+    h ^= this.maxResults.hashCode();
     return h;
   }
 }
@@ -2335,18 +2406,17 @@ public final class ProjectBillingInfo implements Serializable {
 package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
-import com.google.common.collect.ImmutableListMultimap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import javax.annotation.Generated;
 
 @Generated("by GAPIC")
 @BetaApi
-public final class ProjectsGetBillingInfoHttpRequest {
+public final class ProjectsGetBillingInfoHttpRequest implements Message {
   private static final ProjectsGetBillingInfoHttpRequest DEFAULT_INSTANCE = new ProjectsGetBillingInfoHttpRequest();
 
-
-  private final ImmutableListMultimap<String, String> queryParams;
 
   // Query parameters.
   private String access_token;
@@ -2356,8 +2426,6 @@ public final class ProjectsGetBillingInfoHttpRequest {
   private String prettyPrint;
   private String quotaUser;
   private String userIp;
-
-  private final ImmutableListMultimap<String, String> pathParams;
 
   // Path parameters.
   private String name;
@@ -2380,54 +2448,51 @@ public final class ProjectsGetBillingInfoHttpRequest {
     this.prettyPrint = prettyPrint;
     this.quotaUser = quotaUser;
     this.userIp = userIp;
-
-    ImmutableListMultimap.Builder pathParams = ImmutableListMultimap.builder();
-    ImmutableListMultimap.Builder queryParams = ImmutableListMultimap.builder();
-
-    if (name != null) {
-      pathParams.put("name", name.toString());
-    }
-    if (access_token != null) {
-      queryParams.put("access_token", access_token.toString());
-    }
-    if (callback != null) {
-      queryParams.put("callback", callback.toString());
-    }
-    if (fields != null) {
-      queryParams.put("fields", fields.toString());
-    }
-    if (key != null) {
-      queryParams.put("key", key.toString());
-    }
-    if (prettyPrint != null) {
-      queryParams.put("prettyPrint", prettyPrint.toString());
-    }
-    if (quotaUser != null) {
-      queryParams.put("quotaUser", quotaUser.toString());
-    }
-    if (userIp != null) {
-      queryParams.put("userIp", userIp.toString());
-    }
-
-    this.pathParams = pathParams.build();
-    this.queryParams = queryParams.build();
   }
 
-  private ProjectsGetBillingInfoHttpRequest() {
-    this.queryParams = (new ImmutableListMultimap.Builder()).build();
-    this.pathParams = (new ImmutableListMultimap.Builder()).build();
-  }
+  private ProjectsGetBillingInfoHttpRequest() {}
 
-  // A list of key-value pairs, where each key is a query parameter and the value is the value
-  // of the parameter. A key may appear multiple times, in the case of repeatable parameters.
-  public ImmutableListMultimap<String, String> getQueryParams() {
-    return queryParams;
-  }
-
-  // A list of key-value pairs, where each key is a path parameter and the value is the value
-  // of the parameter. A key may appear multiple times, in the case of repeatable parameters
-  public ImmutableListMultimap<String, String> getPathParams() {
-    return pathParams;
+  public void populateFieldsInMap(Set<String> fieldNames, Map<String, List<String>> map) {
+    if (fieldNames.contains("name")) {
+      List<String> values = new LinkedList<>();
+      values.add(name);
+      map.put("name", values);
+    }
+    if (fieldNames.contains("access_token")) {
+      List<String> values = new LinkedList<>();
+      values.add(access_token);
+      map.put("access_token", values);
+    }
+    if (fieldNames.contains("callback")) {
+      List<String> values = new LinkedList<>();
+      values.add(callback);
+      map.put("callback", values);
+    }
+    if (fieldNames.contains("fields")) {
+      List<String> values = new LinkedList<>();
+      values.add(fields);
+      map.put("fields", values);
+    }
+    if (fieldNames.contains("key")) {
+      List<String> values = new LinkedList<>();
+      values.add(key);
+      map.put("key", values);
+    }
+    if (fieldNames.contains("prettyPrint")) {
+      List<String> values = new LinkedList<>();
+      values.add(prettyPrint);
+      map.put("prettyPrint", values);
+    }
+    if (fieldNames.contains("quotaUser")) {
+      List<String> values = new LinkedList<>();
+      values.add(quotaUser);
+      map.put("quotaUser", values);
+    }
+    if (fieldNames.contains("userIp")) {
+      List<String> values = new LinkedList<>();
+      values.add(userIp);
+      map.put("userIp", values);
+    }
   }
 
 
@@ -2560,6 +2625,17 @@ public final class ProjectsGetBillingInfoHttpRequest {
 
 
     public ProjectsGetBillingInfoHttpRequest build() {
+      String missing = "";
+      if (name == null) {
+        missing += " name";
+      }
+
+
+
+
+
+
+
       return new ProjectsGetBillingInfoHttpRequest(
           name,
           access_token,
@@ -2679,18 +2755,17 @@ public final class ProjectsGetBillingInfoHttpRequest {
 package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
-import com.google.common.collect.ImmutableListMultimap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import javax.annotation.Generated;
 
 @Generated("by GAPIC")
 @BetaApi
-public final class ProjectsListHttpRequest {
+public final class ProjectsListHttpRequest implements Message {
   private static final ProjectsListHttpRequest DEFAULT_INSTANCE = new ProjectsListHttpRequest();
 
-
-  private final ImmutableListMultimap<String, String> queryParams;
 
   // Query parameters.
   private String access_token;
@@ -2702,8 +2777,6 @@ public final class ProjectsListHttpRequest {
   private String userIp;
   private Integer pageSize;
   private String pageToken;
-
-  private final ImmutableListMultimap<String, String> pathParams;
 
   // Path parameters.
   private String name;
@@ -2730,60 +2803,61 @@ public final class ProjectsListHttpRequest {
     this.userIp = userIp;
     this.pageSize = pageSize;
     this.pageToken = pageToken;
-
-    ImmutableListMultimap.Builder pathParams = ImmutableListMultimap.builder();
-    ImmutableListMultimap.Builder queryParams = ImmutableListMultimap.builder();
-
-    if (name != null) {
-      pathParams.put("name", name.toString());
-    }
-    if (access_token != null) {
-      queryParams.put("access_token", access_token.toString());
-    }
-    if (callback != null) {
-      queryParams.put("callback", callback.toString());
-    }
-    if (fields != null) {
-      queryParams.put("fields", fields.toString());
-    }
-    if (key != null) {
-      queryParams.put("key", key.toString());
-    }
-    if (prettyPrint != null) {
-      queryParams.put("prettyPrint", prettyPrint.toString());
-    }
-    if (quotaUser != null) {
-      queryParams.put("quotaUser", quotaUser.toString());
-    }
-    if (userIp != null) {
-      queryParams.put("userIp", userIp.toString());
-    }
-    if (pageSize != null) {
-      queryParams.put("pageSize", pageSize.toString());
-    }
-    if (pageToken != null) {
-      queryParams.put("pageToken", pageToken.toString());
-    }
-
-    this.pathParams = pathParams.build();
-    this.queryParams = queryParams.build();
   }
 
-  private ProjectsListHttpRequest() {
-    this.queryParams = (new ImmutableListMultimap.Builder()).build();
-    this.pathParams = (new ImmutableListMultimap.Builder()).build();
-  }
+  private ProjectsListHttpRequest() {}
 
-  // A list of key-value pairs, where each key is a query parameter and the value is the value
-  // of the parameter. A key may appear multiple times, in the case of repeatable parameters.
-  public ImmutableListMultimap<String, String> getQueryParams() {
-    return queryParams;
-  }
-
-  // A list of key-value pairs, where each key is a path parameter and the value is the value
-  // of the parameter. A key may appear multiple times, in the case of repeatable parameters
-  public ImmutableListMultimap<String, String> getPathParams() {
-    return pathParams;
+  public void populateFieldsInMap(Set<String> fieldNames, Map<String, List<String>> map) {
+    if (fieldNames.contains("name")) {
+      List<String> values = new LinkedList<>();
+      values.add(name);
+      map.put("name", values);
+    }
+    if (fieldNames.contains("access_token")) {
+      List<String> values = new LinkedList<>();
+      values.add(access_token);
+      map.put("access_token", values);
+    }
+    if (fieldNames.contains("callback")) {
+      List<String> values = new LinkedList<>();
+      values.add(callback);
+      map.put("callback", values);
+    }
+    if (fieldNames.contains("fields")) {
+      List<String> values = new LinkedList<>();
+      values.add(fields);
+      map.put("fields", values);
+    }
+    if (fieldNames.contains("key")) {
+      List<String> values = new LinkedList<>();
+      values.add(key);
+      map.put("key", values);
+    }
+    if (fieldNames.contains("prettyPrint")) {
+      List<String> values = new LinkedList<>();
+      values.add(prettyPrint);
+      map.put("prettyPrint", values);
+    }
+    if (fieldNames.contains("quotaUser")) {
+      List<String> values = new LinkedList<>();
+      values.add(quotaUser);
+      map.put("quotaUser", values);
+    }
+    if (fieldNames.contains("userIp")) {
+      List<String> values = new LinkedList<>();
+      values.add(userIp);
+      map.put("userIp", values);
+    }
+    if (fieldNames.contains("pageSize")) {
+      List<String> values = new LinkedList<>();
+      values.add(pageSize);
+      map.put("pageSize", values);
+    }
+    if (fieldNames.contains("pageToken")) {
+      List<String> values = new LinkedList<>();
+      values.add(pageToken);
+      map.put("pageToken", values);
+    }
   }
 
 
@@ -2944,6 +3018,19 @@ public final class ProjectsListHttpRequest {
 
 
     public ProjectsListHttpRequest build() {
+      String missing = "";
+      if (name == null) {
+        missing += " name";
+      }
+
+
+
+
+
+
+
+
+
       return new ProjectsListHttpRequest(
           name,
           access_token,
@@ -3079,19 +3166,18 @@ public final class ProjectsListHttpRequest {
 package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
-import com.google.common.collect.ImmutableListMultimap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import javax.annotation.Generated;
 
 @Generated("by GAPIC")
 @BetaApi
-public final class ProjectsUpdateBillingInfoHttpRequest {
+public final class ProjectsUpdateBillingInfoHttpRequest implements Message {
   private static final ProjectsUpdateBillingInfoHttpRequest DEFAULT_INSTANCE = new ProjectsUpdateBillingInfoHttpRequest();
 
   private ProjectBillingInfo request;
-
-  private final ImmutableListMultimap<String, String> queryParams;
 
   // Query parameters.
   private String access_token;
@@ -3101,8 +3187,6 @@ public final class ProjectsUpdateBillingInfoHttpRequest {
   private String prettyPrint;
   private String quotaUser;
   private String userIp;
-
-  private final ImmutableListMultimap<String, String> pathParams;
 
   // Path parameters.
   private String name;
@@ -3128,60 +3212,56 @@ public final class ProjectsUpdateBillingInfoHttpRequest {
     this.quotaUser = quotaUser;
     this.userIp = userIp;
     this.request = request;
-
-    ImmutableListMultimap.Builder pathParams = ImmutableListMultimap.builder();
-    ImmutableListMultimap.Builder queryParams = ImmutableListMultimap.builder();
-
-    if (name != null) {
-      pathParams.put("name", name.toString());
-    }
-    if (access_token != null) {
-      queryParams.put("access_token", access_token.toString());
-    }
-    if (callback != null) {
-      queryParams.put("callback", callback.toString());
-    }
-    if (fields != null) {
-      queryParams.put("fields", fields.toString());
-    }
-    if (key != null) {
-      queryParams.put("key", key.toString());
-    }
-    if (prettyPrint != null) {
-      queryParams.put("prettyPrint", prettyPrint.toString());
-    }
-    if (quotaUser != null) {
-      queryParams.put("quotaUser", quotaUser.toString());
-    }
-    if (userIp != null) {
-      queryParams.put("userIp", userIp.toString());
-    }
-
-    this.pathParams = pathParams.build();
-    this.queryParams = queryParams.build();
   }
 
-  private ProjectsUpdateBillingInfoHttpRequest() {
-    this.queryParams = (new ImmutableListMultimap.Builder()).build();
-    this.pathParams = (new ImmutableListMultimap.Builder()).build();
-  }
+  private ProjectsUpdateBillingInfoHttpRequest() {}
 
-  // A list of key-value pairs, where each key is a query parameter and the value is the value
-  // of the parameter. A key may appear multiple times, in the case of repeatable parameters.
-  public ImmutableListMultimap<String, String> getQueryParams() {
-    return queryParams;
-  }
-
-  // A list of key-value pairs, where each key is a path parameter and the value is the value
-  // of the parameter. A key may appear multiple times, in the case of repeatable parameters
-  public ImmutableListMultimap<String, String> getPathParams() {
-    return pathParams;
+  public void populateFieldsInMap(Set<String> fieldNames, Map<String, List<String>> map) {
+    if (fieldNames.contains("name")) {
+      List<String> values = new LinkedList<>();
+      values.add(name);
+      map.put("name", values);
+    }
+    if (fieldNames.contains("access_token")) {
+      List<String> values = new LinkedList<>();
+      values.add(access_token);
+      map.put("access_token", values);
+    }
+    if (fieldNames.contains("callback")) {
+      List<String> values = new LinkedList<>();
+      values.add(callback);
+      map.put("callback", values);
+    }
+    if (fieldNames.contains("fields")) {
+      List<String> values = new LinkedList<>();
+      values.add(fields);
+      map.put("fields", values);
+    }
+    if (fieldNames.contains("key")) {
+      List<String> values = new LinkedList<>();
+      values.add(key);
+      map.put("key", values);
+    }
+    if (fieldNames.contains("prettyPrint")) {
+      List<String> values = new LinkedList<>();
+      values.add(prettyPrint);
+      map.put("prettyPrint", values);
+    }
+    if (fieldNames.contains("quotaUser")) {
+      List<String> values = new LinkedList<>();
+      values.add(quotaUser);
+      map.put("quotaUser", values);
+    }
+    if (fieldNames.contains("userIp")) {
+      List<String> values = new LinkedList<>();
+      values.add(userIp);
+      map.put("userIp", values);
+    }
   }
 
   public ProjectBillingInfo getRequest() {
      return request;
    }
-
   public String getName () {
     return name;
   }
@@ -3312,6 +3392,17 @@ public final class ProjectsUpdateBillingInfoHttpRequest {
 
 
     public ProjectsUpdateBillingInfoHttpRequest build() {
+      String missing = "";
+      if (name == null) {
+        missing += " name";
+      }
+
+
+
+
+
+
+
       return new ProjectsUpdateBillingInfoHttpRequest(
           name,
           access_token,
