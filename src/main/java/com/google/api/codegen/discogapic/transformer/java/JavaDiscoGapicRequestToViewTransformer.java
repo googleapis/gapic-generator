@@ -87,8 +87,6 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     reservedKeywords.add("Builder");
   }
 
-  private static final String XAPI_TEMPLATE_FILENAME = "java/main.snip";
-  private static final String PACKAGE_INFO_TEMPLATE_FILENAME = "java/package-info.snip";
   private static final String REQUEST_TEMPLATE_FILENAME = "java/http_request.snip";
 
   public JavaDiscoGapicRequestToViewTransformer(
@@ -98,9 +96,9 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     // TODO use packageMetadataConfig
   }
 
+  @Override
   public List<String> getTemplateFileNames() {
-    return Arrays.asList(
-        XAPI_TEMPLATE_FILENAME, PACKAGE_INFO_TEMPLATE_FILENAME, REQUEST_TEMPLATE_FILENAME);
+    return Arrays.asList(REQUEST_TEMPLATE_FILENAME);
   }
 
   @Override
