@@ -738,6 +738,7 @@ public final class BillingAccountsListHttpRequest implements Message {
   private String userIp;
   private Integer pageSize;
   private String pageToken;
+  private Long maxResults;
 
 
 
@@ -750,7 +751,8 @@ public final class BillingAccountsListHttpRequest implements Message {
       String quotaUser,
       String userIp,
       Integer pageSize,
-      String pageToken
+      String pageToken,
+      Long maxResults
       ) {
     this.access_token = access_token;
     this.callback = callback;
@@ -761,6 +763,7 @@ public final class BillingAccountsListHttpRequest implements Message {
     this.userIp = userIp;
     this.pageSize = pageSize;
     this.pageToken = pageToken;
+    this.maxResults = maxResults;
   }
 
   private BillingAccountsListHttpRequest() {}
@@ -811,6 +814,11 @@ public final class BillingAccountsListHttpRequest implements Message {
       values.add(pageToken);
       map.put("pageToken", values);
     }
+    if (fieldNames.contains("maxResults")) {
+      List<String> values = new LinkedList<>();
+      values.add(maxResults);
+      map.put("maxResults", values);
+    }
   }
 
 
@@ -841,6 +849,9 @@ public final class BillingAccountsListHttpRequest implements Message {
   public String getPageToken () {
     return pageToken;
   }
+  public Long getMaxResults () {
+    return maxResults;
+  }
 
   public static Builder newBuilder() {
     return new BillingAccountsListHttpRequest.Builder();
@@ -856,6 +867,7 @@ public final class BillingAccountsListHttpRequest implements Message {
     private String userIp;
     private Integer pageSize;
     private String pageToken;
+    private Long maxResults;
 
     Builder() {}
 
@@ -869,6 +881,7 @@ public final class BillingAccountsListHttpRequest implements Message {
       this.userIp = source.getUserIp();
       this.pageSize = source.getPageSize();
       this.pageToken = source.getPageToken();
+      this.maxResults = source.getMaxResults();
     }
 
     public String getAccessToken() {
@@ -952,10 +965,20 @@ public final class BillingAccountsListHttpRequest implements Message {
       return this;
     }
 
+    public Long getMaxResults() {
+      return maxResults;
+    }
+
+    public Builder setMaxResults(Long maxResults) {
+      this.maxResults = maxResults;
+      return this;
+    }
+
 
 
     public BillingAccountsListHttpRequest build() {
       String missing = "";
+
 
 
 
@@ -973,7 +996,8 @@ public final class BillingAccountsListHttpRequest implements Message {
           quotaUser,
           userIp,
           pageSize,
-          pageToken
+          pageToken,
+          maxResults
       );
     }
 
@@ -1006,6 +1030,9 @@ public final class BillingAccountsListHttpRequest implements Message {
       if (pageToken != null) {
         newBuilder.setPageToken(this.pageToken);
       }
+      if (maxResults != null) {
+        newBuilder.setMaxResults(this.maxResults);
+      }
       return newBuilder;
     }
   }
@@ -1021,7 +1048,8 @@ public final class BillingAccountsListHttpRequest implements Message {
         + "quotaUser=" + quotaUser + ", "
         + "userIp=" + userIp + ", "
         + "pageSize=" + pageSize + ", "
-        + "pageToken=" + pageToken
+        + "pageToken=" + pageToken + ", "
+        + "maxResults=" + maxResults
         + "}";
   }
 
@@ -1041,7 +1069,8 @@ public final class BillingAccountsListHttpRequest implements Message {
           this.quotaUser.equals(that.getQuotaUser())&&
           this.userIp.equals(that.getUserIp())&&
           this.pageSize.equals(that.getPageSize())&&
-          this.pageToken.equals(that.getPageToken())
+          this.pageToken.equals(that.getPageToken())&&
+          this.maxResults.equals(that.getMaxResults())
           ;
     }
     return false;
@@ -1068,6 +1097,8 @@ public final class BillingAccountsListHttpRequest implements Message {
     h ^= this.pageSize.hashCode();
     h *= 1000003;
     h ^= this.pageToken.hashCode();
+    h *= 1000003;
+    h ^= this.maxResults.hashCode();
     return h;
   }
 }
