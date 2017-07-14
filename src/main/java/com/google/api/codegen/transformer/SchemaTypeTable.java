@@ -91,16 +91,7 @@ public class SchemaTypeTable implements SchemaTypeFormatter {
    * nickname.
    */
   public String getAndSaveNicknameFor(Schema schema) {
-    return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeName(schema));
-  }
-
-  /**
-   * Computes the nickname for the given type, adds the full name to the import set, and returns the
-   * nickname.
-   */
-  public String getAndSaveNicknameFor(Schema schema, boolean shouldBoxPrimitives) {
-    return typeTable.getAndSaveNicknameFor(
-        typeNameConverter.getTypeName(schema, shouldBoxPrimitives));
+    return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeName(schema, true));
   }
 
   /** Returns the imports accumulated so far. */
