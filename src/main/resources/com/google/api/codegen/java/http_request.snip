@@ -109,12 +109,11 @@
 @private hashCode(request)
   @@Override
   public int hashCode() {
-    int h = 1;
-    @join param : request.allParams
-      h *= 1000003;
-      h ^= this.{@param.name}.hashCode();
-    @end
-    return h;
+    return Objects.hash(
+      @join param : request.allParams on ", ".add(BREAK)
+        {@param.name}
+      @end
+    );
   }
 @end
 
