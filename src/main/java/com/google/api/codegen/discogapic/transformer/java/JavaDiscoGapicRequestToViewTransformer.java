@@ -40,6 +40,7 @@ import com.google.api.codegen.viewmodel.SimpleParamView;
 import com.google.api.codegen.viewmodel.StaticLangApiHttpRequestFileView;
 import com.google.api.codegen.viewmodel.StaticLangApiHttpRequestView;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.io.File;
 import java.util.ArrayList;
@@ -203,6 +204,13 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
 
     requestView.queryParams(queryParamViews);
     requestView.pathParams(pathParamViews);
+
+    List<SimpleParamView> allParams =
+        (new ImmutableList.Builder<SimpleParamView>())
+            .addAll(queryParamViews)
+            .addAll(pathParamViews)
+            .build();
+    requestView.allParams(allParams);
 
     if (method.request() != null) {
       requestView.requestObject(schemaToParamView(context, method.request(), symbolTable));
