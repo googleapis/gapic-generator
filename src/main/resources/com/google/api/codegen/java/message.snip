@@ -10,7 +10,7 @@
 @end
 
 @private schemaClassDef(schema)
-  public final class {@schema.typeName} implements ApiMessage, Serializable {
+  public final class {@schema.innerTypeName} implements ApiMessage, Serializable {
     {@members(schema)}
 
     {@constructors(schema)}
@@ -33,18 +33,24 @@
 @end
 
 @private populateMapMethod(schema)
-  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames, Map<String, List<String>> map) {
-    Map<String, List<String>> fieldMap = new HashMap<>();
-    @join param : schema.properties
-      if (fieldNames.contains("{@param.name}")) {
-        @if param.canRepeat
-          fieldMap.put("{@param.name}", {@param.name});
-        @else
-          fieldMap.put("{@param.name}", Collections.singletonList({@param.name}));
-        @end
-      }
+  // Return a map of each given field mapped to a list of the values for the field.
+  // If this object is not a request object, then this method returns null.
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    @if schema.isRequestMessage()
+      Map<String, List<String>> fieldMap = new HashMap<>();
+      @join param : schema.properties
+        if (fieldNames.contains("{@param.name}")) {
+          @if param.canRepeat
+            fieldMap.put("{@param.name}", {@param.name});
+          @else
+            fieldMap.put("{@param.name}", Collections.singletonList({@param.name}));
+          @end
+        }
+      @end
+      return fieldMap;
+    @else
+      return null;
     @end
-    return fieldMap;
   }
 @end
 

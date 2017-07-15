@@ -192,19 +192,27 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
 
     schemaView.canRepeat(schema.repeated());
     schemaView.isRequired(schema.required());
+    schemaView.isRequestMessage(false);
 
     if (!schema.properties().isEmpty()
         || (schema.items() != null && !schema.items().properties().isEmpty())) {
       // This is a top-level Schema, so add it to list of file ViewModels for rendering.
+
       messageViewAccumulator.put(context, schemaView.build());
     }
     return schemaView.build();
   }
 
   private void addApiImports(SchemaTypeTable typeTable) {
-    typeTable.saveNicknameFor("com.google.api.core.BetaApi");
-    typeTable.saveNicknameFor("java.io.Serializable");
-    typeTable.saveNicknameFor("java.io.Serializable");
-    typeTable.saveNicknameFor("javax.annotation.Generated");
+    typeTable.getAndSaveNicknameFor("com.google.api.core.BetaApi");
+    typeTable.getAndSaveNicknameFor("com.google.common.collect.ImmutableList");
+    typeTable.getAndSaveNicknameFor("java.io.Serializable");
+    typeTable.getAndSaveNicknameFor("java.util.Collections");
+    typeTable.getAndSaveNicknameFor("java.util.HashMap");
+    typeTable.getAndSaveNicknameFor("java.util.List");
+    typeTable.getAndSaveNicknameFor("java.util.Map");
+    typeTable.getAndSaveNicknameFor("java.util.Objects");
+    typeTable.getAndSaveNicknameFor("java.util.Set");
+    typeTable.getAndSaveNicknameFor("javax.annotation.Generated");
   }
 }
