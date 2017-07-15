@@ -185,6 +185,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
       paramView.fieldSetFunction(context.getDiscoGapicNamer().getResourceSetterName(param));
       paramView.innerTypeName("String");
       paramView.properties(new LinkedList<StaticLangApiMessageView>());
+      paramView.isRequestMessage(false);
       properties.add(paramView.build());
     }
 
@@ -200,6 +201,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     requestView.canRepeat(false);
     requestView.isRequired(true);
     requestView.properties(properties);
+    requestView.isRequestMessage(true);
 
     return requestView.build();
   }
@@ -220,12 +222,14 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     paramView.fieldSetFunction(
         context.getDiscoGapicNamer().getResourceSetterName(schema.getIdentifier()));
     paramView.properties(new LinkedList<StaticLangApiMessageView>());
+    paramView.isRequestMessage(false);
     return paramView.build();
   }
 
   private void addApiImports(TypeTable typeTable) {
     typeTable.getAndSaveNicknameFor("com.google.api.core.BetaApi");
     typeTable.getAndSaveNicknameFor("com.google.common.collect.ImmutableList");
+    typeTable.getAndSaveNicknameFor("java.io.Serializable");
     typeTable.getAndSaveNicknameFor("java.util.Collections");
     typeTable.getAndSaveNicknameFor("java.util.HashMap");
     typeTable.getAndSaveNicknameFor("java.util.Map");

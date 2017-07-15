@@ -63,6 +63,9 @@ public abstract class StaticLangApiMessageView implements Comparable<StaticLangA
 
   public abstract boolean canRepeat();
 
+  // If this an HTTP Request message.
+  public abstract boolean isRequestMessage();
+
   // There can be arbitrarily nested fields inside of this field.
   public abstract List<StaticLangApiMessageView> properties();
 
@@ -93,6 +96,8 @@ public abstract class StaticLangApiMessageView implements Comparable<StaticLangA
     public abstract StaticLangApiMessageView.Builder isRequired(boolean val);
 
     public abstract StaticLangApiMessageView.Builder canRepeat(boolean val);
+
+    public abstract StaticLangApiMessageView.Builder isRequestMessage(boolean val);
 
     public abstract StaticLangApiMessageView build();
   }
