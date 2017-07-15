@@ -378,7 +378,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     String outputPath =
         pathMapper.getOutputPath(context.getInterface(), context.getProductConfig());
     String className = context.getNamer().getApiSettingsClassName(context.getInterfaceConfig());
-    settingsFile.outputPath(outputPath + "/" + className + ".java");
+    settingsFile.outputPath(outputPath + File.separator + className + ".java");
 
     // must be done as the last step to catch all imports
     settingsFile.fileHeader(fileHeaderTransformer.generateFileHeader(context));
@@ -442,7 +442,8 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     String outputPath =
         pathMapper.getOutputPath(context.getInterface(), context.getProductConfig());
     String className = context.getNamer().getApiStubInterfaceName(context.getInterfaceConfig());
-    fileView.outputPath(outputPath + "/stub/" + className + ".java");
+    fileView.outputPath(
+        outputPath + File.separator + "stub" + File.separator + className + ".java");
 
     // must be done as the last step to catch all imports
     fileView.fileHeader(fileHeaderTransformer.generateFileHeader(context));
@@ -484,7 +485,8 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     String outputPath =
         pathMapper.getOutputPath(context.getInterface(), context.getProductConfig());
     String className = context.getNamer().getApiGrpcStubClassName(context.getInterfaceConfig());
-    fileView.outputPath(outputPath + "/stub/" + className + ".java");
+    fileView.outputPath(
+        outputPath + File.separator + "stub" + File.separator + className + ".java");
 
     // must be done as the last step to catch all imports
     fileView.fileHeader(fileHeaderTransformer.generateFileHeader(context));
@@ -524,16 +526,16 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     SurfaceNamer namer = context.getNamer();
     ModelTypeTable typeTable = context.getModelTypeTable();
 
-    String fqTypeName = namer.getRootPackageName() + "." + nickname;
-    return typeTable.getAndSaveNicknameFor(fqTypeName);
+    String fullyQualifiedTypeName = namer.getRootPackageName() + "." + nickname;
+    return typeTable.getAndSaveNicknameFor(fullyQualifiedTypeName);
   }
 
   private String getAndSaveNicknameForStubType(GapicInterfaceContext context, String nickname) {
     SurfaceNamer namer = context.getNamer();
     ModelTypeTable typeTable = context.getModelTypeTable();
 
-    String fqTypeName = namer.getStubPackageName() + "." + nickname;
-    return typeTable.getAndSaveNicknameFor(fqTypeName);
+    String fullyQualifiedTypeName = namer.getStubPackageName() + "." + nickname;
+    return typeTable.getAndSaveNicknameFor(fullyQualifiedTypeName);
   }
 
   private List<StaticLangApiMethodView> filterIncludeCallableMethods(
@@ -575,7 +577,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
 
     Interface firstInterface = new InterfaceView().getElementIterable(model).iterator().next();
     String outputPath = pathMapper.getOutputPath(firstInterface, productConfig);
-    packageInfo.outputPath(outputPath + "/package-info.java");
+    packageInfo.outputPath(outputPath + File.separator + "package-info.java");
 
     return packageInfo.build();
   }
