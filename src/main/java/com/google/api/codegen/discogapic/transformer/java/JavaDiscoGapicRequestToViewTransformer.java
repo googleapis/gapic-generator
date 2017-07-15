@@ -36,11 +36,9 @@ import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.TypeTable;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaTypeTable;
-import com.google.api.codegen.viewmodel.SimpleParamView;
-import com.google.api.codegen.viewmodel.StaticLangApiHttpRequestFileView;
-import com.google.api.codegen.viewmodel.StaticLangApiHttpRequestView;
+import com.google.api.codegen.viewmodel.StaticLangApiMessageFileView;
+import com.google.api.codegen.viewmodel.StaticLangApiMessageView;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.io.File;
 import java.util.ArrayList;
@@ -88,7 +86,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     reservedKeywords.add("Builder");
   }
 
-  private static final String REQUEST_TEMPLATE_FILENAME = "java/http_request.snip";
+  private static final String REQUEST_TEMPLATE_FILENAME = "java/message.snip";
 
   public JavaDiscoGapicRequestToViewTransformer(
       GapicCodePathMapper pathMapper, PackageMetadataConfig packageMetadataConfig) {
@@ -121,7 +119,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     for (Method method : context.getDocument().methods()) {
       RequestInterfaceContext requestContext =
           RequestInterfaceContext.create(context, method, context.getSchemaTypeTable());
-      StaticLangApiHttpRequestView requestView = generateRequestClass(requestContext, method);
+      StaticLangApiMessageView requestView = generateRequestClass(requestContext, method);
       surfaceRequests.add(generateRequestFile(requestContext, requestView));
     }
     Collections.sort(
@@ -136,13 +134,12 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
   }
 
   /* Given a message view, creates a top-level message file view. */
-  private StaticLangApiHttpRequestFileView generateRequestFile(
-      RequestInterfaceContext context, StaticLangApiHttpRequestView messageView) {
-    StaticLangApiHttpRequestFileView.Builder apiFile =
-        StaticLangApiHttpRequestFileView.newBuilder();
+  private StaticLangApiMessageFileView generateRequestFile(
+      RequestInterfaceContext context, StaticLangApiMessageView messageView) {
+    StaticLangApiMessageFileView.Builder apiFile = StaticLangApiMessageFileView.newBuilder();
     apiFile.templateFileName(REQUEST_TEMPLATE_FILENAME);
     addApiImports(context.getTypeTable());
-    apiFile.request(messageView);
+    apiFile.schema(messageView);
 
     String outputPath = pathMapper.getOutputPath(null, context.getDocContext().getProductConfig());
     apiFile.outputPath(outputPath + File.separator + messageView.typeName() + ".java");
@@ -153,9 +150,9 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     return apiFile.build();
   }
 
-  private StaticLangApiHttpRequestView generateRequestClass(
+  private StaticLangApiMessageView generateRequestClass(
       RequestInterfaceContext context, Method method) {
-    StaticLangApiHttpRequestView.Builder requestView = StaticLangApiHttpRequestView.newBuilder();
+    StaticLangApiMessageView.Builder requestView = StaticLangApiMessageView.newBuilder();
 
     SymbolTable symbolTable = SymbolTable.fromSeed(reservedKeywords);
 
@@ -168,73 +165,61 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
 
     String requestTypeName = nameFormatter.publicClassName(Name.anyCamel(requestClassId));
     requestView.typeName(requestTypeName);
+    requestView.innerTypeName(requestTypeName);
 
-    List<SimpleParamView> queryParamViews = new LinkedList<>();
-    List<SimpleParamView> pathParamViews = new LinkedList<>();
+    List<StaticLangApiMessageView> properties = new LinkedList<>();
 
     // Add the standard query parameters.
     for (String param : STANDARD_QUERY_PARAMS.keySet()) {
       if (method.parameters().containsKey(param)) {
         continue;
       }
-      SimpleParamView.Builder paramView = SimpleParamView.newBuilder();
+      StaticLangApiMessageView.Builder paramView = StaticLangApiMessageView.newBuilder();
       paramView.description(STANDARD_QUERY_PARAMS.get(param));
       paramView.name(symbolTable.getNewSymbol(param));
       paramView.typeName("String");
+      paramView.innerTypeName("String");
       paramView.isRequired(false);
       paramView.canRepeat(false);
-      paramView.getterFunction(context.getDiscoGapicNamer().getResourceGetterName(param));
-      paramView.setterFunction(context.getDiscoGapicNamer().getResourceSetterName(param));
-      queryParamViews.add(paramView.build());
+      paramView.fieldGetFunction(context.getDiscoGapicNamer().getResourceGetterName(param));
+      paramView.fieldSetFunction(context.getDiscoGapicNamer().getResourceSetterName(param));
+      paramView.innerTypeName("String");
+      paramView.properties(new LinkedList<StaticLangApiMessageView>());
+      properties.add(paramView.build());
     }
 
     for (Map.Entry<String, Schema> entry : method.parameters().entrySet()) {
       Schema param = entry.getValue();
-      if (param.location().toLowerCase().equals("query")) {
-        queryParamViews.add(schemaToParamView(context, param, symbolTable));
-      } else if (param.location().toLowerCase().equals("path")) {
-        pathParamViews.add(schemaToParamView(context, param, symbolTable));
-      } else {
-        throw new IllegalArgumentException(
-            String.format(
-                "Schema %s has a parameter whose location (\"%s\") is neither \"path\" nor \"query\".",
-                param.getIdentifier(), param.location()));
-      }
+      properties.add(schemaToParamView(context, param, symbolTable));
     }
-
-    requestView.queryParams(queryParamViews);
-    requestView.pathParams(pathParamViews);
-
-    List<SimpleParamView> allParams =
-        (new ImmutableList.Builder<SimpleParamView>())
-            .addAll(queryParamViews)
-            .addAll(pathParamViews)
-            .build();
-    requestView.allParams(allParams);
 
     if (method.request() != null) {
-      requestView.requestObject(schemaToParamView(context, method.request(), symbolTable));
+      properties.add(schemaToParamView(context, method.request(), symbolTable));
     }
-    if (method.response() != null) {
-      requestView.responseObject(schemaToParamView(context, method.response(), symbolTable));
-    }
+
+    requestView.canRepeat(false);
+    requestView.isRequired(true);
+    requestView.properties(properties);
 
     return requestView.build();
   }
 
-  // Transforms a request/response Schema object into a SimpleParamView.
-  private SimpleParamView schemaToParamView(
+  // Transforms a request/response Schema object into a StaticLangApiMessageView.
+  private StaticLangApiMessageView schemaToParamView(
       RequestInterfaceContext context, Schema schema, SymbolTable symbolTable) {
-    SimpleParamView.Builder paramView = SimpleParamView.newBuilder();
+    StaticLangApiMessageView.Builder paramView = StaticLangApiMessageView.newBuilder();
+    String typeName = context.getSchemaTypeTable().getAndSaveNicknameFor(schema);
     paramView.description(schema.description());
     paramView.name(symbolTable.getNewSymbol(schema.getIdentifier()));
-    paramView.typeName(context.getSchemaTypeTable().getAndSaveNicknameFor(schema));
+    paramView.typeName(typeName);
+    paramView.innerTypeName(typeName);
     paramView.isRequired(schema.required());
     paramView.canRepeat(schema.repeated());
-    paramView.getterFunction(
+    paramView.fieldGetFunction(
         context.getDiscoGapicNamer().getResourceGetterName(schema.getIdentifier()));
-    paramView.setterFunction(
+    paramView.fieldSetFunction(
         context.getDiscoGapicNamer().getResourceSetterName(schema.getIdentifier()));
+    paramView.properties(new LinkedList<StaticLangApiMessageView>());
     return paramView.build();
   }
 
