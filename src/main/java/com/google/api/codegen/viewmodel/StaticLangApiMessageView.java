@@ -59,6 +59,10 @@ public abstract class StaticLangApiMessageView implements Comparable<StaticLangA
   @Nullable
   public abstract String fieldSetFunction();
 
+  public abstract boolean isRequired();
+
+  public abstract boolean canRepeat();
+
   // There can be arbitrarily nested fields inside of this field.
   public abstract List<StaticLangApiMessageView> properties();
 
@@ -85,6 +89,10 @@ public abstract class StaticLangApiMessageView implements Comparable<StaticLangA
     public abstract StaticLangApiMessageView.Builder fieldSetFunction(String val);
 
     public abstract StaticLangApiMessageView.Builder properties(List<StaticLangApiMessageView> val);
+
+    public abstract StaticLangApiMessageView.Builder isRequired(boolean val);
+
+    public abstract StaticLangApiMessageView.Builder canRepeat(boolean val);
 
     public abstract StaticLangApiMessageView build();
   }

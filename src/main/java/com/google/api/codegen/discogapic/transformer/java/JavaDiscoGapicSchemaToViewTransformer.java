@@ -66,8 +66,6 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     reservedKeywords.add("Builder");
   }
 
-  private static final String XAPI_TEMPLATE_FILENAME = "java/main.snip";
-  private static final String PACKAGE_INFO_TEMPLATE_FILENAME = "java/package-info.snip";
   private static final String SCHEMA_TEMPLATE_FILENAME = "java/message.snip";
 
   public JavaDiscoGapicSchemaToViewTransformer(
@@ -78,8 +76,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
   }
 
   public List<String> getTemplateFileNames() {
-    return Arrays.asList(
-        XAPI_TEMPLATE_FILENAME, PACKAGE_INFO_TEMPLATE_FILENAME, SCHEMA_TEMPLATE_FILENAME);
+    return Arrays.asList(SCHEMA_TEMPLATE_FILENAME);
   }
 
   @Override
@@ -193,6 +190,9 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     Collections.sort(viewProperties);
     schemaView.properties(viewProperties);
 
+    schemaView.canRepeat(schema.repeated());
+    schemaView.isRequired(schema.required());
+
     if (!schema.properties().isEmpty()
         || (schema.items() != null && !schema.items().properties().isEmpty())) {
       // This is a top-level Schema, so add it to list of file ViewModels for rendering.
@@ -203,6 +203,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
 
   private void addApiImports(SchemaTypeTable typeTable) {
     typeTable.saveNicknameFor("com.google.api.core.BetaApi");
+    typeTable.saveNicknameFor("java.io.Serializable");
     typeTable.saveNicknameFor("java.io.Serializable");
     typeTable.saveNicknameFor("javax.annotation.Generated");
   }
