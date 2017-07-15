@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.config.LongRunningConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
@@ -78,6 +79,16 @@ public class ApiCallableTransformer {
     List<ApiCallSettingsView> settingsMembers = new ArrayList<>();
 
     for (Method method : context.getSupportedMethods()) {
+      settingsMembers.addAll(generateApiCallableSettings(context.asRequestMethodContext(method)));
+    }
+
+    return settingsMembers;
+  }
+
+  public List<ApiCallSettingsView> generateCallSettings(DiscoGapicInterfaceContext context) {
+    List<ApiCallSettingsView> settingsMembers = new ArrayList<>();
+
+    for (com.google.api.codegen.discovery.Method method : context.getSupportedMethods()) {
       settingsMembers.addAll(generateApiCallableSettings(context.asRequestMethodContext(method)));
     }
 
@@ -390,6 +401,83 @@ public class ApiCallableTransformer {
       if (pollingInterval != null) {
         settings.operationPollingIntervalMillis(Long.toString(pollingInterval.getMillis()));
       }
+    } else {
+      settings.type(ApiCallableImplType.SimpleApiCallable);
+    }
+
+    settings.memberName(namer.getSettingsMemberName(method));
+    settings.settingsGetFunction(namer.getSettingsFunctionName(method));
+
+    return Arrays.asList(settings.build());
+  }
+
+  public List<ApiCallSettingsView> generateApiCallableSettings(DiscoGapicMethodContext context) {
+    SurfaceNamer namer = context.getNamer();
+    SchemaTypeTable typeTable = context.getTypeTable();
+    com.google.api.codegen.discovery.Method method = context.getMethod();
+    MethodConfig methodConfig = context.getMethodConfig();
+    Map<String, RetryCodesDefinitionView> retryCodesByKey = new HashMap<>();
+    for (RetryCodesDefinitionView retryCodes :
+        retryDefinitionsTransformer.generateRetryCodesDefinitions(
+            context.getSurfaceTransformerContext())) {
+      retryCodesByKey.put(retryCodes.key(), retryCodes);
+    }
+    Map<String, RetryParamsDefinitionView> retryParamsByKey = new HashMap<>();
+    for (RetryParamsDefinitionView retryParams :
+        retryDefinitionsTransformer.generateRetryParamsDefinitions(
+            context.getSurfaceTransformerContext())) {
+      retryParamsByKey.put(retryParams.key(), retryParams);
+    }
+
+    ApiCallSettingsView.Builder settings = ApiCallSettingsView.newBuilder();
+
+    settings.methodName(namer.getApiMethodName(method, VisibilityConfig.PUBLIC));
+    settings.protoMethodName(method.id());
+    settings.fullServiceName(context.getTargetInterface().getFullName());
+    settings.asyncMethodName(namer.getAsyncApiMethodName(method, VisibilityConfig.PUBLIC));
+
+    // TODO(andrealin): use discogapic namer for request and repsonse type names.
+    settings.requestTypeName(typeTable.getAndSaveNicknameFor(method.request()));
+    settings.responseTypeName(typeTable.getAndSaveNicknameFor(method.response()));
+
+    settings.grpcTypeName("Grpc not used in Discovery-based method.");
+    settings.grpcMethodConstant("Grpc not used in Discovery-based method.");
+    settings.retryCodesName(methodConfig.getRetryCodesConfigName());
+    settings.retryCodesView(retryCodesByKey.get(methodConfig.getRetryCodesConfigName()));
+    settings.retryParamsName(methodConfig.getRetrySettingsConfigName());
+    settings.retryParamsView(retryParamsByKey.get(methodConfig.getRetrySettingsConfigName()));
+
+    String notImplementedPrefix = "ApiCallableTransformer.generateApiCallableSettings - ";
+    settings.resourceTypeName(
+        namer.getNotImplementedString(notImplementedPrefix + "resourceTypeName"));
+    settings.pagedListResponseTypeName(
+        namer.getNotImplementedString(notImplementedPrefix + "pagedListResponseTypeName"));
+    settings.pageStreamingDescriptorName(
+        namer.getNotImplementedString(notImplementedPrefix + "pageStreamingDescriptorName"));
+    settings.pagedListResponseFactoryName(
+        namer.getNotImplementedString(notImplementedPrefix + "pagedListResponseFactoryName"));
+    settings.batchingDescriptorName(
+        namer.getNotImplementedString(notImplementedPrefix + "batchingDescriptorName"));
+    settings.operationResultTypeName(
+        namer.getNotImplementedString(notImplementedPrefix + "operationResultTypeName"));
+
+    if (methodConfig.isPageStreaming()) {
+      settings.type(ApiCallableImplType.PagedApiCallable);
+      FieldType resourceField = methodConfig.getPageStreaming().getResourcesField();
+      settings.resourceTypeName(typeTable.getAndSaveNicknameForElementType(resourceField));
+      settings.pagedListResponseTypeName(
+          namer.getAndSavePagedResponseTypeName(
+              context.getMethod(),
+              context.getTypeTable(),
+              methodConfig.getPageStreaming().getResourcesFieldConfig()));
+      settings.pageStreamingDescriptorName(namer.getPageStreamingDescriptorConstName(method));
+      settings.pagedListResponseFactoryName(namer.getPagedListResponseFactoryConstName(method));
+    } else if (methodConfig.isBatching()) {
+      settings.type(ApiCallableImplType.BatchingApiCallable);
+      settings.batchingDescriptorName(namer.getBatchingDescriptorConstName(method));
+      settings.batchingConfig(batchingTransformer.generateBatchingConfig(context));
+    } else if (methodConfig.isLongRunningOperation()) {
+      throw new IllegalArgumentException("LRO not yet implemented for DiscoGapic surface.");
     } else {
       settings.type(ApiCallableImplType.SimpleApiCallable);
     }

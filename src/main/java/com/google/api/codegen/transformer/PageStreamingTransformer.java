@@ -15,8 +15,10 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
+import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.viewmodel.PageStreamingDescriptorClassView;
 import com.google.api.codegen.viewmodel.PageStreamingDescriptorView;
 import com.google.api.codegen.viewmodel.PagedListResponseFactoryClassView;
@@ -64,6 +66,17 @@ public class PageStreamingTransformer {
     return descriptors;
   }
 
+  public List<PageStreamingDescriptorClassView> generateDescriptorClasses(
+      DiscoGapicInterfaceContext context) {
+    List<PageStreamingDescriptorClassView> descriptors = new ArrayList<>();
+
+    for (com.google.api.codegen.discovery.Method method : context.getPageStreamingMethods()) {
+      descriptors.add(generateDescriptorClass(context.asRequestMethodContext(method)));
+    }
+
+    return descriptors;
+  }
+
   private PageStreamingDescriptorClassView generateDescriptorClass(GapicMethodContext context) {
     SurfaceNamer namer = context.getNamer();
     ModelTypeTable typeTable = context.getTypeTable();
@@ -101,11 +114,63 @@ public class PageStreamingTransformer {
     return desc.build();
   }
 
+  private PageStreamingDescriptorClassView generateDescriptorClass(
+      DiscoGapicMethodContext context) {
+    SurfaceNamer namer = context.getNamer();
+    DiscoGapicNamer discoGapicNamer = context.getDiscoGapicNamer();
+    SchemaTypeTable typeTable = context.getTypeTable();
+    com.google.api.codegen.discovery.Method method = context.getMethod();
+    PageStreamingConfig pageStreaming = context.getMethodConfig().getPageStreaming();
+
+    PageStreamingDescriptorClassView.Builder desc = PageStreamingDescriptorClassView.newBuilder();
+
+    FieldType resourceField = pageStreaming.getResourcesField();
+    FieldConfig resourceFieldConfig = pageStreaming.getResourcesFieldConfig();
+
+    desc.name(namer.getPageStreamingDescriptorConstName(method));
+    desc.typeName(namer.getAndSavePagedResponseTypeName(method, typeTable, resourceFieldConfig));
+
+    // TODO(andrealin): use discogapic namer
+    desc.requestTypeName(typeTable.getAndSaveNicknameFor(discoGapicNamer.getRequestName(method)));
+    desc.responseTypeName(typeTable.getAndSaveNicknameFor(method.response()));
+    desc.resourceTypeName(typeTable.getAndSaveNicknameFor(resourceField));
+
+    FieldType tokenType = pageStreaming.getResponseTokenField();
+    desc.tokenTypeName(typeTable.getAndSaveNicknameFor(tokenType));
+    desc.defaultTokenValue(context.getTypeTable().getSnippetZeroValueAndSaveNicknameFor(tokenType));
+
+    desc.requestTokenSetFunction(
+        namer.getFieldSetFunctionName(pageStreaming.getRequestTokenField()));
+    if (pageStreaming.hasPageSizeField()) {
+      desc.requestPageSizeSetFunction(
+          namer.getFieldSetFunctionName(pageStreaming.getPageSizeField()));
+      desc.requestPageSizeGetFunction(
+          namer.getFieldGetFunctionName(pageStreaming.getPageSizeField()));
+    }
+    desc.responseTokenGetFunction(
+        namer.getFieldGetFunctionName(pageStreaming.getResponseTokenField()));
+    desc.resourcesFieldGetFunction(
+        namer.getFieldGetFunctionName(pageStreaming.getResourcesField()));
+
+    return desc.build();
+  }
+
   public List<PagedListResponseFactoryClassView> generateFactoryClasses(
       GapicInterfaceContext context) {
     List<PagedListResponseFactoryClassView> factories = new ArrayList<>();
 
     for (Method method : context.getPageStreamingMethods()) {
+      factories.add(generateFactoryClass(context.asRequestMethodContext(method)));
+    }
+
+    return factories;
+  }
+
+  public List<PagedListResponseFactoryClassView> generateFactoryClasses(
+      DiscoGapicInterfaceContext context) {
+    List<PagedListResponseFactoryClassView> factories = new ArrayList<>();
+
+    for (com.google.api.codegen.discovery.Method method : context.getPageStreamingMethods()) {
       factories.add(generateFactoryClass(context.asRequestMethodContext(method)));
     }
 
@@ -127,6 +192,30 @@ public class PageStreamingTransformer {
     factory.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
     factory.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));
     factory.resourceTypeName(typeTable.getAndSaveNicknameForElementType(resourceField.getType()));
+    factory.pagedListResponseTypeName(
+        namer.getAndSavePagedResponseTypeName(method, typeTable, resourceFieldConfig));
+    factory.pageStreamingDescriptorName(namer.getPageStreamingDescriptorConstName(method));
+
+    return factory.build();
+  }
+
+  private PagedListResponseFactoryClassView generateFactoryClass(DiscoGapicMethodContext context) {
+    SurfaceNamer namer = context.getNamer();
+    DiscoGapicNamer discoGapicNamer = context.getDiscoGapicNamer();
+    SchemaTypeTable typeTable = context.getTypeTable();
+    com.google.api.codegen.discovery.Method method = context.getMethod();
+    PageStreamingConfig pageStreaming = context.getMethodConfig().getPageStreaming();
+    FieldType resourceField = pageStreaming.getResourcesField();
+    FieldConfig resourceFieldConfig = pageStreaming.getResourcesFieldConfig();
+
+    PagedListResponseFactoryClassView.Builder factory =
+        PagedListResponseFactoryClassView.newBuilder();
+
+    factory.name(namer.getPagedListResponseFactoryConstName(method));
+    factory.requestTypeName(
+        typeTable.getAndSaveNicknameFor(discoGapicNamer.getRequestName(method)));
+    factory.responseTypeName(typeTable.getAndSaveNicknameFor(method.response()));
+    factory.resourceTypeName(typeTable.getAndSaveNicknameForElementType(resourceField));
     factory.pagedListResponseTypeName(
         namer.getAndSavePagedResponseTypeName(method, typeTable, resourceFieldConfig));
     factory.pageStreamingDescriptorName(namer.getPageStreamingDescriptorConstName(method));

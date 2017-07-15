@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.discogapic.transformer;
 
+import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NameFormatter;
 import com.google.api.codegen.util.NameFormatterDelegator;
@@ -72,6 +73,14 @@ public class DiscoGapicNamer extends NameFormatterDelegator {
     String[] pieces = getMethodNamePieces(fullMethodName);
     return privateFieldName(
         Name.anyCamel(pieces[pieces.length - 2], pieces[pieces.length - 1], "http", "request"));
+  }
+
+  /**
+   * Returns the last substring after the input is split by periods. Ex: Input
+   * "compute.addresses.aggregatedList" returns "aggregatedList".
+   */
+  public String getRequestName(Method method) {
+    return getRequestName(method.id());
   }
 
   //TODO(andrealin): Naming methods for requests, responses, service name.

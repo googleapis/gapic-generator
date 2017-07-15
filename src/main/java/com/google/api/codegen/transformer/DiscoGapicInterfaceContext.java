@@ -27,6 +27,7 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import javax.annotation.Nullable;
 
@@ -88,6 +89,16 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
 
   public abstract DiscoGapicNamer getDiscoGapicNamer();
 
+  public List<Method> getMethods() {
+    List<Method> methods = new LinkedList<>();
+    for (InterfaceConfig config : getProductConfig().getInterfaceConfigMap().values()) {
+      for (MethodConfig methodConfig : config.getMethodConfigs()) {
+        methods.add(((DiscoGapicMethodConfig) methodConfig).getMethod());
+      }
+    }
+    return methods;
+  }
+
   @Nullable
   @Override
   public Interface getInterface() {
@@ -110,9 +121,10 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
 
   /** Returns a list of supported methods, configured by FeatureConfig. */
   public List<Method> getSupportedMethods() {
-    List<Method> methods = new ArrayList<>(getInterfaceConfig().getMethodConfigs().size());
-    for (MethodConfig methodConfig : getInterfaceConfig().getMethodConfigs()) {
-      Method method = ((DiscoGapicMethodConfig) methodConfig).getMethod();
+    List<Method> allMethods = getMethods();
+    List<Method> methods = new ArrayList<>();
+
+    for (Method method : allMethods) {
       if (isSupported(method)) {
         methods.add(method);
       }
@@ -138,6 +150,26 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
 
     throw new IllegalArgumentException(
         "Interface config does not exist for method: " + method.id());
+  }
+
+  public List<Method> getPageStreamingMethods() {
+    List<Method> methods = new ArrayList<>();
+    for (Method method : getSupportedMethods()) {
+      if (getMethodConfig(method).isPageStreaming()) {
+        methods.add(method);
+      }
+    }
+    return methods;
+  }
+
+  public List<Method> getBatchingMethods() {
+    List<Method> methods = new ArrayList<>();
+    for (Method method : getSupportedMethods()) {
+      if (getMethodConfig(method).isBatching()) {
+        methods.add(method);
+      }
+    }
+    return methods;
   }
 
   public DiscoGapicMethodContext asRequestMethodContext(Method method) {
