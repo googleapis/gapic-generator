@@ -75,7 +75,7 @@ public abstract class FieldConfig {
         field, resourceNameTreatment, resourceNameConfig, messageResourceNameConfig);
   }
 
-  public static FieldConfig createFieldConfig(DiagCollector diagCollector, Schema field) {
+  public static FieldConfig createFieldConfig(Schema field) {
     return new AutoValue_FieldConfig(new FieldType(field), ResourceNameTreatment.NONE, null, null);
   }
 

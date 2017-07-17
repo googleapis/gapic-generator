@@ -14,10 +14,7 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.BatchingConfigProto;
-import com.google.api.codegen.FlatteningConfigProto;
 import com.google.api.codegen.MethodConfigProto;
-import com.google.api.codegen.PageStreamingConfigProto;
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.SurfaceTreatmentProto;
@@ -29,8 +26,6 @@ import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
-import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
@@ -80,31 +75,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
 
     boolean error = false;
 
-    PageStreamingConfig pageStreaming = null;
-    if (!PageStreamingConfigProto.getDefaultInstance()
-        .equals(methodConfigProto.getPageStreaming())) {
-      pageStreaming = PageStreamingConfig.createPageStreaming(diagCollector, method);
-      if (pageStreaming == null) {
-        error = true;
-      }
-    }
-
-    ImmutableList<FlatteningConfig> flattening = null;
-    if (!FlatteningConfigProto.getDefaultInstance().equals(methodConfigProto.getFlattening())) {
-      flattening = createFlattening(diagCollector, methodConfigProto, method);
-      if (flattening == null) {
-        error = true;
-      }
-    }
-
-    BatchingConfig batching = null;
-    if (!BatchingConfigProto.getDefaultInstance().equals(methodConfigProto.getBatching())) {
-      batching =
-          BatchingConfig.createBatching(diagCollector, methodConfigProto.getBatching(), method);
-      if (batching == null) {
-        error = true;
-      }
-    }
+    //TODO(andrealin): Paging, batching, and retry configs.
 
     String retryCodesName = methodConfigProto.getRetryCodesName();
     if (!retryCodesName.isEmpty() && !retryCodesConfigNames.contains(retryCodesName)) {
@@ -152,13 +123,11 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
 
     Iterable<FieldConfig> requiredFieldConfigs =
         DiscoGapicMethodConfig.createFieldNameConfigs(
-            diagCollector,
             DiscoGapicMethodConfig.getRequiredFields(
                 diagCollector, method, methodConfigProto.getRequiredFieldsList()));
 
     Iterable<FieldConfig> optionalFieldConfigs =
         DiscoGapicMethodConfig.createFieldNameConfigs(
-            diagCollector,
             DiscoGapicMethodConfig.getOptionalFields(
                 method, methodConfigProto.getRequiredFieldsList()));
 
@@ -166,11 +135,8 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
     sampleCodeInitFields.addAll(methodConfigProto.getRequiredFieldsList());
     sampleCodeInitFields.addAll(methodConfigProto.getSampleCodeInitFieldsList());
 
-    String rerouteToGrpcInterface =
-        Strings.emptyToNull(methodConfigProto.getRerouteToGrpcInterface());
-
     VisibilityConfig visibility = VisibilityConfig.PUBLIC;
-    ReleaseLevel releaseLevel = ReleaseLevel.GA;
+    ReleaseLevel releaseLevel = ReleaseLevel.ALPHA;
     for (SurfaceTreatmentProto treatment : methodConfigProto.getSurfaceTreatmentsList()) {
       if (!treatment.getIncludeLanguagesList().contains(language)) {
         continue;
@@ -189,15 +155,15 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
       return null;
     } else {
       return new AutoValue_DiscoGapicMethodConfig(
-          pageStreaming,
-          flattening,
+          null,
+          null,
           retryCodesName,
           retryParamsName,
           timeout,
           requiredFieldConfigs,
           optionalFieldConfigs,
           defaultResourceNameTreatment,
-          batching,
+          null,
           hasRequestObjectMethod,
           fieldNamePatterns,
           sampleCodeInitFields,
