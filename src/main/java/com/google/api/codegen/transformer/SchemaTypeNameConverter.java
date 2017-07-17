@@ -61,7 +61,4 @@ public interface SchemaTypeNameConverter {
 
   /** Renders the given value if it is a primitive type. */
   String renderPrimitiveValue(Schema schema, String value);
-
-  /** Provides a TypeName for the given fully-qualified name. */
-  TypeName getTypeName(String fullName);
 }

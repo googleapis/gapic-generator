@@ -90,11 +90,6 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
   }
 
   @Override
-  public TypeName getTypeName(String fullName) {
-    return typeNameConverter.getTypeName(fullName);
-  }
-
-  @Override
   public TypeName getTypeNameInImplicitPackage(String shortName) {
     return typeNameConverter.getTypeNameInImplicitPackage(shortName);
   }
