@@ -501,33 +501,33 @@ public final class BillingAccountsGetHttpRequest implements Serializable
   private final String access_token;
   private final String callback;
   private final String fields;
+  private final List<String> fooRepeated;
   private final String key;
+  private final String name;
   private final String prettyPrint;
   private final String quotaUser;
   private final String userIp;
-  private final List<String> fooRepeated;
-  private final String name;
 
   private BillingAccountsGetHttpRequest(
       String access_token,
       String callback,
       String fields,
+      List<String> fooRepeated,
       String key,
+      String name,
       String prettyPrint,
       String quotaUser,
-      String userIp,
-      List<String> fooRepeated,
-      String name
+      String userIp
       ) {
     this.access_token = access_token;
     this.callback = callback;
     this.fields = fields;
+    this.fooRepeated = fooRepeated;
     this.key = key;
+    this.name = name;
     this.prettyPrint = prettyPrint;
     this.quotaUser = quotaUser;
     this.userIp = userIp;
-    this.fooRepeated = fooRepeated;
-    this.name = name;
   }
 
   @Override
@@ -542,8 +542,14 @@ public final class BillingAccountsGetHttpRequest implements Serializable
     if (fieldNames.contains("fields")) {
       fieldMap.put("fields", Collections.singletonList(fields));
     }
+    if (fieldNames.contains("fooRepeated")) {
+      fieldMap.put("fooRepeated", fooRepeated);
+    }
     if (fieldNames.contains("key")) {
       fieldMap.put("key", Collections.singletonList(key));
+    }
+    if (fieldNames.contains("name")) {
+      fieldMap.put("name", Collections.singletonList(name));
     }
     if (fieldNames.contains("prettyPrint")) {
       fieldMap.put("prettyPrint", Collections.singletonList(prettyPrint));
@@ -553,12 +559,6 @@ public final class BillingAccountsGetHttpRequest implements Serializable
     }
     if (fieldNames.contains("userIp")) {
       fieldMap.put("userIp", Collections.singletonList(userIp));
-    }
-    if (fieldNames.contains("fooRepeated")) {
-      fieldMap.put("fooRepeated", fooRepeated);
-    }
-    if (fieldNames.contains("name")) {
-      fieldMap.put("name", Collections.singletonList(name));
     }
     return fieldMap;
   }
@@ -575,8 +575,16 @@ public final class BillingAccountsGetHttpRequest implements Serializable
     return fields;
   }
 
+  public List<String> getFooRepeated() {
+    return fooRepeated;
+  }
+
   public String getKey() {
     return key;
+  }
+
+  public String getName() {
+    return name;
   }
 
   public String getPrettyPrint() {
@@ -591,14 +599,6 @@ public final class BillingAccountsGetHttpRequest implements Serializable
     return userIp;
   }
 
-  public List<String> getFooRepeated() {
-    return fooRepeated;
-  }
-
-  public String getName() {
-    return name;
-  }
-
 
   public static Builder newBuilder() {
     return new BillingAccountsGetHttpRequest.Builder();
@@ -608,12 +608,12 @@ public final class BillingAccountsGetHttpRequest implements Serializable
     private String access_token;
     private String callback;
     private String fields;
+    private List<String> fooRepeated;
     private String key;
+    private String name;
     private String prettyPrint;
     private String quotaUser;
     private String userIp;
-    private List<String> fooRepeated;
-    private String name;
 
     Builder() {}
 
@@ -621,12 +621,12 @@ public final class BillingAccountsGetHttpRequest implements Serializable
       this.access_token = source.access_token;
       this.callback = source.callback;
       this.fields = source.fields;
+      this.fooRepeated = source.fooRepeated;
       this.key = source.key;
+      this.name = source.name;
       this.prettyPrint = source.prettyPrint;
       this.quotaUser = source.quotaUser;
       this.userIp = source.userIp;
-      this.fooRepeated = source.fooRepeated;
-      this.name = source.name;
     }
 
     public String getAccessToken() {
@@ -656,12 +656,30 @@ public final class BillingAccountsGetHttpRequest implements Serializable
       return this;
     }
 
+    public List<String> getFooRepeated() {
+      return fooRepeated;
+    }
+
+    public Builder setFooRepeated(List<String> fooRepeated) {
+      this.fooRepeated = fooRepeated;
+      return this;
+    }
+
     public String getKey() {
       return key;
     }
 
     public Builder setKey(String key) {
       this.key = key;
+      return this;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public Builder setName(String name) {
+      this.name = name;
       return this;
     }
 
@@ -692,24 +710,6 @@ public final class BillingAccountsGetHttpRequest implements Serializable
       return this;
     }
 
-    public List<String> getFooRepeated() {
-      return fooRepeated;
-    }
-
-    public Builder setFooRepeated(List<String> fooRepeated) {
-      this.fooRepeated = fooRepeated;
-      return this;
-    }
-
-    public String getName() {
-      return name;
-    }
-
-    public Builder setName(String name) {
-      this.name = name;
-      return this;
-    }
-
 
     public BillingAccountsGetHttpRequest build() {
       String missing = "";
@@ -718,22 +718,22 @@ public final class BillingAccountsGetHttpRequest implements Serializable
 
 
 
-
-
-
       if (name == null) {
         missing += " name";
       }
+
+
+
       return new BillingAccountsGetHttpRequest(
         access_token,
         callback,
         fields,
+        fooRepeated,
         key,
+        name,
         prettyPrint,
         quotaUser,
-        userIp,
-        fooRepeated,
-        name
+        userIp
       );
     }
 
@@ -742,12 +742,12 @@ public final class BillingAccountsGetHttpRequest implements Serializable
       newBuilder.setAccessToken(this.access_token);
       newBuilder.setCallback(this.callback);
       newBuilder.setFields(this.fields);
+      newBuilder.setFooRepeated(this.fooRepeated);
       newBuilder.setKey(this.key);
+      newBuilder.setName(this.name);
       newBuilder.setPrettyPrint(this.prettyPrint);
       newBuilder.setQuotaUser(this.quotaUser);
       newBuilder.setUserIp(this.userIp);
-      newBuilder.setFooRepeated(this.fooRepeated);
-      newBuilder.setName(this.name);
       return newBuilder;
     }
   }
@@ -758,12 +758,12 @@ public final class BillingAccountsGetHttpRequest implements Serializable
         + "access_token=" + access_token + ", "
         + "callback=" + callback + ", "
         + "fields=" + fields + ", "
+        + "fooRepeated=" + fooRepeated + ", "
         + "key=" + key + ", "
+        + "name=" + name + ", "
         + "prettyPrint=" + prettyPrint + ", "
         + "quotaUser=" + quotaUser + ", "
-        + "userIp=" + userIp + ", "
-        + "fooRepeated=" + fooRepeated + ", "
-        + "name=" + name
+        + "userIp=" + userIp
         + "}";
   }
 
@@ -778,12 +778,12 @@ public final class BillingAccountsGetHttpRequest implements Serializable
           Objects.equals(this.access_token, that.getAccessToken())&&
           Objects.equals(this.callback, that.getCallback())&&
           Objects.equals(this.fields, that.getFields())&&
+          Objects.equals(this.fooRepeated, that.getFooRepeated())&&
           Objects.equals(this.key, that.getKey())&&
+          Objects.equals(this.name, that.getName())&&
           Objects.equals(this.prettyPrint, that.getPrettyPrint())&&
           Objects.equals(this.quotaUser, that.getQuotaUser())&&
-          Objects.equals(this.userIp, that.getUserIp())&&
-          Objects.equals(this.fooRepeated, that.getFooRepeated())&&
-          Objects.equals(this.name, that.getName())
+          Objects.equals(this.userIp, that.getUserIp())
           ;
     }
     return false;
@@ -795,12 +795,12 @@ public final class BillingAccountsGetHttpRequest implements Serializable
       access_token,
       callback,
       fields,
+      fooRepeated,
       key,
+      name,
       prettyPrint,
       quotaUser,
-      userIp,
-      fooRepeated,
-      name
+      userIp
     );
   }
 }
@@ -842,35 +842,35 @@ public final class BillingAccountsListHttpRequest implements Serializable
   private final String callback;
   private final String fields;
   private final String key;
-  private final String prettyPrint;
-  private final String quotaUser;
-  private final String userIp;
   private final Long maxResults;
   private final Integer pageSize;
   private final String pageToken;
+  private final String prettyPrint;
+  private final String quotaUser;
+  private final String userIp;
 
   private BillingAccountsListHttpRequest(
       String access_token,
       String callback,
       String fields,
       String key,
-      String prettyPrint,
-      String quotaUser,
-      String userIp,
       Long maxResults,
       Integer pageSize,
-      String pageToken
+      String pageToken,
+      String prettyPrint,
+      String quotaUser,
+      String userIp
       ) {
     this.access_token = access_token;
     this.callback = callback;
     this.fields = fields;
     this.key = key;
-    this.prettyPrint = prettyPrint;
-    this.quotaUser = quotaUser;
-    this.userIp = userIp;
     this.maxResults = maxResults;
     this.pageSize = pageSize;
     this.pageToken = pageToken;
+    this.prettyPrint = prettyPrint;
+    this.quotaUser = quotaUser;
+    this.userIp = userIp;
   }
 
   @Override
@@ -888,15 +888,6 @@ public final class BillingAccountsListHttpRequest implements Serializable
     if (fieldNames.contains("key")) {
       fieldMap.put("key", Collections.singletonList(key));
     }
-    if (fieldNames.contains("prettyPrint")) {
-      fieldMap.put("prettyPrint", Collections.singletonList(prettyPrint));
-    }
-    if (fieldNames.contains("quotaUser")) {
-      fieldMap.put("quotaUser", Collections.singletonList(quotaUser));
-    }
-    if (fieldNames.contains("userIp")) {
-      fieldMap.put("userIp", Collections.singletonList(userIp));
-    }
     if (fieldNames.contains("maxResults")) {
       fieldMap.put("maxResults", Collections.singletonList(maxResults));
     }
@@ -905,6 +896,15 @@ public final class BillingAccountsListHttpRequest implements Serializable
     }
     if (fieldNames.contains("pageToken")) {
       fieldMap.put("pageToken", Collections.singletonList(pageToken));
+    }
+    if (fieldNames.contains("prettyPrint")) {
+      fieldMap.put("prettyPrint", Collections.singletonList(prettyPrint));
+    }
+    if (fieldNames.contains("quotaUser")) {
+      fieldMap.put("quotaUser", Collections.singletonList(quotaUser));
+    }
+    if (fieldNames.contains("userIp")) {
+      fieldMap.put("userIp", Collections.singletonList(userIp));
     }
     return fieldMap;
   }
@@ -925,18 +925,6 @@ public final class BillingAccountsListHttpRequest implements Serializable
     return key;
   }
 
-  public String getPrettyPrint() {
-    return prettyPrint;
-  }
-
-  public String getQuotaUser() {
-    return quotaUser;
-  }
-
-  public String getUserIp() {
-    return userIp;
-  }
-
   public Long getMaxResults() {
     return maxResults;
   }
@@ -949,6 +937,18 @@ public final class BillingAccountsListHttpRequest implements Serializable
     return pageToken;
   }
 
+  public String getPrettyPrint() {
+    return prettyPrint;
+  }
+
+  public String getQuotaUser() {
+    return quotaUser;
+  }
+
+  public String getUserIp() {
+    return userIp;
+  }
+
 
   public static Builder newBuilder() {
     return new BillingAccountsListHttpRequest.Builder();
@@ -959,12 +959,12 @@ public final class BillingAccountsListHttpRequest implements Serializable
     private String callback;
     private String fields;
     private String key;
-    private String prettyPrint;
-    private String quotaUser;
-    private String userIp;
     private Long maxResults;
     private Integer pageSize;
     private String pageToken;
+    private String prettyPrint;
+    private String quotaUser;
+    private String userIp;
 
     Builder() {}
 
@@ -973,12 +973,12 @@ public final class BillingAccountsListHttpRequest implements Serializable
       this.callback = source.callback;
       this.fields = source.fields;
       this.key = source.key;
-      this.prettyPrint = source.prettyPrint;
-      this.quotaUser = source.quotaUser;
-      this.userIp = source.userIp;
       this.maxResults = source.maxResults;
       this.pageSize = source.pageSize;
       this.pageToken = source.pageToken;
+      this.prettyPrint = source.prettyPrint;
+      this.quotaUser = source.quotaUser;
+      this.userIp = source.userIp;
     }
 
     public String getAccessToken() {
@@ -1017,33 +1017,6 @@ public final class BillingAccountsListHttpRequest implements Serializable
       return this;
     }
 
-    public String getPrettyPrint() {
-      return prettyPrint;
-    }
-
-    public Builder setPrettyPrint(String prettyPrint) {
-      this.prettyPrint = prettyPrint;
-      return this;
-    }
-
-    public String getQuotaUser() {
-      return quotaUser;
-    }
-
-    public Builder setQuotaUser(String quotaUser) {
-      this.quotaUser = quotaUser;
-      return this;
-    }
-
-    public String getUserIp() {
-      return userIp;
-    }
-
-    public Builder setUserIp(String userIp) {
-      this.userIp = userIp;
-      return this;
-    }
-
     public Long getMaxResults() {
       return maxResults;
     }
@@ -1071,6 +1044,33 @@ public final class BillingAccountsListHttpRequest implements Serializable
       return this;
     }
 
+    public String getPrettyPrint() {
+      return prettyPrint;
+    }
+
+    public Builder setPrettyPrint(String prettyPrint) {
+      this.prettyPrint = prettyPrint;
+      return this;
+    }
+
+    public String getQuotaUser() {
+      return quotaUser;
+    }
+
+    public Builder setQuotaUser(String quotaUser) {
+      this.quotaUser = quotaUser;
+      return this;
+    }
+
+    public String getUserIp() {
+      return userIp;
+    }
+
+    public Builder setUserIp(String userIp) {
+      this.userIp = userIp;
+      return this;
+    }
+
 
     public BillingAccountsListHttpRequest build() {
       String missing = "";
@@ -1088,12 +1088,12 @@ public final class BillingAccountsListHttpRequest implements Serializable
         callback,
         fields,
         key,
-        prettyPrint,
-        quotaUser,
-        userIp,
         maxResults,
         pageSize,
-        pageToken
+        pageToken,
+        prettyPrint,
+        quotaUser,
+        userIp
       );
     }
 
@@ -1103,12 +1103,12 @@ public final class BillingAccountsListHttpRequest implements Serializable
       newBuilder.setCallback(this.callback);
       newBuilder.setFields(this.fields);
       newBuilder.setKey(this.key);
-      newBuilder.setPrettyPrint(this.prettyPrint);
-      newBuilder.setQuotaUser(this.quotaUser);
-      newBuilder.setUserIp(this.userIp);
       newBuilder.setMaxResults(this.maxResults);
       newBuilder.setPageSize(this.pageSize);
       newBuilder.setPageToken(this.pageToken);
+      newBuilder.setPrettyPrint(this.prettyPrint);
+      newBuilder.setQuotaUser(this.quotaUser);
+      newBuilder.setUserIp(this.userIp);
       return newBuilder;
     }
   }
@@ -1120,12 +1120,12 @@ public final class BillingAccountsListHttpRequest implements Serializable
         + "callback=" + callback + ", "
         + "fields=" + fields + ", "
         + "key=" + key + ", "
-        + "prettyPrint=" + prettyPrint + ", "
-        + "quotaUser=" + quotaUser + ", "
-        + "userIp=" + userIp + ", "
         + "maxResults=" + maxResults + ", "
         + "pageSize=" + pageSize + ", "
-        + "pageToken=" + pageToken
+        + "pageToken=" + pageToken + ", "
+        + "prettyPrint=" + prettyPrint + ", "
+        + "quotaUser=" + quotaUser + ", "
+        + "userIp=" + userIp
         + "}";
   }
 
@@ -1141,12 +1141,12 @@ public final class BillingAccountsListHttpRequest implements Serializable
           Objects.equals(this.callback, that.getCallback())&&
           Objects.equals(this.fields, that.getFields())&&
           Objects.equals(this.key, that.getKey())&&
-          Objects.equals(this.prettyPrint, that.getPrettyPrint())&&
-          Objects.equals(this.quotaUser, that.getQuotaUser())&&
-          Objects.equals(this.userIp, that.getUserIp())&&
           Objects.equals(this.maxResults, that.getMaxResults())&&
           Objects.equals(this.pageSize, that.getPageSize())&&
-          Objects.equals(this.pageToken, that.getPageToken())
+          Objects.equals(this.pageToken, that.getPageToken())&&
+          Objects.equals(this.prettyPrint, that.getPrettyPrint())&&
+          Objects.equals(this.quotaUser, that.getQuotaUser())&&
+          Objects.equals(this.userIp, that.getUserIp())
           ;
     }
     return false;
@@ -1159,12 +1159,12 @@ public final class BillingAccountsListHttpRequest implements Serializable
       callback,
       fields,
       key,
-      prettyPrint,
-      quotaUser,
-      userIp,
       maxResults,
       pageSize,
-      pageToken
+      pageToken,
+      prettyPrint,
+      quotaUser,
+      userIp
     );
   }
 }
@@ -2588,29 +2588,29 @@ public final class ProjectsGetBillingInfoHttpRequest implements Serializable
   private final String callback;
   private final String fields;
   private final String key;
+  private final String name;
   private final String prettyPrint;
   private final String quotaUser;
   private final String userIp;
-  private final String name;
 
   private ProjectsGetBillingInfoHttpRequest(
       String access_token,
       String callback,
       String fields,
       String key,
+      String name,
       String prettyPrint,
       String quotaUser,
-      String userIp,
-      String name
+      String userIp
       ) {
     this.access_token = access_token;
     this.callback = callback;
     this.fields = fields;
     this.key = key;
+    this.name = name;
     this.prettyPrint = prettyPrint;
     this.quotaUser = quotaUser;
     this.userIp = userIp;
-    this.name = name;
   }
 
   @Override
@@ -2628,6 +2628,9 @@ public final class ProjectsGetBillingInfoHttpRequest implements Serializable
     if (fieldNames.contains("key")) {
       fieldMap.put("key", Collections.singletonList(key));
     }
+    if (fieldNames.contains("name")) {
+      fieldMap.put("name", Collections.singletonList(name));
+    }
     if (fieldNames.contains("prettyPrint")) {
       fieldMap.put("prettyPrint", Collections.singletonList(prettyPrint));
     }
@@ -2636,9 +2639,6 @@ public final class ProjectsGetBillingInfoHttpRequest implements Serializable
     }
     if (fieldNames.contains("userIp")) {
       fieldMap.put("userIp", Collections.singletonList(userIp));
-    }
-    if (fieldNames.contains("name")) {
-      fieldMap.put("name", Collections.singletonList(name));
     }
     return fieldMap;
   }
@@ -2659,6 +2659,10 @@ public final class ProjectsGetBillingInfoHttpRequest implements Serializable
     return key;
   }
 
+  public String getName() {
+    return name;
+  }
+
   public String getPrettyPrint() {
     return prettyPrint;
   }
@@ -2671,10 +2675,6 @@ public final class ProjectsGetBillingInfoHttpRequest implements Serializable
     return userIp;
   }
 
-  public String getName() {
-    return name;
-  }
-
 
   public static Builder newBuilder() {
     return new ProjectsGetBillingInfoHttpRequest.Builder();
@@ -2685,10 +2685,10 @@ public final class ProjectsGetBillingInfoHttpRequest implements Serializable
     private String callback;
     private String fields;
     private String key;
+    private String name;
     private String prettyPrint;
     private String quotaUser;
     private String userIp;
-    private String name;
 
     Builder() {}
 
@@ -2697,10 +2697,10 @@ public final class ProjectsGetBillingInfoHttpRequest implements Serializable
       this.callback = source.callback;
       this.fields = source.fields;
       this.key = source.key;
+      this.name = source.name;
       this.prettyPrint = source.prettyPrint;
       this.quotaUser = source.quotaUser;
       this.userIp = source.userIp;
-      this.name = source.name;
     }
 
     public String getAccessToken() {
@@ -2739,6 +2739,15 @@ public final class ProjectsGetBillingInfoHttpRequest implements Serializable
       return this;
     }
 
+    public String getName() {
+      return name;
+    }
+
+    public Builder setName(String name) {
+      this.name = name;
+      return this;
+    }
+
     public String getPrettyPrint() {
       return prettyPrint;
     }
@@ -2766,15 +2775,6 @@ public final class ProjectsGetBillingInfoHttpRequest implements Serializable
       return this;
     }
 
-    public String getName() {
-      return name;
-    }
-
-    public Builder setName(String name) {
-      this.name = name;
-      return this;
-    }
-
 
     public ProjectsGetBillingInfoHttpRequest build() {
       String missing = "";
@@ -2782,21 +2782,21 @@ public final class ProjectsGetBillingInfoHttpRequest implements Serializable
 
 
 
-
-
-
       if (name == null) {
         missing += " name";
       }
+
+
+
       return new ProjectsGetBillingInfoHttpRequest(
         access_token,
         callback,
         fields,
         key,
+        name,
         prettyPrint,
         quotaUser,
-        userIp,
-        name
+        userIp
       );
     }
 
@@ -2806,10 +2806,10 @@ public final class ProjectsGetBillingInfoHttpRequest implements Serializable
       newBuilder.setCallback(this.callback);
       newBuilder.setFields(this.fields);
       newBuilder.setKey(this.key);
+      newBuilder.setName(this.name);
       newBuilder.setPrettyPrint(this.prettyPrint);
       newBuilder.setQuotaUser(this.quotaUser);
       newBuilder.setUserIp(this.userIp);
-      newBuilder.setName(this.name);
       return newBuilder;
     }
   }
@@ -2821,10 +2821,10 @@ public final class ProjectsGetBillingInfoHttpRequest implements Serializable
         + "callback=" + callback + ", "
         + "fields=" + fields + ", "
         + "key=" + key + ", "
+        + "name=" + name + ", "
         + "prettyPrint=" + prettyPrint + ", "
         + "quotaUser=" + quotaUser + ", "
-        + "userIp=" + userIp + ", "
-        + "name=" + name
+        + "userIp=" + userIp
         + "}";
   }
 
@@ -2840,10 +2840,10 @@ public final class ProjectsGetBillingInfoHttpRequest implements Serializable
           Objects.equals(this.callback, that.getCallback())&&
           Objects.equals(this.fields, that.getFields())&&
           Objects.equals(this.key, that.getKey())&&
+          Objects.equals(this.name, that.getName())&&
           Objects.equals(this.prettyPrint, that.getPrettyPrint())&&
           Objects.equals(this.quotaUser, that.getQuotaUser())&&
-          Objects.equals(this.userIp, that.getUserIp())&&
-          Objects.equals(this.name, that.getName())
+          Objects.equals(this.userIp, that.getUserIp())
           ;
     }
     return false;
@@ -2856,10 +2856,10 @@ public final class ProjectsGetBillingInfoHttpRequest implements Serializable
       callback,
       fields,
       key,
+      name,
       prettyPrint,
       quotaUser,
-      userIp,
-      name
+      userIp
     );
   }
 }
@@ -2901,35 +2901,35 @@ public final class ProjectsListHttpRequest implements Serializable
   private final String callback;
   private final String fields;
   private final String key;
-  private final String prettyPrint;
-  private final String quotaUser;
-  private final String userIp;
   private final String name;
   private final Integer pageSize;
   private final String pageToken;
+  private final String prettyPrint;
+  private final String quotaUser;
+  private final String userIp;
 
   private ProjectsListHttpRequest(
       String access_token,
       String callback,
       String fields,
       String key,
-      String prettyPrint,
-      String quotaUser,
-      String userIp,
       String name,
       Integer pageSize,
-      String pageToken
+      String pageToken,
+      String prettyPrint,
+      String quotaUser,
+      String userIp
       ) {
     this.access_token = access_token;
     this.callback = callback;
     this.fields = fields;
     this.key = key;
-    this.prettyPrint = prettyPrint;
-    this.quotaUser = quotaUser;
-    this.userIp = userIp;
     this.name = name;
     this.pageSize = pageSize;
     this.pageToken = pageToken;
+    this.prettyPrint = prettyPrint;
+    this.quotaUser = quotaUser;
+    this.userIp = userIp;
   }
 
   @Override
@@ -2947,15 +2947,6 @@ public final class ProjectsListHttpRequest implements Serializable
     if (fieldNames.contains("key")) {
       fieldMap.put("key", Collections.singletonList(key));
     }
-    if (fieldNames.contains("prettyPrint")) {
-      fieldMap.put("prettyPrint", Collections.singletonList(prettyPrint));
-    }
-    if (fieldNames.contains("quotaUser")) {
-      fieldMap.put("quotaUser", Collections.singletonList(quotaUser));
-    }
-    if (fieldNames.contains("userIp")) {
-      fieldMap.put("userIp", Collections.singletonList(userIp));
-    }
     if (fieldNames.contains("name")) {
       fieldMap.put("name", Collections.singletonList(name));
     }
@@ -2964,6 +2955,15 @@ public final class ProjectsListHttpRequest implements Serializable
     }
     if (fieldNames.contains("pageToken")) {
       fieldMap.put("pageToken", Collections.singletonList(pageToken));
+    }
+    if (fieldNames.contains("prettyPrint")) {
+      fieldMap.put("prettyPrint", Collections.singletonList(prettyPrint));
+    }
+    if (fieldNames.contains("quotaUser")) {
+      fieldMap.put("quotaUser", Collections.singletonList(quotaUser));
+    }
+    if (fieldNames.contains("userIp")) {
+      fieldMap.put("userIp", Collections.singletonList(userIp));
     }
     return fieldMap;
   }
@@ -2984,18 +2984,6 @@ public final class ProjectsListHttpRequest implements Serializable
     return key;
   }
 
-  public String getPrettyPrint() {
-    return prettyPrint;
-  }
-
-  public String getQuotaUser() {
-    return quotaUser;
-  }
-
-  public String getUserIp() {
-    return userIp;
-  }
-
   public String getName() {
     return name;
   }
@@ -3008,6 +2996,18 @@ public final class ProjectsListHttpRequest implements Serializable
     return pageToken;
   }
 
+  public String getPrettyPrint() {
+    return prettyPrint;
+  }
+
+  public String getQuotaUser() {
+    return quotaUser;
+  }
+
+  public String getUserIp() {
+    return userIp;
+  }
+
 
   public static Builder newBuilder() {
     return new ProjectsListHttpRequest.Builder();
@@ -3018,12 +3018,12 @@ public final class ProjectsListHttpRequest implements Serializable
     private String callback;
     private String fields;
     private String key;
-    private String prettyPrint;
-    private String quotaUser;
-    private String userIp;
     private String name;
     private Integer pageSize;
     private String pageToken;
+    private String prettyPrint;
+    private String quotaUser;
+    private String userIp;
 
     Builder() {}
 
@@ -3032,12 +3032,12 @@ public final class ProjectsListHttpRequest implements Serializable
       this.callback = source.callback;
       this.fields = source.fields;
       this.key = source.key;
-      this.prettyPrint = source.prettyPrint;
-      this.quotaUser = source.quotaUser;
-      this.userIp = source.userIp;
       this.name = source.name;
       this.pageSize = source.pageSize;
       this.pageToken = source.pageToken;
+      this.prettyPrint = source.prettyPrint;
+      this.quotaUser = source.quotaUser;
+      this.userIp = source.userIp;
     }
 
     public String getAccessToken() {
@@ -3076,33 +3076,6 @@ public final class ProjectsListHttpRequest implements Serializable
       return this;
     }
 
-    public String getPrettyPrint() {
-      return prettyPrint;
-    }
-
-    public Builder setPrettyPrint(String prettyPrint) {
-      this.prettyPrint = prettyPrint;
-      return this;
-    }
-
-    public String getQuotaUser() {
-      return quotaUser;
-    }
-
-    public Builder setQuotaUser(String quotaUser) {
-      this.quotaUser = quotaUser;
-      return this;
-    }
-
-    public String getUserIp() {
-      return userIp;
-    }
-
-    public Builder setUserIp(String userIp) {
-      this.userIp = userIp;
-      return this;
-    }
-
     public String getName() {
       return name;
     }
@@ -3130,12 +3103,36 @@ public final class ProjectsListHttpRequest implements Serializable
       return this;
     }
 
+    public String getPrettyPrint() {
+      return prettyPrint;
+    }
+
+    public Builder setPrettyPrint(String prettyPrint) {
+      this.prettyPrint = prettyPrint;
+      return this;
+    }
+
+    public String getQuotaUser() {
+      return quotaUser;
+    }
+
+    public Builder setQuotaUser(String quotaUser) {
+      this.quotaUser = quotaUser;
+      return this;
+    }
+
+    public String getUserIp() {
+      return userIp;
+    }
+
+    public Builder setUserIp(String userIp) {
+      this.userIp = userIp;
+      return this;
+    }
+
 
     public ProjectsListHttpRequest build() {
       String missing = "";
-
-
-
 
 
 
@@ -3145,17 +3142,20 @@ public final class ProjectsListHttpRequest implements Serializable
       }
 
 
+
+
+
       return new ProjectsListHttpRequest(
         access_token,
         callback,
         fields,
         key,
-        prettyPrint,
-        quotaUser,
-        userIp,
         name,
         pageSize,
-        pageToken
+        pageToken,
+        prettyPrint,
+        quotaUser,
+        userIp
       );
     }
 
@@ -3165,12 +3165,12 @@ public final class ProjectsListHttpRequest implements Serializable
       newBuilder.setCallback(this.callback);
       newBuilder.setFields(this.fields);
       newBuilder.setKey(this.key);
-      newBuilder.setPrettyPrint(this.prettyPrint);
-      newBuilder.setQuotaUser(this.quotaUser);
-      newBuilder.setUserIp(this.userIp);
       newBuilder.setName(this.name);
       newBuilder.setPageSize(this.pageSize);
       newBuilder.setPageToken(this.pageToken);
+      newBuilder.setPrettyPrint(this.prettyPrint);
+      newBuilder.setQuotaUser(this.quotaUser);
+      newBuilder.setUserIp(this.userIp);
       return newBuilder;
     }
   }
@@ -3182,12 +3182,12 @@ public final class ProjectsListHttpRequest implements Serializable
         + "callback=" + callback + ", "
         + "fields=" + fields + ", "
         + "key=" + key + ", "
-        + "prettyPrint=" + prettyPrint + ", "
-        + "quotaUser=" + quotaUser + ", "
-        + "userIp=" + userIp + ", "
         + "name=" + name + ", "
         + "pageSize=" + pageSize + ", "
-        + "pageToken=" + pageToken
+        + "pageToken=" + pageToken + ", "
+        + "prettyPrint=" + prettyPrint + ", "
+        + "quotaUser=" + quotaUser + ", "
+        + "userIp=" + userIp
         + "}";
   }
 
@@ -3203,12 +3203,12 @@ public final class ProjectsListHttpRequest implements Serializable
           Objects.equals(this.callback, that.getCallback())&&
           Objects.equals(this.fields, that.getFields())&&
           Objects.equals(this.key, that.getKey())&&
-          Objects.equals(this.prettyPrint, that.getPrettyPrint())&&
-          Objects.equals(this.quotaUser, that.getQuotaUser())&&
-          Objects.equals(this.userIp, that.getUserIp())&&
           Objects.equals(this.name, that.getName())&&
           Objects.equals(this.pageSize, that.getPageSize())&&
-          Objects.equals(this.pageToken, that.getPageToken())
+          Objects.equals(this.pageToken, that.getPageToken())&&
+          Objects.equals(this.prettyPrint, that.getPrettyPrint())&&
+          Objects.equals(this.quotaUser, that.getQuotaUser())&&
+          Objects.equals(this.userIp, that.getUserIp())
           ;
     }
     return false;
@@ -3221,12 +3221,12 @@ public final class ProjectsListHttpRequest implements Serializable
       callback,
       fields,
       key,
-      prettyPrint,
-      quotaUser,
-      userIp,
       name,
       pageSize,
-      pageToken
+      pageToken,
+      prettyPrint,
+      quotaUser,
+      userIp
     );
   }
 }
@@ -3268,32 +3268,32 @@ public final class ProjectsUpdateBillingInfoHttpRequest implements Serializable
   private final String callback;
   private final String fields;
   private final String key;
+  private final String name;
   private final String prettyPrint;
   private final String quotaUser;
-  private final String userIp;
-  private final String name;
   private final ProjectBillingInfo request;
+  private final String userIp;
 
   private ProjectsUpdateBillingInfoHttpRequest(
       String access_token,
       String callback,
       String fields,
       String key,
+      String name,
       String prettyPrint,
       String quotaUser,
-      String userIp,
-      String name,
-      ProjectBillingInfo request
+      ProjectBillingInfo request,
+      String userIp
       ) {
     this.access_token = access_token;
     this.callback = callback;
     this.fields = fields;
     this.key = key;
+    this.name = name;
     this.prettyPrint = prettyPrint;
     this.quotaUser = quotaUser;
-    this.userIp = userIp;
-    this.name = name;
     this.request = request;
+    this.userIp = userIp;
   }
 
   @Override
@@ -3311,20 +3311,20 @@ public final class ProjectsUpdateBillingInfoHttpRequest implements Serializable
     if (fieldNames.contains("key")) {
       fieldMap.put("key", Collections.singletonList(key));
     }
+    if (fieldNames.contains("name")) {
+      fieldMap.put("name", Collections.singletonList(name));
+    }
     if (fieldNames.contains("prettyPrint")) {
       fieldMap.put("prettyPrint", Collections.singletonList(prettyPrint));
     }
     if (fieldNames.contains("quotaUser")) {
       fieldMap.put("quotaUser", Collections.singletonList(quotaUser));
     }
-    if (fieldNames.contains("userIp")) {
-      fieldMap.put("userIp", Collections.singletonList(userIp));
-    }
-    if (fieldNames.contains("name")) {
-      fieldMap.put("name", Collections.singletonList(name));
-    }
     if (fieldNames.contains("request")) {
       fieldMap.put("request", Collections.singletonList(request));
+    }
+    if (fieldNames.contains("userIp")) {
+      fieldMap.put("userIp", Collections.singletonList(userIp));
     }
     return fieldMap;
   }
@@ -3345,6 +3345,10 @@ public final class ProjectsUpdateBillingInfoHttpRequest implements Serializable
     return key;
   }
 
+  public String getName() {
+    return name;
+  }
+
   public String getPrettyPrint() {
     return prettyPrint;
   }
@@ -3353,16 +3357,12 @@ public final class ProjectsUpdateBillingInfoHttpRequest implements Serializable
     return quotaUser;
   }
 
-  public String getUserIp() {
-    return userIp;
-  }
-
-  public String getName() {
-    return name;
-  }
-
   public ProjectBillingInfo getRequest() {
     return request;
+  }
+
+  public String getUserIp() {
+    return userIp;
   }
 
 
@@ -3375,11 +3375,11 @@ public final class ProjectsUpdateBillingInfoHttpRequest implements Serializable
     private String callback;
     private String fields;
     private String key;
+    private String name;
     private String prettyPrint;
     private String quotaUser;
-    private String userIp;
-    private String name;
     private ProjectBillingInfo request;
+    private String userIp;
 
     Builder() {}
 
@@ -3388,11 +3388,11 @@ public final class ProjectsUpdateBillingInfoHttpRequest implements Serializable
       this.callback = source.callback;
       this.fields = source.fields;
       this.key = source.key;
+      this.name = source.name;
       this.prettyPrint = source.prettyPrint;
       this.quotaUser = source.quotaUser;
-      this.userIp = source.userIp;
-      this.name = source.name;
       this.request = source.request;
+      this.userIp = source.userIp;
     }
 
     public String getAccessToken() {
@@ -3431,6 +3431,15 @@ public final class ProjectsUpdateBillingInfoHttpRequest implements Serializable
       return this;
     }
 
+    public String getName() {
+      return name;
+    }
+
+    public Builder setName(String name) {
+      this.name = name;
+      return this;
+    }
+
     public String getPrettyPrint() {
       return prettyPrint;
     }
@@ -3449,30 +3458,21 @@ public final class ProjectsUpdateBillingInfoHttpRequest implements Serializable
       return this;
     }
 
-    public String getUserIp() {
-      return userIp;
-    }
-
-    public Builder setUserIp(String userIp) {
-      this.userIp = userIp;
-      return this;
-    }
-
-    public String getName() {
-      return name;
-    }
-
-    public Builder setName(String name) {
-      this.name = name;
-      return this;
-    }
-
     public ProjectBillingInfo getRequest() {
       return request;
     }
 
     public Builder setRequest(ProjectBillingInfo request) {
       this.request = request;
+      return this;
+    }
+
+    public String getUserIp() {
+      return userIp;
+    }
+
+    public Builder setUserIp(String userIp) {
+      this.userIp = userIp;
       return this;
     }
 
@@ -3483,23 +3483,23 @@ public final class ProjectsUpdateBillingInfoHttpRequest implements Serializable
 
 
 
-
-
-
       if (name == null) {
         missing += " name";
       }
+
+
+
 
       return new ProjectsUpdateBillingInfoHttpRequest(
         access_token,
         callback,
         fields,
         key,
+        name,
         prettyPrint,
         quotaUser,
-        userIp,
-        name,
-        request
+        request,
+        userIp
       );
     }
 
@@ -3509,11 +3509,11 @@ public final class ProjectsUpdateBillingInfoHttpRequest implements Serializable
       newBuilder.setCallback(this.callback);
       newBuilder.setFields(this.fields);
       newBuilder.setKey(this.key);
+      newBuilder.setName(this.name);
       newBuilder.setPrettyPrint(this.prettyPrint);
       newBuilder.setQuotaUser(this.quotaUser);
-      newBuilder.setUserIp(this.userIp);
-      newBuilder.setName(this.name);
       newBuilder.setRequest(this.request);
+      newBuilder.setUserIp(this.userIp);
       return newBuilder;
     }
   }
@@ -3525,11 +3525,11 @@ public final class ProjectsUpdateBillingInfoHttpRequest implements Serializable
         + "callback=" + callback + ", "
         + "fields=" + fields + ", "
         + "key=" + key + ", "
+        + "name=" + name + ", "
         + "prettyPrint=" + prettyPrint + ", "
         + "quotaUser=" + quotaUser + ", "
-        + "userIp=" + userIp + ", "
-        + "name=" + name + ", "
-        + "request=" + request
+        + "request=" + request + ", "
+        + "userIp=" + userIp
         + "}";
   }
 
@@ -3545,11 +3545,11 @@ public final class ProjectsUpdateBillingInfoHttpRequest implements Serializable
           Objects.equals(this.callback, that.getCallback())&&
           Objects.equals(this.fields, that.getFields())&&
           Objects.equals(this.key, that.getKey())&&
+          Objects.equals(this.name, that.getName())&&
           Objects.equals(this.prettyPrint, that.getPrettyPrint())&&
           Objects.equals(this.quotaUser, that.getQuotaUser())&&
-          Objects.equals(this.userIp, that.getUserIp())&&
-          Objects.equals(this.name, that.getName())&&
-          Objects.equals(this.request, that.getRequest())
+          Objects.equals(this.request, that.getRequest())&&
+          Objects.equals(this.userIp, that.getUserIp())
           ;
     }
     return false;
@@ -3562,11 +3562,11 @@ public final class ProjectsUpdateBillingInfoHttpRequest implements Serializable
       callback,
       fields,
       key,
+      name,
       prettyPrint,
       quotaUser,
-      userIp,
-      name,
-      request
+      request,
+      userIp
     );
   }
 }

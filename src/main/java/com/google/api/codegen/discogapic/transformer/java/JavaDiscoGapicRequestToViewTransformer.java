@@ -198,6 +198,15 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
       properties.add(schemaToParamView(context, method.request(), symbolTable));
     }
 
+    Collections.sort(
+        properties,
+        new Comparator<StaticLangApiMessageView>() {
+          @Override
+          public int compare(StaticLangApiMessageView o1, StaticLangApiMessageView o2) {
+            return String.CASE_INSENSITIVE_ORDER.compare(o1.name(), o2.name());
+          }
+        });
+
     requestView.canRepeat(false);
     requestView.isRequired(true);
     requestView.properties(properties);
