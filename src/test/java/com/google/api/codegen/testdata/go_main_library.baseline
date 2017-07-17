@@ -874,7 +874,7 @@ func (c *Client) GetBigBookOperation(name string) *GetBigBookOperation {
 // See documentation of Poll for error-handling information.
 func (op *GetBigBookOperation) Wait(ctx context.Context, opts ...gax.CallOption) (*librarypb.Book, error) {
     var resp librarypb.Book
-    if err := op.lro.Wait(ctx, &resp, opts...); err != nil {
+    if err := op.lro.WaitWithInterval(ctx, &resp, 30000*time.Millisecond, opts...); err != nil {
         return nil, err
     }
     return &resp, nil
@@ -951,7 +951,7 @@ func (c *Client) GetBigNothingOperation(name string) *GetBigNothingOperation {
 //
 // See documentation of Poll for error-handling information.
 func (op *GetBigNothingOperation) Wait(ctx context.Context, opts ...gax.CallOption) error {
-    return op.lro.Wait(ctx, nil, opts...)
+    return op.lro.WaitWithInterval(ctx, nil, 60000*time.Millisecond, opts...)
 }
 
 // Poll fetches the latest state of the long-running operation.
