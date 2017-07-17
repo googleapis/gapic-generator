@@ -52,11 +52,6 @@ public class ModelTypeFormatterImpl implements ModelTypeFormatter {
   }
 
   @Override
-  public String getNicknameFor(String fullName) {
-    return "$ NOT IMPLEMENTED: getNicknameFor(String fullName) $";
-  }
-
-  @Override
   public String renderPrimitiveValue(TypeRef type, String value) {
     return typeNameConverter.renderPrimitiveValue(type, value);
   }

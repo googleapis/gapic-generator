@@ -36,6 +36,13 @@ import javax.annotation.Nullable;
  */
 @AutoValue
 public abstract class SchemaInterfaceContext implements InterfaceContext {
+  /**
+   * Create a context for transforming a schema.
+   *
+   * @param id Any sort of unique identifier for this context. Used in sorting contexts.
+   * @param typeTable Manages the imports for the schema view.
+   * @param docContext The context for the parent Document.
+   */
   public static SchemaInterfaceContext create(
       String id, SchemaTypeTable typeTable, DiscoGapicInterfaceContext docContext) {
     return new AutoValue_SchemaInterfaceContext(id, typeTable, docContext);
@@ -48,7 +55,6 @@ public abstract class SchemaInterfaceContext implements InterfaceContext {
     return null;
   }
 
-  /* Any sort of identifier for this context. Used in sorting contexts. */
   public abstract String id();
 
   public abstract SchemaTypeTable getSchemaTypeTable();

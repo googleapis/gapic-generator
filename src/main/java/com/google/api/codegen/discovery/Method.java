@@ -150,13 +150,4 @@ public abstract class Method implements Comparable<Method>, Node {
 
   /** @return whether or not the method supports media upload. */
   public abstract boolean supportsMediaUpload();
-
-  /** @return the parent Document node. Returns null if there is no parent Document. */
-  public Document getRootDocument() {
-    Node node = this;
-    while (!(node.parent() instanceof Document)) {
-      node = node.parent();
-    }
-    return (Document) node.parent();
-  }
 }

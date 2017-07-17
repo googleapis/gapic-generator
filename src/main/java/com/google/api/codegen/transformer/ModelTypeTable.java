@@ -65,11 +65,6 @@ public class ModelTypeTable implements ImportTypeTable, ModelTypeFormatter {
   }
 
   @Override
-  public String getNicknameFor(String fullName) {
-    return typeFormatter.getNicknameFor(fullName);
-  }
-
-  @Override
   public String renderPrimitiveValue(TypeRef type, String value) {
     return typeFormatter.renderPrimitiveValue(type, value);
   }
