@@ -121,10 +121,10 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
 
   /** Returns a list of supported methods, configured by FeatureConfig. */
   public List<Method> getSupportedMethods() {
-    List<Method> allMethods = getMethods();
-    List<Method> methods = new ArrayList<>();
+    List<Method> methods = new ArrayList<>(getInterfaceConfig().getMethodConfigs().size());
 
-    for (Method method : allMethods) {
+    for (MethodConfig methodConfig : getInterfaceConfig().getMethodConfigs()) {
+      Method method = ((DiscoGapicMethodConfig) methodConfig).getMethod();
       if (isSupported(method)) {
         methods.add(method);
       }

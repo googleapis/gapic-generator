@@ -66,8 +66,6 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     reservedKeywords.add("Builder");
   }
 
-  private static final String XAPI_TEMPLATE_FILENAME = "java/main.snip";
-  private static final String PACKAGE_INFO_TEMPLATE_FILENAME = "java/package-info.snip";
   private static final String SCHEMA_TEMPLATE_FILENAME = "java/message.snip";
 
   public JavaDiscoGapicSchemaToViewTransformer(
@@ -78,8 +76,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
   }
 
   public List<String> getTemplateFileNames() {
-    return Arrays.asList(
-        XAPI_TEMPLATE_FILENAME, PACKAGE_INFO_TEMPLATE_FILENAME, SCHEMA_TEMPLATE_FILENAME);
+    return Arrays.asList(SCHEMA_TEMPLATE_FILENAME);
   }
 
   @Override
@@ -169,7 +166,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     // Getters and setters use unescaped name for better readability on public methods.
     schemaView.fieldGetFunction(context.getDiscoGapicNamer().getResourceGetterName(schemaId));
     schemaView.fieldSetFunction(context.getDiscoGapicNamer().getResourceSetterName(schemaId));
-    String schemaTypeName = schemaTypeTable.getAndSaveNicknameFor(schema, true);
+    String schemaTypeName = schemaTypeTable.getAndSaveNicknameFor(schema);
 
     schemaView.typeName(schemaTypeName);
     if (schema.type() == Type.ARRAY) {
@@ -195,17 +192,29 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     Collections.sort(viewProperties);
     schemaView.properties(viewProperties);
 
+    schemaView.canRepeat(schema.repeated());
+    schemaView.isRequired(schema.required());
+    schemaView.isRequestMessage(false);
+
     if (!schema.properties().isEmpty()
         || (schema.items() != null && !schema.items().properties().isEmpty())) {
       // This is a top-level Schema, so add it to list of file ViewModels for rendering.
+
       messageViewAccumulator.put(context, schemaView.build());
     }
     return schemaView.build();
   }
 
   private void addApiImports(SchemaTypeTable typeTable) {
-    typeTable.saveNicknameFor("com.google.api.core.BetaApi");
-    typeTable.saveNicknameFor("java.io.Serializable");
-    typeTable.saveNicknameFor("javax.annotation.Generated");
+    typeTable.getAndSaveNicknameFor("com.google.api.core.BetaApi");
+    typeTable.getAndSaveNicknameFor("com.google.common.collect.ImmutableList");
+    typeTable.getAndSaveNicknameFor("java.io.Serializable");
+    typeTable.getAndSaveNicknameFor("java.util.Collections");
+    typeTable.getAndSaveNicknameFor("java.util.HashMap");
+    typeTable.getAndSaveNicknameFor("java.util.List");
+    typeTable.getAndSaveNicknameFor("java.util.Map");
+    typeTable.getAndSaveNicknameFor("java.util.Objects");
+    typeTable.getAndSaveNicknameFor("java.util.Set");
+    typeTable.getAndSaveNicknameFor("javax.annotation.Generated");
   }
 }
