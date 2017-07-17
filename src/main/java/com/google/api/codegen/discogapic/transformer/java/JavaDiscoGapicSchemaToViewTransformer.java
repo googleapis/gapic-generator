@@ -147,8 +147,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
         (SchemaTypeTable) documentContext.getSchemaTypeTable().cloneEmpty();
 
     SchemaInterfaceContext context =
-        SchemaInterfaceContext.create(
-            documentContext.getInterface(), schema, schemaTypeTable, documentContext);
+        SchemaInterfaceContext.create(schema.getIdentifier(), schemaTypeTable, documentContext);
 
     StaticLangApiMessageView.Builder schemaView = StaticLangApiMessageView.newBuilder();
 
