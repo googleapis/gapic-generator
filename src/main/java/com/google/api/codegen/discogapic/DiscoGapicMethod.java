@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.discogapic;
 
-import com.google.api.codegen.discogapic.AutoValue_DiscoGapicMethod.Builder;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.transformer.SchemaTypeTable;
@@ -45,9 +44,11 @@ public abstract class DiscoGapicMethod {
    */
   public abstract SchemaTypeTable schemaTypeTable();
 
-  /** @return ????? hopefully the yaml config. */
   @Nullable
-  public abstract Interface parent();
+  /* Returns null, because Discovery-based methods have no proto Interface. */
+  public Interface parent() {
+    return null;
+  }
 
   @Override
   public String toString() {
@@ -74,8 +75,6 @@ public abstract class DiscoGapicMethod {
     public abstract Builder setResponseType(Schema response);
 
     public abstract Builder setSchemaTypeTable(SchemaTypeTable schemaTypeTable);
-
-    public abstract Builder setParent(Interface parent);
 
     public abstract DiscoGapicMethod build();
   }

@@ -181,7 +181,7 @@ public abstract class GapicProductConfig implements ProductConfig {
 
     ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
         createDiscoGapicInterfaceConfigMap(
-            document, new BoundedDiagCollector(), configProto, settings, resourceNameConfigs);
+            document, new BoundedDiagCollector(), configProto, settings);
 
     ImmutableList<String> copyrightLines;
     ImmutableList<String> licenseLines;
@@ -283,8 +283,7 @@ public abstract class GapicProductConfig implements ProductConfig {
       Document document,
       DiagCollector diagCollector,
       ConfigProto configProto,
-      LanguageSettingsProto languageSettings,
-      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs) {
+      LanguageSettingsProto languageSettings) {
     ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap = ImmutableMap.builder();
     for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
       String interfaceNameOverride =

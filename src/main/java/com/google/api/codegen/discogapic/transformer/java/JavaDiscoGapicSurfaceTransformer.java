@@ -55,17 +55,7 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
   private final JavaNameFormatter nameFormatter = new JavaNameFormatter();
   private final ApiCallableTransformer apiCallableTransformer = new ApiCallableTransformer();
 
-  // TODO(andrealin) Use transformers.
-  //  private final ServiceTransformer serviceTransformer = new ServiceTransformer();
-  //  private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
-  //
-  //  private final StaticLangApiMethodTransformer apiMethodTransformer =
-  //      new StaticLangApiMethodTransformer();
-  //  private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
-  //  private final BatchingTransformer batchingTransformer = new BatchingTransformer();
-  //  private final RetryDefinitionsTransformer retryDefinitionsTransformer =
-  //      new RetryDefinitionsTransformer();
-  //  private final ProductServiceConfig productServiceConfig = new ProductServiceConfig();
+  // TODO(andrealin) Create the service, page streaming, batching, etc transformers.
 
   private static final String XAPI_TEMPLATE_FILENAME = "java/main.snip";
   private static final String XSETTINGS_TEMPLATE_FILENAME = "java/settings.snip";

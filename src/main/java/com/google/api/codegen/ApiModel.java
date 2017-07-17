@@ -25,6 +25,7 @@ import com.google.api.tools.framework.tools.FileWrapper;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.api.tools.framework.tools.ToolUtil;
 import com.google.api.tools.framework.yaml.YamlReader;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.Set;
@@ -53,6 +54,7 @@ public class ApiModel {
   // Elements present when this ApiModel is based on a proto Model.
   private final Model model;
 
+  /* The source type of the API definition. */
   public enum ModelType {
     DISCOVERY,
     PROTO
@@ -61,7 +63,8 @@ public class ApiModel {
   // Constructors enforce the exactly-one-source precondition of this class.
 
   /** Create an ApiModel from a Discovery document. */
-  public ApiModel(@Nonnull Document document, @Nonnull SymbolTable docSymbolTable) {
+  public ApiModel(Document document, SymbolTable docSymbolTable) {
+    Preconditions.checkNotNull(document);
     this.modelType = ModelType.DISCOVERY;
     this.document = document;
     this.docSymbolTable = docSymbolTable;
@@ -70,7 +73,8 @@ public class ApiModel {
   }
 
   /** Create an ApiModel from a protobuf that defines an API model. */
-  public ApiModel(@Nonnull Model model) {
+  public ApiModel(Model model) {
+    Preconditions.checkNotNull(model);
     this.modelType = ModelType.PROTO;
     this.model = model;
     this.docSymbolTable = null;

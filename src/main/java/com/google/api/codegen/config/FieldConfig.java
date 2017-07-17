@@ -213,10 +213,6 @@ public abstract class FieldConfig {
     return null;
   }
 
-  public boolean hasEntityName() {
-    return getEntityName() != null;
-  }
-
   public boolean useResourceNameType() {
     return getResourceNameTreatment() == ResourceNameTreatment.STATIC_TYPES;
   }
@@ -298,15 +294,6 @@ public abstract class FieldConfig {
       @Override
       public FieldType apply(Field field) {
         return new FieldType(field);
-      }
-    };
-  }
-
-  private static Function<FieldType, Field> selectFieldFromFieldTypeFunction() {
-    return new Function<FieldType, Field>() {
-      @Override
-      public Field apply(FieldType field) {
-        return field.getProtoBasedField();
       }
     };
   }

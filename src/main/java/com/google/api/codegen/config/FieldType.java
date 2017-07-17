@@ -25,7 +25,12 @@ import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Preconditions;
 import javax.annotation.Nullable;
 
-/** Created by andrealin on 6/22/17. */
+/**
+ * Wrapper class around the protobuf Field class and the Discovery-doc Schema class.
+ *
+ * <p>Each instance of this class contains exactly one of {Field, Schema}. This class abstracts the
+ * format (protobuf, discovery, etc) of the source from a resource type definition.
+ */
 public class FieldType {
 
   @Nullable Field protoBasedField;
@@ -34,18 +39,21 @@ public class FieldType {
 
   public final ModelType modelType;
 
+  /* Create a FieldType object from a non-null Field object. */
   public FieldType(Field protoBasedField) {
     Preconditions.checkNotNull(protoBasedField);
     this.protoBasedField = protoBasedField;
     modelType = PROTO;
   }
 
+  /* Create a FieldType object from a non-null Schema object. */
   public FieldType(Schema schemaField) {
     Preconditions.checkNotNull(schemaField);
     this.schemaField = schemaField;
     modelType = DISCOVERY;
   }
 
+  /* @return the type of the underlying model resource. */
   public ModelType getModelType() {
     return modelType;
   }
@@ -61,10 +69,14 @@ public class FieldType {
     }
   }
 
+  @Nullable
+  /* Return the underlying proto-based field, or null if none. */
   public Field getProtoBasedField() {
     return protoBasedField;
   }
 
+  @Nullable
+  /* Return the underlying Discovery-Doc-based schema, or null if none. */
   public Schema getSchemaField() {
     return schemaField;
   }
@@ -80,6 +92,7 @@ public class FieldType {
     }
   }
 
+  /* @return if the underlying resource is a map type. */
   public boolean isMap() {
     switch (getModelType()) {
       case PROTO:
@@ -91,6 +104,7 @@ public class FieldType {
     }
   }
 
+  /* @return the resource type of the map key. */
   public FieldType getMapKeyField() {
     switch (getModelType()) {
       case PROTO:
@@ -102,6 +116,7 @@ public class FieldType {
     }
   }
 
+  /* @return the resource type of the map value. */
   public FieldType getMapValueField() {
     switch (getModelType()) {
       case PROTO:
@@ -113,6 +128,7 @@ public class FieldType {
     }
   }
 
+  /* @return if the underlying resource is a proto Messsage. */
   public boolean isMessage() {
     switch (getModelType()) {
       case PROTO:
@@ -124,6 +140,7 @@ public class FieldType {
     }
   }
 
+  /* @return if the underlying resource can be repeated in the parent resource. */
   public boolean isRepeated() {
     switch (getModelType()) {
       case PROTO:
@@ -135,17 +152,19 @@ public class FieldType {
     }
   }
 
+  /* @return the full name of the parent. */
   public String getParentFullName() {
     switch (getModelType()) {
       case PROTO:
         return protoBasedField.getParent().getFullName();
       case DISCOVERY:
-        return schemaField.getIdentifier();
+        return schemaField.parent().id();
       default:
         throw new IllegalArgumentException("Unhandled model type.");
     }
   }
 
+  /* @return the cardinality of the resource. */
   public Cardinality getCardinality() {
     switch (getModelType()) {
       case PROTO:
@@ -156,6 +175,7 @@ public class FieldType {
     }
   }
 
+  /* @return if this resource is an enum. */
   public boolean isEnum() {
     switch (getModelType()) {
       case PROTO:
@@ -167,6 +187,7 @@ public class FieldType {
     }
   }
 
+  /* @return if this is a primitive type. */
   public boolean isPrimitive() {
     switch (getModelType()) {
       case PROTO:

@@ -33,7 +33,10 @@ import java.util.List;
 import javax.annotation.Nullable;
 import org.joda.time.Duration;
 
-/** Created by andrealin on 6/15/17. */
+/**
+ * GapicMethodConfig represents the code-gen config for a Discovery doc method, and includes the
+ * specification of features like page streaming and parameter flattening.
+ */
 @AutoValue
 public abstract class DiscoGapicMethodConfig extends MethodConfig {
   public abstract Method getMethod();
@@ -49,7 +52,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
   }
 
   @Override
-  /** Returns the grpc streaming configuration of the method. */
+  /* Returns the grpc streaming configuration of the method. */
   public GrpcStreamingType getGrpcStreamingType() {
     return GrpcStreamingType.NonStreaming;
   }
@@ -174,7 +177,8 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
     }
   }
 
-  /** Return the list of "one of" instances associated with the fields. */
+  @Override
+  /* Return the list of "one of" instances associated with the fields. */
   public Iterable<Oneof> getOneofs() {
     ImmutableSet.Builder<Oneof> answer = ImmutableSet.builder();
     return answer.build();

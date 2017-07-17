@@ -89,8 +89,7 @@ public abstract class ResourceNameMessageConfigs {
         return new AutoValue_ResourceNameMessageConfigs(
             messageResourceTypeConfigMap, fieldsByMessage);
       default:
-        //        throw new IllegalArgumentException("Unhandled model type.");
-        return null;
+        throw new IllegalArgumentException("Unhandled model type.");
     }
   }
 
