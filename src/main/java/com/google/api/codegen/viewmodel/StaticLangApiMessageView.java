@@ -69,6 +69,8 @@ public abstract class StaticLangApiMessageView implements Comparable<StaticLangA
   // There can be arbitrarily nested fields inside of this field.
   public abstract List<StaticLangApiMessageView> properties();
 
+  public abstract boolean hasRequiredProperties();
+
   public static StaticLangApiMessageView.Builder newBuilder() {
     return new AutoValue_StaticLangApiMessageView.Builder();
   }
@@ -92,6 +94,8 @@ public abstract class StaticLangApiMessageView implements Comparable<StaticLangA
     public abstract StaticLangApiMessageView.Builder fieldSetFunction(String val);
 
     public abstract StaticLangApiMessageView.Builder properties(List<StaticLangApiMessageView> val);
+
+    public abstract StaticLangApiMessageView.Builder hasRequiredProperties(boolean val);
 
     public abstract StaticLangApiMessageView.Builder isRequired(boolean val);
 

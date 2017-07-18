@@ -151,13 +151,20 @@
     @end
 
     public {@schema.innerTypeName} build() {
-      String missing = "";
+      @if schema.hasRequiredProperties
+        String missing = "";
+      @end
       @join param : schema.properties
         @if param.isRequired
           if ({@param.name} == null) {
             missing += " {@param.name}";
           }
         @end
+      @end
+      @if schema.hasRequiredProperties
+        if (!missing.isEmpty()) {
+          throw new IllegalStateException("Missing required properties:" + missing);
+        }
       @end
       return new {@schema.innerTypeName}(
         @join param : schema.properties on ", ".add(BREAK)
