@@ -10,10 +10,14 @@
 @end
 
 @private schemaClassDef(schema)
-  public final class {@schema.innerTypeName} implements Serializable {
+  public final class {@schema.innerTypeName} implements ApiMessage {
     {@members(schema)}
 
-    {@constructor(schema)}
+    {@constructors(schema)}
+
+    @if schema.isRequestMessage
+      {@populateMapMethod(schema)}
+    @end
 
     {@getters(schema)}
 
@@ -30,14 +34,36 @@
 
 @end
 
+@private populateMapMethod(schema)
+  @@Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    @join param : schema.properties
+      if (fieldNames.contains("{@param.name}")) {
+        @if param.canRepeat
+          fieldMap.put("{@param.name}", {@param.name});
+        @else
+          fieldMap.put("{@param.name}", Collections.singletonList({@param.name}));
+        @end
+      }
+    @end
+    return fieldMap;
+  }
+@end
+
+@private members(schema)
+  @join property : schema.properties
+    private final {@property.typeName} {@property.name};
+  @end
+@end
+
 @private toString(schema)
   @@Override
   public String toString() {
     return "{@schema.innerTypeName}{"
-    @join property : schema.properties on " + \", \""
-
-        + "{@property.name}=" + {@property.name}
-    @end
+        @join property : schema.properties on " + \", \"".add(BREAK)
+          + "{@property.name}=" + {@property.name}
+        @end
         + "}";
   }
 @end
@@ -51,11 +77,10 @@
     if (o instanceof {@schema.innerTypeName}) {
       {@schema.innerTypeName} that = ({@schema.innerTypeName}) o;
       return
-      @join property : schema.properties on "&&"
-
-        this.{@property.name}.equals(that.{@property.fieldGetFunction}())
-      @end
-      ;
+          @join param : schema.properties on " &&".add(BREAK)
+            Objects.equals(this.{@param.name}, that.{@param.fieldGetFunction}())
+          @end
+          ;
     }
     return false;
   }
@@ -64,12 +89,11 @@
 @private hashCode(schema)
   @@Override
   public int hashCode() {
-    int h = 1;
-    @join property : schema.properties
-      h *= 1000003;
-      h ^= this.{@property.name}.hashCode();
-    @end
-    return h;
+    return Objects.hash(
+      @join properties : schema.properties on ", ".add(BREAK)
+        {@properties.name}
+      @end
+    );
   }
 @end
 
@@ -80,37 +104,30 @@
 @end
 
 @private getters(schema)
-  @join property : schema.properties
-    public {@property.typeName} {@property.fieldGetFunction}() {
-      return {@property.name};
+  @join param : schema.properties
+    public {@param.typeName} {@param.fieldGetFunction}() {
+      return {@param.name};
     }
-    {@""}
+
   @end
 @end
 
-@private constructor(schema)
+@private constructors(schema)
   private {@schema.innerTypeName}(
-    @join property : schema.properties on ", "
-
-      {@property.typeName} {@property.name}
-    @end
-    ) {
-    @join property : schema.properties
-      this.{@property.name} = {@property.name};
+      @join param : schema.properties on ",".add(BREAK)
+        {@param.typeName} {@param.name}
+      @end
+      ) {
+    @join param : schema.properties
+      this.{@param.name} = {@param.name};
     @end
   }
 @end
 
-@private members(schema)
-  @join property : schema.properties
-    private final {@property.typeName} {@property.name};
-  @end
-@end
-
 @private builder(schema)
   public static class Builder {
-    @join property : schema.properties
-      private {@property.typeName} {@property.name};
+    @join param : schema.properties
+      private {@param.typeName} {@param.name};
     @end
 
     Builder() {}
@@ -134,19 +151,34 @@
     @end
 
     public {@schema.innerTypeName} build() {
+      @if schema.hasRequiredProperties
+        String missing = "";
+      @end
+      @join param : schema.properties
+        @if param.isRequired
+          if ({@param.name} == null) {
+            missing += " {@param.name}";
+          }
+        @end
+      @end
+      @if schema.hasRequiredProperties
+        if (!missing.isEmpty()) {
+          throw new IllegalStateException("Missing required properties:" + missing);
+        }
+      @end
       return new {@schema.innerTypeName}(
-        @join property : schema.properties on ", "
-
-          {@property.name}
+        @join param : schema.properties on ", ".add(BREAK)
+          {@param.name}
         @end
       );
     }
-  }
-@end
 
-@private builderMembers(schema)
-  @join property : schema.properties
-    public abstract {@schema.typeName}.Builder {@property.name}({@property.typeName} val);
-    {@""}
-  @end
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      @join param : schema.properties
+        newBuilder.{@param.fieldSetFunction}(this.{@param.name});
+      @end
+      return newBuilder;
+    }
+  }
 @end

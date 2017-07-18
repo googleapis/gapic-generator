@@ -17,13 +17,19 @@
 package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
+import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import javax.annotation.Generated;
 
 @Generated("by GAPIC")
 @BetaApi
-public final class AttachedDisk implements Serializable {
+public final class AttachedDisk implements ApiMessage {
   private final Integer index;
   private final Interface interface2;
   private final List<String> licenses;
@@ -31,19 +37,19 @@ public final class AttachedDisk implements Serializable {
   private final String type;
 
   private AttachedDisk(
-
-    Integer index,
-    Interface interface2,
-    List<String> licenses,
-    String mode,
-    String type
-    ) {
+      Integer index,
+      Interface interface2,
+      List<String> licenses,
+      String mode,
+      String type
+      ) {
     this.index = index;
     this.interface2 = interface2;
     this.licenses = licenses;
     this.mode = mode;
     this.type = type;
   }
+
 
   public Integer getIndex() {
     return index;
@@ -134,8 +140,11 @@ public final class AttachedDisk implements Serializable {
 
 
     public AttachedDisk build() {
-      return new AttachedDisk(
 
+
+
+
+      return new AttachedDisk(
         index,
         interface2,
         licenses,
@@ -143,17 +152,26 @@ public final class AttachedDisk implements Serializable {
         type
       );
     }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      newBuilder.setIndex(this.index);
+      newBuilder.setInterface(this.interface2);
+      newBuilder.setLicenses(this.licenses);
+      newBuilder.setMode(this.mode);
+      newBuilder.setType(this.type);
+      return newBuilder;
+    }
   }
 
   @Override
   public String toString() {
     return "AttachedDisk{"
-
-    + "index=" + index + ", "
-    + "interface2=" + interface2 + ", "
-    + "licenses=" + licenses + ", "
-    + "mode=" + mode + ", "
-    + "type=" + type
+        + "index=" + index + ", "
+        + "interface2=" + interface2 + ", "
+        + "licenses=" + licenses + ", "
+        + "mode=" + mode + ", "
+        + "type=" + type
         + "}";
   }
 
@@ -165,31 +183,25 @@ public final class AttachedDisk implements Serializable {
     if (o instanceof AttachedDisk) {
       AttachedDisk that = (AttachedDisk) o;
       return
-
-      this.index.equals(that.getIndex())&&
-      this.interface2.equals(that.getInterface())&&
-      this.licenses.equals(that.getLicenses())&&
-      this.mode.equals(that.getMode())&&
-      this.type.equals(that.getType())
-      ;
+          Objects.equals(this.index, that.getIndex()) &&
+          Objects.equals(this.interface2, that.getInterface()) &&
+          Objects.equals(this.licenses, that.getLicenses()) &&
+          Objects.equals(this.mode, that.getMode()) &&
+          Objects.equals(this.type, that.getType())
+          ;
     }
     return false;
   }
 
   @Override
   public int hashCode() {
-    int h = 1;
-    h *= 1000003;
-    h ^= this.index.hashCode();
-    h *= 1000003;
-    h ^= this.interface2.hashCode();
-    h *= 1000003;
-    h ^= this.licenses.hashCode();
-    h *= 1000003;
-    h ^= this.mode.hashCode();
-    h *= 1000003;
-    h ^= this.type.hashCode();
-    return h;
+    return Objects.hash(
+      index,
+      interface2,
+      licenses,
+      mode,
+      type
+    );
   }
 }
 
@@ -212,23 +224,30 @@ public final class AttachedDisk implements Serializable {
 package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
+import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import javax.annotation.Generated;
 
 @Generated("by GAPIC")
 @BetaApi
-public final class BillingAccount implements Serializable {
+public final class BillingAccount implements ApiMessage {
   private final String name;
   private final Boolean open;
 
   private BillingAccount(
-
-    String name,
-    Boolean open
-    ) {
+      String name,
+      Boolean open
+      ) {
     this.name = name;
     this.open = open;
   }
+
 
   public String getName() {
     return name;
@@ -274,20 +293,26 @@ public final class BillingAccount implements Serializable {
 
 
     public BillingAccount build() {
-      return new BillingAccount(
 
+      return new BillingAccount(
         name,
         open
       );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      newBuilder.setName(this.name);
+      newBuilder.setOpen(this.open);
+      return newBuilder;
     }
   }
 
   @Override
   public String toString() {
     return "BillingAccount{"
-
-    + "name=" + name + ", "
-    + "open=" + open
+        + "name=" + name + ", "
+        + "open=" + open
         + "}";
   }
 
@@ -299,22 +324,696 @@ public final class BillingAccount implements Serializable {
     if (o instanceof BillingAccount) {
       BillingAccount that = (BillingAccount) o;
       return
-
-      this.name.equals(that.getName())&&
-      this.open.equals(that.getOpen())
-      ;
+          Objects.equals(this.name, that.getName()) &&
+          Objects.equals(this.open, that.getOpen())
+          ;
     }
     return false;
   }
 
   @Override
   public int hashCode() {
-    int h = 1;
-    h *= 1000003;
-    h ^= this.name.hashCode();
-    h *= 1000003;
-    h ^= this.open.hashCode();
-    return h;
+    return Objects.hash(
+      name,
+      open
+    );
+  }
+}
+
+============== file: src/main/java/com/google/cloud/fakebilling/v1/BillingAccountsGetHttpRequest.java ==============
+/*
+ * Copyright 2017, Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.fakebilling.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.common.collect.ImmutableList;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import javax.annotation.Generated;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class BillingAccountsGetHttpRequest implements ApiMessage {
+  private final String access_token;
+  private final String callback;
+  private final String fields;
+  private final String key;
+  private final String prettyPrint;
+  private final String quotaUser;
+  private final String userIp;
+  private final List<String> fooRepeated;
+  private final String name;
+
+  private BillingAccountsGetHttpRequest(
+      String access_token,
+      String callback,
+      String fields,
+      String key,
+      String prettyPrint,
+      String quotaUser,
+      String userIp,
+      List<String> fooRepeated,
+      String name
+      ) {
+    this.access_token = access_token;
+    this.callback = callback;
+    this.fields = fields;
+    this.key = key;
+    this.prettyPrint = prettyPrint;
+    this.quotaUser = quotaUser;
+    this.userIp = userIp;
+    this.fooRepeated = fooRepeated;
+    this.name = name;
+  }
+
+  @Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    if (fieldNames.contains("access_token")) {
+      fieldMap.put("access_token", Collections.singletonList(access_token));
+    }
+    if (fieldNames.contains("callback")) {
+      fieldMap.put("callback", Collections.singletonList(callback));
+    }
+    if (fieldNames.contains("fields")) {
+      fieldMap.put("fields", Collections.singletonList(fields));
+    }
+    if (fieldNames.contains("key")) {
+      fieldMap.put("key", Collections.singletonList(key));
+    }
+    if (fieldNames.contains("prettyPrint")) {
+      fieldMap.put("prettyPrint", Collections.singletonList(prettyPrint));
+    }
+    if (fieldNames.contains("quotaUser")) {
+      fieldMap.put("quotaUser", Collections.singletonList(quotaUser));
+    }
+    if (fieldNames.contains("userIp")) {
+      fieldMap.put("userIp", Collections.singletonList(userIp));
+    }
+    if (fieldNames.contains("fooRepeated")) {
+      fieldMap.put("fooRepeated", fooRepeated);
+    }
+    if (fieldNames.contains("name")) {
+      fieldMap.put("name", Collections.singletonList(name));
+    }
+    return fieldMap;
+  }
+
+  public String getAccessToken() {
+    return access_token;
+  }
+
+  public String getCallback() {
+    return callback;
+  }
+
+  public String getFields() {
+    return fields;
+  }
+
+  public String getKey() {
+    return key;
+  }
+
+  public String getPrettyPrint() {
+    return prettyPrint;
+  }
+
+  public String getQuotaUser() {
+    return quotaUser;
+  }
+
+  public String getUserIp() {
+    return userIp;
+  }
+
+  public List<String> getFooRepeated() {
+    return fooRepeated;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+
+  public static Builder newBuilder() {
+    return new BillingAccountsGetHttpRequest.Builder();
+  }
+
+  public static class Builder {
+    private String access_token;
+    private String callback;
+    private String fields;
+    private String key;
+    private String prettyPrint;
+    private String quotaUser;
+    private String userIp;
+    private List<String> fooRepeated;
+    private String name;
+
+    Builder() {}
+
+    Builder(BillingAccountsGetHttpRequest source) {
+      this.access_token = source.access_token;
+      this.callback = source.callback;
+      this.fields = source.fields;
+      this.key = source.key;
+      this.prettyPrint = source.prettyPrint;
+      this.quotaUser = source.quotaUser;
+      this.userIp = source.userIp;
+      this.fooRepeated = source.fooRepeated;
+      this.name = source.name;
+    }
+
+    public String getAccessToken() {
+      return access_token;
+    }
+
+    public Builder setAccessToken(String access_token) {
+      this.access_token = access_token;
+      return this;
+    }
+
+    public String getCallback() {
+      return callback;
+    }
+
+    public Builder setCallback(String callback) {
+      this.callback = callback;
+      return this;
+    }
+
+    public String getFields() {
+      return fields;
+    }
+
+    public Builder setFields(String fields) {
+      this.fields = fields;
+      return this;
+    }
+
+    public String getKey() {
+      return key;
+    }
+
+    public Builder setKey(String key) {
+      this.key = key;
+      return this;
+    }
+
+    public String getPrettyPrint() {
+      return prettyPrint;
+    }
+
+    public Builder setPrettyPrint(String prettyPrint) {
+      this.prettyPrint = prettyPrint;
+      return this;
+    }
+
+    public String getQuotaUser() {
+      return quotaUser;
+    }
+
+    public Builder setQuotaUser(String quotaUser) {
+      this.quotaUser = quotaUser;
+      return this;
+    }
+
+    public String getUserIp() {
+      return userIp;
+    }
+
+    public Builder setUserIp(String userIp) {
+      this.userIp = userIp;
+      return this;
+    }
+
+    public List<String> getFooRepeated() {
+      return fooRepeated;
+    }
+
+    public Builder setFooRepeated(List<String> fooRepeated) {
+      this.fooRepeated = fooRepeated;
+      return this;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public Builder setName(String name) {
+      this.name = name;
+      return this;
+    }
+
+
+    public BillingAccountsGetHttpRequest build() {
+      String missing = "";
+
+
+
+
+
+
+
+
+      if (name == null) {
+        missing += " name";
+      }
+      if (!missing.isEmpty()) {
+        throw new IllegalStateException("Missing required properties:" + missing);
+      }
+      return new BillingAccountsGetHttpRequest(
+        access_token,
+        callback,
+        fields,
+        key,
+        prettyPrint,
+        quotaUser,
+        userIp,
+        fooRepeated,
+        name
+      );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      newBuilder.setAccessToken(this.access_token);
+      newBuilder.setCallback(this.callback);
+      newBuilder.setFields(this.fields);
+      newBuilder.setKey(this.key);
+      newBuilder.setPrettyPrint(this.prettyPrint);
+      newBuilder.setQuotaUser(this.quotaUser);
+      newBuilder.setUserIp(this.userIp);
+      newBuilder.setFooRepeated(this.fooRepeated);
+      newBuilder.setName(this.name);
+      return newBuilder;
+    }
+  }
+
+  @Override
+  public String toString() {
+    return "BillingAccountsGetHttpRequest{"
+        + "access_token=" + access_token + ", "
+        + "callback=" + callback + ", "
+        + "fields=" + fields + ", "
+        + "key=" + key + ", "
+        + "prettyPrint=" + prettyPrint + ", "
+        + "quotaUser=" + quotaUser + ", "
+        + "userIp=" + userIp + ", "
+        + "fooRepeated=" + fooRepeated + ", "
+        + "name=" + name
+        + "}";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof BillingAccountsGetHttpRequest) {
+      BillingAccountsGetHttpRequest that = (BillingAccountsGetHttpRequest) o;
+      return
+          Objects.equals(this.access_token, that.getAccessToken()) &&
+          Objects.equals(this.callback, that.getCallback()) &&
+          Objects.equals(this.fields, that.getFields()) &&
+          Objects.equals(this.key, that.getKey()) &&
+          Objects.equals(this.prettyPrint, that.getPrettyPrint()) &&
+          Objects.equals(this.quotaUser, that.getQuotaUser()) &&
+          Objects.equals(this.userIp, that.getUserIp()) &&
+          Objects.equals(this.fooRepeated, that.getFooRepeated()) &&
+          Objects.equals(this.name, that.getName())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+      access_token,
+      callback,
+      fields,
+      key,
+      prettyPrint,
+      quotaUser,
+      userIp,
+      fooRepeated,
+      name
+    );
+  }
+}
+
+============== file: src/main/java/com/google/cloud/fakebilling/v1/BillingAccountsListHttpRequest.java ==============
+/*
+ * Copyright 2017, Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.fakebilling.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.common.collect.ImmutableList;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import javax.annotation.Generated;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class BillingAccountsListHttpRequest implements ApiMessage {
+  private final String access_token;
+  private final String callback;
+  private final String fields;
+  private final String key;
+  private final String prettyPrint;
+  private final String quotaUser;
+  private final String userIp;
+  private final Integer pageSize;
+  private final String pageToken;
+
+  private BillingAccountsListHttpRequest(
+      String access_token,
+      String callback,
+      String fields,
+      String key,
+      String prettyPrint,
+      String quotaUser,
+      String userIp,
+      Integer pageSize,
+      String pageToken
+      ) {
+    this.access_token = access_token;
+    this.callback = callback;
+    this.fields = fields;
+    this.key = key;
+    this.prettyPrint = prettyPrint;
+    this.quotaUser = quotaUser;
+    this.userIp = userIp;
+    this.pageSize = pageSize;
+    this.pageToken = pageToken;
+  }
+
+  @Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    if (fieldNames.contains("access_token")) {
+      fieldMap.put("access_token", Collections.singletonList(access_token));
+    }
+    if (fieldNames.contains("callback")) {
+      fieldMap.put("callback", Collections.singletonList(callback));
+    }
+    if (fieldNames.contains("fields")) {
+      fieldMap.put("fields", Collections.singletonList(fields));
+    }
+    if (fieldNames.contains("key")) {
+      fieldMap.put("key", Collections.singletonList(key));
+    }
+    if (fieldNames.contains("prettyPrint")) {
+      fieldMap.put("prettyPrint", Collections.singletonList(prettyPrint));
+    }
+    if (fieldNames.contains("quotaUser")) {
+      fieldMap.put("quotaUser", Collections.singletonList(quotaUser));
+    }
+    if (fieldNames.contains("userIp")) {
+      fieldMap.put("userIp", Collections.singletonList(userIp));
+    }
+    if (fieldNames.contains("pageSize")) {
+      fieldMap.put("pageSize", Collections.singletonList(pageSize));
+    }
+    if (fieldNames.contains("pageToken")) {
+      fieldMap.put("pageToken", Collections.singletonList(pageToken));
+    }
+    return fieldMap;
+  }
+
+  public String getAccessToken() {
+    return access_token;
+  }
+
+  public String getCallback() {
+    return callback;
+  }
+
+  public String getFields() {
+    return fields;
+  }
+
+  public String getKey() {
+    return key;
+  }
+
+  public String getPrettyPrint() {
+    return prettyPrint;
+  }
+
+  public String getQuotaUser() {
+    return quotaUser;
+  }
+
+  public String getUserIp() {
+    return userIp;
+  }
+
+  public Integer getPageSize() {
+    return pageSize;
+  }
+
+  public String getPageToken() {
+    return pageToken;
+  }
+
+
+  public static Builder newBuilder() {
+    return new BillingAccountsListHttpRequest.Builder();
+  }
+
+  public static class Builder {
+    private String access_token;
+    private String callback;
+    private String fields;
+    private String key;
+    private String prettyPrint;
+    private String quotaUser;
+    private String userIp;
+    private Integer pageSize;
+    private String pageToken;
+
+    Builder() {}
+
+    Builder(BillingAccountsListHttpRequest source) {
+      this.access_token = source.access_token;
+      this.callback = source.callback;
+      this.fields = source.fields;
+      this.key = source.key;
+      this.prettyPrint = source.prettyPrint;
+      this.quotaUser = source.quotaUser;
+      this.userIp = source.userIp;
+      this.pageSize = source.pageSize;
+      this.pageToken = source.pageToken;
+    }
+
+    public String getAccessToken() {
+      return access_token;
+    }
+
+    public Builder setAccessToken(String access_token) {
+      this.access_token = access_token;
+      return this;
+    }
+
+    public String getCallback() {
+      return callback;
+    }
+
+    public Builder setCallback(String callback) {
+      this.callback = callback;
+      return this;
+    }
+
+    public String getFields() {
+      return fields;
+    }
+
+    public Builder setFields(String fields) {
+      this.fields = fields;
+      return this;
+    }
+
+    public String getKey() {
+      return key;
+    }
+
+    public Builder setKey(String key) {
+      this.key = key;
+      return this;
+    }
+
+    public String getPrettyPrint() {
+      return prettyPrint;
+    }
+
+    public Builder setPrettyPrint(String prettyPrint) {
+      this.prettyPrint = prettyPrint;
+      return this;
+    }
+
+    public String getQuotaUser() {
+      return quotaUser;
+    }
+
+    public Builder setQuotaUser(String quotaUser) {
+      this.quotaUser = quotaUser;
+      return this;
+    }
+
+    public String getUserIp() {
+      return userIp;
+    }
+
+    public Builder setUserIp(String userIp) {
+      this.userIp = userIp;
+      return this;
+    }
+
+    public Integer getPageSize() {
+      return pageSize;
+    }
+
+    public Builder setPageSize(Integer pageSize) {
+      this.pageSize = pageSize;
+      return this;
+    }
+
+    public String getPageToken() {
+      return pageToken;
+    }
+
+    public Builder setPageToken(String pageToken) {
+      this.pageToken = pageToken;
+      return this;
+    }
+
+
+    public BillingAccountsListHttpRequest build() {
+
+
+
+
+
+
+
+
+      return new BillingAccountsListHttpRequest(
+        access_token,
+        callback,
+        fields,
+        key,
+        prettyPrint,
+        quotaUser,
+        userIp,
+        pageSize,
+        pageToken
+      );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      newBuilder.setAccessToken(this.access_token);
+      newBuilder.setCallback(this.callback);
+      newBuilder.setFields(this.fields);
+      newBuilder.setKey(this.key);
+      newBuilder.setPrettyPrint(this.prettyPrint);
+      newBuilder.setQuotaUser(this.quotaUser);
+      newBuilder.setUserIp(this.userIp);
+      newBuilder.setPageSize(this.pageSize);
+      newBuilder.setPageToken(this.pageToken);
+      return newBuilder;
+    }
+  }
+
+  @Override
+  public String toString() {
+    return "BillingAccountsListHttpRequest{"
+        + "access_token=" + access_token + ", "
+        + "callback=" + callback + ", "
+        + "fields=" + fields + ", "
+        + "key=" + key + ", "
+        + "prettyPrint=" + prettyPrint + ", "
+        + "quotaUser=" + quotaUser + ", "
+        + "userIp=" + userIp + ", "
+        + "pageSize=" + pageSize + ", "
+        + "pageToken=" + pageToken
+        + "}";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof BillingAccountsListHttpRequest) {
+      BillingAccountsListHttpRequest that = (BillingAccountsListHttpRequest) o;
+      return
+          Objects.equals(this.access_token, that.getAccessToken()) &&
+          Objects.equals(this.callback, that.getCallback()) &&
+          Objects.equals(this.fields, that.getFields()) &&
+          Objects.equals(this.key, that.getKey()) &&
+          Objects.equals(this.prettyPrint, that.getPrettyPrint()) &&
+          Objects.equals(this.quotaUser, that.getQuotaUser()) &&
+          Objects.equals(this.userIp, that.getUserIp()) &&
+          Objects.equals(this.pageSize, that.getPageSize()) &&
+          Objects.equals(this.pageToken, that.getPageToken())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+      access_token,
+      callback,
+      fields,
+      key,
+      prettyPrint,
+      quotaUser,
+      userIp,
+      pageSize,
+      pageToken
+    );
   }
 }
 
@@ -337,24 +1036,30 @@ public final class BillingAccount implements Serializable {
 package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
+import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import javax.annotation.Generated;
 
 @Generated("by GAPIC")
 @BetaApi
-public final class Data implements Serializable {
+public final class Data implements ApiMessage {
   private final String key;
   private final String value;
 
   private Data(
-
-    String key,
-    String value
-    ) {
+      String key,
+      String value
+      ) {
     this.key = key;
     this.value = value;
   }
+
 
   public String getKey() {
     return key;
@@ -400,20 +1105,26 @@ public final class Data implements Serializable {
 
 
     public Data build() {
-      return new Data(
 
+      return new Data(
         key,
         value
       );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      newBuilder.setKey(this.key);
+      newBuilder.setValue(this.value);
+      return newBuilder;
     }
   }
 
   @Override
   public String toString() {
     return "Data{"
-
-    + "key=" + key + ", "
-    + "value=" + value
+        + "key=" + key + ", "
+        + "value=" + value
         + "}";
   }
 
@@ -425,22 +1136,19 @@ public final class Data implements Serializable {
     if (o instanceof Data) {
       Data that = (Data) o;
       return
-
-      this.key.equals(that.getKey())&&
-      this.value.equals(that.getValue())
-      ;
+          Objects.equals(this.key, that.getKey()) &&
+          Objects.equals(this.value, that.getValue())
+          ;
     }
     return false;
   }
 
   @Override
   public int hashCode() {
-    int h = 1;
-    h *= 1000003;
-    h ^= this.key.hashCode();
-    h *= 1000003;
-    h ^= this.value.hashCode();
-    return h;
+    return Objects.hash(
+      key,
+      value
+    );
   }
 }
 
@@ -463,21 +1171,27 @@ public final class Data implements Serializable {
 package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
+import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import javax.annotation.Generated;
 
 @Generated("by GAPIC")
 @BetaApi
-public final class Error implements Serializable {
+public final class Error implements ApiMessage {
   private final List<Errors> errors;
 
   private Error(
-
-    List<Errors> errors
-    ) {
+      List<Errors> errors
+      ) {
     this.errors = errors;
   }
+
 
   public List<Errors> getErrors() {
     return errors;
@@ -509,17 +1223,21 @@ public final class Error implements Serializable {
 
     public Error build() {
       return new Error(
-
         errors
       );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      newBuilder.setErrors(this.errors);
+      return newBuilder;
     }
   }
 
   @Override
   public String toString() {
     return "Error{"
-
-    + "errors=" + errors
+        + "errors=" + errors
         + "}";
   }
 
@@ -531,19 +1249,17 @@ public final class Error implements Serializable {
     if (o instanceof Error) {
       Error that = (Error) o;
       return
-
-      this.errors.equals(that.getErrors())
-      ;
+          Objects.equals(this.errors, that.getErrors())
+          ;
     }
     return false;
   }
 
   @Override
   public int hashCode() {
-    int h = 1;
-    h *= 1000003;
-    h ^= this.errors.hashCode();
-    return h;
+    return Objects.hash(
+      errors
+    );
   }
 }
 
@@ -566,27 +1282,33 @@ public final class Error implements Serializable {
 package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
+import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import javax.annotation.Generated;
 
 @Generated("by GAPIC")
 @BetaApi
-public final class Errors implements Serializable {
+public final class Errors implements ApiMessage {
   private final String code;
   private final String location;
   private final String message;
 
   private Errors(
-
-    String code,
-    String location,
-    String message
-    ) {
+      String code,
+      String location,
+      String message
+      ) {
     this.code = code;
     this.location = location;
     this.message = message;
   }
+
 
   public String getCode() {
     return code;
@@ -647,22 +1369,30 @@ public final class Errors implements Serializable {
 
 
     public Errors build() {
-      return new Errors(
 
+
+      return new Errors(
         code,
         location,
         message
       );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      newBuilder.setCode(this.code);
+      newBuilder.setLocation(this.location);
+      newBuilder.setMessage(this.message);
+      return newBuilder;
     }
   }
 
   @Override
   public String toString() {
     return "Errors{"
-
-    + "code=" + code + ", "
-    + "location=" + location + ", "
-    + "message=" + message
+        + "code=" + code + ", "
+        + "location=" + location + ", "
+        + "message=" + message
         + "}";
   }
 
@@ -674,25 +1404,21 @@ public final class Errors implements Serializable {
     if (o instanceof Errors) {
       Errors that = (Errors) o;
       return
-
-      this.code.equals(that.getCode())&&
-      this.location.equals(that.getLocation())&&
-      this.message.equals(that.getMessage())
-      ;
+          Objects.equals(this.code, that.getCode()) &&
+          Objects.equals(this.location, that.getLocation()) &&
+          Objects.equals(this.message, that.getMessage())
+          ;
     }
     return false;
   }
 
   @Override
   public int hashCode() {
-    int h = 1;
-    h *= 1000003;
-    h ^= this.code.hashCode();
-    h *= 1000003;
-    h ^= this.location.hashCode();
-    h *= 1000003;
-    h ^= this.message.hashCode();
-    return h;
+    return Objects.hash(
+      code,
+      location,
+      message
+    );
   }
 }
 
@@ -831,26 +1557,33 @@ public class FakebillingClient implements AutoCloseable {
 package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
+import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import javax.annotation.Generated;
 
 @Generated("by GAPIC")
 @BetaApi
-public final class Interface implements Serializable {
+public final class Interface implements ApiMessage {
   private final String face;
   private final Boolean inter;
   private final String interface2;
 
   private Interface(
-
-    String face,
-    Boolean inter,
-    String interface2
-    ) {
+      String face,
+      Boolean inter,
+      String interface2
+      ) {
     this.face = face;
     this.inter = inter;
     this.interface2 = interface2;
   }
+
 
   public String getFace() {
     return face;
@@ -911,22 +1644,30 @@ public final class Interface implements Serializable {
 
 
     public Interface build() {
-      return new Interface(
 
+
+      return new Interface(
         face,
         inter,
         interface2
       );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      newBuilder.setFace(this.face);
+      newBuilder.setInter(this.inter);
+      newBuilder.setInterface(this.interface2);
+      return newBuilder;
     }
   }
 
   @Override
   public String toString() {
     return "Interface{"
-
-    + "face=" + face + ", "
-    + "inter=" + inter + ", "
-    + "interface2=" + interface2
+        + "face=" + face + ", "
+        + "inter=" + inter + ", "
+        + "interface2=" + interface2
         + "}";
   }
 
@@ -938,25 +1679,21 @@ public final class Interface implements Serializable {
     if (o instanceof Interface) {
       Interface that = (Interface) o;
       return
-
-      this.face.equals(that.getFace())&&
-      this.inter.equals(that.getInter())&&
-      this.interface2.equals(that.getInterface())
-      ;
+          Objects.equals(this.face, that.getFace()) &&
+          Objects.equals(this.inter, that.getInter()) &&
+          Objects.equals(this.interface2, that.getInterface())
+          ;
     }
     return false;
   }
 
   @Override
   public int hashCode() {
-    int h = 1;
-    h *= 1000003;
-    h ^= this.face.hashCode();
-    h *= 1000003;
-    h ^= this.inter.hashCode();
-    h *= 1000003;
-    h ^= this.interface2.hashCode();
-    return h;
+    return Objects.hash(
+      face,
+      inter,
+      interface2
+    );
   }
 }
 
@@ -979,24 +1716,30 @@ public final class Interface implements Serializable {
 package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
+import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import javax.annotation.Generated;
 
 @Generated("by GAPIC")
 @BetaApi
-public final class ListBillingAccountsResponse implements Serializable {
+public final class ListBillingAccountsResponse implements ApiMessage {
   private final List<BillingAccount> billingAccounts;
   private final String nextPageToken;
 
   private ListBillingAccountsResponse(
-
-    List<BillingAccount> billingAccounts,
-    String nextPageToken
-    ) {
+      List<BillingAccount> billingAccounts,
+      String nextPageToken
+      ) {
     this.billingAccounts = billingAccounts;
     this.nextPageToken = nextPageToken;
   }
+
 
   public List<BillingAccount> getBillingAccounts() {
     return billingAccounts;
@@ -1042,20 +1785,26 @@ public final class ListBillingAccountsResponse implements Serializable {
 
 
     public ListBillingAccountsResponse build() {
-      return new ListBillingAccountsResponse(
 
+      return new ListBillingAccountsResponse(
         billingAccounts,
         nextPageToken
       );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      newBuilder.setBillingAccounts(this.billingAccounts);
+      newBuilder.setNextPageToken(this.nextPageToken);
+      return newBuilder;
     }
   }
 
   @Override
   public String toString() {
     return "ListBillingAccountsResponse{"
-
-    + "billingAccounts=" + billingAccounts + ", "
-    + "nextPageToken=" + nextPageToken
+        + "billingAccounts=" + billingAccounts + ", "
+        + "nextPageToken=" + nextPageToken
         + "}";
   }
 
@@ -1067,22 +1816,19 @@ public final class ListBillingAccountsResponse implements Serializable {
     if (o instanceof ListBillingAccountsResponse) {
       ListBillingAccountsResponse that = (ListBillingAccountsResponse) o;
       return
-
-      this.billingAccounts.equals(that.getBillingAccounts())&&
-      this.nextPageToken.equals(that.getNextPageToken())
-      ;
+          Objects.equals(this.billingAccounts, that.getBillingAccounts()) &&
+          Objects.equals(this.nextPageToken, that.getNextPageToken())
+          ;
     }
     return false;
   }
 
   @Override
   public int hashCode() {
-    int h = 1;
-    h *= 1000003;
-    h ^= this.billingAccounts.hashCode();
-    h *= 1000003;
-    h ^= this.nextPageToken.hashCode();
-    return h;
+    return Objects.hash(
+      billingAccounts,
+      nextPageToken
+    );
   }
 }
 
@@ -1105,24 +1851,30 @@ public final class ListBillingAccountsResponse implements Serializable {
 package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
+import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import javax.annotation.Generated;
 
 @Generated("by GAPIC")
 @BetaApi
-public final class ListProjectBillingInfoResponse implements Serializable {
+public final class ListProjectBillingInfoResponse implements ApiMessage {
   private final String nextPageToken;
   private final List<ProjectBillingInfo> projectBillingInfo;
 
   private ListProjectBillingInfoResponse(
-
-    String nextPageToken,
-    List<ProjectBillingInfo> projectBillingInfo
-    ) {
+      String nextPageToken,
+      List<ProjectBillingInfo> projectBillingInfo
+      ) {
     this.nextPageToken = nextPageToken;
     this.projectBillingInfo = projectBillingInfo;
   }
+
 
   public String getNextPageToken() {
     return nextPageToken;
@@ -1168,20 +1920,26 @@ public final class ListProjectBillingInfoResponse implements Serializable {
 
 
     public ListProjectBillingInfoResponse build() {
-      return new ListProjectBillingInfoResponse(
 
+      return new ListProjectBillingInfoResponse(
         nextPageToken,
         projectBillingInfo
       );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      newBuilder.setNextPageToken(this.nextPageToken);
+      newBuilder.setProjectBillingInfo(this.projectBillingInfo);
+      return newBuilder;
     }
   }
 
   @Override
   public String toString() {
     return "ListProjectBillingInfoResponse{"
-
-    + "nextPageToken=" + nextPageToken + ", "
-    + "projectBillingInfo=" + projectBillingInfo
+        + "nextPageToken=" + nextPageToken + ", "
+        + "projectBillingInfo=" + projectBillingInfo
         + "}";
   }
 
@@ -1193,22 +1951,19 @@ public final class ListProjectBillingInfoResponse implements Serializable {
     if (o instanceof ListProjectBillingInfoResponse) {
       ListProjectBillingInfoResponse that = (ListProjectBillingInfoResponse) o;
       return
-
-      this.nextPageToken.equals(that.getNextPageToken())&&
-      this.projectBillingInfo.equals(that.getProjectBillingInfo())
-      ;
+          Objects.equals(this.nextPageToken, that.getNextPageToken()) &&
+          Objects.equals(this.projectBillingInfo, that.getProjectBillingInfo())
+          ;
     }
     return false;
   }
 
   @Override
   public int hashCode() {
-    int h = 1;
-    h *= 1000003;
-    h ^= this.nextPageToken.hashCode();
-    h *= 1000003;
-    h ^= this.projectBillingInfo.hashCode();
-    return h;
+    return Objects.hash(
+      nextPageToken,
+      projectBillingInfo
+    );
   }
 }
 
@@ -1231,13 +1986,19 @@ public final class ListProjectBillingInfoResponse implements Serializable {
 package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
+import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import javax.annotation.Generated;
 
 @Generated("by GAPIC")
 @BetaApi
-public final class Operation implements Serializable {
+public final class Operation implements ApiMessage {
   private final String creationTimestamp;
   private final String description;
   private final Error error;
@@ -1248,16 +2009,15 @@ public final class Operation implements Serializable {
   private final List<Warnings> warnings;
 
   private Operation(
-
-    String creationTimestamp,
-    String description,
-    Error error,
-    Integer httpErrorStatusCode,
-    String id,
-    String name,
-    String status,
-    List<Warnings> warnings
-    ) {
+      String creationTimestamp,
+      String description,
+      Error error,
+      Integer httpErrorStatusCode,
+      String id,
+      String name,
+      String status,
+      List<Warnings> warnings
+      ) {
     this.creationTimestamp = creationTimestamp;
     this.description = description;
     this.error = error;
@@ -1267,6 +2027,7 @@ public final class Operation implements Serializable {
     this.status = status;
     this.warnings = warnings;
   }
+
 
   public String getCreationTimestamp() {
     return creationTimestamp;
@@ -1402,8 +2163,14 @@ public final class Operation implements Serializable {
 
 
     public Operation build() {
-      return new Operation(
 
+
+
+
+
+
+
+      return new Operation(
         creationTimestamp,
         description,
         error,
@@ -1414,20 +2181,32 @@ public final class Operation implements Serializable {
         warnings
       );
     }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      newBuilder.setCreationTimestamp(this.creationTimestamp);
+      newBuilder.setDescription(this.description);
+      newBuilder.setError(this.error);
+      newBuilder.setHttpErrorStatusCode(this.httpErrorStatusCode);
+      newBuilder.setId(this.id);
+      newBuilder.setName(this.name);
+      newBuilder.setStatus(this.status);
+      newBuilder.setWarnings(this.warnings);
+      return newBuilder;
+    }
   }
 
   @Override
   public String toString() {
     return "Operation{"
-
-    + "creationTimestamp=" + creationTimestamp + ", "
-    + "description=" + description + ", "
-    + "error=" + error + ", "
-    + "httpErrorStatusCode=" + httpErrorStatusCode + ", "
-    + "id=" + id + ", "
-    + "name=" + name + ", "
-    + "status=" + status + ", "
-    + "warnings=" + warnings
+        + "creationTimestamp=" + creationTimestamp + ", "
+        + "description=" + description + ", "
+        + "error=" + error + ", "
+        + "httpErrorStatusCode=" + httpErrorStatusCode + ", "
+        + "id=" + id + ", "
+        + "name=" + name + ", "
+        + "status=" + status + ", "
+        + "warnings=" + warnings
         + "}";
   }
 
@@ -1439,40 +2218,31 @@ public final class Operation implements Serializable {
     if (o instanceof Operation) {
       Operation that = (Operation) o;
       return
-
-      this.creationTimestamp.equals(that.getCreationTimestamp())&&
-      this.description.equals(that.getDescription())&&
-      this.error.equals(that.getError())&&
-      this.httpErrorStatusCode.equals(that.getHttpErrorStatusCode())&&
-      this.id.equals(that.getId())&&
-      this.name.equals(that.getName())&&
-      this.status.equals(that.getStatus())&&
-      this.warnings.equals(that.getWarnings())
-      ;
+          Objects.equals(this.creationTimestamp, that.getCreationTimestamp()) &&
+          Objects.equals(this.description, that.getDescription()) &&
+          Objects.equals(this.error, that.getError()) &&
+          Objects.equals(this.httpErrorStatusCode, that.getHttpErrorStatusCode()) &&
+          Objects.equals(this.id, that.getId()) &&
+          Objects.equals(this.name, that.getName()) &&
+          Objects.equals(this.status, that.getStatus()) &&
+          Objects.equals(this.warnings, that.getWarnings())
+          ;
     }
     return false;
   }
 
   @Override
   public int hashCode() {
-    int h = 1;
-    h *= 1000003;
-    h ^= this.creationTimestamp.hashCode();
-    h *= 1000003;
-    h ^= this.description.hashCode();
-    h *= 1000003;
-    h ^= this.error.hashCode();
-    h *= 1000003;
-    h ^= this.httpErrorStatusCode.hashCode();
-    h *= 1000003;
-    h ^= this.id.hashCode();
-    h *= 1000003;
-    h ^= this.name.hashCode();
-    h *= 1000003;
-    h ^= this.status.hashCode();
-    h *= 1000003;
-    h ^= this.warnings.hashCode();
-    return h;
+    return Objects.hash(
+      creationTimestamp,
+      description,
+      error,
+      httpErrorStatusCode,
+      id,
+      name,
+      status,
+      warnings
+    );
   }
 }
 
@@ -1495,23 +2265,30 @@ public final class Operation implements Serializable {
 package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
+import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import javax.annotation.Generated;
 
 @Generated("by GAPIC")
 @BetaApi
-public final class ProjectBillingInfo implements Serializable {
+public final class ProjectBillingInfo implements ApiMessage {
   private final Boolean billingEnabled;
   private final String projectId;
 
   private ProjectBillingInfo(
-
-    Boolean billingEnabled,
-    String projectId
-    ) {
+      Boolean billingEnabled,
+      String projectId
+      ) {
     this.billingEnabled = billingEnabled;
     this.projectId = projectId;
   }
+
 
   public Boolean getBillingEnabled() {
     return billingEnabled;
@@ -1557,20 +2334,26 @@ public final class ProjectBillingInfo implements Serializable {
 
 
     public ProjectBillingInfo build() {
-      return new ProjectBillingInfo(
 
+      return new ProjectBillingInfo(
         billingEnabled,
         projectId
       );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      newBuilder.setBillingEnabled(this.billingEnabled);
+      newBuilder.setProjectId(this.projectId);
+      return newBuilder;
     }
   }
 
   @Override
   public String toString() {
     return "ProjectBillingInfo{"
-
-    + "billingEnabled=" + billingEnabled + ", "
-    + "projectId=" + projectId
+        + "billingEnabled=" + billingEnabled + ", "
+        + "projectId=" + projectId
         + "}";
   }
 
@@ -1582,22 +2365,1045 @@ public final class ProjectBillingInfo implements Serializable {
     if (o instanceof ProjectBillingInfo) {
       ProjectBillingInfo that = (ProjectBillingInfo) o;
       return
-
-      this.billingEnabled.equals(that.getBillingEnabled())&&
-      this.projectId.equals(that.getProjectId())
-      ;
+          Objects.equals(this.billingEnabled, that.getBillingEnabled()) &&
+          Objects.equals(this.projectId, that.getProjectId())
+          ;
     }
     return false;
   }
 
   @Override
   public int hashCode() {
-    int h = 1;
-    h *= 1000003;
-    h ^= this.billingEnabled.hashCode();
-    h *= 1000003;
-    h ^= this.projectId.hashCode();
-    return h;
+    return Objects.hash(
+      billingEnabled,
+      projectId
+    );
+  }
+}
+
+============== file: src/main/java/com/google/cloud/fakebilling/v1/ProjectsGetBillingInfoHttpRequest.java ==============
+/*
+ * Copyright 2017, Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.fakebilling.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.common.collect.ImmutableList;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import javax.annotation.Generated;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class ProjectsGetBillingInfoHttpRequest implements ApiMessage {
+  private final String access_token;
+  private final String callback;
+  private final String fields;
+  private final String key;
+  private final String prettyPrint;
+  private final String quotaUser;
+  private final String userIp;
+  private final String name;
+
+  private ProjectsGetBillingInfoHttpRequest(
+      String access_token,
+      String callback,
+      String fields,
+      String key,
+      String prettyPrint,
+      String quotaUser,
+      String userIp,
+      String name
+      ) {
+    this.access_token = access_token;
+    this.callback = callback;
+    this.fields = fields;
+    this.key = key;
+    this.prettyPrint = prettyPrint;
+    this.quotaUser = quotaUser;
+    this.userIp = userIp;
+    this.name = name;
+  }
+
+  @Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    if (fieldNames.contains("access_token")) {
+      fieldMap.put("access_token", Collections.singletonList(access_token));
+    }
+    if (fieldNames.contains("callback")) {
+      fieldMap.put("callback", Collections.singletonList(callback));
+    }
+    if (fieldNames.contains("fields")) {
+      fieldMap.put("fields", Collections.singletonList(fields));
+    }
+    if (fieldNames.contains("key")) {
+      fieldMap.put("key", Collections.singletonList(key));
+    }
+    if (fieldNames.contains("prettyPrint")) {
+      fieldMap.put("prettyPrint", Collections.singletonList(prettyPrint));
+    }
+    if (fieldNames.contains("quotaUser")) {
+      fieldMap.put("quotaUser", Collections.singletonList(quotaUser));
+    }
+    if (fieldNames.contains("userIp")) {
+      fieldMap.put("userIp", Collections.singletonList(userIp));
+    }
+    if (fieldNames.contains("name")) {
+      fieldMap.put("name", Collections.singletonList(name));
+    }
+    return fieldMap;
+  }
+
+  public String getAccessToken() {
+    return access_token;
+  }
+
+  public String getCallback() {
+    return callback;
+  }
+
+  public String getFields() {
+    return fields;
+  }
+
+  public String getKey() {
+    return key;
+  }
+
+  public String getPrettyPrint() {
+    return prettyPrint;
+  }
+
+  public String getQuotaUser() {
+    return quotaUser;
+  }
+
+  public String getUserIp() {
+    return userIp;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+
+  public static Builder newBuilder() {
+    return new ProjectsGetBillingInfoHttpRequest.Builder();
+  }
+
+  public static class Builder {
+    private String access_token;
+    private String callback;
+    private String fields;
+    private String key;
+    private String prettyPrint;
+    private String quotaUser;
+    private String userIp;
+    private String name;
+
+    Builder() {}
+
+    Builder(ProjectsGetBillingInfoHttpRequest source) {
+      this.access_token = source.access_token;
+      this.callback = source.callback;
+      this.fields = source.fields;
+      this.key = source.key;
+      this.prettyPrint = source.prettyPrint;
+      this.quotaUser = source.quotaUser;
+      this.userIp = source.userIp;
+      this.name = source.name;
+    }
+
+    public String getAccessToken() {
+      return access_token;
+    }
+
+    public Builder setAccessToken(String access_token) {
+      this.access_token = access_token;
+      return this;
+    }
+
+    public String getCallback() {
+      return callback;
+    }
+
+    public Builder setCallback(String callback) {
+      this.callback = callback;
+      return this;
+    }
+
+    public String getFields() {
+      return fields;
+    }
+
+    public Builder setFields(String fields) {
+      this.fields = fields;
+      return this;
+    }
+
+    public String getKey() {
+      return key;
+    }
+
+    public Builder setKey(String key) {
+      this.key = key;
+      return this;
+    }
+
+    public String getPrettyPrint() {
+      return prettyPrint;
+    }
+
+    public Builder setPrettyPrint(String prettyPrint) {
+      this.prettyPrint = prettyPrint;
+      return this;
+    }
+
+    public String getQuotaUser() {
+      return quotaUser;
+    }
+
+    public Builder setQuotaUser(String quotaUser) {
+      this.quotaUser = quotaUser;
+      return this;
+    }
+
+    public String getUserIp() {
+      return userIp;
+    }
+
+    public Builder setUserIp(String userIp) {
+      this.userIp = userIp;
+      return this;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public Builder setName(String name) {
+      this.name = name;
+      return this;
+    }
+
+
+    public ProjectsGetBillingInfoHttpRequest build() {
+      String missing = "";
+
+
+
+
+
+
+
+      if (name == null) {
+        missing += " name";
+      }
+      if (!missing.isEmpty()) {
+        throw new IllegalStateException("Missing required properties:" + missing);
+      }
+      return new ProjectsGetBillingInfoHttpRequest(
+        access_token,
+        callback,
+        fields,
+        key,
+        prettyPrint,
+        quotaUser,
+        userIp,
+        name
+      );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      newBuilder.setAccessToken(this.access_token);
+      newBuilder.setCallback(this.callback);
+      newBuilder.setFields(this.fields);
+      newBuilder.setKey(this.key);
+      newBuilder.setPrettyPrint(this.prettyPrint);
+      newBuilder.setQuotaUser(this.quotaUser);
+      newBuilder.setUserIp(this.userIp);
+      newBuilder.setName(this.name);
+      return newBuilder;
+    }
+  }
+
+  @Override
+  public String toString() {
+    return "ProjectsGetBillingInfoHttpRequest{"
+        + "access_token=" + access_token + ", "
+        + "callback=" + callback + ", "
+        + "fields=" + fields + ", "
+        + "key=" + key + ", "
+        + "prettyPrint=" + prettyPrint + ", "
+        + "quotaUser=" + quotaUser + ", "
+        + "userIp=" + userIp + ", "
+        + "name=" + name
+        + "}";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof ProjectsGetBillingInfoHttpRequest) {
+      ProjectsGetBillingInfoHttpRequest that = (ProjectsGetBillingInfoHttpRequest) o;
+      return
+          Objects.equals(this.access_token, that.getAccessToken()) &&
+          Objects.equals(this.callback, that.getCallback()) &&
+          Objects.equals(this.fields, that.getFields()) &&
+          Objects.equals(this.key, that.getKey()) &&
+          Objects.equals(this.prettyPrint, that.getPrettyPrint()) &&
+          Objects.equals(this.quotaUser, that.getQuotaUser()) &&
+          Objects.equals(this.userIp, that.getUserIp()) &&
+          Objects.equals(this.name, that.getName())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+      access_token,
+      callback,
+      fields,
+      key,
+      prettyPrint,
+      quotaUser,
+      userIp,
+      name
+    );
+  }
+}
+
+============== file: src/main/java/com/google/cloud/fakebilling/v1/ProjectsListHttpRequest.java ==============
+/*
+ * Copyright 2017, Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.fakebilling.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.common.collect.ImmutableList;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import javax.annotation.Generated;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class ProjectsListHttpRequest implements ApiMessage {
+  private final String access_token;
+  private final String callback;
+  private final String fields;
+  private final String key;
+  private final String prettyPrint;
+  private final String quotaUser;
+  private final String userIp;
+  private final String name;
+  private final Integer pageSize;
+  private final String pageToken;
+
+  private ProjectsListHttpRequest(
+      String access_token,
+      String callback,
+      String fields,
+      String key,
+      String prettyPrint,
+      String quotaUser,
+      String userIp,
+      String name,
+      Integer pageSize,
+      String pageToken
+      ) {
+    this.access_token = access_token;
+    this.callback = callback;
+    this.fields = fields;
+    this.key = key;
+    this.prettyPrint = prettyPrint;
+    this.quotaUser = quotaUser;
+    this.userIp = userIp;
+    this.name = name;
+    this.pageSize = pageSize;
+    this.pageToken = pageToken;
+  }
+
+  @Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    if (fieldNames.contains("access_token")) {
+      fieldMap.put("access_token", Collections.singletonList(access_token));
+    }
+    if (fieldNames.contains("callback")) {
+      fieldMap.put("callback", Collections.singletonList(callback));
+    }
+    if (fieldNames.contains("fields")) {
+      fieldMap.put("fields", Collections.singletonList(fields));
+    }
+    if (fieldNames.contains("key")) {
+      fieldMap.put("key", Collections.singletonList(key));
+    }
+    if (fieldNames.contains("prettyPrint")) {
+      fieldMap.put("prettyPrint", Collections.singletonList(prettyPrint));
+    }
+    if (fieldNames.contains("quotaUser")) {
+      fieldMap.put("quotaUser", Collections.singletonList(quotaUser));
+    }
+    if (fieldNames.contains("userIp")) {
+      fieldMap.put("userIp", Collections.singletonList(userIp));
+    }
+    if (fieldNames.contains("name")) {
+      fieldMap.put("name", Collections.singletonList(name));
+    }
+    if (fieldNames.contains("pageSize")) {
+      fieldMap.put("pageSize", Collections.singletonList(pageSize));
+    }
+    if (fieldNames.contains("pageToken")) {
+      fieldMap.put("pageToken", Collections.singletonList(pageToken));
+    }
+    return fieldMap;
+  }
+
+  public String getAccessToken() {
+    return access_token;
+  }
+
+  public String getCallback() {
+    return callback;
+  }
+
+  public String getFields() {
+    return fields;
+  }
+
+  public String getKey() {
+    return key;
+  }
+
+  public String getPrettyPrint() {
+    return prettyPrint;
+  }
+
+  public String getQuotaUser() {
+    return quotaUser;
+  }
+
+  public String getUserIp() {
+    return userIp;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public Integer getPageSize() {
+    return pageSize;
+  }
+
+  public String getPageToken() {
+    return pageToken;
+  }
+
+
+  public static Builder newBuilder() {
+    return new ProjectsListHttpRequest.Builder();
+  }
+
+  public static class Builder {
+    private String access_token;
+    private String callback;
+    private String fields;
+    private String key;
+    private String prettyPrint;
+    private String quotaUser;
+    private String userIp;
+    private String name;
+    private Integer pageSize;
+    private String pageToken;
+
+    Builder() {}
+
+    Builder(ProjectsListHttpRequest source) {
+      this.access_token = source.access_token;
+      this.callback = source.callback;
+      this.fields = source.fields;
+      this.key = source.key;
+      this.prettyPrint = source.prettyPrint;
+      this.quotaUser = source.quotaUser;
+      this.userIp = source.userIp;
+      this.name = source.name;
+      this.pageSize = source.pageSize;
+      this.pageToken = source.pageToken;
+    }
+
+    public String getAccessToken() {
+      return access_token;
+    }
+
+    public Builder setAccessToken(String access_token) {
+      this.access_token = access_token;
+      return this;
+    }
+
+    public String getCallback() {
+      return callback;
+    }
+
+    public Builder setCallback(String callback) {
+      this.callback = callback;
+      return this;
+    }
+
+    public String getFields() {
+      return fields;
+    }
+
+    public Builder setFields(String fields) {
+      this.fields = fields;
+      return this;
+    }
+
+    public String getKey() {
+      return key;
+    }
+
+    public Builder setKey(String key) {
+      this.key = key;
+      return this;
+    }
+
+    public String getPrettyPrint() {
+      return prettyPrint;
+    }
+
+    public Builder setPrettyPrint(String prettyPrint) {
+      this.prettyPrint = prettyPrint;
+      return this;
+    }
+
+    public String getQuotaUser() {
+      return quotaUser;
+    }
+
+    public Builder setQuotaUser(String quotaUser) {
+      this.quotaUser = quotaUser;
+      return this;
+    }
+
+    public String getUserIp() {
+      return userIp;
+    }
+
+    public Builder setUserIp(String userIp) {
+      this.userIp = userIp;
+      return this;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public Builder setName(String name) {
+      this.name = name;
+      return this;
+    }
+
+    public Integer getPageSize() {
+      return pageSize;
+    }
+
+    public Builder setPageSize(Integer pageSize) {
+      this.pageSize = pageSize;
+      return this;
+    }
+
+    public String getPageToken() {
+      return pageToken;
+    }
+
+    public Builder setPageToken(String pageToken) {
+      this.pageToken = pageToken;
+      return this;
+    }
+
+
+    public ProjectsListHttpRequest build() {
+      String missing = "";
+
+
+
+
+
+
+
+      if (name == null) {
+        missing += " name";
+      }
+
+
+      if (!missing.isEmpty()) {
+        throw new IllegalStateException("Missing required properties:" + missing);
+      }
+      return new ProjectsListHttpRequest(
+        access_token,
+        callback,
+        fields,
+        key,
+        prettyPrint,
+        quotaUser,
+        userIp,
+        name,
+        pageSize,
+        pageToken
+      );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      newBuilder.setAccessToken(this.access_token);
+      newBuilder.setCallback(this.callback);
+      newBuilder.setFields(this.fields);
+      newBuilder.setKey(this.key);
+      newBuilder.setPrettyPrint(this.prettyPrint);
+      newBuilder.setQuotaUser(this.quotaUser);
+      newBuilder.setUserIp(this.userIp);
+      newBuilder.setName(this.name);
+      newBuilder.setPageSize(this.pageSize);
+      newBuilder.setPageToken(this.pageToken);
+      return newBuilder;
+    }
+  }
+
+  @Override
+  public String toString() {
+    return "ProjectsListHttpRequest{"
+        + "access_token=" + access_token + ", "
+        + "callback=" + callback + ", "
+        + "fields=" + fields + ", "
+        + "key=" + key + ", "
+        + "prettyPrint=" + prettyPrint + ", "
+        + "quotaUser=" + quotaUser + ", "
+        + "userIp=" + userIp + ", "
+        + "name=" + name + ", "
+        + "pageSize=" + pageSize + ", "
+        + "pageToken=" + pageToken
+        + "}";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof ProjectsListHttpRequest) {
+      ProjectsListHttpRequest that = (ProjectsListHttpRequest) o;
+      return
+          Objects.equals(this.access_token, that.getAccessToken()) &&
+          Objects.equals(this.callback, that.getCallback()) &&
+          Objects.equals(this.fields, that.getFields()) &&
+          Objects.equals(this.key, that.getKey()) &&
+          Objects.equals(this.prettyPrint, that.getPrettyPrint()) &&
+          Objects.equals(this.quotaUser, that.getQuotaUser()) &&
+          Objects.equals(this.userIp, that.getUserIp()) &&
+          Objects.equals(this.name, that.getName()) &&
+          Objects.equals(this.pageSize, that.getPageSize()) &&
+          Objects.equals(this.pageToken, that.getPageToken())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+      access_token,
+      callback,
+      fields,
+      key,
+      prettyPrint,
+      quotaUser,
+      userIp,
+      name,
+      pageSize,
+      pageToken
+    );
+  }
+}
+
+============== file: src/main/java/com/google/cloud/fakebilling/v1/ProjectsUpdateBillingInfoHttpRequest.java ==============
+/*
+ * Copyright 2017, Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.fakebilling.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.common.collect.ImmutableList;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import javax.annotation.Generated;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class ProjectsUpdateBillingInfoHttpRequest implements ApiMessage {
+  private final String access_token;
+  private final String callback;
+  private final String fields;
+  private final String key;
+  private final String prettyPrint;
+  private final String quotaUser;
+  private final String userIp;
+  private final String name;
+  private final ProjectBillingInfo request;
+
+  private ProjectsUpdateBillingInfoHttpRequest(
+      String access_token,
+      String callback,
+      String fields,
+      String key,
+      String prettyPrint,
+      String quotaUser,
+      String userIp,
+      String name,
+      ProjectBillingInfo request
+      ) {
+    this.access_token = access_token;
+    this.callback = callback;
+    this.fields = fields;
+    this.key = key;
+    this.prettyPrint = prettyPrint;
+    this.quotaUser = quotaUser;
+    this.userIp = userIp;
+    this.name = name;
+    this.request = request;
+  }
+
+  @Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    if (fieldNames.contains("access_token")) {
+      fieldMap.put("access_token", Collections.singletonList(access_token));
+    }
+    if (fieldNames.contains("callback")) {
+      fieldMap.put("callback", Collections.singletonList(callback));
+    }
+    if (fieldNames.contains("fields")) {
+      fieldMap.put("fields", Collections.singletonList(fields));
+    }
+    if (fieldNames.contains("key")) {
+      fieldMap.put("key", Collections.singletonList(key));
+    }
+    if (fieldNames.contains("prettyPrint")) {
+      fieldMap.put("prettyPrint", Collections.singletonList(prettyPrint));
+    }
+    if (fieldNames.contains("quotaUser")) {
+      fieldMap.put("quotaUser", Collections.singletonList(quotaUser));
+    }
+    if (fieldNames.contains("userIp")) {
+      fieldMap.put("userIp", Collections.singletonList(userIp));
+    }
+    if (fieldNames.contains("name")) {
+      fieldMap.put("name", Collections.singletonList(name));
+    }
+    if (fieldNames.contains("request")) {
+      fieldMap.put("request", Collections.singletonList(request));
+    }
+    return fieldMap;
+  }
+
+  public String getAccessToken() {
+    return access_token;
+  }
+
+  public String getCallback() {
+    return callback;
+  }
+
+  public String getFields() {
+    return fields;
+  }
+
+  public String getKey() {
+    return key;
+  }
+
+  public String getPrettyPrint() {
+    return prettyPrint;
+  }
+
+  public String getQuotaUser() {
+    return quotaUser;
+  }
+
+  public String getUserIp() {
+    return userIp;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public ProjectBillingInfo getRequest() {
+    return request;
+  }
+
+
+  public static Builder newBuilder() {
+    return new ProjectsUpdateBillingInfoHttpRequest.Builder();
+  }
+
+  public static class Builder {
+    private String access_token;
+    private String callback;
+    private String fields;
+    private String key;
+    private String prettyPrint;
+    private String quotaUser;
+    private String userIp;
+    private String name;
+    private ProjectBillingInfo request;
+
+    Builder() {}
+
+    Builder(ProjectsUpdateBillingInfoHttpRequest source) {
+      this.access_token = source.access_token;
+      this.callback = source.callback;
+      this.fields = source.fields;
+      this.key = source.key;
+      this.prettyPrint = source.prettyPrint;
+      this.quotaUser = source.quotaUser;
+      this.userIp = source.userIp;
+      this.name = source.name;
+      this.request = source.request;
+    }
+
+    public String getAccessToken() {
+      return access_token;
+    }
+
+    public Builder setAccessToken(String access_token) {
+      this.access_token = access_token;
+      return this;
+    }
+
+    public String getCallback() {
+      return callback;
+    }
+
+    public Builder setCallback(String callback) {
+      this.callback = callback;
+      return this;
+    }
+
+    public String getFields() {
+      return fields;
+    }
+
+    public Builder setFields(String fields) {
+      this.fields = fields;
+      return this;
+    }
+
+    public String getKey() {
+      return key;
+    }
+
+    public Builder setKey(String key) {
+      this.key = key;
+      return this;
+    }
+
+    public String getPrettyPrint() {
+      return prettyPrint;
+    }
+
+    public Builder setPrettyPrint(String prettyPrint) {
+      this.prettyPrint = prettyPrint;
+      return this;
+    }
+
+    public String getQuotaUser() {
+      return quotaUser;
+    }
+
+    public Builder setQuotaUser(String quotaUser) {
+      this.quotaUser = quotaUser;
+      return this;
+    }
+
+    public String getUserIp() {
+      return userIp;
+    }
+
+    public Builder setUserIp(String userIp) {
+      this.userIp = userIp;
+      return this;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public Builder setName(String name) {
+      this.name = name;
+      return this;
+    }
+
+    public ProjectBillingInfo getRequest() {
+      return request;
+    }
+
+    public Builder setRequest(ProjectBillingInfo request) {
+      this.request = request;
+      return this;
+    }
+
+
+    public ProjectsUpdateBillingInfoHttpRequest build() {
+      String missing = "";
+
+
+
+
+
+
+
+      if (name == null) {
+        missing += " name";
+      }
+
+      if (!missing.isEmpty()) {
+        throw new IllegalStateException("Missing required properties:" + missing);
+      }
+      return new ProjectsUpdateBillingInfoHttpRequest(
+        access_token,
+        callback,
+        fields,
+        key,
+        prettyPrint,
+        quotaUser,
+        userIp,
+        name,
+        request
+      );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      newBuilder.setAccessToken(this.access_token);
+      newBuilder.setCallback(this.callback);
+      newBuilder.setFields(this.fields);
+      newBuilder.setKey(this.key);
+      newBuilder.setPrettyPrint(this.prettyPrint);
+      newBuilder.setQuotaUser(this.quotaUser);
+      newBuilder.setUserIp(this.userIp);
+      newBuilder.setName(this.name);
+      newBuilder.setRequest(this.request);
+      return newBuilder;
+    }
+  }
+
+  @Override
+  public String toString() {
+    return "ProjectsUpdateBillingInfoHttpRequest{"
+        + "access_token=" + access_token + ", "
+        + "callback=" + callback + ", "
+        + "fields=" + fields + ", "
+        + "key=" + key + ", "
+        + "prettyPrint=" + prettyPrint + ", "
+        + "quotaUser=" + quotaUser + ", "
+        + "userIp=" + userIp + ", "
+        + "name=" + name + ", "
+        + "request=" + request
+        + "}";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof ProjectsUpdateBillingInfoHttpRequest) {
+      ProjectsUpdateBillingInfoHttpRequest that = (ProjectsUpdateBillingInfoHttpRequest) o;
+      return
+          Objects.equals(this.access_token, that.getAccessToken()) &&
+          Objects.equals(this.callback, that.getCallback()) &&
+          Objects.equals(this.fields, that.getFields()) &&
+          Objects.equals(this.key, that.getKey()) &&
+          Objects.equals(this.prettyPrint, that.getPrettyPrint()) &&
+          Objects.equals(this.quotaUser, that.getQuotaUser()) &&
+          Objects.equals(this.userIp, that.getUserIp()) &&
+          Objects.equals(this.name, that.getName()) &&
+          Objects.equals(this.request, that.getRequest())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+      access_token,
+      callback,
+      fields,
+      key,
+      prettyPrint,
+      quotaUser,
+      userIp,
+      name,
+      request
+    );
   }
 }
 
@@ -1620,30 +3426,36 @@ public final class ProjectBillingInfo implements Serializable {
 package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
+import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import javax.annotation.Generated;
 
 @Generated("by GAPIC")
 @BetaApi
-public final class Warnings implements Serializable {
+public final class Warnings implements ApiMessage {
   private final String code;
   private final List<Data> data;
   private final String message;
   private final ProjectBillingInfo projectBillingInfo;
 
   private Warnings(
-
-    String code,
-    List<Data> data,
-    String message,
-    ProjectBillingInfo projectBillingInfo
-    ) {
+      String code,
+      List<Data> data,
+      String message,
+      ProjectBillingInfo projectBillingInfo
+      ) {
     this.code = code;
     this.data = data;
     this.message = message;
     this.projectBillingInfo = projectBillingInfo;
   }
+
 
   public String getCode() {
     return code;
@@ -1719,24 +3531,34 @@ public final class Warnings implements Serializable {
 
 
     public Warnings build() {
-      return new Warnings(
 
+
+
+      return new Warnings(
         code,
         data,
         message,
         projectBillingInfo
       );
     }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      newBuilder.setCode(this.code);
+      newBuilder.setData(this.data);
+      newBuilder.setMessage(this.message);
+      newBuilder.setProjectBillingInfo(this.projectBillingInfo);
+      return newBuilder;
+    }
   }
 
   @Override
   public String toString() {
     return "Warnings{"
-
-    + "code=" + code + ", "
-    + "data=" + data + ", "
-    + "message=" + message + ", "
-    + "projectBillingInfo=" + projectBillingInfo
+        + "code=" + code + ", "
+        + "data=" + data + ", "
+        + "message=" + message + ", "
+        + "projectBillingInfo=" + projectBillingInfo
         + "}";
   }
 
@@ -1748,28 +3570,23 @@ public final class Warnings implements Serializable {
     if (o instanceof Warnings) {
       Warnings that = (Warnings) o;
       return
-
-      this.code.equals(that.getCode())&&
-      this.data.equals(that.getData())&&
-      this.message.equals(that.getMessage())&&
-      this.projectBillingInfo.equals(that.getProjectBillingInfo())
-      ;
+          Objects.equals(this.code, that.getCode()) &&
+          Objects.equals(this.data, that.getData()) &&
+          Objects.equals(this.message, that.getMessage()) &&
+          Objects.equals(this.projectBillingInfo, that.getProjectBillingInfo())
+          ;
     }
     return false;
   }
 
   @Override
   public int hashCode() {
-    int h = 1;
-    h *= 1000003;
-    h ^= this.code.hashCode();
-    h *= 1000003;
-    h ^= this.data.hashCode();
-    h *= 1000003;
-    h ^= this.message.hashCode();
-    h *= 1000003;
-    h ^= this.projectBillingInfo.hashCode();
-    return h;
+    return Objects.hash(
+      code,
+      data,
+      message,
+      projectBillingInfo
+    );
   }
 }
 

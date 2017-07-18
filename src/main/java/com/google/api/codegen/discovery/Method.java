@@ -40,6 +40,7 @@ public abstract class Method implements Comparable<Method>, Node {
     String description = root.getString("description");
     String httpMethod = root.getString("httpMethod");
     String id = root.getString("id");
+    String path = root.getString("path");
     List<String> parameterOrder = new ArrayList<>();
     for (DiscoveryNode nameNode : root.getArray("parameterOrder").getElements()) {
       parameterOrder.add(nameNode.asText());
@@ -79,6 +80,7 @@ public abstract class Method implements Comparable<Method>, Node {
             id,
             parameterOrder,
             parameters,
+            path,
             request,
             response,
             scopes,
@@ -128,6 +130,9 @@ public abstract class Method implements Comparable<Method>, Node {
 
   /** @return the map of parameter names to schemas. */
   public abstract Map<String, Schema> parameters();
+
+  /** @return the The URI path of this REST method. */
+  public abstract String path();
 
   /** @return the request schema, or null if none. */
   @Nullable

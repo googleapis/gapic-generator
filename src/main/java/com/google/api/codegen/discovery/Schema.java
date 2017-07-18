@@ -108,6 +108,11 @@ public abstract class Schema implements Node {
     return thisSchema;
   }
 
+  /** @return a non-null identifier for this schema. */
+  public String getIdentifier() {
+    return id().isEmpty() ? key() : id();
+  }
+
   public static Schema empty() {
     return new AutoValue_Schema(
         null,

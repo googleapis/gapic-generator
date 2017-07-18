@@ -61,16 +61,6 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
 
   public abstract FeatureConfig getFeatureConfig();
 
-  public DiscoGapicInterfaceContext withNewTypeTable() {
-    return create(
-        getDocument(),
-        getProductConfig(),
-        getSchemaTypeTable().cloneEmpty(),
-        getDiscoGapicNamer(),
-        getNamer(),
-        getFeatureConfig());
-  }
-
   public InterfaceConfig getInterfaceConfig() {
     return getProductConfig().getInterfaceConfig(getDocument().name());
   }

@@ -32,11 +32,46 @@ public class DiscoGapicNamer extends NameFormatterDelegator {
 
   /** Returns the resource getter method name for a resource field. */
   public String getResourceGetterName(String fieldName) {
-    return publicMethodName(Name.anyCamel("get", fieldName));
+    Name name;
+    if (fieldName.contains("_")) {
+      name = Name.anyCamel(fieldName.split("_"));
+    } else {
+      name = Name.anyCamel(fieldName);
+    }
+    return publicMethodName(Name.anyCamel("get").join(name));
   }
   /** Returns the resource getter method name for a resource field. */
   public String getResourceSetterName(String fieldName) {
-    return publicMethodName(Name.anyCamel("set", fieldName));
+    Name name;
+    if (fieldName.contains("_")) {
+      name = Name.anyCamel(fieldName.split("_"));
+    } else {
+      name = Name.anyCamel(fieldName);
+    }
+    return publicMethodName(Name.anyCamel("set").join(name));
+  }
+
+  /**
+   * Returns the array of substrings after the input is split by periods. Ex: Input of
+   * "compute.addresses.aggregatedList" returns the array: ["compute", "addresses", "List"].
+   */
+  public String[] getMethodNamePieces(String longMethodName) {
+    String[] pieces = longMethodName.split("\\.");
+    if (pieces.length < 3) {
+      throw new IllegalArgumentException(
+          "Fully qualified method name must be in the form [api].[resource].[method]");
+    }
+    return pieces;
+  }
+
+  /**
+   * Returns the last substring after the input is split by periods. Ex: Input
+   * "compute.addresses.aggregatedList" returns "aggregatedList".
+   */
+  public String getRequestName(String fullMethodName) {
+    String[] pieces = getMethodNamePieces(fullMethodName);
+    return privateFieldName(
+        Name.anyCamel(pieces[pieces.length - 2], pieces[pieces.length - 1], "http", "request"));
   }
 
   //TODO(andrealin): Naming methods for requests, responses, service name.
