@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.discovery.Schema;
+import com.google.api.codegen.transformer.SchemaTypeNameConverter.BoxPrimitives;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeTable;
 import java.util.Map;
@@ -91,7 +92,8 @@ public class SchemaTypeTable implements SchemaTypeFormatter {
    * nickname.
    */
   public String getAndSaveNicknameFor(Schema schema) {
-    return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeName(schema, true));
+    return typeTable.getAndSaveNicknameFor(
+        typeNameConverter.getTypeName(schema, BoxPrimitives.BOX_PRIMITIVES));
   }
 
   /** Returns the imports accumulated so far. */
