@@ -18,7 +18,7 @@ import static com.google.api.codegen.util.java.JavaTypeTable.JavaLangResolution.
 
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.discogapic.RequestInterfaceContext;
+import com.google.api.codegen.discogapic.SchemaInterfaceContext;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Method;
@@ -114,11 +114,9 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
             new JavaSurfaceNamer(productConfig.getPackageName()),
             JavaFeatureConfig.newBuilder().enableStringFormatFunctions(false).build());
 
-    // Escape any request names that are Java keywords.
-
     for (Method method : context.getDocument().methods()) {
-      RequestInterfaceContext requestContext =
-          RequestInterfaceContext.create(method, context, context.getSchemaTypeTable());
+      SchemaInterfaceContext requestContext =
+          SchemaInterfaceContext.create(method.id(), context.getSchemaTypeTable(), context);
       StaticLangApiMessageView requestView = generateRequestClass(requestContext, method);
       surfaceRequests.add(generateRequestFile(requestContext, requestView));
     }
@@ -135,7 +133,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
 
   /* Given a message view, creates a top-level message file view. */
   private StaticLangApiMessageFileView generateRequestFile(
-      RequestInterfaceContext context, StaticLangApiMessageView messageView) {
+      SchemaInterfaceContext context, StaticLangApiMessageView messageView) {
     StaticLangApiMessageFileView.Builder apiFile = StaticLangApiMessageFileView.newBuilder();
     apiFile.templateFileName(REQUEST_TEMPLATE_FILENAME);
     addApiImports(context.getTypeTable());
@@ -151,7 +149,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
   }
 
   private StaticLangApiMessageView generateRequestClass(
-      RequestInterfaceContext context, Method method) {
+      SchemaInterfaceContext context, Method method) {
     StaticLangApiMessageView.Builder requestView = StaticLangApiMessageView.newBuilder();
 
     SymbolTable symbolTable = SymbolTable.fromSeed(reservedKeywords);
@@ -159,6 +157,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     String requestClassId = context.getDiscoGapicNamer().getRequestName(method.id());
     String requestName =
         nameFormatter.privateFieldName(Name.anyCamel(symbolTable.getNewSymbol(requestClassId)));
+    boolean hasRequiredProperties = false;
 
     requestView.name(requestName);
     requestView.description(method.description());
@@ -183,15 +182,18 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
       paramView.canRepeat(false);
       paramView.fieldGetFunction(context.getDiscoGapicNamer().getResourceGetterName(param));
       paramView.fieldSetFunction(context.getDiscoGapicNamer().getResourceSetterName(param));
-      paramView.innerTypeName("String");
       paramView.properties(new LinkedList<StaticLangApiMessageView>());
       paramView.isRequestMessage(false);
+      paramView.hasRequiredProperties(false);
       properties.add(paramView.build());
     }
 
     for (Map.Entry<String, Schema> entry : method.parameters().entrySet()) {
       Schema param = entry.getValue();
       properties.add(schemaToParamView(context, param, symbolTable));
+      if (param.required()) {
+        hasRequiredProperties = true;
+      }
     }
 
     if (method.request() != null) {
@@ -210,6 +212,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     requestView.canRepeat(false);
     requestView.isRequired(true);
     requestView.properties(properties);
+    requestView.hasRequiredProperties(hasRequiredProperties);
     requestView.isRequestMessage(true);
 
     return requestView.build();
@@ -217,7 +220,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
 
   // Transforms a request/response Schema object into a StaticLangApiMessageView.
   private StaticLangApiMessageView schemaToParamView(
-      RequestInterfaceContext context, Schema schema, SymbolTable symbolTable) {
+      SchemaInterfaceContext context, Schema schema, SymbolTable symbolTable) {
     StaticLangApiMessageView.Builder paramView = StaticLangApiMessageView.newBuilder();
     String typeName = context.getSchemaTypeTable().getAndSaveNicknameFor(schema);
     paramView.description(schema.description());
@@ -232,6 +235,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
         context.getDiscoGapicNamer().getResourceSetterName(schema.getIdentifier()));
     paramView.properties(new LinkedList<StaticLangApiMessageView>());
     paramView.isRequestMessage(false);
+    paramView.hasRequiredProperties(false);
     return paramView.build();
   }
 

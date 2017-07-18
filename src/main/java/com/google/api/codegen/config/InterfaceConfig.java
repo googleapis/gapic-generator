@@ -63,6 +63,7 @@ public interface InterfaceConfig {
 
   boolean hasDefaultInstance();
 
+  @Nullable
   ImmutableList<SingleResourceNameConfig> getSingleResourceNameConfigs();
 
   boolean hasInterfaceNameOverride();

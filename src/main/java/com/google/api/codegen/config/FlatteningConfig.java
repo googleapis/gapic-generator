@@ -100,7 +100,6 @@ public abstract class FlatteningConfig {
   @Nullable
   public static FlatteningConfig createFlattening(
       DiagCollector diagCollector,
-      MethodConfigProto methodConfigProto,
       FlatteningGroupProto flatteningGroup,
       com.google.api.codegen.discovery.Method method) {
 
@@ -119,7 +118,7 @@ public abstract class FlatteningConfig {
         return null;
       }
 
-      FieldConfig fieldConfig = FieldConfig.createFieldConfig(diagCollector, parameterField);
+      FieldConfig fieldConfig = FieldConfig.createFieldConfig(parameterField);
       if (fieldConfig == null) {
         missing = true;
       } else {
@@ -134,15 +133,7 @@ public abstract class FlatteningConfig {
         flattenedFieldConfigBuilder.build(), flatteningGroup.getFlatteningGroupName());
   }
 
-  public FieldConfig getFieldConfig(String fieldSimpleName) {
-    return getFlattenedFieldConfigs().get(fieldSimpleName);
-  }
-
   public Iterable<FieldType> getFlattenedFields() {
     return FieldConfig.toFieldTypeIterable(getFlattenedFieldConfigs().values());
-  }
-
-  public Iterable<String> getParameterList() {
-    return getFlattenedFieldConfigs().keySet();
   }
 }

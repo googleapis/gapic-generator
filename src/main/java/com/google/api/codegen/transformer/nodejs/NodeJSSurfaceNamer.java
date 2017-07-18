@@ -194,9 +194,9 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     }
 
     List<String> callbackLines =
-        returnCallbackDocLines(context.getModelTypeTable(), gapicMethodConfig);
+        returnCallbackDocLines(context.getImportTypeTable(), gapicMethodConfig);
     List<String> returnObjectLines =
-        returnObjectDocLines(context.getModelTypeTable(), gapicMethodConfig);
+        returnObjectDocLines(context.getImportTypeTable(), gapicMethodConfig);
     return ImmutableList.<String>builder().addAll(callbackLines).addAll(returnObjectLines).build();
   }
 

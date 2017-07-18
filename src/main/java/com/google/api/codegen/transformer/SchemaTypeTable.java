@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.discovery.Schema;
+import com.google.api.codegen.transformer.SchemaTypeNameConverter.BoxPrimitives;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
@@ -104,7 +105,8 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
    * nickname.
    */
   public String getAndSaveNicknameFor(Schema schema) {
-    return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeName(schema, true));
+    return typeTable.getAndSaveNicknameFor(
+        typeNameConverter.getTypeName(schema, BoxPrimitives.BOX_PRIMITIVES));
   }
 
   public String getFullNameForElementType(Schema type) {
@@ -127,12 +129,6 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
   @Override
   public String getNicknameFor(FieldType type) {
     return typeFormatter.getNicknameFor(type);
-  }
-
-  /** Returns the nickname for the given type (without adding the full name to the import set). */
-  @Override
-  public String getNicknameFor(String fullName) {
-    return typeFormatter.getNicknameFor(fullName);
   }
 
   /** Renders the primitive value of the given type. */

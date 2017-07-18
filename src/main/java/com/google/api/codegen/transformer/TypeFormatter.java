@@ -26,9 +26,6 @@ public interface TypeFormatter {
   /** Get the full name for the given short name, using the default package. */
   String getImplicitPackageFullNameFor(String shortName);
 
-  /** Get the short name for the given fully-qualified name, using the default package. */
-  String getNicknameFor(String fullName);
-
   /** Get the full name for the given type. */
   String getFullNameFor(FieldType type);
 

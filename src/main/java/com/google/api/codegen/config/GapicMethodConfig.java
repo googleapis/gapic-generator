@@ -273,7 +273,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
   }
 
   @Nullable
-  static ImmutableList<FlatteningConfig> createFlattening(
+  private static ImmutableList<FlatteningConfig> createFlattening(
       DiagCollector diagCollector,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
@@ -303,7 +303,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
     return flatteningGroupsBuilder.build();
   }
 
-  static Iterable<FieldType> getRequiredFields(
+  private static Iterable<FieldType> getRequiredFields(
       DiagCollector diagCollector, Method method, List<String> requiredFieldNames) {
     ImmutableList.Builder<FieldType> fieldsBuilder = ImmutableList.builder();
     for (String fieldName : requiredFieldNames) {
@@ -322,7 +322,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
     return fieldsBuilder.build();
   }
 
-  static Iterable<FieldType> getOptionalFields(Method method, List<String> requiredFieldNames) {
+  private static Iterable<FieldType> getOptionalFields(Method method, List<String> requiredFieldNames) {
     ImmutableList.Builder<FieldType> fieldsBuilder = ImmutableList.builder();
     for (Field field : method.getInputType().getMessageType().getFields()) {
       if (requiredFieldNames.contains(field.getSimpleName())) {
@@ -333,7 +333,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
     return fieldsBuilder.build();
   }
 
-  static Iterable<FieldConfig> createFieldNameConfigs(
+  private static Iterable<FieldConfig> createFieldNameConfigs(
       DiagCollector diagCollector,
       ResourceNameMessageConfigs messageConfigs,
       ResourceNameTreatment defaultResourceNameTreatment,

@@ -16,7 +16,6 @@ package com.google.api.codegen.config;
 
 import static com.google.api.codegen.config.DiscoGapicMethodConfig.createDiscoGapicMethodConfig;
 
-import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.discovery.Document;
@@ -70,9 +69,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
       DiagCollector diagCollector,
       String language,
       InterfaceConfigProto interfaceConfigProto,
-      String interfaceNameOverride,
-      ResourceNameMessageConfigs messageConfigs,
-      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs) {
+      String interfaceNameOverride) {
 
     ImmutableMap<String, ImmutableSet<Status.Code>> retryCodesDefinition =
         GapicInterfaceConfig.createRetryCodesDefinition(diagCollector, interfaceConfigProto);
@@ -88,44 +85,25 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
               diagCollector,
               language,
               interfaceConfigProto,
-              messageConfigs,
-              resourceNameConfigs,
               retryCodesDefinition.keySet(),
               retrySettingsDefinition.keySet());
       methodConfigs =
           GapicInterfaceConfig.createMethodConfigs(methodConfigMap, interfaceConfigProto);
     }
 
-    // TODO(andrealin)  Make non-null smokeTestConfig
+    // TODO(andrealin)  Make non-null smokeTestConfig.
     SmokeTestConfig smokeTestConfig = null;
 
-    // TODO(andrealin) IAM permissions configs?
+    // TODO(andrealin) IAM permissions configs.
 
     ImmutableList<String> requiredConstructorParams =
-        ImmutableList.<String>copyOf(interfaceConfigProto.getRequiredConstructorParamsList());
+        ImmutableList.copyOf(interfaceConfigProto.getRequiredConstructorParamsList());
     for (String param : interfaceConfigProto.getRequiredConstructorParamsList()) {
       if (!CONSTRUCTOR_PARAMS.contains(param)) {
         diagCollector.addDiag(
             Diag.error(SimpleLocation.TOPLEVEL, "Unsupported constructor param: %s", param));
       }
     }
-
-    ImmutableList.Builder<SingleResourceNameConfig> resourcesBuilder = ImmutableList.builder();
-    for (CollectionConfigProto collectionConfigProto : interfaceConfigProto.getCollectionsList()) {
-      String entityName = collectionConfigProto.getEntityName();
-      ResourceNameConfig resourceName = resourceNameConfigs.get(entityName);
-      if (resourceName == null || !(resourceName instanceof SingleResourceNameConfig)) {
-        diagCollector.addDiag(
-            Diag.error(
-                SimpleLocation.TOPLEVEL,
-                "Inconsistent configuration - single resource name %s specified for interface, "
-                    + " but was not found in GapicProductConfig configuration.",
-                entityName));
-        return null;
-      }
-      resourcesBuilder.add((SingleResourceNameConfig) resourceName);
-    }
-    ImmutableList<SingleResourceNameConfig> singleResourceNames = resourcesBuilder.build();
 
     String manualDoc = Strings.nullToEmpty(interfaceConfigProto.getLangDoc().get(language)).trim();
 
@@ -138,13 +116,10 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
           retrySettingsDefinition,
           requiredConstructorParams,
           manualDoc,
-          singleResourceNames,
           interfaceNameOverride,
           smokeTestConfig,
           methodConfigMap);
     }
-
-    //    return new AutoValue_DiscoGapicInterfaceConfig(methodConfigs, document.name(), null);
   }
 
   private static Method lookupMethod(Document source, String methodName) {
@@ -161,8 +136,6 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
       DiagCollector diagCollector,
       String language,
       InterfaceConfigProto interfaceConfigProto,
-      ResourceNameMessageConfigs messageConfigs,
-      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       ImmutableSet<String> retryCodesConfigNames,
       ImmutableSet<String> retryParamsConfigNames) {
     ImmutableMap.Builder<String, DiscoGapicMethodConfig> methodConfigMapBuilder =
@@ -171,7 +144,6 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
     for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {
       com.google.api.codegen.discovery.Method method =
           lookupMethod(document, methodConfigProto.getName());
-      //      Method method = symbolTable.lookupMethodSimpleName(methodConfigProto.getName()).get(0);
       if (method == null) {
         diagCollector.addDiag(
             Diag.error(
@@ -199,7 +171,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
     }
   }
 
-  // TODO(andrealin): below methods are straight copies of GapicInterfaceConfig. Consider making the shared interface an abstract class instead, to avoid code duplication.
+  @Override
   public boolean hasPageStreamingMethods() {
     for (MethodConfig methodConfig : getMethodConfigs()) {
       if (methodConfig.isPageStreaming()) {
@@ -209,6 +181,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
     return false;
   }
 
+  @Override
   public boolean hasLongRunningOperations() {
     for (MethodConfig methodConfig : getMethodConfigs()) {
       if (methodConfig.isLongRunningOperation()) {
@@ -218,14 +191,17 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
     return false;
   }
 
+  @Override
   public boolean hasDefaultServiceAddress() {
     return !getRequiredConstructorParams().contains(SERVICE_ADDRESS_PARAM);
   }
 
+  @Override
   public boolean hasDefaultServiceScopes() {
     return !getRequiredConstructorParams().contains(SCOPES_PARAM);
   }
 
+  @Override
   public boolean hasBatchingMethods() {
     for (MethodConfig methodConfig : getMethodConfigs()) {
       if (methodConfig.isBatching()) {
@@ -235,6 +211,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
     return false;
   }
 
+  @Override
   public boolean hasGrpcStreamingMethods() {
     for (MethodConfig methodConfig : getMethodConfigs()) {
       if (methodConfig.isGrpcStreaming()) {
@@ -267,4 +244,10 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
   }
 
   abstract ImmutableMap<String, ? extends MethodConfig> getMethodConfigMap();
+
+  @Override
+  @Nullable
+  public ImmutableList<SingleResourceNameConfig> getSingleResourceNameConfigs() {
+    return null;
+  }
 }

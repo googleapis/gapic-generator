@@ -90,18 +90,13 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
   }
 
   @Override
-  public TypeName getTypeName(String fullName) {
-    return typeNameConverter.getTypeName(fullName);
-  }
-
-  @Override
   public TypeName getTypeNameInImplicitPackage(String shortName) {
     return typeNameConverter.getTypeNameInImplicitPackage(shortName);
   }
 
   @Override
   public TypeName getTypeName(Schema schema) {
-    return getTypeName(schema, false);
+    return getTypeName(schema, BoxPrimitives.NO_BOX_PRIMTIVES);
   }
 
   @Override
@@ -116,19 +111,22 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
    * @param schema The Schema to generate a TypeName from.
    *     <p>This method will be recursively called on the given schema's children.
    */
-  public TypeName getTypeName(Schema schema, boolean shouldBoxPrimitives) {
+  public TypeName getTypeName(Schema schema, BoxPrimitives shouldBoxPrimitives) {
     String primitiveTypeName = getPrimitiveTypeName(schema);
     if (primitiveTypeName != null) {
-      TypeName primitiveType;
+      TypeName primitiveType = null;
       if (primitiveTypeName.contains(".")) {
         // Fully qualified type name, use regular type name resolver. Can skip boxing logic
         // because those types are already boxed.
         primitiveType = typeNameConverter.getTypeName(primitiveTypeName);
       } else {
-        if (shouldBoxPrimitives) {
-          primitiveType = new TypeName(JavaTypeTable.getBoxedTypeName(primitiveTypeName));
-        } else {
-          primitiveType = new TypeName(primitiveTypeName);
+        switch (shouldBoxPrimitives) {
+          case BOX_PRIMITIVES:
+            primitiveType = new TypeName(JavaTypeTable.getBoxedTypeName(primitiveTypeName));
+            break;
+          case NO_BOX_PRIMTIVES:
+            primitiveType = new TypeName(primitiveTypeName);
+            break;
         }
       }
       if (schema.repeated()) {
@@ -141,7 +139,7 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
     } else if (schema.type() == Type.ARRAY) {
       // TODO(andrealin): ensure that this handles arrays of arrays.
       TypeName listTypeName = typeNameConverter.getTypeName("java.util.List");
-      TypeName elementTypeName = getTypeName(schema.items(), true);
+      TypeName elementTypeName = getTypeName(schema.items(), BoxPrimitives.BOX_PRIMITIVES);
       return new TypeName(
           listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", elementTypeName);
     } else {
@@ -157,7 +155,6 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
         shortName = schema.additionalProperties().reference();
       } else {
         // This schema has a parent Schema.
-        // TODO(andrealin): Consider "ParentChild" instead of "Child" if inner classes clash.
         shortName = nameFormatter.publicClassName(Name.anyCamel(schema.key()));
       }
       String longName = packageName + "." + shortName;

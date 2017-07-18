@@ -29,7 +29,7 @@ import javax.annotation.Nullable;
 @AutoValue
 public abstract class GapicMethodContext implements MethodContext {
   public static GapicMethodContext create(
-      InterfaceContext surfaceTransformerContext,
+      GapicInterfaceContext surfaceTransformerContext,
       Interface apiInterface,
       GapicProductConfig productConfig,
       ModelTypeTable typeTable,
@@ -50,7 +50,7 @@ public abstract class GapicMethodContext implements MethodContext {
         featureConfig);
   }
 
-  public abstract InterfaceContext getSurfaceTransformerContext();
+  public abstract GapicInterfaceContext getSurfaceTransformerContext();
 
   public abstract Interface getInterface();
 

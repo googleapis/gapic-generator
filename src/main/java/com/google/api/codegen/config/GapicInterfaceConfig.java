@@ -98,6 +98,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     return hasInterfaceNameOverride() ? getInterfaceNameOverride() : getInterface().getSimpleName();
   }
 
+  @Override
   public boolean hasInterfaceNameOverride() {
     return getInterfaceNameOverride() != null;
   }
@@ -330,6 +331,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   @Override
   @Nullable
   public MethodConfig getMethodConfig(com.google.api.codegen.discovery.Method method) {
+    // TODO(andrealin)
     return null;
   }
 
