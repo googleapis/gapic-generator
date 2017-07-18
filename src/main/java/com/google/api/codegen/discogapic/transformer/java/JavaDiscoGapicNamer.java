@@ -12,17 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.config;
+package com.google.api.codegen.discogapic.transformer.java;
 
-import javax.annotation.Nullable;
+import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
+import com.google.api.codegen.util.java.JavaNameFormatter;
 
-/**
- * InterfaceConfig represents the client code-gen config for an API interface in an input-agnostic
- * way.
- */
-public interface InterfaceConfig {
-  String getName();
+class JavaDiscoGapicNamer extends DiscoGapicNamer {
 
-  @Nullable
-  SmokeTestConfig getSmokeTestConfig();
+  public JavaDiscoGapicNamer() {
+    super(new JavaNameFormatter());
+  }
 }

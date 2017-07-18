@@ -454,6 +454,16 @@ task runDiscoBatch(type: JavaExec) {
   }
 }
 
+// Task to run DiscoGapicGeneratorTool
+// =============================
+task runDiscoGapicGen(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  main = 'com.google.api.codegen.DiscoGapicGeneratorTool'
+  if (project.hasProperty('clargs')) {
+    args = clargs.split(',').toList()
+  }
+}
+
 task verifyLicense << {
   def licenseText = new File(rootProject.rootDir, 'license-header-javadoc.txt').text
   def srcFiles = []

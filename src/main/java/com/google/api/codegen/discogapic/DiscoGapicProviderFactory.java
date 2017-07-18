@@ -12,17 +12,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.config;
+package com.google.api.codegen.discogapic;
 
-import javax.annotation.Nullable;
+import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.discovery.Document;
+import com.google.api.codegen.gapic.GapicGeneratorConfig;
+import java.util.List;
 
-/**
- * InterfaceConfig represents the client code-gen config for an API interface in an input-agnostic
- * way.
- */
-public interface InterfaceConfig {
-  String getName();
-
-  @Nullable
-  SmokeTestConfig getSmokeTestConfig();
+public interface DiscoGapicProviderFactory {
+  List<DiscoGapicProvider> create(
+      Document document,
+      GapicProductConfig productConfig,
+      GapicGeneratorConfig generatorConfig,
+      PackageMetadataConfig packageConfig);
 }

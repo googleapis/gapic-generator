@@ -12,17 +12,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.config;
+package com.google.api.codegen.discogapic.transformer;
 
-import javax.annotation.Nullable;
+import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.discovery.Document;
+import com.google.api.codegen.viewmodel.ViewModel;
+import java.util.List;
 
-/**
- * InterfaceConfig represents the client code-gen config for an API interface in an input-agnostic
- * way.
- */
-public interface InterfaceConfig {
-  String getName();
+public interface DocumentToViewTransformer {
 
-  @Nullable
-  SmokeTestConfig getSmokeTestConfig();
+  /** Generate a list of ViewModels from a given Document model. */
+  List<ViewModel> transform(Document document, GapicProductConfig productConfig);
+
+  /** Return the list of filenames of View templates to be applied to the transformed ViewModels. */
+  List<String> getTemplateFileNames();
 }

@@ -4,7 +4,9 @@
 @snippet generate(apiFile)
   {@renderFileHeader(apiFile.fileHeader)}
 
-  {@serviceDoc(apiFile.api)}
+  @if apiFile.api.hasDoc
+    {@serviceDoc(apiFile.api)}
+  @end
   @@Generated("by GAPIC")
   @if apiFile.api.releaseLevelAnnotation
     {@apiFile.api.releaseLevelAnnotation}

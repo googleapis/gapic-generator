@@ -12,17 +12,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.config;
+package com.google.api.codegen.discogapic;
 
+import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.SmokeTestConfig;
+import com.google.api.codegen.discovery.Document;
+import com.google.auto.value.AutoValue;
 import javax.annotation.Nullable;
 
-/**
- * InterfaceConfig represents the client code-gen config for an API interface in an input-agnostic
- * way.
- */
-public interface InterfaceConfig {
-  String getName();
+@AutoValue
+public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
 
+  @Override
+  public abstract String getName();
+
+  @Override
   @Nullable
-  SmokeTestConfig getSmokeTestConfig();
+  public abstract SmokeTestConfig getSmokeTestConfig();
+
+  public static DiscoGapicInterfaceConfig createInterfaceConfig(Document document) {
+    return new AutoValue_DiscoGapicInterfaceConfig(document.name(), null);
+  }
 }
