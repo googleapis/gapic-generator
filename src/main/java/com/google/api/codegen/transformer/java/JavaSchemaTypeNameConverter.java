@@ -128,7 +128,8 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
             primitiveType = new TypeName(primitiveTypeName);
             break;
           default:
-            throw new IllegalArgumentException(String.format("Unhandled boxing behavior: %s", boxingBehavior.name()));
+            throw new IllegalArgumentException(
+                String.format("Unhandled boxing behavior: %s", boxingBehavior.name()));
         }
       }
       if (schema.repeated()) {
