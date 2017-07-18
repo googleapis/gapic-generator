@@ -22,7 +22,7 @@ import com.google.api.codegen.util.TypedValue;
 /** SchemaTypeNameConverter maps Schema instances to TypeName instances. */
 public interface SchemaTypeNameConverter {
 
-  enum BoxPrimitives {
+  enum BoxingBehavior {
     // Box primitive types, e.g. Boolean instead of boolean.
     BOX_PRIMITIVES,
 
@@ -34,7 +34,7 @@ public interface SchemaTypeNameConverter {
   TypeName getTypeName(Schema type);
 
   /** Provides a TypeName for the given Schema. */
-  TypeName getTypeName(Schema type, BoxPrimitives boxPrimitives);
+  TypeName getTypeName(Schema type, BoxingBehavior boxingBehavior);
 
   /** Provides a TypeName for the given FieldConfig and resource short name. */
   TypeName getTypeNameForTypedResourceName(FieldConfig fieldConfig, String typedResourceShortName);
