@@ -10,12 +10,7 @@
 @end
 
 @private schemaClassDef(schema)
-  public final class {@schema.innerTypeName} implements Serializable
-      @if schema.isRequestMessage()
-        , ApiMessage {
-      @else
-        {
-      @end
+  public final class {@schema.innerTypeName} implements Serializable, ApiMessage {
     {@members(schema)}
 
     {@constructors(schema)}
@@ -82,7 +77,7 @@
     if (o instanceof {@schema.innerTypeName}) {
       {@schema.innerTypeName} that = ({@schema.innerTypeName}) o;
       return
-          @join param : schema.properties on "&&".add(BREAK)
+          @join param : schema.properties on " &&".add(BREAK)
             Objects.equals(this.{@param.name}, that.{@param.fieldGetFunction}())
           @end
           ;
