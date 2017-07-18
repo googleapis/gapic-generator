@@ -18,7 +18,6 @@ import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.ProductConfig;
 import com.google.api.codegen.util.TypeTable;
 import com.google.api.tools.framework.model.Interface;
-import javax.annotation.Nullable;
 
 /**
  * The context for transforming an API interface, in an input-agnostic way, into a view model to use
@@ -36,6 +35,5 @@ public interface InterfaceContext {
 
   InterfaceConfig getInterfaceConfig();
 
-  @Nullable
-  ImportTypeTable getModelTypeTable();
+  ImportTypeTable getImportTypeTable();
 }

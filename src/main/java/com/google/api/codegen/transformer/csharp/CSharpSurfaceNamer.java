@@ -439,7 +439,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
     if (methodConfig.isPageStreaming()) {
       FieldType resourceType = methodConfig.getPageStreaming().getResourcesField();
       String resourceTypeName =
-          context.getModelTypeTable().getAndSaveNicknameForElementType(resourceType);
+          context.getImportTypeTable().getAndSaveNicknameForElementType(resourceType);
       switch (synchronicity) {
         case Sync:
           return ImmutableList.of(

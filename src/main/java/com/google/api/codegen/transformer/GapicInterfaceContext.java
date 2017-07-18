@@ -82,7 +82,11 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
   @Override
   public abstract GapicProductConfig getProductConfig();
 
-  public abstract ModelTypeTable getModelTypeTable();
+  public ModelTypeTable getModelTypeTable() {
+    return (ModelTypeTable) getImportTypeTable();
+  }
+
+  public abstract ImportTypeTable getImportTypeTable();
 
   @Override
   public TypeTable getTypeTable() {

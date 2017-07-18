@@ -85,7 +85,12 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   @Override
   public abstract GapicProductConfig getProductConfig();
 
-  public abstract SchemaTypeTable getSchemaTypeTable();
+  public SchemaTypeTable getSchemaTypeTable() {
+    return (SchemaTypeTable) getImportTypeTable();
+  }
+
+  @Override
+  public abstract ImportTypeTable getImportTypeTable();
 
   public abstract DiscoGapicNamer getDiscoGapicNamer();
 

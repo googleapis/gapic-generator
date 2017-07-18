@@ -82,7 +82,7 @@ public abstract class SchemaInterfaceContext implements InterfaceContext {
   }
 
   @Override
-  public ImportTypeTable getModelTypeTable() {
+  public ImportTypeTable getImportTypeTable() {
     return getSchemaTypeTable();
   }
 
