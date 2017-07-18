@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.discovery.Schema;
+import com.google.api.codegen.transformer.SchemaTypeNameConverter.BoxingBehavior;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeTable;
 import java.util.Map;
@@ -91,19 +92,8 @@ public class SchemaTypeTable implements SchemaTypeFormatter {
    * nickname.
    */
   public String getAndSaveNicknameFor(Schema schema) {
-    return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeName(schema));
-  }
-
-  /**
-   * For a given schema, add the full name to the import set, and then return the nickname.
-   *
-   * @param schema The schema to save and get the nickname for.
-   * @return nickname for the schema.
-   *     <p>If the given schema type is an array, then the element type is the contained type;
-   *     otherwise the element type is the boxed form of the type.
-   */
-  public String getAndSaveNicknameForElementType(Schema schema) {
-    return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeNameForElementType(schema));
+    return typeTable.getAndSaveNicknameFor(
+        typeNameConverter.getTypeName(schema, BoxingBehavior.BOX_PRIMITIVES));
   }
 
   /** Returns the imports accumulated so far. */
