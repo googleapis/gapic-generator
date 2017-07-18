@@ -322,7 +322,8 @@ public abstract class GapicMethodConfig extends MethodConfig {
     return fieldsBuilder.build();
   }
 
-  private static Iterable<FieldType> getOptionalFields(Method method, List<String> requiredFieldNames) {
+  private static Iterable<FieldType> getOptionalFields(
+      Method method, List<String> requiredFieldNames) {
     ImmutableList.Builder<FieldType> fieldsBuilder = ImmutableList.builder();
     for (Field field : method.getInputType().getMessageType().getFields()) {
       if (requiredFieldNames.contains(field.getSimpleName())) {
