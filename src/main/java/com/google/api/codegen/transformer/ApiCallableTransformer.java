@@ -292,7 +292,6 @@ public class ApiCallableTransformer {
   }
 
   private ApiCallableView generateOperationApiCallable(DiscoGapicMethodContext context) {
-    SchemaTypeTable typeTable = context.getTypeTable();
     com.google.api.codegen.discovery.Method method = context.getMethod();
     MethodConfig methodConfig = context.getMethodConfig();
     SurfaceNamer namer = context.getNamer();
@@ -436,8 +435,8 @@ public class ApiCallableTransformer {
     settings.fullServiceName(context.getTargetInterface().getFullName());
     settings.asyncMethodName(namer.getAsyncApiMethodName(method, VisibilityConfig.PUBLIC));
 
-    // TODO(andrealin): use discogapic namer for request and repsonse type names.
-    settings.requestTypeName(typeTable.getAndSaveNicknameFor(method.request()));
+    settings.requestTypeName(context.getDiscoGapicNamer().getRequestName(method));
+    // TODO(andrealin): handle empty repsonse type names.
     settings.responseTypeName(typeTable.getAndSaveNicknameFor(method.response()));
 
     settings.grpcTypeName("Grpc not used in Discovery-based method.");
