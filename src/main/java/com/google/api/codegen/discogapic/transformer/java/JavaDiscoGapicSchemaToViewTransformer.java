@@ -150,6 +150,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
         SchemaInterfaceContext.create(schema.getIdentifier(), schemaTypeTable, documentContext);
 
     StaticLangApiMessageView.Builder schemaView = StaticLangApiMessageView.newBuilder();
+    boolean hasRequiredProperties = false;
 
     // Child schemas cannot have the same symbols as parent schemas, but sibling schemas can have
     // the same symbols.
@@ -187,6 +188,9 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
         // Add non-primitive-type property to imports.
         schemaTypeTable.getAndSaveNicknameFor(property);
       }
+      if (property.required()) {
+        hasRequiredProperties = true;
+      }
     }
     Collections.sort(viewProperties);
     schemaView.properties(viewProperties);
@@ -194,6 +198,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     schemaView.canRepeat(schema.repeated());
     schemaView.isRequired(schema.required());
     schemaView.isRequestMessage(false);
+    schemaView.hasRequiredProperties(hasRequiredProperties);
 
     if (!schema.properties().isEmpty()
         || (schema.items() != null && !schema.items().properties().isEmpty())) {

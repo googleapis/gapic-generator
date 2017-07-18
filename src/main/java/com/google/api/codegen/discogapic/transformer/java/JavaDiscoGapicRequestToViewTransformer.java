@@ -157,6 +157,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     String requestClassId = context.getDiscoGapicNamer().getRequestName(method.id());
     String requestName =
         nameFormatter.privateFieldName(Name.anyCamel(symbolTable.getNewSymbol(requestClassId)));
+    boolean hasRequiredProperties = false;
 
     requestView.name(requestName);
     requestView.description(method.description());
@@ -181,15 +182,18 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
       paramView.canRepeat(false);
       paramView.fieldGetFunction(context.getDiscoGapicNamer().getResourceGetterName(param));
       paramView.fieldSetFunction(context.getDiscoGapicNamer().getResourceSetterName(param));
-      paramView.innerTypeName("String");
       paramView.properties(new LinkedList<StaticLangApiMessageView>());
       paramView.isRequestMessage(false);
+      paramView.hasRequiredProperties(false);
       properties.add(paramView.build());
     }
 
     for (Map.Entry<String, Schema> entry : method.parameters().entrySet()) {
       Schema param = entry.getValue();
       properties.add(schemaToParamView(context, param, symbolTable));
+      if (param.required()) {
+        hasRequiredProperties = true;
+      }
     }
 
     if (method.request() != null) {
@@ -208,6 +212,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     requestView.canRepeat(false);
     requestView.isRequired(true);
     requestView.properties(properties);
+    requestView.hasRequiredProperties(hasRequiredProperties);
     requestView.isRequestMessage(true);
 
     return requestView.build();
@@ -230,6 +235,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
         context.getDiscoGapicNamer().getResourceSetterName(schema.getIdentifier()));
     paramView.properties(new LinkedList<StaticLangApiMessageView>());
     paramView.isRequestMessage(false);
+    paramView.hasRequiredProperties(false);
     return paramView.build();
   }
 
