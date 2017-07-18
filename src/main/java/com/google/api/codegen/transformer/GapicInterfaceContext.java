@@ -112,6 +112,7 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
         getFeatureConfig());
   }
 
+  @Override
   public InterfaceConfig getInterfaceConfig() {
     return getProductConfig().getInterfaceConfig(getInterface());
   }

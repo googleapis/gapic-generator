@@ -23,7 +23,6 @@ import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.util.TypeTable;
-import com.google.api.tools.framework.model.Interface;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
@@ -85,12 +84,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   @Override
   public abstract GapicProductConfig getProductConfig();
 
-  public SchemaTypeTable getSchemaTypeTable() {
-    return (SchemaTypeTable) getImportTypeTable();
-  }
-
-  @Override
-  public abstract ImportTypeTable getImportTypeTable();
+  public abstract SchemaTypeTable getSchemaTypeTable();
 
   public abstract DiscoGapicNamer getDiscoGapicNamer();
 
@@ -102,12 +96,6 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
       }
     }
     return methods;
-  }
-
-  @Nullable
-  @Override
-  public Interface getInterface() {
-    return null;
   }
 
   public abstract List<Method> getInterfaceMethods();
@@ -180,7 +168,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   public DiscoGapicMethodContext asRequestMethodContext(Method method) {
     return DiscoGapicMethodContext.create(
         this,
-        getInterface(),
+        null,
         getProductConfig(),
         getSchemaTypeTable(),
         getNamer(),
@@ -190,12 +178,14 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
         getFeatureConfig());
   }
 
+  @Override
   public InterfaceConfig getInterfaceConfig() {
     return getProductConfig().getInterfaceConfig(getInterfaceName());
   }
 
   @Nullable
-  public ModelTypeTable getModelTypeTable() {
-    return null;
+  @Override
+  public ImportTypeTable getImportTypeTable() {
+    return getSchemaTypeTable();
   }
 }

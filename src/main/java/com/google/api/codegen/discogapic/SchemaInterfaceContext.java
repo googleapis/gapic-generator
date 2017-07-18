@@ -14,8 +14,8 @@
  */
 package com.google.api.codegen.discogapic;
 
-import com.google.api.codegen.config.DiscoGapicInterfaceConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.transformer.DiscoGapicInterfaceContext;
 import com.google.api.codegen.transformer.ImportTypeTable;
@@ -23,7 +23,6 @@ import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.SchemaTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.TypeTable;
-import com.google.api.tools.framework.model.Interface;
 import com.google.auto.value.AutoValue;
 import java.util.Comparator;
 import javax.annotation.Nullable;
@@ -46,13 +45,6 @@ public abstract class SchemaInterfaceContext implements InterfaceContext {
   public static SchemaInterfaceContext create(
       String id, SchemaTypeTable typeTable, DiscoGapicInterfaceContext docContext) {
     return new AutoValue_SchemaInterfaceContext(id, typeTable, docContext);
-  }
-
-  @Override
-  @Nullable
-  /* @return null, because a Discovery Doc schema has no proto-based Interface. */
-  public Interface getInterface() {
-    return null;
   }
 
   public abstract String id();
@@ -86,12 +78,6 @@ public abstract class SchemaInterfaceContext implements InterfaceContext {
     return getSchemaTypeTable();
   }
 
-  @Override
-  @Nullable
-  public DiscoGapicInterfaceConfig getInterfaceConfig() {
-    return null;
-  }
-
   public static Comparator<SchemaInterfaceContext> comparator =
       new Comparator<SchemaInterfaceContext>() {
         @Override
@@ -99,4 +85,10 @@ public abstract class SchemaInterfaceContext implements InterfaceContext {
           return String.CASE_INSENSITIVE_ORDER.compare(o1.id(), o2.id());
         }
       };
+
+  @Nullable
+  @Override
+  public InterfaceConfig getInterfaceConfig() {
+    return null;
+  }
 }
