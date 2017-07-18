@@ -111,7 +111,7 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
    * @param schema The Schema to generate a TypeName from.
    *     <p>This method will be recursively called on the given schema's children.
    */
-  public TypeName getTypeName(Schema schema, BoxingBehavior shouldBoxingBehavior) {
+  public TypeName getTypeName(Schema schema, BoxingBehavior boxingBehavior) {
     String primitiveTypeName = getPrimitiveTypeName(schema);
     if (primitiveTypeName != null) {
       TypeName primitiveType = null;
@@ -120,13 +120,15 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
         // because those types are already boxed.
         primitiveType = typeNameConverter.getTypeName(primitiveTypeName);
       } else {
-        switch (shouldBoxingBehavior) {
+        switch (boxingBehavior) {
           case BOX_PRIMITIVES:
             primitiveType = new TypeName(JavaTypeTable.getBoxedTypeName(primitiveTypeName));
             break;
           case NO_BOX_PRIMTIVES:
             primitiveType = new TypeName(primitiveTypeName);
             break;
+          default:
+            throw new IllegalArgumentException(String.format("Unhandled boxing behavior: %s", boxingBehavior.name()));
         }
       }
       if (schema.repeated()) {
