@@ -25,7 +25,7 @@ import java.util.Map;
 public class StandardImportSectionTransformer implements ImportSectionTransformer {
   @Override
   public ImportSectionView generateImportSection(InterfaceContext context) {
-    return generateImportSection(context.getTypeTable().getImports());
+    return generateImportSection(context.getImportTypeTable().getTypeTable().getImports());
   }
 
   @Override

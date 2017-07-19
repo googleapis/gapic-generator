@@ -136,7 +136,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
       SchemaInterfaceContext context, StaticLangApiMessageView messageView) {
     StaticLangApiMessageFileView.Builder apiFile = StaticLangApiMessageFileView.newBuilder();
     apiFile.templateFileName(REQUEST_TEMPLATE_FILENAME);
-    addApiImports(context.getTypeTable());
+    addApiImports(context.getImportTypeTable().getTypeTable());
     apiFile.schema(messageView);
 
     String outputPath = pathMapper.getOutputPath(null, context.getDocContext().getProductConfig());
