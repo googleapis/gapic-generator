@@ -122,16 +122,16 @@ public class LanguageGenerator {
 
   private static class GoLanguageFormatter implements LanguageFormatter {
     public String getFormattedPackageName(String packageName) {
-      List<String> nameComponents = Splitter.on(DEFAULT_PACKAGE_SEPARATOR).splitToList(packageName);
+      List<String> nameComponents =
+          Lists.newArrayList(Splitter.on(DEFAULT_PACKAGE_SEPARATOR).splitToList(packageName));
 
       // If the name follows the pattern google.foo.bar.v1234,
       // we reformat it into cloud.google.com.
       // google.logging.v2 => cloud.google.com/go/logging/apiv2
       // Otherwise, fall back to backup
       if (!isApiGoogleCloud(nameComponents)) {
-        List<String> newComponents = Lists.newArrayList(nameComponents);
-        newComponents.add(0, "google.golang.org");
-        return Joiner.on("/").join(newComponents);
+        nameComponents.add(0, "google.golang.org");
+        return Joiner.on("/").join(nameComponents);
       }
       int size = nameComponents.size();
       return "cloud.google.com/go/"
