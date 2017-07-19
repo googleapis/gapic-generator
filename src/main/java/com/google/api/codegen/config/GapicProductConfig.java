@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.ApiModel;
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.CollectionOneofProto;
 import com.google.api.codegen.ConfigProto;
@@ -91,19 +90,18 @@ public abstract class GapicProductConfig implements ProductConfig {
   @Nullable
   public static GapicProductConfig create(Model model, ConfigProto configProto) {
 
-    ApiModel apiModel = new ApiModel(model);
     // Get the proto file containing the first interface listed in the config proto, and use it as
     // the assigned file for generated resource names, and to get the default message namespace
     ProtoFile file =
-        apiModel.getSymbolTable().lookupInterface(configProto.getInterfaces(0).getName()).getFile();
+        model.getSymbolTable().lookupInterface(configProto.getInterfaces(0).getName()).getFile();
     String defaultPackage = file.getProto().getPackage();
 
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
-            apiModel, configProto, defaultPackage);
+            model, configProto, defaultPackage);
 
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
-        createResourceNameConfigs(apiModel.getDiagCollector(), configProto, file);
+        createResourceNameConfigs(model.getDiagCollector(), configProto, file);
 
     LanguageSettingsProto settings =
         configProto.getLanguageSettings().get(configProto.getLanguage());
@@ -113,12 +111,12 @@ public abstract class GapicProductConfig implements ProductConfig {
 
     ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
         createInterfaceConfigMap(
-            apiModel.getDiagCollector(),
+            model.getDiagCollector(),
             configProto,
             settings,
             messageConfigs,
             resourceNameConfigs,
-            apiModel.getSymbolTable());
+            model.getSymbolTable());
 
     ImmutableList<String> copyrightLines = null;
     ImmutableList<String> licenseLines = null;
@@ -129,10 +127,10 @@ public abstract class GapicProductConfig implements ProductConfig {
               .toBuilder()
               .mergeFrom(settings.getLicenseHeaderOverride())
               .build();
-      copyrightLines = loadCopyrightLines(apiModel.getDiagCollector(), licenseHeader);
-      licenseLines = loadLicenseLines(apiModel.getDiagCollector(), licenseHeader);
+      copyrightLines = loadCopyrightLines(model.getDiagCollector(), licenseHeader);
+      licenseLines = loadLicenseLines(model.getDiagCollector(), licenseHeader);
     } catch (Exception e) {
-      apiModel
+      model
           .getDiagCollector()
           .addDiag(Diag.error(SimpleLocation.TOPLEVEL, "Exception: %s", e.getMessage()));
       e.printStackTrace(System.err);
@@ -160,16 +158,18 @@ public abstract class GapicProductConfig implements ProductConfig {
 
     DocumentSymbolTableBuilder symbolTableBuilder = new DocumentSymbolTableBuilder(document);
     SymbolTable symbolTable = symbolTableBuilder.create(configProto);
-    ApiModel apiModel = new ApiModel(document, symbolTable);
 
     // TODO(andrealin): put this in config instead of hard coding it
     String defaultPackage = "com.google.proto";
 
+    DiagCollector diagCollector = new BoundedDiagCollector();
+
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
-            apiModel, configProto, defaultPackage);
+            document, diagCollector, configProto, defaultPackage);
+
     // TODO (andrealin): load resourceNameConfigs
-    DiagCollector diagCollector = new BoundedDiagCollector();
+
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
         createResourceNameConfigs(diagCollector, configProto, null);
 
@@ -194,8 +194,8 @@ public abstract class GapicProductConfig implements ProductConfig {
               .build();
       copyrightLines = getResourceLines(licenseHeader.getCopyrightFile());
       licenseLines = getResourceLines(licenseHeader.getLicenseFile());
-    } catch (IOException e) {
-      // TODO(andrealin): use a DiagCollector to store all the errors.
+    } catch (Exception e) {
+      diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, "Exception: %s", e.getMessage()));
       e.printStackTrace(System.err);
       throw new RuntimeException(e);
     }

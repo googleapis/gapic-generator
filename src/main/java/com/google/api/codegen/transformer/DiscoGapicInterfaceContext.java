@@ -98,6 +98,8 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
     return methods;
   }
 
+  public abstract List<Method> getInterfaceMethods();
+
   public abstract String getInterfaceName();
 
   @Override

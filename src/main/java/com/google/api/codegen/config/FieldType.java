@@ -14,10 +14,9 @@
  */
 package com.google.api.codegen.config;
 
-import static com.google.api.codegen.ApiModel.ModelType.DISCOVERY;
-import static com.google.api.codegen.ApiModel.ModelType.PROTO;
+import static com.google.api.codegen.config.FieldType.ModelType.DISCOVERY;
+import static com.google.api.codegen.config.FieldType.ModelType.PROTO;
 
-import com.google.api.codegen.ApiModel.ModelType;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.discovery.Schema.Type;
 import com.google.api.tools.framework.model.Field;
@@ -32,6 +31,11 @@ import javax.annotation.Nullable;
  * format (protobuf, discovery, etc) of the source from a resource type definition.
  */
 public class FieldType {
+
+  public enum ModelType {
+    DISCOVERY,
+    PROTO;
+  }
 
   @Nullable Field protoBasedField;
 

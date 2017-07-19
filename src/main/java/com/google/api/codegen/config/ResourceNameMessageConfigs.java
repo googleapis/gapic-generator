@@ -14,13 +14,14 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.ApiModel;
 import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.ResourceNameMessageConfigProto;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Schema;
+import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.MessageType;
+import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ArrayListMultimap;
@@ -45,7 +46,7 @@ public abstract class ResourceNameMessageConfigs {
 
   @Nullable
   public static ResourceNameMessageConfigs createMessageResourceTypesConfig(
-      ApiModel model, ConfigProto configProto, String defaultPackage) {
+      Model model, ConfigProto configProto, String defaultPackage) {
     ImmutableMap.Builder<String, ResourceNameMessageConfig> builder = ImmutableMap.builder();
     for (ResourceNameMessageConfigProto messageResourceTypesProto :
         configProto.getResourceNameGenerationList()) {
@@ -58,39 +59,50 @@ public abstract class ResourceNameMessageConfigs {
 
     ListMultimap<String, FieldType> fieldsByMessage = ArrayListMultimap.create();
 
-    switch (model.getModelType()) {
-      case PROTO:
-        Set<String> seenProtoFiles = new HashSet<>();
-        for (ProtoFile protoFile : model.getProtoModel().getFiles()) {
-          if (!seenProtoFiles.contains(protoFile.getSimpleName())) {
-            seenProtoFiles.add(protoFile.getSimpleName());
-            for (MessageType msg : protoFile.getMessages()) {
-              ResourceNameMessageConfig messageConfig =
-                  messageResourceTypeConfigMap.get(msg.getFullName());
-              if (messageConfig == null) {
-                continue;
-              }
-              for (Field field : msg.getFields()) {
-                if (messageConfig.getEntityNameForField(field.getSimpleName()) != null) {
-                  fieldsByMessage.put(msg.getFullName(), new FieldType(field));
-                }
-              }
+    Set<String> seenProtoFiles = new HashSet<>();
+    for (ProtoFile protoFile : model.getFiles()) {
+      if (!seenProtoFiles.contains(protoFile.getSimpleName())) {
+        seenProtoFiles.add(protoFile.getSimpleName());
+        for (MessageType msg : protoFile.getMessages()) {
+          ResourceNameMessageConfig messageConfig =
+              messageResourceTypeConfigMap.get(msg.getFullName());
+          if (messageConfig == null) {
+            continue;
+          }
+          for (Field field : msg.getFields()) {
+            if (messageConfig.getEntityNameForField(field.getSimpleName()) != null) {
+              fieldsByMessage.put(msg.getFullName(), new FieldType(field));
             }
           }
         }
-        return new AutoValue_ResourceNameMessageConfigs(
-            messageResourceTypeConfigMap, fieldsByMessage);
-      case DISCOVERY:
-        // TODO(andrealin): implementation for Schema.
-        Document document = model.getDocument();
-        for (Map.Entry<String, Schema> schemaEntry : document.schemas().entrySet()) {
-          fieldsByMessage.put(schemaEntry.getKey(), new FieldType(schemaEntry.getValue()));
-        }
-        return new AutoValue_ResourceNameMessageConfigs(
-            messageResourceTypeConfigMap, fieldsByMessage);
-      default:
-        throw new IllegalArgumentException("Unhandled model type.");
+      }
     }
+    return new AutoValue_ResourceNameMessageConfigs(messageResourceTypeConfigMap, fieldsByMessage);
+  }
+
+  @Nullable
+  public static ResourceNameMessageConfigs createMessageResourceTypesConfig(
+      Document document,
+      DiagCollector diagCollector,
+      ConfigProto configProto,
+      String defaultPackage) {
+    ImmutableMap.Builder<String, ResourceNameMessageConfig> builder = ImmutableMap.builder();
+    for (ResourceNameMessageConfigProto messageResourceTypesProto :
+        configProto.getResourceNameGenerationList()) {
+      ResourceNameMessageConfig messageResourceTypeConfig =
+          ResourceNameMessageConfig.createResourceNameMessageConfig(
+              diagCollector, messageResourceTypesProto, defaultPackage);
+      builder.put(messageResourceTypeConfig.messageName(), messageResourceTypeConfig);
+    }
+    ImmutableMap<String, ResourceNameMessageConfig> messageResourceTypeConfigMap = builder.build();
+
+    ListMultimap<String, FieldType> fieldsByMessage = ArrayListMultimap.create();
+
+    // TODO(andrealin): implementation.
+    for (Map.Entry<String, Schema> schemaEntry : document.schemas().entrySet()) {
+      fieldsByMessage.put(schemaEntry.getKey(), new FieldType(schemaEntry.getValue()));
+    }
+    return new AutoValue_ResourceNameMessageConfigs(messageResourceTypeConfigMap, fieldsByMessage);
   }
 
   public boolean isEmpty() {
