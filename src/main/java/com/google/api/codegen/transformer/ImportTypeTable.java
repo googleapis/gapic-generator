@@ -24,10 +24,7 @@ import java.util.Map;
  * A ModelTypeTable manages the imports for a set of fully-qualified type names, and provides helper
  * methods for importing instances of FieldType.
  */
-public interface ImportTypeTable {
-  /** Get the full name for the given short name, using the default package. */
-  String getImplicitPackageFullNameFor(String shortName);
-
+public interface ImportTypeTable extends TypeFormatter {
   /** Returns the enum value string */
   String getEnumValue(FieldType type, String value);
 
@@ -89,18 +86,6 @@ public interface ImportTypeTable {
   String getSnippetZeroValueAndSaveNicknameFor(FieldType type);
 
   String getImplZeroValueAndSaveNicknameFor(FieldType type);
-
-  /** Get the full name for the given type. */
-  String getFullNameFor(FieldType type);
-
-  /** Get the full name for the element type of the given type. */
-  String getFullNameForElementType(FieldType type);
-
-  /** Returns the nickname for the given type (without adding the full name to the import set). */
-  String getNicknameFor(FieldType type);
-
-  /** Renders the primitive value of the given type. */
-  String renderPrimitiveValue(FieldType type, String key);
 
   /** Returns the imports accumulated so far. */
   Map<String, TypeAlias> getImports();

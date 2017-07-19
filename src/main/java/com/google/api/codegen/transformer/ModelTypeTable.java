@@ -82,16 +82,19 @@ public class ModelTypeTable implements ImportTypeTable, ModelTypeFormatter {
   }
 
   /** Returns the enum value string */
+  @Override
   public String getEnumValue(FieldType type, String value) {
     return getEnumValue(type.getProtoBasedField().getType(), value);
   }
 
   /** Creates a new ModelTypeTable of the same concrete type, but with an empty import set. */
+  @Override
   public ModelTypeTable cloneEmpty() {
     return new ModelTypeTable(typeTable.cloneEmpty(), typeNameConverter);
   }
 
   /** Compute the nickname for the given fullName and save it in the import set. */
+  @Override
   public void saveNicknameFor(String fullName) {
     getAndSaveNicknameFor(fullName);
   }
@@ -100,11 +103,13 @@ public class ModelTypeTable implements ImportTypeTable, ModelTypeFormatter {
    * Computes the nickname for the given full name, adds the full name to the import set, and
    * returns the nickname.
    */
+  @Override
   public String getAndSaveNicknameFor(String fullName) {
     return typeTable.getAndSaveNicknameFor(fullName);
   }
 
   /** Adds the given type alias to the import set, and returns the nickname. */
+  @Override
   public String getAndSaveNicknameFor(TypeAlias typeAlias) {
     return typeTable.getAndSaveNicknameFor(typeAlias);
   }
@@ -113,6 +118,7 @@ public class ModelTypeTable implements ImportTypeTable, ModelTypeFormatter {
    * Computes the nickname for the given container full name and inner type short name, adds the
    * full inner type name to the static import set, and returns the nickname.
    */
+  @Override
   public String getAndSaveNicknameForInnerType(
       String containerFullName, String innerTypeShortName) {
     return typeTable.getAndSaveNicknameForInnerType(containerFullName, innerTypeShortName);
@@ -130,6 +136,7 @@ public class ModelTypeTable implements ImportTypeTable, ModelTypeFormatter {
    * Computes the nickname for the given type, adds the full name to the import set, and returns the
    * nickname.
    */
+  @Override
   public String getAndSaveNicknameFor(FieldType type) {
     return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeName(type));
   }
@@ -138,6 +145,7 @@ public class ModelTypeTable implements ImportTypeTable, ModelTypeFormatter {
    * Computes the nickname for the given FieldConfig, and ResourceName. Adds the full name to
    * the import set, and returns the nickname.
    */
+  @Override
   public String getAndSaveNicknameForTypedResourceName(
       FieldConfig fieldConfig, String typedResourceShortName) {
     return typeTable.getAndSaveNicknameFor(
@@ -148,6 +156,7 @@ public class ModelTypeTable implements ImportTypeTable, ModelTypeFormatter {
    * Computes the nickname for the element type given FieldConfig, and ResourceName. Adds the full
    * name to the import set, and returns the nickname.
    */
+  @Override
   public String getAndSaveNicknameForResourceNameElementType(
       FieldConfig fieldConfig, String typedResourceShortName) {
     return typeTable.getAndSaveNicknameFor(
@@ -171,10 +180,12 @@ public class ModelTypeTable implements ImportTypeTable, ModelTypeFormatter {
    * contained type; if the type is not a repeated type, then the element type is the boxed form of
    * the type.
    */
+  @Override
   public String getAndSaveNicknameForElementType(FieldType type) {
     return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeNameForElementType(type));
   }
 
+  @Override
   public String getAndSaveNicknameForContainer(
       String containerFullName, String... elementFullNames) {
     TypeName completeTypeName = typeTable.getContainerTypeName(containerFullName, elementFullNames);
@@ -193,39 +204,47 @@ public class ModelTypeTable implements ImportTypeTable, ModelTypeFormatter {
    * If the given type is not implicitly imported, the add it to the import set, then return the
    * zero value for that type.
    */
+  @Override
   public String getSnippetZeroValueAndSaveNicknameFor(FieldType type) {
     return typeNameConverter.getSnippetZeroValue(type).getValueAndSaveTypeNicknameIn(typeTable);
   }
 
+  @Override
   public String getImplZeroValueAndSaveNicknameFor(FieldType type) {
     return typeNameConverter.getImplZeroValue(type).getValueAndSaveTypeNicknameIn(typeTable);
   }
 
   /** Get the full name for the given type. */
+  @Override
   public String getFullNameFor(FieldType type) {
     return getFullNameFor(type.getProtoBasedField().getType());
   }
 
   /** Get the full name for the element type of the given type. */
+  @Override
   public String getFullNameForElementType(FieldType type) {
     return getFullNameForElementType(type.getProtoBasedField().getType());
   }
 
   /** Returns the nickname for the given type (without adding the full name to the import set). */
+  @Override
   public String getNicknameFor(FieldType type) {
     return getNicknameFor(type.getProtoBasedField().getType());
   }
 
   /** Renders the primitive value of the given type. */
+  @Override
   public String renderPrimitiveValue(FieldType type, String key) {
     return renderPrimitiveValue(type.getProtoBasedField().getType(), key);
   }
 
   /** Returns the imports accumulated so far. */
+  @Override
   public Map<String, TypeAlias> getImports() {
     return typeTable.getImports();
   }
 
+  @Override
   public TypeTable getTypeTable() {
     return typeTable;
   }

@@ -69,11 +69,13 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
   }
 
   /** Creates a new SchemaTypeTable of the same concrete type, but with an empty import set. */
+  @Override
   public ImportTypeTable cloneEmpty() {
     return new SchemaTypeTable(typeTable.cloneEmpty(), typeNameConverter);
   }
 
   /** Compute the nickname for the given fullName and save it in the import set. */
+  @Override
   public void saveNicknameFor(String fullName) {
     getAndSaveNicknameFor(fullName);
   }
@@ -82,11 +84,13 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
    * Computes the nickname for the given full name, adds the full name to the import set, and
    * returns the nickname.
    */
+  @Override
   public String getAndSaveNicknameFor(String fullName) {
     return typeTable.getAndSaveNicknameFor(fullName);
   }
 
   /** Adds the given type alias to the import set, and returns the nickname. */
+  @Override
   public String getAndSaveNicknameFor(TypeAlias typeAlias) {
     return typeTable.getAndSaveNicknameFor(typeAlias);
   }
@@ -95,6 +99,7 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
    * Computes the nickname for the given container full name and inner type short name, adds the
    * full inner type name to the static import set, and returns the nickname.
    */
+  @Override
   public String getAndSaveNicknameForInnerType(
       String containerFullName, String innerTypeShortName) {
     return typeTable.getAndSaveNicknameForInnerType(containerFullName, innerTypeShortName);
@@ -187,10 +192,12 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
   }
 
   /** Returns the imports accumulated so far. */
+  @Override
   public Map<String, TypeAlias> getImports() {
     return typeTable.getImports();
   }
 
+  @Override
   public TypeTable getTypeTable() {
     return typeTable;
   }
