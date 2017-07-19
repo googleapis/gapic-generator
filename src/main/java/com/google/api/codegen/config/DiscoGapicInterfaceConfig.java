@@ -239,7 +239,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
 
   @Override
   @Nullable
-  public MethodConfig getMethodConfig(com.google.api.tools.framework.model.Method method) {
+  public GapicMethodConfig getMethodConfig(com.google.api.tools.framework.model.Method method) {
     return null;
   }
 

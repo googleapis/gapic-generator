@@ -65,13 +65,13 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   }
 
   @Override
-  public abstract List<? extends MethodConfig> getMethodConfigs();
+  public abstract List<GapicMethodConfig> getMethodConfigs();
 
   @Nullable
   @Override
   public abstract SmokeTestConfig getSmokeTestConfig();
 
-  abstract ImmutableMap<String, ? extends MethodConfig> getMethodConfigMap();
+  abstract ImmutableMap<String, GapicMethodConfig> getMethodConfigMap();
 
   @Override
   public abstract ImmutableMap<String, ImmutableSet<Status.Code>> getRetryCodesDefinition();
@@ -318,8 +318,8 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
 
   /** Returns the GapicMethodConfig for the given method. */
   @Override
-  public MethodConfig getMethodConfig(Method method) {
-    MethodConfig methodConfig = getMethodConfigMap().get(method.getSimpleName());
+  public GapicMethodConfig getMethodConfig(Method method) {
+    GapicMethodConfig methodConfig = getMethodConfigMap().get(method.getSimpleName());
     if (methodConfig == null) {
       throw new IllegalArgumentException(
           "no method config for method '" + method.getFullName() + "'");
@@ -330,8 +330,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   /** Returns the GapicMethodConfig for the given method. */
   @Override
   @Nullable
-  public MethodConfig getMethodConfig(com.google.api.codegen.discovery.Method method) {
-    // TODO(andrealin)
+  public DiscoGapicMethodConfig getMethodConfig(com.google.api.codegen.discovery.Method method) {
     return null;
   }
 
