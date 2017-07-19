@@ -17,6 +17,7 @@ package com.google.api.codegen.configgen;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -128,8 +129,9 @@ public class LanguageGenerator {
       // google.logging.v2 => cloud.google.com/go/logging/apiv2
       // Otherwise, fall back to backup
       if (!isApiGoogleCloud(nameComponents)) {
-        nameComponents.add(0, "google.golang.org");
-        return Joiner.on("/").join(nameComponents);
+        List<String> newComponents = Lists.newArrayList(nameComponents);
+        newComponents.add(0, "google.golang.org");
+        return Joiner.on("/").join(newComponents);
       }
       int size = nameComponents.size();
       return "cloud.google.com/go/"
