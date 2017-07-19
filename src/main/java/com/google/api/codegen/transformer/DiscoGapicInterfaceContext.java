@@ -54,7 +54,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
         featureConfig);
   }
 
-  public static DiscoGapicInterfaceContext create(
+  public static DiscoGapicInterfaceContext createWithInterface(
       Document document,
       String interfaceName,
       GapicProductConfig productConfig,
@@ -97,8 +97,6 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
     }
     return methods;
   }
-
-  public abstract List<Method> getInterfaceMethods();
 
   public abstract String getInterfaceName();
 

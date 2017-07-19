@@ -89,7 +89,7 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
 
     for (String interfaceName : productConfig.getInterfaceConfigMap().keySet()) {
       DiscoGapicInterfaceContext context =
-          DiscoGapicInterfaceContext.create(
+          DiscoGapicInterfaceContext.createWithInterface(
               document,
               interfaceName,
               productConfig,

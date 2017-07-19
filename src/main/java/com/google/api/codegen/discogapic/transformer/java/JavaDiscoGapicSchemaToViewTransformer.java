@@ -203,6 +203,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     if (!schema.properties().isEmpty()
         || (schema.items() != null && !schema.items().properties().isEmpty())) {
       // This is a top-level Schema, so add it to list of file ViewModels for rendering.
+
       messageViewAccumulator.put(context, schemaView.build());
     }
     return schemaView.build();
