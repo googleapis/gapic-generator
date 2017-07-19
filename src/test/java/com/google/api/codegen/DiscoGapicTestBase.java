@@ -75,17 +75,6 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
 
   @Override
   protected Map<String, Doc> run() {
-    try {
-      discoGapicProviders =
-          DiscoGapicGeneratorApi.getProviders(
-              getTestDataLocator().findTestData(discoveryDocFileName).getPath(),
-              gapicConfigFilePaths,
-              null,
-              new LinkedList<String>());
-    } catch (IOException e) {
-      throw new IllegalArgumentException("Problem creating DiscoGapic generator.");
-    }
-
     Map<String, Doc> outputDocs = new LinkedHashMap<>();
 
     for (DiscoGapicProvider provider : discoGapicProviders) {

@@ -21,7 +21,6 @@ import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.VisibilityConfig;
-import com.google.api.codegen.util.TypeTable;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
@@ -87,11 +86,6 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
   }
 
   public abstract ImportTypeTable getImportTypeTable();
-
-  @Override
-  public TypeTable getTypeTable() {
-    return getModelTypeTable().getTypeTable();
-  }
 
   @Override
   public abstract SurfaceNamer getNamer();

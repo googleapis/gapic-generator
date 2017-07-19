@@ -22,7 +22,6 @@ import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Method;
-import com.google.api.codegen.util.TypeTable;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
@@ -54,7 +53,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
         featureConfig);
   }
 
-  public static DiscoGapicInterfaceContext create(
+  public static DiscoGapicInterfaceContext createWithInterface(
       Document document,
       String interfaceName,
       GapicProductConfig productConfig,
@@ -104,11 +103,6 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
 
   @Override
   public abstract SurfaceNamer getNamer();
-
-  @Override
-  public TypeTable getTypeTable() {
-    return getSchemaTypeTable().getTypeTable();
-  }
 
   public abstract FeatureConfig getFeatureConfig();
 

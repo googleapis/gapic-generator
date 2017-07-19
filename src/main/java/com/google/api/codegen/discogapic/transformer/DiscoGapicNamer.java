@@ -83,5 +83,5 @@ public class DiscoGapicNamer extends NameFormatterDelegator {
     return getRequestName(method.id());
   }
 
-  //TODO(andrealin): Naming methods for requests, responses, service name.
+  //TODO(andrealin): Naming methods for responses, service name.
 }

@@ -36,14 +36,14 @@ public interface MethodContext {
 
   SurfaceNamer getNamer();
 
-  <T extends MethodConfig> T getMethodConfig();
+  MethodConfig getMethodConfig();
 
   @Nullable
   FlatteningConfig getFlatteningConfig();
 
   FeatureConfig getFeatureConfig();
 
-  public boolean isFlattenedMethodContext();
+  boolean isFlattenedMethodContext();
 
   Interface getTargetInterface();
 

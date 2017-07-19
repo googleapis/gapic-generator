@@ -97,7 +97,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
    * collector.
    */
   @Nullable
-  public static GapicMethodConfig createMethodConfig(
+  static GapicMethodConfig createMethodConfig(
       DiagCollector diagCollector,
       String language,
       MethodConfigProto methodConfigProto,
@@ -368,11 +368,13 @@ public abstract class GapicMethodConfig extends MethodConfig {
   }
 
   /** Returns true if this method has page streaming configured. */
+  @Override
   public boolean isPageStreaming() {
     return getPageStreaming() != null;
   }
 
   /** Returns true if this method has grpc streaming configured. */
+  @Override
   public boolean isGrpcStreaming() {
     return getGrpcStreaming() != null;
   }
@@ -413,6 +415,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
   }
 
   /** Return the list of "one of" instances associated with the fields. */
+  @Override
   public Iterable<Oneof> getOneofs() {
     ImmutableSet.Builder<Oneof> answer = ImmutableSet.builder();
 

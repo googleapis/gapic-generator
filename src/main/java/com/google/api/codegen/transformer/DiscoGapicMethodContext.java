@@ -46,33 +46,41 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
         flatteningConfig,
         featureConfig,
         method,
-        methodConfig,
         new DiscoGapicNamer(namer),
+        methodConfig,
         typeTable);
   }
 
+  /** The Discovery Method for which this object is a transformation context. */
   public abstract Method getMethod();
+
+  public abstract DiscoGapicNamer getDiscoGapicNamer();
 
   @Override
   public abstract DiscoGapicMethodConfig getMethodConfig();
 
+  @Override
   public boolean isFlattenedMethodContext() {
     return getFlatteningConfig() != null;
   }
 
+  @Override
   public Interface getTargetInterface() {
     return GapicInterfaceConfig.getTargetInterface(
         getInterface(), getMethodConfig().getRerouteToGrpcInterface());
   }
 
+  @Override
   public InterfaceConfig getInterfaceConfig() {
     return getProductConfig().getInterfaceConfig(getInterface());
   }
 
+  @Override
   public SingleResourceNameConfig getSingleResourceNameConfig(String entityName) {
     return getProductConfig().getSingleResourceNameConfig(entityName);
   }
 
+  @Override
   public DiscoGapicMethodContext cloneWithEmptyTypeTable() {
     return create(
         getSurfaceTransformerContext(),
@@ -85,8 +93,6 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
         getFlatteningConfig(),
         getFeatureConfig());
   }
-
-  public abstract DiscoGapicNamer getDiscoGapicNamer();
 
   @Override
   public abstract SchemaTypeTable getTypeTable();

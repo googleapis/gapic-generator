@@ -45,9 +45,9 @@ public interface InterfaceConfig {
 
   String getManualDoc();
 
-  <T extends MethodConfig> T getMethodConfig(Method method);
+  MethodConfig getMethodConfig(Method method);
 
-  <T extends MethodConfig> T getMethodConfig(com.google.api.codegen.discovery.Method method);
+  MethodConfig getMethodConfig(com.google.api.codegen.discovery.Method method);
 
   boolean hasPageStreamingMethods();
 

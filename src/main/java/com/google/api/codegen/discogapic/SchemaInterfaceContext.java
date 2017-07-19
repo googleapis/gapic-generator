@@ -22,7 +22,6 @@ import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.SchemaTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.util.TypeTable;
 import com.google.auto.value.AutoValue;
 import java.util.Comparator;
 import javax.annotation.Nullable;
@@ -66,11 +65,6 @@ public abstract class SchemaInterfaceContext implements InterfaceContext {
   @Override
   public SurfaceNamer getNamer() {
     return getDocContext().getNamer();
-  }
-
-  @Override
-  public TypeTable getTypeTable() {
-    return getSchemaTypeTable().getTypeTable();
   }
 
   @Override
