@@ -43,7 +43,7 @@ public interface MethodContext {
 
   FeatureConfig getFeatureConfig();
 
-  public boolean isFlattenedMethodContext();
+  boolean isFlattenedMethodContext();
 
   Interface getTargetInterface();
 
