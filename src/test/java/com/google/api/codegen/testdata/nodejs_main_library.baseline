@@ -175,6 +175,7 @@ function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
     'addComments',
     'getBookFromArchive',
     'getBookFromAnywhere',
+    'getBookFromAbsolutelyAnywhere',
     'updateBookIndex',
     'streamShelves',
     'streamBooks',
@@ -1456,6 +1457,53 @@ LibraryServiceClient.prototype.getBookFromAnywhere = function(request, options, 
   }
 
   return this._getBookFromAnywhere(request, options, callback);
+};
+
+/**
+ * Test proper OneOf-Any resource name mapping
+ *
+ * @param {Object} request
+ *   The request object that will be sent.
+ * @param {string} request.name
+ *   The name of the book to retrieve.
+ * @param {Object=} options
+ *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+ *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+ * @param {function(?Error, ?Object)=} callback
+ *   The function which will be called with the result of the API call.
+ *
+ *   The second parameter to the callback is an object representing [BookFromAnywhere]{@link BookFromAnywhere}.
+ * @return {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [BookFromAnywhere]{@link BookFromAnywhere}.
+ *   The promise has a method named "cancel" which cancels the ongoing API call.
+ *
+ * @example
+ *
+ * var library = require('@google-cloud/library');
+ *
+ * var client = library.v1({
+ *   // optional auth parameters.
+ * });
+ *
+ * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+ * client.getBookFromAbsolutelyAnywhere({name: formattedName}).then(function(responses) {
+ *     var response = responses[0];
+ *     // doThingsWith(response)
+ * })
+ * .catch(function(err) {
+ *     console.error(err);
+ * });
+ */
+LibraryServiceClient.prototype.getBookFromAbsolutelyAnywhere = function(request, options, callback) {
+  if (options instanceof Function && callback === undefined) {
+    callback = options;
+    options = {};
+  }
+  if (options === undefined) {
+    options = {};
+  }
+
+  return this._getBookFromAbsolutelyAnywhere(request, options, callback);
 };
 
 /**

@@ -327,6 +327,10 @@ module Library
           @library_service_stub.method(:get_book_from_anywhere),
           defaults["get_book_from_anywhere"]
         )
+        @get_book_from_absolutely_anywhere = Google::Gax.create_api_call(
+          @library_service_stub.method(:get_book_from_absolutely_anywhere),
+          defaults["get_book_from_absolutely_anywhere"]
+        )
         @update_book_index = Google::Gax.create_api_call(
           @library_service_stub.method(:update_book_index),
           defaults["update_book_index"]
@@ -948,6 +952,32 @@ module Library
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::GetBookFromAnywhereRequest)
         @get_book_from_anywhere.call(req, options)
+      end
+
+      # Test proper OneOf-Any resource name mapping
+      #
+      # @param name [String]
+      #   The name of the book to retrieve.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @return [Google::Example::Library::V1::BookFromAnywhere]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library/v1"
+      #
+      #   library_service_client = Library::V1::LibraryServiceClient.new
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #   response = library_service_client.get_book_from_absolutely_anywhere(formatted_name)
+
+      def get_book_from_absolutely_anywhere \
+          name,
+          options: nil
+        req = {
+          name: name
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Example::Library::V1::GetBookFromAbsolutelyAnywhereRequest)
+        @get_book_from_absolutely_anywhere.call(req, options)
       end
 
       # Updates the index of a book.
