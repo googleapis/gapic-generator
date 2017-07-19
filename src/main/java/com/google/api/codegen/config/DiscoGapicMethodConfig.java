@@ -69,7 +69,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
    * collector.
    */
   @Nullable
-  public static DiscoGapicMethodConfig createDiscoGapicMethodConfig(
+  static DiscoGapicMethodConfig createDiscoGapicMethodConfig(
       DiagCollector diagCollector,
       String language,
       MethodConfigProto methodConfigProto,

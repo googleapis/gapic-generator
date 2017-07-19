@@ -51,46 +51,6 @@ import org.joda.time.Duration;
 public abstract class GapicMethodConfig extends MethodConfig {
   public abstract Method getMethod();
 
-  @Nullable
-  public abstract PageStreamingConfig getPageStreaming();
-
-  @Nullable
-  public abstract GrpcStreamingConfig getGrpcStreaming();
-
-  @Nullable
-  public abstract ImmutableList<FlatteningConfig> getFlatteningConfigs();
-
-  public abstract String getRetryCodesConfigName();
-
-  public abstract String getRetrySettingsConfigName();
-
-  public abstract Duration getTimeout();
-
-  public abstract Iterable<FieldConfig> getRequiredFieldConfigs();
-
-  public abstract Iterable<FieldConfig> getOptionalFieldConfigs();
-
-  public abstract ResourceNameTreatment getDefaultResourceNameTreatment();
-
-  @Nullable
-  public abstract BatchingConfig getBatching();
-
-  public abstract boolean hasRequestObjectMethod();
-
-  public abstract ImmutableMap<String, String> getFieldNamePatterns();
-
-  public abstract List<String> getSampleCodeInitFields();
-
-  @Nullable
-  public abstract String getRerouteToGrpcInterface();
-
-  public abstract VisibilityConfig getVisibility();
-
-  public abstract ReleaseLevel getReleaseLevel();
-
-  @Nullable
-  public abstract LongRunningConfig getLongRunningConfig();
-
   /**
    * Creates an instance of GapicMethodConfig based on MethodConfigProto, linking it up with the
    * provided method. On errors, null will be returned, and diagnostics are reported to the diag
@@ -251,7 +211,6 @@ public abstract class GapicMethodConfig extends MethodConfig {
       return null;
     } else {
       return new AutoValue_GapicMethodConfig(
-          method,
           pageStreaming,
           grpcStreaming,
           flattening,
@@ -268,12 +227,13 @@ public abstract class GapicMethodConfig extends MethodConfig {
           rerouteToGrpcInterface,
           visibility,
           releaseLevel,
-          longRunningConfig);
+          longRunningConfig,
+          method);
     }
   }
 
   @Nullable
-  static ImmutableList<FlatteningConfig> createFlattening(
+  private static ImmutableList<FlatteningConfig> createFlattening(
       DiagCollector diagCollector,
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
@@ -303,7 +263,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
     return flatteningGroupsBuilder.build();
   }
 
-  static Iterable<FieldType> getRequiredFields(
+  private static Iterable<FieldType> getRequiredFields(
       DiagCollector diagCollector, Method method, List<String> requiredFieldNames) {
     ImmutableList.Builder<FieldType> fieldsBuilder = ImmutableList.builder();
     for (String fieldName : requiredFieldNames) {
@@ -322,7 +282,8 @@ public abstract class GapicMethodConfig extends MethodConfig {
     return fieldsBuilder.build();
   }
 
-  static Iterable<FieldType> getOptionalFields(Method method, List<String> requiredFieldNames) {
+  private static Iterable<FieldType> getOptionalFields(
+      Method method, List<String> requiredFieldNames) {
     ImmutableList.Builder<FieldType> fieldsBuilder = ImmutableList.builder();
     for (Field field : method.getInputType().getMessageType().getFields()) {
       if (requiredFieldNames.contains(field.getSimpleName())) {
@@ -333,7 +294,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
     return fieldsBuilder.build();
   }
 
-  static Iterable<FieldConfig> createFieldNameConfigs(
+  private static Iterable<FieldConfig> createFieldNameConfigs(
       DiagCollector diagCollector,
       ResourceNameMessageConfigs messageConfigs,
       ResourceNameTreatment defaultResourceNameTreatment,
@@ -367,11 +328,13 @@ public abstract class GapicMethodConfig extends MethodConfig {
   }
 
   /** Returns true if this method has page streaming configured. */
+  @Override
   public boolean isPageStreaming() {
     return getPageStreaming() != null;
   }
 
   /** Returns true if this method has grpc streaming configured. */
+  @Override
   public boolean isGrpcStreaming() {
     return getGrpcStreaming() != null;
   }
@@ -412,6 +375,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
   }
 
   /** Return the list of "one of" instances associated with the fields. */
+  @Override
   public Iterable<Oneof> getOneofs() {
     ImmutableSet.Builder<Oneof> answer = ImmutableSet.builder();
 
