@@ -58,6 +58,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
   }
 
   @Nullable
+  @Override
   public GrpcStreamingConfig getGrpcStreaming() {
     return null;
   }

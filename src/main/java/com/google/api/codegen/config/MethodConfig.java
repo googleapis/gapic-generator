@@ -33,6 +33,8 @@ import org.joda.time.Duration;
 /**
  * MethodConfig represents the code-gen config for a method, and includes the specification of
  * features like page streaming and parameter flattening.
+ *
+ * <p>Subclasses should have a field to contain the method for which this a config.
  */
 public abstract class MethodConfig {
 
