@@ -25,7 +25,10 @@ import java.util.Map;
  * methods for importing instances of FieldType.
  */
 public interface ImportTypeTable extends TypeFormatter {
-  /** Returns the enum value string */
+  /** Returns the underlying TypeTable. */
+  TypeTable getTypeTable();
+
+  /** Returns the enum value string. */
   String getEnumValue(FieldType type, String value);
 
   /** Creates a new ModelTypeTable of the same concrete type, but with an empty import set. */
@@ -89,6 +92,4 @@ public interface ImportTypeTable extends TypeFormatter {
 
   /** Returns the imports accumulated so far. */
   Map<String, TypeAlias> getImports();
-
-  TypeTable getTypeTable();
 }
