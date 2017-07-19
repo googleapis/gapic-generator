@@ -353,11 +353,6 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getApiWrapperClassImplName(Interface apiInterface) {
-    return publicClassName(Name.upperCamel(apiInterface.getSimpleName(), "ClientImpl"));
-  }
-
-  @Override
   public String getPageStreamingDescriptorConstName(Method method) {
     return inittedConstantName(Name.upperCamel(method.getSimpleName()));
   }

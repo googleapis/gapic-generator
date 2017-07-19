@@ -609,8 +609,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The name of the implementation class that implements a particular proto interface. */
-  public String getApiWrapperClassImplName(Interface apiInterface) {
-    return getNotImplementedString("SurfaceNamer.getApiWrapperClassImplName");
+  public String getApiWrapperClassImplName(InterfaceConfig interfaceConfig) {
+    return publicClassName(Name.upperCamel(getInterfaceName(interfaceConfig), "ClientImpl"));
   }
 
   /** The name of the class that implements snippets for a particular proto interface. */
