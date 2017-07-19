@@ -223,6 +223,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
 
     ImmutableList.Builder<VersionIndexRequireView> requireViews = ImmutableList.builder();
     Iterable<Interface> interfaces = new InterfaceView().getElementIterable(model);
+    List<String> modules = namer.getApiModules();
     boolean hasMultipleServices = Iterables.size(interfaces) > 1;
     for (Interface apiInterface : interfaces) {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
@@ -231,16 +232,21 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
       if (hasMultipleServices) {
         clientName += "::" + serviceName;
       }
+      String topLevelNamespace = Joiner.on("::").join(modules.subList(0, modules.size() - 1));
       requireViews.add(
           VersionIndexRequireView.newBuilder()
               .clientName(clientName)
               .serviceName(serviceName)
               .fileName(versionPackagePath(namer))
+              .topLevelNamespace(topLevelNamespace)
               .doc(
                   serviceTransformer.generateServiceDoc(
                       context, generateApiMethods(context).get(0)))
               .build());
     }
+
+    String versionFileBasePath =
+        namer.packageFilePathPiece(Name.upperCamel(modules.get(modules.size() - 2)));
 
     return VersionIndexView.newBuilder()
         .apiVersion(packageConfig.apiVersion())
@@ -253,6 +259,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
         .outputPath("lib" + File.separator + topLevelPackagePath(namer) + ".rb")
         .modules(generateModuleViews(model, productConfig, false))
         .type(VersionIndexType.TopLevelIndex)
+        .versionFileBasePath(versionFileBasePath)
         .build();
   }
 

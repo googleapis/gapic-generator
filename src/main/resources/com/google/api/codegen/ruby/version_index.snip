@@ -15,7 +15,7 @@
   @default
   @end
   @if index.modules
-    {@modules(index.modules.iterator, index.type, clients(index))}
+    {@modules(index.modules.iterator, index.type, body(index))}
   @end
 @end
 
@@ -89,7 +89,11 @@
   $ gem install {@metadata.identifier}
 @end
 
-@private clients(index)
+@private body(index)
+  @if constants(index)
+    {@constants(index)}
+
+  @end
   @join requireView : index.requireViews on BREAK.add(BREAK)
     @if index.hasMultipleServices
       module {@requireView.serviceName}
@@ -98,6 +102,27 @@
     @else
       {@client(index, requireView)}
     @end
+  @end
+@end
+
+@private constants(index)
+  @switch index.type.toString
+  @case "TopLevelIndex"
+    VERSION_MATCHER = /
+        ([vV]\d+) # Major version eg: v1
+        ([pP]\d+)? # Point release eg: p2
+        (([aA]lpha|[bB]eta)\d*)? # Release level eg: alpha3
+    /x
+
+    FILE_DIR = File.realdirpath(Pathname.new(__FILE__).join("..").join("{@index.versionFileBasePath}"))
+
+    AVAILABLE_VERSIONS = Dir["#{FILE_DIR}/*"]
+      .select {|file| File.directory?(file)}
+      .select {|dir| VERSION_MATCHER.match(File.basename(dir))}
+      .select {|dir| File.exist?(dir + ".rb")}
+      .map {|dir| File.basename(dir)}
+
+  @default
   @end
 @end
 
@@ -134,13 +159,21 @@
   @#   is used.
   {@initMethodComments()}
   def self.new(*args, version: :{@index.apiVersion}, **kwargs)
-    case version.to_s.downcase
-    when "{@index.apiVersion}"
-      require "{@requireView.fileName}"
-      {@requireView.clientName}.new(*args, **kwargs)
-    else
-      raise ArgumentError.new "The version #{version}, was not is not supported. " @\
-        "The version that is supported is '{@index.apiVersion}'."
+    # Check if the version provided is available.
+    unless AVAILABLE_VERSIONS.include?(version.to_s.downcase)
+      raise "The version: #{version} is not available. The available versions " @\
+        "are: [#{AVAILABLE_VERSIONS.join(", ")}]"
     end
+
+    require "#{FILE_DIR}/#{version.to_s.downcase}"
+    version_module = {@requireView.topLevelNamespace}
+      .constants
+      .select {|sym| sym.to_s.downcase == version.to_s.downcase}
+      .first
+    @if index.hasMultipleServices
+      {@requireView.topLevelNamespace}.const_get(version_module)::{@requireView.serviceName}.new(*args, **kwargs)
+    @else
+      {@requireView.topLevelNamespace}.const_get(version_module).new(*args, **kwargs)
+    @end
   end
 @end

@@ -117,7 +117,7 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
   private List<ImportFileView> generateTestAppImports(GapicInterfaceContext context) {
     ImmutableList.Builder<ImportFileView> imports = ImmutableList.builder();
     SurfaceNamer namer = context.getNamer();
-    imports.add(createImport(namer.getServiceFileName(context.getInterfaceConfig())));
+    imports.add(createImport(namer.getVersionIndexFileImportName()));
     for (String filename : generateImportFilenames(context)) {
       imports.add(createImport(namer.getServiceFileImportName(filename)));
     }
@@ -132,5 +132,19 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
     fileImport.moduleName(name);
     fileImport.types(ImmutableList.<ImportTypeView>of());
     return fileImport.build();
+  }
+
+  public ImportSectionView generateSmokeTestImportSection(GapicInterfaceContext context) {
+    List<ImportFileView> none = ImmutableList.of();
+    ImportSectionView.Builder importSection = ImportSectionView.newBuilder();
+    importSection.standardImports(generateTestStandardImports());
+    importSection.externalImports(none);
+    importSection.appImports(generateSmokeTestAppImports(context));
+    importSection.serviceImports(none);
+    return importSection.build();
+  }
+
+  private List<ImportFileView> generateSmokeTestAppImports(GapicInterfaceContext context) {
+    return ImmutableList.of(createImport(context.getNamer().getTopLevelIndexFileImportName()));
   }
 }

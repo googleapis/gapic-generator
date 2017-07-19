@@ -18,7 +18,7 @@ require "minitest/spec"
 
 require "google/gax"
 
-require "google/example/v1/decrementer_service_client"
+require "google/example/v1"
 require "multiple_services_services_pb"
 
 class CustomTestError < StandardError; end
@@ -66,7 +66,7 @@ describe Google::Example::V1::DecrementerServiceClient do
       mock_stub = MockGrpcClientStub.new(:decrement, mock_method)
 
       Google::Cloud::Example::V1::DecrementerService::Stub.stub(:new, mock_stub) do
-        client = Google::Example::V1::DecrementerServiceClient.new
+        client = Google::Example::V1::Decrementer.new
 
         # Call method
         response = client.decrement
@@ -84,7 +84,7 @@ describe Google::Example::V1::DecrementerServiceClient do
       mock_stub = MockGrpcClientStub.new(:decrement, mock_method)
 
       Google::Cloud::Example::V1::DecrementerService::Stub.stub(:new, mock_stub) do
-        client = Google::Example::V1::DecrementerServiceClient.new
+        client = Google::Example::V1::Decrementer.new
 
         # Call method
         err = assert_raises Google::Gax::GaxError do
@@ -117,7 +117,7 @@ require "minitest/spec"
 
 require "google/gax"
 
-require "google/example/v1/incrementer_service_client"
+require "google/example/v1"
 require "multiple_services_services_pb"
 
 class CustomTestError < StandardError; end
@@ -165,7 +165,7 @@ describe Google::Example::V1::IncrementerServiceClient do
       mock_stub = MockGrpcClientStub.new(:increment, mock_method)
 
       Google::Cloud::Example::V1::IncrementerService::Stub.stub(:new, mock_stub) do
-        client = Google::Example::V1::IncrementerServiceClient.new
+        client = Google::Example::V1::Incrementer.new
 
         # Call method
         response = client.increment
@@ -183,7 +183,7 @@ describe Google::Example::V1::IncrementerServiceClient do
       mock_stub = MockGrpcClientStub.new(:increment, mock_method)
 
       Google::Cloud::Example::V1::IncrementerService::Stub.stub(:new, mock_stub) do
-        client = Google::Example::V1::IncrementerServiceClient.new
+        client = Google::Example::V1::Incrementer.new
 
         # Call method
         err = assert_raises Google::Gax::GaxError do
