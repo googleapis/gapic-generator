@@ -36,6 +36,7 @@ import com.google.common.collect.Sets;
 import java.util.List;
 import java.util.Set;
 
+/** Transforms a Model into a GAPIC surface for the gRPC docs in Python. */
 public class PythonGapicSurfaceDocTransformer implements ModelToViewTransformer {
   private static final String DOC_TEMPLATE_FILENAME = "py/message.snip";
 
@@ -86,7 +87,7 @@ public class PythonGapicSurfaceDocTransformer implements ModelToViewTransformer 
     doc.templateFileName(DOC_TEMPLATE_FILENAME);
 
     String filename = file.getSimpleName();
-    doc.outputPath(filename.substring(0, filename.length() - ".proto".length()) + "_pb2.py");
+    doc.outputPath(filename.substring(0, filename.lastIndexOf('.')) + "_pb2.py");
 
     ImportSectionView importSection =
         importSectionTransformer.generateImportSection(typeTable.getImports());

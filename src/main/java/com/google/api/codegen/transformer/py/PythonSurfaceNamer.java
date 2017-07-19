@@ -245,7 +245,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   @Override
   public String getProtoFileName(ProtoFile file) {
     String protoFilename = file.getSimpleName();
-    return protoFilename.substring(0, protoFilename.length() - "proto".length()) + "py";
+    return protoFilename.substring(0, protoFilename.lastIndexOf('.')) + ".py";
   }
 
   @Override
