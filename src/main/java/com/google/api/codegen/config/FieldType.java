@@ -14,8 +14,8 @@
  */
 package com.google.api.codegen.config;
 
-import static com.google.api.codegen.config.FieldType.ModelType.DISCOVERY;
-import static com.google.api.codegen.config.FieldType.ModelType.PROTO;
+import static com.google.api.codegen.config.FieldType.ApiSource.DISCOVERY;
+import static com.google.api.codegen.config.FieldType.ApiSource.PROTO;
 
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.discovery.Schema.Type;
@@ -32,7 +32,7 @@ import javax.annotation.Nullable;
  */
 public class FieldType {
 
-  public enum ModelType {
+  public enum ApiSource {
     DISCOVERY,
     PROTO;
   }
@@ -41,29 +41,29 @@ public class FieldType {
 
   @Nullable Schema schemaField;
 
-  public final ModelType modelType;
+  public final ApiSource apiSource;
 
   /* Create a FieldType object from a non-null Field object. */
   public FieldType(Field protoBasedField) {
     Preconditions.checkNotNull(protoBasedField);
     this.protoBasedField = protoBasedField;
-    modelType = PROTO;
+    apiSource = PROTO;
   }
 
   /* Create a FieldType object from a non-null Schema object. */
   public FieldType(Schema schemaField) {
     Preconditions.checkNotNull(schemaField);
     this.schemaField = schemaField;
-    modelType = DISCOVERY;
+    apiSource = DISCOVERY;
   }
 
   /* @return the type of the underlying model resource. */
-  public ModelType getModelType() {
-    return modelType;
+  public ApiSource getApiSource() {
+    return apiSource;
   }
 
   public String getSimpleName() {
-    switch (modelType) {
+    switch (apiSource) {
       case PROTO:
         return protoBasedField.getSimpleName();
       case DISCOVERY:
@@ -86,7 +86,7 @@ public class FieldType {
   }
 
   public String getFullName() {
-    switch (getModelType()) {
+    switch (getApiSource()) {
       case PROTO:
         return protoBasedField.getFullName();
       case DISCOVERY:
@@ -98,7 +98,7 @@ public class FieldType {
 
   /* @return if the underlying resource is a map type. */
   public boolean isMap() {
-    switch (getModelType()) {
+    switch (getApiSource()) {
       case PROTO:
         return protoBasedField.getType().isMap();
       case DISCOVERY:
@@ -110,7 +110,7 @@ public class FieldType {
 
   /* @return the resource type of the map key. */
   public FieldType getMapKeyField() {
-    switch (getModelType()) {
+    switch (getApiSource()) {
       case PROTO:
         return new FieldType(protoBasedField.getType().getMapKeyField());
       case DISCOVERY:
@@ -122,7 +122,7 @@ public class FieldType {
 
   /* @return the resource type of the map value. */
   public FieldType getMapValueField() {
-    switch (getModelType()) {
+    switch (getApiSource()) {
       case PROTO:
         return new FieldType(protoBasedField.getType().getMapValueField());
       case DISCOVERY:
@@ -134,7 +134,7 @@ public class FieldType {
 
   /* @return if the underlying resource is a proto Messsage. */
   public boolean isMessage() {
-    switch (getModelType()) {
+    switch (getApiSource()) {
       case PROTO:
         return protoBasedField.getType().isMessage();
       case DISCOVERY:
@@ -146,7 +146,7 @@ public class FieldType {
 
   /* @return if the underlying resource can be repeated in the parent resource. */
   public boolean isRepeated() {
-    switch (getModelType()) {
+    switch (getApiSource()) {
       case PROTO:
         return protoBasedField.isRepeated();
       case DISCOVERY:
@@ -158,7 +158,7 @@ public class FieldType {
 
   /* @return the full name of the parent. */
   public String getParentFullName() {
-    switch (getModelType()) {
+    switch (getApiSource()) {
       case PROTO:
         return protoBasedField.getParent().getFullName();
       case DISCOVERY:
@@ -170,7 +170,7 @@ public class FieldType {
 
   /* @return the cardinality of the resource. */
   public Cardinality getCardinality() {
-    switch (getModelType()) {
+    switch (getApiSource()) {
       case PROTO:
         return protoBasedField.getType().getCardinality();
       case DISCOVERY:
@@ -181,7 +181,7 @@ public class FieldType {
 
   /* @return if this resource is an enum. */
   public boolean isEnum() {
-    switch (getModelType()) {
+    switch (getApiSource()) {
       case PROTO:
         return protoBasedField.getType().isEnum();
       case DISCOVERY:
@@ -193,7 +193,7 @@ public class FieldType {
 
   /* @return if this is a primitive type. */
   public boolean isPrimitive() {
-    switch (getModelType()) {
+    switch (getApiSource()) {
       case PROTO:
         return protoBasedField.getType().isPrimitive();
       case DISCOVERY:
@@ -213,11 +213,11 @@ public class FieldType {
     }
 
     FieldType other = (FieldType) o;
-    if (!this.getModelType().equals(other.getModelType())) {
+    if (!this.getApiSource().equals(other.getApiSource())) {
       return false;
     }
 
-    switch (this.getModelType()) {
+    switch (this.getApiSource()) {
       case DISCOVERY:
         return this.getSchemaField().equals(other.getSchemaField());
       case PROTO:
@@ -230,7 +230,7 @@ public class FieldType {
   @Override
   public String toString() {
     String fieldString = "";
-    switch (modelType) {
+    switch (apiSource) {
       case DISCOVERY:
         fieldString = getSchemaField().toString();
         break;
@@ -238,7 +238,7 @@ public class FieldType {
         fieldString = getProtoBasedField().toString();
         break;
     }
-    return String.format("FieldType (%s): {%s}", modelType, fieldString);
+    return String.format("FieldType (%s): {%s}", apiSource, fieldString);
   }
 
   public boolean isEmpty() {

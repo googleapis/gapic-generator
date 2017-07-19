@@ -192,7 +192,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The function name to set the given proto field. */
   public String getFieldSetFunctionName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
-    switch (fieldConfig.getField().getModelType()) {
+    switch (fieldConfig.getField().getApiSource()) {
       case PROTO:
         Field field = fieldConfig.getField().getProtoBasedField();
         if (featureConfig.useResourceNameFormatOption(fieldConfig)) {
@@ -245,7 +245,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The function name to add an element to a map or repeated field. */
   public String getFieldAddFunctionName(FieldType field) {
-    switch (field.getModelType()) {
+    switch (field.getApiSource()) {
       case PROTO:
         return getFieldAddFunctionName(
             field.getProtoBasedField().getType(), Name.from(field.getSimpleName()));
@@ -268,7 +268,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The function name to set a field that is a resource name class. */
   public String getResourceNameFieldSetFunctionName(FieldConfig fieldConfig) {
-    switch (fieldConfig.getField().getModelType()) {
+    switch (fieldConfig.getField().getApiSource()) {
       case PROTO:
         TypeRef type = fieldConfig.getField().getProtoBasedField().getType();
         Name identifier = Name.from(fieldConfig.getField().getSimpleName());
@@ -295,7 +295,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   public String getFullNameForElementType(FieldType type) {
-    switch (type.getModelType()) {
+    switch (type.getApiSource()) {
       case PROTO:
         getModelTypeFormatter().getFullNameForElementType(type.getProtoBasedField().getType());
       case DISCOVERY:
@@ -854,7 +854,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The type name for the method param */
   public String getParamTypeName(ImportTypeTable typeTable, FieldType type) {
-    switch (type.getModelType()) {
+    switch (type.getApiSource()) {
       case PROTO:
         return getParamTypeName((ModelTypeTable) typeTable, type.getProtoBasedField().getType());
       default:
@@ -1326,7 +1326,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** Provides the doc lines for the given field in the current language. */
   public List<String> getDocLines(FieldType field) {
-    switch (field.getModelType()) {
+    switch (field.getApiSource()) {
       case PROTO:
         return getDocLines(DocumentationUtil.getScopedDescription(field.getProtoBasedField()));
       case DISCOVERY:
@@ -1368,7 +1368,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The name of a type with with qualifying articles and descriptions. */
   public String getTypeNameDoc(ImportTypeTable typeTable, FieldType type) {
-    switch (type.getModelType()) {
+    switch (type.getApiSource()) {
       case PROTO:
         return getTypeNameDoc(typeTable, type.getProtoBasedField().getType());
       case DISCOVERY:
@@ -1553,7 +1553,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** Is this type a primitive, according to target language. */
   public boolean isPrimitive(FieldType type) {
 
-    switch (type.getModelType()) {
+    switch (type.getApiSource()) {
       case PROTO:
         return isPrimitive(type.getProtoBasedField().getType());
       case DISCOVERY:
