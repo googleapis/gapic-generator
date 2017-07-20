@@ -211,6 +211,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
       return null;
     } else {
       return new AutoValue_GapicMethodConfig(
+          method,
           pageStreaming,
           grpcStreaming,
           flattening,
@@ -227,8 +228,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
           rerouteToGrpcInterface,
           visibility,
           releaseLevel,
-          longRunningConfig,
-          method);
+          longRunningConfig);
     }
   }
 
