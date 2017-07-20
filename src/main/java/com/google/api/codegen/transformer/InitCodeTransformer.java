@@ -124,7 +124,7 @@ public class InitCodeTransformer {
       String expectedValueIdentifier = getVariableName(methodContext, fieldItemTree);
       String expectedTransformFunction = null;
       if (methodContext.getFeatureConfig().useResourceNameFormatOption(fieldConfig)
-          && fieldConfig.hasDifferentMessageResourceNameConfig()) {
+          && fieldConfig.requiresParamTransformation()) {
         expectedTransformFunction =
             namer.getResourceOneofCreateMethod(methodContext.getTypeTable(), fieldConfig);
       }

@@ -1081,8 +1081,8 @@ public class LibraryClientTest {
 
       client.getBookFromAbsolutelyAnywhere(name);
       Assert.fail("No exception raised");
-    } catch (ApiException e) {
-      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
+    } catch (GrpcApiException e) {
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode().getCode());
     }
   }
 
