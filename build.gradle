@@ -200,16 +200,14 @@ sourceSets {
   }
 }
 
-task setupProtocEnvironment{
-    doLast {
-        def protocPath = project.configurations.protobufToolsLocator_protoc.resolve().getAt(0)
-
-        if (protocPath == null) {
-            throw new RuntimeException("protoc path is null")
-        }
-
-        test.setEnvironment(PROTOC_COMPILER: protocPath)
+task setupProtocEnvironment {
+  doLast {
+    def protocPath = project.configurations.protobufToolsLocator_protoc.resolve().getAt(0)
+    if (protocPath == null) {
+      throw new RuntimeException("protoc path is null")
     }
+    test.setEnvironment(PROTOC_COMPILER: protocPath)
+  }
 }
 
 test.dependsOn setupProtocEnvironment
