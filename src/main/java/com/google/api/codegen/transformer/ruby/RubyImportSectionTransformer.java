@@ -117,7 +117,12 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
   private List<ImportFileView> generateTestAppImports(GapicInterfaceContext context) {
     ImmutableList.Builder<ImportFileView> imports = ImmutableList.builder();
     SurfaceNamer namer = context.getNamer();
-    imports.add(createImport(namer.getVersionIndexFileImportName()));
+    imports.add(createImport(namer.getTopLevelIndexFileImportName()));
+    // Import the client class directly so the client class is in scope for the static class methods
+    // used in the in the init code such as the path methods. This is not necessary for method
+    // samples since the client is initialized before the init code, and the initialization
+    // requires the client class file.
+    imports.add(createImport(namer.getServiceFileName(context.getInterfaceConfig())));
     for (String filename : generateImportFilenames(context)) {
       imports.add(createImport(namer.getServiceFileImportName(filename)));
     }

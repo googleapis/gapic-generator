@@ -19,6 +19,7 @@ import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
@@ -59,14 +60,17 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private static String UNIT_TEST_TEMPLATE_FILE = "ruby/test.snip";
 
   private final GapicCodePathMapper pathMapper;
+  private PackageMetadataConfig packageConfig;
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new RubyImportSectionTransformer());
   private final RubyImportSectionTransformer importSectionTransformer =
       new RubyImportSectionTransformer();
   private final ValueProducer valueProducer = new StandardValueProducer();
 
-  public RubyGapicSurfaceTestTransformer(GapicCodePathMapper rubyPathMapper) {
+  public RubyGapicSurfaceTestTransformer(
+      GapicCodePathMapper rubyPathMapper, PackageMetadataConfig packageConfig) {
     this.pathMapper = rubyPathMapper;
+    this.packageConfig = packageConfig;
   }
 
   @Override
@@ -102,6 +106,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
               .testClass(createUnitTestClassView(context, packageHasMultipleServices))
               .fileHeader(
                   fileHeaderTransformer.generateFileHeader(productConfig, importSection, namer))
+              .apiVersion(packageConfig.apiVersion())
               .build());
     }
     return views.build();
@@ -234,6 +239,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
     testClass.requireProjectId(
         testCaseTransformer.requireProjectIdInSmokeTest(
             apiMethodView.initCode(), context.getNamer()));
+    testClass.apiVersion(packageConfig.apiVersion());
 
     FileHeaderView fileHeader =
         fileHeaderTransformer.generateFileHeader(

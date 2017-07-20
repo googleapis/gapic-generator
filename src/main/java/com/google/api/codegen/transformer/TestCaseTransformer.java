@@ -156,7 +156,7 @@ public class TestCaseTransformer {
         .fullyQualifiedServiceClassName(
             namer.getFullyQualifiedApiWrapperClassName(methodContext.getInterfaceConfig()))
         .fullyQualifiedAliasedServiceClassName(
-            namer.getVersionAliasedApiClassName(
+            namer.getTopLevelAliasedApiClassName(
                 methodContext.getInterfaceConfig(), packageHasMultipleServices))
         .clientMethodName(clientMethodName)
         .mockGrpcStubTypeName(namer.getMockGrpcServiceImplName(methodContext.getTargetInterface()))

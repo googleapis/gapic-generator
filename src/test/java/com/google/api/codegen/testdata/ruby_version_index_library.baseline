@@ -50,17 +50,11 @@
 # [Product Documentation]: https://cloud.google.com/library
 #
 module Library
-  VERSION_MATCHER = /
-      ([vV]\d+) # Major version eg: v1
-      ([pP]\d+)? # Point release eg: p2
-      (([aA]lpha|[bB]eta)\d*)? # Release level eg: alpha3
-  /x
-
   FILE_DIR = File.realdirpath(Pathname.new(__FILE__).join("..").join("library"))
 
   AVAILABLE_VERSIONS = Dir["#{FILE_DIR}/*"]
     .select {|file| File.directory?(file)}
-    .select {|dir| VERSION_MATCHER.match(File.basename(dir))}
+    .select {|dir| Google::Gax::VERSION_MATCHER.match(File.basename(dir))}
     .select {|dir| File.exist?(dir + ".rb")}
     .map {|dir| File.basename(dir)}
 

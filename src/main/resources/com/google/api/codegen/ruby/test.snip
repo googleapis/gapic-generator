@@ -7,7 +7,7 @@
 
   {@helpers()}
 
-  {@testClass(apiTest.testClass)}
+  {@testClass(apiTest.apiVersion, apiTest.testClass)}
 @end
 
 @private header(fileHeader)
@@ -53,61 +53,61 @@
   end
 @end
 
-@private testClass(testClass)
+@private testClass(apiVersion, testClass)
   describe {@testClass.apiClassName} do
     @join test : testClass.testCases
 
       describe '{@test.clientMethodName}' do
         custom_error = CustomTestError.new "Custom test error for {@test.fullyQualifiedServiceClassName}#{@test.clientMethodName}."
 
-        {@testCase(test)}
+        {@testCase(apiVersion, test)}
 
-        {@errorTestCase(test)}
+        {@errorTestCase(apiVersion, test)}
       end
     @end
   end
 @end
 
-@private testCase(test)
+@private testCase(apiVersion, test)
   @switch test.grpcStreamingType
   @case "NonStreaming"
     @switch test.clientMethodType
     @case "RequestObjectMethod"
-      {@requestObjectTestCase(test)}
+      {@requestObjectTestCase(apiVersion, test)}
     @case "PagedRequestObjectMethod"
-      {@pageIterationTestCase(test)}
+      {@pageIterationTestCase(apiVersion, test)}
     @case "OperationCallableMethod"
-      {@longrunningTestCase(test)}
+      {@longrunningTestCase(apiVersion, test)}
     @default
       $unhandled case: {@test.clientMethodType.toString}$
     @end
   @case "ServerStreaming"
-    {@serverStreamingTest(test)}
+    {@serverStreamingTest(apiVersion, test)}
   @case "BidiStreaming"
-    {@bidiStreamingTest(test)}
+    {@bidiStreamingTest(apiVersion, test)}
   @case "ClientStreaming"
-    {@clientStreamingTest(test)}
+    {@clientStreamingTest(apiVersion, test)}
   @default
     $unhandled case: {@test.grpcStreamingType.toString}$
   @end
 @end
 
-@private errorTestCase(test)
+@private errorTestCase(apiVersion, test)
   @switch test.grpcStreamingType
     @case "NonStreaming"
-      {@simpleErrorTestCase(test)}
+      {@simpleErrorTestCase(apiVersion, test)}
     @case "ServerStreaming"
-      {@simpleErrorTestCase(test)}
+      {@simpleErrorTestCase(apiVersion, test)}
     @case "BidiStreaming"
-      {@clientStreamingErrorTestCase(test)}
+      {@clientStreamingErrorTestCase(apiVersion, test)}
     @case "ClientStreaming"
-       {@clientStreamingErrorTestCase(test)}
+       {@clientStreamingErrorTestCase(apiVersion, test)}
     @default
       $unhandled case: {@test.grpcStreamingType.toString}$
     @end
 @end
 
-@private requestObjectTestCase(test)
+@private requestObjectTestCase(apiVersion, test)
   it 'invokes {@test.clientMethodName} without error' do
     @if initCode(test.initCode)
       @# Create request parameters
@@ -127,7 +127,7 @@
     mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
 
     {@test.grpcStubCallString}.stub(:new, mock_stub) do
-      client = {@test.fullyQualifiedAliasedServiceClassName}.new
+      client = {@test.fullyQualifiedAliasedServiceClassName}.new(version: :{@apiVersion})
 
       @# Call method
       {@methodCallWithResponse(test)}
@@ -142,7 +142,7 @@
   end
 @end
 
-@private pageIterationTestCase(test)
+@private pageIterationTestCase(apiVersion, test)
   it 'invokes {@test.clientMethodName} without error' do
     @if initCode(test.initCode)
       @# Create request parameters
@@ -158,7 +158,7 @@
     mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
 
     {@test.grpcStubCallString}.stub(:new, mock_stub) do
-      client = {@test.fullyQualifiedAliasedServiceClassName}.new
+      client = {@test.fullyQualifiedAliasedServiceClassName}.new(version: :{@apiVersion})
 
       @# Call method
       {@methodCallWithResponse(test)}
@@ -174,7 +174,7 @@
   end
 @end
 
-@private longrunningTestCase(test)
+@private longrunningTestCase(apiVersion, test)
   it 'invokes {@test.clientMethodName} without error' do
     @if initCode(test.initCode)
       @# Create request parameters
@@ -197,7 +197,7 @@
     mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
 
     {@test.grpcStubCallString}.stub(:new, mock_stub) do
-      client = {@test.fullyQualifiedAliasedServiceClassName}.new
+      client = {@test.fullyQualifiedAliasedServiceClassName}.new(version: :{@apiVersion})
 
       @# Call method
       {@methodCallWithResponse(test)}
@@ -228,7 +228,7 @@
     mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
 
     {@test.grpcStubCallString}.stub(:new, mock_stub) do
-      client = {@test.fullyQualifiedAliasedServiceClassName}.new
+      client = {@test.fullyQualifiedAliasedServiceClassName}.new(version: :{@apiVersion})
 
       @# Call method
       {@methodCallWithResponse(test)}
@@ -240,7 +240,7 @@
   end
 @end
 
-@private serverStreamingTest(test)
+@private serverStreamingTest(apiVersion, test)
   it 'invokes {@test.clientMethodName} without error' do
     @if test.hasRequestParameters
       @# Create request parameters
@@ -256,7 +256,7 @@
     mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
 
     {@test.grpcStubCallString}.stub(:new, mock_stub) do
-      client = {@test.fullyQualifiedAliasedServiceClassName}.new
+      client = {@test.fullyQualifiedAliasedServiceClassName}.new(version: :{@apiVersion})
 
       @# Call method
       {@methodCallWithResponse(test)}
@@ -268,7 +268,7 @@
   end
 @end
 
-@private clientStreamingTest(test)
+@private clientStreamingTest(apiVersion, test)
   it 'invokes {@test.clientMethodName} without error' do
     @# Create request parameters
     {@initCode(test.initCode)}
@@ -284,7 +284,7 @@
     mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
 
     {@test.grpcStubCallString}.stub(:new, mock_stub) do
-      client = {@test.fullyQualifiedAliasedServiceClassName}.new
+      client = {@test.fullyQualifiedAliasedServiceClassName}.new(version: :{@apiVersion})
 
       @# Call method
       {@clientStreamingCall(test)}
@@ -299,7 +299,7 @@
   end
 @end
 
-@private bidiStreamingTest(test)
+@private bidiStreamingTest(apiVersion, test)
   it 'invokes {@test.clientMethodName} without error' do
     @# Create request parameters
     {@initCode(test.initCode)}
@@ -313,7 +313,7 @@
     mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
 
     {@test.grpcStubCallString}.stub(:new, mock_stub) do
-      client = {@test.fullyQualifiedAliasedServiceClassName}.new
+      client = {@test.fullyQualifiedAliasedServiceClassName}.new(version: :{@apiVersion})
 
       @# Call method
       {@clientStreamingCall(test)}
@@ -325,7 +325,7 @@
   end
 @end
 
-@private simpleErrorTestCase(test)
+@private simpleErrorTestCase(apiVersion, test)
   it 'invokes {@test.clientMethodName} with error' do
     @if initCode(test.initCode)
       @# Create request parameters
@@ -337,7 +337,7 @@
     mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
 
     {@test.grpcStubCallString}.stub(:new, mock_stub) do
-      client = {@test.fullyQualifiedAliasedServiceClassName}.new
+      client = {@test.fullyQualifiedAliasedServiceClassName}.new(version: :{@apiVersion})
 
       @# Call method
       err = assert_raises Google::Gax::GaxError do
@@ -350,7 +350,7 @@
   end
 @end
 
-@private clientStreamingErrorTestCase(test)
+@private clientStreamingErrorTestCase(apiVersion, test)
   it 'invokes {@test.clientMethodName} with error' do
     @# Create request parameters
     {@initCode(test.initCode)}
@@ -360,7 +360,7 @@
     mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
 
     {@test.grpcStubCallString}.stub(:new, mock_stub) do
-      client = {@test.fullyQualifiedAliasedServiceClassName}.new
+      client = {@test.fullyQualifiedAliasedServiceClassName}.new(version: :{@apiVersion})
 
       @# Call method
       err = assert_raises Google::Gax::GaxError do
