@@ -24,7 +24,7 @@ license_header:
 interfaces:
 - name: google.fakebilling.v1.BillingAccounts
   collections:
-  - name_pattern: billingAccounts/{billingAccountsId}
+  - name_pattern: v1/billingAccounts/{billingAccountsId}
     entity_name: billingAccountsId
   retry_codes_def:
   - name: idempotent
@@ -58,9 +58,9 @@ interfaces:
     flattening:
       groups:
       - parameters:
-        - name
+        - billingAccountsId
     required_fields:
-    - name
+    - billingAccountsId
     request_object_method: false
     retry_codes_name: idempotent
     retry_params_name: default
@@ -69,8 +69,8 @@ interfaces:
   lang_doc:
     java: Configure billing projects.
   collections:
-  - name_pattern: billingAccounts/{billingAccountsId}
-    entity_name: billingAccountsId
+  - name_pattern: v1/projects/{projectsId}/billingInfo
+    entity_name: projectsId
   retry_codes_def:
   - name: idempotent
     retry_codes:
@@ -88,7 +88,7 @@ interfaces:
   methods:
   - name: fakebilling.projects.updateBillingInfo
     required_fields:
-      - name
+      - projectsId
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 60000
@@ -98,7 +98,7 @@ interfaces:
       name: name
   - name: fakebilling.projects.getBillingInfo
     required_fields:
-      - name
+      - projectsId
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 60000
