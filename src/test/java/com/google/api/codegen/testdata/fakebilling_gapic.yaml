@@ -23,25 +23,14 @@ license_header:
   license_file: license-header-apache-2.0.txt
 interfaces:
 - name: google.fakebilling.v1.BillingAccounts
-  lang_doc:
-    java: Configure billing accounts.
   collections:
-  - name_pattern: billingAccounts/{billingAccountsId}
-    entity_name: billingAccountsId
+  - name_pattern: billingAccounts/{billing_account}
+    entity_name: billing_account
   retry_codes_def:
   - name: idempotent
     retry_codes:
     - UNAVAILABLE
     - DEADLINE_EXCEEDED
-  - name: non_idempotent
-    retry_codes: []
-  - name: pull
-    retry_codes:
-    - DEADLINE_EXCEEDED
-    - INTERNAL
-    - CANCELLED
-    - RESOURCE_EXHAUSTED
-    - UNAVAILABLE
   retry_params_def:
   - name: default
     initial_retry_delay_millis: 100
@@ -50,14 +39,6 @@ interfaces:
     initial_rpc_timeout_millis: 60000 # 60 seconds
     rpc_timeout_multiplier: 1
     max_rpc_timeout_millis: 60000 # 60 seconds
-    total_timeout_millis: 600000 # 10 minutes
-  - name: messaging
-    initial_retry_delay_millis: 100
-    retry_delay_multiplier: 1.3
-    max_retry_delay_millis: 60000 # 60 seconds
-    initial_rpc_timeout_millis: 12000 # 12 seconds
-    rpc_timeout_multiplier: 1
-    max_rpc_timeout_millis: 12000 # 12 seconds
     total_timeout_millis: 600000 # 10 minutes
   methods:
   - name: fakebilling.billingAccounts.list
@@ -84,26 +65,19 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 60000
+    field_name_patterns:
+      name: billing_account
 - name: google.fakebilling.v1.Projects
   lang_doc:
     java: Configure billing projects.
   collections:
-  - name_pattern: billingAccounts/{billingAccountsId}
-    entity_name: billingAccountsId
+  - name_pattern: projects/{project}
+    entity_name: project
   retry_codes_def:
   - name: idempotent
     retry_codes:
     - UNAVAILABLE
     - DEADLINE_EXCEEDED
-  - name: non_idempotent
-    retry_codes: []
-  - name: pull
-    retry_codes:
-    - DEADLINE_EXCEEDED
-    - INTERNAL
-    - CANCELLED
-    - RESOURCE_EXHAUSTED
-    - UNAVAILABLE
   retry_params_def:
   - name: default
     initial_retry_delay_millis: 100
@@ -113,32 +87,24 @@ interfaces:
     rpc_timeout_multiplier: 1
     max_rpc_timeout_millis: 60000 # 60 seconds
     total_timeout_millis: 600000 # 10 minutes
-  - name: messaging
-    initial_retry_delay_millis: 100
-    retry_delay_multiplier: 1.3
-    max_retry_delay_millis: 60000 # 60 seconds
-    initial_rpc_timeout_millis: 12000 # 12 seconds
-    rpc_timeout_multiplier: 1
-    max_rpc_timeout_millis: 12000 # 12 seconds
-    total_timeout_millis: 600000 # 10 minutes
   methods:
   - name: fakebilling.projects.updateBillingInfo
     required_fields:
       - name
     retry_codes_name: idempotent
     retry_params_name: default
-    timeout_millis: 10000
+    timeout_millis: 60000
     request_object_method: true
     resource_name_treatment: STATIC_TYPES
     field_name_patterns:
-      name: name
+      name: project
   - name: fakebilling.projects.getBillingInfo
     required_fields:
       - name
     retry_codes_name: idempotent
     retry_params_name: default
-    timeout_millis: 10000
+    timeout_millis: 60000
     request_object_method: true
     resource_name_treatment: STATIC_TYPES
     field_name_patterns:
-      name: name
+      name: project
