@@ -53,8 +53,14 @@ public class GoSurfaceNamer extends SurfaceNamer {
         new ModelTypeFormatterImpl(converter),
         new GoTypeTable(),
         new PassThroughCommentReformatter(),
+        packageName,
         packageName);
     this.converter = converter;
+  }
+
+  @Override
+  public SurfaceNamer cloneWithPackageName(String packageName) {
+    return new GoSurfaceNamer(packageName);
   }
 
   @Override

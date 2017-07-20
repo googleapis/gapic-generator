@@ -31,6 +31,11 @@ public class GoTypeTable implements TypeTable {
   }
 
   @Override
+  public TypeTable cloneEmpty(String packageName) {
+    return new GoTypeTable();
+  }
+
+  @Override
   public TypeName getTypeName(String fullName) {
     String[] parts = fullName.split(";", -1);
     if (parts.length != 4) {

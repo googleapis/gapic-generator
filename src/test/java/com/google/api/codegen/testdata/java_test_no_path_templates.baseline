@@ -17,7 +17,8 @@
 package com.google.gcloud.example;
 
 import com.google.api.gax.core.NoCredentialsProvider;
-import com.google.api.gax.grpc.ApiException;
+import com.google.api.gax.grpc.GrpcApiException;
+import com.google.api.gax.grpc.GrpcTransportProvider;
 import com.google.api.gax.grpc.testing.MockGrpcService;
 import com.google.api.gax.grpc.testing.MockServiceHelper;
 import com.google.common.collect.Lists;
@@ -58,7 +59,10 @@ public class NoTemplatesApiServiceClientTest {
   public void setUp() throws IOException {
     serviceHelper.reset();
     NoTemplatesApiServiceSettings settings = NoTemplatesApiServiceSettings.defaultBuilder()
-        .setChannelProvider(serviceHelper.createChannelProvider())
+        .setTransportProvider(
+              GrpcTransportProvider.newBuilder()
+                  .setChannelProvider(serviceHelper.createChannelProvider())
+                  .build())
         .setCredentialsProvider(new NoCredentialsProvider())
         .build();
     client = NoTemplatesApiServiceClient.create(settings);

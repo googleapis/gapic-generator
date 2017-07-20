@@ -54,7 +54,13 @@ public class PythonSurfaceNamer extends SurfaceNamer {
         new ModelTypeFormatterImpl(new PythonModelTypeNameConverter(packageName)),
         new PythonTypeTable(packageName),
         new PythonCommentReformatter(),
+        packageName,
         packageName);
+  }
+
+  @Override
+  public SurfaceNamer cloneWithPackageName(String packageName) {
+    return new PythonSurfaceNamer(packageName);
   }
 
   @Override

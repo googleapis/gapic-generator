@@ -48,13 +48,19 @@ public class JavaSurfaceNamer extends SurfaceNamer {
 
   private final Pattern versionPattern = Pattern.compile("^v\\d+");
 
-  public JavaSurfaceNamer(String packageName) {
+  public JavaSurfaceNamer(String rootPackageName, String packageName) {
     super(
         new JavaNameFormatter(),
         new ModelTypeFormatterImpl(new JavaModelTypeNameConverter(packageName)),
         new JavaTypeTable(packageName),
         new JavaCommentReformatter(),
+        rootPackageName,
         packageName);
+  }
+
+  @Override
+  public SurfaceNamer cloneWithPackageName(String packageName) {
+    return new JavaSurfaceNamer(getRootPackageName(), packageName);
   }
 
   @Override
@@ -83,7 +89,7 @@ public class JavaSurfaceNamer extends SurfaceNamer {
 
   @Override
   public List<String> getThrowsDocLines(GapicMethodConfig methodConfig) {
-    return Arrays.asList("@throws com.google.api.gax.grpc.ApiException if the remote call fails");
+    return Arrays.asList("@throws com.google.api.gax.rpc.ApiException if the remote call fails");
   }
 
   @Override
@@ -203,6 +209,30 @@ public class JavaSurfaceNamer extends SurfaceNamer {
         return "OperationCallable";
       default:
         return getNotImplementedString("getApiCallableTypeName() for " + serviceMethodType);
+    }
+  }
+
+  @Override
+  public String getDirectCallableTypeName(ServiceMethodType serviceMethodType) {
+    switch (serviceMethodType) {
+      case UnaryMethod:
+        return "UnaryCallable";
+      case GrpcStreamingMethod:
+        return "StreamingCallable";
+      default:
+        return getNotImplementedString("getDirectCallableTypeName() for " + serviceMethodType);
+    }
+  }
+
+  @Override
+  public String getCreateCallableFunctionName(ServiceMethodType serviceMethodType) {
+    switch (serviceMethodType) {
+      case UnaryMethod:
+        return "createDirectCallable";
+      case GrpcStreamingMethod:
+        return "createDirectStreamingCallable";
+      default:
+        return getNotImplementedString("getDirectCallableTypeName() for " + serviceMethodType);
     }
   }
 
