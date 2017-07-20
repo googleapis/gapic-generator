@@ -67,6 +67,11 @@ public class JavaTypeTable implements TypeTable {
   }
 
   @Override
+  public TypeTable cloneEmpty(String packageName) {
+    return new JavaTypeTable(packageName);
+  }
+
+  @Override
   public TypeName getTypeName(String fullName) {
     int lastDotIndex = fullName.lastIndexOf('.');
     if (lastDotIndex < 0) {
