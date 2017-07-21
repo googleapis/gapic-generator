@@ -19,13 +19,11 @@ import java.util.List;
 
 @AutoValue
 public abstract class CredentialsClassView {
-  public abstract String serviceAddress();
+  public abstract List<String> scopes();
 
   public abstract List<String> pathEnvVars();
 
   public abstract List<String> jsonEnvVars();
-
-  public abstract String packageName();
 
   public static Builder newBuilder() {
     return new AutoValue_CredentialsClassView.Builder();
@@ -33,13 +31,11 @@ public abstract class CredentialsClassView {
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder serviceAddress(String val);
+    public abstract Builder scopes(List<String> vals);
 
     public abstract Builder pathEnvVars(List<String> vals);
 
     public abstract Builder jsonEnvVars(List<String> vals);
-
-    public abstract Builder packageName(String val);
 
     public abstract CredentialsClassView build();
   }

@@ -332,6 +332,19 @@ public class RubySurfaceNamer extends SurfaceNamer {
     return Joiner.on(File.separator).join(newNames.toArray());
   }
 
+  @Override
+  public String getCredentialsClassImportName() {
+    List<String> parts = getApiModules();
+    // Place credentials in top-level namespace.
+    parts = parts.subList(0, parts.size() - 1);
+    List<String> paths = new ArrayList<>();
+    for (String part : parts) {
+      paths.add(packageFilePathPiece(Name.upperCamel(part)));
+    }
+    paths.add("credentials");
+    return Joiner.on(File.separator).join(paths);
+  }
+
   private String getPackageFilePath() {
     List<String> newNames = new ArrayList<>();
     for (String name : getPackageName().split("::")) {

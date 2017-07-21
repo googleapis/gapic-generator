@@ -182,8 +182,9 @@
       )
 
     @end
+    credentials ||= {@xapiClass.fullyQualifiedCredentialsClassName}.default
     if credentials.is_a?(String) || credentials.is_a?(Hash)
-      updater_proc = {@xapiClass.credentialsClass.packageName}::Credentials.new(credentials).updater_proc
+      updater_proc = {@xapiClass.fullyQualifiedCredentialsClassName}.new(credentials).updater_proc
     end
     if credentials.is_a?(GRPC::Core::Channel)
       channel = credentials
@@ -194,7 +195,7 @@
     if credentials.is_a?(Proc)
       updater_proc = credentials
     end
-    if credentials.ia_a(Google::Gax::Credentials)
+    if credentials.is_a?(Google::Gax::Credentials)
       updater_proc = credentials.updater_proc
     end
 

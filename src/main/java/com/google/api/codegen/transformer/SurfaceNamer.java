@@ -1156,6 +1156,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getTopLevelIndexFileImportName() {
     return getNotImplementedString("SurfaceNamer.getTopLevelIndexFileImportName");
   }
+
+  public String getCredentialsClassImportName() {
+    return getNotImplementedString("SurfaceNamer.getCredentialsClassImportName");
+  }
   /////////////////////////////////// Docs & Annotations //////////////////////////////////////////
 
   /** The documentation name of a parameter for the given lower-case field name. */
