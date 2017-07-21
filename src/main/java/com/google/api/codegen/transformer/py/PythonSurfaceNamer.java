@@ -52,7 +52,13 @@ public class PythonSurfaceNamer extends SurfaceNamer {
         new ModelTypeFormatterImpl(new PythonModelTypeNameConverter(packageName)),
         new PythonTypeTable(packageName),
         new PythonCommentReformatter(),
+        packageName,
         packageName);
+  }
+
+  @Override
+  public SurfaceNamer cloneWithPackageName(String packageName) {
+    return new PythonSurfaceNamer(packageName);
   }
 
   @Override
@@ -63,6 +69,11 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   @Override
   public String getFormattedVariableName(Name identifier) {
     return localVarName(identifier);
+  }
+
+  @Override
+  public String getRequestVariableName(Method method) {
+    return method.getRequestStreaming() ? "requests" : "request";
   }
 
   @Override
@@ -81,6 +92,16 @@ public class PythonSurfaceNamer extends SurfaceNamer {
             getPackageName(),
             getApiWrapperVariableName(interfaceConfig),
             getApiWrapperClassName(interfaceConfig));
+  }
+
+  @Override
+  public String getRequestTypeName(ModelTypeTable typeTable, TypeRef type) {
+    return typeTable.getAndSaveNicknameFor(type);
+  }
+
+  @Override
+  public String getLongRunningOperationTypeName(ModelTypeTable typeTable, TypeRef type) {
+    return typeTable.getAndSaveNicknameFor(type);
   }
 
   @Override
@@ -227,8 +248,14 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getSmokeTestClassName(GapicInterfaceConfig interfaceConfig) {
+    return publicClassName(
+        Name.upperCamelKeepUpperAcronyms("Test", "System", getInterfaceName(interfaceConfig)));
+  }
+
+  @Override
   public String getTestPackageName() {
-    return "test." + getPackageName();
+    return "tests." + getPackageName();
   }
 
   @Override

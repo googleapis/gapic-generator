@@ -38,6 +38,11 @@ public class RubyTypeTable implements TypeTable {
   }
 
   @Override
+  public TypeTable cloneEmpty(String packageName) {
+    return new RubyTypeTable(packageName);
+  }
+
+  @Override
   public TypeName getTypeName(String fullName) {
     return dynamicTypeTable.getTypeName(fullName);
   }

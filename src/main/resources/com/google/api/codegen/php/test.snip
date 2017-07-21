@@ -39,7 +39,11 @@
         $grpcCredentialsHelper = new GrpcCredentialsHelper([]);
         return $grpcCredentialsHelper->createStub(
             $createGrpcStub,
-            {@testClass.apiClassName}::SERVICE_ADDRESS,
+            @if testClass.missingDefaultServiceAddress
+                'unknown-service-address',
+            @else
+                {@testClass.apiClassName}::SERVICE_ADDRESS,
+            @end
             {@testClass.apiClassName}::DEFAULT_SERVICE_PORT
         );
     }
@@ -53,6 +57,12 @@
             $createStubFuncName => function ($hostname, $opts) use ($grpcStub) {
                 return $grpcStub;
             },
+            @if testClass.missingDefaultServiceAddress
+                'serviceAddress' => 'unknown-service-address',
+            @end
+            @if testClass.missingDefaultServiceScopes
+                'scopes' => ['unknown-service-scopes'],
+            @end
         ]);
     }
 @end

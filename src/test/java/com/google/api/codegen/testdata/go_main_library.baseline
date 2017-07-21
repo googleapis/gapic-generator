@@ -37,12 +37,6 @@ import (
     "google.golang.org/grpc/codes"
 )
 
-var (
-    libraryShelfPathTemplate = gax.MustCompilePathTemplate("shelves/{shelf_id}")
-    libraryBookPathTemplate = gax.MustCompilePathTemplate("shelves/{shelf_id}/books/{book_id}")
-    libraryReturnPathTemplate = gax.MustCompilePathTemplate("shelves/{shelf}/books/{book}/returns/{return}")
-)
-
 // CallOptions contains the retry settings for each method of Client.
 type CallOptions struct {
     CreateShelf []gax.CallOption
@@ -213,38 +207,32 @@ func (c *Client) SetGoogleClientInfo(keyval ...string) {
 
 // ShelfPath returns the path for the shelf resource.
 func ShelfPath(shelfId string) string {
-    path, err := libraryShelfPathTemplate.Render(map[string]string{
-        "shelf_id": shelfId,
-    })
-    if err != nil {
-        panic(err)
-    }
-    return path
+    return "" +
+        "shelves/" +
+        shelfId +
+        ""
 }
 
 // BookPath returns the path for the book resource.
 func BookPath(shelfId, bookId string) string {
-    path, err := libraryBookPathTemplate.Render(map[string]string{
-        "shelf_id": shelfId,
-        "book_id": bookId,
-    })
-    if err != nil {
-        panic(err)
-    }
-    return path
+    return "" +
+        "shelves/" +
+        shelfId +
+        "/books/" +
+        bookId +
+        ""
 }
 
 // ReturnPath returns the path for the return resource.
 func ReturnPath(shelf, book, return_ string) string {
-    path, err := libraryReturnPathTemplate.Render(map[string]string{
-        "shelf": shelf,
-        "book": book,
-        "return": return_,
-    })
-    if err != nil {
-        panic(err)
-    }
-    return path
+    return "" +
+        "shelves/" +
+        shelf +
+        "/books/" +
+        book +
+        "/returns/" +
+        return_ +
+        ""
 }
 
 
@@ -886,7 +874,7 @@ func (c *Client) GetBigBookOperation(name string) *GetBigBookOperation {
 // See documentation of Poll for error-handling information.
 func (op *GetBigBookOperation) Wait(ctx context.Context, opts ...gax.CallOption) (*librarypb.Book, error) {
     var resp librarypb.Book
-    if err := op.lro.Wait(ctx, &resp, opts...); err != nil {
+    if err := op.lro.WaitWithInterval(ctx, &resp, 30000*time.Millisecond, opts...); err != nil {
         return nil, err
     }
     return &resp, nil
@@ -963,7 +951,7 @@ func (c *Client) GetBigNothingOperation(name string) *GetBigNothingOperation {
 //
 // See documentation of Poll for error-handling information.
 func (op *GetBigNothingOperation) Wait(ctx context.Context, opts ...gax.CallOption) error {
-    return op.lro.Wait(ctx, nil, opts...)
+    return op.lro.WaitWithInterval(ctx, nil, 60000*time.Millisecond, opts...)
 }
 
 // Poll fetches the latest state of the long-running operation.

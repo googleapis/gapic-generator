@@ -15,7 +15,6 @@
 package com.google.api.codegen.util.js;
 
 import com.google.api.codegen.util.DynamicLangTypeTable;
-import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeName;
@@ -24,7 +23,6 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import java.lang.Character;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /** The TypeTable for JS. */
@@ -39,6 +37,11 @@ public class JSTypeTable implements TypeTable {
   @Override
   public TypeTable cloneEmpty() {
     return new JSTypeTable(dynamicTypeTable.getImplicitPackageName());
+  }
+
+  @Override
+  public TypeTable cloneEmpty(String packageName) {
+    return new JSTypeTable(packageName);
   }
 
   @Override
@@ -58,11 +61,8 @@ public class JSTypeTable implements TypeTable {
       }
     }
     String shortName = Joiner.on(".").join(shortNameParts);
-    List<String> packageParts =
-        Splitter.on(".").splitToList(dynamicTypeTable.getImplicitPackageName());
-    String packagePrefix =
-        Name.from(packageParts.toArray(new String[packageParts.size()])).toLowerCamel();
-    return new TypeName(fullName, packagePrefix + "." + shortName);
+    return new TypeName(
+        fullName, dynamicTypeTable.getImplicitPackageName() + ".types." + shortName);
   }
 
   @Override

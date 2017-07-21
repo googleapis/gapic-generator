@@ -16,6 +16,7 @@ package com.google.api.codegen.viewmodel.metadata;
 
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.viewmodel.FileHeaderView;
+import com.google.api.codegen.viewmodel.GrpcStubView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
 import java.util.List;
@@ -42,9 +43,22 @@ public abstract class VersionIndexView implements ViewModel {
 
   public abstract String packageVersion();
 
+  @Nullable
+  public abstract List<VersionIndexModuleView> modules();
+
   public abstract List<VersionIndexRequireView> requireViews();
 
   public abstract FileHeaderView fileHeader();
+
+  @Nullable
+  public abstract List<GrpcStubView> stubs();
+
+  public abstract boolean isGcloud();
+
+  public abstract VersionIndexType type();
+
+  @Nullable
+  public abstract String versionFileBasePath();
 
   public boolean hasMultipleServices() {
     return requireViews().size() > 1;
@@ -52,7 +66,10 @@ public abstract class VersionIndexView implements ViewModel {
 
   public static Builder newBuilder() {
     // Use v1 as the default version.
-    return new AutoValue_VersionIndexView.Builder().apiVersion("v1");
+    return new AutoValue_VersionIndexView.Builder()
+        .apiVersion("v1")
+        .isGcloud(false)
+        .type(VersionIndexType.Unspecified);
   }
 
   @AutoValue.Builder
@@ -67,9 +84,19 @@ public abstract class VersionIndexView implements ViewModel {
 
     public abstract Builder packageVersion(String val);
 
+    public abstract Builder modules(List<VersionIndexModuleView> val);
+
     public abstract Builder requireViews(List<VersionIndexRequireView> val);
 
     public abstract Builder fileHeader(FileHeaderView val);
+
+    public abstract Builder stubs(List<GrpcStubView> vals);
+
+    public abstract Builder isGcloud(boolean val);
+
+    public abstract Builder type(VersionIndexType val);
+
+    public abstract Builder versionFileBasePath(String val);
 
     public abstract VersionIndexView build();
   }

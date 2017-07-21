@@ -179,6 +179,10 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         mockServiceTransformer.createMockServices(
             context.getNamer(), context.getModel(), context.getProductConfig()));
 
+    testClass.missingDefaultServiceAddress(
+        !context.getInterfaceConfig().hasDefaultServiceAddress());
+    testClass.missingDefaultServiceScopes(!context.getInterfaceConfig().hasDefaultServiceScopes());
+
     ClientTestFileView.Builder testFile = ClientTestFileView.newBuilder();
     testFile.testClass(testClass.build());
     testFile.outputPath(namer.getSourceFilePath(outputPath, name));
@@ -202,7 +206,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
           // Issue: https://github.com/googleapis/toolkit/issues/946
           continue;
         }
-        addGrpcStreamingTestImport(context);
+        addGrpcStreamingTestImports(context);
         GapicMethodContext methodContext = context.asRequestMethodContext(method);
         InitCodeContext initCodeContext =
             initCodeTransformer.createRequestInitCodeContext(
@@ -314,7 +318,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         apiInterface,
         productConfig,
         typeTable,
-        new JavaSurfaceNamer(productConfig.getPackageName()),
+        new JavaSurfaceNamer(productConfig.getPackageName(), productConfig.getPackageName()),
         JavaFeatureConfig.newBuilder()
             .enableStringFormatFunctions(productConfig.getResourceNameMessageConfigs().isEmpty())
             .build());
@@ -325,7 +329,8 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private void addUnitTestImports(GapicInterfaceContext context) {
     ModelTypeTable typeTable = context.getModelTypeTable();
     typeTable.saveNicknameFor("com.google.api.gax.core.NoCredentialsProvider");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.ApiException");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcApiException");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcTransportProvider");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.testing.MockGrpcService");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.testing.MockServiceHelper");
     typeTable.saveNicknameFor("com.google.common.collect.Lists");
@@ -351,7 +356,8 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     }
   }
 
-  private void addSmokeTestImports(GapicInterfaceContext context) {
+  /** package-private */
+  void addSmokeTestImports(GapicInterfaceContext context) {
     ModelTypeTable typeTable = context.getModelTypeTable();
     typeTable.saveNicknameFor("java.util.logging.Level");
     typeTable.saveNicknameFor("java.util.logging.Logger");
@@ -387,10 +393,10 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("io.grpc.ServerServiceDefinition");
   }
 
-  private void addGrpcStreamingTestImport(GapicInterfaceContext context) {
+  private void addGrpcStreamingTestImports(GapicInterfaceContext context) {
     ModelTypeTable typeTable = context.getModelTypeTable();
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.ApiStreamObserver");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.StreamingCallable");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.testing.MockStreamObserver");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.ApiStreamObserver");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.StreamingCallable");
   }
 }

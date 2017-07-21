@@ -28,7 +28,9 @@ import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.RequestObjectParamView;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Method;
+import com.google.api.tools.framework.model.Oneof;
 import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +56,11 @@ public class DynamicLangApiMethodTransformer {
   }
 
   public OptionalArrayMethodView generateMethod(GapicMethodContext context) {
+    return generateMethod(context, false);
+  }
+
+  public OptionalArrayMethodView generateMethod(
+      GapicMethodContext context, boolean packageHasMultipleServices) {
     SurfaceNamer namer = context.getNamer();
     OptionalArrayMethodView.Builder apiMethod = OptionalArrayMethodView.newBuilder();
 
@@ -65,6 +72,12 @@ public class DynamicLangApiMethodTransformer {
     apiMethod.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
     apiMethod.fullyQualifiedApiClassName(
         namer.getFullyQualifiedApiWrapperClassName(context.getInterfaceConfig()));
+    apiMethod.topLevelAliasedApiClassName(
+        namer.getTopLevelAliasedApiClassName(
+            context.getInterfaceConfig(), packageHasMultipleServices));
+    apiMethod.versionAliasedApiClassName(
+        namer.getVersionAliasedApiClassName(
+            context.getInterfaceConfig(), packageHasMultipleServices));
     apiMethod.apiVariableName(namer.getApiWrapperVariableName(context.getInterfaceConfig()));
     apiMethod.apiModuleName(namer.getApiWrapperModuleName());
     InitCodeOutputType initCodeOutputType =
@@ -113,10 +126,16 @@ public class DynamicLangApiMethodTransformer {
         grpcStreamingType.equals(GrpcStreamingType.NonStreaming)
             || grpcStreamingType.equals(GrpcStreamingType.ServerStreaming));
 
+    apiMethod.packageName(namer.getPackageName());
+    apiMethod.packageHasMultipleServices(packageHasMultipleServices);
+    apiMethod.packageServiceName(namer.getPackageServiceName(context.getInterface()));
+    apiMethod.apiVersion(namer.getApiWrapperModuleVersion());
     apiMethod.longRunningView(
         context.getMethodConfig().isLongRunningOperation()
             ? lroTransformer.generateDetailView(context)
             : null);
+
+    apiMethod.oneofParams(generateOneOfParams(context.getMethodConfig().getOneofs(), namer));
 
     return apiMethod.build();
   }
@@ -202,6 +221,18 @@ public class DynamicLangApiMethodTransformer {
       param.optionalDefault(namer.getOptionalFieldDefaultValue(fieldConfig, context));
     }
     return param.build();
+  }
+
+  private List<List<String>> generateOneOfParams(Iterable<Oneof> oneofs, SurfaceNamer namer) {
+    ImmutableList.Builder<List<String>> oneofParams = ImmutableList.builder();
+    for (Oneof oneof : oneofs) {
+      ImmutableList.Builder<String> oneofFields = ImmutableList.builder();
+      for (Field field : oneof.getFields()) {
+        oneofFields.add(namer.getVariableName(field));
+      }
+      oneofParams.add(oneofFields.build());
+    }
+    return oneofParams.build();
   }
 
   private InitCodeContext createInitCodeContext(

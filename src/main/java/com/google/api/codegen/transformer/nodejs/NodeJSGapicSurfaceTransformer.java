@@ -43,6 +43,7 @@ import com.google.api.codegen.util.js.JSTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.DynamicLangXApiView;
 import com.google.api.codegen.viewmodel.GrpcStreamingDetailView;
+import com.google.api.codegen.viewmodel.GrpcStubView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
 import com.google.api.codegen.viewmodel.PathTemplateGetterFunctionView;
@@ -54,6 +55,7 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,17 +100,19 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private List<ViewModel> generateApiClasses(Model model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ViewModel> models = ImmutableList.builder();
-    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+    Iterable<Interface> interfaces = new InterfaceView().getElementIterable(model);
+    boolean hasMultipleServices = Iterables.size(interfaces) > 1;
+    for (Interface apiInterface : interfaces) {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
-      models.add(generateApiClass(context));
+      models.add(generateApiClass(context, hasMultipleServices));
     }
     return models.build();
   }
 
-  private ViewModel generateApiClass(GapicInterfaceContext context) {
+  private ViewModel generateApiClass(GapicInterfaceContext context, boolean hasMultipleServices) {
     SurfaceNamer namer = context.getNamer();
     String subPath = pathMapper.getOutputPath(context.getInterface(), context.getProductConfig());
-    List<ApiMethodView> methods = generateApiMethods(context);
+    List<ApiMethodView> methods = generateApiMethods(context, hasMultipleServices);
 
     DynamicLangXApiView.Builder xapiClass = DynamicLangXApiView.newBuilder();
 
@@ -160,6 +164,9 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.packageVersion(
         packageConfig.generatedPackageVersionBound(TargetLanguage.NODEJS).lower());
 
+    xapiClass.packageHasMultipleServices(hasMultipleServices);
+    xapiClass.packageServiceName(namer.getPackageServiceName(context.getInterface()));
+
     xapiClass.validDescriptorsNames(generateValidDescriptorsNames(context));
     xapiClass.constructorName(namer.getApiWrapperClassConstructorName(context.getInterface()));
     xapiClass.isGcloud(NodeJSUtils.isGcloud(context.getProductConfig()));
@@ -184,11 +191,14 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
     return validDescriptorsNames.build();
   }
 
-  private List<ApiMethodView> generateApiMethods(GapicInterfaceContext context) {
+  private List<ApiMethodView> generateApiMethods(
+      GapicInterfaceContext context, boolean packageHasMultipleServices) {
     ImmutableList.Builder<ApiMethodView> apiMethods = ImmutableList.builder();
 
     for (Method method : context.getSupportedMethods()) {
-      apiMethods.add(apiMethodTransformer.generateMethod(context.asDynamicMethodContext(method)));
+      apiMethods.add(
+          apiMethodTransformer.generateMethod(
+              context.asDynamicMethodContext(method), packageHasMultipleServices));
     }
 
     return apiMethods.build();
@@ -256,6 +266,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
     String version = namer.getApiWrapperModuleVersion();
     boolean hasVersion = version != null && !version.isEmpty();
     ArrayList<VersionIndexRequireView> requireViews = new ArrayList<>();
+    boolean packageHasMultipleServices = Iterables.size(apiInterfaces) > 1;
     for (Interface apiInterface : apiInterfaces) {
       Name serviceName = namer.getReducedServiceName(apiInterface.getSimpleName());
       String localName =
@@ -265,11 +276,11 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
           VersionIndexRequireView.newBuilder()
               .clientName(
                   namer.getApiWrapperVariableName(productConfig.getInterfaceConfig(apiInterface)))
-              .serviceName(serviceName.toLowerCamel())
+              .serviceName(namer.getPackageServiceName(apiInterface))
               .localName(localName)
               .doc(
                   serviceTransformer.generateServiceDoc(
-                      context, generateApiMethods(context).get(0)))
+                      context, generateApiMethods(context, packageHasMultipleServices).get(0)))
               .fileName(namer.getClientFileName(apiInterface))
               .build();
       requireViews.add(require);
@@ -300,6 +311,8 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
               .requireViews(requireViews)
               .primaryService(requireViews.get(0))
               .apiVersion(version)
+              .stubs(versionIndexStubs(apiInterfaces, productConfig))
+              .isGcloud(NodeJSUtils.isGcloud(productConfig))
               .packageVersion(
                   packageConfig.generatedPackageVersionBound(TargetLanguage.NODEJS).lower())
               .fileHeader(
@@ -308,6 +321,16 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
       indexViews.add(versionIndexViewBuilder.build());
     }
     return indexViews;
+  }
+
+  private List<GrpcStubView> versionIndexStubs(
+      Iterable<Interface> apiInterfaces, GapicProductConfig productConfig) {
+    ImmutableList.Builder<GrpcStubView> stubs = ImmutableList.builder();
+    for (Interface apiInterface : apiInterfaces) {
+      stubs.addAll(
+          grpcStubTransformer.generateGrpcStubs(createContext(apiInterface, productConfig)));
+    }
+    return stubs.build();
   }
 
   private GapicInterfaceContext createContext(
