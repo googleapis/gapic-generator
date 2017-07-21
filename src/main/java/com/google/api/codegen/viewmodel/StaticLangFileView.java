@@ -15,17 +15,16 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.api.codegen.SnippetSetRunner;
-import com.google.api.codegen.viewmodel.StaticLangSettingsView.Builder;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class StaticLangSettingsFileView implements ViewModel {
+public abstract class StaticLangFileView<ClassViewT> implements ViewModel {
   @Override
   public abstract String templateFileName();
 
   public abstract FileHeaderView fileHeader();
 
-  public abstract StaticLangSettingsView settings();
+  public abstract ClassViewT classView();
 
   @Override
   public abstract String outputPath();
@@ -35,20 +34,20 @@ public abstract class StaticLangSettingsFileView implements ViewModel {
     return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
   }
 
-  public static Builder newBuilder() {
-    return new AutoValue_StaticLangSettingsFileView.Builder();
+  public static <ClassViewT> Builder<ClassViewT> newBuilder() {
+    return new AutoValue_StaticLangFileView.Builder();
   }
 
   @AutoValue.Builder
-  public abstract static class Builder {
-    public abstract Builder templateFileName(String val);
+  public abstract static class Builder<ClassViewT> {
+    public abstract Builder<ClassViewT> templateFileName(String val);
 
-    public abstract Builder fileHeader(FileHeaderView val);
+    public abstract Builder<ClassViewT> fileHeader(FileHeaderView val);
 
-    public abstract Builder outputPath(String val);
+    public abstract Builder<ClassViewT> outputPath(String val);
 
-    public abstract Builder settings(StaticLangSettingsView val);
+    public abstract Builder<ClassViewT> classView(ClassViewT val);
 
-    public abstract StaticLangSettingsFileView build();
+    public abstract StaticLangFileView<ClassViewT> build();
   }
 }

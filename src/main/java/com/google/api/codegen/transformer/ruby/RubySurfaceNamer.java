@@ -54,7 +54,13 @@ public class RubySurfaceNamer extends SurfaceNamer {
         new ModelTypeFormatterImpl(new RubyModelTypeNameConverter(packageName)),
         new RubyTypeTable(packageName),
         new RubyCommentReformatter(),
+        packageName,
         packageName);
+  }
+
+  @Override
+  public SurfaceNamer cloneWithPackageName(String packageName) {
+    return new RubySurfaceNamer(packageName);
   }
 
   /** The name of the class that implements snippets for a particular proto interface. */

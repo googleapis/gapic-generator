@@ -65,6 +65,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   private final ModelTypeFormatter modelTypeFormatter;
   private final TypeNameConverter typeNameConverter;
   private final CommentReformatter commentReformatter;
+  private final String rootPackageName;
   private final String packageName;
 
   public SurfaceNamer(
@@ -72,12 +73,18 @@ public class SurfaceNamer extends NameFormatterDelegator {
       ModelTypeFormatter modelTypeFormatter,
       TypeNameConverter typeNameConverter,
       CommentReformatter commentReformatter,
+      String rootPackageName,
       String packageName) {
     super(languageNamer);
     this.modelTypeFormatter = modelTypeFormatter;
     this.typeNameConverter = typeNameConverter;
     this.commentReformatter = commentReformatter;
+    this.rootPackageName = rootPackageName;
     this.packageName = packageName;
+  }
+
+  public SurfaceNamer cloneWithPackageName(String packageName) {
+    throw new UnsupportedOperationException("clone needs to be overridden");
   }
 
   public ModelTypeFormatter getModelTypeFormatter() {
@@ -90,6 +97,14 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   public String getPackageName() {
     return packageName;
+  }
+
+  public String getRootPackageName() {
+    return rootPackageName;
+  }
+
+  public String getStubPackageName() {
+    return rootPackageName + ".stub";
   }
 
   public String getNotImplementedString(String feature) {
@@ -435,6 +450,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return privateFieldName(Name.upperCamel(method.getSimpleName(), "OperationCallable"));
   }
 
+  public String getDirectCallableName(Method method) {
+    return privateFieldName(Name.upperCamel("Direct", method.getSimpleName(), "Callable"));
+  }
+
   /** The name of the settings member name for the given method. */
   public String getSettingsMemberName(Method method) {
     return publicMethodName(Name.upperCamel(method.getSimpleName(), "Settings"));
@@ -599,6 +618,18 @@ public class SurfaceNamer extends NameFormatterDelegator {
    */
   public String getApiSettingsClassName(GapicInterfaceConfig interfaceConfig) {
     return publicClassName(Name.upperCamel(getInterfaceName(interfaceConfig), "Settings"));
+  }
+
+  /**
+   * The name of the stub interface for a particular proto interface; not used in most languages.
+   */
+  public String getApiStubInterfaceName(GapicInterfaceConfig interfaceConfig) {
+    return publicClassName(Name.upperCamel(interfaceConfig.getRawName(), "Stub"));
+  }
+
+  /** The name of the grpc stub for a particular proto interface; not used in most languages. */
+  public String getApiGrpcStubClassName(GapicInterfaceConfig interfaceConfig) {
+    return publicClassName(Name.upperCamel("Grpc", interfaceConfig.getRawName(), "Stub"));
   }
 
   /** The name of the class that contains paged list response wrappers. */
@@ -882,6 +913,14 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The type name of the API callable class for this service method type. */
   public String getApiCallableTypeName(ServiceMethodType serviceMethodType) {
     return getNotImplementedString("SurfaceNamer.getApiCallableTypeName");
+  }
+
+  public String getDirectCallableTypeName(ServiceMethodType serviceMethodType) {
+    return getNotImplementedString("SurfaceNamer.getDirectCallableTypeName");
+  }
+
+  public String getCreateCallableFunctionName(ServiceMethodType serviceMethodType) {
+    return getNotImplementedString("SurfaceNamer.getCreateCallableFunctionName");
   }
 
   /** Return the type name used to discriminate oneof variants. */

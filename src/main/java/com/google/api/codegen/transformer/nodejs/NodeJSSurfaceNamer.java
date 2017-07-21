@@ -64,9 +64,15 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
         new ModelTypeFormatterImpl(new NodeJSModelTypeNameConverter(packageName)),
         new JSTypeTable(packageName),
         new JSCommentReformatter(),
+        packageName,
         packageName);
     this.packageName = packageName;
     this.isGcloud = isGcloud;
+  }
+
+  @Override
+  public SurfaceNamer cloneWithPackageName(String packageName) {
+    return new NodeJSSurfaceNamer(packageName, isGcloud);
   }
 
   /**

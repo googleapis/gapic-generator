@@ -76,6 +76,12 @@ public abstract class StaticLangSettingsView {
 
   public abstract boolean hasDefaultInstance();
 
+  @Nullable // Used in Java
+  public abstract String stubInterfaceName();
+
+  @Nullable // Used in Java
+  public abstract String grpcStubClassName();
+
   public static Builder newBuilder() {
     return new AutoValue_StaticLangSettingsView.Builder();
   }
@@ -115,6 +121,10 @@ public abstract class StaticLangSettingsView {
     public abstract Builder hasDefaultServiceScopes(boolean hasDefaultServiceScopes);
 
     public abstract Builder hasDefaultInstance(boolean hasDefaultInstance);
+
+    public abstract Builder stubInterfaceName(String apiStubInterfaceName);
+
+    public abstract Builder grpcStubClassName(String apiGrpcStubClassName);
 
     public abstract StaticLangSettingsView build();
   }
