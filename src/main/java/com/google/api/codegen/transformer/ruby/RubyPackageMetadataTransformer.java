@@ -184,7 +184,8 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
   private List<ApiMethodView> generateExampleMethods(
       Model model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ApiMethodView> exampleMethods = ImmutableList.builder();
-    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+    InterfaceView interfaceView = new InterfaceView();
+    for (Interface apiInterface : interfaceView.getElementIterable(model)) {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
       if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
         Method method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
@@ -193,16 +194,19 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
                 context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
         GapicMethodContext flattenedMethodContext =
             context.asFlattenedMethodContext(method, flatteningGroup);
-        exampleMethods.add(createExampleApiMethodView(flattenedMethodContext));
+        exampleMethods.add(
+            createExampleApiMethodView(
+                flattenedMethodContext, interfaceView.hasMultipleServices(model)));
       }
     }
     return exampleMethods.build();
   }
 
-  private OptionalArrayMethodView createExampleApiMethodView(GapicMethodContext context) {
+  private OptionalArrayMethodView createExampleApiMethodView(
+      GapicMethodContext context, boolean packageHasMultipleServices) {
     OptionalArrayMethodView initialApiMethodView =
         new DynamicLangApiMethodTransformer(new RubyApiMethodParamTransformer())
-            .generateMethod(context);
+            .generateMethod(context, packageHasMultipleServices);
 
     OptionalArrayMethodView.Builder apiMethodView = initialApiMethodView.toBuilder();
 
