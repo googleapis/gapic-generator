@@ -22,6 +22,8 @@ import com.google.api.codegen.grpcmetadatagen.PackageType;
 import com.google.api.codegen.viewmodel.FileHeaderView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
 
@@ -74,6 +76,21 @@ public abstract class PackageMetadataView implements ViewModel {
 
   @Nullable
   public abstract List<PackageDependencyView> protoPackageDependencies();
+
+  @Nullable
+  public abstract List<PackageDependencyView> additionalDependencies();
+
+  public List<PackageDependencyView> dependencies() {
+    List<PackageDependencyView> dependencies = new ArrayList<PackageDependencyView>();
+    if (protoPackageDependencies() != null) {
+      dependencies.addAll(protoPackageDependencies());
+    }
+    if (additionalDependencies() != null) {
+      dependencies.addAll(additionalDependencies());
+    }
+    Collections.sort(dependencies);
+    return dependencies;
+  }
 
   @Nullable
   public abstract List<PackageDependencyView> protoPackageTestDependencies();
@@ -182,6 +199,9 @@ public abstract class PackageMetadataView implements ViewModel {
 
     @Nullable
     public abstract Builder protoPackageTestDependencies(List<PackageDependencyView> val);
+
+    /** Additional dependencies. Used for conditionally added dependencies. */
+    public abstract Builder additionalDependencies(List<PackageDependencyView> val);
 
     public abstract Builder authVersionBound(VersionBound val);
 
