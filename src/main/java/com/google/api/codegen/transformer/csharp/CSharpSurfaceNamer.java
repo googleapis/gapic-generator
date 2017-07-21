@@ -18,6 +18,7 @@ import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicMethodConfig;
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.config.SingleResourceNameConfig;
@@ -350,6 +351,11 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
     return publicClassName(Name.upperCamel(apiInterface.getSimpleName()))
         + "."
         + publicClassName(Name.upperCamel(apiInterface.getSimpleName(), "Client"));
+  }
+
+  @Override
+  public String getApiWrapperClassImplName(InterfaceConfig interfaceConfig) {
+    return publicClassName(Name.upperCamel(getInterfaceName(interfaceConfig), "ClientImpl"));
   }
 
   @Override
