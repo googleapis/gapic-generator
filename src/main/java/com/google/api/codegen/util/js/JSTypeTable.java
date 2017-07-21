@@ -40,6 +40,11 @@ public class JSTypeTable implements TypeTable {
   }
 
   @Override
+  public TypeTable cloneEmpty(String packageName) {
+    return new JSTypeTable(packageName);
+  }
+
+  @Override
   public TypeName getTypeName(String fullName) {
     // Assumes the namespace part starts with lowercase while others start
     // with uppercase.

@@ -74,8 +74,7 @@
 
     // {@view.clientConstructorName} creates a new {@view.servicePhraseName} client.
     //
-    // {@view.serviceDoc.firstLine}
-    @join line : view.serviceDoc.remainingLines
+    @join line : view.serviceDoc.lines
         // {@line}
     @end
     func {@view.clientConstructorName}(ctx context.Context, opts ...option.ClientOption) (*{@view.clientTypeName}, error) {
@@ -358,7 +357,7 @@
         //
         // See documentation of Poll for error-handling information.
         func (op *{@lro.clientReturnTypeName}) Wait(ctx context.Context, opts ...gax.CallOption) error {
-            return op.lro.Wait(ctx, nil, opts...)
+            return op.lro.WaitWithInterval(ctx, nil, {@lro.maxPollDelay}*time.Millisecond, opts...)
         }
 
         // Poll fetches the latest state of the long-running operation.
@@ -377,7 +376,7 @@
         // See documentation of Poll for error-handling information.
         func (op *{@lro.clientReturnTypeName}) Wait(ctx context.Context, opts ...gax.CallOption) (*{@lro.operationPayloadTypeName}, error) {
             var resp {@lro.operationPayloadTypeName}
-            if err := op.lro.Wait(ctx, &resp, opts...); err != nil {
+            if err := op.lro.WaitWithInterval(ctx, &resp, {@lro.maxPollDelay}*time.Millisecond, opts...); err != nil {
                 return nil, err
             }
             return &resp, nil

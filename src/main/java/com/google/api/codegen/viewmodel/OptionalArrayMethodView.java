@@ -83,9 +83,15 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
   @Nullable
   public abstract String apiVersion();
 
+  public abstract String topLevelAliasedApiClassName();
+
+  public abstract String versionAliasedApiClassName();
+
   public boolean hasApiVersion() {
     return apiVersion() != null;
   }
+
+  public abstract List<List<String>> oneofParams();
 
   public static Builder newBuilder() {
     return new AutoValue_OptionalArrayMethodView.Builder();
@@ -156,6 +162,12 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
     public abstract Builder packageServiceName(String val);
 
     public abstract Builder apiVersion(String val);
+
+    public abstract Builder topLevelAliasedApiClassName(String val);
+
+    public abstract Builder versionAliasedApiClassName(String val);
+
+    public abstract Builder oneofParams(List<List<String>> val);
 
     public abstract OptionalArrayMethodView build();
   }

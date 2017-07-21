@@ -17,6 +17,7 @@ package com.google.api.codegen.configgen;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -121,7 +122,8 @@ public class LanguageGenerator {
 
   private static class GoLanguageFormatter implements LanguageFormatter {
     public String getFormattedPackageName(String packageName) {
-      List<String> nameComponents = Splitter.on(DEFAULT_PACKAGE_SEPARATOR).splitToList(packageName);
+      List<String> nameComponents =
+          Lists.newArrayList(Splitter.on(DEFAULT_PACKAGE_SEPARATOR).splitToList(packageName));
 
       // If the name follows the pattern google.foo.bar.v1234,
       // we reformat it into cloud.google.com.

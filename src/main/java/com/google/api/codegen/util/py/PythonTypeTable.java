@@ -54,6 +54,11 @@ public class PythonTypeTable implements TypeTable {
   }
 
   @Override
+  public TypeTable cloneEmpty(String packageName) {
+    return new PythonTypeTable(packageName);
+  }
+
+  @Override
   public TypeName getTypeName(String fullName) {
     List<String> namespaces = new ArrayList<>();
     List<String> shortNameParts = new ArrayList<>();

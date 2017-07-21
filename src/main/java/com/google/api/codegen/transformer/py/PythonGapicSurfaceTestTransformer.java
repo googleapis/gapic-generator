@@ -53,6 +53,7 @@ import com.google.api.codegen.viewmodel.testing.TestCaseView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.List;
@@ -129,12 +130,11 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
               .build();
 
       String version = packageConfig.apiVersion();
-      String outputDir = pathMapper.getOutputPath(context.getInterface(), productConfig);
-      String outputPath =
-          outputDir
-              + File.separator
-              + surfacePackageNamer.classFileNameBase(Name.upperCamel(testClassName).join(version))
+      String filename =
+          surfacePackageNamer.classFileNameBase(Name.upperCamel(testClassName).join(version))
               + ".py";
+      String outputPath =
+          Joiner.on(File.separator).join("tests", "unit", "gapic", version, filename);
       ImportSectionView importSection = importSectionTransformer.generateTestImportSection(context);
       models.add(
           ClientTestFileView.newBuilder()
@@ -205,10 +205,13 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
 
   private SmokeTestClassView createSmokeTestClassView(
       GapicInterfaceContext context, SurfaceNamer testPackageNamer) {
-    String outputPath =
-        pathMapper.getOutputPath(context.getInterface(), context.getProductConfig());
     SurfaceNamer namer = context.getNamer();
     String name = namer.getSmokeTestClassName(context.getInterfaceConfig());
+
+    String version = packageConfig.apiVersion();
+    String filename = namer.classFileNameBase(Name.upperCamel(name).join(version)) + ".py";
+    String outputPath =
+        Joiner.on(File.separator).join("tests", "system", "gapic", version, filename);
 
     Method method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
     FlatteningConfig flatteningGroup =
@@ -234,7 +237,7 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
         .apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()))
         .apiVariableName(namer.getApiWrapperVariableName(context.getInterfaceConfig()))
         .name(name)
-        .outputPath(namer.getSourceFilePath(outputPath, name))
+        .outputPath(outputPath)
         .templateFileName(SMOKE_TEST_TEMPLATE_FILE)
         .apiMethod(apiMethodView)
         .method(testCaseView)

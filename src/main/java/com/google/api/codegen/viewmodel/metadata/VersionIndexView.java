@@ -57,13 +57,21 @@ public abstract class VersionIndexView implements ViewModel {
 
   public abstract boolean isGcloud();
 
+  public abstract VersionIndexType type();
+
+  @Nullable
+  public abstract String versionFileBasePath();
+
   public boolean hasMultipleServices() {
     return requireViews().size() > 1;
   }
 
   public static Builder newBuilder() {
     // Use v1 as the default version.
-    return new AutoValue_VersionIndexView.Builder().apiVersion("v1").isGcloud(false);
+    return new AutoValue_VersionIndexView.Builder()
+        .apiVersion("v1")
+        .isGcloud(false)
+        .type(VersionIndexType.Unspecified);
   }
 
   @AutoValue.Builder
@@ -89,6 +97,10 @@ public abstract class VersionIndexView implements ViewModel {
     public abstract Builder stubs(List<GrpcStubView> vals);
 
     public abstract Builder isGcloud(boolean val);
+
+    public abstract Builder type(VersionIndexType val);
+
+    public abstract Builder versionFileBasePath(String val);
 
     public abstract VersionIndexView build();
   }

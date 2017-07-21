@@ -135,7 +135,13 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
         new ModelTypeFormatterImpl(new CSharpModelTypeNameConverter(packageName)),
         new CSharpTypeTable(packageName),
         new CSharpCommentReformatter(),
+        packageName,
         packageName);
+  }
+
+  @Override
+  public SurfaceNamer cloneWithPackageName(String packageName) {
+    return new CSharpSurfaceNamer(packageName);
   }
 
   @Override

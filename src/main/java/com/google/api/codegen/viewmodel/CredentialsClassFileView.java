@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,36 +18,36 @@ import com.google.api.codegen.SnippetSetRunner;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class StaticLangApiFileView implements ViewModel {
-  @Override
-  public abstract String templateFileName();
-
-  public abstract FileHeaderView fileHeader();
-
-  public abstract StaticLangApiView api();
-
-  @Override
-  public abstract String outputPath();
-
+public abstract class CredentialsClassFileView implements ViewModel {
   @Override
   public String resourceRoot() {
     return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
   }
 
+  @Override
+  public abstract String templateFileName();
+
+  @Override
+  public abstract String outputPath();
+
+  public abstract FileHeaderView fileHeader();
+
+  public abstract CredentialsClassView credentialsClass();
+
   public static Builder newBuilder() {
-    return new AutoValue_StaticLangApiFileView.Builder();
+    return new AutoValue_CredentialsClassFileView.Builder();
   }
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder templateFileName(String val);
-
     public abstract Builder fileHeader(FileHeaderView val);
 
     public abstract Builder outputPath(String val);
 
-    public abstract Builder api(StaticLangApiView val);
+    public abstract Builder templateFileName(String val);
 
-    public abstract StaticLangApiFileView build();
+    public abstract Builder credentialsClass(CredentialsClassView val);
+
+    public abstract CredentialsClassFileView build();
   }
 }
