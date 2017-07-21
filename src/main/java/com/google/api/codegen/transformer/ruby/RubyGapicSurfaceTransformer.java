@@ -37,9 +37,13 @@ import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodView;
+import com.google.api.codegen.viewmodel.CredentialsClassFileView;
+import com.google.api.codegen.viewmodel.CredentialsClassView;
 import com.google.api.codegen.viewmodel.DynamicLangXApiView;
 import com.google.api.codegen.viewmodel.GrpcStreamingDetailView;
+import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
+import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
 import com.google.api.codegen.viewmodel.PathTemplateGetterFunctionView;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -64,6 +68,12 @@ import java.util.List;
 public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
   private static final String VERSION_INDEX_TEMPLATE_FILE = "ruby/version_index.snip";
   private static final String XAPI_TEMPLATE_FILENAME = "ruby/main.snip";
+  private static final String CREDENTIALS_CLASS_TEMPLATE_FILE = "ruby/credentials.snip";
+  // This assumes the api is a google-cloud api.
+  private static final List<String> DEFAULT_PATH_ENV_VARS =
+      ImmutableList.of("GOOGLE_CLOUD_KEYFILE", "GCLOUD_KEYFILE");
+  private static final List<String> DEFAULT_JSON_ENV_VARS =
+      ImmutableList.of("GOOGLE_CLOUD_KEYFILE_JSON", "GCLOUD_KEYFILE_JSON");
   private static final int VERSION_MODULE_RINDEX = 1;
   private static final int SERVICE_MODULE_RINDEX = 2;
 
@@ -87,7 +97,8 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
 
   @Override
   public List<String> getTemplateFileNames() {
-    return ImmutableList.of(XAPI_TEMPLATE_FILENAME, VERSION_INDEX_TEMPLATE_FILE);
+    return ImmutableList.of(
+        XAPI_TEMPLATE_FILENAME, VERSION_INDEX_TEMPLATE_FILE, CREDENTIALS_CLASS_TEMPLATE_FILE);
   }
 
   @Override
@@ -96,6 +107,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
     views.add(generateVersionIndexView(model, productConfig));
     views.add(generateTopLevelIndexView(model, productConfig));
     views.addAll(generateApiClasses(model, productConfig));
+    views.add(generateCredentialsView(model, productConfig));
     return views.build();
   }
 
@@ -170,6 +182,8 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.packageVersion(
         packageConfig.generatedPackageVersionBound(TargetLanguage.RUBY).lower());
 
+    xapiClass.credentialsClass(
+        generateCredentialsClass(context.getModel(), context.getProductConfig()));
     return xapiClass.build();
   }
 
@@ -215,6 +229,69 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
         .outputPath("lib" + File.separator + versionPackagePath(namer) + ".rb")
         .modules(generateModuleViews(model, productConfig, true))
         .type(VersionIndexType.VersionIndex)
+        .build();
+  }
+
+  private ViewModel generateCredentialsView(Model model, GapicProductConfig productConfig) {
+    SurfaceNamer namer = new RubySurfaceNamer(productConfig.getPackageName());
+    CredentialsClassView credentialsClass = generateCredentialsClass(model, productConfig);
+    String outputPath = credentialsClassOutputPath(namer);
+
+    ImportSectionView importSection =
+        ImportSectionView.newBuilder()
+            .externalImports(
+                ImmutableList.of(
+                    ImportFileView.newBuilder()
+                        .moduleName("google/gax")
+                        .types(ImmutableList.<ImportTypeView>of())
+                        .build()))
+            .build();
+    return CredentialsClassFileView.newBuilder()
+        .outputPath(outputPath)
+        .templateFileName(CREDENTIALS_CLASS_TEMPLATE_FILE)
+        .credentialsClass(credentialsClass)
+        .fileHeader(fileHeaderTransformer.generateFileHeader(productConfig, importSection, namer))
+        .build();
+  }
+
+  private String credentialsClassOutputPath(SurfaceNamer namer) {
+    List<String> parts = namer.getApiModules();
+    List<String> paths = new ArrayList<>();
+    paths.add("lib");
+    for (String part : parts) {
+      paths.add(namer.packageFilePathPiece(Name.upperCamel(part)));
+    }
+    paths.add("credentials.rb");
+    return Joiner.on(File.separator).join(paths);
+  }
+
+  private CredentialsClassView generateCredentialsClass(
+      Model model, GapicProductConfig productConfig) {
+    ProductServiceConfig productServiceConfig = new ProductServiceConfig();
+
+    SurfaceNamer namer = new RubySurfaceNamer(productConfig.getPackageName());
+
+    String apiSpecificPathEnvVar =
+        namer.inittedConstantName(Name.lowerCamel(packageConfig.shortName()).join("keyfile"));
+    String apiSpecificJsonEnvVar =
+        namer.inittedConstantName(
+            Name.lowerCamel(packageConfig.shortName()).join("keyfile").join("json"));
+
+    List<String> pathEnvVars =
+        ImmutableList.<String>builder()
+            .add(apiSpecificPathEnvVar)
+            .addAll(DEFAULT_PATH_ENV_VARS)
+            .build();
+    List<String> jsonEnvVars =
+        ImmutableList.<String>builder()
+            .add(apiSpecificJsonEnvVar)
+            .addAll(DEFAULT_JSON_ENV_VARS)
+            .build();
+    return CredentialsClassView.newBuilder()
+        .pathEnvVars(pathEnvVars)
+        .jsonEnvVars(jsonEnvVars)
+        .serviceAddress(productServiceConfig.getServiceAddress(model))
+        .packageName(namer.getPackageName())
         .build();
   }
 
