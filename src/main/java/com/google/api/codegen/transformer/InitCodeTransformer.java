@@ -226,6 +226,7 @@ public class InitCodeTransformer {
         .fieldSettings(getFieldSettings(context, argItems))
         .importSection(importSectionTransformer.generateImportSection(context, orderedItems))
         .versionIndexFileImportName(namer.getVersionIndexFileImportName())
+        .topLevelIndexFileImportName(namer.getTopLevelIndexFileImportName())
         .apiFileName(namer.getServiceFileName(context.getInterfaceConfig()))
         .build();
   }

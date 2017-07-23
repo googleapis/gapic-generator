@@ -18,6 +18,7 @@ require "minitest/spec"
 
 require "google/gax"
 
+require "library"
 require "library/v1/library_service_client"
 require "library_services_pb"
 require "tagger_services_pb"
@@ -83,7 +84,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:create_shelf, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         response = client.create_shelf(shelf)
@@ -106,7 +107,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:create_shelf, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         err = assert_raises Google::Gax::GaxError do
@@ -148,7 +149,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:get_shelf, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         response = client.get_shelf(formatted_name, options_)
@@ -173,7 +174,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:get_shelf, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         err = assert_raises Google::Gax::GaxError do
@@ -204,7 +205,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:list_shelves, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         response = client.list_shelves
@@ -225,7 +226,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:list_shelves, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         err = assert_raises Google::Gax::GaxError do
@@ -254,7 +255,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:delete_shelf, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         response = client.delete_shelf(formatted_name)
@@ -277,7 +278,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:delete_shelf, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         err = assert_raises Google::Gax::GaxError do
@@ -319,7 +320,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:merge_shelves, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         response = client.merge_shelves(formatted_name, formatted_other_shelf_name)
@@ -344,7 +345,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:merge_shelves, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         err = assert_raises Google::Gax::GaxError do
@@ -388,7 +389,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:create_book, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         response = client.create_book(formatted_name, book)
@@ -413,7 +414,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:create_book, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         err = assert_raises Google::Gax::GaxError do
@@ -453,7 +454,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:publish_series, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         response = client.publish_series(
@@ -485,7 +486,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:publish_series, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         err = assert_raises Google::Gax::GaxError do
@@ -531,7 +532,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:get_book, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         response = client.get_book(formatted_name)
@@ -554,7 +555,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:get_book, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         err = assert_raises Google::Gax::GaxError do
@@ -590,7 +591,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:list_books, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         response = client.list_books(formatted_name)
@@ -616,7 +617,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:list_books, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         err = assert_raises Google::Gax::GaxError do
@@ -645,7 +646,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:delete_book, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         response = client.delete_book(formatted_name)
@@ -668,7 +669,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:delete_book, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         err = assert_raises Google::Gax::GaxError do
@@ -712,7 +713,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:update_book, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         response = client.update_book(formatted_name, book)
@@ -737,7 +738,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:update_book, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         err = assert_raises Google::Gax::GaxError do
@@ -781,7 +782,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:move_book, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         response = client.move_book(formatted_name, formatted_other_shelf_name)
@@ -806,7 +807,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:move_book, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         err = assert_raises Google::Gax::GaxError do
@@ -837,7 +838,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:list_strings, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         response = client.list_strings
@@ -858,7 +859,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:list_strings, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         err = assert_raises Google::Gax::GaxError do
@@ -897,7 +898,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:add_comments, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         response = client.add_comments(formatted_name, comments)
@@ -930,7 +931,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:add_comments, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         err = assert_raises Google::Gax::GaxError do
@@ -972,7 +973,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:get_book_from_archive, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         response = client.get_book_from_archive(formatted_name)
@@ -995,7 +996,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:get_book_from_archive, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         err = assert_raises Google::Gax::GaxError do
@@ -1039,7 +1040,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:get_book_from_anywhere, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         response = client.get_book_from_anywhere(formatted_name, formatted_alt_book_name)
@@ -1064,7 +1065,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:get_book_from_anywhere, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         err = assert_raises Google::Gax::GaxError do
@@ -1163,7 +1164,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:update_book_index, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         response = client.update_book_index(
@@ -1195,7 +1196,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:update_book_index, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         err = assert_raises Google::Gax::GaxError do
@@ -1232,7 +1233,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:stream_shelves, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         response = client.stream_shelves(request)
@@ -1254,7 +1255,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:stream_shelves, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         err = assert_raises Google::Gax::GaxError do
@@ -1297,7 +1298,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:stream_books, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         response = client.stream_books(request)
@@ -1322,7 +1323,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:stream_books, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         err = assert_raises Google::Gax::GaxError do
@@ -1359,7 +1360,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:discuss_book, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         response = client.discuss_book([request])
@@ -1385,7 +1386,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:discuss_book, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         err = assert_raises Google::Gax::GaxError do
@@ -1422,7 +1423,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:monolog_about_book, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         response = client.monolog_about_book([request])
@@ -1447,7 +1448,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:monolog_about_book, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         err = assert_raises Google::Gax::GaxError do
@@ -1486,7 +1487,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:find_related_books, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         response = client.find_related_books(names, shelves)
@@ -1515,7 +1516,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:find_related_books, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         err = assert_raises Google::Gax::GaxError do
@@ -1550,7 +1551,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:add_tag, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         response = client.add_tag(formatted_resource, tag)
@@ -1575,7 +1576,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:add_tag, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         err = assert_raises Google::Gax::GaxError do
@@ -1610,7 +1611,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:add_label, mock_method)
 
       Google::Tagger::V1::Labeler::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         response = client.add_label(formatted_resource, label)
@@ -1635,7 +1636,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:add_label, mock_method)
 
       Google::Tagger::V1::Labeler::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         err = assert_raises Google::Gax::GaxError do
@@ -1684,7 +1685,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:get_big_book, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         response = client.get_big_book(formatted_name)
@@ -1717,7 +1718,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:get_big_book, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         response = client.get_big_book(formatted_name)
@@ -1741,7 +1742,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:get_big_book, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         err = assert_raises Google::Gax::GaxError do
@@ -1781,7 +1782,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:get_big_nothing, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         response = client.get_big_nothing(formatted_name)
@@ -1814,7 +1815,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:get_big_nothing, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         response = client.get_big_nothing(formatted_name)
@@ -1838,7 +1839,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:get_big_nothing, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         err = assert_raises Google::Gax::GaxError do
@@ -1923,7 +1924,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:test_optional_required_flattening_params, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         response = client.test_optional_required_flattening_params(
@@ -2026,7 +2027,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:test_optional_required_flattening_params, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         err = assert_raises Google::Gax::GaxError do

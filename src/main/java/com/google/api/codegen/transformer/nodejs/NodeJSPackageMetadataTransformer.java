@@ -19,6 +19,7 @@ import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.VersionBound;
 import com.google.api.codegen.nodejs.NodeJSUtils;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
@@ -37,6 +38,7 @@ import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.api.codegen.viewmodel.metadata.PackageDependencyView;
 import com.google.api.codegen.viewmodel.metadata.ReadmeMetadataView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
@@ -192,7 +194,21 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
         .generateMetadataView(packageConfig, model, template, outputPath, TargetLanguage.NODEJS)
         .identifier(namer.getMetadataIdentifier())
         .hasMultipleServices(hasMultipleServices)
+        .additionalDependencies(generateAdditionalDependencies(model))
         .build();
+  }
+
+  private List<PackageDependencyView> generateAdditionalDependencies(Model model) {
+    ImmutableList.Builder<PackageDependencyView> dependencies = ImmutableList.builder();
+    dependencies.add(
+        PackageDependencyView.create(
+            "google-gax", packageConfig.gaxVersionBound(TargetLanguage.NODEJS)));
+    dependencies.add(PackageDependencyView.create("extend", VersionBound.create("3.0", "")));
+    if (new InterfaceView().hasMultipleServices(model)) {
+      dependencies.add(
+          PackageDependencyView.create("lodash.union", VersionBound.create("4.6.0", "")));
+    }
+    return dependencies.build();
   }
 
   private GapicInterfaceContext createContext(
