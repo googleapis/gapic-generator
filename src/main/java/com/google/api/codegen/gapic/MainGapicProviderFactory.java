@@ -482,7 +482,8 @@ public class MainGapicProviderFactory
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
-                .setModelToViewTransformer(new RubyGapicSurfaceTestTransformer(rubyTestPathMapper))
+                .setModelToViewTransformer(
+                    new RubyGapicSurfaceTestTransformer(rubyTestPathMapper, packageConfig))
                 .build();
         providers.add(testProvider);
       }

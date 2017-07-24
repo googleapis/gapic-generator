@@ -20,14 +20,14 @@ import com.google.api.core.ApiFunction;
 import com.google.api.core.ApiFuture;
 import com.google.api.core.ApiFutures;
 import com.google.api.core.BetaApi;
-import com.google.api.gax.core.FixedSizeCollection;
-import com.google.api.gax.core.Page;
-import com.google.api.gax.core.PagedListResponse;
-import com.google.api.gax.grpc.AbstractFixedSizeCollection;
-import com.google.api.gax.grpc.AbstractPage;
-import com.google.api.gax.grpc.AbstractPagedListResponse;
-import com.google.api.gax.grpc.ApiExceptions;
-import com.google.api.gax.grpc.PageContext;
+import com.google.api.gax.paging.AbstractFixedSizeCollection;
+import com.google.api.gax.paging.AbstractPage;
+import com.google.api.gax.paging.AbstractPagedListResponse;
+import com.google.api.gax.paging.FixedSizeCollection;
+import com.google.api.gax.paging.Page;
+import com.google.api.gax.paging.PagedListResponse;
+import com.google.api.gax.rpc.ApiExceptions;
+import com.google.api.gax.rpc.PageContext;
 import com.google.api.resourcenames.ResourceName;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
@@ -108,7 +108,7 @@ public class PagedResponseWrappers {
     }
 
     @Override
-    protected ApiFuture<ListShelvesPage> createPageAsync(
+    public ApiFuture<ListShelvesPage> createPageAsync(
         PageContext<ListShelvesRequest, ListShelvesResponse, Shelf> context,
         ApiFuture<ListShelvesResponse> futureResponse) {
       return super.createPageAsync(context, futureResponse);
@@ -196,7 +196,7 @@ public class PagedResponseWrappers {
     }
 
     @Override
-    protected ApiFuture<ListBooksPage> createPageAsync(
+    public ApiFuture<ListBooksPage> createPageAsync(
         PageContext<ListBooksRequest, ListBooksResponse, Book> context,
         ApiFuture<ListBooksResponse> futureResponse) {
       return super.createPageAsync(context, futureResponse);
@@ -292,7 +292,7 @@ public class PagedResponseWrappers {
     }
 
     @Override
-    protected ApiFuture<ListStringsPage> createPageAsync(
+    public ApiFuture<ListStringsPage> createPageAsync(
         PageContext<ListStringsRequest, ListStringsResponse, String> context,
         ApiFuture<ListStringsResponse> futureResponse) {
       return super.createPageAsync(context, futureResponse);
@@ -412,7 +412,7 @@ public class PagedResponseWrappers {
     }
 
     @Override
-    protected ApiFuture<FindRelatedBooksPage> createPageAsync(
+    public ApiFuture<FindRelatedBooksPage> createPageAsync(
         PageContext<FindRelatedBooksRequest, FindRelatedBooksResponse, String> context,
         ApiFuture<FindRelatedBooksResponse> futureResponse) {
       return super.createPageAsync(context, futureResponse);

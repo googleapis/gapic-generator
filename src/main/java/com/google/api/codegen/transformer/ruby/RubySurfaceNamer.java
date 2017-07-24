@@ -41,6 +41,7 @@ import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +54,13 @@ public class RubySurfaceNamer extends SurfaceNamer {
         new ModelTypeFormatterImpl(new RubyModelTypeNameConverter(packageName)),
         new RubyTypeTable(packageName),
         new RubyCommentReformatter(),
+        packageName,
         packageName);
+  }
+
+  @Override
+  public SurfaceNamer cloneWithPackageName(String packageName) {
+    return new RubySurfaceNamer(packageName);
   }
 
   /** The name of the class that implements snippets for a particular proto interface. */
@@ -254,6 +261,28 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getTopLevelAliasedApiClassName(
+      GapicInterfaceConfig interfaceConfig, boolean packageHasMultipleServices) {
+    return packageHasMultipleServices
+        ? getTopLevelNamespace() + "::" + getPackageServiceName(interfaceConfig.getInterface())
+        : getTopLevelNamespace();
+  }
+
+  @Override
+  public String getVersionAliasedApiClassName(
+      GapicInterfaceConfig interfaceConfig, boolean packageHasMultipleServices) {
+    return packageHasMultipleServices
+        ? getPackageName() + "::" + getPackageServiceName(interfaceConfig.getInterface())
+        : getPackageName();
+  }
+
+  private String getTopLevelNamespace() {
+    List<String> parts = Lists.newArrayList(getPackageName().split("::"));
+    parts = parts.subList(0, parts.size() - 1);
+    return Joiner.on("::").join(parts);
+  }
+
+  @Override
   public ImmutableList<String> getApiModules() {
     return ImmutableList.copyOf(Splitter.on("::").split(getPackageName()));
   }
@@ -294,6 +323,15 @@ public class RubySurfaceNamer extends SurfaceNamer {
     return getPackageFilePath();
   }
 
+  @Override
+  public String getTopLevelIndexFileImportName() {
+    List<String> newNames = new ArrayList<>();
+    for (String name : getTopLevelNamespace().split("::")) {
+      newNames.add(packageFilePathPiece(Name.upperCamel(name)));
+    }
+    return Joiner.on(File.separator).join(newNames.toArray());
+  }
+
   private String getPackageFilePath() {
     List<String> newNames = new ArrayList<>();
     for (String name : getPackageName().split("::")) {
@@ -320,5 +358,10 @@ public class RubySurfaceNamer extends SurfaceNamer {
   @Override
   public String getLroApiMethodName(Method method, VisibilityConfig visibility) {
     return getMethodKey(method);
+  }
+
+  @Override
+  public String getPackageServiceName(Interface apiInterface) {
+    return publicClassName(getReducedServiceName(apiInterface.getSimpleName()));
   }
 }
