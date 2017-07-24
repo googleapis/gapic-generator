@@ -665,6 +665,16 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getFullyQualifiedApiWrapperClassName");
   }
 
+  public String getTopLevelAliasedApiClassName(
+      GapicInterfaceConfig interfaceConfig, boolean packageHasMultipleServices) {
+    return getNotImplementedString("SurfaceNamer.getTopLevelAliasedApiClassName");
+  }
+
+  public String getVersionAliasedApiClassName(
+      GapicInterfaceConfig interfaceConfig, boolean packageHasMultipleServices) {
+    return getNotImplementedString("SurfaceNamer.getVersionAliasedApiClassName");
+  }
+
   protected Name getResourceTypeNameObject(ResourceNameConfig resourceNameConfig) {
     String entityName = resourceNameConfig.getEntityName();
     ResourceNameType resourceNameType = resourceNameConfig.getResourceNameType();
@@ -1143,6 +1153,9 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getVersionIndexFileImportName");
   }
 
+  public String getTopLevelIndexFileImportName() {
+    return getNotImplementedString("SurfaceNamer.getTopLevelIndexFileImportName");
+  }
   /////////////////////////////////// Docs & Annotations //////////////////////////////////////////
 
   /** The documentation name of a parameter for the given lower-case field name. */

@@ -5,74 +5,169 @@
 @snippet generate(index)
   {@license(index.fileHeader)}
 
+  @switch index.type.toString
+  @case "VersionIndex"
+    @join requireView : {@index.requireViews}
+        require "{@requireView.fileName}"
+    @end
+
+
+  @default
+  @end
   @if index.modules
-    {@modules(index.modules.iterator)}
+    {@modules(index.modules.iterator, index.type, body(index))}
   @end
-
-  @join requireView : {@index.requireViews}
-      require "{@requireView.fileName}"
-  @end
-
 @end
 
-@private modules(iterator)
+@private modules(iterator, indexType, content)
   @let module = iterator.next
     @switch module.type
     @case "ReadmeMetadataView"
-      {@readmeModule(module, iterator)}
+      {@readmeModule(indexType, module, iterator, content)}
     @case "TocModuleView"
-      {@tocModule(module, iterator)}
+      {@tocModule(indexType, module, iterator, content)}
     @case "SimpleModuleView"
-      {@simpleModule(module, iterator)}
+      {@simpleModule(indexType, module, iterator, content)}
     @end
   @end
 @end
 
-@private readmeModule(module, iterator)
+@private readmeModule(indexType, module, iterator, content)
   @##
-  {@toComments(util.getDocLines(generateReadme(module)))}
+  {@toComments(util.getDocLines(generateReadme(indexType, module)))}
   @#
-  {@simpleModule(module, iterator)}
+  {@simpleModule(indexType, module, iterator, content)}
 @end
 
-@private tocModule(module, iterator)
+@private tocModule(indexType, module, iterator, content)
   @##
   @# # {@module.fullName} Contents
   @#
   @# | Class | Description |
   @# | ----- | ----------- |
-  @join content : module.contents
-    @# | [{@content.name}][] | {@content.description} |
+  @join class : module.contents
+    @# | [{@class.name}][] | {@class.description} |
   @end
   @#
-  @join content : module.contents
-    @# [{@content.name}]: {@content.link}
+  @join class : module.contents
+    @# [{@class.name}]: {@class.link}
   @end
   @#
-  {@simpleModule(module, iterator)}
+  {@simpleModule(indexType, module, iterator, content)}
 @end
 
-@private simpleModule(module, iterator)
+@private simpleModule(indexType, module, iterator, content)
   module {@module.moduleName}
     @if iterator.hasNext
-      {@modules(iterator)}
+      {@modules(iterator, indexType, content)}
+    @else
+      {@content}
     @end
   end
 @end
 
-@private generateReadme(metadata)
-  {@readme(metadata, exampleMethods(metadata.exampleMethods), installationLines(metadata))}
+@private generateReadme(indexType, metadata)
+  {@readme(metadata, exampleMethods(indexType, metadata.exampleMethods), installationLines(metadata))}
 @end
 
-@private exampleMethods(methods)
+@private exampleMethods(indexType, methods)
   @join method : methods on BREAK
     @#### {@method.apiClassName}
     ```rb
-    {@sampleCode_(method)}
+    @switch indexType.toString
+    @case "VersionIndex"
+      {@sampleCodeWithVersionImport(method)}
+    @case "TopLevelIndex"
+      {@sampleCodeWithTopLevelImport(method)}
+    @default
+    @end
     ```
   @end
 @end
 
 @private installationLines(metadata)
   $ gem install {@metadata.identifier}
+@end
+
+@private body(index)
+  @if constants(index)
+    {@constants(index)}
+
+  @end
+  @join requireView : index.requireViews on BREAK.add(BREAK)
+    @if index.hasMultipleServices
+      module {@requireView.serviceName}
+        {@client(index, requireView)}
+      end
+    @else
+      {@client(index, requireView)}
+    @end
+  @end
+@end
+
+@private constants(index)
+  @switch index.type.toString
+  @case "TopLevelIndex"
+    FILE_DIR = File.realdirpath(Pathname.new(__FILE__).join("..").join("{@index.versionFileBasePath}"))
+
+    AVAILABLE_VERSIONS = Dir["#{FILE_DIR}/*"]
+      .select {|file| File.directory?(file)}
+      .select {|dir| Google::Gax::VERSION_MATCHER.match(File.basename(dir))}
+      .select {|dir| File.exist?(dir + ".rb")}
+      .map {|dir| File.basename(dir)}
+
+  @default
+  @end
+@end
+
+@private client(index, requireView)
+  @switch index.type.toString
+  @case "VersionIndex"
+    {@versionIndexClient(requireView)}
+  @case "TopLevelIndex"
+    {@topLevelClient(index, requireView)}
+  @default
+  @end
+@end
+
+@private versionIndexClient(requireView)
+  @##
+  @if @requireView.doc.lines
+    {@toComments(@requireView.doc.lines)}
+  @#
+  @end
+  {@initMethodComments()}
+  def self.new(*args, **kwargs)
+    {@requireView.clientName}.new(*args, **kwargs)
+  end
+@end
+
+@private topLevelClient(index, requireView)
+  @##
+  @if @requireView.doc.lines
+    {@toComments(@requireView.doc.lines)}
+  @#
+  @end
+  @# @@param version [Symbol, String]
+  @#   The major version of the service to be used. By default :{@index.apiVersion}
+  @#   is used.
+  {@initMethodComments()}
+  def self.new(*args, version: :{@index.apiVersion}, **kwargs)
+    # Check if the version provided is available.
+    unless AVAILABLE_VERSIONS.include?(version.to_s.downcase)
+      raise "The version: #{version} is not available. The available versions " @\
+        "are: [#{AVAILABLE_VERSIONS.join(", ")}]"
+    end
+
+    require "#{FILE_DIR}/#{version.to_s.downcase}"
+    version_module = {@requireView.topLevelNamespace}
+      .constants
+      .select {|sym| sym.to_s.downcase == version.to_s.downcase}
+      .first
+    @if index.hasMultipleServices
+      {@requireView.topLevelNamespace}.const_get(version_module)::{@requireView.serviceName}.new(*args, **kwargs)
+    @else
+      {@requireView.topLevelNamespace}.const_get(version_module).new(*args, **kwargs)
+    @end
+  end
 @end

@@ -17,7 +17,8 @@
 
 require "minitest/autorun"
 require "minitest/spec"
-require "library/v1/library_service_client"
+
+require "library"
 
 describe "LibraryServiceSmokeTest" do
   it "runs one smoke test with update_book" do
@@ -26,7 +27,7 @@ describe "LibraryServiceSmokeTest" do
     end
     project_id = ENV["SMOKE_TEST_PROJECT"].freeze
 
-    library_service_client = Library::V1::LibraryServiceClient.new
+    library_service_client = Library.new
     formatted_name = Library::V1::LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)
     rating = :GOOD
     book = { rating: rating }
