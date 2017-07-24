@@ -83,6 +83,7 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
     for (String filename : filenames) {
       imports.add(createImport(context.getNamer().getProtoFileImportName(filename)));
     }
+    imports.add(createImport(context.getNamer().getCredentialsClassImportName()));
     return imports.build();
   }
 

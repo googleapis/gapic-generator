@@ -29,6 +29,7 @@ require "pathname"
 require "google/gax"
 
 require "multiple_services_pb"
+require "google/example/credentials"
 
 module Google
   module Example
@@ -111,8 +112,9 @@ module Google
             warn "`app_name` and `app_version` are no longer being used in the request headers."
           end
 
+          credentials ||= Google::Example::Credentials.default
           if credentials.is_a?(String) || credentials.is_a?(Hash)
-            updater_proc = Google::Example::V1::Credentials.new(credentials).updater_proc
+            updater_proc = Google::Example::Credentials.new(credentials).updater_proc
           end
           if credentials.is_a?(GRPC::Core::Channel)
             channel = credentials
@@ -123,7 +125,7 @@ module Google
           if credentials.is_a?(Proc)
             updater_proc = credentials
           end
-          if credentials.ia_a(Google::Gax::Credentials)
+          if credentials.is_a?(Google::Gax::Credentials)
             updater_proc = credentials.updater_proc
           end
 
@@ -219,6 +221,7 @@ require "pathname"
 require "google/gax"
 
 require "multiple_services_pb"
+require "google/example/credentials"
 
 module Google
   module Example
@@ -301,8 +304,9 @@ module Google
             warn "`app_name` and `app_version` are no longer being used in the request headers."
           end
 
+          credentials ||= Google::Example::Credentials.default
           if credentials.is_a?(String) || credentials.is_a?(Hash)
-            updater_proc = Google::Example::V1::Credentials.new(credentials).updater_proc
+            updater_proc = Google::Example::Credentials.new(credentials).updater_proc
           end
           if credentials.is_a?(GRPC::Core::Channel)
             channel = credentials
@@ -313,7 +317,7 @@ module Google
           if credentials.is_a?(Proc)
             updater_proc = credentials
           end
-          if credentials.ia_a(Google::Gax::Credentials)
+          if credentials.is_a?(Google::Gax::Credentials)
             updater_proc = credentials.updater_proc
           end
 

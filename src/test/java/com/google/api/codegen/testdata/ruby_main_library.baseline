@@ -32,6 +32,7 @@ require "google/longrunning/operations_client"
 
 require "library_pb"
 require "tagger_pb"
+require "library/credentials"
 
 module Library
   module V1
@@ -235,8 +236,9 @@ module Library
           lib_version: lib_version,
         )
 
+        credentials ||= Library::Credentials.default
         if credentials.is_a?(String) || credentials.is_a?(Hash)
-          updater_proc = Library::V1::Credentials.new(credentials).updater_proc
+          updater_proc = Library::Credentials.new(credentials).updater_proc
         end
         if credentials.is_a?(GRPC::Core::Channel)
           channel = credentials
@@ -247,7 +249,7 @@ module Library
         if credentials.is_a?(Proc)
           updater_proc = credentials
         end
-        if credentials.ia_a(Google::Gax::Credentials)
+        if credentials.is_a?(Google::Gax::Credentials)
           updater_proc = credentials.updater_proc
         end
 

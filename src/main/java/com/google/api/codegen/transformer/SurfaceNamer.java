@@ -184,6 +184,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return ImmutableList.<String>of();
   }
 
+  /** The top level modules of the package. */
+  public List<String> getTopLevelApiModules() {
+    return ImmutableList.of();
+  }
+
   /////////////////////////////////// Protos methods /////////////////////////////////////////////
 
   /** The function name to set the given proto field. */
@@ -1155,6 +1160,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   public String getTopLevelIndexFileImportName() {
     return getNotImplementedString("SurfaceNamer.getTopLevelIndexFileImportName");
+  }
+
+  public String getCredentialsClassImportName() {
+    return getNotImplementedString("SurfaceNamer.getCredentialsClassImportName");
   }
   /////////////////////////////////// Docs & Annotations //////////////////////////////////////////
 

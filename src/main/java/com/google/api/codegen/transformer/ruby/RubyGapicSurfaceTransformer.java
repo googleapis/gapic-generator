@@ -182,8 +182,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.packageVersion(
         packageConfig.generatedPackageVersionBound(TargetLanguage.RUBY).lower());
 
-    xapiClass.credentialsClass(
-        generateCredentialsClass(context.getModel(), context.getProductConfig()));
+    xapiClass.fullyQualifiedCredentialsClassName(topLevelNamespace(namer) + "::Credentials");
     return xapiClass.build();
   }
 
@@ -236,8 +235,6 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
   private ViewModel generateCredentialsView(Model model, GapicProductConfig productConfig) {
     SurfaceNamer namer = new RubySurfaceNamer(productConfig.getPackageName());
     CredentialsClassView credentialsClass = generateCredentialsClass(model, productConfig);
-    String outputPath = credentialsClassOutputPath(namer);
-
     ImportSectionView importSection =
         ImportSectionView.newBuilder()
             .externalImports(
@@ -247,23 +244,15 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
                         .types(ImmutableList.<ImportTypeView>of())
                         .build()))
             .build();
+    List<String> modules = namer.getTopLevelApiModules();
     return CredentialsClassFileView.newBuilder()
-        .outputPath(outputPath)
+        .outputPath("lib" + File.separator + namer.getCredentialsClassImportName() + ".rb")
         .templateFileName(CREDENTIALS_CLASS_TEMPLATE_FILE)
         .credentialsClass(credentialsClass)
-        .fileHeader(fileHeaderTransformer.generateFileHeader(productConfig, importSection, namer))
+        .fileHeader(
+            fileHeaderTransformer.generateFileHeader(
+                productConfig, importSection, namer, ImmutableList.copyOf(modules)))
         .build();
-  }
-
-  private String credentialsClassOutputPath(SurfaceNamer namer) {
-    List<String> parts = namer.getApiModules();
-    List<String> paths = new ArrayList<>();
-    paths.add("lib");
-    for (String part : parts) {
-      paths.add(namer.packageFilePathPiece(Name.upperCamel(part)));
-    }
-    paths.add("credentials.rb");
-    return Joiner.on(File.separator).join(paths);
   }
 
   private CredentialsClassView generateCredentialsClass(
@@ -288,11 +277,11 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
             .add(apiSpecificJsonEnvVar)
             .addAll(DEFAULT_JSON_ENV_VARS)
             .build();
+
     return CredentialsClassView.newBuilder()
         .pathEnvVars(pathEnvVars)
         .jsonEnvVars(jsonEnvVars)
-        .serviceAddress(productServiceConfig.getServiceAddress(model))
-        .packageName(namer.getPackageName())
+        .scopes(productServiceConfig.getAuthScopes(model))
         .build();
   }
 
@@ -301,7 +290,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
 
     ImmutableList.Builder<VersionIndexRequireView> requireViews = ImmutableList.builder();
     Iterable<Interface> interfaces = new InterfaceView().getElementIterable(model);
-    List<String> modules = namer.getApiModules();
+    List<String> modules = namer.getTopLevelApiModules();
     boolean hasMultipleServices = Iterables.size(interfaces) > 1;
     for (Interface apiInterface : interfaces) {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
@@ -310,7 +299,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
       if (hasMultipleServices) {
         clientName += "::" + serviceName;
       }
-      String topLevelNamespace = Joiner.on("::").join(modules.subList(0, modules.size() - 1));
+      String topLevelNamespace = topLevelNamespace(namer);
       requireViews.add(
           VersionIndexRequireView.newBuilder()
               .clientName(clientName)
@@ -324,7 +313,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
     }
 
     String versionFileBasePath =
-        namer.packageFilePathPiece(Name.upperCamel(modules.get(modules.size() - 2)));
+        namer.packageFilePathPiece(Name.upperCamel(modules.get(modules.size() - 1)));
 
     return VersionIndexView.newBuilder()
         .apiVersion(packageConfig.apiVersion())
@@ -410,13 +399,15 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private String topLevelPackagePath(SurfaceNamer namer) {
-    List<String> parts = namer.getApiModules();
-    parts = parts.subList(0, parts.size() - 1);
     List<String> paths = new ArrayList<>();
-    for (String part : parts) {
+    for (String part : namer.getTopLevelApiModules()) {
       paths.add(namer.packageFilePathPiece(Name.upperCamel(part)));
     }
     return Joiner.on(File.separator).join(paths);
+  }
+
+  private String topLevelNamespace(SurfaceNamer namer) {
+    return Joiner.on("::").join(namer.getTopLevelApiModules());
   }
 
   private GapicInterfaceContext createContext(
