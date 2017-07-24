@@ -1107,7 +1107,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:get_book_from_absolutely_anywhere, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         response = client.get_book_from_absolutely_anywhere(formatted_name)
@@ -1130,7 +1130,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:get_book_from_absolutely_anywhere, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         err = assert_raises Google::Gax::GaxError do
