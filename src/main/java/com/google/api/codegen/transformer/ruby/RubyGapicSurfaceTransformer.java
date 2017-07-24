@@ -244,8 +244,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
                         .types(ImmutableList.<ImportTypeView>of())
                         .build()))
             .build();
-    List<String> modules = namer.getApiModules();
-    modules = modules.subList(0, modules.size() - 1);
+    List<String> modules = namer.getTopLevelApiModules();
     return CredentialsClassFileView.newBuilder()
         .outputPath("lib" + File.separator + namer.getCredentialsClassImportName() + ".rb")
         .templateFileName(CREDENTIALS_CLASS_TEMPLATE_FILE)
@@ -291,7 +290,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
 
     ImmutableList.Builder<VersionIndexRequireView> requireViews = ImmutableList.builder();
     Iterable<Interface> interfaces = new InterfaceView().getElementIterable(model);
-    List<String> modules = namer.getApiModules();
+    List<String> modules = namer.getTopLevelApiModules();
     boolean hasMultipleServices = Iterables.size(interfaces) > 1;
     for (Interface apiInterface : interfaces) {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
@@ -300,7 +299,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
       if (hasMultipleServices) {
         clientName += "::" + serviceName;
       }
-      String topLevelNamespace = Joiner.on("::").join(modules.subList(0, modules.size() - 1));
+      String topLevelNamespace = topLevelNamespace(namer);
       requireViews.add(
           VersionIndexRequireView.newBuilder()
               .clientName(clientName)
@@ -314,7 +313,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
     }
 
     String versionFileBasePath =
-        namer.packageFilePathPiece(Name.upperCamel(modules.get(modules.size() - 2)));
+        namer.packageFilePathPiece(Name.upperCamel(modules.get(modules.size() - 1)));
 
     return VersionIndexView.newBuilder()
         .apiVersion(packageConfig.apiVersion())
@@ -400,18 +399,15 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private String topLevelPackagePath(SurfaceNamer namer) {
-    List<String> parts = namer.getApiModules();
-    parts = parts.subList(0, parts.size() - 1);
     List<String> paths = new ArrayList<>();
-    for (String part : parts) {
+    for (String part : namer.getTopLevelApiModules()) {
       paths.add(namer.packageFilePathPiece(Name.upperCamel(part)));
     }
     return Joiner.on(File.separator).join(paths);
   }
 
   private String topLevelNamespace(SurfaceNamer namer) {
-    List<String> parts = namer.getApiModules();
-    return Joiner.on("::").join(parts.subList(0, parts.size() - 1));
+    return Joiner.on("::").join(namer.getTopLevelApiModules());
   }
 
   private GapicInterfaceContext createContext(
