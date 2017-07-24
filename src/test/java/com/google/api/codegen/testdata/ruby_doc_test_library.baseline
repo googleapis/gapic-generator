@@ -1078,6 +1078,71 @@ describe Library::V1::LibraryServiceClient do
     end
   end
 
+  describe 'get_book_from_absolutely_anywhere' do
+    custom_error = CustomTestError.new "Custom test error for Library::V1::LibraryServiceClient#get_book_from_absolutely_anywhere."
+
+    it 'invokes get_book_from_absolutely_anywhere without error' do
+      # Create request parameters
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+
+      # Create expected grpc response
+      name_2 = "name2-1052831874"
+      author = "author-1406328437"
+      title = "title110371416"
+      read = true
+      expected_response = {
+        name: name_2,
+        author: author,
+        title: title,
+        read: read
+      }
+      expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::BookFromAnywhere)
+
+      # Mock Grpc layer
+      mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::GetBookFromAbsolutelyAnywhereRequest, request)
+        assert_equal(formatted_name, request.name)
+        expected_response
+      end
+      mock_stub = MockGrpcClientStub.new(:get_book_from_absolutely_anywhere, mock_method)
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = Library.new(version: :v1)
+
+        # Call method
+        response = client.get_book_from_absolutely_anywhere(formatted_name)
+
+        # Verify the response
+        assert_equal(expected_response, response)
+      end
+    end
+
+    it 'invokes get_book_from_absolutely_anywhere with error' do
+      # Create request parameters
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+
+      # Mock Grpc layer
+      mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::GetBookFromAbsolutelyAnywhereRequest, request)
+        assert_equal(formatted_name, request.name)
+        raise custom_error
+      end
+      mock_stub = MockGrpcClientStub.new(:get_book_from_absolutely_anywhere, mock_method)
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        client = Library.new(version: :v1)
+
+        # Call method
+        err = assert_raises Google::Gax::GaxError do
+          client.get_book_from_absolutely_anywhere(formatted_name)
+        end
+
+        # Verify the GaxError wrapped the custom error that was raised.
+        assert_match(custom_error.message, err.message)
+      end
+    end
+  end
+
   describe 'update_book_index' do
     custom_error = CustomTestError.new "Custom test error for Library::V1::LibraryServiceClient#update_book_index."
 

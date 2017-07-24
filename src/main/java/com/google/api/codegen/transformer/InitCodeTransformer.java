@@ -15,7 +15,9 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameOneofConfig;
+import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
@@ -122,7 +124,7 @@ public class InitCodeTransformer {
       String expectedValueIdentifier = getVariableName(methodContext, fieldItemTree);
       String expectedTransformFunction = null;
       if (methodContext.getFeatureConfig().useResourceNameFormatOption(fieldConfig)
-          && fieldConfig.hasDifferentMessageResourceNameConfig()) {
+          && fieldConfig.requiresParamTransformation()) {
         expectedTransformFunction =
             namer.getResourceOneofCreateMethod(methodContext.getTypeTable(), fieldConfig);
       }
@@ -368,9 +370,14 @@ public class InitCodeTransformer {
 
     if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
       if (!context.isFlattenedMethodContext()) {
-        // In a non-flattened context, we always use the resource name type set on the message
-        // instead of set on the flattened method
-        fieldConfig = fieldConfig.getMessageFieldConfig();
+        ResourceNameConfig messageResNameConfig = fieldConfig.getMessageResourceNameConfig();
+        if (messageResNameConfig == null
+            || messageResNameConfig.getResourceNameType() != ResourceNameType.ANY) {
+          // In a non-flattened context, we always use the resource name type set on the message
+          // instead of set on the flattened method, unless the resource name type on message
+          // is ANY.
+          fieldConfig = fieldConfig.getMessageFieldConfig();
+        }
       }
       if (item.getType().isRepeated()) {
         return RepeatedResourceNameInitValueView.newBuilder()
@@ -516,7 +523,8 @@ public class InitCodeTransformer {
       FieldConfig fieldConfig = item.getFieldConfig();
 
       if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
-        fieldSetting.fieldSetFunction(namer.getResourceNameFieldSetFunctionName(fieldConfig));
+        fieldSetting.fieldSetFunction(
+            namer.getResourceNameFieldSetFunctionName(fieldConfig.getMessageFieldConfig()));
       } else {
         fieldSetting.fieldSetFunction(
             namer.getFieldSetFunctionName(item.getType(), Name.from(item.getKey())));

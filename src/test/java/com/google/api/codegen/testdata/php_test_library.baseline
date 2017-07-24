@@ -37,6 +37,7 @@ use Google\Example\Library\V1\DeleteShelfRequest;
 use Google\Example\Library\V1\DiscussBookRequest;
 use Google\Example\Library\V1\FindRelatedBooksRequest;
 use Google\Example\Library\V1\FindRelatedBooksResponse;
+use Google\Example\Library\V1\GetBookFromAbsolutelyAnywhereRequest;
 use Google\Example\Library\V1\GetBookFromAnywhereRequest;
 use Google\Example\Library\V1\GetBookFromArchiveRequest;
 use Google\Example\Library\V1\GetBookRequest;
@@ -1340,6 +1341,83 @@ class LibraryServiceClientTest extends GeneratedTest
 
         try {
             $client->getBookFromAnywhere($formattedName, $formattedAltBookName);
+            // If the $client method call did not throw, fail the test
+            $this->fail("Expected an ApiException, but no exception was thrown.");
+        } catch (ApiException $ex) {
+            $this->assertEquals($status->code, $ex->getCode());
+            $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
+        }
+
+        // Call popReceivedCalls to ensure the stub is exhausted
+        $grpcStub->popReceivedCalls();
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function getBookFromAbsolutelyAnywhereTest()
+    {
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        // Mock response
+        $name2 = "name2-1052831874";
+        $author = "author-1406328437";
+        $title = "title110371416";
+        $read = true;
+        $expectedResponse = new BookFromAnywhere();
+        $expectedResponse->setName($name2);
+        $expectedResponse->setAuthor($author);
+        $expectedResponse->setTitle($title);
+        $expectedResponse->setRead($read);
+        $grpcStub->addResponse($expectedResponse);
+
+        // Mock request
+        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+
+        $response = $client->getBookFromAbsolutelyAnywhere($formattedName);
+        $this->assertEquals($expectedResponse, $response);
+        $actualRequests = $grpcStub->popReceivedCalls();
+        $this->assertSame(1, count($actualRequests));
+        $actualFuncCall = $actualRequests[0]->getFuncCall();
+        $actualRequestObject = $actualRequests[0]->getRequestObject();
+        $this->assertSame('/google.example.library.v1.LibraryService/GetBookFromAbsolutelyAnywhere', $actualFuncCall);
+
+        $this->assertEquals($formattedName, $actualRequestObject->getName());
+
+        $this->assertTrue($grpcStub->isExhausted());
+    }
+
+    /**
+     * @test
+     */
+    public function getBookFromAbsolutelyAnywhereExceptionTest()
+    {
+        $grpcStub = $this->createStub([$this, 'createMockLibraryServiceImpl']);
+        $client = $this->createClient('createLibraryServiceStubFunction', $grpcStub);
+
+        $this->assertTrue($grpcStub->isExhausted());
+
+        $status = new stdClass();
+        $status->code = Grpc\STATUS_DATA_LOSS;
+        $status->details = 'internal error';
+
+        $expectedExceptionMessage = json_encode([
+           "message" => "internal error",
+           "code" => Grpc\STATUS_DATA_LOSS,
+           "status" => "DATA_LOSS",
+           "details" => [],
+        ], JSON_PRETTY_PRINT);
+        $grpcStub->addResponse(null, $status);
+
+        // Mock request
+        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+
+        try {
+            $client->getBookFromAbsolutelyAnywhere($formattedName);
             // If the $client method call did not throw, fail the test
             $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
