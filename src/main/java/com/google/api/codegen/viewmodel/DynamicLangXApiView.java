@@ -118,8 +118,12 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
   public abstract boolean isGcloud();
 
+  /**
+   * The name of the class that controls the credentials information of an api. It is currently only
+   * used by Ruby.
+   */
   @Nullable
-  public abstract CredentialsClassView credentialsClass();
+  public abstract String fullyQualifiedCredentialsClassName();
 
   @Override
   public String resourceRoot() {
@@ -207,7 +211,7 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
     public abstract Builder isGcloud(boolean val);
 
-    public abstract Builder credentialsClass(CredentialsClassView val);
+    public abstract Builder fullyQualifiedCredentialsClassName(String val);
 
     public abstract DynamicLangXApiView build();
   }

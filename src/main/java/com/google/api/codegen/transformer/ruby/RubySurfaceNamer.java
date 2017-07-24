@@ -41,7 +41,6 @@ import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -277,14 +276,18 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   private String getTopLevelNamespace() {
-    List<String> parts = Lists.newArrayList(getPackageName().split("::"));
-    parts = parts.subList(0, parts.size() - 1);
-    return Joiner.on("::").join(parts);
+    return Joiner.on("::").join(getTopLevelApiModules());
   }
 
   @Override
   public ImmutableList<String> getApiModules() {
     return ImmutableList.copyOf(Splitter.on("::").split(getPackageName()));
+  }
+
+  @Override
+  public List<String> getTopLevelApiModules() {
+    List<String> apiModules = getApiModules();
+    return apiModules.subList(0, apiModules.size() - 1);
   }
 
   @Override
@@ -330,6 +333,17 @@ public class RubySurfaceNamer extends SurfaceNamer {
       newNames.add(packageFilePathPiece(Name.upperCamel(name)));
     }
     return Joiner.on(File.separator).join(newNames.toArray());
+  }
+
+  @Override
+  public String getCredentialsClassImportName() {
+    // Place credentials in top-level namespace.
+    List<String> paths = new ArrayList<>();
+    for (String part : getTopLevelApiModules()) {
+      paths.add(packageFilePathPiece(Name.upperCamel(part)));
+    }
+    paths.add("credentials");
+    return Joiner.on(File.separator).join(paths);
   }
 
   private String getPackageFilePath() {
