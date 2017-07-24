@@ -105,6 +105,7 @@ import com.google.example.library.v1.DeleteShelfRequest;
 import com.google.example.library.v1.DiscussBookRequest;
 import com.google.example.library.v1.FindRelatedBooksRequest;
 import com.google.example.library.v1.FindRelatedBooksResponse;
+import com.google.example.library.v1.GetBookFromAbsolutelyAnywhereRequest;
 import com.google.example.library.v1.GetBookFromAnywhereRequest;
 import com.google.example.library.v1.GetBookFromArchiveRequest;
 import com.google.example.library.v1.GetBookRequest;
@@ -397,6 +398,21 @@ public class MockLibraryServiceImpl extends LibraryServiceImplBase {
 
   @Override
   public void getBookFromAnywhere(GetBookFromAnywhereRequest request,
+    StreamObserver<BookFromAnywhere> responseObserver) {
+    Object response = responses.remove();
+    if (response instanceof BookFromAnywhere) {
+      requests.add(request);
+      responseObserver.onNext((BookFromAnywhere) response);
+      responseObserver.onCompleted();
+    } else if (response instanceof Exception) {
+      responseObserver.onError((Exception) response);
+    } else {
+      responseObserver.onError(new IllegalArgumentException("Unrecognized response type"));
+    }
+  }
+
+  @Override
+  public void getBookFromAbsolutelyAnywhere(GetBookFromAbsolutelyAnywhereRequest request,
     StreamObserver<BookFromAnywhere> responseObserver) {
     Object response = responses.remove();
     if (response instanceof BookFromAnywhere) {

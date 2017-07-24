@@ -40,6 +40,7 @@ import com.google.example.library.v1.DiscussBookRequest;
 import com.google.example.library.v1.FindRelatedBooksRequest;
 import com.google.example.library.v1.FindRelatedBooksResponse;
 import com.google.example.library.v1.GetBigBookMetadata;
+import com.google.example.library.v1.GetBookFromAbsolutelyAnywhereRequest;
 import com.google.example.library.v1.GetBookFromAnywhereRequest;
 import com.google.example.library.v1.GetBookFromArchiveRequest;
 import com.google.example.library.v1.GetBookRequest;
@@ -1568,7 +1569,7 @@ public class LibraryClient implements BackgroundResource {
    *   BookNameOneof altBookName = BookNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
    *   GetBookFromAnywhereRequest request = GetBookFromAnywhereRequest.newBuilder()
    *     .setNameWithBookNameOneof(name)
-   *     .setAltBookNameWithBookName(altBookName)
+   *     .setAltBookNameWithBookNameOneof(altBookName)
    *     .build();
    *   BookFromAnywhere response = libraryClient.getBookFromAnywhere(request);
    * }
@@ -1592,7 +1593,7 @@ public class LibraryClient implements BackgroundResource {
    *   BookNameOneof altBookName = BookNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
    *   GetBookFromAnywhereRequest request = GetBookFromAnywhereRequest.newBuilder()
    *     .setNameWithBookNameOneof(name)
-   *     .setAltBookNameWithBookName(altBookName)
+   *     .setAltBookNameWithBookNameOneof(altBookName)
    *     .build();
    *   ApiFuture&lt;BookFromAnywhere&gt; future = libraryClient.getBookFromAnywhereCallable().futureCall(request);
    *   // Do something
@@ -1602,6 +1603,73 @@ public class LibraryClient implements BackgroundResource {
    */
   public final UnaryCallable<GetBookFromAnywhereRequest, BookFromAnywhere> getBookFromAnywhereCallable() {
     return stub.getBookFromAnywhereCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Test proper OneOf-Any resource name mapping
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   BookNameOneof name = BookNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
+   *   BookFromAnywhere response = libraryClient.getBookFromAbsolutelyAnywhere(name);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to retrieve.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  public final BookFromAnywhere getBookFromAbsolutelyAnywhere(BookNameOneof name) {
+
+    GetBookFromAbsolutelyAnywhereRequest request =
+        GetBookFromAbsolutelyAnywhereRequest.newBuilder()
+        .setNameWithResourceName(name)
+        .build();
+    return getBookFromAbsolutelyAnywhere(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Test proper OneOf-Any resource name mapping
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ResourceName name = BookNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
+   *   GetBookFromAbsolutelyAnywhereRequest request = GetBookFromAbsolutelyAnywhereRequest.newBuilder()
+   *     .setNameWithResourceName(name)
+   *     .build();
+   *   BookFromAnywhere response = libraryClient.getBookFromAbsolutelyAnywhere(request);
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  private final BookFromAnywhere getBookFromAbsolutelyAnywhere(GetBookFromAbsolutelyAnywhereRequest request) {
+    return getBookFromAbsolutelyAnywhereCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Test proper OneOf-Any resource name mapping
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
+   *   ResourceName name = BookNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
+   *   GetBookFromAbsolutelyAnywhereRequest request = GetBookFromAbsolutelyAnywhereRequest.newBuilder()
+   *     .setNameWithResourceName(name)
+   *     .build();
+   *   ApiFuture&lt;BookFromAnywhere&gt; future = libraryClient.getBookFromAbsolutelyAnywhereCallable().futureCall(request);
+   *   // Do something
+   *   BookFromAnywhere response = future.get();
+   * }
+   * </code></pre>
+   */
+  public final UnaryCallable<GetBookFromAbsolutelyAnywhereRequest, BookFromAnywhere> getBookFromAbsolutelyAnywhereCallable() {
+    return stub.getBookFromAbsolutelyAnywhereCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
