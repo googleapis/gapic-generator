@@ -43,6 +43,7 @@ import com.google.example.library.v1.DeleteShelfRequest;
 import com.google.example.library.v1.DiscussBookRequest;
 import com.google.example.library.v1.FindRelatedBooksRequest;
 import com.google.example.library.v1.FindRelatedBooksResponse;
+import com.google.example.library.v1.GetBookFromAbsolutelyAnywhereRequest;
 import com.google.example.library.v1.GetBookFromAnywhereRequest;
 import com.google.example.library.v1.GetBookFromArchiveRequest;
 import com.google.example.library.v1.GetBookRequest;
@@ -1035,6 +1036,50 @@ public class LibraryClientTest {
       BookName altBookName = BookName.create("[SHELF_ID]", "[BOOK_ID]");
 
       client.getBookFromAnywhere(name, altBookName);
+      Assert.fail("No exception raised");
+    } catch (GrpcApiException e) {
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode().getCode());
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void getBookFromAbsolutelyAnywhereTest() {
+    BookNameOneof name2 = BookNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
+    String author = "author-1406328437";
+    String title = "title110371416";
+    boolean read = true;
+    BookFromAnywhere expectedResponse = BookFromAnywhere.newBuilder()
+      .setNameWithBookNameOneof(name2)
+      .setAuthor(author)
+      .setTitle(title)
+      .setRead(read)
+      .build();
+    mockLibraryService.addResponse(expectedResponse);
+
+    BookNameOneof name = BookNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
+
+    BookFromAnywhere actualResponse =
+        client.getBookFromAbsolutelyAnywhere(name);
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    GetBookFromAbsolutelyAnywhereRequest actualRequest = (GetBookFromAbsolutelyAnywhereRequest)actualRequests.get(0);
+
+    Assert.assertEquals(name, actualRequest.getNameAsResourceName());
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void getBookFromAbsolutelyAnywhereExceptionTest() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockLibraryService.addException(exception);
+
+    try {
+      BookNameOneof name = BookNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
+
+      client.getBookFromAbsolutelyAnywhere(name);
       Assert.fail("No exception raised");
     } catch (GrpcApiException e) {
       Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode().getCode());

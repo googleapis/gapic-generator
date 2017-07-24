@@ -41,6 +41,7 @@ use Google\Example\Library\V1\DeleteShelfRequest;
 use Google\Example\Library\V1\DiscussBookRequest;
 use Google\Example\Library\V1\FindRelatedBooksRequest;
 use Google\Example\Library\V1\GetBigBookMetadata;
+use Google\Example\Library\V1\GetBookFromAbsolutelyAnywhereRequest;
 use Google\Example\Library\V1\GetBookFromAnywhereRequest;
 use Google\Example\Library\V1\GetBookFromArchiveRequest;
 use Google\Example\Library\V1\GetBookRequest;
@@ -526,6 +527,7 @@ class LibraryServiceClient
             'addComments' => $defaultDescriptors,
             'getBookFromArchive' => $defaultDescriptors,
             'getBookFromAnywhere' => $defaultDescriptors,
+            'getBookFromAbsolutelyAnywhere' => $defaultDescriptors,
             'updateBookIndex' => $defaultDescriptors,
             'streamShelves' => $defaultDescriptors,
             'streamBooks' => $defaultDescriptors,
@@ -1464,6 +1466,52 @@ class LibraryServiceClient
             new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
             $this->libraryServiceStub, 'GetBookFromAnywhere', $mergedSettings, $this->descriptors['getBookFromAnywhere']);
+
+        return $callable(
+            $request,
+            [],
+            ['call_credentials_callback' => $this->createCredentialsCallback()]);
+    }
+
+    /**
+     * Test proper OneOf-Any resource name mapping
+     *
+     * Sample code:
+     * ```
+     * try {
+     *     $libraryServiceClient = new LibraryServiceClient();
+     *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $response = $libraryServiceClient->getBookFromAbsolutelyAnywhere($formattedName);
+     * } finally {
+     *     $libraryServiceClient->close();
+     * }
+     * ```
+     *
+     * @param string $name The name of the book to retrieve.
+     * @param array $optionalArgs {
+     *     Optional.
+     *     @type \Google\GAX\RetrySettings $retrySettings
+     *          Retry settings to use for this call. If present, then
+     *          $timeoutMillis is ignored.
+     *     @type int $timeoutMillis
+     *          Timeout to use for this call. Only used if $retrySettings
+     *          is not set.
+     * }
+     *
+     * @return \Google\Example\Library\V1\BookFromAnywhere
+     *
+     * @throws \Google\GAX\ApiException if the remote call fails
+     * @experimental
+     */
+    public function getBookFromAbsolutelyAnywhere($name, $optionalArgs = [])
+    {
+        $request = new GetBookFromAbsolutelyAnywhereRequest();
+        $request->setName($name);
+
+        $mergedSettings = $this->defaultCallSettings['getBookFromAbsolutelyAnywhere']->merge(
+            new CallSettings($optionalArgs));
+        $callable = ApiCallable::createApiCall(
+            $this->libraryServiceStub, 'GetBookFromAbsolutelyAnywhere', $mergedSettings, $this->descriptors['getBookFromAbsolutelyAnywhere']);
 
         return $callable(
             $request,

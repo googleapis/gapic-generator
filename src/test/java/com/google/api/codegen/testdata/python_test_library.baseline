@@ -811,6 +811,55 @@ class TestLibraryServiceClient(unittest.TestCase):
         self.assertRaises(errors.GaxError, client.get_book_from_anywhere, name, alt_book_name)
 
     @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_get_book_from_absolutely_anywhere(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_service_client.LibraryServiceClient()
+
+        # Mock request
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+
+        # Mock response
+        name_2 = 'name2-1052831874'
+        author = 'author-1406328437'
+        title = 'title110371416'
+        read = True
+        expected_response = book_from_anywhere_pb2.BookFromAnywhere(name=name_2, author=author, title=title, read=read)
+        grpc_stub.GetBookFromAbsolutelyAnywhere.return_value = expected_response
+
+        response = client.get_book_from_absolutely_anywhere(name)
+        self.assertEqual(expected_response, response)
+
+        grpc_stub.GetBookFromAbsolutelyAnywhere.assert_called_once()
+        args, kwargs = grpc_stub.GetBookFromAbsolutelyAnywhere.call_args
+        self.assertEqual(len(args), 2)
+        self.assertEqual(len(kwargs), 1)
+        self.assertIn('metadata', kwargs)
+        actual_request = args[0]
+
+        expected_request = library_pb2.GetBookFromAbsolutelyAnywhereRequest(name=name)
+        self.assertEqual(expected_request, actual_request)
+
+    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_get_book_from_absolutely_anywhere_exception(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_service_client.LibraryServiceClient()
+
+        # Mock request
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+
+        # Mock exception response
+        grpc_stub.GetBookFromAbsolutelyAnywhere.side_effect = CustomException()
+
+        self.assertRaises(errors.GaxError, client.get_book_from_absolutely_anywhere, name)
+
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_update_book_index(self, mock_create_stub):
         # Mock gRPC layer
         grpc_stub = mock.Mock()
