@@ -60,8 +60,8 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new PhpImportSectionTransformer());
 
-  private static final String API_TEMPLATE_FILENAME = "php/main.snip";
-  private static final String API_IMPL_TEMPLATE_FILENAME = "php/main_impl.snip";
+  private static final String API_TEMPLATE_FILENAME = "php/partial_veneer_client.snip";
+  private static final String API_IMPL_TEMPLATE_FILENAME = "php/client_impl.snip";
 
   public PhpGapicSurfaceTransformer(
       GapicProductConfig productConfig, GapicCodePathMapper pathMapper) {

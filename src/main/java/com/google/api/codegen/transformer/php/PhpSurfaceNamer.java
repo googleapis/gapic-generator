@@ -126,7 +126,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getApiWrapperClassImplName(InterfaceConfig interfaceConfig) {
-    return publicClassName(Name.upperCamel(getInterfaceName(interfaceConfig), "Gapic"));
+    return publicClassName(Name.upperCamel(getInterfaceName(interfaceConfig), "GapicClient"));
   }
 
   @Override
