@@ -282,8 +282,12 @@
           actualRequest.{@assert.actualValueGetter}());
       @end
     @else
-      Assert.assertEquals({@assert.expectedValueIdentifier}, \
-        actualRequest.{@assert.actualValueGetter}());
+      @if assert.hasActualValueTransformFunction
+        "$ NOT IMPLEMENTED: hasActualValueTransformFunction == true while hasExpectedValueTransformFunction == false";
+      @else
+        Assert.assertEquals({@assert.expectedValueIdentifier}, \
+          actualRequest.{@assert.actualValueGetter}());
+      @end
     @end
   @end
 @end
