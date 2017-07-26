@@ -808,7 +808,7 @@ public class StaticLangApiMethodTransformer {
     String transformParamFunctionName = null;
     if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)
         && fieldConfig.requiresParamTransformation()) {
-      if (!fieldConfig.requiresAnyParamTransformation()) {
+      if (!fieldConfig.requiresParamTransformationFromAny()) {
         transformParamFunctionName = namer.getResourceOneofCreateMethod(typeTable, fieldConfig);
       }
     }

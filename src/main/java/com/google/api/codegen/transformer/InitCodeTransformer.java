@@ -125,7 +125,7 @@ public class InitCodeTransformer {
       String expectedTransformFunction = null;
       String actualTransformFunction = null;
       if (methodContext.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
-        if (fieldConfig.requiresAnyParamTransformation()) {
+        if (fieldConfig.requiresParamTransformationFromAny()) {
           expectedTransformFunction = namer.getToStringMethod();
           actualTransformFunction = namer.getToStringMethod();
         } else if (fieldConfig.requiresParamTransformation()) {

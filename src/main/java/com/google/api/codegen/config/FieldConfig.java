@@ -215,7 +215,7 @@ public abstract class FieldConfig {
         && !getResourceNameConfig().equals(getMessageResourceNameConfig());
   }
 
-  public boolean requiresAnyParamTransformation() {
+  public boolean requiresParamTransformationFromAny() {
     return getMessageResourceNameConfig() != null
         && getMessageResourceNameConfig().getResourceNameType() == ResourceNameType.ANY;
   }
