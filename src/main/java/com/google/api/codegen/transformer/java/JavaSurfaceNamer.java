@@ -266,4 +266,9 @@ public class JavaSurfaceNamer extends SurfaceNamer {
     }
     return Joiner.on("/").join(packagePath.subList(0, endIndex));
   }
+
+  @Override
+  public String getToStringMethod() {
+    return "Objects.toString";
+  }
 }

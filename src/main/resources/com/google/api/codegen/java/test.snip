@@ -272,12 +272,22 @@
 
   @join assert : test.asserts
     @if assert.hasExpectedValueTransformFunction
-      Assert.assertEquals({@assert.expectedValueTransformFunction}(\
-        {@assert.expectedValueIdentifier}), \
-        actualRequest.{@assert.actualValueGetter}());
+      @if assert.hasActualValueTransformFunction
+        Assert.assertEquals({@assert.expectedValueTransformFunction}(\
+          {@assert.expectedValueIdentifier}), \
+          {@assert.actualValueTransformFunction}(actualRequest.{@assert.actualValueGetter}()));
+      @else
+        Assert.assertEquals({@assert.expectedValueTransformFunction}(\
+          {@assert.expectedValueIdentifier}), \
+          actualRequest.{@assert.actualValueGetter}());
+      @end
     @else
-      Assert.assertEquals({@assert.expectedValueIdentifier}, \
-        actualRequest.{@assert.actualValueGetter}());
+      @if assert.hasActualValueTransformFunction
+        "$ NOT IMPLEMENTED: hasActualValueTransformFunction == true while hasExpectedValueTransformFunction == false $";
+      @else
+        Assert.assertEquals({@assert.expectedValueIdentifier}, \
+          actualRequest.{@assert.actualValueGetter}());
+      @end
     @end
   @end
 @end

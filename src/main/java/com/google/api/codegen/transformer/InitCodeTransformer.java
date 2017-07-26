@@ -123,10 +123,15 @@ public class InitCodeTransformer {
 
       String expectedValueIdentifier = getVariableName(methodContext, fieldItemTree);
       String expectedTransformFunction = null;
-      if (methodContext.getFeatureConfig().useResourceNameFormatOption(fieldConfig)
-          && fieldConfig.requiresParamTransformation()) {
-        expectedTransformFunction =
-            namer.getResourceOneofCreateMethod(methodContext.getTypeTable(), fieldConfig);
+      String actualTransformFunction = null;
+      if (methodContext.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
+        if (fieldConfig.requiresParamTransformationFromAny()) {
+          expectedTransformFunction = namer.getToStringMethod();
+          actualTransformFunction = namer.getToStringMethod();
+        } else if (fieldConfig.requiresParamTransformation()) {
+          expectedTransformFunction =
+              namer.getResourceOneofCreateMethod(methodContext.getTypeTable(), fieldConfig);
+        }
       }
 
       boolean isArray =
@@ -148,6 +153,7 @@ public class InitCodeTransformer {
           createAssertView(
               expectedValueIdentifier,
               expectedTransformFunction,
+              actualTransformFunction,
               isArray,
               getterMethod,
               enumTypeName,
@@ -179,6 +185,7 @@ public class InitCodeTransformer {
   private ClientTestAssertView createAssertView(
       String expected,
       String expectedTransformFunction,
+      String actualTransformFunction,
       boolean isArray,
       String actual,
       String enumTypeName,
@@ -187,6 +194,7 @@ public class InitCodeTransformer {
         .expectedValueIdentifier(expected)
         .isArray(isArray)
         .expectedValueTransformFunction(expectedTransformFunction)
+        .actualValueTransformFunction(actualTransformFunction)
         .actualValueGetter(actual)
         .enumTypeName(enumTypeName)
         .messageTypeName(messageTypeName)
