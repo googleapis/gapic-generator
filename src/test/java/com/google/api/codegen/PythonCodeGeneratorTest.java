@@ -34,8 +34,7 @@ public class PythonCodeGeneratorTest {
         String packageConfigFileName,
         String snippetName) {
       super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
-      getTestDataLocator()
-          .addTestDataSource(com.google.api.codegen.py.PythonGapicContext.class, "");
+      getTestDataLocator().addTestDataSource(getClass(), "py");
     }
 
     /**
@@ -69,8 +68,7 @@ public class PythonCodeGeneratorTest {
         String packageConfigFileName,
         String snippetName) {
       super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
-      getTestDataLocator()
-          .addTestDataSource(com.google.api.codegen.py.PythonGapicContext.class, "");
+      getTestDataLocator().addTestDataSource(getClass(), "py");
     }
 
     /**
@@ -104,8 +102,7 @@ public class PythonCodeGeneratorTest {
         String packageConfigFileName,
         String snippetName) {
       super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
-      getTestDataLocator()
-          .addTestDataSource(com.google.api.codegen.py.PythonGapicContext.class, "");
+      getTestDataLocator().addTestDataSource(getClass(), "py");
     }
 
     /**
