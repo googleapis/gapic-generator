@@ -1,6 +1,8 @@
 sudo: false
 language: java
 dist: precise
+git:
+  depth: 2
 env:
   global:
     - GRADLE_OPTS="-Xmx512m"
@@ -8,6 +10,12 @@ jdk:
   - oraclejdk8
   - oraclejdk7
   - openjdk7
+cache:
+  directories:
+    - $HOME/.gradle
+    - $HOME/.m2
+    - ./build
+    - ./.gradle
 script:
   ./gradlew check --info
 after_success:
