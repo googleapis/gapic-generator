@@ -202,6 +202,8 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
       properties.add(schemaToParamView(context, method.request(), symbolTable));
     }
 
+    Collections.sort(properties);
+
     requestView.canRepeat(false);
     requestView.isRequired(true);
     requestView.properties(properties);
