@@ -71,7 +71,9 @@ public class PageStreamingTransformer {
     List<PageStreamingDescriptorClassView> descriptors = new ArrayList<>();
 
     for (com.google.api.codegen.discovery.Method method : context.getPageStreamingMethods()) {
-      descriptors.add(generateDescriptorClass(context.asRequestMethodContext(method)));
+      descriptors.add(
+          generateDescriptorClass(
+              context.asRequestMethodContext(method, context.getInterfaceName())));
     }
 
     return descriptors;
@@ -171,7 +173,8 @@ public class PageStreamingTransformer {
     List<PagedListResponseFactoryClassView> factories = new ArrayList<>();
 
     for (com.google.api.codegen.discovery.Method method : context.getPageStreamingMethods()) {
-      factories.add(generateFactoryClass(context.asRequestMethodContext(method)));
+      factories.add(
+          generateFactoryClass(context.asRequestMethodContext(method, context.getInterfaceName())));
     }
 
     return factories;

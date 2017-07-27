@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.DiscoGapicMethodConfig;
+import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
@@ -159,10 +160,10 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
     return methods;
   }
 
-  public DiscoGapicMethodContext asRequestMethodContext(Method method) {
+  public DiscoGapicMethodContext asRequestMethodContext(Method method, String interfaceName) {
     return DiscoGapicMethodContext.create(
         this,
-        null,
+        interfaceName,
         getProductConfig(),
         getSchemaTypeTable(),
         getNamer(),
@@ -181,5 +182,19 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   @Override
   public ImportTypeTable getImportTypeTable() {
     return getSchemaTypeTable();
+  }
+
+  public DiscoGapicMethodContext asFlattenedMethodContext(
+      Method method, FlatteningConfig flatteningConfig, String interfaceName) {
+    return DiscoGapicMethodContext.create(
+        this,
+        interfaceName,
+        getProductConfig(),
+        getSchemaTypeTable(),
+        getNamer(),
+        method,
+        getMethodConfig(method),
+        flatteningConfig,
+        getFeatureConfig());
   }
 }

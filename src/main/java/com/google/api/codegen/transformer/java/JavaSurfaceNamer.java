@@ -21,10 +21,12 @@ import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.ResourceNameType;
+import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.SchemaTypeFormatterImpl;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
@@ -47,10 +49,21 @@ import java.util.List;
 /** The SurfaceNamer for Java. */
 public class JavaSurfaceNamer extends SurfaceNamer {
 
+  /* Create a JavaSurfaceNamer for a protobuf-based API. */
   public JavaSurfaceNamer(String packageName) {
     super(
         new JavaNameFormatter(),
         new ModelTypeFormatterImpl(new JavaModelTypeNameConverter(packageName)),
+        new JavaTypeTable(packageName),
+        new JavaCommentReformatter(),
+        packageName);
+  }
+
+  /* Create a JavaSurfaceNamer for a Discovery-based API. */
+  public JavaSurfaceNamer(String packageName, JavaNameFormatter formatter) {
+    super(
+        formatter,
+        new SchemaTypeFormatterImpl(new JavaSchemaTypeNameConverter(packageName, formatter)),
         new JavaTypeTable(packageName),
         new JavaCommentReformatter(),
         packageName);
@@ -94,6 +107,15 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getStaticLangReturnTypeName(
+      com.google.api.codegen.discovery.Method method, MethodConfig methodConfig) {
+    if (method.response() == null) {
+      return "void";
+    }
+    return getSchemaTypeFormatter().getFullNameFor(method.response());
+  }
+
+  @Override
   public String getAndSaveOperationResponseTypeName(
       Method method, ImportTypeTable typeTable, MethodConfig methodConfig) {
     String responseTypeName =
@@ -109,6 +131,15 @@ public class JavaSurfaceNamer extends SurfaceNamer {
       return "Void";
     } else {
       return getModelTypeFormatter().getFullNameFor(outputType);
+    }
+  }
+
+  @Override
+  public String getGenericAwareResponseTypeName(Schema outputType) {
+    if (outputType == null) {
+      return "Void";
+    } else {
+      return getSchemaTypeFormatter().getFullNameFor(outputType);
     }
   }
 
@@ -149,15 +180,39 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getPagedResponseTypeInnerName(
+      com.google.api.codegen.discovery.Method method,
+      ImportTypeTable typeTable,
+      FieldType resourceField) {
+    return publicClassName(Name.upperCamel(method.id(), "PagedResponse"));
+  }
+
+  @Override
   public String getPageTypeInnerName(
       Method method, ImportTypeTable typeTable, FieldType resourceField) {
     return publicClassName(Name.upperCamel(method.getSimpleName(), "Page"));
   }
 
   @Override
+  public String getPageTypeInnerName(
+      com.google.api.codegen.discovery.Method method,
+      ImportTypeTable typeTable,
+      FieldType resourceField) {
+    return publicClassName(Name.upperCamel(method.id(), "Page"));
+  }
+
+  @Override
   public String getFixedSizeCollectionTypeInnerName(
       Method method, ImportTypeTable typeTable, FieldType resourceField) {
     return publicClassName(Name.upperCamel(method.getSimpleName(), "FixedSizeCollection"));
+  }
+
+  @Override
+  public String getFixedSizeCollectionTypeInnerName(
+      com.google.api.codegen.discovery.Method method,
+      ImportTypeTable typeTable,
+      FieldType resourceField) {
+    return publicClassName(Name.upperCamel(method.id(), "FixedSizeCollection"));
   }
 
   @Override

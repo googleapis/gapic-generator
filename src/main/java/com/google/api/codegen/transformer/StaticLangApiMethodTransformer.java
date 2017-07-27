@@ -15,11 +15,13 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.ServiceMessages;
+import com.google.api.codegen.config.DiscoGapicInterfaceConfig;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
+import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.util.Name;
@@ -41,6 +43,7 @@ import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -57,6 +60,26 @@ public class StaticLangApiMethodTransformer {
 
   public StaticLangApiMethodView generatePagedFlattenedMethod(
       GapicMethodContext context, List<ParamWithSimpleDoc> additionalParams) {
+    SurfaceNamer namer = context.getNamer();
+    StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
+
+    setCommonFields(context, methodViewBuilder);
+    methodViewBuilder.name(
+        namer.getApiMethodName(context.getMethod(), context.getMethodConfig().getVisibility()));
+    methodViewBuilder.exampleName(
+        namer.getApiMethodExampleName(context.getInterface(), context.getMethod()));
+    setListMethodFields(context, Synchronicity.Sync, methodViewBuilder);
+    setFlattenedMethodFields(context, additionalParams, Synchronicity.Sync, methodViewBuilder);
+
+    return methodViewBuilder.type(ClientMethodType.PagedFlattenedMethod).build();
+  }
+
+  public StaticLangApiMethodView generatePagedFlattenedMethod(DiscoGapicMethodContext context) {
+    return generatePagedFlattenedMethod(context, Collections.<ParamWithSimpleDoc>emptyList());
+  }
+
+  public StaticLangApiMethodView generatePagedFlattenedMethod(
+      DiscoGapicMethodContext context, List<ParamWithSimpleDoc> additionalParams) {
     SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
 
@@ -96,8 +119,33 @@ public class StaticLangApiMethodTransformer {
     return generatePagedRequestObjectMethod(context, Collections.<ParamWithSimpleDoc>emptyList());
   }
 
+  public StaticLangApiMethodView generatePagedRequestObjectMethod(DiscoGapicMethodContext context) {
+    return generatePagedRequestObjectMethod(context, Collections.<ParamWithSimpleDoc>emptyList());
+  }
+
   public StaticLangApiMethodView generatePagedRequestObjectMethod(
       GapicMethodContext context, List<ParamWithSimpleDoc> additionalParams) {
+    SurfaceNamer namer = context.getNamer();
+    StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
+
+    setCommonFields(context, methodViewBuilder);
+    methodViewBuilder.name(
+        namer.getApiMethodName(context.getMethod(), context.getMethodConfig().getVisibility()));
+    methodViewBuilder.exampleName(
+        namer.getApiMethodExampleName(context.getInterface(), context.getMethod()));
+    setListMethodFields(context, Synchronicity.Sync, methodViewBuilder);
+    setRequestObjectMethodFields(
+        context,
+        namer.getPagedCallableMethodName(context.getMethod()),
+        Synchronicity.Sync,
+        additionalParams,
+        methodViewBuilder);
+
+    return methodViewBuilder.type(ClientMethodType.PagedRequestObjectMethod).build();
+  }
+
+  public StaticLangApiMethodView generatePagedRequestObjectMethod(
+      DiscoGapicMethodContext context, List<ParamWithSimpleDoc> additionalParams) {
     SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
 
@@ -154,6 +202,21 @@ public class StaticLangApiMethodTransformer {
     return methodViewBuilder.type(ClientMethodType.PagedCallableMethod).build();
   }
 
+  public StaticLangApiMethodView generatePagedCallableMethod(DiscoGapicMethodContext context) {
+    SurfaceNamer namer = context.getNamer();
+    StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
+
+    setCommonFields(context, methodViewBuilder);
+    methodViewBuilder.name(namer.getPagedCallableMethodName(context.getMethod()));
+    methodViewBuilder.exampleName(
+        namer.getPagedCallableMethodExampleName(context.getInterface(), context.getMethod()));
+    setListMethodFields(context, Synchronicity.Sync, methodViewBuilder);
+    setCallableMethodFields(
+        context, namer.getPagedCallableName(context.getMethod()), methodViewBuilder);
+
+    return methodViewBuilder.type(ClientMethodType.PagedCallableMethod).build();
+  }
+
   public StaticLangApiMethodView generateUnpagedListCallableMethod(GapicMethodContext context) {
     SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
@@ -178,6 +241,35 @@ public class StaticLangApiMethodTransformer {
 
     methodViewBuilder.responseTypeName(
         context.getTypeTable().getAndSaveNicknameFor(context.getMethod().getOutputType()));
+
+    return methodViewBuilder.type(ClientMethodType.UnpagedListCallableMethod).build();
+  }
+
+  public StaticLangApiMethodView generateUnpagedListCallableMethod(
+      DiscoGapicMethodContext context) {
+    SurfaceNamer namer = context.getNamer();
+    StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
+
+    setCommonFields(context, methodViewBuilder);
+    methodViewBuilder.name(namer.getCallableMethodName(context.getMethod()));
+    methodViewBuilder.exampleName(
+        namer.getCallableMethodExampleName(context.getInterface(), context.getMethod()));
+    setListMethodFields(context, Synchronicity.Sync, methodViewBuilder);
+    setCallableMethodFields(context, namer.getCallableName(context.getMethod()), methodViewBuilder);
+
+    String getResourceListCallName =
+        namer.getFieldGetFunctionName(
+            context.getFeatureConfig(),
+            context.getMethodConfig().getPageStreaming().getResourcesFieldConfig());
+
+    UnpagedListCallableMethodDetailView unpagedListCallableDetails =
+        UnpagedListCallableMethodDetailView.newBuilder()
+            .resourceListGetFunction(getResourceListCallName)
+            .build();
+    methodViewBuilder.unpagedListCallableMethod(unpagedListCallableDetails);
+
+    methodViewBuilder.responseTypeName(
+        context.getTypeTable().getAndSaveNicknameFor(context.getMethod().response()));
 
     return methodViewBuilder.type(ClientMethodType.UnpagedListCallableMethod).build();
   }
@@ -211,8 +303,29 @@ public class StaticLangApiMethodTransformer {
     return generateFlattenedMethod(context, Collections.<ParamWithSimpleDoc>emptyList());
   }
 
+  public StaticLangApiMethodView generateFlattenedMethod(DiscoGapicMethodContext context) {
+    return generateFlattenedMethod(context, Collections.<ParamWithSimpleDoc>emptyList());
+  }
+
   public StaticLangApiMethodView generateFlattenedMethod(
       GapicMethodContext context, List<ParamWithSimpleDoc> additionalParams) {
+    SurfaceNamer namer = context.getNamer();
+    StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
+
+    setCommonFields(context, methodViewBuilder);
+    methodViewBuilder.name(
+        namer.getApiMethodName(context.getMethod(), context.getMethodConfig().getVisibility()));
+    methodViewBuilder.exampleName(
+        namer.getApiMethodExampleName(context.getInterface(), context.getMethod()));
+    methodViewBuilder.callableName(namer.getCallableName(context.getMethod()));
+    setFlattenedMethodFields(context, additionalParams, Synchronicity.Sync, methodViewBuilder);
+    setStaticLangReturnTypeName(context, methodViewBuilder);
+
+    return methodViewBuilder.type(ClientMethodType.FlattenedMethod).build();
+  }
+
+  public StaticLangApiMethodView generateFlattenedMethod(
+      DiscoGapicMethodContext context, List<ParamWithSimpleDoc> additionalParams) {
     SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
 
@@ -232,8 +345,33 @@ public class StaticLangApiMethodTransformer {
     return generateRequestObjectMethod(context, Collections.<ParamWithSimpleDoc>emptyList());
   }
 
+  public StaticLangApiMethodView generateRequestObjectMethod(DiscoGapicMethodContext context) {
+    return generateRequestObjectMethod(context, Collections.<ParamWithSimpleDoc>emptyList());
+  }
+
   public StaticLangApiMethodView generateRequestObjectMethod(
       GapicMethodContext context, List<ParamWithSimpleDoc> additionalParams) {
+    SurfaceNamer namer = context.getNamer();
+    StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
+
+    setCommonFields(context, methodViewBuilder);
+    methodViewBuilder.name(
+        namer.getApiMethodName(context.getMethod(), context.getMethodConfig().getVisibility()));
+    methodViewBuilder.exampleName(
+        namer.getApiMethodExampleName(context.getInterface(), context.getMethod()));
+    setRequestObjectMethodFields(
+        context,
+        namer.getCallableMethodName(context.getMethod()),
+        Synchronicity.Sync,
+        additionalParams,
+        methodViewBuilder);
+    setStaticLangReturnTypeName(context, methodViewBuilder);
+
+    return methodViewBuilder.type(ClientMethodType.RequestObjectMethod).build();
+  }
+
+  public StaticLangApiMethodView generateRequestObjectMethod(
+      DiscoGapicMethodContext context, List<ParamWithSimpleDoc> additionalParams) {
     SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
 
@@ -292,6 +430,23 @@ public class StaticLangApiMethodTransformer {
     setCallableMethodFields(context, namer.getCallableName(context.getMethod()), methodViewBuilder);
     methodViewBuilder.responseTypeName(
         context.getTypeTable().getAndSaveNicknameFor(context.getMethod().getOutputType()));
+
+    return methodViewBuilder.type(ClientMethodType.CallableMethod).build();
+  }
+
+  public StaticLangApiMethodView generateCallableMethod(DiscoGapicMethodContext context) {
+    SurfaceNamer namer = context.getNamer();
+    StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
+
+    setCommonFields(context, methodViewBuilder);
+    methodViewBuilder.name(namer.getCallableMethodName(context.getMethod()));
+    methodViewBuilder.exampleName(
+        context
+            .getNamer()
+            .getCallableMethodExampleName(context.getInterface(), context.getMethod()));
+    setCallableMethodFields(context, namer.getCallableName(context.getMethod()), methodViewBuilder);
+    methodViewBuilder.responseTypeName(
+        context.getTypeTable().getAndSaveNicknameFor(context.getMethod().response()));
 
     return methodViewBuilder.type(ClientMethodType.CallableMethod).build();
   }
@@ -484,6 +639,43 @@ public class StaticLangApiMethodTransformer {
     }
   }
 
+  private void setCommonFields(
+      DiscoGapicMethodContext context, StaticLangApiMethodView.Builder methodViewBuilder) {
+    SurfaceNamer namer = context.getNamer();
+
+    String requestTypeName =
+        context
+            .getTypeTable()
+            .getAndSaveNicknameFor(
+                context.getDiscoGapicNamer().getRequestName(context.getMethod()));
+    methodViewBuilder.serviceRequestTypeName(requestTypeName);
+    methodViewBuilder.serviceRequestTypeConstructor(namer.getTypeConstructor(requestTypeName));
+
+    setServiceResponseTypeName(context, methodViewBuilder);
+
+    methodViewBuilder.apiClassName(
+        namer.getApiWrapperClassName((DiscoGapicInterfaceConfig) context.getInterfaceConfig()));
+    methodViewBuilder.apiVariableName(
+        namer.getApiWrapperVariableName(context.getInterfaceConfig()));
+    methodViewBuilder.stubName(namer.getStubName(context.getInterfaceConfig()));
+    methodViewBuilder.settingsGetterName(namer.getSettingsFunctionName(context.getMethod()));
+    methodViewBuilder.callableName(context.getNamer().getCallableName(context.getMethod()));
+    methodViewBuilder.modifyMethodName(namer.getModifyMethodName(context.getMethod()));
+    methodViewBuilder.grpcStreamingType(context.getMethodConfig().getGrpcStreamingType());
+    methodViewBuilder.visibility(
+        namer.getVisiblityKeyword(context.getMethodConfig().getVisibility()));
+    methodViewBuilder.releaseLevelAnnotation(
+        namer.getReleaseAnnotation(context.getMethodConfig().getReleaseLevel()));
+
+    ServiceMessages messages = new ServiceMessages();
+    if (context.getMethodConfig().isLongRunningOperation()) {
+      methodViewBuilder.hasReturnValue(
+          !messages.isEmptyType(context.getMethodConfig().getLongRunningConfig().getReturnType()));
+    } else {
+      methodViewBuilder.hasReturnValue(context.getMethod().response() != null);
+    }
+  }
+
   protected void setServiceResponseTypeName(
       GapicMethodContext context, StaticLangApiMethodView.Builder methodViewBuilder) {
     SurfaceNamer namer = context.getNamer();
@@ -499,6 +691,13 @@ public class StaticLangApiMethodTransformer {
     }
   }
 
+  protected void setServiceResponseTypeName(
+      DiscoGapicMethodContext context, StaticLangApiMethodView.Builder methodViewBuilder) {
+    String responseTypeName =
+        context.getTypeTable().getAndSaveNicknameFor(context.getMethod().response());
+    methodViewBuilder.serviceResponseTypeName(responseTypeName);
+  }
+
   private void setListMethodFields(
       GapicMethodContext context,
       Synchronicity synchronicity,
@@ -508,6 +707,62 @@ public class StaticLangApiMethodTransformer {
     PageStreamingConfig pageStreaming = context.getMethodConfig().getPageStreaming();
     String requestTypeName = typeTable.getAndSaveNicknameFor(context.getMethod().getInputType());
     String responseTypeName = typeTable.getAndSaveNicknameFor(context.getMethod().getOutputType());
+
+    FieldConfig resourceFieldConfig = pageStreaming.getResourcesFieldConfig();
+    FieldType resourceField = resourceFieldConfig.getField();
+
+    String resourceTypeName;
+
+    if (context.getFeatureConfig().useResourceNameFormatOption(resourceFieldConfig)) {
+      resourceTypeName = namer.getAndSaveElementResourceTypeName(typeTable, resourceFieldConfig);
+    } else {
+      resourceTypeName = typeTable.getAndSaveNicknameForElementType(resourceField);
+    }
+
+    String iterateMethodName =
+        context
+            .getNamer()
+            .getPagedResponseIterateMethod(context.getFeatureConfig(), resourceFieldConfig);
+
+    String resourceFieldName = context.getNamer().getFieldName(resourceField);
+    String resourceFieldGetFunctionName =
+        namer.getFieldGetFunctionName(context.getFeatureConfig(), resourceFieldConfig);
+
+    methodViewBuilder.listMethod(
+        ListMethodDetailView.newBuilder()
+            .requestTypeName(requestTypeName)
+            .responseTypeName(responseTypeName)
+            .resourceTypeName(resourceTypeName)
+            .iterateMethodName(iterateMethodName)
+            .resourceFieldName(resourceFieldName)
+            .resourcesFieldGetFunction(resourceFieldGetFunctionName)
+            .build());
+
+    switch (synchronicity) {
+      case Sync:
+        methodViewBuilder.responseTypeName(
+            namer.getAndSavePagedResponseTypeName(
+                context.getMethod(), context.getTypeTable(), resourceFieldConfig));
+        break;
+      case Async:
+        methodViewBuilder.responseTypeName(
+            namer.getAndSaveAsyncPagedResponseTypeName(
+                context.getMethod(), context.getTypeTable(), resourceFieldConfig));
+        break;
+    }
+  }
+
+  private void setListMethodFields(
+      DiscoGapicMethodContext context,
+      Synchronicity synchronicity,
+      StaticLangApiMethodView.Builder methodViewBuilder) {
+    SchemaTypeTable typeTable = context.getTypeTable();
+    SurfaceNamer namer = context.getNamer();
+    PageStreamingConfig pageStreaming = context.getMethodConfig().getPageStreaming();
+    String requestTypeName =
+        typeTable.getAndSaveNicknameFor(
+            context.getDiscoGapicNamer().getRequestName(context.getMethod()));
+    String responseTypeName = typeTable.getAndSaveNicknameFor(context.getMethod().response());
 
     FieldConfig resourceFieldConfig = pageStreaming.getResourcesFieldConfig();
     FieldType resourceField = resourceFieldConfig.getField();
@@ -590,6 +845,43 @@ public class StaticLangApiMethodTransformer {
     methodViewBuilder.pathTemplateChecks(generatePathTemplateChecks(context, fieldConfigs));
   }
 
+  private void setFlattenedMethodFields(
+      DiscoGapicMethodContext context,
+      List<ParamWithSimpleDoc> additionalParams,
+      Synchronicity synchronicity,
+      StaticLangApiMethodView.Builder methodViewBuilder) {
+    SurfaceNamer namer = context.getNamer();
+    Iterable<FieldConfig> fieldConfigs =
+        context.getFlatteningConfig().getFlattenedFieldConfigs().values();
+    methodViewBuilder.initCode(
+        initCodeTransformer.generateInitCode(context.cloneWithEmptyTypeTable(), null));
+    methodViewBuilder.doc(
+        ApiMethodDocView.newBuilder()
+            // TODO(andrealin): mainDocLines
+            .mainDocLines(new LinkedList<String>())
+            .paramDocs(getMethodParamDocs(context, fieldConfigs, additionalParams))
+            .throwsDocLines(namer.getThrowsDocLines(context.getMethodConfig()))
+            .returnsDocLines(
+                namer.getReturnDocLines(
+                    context.getSurfaceTransformerContext(),
+                    context.getMethodConfig(),
+                    synchronicity))
+            .build());
+
+    List<RequestObjectParamView> params = new ArrayList<>();
+    for (FieldConfig fieldConfig : fieldConfigs) {
+      // TODO(andrealin): ???
+      //      params.add(generateRequestObjectParam(context, fieldConfig));
+    }
+    methodViewBuilder.forwardingMethodParams(params);
+    List<RequestObjectParamView> nonforwardingParams = new ArrayList<>(params);
+    nonforwardingParams.addAll(ParamWithSimpleDoc.asRequestObjectParamViews(additionalParams));
+    methodViewBuilder.methodParams(nonforwardingParams);
+    methodViewBuilder.requestObjectParams(params);
+
+    methodViewBuilder.pathTemplateChecks(generatePathTemplateChecks(context, fieldConfigs));
+  }
+
   private void setRequestObjectMethodFields(
       GapicMethodContext context,
       String callableMethodName,
@@ -646,6 +938,49 @@ public class StaticLangApiMethodTransformer {
     methodViewBuilder.requestObjectMethod(detailBuilder.build());
   }
 
+  private void setRequestObjectMethodFields(
+      DiscoGapicMethodContext context,
+      String callableMethodName,
+      Synchronicity sync,
+      List<ParamWithSimpleDoc> additionalParams,
+      StaticLangApiMethodView.Builder methodViewBuilder) {
+    SurfaceNamer namer = context.getNamer();
+    List<ParamDocView> paramDocs = new ArrayList<>();
+    paramDocs.addAll(getRequestObjectParamDocs(context, context.getMethod().request()));
+    paramDocs.addAll(ParamWithSimpleDoc.asParamDocViews(additionalParams));
+    methodViewBuilder.doc(
+        ApiMethodDocView.newBuilder()
+            // TODO(andrealin): mainDocLines
+            .mainDocLines(new LinkedList<String>())
+            .paramDocs(paramDocs)
+            .throwsDocLines(namer.getThrowsDocLines(context.getMethodConfig()))
+            .returnsDocLines(
+                namer.getReturnDocLines(
+                    context.getSurfaceTransformerContext(), context.getMethodConfig(), sync))
+            .build());
+    // TODO(andrealin): initCode
+    methodViewBuilder.initCode(
+        initCodeTransformer.generateInitCode(context.cloneWithEmptyTypeTable(), null));
+    //                context,
+    //                context.getMethodConfig().getRequiredFieldConfigs(),
+    //                InitCodeOutputType.SingleObject)));
+
+    methodViewBuilder.methodParams(new ArrayList<RequestObjectParamView>());
+    methodViewBuilder.requestObjectParams(new ArrayList<RequestObjectParamView>());
+    methodViewBuilder.pathTemplateChecks(new ArrayList<PathTemplateCheckView>());
+
+    RequestObjectMethodDetailView.Builder detailBuilder =
+        RequestObjectMethodDetailView.newBuilder();
+    if (context.getMethodConfig().hasRequestObjectMethod()) {
+      detailBuilder.accessModifier(
+          context.getNamer().getVisiblityKeyword(context.getMethodConfig().getVisibility()));
+    } else {
+      detailBuilder.accessModifier(context.getNamer().getPrivateAccessModifier());
+    }
+    detailBuilder.callableMethodName(callableMethodName);
+    methodViewBuilder.requestObjectMethod(detailBuilder.build());
+  }
+
   private void setCallableMethodFields(
       GapicMethodContext context, String callableName, Builder methodViewBuilder) {
     methodViewBuilder.doc(
@@ -678,6 +1013,38 @@ public class StaticLangApiMethodTransformer {
             .build());
   }
 
+  private void setCallableMethodFields(
+      DiscoGapicMethodContext context, String callableName, Builder methodViewBuilder) {
+    methodViewBuilder.doc(
+        ApiMethodDocView.newBuilder()
+            // TODO(andrealin): mainDocLines
+            .mainDocLines(new LinkedList<String>())
+            .paramDocs(new ArrayList<ParamDocView>())
+            .throwsDocLines(new ArrayList<String>())
+            .build());
+    // TODO(andrealin): initCode
+    methodViewBuilder.initCode(
+        initCodeTransformer.generateInitCode(context.cloneWithEmptyTypeTable(), null));
+    //            createInitCodeContext(
+    //                context,
+    //                context.getMethodConfig().getRequiredFieldConfigs(),
+    //                InitCodeOutputType.SingleObject)));
+
+    methodViewBuilder.methodParams(new ArrayList<RequestObjectParamView>());
+    methodViewBuilder.requestObjectParams(new ArrayList<RequestObjectParamView>());
+    methodViewBuilder.pathTemplateChecks(new ArrayList<PathTemplateCheckView>());
+
+    String genericAwareResponseTypeFullName =
+        context.getNamer().getGenericAwareResponseTypeName(context.getMethod().response());
+    String genericAwareResponseType =
+        context.getTypeTable().getAndSaveNicknameFor(genericAwareResponseTypeFullName);
+    methodViewBuilder.callableMethod(
+        CallableMethodDetailView.newBuilder()
+            .genericAwareResponseType(genericAwareResponseType)
+            .callableName(callableName)
+            .build());
+  }
+
   private void setStaticLangAsyncReturnTypeName(
       GapicMethodContext context, StaticLangApiMethodView.Builder methodViewBuilder) {
     SurfaceNamer namer = context.getNamer();
@@ -689,6 +1056,15 @@ public class StaticLangApiMethodTransformer {
 
   private void setStaticLangReturnTypeName(
       GapicMethodContext context, StaticLangApiMethodView.Builder methodViewBuilder) {
+    SurfaceNamer namer = context.getNamer();
+    String returnTypeFullName =
+        namer.getStaticLangReturnTypeName(context.getMethod(), context.getMethodConfig());
+    String returnTypeNickname = context.getTypeTable().getAndSaveNicknameFor(returnTypeFullName);
+    methodViewBuilder.responseTypeName(returnTypeNickname);
+  }
+
+  private void setStaticLangReturnTypeName(
+      DiscoGapicMethodContext context, StaticLangApiMethodView.Builder methodViewBuilder) {
     SurfaceNamer namer = context.getNamer();
     String returnTypeFullName =
         namer.getStaticLangReturnTypeName(context.getMethod(), context.getMethodConfig());
@@ -748,7 +1124,49 @@ public class StaticLangApiMethodTransformer {
     return pathTemplateChecks;
   }
 
-  private boolean shouldAllowEmpty(GapicMethodContext context, FieldType field) {
+  private List<PathTemplateCheckView> generatePathTemplateChecks(
+      DiscoGapicMethodContext context, Iterable<FieldConfig> fieldConfigs) {
+    List<PathTemplateCheckView> pathTemplateChecks = new ArrayList<>();
+    if (!context.getFeatureConfig().enableStringFormatFunctions()) {
+      return pathTemplateChecks;
+    }
+    for (FieldConfig fieldConfig : fieldConfigs) {
+      if (!fieldConfig.useValidation()) {
+        // Don't generate a path template check if fieldConfig is not configured to use validation.
+        continue;
+      }
+      FieldType field = fieldConfig.getField();
+      ImmutableMap<String, String> fieldNamePatterns =
+          context.getMethodConfig().getFieldNamePatterns();
+      String entityName = fieldNamePatterns.get(field.getSimpleName());
+      if (entityName != null) {
+        SingleResourceNameConfig resourceNameConfig =
+            context.getSingleResourceNameConfig(entityName);
+        if (resourceNameConfig == null) {
+          String methodName = context.getMethod().id();
+          throw new IllegalStateException(
+              "No collection config with id '"
+                  + entityName
+                  + "' required by configuration for method '"
+                  + methodName
+                  + "'");
+        }
+        PathTemplateCheckView.Builder check = PathTemplateCheckView.newBuilder();
+        check.pathTemplateName(
+            context.getNamer().getPathTemplateName(context.getInterface(), resourceNameConfig));
+        check.paramName(context.getNamer().getVariableName(field));
+        check.allowEmptyString(shouldAllowEmpty(context, field));
+        check.validationMessageContext(
+            context
+                .getNamer()
+                .getApiMethodName(context.getMethod(), context.getMethodConfig().getVisibility()));
+        pathTemplateChecks.add(check.build());
+      }
+    }
+    return pathTemplateChecks;
+  }
+
+  private boolean shouldAllowEmpty(MethodContext context, FieldType field) {
     for (FieldType requiredField : context.getMethodConfig().getRequiredFields()) {
       if (requiredField.equals(field)) {
         return false;
@@ -879,12 +1297,74 @@ public class StaticLangApiMethodTransformer {
     return allDocs;
   }
 
+  private List<ParamDocView> getMethodParamDocs(
+      DiscoGapicMethodContext context,
+      Iterable<FieldConfig> fieldConfigs,
+      List<ParamWithSimpleDoc> additionalParamDocs) {
+    List<ParamDocView> allDocs = new ArrayList<>();
+
+    for (FieldConfig fieldConfig : fieldConfigs) {
+      FieldType field = fieldConfig.getField();
+      SimpleParamDocView.Builder paramDoc = SimpleParamDocView.newBuilder();
+      paramDoc.paramName(context.getNamer().getVariableName(field));
+      paramDoc.typeName(context.getTypeTable().getAndSaveNicknameFor(field.getSchemaField()));
+
+      List<String> docLines = null;
+      MethodConfig methodConfig = context.getMethodConfig();
+      if (methodConfig.isPageStreaming()
+          && methodConfig.getPageStreaming().hasPageSizeField()
+          && field.equals(methodConfig.getPageStreaming().getPageSizeField())) {
+        docLines =
+            Arrays.asList(
+                new String[] {
+                  "The maximum number of resources contained in the underlying API",
+                  "response. The API may return fewer values in a page, even if",
+                  "there are additional values to be retrieved."
+                });
+      } else if (methodConfig.isPageStreaming()
+          && field.equals(methodConfig.getPageStreaming().getRequestTokenField())) {
+        docLines =
+            Arrays.asList(
+                new String[] {
+                  "A page token is used to specify a page of values to be returned.",
+                  "If no page token is specified (the default), the first page",
+                  "of values will be returned. Any page token used here must have",
+                  "been generated by a previous call to the API."
+                });
+      } else {
+        docLines = context.getNamer().getDocLines(field);
+      }
+
+      paramDoc.lines(docLines);
+
+      allDocs.add(paramDoc.build());
+    }
+    allDocs.addAll(ParamWithSimpleDoc.asParamDocViews(additionalParamDocs));
+    return allDocs;
+  }
+
   public List<SimpleParamDocView> getRequestObjectParamDocs(
       GapicMethodContext context, TypeRef typeRef) {
     SimpleParamDocView doc =
         SimpleParamDocView.newBuilder()
             .paramName("request")
             .typeName(context.getTypeTable().getAndSaveNicknameFor(typeRef))
+            .lines(
+                Arrays.<String>asList(
+                    "The request object containing all of the parameters for the API call."))
+            .build();
+    return ImmutableList.of(doc);
+  }
+
+  public List<SimpleParamDocView> getRequestObjectParamDocs(
+      DiscoGapicMethodContext context, Schema schema) {
+    if (schema == null) {
+      return ImmutableList.copyOf(new LinkedList<SimpleParamDocView>());
+    }
+    SimpleParamDocView doc =
+        SimpleParamDocView.newBuilder()
+            .paramName("request")
+            .typeName(context.getTypeTable().getAndSaveNicknameFor(schema))
             .lines(
                 Arrays.<String>asList(
                     "The request object containing all of the parameters for the API call."))

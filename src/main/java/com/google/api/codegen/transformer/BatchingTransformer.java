@@ -78,7 +78,9 @@ public class BatchingTransformer {
       if (!methodConfig.isBatching()) {
         continue;
       }
-      descriptors.add(generateDescriptorClass(context.asRequestMethodContext(method)));
+      descriptors.add(
+          generateDescriptorClass(
+              context.asRequestMethodContext(method, context.getInterfaceName())));
     }
 
     return descriptors;

@@ -17,6 +17,7 @@ package com.google.api.codegen.config;
 import com.google.api.Authentication;
 import com.google.api.AuthenticationRule;
 import com.google.api.Service;
+import com.google.api.codegen.discovery.Document;
 import com.google.api.tools.framework.model.Model;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,5 +60,10 @@ public class ProductServiceConfig {
       }
     }
     return new ArrayList<>(result);
+  }
+
+  /** Return a list of scopes for authentication. */
+  public List<String> getAuthScopes(Document document) {
+    return document.authScopes();
   }
 }

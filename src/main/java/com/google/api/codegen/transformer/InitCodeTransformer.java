@@ -28,6 +28,8 @@ import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.codegen.viewmodel.FieldSettingView;
 import com.google.api.codegen.viewmodel.FormattedInitValueView;
+import com.google.api.codegen.viewmodel.ImportFileView;
+import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.InitCodeLineView;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.InitValueView;
@@ -47,6 +49,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -76,6 +79,28 @@ public class InitCodeTransformer {
     } else {
       return buildInitCodeViewRequestObject(methodContext, rootNode);
     }
+  }
+
+  /**
+   * Generates initialization code from the given GapicMethodContext and InitCodeContext objects.
+   */
+  public InitCodeView generateInitCode(
+      DiscoGapicMethodContext methodContext, InitCodeContext initCodeContext) {
+    // TODO(andrealin): Implementation.
+    return InitCodeView.newBuilder()
+        .apiFileName("apiFileName")
+        .fieldSettings(new LinkedList<FieldSettingView>())
+        .importSection(
+            ImportSectionView.newBuilder()
+                .appImports(new LinkedList<ImportFileView>())
+                .externalImports(new LinkedList<ImportFileView>())
+                .serviceImports(new LinkedList<ImportFileView>())
+                .standardImports(new LinkedList<ImportFileView>())
+                .build())
+        .lines(new LinkedList<InitCodeLineView>())
+        .topLevelLines(new LinkedList<InitCodeLineView>())
+        .versionIndexFileImportName("versionIndexFileImportName")
+        .build();
   }
 
   public InitCodeContext createRequestInitCodeContext(

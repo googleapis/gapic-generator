@@ -69,7 +69,8 @@ public class ApiCallableTransformer {
         continue;
       }
       callableMembers.addAll(
-          generateStaticLangApiCallables(context.asRequestMethodContext(method)));
+          generateStaticLangApiCallables(
+              context.asRequestMethodContext(method, context.getInterfaceName())));
     }
 
     return callableMembers;
@@ -89,7 +90,9 @@ public class ApiCallableTransformer {
     List<ApiCallSettingsView> settingsMembers = new ArrayList<>();
 
     for (com.google.api.codegen.discovery.Method method : context.getSupportedMethods()) {
-      settingsMembers.addAll(generateApiCallableSettings(context.asRequestMethodContext(method)));
+      settingsMembers.addAll(
+          generateApiCallableSettings(
+              context.asRequestMethodContext(method, context.getInterfaceName())));
     }
 
     return settingsMembers;

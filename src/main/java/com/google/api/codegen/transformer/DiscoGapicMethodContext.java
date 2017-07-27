@@ -16,7 +16,6 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.DiscoGapicMethodConfig;
 import com.google.api.codegen.config.FlatteningConfig;
-import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
@@ -24,13 +23,14 @@ import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.tools.framework.model.Interface;
 import com.google.auto.value.AutoValue;
+import javax.annotation.Nullable;
 
 /** The context for transforming a method to a view model object. */
 @AutoValue
 public abstract class DiscoGapicMethodContext implements MethodContext {
   public static DiscoGapicMethodContext create(
       InterfaceContext surfaceTransformerContext,
-      Interface apiInterface,
+      String interfaceName,
       GapicProductConfig productConfig,
       SchemaTypeTable typeTable,
       SurfaceNamer namer,
@@ -40,13 +40,14 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
       FeatureConfig featureConfig) {
     return new AutoValue_DiscoGapicMethodContext(
         surfaceTransformerContext,
-        apiInterface,
+        null,
         productConfig,
         namer,
         flatteningConfig,
         featureConfig,
         method,
         new DiscoGapicNamer(namer),
+        interfaceName,
         methodConfig,
         typeTable);
   }
@@ -56,6 +57,8 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
 
   public abstract DiscoGapicNamer getDiscoGapicNamer();
 
+  public abstract String interfaceName();
+
   @Override
   public abstract DiscoGapicMethodConfig getMethodConfig();
 
@@ -64,15 +67,15 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
     return getFlatteningConfig() != null;
   }
 
+  @Nullable
   @Override
   public Interface getTargetInterface() {
-    return GapicInterfaceConfig.getTargetInterface(
-        getInterface(), getMethodConfig().getRerouteToGrpcInterface());
+    return null;
   }
 
   @Override
   public InterfaceConfig getInterfaceConfig() {
-    return getProductConfig().getInterfaceConfig(getInterface());
+    return getProductConfig().getInterfaceConfig(interfaceName());
   }
 
   @Override
@@ -84,7 +87,7 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
   public DiscoGapicMethodContext cloneWithEmptyTypeTable() {
     return create(
         getSurfaceTransformerContext(),
-        getInterface(),
+        interfaceName(),
         getProductConfig(),
         (SchemaTypeTable) getTypeTable().cloneEmpty(),
         getNamer(),

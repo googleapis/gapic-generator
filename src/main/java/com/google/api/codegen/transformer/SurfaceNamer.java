@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.ReleaseLevel;
+import com.google.api.codegen.config.DiscoGapicInterfaceConfig;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.config.GrpcStreamingConfig;
@@ -68,6 +69,9 @@ public class SurfaceNamer extends NameFormatterDelegator {
   // Only for proto-based SurfaceNamers.
   @Nullable private final ModelTypeFormatter modelTypeFormatter;
 
+  // Only for Discovery-based SurfaceNamers.
+  @Nullable private final SchemaTypeFormatter schemaTypeFormatter;
+
   public String[] discoveryMethodNamePieces(com.google.api.codegen.discovery.Method method) {
     return method.id().split("\\.");
   }
@@ -89,15 +93,18 @@ public class SurfaceNamer extends NameFormatterDelegator {
     this.typeNameConverter = typeNameConverter;
     this.commentReformatter = commentReformatter;
     this.packageName = packageName;
+    this.schemaTypeFormatter = null;
   }
 
   // Create a SurfaceNamer based on Discovery Documents.
   public SurfaceNamer(
       NameFormatter languageNamer,
+      SchemaTypeFormatter schemaTypeFormatter,
       TypeNameConverter typeNameConverter,
       CommentReformatter commentReformatter,
       String packageName) {
     super(languageNamer);
+    this.schemaTypeFormatter = schemaTypeFormatter;
     this.typeNameConverter = typeNameConverter;
     this.commentReformatter = commentReformatter;
     this.packageName = packageName;
@@ -106,6 +113,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   public ModelTypeFormatter getModelTypeFormatter() {
     return modelTypeFormatter;
+  }
+
+  public SchemaTypeFormatter getSchemaTypeFormatter() {
+    return schemaTypeFormatter;
   }
 
   public TypeNameConverter getTypeNameConverter() {
@@ -316,12 +327,22 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The function name to get the given proto field. */
   public String getFieldGetFunctionName(FieldType field) {
-    return getFieldGetFunctionName(
-        field.getProtoBasedField().getType(), Name.from(field.getSimpleName()));
+    return getFieldGetFunctionName(field, Name.from(field.getSimpleName()));
   }
 
   /** The function name to get a field having the given type and name. */
   public String getFieldGetFunctionName(TypeRef type, Name identifier) {
+    if (type.isRepeated() && !type.isMap()) {
+      return publicMethodName(Name.from("get").join(identifier).join("list"));
+    } else if (type.isMap()) {
+      return publicMethodName(Name.from("get").join(identifier).join("map"));
+    } else {
+      return publicMethodName(Name.from("get").join(identifier));
+    }
+  }
+
+  /** The function name to get a field having the given type and name. */
+  public String getFieldGetFunctionName(FieldType type, Name identifier) {
     if (type.isRepeated() && !type.isMap()) {
       return publicMethodName(Name.from("get").join(identifier).join("list"));
     } else if (type.isMap()) {
@@ -512,6 +533,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return publicMethodName(Name.upperCamel(method.getSimpleName(), "PagedCallable"));
   }
 
+  /** The name of the paged callable variant of the given method. */
+  public String getPagedCallableMethodName(com.google.api.codegen.discovery.Method method) {
+    String[] namePieces = appendToStringArray(discoveryMethodNamePieces(method), "PagedCallable");
+    return publicMethodName(Name.anyCamel(namePieces));
+  }
+
   /** The name of the plain callable variant of the given method. */
   public String getCallableMethodName(Method method) {
     return publicMethodName(Name.upperCamel(method.getSimpleName(), "Callable"));
@@ -587,6 +614,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The name of a method to apply modifications to this method request. */
   public String getModifyMethodName(Method method) {
+    return getNotImplementedString("SurfaceNamer.getModifyMethodName");
+  }
+
+  /** The name of a method to apply modifications to this method request. */
+  public String getModifyMethodName(com.google.api.codegen.discovery.Method method) {
     return getNotImplementedString("SurfaceNamer.getModifyMethodName");
   }
 
@@ -669,6 +701,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return privateFieldName(Name.upperCamel(apiInterface.getSimpleName(), "Stub"));
   }
 
+  /** The name of the variable that will hold the stub for an API interface. */
+  public String getStubName(InterfaceConfig apiInterface) {
+    return privateFieldName(Name.upperCamel(apiInterface.getSimpleName(), "Stub"));
+  }
+
   /** The name of the array which will hold the methods for a given stub. */
   public String getStubMethodsArrayName(Interface apiInterface) {
     return privateMethodName(Name.upperCamel(apiInterface.getSimpleName(), "Stub", "Methods"));
@@ -722,6 +759,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The name of the class that implements a particular proto interface. */
   public String getApiWrapperClassName(InterfaceConfig interfaceConfig) {
     return publicClassName(Name.anyCamel(getInterfaceName(interfaceConfig), "Client"));
+  }
+
+  /** The name of the class that implements a particular proto interface. */
+  public String getApiWrapperClassName(DiscoGapicInterfaceConfig interfaceConfig) {
+    return publicClassName(Name.anyCamel(interfaceConfig.getName(), "Client"));
   }
 
   /** The name of the class that implements a particular proto interface. */
@@ -897,6 +939,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getStaticLangReturnTypeName");
   }
 
+  /** The return type name in a static language for the given method. */
+  public String getStaticLangReturnTypeName(
+      com.google.api.codegen.discovery.Method method, MethodConfig methodConfig) {
+    return getNotImplementedString("SurfaceNamer.getStaticLangReturnTypeName");
+  }
+
   /** The return type name in a static language that is used by the caller */
   public String getStaticLangCallerReturnTypeName(Method method, MethodConfig methodConfig) {
     return getStaticLangReturnTypeName(method, methodConfig);
@@ -961,6 +1009,14 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /**
+   * The generic-aware response type name for the given type. For example, in Java, this will be the
+   * type used for Future&lt;...&gt;.
+   */
+  public String getGenericAwareResponseTypeName(Schema outputType) {
+    return getNotImplementedString("SurfaceNamer.getGenericAwareResponseType");
+  }
+
+  /**
    * Computes the nickname of the paged response type name for the given method and resources field,
    * saves it in the given type table, and returns it.
    */
@@ -986,9 +1042,25 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getAndSavePagedResponseTypeInnerName");
   }
 
+  /** The inner type name of the paged response type for the given method and resources field. */
+  public String getPagedResponseTypeInnerName(
+      com.google.api.codegen.discovery.Method method,
+      ImportTypeTable typeTable,
+      FieldType resourcesField) {
+    return getNotImplementedString("SurfaceNamer.getAndSavePagedResponseTypeInnerName");
+  }
+
   /** The inner type name of the page type for the given method and resources field. */
   public String getPageTypeInnerName(
       Method method, ImportTypeTable typeTable, FieldType resourceField) {
+    return getNotImplementedString("SurfaceNamer.getPageTypeInnerName");
+  }
+
+  /** The inner type name of the page type for the given method and resources field. */
+  public String getPageTypeInnerName(
+      com.google.api.codegen.discovery.Method method,
+      ImportTypeTable typeTable,
+      FieldType resourceField) {
     return getNotImplementedString("SurfaceNamer.getPageTypeInnerName");
   }
 
@@ -1001,11 +1073,32 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /**
+   * The inner type name of the fixed size collection type for the given method and resources field.
+   */
+  public String getFixedSizeCollectionTypeInnerName(
+      com.google.api.codegen.discovery.Method method,
+      ImportTypeTable typeTable,
+      FieldType resourceField) {
+    return getNotImplementedString("SurfaceNamer.getPageTypeInnerName");
+  }
+
+  /**
    * Computes the nickname of the async response type name for the given resource type, saves it in
    * the given type table, and returns it.
    */
   public String getAndSaveAsyncPagedResponseTypeName(
       Method method, ImportTypeTable typeTable, FieldConfig resourcesFieldConfig) {
+    return getNotImplementedString("SurfaceNamer.getAndSavePagedAsyncResponseTypeName");
+  }
+
+  /**
+   * Computes the nickname of the async response type name for the given resource type, saves it in
+   * the given type table, and returns it.
+   */
+  public String getAndSaveAsyncPagedResponseTypeName(
+      com.google.api.codegen.discovery.Method method,
+      ImportTypeTable typeTable,
+      FieldConfig resourcesFieldConfig) {
     return getNotImplementedString("SurfaceNamer.getAndSavePagedAsyncResponseTypeName");
   }
 
@@ -1478,8 +1571,20 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getPagedCallableMethodName(method);
   }
 
+  /** The name of the example for the paged callable variant. */
+  public String getPagedCallableMethodExampleName(
+      Interface apiInterface, com.google.api.codegen.discovery.Method method) {
+    return getPagedCallableMethodName(method);
+  }
+
   /** The name of the example for the plain callable variant. */
   public String getCallableMethodExampleName(Interface apiInterface, Method method) {
+    return getCallableMethodName(method);
+  }
+
+  /** The name of the example for the plain callable variant. */
+  public String getCallableMethodExampleName(
+      Interface apiInterface, com.google.api.codegen.discovery.Method method) {
     return getCallableMethodName(method);
   }
 
@@ -1493,8 +1598,20 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getApiMethodName(method, VisibilityConfig.PUBLIC);
   }
 
+  /** The name of the example for the method. */
+  public String getApiMethodExampleName(
+      Interface apiInterface, com.google.api.codegen.discovery.Method method) {
+    return getApiMethodName(method, VisibilityConfig.PUBLIC);
+  }
+
   /** The name of the example for the async variant of the given method. */
   public String getAsyncApiMethodExampleName(Interface apiInterface, Method method) {
+    return getAsyncApiMethodName(method, VisibilityConfig.PUBLIC);
+  }
+
+  /** The name of the example for the async variant of the given method. */
+  public String getAsyncApiMethodExampleName(
+      Interface apiInterface, com.google.api.codegen.discovery.Method method) {
     return getAsyncApiMethodName(method, VisibilityConfig.PUBLIC);
   }
 
