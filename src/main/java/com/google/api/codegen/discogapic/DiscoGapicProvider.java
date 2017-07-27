@@ -20,9 +20,9 @@ import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.snippet.Doc;
+import com.google.gson.internal.LinkedTreeMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 public class DiscoGapicProvider {
   private final Document document;
@@ -46,7 +46,7 @@ public class DiscoGapicProvider {
   }
 
   public Map<String, Doc> generate(String snippetFileName) {
-    Map<String, Doc> docs = new TreeMap<>();
+    Map<String, Doc> docs = new LinkedTreeMap<>();
 
     for (DocumentToViewTransformer transformer : transformers) {
       List<ViewModel> surfaceDocs = transformer.transform(document, productConfig);
