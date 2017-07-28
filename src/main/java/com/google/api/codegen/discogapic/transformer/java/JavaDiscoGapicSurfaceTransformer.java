@@ -71,6 +71,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /** The ModelToViewTransformer to transform a Document into the standard GAPIC surface in Java. */
 public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransformer {
