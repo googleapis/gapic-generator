@@ -436,7 +436,7 @@ public class ApiCallableTransformer {
     settings.asyncMethodName(namer.getAsyncApiMethodName(method, VisibilityConfig.PUBLIC));
 
     settings.requestTypeName(context.getDiscoGapicNamer().getRequestName(method));
-    // TODO(andrealin): handle empty repsonse type names.
+    // TODO(andrealin): handle empty response type names.
     settings.responseTypeName(typeTable.getAndSaveNicknameFor(method.response()));
 
     settings.grpcTypeName("Grpc not used in Discovery-based method.");

@@ -49,7 +49,7 @@ public abstract class GapicMethodContext implements MethodContext {
         typeTable);
   }
 
-  /** The Method for which this object a transformation context. */
+  /** The Method for which this object is a transformation context. */
   public abstract Method getMethod();
 
   @Override
