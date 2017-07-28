@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen;
 
+import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.discogapic.DiscoGapicProvider;
 import com.google.api.tools.framework.model.SimpleDiagCollector;
 import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
@@ -28,6 +29,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nullable;
 
 /** Base class for Discovery code generator baseline tests. */
 public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
@@ -39,14 +41,25 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
   private final String discoveryDocFileName;
   private final List<String> gapicConfigFilePaths = new LinkedList<>();
   private final String[] gapicConfigFileNames;
+  @Nullable private final String packageConfigFileName;
   protected ConfigProto config;
   List<DiscoGapicProvider> discoGapicProviders;
+  protected PackageMetadataConfig packageConfig;
 
   public DiscoGapicTestBase(
       String name, String discoveryDocFileName, String[] gapicConfigFileNames) {
+    this(name, discoveryDocFileName, gapicConfigFileNames, null);
+  }
+
+  public DiscoGapicTestBase(
+      String name,
+      String discoveryDocFileName,
+      String[] gapicConfigFileNames,
+      String packageConfigFileName) {
     this.name = name;
     this.discoveryDocFileName = discoveryDocFileName;
     this.gapicConfigFileNames = gapicConfigFileNames;
+    this.packageConfigFileName = packageConfigFileName;
 
     for (String fileName : gapicConfigFileNames) {
       gapicConfigFilePaths.add(getTestDataLocator().findTestData(fileName).getFile());
@@ -59,7 +72,7 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
           DiscoGapicGeneratorApi.getProviders(
               getTestDataLocator().findTestData(discoveryDocFileName).getPath(),
               gapicConfigFilePaths,
-              null,
+              getTestDataLocator().findTestData(packageConfigFileName).getPath(),
               new LinkedList<String>());
     } catch (IOException e) {
       throw new IllegalArgumentException("Problem creating DiscoGapic generator.");
