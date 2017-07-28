@@ -239,7 +239,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     if (schema.type() == Schema.Type.ARRAY) {
       return publicMethodName(Name.from("add", "all").join(schema.getIdentifier()));
     } else {
-      return publicMethodName(Name.from("set").join(schema.getIdentifier()));
+      return publicMethodName(Name.from("set").join(Name.anyCamel(schema.getIdentifier())));
     }
   }
 
@@ -327,9 +327,15 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The function name to get the given proto field. */
   public String getFieldGetFunctionName(FieldType field) {
-    //    return getFieldGetFunctionName(field, Name.from(field.getSimpleName()));
-    return getFieldGetFunctionName(
-        field.getProtoBasedField().getType(), Name.from(field.getSimpleName()));
+    switch (field.getApiSource()) {
+      case PROTO:
+        return getFieldGetFunctionName(
+            field.getProtoBasedField().getType(), Name.from(field.getSimpleName()));
+      case DISCOVERY:
+        return getFieldSetFunctionName(field.getSchemaField());
+      default:
+        throw new IllegalArgumentException("Unhandled model type.");
+    }
   }
 
   /** The function name to get a field having the given type and name. */
