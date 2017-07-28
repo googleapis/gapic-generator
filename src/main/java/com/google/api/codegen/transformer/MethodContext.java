@@ -45,8 +45,6 @@ public interface MethodContext {
 
   boolean isFlattenedMethodContext();
 
-  Interface getTargetInterface();
-
   InterfaceConfig getInterfaceConfig();
 
   SingleResourceNameConfig getSingleResourceNameConfig(String entityName);

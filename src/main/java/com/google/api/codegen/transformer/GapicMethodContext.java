@@ -63,7 +63,6 @@ public abstract class GapicMethodContext implements MethodContext {
     return getFlatteningConfig() != null;
   }
 
-  @Override
   public Interface getTargetInterface() {
     return GapicInterfaceConfig.getTargetInterface(
         getInterface(), getMethodConfig().getRerouteToGrpcInterface());

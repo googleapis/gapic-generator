@@ -64,7 +64,6 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
     return getFlatteningConfig() != null;
   }
 
-  @Override
   public Interface getTargetInterface() {
     return GapicInterfaceConfig.getTargetInterface(
         getInterface(), getMethodConfig().getRerouteToGrpcInterface());
