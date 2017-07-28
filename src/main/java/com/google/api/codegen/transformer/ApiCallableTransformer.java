@@ -435,7 +435,8 @@ public class ApiCallableTransformer {
 
     settings.methodName(namer.getApiMethodName(method, VisibilityConfig.PUBLIC));
     settings.protoMethodName(method.id());
-    settings.fullServiceName(context.getTargetInterface().getFullName());
+    // TODO(andrealin): fullServiceName.
+    settings.fullServiceName("Full service name.");
     settings.asyncMethodName(namer.getAsyncApiMethodName(method, VisibilityConfig.PUBLIC));
 
     settings.requestTypeName(context.getDiscoGapicNamer().getRequestName(method));

@@ -52,7 +52,6 @@ import io.grpc.Status;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.annotation.Nullable;
 
 /**
  * A SurfaceNamer provides language-specific names for specific components of a view for a surface.
@@ -66,11 +65,7 @@ import javax.annotation.Nullable;
  * language-specific namer.
  */
 public class SurfaceNamer extends NameFormatterDelegator {
-  // Only for proto-based SurfaceNamers.
-  @Nullable private final ModelTypeFormatter modelTypeFormatter;
-
-  // Only for Discovery-based SurfaceNamers.
-  @Nullable private final SchemaTypeFormatter schemaTypeFormatter;
+  private final TypeFormatter modelTypeFormatter;
 
   public String[] discoveryMethodNamePieces(com.google.api.codegen.discovery.Method method) {
     return method.id().split("\\.");
@@ -93,30 +88,28 @@ public class SurfaceNamer extends NameFormatterDelegator {
     this.typeNameConverter = typeNameConverter;
     this.commentReformatter = commentReformatter;
     this.packageName = packageName;
-    this.schemaTypeFormatter = null;
   }
 
   // Create a SurfaceNamer based on Discovery Documents.
   public SurfaceNamer(
       NameFormatter languageNamer,
-      SchemaTypeFormatter schemaTypeFormatter,
+      SchemaTypeFormatter modelTypeFormatter,
       TypeNameConverter typeNameConverter,
       CommentReformatter commentReformatter,
       String packageName) {
     super(languageNamer);
-    this.schemaTypeFormatter = schemaTypeFormatter;
     this.typeNameConverter = typeNameConverter;
     this.commentReformatter = commentReformatter;
     this.packageName = packageName;
-    this.modelTypeFormatter = null;
+    this.modelTypeFormatter = modelTypeFormatter;
   }
 
   public ModelTypeFormatter getModelTypeFormatter() {
-    return modelTypeFormatter;
+    return (ModelTypeFormatter) modelTypeFormatter;
   }
 
   public SchemaTypeFormatter getSchemaTypeFormatter() {
-    return schemaTypeFormatter;
+    return (SchemaTypeFormatter) modelTypeFormatter;
   }
 
   public TypeNameConverter getTypeNameConverter() {
@@ -190,7 +183,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The qualified namespace of an API interface. */
   public String getNamespace(Interface apiInterface) {
     NamePath namePath =
-        typeNameConverter.getNamePath(modelTypeFormatter.getFullNameFor(apiInterface));
+        typeNameConverter.getNamePath(getModelTypeFormatter().getFullNameFor(apiInterface));
     return qualifiedName(namePath.withoutHead());
   }
 
@@ -230,8 +223,15 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The function name to set the given proto field. */
   public String getFieldSetFunctionName(FieldType field) {
-    return getFieldSetFunctionName(
-        field.getProtoBasedField().getType(), Name.from(field.getSimpleName()));
+    switch (field.getApiSource()) {
+      case DISCOVERY:
+        return getFieldSetFunctionName(field.getSchemaField());
+      case PROTO:
+        return getFieldSetFunctionName(
+            field.getProtoBasedField().getType(), Name.from(field.getSimpleName()));
+      default:
+        throw new IllegalArgumentException("Unhandled model type.");
+    }
   }
 
   /** The function name to set a field from a Discovery document. */
@@ -327,7 +327,9 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The function name to get the given proto field. */
   public String getFieldGetFunctionName(FieldType field) {
-    return getFieldGetFunctionName(field, Name.from(field.getSimpleName()));
+    //    return getFieldGetFunctionName(field, Name.from(field.getSimpleName()));
+    return getFieldGetFunctionName(
+        field.getProtoBasedField().getType(), Name.from(field.getSimpleName()));
   }
 
   /** The function name to get a field having the given type and name. */
@@ -811,7 +813,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    */
   public String getGrpcServiceClassName(Interface apiInterface) {
     NamePath namePath =
-        typeNameConverter.getNamePath(modelTypeFormatter.getFullNameFor(apiInterface));
+        typeNameConverter.getNamePath(getModelTypeFormatter().getFullNameFor(apiInterface));
     String grpcContainerName =
         publicClassName(Name.upperCamelKeepUpperAcronyms(namePath.getHead(), "Grpc"));
     String serviceClassName =
@@ -888,7 +890,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    */
   public String getGrpcContainerTypeName(Interface apiInterface) {
     NamePath namePath =
-        typeNameConverter.getNamePath(modelTypeFormatter.getFullNameFor(apiInterface));
+        typeNameConverter.getNamePath(getModelTypeFormatter().getFullNameFor(apiInterface));
     String publicClassName =
         publicClassName(Name.upperCamelKeepUpperAcronyms(namePath.getHead(), "Grpc"));
     return qualifiedName(namePath.withHead(publicClassName));
@@ -1344,7 +1346,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getPageStreamingDescriptorConstName(
       com.google.api.codegen.discovery.Method method) {
     return inittedConstantName(
-        Name.upperCamel(discoveryMethodNamePieces(method)).join("page_str_desc"));
+        Name.anyCamel(discoveryMethodNamePieces(method)).join("page_str_desc"));
   }
 
   /** The name of the constant to hold the page streaming factory for the given method. */
@@ -1356,7 +1358,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getPagedListResponseFactoryConstName(
       com.google.api.codegen.discovery.Method method) {
     return inittedConstantName(
-        Name.upperCamel(discoveryMethodNamePieces(method)).join("page_str_fact"));
+        Name.anyCamel(discoveryMethodNamePieces(method)).join("page_str_fact"));
   }
 
   /** The string used to identify the method in the gRPC stub. Not all languages will use this. */

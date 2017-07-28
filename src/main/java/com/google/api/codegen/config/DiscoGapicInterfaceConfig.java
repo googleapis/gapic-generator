@@ -16,6 +16,7 @@ package com.google.api.codegen.config;
 
 import static com.google.api.codegen.config.DiscoGapicMethodConfig.createDiscoGapicMethodConfig;
 
+import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.discovery.Document;
@@ -69,7 +70,8 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
       DiagCollector diagCollector,
       String language,
       InterfaceConfigProto interfaceConfigProto,
-      String interfaceNameOverride) {
+      String interfaceNameOverride,
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs) {
 
     ImmutableMap<String, ImmutableSet<Status.Code>> retryCodesDefinition =
         GapicInterfaceConfig.createRetryCodesDefinition(diagCollector, interfaceConfigProto);
@@ -107,6 +109,23 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
 
     String manualDoc = Strings.nullToEmpty(interfaceConfigProto.getLangDoc().get(language)).trim();
 
+    ImmutableList.Builder<SingleResourceNameConfig> resourcesBuilder = ImmutableList.builder();
+    for (CollectionConfigProto collectionConfigProto : interfaceConfigProto.getCollectionsList()) {
+      String entityName = collectionConfigProto.getEntityName();
+      ResourceNameConfig resourceName = resourceNameConfigs.get(entityName);
+      if (resourceName == null || !(resourceName instanceof SingleResourceNameConfig)) {
+        diagCollector.addDiag(
+            Diag.error(
+                SimpleLocation.TOPLEVEL,
+                "Inconsistent configuration - single resource name %s specified for interface, "
+                    + " but was not found in GapicProductConfig configuration.",
+                entityName));
+        return null;
+      }
+      resourcesBuilder.add((SingleResourceNameConfig) resourceName);
+    }
+    ImmutableList<SingleResourceNameConfig> singleResourceNames = resourcesBuilder.build();
+
     if (diagCollector.hasErrors()) {
       return null;
     } else {
@@ -118,7 +137,8 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
           manualDoc,
           interfaceNameOverride,
           smokeTestConfig,
-          methodConfigMap);
+          methodConfigMap,
+          singleResourceNames);
     }
   }
 
@@ -246,8 +266,5 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
   abstract ImmutableMap<String, ? extends MethodConfig> getMethodConfigMap();
 
   @Override
-  @Nullable
-  public ImmutableList<SingleResourceNameConfig> getSingleResourceNameConfigs() {
-    return null;
-  }
+  public abstract ImmutableList<SingleResourceNameConfig> getSingleResourceNameConfigs();
 }
