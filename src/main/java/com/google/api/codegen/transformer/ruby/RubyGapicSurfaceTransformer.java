@@ -261,11 +261,13 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
 
     SurfaceNamer namer = new RubySurfaceNamer(productConfig.getPackageName());
 
+    String sanitizedShortName = packageConfig.shortName().replaceAll("[^A-Za-z0-9]", " ");
+    Name.lowerCamel(sanitizedShortName.split(" "));
     String apiSpecificPathEnvVar =
-        namer.inittedConstantName(Name.lowerCamel(packageConfig.shortName()).join("keyfile"));
+        namer.inittedConstantName(Name.lowerCamel(sanitizedShortName.split(" ")).join("keyfile"));
     String apiSpecificJsonEnvVar =
         namer.inittedConstantName(
-            Name.lowerCamel(packageConfig.shortName()).join("keyfile").join("json"));
+            Name.lowerCamel(sanitizedShortName.split(" ")).join("keyfile").join("json"));
 
     List<String> pathEnvVars =
         ImmutableList.<String>builder()
