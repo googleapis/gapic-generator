@@ -68,6 +68,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /** The ModelToViewTransformer to transform a Document into the standard GAPIC surface in Java. */
 public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransformer {
@@ -240,11 +241,11 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
     pagedResponseWrappers.name(name);
 
     List<StaticLangPagedResponseView> pagedResponseWrappersList = new ArrayList<>();
-    for (InterfaceConfig interfaceConfig : productConfig.getInterfaceConfigMap().values()) {
+    for (String interfaceName : productConfig.getInterfaceConfigMap().keySet()) {
       DiscoGapicInterfaceContext context =
           DiscoGapicInterfaceContext.createWithInterface(
               model,
-              interfaceConfig.getName(),
+              interfaceName,
               productConfig,
               typeTable,
               discoGapicNamer,
