@@ -184,7 +184,8 @@ public class JavaSurfaceNamer extends SurfaceNamer {
       com.google.api.codegen.discovery.Method method,
       ImportTypeTable typeTable,
       FieldType resourceField) {
-    return publicClassName(Name.upperCamel(method.id(), "PagedResponse"));
+    return publicClassName(
+        Name.anyCamel(discoveryMethodNamePieces(method)).join(Name.upperCamel("PagedResponse")));
   }
 
   @Override
@@ -198,7 +199,8 @@ public class JavaSurfaceNamer extends SurfaceNamer {
       com.google.api.codegen.discovery.Method method,
       ImportTypeTable typeTable,
       FieldType resourceField) {
-    return publicClassName(Name.upperCamel(method.id(), "Page"));
+    return publicClassName(
+        Name.anyCamel(discoveryMethodNamePieces(method)).join(Name.upperCamel("Page")));
   }
 
   @Override
@@ -212,7 +214,9 @@ public class JavaSurfaceNamer extends SurfaceNamer {
       com.google.api.codegen.discovery.Method method,
       ImportTypeTable typeTable,
       FieldType resourceField) {
-    return publicClassName(Name.upperCamel(method.id(), "FixedSizeCollection"));
+    return publicClassName(
+        Name.anyCamel(discoveryMethodNamePieces(method))
+            .join(Name.upperCamel("FixedSizeCollection")));
   }
 
   @Override
