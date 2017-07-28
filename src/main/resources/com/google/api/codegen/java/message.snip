@@ -15,9 +15,7 @@
 
     {@constructors(schema)}
 
-    @if schema.isRequestMessage
-      {@populateMapMethod(schema)}
-    @end
+    {@populateMapMethod(schema)}
 
     {@getters(schema)}
 
@@ -43,7 +41,7 @@
         @if param.canRepeat
           fieldMap.put("{@param.name}", {@param.name});
         @else
-          fieldMap.put("{@param.name}", Collections.singletonList({@param.name}));
+          fieldMap.put("{@param.name}", Collections.singletonList(String.valueOf({@param.name})));
         @end
       }
     @end
