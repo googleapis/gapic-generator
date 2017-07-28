@@ -93,7 +93,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   // Create a SurfaceNamer based on Discovery Documents.
   public SurfaceNamer(
       NameFormatter languageNamer,
-      SchemaTypeFormatter modelTypeFormatter,
+      SchemaTypeFormatter typeFormatter,
       TypeNameConverter typeNameConverter,
       CommentReformatter commentReformatter,
       String packageName) {
@@ -101,7 +101,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     this.typeNameConverter = typeNameConverter;
     this.commentReformatter = commentReformatter;
     this.packageName = packageName;
-    this.modelTypeFormatter = modelTypeFormatter;
+    this.modelTypeFormatter = typeFormatter;
   }
 
   public ModelTypeFormatter getModelTypeFormatter() {
