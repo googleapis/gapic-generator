@@ -3521,7 +3521,6 @@ package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.auth.Credentials;
-import io.grpc.ManagedChannel;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -3529,10 +3528,63 @@ import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 import javax.annotation.Generated;
 
+// AUTO-GENERATED DOCUMENTATION AND SERVICE
+/**
+ * Service Description:
+ *
+ * <p>This class provides the ability to make remote calls to the backing service through method
+ * calls that map to API methods. Sample code to get started:
+ *
+ * <pre>
+ * <code>
+ * try (BillingAccountAdminClient billingAccountAdminClient = BillingAccountAdminClient.create()) {
+ *
+ *   BillingAccount response = billingAccountAdminClient.fakebillingBillingAccountsGet();
+ * }
+ * </code>
+ * </pre>
+ *
+ * <p>Note: close() needs to be called on the billingAccountAdminClient object to clean up resources such
+ * as threads. In the example above, try-with-resources is used, which automatically calls
+ * close().
+ *
+ * <p>The surface of this class includes several types of Java methods for each of the API's methods:
+ *
+ * <ol>
+ * <li> A "flattened" method. With this type of method, the fields of the request type have been
+ * converted into function parameters. It may be the case that not all fields are available
+ * as parameters, and not every API method will have a flattened method entry point.
+ * <li> A "request object" method. This type of method only takes one parameter, a request
+ * object, which must be constructed before the call. Not every API method will have a request
+ * object method.
+ * <li> A "callable" method. This type of method takes no parameters and returns an immutable
+ * API callable object, which can be used to initiate calls to the service.
+ * </ol>
+ *
+ * <p>See the individual methods for example code.
+ *
+ * <p>Many parameters require resource names to be formatted in a particular way. To assist
+ * with these names, this class includes a format method for each type of name, and additionally
+ * a parse method to extract the individual identifiers contained within names that are
+ * returned.
+ *
+ * <p>This class can be customized by passing in a custom instance of BillingAccountAdminSettings to
+ * create(). For example:
+ *
+ * <pre>
+ * <code>
+ * BillingAccountAdminSettings billingAccountAdminSettings =
+ *     BillingAccountAdminSettings.defaultBuilder()
+ *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
+ *         .build();
+ * BillingAccountAdminClient billingAccountAdminClient =
+ *     BillingAccountAdminClient.create(billingAccountAdminSettings);
+ * </code>
+ * </pre>
+ */
 @Generated("by GAPIC")
-@BetaApi
-public class FakebillingClient implements AutoCloseable {
-  private final FakebillingSettings settings;
+public class BillingAccountAdminClient implements AutoCloseable {
+  private final BillingAccountAdminSettings settings;
   private final ScheduledExecutorService executor;
   private final ManagedChannel channel;
   private final List<AutoCloseable> closeables = new ArrayList<>();
@@ -3541,30 +3593,48 @@ public class FakebillingClient implements AutoCloseable {
   private final UnaryCallable<billingAccountsListHttpRequest, $ NOT IMPLEMENTED: SurfaceNamer.getAndSavePagedResponseTypeName $> fakebillingBillingAccountsListPagedCallable;
   private final UnaryCallable<billingAccountsGetHttpRequest, BillingAccount> fakebillingBillingAccountsGetCallable;
 
-
+  private static final PathTemplate BILLING_ACCOUNT_PATH_TEMPLATE =
+      PathTemplate.createWithoutUrlEncoding("billingAccounts/{billing_account}");
 
   /**
-   * Constructs an instance of FakebillingClient with default settings.
+   * Formats a string containing the fully-qualified path to represent
+   * a billing_account resource.
    */
-  public static final FakebillingClient create() throws IOException {
-    return create(FakebillingSettings.defaultBuilder().build());
+  public static final String formatBillingAccountName(String billingAccount) {
+    return BILLING_ACCOUNT_PATH_TEMPLATE.instantiate(
+        "billing_account", billingAccount);
   }
 
   /**
-   * Constructs an instance of FakebillingClient, using the given settings.
+   * Parses the billing_account from the given fully-qualified path which
+   * represents a billing_account resource.
+   */
+  public static final String parseBillingAccountFromBillingAccountName(String billingAccountName) {
+    return BILLING_ACCOUNT_PATH_TEMPLATE.parse(billingAccountName).get("billing_account");
+  }
+
+  /**
+   * Constructs an instance of BillingAccountAdminClient with default settings.
+   */
+  public static final BillingAccountAdminClient create() throws IOException {
+    return create(BillingAccountAdminSettings.defaultBuilder().build());
+  }
+
+  /**
+   * Constructs an instance of BillingAccountAdminClient, using the given settings.
    * The channels are created based on the settings passed in, or defaults for any
    * settings that are not set.
    */
-  public static final FakebillingClient create(FakebillingSettings settings) throws IOException {
-    return new FakebillingClient(settings);
+  public static final BillingAccountAdminClient create(BillingAccountAdminSettings settings) throws IOException {
+    return new BillingAccountAdminClient(settings);
   }
 
   /**
-   * Constructs an instance of FakebillingClient, using the given settings.
+   * Constructs an instance of BillingAccountAdminClient, using the given settings.
    * This is protected so that it easy to make a subclass, but otherwise, the static
    * factory methods should be preferred.
    */
-  protected FakebillingClient(FakebillingSettings settings) throws IOException {
+  protected BillingAccountAdminClient(BillingAccountAdminSettings settings) throws IOException {
     this.settings = settings;
     ChannelAndExecutor channelAndExecutor = settings.getChannelAndExecutor();
     this.executor = channelAndExecutor.getExecutor();
@@ -3604,11 +3674,142 @@ public class FakebillingClient implements AutoCloseable {
     }
   }
 
-  public final FakebillingSettings getSettings() {
+  public final BillingAccountAdminSettings getSettings() {
     return settings;
   }
 
 
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (BillingAccountAdminClient billingAccountAdminClient = BillingAccountAdminClient.create()) {
+   *
+   *   for (ListBillingAccountsResponse element : billingAccountAdminClient.fakebillingBillingAccountsList().iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  public final $ NOT IMPLEMENTED: SurfaceNamer.getAndSavePagedResponseTypeName $ fakebillingBillingAccountsList(billingAccountsListHttpRequest request) {
+    return fakebillingBillingAccountsListPagedCallable()
+        .call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (BillingAccountAdminClient billingAccountAdminClient = BillingAccountAdminClient.create()) {
+   *
+   *   ApiFuture&lt;$ NOT IMPLEMENTED: SurfaceNamer.getAndSavePagedResponseTypeName $&gt; future = billingAccountAdminClient.fakebillingBillingAccountsListPagedCallable().futureCall();
+   *   // Do something
+   *   for (ListBillingAccountsResponse element : future.get().iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   */
+  @BetaApi
+  public final UnaryCallable<billingAccountsListHttpRequest, $ NOT IMPLEMENTED: SurfaceNamer.getAndSavePagedResponseTypeName $> fakebillingBillingAccountsListPagedCallable() {
+    return fakebillingBillingAccountsListPagedCallable;
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (BillingAccountAdminClient billingAccountAdminClient = BillingAccountAdminClient.create()) {
+   *
+   *   while (true) {
+   *     ListBillingAccountsResponse response = billingAccountAdminClient.fakebillingBillingAccountsListCallable().call();
+   *     for (ListBillingAccountsResponse element : response.setResponse()) {
+   *       // doThingsWith(element);
+   *     }
+   *     String nextPageToken = response.getNextPageToken();
+   *     if (!Strings.isNullOrEmpty(nextPageToken)) {
+   *       request = request.toBuilder().setPageToken(nextPageToken).build();
+   *     } else {
+   *       break;
+   *     }
+   *   }
+   * }
+   * </code></pre>
+   */
+  @BetaApi
+  public final UnaryCallable<billingAccountsListHttpRequest, ListBillingAccountsResponse> fakebillingBillingAccountsListCallable() {
+    return fakebillingBillingAccountsListCallable;
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (BillingAccountAdminClient billingAccountAdminClient = BillingAccountAdminClient.create()) {
+   *
+   *   BillingAccount response = billingAccountAdminClient.fakebillingBillingAccountsGet();
+   * }
+   * </code></pre>
+   *
+   * @param name $ NOT IMPLEMENTED: SurfaceNamer.getDocLines $
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  public final BillingAccount fakebillingBillingAccountsGet() {
+
+    billingAccountsGetHttpRequest request =
+        billingAccountsGetHttpRequest.newBuilder()
+
+        .build();
+    return fakebillingBillingAccountsGet(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (BillingAccountAdminClient billingAccountAdminClient = BillingAccountAdminClient.create()) {
+   *
+   *   BillingAccount response = billingAccountAdminClient.fakebillingBillingAccountsGet();
+   * }
+   * </code></pre>
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  private final BillingAccount fakebillingBillingAccountsGet(billingAccountsGetHttpRequest request) {
+    return fakebillingBillingAccountsGetCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (BillingAccountAdminClient billingAccountAdminClient = BillingAccountAdminClient.create()) {
+   *
+   *   ApiFuture&lt;BillingAccount&gt; future = billingAccountAdminClient.fakebillingBillingAccountsGetCallable().futureCall();
+   *   // Do something
+   *   BillingAccount response = future.get();
+   * }
+   * </code></pre>
+   */
+  @BetaApi
+  public final UnaryCallable<billingAccountsGetHttpRequest, BillingAccount> fakebillingBillingAccountsGetCallable() {
+    return fakebillingBillingAccountsGetCallable;
+  }
 
   /**
    * Initiates an orderly shutdown in which preexisting calls continue but new calls are immediately
@@ -3621,6 +3822,388 @@ public class FakebillingClient implements AutoCloseable {
     }
   }
 
+}
+============== file: src/main/java/com/google/cloud/fakebilling/v1/BillingAccountAdminSettings.java ==============
+/*
+ * Copyright 2017, Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.fakebilling.v1;
+
+import com.google.api.core.ApiFuture;
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.CredentialsProvider;
+import com.google.api.gax.core.GoogleCredentialsProvider;
+import com.google.api.gax.core.PropertiesProvider;
+import com.google.api.gax.grpc.ApiExceptions;
+import com.google.api.gax.grpc.CallContext;
+import com.google.api.gax.grpc.ChannelProvider;
+import com.google.api.gax.grpc.ClientSettings;
+import com.google.api.gax.grpc.ExecutorProvider;
+import com.google.api.gax.grpc.InstantiatingChannelProvider;
+import com.google.api.gax.grpc.InstantiatingExecutorProvider;
+import com.google.api.gax.grpc.PageContext;
+import com.google.api.gax.grpc.PagedCallSettings;
+import com.google.api.gax.grpc.PagedListDescriptor;
+import com.google.api.gax.grpc.PagedListResponseFactory;
+import com.google.api.gax.grpc.SimpleCallSettings;
+import com.google.api.gax.grpc.UnaryCallSettings;
+import com.google.api.gax.grpc.UnaryCallable;
+import com.google.api.gax.retrying.RetrySettings;
+import com.google.auth.Credentials;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import io.grpc.ManagedChannel;
+import io.grpc.Status;
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.ScheduledExecutorService;
+import javax.annotation.Generated;
+import org.threeten.bp.Duration;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS
+/**
+ * Settings class to configure an instance of {@link BillingAccountAdminClient}.
+ *
+ * <p>The default instance has everything set to sensible defaults:
+ *
+ * <ul>
+ * <li>The default service address (Service address.) and default port (443)
+ * are used.
+ * <li>Credentials are acquired automatically through Application Default Credentials.
+ * <li>Retries are configured for idempotent methods but not for non-idempotent methods.
+ * </ul>
+ *
+ * <p>The builder of this class is recursive, so contained classes are themselves builders.
+ * When build() is called, the tree of builders is called to create the complete settings
+ * object. For example, to set the total timeout of fakebillingBillingAccountsGet to 30 seconds:
+ *
+ * <pre>
+ * <code>
+ * BillingAccountAdminSettings.Builder billingAccountAdminSettingsBuilder =
+ *     BillingAccountAdminSettings.defaultBuilder();
+ * billingAccountAdminSettingsBuilder.fakebillingBillingAccountsGetSettings().getRetrySettingsBuilder()
+ *     .setTotalTimeout(Duration.ofSeconds(30));
+ * BillingAccountAdminSettings billingAccountAdminSettings = billingAccountAdminSettingsBuilder.build();
+ * </code>
+ * </pre>
+ */
+@Generated("by GAPIC v0.0.5")
+public class BillingAccountAdminSettings extends ClientSettings {
+  /**
+   * The default scopes of the service.
+   */
+  private static final ImmutableList<String> DEFAULT_SERVICE_SCOPES = ImmutableList.<String>builder()
+      .add("https://www.googleapis.com/auth/cloud-platform")
+      .build();
+
+  private static final String DEFAULT_GAPIC_NAME = "gapic";
+  private static final String DEFAULT_GAPIC_VERSION = "";
+
+  private static final String PROPERTIES_FILE = "/com/google/cloud/fakebilling/v1/project.properties";
+  private static final String META_VERSION_KEY = "artifact.version";
+
+  private static String gapicVersion;
+
+  private static final io.grpc.MethodDescriptor<billingAccountsListHttpRequest, ListBillingAccountsResponse> Grpc not used in Discovery-based method. =
+        io.grpc.MethodDescriptor.create(
+            io.grpc.MethodDescriptor.MethodType.UNARY,
+            "Full service name./fakebilling.billingAccounts.list",
+            io.grpc.protobuf.ProtoUtils.marshaller(billingAccountsListHttpRequest.getDefaultInstance()),
+            io.grpc.protobuf.ProtoUtils.marshaller(ListBillingAccountsResponse.getDefaultInstance()));
+  private static final io.grpc.MethodDescriptor<billingAccountsGetHttpRequest, BillingAccount> Grpc not used in Discovery-based method. =
+        io.grpc.MethodDescriptor.create(
+            io.grpc.MethodDescriptor.MethodType.UNARY,
+            "Full service name./fakebilling.billingAccounts.get",
+            io.grpc.protobuf.ProtoUtils.marshaller(billingAccountsGetHttpRequest.getDefaultInstance()),
+            io.grpc.protobuf.ProtoUtils.marshaller(BillingAccount.getDefaultInstance()));
+
+  private final PagedCallSettings<billingAccountsListHttpRequest, ListBillingAccountsResponse, $ NOT IMPLEMENTED: SurfaceNamer.getAndSavePagedResponseTypeName $> fakebillingBillingAccountsListSettings;
+  private final SimpleCallSettings<billingAccountsGetHttpRequest, BillingAccount> fakebillingBillingAccountsGetSettings;
+
+  /**
+   * Returns the object with the settings used for calls to fakebillingBillingAccountsList.
+   */
+  public PagedCallSettings<billingAccountsListHttpRequest, ListBillingAccountsResponse, $ NOT IMPLEMENTED: SurfaceNamer.getAndSavePagedResponseTypeName $> fakebillingBillingAccountsListSettings() {
+    return fakebillingBillingAccountsListSettings;
+  }
+
+  /**
+   * Returns the object with the settings used for calls to fakebillingBillingAccountsGet.
+   */
+  public SimpleCallSettings<billingAccountsGetHttpRequest, BillingAccount> fakebillingBillingAccountsGetSettings() {
+    return fakebillingBillingAccountsGetSettings;
+  }
+
+
+  /**
+   * Returns a builder for the default ExecutorProvider for this service.
+   */
+  public static InstantiatingExecutorProvider.Builder defaultExecutorProviderBuilder() {
+    return InstantiatingExecutorProvider.newBuilder();
+  }
+
+  /**
+   * Returns the default service endpoint.
+   */
+  public static String getDefaultEndpoint() {
+    return "Service address.:443";
+  }
+
+
+  /**
+   * Returns the default service scopes.
+   */
+  public static List<String> getDefaultServiceScopes() {
+    return DEFAULT_SERVICE_SCOPES;
+  }
+
+
+  /**
+   * Returns a builder for the default credentials for this service.
+   */
+  public static GoogleCredentialsProvider.Builder defaultCredentialsProviderBuilder() {
+    return GoogleCredentialsProvider.newBuilder()
+        .setScopesToApply(DEFAULT_SERVICE_SCOPES)
+        ;
+  }
+
+  /** Returns a builder for the default ChannelProvider for this service. */
+  public static InstantiatingChannelProvider.Builder defaultChannelProviderBuilder() {
+    return InstantiatingChannelProvider.newBuilder()
+        .setEndpoint(getDefaultEndpoint())
+        .setGeneratorHeader(DEFAULT_GAPIC_NAME, getGapicVersion());
+  }
+
+  private static String getGapicVersion() {
+    if (gapicVersion == null) {
+      gapicVersion = PropertiesProvider.loadProperty(
+          BillingAccountAdminSettings.class, PROPERTIES_FILE, META_VERSION_KEY);
+      gapicVersion = gapicVersion == null ? DEFAULT_GAPIC_VERSION : gapicVersion;
+    }
+    return gapicVersion;
+  }
+
+  /**
+   * Returns a builder for this class with recommended defaults.
+   */
+  public static Builder defaultBuilder() {
+    return Builder.createDefault();
+  }
+
+  /**
+   * Returns a new builder for this class.
+   */
+  public static Builder newBuilder() {
+    return new Builder();
+  }
+
+  /**
+   * Returns a builder containing all the values of this settings class.
+   */
+  public Builder toBuilder() {
+    return new Builder(this);
+  }
+
+  private BillingAccountAdminSettings(Builder settingsBuilder) throws IOException {
+    super(settingsBuilder.getExecutorProvider(),
+          settingsBuilder.getChannelProvider(),
+          settingsBuilder.getCredentialsProvider());
+
+    fakebillingBillingAccountsListSettings = settingsBuilder.fakebillingBillingAccountsListSettings().build();
+    fakebillingBillingAccountsGetSettings = settingsBuilder.fakebillingBillingAccountsGetSettings().build();
+  }
+
+  private static final PagedListDescriptor<billingAccountsListHttpRequest, ListBillingAccountsResponse, ListBillingAccountsResponse> FAKEBILLING_BILLING_ACCOUNTS_LIST_PAGE_STR_DESC =
+      new PagedListDescriptor<billingAccountsListHttpRequest, ListBillingAccountsResponse, ListBillingAccountsResponse>() {
+        @Override
+        public String emptyToken() {
+          return ListBillingAccountsResponse.newBuilder().build();
+        }
+        @Override
+        public billingAccountsListHttpRequest injectToken(billingAccountsListHttpRequest payload, String token) {
+          return billingAccountsListHttpRequest
+            .newBuilder(payload)
+            .setPageToken(token)
+            .build();
+        }
+        @Override
+        public billingAccountsListHttpRequest injectPageSize(billingAccountsListHttpRequest payload, int pageSize) {
+          return billingAccountsListHttpRequest
+            .newBuilder(payload)
+            .setMaxResults(pageSize)
+            .build();
+        }
+        @Override
+        public Integer extractPageSize(billingAccountsListHttpRequest payload) {
+          return payload.setMaxResults();
+        }
+        @Override
+        public String extractNextToken(ListBillingAccountsResponse payload) {
+          return payload.setListBillingAccountsResponse();
+        }
+        @Override
+        public Iterable<ListBillingAccountsResponse> extractResources(ListBillingAccountsResponse payload) {
+          return payload.setResponse();
+        }
+      };
+
+  private static final PagedListResponseFactory<billingAccountsListHttpRequest, ListBillingAccountsResponse, $ NOT IMPLEMENTED: SurfaceNamer.getAndSavePagedResponseTypeName $> FAKEBILLING_BILLING_ACCOUNTS_LIST_PAGE_STR_FACT =
+      new PagedListResponseFactory<billingAccountsListHttpRequest, ListBillingAccountsResponse, $ NOT IMPLEMENTED: SurfaceNamer.getAndSavePagedResponseTypeName $>() {
+        @Override
+        public ApiFuture<$ NOT IMPLEMENTED: SurfaceNamer.getAndSavePagedResponseTypeName $> getFuturePagedResponse(
+            UnaryCallable<billingAccountsListHttpRequest, ListBillingAccountsResponse> callable,
+            billingAccountsListHttpRequest request,
+            CallContext context,
+            ApiFuture<ListBillingAccountsResponse> futureResponse) {
+          PageContext<billingAccountsListHttpRequest, ListBillingAccountsResponse, ListBillingAccountsResponse> pageContext =
+              PageContext.create(callable, FAKEBILLING_BILLING_ACCOUNTS_LIST_PAGE_STR_DESC, request, context);
+          return $ NOT IMPLEMENTED: SurfaceNamer.getAndSavePagedResponseTypeName $.createAsync(pageContext, futureResponse);
+        }
+      };
+
+
+  /**
+   * Builder for BillingAccountAdminSettings.
+   */
+  public static class Builder extends ClientSettings.Builder {
+    private final ImmutableList<UnaryCallSettings.Builder> unaryMethodSettingsBuilders;
+
+    private final PagedCallSettings.Builder<billingAccountsListHttpRequest, ListBillingAccountsResponse, $ NOT IMPLEMENTED: SurfaceNamer.getAndSavePagedResponseTypeName $> fakebillingBillingAccountsListSettings;
+    private final SimpleCallSettings.Builder<billingAccountsGetHttpRequest, BillingAccount> fakebillingBillingAccountsGetSettings;
+
+    private static final ImmutableMap<String, ImmutableSet<Status.Code>> RETRYABLE_CODE_DEFINITIONS;
+
+    static {
+      ImmutableMap.Builder<String, ImmutableSet<Status.Code>> definitions = ImmutableMap.builder();
+      definitions.put(
+          "idempotent",
+          Sets.immutableEnumSet(Lists.<Status.Code>newArrayList(Status.Code.DEADLINE_EXCEEDED, Status.Code.UNAVAILABLE)));
+      RETRYABLE_CODE_DEFINITIONS = definitions.build();
+    }
+
+    private static final ImmutableMap<String, RetrySettings.Builder> RETRY_PARAM_DEFINITIONS;
+
+    static {
+      ImmutableMap.Builder<String, RetrySettings.Builder> definitions = ImmutableMap.builder();
+      RetrySettings.Builder settingsBuilder = null;
+      settingsBuilder = RetrySettings.newBuilder()
+          .setInitialRetryDelay(Duration.ofMillis(100L))
+          .setRetryDelayMultiplier(1.3)
+          .setMaxRetryDelay(Duration.ofMillis(60000L))
+          .setInitialRpcTimeout(Duration.ofMillis(60000L))
+          .setRpcTimeoutMultiplier(1.0)
+          .setMaxRpcTimeout(Duration.ofMillis(60000L))
+          .setTotalTimeout(Duration.ofMillis(600000L));
+      definitions.put("default", settingsBuilder);
+      RETRY_PARAM_DEFINITIONS = definitions.build();
+    }
+
+    private Builder() {
+      super(defaultChannelProviderBuilder().build());
+      setCredentialsProvider(defaultCredentialsProviderBuilder().build());
+
+      fakebillingBillingAccountsListSettings = PagedCallSettings.newBuilder(
+          Grpc not used in Discovery-based method.,
+          FAKEBILLING_BILLING_ACCOUNTS_LIST_PAGE_STR_FACT);
+
+      fakebillingBillingAccountsGetSettings = SimpleCallSettings.newBuilder(Grpc not used in Discovery-based method.);
+
+      unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder>of(
+          fakebillingBillingAccountsListSettings,
+          fakebillingBillingAccountsGetSettings
+      );
+    }
+
+    private static Builder createDefault() {
+      Builder builder = new Builder();
+
+      builder.fakebillingBillingAccountsListSettings()
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
+          .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
+
+      builder.fakebillingBillingAccountsGetSettings()
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
+          .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
+
+      return builder;
+    }
+
+    private Builder(BillingAccountAdminSettings settings) {
+      super(settings);
+
+      fakebillingBillingAccountsListSettings = settings.fakebillingBillingAccountsListSettings.toBuilder();
+      fakebillingBillingAccountsGetSettings = settings.fakebillingBillingAccountsGetSettings.toBuilder();
+
+      unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder>of(
+          fakebillingBillingAccountsListSettings,
+          fakebillingBillingAccountsGetSettings
+      );
+    }
+
+    @Override
+    public Builder setExecutorProvider(ExecutorProvider executorProvider) {
+      super.setExecutorProvider(executorProvider);
+      return this;
+    }
+
+    @Override
+    public Builder setChannelProvider(ChannelProvider channelProvider) {
+      super.setChannelProvider(channelProvider);
+      return this;
+    }
+
+    @Override
+    public Builder setCredentialsProvider(CredentialsProvider credentialsProvider) {
+      super.setCredentialsProvider(credentialsProvider);
+      return this;
+    }
+
+    /**
+     * Applies the given settings to all of the unary API methods in this service. Only
+     * values that are non-null will be applied, so this method is not capable
+     * of un-setting any values.
+     *
+     * Note: This method does not support applying settings to streaming methods.
+     */
+    public Builder applyToAllUnaryMethods(UnaryCallSettings.Builder unaryCallSettings) throws Exception {
+      super.applyToAllUnaryMethods(unaryMethodSettingsBuilders, unaryCallSettings);
+      return this;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to fakebillingBillingAccountsList.
+     */
+    public PagedCallSettings.Builder<billingAccountsListHttpRequest, ListBillingAccountsResponse, $ NOT IMPLEMENTED: SurfaceNamer.getAndSavePagedResponseTypeName $> fakebillingBillingAccountsListSettings() {
+      return fakebillingBillingAccountsListSettings;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to fakebillingBillingAccountsGet.
+     */
+    public SimpleCallSettings.Builder<billingAccountsGetHttpRequest, BillingAccount> fakebillingBillingAccountsGetSettings() {
+      return fakebillingBillingAccountsGetSettings;
+    }
+
+    @Override
+    public BillingAccountAdminSettings build() throws IOException {
+      return new BillingAccountAdminSettings(this);
+    }
+  }
 }
 ============== file: src/main/java/com/google/cloud/fakebilling/v1/ProjectAdminClient.java ==============
 /*
@@ -3642,7 +4225,6 @@ package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.auth.Credentials;
-import io.grpc.ManagedChannel;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -3650,10 +4232,64 @@ import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 import javax.annotation.Generated;
 
+// AUTO-GENERATED DOCUMENTATION AND SERVICE
+/**
+ * Service Description:
+ * Configure billing projects.
+ *
+ * <p>This class provides the ability to make remote calls to the backing service through method
+ * calls that map to API methods. Sample code to get started:
+ *
+ * <pre>
+ * <code>
+ * try (ProjectAdminClient projectAdminClient = ProjectAdminClient.create()) {
+ *
+ *   ProjectBillingInfo response = projectAdminClient.fakebillingProjectsUpdateBillingInfo();
+ * }
+ * </code>
+ * </pre>
+ *
+ * <p>Note: close() needs to be called on the projectAdminClient object to clean up resources such
+ * as threads. In the example above, try-with-resources is used, which automatically calls
+ * close().
+ *
+ * <p>The surface of this class includes several types of Java methods for each of the API's methods:
+ *
+ * <ol>
+ * <li> A "flattened" method. With this type of method, the fields of the request type have been
+ * converted into function parameters. It may be the case that not all fields are available
+ * as parameters, and not every API method will have a flattened method entry point.
+ * <li> A "request object" method. This type of method only takes one parameter, a request
+ * object, which must be constructed before the call. Not every API method will have a request
+ * object method.
+ * <li> A "callable" method. This type of method takes no parameters and returns an immutable
+ * API callable object, which can be used to initiate calls to the service.
+ * </ol>
+ *
+ * <p>See the individual methods for example code.
+ *
+ * <p>Many parameters require resource names to be formatted in a particular way. To assist
+ * with these names, this class includes a format method for each type of name, and additionally
+ * a parse method to extract the individual identifiers contained within names that are
+ * returned.
+ *
+ * <p>This class can be customized by passing in a custom instance of ProjectAdminSettings to
+ * create(). For example:
+ *
+ * <pre>
+ * <code>
+ * ProjectAdminSettings projectAdminSettings =
+ *     ProjectAdminSettings.defaultBuilder()
+ *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
+ *         .build();
+ * ProjectAdminClient projectAdminClient =
+ *     ProjectAdminClient.create(projectAdminSettings);
+ * </code>
+ * </pre>
+ */
 @Generated("by GAPIC")
-@BetaApi
-public class FakebillingClient implements AutoCloseable {
-  private final FakebillingSettings settings;
+public class ProjectAdminClient implements AutoCloseable {
+  private final ProjectAdminSettings settings;
   private final ScheduledExecutorService executor;
   private final ManagedChannel channel;
   private final List<AutoCloseable> closeables = new ArrayList<>();
@@ -3661,30 +4297,48 @@ public class FakebillingClient implements AutoCloseable {
   private final UnaryCallable<projectsUpdateBillingInfoHttpRequest, ProjectBillingInfo> fakebillingProjectsUpdateBillingInfoCallable;
   private final UnaryCallable<projectsGetBillingInfoHttpRequest, ProjectBillingInfo> fakebillingProjectsGetBillingInfoCallable;
 
-
+  private static final PathTemplate PROJECT_PATH_TEMPLATE =
+      PathTemplate.createWithoutUrlEncoding("projects/{project}");
 
   /**
-   * Constructs an instance of FakebillingClient with default settings.
+   * Formats a string containing the fully-qualified path to represent
+   * a project resource.
    */
-  public static final FakebillingClient create() throws IOException {
-    return create(FakebillingSettings.defaultBuilder().build());
+  public static final String formatProjectName(String project) {
+    return PROJECT_PATH_TEMPLATE.instantiate(
+        "project", project);
   }
 
   /**
-   * Constructs an instance of FakebillingClient, using the given settings.
+   * Parses the project from the given fully-qualified path which
+   * represents a project resource.
+   */
+  public static final String parseProjectFromProjectName(String projectName) {
+    return PROJECT_PATH_TEMPLATE.parse(projectName).get("project");
+  }
+
+  /**
+   * Constructs an instance of ProjectAdminClient with default settings.
+   */
+  public static final ProjectAdminClient create() throws IOException {
+    return create(ProjectAdminSettings.defaultBuilder().build());
+  }
+
+  /**
+   * Constructs an instance of ProjectAdminClient, using the given settings.
    * The channels are created based on the settings passed in, or defaults for any
    * settings that are not set.
    */
-  public static final FakebillingClient create(FakebillingSettings settings) throws IOException {
-    return new FakebillingClient(settings);
+  public static final ProjectAdminClient create(ProjectAdminSettings settings) throws IOException {
+    return new ProjectAdminClient(settings);
   }
 
   /**
-   * Constructs an instance of FakebillingClient, using the given settings.
+   * Constructs an instance of ProjectAdminClient, using the given settings.
    * This is protected so that it easy to make a subclass, but otherwise, the static
    * factory methods should be preferred.
    */
-  protected FakebillingClient(FakebillingSettings settings) throws IOException {
+  protected ProjectAdminClient(ProjectAdminSettings settings) throws IOException {
     this.settings = settings;
     ChannelAndExecutor channelAndExecutor = settings.getChannelAndExecutor();
     this.executor = channelAndExecutor.getExecutor();
@@ -3722,11 +4376,86 @@ public class FakebillingClient implements AutoCloseable {
     }
   }
 
-  public final FakebillingSettings getSettings() {
+  public final ProjectAdminSettings getSettings() {
     return settings;
   }
 
 
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (ProjectAdminClient projectAdminClient = ProjectAdminClient.create()) {
+   *
+   *   ProjectBillingInfo response = projectAdminClient.fakebillingProjectsUpdateBillingInfo();
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  public final ProjectBillingInfo fakebillingProjectsUpdateBillingInfo(projectsUpdateBillingInfoHttpRequest request) {
+    return fakebillingProjectsUpdateBillingInfoCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (ProjectAdminClient projectAdminClient = ProjectAdminClient.create()) {
+   *
+   *   ApiFuture&lt;ProjectBillingInfo&gt; future = projectAdminClient.fakebillingProjectsUpdateBillingInfoCallable().futureCall();
+   *   // Do something
+   *   ProjectBillingInfo response = future.get();
+   * }
+   * </code></pre>
+   */
+  @BetaApi
+  public final UnaryCallable<projectsUpdateBillingInfoHttpRequest, ProjectBillingInfo> fakebillingProjectsUpdateBillingInfoCallable() {
+    return fakebillingProjectsUpdateBillingInfoCallable;
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (ProjectAdminClient projectAdminClient = ProjectAdminClient.create()) {
+   *
+   *   ProjectBillingInfo response = projectAdminClient.fakebillingProjectsGetBillingInfo();
+   * }
+   * </code></pre>
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  public final ProjectBillingInfo fakebillingProjectsGetBillingInfo(projectsGetBillingInfoHttpRequest request) {
+    return fakebillingProjectsGetBillingInfoCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   *
+   *
+   * Sample code:
+   * <pre><code>
+   * try (ProjectAdminClient projectAdminClient = ProjectAdminClient.create()) {
+   *
+   *   ApiFuture&lt;ProjectBillingInfo&gt; future = projectAdminClient.fakebillingProjectsGetBillingInfoCallable().futureCall();
+   *   // Do something
+   *   ProjectBillingInfo response = future.get();
+   * }
+   * </code></pre>
+   */
+  @BetaApi
+  public final UnaryCallable<projectsGetBillingInfoHttpRequest, ProjectBillingInfo> fakebillingProjectsGetBillingInfoCallable() {
+    return fakebillingProjectsGetBillingInfoCallable;
+  }
 
   /**
    * Initiates an orderly shutdown in which preexisting calls continue but new calls are immediately
@@ -3740,3 +4469,522 @@ public class FakebillingClient implements AutoCloseable {
   }
 
 }
+============== file: src/main/java/com/google/cloud/fakebilling/v1/ProjectAdminSettings.java ==============
+/*
+ * Copyright 2017, Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.fakebilling.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.CredentialsProvider;
+import com.google.api.gax.core.GoogleCredentialsProvider;
+import com.google.api.gax.core.PropertiesProvider;
+import com.google.api.gax.grpc.ApiExceptions;
+import com.google.api.gax.grpc.ChannelProvider;
+import com.google.api.gax.grpc.ClientSettings;
+import com.google.api.gax.grpc.ExecutorProvider;
+import com.google.api.gax.grpc.InstantiatingChannelProvider;
+import com.google.api.gax.grpc.InstantiatingExecutorProvider;
+import com.google.api.gax.grpc.SimpleCallSettings;
+import com.google.api.gax.grpc.UnaryCallSettings;
+import com.google.api.gax.retrying.RetrySettings;
+import com.google.auth.Credentials;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import io.grpc.ManagedChannel;
+import io.grpc.Status;
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.ScheduledExecutorService;
+import javax.annotation.Generated;
+import org.threeten.bp.Duration;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS
+/**
+ * Settings class to configure an instance of {@link ProjectAdminClient}.
+ *
+ * <p>The default instance has everything set to sensible defaults:
+ *
+ * <ul>
+ * <li>The default service address (Service address.) and default port (443)
+ * are used.
+ * <li>Credentials are acquired automatically through Application Default Credentials.
+ * <li>Retries are configured for idempotent methods but not for non-idempotent methods.
+ * </ul>
+ *
+ * <p>The builder of this class is recursive, so contained classes are themselves builders.
+ * When build() is called, the tree of builders is called to create the complete settings
+ * object. For example, to set the total timeout of fakebillingProjectsUpdateBillingInfo to 30 seconds:
+ *
+ * <pre>
+ * <code>
+ * ProjectAdminSettings.Builder projectAdminSettingsBuilder =
+ *     ProjectAdminSettings.defaultBuilder();
+ * projectAdminSettingsBuilder.fakebillingProjectsUpdateBillingInfoSettings().getRetrySettingsBuilder()
+ *     .setTotalTimeout(Duration.ofSeconds(30));
+ * ProjectAdminSettings projectAdminSettings = projectAdminSettingsBuilder.build();
+ * </code>
+ * </pre>
+ */
+@Generated("by GAPIC v0.0.5")
+public class ProjectAdminSettings extends ClientSettings {
+  /**
+   * The default scopes of the service.
+   */
+  private static final ImmutableList<String> DEFAULT_SERVICE_SCOPES = ImmutableList.<String>builder()
+      .add("https://www.googleapis.com/auth/cloud-platform")
+      .build();
+
+  private static final String DEFAULT_GAPIC_NAME = "gapic";
+  private static final String DEFAULT_GAPIC_VERSION = "";
+
+  private static final String PROPERTIES_FILE = "/com/google/cloud/fakebilling/v1/project.properties";
+  private static final String META_VERSION_KEY = "artifact.version";
+
+  private static String gapicVersion;
+
+  private static final io.grpc.MethodDescriptor<projectsUpdateBillingInfoHttpRequest, ProjectBillingInfo> Grpc not used in Discovery-based method. =
+        io.grpc.MethodDescriptor.create(
+            io.grpc.MethodDescriptor.MethodType.UNARY,
+            "Full service name./fakebilling.projects.updateBillingInfo",
+            io.grpc.protobuf.ProtoUtils.marshaller(projectsUpdateBillingInfoHttpRequest.getDefaultInstance()),
+            io.grpc.protobuf.ProtoUtils.marshaller(ProjectBillingInfo.getDefaultInstance()));
+  private static final io.grpc.MethodDescriptor<projectsGetBillingInfoHttpRequest, ProjectBillingInfo> Grpc not used in Discovery-based method. =
+        io.grpc.MethodDescriptor.create(
+            io.grpc.MethodDescriptor.MethodType.UNARY,
+            "Full service name./fakebilling.projects.getBillingInfo",
+            io.grpc.protobuf.ProtoUtils.marshaller(projectsGetBillingInfoHttpRequest.getDefaultInstance()),
+            io.grpc.protobuf.ProtoUtils.marshaller(ProjectBillingInfo.getDefaultInstance()));
+
+  private final SimpleCallSettings<projectsUpdateBillingInfoHttpRequest, ProjectBillingInfo> fakebillingProjectsUpdateBillingInfoSettings;
+  private final SimpleCallSettings<projectsGetBillingInfoHttpRequest, ProjectBillingInfo> fakebillingProjectsGetBillingInfoSettings;
+
+  /**
+   * Returns the object with the settings used for calls to fakebillingProjectsUpdateBillingInfo.
+   */
+  public SimpleCallSettings<projectsUpdateBillingInfoHttpRequest, ProjectBillingInfo> fakebillingProjectsUpdateBillingInfoSettings() {
+    return fakebillingProjectsUpdateBillingInfoSettings;
+  }
+
+  /**
+   * Returns the object with the settings used for calls to fakebillingProjectsGetBillingInfo.
+   */
+  public SimpleCallSettings<projectsGetBillingInfoHttpRequest, ProjectBillingInfo> fakebillingProjectsGetBillingInfoSettings() {
+    return fakebillingProjectsGetBillingInfoSettings;
+  }
+
+
+  /**
+   * Returns a builder for the default ExecutorProvider for this service.
+   */
+  public static InstantiatingExecutorProvider.Builder defaultExecutorProviderBuilder() {
+    return InstantiatingExecutorProvider.newBuilder();
+  }
+
+  /**
+   * Returns the default service endpoint.
+   */
+  public static String getDefaultEndpoint() {
+    return "Service address.:443";
+  }
+
+
+  /**
+   * Returns the default service scopes.
+   */
+  public static List<String> getDefaultServiceScopes() {
+    return DEFAULT_SERVICE_SCOPES;
+  }
+
+
+  /**
+   * Returns a builder for the default credentials for this service.
+   */
+  public static GoogleCredentialsProvider.Builder defaultCredentialsProviderBuilder() {
+    return GoogleCredentialsProvider.newBuilder()
+        .setScopesToApply(DEFAULT_SERVICE_SCOPES)
+        ;
+  }
+
+  /** Returns a builder for the default ChannelProvider for this service. */
+  public static InstantiatingChannelProvider.Builder defaultChannelProviderBuilder() {
+    return InstantiatingChannelProvider.newBuilder()
+        .setEndpoint(getDefaultEndpoint())
+        .setGeneratorHeader(DEFAULT_GAPIC_NAME, getGapicVersion());
+  }
+
+  private static String getGapicVersion() {
+    if (gapicVersion == null) {
+      gapicVersion = PropertiesProvider.loadProperty(
+          ProjectAdminSettings.class, PROPERTIES_FILE, META_VERSION_KEY);
+      gapicVersion = gapicVersion == null ? DEFAULT_GAPIC_VERSION : gapicVersion;
+    }
+    return gapicVersion;
+  }
+
+  /**
+   * Returns a builder for this class with recommended defaults.
+   */
+  public static Builder defaultBuilder() {
+    return Builder.createDefault();
+  }
+
+  /**
+   * Returns a new builder for this class.
+   */
+  public static Builder newBuilder() {
+    return new Builder();
+  }
+
+  /**
+   * Returns a builder containing all the values of this settings class.
+   */
+  public Builder toBuilder() {
+    return new Builder(this);
+  }
+
+  private ProjectAdminSettings(Builder settingsBuilder) throws IOException {
+    super(settingsBuilder.getExecutorProvider(),
+          settingsBuilder.getChannelProvider(),
+          settingsBuilder.getCredentialsProvider());
+
+    fakebillingProjectsUpdateBillingInfoSettings = settingsBuilder.fakebillingProjectsUpdateBillingInfoSettings().build();
+    fakebillingProjectsGetBillingInfoSettings = settingsBuilder.fakebillingProjectsGetBillingInfoSettings().build();
+  }
+
+
+
+
+  /**
+   * Builder for ProjectAdminSettings.
+   */
+  public static class Builder extends ClientSettings.Builder {
+    private final ImmutableList<UnaryCallSettings.Builder> unaryMethodSettingsBuilders;
+
+    private final SimpleCallSettings.Builder<projectsUpdateBillingInfoHttpRequest, ProjectBillingInfo> fakebillingProjectsUpdateBillingInfoSettings;
+    private final SimpleCallSettings.Builder<projectsGetBillingInfoHttpRequest, ProjectBillingInfo> fakebillingProjectsGetBillingInfoSettings;
+
+    private static final ImmutableMap<String, ImmutableSet<Status.Code>> RETRYABLE_CODE_DEFINITIONS;
+
+    static {
+      ImmutableMap.Builder<String, ImmutableSet<Status.Code>> definitions = ImmutableMap.builder();
+      definitions.put(
+          "idempotent",
+          Sets.immutableEnumSet(Lists.<Status.Code>newArrayList(Status.Code.DEADLINE_EXCEEDED, Status.Code.UNAVAILABLE)));
+      RETRYABLE_CODE_DEFINITIONS = definitions.build();
+    }
+
+    private static final ImmutableMap<String, RetrySettings.Builder> RETRY_PARAM_DEFINITIONS;
+
+    static {
+      ImmutableMap.Builder<String, RetrySettings.Builder> definitions = ImmutableMap.builder();
+      RetrySettings.Builder settingsBuilder = null;
+      settingsBuilder = RetrySettings.newBuilder()
+          .setInitialRetryDelay(Duration.ofMillis(100L))
+          .setRetryDelayMultiplier(1.3)
+          .setMaxRetryDelay(Duration.ofMillis(60000L))
+          .setInitialRpcTimeout(Duration.ofMillis(60000L))
+          .setRpcTimeoutMultiplier(1.0)
+          .setMaxRpcTimeout(Duration.ofMillis(60000L))
+          .setTotalTimeout(Duration.ofMillis(600000L));
+      definitions.put("default", settingsBuilder);
+      RETRY_PARAM_DEFINITIONS = definitions.build();
+    }
+
+    private Builder() {
+      super(defaultChannelProviderBuilder().build());
+      setCredentialsProvider(defaultCredentialsProviderBuilder().build());
+
+      fakebillingProjectsUpdateBillingInfoSettings = SimpleCallSettings.newBuilder(Grpc not used in Discovery-based method.);
+
+      fakebillingProjectsGetBillingInfoSettings = SimpleCallSettings.newBuilder(Grpc not used in Discovery-based method.);
+
+      unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder>of(
+          fakebillingProjectsUpdateBillingInfoSettings,
+          fakebillingProjectsGetBillingInfoSettings
+      );
+    }
+
+    private static Builder createDefault() {
+      Builder builder = new Builder();
+
+      builder.fakebillingProjectsUpdateBillingInfoSettings()
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
+          .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
+
+      builder.fakebillingProjectsGetBillingInfoSettings()
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
+          .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
+
+      return builder;
+    }
+
+    private Builder(ProjectAdminSettings settings) {
+      super(settings);
+
+      fakebillingProjectsUpdateBillingInfoSettings = settings.fakebillingProjectsUpdateBillingInfoSettings.toBuilder();
+      fakebillingProjectsGetBillingInfoSettings = settings.fakebillingProjectsGetBillingInfoSettings.toBuilder();
+
+      unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder>of(
+          fakebillingProjectsUpdateBillingInfoSettings,
+          fakebillingProjectsGetBillingInfoSettings
+      );
+    }
+
+    @Override
+    public Builder setExecutorProvider(ExecutorProvider executorProvider) {
+      super.setExecutorProvider(executorProvider);
+      return this;
+    }
+
+    @Override
+    public Builder setChannelProvider(ChannelProvider channelProvider) {
+      super.setChannelProvider(channelProvider);
+      return this;
+    }
+
+    @Override
+    public Builder setCredentialsProvider(CredentialsProvider credentialsProvider) {
+      super.setCredentialsProvider(credentialsProvider);
+      return this;
+    }
+
+    /**
+     * Applies the given settings to all of the unary API methods in this service. Only
+     * values that are non-null will be applied, so this method is not capable
+     * of un-setting any values.
+     *
+     * Note: This method does not support applying settings to streaming methods.
+     */
+    public Builder applyToAllUnaryMethods(UnaryCallSettings.Builder unaryCallSettings) throws Exception {
+      super.applyToAllUnaryMethods(unaryMethodSettingsBuilders, unaryCallSettings);
+      return this;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to fakebillingProjectsUpdateBillingInfo.
+     */
+    public SimpleCallSettings.Builder<projectsUpdateBillingInfoHttpRequest, ProjectBillingInfo> fakebillingProjectsUpdateBillingInfoSettings() {
+      return fakebillingProjectsUpdateBillingInfoSettings;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to fakebillingProjectsGetBillingInfo.
+     */
+    public SimpleCallSettings.Builder<projectsGetBillingInfoHttpRequest, ProjectBillingInfo> fakebillingProjectsGetBillingInfoSettings() {
+      return fakebillingProjectsGetBillingInfoSettings;
+    }
+
+    @Override
+    public ProjectAdminSettings build() throws IOException {
+      return new ProjectAdminSettings(this);
+    }
+  }
+}
+============== file: src/main/java/com/google/cloud/fakebilling/v1/PagedResponseWrappers.java ==============
+/*
+ * Copyright 2017, Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.fakebilling.v1;
+
+import com.google.api.core.ApiFunction;
+import com.google.api.core.ApiFuture;
+import com.google.api.core.ApiFutures;
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.FixedSizeCollection;
+import com.google.api.gax.core.Page;
+import com.google.api.gax.core.PagedListResponse;
+import com.google.api.gax.grpc.AbstractFixedSizeCollection;
+import com.google.api.gax.grpc.AbstractPage;
+import com.google.api.gax.grpc.AbstractPagedListResponse;
+import com.google.api.gax.grpc.ApiExceptions;
+import com.google.api.gax.grpc.PageContext;
+import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
+import java.util.Iterator;
+import java.util.List;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS
+/**
+ * Wrapper class to contain paged response types for page streaming methods.
+ * Each static class inside this wrapper class is used as the return type of
+ * one of an API method that implements the page streaming pattern.
+ */
+@Generated("by GAPIC")
+public class PagedResponseWrappers {
+
+  public static class FakebillingBillingAccountsListPagedResponse extends AbstractPagedListResponse<
+      billingAccountsListHttpRequest,
+      ListBillingAccountsResponse,
+      ListBillingAccountsResponse,
+      FakebillingBillingAccountsListPage,
+      FakebillingBillingAccountsListFixedSizeCollection> {
+
+    public static ApiFuture<FakebillingBillingAccountsListPagedResponse> createAsync(
+        PageContext<billingAccountsListHttpRequest, ListBillingAccountsResponse, ListBillingAccountsResponse> context,
+        ApiFuture<ListBillingAccountsResponse> futureResponse) {
+      ApiFuture<FakebillingBillingAccountsListPage> futurePage =
+          FakebillingBillingAccountsListPage.createEmptyPage().createPageAsync(context, futureResponse);
+      return ApiFutures.transform(
+          futurePage,
+          new ApiFunction<FakebillingBillingAccountsListPage, FakebillingBillingAccountsListPagedResponse>() {
+            @Override
+            public FakebillingBillingAccountsListPagedResponse apply(FakebillingBillingAccountsListPage input) {
+              return new FakebillingBillingAccountsListPagedResponse(input);
+            }
+          });
+    }
+
+    private FakebillingBillingAccountsListPagedResponse(FakebillingBillingAccountsListPage page) {
+      super(page, FakebillingBillingAccountsListFixedSizeCollection.createEmptyCollection());
+    }
+
+
+  }
+
+  public static class FakebillingBillingAccountsListPage extends AbstractPage<
+      billingAccountsListHttpRequest,
+      ListBillingAccountsResponse,
+      ListBillingAccountsResponse,
+      FakebillingBillingAccountsListPage> {
+
+    private FakebillingBillingAccountsListPage(
+        PageContext<billingAccountsListHttpRequest, ListBillingAccountsResponse, ListBillingAccountsResponse> context,
+        ListBillingAccountsResponse response) {
+      super(context, response);
+    }
+
+    private static FakebillingBillingAccountsListPage createEmptyPage() {
+      return new FakebillingBillingAccountsListPage(null, null);
+    }
+
+    @Override
+    protected FakebillingBillingAccountsListPage createPage(
+        PageContext<billingAccountsListHttpRequest, ListBillingAccountsResponse, ListBillingAccountsResponse> context,
+        ListBillingAccountsResponse response) {
+      return new FakebillingBillingAccountsListPage(context, response);
+    }
+
+    @Override
+    protected ApiFuture<FakebillingBillingAccountsListPage> createPageAsync(
+        PageContext<billingAccountsListHttpRequest, ListBillingAccountsResponse, ListBillingAccountsResponse> context,
+        ApiFuture<ListBillingAccountsResponse> futureResponse) {
+      return super.createPageAsync(context, futureResponse);
+    }
+
+
+
+
+  }
+
+  public static class FakebillingBillingAccountsListFixedSizeCollection extends AbstractFixedSizeCollection<
+      billingAccountsListHttpRequest,
+      ListBillingAccountsResponse,
+      ListBillingAccountsResponse,
+      FakebillingBillingAccountsListPage,
+      FakebillingBillingAccountsListFixedSizeCollection> {
+
+    private FakebillingBillingAccountsListFixedSizeCollection(List<FakebillingBillingAccountsListPage> pages, int collectionSize) {
+      super(pages, collectionSize);
+    }
+
+    private static FakebillingBillingAccountsListFixedSizeCollection createEmptyCollection() {
+      return new FakebillingBillingAccountsListFixedSizeCollection(null, 0);
+    }
+
+    @Override
+    protected FakebillingBillingAccountsListFixedSizeCollection createCollection(
+        List<FakebillingBillingAccountsListPage> pages, int collectionSize) {
+      return new FakebillingBillingAccountsListFixedSizeCollection(pages, collectionSize);
+    }
+
+
+  }
+
+}
+============== file: src/main/java/com/google/cloud/fakebilling/v1/package-info.java ==============
+/*
+ * Copyright 2017, Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * A client to Service title..
+ *
+ * The interfaces provided are listed below, along with usage samples.
+ *
+ * =========================
+ * BillingAccountAdminClient
+ * =========================
+ *
+ * Service Description:
+ *
+ * Sample for BillingAccountAdminClient:
+ * <pre>
+ * <code>
+ * try (BillingAccountAdminClient billingAccountAdminClient = BillingAccountAdminClient.create()) {
+ *
+ *   BillingAccount response = billingAccountAdminClient.fakebillingBillingAccountsGet();
+ * }
+ * </code>
+ * </pre>
+ *
+ * ==================
+ * ProjectAdminClient
+ * ==================
+ *
+ * Service Description:
+ * Configure billing projects.
+ *
+ * Sample for ProjectAdminClient:
+ * <pre>
+ * <code>
+ * try (ProjectAdminClient projectAdminClient = ProjectAdminClient.create()) {
+ *
+ *   ProjectBillingInfo response = projectAdminClient.fakebillingProjectsUpdateBillingInfo();
+ * }
+ * </code>
+ * </pre>
+ *
+ */
+
+package com.google.cloud.fakebilling.v1;
