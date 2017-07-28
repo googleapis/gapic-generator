@@ -148,7 +148,7 @@ public class NodeJSCodeGeneratorTest {
       return GapicTestBase.createTestedConfigs(
           MainGapicProviderFactory.NODEJS,
           new String[] {"nodejs_gapic.yaml", "multiple_services_gapic.yaml"},
-          "library_pkg.yaml");
+          "multiple_services_pkg.yaml");
     }
 
     // Tests

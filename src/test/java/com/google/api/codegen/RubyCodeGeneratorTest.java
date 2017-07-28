@@ -114,7 +114,7 @@ public class RubyCodeGeneratorTest {
       return GapicTestBase.createTestedConfigs(
           MainGapicProviderFactory.RUBY,
           new String[] {"ruby_gapic.yaml", "multiple_services_gapic.yaml"},
-          "library_pkg.yaml");
+          "multiple_services_pkg.yaml");
     }
 
     // Tests
