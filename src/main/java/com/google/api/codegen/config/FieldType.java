@@ -14,9 +14,6 @@
  */
 package com.google.api.codegen.config;
 
-import static com.google.api.codegen.config.FieldType.ApiSource.DISCOVERY;
-import static com.google.api.codegen.config.FieldType.ApiSource.PROTO;
-
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Oneof;
@@ -32,13 +29,14 @@ import com.google.api.tools.framework.model.TypeRef.Cardinality;
 public interface FieldType {
 
   enum ApiSource {
-    DISCOVERY,
-    PROTO;
+    DISCOVERY, // Discovery Document.
+    PROTO; // Protobuf.
   }
 
-  String getSimpleName();
-
+  /* @return the type of source that this FieldType is based on. */
   ApiSource getApiSource();
+
+  String getSimpleName();
 
   String getFullName();
 
@@ -69,13 +67,17 @@ public interface FieldType {
   /* @return if this is a primitive type. */
   boolean isPrimitive();
 
+  // Functions that are specific to the source type.
+
+  /* @return the TypeRef of the underlying protobuf Field, if it exists. */
   TypeRef getProtoTypeRef();
 
+  /* @return the underlying protobuf Field, if it exists. */
   Field getProtoField();
 
-  Schema getDiscoveryField();
-
+  /* @return if the underlying protobuf Field's Oneof, if it exists. */
   Oneof getProtoOneof();
 
-  // Recommended to implement .equals() method.
+  /* @return the underlying Schema, if it exists. */
+  Schema getDiscoveryField();
 }
