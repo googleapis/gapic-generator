@@ -91,4 +91,19 @@ public abstract class GapicMethodContext implements MethodContext {
         getFlatteningConfig(),
         getFeatureConfig());
   }
+
+  @Override
+  public String getAndSaveRequestTypeName() {
+    return getTypeTable().getAndSaveNicknameFor(getMethod().getInputType());
+  }
+
+  @Override
+  public String getAndSaveResponseTypeName() {
+    return getTypeTable().getAndSaveNicknameFor(getMethod().getOutputType());
+  }
+
+  @Override
+  public String getBatchingDescriptorConstName() {
+    return getNamer().getBatchingDescriptorConstName(getMethod());
+  }
 }

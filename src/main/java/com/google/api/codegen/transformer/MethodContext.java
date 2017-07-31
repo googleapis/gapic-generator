@@ -50,4 +50,12 @@ public interface MethodContext {
   SingleResourceNameConfig getSingleResourceNameConfig(String entityName);
 
   MethodContext cloneWithEmptyTypeTable();
+
+  /* Get the request type name and save it in the type table. */
+  String getAndSaveRequestTypeName();
+
+  /* Get the response type name and save it in the type table. */
+  String getAndSaveResponseTypeName();
+
+  String getBatchingDescriptorConstName();
 }
