@@ -100,11 +100,6 @@ public class ProtoField implements FieldType {
   }
 
   @Override
-  public Field getProtoField() {
-    return protoField;
-  }
-
-  @Override
   public Schema getDiscoveryField() {
     throw new IllegalArgumentException("Protobuf model types have no Discovery Field types.");
   }

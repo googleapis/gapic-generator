@@ -15,7 +15,6 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.discovery.Schema;
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import java.util.List;
@@ -71,9 +70,6 @@ public interface FieldType {
 
   /* @return the TypeRef of the underlying protobuf Field, if it exists. */
   TypeRef getProtoTypeRef();
-
-  /* @return the underlying protobuf Field, if it exists. */
-  Field getProtoField();
 
   /* @return the underlying Schema, if it exists. */
   Schema getDiscoveryField();

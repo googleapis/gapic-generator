@@ -18,7 +18,6 @@ import static com.google.api.codegen.config.FieldType.ApiSource.DISCOVERY;
 
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.discovery.Schema.Type;
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Preconditions;
@@ -110,11 +109,6 @@ public class DiscoveryField implements FieldType {
   @Override
   public TypeRef getProtoTypeRef() {
     throw new IllegalArgumentException("Discovery model types have no TypeRefs.");
-  }
-
-  @Override
-  public Field getProtoField() {
-    throw new IllegalArgumentException("Discovery model types have no protobuf Field types.");
   }
 
   @Override
