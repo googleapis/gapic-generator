@@ -22,6 +22,8 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
+import java.util.List;
 
 /** Created by andrealin on 7/31/17. */
 public class DiscoveryField implements FieldType {
@@ -129,7 +131,7 @@ public class DiscoveryField implements FieldType {
   }
 
   @Override
-  public boolean hasOneof() {
-    return false;
+  public List<String> getOneofFieldsNames() {
+    return ImmutableList.of();
   }
 }

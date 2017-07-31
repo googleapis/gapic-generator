@@ -22,7 +22,6 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
-import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
@@ -93,7 +92,7 @@ public class PythonImportHandler {
         productConfig.getInterfaceConfig(apiInterface).getMethodConfigs()) {
       // Add the import for gax.utils.oneof if and only if there is at
       // least one "one of" argument set.
-      for (Oneof oneof : methodConfig.getOneofs()) {
+      for (Iterable<String> oneofFieldNames : methodConfig.getOneofsNames()) {
         addImportExternal("google.gax.utils", "oneof");
         break;
       }

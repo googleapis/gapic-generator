@@ -18,6 +18,7 @@ import com.google.api.codegen.discovery.Schema;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
+import java.util.List;
 
 /**
  * Wrapper class around the protobuf Field class and the Discovery-doc Schema class.
@@ -80,6 +81,6 @@ public interface FieldType {
   /* Get the description of the element scoped to the visibility as currently set in the model. */
   String getScopedDocumentation();
 
-  /* @return if this model is associated with a Oneof. */
-  boolean hasOneof();
+  /* @return the simple name of the Oneof (if it exists) associated with this model. */
+  List<String> getOneofFieldsNames();
 }

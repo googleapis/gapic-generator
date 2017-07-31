@@ -22,6 +22,8 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
+import java.util.List;
 
 /** Created by andrealin on 7/31/17. */
 public class ProtoField implements FieldType {
@@ -120,7 +122,14 @@ public class ProtoField implements FieldType {
   }
 
   @Override
-  public boolean hasOneof() {
-    return protoField.getOneof() != null;
+  public List<String> getOneofFieldsNames() {
+    if (protoField.getOneof() != null) {
+      ImmutableList.Builder<String> fieldNames = ImmutableList.builder();
+      for (Field field : protoField.getOneof().getFields()) {
+        fieldNames.add(field.getSimpleName());
+      }
+      return fieldNames.build();
+    }
+    return null;
   }
 }

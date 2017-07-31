@@ -23,9 +23,9 @@ import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
-import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
@@ -180,8 +180,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
 
   @Override
   /* Return the list of "one of" instances associated with the fields. */
-  public Iterable<Oneof> getOneofs() {
-    ImmutableSet.Builder<Oneof> answer = ImmutableSet.builder();
-    return answer.build();
+  public Iterable<Iterable<String>> getOneofsNames() {
+    return ImmutableList.of();
   }
 }

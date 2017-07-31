@@ -30,7 +30,6 @@ import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
-import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Strings;
@@ -376,14 +375,16 @@ public abstract class GapicMethodConfig extends MethodConfig {
 
   /** Return the list of "one of" instances associated with the fields. */
   @Override
-  public Iterable<Oneof> getOneofs() {
-    ImmutableSet.Builder<Oneof> answer = ImmutableSet.builder();
+  public Iterable<Iterable<String>> getOneofsNames() {
+    ImmutableSet.Builder<Iterable<String>> answer = ImmutableSet.builder();
 
     for (FieldType field : getOptionalFields()) {
-      if (field.getProtoField().getOneof() == null) {
+      if (field.getOneofFieldsNames() == null || field.getOneofFieldsNames().size() == 0) {
         continue;
       }
-      answer.add(field.getProtoField().getOneof());
+      ImmutableSet.Builder<String> oneOfFields = ImmutableSet.builder();
+      oneOfFields.addAll(field.getOneofFieldsNames());
+      answer.add(oneOfFields.build());
     }
 
     return answer.build();
