@@ -26,7 +26,6 @@ import com.google.api.codegen.viewmodel.ApiCallableView;
 import com.google.api.codegen.viewmodel.RetryCodesDefinitionView;
 import com.google.api.codegen.viewmodel.RetryParamsDefinitionView;
 import com.google.api.codegen.viewmodel.ServiceMethodType;
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 import java.util.ArrayList;
@@ -376,10 +375,9 @@ public class ApiCallableTransformer {
       settings.grpcStreamingType(methodConfig.getGrpcStreaming().getType());
     } else if (methodConfig.isPageStreaming()) {
       settings.type(ApiCallableImplType.PagedApiCallable);
-      Field resourceField =
-          methodConfig.getPageStreaming().getResourcesField().getProtoBasedField();
       settings.resourceTypeName(
-          typeTable.getAndSaveNicknameForElementType(resourceField.getType()));
+          typeTable.getAndSaveNicknameForElementType(
+              methodConfig.getPageStreaming().getResourcesField()));
       settings.pagedListResponseTypeName(
           namer.getAndSavePagedResponseTypeName(
               context.getMethod(),

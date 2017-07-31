@@ -118,15 +118,15 @@ public abstract class PageStreamingConfig {
       return null;
     }
     return new AutoValue_PageStreamingConfig(
-        new FieldType(requestTokenField),
-        pageSizeField == null ? null : new FieldType(pageSizeField),
-        new FieldType(responseTokenField),
+        new ProtoField(requestTokenField),
+        pageSizeField == null ? null : new ProtoField(pageSizeField),
+        new ProtoField(responseTokenField),
         resourcesFieldConfig);
   }
 
   /** Returns whether there is a field for page size. */
   public boolean hasPageSizeField() {
-    return getPageSizeField() != null && !getPageSizeField().isEmpty();
+    return getPageSizeField() != null;
   }
 
   public FieldType getResourcesField() {

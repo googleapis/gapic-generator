@@ -22,6 +22,7 @@ import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.ProtoField;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
@@ -220,7 +221,7 @@ public class PythonGapicContext extends GapicContext {
         prefix =
             String.format(
                 "dict[%s -> ",
-                fieldTypeComment(new FieldType(type.getMapKeyField()), importHandler));
+                fieldTypeComment(new ProtoField(type.getMapKeyField()), importHandler));
       } else {
         prefix = "list[";
       }
@@ -234,7 +235,7 @@ public class PythonGapicContext extends GapicContext {
 
   /** Returns type information for a field in Sphinx docstring style. */
   private String fieldTypeComment(FieldType field, PythonImportHandler importHandler) {
-    return typeComment(field.getProtoBasedField().getType(), importHandler);
+    return typeComment(field.getProtoTypeRef(), importHandler);
   }
 
   private String enumClassName(EnumType enumType) {

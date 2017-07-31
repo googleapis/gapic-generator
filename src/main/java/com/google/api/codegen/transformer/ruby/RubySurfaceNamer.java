@@ -141,7 +141,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
   @Override
   public String getMessagePropertyTypeName(ImportTypeTable importTypeTable, FieldType fieldType) {
     ModelTypeTable typeTable = (ModelTypeTable) importTypeTable;
-    TypeRef type = fieldType.getProtoBasedField().getType();
+    TypeRef type = fieldType.getProtoTypeRef();
     if (type.isMap()) {
       String keyTypeName = typeTable.getFullNameForElementType(type.getMapKeyField().getType());
       String valueTypeName = typeTable.getFullNameForElementType(type.getMapValueField().getType());
@@ -179,9 +179,9 @@ public class RubySurfaceNamer extends SurfaceNamer {
     }
 
     if (methodConfig.isPageStreaming()) {
-      TypeRef resourceType =
-          methodConfig.getPageStreaming().getResourcesField().getProtoBasedField().getType();
-      String resourceTypeName = getModelTypeFormatter().getFullNameForElementType(resourceType);
+      String resourceTypeName =
+          getModelTypeFormatter()
+              .getFullNameForElementType(methodConfig.getPageStreaming().getResourcesField());
       return "Google::Gax::PagedEnumerable<" + resourceTypeName + ">";
     }
 
@@ -224,9 +224,9 @@ public class RubySurfaceNamer extends SurfaceNamer {
     }
 
     if (methodConfig.isPageStreaming()) {
-      TypeRef resourceType =
-          methodConfig.getPageStreaming().getResourcesField().getProtoBasedField().getType();
-      String resourceTypeName = getModelTypeFormatter().getFullNameForElementType(resourceType);
+      String resourceTypeName =
+          getModelTypeFormatter()
+              .getFullNameForElementType(methodConfig.getPageStreaming().getResourcesField());
       return ImmutableList.of(
           "An enumerable of " + resourceTypeName + " instances.",
           "See Google::Gax::PagedEnumerable documentation for other",

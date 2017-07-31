@@ -200,7 +200,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getResourceNameFieldGetFunctionName(FieldConfig fieldConfig) {
-    TypeRef type = fieldConfig.getField().getProtoBasedField().getType();
+    FieldType type = fieldConfig.getField();
     String fieldName = fieldConfig.getField().getSimpleName();
     Name identifier = Name.from(fieldName);
     Name resourceName;
@@ -498,6 +498,11 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
       default:
         return false;
     }
+  }
+
+  @Override
+  public boolean isPrimitive(FieldType type) {
+    return isPrimitive(type.getProtoTypeRef());
   }
 
   @Override

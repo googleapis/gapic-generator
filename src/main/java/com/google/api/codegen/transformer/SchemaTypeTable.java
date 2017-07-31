@@ -121,13 +121,13 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
   /** Get the full name for the given type. */
   @Override
   public String getFullNameFor(FieldType type) {
-    return getFullNameFor(type.getSchemaField());
+    return getFullNameFor(type.getDiscoveryField());
   }
 
   /** Get the full name for the element type of the given type. */
   @Override
   public String getFullNameForElementType(FieldType type) {
-    return getFullNameForElementType(type.getSchemaField());
+    return getFullNameForElementType(type.getDiscoveryField());
   }
 
   /** Returns the nickname for the given type (without adding the full name to the import set). */
@@ -139,7 +139,7 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
   /** Renders the primitive value of the given type. */
   @Override
   public String renderPrimitiveValue(FieldType type, String key) {
-    return renderPrimitiveValue(type.getSchemaField(), key);
+    return renderPrimitiveValue(type.getDiscoveryField(), key);
   }
 
   /**
@@ -148,7 +148,7 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
    */
   @Override
   public String getAndSaveNicknameFor(FieldType type) {
-    return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeName(type.getSchemaField()));
+    return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeName(type.getDiscoveryField()));
   }
 
   @Override
@@ -167,7 +167,7 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
 
   @Override
   public String getAndSaveNicknameForElementType(FieldType type) {
-    return getAndSaveNicknameFor(type.getSchemaField());
+    return getAndSaveNicknameFor(type.getDiscoveryField());
   }
 
   @Override
@@ -180,14 +180,14 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
   @Override
   public String getSnippetZeroValueAndSaveNicknameFor(FieldType type) {
     return typeNameConverter
-        .getSnippetZeroValue(type.getSchemaField())
+        .getSnippetZeroValue(type.getDiscoveryField())
         .getValueAndSaveTypeNicknameIn(typeTable);
   }
 
   @Override
   public String getImplZeroValueAndSaveNicknameFor(FieldType type) {
     return typeNameConverter
-        .getImplZeroValue(type.getSchemaField())
+        .getImplZeroValue(type.getDiscoveryField())
         .getValueAndSaveTypeNicknameIn(typeTable);
   }
 

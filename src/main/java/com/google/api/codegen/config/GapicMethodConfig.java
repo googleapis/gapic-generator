@@ -277,7 +277,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
                 method.getFullName()));
         return null;
       }
-      fieldsBuilder.add(new FieldType(requiredField));
+      fieldsBuilder.add(new ProtoField(requiredField));
     }
     return fieldsBuilder.build();
   }
@@ -289,7 +289,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
       if (requiredFieldNames.contains(field.getSimpleName())) {
         continue;
       }
-      fieldsBuilder.add(new FieldType(field));
+      fieldsBuilder.add(new ProtoField(field));
     }
     return fieldsBuilder.build();
   }
@@ -380,10 +380,10 @@ public abstract class GapicMethodConfig extends MethodConfig {
     ImmutableSet.Builder<Oneof> answer = ImmutableSet.builder();
 
     for (FieldType field : getOptionalFields()) {
-      if (field.getProtoBasedField().getOneof() == null) {
+      if (field.getProtoOneof() == null) {
         continue;
       }
-      answer.add(field.getProtoBasedField().getOneof());
+      answer.add(field.getProtoOneof());
     }
 
     return answer.build();

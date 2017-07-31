@@ -47,8 +47,7 @@ public class BatchingTransformer {
       }
 
       descriptor.byteLengthFunctionName(
-          namer.getByteLengthFunctionName(
-              batching.getBatchedField().getProtoBasedField().getType()));
+          namer.getByteLengthFunctionName(batching.getBatchedField().getProtoTypeRef()));
       descriptors.add(descriptor.build());
     }
     return descriptors.build();
@@ -116,8 +115,6 @@ public class BatchingTransformer {
     BatchingConfig batching = context.getMethodConfig().getBatching();
 
     FieldType batchedField = batching.getBatchedField();
-    TypeRef batchedType = batchedField.getProtoBasedField().getType();
-    Name batchedTypeName = Name.from(batchedField.getSimpleName());
 
     FieldType subresponseField = batching.getSubresponseField();
 
@@ -126,22 +123,19 @@ public class BatchingTransformer {
     desc.name(namer.getBatchingDescriptorConstName(method));
     desc.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
     desc.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));
-    desc.batchedFieldTypeName(typeTable.getAndSaveNicknameFor(batchedType));
+    desc.batchedFieldTypeName(typeTable.getAndSaveNicknameFor(batchedField));
 
     desc.partitionKeys(generatePartitionKeys(context));
     desc.discriminatorFieldCopies(generateDiscriminatorFieldCopies(context));
 
-    desc.batchedFieldGetFunction(namer.getFieldGetFunctionName(batchedType, batchedTypeName));
-    desc.batchedFieldSetFunction(namer.getFieldSetFunctionName(batchedType, batchedTypeName));
+    desc.batchedFieldGetFunction(namer.getFieldGetFunctionName(batchedField));
+    desc.batchedFieldSetFunction(namer.getFieldSetFunctionName(batchedField));
     desc.batchedFieldCountGetFunction(namer.getFieldCountGetFunctionName(batchedField));
 
     if (subresponseField != null) {
-      TypeRef subresponseType = subresponseField.getProtoBasedField().getType();
-      Name subresponseTypeName = Name.from(subresponseField.getSimpleName());
-      desc.subresponseTypeName(typeTable.getAndSaveNicknameFor(subresponseType));
+      desc.subresponseTypeName(typeTable.getAndSaveNicknameFor(subresponseField));
       desc.subresponseByIndexGetFunction(namer.getByIndexGetFunctionName(subresponseField));
-      desc.subresponseSetFunction(
-          namer.getFieldSetFunctionName(subresponseType, subresponseTypeName));
+      desc.subresponseSetFunction(namer.getFieldSetFunctionName(subresponseField));
     }
 
     return desc.build();

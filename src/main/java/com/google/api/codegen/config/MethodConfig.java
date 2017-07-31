@@ -25,7 +25,6 @@ import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.joda.time.Duration;
@@ -166,16 +165,5 @@ public abstract class MethodConfig {
   }
 
   /** Return the list of "one of" instances associated with the fields. */
-  public Iterable<Oneof> getOneofs() {
-    ImmutableSet.Builder<Oneof> answer = ImmutableSet.builder();
-
-    for (FieldType field : getOptionalFields()) {
-      if (field.getProtoBasedField().getOneof() == null) {
-        continue;
-      }
-      answer.add(field.getProtoBasedField().getOneof());
-    }
-
-    return answer.build();
-  }
+  public abstract Iterable<Oneof> getOneofs();
 }

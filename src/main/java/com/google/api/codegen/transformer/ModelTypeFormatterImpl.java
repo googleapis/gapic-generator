@@ -58,21 +58,21 @@ public class ModelTypeFormatterImpl implements ModelTypeFormatter {
 
   @Override
   public String getFullNameFor(FieldType type) {
-    return getFullNameFor(type.getProtoBasedField().getType());
+    return getFullNameFor(type.getProtoTypeRef());
   }
 
   @Override
   public String getFullNameForElementType(FieldType type) {
-    return getFullNameForElementType(type.getProtoBasedField().getType());
+    return getFullNameForElementType(type.getProtoTypeRef());
   }
 
   @Override
   public String getNicknameFor(FieldType type) {
-    return getNicknameFor(type.getProtoBasedField().getType());
+    return getNicknameFor(type.getProtoTypeRef());
   }
 
   @Override
   public String renderPrimitiveValue(FieldType type, String key) {
-    return renderPrimitiveValue(type.getProtoBasedField().getType(), key);
+    return renderPrimitiveValue(type.getProtoTypeRef(), key);
   }
 }

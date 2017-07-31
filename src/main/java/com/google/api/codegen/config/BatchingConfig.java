@@ -107,9 +107,9 @@ public abstract class BatchingConfig {
         elementCountLimit,
         requestByteLimit,
         delayThresholdMillis,
-        batchedField == null ? null : new FieldType(batchedField),
+        batchedField == null ? null : new ProtoField(batchedField),
         discriminatorsBuilder.build(),
-        subresponseField == null ? null : new FieldType(subresponseField),
+        subresponseField == null ? null : new ProtoField(subresponseField),
         flowControlElementLimit,
         flowControlByteLimit,
         flowControlLimitConfig);

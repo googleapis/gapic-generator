@@ -76,13 +76,14 @@ public abstract class FieldConfig {
   }
 
   public static FieldConfig createFieldConfig(Schema field) {
-    return new AutoValue_FieldConfig(new FieldType(field), ResourceNameTreatment.NONE, null, null);
+    return new AutoValue_FieldConfig(
+        new DiscoveryField(field), ResourceNameTreatment.NONE, null, null);
   }
 
   /** Creates a FieldConfig for the given Field with ResourceNameTreatment set to None. */
   public static FieldConfig createDefaultFieldConfig(Field field) {
     return FieldConfig.createFieldConfig(
-        new FieldType(field), ResourceNameTreatment.NONE, null, null);
+        new ProtoField(field), ResourceNameTreatment.NONE, null, null);
   }
 
   public static FieldConfig createMessageFieldConfig(
@@ -110,7 +111,7 @@ public abstract class FieldConfig {
         messageConfigs,
         null,
         resourceNameConfigs,
-        new FieldType(field),
+        new ProtoField(field),
         ResourceNameTreatment.UNSET_TREATMENT,
         defaultResourceNameTreatment);
   }
@@ -293,7 +294,7 @@ public abstract class FieldConfig {
     return new Function<Field, FieldType>() {
       @Override
       public FieldType apply(Field field) {
-        return new FieldType(field);
+        return new ProtoField(field);
       }
     };
   }

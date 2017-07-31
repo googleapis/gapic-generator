@@ -21,9 +21,9 @@ import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
+import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
-import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.Synchronicity;
 import com.google.api.codegen.util.Name;
@@ -81,7 +81,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getParamTypeName(ModelTypeTable typeTable, TypeRef type) {
+  public String getParamTypeName(ImportTypeTable typeTable, TypeRef type) {
     if (type.isMap()) {
       TypeName mapTypeName = new TypeName("dict");
       TypeName keyTypeName =
@@ -186,8 +186,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
     }
 
     if (methodConfig.isPageStreaming()) {
-      TypeRef resourceType =
-          methodConfig.getPageStreaming().getResourcesField().getProtoBasedField().getType();
+      TypeRef resourceType = methodConfig.getPageStreaming().getResourcesField().getProtoTypeRef();
       return ImmutableList.of(
           "A :class:`google.gax.PageIterator` instance. By default, this",
           "is an iterable of " + getParamTypeNameForElementType(resourceType) + " instances.",

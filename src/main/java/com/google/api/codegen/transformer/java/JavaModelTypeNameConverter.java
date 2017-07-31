@@ -258,7 +258,7 @@ public class JavaModelTypeNameConverter extends ModelTypeNameConverter {
       FieldConfig fieldConfig, String typedResourceShortName) {
     return getTypeNameForTypedResourceName(
         fieldConfig.getResourceNameConfig(),
-        fieldConfig.getField().getProtoBasedField().getType(),
+        fieldConfig.getField().getProtoTypeRef(),
         typedResourceShortName);
   }
 
@@ -267,7 +267,7 @@ public class JavaModelTypeNameConverter extends ModelTypeNameConverter {
       FieldConfig fieldConfig, String typedResourceShortName) {
     return getTypeNameForTypedResourceName(
         fieldConfig.getResourceNameConfig(),
-        fieldConfig.getField().getProtoBasedField().getType().makeOptional(),
+        fieldConfig.getField().getProtoTypeRef().makeOptional(),
         typedResourceShortName);
   }
 

@@ -22,9 +22,7 @@ import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.viewmodel.PageStreamingDescriptorClassView;
 import com.google.api.codegen.viewmodel.PageStreamingDescriptorView;
 import com.google.api.codegen.viewmodel.PagedListResponseFactoryClassView;
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Method;
-import com.google.api.tools.framework.model.TypeRef;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,18 +83,20 @@ public class PageStreamingTransformer {
 
     PageStreamingDescriptorClassView.Builder desc = PageStreamingDescriptorClassView.newBuilder();
 
-    Field resourceField = pageStreaming.getResourcesField().getProtoBasedField();
+    FieldType resourceField = pageStreaming.getResourcesField();
     FieldConfig resourceFieldConfig = pageStreaming.getResourcesFieldConfig();
 
     desc.name(namer.getPageStreamingDescriptorConstName(method));
     desc.typeName(namer.getAndSavePagedResponseTypeName(method, typeTable, resourceFieldConfig));
     desc.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
     desc.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));
-    desc.resourceTypeName(typeTable.getAndSaveNicknameForElementType(resourceField.getType()));
+    desc.resourceTypeName(typeTable.getAndSaveNicknameForElementType(resourceField));
 
-    TypeRef tokenType = pageStreaming.getResponseTokenField().getProtoBasedField().getType();
-    desc.tokenTypeName(typeTable.getAndSaveNicknameFor(tokenType));
-    desc.defaultTokenValue(context.getTypeTable().getSnippetZeroValueAndSaveNicknameFor(tokenType));
+    desc.tokenTypeName(typeTable.getAndSaveNicknameFor(pageStreaming.getResponseTokenField()));
+    desc.defaultTokenValue(
+        context
+            .getTypeTable()
+            .getSnippetZeroValueAndSaveNicknameFor(pageStreaming.getResponseTokenField()));
 
     desc.requestTokenSetFunction(
         namer.getFieldSetFunctionName(pageStreaming.getRequestTokenField()));
@@ -182,7 +182,7 @@ public class PageStreamingTransformer {
     ModelTypeTable typeTable = context.getTypeTable();
     Method method = context.getMethod();
     PageStreamingConfig pageStreaming = context.getMethodConfig().getPageStreaming();
-    Field resourceField = pageStreaming.getResourcesField().getProtoBasedField();
+    FieldType resourceField = pageStreaming.getResourcesField();
     FieldConfig resourceFieldConfig = pageStreaming.getResourcesFieldConfig();
 
     PagedListResponseFactoryClassView.Builder factory =
@@ -191,7 +191,7 @@ public class PageStreamingTransformer {
     factory.name(namer.getPagedListResponseFactoryConstName(method));
     factory.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
     factory.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));
-    factory.resourceTypeName(typeTable.getAndSaveNicknameForElementType(resourceField.getType()));
+    factory.resourceTypeName(typeTable.getAndSaveNicknameForElementType(resourceField));
     factory.pagedListResponseTypeName(
         namer.getAndSavePagedResponseTypeName(method, typeTable, resourceFieldConfig));
     factory.pageStreamingDescriptorName(namer.getPageStreamingDescriptorConstName(method));
