@@ -17,8 +17,8 @@ package com.google.api.codegen.config;
 import static com.google.api.codegen.config.FieldType.ApiSource.PROTO;
 
 import com.google.api.codegen.discovery.Schema;
+import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Field;
-import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Preconditions;
@@ -108,14 +108,19 @@ public class ProtoField implements FieldType {
   }
 
   @Override
-  public Oneof getProtoOneof() {
-    return protoField.getOneof();
-  }
-
-  @Override
   public boolean equals(Object o) {
     return o != null
         && o instanceof ProtoField
         && ((ProtoField) o).protoField.equals(this.protoField);
+  }
+
+  @Override
+  public String getScopedDocumentation() {
+    return DocumentationUtil.getScopedDescription(protoField);
+  }
+
+  @Override
+  public boolean hasOneof() {
+    return protoField.getOneof() != null;
   }
 }

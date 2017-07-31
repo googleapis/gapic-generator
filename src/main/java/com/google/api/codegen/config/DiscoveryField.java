@@ -19,7 +19,6 @@ import static com.google.api.codegen.config.FieldType.ApiSource.DISCOVERY;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.discovery.Schema.Type;
 import com.google.api.tools.framework.model.Field;
-import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Preconditions;
@@ -117,14 +116,20 @@ public class DiscoveryField implements FieldType {
   }
 
   @Override
-  public Oneof getProtoOneof() {
-    throw new IllegalArgumentException("Discovery model types have no protobuf Oneofs.");
-  }
-
-  @Override
   public boolean equals(Object o) {
     return o != null
         && o instanceof DiscoveryField
         && ((DiscoveryField) o).schema.equals(this.schema);
+  }
+
+  @Override
+  /* @Get the description of the element scoped to the visibility as currently set in the model. */
+  public String getScopedDocumentation() {
+    return "Not yet implemented.";
+  }
+
+  @Override
+  public boolean hasOneof() {
+    return false;
   }
 }

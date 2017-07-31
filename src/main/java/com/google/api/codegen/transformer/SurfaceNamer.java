@@ -1303,14 +1303,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** Provides the doc lines for the given field in the current language. */
   public List<String> getDocLines(FieldType field) {
-    switch (field.getApiSource()) {
-      case PROTO:
-        return getDocLines(DocumentationUtil.getScopedDescription(field.getProtoField()));
-      case DISCOVERY:
-        return Collections.singletonList(getNotImplementedString("SurfaceNamer.getDocLines"));
-      default:
-        throw new IllegalArgumentException("Unhandled model type.");
-    }
+    return getDocLines(field.getScopedDocumentation());
   }
 
   /** Provides the doc lines for the given method element in the current language. */

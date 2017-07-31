@@ -37,7 +37,6 @@ import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.js.JSCommentReformatter;
 import com.google.api.codegen.util.js.JSNameFormatter;
 import com.google.api.codegen.util.js.JSTypeTable;
-import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.EnumType;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
@@ -378,8 +377,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   @Override
   public List<String> getDocLines(FieldType field) {
     ImmutableList.Builder<String> lines = ImmutableList.builder();
-    List<String> fieldDocLines =
-        getDocLines(DocumentationUtil.getScopedDescription(field.getProtoField()));
+    List<String> fieldDocLines = getDocLines(field.getScopedDocumentation());
     String extraFieldDescription = getExtraFieldDescription(field);
 
     lines.addAll(fieldDocLines);

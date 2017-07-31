@@ -380,10 +380,10 @@ public abstract class GapicMethodConfig extends MethodConfig {
     ImmutableSet.Builder<Oneof> answer = ImmutableSet.builder();
 
     for (FieldType field : getOptionalFields()) {
-      if (field.getProtoOneof() == null) {
+      if (field.getProtoField().getOneof() == null) {
         continue;
       }
-      answer.add(field.getProtoOneof());
+      answer.add(field.getProtoField().getOneof());
     }
 
     return answer.build();

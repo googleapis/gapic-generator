@@ -16,7 +16,6 @@ package com.google.api.codegen.config;
 
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.tools.framework.model.Field;
-import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
 
@@ -75,9 +74,12 @@ public interface FieldType {
   /* @return the underlying protobuf Field, if it exists. */
   Field getProtoField();
 
-  /* @return if the underlying protobuf Field's Oneof, if it exists. */
-  Oneof getProtoOneof();
-
   /* @return the underlying Schema, if it exists. */
   Schema getDiscoveryField();
+
+  /* Get the description of the element scoped to the visibility as currently set in the model. */
+  String getScopedDocumentation();
+
+  /* @return if this model is associated with a Oneof. */
+  boolean hasOneof();
 }
