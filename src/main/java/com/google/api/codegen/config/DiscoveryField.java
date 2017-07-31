@@ -42,6 +42,11 @@ public class DiscoveryField implements FieldType {
   }
 
   @Override
+  public Schema getDiscoveryField() {
+    return schema;
+  }
+
+  @Override
   public String getSimpleName() {
     return schema.getIdentifier();
   }
@@ -52,55 +57,46 @@ public class DiscoveryField implements FieldType {
   }
 
   @Override
-  /* @return if the underlying resource is a map type. */
   public boolean isMap() {
     return false;
   }
 
   @Override
-  /* @return the resource type of the map key. */
   public FieldType getMapKeyField() {
     throw new IllegalArgumentException("Discovery model types have no map keys.");
   }
 
   @Override
-  /* @return the resource type of the map value. */
   public FieldType getMapValueField() {
     throw new IllegalArgumentException("Discovery model types have no map values.");
   }
 
   @Override
-  /* @return if the underlying resource is a proto Messsage. */
   public boolean isMessage() {
     return false;
   }
 
   @Override
-  /* @return if the underlying resource can be repeated in the parent resource. */
   public boolean isRepeated() {
     return schema.type() == Type.ARRAY;
   }
 
   @Override
-  /* @return the full name of the parent. */
   public String getParentFullName() {
     return schema.parent().id();
   }
 
   @Override
-  /* @return the cardinality of the resource. */
   public Cardinality getCardinality() {
     throw new IllegalArgumentException("Discovery model types have no defined Cardinality.");
   }
 
   @Override
-  /* @return if this resource is an enum. */
   public boolean isEnum() {
     return schema.isEnum();
   }
 
   @Override
-  /* @return if this is a primitive type. */
   public boolean isPrimitive() {
     return schema.reference().isEmpty() && schema.items() == null;
   }
@@ -118,11 +114,6 @@ public class DiscoveryField implements FieldType {
   @Override
   public Field getProtoField() {
     throw new IllegalArgumentException("Discovery model types have no protobuf Field types.");
-  }
-
-  @Override
-  public Schema getDiscoveryField() {
-    return schema;
   }
 
   @Override

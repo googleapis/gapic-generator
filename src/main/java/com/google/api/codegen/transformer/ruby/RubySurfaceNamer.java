@@ -140,31 +140,30 @@ public class RubySurfaceNamer extends SurfaceNamer {
   /** The type name for the message property */
   @Override
   public String getMessagePropertyTypeName(ImportTypeTable importTypeTable, FieldType fieldType) {
-    ModelTypeTable typeTable = (ModelTypeTable) importTypeTable;
-    TypeRef type = fieldType.getProtoTypeRef();
-    if (type.isMap()) {
-      String keyTypeName = typeTable.getFullNameForElementType(type.getMapKeyField().getType());
-      String valueTypeName = typeTable.getFullNameForElementType(type.getMapValueField().getType());
+    if (fieldType.isMap()) {
+      String keyTypeName = importTypeTable.getFullNameForElementType(fieldType.getMapKeyField());
+      String valueTypeName =
+          importTypeTable.getFullNameForElementType(fieldType.getMapValueField());
       return new TypeName(
-              typeTable.getFullNameFor(type),
-              typeTable.getNicknameFor(type),
+              importTypeTable.getFullNameFor(fieldType),
+              importTypeTable.getNicknameFor(fieldType),
               "%s{%i => %i}",
               new TypeName(keyTypeName),
               new TypeName(valueTypeName))
           .getFullName();
     }
 
-    if (type.isRepeated()) {
-      String elementTypeName = typeTable.getFullNameForElementType(type);
+    if (fieldType.isRepeated()) {
+      String elementTypeName = importTypeTable.getFullNameForElementType(fieldType);
       return new TypeName(
-              typeTable.getFullNameFor(type),
-              typeTable.getNicknameFor(type),
+              importTypeTable.getFullNameFor(fieldType),
+              importTypeTable.getNicknameFor(fieldType),
               "%s<%i>",
               new TypeName(elementTypeName))
           .getFullName();
     }
 
-    return typeTable.getFullNameForElementType(type);
+    return importTypeTable.getFullNameForElementType(fieldType);
   }
 
   @Override

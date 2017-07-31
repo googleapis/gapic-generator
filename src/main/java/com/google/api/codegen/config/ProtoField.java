@@ -51,47 +51,38 @@ public class ProtoField implements FieldType {
   }
 
   @Override
-  /* @return if the underlying resource is a map type. */
   public boolean isMap() {
     return protoField.getType().isMap();
   }
 
-  /* @return the resource type of the map key. */
   public ProtoField getMapKeyField() {
     return new ProtoField(protoField.getType().getMapKeyField());
   }
 
-  /* @return the resource type of the map value. */
   public ProtoField getMapValueField() {
     return new ProtoField(protoField.getType().getMapValueField());
   }
 
-  /* @return if the underlying resource is a proto Messsage. */
   public boolean isMessage() {
     return protoField.getType().isMessage();
   }
 
-  /* @return if the underlying resource can be repeated in the parent resource. */
   public boolean isRepeated() {
     return protoField.isRepeated();
   }
 
-  /* @return the full name of the parent. */
   public String getParentFullName() {
     return protoField.getParent().getFullName();
   }
 
-  /* @return the cardinality of the resource. */
   public Cardinality getCardinality() {
     return protoField.getType().getCardinality();
   }
 
-  /* @return if this resource is an enum. */
   public boolean isEnum() {
     return protoField.getType().isEnum();
   }
 
-  /* @return if this is a primitive type. */
   public boolean isPrimitive() {
     return protoField.getType().isPrimitive();
   }
