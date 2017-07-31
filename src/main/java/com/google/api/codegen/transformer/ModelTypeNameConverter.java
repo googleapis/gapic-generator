@@ -33,11 +33,13 @@ public abstract class ModelTypeNameConverter implements TypeNameConverter {
   /** Provides a TypeName for the element type of the given TypeRef. */
   public abstract TypeName getTypeNameForElementType(TypeRef type);
 
-  /** Provides a TypeName for the given FieldConfig and resource short name. */
+  @Override
+  /* Provides a TypeName for the given FieldConfig and resource short name. */
   public abstract TypeName getTypeNameForTypedResourceName(
       FieldConfig fieldConfig, String typedResourceShortName);
 
-  /**
+  @Override
+  /*
    * Provides a TypeName for the given FieldConfig and resource short name, using the inner type if
    * the underlying field is repeated.
    */
@@ -47,7 +49,8 @@ public abstract class ModelTypeNameConverter implements TypeNameConverter {
   /** Provides a TypeName for the given ProtoElement. */
   public abstract TypeName getTypeName(ProtoElement elem);
 
-  /** Provides a TypeName for the given short name, using the default package. */
+  @Override
+  /* Provides a TypeName for the given short name, using the default package. */
   public abstract TypeName getTypeNameInImplicitPackage(String shortName);
 
   /**
