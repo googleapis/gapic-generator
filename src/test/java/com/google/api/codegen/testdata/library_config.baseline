@@ -1,4 +1,5 @@
 type: com.google.api.codegen.ConfigProto
+# The settings of generated code in a specific language.
 language_settings:
   java:
     package_name: com.google.cloud.example.library.spi.v1
@@ -14,11 +15,26 @@ language_settings:
     package_name: Google\Cloud\Example\Library\V1
   nodejs:
     package_name: library.v1
+# The configuration for the license header to put on generated files.
 license_header:
+  # The file containing the copyright line(s).
   copyright_file: copyright-google.txt
+  # The file containing the raw license header without any copyright line(s).
   license_file: license-header-apache-2.0.txt
+# A list of API interface configurations.
 interfaces:
+  # The fully qualified name of the API interface.
 - name: google.example.library.v1.LibraryService
+  # A list of resource collection configurations.
+  # Consists of a name_pattern and an entity_name.
+  # The name_pattern is a pattern to describe the names of the resources of this
+  # collection, using the platform's conventions for URI patterns. A generator
+  # may use this to generate methods to compose and decompose such names. The
+  # pattern should use named placeholders as in `shelves/{shelf}/books/{book}`;
+  # those will be taken as hints for the parameter names of the generated
+  # methods. If empty, no name methods are generated.
+  # The entity_name is the name to be used as a basis for generated methods and
+  # classes.
   collections:
   - name_pattern: archives/{archive}/books/{book_path=**}
     entity_name: book_path
@@ -28,6 +44,7 @@ interfaces:
     entity_name: book_shelf
   - name_pattern: bookShelves/{book_shelf}/books/{book}
     entity_name: book_2
+  # Definition for retryable codes.
   retry_codes_def:
   - name: idempotent
     retry_codes:
@@ -35,6 +52,7 @@ interfaces:
     - DEADLINE_EXCEEDED
   - name: non_idempotent
     retry_codes: []
+  # Definition for retry/backoff parameters.
   retry_params_def:
   - name: default
     initial_retry_delay_millis: 100
@@ -44,19 +62,45 @@ interfaces:
     rpc_timeout_multiplier: 1
     max_rpc_timeout_millis: 20000
     total_timeout_millis: 600000
+  # A list of method configurations.
   methods:
+    # The simple name of the method.
   - name: CreateShelf
+    # Specifies the configuration for parameter flattening.
+    # Describes the parameter groups for which a generator should produce
+    # method overloads which allow a client to directly pass request message
+    # fields as method parameters. This information may or may not be used,
+    # depending on the target language.
+    # Consists of groups, which each represent a list of parameters to be
+    # flattened. Each parameter listed must be a field of the request message.
     flattening:
       groups:
       - parameters:
         - shelf
+    # Fields that are always required for a request to be valid.
     required_fields:
     - shelf
+    # Turns on or off the generation of a method whose sole parameter is
+    # a request object. Not all languages will generate this method.
     request_object_method: false
+    # Specifies the configuration for retryable codes.
+    # The name must be defined in interfaces.retry_codes_def.
     retry_codes_name: non_idempotent
+    # Specifies the configuration for retry/backoff parameters.
+    # The name must be defined in interfaces.retry_params_def.
     retry_params_name: default
+    # Specifies the default timeout for a non-retrying call.
+    # If the call is retrying, refer to retry_params_name instead.
     timeout_millis: 60000
+    # The simple name of the method.
   - name: GetShelf
+    # Specifies the configuration for parameter flattening.
+    # Describes the parameter groups for which a generator should produce
+    # method overloads which allow a client to directly pass request message
+    # fields as method parameters. This information may or may not be used,
+    # depending on the target language.
+    # Consists of groups, which each represent a list of parameters to be
+    # flattened. Each parameter listed must be a field of the request message.
     flattening:
       groups:
       - parameters:
@@ -64,105 +108,259 @@ interfaces:
         - message
         - string_builder
         - options
+    # Fields that are always required for a request to be valid.
     required_fields:
     - name
     - message
     - string_builder
     - options
+    # Turns on or off the generation of a method whose sole parameter is
+    # a request object. Not all languages will generate this method.
     request_object_method: true
+    # Specifies the configuration for retryable codes.
+    # The name must be defined in interfaces.retry_codes_def.
     retry_codes_name: idempotent
+    # Specifies the configuration for retry/backoff parameters.
+    # The name must be defined in interfaces.retry_params_def.
     retry_params_name: default
+    # Maps the field name of the request type to entity_name of
+    # interfaces.collections.
+    # Specifies the string pattern that the field must follow.
     field_name_patterns:
       name: book_shelf
+    # Specifies the default timeout for a non-retrying call.
+    # If the call is retrying, refer to retry_params_name instead.
     timeout_millis: 60000
+    # The simple name of the method.
   - name: ListShelves
+    # Turns on or off the generation of a method whose sole parameter is
+    # a request object. Not all languages will generate this method.
     request_object_method: true
+    # Specifies the configuration for paging.
+    # Describes information for generating a method which transforms a paging
+    # list RPC into a stream of resources.
+    # Consists of a request and a response.
+    # The request specifies request information of the list method. It defines
+    # which fields match the paging pattern in the request. The request consists
+    # of a page_size_field and a token_field. The page_size_field is the
+    # name of the optional field specifying the maximum number of elements to be
+    # returned in the response. The token_field is the name of the field in the
+    # request containing the page token.
+    # The response specifies response information of the list method. It defines
+    # which fields match the paging pattern in the response. The response
+    # consists of a token_field and a resources_field. The token_field is the
+    # name of the field in the response containing the next page token. The
+    # resources_field is the name of the field in the response containing the
+    # list of resources belonging to the page.
     page_streaming:
       request:
         token_field: page_token
       response:
         token_field: next_page_token
         resources_field: shelves
+    # Specifies the configuration for retryable codes.
+    # The name must be defined in interfaces.retry_codes_def.
     retry_codes_name: idempotent
+    # Specifies the configuration for retry/backoff parameters.
+    # The name must be defined in interfaces.retry_params_def.
     retry_params_name: default
+    # Specifies the default timeout for a non-retrying call.
+    # If the call is retrying, refer to retry_params_name instead.
     timeout_millis: 60000
+    # The simple name of the method.
   - name: DeleteShelf
+    # Specifies the configuration for parameter flattening.
+    # Describes the parameter groups for which a generator should produce
+    # method overloads which allow a client to directly pass request message
+    # fields as method parameters. This information may or may not be used,
+    # depending on the target language.
+    # Consists of groups, which each represent a list of parameters to be
+    # flattened. Each parameter listed must be a field of the request message.
     flattening:
       groups:
       - parameters:
         - name
+    # Fields that are always required for a request to be valid.
     required_fields:
     - name
+    # Turns on or off the generation of a method whose sole parameter is
+    # a request object. Not all languages will generate this method.
     request_object_method: false
+    # Specifies the configuration for retryable codes.
+    # The name must be defined in interfaces.retry_codes_def.
     retry_codes_name: idempotent
+    # Specifies the configuration for retry/backoff parameters.
+    # The name must be defined in interfaces.retry_params_def.
     retry_params_name: default
+    # Maps the field name of the request type to entity_name of
+    # interfaces.collections.
+    # Specifies the string pattern that the field must follow.
     field_name_patterns:
       name: book_shelf
+    # Specifies the default timeout for a non-retrying call.
+    # If the call is retrying, refer to retry_params_name instead.
     timeout_millis: 60000
+    # The simple name of the method.
   - name: MergeShelves
+    # Specifies the configuration for parameter flattening.
+    # Describes the parameter groups for which a generator should produce
+    # method overloads which allow a client to directly pass request message
+    # fields as method parameters. This information may or may not be used,
+    # depending on the target language.
+    # Consists of groups, which each represent a list of parameters to be
+    # flattened. Each parameter listed must be a field of the request message.
     flattening:
       groups:
       - parameters:
         - name
         - other_shelf_name
+    # Fields that are always required for a request to be valid.
     required_fields:
     - name
     - other_shelf_name
+    # Turns on or off the generation of a method whose sole parameter is
+    # a request object. Not all languages will generate this method.
     request_object_method: true
+    # Specifies the configuration for retryable codes.
+    # The name must be defined in interfaces.retry_codes_def.
     retry_codes_name: non_idempotent
+    # Specifies the configuration for retry/backoff parameters.
+    # The name must be defined in interfaces.retry_params_def.
     retry_params_name: default
+    # Maps the field name of the request type to entity_name of
+    # interfaces.collections.
+    # Specifies the string pattern that the field must follow.
     field_name_patterns:
       name: book_shelf
+    # Specifies the default timeout for a non-retrying call.
+    # If the call is retrying, refer to retry_params_name instead.
     timeout_millis: 60000
+    # The simple name of the method.
   - name: CreateBook
+    # Specifies the configuration for parameter flattening.
+    # Describes the parameter groups for which a generator should produce
+    # method overloads which allow a client to directly pass request message
+    # fields as method parameters. This information may or may not be used,
+    # depending on the target language.
+    # Consists of groups, which each represent a list of parameters to be
+    # flattened. Each parameter listed must be a field of the request message.
     flattening:
       groups:
       - parameters:
         - name
         - book
+    # Fields that are always required for a request to be valid.
     required_fields:
     - name
     - book
+    # Turns on or off the generation of a method whose sole parameter is
+    # a request object. Not all languages will generate this method.
     request_object_method: true
+    # Specifies the configuration for retryable codes.
+    # The name must be defined in interfaces.retry_codes_def.
     retry_codes_name: non_idempotent
+    # Specifies the configuration for retry/backoff parameters.
+    # The name must be defined in interfaces.retry_params_def.
     retry_params_name: default
+    # Maps the field name of the request type to entity_name of
+    # interfaces.collections.
+    # Specifies the string pattern that the field must follow.
     field_name_patterns:
       name: book_shelf
+    # Specifies the default timeout for a non-retrying call.
+    # If the call is retrying, refer to retry_params_name instead.
     timeout_millis: 60000
+    # The simple name of the method.
   - name: PublishSeries
+    # Fields that are always required for a request to be valid.
     required_fields:
     - shelf
     - books
     - edition
     - review_copy
     - series_uuid
+    # Turns on or off the generation of a method whose sole parameter is
+    # a request object. Not all languages will generate this method.
     request_object_method: true
+    # Specifies the configuration for retryable codes.
+    # The name must be defined in interfaces.retry_codes_def.
     retry_codes_name: non_idempotent
+    # Specifies the configuration for retry/backoff parameters.
+    # The name must be defined in interfaces.retry_params_def.
     retry_params_name: default
+    # Specifies the default timeout for a non-retrying call.
+    # If the call is retrying, refer to retry_params_name instead.
     timeout_millis: 60000
+    # The simple name of the method.
   - name: GetBook
+    # Specifies the configuration for parameter flattening.
+    # Describes the parameter groups for which a generator should produce
+    # method overloads which allow a client to directly pass request message
+    # fields as method parameters. This information may or may not be used,
+    # depending on the target language.
+    # Consists of groups, which each represent a list of parameters to be
+    # flattened. Each parameter listed must be a field of the request message.
     flattening:
       groups:
       - parameters:
         - name
+    # Fields that are always required for a request to be valid.
     required_fields:
     - name
+    # Turns on or off the generation of a method whose sole parameter is
+    # a request object. Not all languages will generate this method.
     request_object_method: false
+    # Specifies the configuration for retryable codes.
+    # The name must be defined in interfaces.retry_codes_def.
     retry_codes_name: idempotent
+    # Specifies the configuration for retry/backoff parameters.
+    # The name must be defined in interfaces.retry_params_def.
     retry_params_name: default
+    # Maps the field name of the request type to entity_name of
+    # interfaces.collections.
+    # Specifies the string pattern that the field must follow.
     field_name_patterns:
       name: book_2
+    # Specifies the default timeout for a non-retrying call.
+    # If the call is retrying, refer to retry_params_name instead.
     timeout_millis: 60000
+    # The simple name of the method.
   - name: ListBooks
+    # Specifies the configuration for parameter flattening.
+    # Describes the parameter groups for which a generator should produce
+    # method overloads which allow a client to directly pass request message
+    # fields as method parameters. This information may or may not be used,
+    # depending on the target language.
+    # Consists of groups, which each represent a list of parameters to be
+    # flattened. Each parameter listed must be a field of the request message.
     flattening:
       groups:
       - parameters:
         - name
         - filter
+    # Fields that are always required for a request to be valid.
     required_fields:
     - name
     - filter
+    # Turns on or off the generation of a method whose sole parameter is
+    # a request object. Not all languages will generate this method.
     request_object_method: true
+    # Specifies the configuration for paging.
+    # Describes information for generating a method which transforms a paging
+    # list RPC into a stream of resources.
+    # Consists of a request and a response.
+    # The request specifies request information of the list method. It defines
+    # which fields match the paging pattern in the request. The request consists
+    # of a page_size_field and a token_field. The page_size_field is the
+    # name of the optional field specifying the maximum number of elements to be
+    # returned in the response. The token_field is the name of the field in the
+    # request containing the page token.
+    # The response specifies response information of the list method. It defines
+    # which fields match the paging pattern in the response. The response
+    # consists of a token_field and a resources_field. The token_field is the
+    # name of the field in the response containing the next page token. The
+    # resources_field is the name of the field in the response containing the
+    # list of resources belonging to the page.
     page_streaming:
       request:
         page_size_field: page_size
@@ -170,25 +368,62 @@ interfaces:
       response:
         token_field: next_page_token
         resources_field: books
+    # Specifies the configuration for retryable codes.
+    # The name must be defined in interfaces.retry_codes_def.
     retry_codes_name: idempotent
+    # Specifies the configuration for retry/backoff parameters.
+    # The name must be defined in interfaces.retry_params_def.
     retry_params_name: default
+    # Maps the field name of the request type to entity_name of
+    # interfaces.collections.
+    # Specifies the string pattern that the field must follow.
     field_name_patterns:
       name: book_shelf
+    # Specifies the default timeout for a non-retrying call.
+    # If the call is retrying, refer to retry_params_name instead.
     timeout_millis: 60000
+    # The simple name of the method.
   - name: DeleteBook
+    # Specifies the configuration for parameter flattening.
+    # Describes the parameter groups for which a generator should produce
+    # method overloads which allow a client to directly pass request message
+    # fields as method parameters. This information may or may not be used,
+    # depending on the target language.
+    # Consists of groups, which each represent a list of parameters to be
+    # flattened. Each parameter listed must be a field of the request message.
     flattening:
       groups:
       - parameters:
         - name
+    # Fields that are always required for a request to be valid.
     required_fields:
     - name
+    # Turns on or off the generation of a method whose sole parameter is
+    # a request object. Not all languages will generate this method.
     request_object_method: false
+    # Specifies the configuration for retryable codes.
+    # The name must be defined in interfaces.retry_codes_def.
     retry_codes_name: idempotent
+    # Specifies the configuration for retry/backoff parameters.
+    # The name must be defined in interfaces.retry_params_def.
     retry_params_name: default
+    # Maps the field name of the request type to entity_name of
+    # interfaces.collections.
+    # Specifies the string pattern that the field must follow.
     field_name_patterns:
       name: book_2
+    # Specifies the default timeout for a non-retrying call.
+    # If the call is retrying, refer to retry_params_name instead.
     timeout_millis: 60000
+    # The simple name of the method.
   - name: UpdateBook
+    # Specifies the configuration for parameter flattening.
+    # Describes the parameter groups for which a generator should produce
+    # method overloads which allow a client to directly pass request message
+    # fields as method parameters. This information may or may not be used,
+    # depending on the target language.
+    # Consists of groups, which each represent a list of parameters to be
+    # flattened. Each parameter listed must be a field of the request message.
     flattening:
       groups:
       - parameters:
@@ -196,40 +431,99 @@ interfaces:
         - book
         - update_mask
         - physical_mask
+    # Fields that are always required for a request to be valid.
     required_fields:
     - name
     - book
     - update_mask
     - physical_mask
+    # Turns on or off the generation of a method whose sole parameter is
+    # a request object. Not all languages will generate this method.
     request_object_method: true
+    # Specifies the configuration for retryable codes.
+    # The name must be defined in interfaces.retry_codes_def.
     retry_codes_name: idempotent
+    # Specifies the configuration for retry/backoff parameters.
+    # The name must be defined in interfaces.retry_params_def.
     retry_params_name: default
+    # Maps the field name of the request type to entity_name of
+    # interfaces.collections.
+    # Specifies the string pattern that the field must follow.
     field_name_patterns:
       name: book_2
+    # Specifies the default timeout for a non-retrying call.
+    # If the call is retrying, refer to retry_params_name instead.
     timeout_millis: 60000
+    # The simple name of the method.
   - name: MoveBook
+    # Specifies the configuration for parameter flattening.
+    # Describes the parameter groups for which a generator should produce
+    # method overloads which allow a client to directly pass request message
+    # fields as method parameters. This information may or may not be used,
+    # depending on the target language.
+    # Consists of groups, which each represent a list of parameters to be
+    # flattened. Each parameter listed must be a field of the request message.
     flattening:
       groups:
       - parameters:
         - name
         - other_shelf_name
+    # Fields that are always required for a request to be valid.
     required_fields:
     - name
     - other_shelf_name
+    # Turns on or off the generation of a method whose sole parameter is
+    # a request object. Not all languages will generate this method.
     request_object_method: true
+    # Specifies the configuration for retryable codes.
+    # The name must be defined in interfaces.retry_codes_def.
     retry_codes_name: non_idempotent
+    # Specifies the configuration for retry/backoff parameters.
+    # The name must be defined in interfaces.retry_params_def.
     retry_params_name: default
+    # Maps the field name of the request type to entity_name of
+    # interfaces.collections.
+    # Specifies the string pattern that the field must follow.
     field_name_patterns:
       name: book_2
+    # Specifies the default timeout for a non-retrying call.
+    # If the call is retrying, refer to retry_params_name instead.
     timeout_millis: 60000
+    # The simple name of the method.
   - name: ListStrings
+    # Specifies the configuration for parameter flattening.
+    # Describes the parameter groups for which a generator should produce
+    # method overloads which allow a client to directly pass request message
+    # fields as method parameters. This information may or may not be used,
+    # depending on the target language.
+    # Consists of groups, which each represent a list of parameters to be
+    # flattened. Each parameter listed must be a field of the request message.
     flattening:
       groups:
       - parameters:
         - name
+    # Fields that are always required for a request to be valid.
     required_fields:
     - name
+    # Turns on or off the generation of a method whose sole parameter is
+    # a request object. Not all languages will generate this method.
     request_object_method: true
+    # Specifies the configuration for paging.
+    # Describes information for generating a method which transforms a paging
+    # list RPC into a stream of resources.
+    # Consists of a request and a response.
+    # The request specifies request information of the list method. It defines
+    # which fields match the paging pattern in the request. The request consists
+    # of a page_size_field and a token_field. The page_size_field is the
+    # name of the optional field specifying the maximum number of elements to be
+    # returned in the response. The token_field is the name of the field in the
+    # request containing the page token.
+    # The response specifies response information of the list method. It defines
+    # which fields match the paging pattern in the response. The response
+    # consists of a token_field and a resources_field. The token_field is the
+    # name of the field in the response containing the next page token. The
+    # resources_field is the name of the field in the response containing the
+    # list of resources belonging to the page.
     page_streaming:
       request:
         page_size_field: page_size
@@ -237,134 +531,327 @@ interfaces:
       response:
         token_field: next_page_token
         resources_field: strings
+    # Specifies the configuration for retryable codes.
+    # The name must be defined in interfaces.retry_codes_def.
     retry_codes_name: idempotent
+    # Specifies the configuration for retry/backoff parameters.
+    # The name must be defined in interfaces.retry_params_def.
     retry_params_name: default
+    # Specifies the default timeout for a non-retrying call.
+    # If the call is retrying, refer to retry_params_name instead.
     timeout_millis: 60000
+    # The simple name of the method.
   - name: AddComments
+    # Specifies the configuration for parameter flattening.
+    # Describes the parameter groups for which a generator should produce
+    # method overloads which allow a client to directly pass request message
+    # fields as method parameters. This information may or may not be used,
+    # depending on the target language.
+    # Consists of groups, which each represent a list of parameters to be
+    # flattened. Each parameter listed must be a field of the request message.
     flattening:
       groups:
       - parameters:
         - name
         - comments
+    # Fields that are always required for a request to be valid.
     required_fields:
     - name
     - comments
+    # Turns on or off the generation of a method whose sole parameter is
+    # a request object. Not all languages will generate this method.
     request_object_method: true
+    # Specifies the configuration for retryable codes.
+    # The name must be defined in interfaces.retry_codes_def.
     retry_codes_name: non_idempotent
+    # Specifies the configuration for retry/backoff parameters.
+    # The name must be defined in interfaces.retry_params_def.
     retry_params_name: default
+    # Maps the field name of the request type to entity_name of
+    # interfaces.collections.
+    # Specifies the string pattern that the field must follow.
     field_name_patterns:
       name: book_shelf
+    # Specifies the default timeout for a non-retrying call.
+    # If the call is retrying, refer to retry_params_name instead.
     timeout_millis: 60000
+    # The simple name of the method.
   - name: GetBookFromArchive
+    # Specifies the configuration for parameter flattening.
+    # Describes the parameter groups for which a generator should produce
+    # method overloads which allow a client to directly pass request message
+    # fields as method parameters. This information may or may not be used,
+    # depending on the target language.
+    # Consists of groups, which each represent a list of parameters to be
+    # flattened. Each parameter listed must be a field of the request message.
     flattening:
       groups:
       - parameters:
         - name
+    # Fields that are always required for a request to be valid.
     required_fields:
     - name
+    # Turns on or off the generation of a method whose sole parameter is
+    # a request object. Not all languages will generate this method.
     request_object_method: false
+    # Specifies the configuration for retryable codes.
+    # The name must be defined in interfaces.retry_codes_def.
     retry_codes_name: idempotent
+    # Specifies the configuration for retry/backoff parameters.
+    # The name must be defined in interfaces.retry_params_def.
     retry_params_name: default
+    # Maps the field name of the request type to entity_name of
+    # interfaces.collections.
+    # Specifies the string pattern that the field must follow.
     field_name_patterns:
       name: book
+    # Specifies the default timeout for a non-retrying call.
+    # If the call is retrying, refer to retry_params_name instead.
     timeout_millis: 60000
+    # The simple name of the method.
   - name: GetBookFromAnywhere
+    # Specifies the configuration for parameter flattening.
+    # Describes the parameter groups for which a generator should produce
+    # method overloads which allow a client to directly pass request message
+    # fields as method parameters. This information may or may not be used,
+    # depending on the target language.
+    # Consists of groups, which each represent a list of parameters to be
+    # flattened. Each parameter listed must be a field of the request message.
     flattening:
       groups:
       - parameters:
         - name
         - alt_book_name
+    # Fields that are always required for a request to be valid.
     required_fields:
     - name
     - alt_book_name
+    # Turns on or off the generation of a method whose sole parameter is
+    # a request object. Not all languages will generate this method.
     request_object_method: true
+    # Specifies the configuration for retryable codes.
+    # The name must be defined in interfaces.retry_codes_def.
     retry_codes_name: idempotent
+    # Specifies the configuration for retry/backoff parameters.
+    # The name must be defined in interfaces.retry_params_def.
     retry_params_name: default
+    # Maps the field name of the request type to entity_name of
+    # interfaces.collections.
+    # Specifies the string pattern that the field must follow.
     field_name_patterns:
       name: book_path
+    # Specifies the default timeout for a non-retrying call.
+    # If the call is retrying, refer to retry_params_name instead.
     timeout_millis: 60000
+    # The simple name of the method.
   - name: GetBookFromAbsolutelyAnywhere
+    # Specifies the configuration for parameter flattening.
+    # Describes the parameter groups for which a generator should produce
+    # method overloads which allow a client to directly pass request message
+    # fields as method parameters. This information may or may not be used,
+    # depending on the target language.
+    # Consists of groups, which each represent a list of parameters to be
+    # flattened. Each parameter listed must be a field of the request message.
     flattening:
       groups:
       - parameters:
         - name
+    # Fields that are always required for a request to be valid.
     required_fields:
     - name
+    # Turns on or off the generation of a method whose sole parameter is
+    # a request object. Not all languages will generate this method.
     request_object_method: false
+    # Specifies the configuration for retryable codes.
+    # The name must be defined in interfaces.retry_codes_def.
     retry_codes_name: non_idempotent
+    # Specifies the configuration for retry/backoff parameters.
+    # The name must be defined in interfaces.retry_params_def.
     retry_params_name: default
+    # Maps the field name of the request type to entity_name of
+    # interfaces.collections.
+    # Specifies the string pattern that the field must follow.
     field_name_patterns:
       name: book
+    # Specifies the default timeout for a non-retrying call.
+    # If the call is retrying, refer to retry_params_name instead.
     timeout_millis: 60000
+    # The simple name of the method.
   - name: UpdateBookIndex
+    # Specifies the configuration for parameter flattening.
+    # Describes the parameter groups for which a generator should produce
+    # method overloads which allow a client to directly pass request message
+    # fields as method parameters. This information may or may not be used,
+    # depending on the target language.
+    # Consists of groups, which each represent a list of parameters to be
+    # flattened. Each parameter listed must be a field of the request message.
     flattening:
       groups:
       - parameters:
         - name
         - index_name
         - index_map
+    # Fields that are always required for a request to be valid.
     required_fields:
     - name
     - index_name
     - index_map
+    # Turns on or off the generation of a method whose sole parameter is
+    # a request object. Not all languages will generate this method.
     request_object_method: true
+    # Specifies the configuration for retryable codes.
+    # The name must be defined in interfaces.retry_codes_def.
     retry_codes_name: non_idempotent
+    # Specifies the configuration for retry/backoff parameters.
+    # The name must be defined in interfaces.retry_params_def.
     retry_params_name: default
+    # Maps the field name of the request type to entity_name of
+    # interfaces.collections.
+    # Specifies the string pattern that the field must follow.
     field_name_patterns:
       name: book_2
+    # Specifies the default timeout for a non-retrying call.
+    # If the call is retrying, refer to retry_params_name instead.
     timeout_millis: 60000
+    # The simple name of the method.
   - name: StreamShelves
+    # Turns on or off the generation of a method whose sole parameter is
+    # a request object. Not all languages will generate this method.
     request_object_method: false
+    # Specifies the configuration for retryable codes.
+    # The name must be defined in interfaces.retry_codes_def.
     retry_codes_name: non_idempotent
+    # Specifies the configuration for retry/backoff parameters.
+    # The name must be defined in interfaces.retry_params_def.
     retry_params_name: default
+    # Specifies the default timeout for a non-retrying call.
+    # If the call is retrying, refer to retry_params_name instead.
     timeout_millis: 60000
+    # The simple name of the method.
   - name: StreamBooks
+    # Specifies the configuration for parameter flattening.
+    # Describes the parameter groups for which a generator should produce
+    # method overloads which allow a client to directly pass request message
+    # fields as method parameters. This information may or may not be used,
+    # depending on the target language.
+    # Consists of groups, which each represent a list of parameters to be
+    # flattened. Each parameter listed must be a field of the request message.
     flattening:
       groups:
       - parameters:
         - name
+    # Fields that are always required for a request to be valid.
     required_fields:
     - name
+    # Turns on or off the generation of a method whose sole parameter is
+    # a request object. Not all languages will generate this method.
     request_object_method: false
+    # Specifies the configuration for retryable codes.
+    # The name must be defined in interfaces.retry_codes_def.
     retry_codes_name: non_idempotent
+    # Specifies the configuration for retry/backoff parameters.
+    # The name must be defined in interfaces.retry_params_def.
     retry_params_name: default
+    # Specifies the default timeout for a non-retrying call.
+    # If the call is retrying, refer to retry_params_name instead.
     timeout_millis: 60000
+    # The simple name of the method.
   - name: DiscussBook
+    # Specifies the configuration for parameter flattening.
+    # Describes the parameter groups for which a generator should produce
+    # method overloads which allow a client to directly pass request message
+    # fields as method parameters. This information may or may not be used,
+    # depending on the target language.
+    # Consists of groups, which each represent a list of parameters to be
+    # flattened. Each parameter listed must be a field of the request message.
     flattening:
       groups:
       - parameters:
         - name
         - comment
+    # Fields that are always required for a request to be valid.
     required_fields:
     - name
     - comment
+    # Turns on or off the generation of a method whose sole parameter is
+    # a request object. Not all languages will generate this method.
     request_object_method: true
+    # Specifies the configuration for retryable codes.
+    # The name must be defined in interfaces.retry_codes_def.
     retry_codes_name: non_idempotent
+    # Specifies the configuration for retry/backoff parameters.
+    # The name must be defined in interfaces.retry_params_def.
     retry_params_name: default
+    # Specifies the default timeout for a non-retrying call.
+    # If the call is retrying, refer to retry_params_name instead.
     timeout_millis: 60000
+    # The simple name of the method.
   - name: MonologAboutBook
+    # Specifies the configuration for parameter flattening.
+    # Describes the parameter groups for which a generator should produce
+    # method overloads which allow a client to directly pass request message
+    # fields as method parameters. This information may or may not be used,
+    # depending on the target language.
+    # Consists of groups, which each represent a list of parameters to be
+    # flattened. Each parameter listed must be a field of the request message.
     flattening:
       groups:
       - parameters:
         - name
         - comment
+    # Fields that are always required for a request to be valid.
     required_fields:
     - name
     - comment
+    # Turns on or off the generation of a method whose sole parameter is
+    # a request object. Not all languages will generate this method.
     request_object_method: true
+    # Specifies the configuration for retryable codes.
+    # The name must be defined in interfaces.retry_codes_def.
     retry_codes_name: non_idempotent
+    # Specifies the configuration for retry/backoff parameters.
+    # The name must be defined in interfaces.retry_params_def.
     retry_params_name: default
+    # Specifies the default timeout for a non-retrying call.
+    # If the call is retrying, refer to retry_params_name instead.
     timeout_millis: 60000
+    # The simple name of the method.
   - name: FindRelatedBooks
+    # Specifies the configuration for parameter flattening.
+    # Describes the parameter groups for which a generator should produce
+    # method overloads which allow a client to directly pass request message
+    # fields as method parameters. This information may or may not be used,
+    # depending on the target language.
+    # Consists of groups, which each represent a list of parameters to be
+    # flattened. Each parameter listed must be a field of the request message.
     flattening:
       groups:
       - parameters:
         - names
         - shelves
+    # Fields that are always required for a request to be valid.
     required_fields:
     - names
     - shelves
+    # Turns on or off the generation of a method whose sole parameter is
+    # a request object. Not all languages will generate this method.
     request_object_method: true
+    # Specifies the configuration for paging.
+    # Describes information for generating a method which transforms a paging
+    # list RPC into a stream of resources.
+    # Consists of a request and a response.
+    # The request specifies request information of the list method. It defines
+    # which fields match the paging pattern in the request. The request consists
+    # of a page_size_field and a token_field. The page_size_field is the
+    # name of the optional field specifying the maximum number of elements to be
+    # returned in the response. The token_field is the name of the field in the
+    # request containing the page token.
+    # The response specifies response information of the list method. It defines
+    # which fields match the paging pattern in the response. The response
+    # consists of a token_field and a resources_field. The token_field is the
+    # name of the field in the response containing the next page token. The
+    # resources_field is the name of the field in the response containing the
+    # list of resources belonging to the page.
     page_streaming:
       request:
         page_size_field: page_size
@@ -372,51 +859,119 @@ interfaces:
       response:
         token_field: next_page_token
         resources_field: names
+    # Specifies the configuration for retryable codes.
+    # The name must be defined in interfaces.retry_codes_def.
     retry_codes_name: idempotent
+    # Specifies the configuration for retry/backoff parameters.
+    # The name must be defined in interfaces.retry_params_def.
     retry_params_name: default
+    # Specifies the default timeout for a non-retrying call.
+    # If the call is retrying, refer to retry_params_name instead.
     timeout_millis: 60000
+    # The simple name of the method.
   - name: AddTag
+    # Specifies the configuration for parameter flattening.
+    # Describes the parameter groups for which a generator should produce
+    # method overloads which allow a client to directly pass request message
+    # fields as method parameters. This information may or may not be used,
+    # depending on the target language.
+    # Consists of groups, which each represent a list of parameters to be
+    # flattened. Each parameter listed must be a field of the request message.
     flattening:
       groups:
       - parameters:
         - resource
         - tag
+    # Fields that are always required for a request to be valid.
     required_fields:
     - resource
     - tag
+    # Turns on or off the generation of a method whose sole parameter is
+    # a request object. Not all languages will generate this method.
     request_object_method: true
+    # Specifies the configuration for retryable codes.
+    # The name must be defined in interfaces.retry_codes_def.
     retry_codes_name: non_idempotent
+    # Specifies the configuration for retry/backoff parameters.
+    # The name must be defined in interfaces.retry_params_def.
     retry_params_name: default
+    # Maps the field name of the request type to entity_name of
+    # interfaces.collections.
+    # Specifies the string pattern that the field must follow.
     field_name_patterns:
       resource: book_2
+    # Specifies the default timeout for a non-retrying call.
+    # If the call is retrying, refer to retry_params_name instead.
     timeout_millis: 60000
+    # The simple name of the method.
   - name: GetBigBook
+    # Specifies the configuration for parameter flattening.
+    # Describes the parameter groups for which a generator should produce
+    # method overloads which allow a client to directly pass request message
+    # fields as method parameters. This information may or may not be used,
+    # depending on the target language.
+    # Consists of groups, which each represent a list of parameters to be
+    # flattened. Each parameter listed must be a field of the request message.
     flattening:
       groups:
       - parameters:
         - name
+    # Fields that are always required for a request to be valid.
     required_fields:
     - name
+    # Turns on or off the generation of a method whose sole parameter is
+    # a request object. Not all languages will generate this method.
     request_object_method: false
+    # Specifies the configuration for retryable codes.
+    # The name must be defined in interfaces.retry_codes_def.
     retry_codes_name: idempotent
+    # Specifies the configuration for retry/backoff parameters.
+    # The name must be defined in interfaces.retry_params_def.
     retry_params_name: default
+    # Maps the field name of the request type to entity_name of
+    # interfaces.collections.
+    # Specifies the string pattern that the field must follow.
     field_name_patterns:
       name: book_2
+    # Specifies the default timeout for a non-retrying call.
+    # If the call is retrying, refer to retry_params_name instead.
     timeout_millis: 60000
+    # The simple name of the method.
   - name: GetBigNothing
+    # Specifies the configuration for parameter flattening.
+    # Describes the parameter groups for which a generator should produce
+    # method overloads which allow a client to directly pass request message
+    # fields as method parameters. This information may or may not be used,
+    # depending on the target language.
+    # Consists of groups, which each represent a list of parameters to be
+    # flattened. Each parameter listed must be a field of the request message.
     flattening:
       groups:
       - parameters:
         - name
+    # Fields that are always required for a request to be valid.
     required_fields:
     - name
+    # Turns on or off the generation of a method whose sole parameter is
+    # a request object. Not all languages will generate this method.
     request_object_method: false
+    # Specifies the configuration for retryable codes.
+    # The name must be defined in interfaces.retry_codes_def.
     retry_codes_name: idempotent
+    # Specifies the configuration for retry/backoff parameters.
+    # The name must be defined in interfaces.retry_params_def.
     retry_params_name: default
+    # Maps the field name of the request type to entity_name of
+    # interfaces.collections.
+    # Specifies the string pattern that the field must follow.
     field_name_patterns:
       name: book_2
+    # Specifies the default timeout for a non-retrying call.
+    # If the call is retrying, refer to retry_params_name instead.
     timeout_millis: 60000
+    # The simple name of the method.
   - name: TestOptionalRequiredFlatteningParams
+    # Fields that are always required for a request to be valid.
     required_fields:
     - required_singular_int32
     - required_singular_int64
@@ -472,8 +1027,16 @@ interfaces:
     - optional_repeated_fixed32
     - optional_repeated_fixed64
     - optional_map
+    # Turns on or off the generation of a method whose sole parameter is
+    # a request object. Not all languages will generate this method.
     request_object_method: true
+    # Specifies the configuration for retryable codes.
+    # The name must be defined in interfaces.retry_codes_def.
     retry_codes_name: non_idempotent
+    # Specifies the configuration for retry/backoff parameters.
+    # The name must be defined in interfaces.retry_params_def.
     retry_params_name: default
+    # Specifies the default timeout for a non-retrying call.
+    # If the call is retrying, refer to retry_params_name instead.
     timeout_millis: 60000
 

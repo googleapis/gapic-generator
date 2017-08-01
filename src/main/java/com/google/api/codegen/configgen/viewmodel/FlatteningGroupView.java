@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,13 +12,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.configgen;
+package com.google.api.codegen.configgen.viewmodel;
 
-import com.google.api.tools.framework.model.Method;
-import java.util.Map;
+import com.google.auto.value.AutoValue;
+import java.util.List;
 
-/** Interface for method config generator. */
-public interface MethodConfigGenerator {
-  /** Generate the config data into a map structure. Return null if no data is generated. */
-  public Map<String, Object> generate(Method method);
+@AutoValue
+public abstract class FlatteningGroupView {
+  public abstract List<String> parameters();
+
+  public static Builder newBuilder() {
+    return new AutoValue_FlatteningGroupView.Builder();
+  }
+
+  @AutoValue.Builder
+  public abstract static class Builder {
+    public abstract Builder parameters(List<String> val);
+
+    public abstract FlatteningGroupView build();
+  }
 }
