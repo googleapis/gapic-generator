@@ -142,9 +142,9 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
     }
   }
 
-  private static Method lookupMethod(Document source, String methodName) {
+  private static Method lookupMethod(Document source, String lookupMethod) {
     for (com.google.api.codegen.discovery.Method method : source.methods()) {
-      if (method.id().equals(methodName)) {
+      if (method.id().equals(lookupMethod)) {
         return method;
       }
     }

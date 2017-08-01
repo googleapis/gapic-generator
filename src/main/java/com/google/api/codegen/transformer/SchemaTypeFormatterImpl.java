@@ -52,7 +52,7 @@ public class SchemaTypeFormatterImpl implements SchemaTypeFormatter {
 
   @Override
   public String getFullNameFor(FieldType type) {
-    return getFullNameFor(type.getSchemaField());
+    return getFullNameFor(type.getDiscoveryField());
   }
 
   @Override
@@ -62,12 +62,12 @@ public class SchemaTypeFormatterImpl implements SchemaTypeFormatter {
 
   @Override
   public String renderPrimitiveValue(FieldType type, String value) {
-    return renderPrimitiveValue(type.getSchemaField(), value);
+    return renderPrimitiveValue(type.getDiscoveryField(), value);
   }
 
   /** Returns the nickname for the given type (without adding the full name to the import set). */
   @Override
   public String getNicknameFor(FieldType type) {
-    return getNicknameFor(type.getSchemaField());
+    return getNicknameFor(type.getDiscoveryField());
   }
 }

@@ -76,7 +76,7 @@ public abstract class FlatteningConfig {
               messageConfigs,
               methodConfigProto.getFieldNamePatterns(),
               resourceNameConfigs,
-              new FieldType(parameterField),
+              new ProtoField(parameterField),
               flatteningGroup.getParameterResourceNameTreatment().get(parameter),
               defaultResourceNameTreatment);
       if (fieldConfig == null) {

@@ -21,9 +21,7 @@ import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Method;
-import com.google.api.tools.framework.model.Interface;
 import com.google.auto.value.AutoValue;
-import javax.annotation.Nullable;
 
 /** The context for transforming a method to a view model object. */
 @AutoValue
@@ -67,12 +65,6 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
     return getFlatteningConfig() != null;
   }
 
-  @Nullable
-  @Override
-  public Interface getTargetInterface() {
-    return null;
-  }
-
   @Override
   public InterfaceConfig getInterfaceConfig() {
     return getProductConfig().getInterfaceConfig(interfaceName());
@@ -99,4 +91,19 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
 
   @Override
   public abstract SchemaTypeTable getTypeTable();
+
+  @Override
+  public String getAndSaveRequestTypeName() {
+    return getTypeTable().getAndSaveNicknameFor(getMethod().request());
+  }
+
+  @Override
+  public String getAndSaveResponseTypeName() {
+    return getTypeTable().getAndSaveNicknameFor(getMethod().response());
+  }
+
+  @Override
+  public String getBatchingDescriptorConstName() {
+    return getNamer().getBatchingDescriptorConstName(getMethod());
+  }
 }

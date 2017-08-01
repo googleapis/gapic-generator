@@ -35,7 +35,6 @@ import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaRenderingUtil;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.ServiceMethodType;
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
@@ -81,7 +80,7 @@ public class JavaSurfaceNamer extends SurfaceNamer {
 
   @Override
   public boolean shouldImportRequestObjectParamElementType(FieldType field) {
-    if (Field.IS_MAP.apply(field.getProtoBasedField())) {
+    if (field.isMap()) {
       return false;
     } else {
       return true;

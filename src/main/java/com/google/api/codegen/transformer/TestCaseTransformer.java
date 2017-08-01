@@ -137,12 +137,10 @@ public class TestCaseTransformer {
     }
 
     FieldConfig resourcesFieldConfig = methodConfig.getPageStreaming().getResourcesFieldConfig();
-    Field resourcesField = resourcesFieldConfig.getField().getProtoBasedField();
+    FieldType resourcesField = resourcesFieldConfig.getField();
     String resourceTypeName =
-        methodContext.getTypeTable().getAndSaveNicknameForElementType(resourcesField.getType());
-    String resourcesFieldGetterName =
-        namer.getFieldGetFunctionName(
-            resourcesField.getType(), Name.from(resourcesField.getSimpleName()));
+        methodContext.getTypeTable().getAndSaveNicknameForElementType(resourcesField);
+    String resourcesFieldGetterName = namer.getFieldGetFunctionName(resourcesField);
     pageStreamingResponseViews.add(
         PageStreamingResponseView.newBuilder()
             .resourceTypeName(resourceTypeName)
@@ -194,7 +192,7 @@ public class TestCaseTransformer {
     }
     for (Field field : outputType.getMessageType().getFields()) {
       if (field.getType().isPrimitive() && !field.getType().isRepeated()) {
-        primitiveFields.add(new FieldType(field));
+        primitiveFields.add(new ProtoField(field));
       }
     }
     return InitCodeContext.newBuilder()

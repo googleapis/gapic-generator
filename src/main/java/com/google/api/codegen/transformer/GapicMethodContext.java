@@ -49,7 +49,7 @@ public abstract class GapicMethodContext implements MethodContext {
         typeTable);
   }
 
-  /** The Method for which this object a transformation context. */
+  /** The Method for which this object is a transformation context. */
   public abstract Method getMethod();
 
   @Override
@@ -63,7 +63,6 @@ public abstract class GapicMethodContext implements MethodContext {
     return getFlatteningConfig() != null;
   }
 
-  @Override
   public Interface getTargetInterface() {
     return GapicInterfaceConfig.getTargetInterface(
         getInterface(), getMethodConfig().getRerouteToGrpcInterface());
@@ -91,5 +90,20 @@ public abstract class GapicMethodContext implements MethodContext {
         getMethodConfig(),
         getFlatteningConfig(),
         getFeatureConfig());
+  }
+
+  @Override
+  public String getAndSaveRequestTypeName() {
+    return getTypeTable().getAndSaveNicknameFor(getMethod().getInputType());
+  }
+
+  @Override
+  public String getAndSaveResponseTypeName() {
+    return getTypeTable().getAndSaveNicknameFor(getMethod().getOutputType());
+  }
+
+  @Override
+  public String getBatchingDescriptorConstName() {
+    return getNamer().getBatchingDescriptorConstName(getMethod());
   }
 }

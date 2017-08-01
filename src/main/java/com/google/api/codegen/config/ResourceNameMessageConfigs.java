@@ -71,7 +71,7 @@ public abstract class ResourceNameMessageConfigs {
           }
           for (Field field : msg.getFields()) {
             if (messageConfig.getEntityNameForField(field.getSimpleName()) != null) {
-              fieldsByMessage.put(msg.getFullName(), new FieldType(field));
+              fieldsByMessage.put(msg.getFullName(), new ProtoField(field));
             }
           }
         }
@@ -100,7 +100,7 @@ public abstract class ResourceNameMessageConfigs {
 
     // TODO(andrealin): implementation.
     for (Map.Entry<String, Schema> schemaEntry : document.schemas().entrySet()) {
-      fieldsByMessage.put(schemaEntry.getKey(), new FieldType(schemaEntry.getValue()));
+      fieldsByMessage.put(schemaEntry.getKey(), new DiscoveryField(schemaEntry.getValue()));
     }
     return new AutoValue_ResourceNameMessageConfigs(messageResourceTypeConfigMap, fieldsByMessage);
   }

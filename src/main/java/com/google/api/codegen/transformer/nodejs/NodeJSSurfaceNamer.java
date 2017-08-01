@@ -37,7 +37,6 @@ import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.js.JSCommentReformatter;
 import com.google.api.codegen.util.js.JSNameFormatter;
 import com.google.api.codegen.util.js.JSTypeTable;
-import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.EnumType;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
@@ -177,6 +176,11 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getFieldGetFunctionName(FieldType type, Name identifier) {
+    return identifier.toLowerCamel();
+  }
+
+  @Override
   public String getAsyncApiMethodName(Method method, VisibilityConfig visibility) {
     return getApiMethodName(Name.upperCamel(method.getSimpleName()), visibility);
   }
@@ -240,7 +244,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
       ImportTypeTable typeTable, GapicMethodConfig methodConfig) {
     String returnTypeDoc = returnTypeDoc(typeTable, methodConfig);
     Method method = methodConfig.getMethod();
-    String classInfo = getParamTypeName((ModelTypeTable) typeTable, method.getOutputType());
+    String classInfo = getParamTypeName(typeTable, method.getOutputType());
     String callbackType;
     if (isProtobufEmpty(method.getOutputMessage())) {
       callbackType = "function(?Error)";
@@ -307,7 +311,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getParamTypeName(ModelTypeTable typeTable, TypeRef type) {
+  public String getParamTypeName(ImportTypeTable typeTable, TypeRef type) {
     String cardinalityComment = "";
     if (type.getCardinality() == TypeRef.Cardinality.REPEATED) {
       if (type.isMap()) {
@@ -333,16 +337,14 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
       if (resourcesType.isMessage()) {
         returnTypeDoc +=
             commentReformatter.getLinkedElementName(
-                resourcesType.getProtoBasedField().getType().getMessageType());
+                resourcesType.getProtoTypeRef().getMessageType());
       } else if (resourcesType.isEnum()) {
         returnTypeDoc +=
-            commentReformatter.getLinkedElementName(
-                resourcesType.getProtoBasedField().getType().getEnumType());
+            commentReformatter.getLinkedElementName(resourcesType.getProtoTypeRef().getEnumType());
       } else {
         // Converting to lowercase because "String" is capitalized in NodeJSModelTypeNameConverter.
         returnTypeDoc +=
-            getParamTypeNoCardinality(typeTable, resourcesType.getProtoBasedField().getType())
-                .toLowerCase();
+            getParamTypeNoCardinality(typeTable, resourcesType.getProtoTypeRef()).toLowerCase();
       }
     } else if (methodConfig.isLongRunningOperation()) {
       returnTypeDoc =
@@ -380,8 +382,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   @Override
   public List<String> getDocLines(FieldType field) {
     ImmutableList.Builder<String> lines = ImmutableList.builder();
-    List<String> fieldDocLines =
-        getDocLines(DocumentationUtil.getScopedDescription(field.getProtoBasedField()));
+    List<String> fieldDocLines = getDocLines(field.getScopedDocumentation());
     String extraFieldDescription = getExtraFieldDescription(field);
 
     lines.addAll(fieldDocLines);
@@ -400,12 +401,10 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     boolean fieldIsEnum = field.isEnum();
     if (fieldIsMessage) {
       return "This object should have the same structure as "
-          + commentReformatter.getLinkedElementName(
-              field.getProtoBasedField().getType().getMessageType());
+          + commentReformatter.getLinkedElementName(field.getProtoTypeRef().getMessageType());
     } else if (fieldIsEnum) {
       return "The number should be among the values of "
-          + commentReformatter.getLinkedElementName(
-              field.getProtoBasedField().getType().getEnumType());
+          + commentReformatter.getLinkedElementName(field.getProtoTypeRef().getEnumType());
     }
     return "";
   }

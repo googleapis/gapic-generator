@@ -1207,7 +1207,7 @@ public class StaticLangApiMethodTransformer {
       }
     } else {
       if (namer.shouldImportRequestObjectParamType(field)) {
-        typeName = typeTable.getAndSaveNicknameFor(field.getProtoBasedField().getType());
+        typeName = typeTable.getAndSaveNicknameFor(field);
         if (!isRequired) {
           typeName = namer.makePrimitiveTypeNullable(typeName, field);
         }
@@ -1234,11 +1234,9 @@ public class StaticLangApiMethodTransformer {
     param.setCallName(setCallName);
     param.addCallName(addCallName);
     param.transformParamFunctionName(transformParamFunctionName);
-    param.isMap(field.getProtoBasedField().getType().isMap());
-    param.isArray(
-        !field.getProtoBasedField().getType().isMap()
-            && field.getProtoBasedField().getType().isRepeated());
-    param.isPrimitive(namer.isPrimitive(field.getProtoBasedField().getType()));
+    param.isMap(field.isMap());
+    param.isArray(!field.isMap() && field.isRepeated());
+    param.isPrimitive(namer.isPrimitive(field));
     param.isOptional(!isRequired);
     if (!isRequired) {
       param.optionalDefault(namer.getOptionalFieldDefaultValue(fieldConfig, context));
@@ -1260,8 +1258,7 @@ public class StaticLangApiMethodTransformer {
       FieldType field = fieldConfig.getField();
       SimpleParamDocView.Builder paramDoc = SimpleParamDocView.newBuilder();
       paramDoc.paramName(context.getNamer().getVariableName(field));
-      paramDoc.typeName(
-          context.getTypeTable().getAndSaveNicknameFor(field.getProtoBasedField().getType()));
+      paramDoc.typeName(context.getTypeTable().getAndSaveNicknameFor(field));
 
       List<String> docLines = null;
       MethodConfig methodConfig = context.getMethodConfig();
@@ -1307,7 +1304,7 @@ public class StaticLangApiMethodTransformer {
       FieldType field = fieldConfig.getField();
       SimpleParamDocView.Builder paramDoc = SimpleParamDocView.newBuilder();
       paramDoc.paramName(context.getNamer().getVariableName(field));
-      paramDoc.typeName(context.getTypeTable().getAndSaveNicknameFor(field.getSchemaField()));
+      paramDoc.typeName(context.getTypeTable().getAndSaveNicknameFor(field.getDiscoveryField()));
 
       List<String> docLines = null;
       MethodConfig methodConfig = context.getMethodConfig();

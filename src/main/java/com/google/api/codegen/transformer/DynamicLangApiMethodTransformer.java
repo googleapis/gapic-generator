@@ -136,8 +136,7 @@ public class DynamicLangApiMethodTransformer {
     if (methodConfig.isPageStreaming()) {
       docBuilder.pageStreamingResourceTypeName(
           surfaceNamer.getTypeNameDoc(
-              context.getTypeTable(),
-              methodConfig.getPageStreaming().getResourcesField().getProtoBasedField().getType()));
+              context.getTypeTable(), methodConfig.getPageStreaming().getResourcesField()));
     }
     docBuilder.throwsDocLines(surfaceNamer.getThrowsDocLines(methodConfig));
 
@@ -189,16 +188,13 @@ public class DynamicLangApiMethodTransformer {
     param.name(namer.getVariableName(field));
     param.keyName(namer.getFieldKey(field));
     param.nameAsMethodName(namer.getFieldGetFunctionName(featureConfig, fieldConfig));
-    param.typeName(typeTable.getAndSaveNicknameFor(field.getProtoBasedField().getType()));
-    param.elementTypeName(
-        typeTable.getAndSaveNicknameForElementType(field.getProtoBasedField().getType()));
+    param.typeName(typeTable.getAndSaveNicknameFor(field));
+    param.elementTypeName(typeTable.getAndSaveNicknameForElementType(field));
     param.setCallName(namer.getFieldSetFunctionName(featureConfig, fieldConfig));
     param.addCallName(namer.getFieldAddFunctionName(field));
-    param.isMap(field.getProtoBasedField().getType().isMap());
-    param.isArray(
-        !field.getProtoBasedField().getType().isMap()
-            && field.getProtoBasedField().getType().isRepeated());
-    param.isPrimitive(namer.isPrimitive(field.getProtoBasedField().getType()));
+    param.isMap(field.isMap());
+    param.isArray(!field.isMap() && field.isRepeated());
+    param.isPrimitive(field.isPrimitive());
     param.isOptional(!isRequired);
     if (!isRequired) {
       param.optionalDefault(namer.getOptionalFieldDefaultValue(fieldConfig, context));

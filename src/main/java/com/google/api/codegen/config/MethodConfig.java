@@ -18,10 +18,8 @@ import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.tools.framework.model.Method;
-import com.google.api.tools.framework.model.Oneof;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.joda.time.Duration;
@@ -120,17 +118,6 @@ public abstract class MethodConfig {
     return FieldConfig.toFieldTypeIterable(getOptionalFieldConfigs());
   }
 
-  /** Return the list of "one of" instances associated with the fields. */
-  public Iterable<Oneof> getOneofs() {
-    ImmutableSet.Builder<Oneof> answer = ImmutableSet.builder();
-
-    for (FieldType field : getOptionalFields()) {
-      if (field.getProtoBasedField().getOneof() == null) {
-        continue;
-      }
-      answer.add(field.getProtoBasedField().getOneof());
-    }
-
-    return answer.build();
-  }
+  /** Return the lists of the simple names of the "one of" instances associated with the fields. */
+  public abstract Iterable<Iterable<String>> getOneofsNames();
 }

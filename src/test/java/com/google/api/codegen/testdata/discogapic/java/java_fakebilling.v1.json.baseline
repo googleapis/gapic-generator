@@ -17,6 +17,7 @@
 package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
+import com.google.api.gax.core.ApiMessage;
 import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
 import java.util.Collections;
@@ -50,6 +51,26 @@ public final class AttachedDisk implements ApiMessage {
     this.type = type;
   }
 
+  @Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    if (fieldNames.contains("index")) {
+      fieldMap.put("index", Collections.singletonList(String.valueOf(index)));
+    }
+    if (fieldNames.contains("interface2")) {
+      fieldMap.put("interface2", Collections.singletonList(String.valueOf(interface2)));
+    }
+    if (fieldNames.contains("licenses")) {
+      fieldMap.put("licenses", Collections.singletonList(String.valueOf(licenses)));
+    }
+    if (fieldNames.contains("mode")) {
+      fieldMap.put("mode", Collections.singletonList(String.valueOf(mode)));
+    }
+    if (fieldNames.contains("type")) {
+      fieldMap.put("type", Collections.singletonList(String.valueOf(type)));
+    }
+    return fieldMap;
+  }
 
   public Integer getIndex() {
     return index;
@@ -224,6 +245,7 @@ public final class AttachedDisk implements ApiMessage {
 package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
+import com.google.api.gax.core.ApiMessage;
 import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
 import java.util.Collections;
@@ -248,6 +270,17 @@ public final class BillingAccount implements ApiMessage {
     this.open = open;
   }
 
+  @Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    if (fieldNames.contains("name")) {
+      fieldMap.put("name", Collections.singletonList(String.valueOf(name)));
+    }
+    if (fieldNames.contains("open")) {
+      fieldMap.put("open", Collections.singletonList(String.valueOf(open)));
+    }
+    return fieldMap;
+  }
 
   public String getName() {
     return name;
@@ -359,6 +392,7 @@ public final class BillingAccount implements ApiMessage {
 package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
+import com.google.api.gax.core.ApiMessage;
 import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
 import java.util.Collections;
@@ -383,6 +417,17 @@ public final class Data implements ApiMessage {
     this.value = value;
   }
 
+  @Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    if (fieldNames.contains("key")) {
+      fieldMap.put("key", Collections.singletonList(String.valueOf(key)));
+    }
+    if (fieldNames.contains("value")) {
+      fieldMap.put("value", Collections.singletonList(String.valueOf(value)));
+    }
+    return fieldMap;
+  }
 
   public String getKey() {
     return key;
@@ -494,6 +539,7 @@ public final class Data implements ApiMessage {
 package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
+import com.google.api.gax.core.ApiMessage;
 import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
 import java.util.Collections;
@@ -515,6 +561,14 @@ public final class Error implements ApiMessage {
     this.errors = errors;
   }
 
+  @Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    if (fieldNames.contains("errors")) {
+      fieldMap.put("errors", Collections.singletonList(String.valueOf(errors)));
+    }
+    return fieldMap;
+  }
 
   public List<Errors> getErrors() {
     return errors;
@@ -605,6 +659,7 @@ public final class Error implements ApiMessage {
 package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
+import com.google.api.gax.core.ApiMessage;
 import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
 import java.util.Collections;
@@ -632,6 +687,20 @@ public final class Errors implements ApiMessage {
     this.message = message;
   }
 
+  @Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    if (fieldNames.contains("code")) {
+      fieldMap.put("code", Collections.singletonList(String.valueOf(code)));
+    }
+    if (fieldNames.contains("location")) {
+      fieldMap.put("location", Collections.singletonList(String.valueOf(location)));
+    }
+    if (fieldNames.contains("message")) {
+      fieldMap.put("message", Collections.singletonList(String.valueOf(message)));
+    }
+    return fieldMap;
+  }
 
   public String getCode() {
     return code;
@@ -764,6 +833,7 @@ public final class Errors implements ApiMessage {
 package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
+import com.google.api.gax.core.ApiMessage;
 import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
 import java.util.Collections;
@@ -791,6 +861,20 @@ public final class Interface implements ApiMessage {
     this.interface2 = interface2;
   }
 
+  @Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    if (fieldNames.contains("face")) {
+      fieldMap.put("face", Collections.singletonList(String.valueOf(face)));
+    }
+    if (fieldNames.contains("inter")) {
+      fieldMap.put("inter", Collections.singletonList(String.valueOf(inter)));
+    }
+    if (fieldNames.contains("interface2")) {
+      fieldMap.put("interface2", Collections.singletonList(String.valueOf(interface2)));
+    }
+    return fieldMap;
+  }
 
   public String getFace() {
     return face;
@@ -923,6 +1007,7 @@ public final class Interface implements ApiMessage {
 package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
+import com.google.api.gax.core.ApiMessage;
 import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
 import java.util.Collections;
@@ -947,6 +1032,17 @@ public final class ListBillingAccountsResponse implements ApiMessage {
     this.nextPageToken = nextPageToken;
   }
 
+  @Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    if (fieldNames.contains("billingAccounts")) {
+      fieldMap.put("billingAccounts", Collections.singletonList(String.valueOf(billingAccounts)));
+    }
+    if (fieldNames.contains("nextPageToken")) {
+      fieldMap.put("nextPageToken", Collections.singletonList(String.valueOf(nextPageToken)));
+    }
+    return fieldMap;
+  }
 
   public List<BillingAccount> getBillingAccounts() {
     return billingAccounts;
@@ -1058,6 +1154,7 @@ public final class ListBillingAccountsResponse implements ApiMessage {
 package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
+import com.google.api.gax.core.ApiMessage;
 import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
 import java.util.Collections;
@@ -1082,6 +1179,17 @@ public final class ListProjectBillingInfoResponse implements ApiMessage {
     this.projectBillingInfo = projectBillingInfo;
   }
 
+  @Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    if (fieldNames.contains("nextPageToken")) {
+      fieldMap.put("nextPageToken", Collections.singletonList(String.valueOf(nextPageToken)));
+    }
+    if (fieldNames.contains("projectBillingInfo")) {
+      fieldMap.put("projectBillingInfo", Collections.singletonList(String.valueOf(projectBillingInfo)));
+    }
+    return fieldMap;
+  }
 
   public String getNextPageToken() {
     return nextPageToken;
@@ -1193,6 +1301,7 @@ public final class ListProjectBillingInfoResponse implements ApiMessage {
 package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
+import com.google.api.gax.core.ApiMessage;
 import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
 import java.util.Collections;
@@ -1235,6 +1344,35 @@ public final class Operation implements ApiMessage {
     this.warnings = warnings;
   }
 
+  @Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    if (fieldNames.contains("creationTimestamp")) {
+      fieldMap.put("creationTimestamp", Collections.singletonList(String.valueOf(creationTimestamp)));
+    }
+    if (fieldNames.contains("description")) {
+      fieldMap.put("description", Collections.singletonList(String.valueOf(description)));
+    }
+    if (fieldNames.contains("error")) {
+      fieldMap.put("error", Collections.singletonList(String.valueOf(error)));
+    }
+    if (fieldNames.contains("httpErrorStatusCode")) {
+      fieldMap.put("httpErrorStatusCode", Collections.singletonList(String.valueOf(httpErrorStatusCode)));
+    }
+    if (fieldNames.contains("id")) {
+      fieldMap.put("id", Collections.singletonList(String.valueOf(id)));
+    }
+    if (fieldNames.contains("name")) {
+      fieldMap.put("name", Collections.singletonList(String.valueOf(name)));
+    }
+    if (fieldNames.contains("status")) {
+      fieldMap.put("status", Collections.singletonList(String.valueOf(status)));
+    }
+    if (fieldNames.contains("warnings")) {
+      fieldMap.put("warnings", Collections.singletonList(String.valueOf(warnings)));
+    }
+    return fieldMap;
+  }
 
   public String getCreationTimestamp() {
     return creationTimestamp;
@@ -1472,6 +1610,7 @@ public final class Operation implements ApiMessage {
 package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
+import com.google.api.gax.core.ApiMessage;
 import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
 import java.util.Collections;
@@ -1496,6 +1635,17 @@ public final class ProjectBillingInfo implements ApiMessage {
     this.projectId = projectId;
   }
 
+  @Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    if (fieldNames.contains("billingEnabled")) {
+      fieldMap.put("billingEnabled", Collections.singletonList(String.valueOf(billingEnabled)));
+    }
+    if (fieldNames.contains("projectId")) {
+      fieldMap.put("projectId", Collections.singletonList(String.valueOf(projectId)));
+    }
+    return fieldMap;
+  }
 
   public Boolean getBillingEnabled() {
     return billingEnabled;
@@ -1607,6 +1757,7 @@ public final class ProjectBillingInfo implements ApiMessage {
 package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
+import com.google.api.gax.core.ApiMessage;
 import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
 import java.util.Collections;
@@ -1637,6 +1788,23 @@ public final class Warnings implements ApiMessage {
     this.projectBillingInfo = projectBillingInfo;
   }
 
+  @Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    if (fieldNames.contains("code")) {
+      fieldMap.put("code", Collections.singletonList(String.valueOf(code)));
+    }
+    if (fieldNames.contains("data")) {
+      fieldMap.put("data", Collections.singletonList(String.valueOf(data)));
+    }
+    if (fieldNames.contains("message")) {
+      fieldMap.put("message", Collections.singletonList(String.valueOf(message)));
+    }
+    if (fieldNames.contains("projectBillingInfo")) {
+      fieldMap.put("projectBillingInfo", Collections.singletonList(String.valueOf(projectBillingInfo)));
+    }
+    return fieldMap;
+  }
 
   public String getCode() {
     return code;
@@ -1790,6 +1958,7 @@ public final class Warnings implements ApiMessage {
 package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
+import com.google.api.gax.core.ApiMessage;
 import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
 import java.util.Collections;
@@ -1839,31 +2008,31 @@ public final class BillingAccountsGetHttpRequest implements ApiMessage {
   public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
     Map<String, List<String>> fieldMap = new HashMap<>();
     if (fieldNames.contains("access_token")) {
-      fieldMap.put("access_token", Collections.singletonList(access_token));
+      fieldMap.put("access_token", Collections.singletonList(String.valueOf(access_token)));
     }
     if (fieldNames.contains("callback")) {
-      fieldMap.put("callback", Collections.singletonList(callback));
+      fieldMap.put("callback", Collections.singletonList(String.valueOf(callback)));
     }
     if (fieldNames.contains("fields")) {
-      fieldMap.put("fields", Collections.singletonList(fields));
+      fieldMap.put("fields", Collections.singletonList(String.valueOf(fields)));
     }
     if (fieldNames.contains("fooRepeated")) {
       fieldMap.put("fooRepeated", fooRepeated);
     }
     if (fieldNames.contains("key")) {
-      fieldMap.put("key", Collections.singletonList(key));
+      fieldMap.put("key", Collections.singletonList(String.valueOf(key)));
     }
     if (fieldNames.contains("name")) {
-      fieldMap.put("name", Collections.singletonList(name));
+      fieldMap.put("name", Collections.singletonList(String.valueOf(name)));
     }
     if (fieldNames.contains("prettyPrint")) {
-      fieldMap.put("prettyPrint", Collections.singletonList(prettyPrint));
+      fieldMap.put("prettyPrint", Collections.singletonList(String.valueOf(prettyPrint)));
     }
     if (fieldNames.contains("quotaUser")) {
-      fieldMap.put("quotaUser", Collections.singletonList(quotaUser));
+      fieldMap.put("quotaUser", Collections.singletonList(String.valueOf(quotaUser)));
     }
     if (fieldNames.contains("userIp")) {
-      fieldMap.put("userIp", Collections.singletonList(userIp));
+      fieldMap.put("userIp", Collections.singletonList(String.valueOf(userIp)));
     }
     return fieldMap;
   }
@@ -2132,6 +2301,7 @@ public final class BillingAccountsGetHttpRequest implements ApiMessage {
 package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
+import com.google.api.gax.core.ApiMessage;
 import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
 import java.util.Collections;
@@ -2184,34 +2354,34 @@ public final class BillingAccountsListHttpRequest implements ApiMessage {
   public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
     Map<String, List<String>> fieldMap = new HashMap<>();
     if (fieldNames.contains("access_token")) {
-      fieldMap.put("access_token", Collections.singletonList(access_token));
+      fieldMap.put("access_token", Collections.singletonList(String.valueOf(access_token)));
     }
     if (fieldNames.contains("callback")) {
-      fieldMap.put("callback", Collections.singletonList(callback));
+      fieldMap.put("callback", Collections.singletonList(String.valueOf(callback)));
     }
     if (fieldNames.contains("fields")) {
-      fieldMap.put("fields", Collections.singletonList(fields));
+      fieldMap.put("fields", Collections.singletonList(String.valueOf(fields)));
     }
     if (fieldNames.contains("key")) {
-      fieldMap.put("key", Collections.singletonList(key));
+      fieldMap.put("key", Collections.singletonList(String.valueOf(key)));
     }
     if (fieldNames.contains("maxResults")) {
-      fieldMap.put("maxResults", Collections.singletonList(maxResults));
+      fieldMap.put("maxResults", Collections.singletonList(String.valueOf(maxResults)));
     }
     if (fieldNames.contains("pageSize")) {
-      fieldMap.put("pageSize", Collections.singletonList(pageSize));
+      fieldMap.put("pageSize", Collections.singletonList(String.valueOf(pageSize)));
     }
     if (fieldNames.contains("pageToken")) {
-      fieldMap.put("pageToken", Collections.singletonList(pageToken));
+      fieldMap.put("pageToken", Collections.singletonList(String.valueOf(pageToken)));
     }
     if (fieldNames.contains("prettyPrint")) {
-      fieldMap.put("prettyPrint", Collections.singletonList(prettyPrint));
+      fieldMap.put("prettyPrint", Collections.singletonList(String.valueOf(prettyPrint)));
     }
     if (fieldNames.contains("quotaUser")) {
-      fieldMap.put("quotaUser", Collections.singletonList(quotaUser));
+      fieldMap.put("quotaUser", Collections.singletonList(String.valueOf(quotaUser)));
     }
     if (fieldNames.contains("userIp")) {
-      fieldMap.put("userIp", Collections.singletonList(userIp));
+      fieldMap.put("userIp", Collections.singletonList(String.valueOf(userIp)));
     }
     return fieldMap;
   }
@@ -2494,6 +2664,7 @@ public final class BillingAccountsListHttpRequest implements ApiMessage {
 package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
+import com.google.api.gax.core.ApiMessage;
 import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
 import java.util.Collections;
@@ -2540,28 +2711,28 @@ public final class ProjectsGetBillingInfoHttpRequest implements ApiMessage {
   public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
     Map<String, List<String>> fieldMap = new HashMap<>();
     if (fieldNames.contains("access_token")) {
-      fieldMap.put("access_token", Collections.singletonList(access_token));
+      fieldMap.put("access_token", Collections.singletonList(String.valueOf(access_token)));
     }
     if (fieldNames.contains("callback")) {
-      fieldMap.put("callback", Collections.singletonList(callback));
+      fieldMap.put("callback", Collections.singletonList(String.valueOf(callback)));
     }
     if (fieldNames.contains("fields")) {
-      fieldMap.put("fields", Collections.singletonList(fields));
+      fieldMap.put("fields", Collections.singletonList(String.valueOf(fields)));
     }
     if (fieldNames.contains("key")) {
-      fieldMap.put("key", Collections.singletonList(key));
+      fieldMap.put("key", Collections.singletonList(String.valueOf(key)));
     }
     if (fieldNames.contains("name")) {
-      fieldMap.put("name", Collections.singletonList(name));
+      fieldMap.put("name", Collections.singletonList(String.valueOf(name)));
     }
     if (fieldNames.contains("prettyPrint")) {
-      fieldMap.put("prettyPrint", Collections.singletonList(prettyPrint));
+      fieldMap.put("prettyPrint", Collections.singletonList(String.valueOf(prettyPrint)));
     }
     if (fieldNames.contains("quotaUser")) {
-      fieldMap.put("quotaUser", Collections.singletonList(quotaUser));
+      fieldMap.put("quotaUser", Collections.singletonList(String.valueOf(quotaUser)));
     }
     if (fieldNames.contains("userIp")) {
-      fieldMap.put("userIp", Collections.singletonList(userIp));
+      fieldMap.put("userIp", Collections.singletonList(String.valueOf(userIp)));
     }
     return fieldMap;
   }
@@ -2809,6 +2980,7 @@ public final class ProjectsGetBillingInfoHttpRequest implements ApiMessage {
 package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
+import com.google.api.gax.core.ApiMessage;
 import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
 import java.util.Collections;
@@ -2861,34 +3033,34 @@ public final class ProjectsListHttpRequest implements ApiMessage {
   public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
     Map<String, List<String>> fieldMap = new HashMap<>();
     if (fieldNames.contains("access_token")) {
-      fieldMap.put("access_token", Collections.singletonList(access_token));
+      fieldMap.put("access_token", Collections.singletonList(String.valueOf(access_token)));
     }
     if (fieldNames.contains("callback")) {
-      fieldMap.put("callback", Collections.singletonList(callback));
+      fieldMap.put("callback", Collections.singletonList(String.valueOf(callback)));
     }
     if (fieldNames.contains("fields")) {
-      fieldMap.put("fields", Collections.singletonList(fields));
+      fieldMap.put("fields", Collections.singletonList(String.valueOf(fields)));
     }
     if (fieldNames.contains("key")) {
-      fieldMap.put("key", Collections.singletonList(key));
+      fieldMap.put("key", Collections.singletonList(String.valueOf(key)));
     }
     if (fieldNames.contains("name")) {
-      fieldMap.put("name", Collections.singletonList(name));
+      fieldMap.put("name", Collections.singletonList(String.valueOf(name)));
     }
     if (fieldNames.contains("pageSize")) {
-      fieldMap.put("pageSize", Collections.singletonList(pageSize));
+      fieldMap.put("pageSize", Collections.singletonList(String.valueOf(pageSize)));
     }
     if (fieldNames.contains("pageToken")) {
-      fieldMap.put("pageToken", Collections.singletonList(pageToken));
+      fieldMap.put("pageToken", Collections.singletonList(String.valueOf(pageToken)));
     }
     if (fieldNames.contains("prettyPrint")) {
-      fieldMap.put("prettyPrint", Collections.singletonList(prettyPrint));
+      fieldMap.put("prettyPrint", Collections.singletonList(String.valueOf(prettyPrint)));
     }
     if (fieldNames.contains("quotaUser")) {
-      fieldMap.put("quotaUser", Collections.singletonList(quotaUser));
+      fieldMap.put("quotaUser", Collections.singletonList(String.valueOf(quotaUser)));
     }
     if (fieldNames.contains("userIp")) {
-      fieldMap.put("userIp", Collections.singletonList(userIp));
+      fieldMap.put("userIp", Collections.singletonList(String.valueOf(userIp)));
     }
     return fieldMap;
   }
@@ -3178,6 +3350,7 @@ public final class ProjectsListHttpRequest implements ApiMessage {
 package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
+import com.google.api.gax.core.ApiMessage;
 import com.google.common.collect.ImmutableList;
 import java.io.Serializable;
 import java.util.Collections;
@@ -3227,31 +3400,31 @@ public final class ProjectsUpdateBillingInfoHttpRequest implements ApiMessage {
   public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
     Map<String, List<String>> fieldMap = new HashMap<>();
     if (fieldNames.contains("access_token")) {
-      fieldMap.put("access_token", Collections.singletonList(access_token));
+      fieldMap.put("access_token", Collections.singletonList(String.valueOf(access_token)));
     }
     if (fieldNames.contains("callback")) {
-      fieldMap.put("callback", Collections.singletonList(callback));
+      fieldMap.put("callback", Collections.singletonList(String.valueOf(callback)));
     }
     if (fieldNames.contains("fields")) {
-      fieldMap.put("fields", Collections.singletonList(fields));
+      fieldMap.put("fields", Collections.singletonList(String.valueOf(fields)));
     }
     if (fieldNames.contains("key")) {
-      fieldMap.put("key", Collections.singletonList(key));
+      fieldMap.put("key", Collections.singletonList(String.valueOf(key)));
     }
     if (fieldNames.contains("name")) {
-      fieldMap.put("name", Collections.singletonList(name));
+      fieldMap.put("name", Collections.singletonList(String.valueOf(name)));
     }
     if (fieldNames.contains("prettyPrint")) {
-      fieldMap.put("prettyPrint", Collections.singletonList(prettyPrint));
+      fieldMap.put("prettyPrint", Collections.singletonList(String.valueOf(prettyPrint)));
     }
     if (fieldNames.contains("quotaUser")) {
-      fieldMap.put("quotaUser", Collections.singletonList(quotaUser));
+      fieldMap.put("quotaUser", Collections.singletonList(String.valueOf(quotaUser)));
     }
     if (fieldNames.contains("request")) {
-      fieldMap.put("request", Collections.singletonList(request));
+      fieldMap.put("request", Collections.singletonList(String.valueOf(request)));
     }
     if (fieldNames.contains("userIp")) {
-      fieldMap.put("userIp", Collections.singletonList(userIp));
+      fieldMap.put("userIp", Collections.singletonList(String.valueOf(userIp)));
     }
     return fieldMap;
   }
@@ -3731,7 +3904,7 @@ public class BillingAccountAdminClient implements AutoCloseable {
    *
    *   while (true) {
    *     ListBillingAccountsResponse response = billingAccountAdminClient.fakebillingBillingAccountsListCallable().call();
-   *     for (ListBillingAccountsResponse element : response.setResponse()) {
+   *     for (ListBillingAccountsResponse element : response.getResponse()) {
    *       // doThingsWith(element);
    *     }
    *     String nextPageToken = response.getNextPageToken();
@@ -3761,7 +3934,7 @@ public class BillingAccountAdminClient implements AutoCloseable {
    * }
    * </code></pre>
    *
-   * @param name $ NOT IMPLEMENTED: SurfaceNamer.getDocLines $
+   * @param name DiscoveryField.getScopedDocumentation() not yet implemented.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   @BetaApi
@@ -4050,15 +4223,15 @@ public class BillingAccountAdminSettings extends ClientSettings {
         }
         @Override
         public Integer extractPageSize(billingAccountsListHttpRequest payload) {
-          return payload.setMaxResults();
+          return payload.getMaxResults();
         }
         @Override
         public String extractNextToken(ListBillingAccountsResponse payload) {
-          return payload.setListBillingAccountsResponse();
+          return payload.getListBillingAccountsResponse();
         }
         @Override
         public Iterable<ListBillingAccountsResponse> extractResources(ListBillingAccountsResponse payload) {
-          return payload.setResponse();
+          return payload.getResponse();
         }
       };
 

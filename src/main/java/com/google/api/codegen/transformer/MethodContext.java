@@ -45,11 +45,17 @@ public interface MethodContext {
 
   boolean isFlattenedMethodContext();
 
-  Interface getTargetInterface();
-
   InterfaceConfig getInterfaceConfig();
 
   SingleResourceNameConfig getSingleResourceNameConfig(String entityName);
 
   MethodContext cloneWithEmptyTypeTable();
+
+  /* Get the request type name and save it in the type table. */
+  String getAndSaveRequestTypeName();
+
+  /* Get the response type name and save it in the type table. */
+  String getAndSaveResponseTypeName();
+
+  String getBatchingDescriptorConstName();
 }

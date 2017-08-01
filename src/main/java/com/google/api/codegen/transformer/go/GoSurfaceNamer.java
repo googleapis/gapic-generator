@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer.go;
 
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.OneofConfig;
@@ -372,6 +373,11 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getFieldGetFunctionName(TypeRef type, Name identifier) {
+    return publicMethodName(identifier);
+  }
+
+  @Override
+  public String getFieldGetFunctionName(FieldType type, Name identifier) {
     return publicMethodName(identifier);
   }
 

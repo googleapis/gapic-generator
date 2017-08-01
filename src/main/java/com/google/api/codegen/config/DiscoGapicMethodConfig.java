@@ -28,7 +28,6 @@ import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
-import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
@@ -208,13 +207,6 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
     }
   }
 
-  @Override
-  /* Return the list of "one of" instances associated with the fields. */
-  public Iterable<Oneof> getOneofs() {
-    ImmutableSet.Builder<Oneof> answer = ImmutableSet.builder();
-    return answer.build();
-  }
-
   @Nullable
   private static ImmutableList<FlatteningConfig> createFlattening(
       DiagCollector diagCollector, MethodConfigProto methodConfigProto, Method method) {
@@ -275,5 +267,11 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
       fieldConfigsBuilder.add(FieldConfig.createFieldConfig(field));
     }
     return fieldConfigsBuilder.build();
+  }
+
+  @Override
+  /* Return the list of "one of" instances associated with the fields. */
+  public Iterable<Iterable<String>> getOneofsNames() {
+    return ImmutableList.of();
   }
 }

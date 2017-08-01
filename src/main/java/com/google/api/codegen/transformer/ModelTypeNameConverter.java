@@ -33,11 +33,13 @@ public abstract class ModelTypeNameConverter implements TypeNameConverter {
   /** Provides a TypeName for the element type of the given TypeRef. */
   public abstract TypeName getTypeNameForElementType(TypeRef type);
 
-  /** Provides a TypeName for the given FieldConfig and resource short name. */
+  @Override
+  /* Provides a TypeName for the given FieldConfig and resource short name. */
   public abstract TypeName getTypeNameForTypedResourceName(
       FieldConfig fieldConfig, String typedResourceShortName);
 
-  /**
+  @Override
+  /*
    * Provides a TypeName for the given FieldConfig and resource short name, using the inner type if
    * the underlying field is repeated.
    */
@@ -47,7 +49,8 @@ public abstract class ModelTypeNameConverter implements TypeNameConverter {
   /** Provides a TypeName for the given ProtoElement. */
   public abstract TypeName getTypeName(ProtoElement elem);
 
-  /** Provides a TypeName for the given short name, using the default package. */
+  @Override
+  /* Provides a TypeName for the given short name, using the default package. */
   public abstract TypeName getTypeNameInImplicitPackage(String shortName);
 
   /**
@@ -71,19 +74,19 @@ public abstract class ModelTypeNameConverter implements TypeNameConverter {
   /** Provides a TypeName for the given FieldType. */
   @Override
   public TypeName getTypeName(FieldType type) {
-    return getTypeName(type.getProtoBasedField().getType());
+    return getTypeName(type.getProtoTypeRef());
   }
 
   /** Provides a TypedValue for the given enum FieldType. */
   @Override
   public TypedValue getEnumValue(FieldType type, EnumValue value) {
-    return getEnumValue(type.getProtoBasedField().getType(), value);
+    return getEnumValue(type.getProtoTypeRef(), value);
   }
 
   /** Provides a TypeName for the element type of the given FieldType. */
   @Override
   public TypeName getTypeNameForElementType(FieldType type) {
-    return getTypeNameForElementType(type.getProtoBasedField().getType());
+    return getTypeNameForElementType(type.getProtoTypeRef());
   }
 
   /**
@@ -92,7 +95,7 @@ public abstract class ModelTypeNameConverter implements TypeNameConverter {
    */
   @Override
   public TypedValue getSnippetZeroValue(FieldType type) {
-    return getSnippetZeroValue(type.getProtoBasedField().getType());
+    return getSnippetZeroValue(type.getProtoTypeRef());
   }
 
   /**
@@ -102,12 +105,12 @@ public abstract class ModelTypeNameConverter implements TypeNameConverter {
    */
   @Override
   public TypedValue getImplZeroValue(FieldType type) {
-    return getImplZeroValue(type.getProtoBasedField().getType());
+    return getImplZeroValue(type.getProtoTypeRef());
   }
 
   /** Renders the given value if it is a primitive type. */
   @Override
   public String renderPrimitiveValue(FieldType type, String value) {
-    return renderPrimitiveValue(type.getProtoBasedField().getType(), value);
+    return renderPrimitiveValue(type.getProtoTypeRef(), value);
   }
 }

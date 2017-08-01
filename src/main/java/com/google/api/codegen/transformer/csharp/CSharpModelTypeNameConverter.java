@@ -248,7 +248,7 @@ public class CSharpModelTypeNameConverter extends ModelTypeNameConverter {
   public TypeName getTypeNameForTypedResourceName(
       FieldConfig fieldConfig, String typedResourceShortName) {
     return getTypeNameForTypedResourceName(
-        fieldConfig, fieldConfig.getField().getProtoBasedField().getType(), typedResourceShortName);
+        fieldConfig, fieldConfig.getField().getProtoTypeRef(), typedResourceShortName);
   }
 
   @Override
@@ -256,7 +256,7 @@ public class CSharpModelTypeNameConverter extends ModelTypeNameConverter {
       FieldConfig fieldConfig, String typedResourceShortName) {
     return getTypeNameForTypedResourceName(
         fieldConfig,
-        fieldConfig.getField().getProtoBasedField().getType().makeOptional(),
+        fieldConfig.getField().getProtoTypeRef().makeOptional(),
         typedResourceShortName);
   }
 
