@@ -189,6 +189,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return ImmutableList.of();
   }
 
+  /** The name of the gapic package. */
+  public String getGapicPackageName(String configPackageName) {
+    return "gapic-" + configPackageName;
+  }
+
   /////////////////////////////////// Protos methods /////////////////////////////////////////////
 
   /** The function name to set the given proto field. */

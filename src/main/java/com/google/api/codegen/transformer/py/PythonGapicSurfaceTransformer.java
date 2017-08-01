@@ -201,7 +201,8 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.apiMethods(methods);
 
     xapiClass.toolkitVersion(GeneratorVersionProvider.getGeneratorVersion());
-    xapiClass.gapicPackageName("gapic-" + packageConfig.packageName(TargetLanguage.PYTHON));
+    xapiClass.gapicPackageName(
+        namer.getGapicPackageName(packageConfig.packageName(TargetLanguage.PYTHON)));
 
     return xapiClass.build();
   }
