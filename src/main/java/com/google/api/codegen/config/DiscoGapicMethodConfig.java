@@ -104,7 +104,8 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
     BatchingConfig batching = null;
     if (!BatchingConfigProto.getDefaultInstance().equals(methodConfigProto.getBatching())) {
       batching =
-          BatchingConfig.createBatching(diagCollector, methodConfigProto.getBatching(), method);
+          BatchingConfig.createBatching(
+              diagCollector, methodConfigProto.getBatching(), new DiscoveryMethodModel(method));
       if (batching == null) {
         error = true;
       }

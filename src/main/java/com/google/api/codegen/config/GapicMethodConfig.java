@@ -147,7 +147,8 @@ public abstract class GapicMethodConfig extends MethodConfig {
     BatchingConfig batching = null;
     if (!BatchingConfigProto.getDefaultInstance().equals(methodConfigProto.getBatching())) {
       batching =
-          BatchingConfig.createBatching(diagCollector, methodConfigProto.getBatching(), method);
+          BatchingConfig.createBatching(
+              diagCollector, methodConfigProto.getBatching(), new ProtoMethodModel(method));
       if (batching == null) {
         error = true;
       }

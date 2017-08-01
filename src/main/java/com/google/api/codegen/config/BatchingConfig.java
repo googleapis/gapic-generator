@@ -17,12 +17,8 @@ package com.google.api.codegen.config;
 import com.google.api.codegen.BatchingConfigProto;
 import com.google.api.codegen.BatchingDescriptorProto;
 import com.google.api.codegen.BatchingSettingsProto;
-import com.google.api.codegen.discovery.Schema;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
-import com.google.api.tools.framework.model.Field;
-import com.google.api.tools.framework.model.FieldSelector;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
@@ -39,25 +35,26 @@ public abstract class BatchingConfig {
    */
   @Nullable
   public static BatchingConfig createBatching(
-      DiagCollector diagCollector, BatchingConfigProto batchingConfig, Method method) {
+      DiagCollector diagCollector, BatchingConfigProto batchingConfig, MethodModel method) {
 
     BatchingDescriptorProto batchDescriptor = batchingConfig.getBatchDescriptor();
     String batchedFieldName = batchDescriptor.getBatchedField();
-    Field batchedField = method.getInputType().getMessageType().lookupField(batchedFieldName);
-    if (batchedField == null) {
+    FieldType batchedField = null;
+    try {
+      batchedField = method.lookupInputField(batchedFieldName);
+    } catch (NullPointerException e) {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
               "Batched field missing for batch config: method = %s, message type = %s, field = %s",
               method.getFullName(),
-              method.getInputType().getMessageType().getFullName(),
+              method.getInputFullName(),
               batchedFieldName));
     }
 
-    ImmutableList.Builder<FieldSelector> discriminatorsBuilder = ImmutableList.builder();
+    ImmutableList.Builder<GenericFieldSelector> discriminatorsBuilder = ImmutableList.builder();
     for (String discriminatorName : batchDescriptor.getDiscriminatorFieldsList()) {
-      FieldSelector selector =
-          FieldSelector.resolve(method.getInputType().getMessageType(), discriminatorName);
+      GenericFieldSelector selector = method.getInputFieldSelector(discriminatorName);
       if (selector == null) {
         diagCollector.addDiag(
             Diag.error(
@@ -65,18 +62,19 @@ public abstract class BatchingConfig {
                 "Discriminator field missing for batch config: method = %s, message type = %s, "
                     + "field = %s",
                 method.getFullName(),
-                method.getInputType().getMessageType().getFullName(),
+                method.getInputFullName(),
                 discriminatorName));
       }
       discriminatorsBuilder.add(selector);
     }
 
     String subresponseFieldName = batchDescriptor.getSubresponseField();
-    Field subresponseField;
+    FieldType subresponseField = null;
     if (!subresponseFieldName.isEmpty()) {
-      subresponseField = method.getOutputType().getMessageType().lookupField(subresponseFieldName);
-    } else {
-      subresponseField = null;
+      try {
+        subresponseField = method.lookupOutputField(subresponseFieldName);
+      } catch (NullPointerException e) {
+      }
     }
 
     BatchingSettingsProto batchingSettings = batchingConfig.getThresholds();
@@ -108,96 +106,7 @@ public abstract class BatchingConfig {
         elementCountLimit,
         requestByteLimit,
         delayThresholdMillis,
-        batchedField == null ? null : new ProtoField(batchedField),
-        discriminatorsBuilder.build(),
-        subresponseField == null ? null : new ProtoField(subresponseField),
-        flowControlElementLimit,
-        flowControlByteLimit,
-        flowControlLimitConfig);
-  }
-
-  /**
-   * Creates an instance of BatchingConfig based on BatchingConfigProto, linking it up with the
-   * provided method. On errors, null will be returned, and diagnostics are reported to the diag
-   * collector.
-   */
-  @Nullable
-  public static BatchingConfig createBatching(
-      DiagCollector diagCollector,
-      BatchingConfigProto batchingConfig,
-      com.google.api.codegen.discovery.Method method) {
-
-    BatchingDescriptorProto batchDescriptor = batchingConfig.getBatchDescriptor();
-    String batchedFieldName = batchDescriptor.getBatchedField();
-    Schema batchedField = method.parameters().get(batchedFieldName);
-    if (batchedField == null) {
-      diagCollector.addDiag(
-          Diag.error(
-              SimpleLocation.TOPLEVEL,
-              "Batched field missing for batch config: method = %s, message type = %s, field = %s",
-              method.id(),
-              method.request().getIdentifier(),
-              batchedFieldName));
-    }
-
-    ImmutableList.Builder<FieldSelector> discriminatorsBuilder = ImmutableList.builder();
-    for (String discriminatorName : batchDescriptor.getDiscriminatorFieldsList()) {
-      //      FieldSelector selector =
-      //          FieldSelector.resolve(method.getInputType().getMessageType(), discriminatorName);
-      // TODO(andrealin)???????
-      FieldSelector selector = null;
-      if (selector == null) {
-        diagCollector.addDiag(
-            Diag.error(
-                SimpleLocation.TOPLEVEL,
-                "Discriminator field missing for batch config: method = %s, message type = %s, "
-                    + "field = %s",
-                method.id(),
-                method.request().getIdentifier(),
-                discriminatorName));
-      }
-      discriminatorsBuilder.add(selector);
-    }
-
-    String subresponseFieldName = batchDescriptor.getSubresponseField();
-    FieldType subresponseField;
-    if (!subresponseFieldName.isEmpty()) {
-      // TODO(andrealin)???
-      subresponseField = new DiscoveryField(method.response());
-    } else {
-      subresponseField = null;
-    }
-
-    BatchingSettingsProto batchingSettings = batchingConfig.getThresholds();
-    int elementCountThreshold = batchingSettings.getElementCountThreshold();
-    long requestByteThreshold = batchingSettings.getRequestByteThreshold();
-    int elementCountLimit = batchingSettings.getElementCountLimit();
-    long requestByteLimit = batchingSettings.getRequestByteLimit();
-    long delayThresholdMillis = batchingConfig.getThresholds().getDelayThresholdMillis();
-    Long flowControlElementLimit =
-        (long) batchingConfig.getThresholds().getFlowControlElementLimit();
-    if (flowControlElementLimit == 0) {
-      flowControlElementLimit = null;
-    }
-    Long flowControlByteLimit = (long) batchingConfig.getThresholds().getFlowControlByteLimit();
-    if (flowControlByteLimit == 0) {
-      flowControlByteLimit = null;
-    }
-    FlowControlLimitConfig flowControlLimitConfig =
-        FlowControlLimitConfig.fromProto(
-            batchingConfig.getThresholds().getFlowControlLimitExceededBehavior());
-
-    if (batchedFieldName == null) {
-      return null;
-    }
-
-    return new AutoValue_BatchingConfig(
-        elementCountThreshold,
-        requestByteThreshold,
-        elementCountLimit,
-        requestByteLimit,
-        delayThresholdMillis,
-        new DiscoveryField(batchedField),
+        batchedField,
         discriminatorsBuilder.build(),
         subresponseField,
         flowControlElementLimit,
@@ -217,7 +126,7 @@ public abstract class BatchingConfig {
 
   public abstract FieldType getBatchedField();
 
-  public abstract ImmutableList<FieldSelector> getDiscriminatorFields();
+  public abstract ImmutableList<GenericFieldSelector> getDiscriminatorFields();
 
   @Nullable
   public abstract FieldType getSubresponseField();
