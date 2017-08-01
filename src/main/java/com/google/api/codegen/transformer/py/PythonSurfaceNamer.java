@@ -214,11 +214,6 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFieldGetFunctionName(TypeRef type, Name identifier) {
-    return publicFieldName(identifier);
-  }
-
-  @Override
   public String getFieldGetFunctionName(FieldType type, Name identifier) {
     return publicFieldName(identifier);
   }

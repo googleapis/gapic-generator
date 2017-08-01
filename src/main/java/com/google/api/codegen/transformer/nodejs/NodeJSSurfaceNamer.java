@@ -171,11 +171,6 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFieldGetFunctionName(TypeRef type, Name identifier) {
-    return identifier.toLowerCamel();
-  }
-
-  @Override
   public String getFieldGetFunctionName(FieldType type, Name identifier) {
     return identifier.toLowerCamel();
   }
