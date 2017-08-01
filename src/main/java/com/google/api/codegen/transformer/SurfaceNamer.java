@@ -1394,4 +1394,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getOptionalFieldDefaultValue(FieldConfig fieldConfig, GapicMethodContext context) {
     return getNotImplementedString("SurfaceNamer.getOptionalFieldDefaultValue");
   }
+
+  public String getToStringMethod() {
+    return getNotImplementedString("SurfaceNamer.getToStringMethod");
+  }
 }

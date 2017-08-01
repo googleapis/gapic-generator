@@ -36,8 +36,11 @@
 @end
 
 @private readmeModule(indexType, module, iterator, content)
+  @# rubocop:disable LineLength
+
   @##
   {@toComments(util.getDocLines(generateReadme(indexType, module)))}
+  @#
   @#
   {@simpleModule(indexType, module, iterator, content)}
 @end
@@ -64,6 +67,8 @@
     @if iterator.hasNext
       {@modules(iterator, indexType, content)}
     @else
+      @# rubocop:enable LineLength
+
       {@content}
     @end
   end
