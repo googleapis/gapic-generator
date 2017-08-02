@@ -21,6 +21,7 @@ import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig;
 import com.google.api.codegen.config.LongRunningConfig;
 import com.google.api.codegen.config.ProductServiceConfig;
+import com.google.api.codegen.config.ProtoField;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
@@ -203,7 +204,9 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
       String resourcesFieldGetFunction = null;
       if (grpcStreamingConfig.hasResourceField()) {
         resourcesFieldGetFunction =
-            context.getNamer().getFieldGetFunctionName(grpcStreamingConfig.getResourcesField());
+            context
+                .getNamer()
+                .getFieldGetFunctionName(new ProtoField(grpcStreamingConfig.getResourcesField()));
       }
       result.add(
           GrpcStreamingDetailView.newBuilder()

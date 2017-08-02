@@ -14,7 +14,8 @@
  */
 package com.google.api.codegen.transformer.py;
 
-import com.google.api.codegen.config.GapicMethodConfig;
+import com.google.api.codegen.config.FieldType;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.transformer.ApiMethodParamTransformer;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -22,8 +23,6 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.DynamicLangDefaultableParamView;
 import com.google.api.codegen.viewmodel.ParamDocView;
 import com.google.api.codegen.viewmodel.SimpleParamDocView;
-import com.google.api.tools.framework.model.Field;
-import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 
@@ -40,25 +39,27 @@ public class PythonApiMethodParamTransformer implements ApiMethodParamTransforme
               .defaultValue("")
               .build());
     } else {
-      for (Field field : context.getMethodConfig().getRequiredFields()) {
+      for (FieldType field : context.getMethodConfig().getRequiredFields()) {
         DynamicLangDefaultableParamView.Builder param =
             DynamicLangDefaultableParamView.newBuilder();
         param.name(context.getNamer().getVariableName(field));
         param.defaultValue("");
         methodParams.add(param.build());
       }
-      for (Field field : context.getMethodConfig().getOptionalFields()) {
+      for (FieldType field : context.getMethodConfig().getOptionalFields()) {
         if (isRequestTokenParam(context.getMethodConfig(), field)) {
           continue;
         }
-        TypeRef type = field.getType();
         DynamicLangDefaultableParamView.Builder param =
             DynamicLangDefaultableParamView.newBuilder();
         param.name(context.getNamer().getVariableName(field));
-        if (type.isRepeated() || type.isMessage() || type.isEnum() || field.getOneof() != null) {
+        if (field.isRepeated()
+            || field.isMessage()
+            || field.isEnum()
+            || field.getOneofFieldsNames(context.getNamer()) != null) {
           param.defaultValue("None");
         } else {
-          param.defaultValue(context.getTypeTable().getSnippetZeroValueAndSaveNicknameFor(type));
+          param.defaultValue(context.getTypeTable().getSnippetZeroValueAndSaveNicknameFor(field));
         }
         methodParams.add(param.build());
       }
@@ -93,18 +94,18 @@ public class PythonApiMethodParamTransformer implements ApiMethodParamTransforme
   }
 
   private List<ParamDocView> generateMethodParamDocs(
-      GapicMethodContext context, Iterable<Field> fields) {
+      GapicMethodContext context, Iterable<FieldType> fields) {
     SurfaceNamer namer = context.getNamer();
-    GapicMethodConfig methodConfig = context.getMethodConfig();
+    MethodConfig methodConfig = context.getMethodConfig();
     ImmutableList.Builder<ParamDocView> docs = ImmutableList.builder();
-    for (Field field : fields) {
+    for (FieldType field : fields) {
       if (isRequestTokenParam(methodConfig, field)) {
         continue;
       }
 
       SimpleParamDocView.Builder paramDoc = SimpleParamDocView.newBuilder();
       paramDoc.paramName(namer.getVariableName(field));
-      paramDoc.typeName(namer.getParamTypeName(context.getTypeTable(), field.getType()));
+      paramDoc.typeName(namer.getParamTypeName(context.getTypeTable(), field));
       ImmutableList.Builder<String> docLines = ImmutableList.builder();
       if (isPageSizeParam(methodConfig, field)) {
         docLines.add(
@@ -122,13 +123,13 @@ public class PythonApiMethodParamTransformer implements ApiMethodParamTransforme
     return docs.build();
   }
 
-  private boolean isPageSizeParam(GapicMethodConfig methodConfig, Field field) {
+  private boolean isPageSizeParam(MethodConfig methodConfig, FieldType field) {
     return methodConfig.isPageStreaming()
         && methodConfig.getPageStreaming().hasPageSizeField()
         && field.equals(methodConfig.getPageStreaming().getPageSizeField());
   }
 
-  private boolean isRequestTokenParam(GapicMethodConfig methodConfig, Field field) {
+  private boolean isRequestTokenParam(MethodConfig methodConfig, FieldType field) {
     return methodConfig.isPageStreaming()
         && field.equals(methodConfig.getPageStreaming().getRequestTokenField());
   }

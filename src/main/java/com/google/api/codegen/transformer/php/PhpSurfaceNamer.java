@@ -15,8 +15,9 @@
 package com.google.api.codegen.transformer.php;
 
 import com.google.api.codegen.ServiceMessages;
-import com.google.api.codegen.config.GapicInterfaceConfig;
-import com.google.api.codegen.config.GapicMethodConfig;
+import com.google.api.codegen.config.FieldType;
+import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
@@ -28,7 +29,6 @@ import com.google.api.codegen.util.php.PhpCommentReformatter;
 import com.google.api.codegen.util.php.PhpNameFormatter;
 import com.google.api.codegen.util.php.PhpPackageUtil;
 import com.google.api.codegen.util.php.PhpTypeTable;
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
@@ -62,6 +62,26 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getFieldSetFunctionName(FieldType field) {
+    return publicMethodName(Name.from("set").join(field.getSimpleName()));
+  }
+
+  @Override
+  public String getFieldAddFunctionName(TypeRef type, Name identifier) {
+    return publicMethodName(Name.from("add").join(identifier));
+  }
+
+  @Override
+  public String getFieldAddFunctionName(FieldType field) {
+    return publicMethodName(Name.from("add").join(field.getSimpleName()));
+  }
+
+  @Override
+  public String getFieldGetFunctionName(FieldType field) {
+    return publicMethodName(Name.from("get").join(field.getSimpleName()));
+  }
+
+  @Override
   public String getFieldGetFunctionName(TypeRef type, Name identifier) {
     return publicMethodName(Name.from("get").join(identifier));
   }
@@ -80,8 +100,8 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public boolean shouldImportRequestObjectParamType(Field field) {
-    return field.getType().isMap();
+  public boolean shouldImportRequestObjectParamType(FieldType field) {
+    return field.isMap();
   }
 
   @Override
@@ -95,7 +115,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getDynamicLangReturnTypeName(Method method, GapicMethodConfig methodConfig) {
+  public String getDynamicLangReturnTypeName(Method method, MethodConfig methodConfig) {
     if (new ServiceMessages().isEmptyType(method.getOutputType())) {
       return "";
     }
@@ -119,7 +139,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFullyQualifiedApiWrapperClassName(GapicInterfaceConfig interfaceConfig) {
+  public String getFullyQualifiedApiWrapperClassName(InterfaceConfig interfaceConfig) {
     return getPackageName() + "\\" + getApiWrapperClassName(interfaceConfig);
   }
 
@@ -181,7 +201,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public boolean methodHasRetrySettings(GapicMethodConfig methodConfig) {
+  public boolean methodHasRetrySettings(MethodConfig methodConfig) {
     return !methodConfig.isGrpcStreaming();
   }
 }

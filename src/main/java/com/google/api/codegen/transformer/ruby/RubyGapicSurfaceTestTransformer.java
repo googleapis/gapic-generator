@@ -17,8 +17,8 @@ package com.google.api.codegen.transformer.ruby;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
-import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.metacode.InitCodeContext;
@@ -141,7 +141,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
     for (Method method : context.getSupportedMethods()) {
       GapicMethodContext requestMethodContext =
           context.withNewTypeTable().asRequestMethodContext(method);
-      GapicMethodConfig methodConfig = requestMethodContext.getMethodConfig();
+      MethodConfig methodConfig = requestMethodContext.getMethodConfig();
       TestCaseTransformer testCaseTransformer =
           new TestCaseTransformer(valueProducer, packageHasMultipleServices);
       TestCaseView testCase =
@@ -159,7 +159,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
       GapicInterfaceContext context, Method method) {
     GapicMethodContext requestMethodContext = context.asRequestMethodContext(method);
     GapicMethodContext dynamicMethodContext = context.asDynamicMethodContext(method);
-    GapicMethodConfig methodConfig = requestMethodContext.getMethodConfig();
+    MethodConfig methodConfig = requestMethodContext.getMethodConfig();
     Iterable<FieldConfig> fieldConfigs = methodConfig.getRequiredFieldConfigs();
 
     InitCodeOutputType outputType =
@@ -172,13 +172,13 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
         .suggestedName(Name.from("request"))
         .initFieldConfigStrings(methodConfig.getSampleCodeInitFields())
         .initValueConfigMap(InitCodeTransformer.createCollectionMap(dynamicMethodContext))
-        .initFields(FieldConfig.toFieldIterable(fieldConfigs))
+        .initFields(FieldConfig.toFieldTypeIterable(fieldConfigs))
         .outputType(outputType)
         .fieldConfigMap(FieldConfig.toFieldConfigMap(fieldConfigs))
         .build();
   }
 
-  private ClientMethodType getMethodType(GapicMethodConfig config) {
+  private ClientMethodType getMethodType(MethodConfig config) {
     ClientMethodType clientMethodType = ClientMethodType.RequestObjectMethod;
     if (config.isPageStreaming()) {
       clientMethodType = ClientMethodType.PagedRequestObjectMethod;

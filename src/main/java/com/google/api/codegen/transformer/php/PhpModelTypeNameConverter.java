@@ -28,7 +28,7 @@ import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
-public class PhpModelTypeNameConverter implements ModelTypeNameConverter {
+public class PhpModelTypeNameConverter extends ModelTypeNameConverter {
 
   /** The maximum depth of nested messages supported by PHP type name determination. */
   private static final int MAX_NESTED_DEPTH = 20;

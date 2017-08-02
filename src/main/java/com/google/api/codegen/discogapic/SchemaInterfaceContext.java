@@ -15,14 +15,16 @@
 package com.google.api.codegen.discogapic;
 
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
-import com.google.api.codegen.discovery.Schema;
+import com.google.api.codegen.transformer.DiscoGapicInterfaceContext;
+import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.SchemaTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.util.TypeTable;
 import com.google.auto.value.AutoValue;
 import java.util.Comparator;
+import javax.annotation.Nullable;
 
 /**
  * The context for transforming a single top-level schema from Discovery Doc API into a top-level
@@ -32,12 +34,19 @@ import java.util.Comparator;
  */
 @AutoValue
 public abstract class SchemaInterfaceContext implements InterfaceContext {
+  /**
+   * Create a context for transforming a schema.
+   *
+   * @param id Any sort of unique identifier for this context. Used in sorting contexts.
+   * @param typeTable Manages the imports for the schema view.
+   * @param docContext The context for the parent Document.
+   */
   public static SchemaInterfaceContext create(
-      Schema schema, SchemaTypeTable typeTable, DiscoGapicInterfaceContext docContext) {
-    return new AutoValue_SchemaInterfaceContext(schema, typeTable, docContext);
+      String id, SchemaTypeTable typeTable, DiscoGapicInterfaceContext docContext) {
+    return new AutoValue_SchemaInterfaceContext(id, typeTable, docContext);
   }
 
-  public abstract Schema getSchema();
+  public abstract String id();
 
   public abstract SchemaTypeTable getSchemaTypeTable();
 
@@ -59,29 +68,21 @@ public abstract class SchemaInterfaceContext implements InterfaceContext {
   }
 
   @Override
-  public TypeTable getTypeTable() {
-    return getSchemaTypeTable().getTypeTable();
-  }
-
-  /** @return the SchemaTypeTable scoped at the Document level. */
-  public SchemaTypeTable getDocumentTypeTable() {
-    return getDocContext().getSchemaTypeTable();
-  }
-
-  public SchemaInterfaceContext withNewTypeTable() {
-    return create(getSchema(), getSchemaTypeTable().cloneEmpty(), getDocContext());
-  }
-
-  public DiscoGapicInterfaceConfig getInterfaceConfig() {
-    return (DiscoGapicInterfaceConfig) getProductConfig().getInterfaceConfig(getSchema().id());
+  public ImportTypeTable getImportTypeTable() {
+    return getSchemaTypeTable();
   }
 
   public static Comparator<SchemaInterfaceContext> comparator =
       new Comparator<SchemaInterfaceContext>() {
         @Override
         public int compare(SchemaInterfaceContext o1, SchemaInterfaceContext o2) {
-          return String.CASE_INSENSITIVE_ORDER.compare(
-              o1.getSchema().getIdentifier(), o2.getSchema().getIdentifier());
+          return String.CASE_INSENSITIVE_ORDER.compare(o1.id(), o2.id());
         }
       };
+
+  @Nullable
+  @Override
+  public InterfaceConfig getInterfaceConfig() {
+    return null;
+  }
 }

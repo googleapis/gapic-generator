@@ -75,7 +75,7 @@ public abstract class FlatteningConfig {
               messageConfigs,
               methodConfigProto.getFieldNamePatterns(),
               resourceNameConfigs,
-              parameterField,
+              new ProtoField(parameterField),
               flatteningGroup.getParameterResourceNameTreatment().get(parameter),
               defaultResourceNameTreatment);
       if (fieldConfig == null) {
@@ -92,15 +92,7 @@ public abstract class FlatteningConfig {
         flattenedFieldConfigBuilder.build(), flatteningGroup.getFlatteningGroupName());
   }
 
-  public FieldConfig getFieldConfig(String fieldSimpleName) {
-    return getFlattenedFieldConfigs().get(fieldSimpleName);
-  }
-
-  public Iterable<Field> getFlattenedFields() {
-    return FieldConfig.toFieldIterable(getFlattenedFieldConfigs().values());
-  }
-
-  public Iterable<String> getParameterList() {
-    return getFlattenedFieldConfigs().keySet();
+  public Iterable<FieldType> getFlattenedFields() {
+    return FieldConfig.toFieldTypeIterable(getFlattenedFieldConfigs().values());
   }
 }

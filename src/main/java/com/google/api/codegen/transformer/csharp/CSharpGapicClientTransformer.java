@@ -16,10 +16,10 @@ package com.google.api.codegen.transformer.csharp;
 
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.FlatteningConfig;
-import com.google.api.codegen.config.GapicInterfaceConfig;
-import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
+import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.ProductServiceConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
@@ -247,7 +247,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
         retryDefinitionsTransformer.generateRetryCodesDefinitions(context));
     settingsClass.retryParamsDefinitions(
         retryDefinitionsTransformer.generateRetryParamsDefinitions(context));
-    GapicInterfaceConfig interfaceConfig = context.getInterfaceConfig();
+    InterfaceConfig interfaceConfig = context.getInterfaceConfig();
     settingsClass.hasDefaultServiceAddress(interfaceConfig.hasDefaultServiceAddress());
     settingsClass.hasDefaultServiceScopes(interfaceConfig.hasDefaultServiceScopes());
     settingsClass.hasDefaultInstance(interfaceConfig.hasDefaultInstance());
@@ -271,7 +271,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     SurfaceNamer namer = context.getNamer();
     Set<ReroutedGrpcView> reroutedViews = new LinkedHashSet<>();
     for (Method method : csharpCommonTransformer.getSupportedMethods(context)) {
-      GapicMethodConfig methodConfig = context.getMethodConfig(method);
+      MethodConfig methodConfig = context.getMethodConfig(method);
       String reroute = methodConfig.getRerouteToGrpcInterface();
       if (reroute != null) {
         ReroutedGrpcView rerouted =
@@ -292,12 +292,13 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     List<ModifyMethodView> modifyMethods = new ArrayList<>();
     Set<TypeRef> modifyTypes = new HashSet<TypeRef>();
     for (Method method : csharpCommonTransformer.getSupportedMethods(context)) {
+
+      MethodConfig methodContext = context.asRequestMethodContext(method).getMethodConfig();
       TypeRef inputType = method.getInputType();
       if (modifyTypes.contains(inputType)) {
         continue;
       }
       modifyTypes.add(inputType);
-      GapicMethodConfig methodContext = context.asRequestMethodContext(method).getMethodConfig();
       ModifyMethodView.Builder builder = ModifyMethodView.builder();
       builder.name(namer.getModifyMethodName(method));
       builder.requestTypeName(typeTable.getAndSaveNicknameFor(inputType));
@@ -316,7 +317,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
 
     List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
     for (Method method : csharpCommonTransformer.getSupportedMethods(context)) {
-      GapicMethodConfig methodConfig = context.getMethodConfig(method);
+      MethodConfig methodConfig = context.getMethodConfig(method);
       GapicMethodContext requestMethodContext = context.asRequestMethodContext(method);
       if (methodConfig.isGrpcStreaming()) {
         apiMethods.add(

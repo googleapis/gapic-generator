@@ -16,13 +16,17 @@ package com.google.api.codegen.transformer.ruby;
 
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicMethodConfig;
+import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.FeatureConfig;
-import com.google.api.codegen.transformer.GapicInterfaceContext;
+import com.google.api.codegen.transformer.ImportTypeTable;
+import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -68,6 +72,12 @@ public class RubySurfaceNamer extends SurfaceNamer {
     return publicClassName(Name.upperCamel(apiInterface.getSimpleName(), "ClientSnippets"));
   }
 
+  /** The function name to set a field. */
+  @Override
+  public String getFieldSetFunctionName(FieldType field) {
+    return getFieldGetFunctionName(field);
+  }
+
   /** The function name to set a field having the given type and name. */
   @Override
   public String getFieldSetFunctionName(TypeRef type, Name identifier) {
@@ -108,11 +118,11 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getParamTypeName(ModelTypeTable typeTable, TypeRef type) {
+  public String getParamTypeName(ImportTypeTable typeTable, FieldType type) {
     if (type.isMap()) {
-      String keyTypeName = typeTable.getFullNameForElementType(type.getMapKeyField().getType());
-      String valueTypeName = typeTable.getFullNameForElementType(type.getMapValueField().getType());
-      if (type.getMapValueField().getType().isMessage()) {
+      String keyTypeName = typeTable.getFullNameForElementType(type.getMapKeyField());
+      String valueTypeName = typeTable.getFullNameForElementType(type.getMapValueField());
+      if (type.getMapValueField().isMessage()) {
         valueTypeName += " | Hash";
       }
       return new TypeName(
@@ -141,34 +151,36 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   /** The type name for the message property */
-  public String getMessagePropertyTypeName(ModelTypeTable typeTable, TypeRef type) {
-    if (type.isMap()) {
-      String keyTypeName = typeTable.getFullNameForElementType(type.getMapKeyField().getType());
-      String valueTypeName = typeTable.getFullNameForElementType(type.getMapValueField().getType());
+  @Override
+  public String getMessagePropertyTypeName(ImportTypeTable importTypeTable, FieldType fieldType) {
+    if (fieldType.isMap()) {
+      String keyTypeName = importTypeTable.getFullNameForElementType(fieldType.getMapKeyField());
+      String valueTypeName =
+          importTypeTable.getFullNameForElementType(fieldType.getMapValueField());
       return new TypeName(
-              typeTable.getFullNameFor(type),
-              typeTable.getNicknameFor(type),
+              importTypeTable.getFullNameFor(fieldType),
+              importTypeTable.getNicknameFor(fieldType),
               "%s{%i => %i}",
               new TypeName(keyTypeName),
               new TypeName(valueTypeName))
           .getFullName();
     }
 
-    if (type.isRepeated()) {
-      String elementTypeName = typeTable.getFullNameForElementType(type);
+    if (fieldType.isRepeated()) {
+      String elementTypeName = importTypeTable.getFullNameForElementType(fieldType);
       return new TypeName(
-              typeTable.getFullNameFor(type),
-              typeTable.getNicknameFor(type),
+              importTypeTable.getFullNameFor(fieldType),
+              importTypeTable.getNicknameFor(fieldType),
               "%s<%i>",
               new TypeName(elementTypeName))
           .getFullName();
     }
 
-    return typeTable.getFullNameForElementType(type);
+    return importTypeTable.getFullNameForElementType(fieldType);
   }
 
   @Override
-  public String getDynamicLangReturnTypeName(Method method, GapicMethodConfig methodConfig) {
+  public String getDynamicLangReturnTypeName(Method method, MethodConfig methodConfig) {
     if (ServiceMessages.s_isEmptyType(method.getOutputType())) {
       return "";
     }
@@ -179,8 +191,9 @@ public class RubySurfaceNamer extends SurfaceNamer {
     }
 
     if (methodConfig.isPageStreaming()) {
-      TypeRef resourceType = methodConfig.getPageStreaming().getResourcesField().getType();
-      String resourceTypeName = getModelTypeFormatter().getFullNameForElementType(resourceType);
+      String resourceTypeName =
+          getModelTypeFormatter()
+              .getFullNameForElementType(methodConfig.getPageStreaming().getResourcesField());
       return "Google::Gax::PagedEnumerable<" + resourceTypeName + ">";
     }
 
@@ -209,27 +222,28 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public List<String> getThrowsDocLines(MethodConfig methodConfig) {
+    return ImmutableList.of("@raise [Google::Gax::GaxError] if the RPC is aborted.");
+  }
+
   public String getFullyQualifiedCredentialsClassName() {
     return getTopLevelNamespace() + "::Credentials";
   }
 
   @Override
-  public List<String> getThrowsDocLines(GapicMethodConfig methodConfig) {
-    return ImmutableList.of("@raise [Google::Gax::GaxError] if the RPC is aborted.");
-  }
-
-  @Override
   public List<String> getReturnDocLines(
-      GapicInterfaceContext context, GapicMethodConfig methodConfig, Synchronicity synchronicity) {
-    Method method = methodConfig.getMethod();
+      InterfaceContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
+    // TODO(andrealin): remove casting after abstracting API source type from Method.
+    Method method = ((GapicMethodConfig) methodConfig).getMethod();
     if (method.getResponseStreaming()) {
       String classInfo = getModelTypeFormatter().getFullNameForElementType(method.getOutputType());
       return ImmutableList.of("An enumerable of " + classInfo + " instances.", "");
     }
 
     if (methodConfig.isPageStreaming()) {
-      TypeRef resourceType = methodConfig.getPageStreaming().getResourcesField().getType();
-      String resourceTypeName = getModelTypeFormatter().getFullNameForElementType(resourceType);
+      String resourceTypeName =
+          getModelTypeFormatter()
+              .getFullNameForElementType(methodConfig.getPageStreaming().getResourcesField());
       return ImmutableList.of(
           "An enumerable of " + resourceTypeName + " instances.",
           "See Google::Gax::PagedEnumerable documentation for other",
@@ -242,7 +256,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
 
   /** The file name for an API interface. */
   @Override
-  public String getServiceFileName(GapicInterfaceConfig interfaceConfig) {
+  public String getServiceFileName(InterfaceConfig interfaceConfig) {
     return getPackageFilePath()
         + "/"
         + classFileNameBase(Name.upperCamel(getApiWrapperClassName(interfaceConfig)));
@@ -260,7 +274,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFullyQualifiedApiWrapperClassName(GapicInterfaceConfig interfaceConfig) {
+  public String getFullyQualifiedApiWrapperClassName(InterfaceConfig interfaceConfig) {
     return getPackageName() + "::" + getApiWrapperClassName(interfaceConfig);
   }
 
@@ -363,6 +377,11 @@ public class RubySurfaceNamer extends SurfaceNamer {
   @Override
   public String getFieldGetFunctionName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
     return getFieldKey(fieldConfig.getField());
+  }
+
+  @Override
+  public String getFieldGetFunctionName(FieldType field) {
+    return keyName(Name.from(field.getSimpleName()));
   }
 
   @Override

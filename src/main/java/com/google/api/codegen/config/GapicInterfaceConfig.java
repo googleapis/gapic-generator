@@ -59,23 +59,30 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
 
   public abstract Interface getInterface();
 
+  @Override
   public abstract List<GapicMethodConfig> getMethodConfigs();
 
   @Nullable
+  @Override
   public abstract SmokeTestConfig getSmokeTestConfig();
 
   abstract ImmutableMap<String, GapicMethodConfig> getMethodConfigMap();
 
+  @Override
   public abstract ImmutableMap<String, ImmutableSet<Status.Code>> getRetryCodesDefinition();
 
+  @Override
   public abstract ImmutableMap<String, RetrySettings> getRetrySettingsDefinition();
 
   public abstract ImmutableList<Field> getIamResources();
 
+  @Override
   public abstract ImmutableList<String> getRequiredConstructorParams();
 
+  @Override
   public abstract ImmutableList<SingleResourceNameConfig> getSingleResourceNameConfigs();
 
+  @Override
   public abstract String getManualDoc();
 
   @Nullable
@@ -197,7 +204,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     }
   }
 
-  private static ImmutableMap<String, ImmutableSet<Status.Code>> createRetryCodesDefinition(
+  static ImmutableMap<String, ImmutableSet<Status.Code>> createRetryCodesDefinition(
       DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto) {
     ImmutableMap.Builder<String, ImmutableSet<Status.Code>> builder =
         ImmutableMap.<String, ImmutableSet<Status.Code>>builder();
@@ -223,7 +230,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     return builder.build();
   }
 
-  private static ImmutableMap<String, RetrySettings> createRetrySettingsDefinition(
+  static ImmutableMap<String, RetrySettings> createRetrySettingsDefinition(
       DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto) {
     ImmutableMap.Builder<String, RetrySettings> builder =
         ImmutableMap.<String, RetrySettings>builder();
@@ -299,10 +306,9 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     }
   }
 
-  private static List<GapicMethodConfig> createMethodConfigs(
-      ImmutableMap<String, GapicMethodConfig> methodConfigMap,
-      InterfaceConfigProto interfaceConfigProto) {
-    List<GapicMethodConfig> methodConfigs = new ArrayList<>();
+  static <T> List<T> createMethodConfigs(
+      ImmutableMap<String, T> methodConfigMap, InterfaceConfigProto interfaceConfigProto) {
+    List<T> methodConfigs = new ArrayList<>();
     for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {
       methodConfigs.add(methodConfigMap.get(methodConfigProto.getName()));
     }
@@ -310,6 +316,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   }
 
   /** Returns the GapicMethodConfig for the given method. */
+  @Override
   public GapicMethodConfig getMethodConfig(Method method) {
     GapicMethodConfig methodConfig = getMethodConfigMap().get(method.getSimpleName());
     if (methodConfig == null) {
@@ -319,14 +326,24 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     return methodConfig;
   }
 
+  /** Returns the GapicMethodConfig for the given method. */
+  @Override
+  @Nullable
+  public DiscoGapicMethodConfig getMethodConfig(com.google.api.codegen.discovery.Method method) {
+    return null;
+  }
+
+  @Override
   public boolean hasDefaultServiceAddress() {
     return !getRequiredConstructorParams().contains(SERVICE_ADDRESS_PARAM);
   }
 
+  @Override
   public boolean hasDefaultServiceScopes() {
     return !getRequiredConstructorParams().contains(SCOPES_PARAM);
   }
 
+  @Override
   public boolean hasDefaultInstance() {
     return getRequiredConstructorParams().size() == 0;
   }
@@ -372,8 +389,9 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     return fields.build();
   }
 
+  @Override
   public boolean hasPageStreamingMethods() {
-    for (GapicMethodConfig methodConfig : getMethodConfigs()) {
+    for (MethodConfig methodConfig : getMethodConfigs()) {
       if (methodConfig.isPageStreaming()) {
         return true;
       }
@@ -381,8 +399,9 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     return false;
   }
 
+  @Override
   public boolean hasBatchingMethods() {
-    for (GapicMethodConfig methodConfig : getMethodConfigs()) {
+    for (MethodConfig methodConfig : getMethodConfigs()) {
       if (methodConfig.isBatching()) {
         return true;
       }
@@ -390,8 +409,9 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     return false;
   }
 
+  @Override
   public boolean hasGrpcStreamingMethods() {
-    for (GapicMethodConfig methodConfig : getMethodConfigs()) {
+    for (MethodConfig methodConfig : getMethodConfigs()) {
       if (methodConfig.isGrpcStreaming()) {
         return true;
       }
@@ -399,8 +419,9 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     return false;
   }
 
+  @Override
   public boolean hasLongRunningOperations() {
-    for (GapicMethodConfig methodConfig : getMethodConfigs()) {
+    for (MethodConfig methodConfig : getMethodConfigs()) {
       if (methodConfig.isLongRunningOperation()) {
         return true;
       }

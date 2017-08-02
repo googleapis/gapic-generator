@@ -26,7 +26,7 @@ public class IamResourceTransformer {
   public List<IamResourceView> generateIamResources(GapicInterfaceContext context) {
     List<IamResourceView> resources = new ArrayList<>();
     for (Field field :
-        context.getProductConfig().getInterfaceConfig(context.getInterface()).getIamResources()) {
+        (context.getProductConfig().getInterfaceConfig(context.getInterface())).getIamResources()) {
       String resourceTypeName =
           context
               .getModelTypeTable()

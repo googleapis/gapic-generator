@@ -92,7 +92,7 @@ public class InitCodeTransformer {
         .suggestedName(Name.from("request"))
         .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
         .initValueConfigMap(InitCodeTransformer.createCollectionMap(context))
-        .initFields(FieldConfig.toFieldIterable(fieldConfigs))
+        .initFields(FieldConfig.toFieldTypeIterable(fieldConfigs))
         .fieldConfigMap(FieldConfig.toFieldConfigMap(fieldConfigs))
         .outputType(outputType)
         .valueGenerator(valueGenerator)
@@ -134,9 +134,7 @@ public class InitCodeTransformer {
         }
       }
 
-      boolean isArray =
-          fieldConfig.getField().getType().isRepeated()
-              && !fieldConfig.getField().getType().isMap();
+      boolean isArray = fieldConfig.getField().isRepeated() && !fieldConfig.getField().isMap();
 
       String enumTypeName = null;
       TypeRef fieldType = fieldItemTree.getType();

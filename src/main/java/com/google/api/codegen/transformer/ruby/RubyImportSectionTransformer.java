@@ -18,6 +18,7 @@ import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.ImportSectionTransformer;
+import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.viewmodel.ImportFileView;
@@ -32,7 +33,8 @@ import java.util.TreeSet;
 
 public class RubyImportSectionTransformer implements ImportSectionTransformer {
   @Override
-  public ImportSectionView generateImportSection(GapicInterfaceContext context) {
+  public ImportSectionView generateImportSection(InterfaceContext interfaceContext) {
+    GapicInterfaceContext context = (GapicInterfaceContext) interfaceContext;
     Set<String> importFilenames = generateImportFilenames(context);
     ImportSectionView.Builder importSection = ImportSectionView.newBuilder();
     importSection.standardImports(generateStandardImports());

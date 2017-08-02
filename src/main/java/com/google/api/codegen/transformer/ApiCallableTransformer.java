@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.config.GapicMethodConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.viewmodel.ApiCallSettingsView;
@@ -25,7 +25,6 @@ import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
 import com.google.api.codegen.viewmodel.RetryCodesDefinitionView;
 import com.google.api.codegen.viewmodel.RetryParamsDefinitionView;
 import com.google.api.codegen.viewmodel.ServiceMethodType;
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 import java.util.ArrayList;
@@ -90,7 +89,7 @@ public class ApiCallableTransformer {
   private ApiCallableView generateMainApiCallable(GapicMethodContext context) {
     ModelTypeTable typeTable = context.getTypeTable();
     Method method = context.getMethod();
-    GapicMethodConfig methodConfig = context.getMethodConfig();
+    MethodConfig methodConfig = context.getMethodConfig();
     SurfaceNamer namer = context.getNamer();
 
     ApiCallableView.Builder apiCallableBuilder = ApiCallableView.newBuilder();
@@ -120,7 +119,7 @@ public class ApiCallableTransformer {
   private ApiCallableView generatePagedApiCallable(GapicMethodContext context) {
     ModelTypeTable typeTable = context.getTypeTable();
     Method method = context.getMethod();
-    GapicMethodConfig methodConfig = context.getMethodConfig();
+    MethodConfig methodConfig = context.getMethodConfig();
     SurfaceNamer namer = context.getNamer();
 
     PageStreamingConfig pageStreaming = methodConfig.getPageStreaming();
@@ -146,7 +145,7 @@ public class ApiCallableTransformer {
   private ApiCallableView generateOperationApiCallable(GapicMethodContext context) {
     ModelTypeTable typeTable = context.getTypeTable();
     Method method = context.getMethod();
-    GapicMethodConfig methodConfig = context.getMethodConfig();
+    MethodConfig methodConfig = context.getMethodConfig();
     SurfaceNamer namer = context.getNamer();
 
     ApiCallableView.Builder operationApiCallableBuilder = ApiCallableView.newBuilder();
@@ -171,7 +170,7 @@ public class ApiCallableTransformer {
       GapicMethodContext context, ApiCallableView.Builder apiCallableBuilder) {
     Method method = context.getMethod();
     SurfaceNamer namer = context.getNamer();
-    GapicMethodConfig methodConfig = context.getMethodConfig();
+    MethodConfig methodConfig = context.getMethodConfig();
 
     apiCallableBuilder.methodName(
         namer.getApiMethodName(method, context.getMethodConfig().getVisibility()));
@@ -187,7 +186,7 @@ public class ApiCallableTransformer {
     SurfaceNamer namer = context.getNamer();
     ModelTypeTable typeTable = context.getTypeTable();
     Method method = context.getMethod();
-    GapicMethodConfig methodConfig = context.getMethodConfig();
+    MethodConfig methodConfig = context.getMethodConfig();
     Map<String, RetryCodesDefinitionView> retryCodesByKey = new HashMap<>();
     for (RetryCodesDefinitionView retryCodes :
         retryDefinitionsTransformer.generateRetryCodesDefinitions(
@@ -238,9 +237,9 @@ public class ApiCallableTransformer {
       settings.grpcStreamingType(methodConfig.getGrpcStreaming().getType());
     } else if (methodConfig.isPageStreaming()) {
       settings.type(ApiCallableImplType.PagedApiCallable);
-      Field resourceField = methodConfig.getPageStreaming().getResourcesField();
       settings.resourceTypeName(
-          typeTable.getAndSaveNicknameForElementType(resourceField.getType()));
+          typeTable.getAndSaveNicknameForElementType(
+              methodConfig.getPageStreaming().getResourcesField()));
       settings.pagedListResponseTypeName(
           namer.getAndSavePagedResponseTypeName(
               context.getMethod(),
@@ -282,7 +281,7 @@ public class ApiCallableTransformer {
   private DirectCallableView generateDirectCallable(GapicMethodContext context) {
     ModelTypeTable typeTable = context.getTypeTable();
     Method method = context.getMethod();
-    GapicMethodConfig methodConfig = context.getMethodConfig();
+    MethodConfig methodConfig = context.getMethodConfig();
     SurfaceNamer namer = context.getNamer();
 
     DirectCallableView.Builder callableBuilder = DirectCallableView.newBuilder();

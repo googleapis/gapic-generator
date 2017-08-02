@@ -22,11 +22,10 @@ import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.auto.value.AutoValue;
-import javax.annotation.Nullable;
 
 /** The context for transforming a method to a view model object. */
 @AutoValue
-public abstract class GapicMethodContext {
+public abstract class GapicMethodContext implements MethodContext {
   public static GapicMethodContext create(
       GapicInterfaceContext surfaceTransformerContext,
       Interface apiInterface,
@@ -38,36 +37,30 @@ public abstract class GapicMethodContext {
       FlatteningConfig flatteningConfig,
       FeatureConfig featureConfig) {
     return new AutoValue_GapicMethodContext(
-        surfaceTransformerContext,
         apiInterface,
         productConfig,
-        typeTable,
         namer,
+        flatteningConfig,
+        featureConfig,
         method,
         methodConfig,
-        flatteningConfig,
-        featureConfig);
+        surfaceTransformerContext,
+        typeTable);
   }
 
-  public abstract GapicInterfaceContext getSurfaceTransformerContext();
-
-  public abstract Interface getInterface();
-
-  public abstract GapicProductConfig getProductConfig();
-
-  public abstract ModelTypeTable getTypeTable();
-
-  public abstract SurfaceNamer getNamer();
-
+  /** The Method for which this object is a transformation context. */
   public abstract Method getMethod();
 
+  @Override
   public abstract GapicMethodConfig getMethodConfig();
 
-  @Nullable
-  public abstract FlatteningConfig getFlatteningConfig();
+  @Override
+  public abstract GapicInterfaceContext getSurfaceTransformerContext();
 
-  public abstract FeatureConfig getFeatureConfig();
+  @Override
+  public abstract ModelTypeTable getTypeTable();
 
+  @Override
   public boolean isFlattenedMethodContext() {
     return getFlatteningConfig() != null;
   }
@@ -77,14 +70,17 @@ public abstract class GapicMethodContext {
         getInterface(), getMethodConfig().getRerouteToGrpcInterface());
   }
 
+  @Override
   public GapicInterfaceConfig getInterfaceConfig() {
     return getProductConfig().getInterfaceConfig(getInterface());
   }
 
+  @Override
   public SingleResourceNameConfig getSingleResourceNameConfig(String entityName) {
     return getProductConfig().getSingleResourceNameConfig(entityName);
   }
 
+  @Override
   public GapicMethodContext cloneWithEmptyTypeTable() {
     return create(
         getSurfaceTransformerContext(),
@@ -96,5 +92,15 @@ public abstract class GapicMethodContext {
         getMethodConfig(),
         getFlatteningConfig(),
         getFeatureConfig());
+  }
+
+  @Override
+  public String getAndSaveRequestTypeName() {
+    return getTypeTable().getAndSaveNicknameFor(getMethod().getInputType());
+  }
+
+  @Override
+  public String getAndSaveResponseTypeName() {
+    return getTypeTable().getAndSaveNicknameFor(getMethod().getOutputType());
   }
 }

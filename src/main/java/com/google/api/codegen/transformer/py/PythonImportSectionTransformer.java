@@ -14,11 +14,12 @@
  */
 package com.google.api.codegen.transformer.py;
 
-import com.google.api.codegen.config.GapicMethodConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.ImportSectionTransformer;
+import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.viewmodel.ImportFileView;
@@ -37,11 +38,11 @@ import java.util.TreeSet;
 
 public class PythonImportSectionTransformer implements ImportSectionTransformer {
   @Override
-  public ImportSectionView generateImportSection(GapicInterfaceContext context) {
+  public ImportSectionView generateImportSection(InterfaceContext context) {
     return ImportSectionView.newBuilder()
         .standardImports(generateFileHeaderStandardImports())
         .externalImports(generateFileHeaderExternalImports(context))
-        .appImports(generateFileHeaderAppImports(context.getModelTypeTable().getImports()))
+        .appImports(generateFileHeaderAppImports(context.getImportTypeTable().getImports()))
         .build();
   }
 
@@ -85,7 +86,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
         createImport("platform"));
   }
 
-  private List<ImportFileView> generateFileHeaderExternalImports(GapicInterfaceContext context) {
+  private List<ImportFileView> generateFileHeaderExternalImports(InterfaceContext context) {
     List<ImportFileView> imports = new ArrayList<>();
     imports.add(createImport("google.gax"));
     imports.add(createImport("google.gax", "api_callable"));
@@ -96,10 +97,10 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
       imports.add(createImport("google.gapic.longrunning", "operations_client"));
     }
 
-    for (GapicMethodConfig methodConfig : context.getInterfaceConfig().getMethodConfigs()) {
+    for (MethodConfig methodConfig : context.getInterfaceConfig().getMethodConfigs()) {
       // Add the import for gax.utils.oneof if and only if there is at
       // least one "one of" argument set.
-      if (!Iterables.isEmpty(methodConfig.getOneofs())) {
+      if (!Iterables.isEmpty(methodConfig.getOneofNames(context.getNamer()))) {
         imports.add(createImport("google.gax.utils", "oneof"));
         break;
       }

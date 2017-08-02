@@ -173,7 +173,7 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
               .suggestedName(Name.from("request"))
               .initFieldConfigStrings(methodContext.getMethodConfig().getSampleCodeInitFields())
               .initValueConfigMap(InitCodeTransformer.createCollectionMap(methodContext))
-              .initFields(FieldConfig.toFieldIterable(fieldConfigs))
+              .initFields(FieldConfig.toFieldTypeIterable(fieldConfigs))
               .outputType(initCodeOutputType)
               .fieldConfigMap(FieldConfig.toFieldConfigMap(fieldConfigs))
               .valueGenerator(valueGenerator)

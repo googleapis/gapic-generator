@@ -49,9 +49,11 @@ public class CSharpCommonTransformer {
       if (mixinsDisabled && context.getMethodConfig(method).getRerouteToGrpcInterface() != null) {
         continue;
       }
+
       GapicMethodConfig methodConfig = context.getMethodConfig(method);
       if (methodConfig.getGrpcStreamingType() == GrpcStreamingType.ClientStreaming) {
         // Client-streaming not yet supported
+
         continue;
       }
       result.add(method);

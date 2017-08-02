@@ -62,7 +62,7 @@ public class TestCaseTransformer {
       InitCodeContext initCodeContext,
       ClientMethodType clientMethodType) {
     Method method = methodContext.getMethod();
-    GapicMethodConfig methodConfig = methodContext.getMethodConfig();
+    MethodConfig methodConfig = methodContext.getMethodConfig();
     SurfaceNamer namer = methodContext.getNamer();
 
     String clientMethodName;
@@ -157,7 +157,7 @@ public class TestCaseTransformer {
             namer.getFullyQualifiedApiWrapperClassName(methodContext.getInterfaceConfig()))
         .fullyQualifiedAliasedServiceClassName(
             namer.getTopLevelAliasedApiClassName(
-                methodContext.getInterfaceConfig(), packageHasMultipleServices))
+                (methodContext.getInterfaceConfig()), packageHasMultipleServices))
         .clientMethodName(clientMethodName)
         .mockGrpcStubTypeName(namer.getMockGrpcServiceImplName(methodContext.getTargetInterface()))
         .createStubFunctionName(namer.getCreateStubFunctionName(methodContext.getTargetInterface()))
@@ -167,7 +167,7 @@ public class TestCaseTransformer {
 
   private List<PageStreamingResponseView> createPageStreamingResponseViews(
       GapicMethodContext methodContext) {
-    GapicMethodConfig methodConfig = methodContext.getMethodConfig();
+    MethodConfig methodConfig = methodContext.getMethodConfig();
     SurfaceNamer namer = methodContext.getNamer();
 
     List<PageStreamingResponseView> pageStreamingResponseViews =
@@ -178,12 +178,10 @@ public class TestCaseTransformer {
     }
 
     FieldConfig resourcesFieldConfig = methodConfig.getPageStreaming().getResourcesFieldConfig();
-    Field resourcesField = resourcesFieldConfig.getField();
+    FieldType resourcesField = resourcesFieldConfig.getField();
     String resourceTypeName =
-        methodContext.getTypeTable().getAndSaveNicknameForElementType(resourcesField.getType());
-    String resourcesFieldGetterName =
-        namer.getFieldGetFunctionName(
-            resourcesField.getType(), Name.from(resourcesField.getSimpleName()));
+        methodContext.getTypeTable().getAndSaveNicknameForElementType(resourcesField);
+    String resourcesFieldGetterName = namer.getFieldGetFunctionName(resourcesField);
     pageStreamingResponseViews.add(
         PageStreamingResponseView.newBuilder()
             .resourceTypeName(resourceTypeName)
@@ -242,14 +240,14 @@ public class TestCaseTransformer {
 
   private InitCodeContext createResponseInitCodeContext(
       GapicMethodContext context, SymbolTable symbolTable) {
-    ArrayList<Field> primitiveFields = new ArrayList<>();
+    ArrayList<FieldType> primitiveFields = new ArrayList<>();
     TypeRef outputType = context.getMethod().getOutputType();
     if (context.getMethodConfig().isLongRunningOperation()) {
       outputType = context.getMethodConfig().getLongRunningConfig().getReturnType();
     }
     for (Field field : outputType.getMessageType().getFields()) {
       if (field.getType().isPrimitive() && !field.getType().isRepeated()) {
-        primitiveFields.add(field);
+        primitiveFields.add(new ProtoField(field));
       }
     }
     return InitCodeContext.newBuilder()
@@ -299,7 +297,7 @@ public class TestCaseTransformer {
   }
 
   public TestCaseView createSmokeTestCaseView(GapicMethodContext context) {
-    GapicMethodConfig methodConfig = context.getMethodConfig();
+    MethodConfig methodConfig = context.getMethodConfig();
     ClientMethodType methodType;
 
     if (methodConfig.isPageStreaming()) {
@@ -383,7 +381,7 @@ public class TestCaseTransformer {
   }
 
   public FlatteningConfig getSmokeTestFlatteningGroup(
-      GapicMethodConfig methodConfig, SmokeTestConfig smokeTestConfig) {
+      MethodConfig methodConfig, SmokeTestConfig smokeTestConfig) {
     for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
       if (flatteningGroup.getFlatteningName().equals(smokeTestConfig.getFlatteningName())) {
         return flatteningGroup;

@@ -18,13 +18,13 @@ import static com.google.api.codegen.util.java.JavaTypeTable.JavaLangResolution.
 
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.discogapic.DiscoGapicInterfaceContext;
 import com.google.api.codegen.discogapic.SchemaInterfaceContext;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.discovery.Schema.Type;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
+import com.google.api.codegen.transformer.DiscoGapicInterfaceContext;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.SchemaTypeTable;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
@@ -85,12 +85,12 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     JavaDiscoGapicNamer discoGapicNamer = new JavaDiscoGapicNamer();
 
     DiscoGapicInterfaceContext context =
-        DiscoGapicInterfaceContext.create(
+        DiscoGapicInterfaceContext.createWithoutInterface(
             document,
             productConfig,
             createTypeTable(productConfig.getPackageName()),
             discoGapicNamer,
-            new JavaSurfaceNamer(productConfig.getPackageName()),
+            new JavaSurfaceNamer(productConfig.getPackageName(), productConfig.getPackageName()),
             JavaFeatureConfig.newBuilder().enableStringFormatFunctions(false).build());
 
     // Escape any schema's field names that are Java keywords.
@@ -143,10 +143,11 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
       DiscoGapicInterfaceContext documentContext,
       Schema schema) {
 
-    SchemaTypeTable schemaTypeTable = documentContext.getSchemaTypeTable().cloneEmpty();
+    SchemaTypeTable schemaTypeTable =
+        (SchemaTypeTable) documentContext.getSchemaTypeTable().cloneEmpty();
 
     SchemaInterfaceContext context =
-        SchemaInterfaceContext.create(schema, schemaTypeTable, documentContext);
+        SchemaInterfaceContext.create(schema.getIdentifier(), schemaTypeTable, documentContext);
 
     StaticLangApiMessageView.Builder schemaView = StaticLangApiMessageView.newBuilder();
     boolean hasRequiredProperties = false;

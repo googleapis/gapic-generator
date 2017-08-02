@@ -15,8 +15,8 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.ServiceMessages;
-import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.LongRunningConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
 import com.google.api.tools.framework.model.Method;
@@ -34,7 +34,7 @@ public class LongRunningTransformer {
   }
 
   public LongRunningOperationDetailView generateDetailView(GapicMethodContext context) {
-    GapicMethodConfig methodConfig = context.getMethodConfig();
+    MethodConfig methodConfig = context.getMethodConfig();
     LongRunningConfig lroConfig = methodConfig.getLongRunningConfig();
     SurfaceNamer namer = context.getNamer();
 

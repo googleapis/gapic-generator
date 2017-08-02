@@ -16,14 +16,17 @@ package com.google.api.codegen.transformer.nodejs;
 
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.GapicInterfaceConfig;
+import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
+import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.FeatureConfig;
-import com.google.api.codegen.transformer.GapicInterfaceContext;
+import com.google.api.codegen.transformer.ImportTypeTable;
+import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -34,9 +37,7 @@ import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.js.JSCommentReformatter;
 import com.google.api.codegen.util.js.JSNameFormatter;
 import com.google.api.codegen.util.js.JSTypeTable;
-import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.EnumType;
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
@@ -143,8 +144,8 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public boolean shouldImportRequestObjectParamType(Field field) {
-    return field.getType().isMap();
+  public boolean shouldImportRequestObjectParamType(FieldType field) {
+    return field.isMap();
   }
 
   @Override
@@ -153,7 +154,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getDynamicLangReturnTypeName(Method method, GapicMethodConfig methodConfig) {
+  public String getDynamicLangReturnTypeName(Method method, MethodConfig methodConfig) {
     if (new ServiceMessages().isEmptyType(method.getOutputType())) {
       return "";
     }
@@ -173,7 +174,12 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getFieldGetFunctionName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
-    Field field = fieldConfig.getField();
+    FieldType field = fieldConfig.getField();
+    return Name.from(field.getSimpleName()).toLowerCamel();
+  }
+
+  @Override
+  public String getFieldGetFunctionName(FieldType field) {
     return Name.from(field.getSimpleName()).toLowerCamel();
   }
 
@@ -190,17 +196,19 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   /** Return JSDoc callback comment and return type comment for the given method. */
   @Override
   public List<String> getReturnDocLines(
-      GapicInterfaceContext context, GapicMethodConfig methodConfig, Synchronicity synchronicity) {
-    Method method = methodConfig.getMethod();
+      InterfaceContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
+    GapicMethodConfig gapicMethodConfig = (GapicMethodConfig) methodConfig;
+    Method method = ((GapicMethodConfig) methodConfig).getMethod();
     if (method.getRequestStreaming() && method.getResponseStreaming()) {
       return bidiStreamingReturnDocLines(method);
     } else if (method.getResponseStreaming()) {
       return responseStreamingReturnDocLines(method);
     }
 
-    List<String> callbackLines = returnCallbackDocLines(context.getModelTypeTable(), methodConfig);
+    List<String> callbackLines =
+        returnCallbackDocLines(context.getImportTypeTable(), gapicMethodConfig);
     List<String> returnObjectLines =
-        returnObjectDocLines(context.getModelTypeTable(), methodConfig);
+        returnObjectDocLines(context.getImportTypeTable(), gapicMethodConfig);
     return ImmutableList.<String>builder().addAll(callbackLines).addAll(returnObjectLines).build();
   }
 
@@ -229,7 +237,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getTypeNameDoc(ModelTypeTable typeTable, TypeRef typeRef) {
+  public String getTypeNameDoc(ImportTypeTable typeTable, TypeRef typeRef) {
     if (typeRef.isMessage()) {
       return "an object representing "
           + commentReformatter.getLinkedElementName(typeRef.getMessageType());
@@ -241,7 +249,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   private List<String> returnCallbackDocLines(
-      ModelTypeTable typeTable, GapicMethodConfig methodConfig) {
+      ImportTypeTable typeTable, GapicMethodConfig methodConfig) {
     String returnTypeDoc = returnTypeDoc(typeTable, methodConfig);
     Method method = methodConfig.getMethod();
     String classInfo = getParamTypeName(typeTable, method.getOutputType());
@@ -274,7 +282,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   private List<String> returnObjectDocLines(
-      ModelTypeTable typeTable, GapicMethodConfig methodConfig) {
+      ImportTypeTable typeTable, GapicMethodConfig methodConfig) {
     String returnTypeDoc = returnTypeDoc(typeTable, methodConfig);
     Method method = methodConfig.getMethod();
     ImmutableList.Builder<String> returnMessageLines = ImmutableList.builder();
@@ -311,7 +319,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getParamTypeName(ModelTypeTable typeTable, TypeRef type) {
+  public String getParamTypeName(ImportTypeTable typeTable, TypeRef type) {
     String cardinalityComment = "";
     if (type.getCardinality() == TypeRef.Cardinality.REPEATED) {
       if (type.isMap()) {
@@ -322,7 +330,6 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
         cardinalityComment = "[]";
       }
     }
-
     return String.format("%s%s", getParamTypeNoCardinality(typeTable, type), cardinalityComment);
   }
 
@@ -330,18 +337,22 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     return message.getFullName().equals("google.protobuf.Empty");
   }
 
-  private String returnTypeDoc(ModelTypeTable typeTable, GapicMethodConfig methodConfig) {
+  private String returnTypeDoc(ImportTypeTable typeTable, GapicMethodConfig methodConfig) {
     String returnTypeDoc = "";
     if (methodConfig.isPageStreaming()) {
       returnTypeDoc = "Array of ";
-      TypeRef resourcesType = methodConfig.getPageStreaming().getResourcesField().getType();
+      FieldType resourcesType = methodConfig.getPageStreaming().getResourcesField();
       if (resourcesType.isMessage()) {
-        returnTypeDoc += commentReformatter.getLinkedElementName(resourcesType.getMessageType());
+        returnTypeDoc +=
+            commentReformatter.getLinkedElementName(
+                resourcesType.getProtoTypeRef().getMessageType());
       } else if (resourcesType.isEnum()) {
-        returnTypeDoc += commentReformatter.getLinkedElementName(resourcesType.getEnumType());
+        returnTypeDoc +=
+            commentReformatter.getLinkedElementName(resourcesType.getProtoTypeRef().getEnumType());
       } else {
         // Converting to lowercase because "String" is capitalized in NodeJSModelTypeNameConverter.
-        returnTypeDoc += getParamTypeNoCardinality(typeTable, resourcesType).toLowerCase();
+        returnTypeDoc +=
+            getParamTypeNoCardinality(typeTable, resourcesType.getProtoTypeRef()).toLowerCase();
       }
     } else if (methodConfig.isLongRunningOperation()) {
       returnTypeDoc =
@@ -352,13 +363,13 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     return returnTypeDoc;
   }
 
-  private String getParamTypeNoCardinality(ModelTypeTable typeTable, TypeRef type) {
+  private String getParamTypeNoCardinality(ImportTypeTable typeTable, TypeRef type) {
     if (type.isMessage()) {
       return "Object";
     } else if (type.isEnum()) {
       return "number";
     } else {
-      return typeTable.getFullNameForElementType(type);
+      return ((ModelTypeTable) typeTable).getFullNameForElementType(type);
     }
   }
 
@@ -377,9 +388,9 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public List<String> getDocLines(Field field) {
+  public List<String> getDocLines(FieldType field) {
     ImmutableList.Builder<String> lines = ImmutableList.builder();
-    List<String> fieldDocLines = getDocLines(DocumentationUtil.getScopedDescription(field));
+    List<String> fieldDocLines = getDocLines(field.getScopedDocumentation());
     String extraFieldDescription = getExtraFieldDescription(field);
 
     lines.addAll(fieldDocLines);
@@ -393,43 +404,42 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     return lines.build();
   }
 
-  private String getExtraFieldDescription(Field field) {
-    boolean fieldIsMessage = field.getType().isMessage() && !field.getType().isMap();
-    boolean fieldIsEnum = field.getType().isEnum();
+  private String getExtraFieldDescription(FieldType field) {
+    boolean fieldIsMessage = field.isMessage() && !field.isMap();
+    boolean fieldIsEnum = field.isEnum();
     if (fieldIsMessage) {
       return "This object should have the same structure as "
-          + commentReformatter.getLinkedElementName(field.getType().getMessageType());
+          + commentReformatter.getLinkedElementName(field.getProtoTypeRef().getMessageType());
     } else if (fieldIsEnum) {
       return "The number should be among the values of "
-          + commentReformatter.getLinkedElementName(field.getType().getEnumType());
+          + commentReformatter.getLinkedElementName(field.getProtoTypeRef().getEnumType());
     }
     return "";
   }
 
   @Override
-  public String getMessageTypeName(ModelTypeTable typeTable, MessageType message) {
+  public String getMessageTypeName(ImportTypeTable typeTable, MessageType message) {
     // JSTypeTable produces nicknames which are qualified with the a packagePrefix which needs
     // to be stripped from the message type name.
     List<String> messageNames =
-        Arrays.asList(typeTable.getNicknameFor(TypeRef.of(message)).split("\\."));
+        Arrays.asList(
+            ((ModelTypeTable) typeTable).getNicknameFor(TypeRef.of(message)).split("\\."));
     return messageNames.get(messageNames.size() - 1);
   }
 
   @Override
-  public String getEnumTypeName(ModelTypeTable typeTable, EnumType enumType) {
+  public String getEnumTypeName(ImportTypeTable typeTable, EnumType enumType) {
     // JSTypeTable produces nicknames which are qualified with the a packagePrefix which needs
     // to be stripped from the enum type name.
     List<String> enumNames =
-        Arrays.asList(typeTable.getNicknameFor(TypeRef.of(enumType)).split("\\."));
+        Arrays.asList(
+            ((ModelTypeTable) typeTable).getNicknameFor(TypeRef.of(enumType)).split("\\."));
     return enumNames.get(enumNames.size() - 1);
   }
 
   @Override
-  public String getServiceFileName(GapicInterfaceConfig interfaceConfig) {
-    return Name.upperCamel(interfaceConfig.getInterface().getSimpleName())
-            .join("client")
-            .toLowerUnderscore()
-        + ".js";
+  public String getServiceFileName(InterfaceConfig interfaceConfig) {
+    return Name.upperCamel(interfaceConfig.getRawName()).join("client").toLowerUnderscore() + ".js";
   }
 
   @Override
@@ -446,20 +456,16 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getByteLengthFunctionName(TypeRef typeRef) {
-    switch (typeRef.getKind()) {
-      case TYPE_MESSAGE:
-        return "gax.createByteLengthFunction(grpcClients."
-            + typeRef.getMessageType().getFullName()
-            + ")";
-      case TYPE_STRING:
-      case TYPE_BYTES:
-        return "function(s) { return s.length; }";
-      default:
-        // There is no easy way to say the actual length of the numeric fields.
-        // For now throwing an exception.
-        throw new IllegalArgumentException(
-            "Can't determine the byte length function for " + typeRef.getKind());
+  public String getByteLengthFunctionName(FieldType typeRef) {
+    if (typeRef.isMessage()) {
+      return "gax.createByteLengthFunction(grpcClients." + typeRef.getTypeFullName() + ")";
+    } else if (typeRef.isString() || typeRef.isBytes()) {
+      return "function(s) { return s.length; }";
+    } else {
+      // There is no easy way to say the actual length of the numeric fields.
+      // For now throwing an exception.
+      throw new IllegalArgumentException(
+          "Can't determine the byte length function for " + typeRef.getKind());
     }
   }
 

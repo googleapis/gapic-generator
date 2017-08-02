@@ -14,8 +14,9 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.ProductConfig;
-import com.google.api.codegen.util.TypeTable;
+import javax.annotation.Nullable;
 
 /**
  * The context for transforming an API interface, in an input-agnostic way, into a view model to use
@@ -25,7 +26,10 @@ public interface InterfaceContext {
 
   ProductConfig getProductConfig();
 
-  TypeTable getTypeTable();
-
   SurfaceNamer getNamer();
+
+  ImportTypeTable getImportTypeTable();
+
+  @Nullable
+  InterfaceConfig getInterfaceConfig();
 }

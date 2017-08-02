@@ -16,13 +16,15 @@ package com.google.api.codegen.transformer.py;
 
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ServiceMessages;
-import com.google.api.codegen.config.GapicInterfaceConfig;
+import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
-import com.google.api.codegen.transformer.GapicInterfaceContext;
+import com.google.api.codegen.transformer.ImportTypeTable;
+import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -94,7 +96,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFullyQualifiedApiWrapperClassName(GapicInterfaceConfig interfaceConfig) {
+  public String getFullyQualifiedApiWrapperClassName(InterfaceConfig interfaceConfig) {
     return Joiner.on(".")
         .join(
             getPackageName(),
@@ -103,12 +105,12 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getMessageTypeName(ModelTypeTable typeTable, MessageType message) {
+  public String getMessageTypeName(ImportTypeTable typeTable, MessageType message) {
     return publicClassName(Name.upperCamel(message.getSimpleName()));
   }
 
   @Override
-  public String getEnumTypeName(ModelTypeTable typeTable, EnumType enumType) {
+  public String getEnumTypeName(ImportTypeTable typeTable, EnumType enumType) {
     return publicClassName(Name.upperCamel(enumType.getSimpleName()));
   }
 
@@ -123,7 +125,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getParamTypeName(ModelTypeTable typeTable, TypeRef type) {
+  public String getParamTypeName(ImportTypeTable typeTable, TypeRef type) {
     if (type.isMap()) {
       TypeName mapTypeName = new TypeName("dict");
       TypeName keyTypeName =
@@ -196,7 +198,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public List<String> getThrowsDocLines(GapicMethodConfig methodConfig) {
+  public List<String> getThrowsDocLines(MethodConfig methodConfig) {
     ImmutableList.Builder<String> lines = ImmutableList.builder();
     lines.add(":exc:`google.gax.errors.GaxError` if the RPC is aborted.");
     if (hasParams(methodConfig)) {
@@ -205,7 +207,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
     return lines.build();
   }
 
-  private boolean hasParams(GapicMethodConfig methodConfig) {
+  private boolean hasParams(MethodConfig methodConfig) {
     if (!Iterables.isEmpty(methodConfig.getRequiredFieldConfigs())) {
       return true;
     }
@@ -217,8 +219,8 @@ public class PythonSurfaceNamer extends SurfaceNamer {
 
   @Override
   public List<String> getReturnDocLines(
-      GapicInterfaceContext context, GapicMethodConfig methodConfig, Synchronicity synchronicity) {
-    TypeRef outputType = methodConfig.getMethod().getOutputType();
+      InterfaceContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
+    TypeRef outputType = ((GapicMethodConfig) methodConfig).getMethod().getOutputType();
     if (ServiceMessages.s_isEmptyType(outputType)) {
       return ImmutableList.<String>of();
     }
@@ -229,12 +231,12 @@ public class PythonSurfaceNamer extends SurfaceNamer {
             : getModelTypeFormatter().getFullNameFor(outputType);
     String classInfo = ":class:`" + returnTypeName + "`";
 
-    if (methodConfig.getMethod().getResponseStreaming()) {
+    if (((GapicMethodConfig) methodConfig).getMethod().getResponseStreaming()) {
       return ImmutableList.of("iterator[" + classInfo + "].");
     }
 
     if (methodConfig.isPageStreaming()) {
-      TypeRef resourceType = methodConfig.getPageStreaming().getResourcesField().getType();
+      TypeRef resourceType = methodConfig.getPageStreaming().getResourcesField().getProtoTypeRef();
       return ImmutableList.of(
           "A :class:`google.gax.PageIterator` instance. By default, this",
           "is an iterable of " + getParamTypeNameForElementType(resourceType) + " instances.",
@@ -261,6 +263,11 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getFieldGetFunctionName(FieldType field) {
+    return publicFieldName(Name.from(field.getSimpleName()));
+  }
+
+  @Override
   public String getFieldGetFunctionName(TypeRef type, Name identifier) {
     return publicFieldName(identifier);
   }
@@ -272,13 +279,13 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getUnitTestClassName(GapicInterfaceConfig interfaceConfig) {
+  public String getUnitTestClassName(InterfaceConfig interfaceConfig) {
     return publicClassName(
         Name.upperCamelKeepUpperAcronyms("Test", getInterfaceName(interfaceConfig), "Client"));
   }
 
   @Override
-  public String getSmokeTestClassName(GapicInterfaceConfig interfaceConfig) {
+  public String getSmokeTestClassName(InterfaceConfig interfaceConfig) {
     return publicClassName(
         Name.upperCamelKeepUpperAcronyms("Test", "System", getInterfaceName(interfaceConfig)));
   }

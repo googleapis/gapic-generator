@@ -16,9 +16,9 @@ package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.FlatteningConfig;
-import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
@@ -199,7 +199,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     ArrayList<TestCaseView> testCaseViews = new ArrayList<>();
     SymbolTable testNameTable = new SymbolTable();
     for (Method method : context.getSupportedMethods()) {
-      GapicMethodConfig methodConfig = context.getMethodConfig(method);
+      MethodConfig methodConfig = context.getMethodConfig(method);
       if (methodConfig.isGrpcStreaming()) {
         if (methodConfig.getGrpcStreamingType() == GrpcStreamingType.ClientStreaming) {
           //TODO: Add unit test generation for ClientStreaming methods
