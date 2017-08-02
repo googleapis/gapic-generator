@@ -132,12 +132,15 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.templateFileName(API_TEMPLATE_FILENAME);
     view.serviceDoc(serviceTransformer.generateServiceDoc(context, null));
     view.clientTypeName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
-    view.clientConstructorName(namer.getApiWrapperClassConstructorName(apiInterface));
-    view.defaultClientOptionFunctionName(namer.getDefaultApiSettingsFunctionName(apiInterface));
-    view.defaultCallOptionFunctionName(namer.getDefaultCallSettingsFunctionName(apiInterface));
-    view.callOptionsTypeName(namer.getCallSettingsTypeName(apiInterface));
+    view.clientConstructorName(
+        namer.getApiWrapperClassConstructorName(context.getInterfaceConfig()));
+    view.defaultClientOptionFunctionName(
+        namer.getDefaultApiSettingsFunctionName(context.getInterfaceConfig()));
+    view.defaultCallOptionFunctionName(
+        namer.getDefaultCallSettingsFunctionName(context.getInterfaceConfig()));
+    view.callOptionsTypeName(namer.getCallSettingsTypeName(context.getInterfaceConfig()));
     view.serviceOriginalName(model.getServiceConfig().getTitle());
-    view.servicePhraseName(namer.getServicePhraseName(apiInterface));
+    view.servicePhraseName(namer.getServicePhraseName(context.getInterfaceConfig()));
 
     String outputPath = pathMapper.getOutputPath(apiInterface, productConfig);
     String fileName = namer.getServiceFileName(context.getInterfaceConfig());
@@ -201,12 +204,14 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.templateFileName(SAMPLE_TEMPLATE_FILENAME);
 
     String outputPath = pathMapper.getOutputPath(apiInterface, productConfig);
-    String fileName = namer.getExampleFileName(apiInterface);
+    String fileName = namer.getExampleFileName(context.getInterfaceConfig());
     view.outputPath(outputPath + File.separator + fileName);
 
     view.clientTypeName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
-    view.clientConstructorName(namer.getApiWrapperClassConstructorName(apiInterface));
-    view.clientConstructorExampleName(namer.getApiWrapperClassConstructorExampleName(apiInterface));
+    view.clientConstructorName(
+        namer.getApiWrapperClassConstructorName(context.getInterfaceConfig()));
+    view.clientConstructorExampleName(
+        namer.getApiWrapperClassConstructorExampleName(context.getInterfaceConfig()));
     view.apiMethods(generateApiMethods(context, context.getPublicMethods()));
     view.iamResources(iamResourceTransformer.generateIamResources(context));
 

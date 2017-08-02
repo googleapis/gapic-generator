@@ -152,7 +152,7 @@ public class TestCaseTransformer {
             methodContext.getTypeTable().getFullNameFor(method.getInputType()))
         .fullyQualifiedResponseTypeName(fullyQualifiedResponseTypeName)
         .serviceConstructorName(
-            namer.getApiWrapperClassConstructorName(methodContext.getInterface()))
+            namer.getApiWrapperClassConstructorName(methodContext.getInterfaceConfig()))
         .fullyQualifiedServiceClassName(
             namer.getFullyQualifiedApiWrapperClassName(methodContext.getInterfaceConfig()))
         .fullyQualifiedAliasedServiceClassName(
