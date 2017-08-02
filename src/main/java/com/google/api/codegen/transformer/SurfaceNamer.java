@@ -211,15 +211,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getFieldSetFunctionName(field.getProtoTypeRef(), Name.from(field.getSimpleName()));
   }
 
-  /** The function name to set a field from a Discovery document. */
-  public String getFieldSetFunctionName(Schema schema) {
-    if (schema.type() == Schema.Type.ARRAY) {
-      return publicMethodName(Name.from("add", "all").join(schema.getIdentifier()));
-    } else {
-      return publicMethodName(Name.from("set").join(schema.getIdentifier()));
-    }
-  }
-
   /** The function name to set a field having the given type and name. */
   public String getFieldSetFunctionName(TypeRef type, Name identifier) {
     if (type.isMap()) {
