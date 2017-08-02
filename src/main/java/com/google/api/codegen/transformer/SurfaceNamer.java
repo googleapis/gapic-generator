@@ -827,6 +827,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The type name for the method param */
   public String getParamTypeName(ImportTypeTable typeTable, FieldType type) {
+    // TODO(andrealin): Remove the switch statement and getProtoTypeRef().
     switch (type.getApiSource()) {
       case PROTO:
         return getParamTypeName(typeTable, type.getProtoTypeRef());
