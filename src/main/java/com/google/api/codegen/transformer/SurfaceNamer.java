@@ -362,6 +362,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getApiMethodName(Name.upperCamel(method.getSimpleName()), visibility);
   }
 
+  //TODO(andrealin): Replace these pairs of methods with one that takes in an interface. */
   /** The name of the surface method which can call the given API method. */
   public String getApiMethodName(
       com.google.api.codegen.discovery.Method method, VisibilityConfig visibility) {
