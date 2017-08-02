@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer.go;
 
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.OneofConfig;
@@ -368,6 +369,11 @@ public class GoSurfaceNamer extends SurfaceNamer {
             Name.upperCamel(
                 "Test", method.getParent().getSimpleName(), method.getSimpleName(), "Error"));
     return publicMethodName(testCaseName);
+  }
+
+  @Override
+  public String getFieldGetFunctionName(FieldType field) {
+    return publicMethodName(Name.from(field.getSimpleName()));
   }
 
   @Override

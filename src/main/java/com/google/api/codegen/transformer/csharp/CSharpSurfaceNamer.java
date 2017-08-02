@@ -243,6 +243,11 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getFieldGetFunctionName(FieldType field) {
+    return privateMethodName(Name.from(field.getSimpleName()));
+  }
+
+  @Override
   public String getFieldGetFunctionName(TypeRef type, Name identifier) {
     return privateMethodName(identifier);
   }

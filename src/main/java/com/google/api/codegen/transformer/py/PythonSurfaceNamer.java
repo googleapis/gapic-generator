@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer.py;
 
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ServiceMessages;
+import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
@@ -210,6 +211,11 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   @Override
   public String getGrpcStubCallString(Interface apiInterface, Method method) {
     return getGrpcMethodName(method);
+  }
+
+  @Override
+  public String getFieldGetFunctionName(FieldType field) {
+    return publicFieldName(Name.from(field.getSimpleName()));
   }
 
   @Override

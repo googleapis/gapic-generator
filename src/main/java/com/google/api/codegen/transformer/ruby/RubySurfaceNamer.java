@@ -65,6 +65,12 @@ public class RubySurfaceNamer extends SurfaceNamer {
     return publicClassName(Name.upperCamel(apiInterface.getSimpleName(), "ClientSnippets"));
   }
 
+  /** The function name to set a field. */
+  @Override
+  public String getFieldSetFunctionName(FieldType field) {
+    return getFieldGetFunctionName(field);
+  }
+
   /** The function name to set a field having the given type and name. */
   @Override
   public String getFieldSetFunctionName(TypeRef type, Name identifier) {
@@ -313,6 +319,11 @@ public class RubySurfaceNamer extends SurfaceNamer {
   @Override
   public String getFieldGetFunctionName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
     return getFieldKey(fieldConfig.getField());
+  }
+
+  @Override
+  public String getFieldGetFunctionName(FieldType field) {
+    return keyName(Name.from(field.getSimpleName()));
   }
 
   @Override

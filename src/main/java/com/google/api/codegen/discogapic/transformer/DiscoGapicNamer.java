@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.discogapic.transformer;
 
-import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NameFormatter;
 import com.google.api.codegen.util.NameFormatterDelegator;
@@ -24,11 +23,6 @@ public class DiscoGapicNamer extends NameFormatterDelegator {
 
   public DiscoGapicNamer(NameFormatter nameFormatter) {
     super(nameFormatter);
-  }
-
-  /** Returns the variable name for a field. */
-  public String getFieldVarName(String fieldName) {
-    return privateFieldName(Name.anyCamel(fieldName));
   }
 
   /** Returns the resource getter method name for a resource field. */
@@ -41,6 +35,7 @@ public class DiscoGapicNamer extends NameFormatterDelegator {
     }
     return publicMethodName(Name.anyCamel("get").join(name));
   }
+
   /** Returns the resource getter method name for a resource field. */
   public String getResourceSetterName(String fieldName) {
     Name name;
@@ -53,34 +48,17 @@ public class DiscoGapicNamer extends NameFormatterDelegator {
   }
 
   /**
-   * Returns the array of substrings after the input is split by periods. Ex: Input of
-   * "compute.addresses.aggregatedList" returns the array: ["compute", "addresses", "List"].
-   */
-  public String[] getMethodNamePieces(String longMethodName) {
-    String[] pieces = longMethodName.split("\\.");
-    if (pieces.length < 3) {
-      throw new IllegalArgumentException(
-          "Fully qualified method name must be in the form [api].[resource].[method]");
-    }
-    return pieces;
-  }
-
-  /**
    * Returns the last substring after the input is split by periods. Ex: Input
    * "compute.addresses.aggregatedList" returns "aggregatedList".
    */
   public String getRequestName(String fullMethodName) {
-    String[] pieces = getMethodNamePieces(fullMethodName);
+    String[] pieces = fullMethodName.split("\\.");
+    if (pieces.length < 3) {
+      throw new IllegalArgumentException(
+          "Fully qualified method name must be in the form [api].[resource].[method]");
+    }
     return privateFieldName(
         Name.anyCamel(pieces[pieces.length - 2], pieces[pieces.length - 1], "http", "request"));
-  }
-
-  /**
-   * Returns the last substring after the input is split by periods. Ex: Input
-   * "compute.addresses.aggregatedList" returns "aggregatedList".
-   */
-  public String getRequestName(Method method) {
-    return getRequestName(method.id());
   }
 
   //TODO(andrealin): Naming methods for responses, service name.

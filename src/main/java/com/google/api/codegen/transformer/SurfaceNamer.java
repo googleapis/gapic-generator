@@ -70,7 +70,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   @Nullable private final ModelTypeFormatter modelTypeFormatter;
 
   /* Render a Discovery Method as a Name. */
-  public Name discoveryMethodasName(com.google.api.codegen.discovery.Method method) {
+  public static Name discoveryMethodasName(com.google.api.codegen.discovery.Method method) {
     String[] pieces = method.id().split("\\.");
     Name resultName = Name.anyCamel(pieces[0]);
     for (int i = 1; i < pieces.length; i++) {
@@ -288,7 +288,14 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The function name to get the given proto field. */
   public String getFieldGetFunctionName(FieldType field) {
-    return getFieldGetFunctionName(field.getProtoTypeRef(), Name.from(field.getSimpleName()));
+    String fieldSimpleName = field.getSimpleName();
+    if (field.isRepeated() && !field.isMap()) {
+      return publicMethodName(Name.from("get").join(fieldSimpleName).join("list"));
+    } else if (field.isMap()) {
+      return publicMethodName(Name.from("get").join(fieldSimpleName).join("map"));
+    } else {
+      return publicMethodName(Name.from("get").join(fieldSimpleName));
+    }
   }
 
   /** The function name to get a field having the given type and name. */
