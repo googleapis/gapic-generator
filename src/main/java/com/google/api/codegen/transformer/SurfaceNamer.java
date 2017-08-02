@@ -199,21 +199,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The function name to set the given proto field. */
   public String getFieldSetFunctionName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
     FieldType field = fieldConfig.getField();
-    switch (fieldConfig.getField().getApiSource()) {
-      case PROTO:
-        if (featureConfig.useResourceNameFormatOption(fieldConfig)) {
-          return getResourceNameFieldSetFunctionName(fieldConfig.getMessageFieldConfig());
-        } else {
-          return getFieldSetFunctionName(field);
-        }
-      case DISCOVERY:
-        if (featureConfig.useResourceNameFormatOption(fieldConfig)) {
-          return getResourceNameFieldSetFunctionName(fieldConfig.getMessageFieldConfig());
-        } else {
-          return getFieldSetFunctionName(field);
-        }
-      default:
-        throw new IllegalArgumentException("Unhandled model type.");
+    if (featureConfig.useResourceNameFormatOption(fieldConfig)) {
+      return getResourceNameFieldSetFunctionName(fieldConfig.getMessageFieldConfig());
+    } else {
+      return getFieldSetFunctionName(field);
     }
   }
 
