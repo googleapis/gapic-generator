@@ -439,20 +439,16 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getByteLengthFunctionName(TypeRef typeRef) {
-    switch (typeRef.getKind()) {
-      case TYPE_MESSAGE:
-        return "gax.createByteLengthFunction(grpcClients."
-            + typeRef.getMessageType().getFullName()
-            + ")";
-      case TYPE_STRING:
-      case TYPE_BYTES:
-        return "function(s) { return s.length; }";
-      default:
-        // There is no easy way to say the actual length of the numeric fields.
-        // For now throwing an exception.
-        throw new IllegalArgumentException(
-            "Can't determine the byte length function for " + typeRef.getKind());
+  public String getByteLengthFunctionName(FieldType typeRef) {
+    if (typeRef.isMessage()) {
+      return "gax.createByteLengthFunction(grpcClients." + typeRef.getTypeFullName() + ")";
+    } else if (typeRef.isString() || typeRef.isBytes()) {
+      return "function(s) { return s.length; }";
+    } else {
+      // There is no easy way to say the actual length of the numeric fields.
+      // For now throwing an exception.
+      throw new IllegalArgumentException(
+          "Can't determine the byte length function for " + typeRef.getKind());
     }
   }
 

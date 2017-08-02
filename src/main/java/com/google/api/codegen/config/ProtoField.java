@@ -15,6 +15,8 @@
 package com.google.api.codegen.config;
 
 import static com.google.api.codegen.config.ApiSource.PROTO;
+import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_BYTES;
+import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_STRING;
 
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
@@ -52,38 +54,51 @@ public class ProtoField implements FieldType {
   }
 
   @Override
+  public String getTypeFullName() {
+    return protoField.getType().getMessageType().getFullName();
+  }
+
+  @Override
   public boolean isMap() {
     return protoField.getType().isMap();
   }
 
+  @Override
   public ProtoField getMapKeyField() {
     return new ProtoField(protoField.getType().getMapKeyField());
   }
 
+  @Override
   public ProtoField getMapValueField() {
     return new ProtoField(protoField.getType().getMapValueField());
   }
 
+  @Override
   public boolean isMessage() {
     return protoField.getType().isMessage();
   }
 
+  @Override
   public boolean isRepeated() {
     return protoField.isRepeated();
   }
 
+  @Override
   public String getParentFullName() {
     return protoField.getParent().getFullName();
   }
 
+  @Override
   public Cardinality getCardinality() {
     return protoField.getType().getCardinality();
   }
 
+  @Override
   public boolean isEnum() {
     return protoField.getType().isEnum();
   }
 
+  @Override
   public boolean isPrimitive() {
     return protoField.getType().isPrimitive();
   }
@@ -125,5 +140,20 @@ public class ProtoField implements FieldType {
       return fieldNames.build();
     }
     return null;
+  }
+
+  @Override
+  public boolean isString() {
+    return protoField.getType().equals(TYPE_STRING);
+  }
+
+  @Override
+  public boolean isBytes() {
+    return protoField.getType().equals(TYPE_BYTES);
+  }
+
+  @Override
+  public String getKind() {
+    return protoField.getType().toString();
   }
 }

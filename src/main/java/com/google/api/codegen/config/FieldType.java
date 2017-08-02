@@ -34,6 +34,8 @@ public interface FieldType {
 
   String getFullName();
 
+  String getTypeFullName();
+
   /* @return if the underlying resource is a map type. */
   boolean isMap();
 
@@ -45,6 +47,12 @@ public interface FieldType {
 
   /* @return if the underlying resource is a proto Messsage. */
   boolean isMessage();
+
+  /* @return if the underlying resource is String-typed. */
+  boolean isString();
+
+  /* @return if the underlying resource is byte-typed. */
+  boolean isBytes();
 
   /* @return if the underlying resource can be repeated in the parent resource. */
   boolean isRepeated();
@@ -74,4 +82,7 @@ public interface FieldType {
 
   /* @return the simple name of the Oneof (if it exists) associated with this model. */
   List<String> getOneofFieldsNames();
+
+  /* @return the type of this object, formatted as a String. */
+  String getKind();
 }

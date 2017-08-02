@@ -31,6 +31,7 @@ import com.google.api.codegen.transformer.java.JavaSchemaTypeNameConverter;
 import com.google.api.codegen.transformer.java.JavaSurfaceNamer;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaTypeTable;
+import com.google.api.codegen.viewmodel.ApiCallableView;
 import com.google.api.codegen.viewmodel.FormatResourceFunctionView;
 import com.google.api.codegen.viewmodel.ParseResourceFunctionView;
 import com.google.api.codegen.viewmodel.PathTemplateView;
@@ -141,8 +142,9 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
     String name = context.getNamer().getApiWrapperClassName(context.getDocument());
     xapiClass.releaseLevelAnnotation(context.getNamer().getReleaseAnnotation(ReleaseLevel.ALPHA));
     xapiClass.name(name);
-    xapiClass.settingsClassName(context.getNamer().getApiSettingsClassName(context.getDocument()));
-    xapiClass.apiCallableMembers(apiCallableTransformer.generateStaticLangApiCallables(context));
+    xapiClass.settingsClassName(
+        context.getNamer().getApiSettingsClassName(context.getInterfaceConfig()));
+    xapiClass.apiCallableMembers(new ArrayList<ApiCallableView>());
     xapiClass.pathTemplates(new ArrayList<PathTemplateView>());
     xapiClass.formatResourceFunctions(new ArrayList<FormatResourceFunctionView>());
     xapiClass.parseResourceFunctions(new ArrayList<ParseResourceFunctionView>());

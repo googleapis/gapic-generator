@@ -17,6 +17,7 @@ package com.google.api.codegen.config;
 import static com.google.api.codegen.config.ApiSource.DISCOVERY;
 
 import com.google.api.codegen.discovery.Schema;
+import com.google.api.codegen.discovery.Schema.Format;
 import com.google.api.codegen.discovery.Schema.Type;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
@@ -52,6 +53,11 @@ public class DiscoveryField implements FieldType {
 
   @Override
   public String getFullName() {
+    return schema.getIdentifier();
+  }
+
+  @Override
+  public String getTypeFullName() {
     return schema.getIdentifier();
   }
 
@@ -126,5 +132,21 @@ public class DiscoveryField implements FieldType {
   @Override
   public List<String> getOneofFieldsNames() {
     return ImmutableList.of();
+  }
+
+  @Override
+  public boolean isString() {
+    return schema.type().equals(Type.STRING);
+  }
+
+  @Override
+  public boolean isBytes() {
+    return schema.type().equals(Type.ANY)
+        || (schema.type().equals(Type.STRING) && schema.format().equals(Format.BYTE));
+  }
+
+  @Override
+  public String getKind() {
+    return schema.type().toString();
   }
 }

@@ -582,7 +582,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getAsyncApiMethodName(method, visibility);
   }
 
-  public String getByteLengthFunctionName(TypeRef typeRef) {
+  public String getByteLengthFunctionName(FieldType typeRef) {
     return getNotImplementedString("SurfaceNamer.getByteLengthFunctionName");
   }
 

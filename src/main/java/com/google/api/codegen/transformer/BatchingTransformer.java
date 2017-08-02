@@ -47,7 +47,7 @@ public class BatchingTransformer {
       }
 
       descriptor.byteLengthFunctionName(
-          namer.getByteLengthFunctionName(batching.getBatchedField().getProtoTypeRef()));
+          namer.getByteLengthFunctionName(batching.getBatchedField()));
       descriptors.add(descriptor.build());
     }
     return descriptors.build();
@@ -68,22 +68,7 @@ public class BatchingTransformer {
     return descriptors;
   }
 
-  public List<BatchingDescriptorClassView> generateDescriptorClasses(
-      DiscoGapicInterfaceContext context) {
-    List<BatchingDescriptorClassView> descriptors = new ArrayList<>();
-
-    for (com.google.api.codegen.discovery.Method method : context.getMethods()) {
-      MethodConfig methodConfig = context.getMethodConfig(method);
-      if (!methodConfig.isBatching()) {
-        continue;
-      }
-      descriptors.add(generateDescriptorClass(context.asRequestMethodContext(method)));
-    }
-
-    return descriptors;
-  }
-
-  public BatchingConfigView generateBatchingConfig(MethodContext context) {
+  public BatchingConfigView generateBatchingConfig(GapicMethodContext context) {
     BatchingConfig batchingConfig = context.getMethodConfig().getBatching();
     BatchingConfigView.Builder batchingConfigView = BatchingConfigView.newBuilder();
 
@@ -108,7 +93,7 @@ public class BatchingTransformer {
     return fieldNames.build();
   }
 
-  private BatchingDescriptorClassView generateDescriptorClass(MethodContext context) {
+  private BatchingDescriptorClassView generateDescriptorClass(GapicMethodContext context) {
     SurfaceNamer namer = context.getNamer();
     BatchingConfig batching = context.getMethodConfig().getBatching();
 
@@ -139,7 +124,7 @@ public class BatchingTransformer {
     return desc.build();
   }
 
-  private List<BatchingPartitionKeyView> generatePartitionKeys(MethodContext context) {
+  private List<BatchingPartitionKeyView> generatePartitionKeys(GapicMethodContext context) {
     List<BatchingPartitionKeyView> keys = new ArrayList<>();
     BatchingConfig batching = context.getMethodConfig().getBatching();
     for (FieldSelector fieldSelector : batching.getDiscriminatorFields()) {
@@ -155,7 +140,7 @@ public class BatchingTransformer {
     return keys;
   }
 
-  private List<FieldCopyView> generateDiscriminatorFieldCopies(MethodContext context) {
+  private List<FieldCopyView> generateDiscriminatorFieldCopies(GapicMethodContext context) {
     List<FieldCopyView> fieldCopies = new ArrayList<>();
     BatchingConfig batching = context.getMethodConfig().getBatching();
     for (FieldSelector fieldSelector : batching.getDiscriminatorFields()) {
