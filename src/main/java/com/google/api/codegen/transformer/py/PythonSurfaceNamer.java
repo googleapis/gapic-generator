@@ -33,6 +33,7 @@ import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.py.PythonCommentReformatter;
 import com.google.api.codegen.util.py.PythonNameFormatter;
 import com.google.api.codegen.util.py.PythonTypeTable;
+import com.google.api.tools.framework.model.EnumType;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
@@ -61,6 +62,11 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   @Override
   public SurfaceNamer cloneWithPackageName(String packageName) {
     return new PythonSurfaceNamer(packageName);
+  }
+
+  @Override
+  public String getServicePhraseName(Interface apiInterface) {
+    return apiInterface.getParent().getFullName() + " " + apiInterface.getSimpleName() + " API";
   }
 
   @Override
@@ -99,6 +105,11 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   @Override
   public String getMessageTypeName(ModelTypeTable typeTable, MessageType message) {
     return publicClassName(Name.upperCamel(message.getSimpleName()));
+  }
+
+  @Override
+  public String getEnumTypeName(ModelTypeTable typeTable, EnumType enumType) {
+    return publicClassName(Name.upperCamel(enumType.getSimpleName()));
   }
 
   @Override
@@ -176,6 +187,12 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   public String getGrpcClientTypeName(Interface apiInterface) {
     String fullName = getModelTypeFormatter().getFullNameFor(apiInterface) + "Stub";
     return getTypeNameConverter().getTypeName(fullName).getNickname();
+  }
+
+  @Override
+  public String getClientConfigPath(Interface apiInterface) {
+    return classFileNameBase(Name.upperCamel(apiInterface.getSimpleName()).join("client_config"))
+        + ".json";
   }
 
   @Override
