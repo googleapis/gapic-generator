@@ -561,7 +561,7 @@
             /// Construct the server-streaming method for <c>{@method.name}</c>.
             /// </summary>
             /// <param name="call">The underlying gRPC server-streaming call.</param>
-            public {@method.name}StreamImpl({@method.responseTypeName} call)
+            internal {@method.name}StreamImpl({@method.responseTypeName} call)
             {
                 GrpcCall = call;
             }
@@ -570,8 +570,7 @@
             public override {@method.responseTypeName} GrpcCall { get; }
 
             /// <inheritdoc/>
-            public override IAsyncEnumerator<{@method.serviceResponseTypeName}> ResponseStream =>
-                GrpcCall.ResponseStream;
+            public override IAsyncEnumerator<{@method.serviceResponseTypeName}> ResponseStream => GrpcCall.ResponseStream;
         }
     @else
         public virtual {@method.name}Stream {@method.name}(
