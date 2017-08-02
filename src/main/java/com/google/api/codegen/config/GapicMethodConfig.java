@@ -375,7 +375,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
 
   /** Return the list of "one of" instances associated with the fields. */
   @Override
-  public Iterable<Iterable<String>> getOneofsNames() {
+  public Iterable<Iterable<String>> getOneofNames() {
     ImmutableSet.Builder<Iterable<String>> answer = ImmutableSet.builder();
 
     for (FieldType field : getOptionalFields()) {

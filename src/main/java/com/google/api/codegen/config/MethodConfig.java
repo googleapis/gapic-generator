@@ -164,5 +164,5 @@ public abstract class MethodConfig {
   }
 
   /** Return the lists of the simple names of the "one of" instances associated with the fields. */
-  public abstract Iterable<Iterable<String>> getOneofsNames();
+  public abstract Iterable<Iterable<String>> getOneofNames();
 }

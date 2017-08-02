@@ -180,7 +180,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
 
   @Override
   /* Return the list of "one of" instances associated with the fields. */
-  public Iterable<Iterable<String>> getOneofsNames() {
+  public Iterable<Iterable<String>> getOneofNames() {
     return ImmutableList.of();
   }
 }

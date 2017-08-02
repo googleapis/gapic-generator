@@ -92,7 +92,7 @@ public class PythonImportHandler {
         productConfig.getInterfaceConfig(apiInterface).getMethodConfigs()) {
       // Add the import for gax.utils.oneof if and only if there is at
       // least one "one of" argument set.
-      for (Iterable<String> oneofFieldNames : methodConfig.getOneofsNames()) {
+      for (Iterable<String> oneofFieldNames : methodConfig.getOneofNames()) {
         addImportExternal("google.gax.utils", "oneof");
         break;
       }
