@@ -105,9 +105,4 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
   public String getAndSaveResponseTypeName() {
     return getTypeTable().getAndSaveNicknameFor(getMethod().response());
   }
-
-  @Override
-  public String getBatchingDescriptorConstName() {
-    return getNamer().getBatchingDescriptorConstName(getMethod());
-  }
 }

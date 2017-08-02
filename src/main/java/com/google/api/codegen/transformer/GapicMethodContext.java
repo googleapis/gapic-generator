@@ -101,9 +101,4 @@ public abstract class GapicMethodContext implements MethodContext {
   public String getAndSaveResponseTypeName() {
     return getTypeTable().getAndSaveNicknameFor(getMethod().getOutputType());
   }
-
-  @Override
-  public String getBatchingDescriptorConstName() {
-    return getNamer().getBatchingDescriptorConstName(getMethod());
-  }
 }

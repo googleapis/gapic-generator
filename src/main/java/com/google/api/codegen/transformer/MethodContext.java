@@ -56,7 +56,4 @@ public interface MethodContext {
 
   /* Get the response type name and save it in the type table. */
   String getAndSaveResponseTypeName();
-
-  // TODO(andrealin): Remove this method and implement in a MethodModel interface.
-  String getBatchingDescriptorConstName();
 }

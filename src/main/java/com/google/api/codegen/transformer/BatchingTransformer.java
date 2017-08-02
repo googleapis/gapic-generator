@@ -95,6 +95,7 @@ public class BatchingTransformer {
 
   private BatchingDescriptorClassView generateDescriptorClass(GapicMethodContext context) {
     SurfaceNamer namer = context.getNamer();
+    Method method = context.getMethod();
     BatchingConfig batching = context.getMethodConfig().getBatching();
 
     FieldType batchedField = batching.getBatchedField();
@@ -103,7 +104,7 @@ public class BatchingTransformer {
 
     BatchingDescriptorClassView.Builder desc = BatchingDescriptorClassView.newBuilder();
 
-    desc.name(context.getBatchingDescriptorConstName());
+    desc.name(namer.getBatchingDescriptorConstName(method));
     desc.requestTypeName(context.getAndSaveRequestTypeName());
     desc.responseTypeName(context.getAndSaveResponseTypeName());
     desc.batchedFieldTypeName(context.getTypeTable().getAndSaveNicknameFor(batchedField));
