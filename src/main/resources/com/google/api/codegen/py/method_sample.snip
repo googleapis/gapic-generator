@@ -46,15 +46,13 @@
 
 # Generate a Protobuf message argument
 @private initLineStructure(line)
-  {@line.identifier} = {@line.typeConstructor}(\
-    {@fieldSettingKwargs(line.fieldSettings)}\
-  )
+  {@line.identifier} = {{@fieldSettingKwargs(line.fieldSettings)}}
 @end
 
 # Helper method for initLineStructure()
 @private fieldSettingKwargs(fieldSettings)
     @join fieldSetting : fieldSettings on ", "
-        {@fieldSetting.fieldName}={@fieldSetting.identifier}
+        '{@fieldSetting.fieldName}': {@fieldSetting.identifier}
     @end
 @end
 

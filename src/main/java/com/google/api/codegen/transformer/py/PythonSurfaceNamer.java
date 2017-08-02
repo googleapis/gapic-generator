@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer.py;
 
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ServiceMessages;
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.InterfaceConfig;
@@ -150,11 +151,17 @@ public class PythonSurfaceNamer extends SurfaceNamer {
     return getParamTypeNameForElementType(type);
   }
 
+  @Override
+  public String getAndSavePagedResponseTypeName(
+      Method method, ModelTypeTable typeTable, FieldConfig resourcesFieldConfig) {
+    return typeTable.getAndSaveNicknameFor(method.getOutputType());
+  }
+
   private String getParamTypeNameForElementType(TypeRef type) {
     String typeName = getModelTypeFormatter().getFullNameForElementType(type);
 
     if (type.isMessage()) {
-      return ":class:`" + typeName + "`";
+      return "Union[dict|:class:`" + typeName + "`]";
     }
 
     if (type.isEnum()) {
@@ -162,6 +169,15 @@ public class PythonSurfaceNamer extends SurfaceNamer {
     }
 
     return typeName;
+  }
+
+  private String getResponseTypeNameForElementType(TypeRef type) {
+    if (type.isMessage()) {
+      String typeName = getModelTypeFormatter().getFullNameForElementType(type);
+      return ":class:`" + typeName + "`";
+    }
+
+    return getParamTypeNameForElementType(type);
   }
 
   @Override
@@ -237,7 +253,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
       TypeRef resourceType = methodConfig.getPageStreaming().getResourcesField().getType();
       return ImmutableList.of(
           "A :class:`google.gax.PageIterator` instance. By default, this",
-          "is an iterable of " + getParamTypeNameForElementType(resourceType) + " instances.",
+          "is an iterable of " + getResponseTypeNameForElementType(resourceType) + " instances.",
           "This object can also be configured to iterate over the pages",
           "of the response through the `CallOptions` parameter.");
     }
