@@ -64,6 +64,7 @@ import javax.annotation.Nullable;
  * <p>This class delegates step 2 to the provided name formatter, which generally would be a
  * language-specific namer.
  */
+// TODO(andrealin): This class should not be exposed to ApiSource.
 public class SurfaceNamer extends NameFormatterDelegator {
   // Only for proto-based SurfaceNamers.
   @Nullable private final ModelTypeFormatter modelTypeFormatter;
@@ -208,9 +209,16 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The function name to set the given proto field. */
   public String getFieldSetFunctionName(FieldType field) {
-    return getFieldSetFunctionName(field.getProtoTypeRef(), Name.from(field.getSimpleName()));
+    if (field.isMap()) {
+      return publicMethodName(Name.from("put", "all").join(field.getSimpleName()));
+    } else if (field.isRepeated()) {
+      return publicMethodName(Name.from("add", "all").join(field.getSimpleName()));
+    } else {
+      return publicMethodName(Name.from("set").join(field.getSimpleName()));
+    }
   }
 
+  // TODO(andrealin): Remove this method.
   /** The function name to set a field having the given type and name. */
   public String getFieldSetFunctionName(TypeRef type, Name identifier) {
     if (type.isMap()) {
