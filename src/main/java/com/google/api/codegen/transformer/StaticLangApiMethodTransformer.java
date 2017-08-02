@@ -64,7 +64,7 @@ public class StaticLangApiMethodTransformer {
     methodViewBuilder.name(
         namer.getApiMethodName(context.getMethod(), context.getMethodConfig().getVisibility()));
     methodViewBuilder.exampleName(
-        namer.getApiMethodExampleName(context.getInterface(), context.getMethod()));
+        namer.getApiMethodExampleName(context.getInterfaceConfig(), context.getMethod()));
     setListMethodFields(context, Synchronicity.Sync, methodViewBuilder);
     setFlattenedMethodFields(context, additionalParams, Synchronicity.Sync, methodViewBuilder);
 
@@ -85,7 +85,7 @@ public class StaticLangApiMethodTransformer {
         namer.getAsyncApiMethodName(
             context.getMethod(), context.getMethodConfig().getVisibility()));
     methodViewBuilder.exampleName(
-        namer.getAsyncApiMethodExampleName(context.getInterface(), context.getMethod()));
+        namer.getAsyncApiMethodExampleName(context.getInterfaceConfig(), context.getMethod()));
     setListMethodFields(context, Synchronicity.Async, methodViewBuilder);
     setFlattenedMethodFields(context, additionalParams, Synchronicity.Async, methodViewBuilder);
 
@@ -105,7 +105,7 @@ public class StaticLangApiMethodTransformer {
     methodViewBuilder.name(
         namer.getApiMethodName(context.getMethod(), context.getMethodConfig().getVisibility()));
     methodViewBuilder.exampleName(
-        namer.getApiMethodExampleName(context.getInterface(), context.getMethod()));
+        namer.getApiMethodExampleName(context.getInterfaceConfig(), context.getMethod()));
     setListMethodFields(context, Synchronicity.Sync, methodViewBuilder);
     setRequestObjectMethodFields(
         context,
@@ -127,7 +127,7 @@ public class StaticLangApiMethodTransformer {
         namer.getAsyncApiMethodName(
             context.getMethod(), context.getMethodConfig().getVisibility()));
     methodViewBuilder.exampleName(
-        namer.getAsyncApiMethodExampleName(context.getInterface(), context.getMethod()));
+        namer.getAsyncApiMethodExampleName(context.getInterfaceConfig(), context.getMethod()));
     setListMethodFields(context, Synchronicity.Async, methodViewBuilder);
     setRequestObjectMethodFields(
         context,
@@ -146,7 +146,7 @@ public class StaticLangApiMethodTransformer {
     setCommonFields(context, methodViewBuilder);
     methodViewBuilder.name(namer.getPagedCallableMethodName(context.getMethod()));
     methodViewBuilder.exampleName(
-        namer.getPagedCallableMethodExampleName(context.getInterface(), context.getMethod()));
+        namer.getPagedCallableMethodExampleName(context.getInterfaceConfig(), context.getMethod()));
     setListMethodFields(context, Synchronicity.Sync, methodViewBuilder);
     setCallableMethodFields(
         context, namer.getPagedCallableName(context.getMethod()), methodViewBuilder);
@@ -161,7 +161,7 @@ public class StaticLangApiMethodTransformer {
     setCommonFields(context, methodViewBuilder);
     methodViewBuilder.name(namer.getCallableMethodName(context.getMethod()));
     methodViewBuilder.exampleName(
-        namer.getCallableMethodExampleName(context.getInterface(), context.getMethod()));
+        namer.getCallableMethodExampleName(context.getInterfaceConfig(), context.getMethod()));
     setListMethodFields(context, Synchronicity.Sync, methodViewBuilder);
     setCallableMethodFields(context, namer.getCallableName(context.getMethod()), methodViewBuilder);
 
@@ -199,7 +199,7 @@ public class StaticLangApiMethodTransformer {
         namer.getAsyncApiMethodName(
             context.getMethod(), context.getMethodConfig().getVisibility()));
     methodViewBuilder.exampleName(
-        namer.getCallableMethodExampleName(context.getInterface(), context.getMethod()));
+        namer.getCallableMethodExampleName(context.getInterfaceConfig(), context.getMethod()));
     methodViewBuilder.callableName(namer.getCallableName(context.getMethod()));
     setFlattenedMethodFields(context, additionalParams, Synchronicity.Async, methodViewBuilder);
     setStaticLangAsyncReturnTypeName(context, methodViewBuilder);
@@ -220,7 +220,7 @@ public class StaticLangApiMethodTransformer {
     methodViewBuilder.name(
         namer.getApiMethodName(context.getMethod(), context.getMethodConfig().getVisibility()));
     methodViewBuilder.exampleName(
-        namer.getApiMethodExampleName(context.getInterface(), context.getMethod()));
+        namer.getApiMethodExampleName(context.getInterfaceConfig(), context.getMethod()));
     methodViewBuilder.callableName(namer.getCallableName(context.getMethod()));
     setFlattenedMethodFields(context, additionalParams, Synchronicity.Sync, methodViewBuilder);
     setStaticLangReturnTypeName(context, methodViewBuilder);
@@ -241,7 +241,7 @@ public class StaticLangApiMethodTransformer {
     methodViewBuilder.name(
         namer.getApiMethodName(context.getMethod(), context.getMethodConfig().getVisibility()));
     methodViewBuilder.exampleName(
-        namer.getApiMethodExampleName(context.getInterface(), context.getMethod()));
+        namer.getApiMethodExampleName(context.getInterfaceConfig(), context.getMethod()));
     setRequestObjectMethodFields(
         context,
         namer.getCallableMethodName(context.getMethod()),
@@ -267,7 +267,7 @@ public class StaticLangApiMethodTransformer {
         namer.getAsyncApiMethodName(
             context.getMethod(), context.getMethodConfig().getVisibility()));
     methodViewBuilder.exampleName(
-        namer.getAsyncApiMethodExampleName(context.getInterface(), context.getMethod()));
+        namer.getAsyncApiMethodExampleName(context.getInterfaceConfig(), context.getMethod()));
     setRequestObjectMethodFields(
         context,
         namer.getCallableAsyncMethodName(context.getMethod()),
@@ -288,7 +288,7 @@ public class StaticLangApiMethodTransformer {
     methodViewBuilder.exampleName(
         context
             .getNamer()
-            .getCallableMethodExampleName(context.getInterface(), context.getMethod()));
+            .getCallableMethodExampleName(context.getInterfaceConfig(), context.getMethod()));
     setCallableMethodFields(context, namer.getCallableName(context.getMethod()), methodViewBuilder);
     methodViewBuilder.responseTypeName(
         context.getTypeTable().getAndSaveNicknameFor(context.getMethod().getOutputType()));
@@ -308,7 +308,8 @@ public class StaticLangApiMethodTransformer {
     methodViewBuilder.exampleName(
         context
             .getNamer()
-            .getGrpcStreamingApiMethodExampleName(context.getInterface(), context.getMethod()));
+            .getGrpcStreamingApiMethodExampleName(
+                context.getInterfaceConfig(), context.getMethod()));
     setRequestObjectMethodFields(
         context,
         namer.getCallableMethodName(context.getMethod()),
@@ -333,7 +334,7 @@ public class StaticLangApiMethodTransformer {
     methodViewBuilder.name(
         namer.getApiMethodName(context.getMethod(), context.getMethodConfig().getVisibility()));
     methodViewBuilder.exampleName(
-        namer.getApiMethodExampleName(context.getInterface(), context.getMethod()));
+        namer.getApiMethodExampleName(context.getInterfaceConfig(), context.getMethod()));
     setRequestObjectMethodFields(
         context,
         namer.getCallableMethodName(context.getMethod()),
@@ -356,7 +357,7 @@ public class StaticLangApiMethodTransformer {
     methodViewBuilder.name(
         namer.getApiMethodName(context.getMethod(), context.getMethodConfig().getVisibility()));
     methodViewBuilder.exampleName(
-        namer.getApiMethodExampleName(context.getInterface(), context.getMethod()));
+        namer.getApiMethodExampleName(context.getInterfaceConfig(), context.getMethod()));
     methodViewBuilder.callableName(namer.getCallableName(context.getMethod()));
     setFlattenedMethodFields(context, additionalParams, Synchronicity.Sync, methodViewBuilder);
     methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
@@ -387,7 +388,7 @@ public class StaticLangApiMethodTransformer {
         namer.getAsyncApiMethodName(
             context.getMethod(), context.getMethodConfig().getVisibility()));
     methodViewBuilder.exampleName(
-        namer.getAsyncApiMethodExampleName(context.getInterface(), context.getMethod()));
+        namer.getAsyncApiMethodExampleName(context.getInterfaceConfig(), context.getMethod()));
     methodViewBuilder.callableName(namer.getCallableName(context.getMethod()));
     setFlattenedMethodFields(context, additionalParams, Synchronicity.Async, methodViewBuilder);
     if (requiresOperationMethod) {
@@ -418,7 +419,7 @@ public class StaticLangApiMethodTransformer {
         namer.getAsyncApiMethodName(
             context.getMethod(), context.getMethodConfig().getVisibility()));
     methodViewBuilder.exampleName(
-        namer.getAsyncApiMethodExampleName(context.getInterface(), context.getMethod()));
+        namer.getAsyncApiMethodExampleName(context.getInterfaceConfig(), context.getMethod()));
     setRequestObjectMethodFields(
         context,
         namer.getOperationCallableMethodName(context.getMethod()),
@@ -444,7 +445,8 @@ public class StaticLangApiMethodTransformer {
     methodViewBuilder.exampleName(
         context
             .getNamer()
-            .getOperationCallableMethodExampleName(context.getInterface(), context.getMethod()));
+            .getOperationCallableMethodExampleName(
+                context.getInterfaceConfig(), context.getMethod()));
     setCallableMethodFields(
         context, namer.getOperationCallableName(context.getMethod()), methodViewBuilder);
     TypeRef returnType = context.getMethodConfig().getLongRunningConfig().getReturnType();
@@ -738,7 +740,9 @@ public class StaticLangApiMethodTransformer {
         }
         PathTemplateCheckView.Builder check = PathTemplateCheckView.newBuilder();
         check.pathTemplateName(
-            context.getNamer().getPathTemplateName(context.getInterface(), resourceNameConfig));
+            context
+                .getNamer()
+                .getPathTemplateName(context.getInterfaceConfig(), resourceNameConfig));
         check.paramName(context.getNamer().getVariableName(field));
         check.allowEmptyString(shouldAllowEmpty(context, field));
         check.validationMessageContext(

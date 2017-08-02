@@ -18,6 +18,7 @@ import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicMethodConfig;
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
@@ -64,8 +65,8 @@ public class RubySurfaceNamer extends SurfaceNamer {
 
   /** The name of the class that implements snippets for a particular proto interface. */
   @Override
-  public String getApiSnippetsClassName(Interface apiInterface) {
-    return publicClassName(Name.upperCamel(apiInterface.getSimpleName(), "ClientSnippets"));
+  public String getApiSnippetsClassName(InterfaceConfig interfaceConfig) {
+    return publicClassName(Name.upperCamel(interfaceConfig.getRawName(), "ClientSnippets"));
   }
 
   /** The function name to set a field having the given type and name. */
@@ -77,7 +78,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
   /** The function name to format the entity for the given collection. */
   @Override
   public String getFormatFunctionName(
-      Interface apiInterface, SingleResourceNameConfig resourceNameConfig) {
+      InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
     return staticFunctionName(Name.from(resourceNameConfig.getEntityName(), "path"));
   }
 
@@ -88,8 +89,8 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getClientConfigPath(Interface apiInterface) {
-    return Name.upperCamel(apiInterface.getSimpleName()).join("client_config").toLowerUnderscore()
+  public String getClientConfigPath(InterfaceConfig interfaceConfig) {
+    return Name.upperCamel(interfaceConfig.getRawName()).join("client_config").toLowerUnderscore()
         + ".json";
   }
 
@@ -263,7 +264,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
   public String getTopLevelAliasedApiClassName(
       GapicInterfaceConfig interfaceConfig, boolean packageHasMultipleServices) {
     return packageHasMultipleServices
-        ? getTopLevelNamespace() + "::" + getPackageServiceName(interfaceConfig.getInterface())
+        ? getTopLevelNamespace() + "::" + getPackageServiceName(interfaceConfig)
         : getTopLevelNamespace();
   }
 
@@ -271,7 +272,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
   public String getVersionAliasedApiClassName(
       GapicInterfaceConfig interfaceConfig, boolean packageHasMultipleServices) {
     return packageHasMultipleServices
-        ? getPackageName() + "::" + getPackageServiceName(interfaceConfig.getInterface())
+        ? getPackageName() + "::" + getPackageServiceName(interfaceConfig)
         : getPackageName();
   }
 
@@ -375,7 +376,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getPackageServiceName(Interface apiInterface) {
-    return publicClassName(getReducedServiceName(apiInterface.getSimpleName()));
+  public String getPackageServiceName(InterfaceConfig interfaceConfig) {
+    return publicClassName(getReducedServiceName(interfaceConfig.getRawName()));
   }
 }

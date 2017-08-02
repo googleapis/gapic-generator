@@ -435,7 +435,7 @@ public class InitCodeTransformer {
             context
                 .getNamer()
                 .getFormatFunctionName(
-                    context.getInterface(), initValueConfig.getSingleResourceNameConfig()));
+                    context.getInterfaceConfig(), initValueConfig.getSingleResourceNameConfig()));
 
         List<String> varList =
             Lists.newArrayList(

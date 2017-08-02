@@ -19,6 +19,7 @@ import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
@@ -97,13 +98,13 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getPackageServiceName(Interface apiInterface) {
-    return getReducedServiceName(apiInterface.getSimpleName()).toLowerCamel();
+  public String getPackageServiceName(InterfaceConfig interfaceConfig) {
+    return getReducedServiceName(interfaceConfig.getRawName()).toLowerCamel();
   }
 
   @Override
-  public String getApiWrapperClassConstructorName(Interface apiInterface) {
-    return publicFieldName(Name.upperCamel(apiInterface.getSimpleName(), "Client"));
+  public String getApiWrapperClassConstructorName(InterfaceConfig interfaceConfig) {
+    return publicFieldName(Name.upperCamel(interfaceConfig.getRawName(), "Client"));
   }
 
   @Override
@@ -117,7 +118,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getPathTemplateName(
-      Interface apiInterface, SingleResourceNameConfig resourceNameConfig) {
+      InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
     return inittedConstantName(Name.from(resourceNameConfig.getEntityName(), "path", "template"));
   }
 
@@ -129,17 +130,17 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getFormatFunctionName(
-      Interface apiInterface, SingleResourceNameConfig resourceNameConfig) {
+      InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
     return staticFunctionName(Name.from(resourceNameConfig.getEntityName(), "path"));
   }
 
   @Override
-  public String getClientConfigPath(Interface apiInterface) {
-    return Name.upperCamel(apiInterface.getSimpleName()).join("client_config").toLowerUnderscore();
+  public String getClientConfigPath(InterfaceConfig interfaceConfig) {
+    return Name.upperCamel(interfaceConfig.getRawName()).join("client_config").toLowerUnderscore();
   }
 
-  public String getClientFileName(Interface apiInterface) {
-    return Name.upperCamel(apiInterface.getSimpleName()).join("client").toLowerUnderscore();
+  public String getClientFileName(InterfaceConfig interfaceConfig) {
+    return Name.upperCamel(interfaceConfig.getRawName()).join("client").toLowerUnderscore();
   }
 
   @Override

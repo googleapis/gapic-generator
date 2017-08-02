@@ -24,7 +24,6 @@ import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ImportTypeView;
-import com.google.api.tools.framework.model.Interface;
 import com.google.common.collect.ImmutableList;
 import java.util.Collections;
 import java.util.List;
@@ -46,8 +45,7 @@ public class NodeJSImportSectionTransformer implements ImportSectionTransformer 
 
   private List<ImportFileView> generateExternalImports(GapicInterfaceContext context) {
     ImmutableList.Builder<ImportFileView> imports = ImmutableList.builder();
-    Interface apiInterface = context.getInterface();
-    String configModule = context.getNamer().getClientConfigPath(apiInterface);
+    String configModule = context.getNamer().getClientConfigPath(context.getInterfaceConfig());
     imports.add(createImport("configData", "./" + configModule));
     imports.add(createImport("extend", "extend"));
     imports.add(createImport("gax", "google-gax"));
