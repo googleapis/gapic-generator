@@ -68,6 +68,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   // Only for proto-based SurfaceNamers.
   @Nullable private final ModelTypeFormatter modelTypeFormatter;
 
+  /* Render a Discovery Method as a Name. */
   public Name discoveryMethodasName(com.google.api.codegen.discovery.Method method) {
     String[] pieces = method.id().split("\\.");
     Name resultName = Name.anyCamel(pieces[0]);
