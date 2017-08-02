@@ -27,11 +27,6 @@ import java.util.List;
  */
 public interface FieldType {
 
-  enum ApiSource {
-    DISCOVERY, // Discovery Document.
-    PROTO; // Protobuf.
-  }
-
   /* @return the type of source that this FieldType is based on. */
   ApiSource getApiSource();
 

@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.config;
 
-import static com.google.api.codegen.config.FieldType.ApiSource.PROTO;
+import static com.google.api.codegen.config.ApiSource.PROTO;
 
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;

@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.config;
 
-import static com.google.api.codegen.config.FieldType.ApiSource.DISCOVERY;
+import static com.google.api.codegen.config.ApiSource.DISCOVERY;
 
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.discovery.Schema.Type;

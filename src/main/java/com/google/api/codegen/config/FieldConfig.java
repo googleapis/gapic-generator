@@ -15,7 +15,6 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.ResourceNameTreatment;
-import com.google.api.codegen.config.FieldType.ApiSource;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
