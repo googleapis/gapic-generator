@@ -156,6 +156,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.apiMethods(apiMethods);
 
     view.iamResources(iamResourceTransformer.generateIamResources(context));
+    // TODO(andrealin): Remove casting after abstracting away API source type from Method.
     if (!((GapicInterfaceConfig) productConfig.getInterfaceConfig(apiInterface))
         .getIamResources()
         .isEmpty()) {

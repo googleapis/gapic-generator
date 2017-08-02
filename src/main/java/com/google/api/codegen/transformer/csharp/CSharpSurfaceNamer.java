@@ -399,6 +399,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   @Override
   public String getAndSaveOperationResponseTypeName(
       Method method, ImportTypeTable typeTable, MethodConfig methodConfig) {
+    // TODO(andrealin): Remove casting.
     String responseTypeName =
         ((ModelTypeTable) typeTable)
             .getFullNameFor(methodConfig.getLongRunningConfig().getReturnType());

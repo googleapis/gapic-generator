@@ -216,6 +216,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
   @Override
   public List<String> getReturnDocLines(
       InterfaceContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
+    // TODO(andrealin): remove casting after abstracting API source type from Method.
     Method method = ((GapicMethodConfig) methodConfig).getMethod();
     if (method.getResponseStreaming()) {
       String classInfo = getModelTypeFormatter().getFullNameForElementType(method.getOutputType());
