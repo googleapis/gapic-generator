@@ -17,7 +17,6 @@ package com.google.api.codegen.config;
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.CollectionOneofProto;
 import com.google.api.codegen.ConfigProto;
-import com.google.api.codegen.DocumentSymbolTableBuilder;
 import com.google.api.codegen.FixedResourceNameValueProto;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.LanguageSettingsProto;
@@ -155,9 +154,6 @@ public abstract class GapicProductConfig implements ProductConfig {
   @Nullable
   public static GapicProductConfig create(Document document, ConfigProto configProto) {
     // TODO (andrealin): load messageConfigs
-
-    DocumentSymbolTableBuilder symbolTableBuilder = new DocumentSymbolTableBuilder(document);
-    SymbolTable symbolTable = symbolTableBuilder.create(configProto);
 
     // TODO(andrealin): put this in config instead of hard coding it
     String defaultPackage = "com.google.proto";
