@@ -28,12 +28,11 @@ import java.util.List;
 /** Created by andrealin on 7/31/17. */
 public class ProtoField implements FieldType {
   private final Field protoField;
-  private final ApiSource apiSource = PROTO;
 
   @Override
   /* @return the type of the underlying model resource. */
   public ApiSource getApiSource() {
-    return apiSource;
+    return PROTO;
   }
 
   /* Create a FieldType object from a non-null Field object. */
@@ -91,7 +90,7 @@ public class ProtoField implements FieldType {
 
   @Override
   public String toString() {
-    return String.format("Protobuf FieldType (%s): {%s}", apiSource, protoField.toString());
+    return String.format("Protobuf FieldType (%s): {%s}", getApiSource(), protoField.toString());
   }
 
   @Override

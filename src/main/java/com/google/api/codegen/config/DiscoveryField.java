@@ -27,7 +27,6 @@ import java.util.List;
 /** Created by andrealin on 7/31/17. */
 public class DiscoveryField implements FieldType {
   private final Schema schema;
-  private final ApiSource apiSource = DISCOVERY;
 
   /* Create a FieldType object from a non-null Schema object. */
   public DiscoveryField(Schema schema) {
@@ -38,7 +37,7 @@ public class DiscoveryField implements FieldType {
   @Override
   /* @return the type of the underlying model resource. */
   public ApiSource getApiSource() {
-    return apiSource;
+    return DISCOVERY;
   }
 
   @Override
@@ -103,7 +102,7 @@ public class DiscoveryField implements FieldType {
 
   @Override
   public String toString() {
-    return String.format("Discovery FieldType (%s): {%s}", apiSource, schema.toString());
+    return String.format("Discovery FieldType (%s): {%s}", getApiSource(), schema.toString());
   }
 
   @Override
