@@ -26,6 +26,7 @@ import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.DiscoGapicInterfaceContext;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
+import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.SchemaTypeTable;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.java.JavaFeatureConfig;
@@ -33,7 +34,6 @@ import com.google.api.codegen.transformer.java.JavaSchemaTypeNameConverter;
 import com.google.api.codegen.transformer.java.JavaSurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
-import com.google.api.codegen.util.TypeTable;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.StaticLangApiMessageFileView;
@@ -136,7 +136,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
       SchemaInterfaceContext context, StaticLangApiMessageView messageView) {
     StaticLangApiMessageFileView.Builder apiFile = StaticLangApiMessageFileView.newBuilder();
     apiFile.templateFileName(REQUEST_TEMPLATE_FILENAME);
-    addApiImports(context.getImportTypeTable().getTypeTable());
+    addApiImports(context.getImportTypeTable());
     apiFile.schema(messageView);
 
     String outputPath = pathMapper.getOutputPath(null, context.getDocContext().getProductConfig());
@@ -231,7 +231,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     return paramView.build();
   }
 
-  private void addApiImports(TypeTable typeTable) {
+  private void addApiImports(ImportTypeTable typeTable) {
     typeTable.getAndSaveNicknameFor("com.google.api.core.BetaApi");
     typeTable.getAndSaveNicknameFor("com.google.common.collect.ImmutableList");
     typeTable.getAndSaveNicknameFor("java.io.Serializable");
