@@ -90,7 +90,7 @@ public class InitCodeTransformer {
         .suggestedName(Name.from("request"))
         .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
         .initValueConfigMap(InitCodeTransformer.createCollectionMap(context))
-        .initFields(FieldConfig.toFieldIterable(fieldConfigs))
+        .initFields(FieldConfig.toFieldTypeIterable(fieldConfigs))
         .fieldConfigMap(FieldConfig.toFieldConfigMap(fieldConfigs))
         .outputType(outputType)
         .valueGenerator(valueGenerator)

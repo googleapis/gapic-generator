@@ -15,8 +15,9 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.config.FixedResourceNameConfig;
-import com.google.api.codegen.config.GapicInterfaceConfig;
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameMessageConfigs;
 import com.google.api.codegen.config.ResourceNameOneofConfig;
@@ -36,7 +37,6 @@ import com.google.api.codegen.viewmodel.ResourceNameSingleView;
 import com.google.api.codegen.viewmodel.ResourceNameView;
 import com.google.api.codegen.viewmodel.ResourceProtoFieldView;
 import com.google.api.codegen.viewmodel.ResourceProtoView;
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.common.collect.ListMultimap;
 import java.util.ArrayList;
@@ -55,7 +55,7 @@ public class PathTemplateTransformer {
     if (!context.getFeatureConfig().enableStringFormatFunctions()) {
       return pathTemplates;
     }
-    GapicInterfaceConfig interfaceConfig = context.getInterfaceConfig();
+    InterfaceConfig interfaceConfig = context.getInterfaceConfig();
     for (SingleResourceNameConfig resourceNameConfig :
         interfaceConfig.getSingleResourceNameConfigs()) {
       PathTemplateView.Builder pathTemplate = PathTemplateView.newBuilder();
@@ -160,25 +160,25 @@ public class PathTemplateTransformer {
     SurfaceNamer namer = context.getNamer();
     ResourceNameMessageConfigs resourceConfigs =
         context.getProductConfig().getResourceNameMessageConfigs();
-    ListMultimap<String, Field> fieldsByMessage =
+    ListMultimap<String, FieldType> fieldsByMessage =
         resourceConfigs.getFieldsWithResourceNamesByMessage();
     Map<String, FieldConfig> fieldConfigMap =
         context.getProductConfig().getDefaultResourceNameFieldConfigMap();
     List<ResourceProtoView> protos = new ArrayList<>();
-    for (Entry<String, Collection<Field>> entry : fieldsByMessage.asMap().entrySet()) {
+    for (Entry<String, Collection<FieldType>> entry : fieldsByMessage.asMap().entrySet()) {
       String msgName = entry.getKey();
-      Collection<Field> fields = new ArrayList<Field>(entry.getValue());
+      Collection<FieldType> fields = new ArrayList<>(entry.getValue());
       ResourceProtoView.Builder protoBuilder = ResourceProtoView.newBuilder();
       protoBuilder.protoClassName(namer.getTypeNameConverter().getTypeName(msgName).getNickname());
       List<ResourceProtoFieldView> fieldViews = new ArrayList<>();
-      for (Field field : fields) {
+      for (FieldType field : fields) {
         FieldConfig fieldConfig = fieldConfigMap.get(field.getFullName());
         String fieldTypeSimpleName = namer.getResourceTypeName(fieldConfig.getResourceNameConfig());
         String fieldTypeName =
             context
                 .getModelTypeTable()
                 .getAndSaveNicknameForTypedResourceName(fieldConfig, fieldTypeSimpleName);
-        if (field.getType().isRepeated()) {
+        if (field.isRepeated()) {
           fieldTypeName = fieldTypeName.replaceFirst("IEnumerable", "ResourceNameList");
         }
         String fieldDocTypeName = fieldTypeName.replace('<', '{').replace('>', '}');
@@ -193,7 +193,7 @@ public class PathTemplateTransformer {
                 .docTypeName(fieldDocTypeName)
                 .elementTypeName(fieldElementTypeName)
                 .isAny(fieldConfig.getResourceNameType() == ResourceNameType.ANY)
-                .isRepeated(field.getType().isRepeated())
+                .isRepeated(field.isRepeated())
                 .isOneof(fieldConfig.getResourceNameType() == ResourceNameType.ONEOF)
                 .propertyName(namer.getResourceNameFieldGetFunctionName(fieldConfig))
                 .underlyingPropertyName(namer.publicMethodName(Name.from(field.getSimpleName())))
@@ -223,7 +223,7 @@ public class PathTemplateTransformer {
 
     SurfaceNamer namer = context.getNamer();
     Interface apiInterface = context.getInterface();
-    GapicInterfaceConfig interfaceConfig = context.getInterfaceConfig();
+    InterfaceConfig interfaceConfig = context.getInterfaceConfig();
     for (SingleResourceNameConfig resourceNameConfig :
         interfaceConfig.getSingleResourceNameConfigs()) {
       FormatResourceFunctionView.Builder function =
@@ -261,7 +261,7 @@ public class PathTemplateTransformer {
 
     SurfaceNamer namer = context.getNamer();
     Interface apiInterface = context.getInterface();
-    GapicInterfaceConfig interfaceConfig = context.getInterfaceConfig();
+    InterfaceConfig interfaceConfig = context.getInterfaceConfig();
     for (SingleResourceNameConfig resourceNameConfig :
         interfaceConfig.getSingleResourceNameConfigs()) {
       for (String var : resourceNameConfig.getNameTemplate().vars()) {
@@ -287,7 +287,7 @@ public class PathTemplateTransformer {
 
     SurfaceNamer namer = context.getNamer();
     Interface apiInterface = context.getInterface();
-    GapicInterfaceConfig interfaceConfig = context.getInterfaceConfig();
+    InterfaceConfig interfaceConfig = context.getInterfaceConfig();
     for (SingleResourceNameConfig resourceNameConfig :
         interfaceConfig.getSingleResourceNameConfigs()) {
       PathTemplateGetterFunctionView.Builder function =

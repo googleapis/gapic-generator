@@ -34,7 +34,7 @@ import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 import java.io.File;
 
 /** The ModelTypeTable for Java. */
-public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
+public class JavaModelTypeNameConverter extends ModelTypeNameConverter {
 
   /** The package prefix protoc uses if no java package option was provided. */
   private static final String DEFAULT_JAVA_PACKAGE_PREFIX = "com.google.protos";
@@ -258,7 +258,7 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
       FieldConfig fieldConfig, String typedResourceShortName) {
     return getTypeNameForTypedResourceName(
         fieldConfig.getResourceNameConfig(),
-        fieldConfig.getField().getType(),
+        fieldConfig.getField().getProtoTypeRef(),
         typedResourceShortName);
   }
 
@@ -267,7 +267,7 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
       FieldConfig fieldConfig, String typedResourceShortName) {
     return getTypeNameForTypedResourceName(
         fieldConfig.getResourceNameConfig(),
-        fieldConfig.getField().getType().makeOptional(),
+        fieldConfig.getField().getProtoTypeRef().makeOptional(),
         typedResourceShortName);
   }
 

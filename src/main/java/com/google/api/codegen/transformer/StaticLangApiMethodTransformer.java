@@ -16,7 +16,8 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.GapicMethodConfig;
+import com.google.api.codegen.config.FieldType;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.metacode.InitCodeContext;
@@ -34,7 +35,6 @@ import com.google.api.codegen.viewmodel.SimpleParamDocView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView.Builder;
 import com.google.api.codegen.viewmodel.UnpagedListCallableMethodDetailView;
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -510,14 +510,14 @@ public class StaticLangApiMethodTransformer {
     String responseTypeName = typeTable.getAndSaveNicknameFor(context.getMethod().getOutputType());
 
     FieldConfig resourceFieldConfig = pageStreaming.getResourcesFieldConfig();
-    Field resourceField = resourceFieldConfig.getField();
+    FieldType resourceField = resourceFieldConfig.getField();
 
     String resourceTypeName;
 
     if (context.getFeatureConfig().useResourceNameFormatOption(resourceFieldConfig)) {
       resourceTypeName = namer.getAndSaveElementResourceTypeName(typeTable, resourceFieldConfig);
     } else {
-      resourceTypeName = typeTable.getAndSaveNicknameForElementType(resourceField.getType());
+      resourceTypeName = typeTable.getAndSaveNicknameForElementType(resourceField);
     }
 
     String iterateMethodName =
@@ -717,7 +717,7 @@ public class StaticLangApiMethodTransformer {
         // Don't generate a path template check if fieldConfig is not configured to use validation.
         continue;
       }
-      Field field = fieldConfig.getField();
+      FieldType field = fieldConfig.getField();
       ImmutableMap<String, String> fieldNamePatterns =
           context.getMethodConfig().getFieldNamePatterns();
       String entityName = fieldNamePatterns.get(field.getSimpleName());
@@ -748,8 +748,8 @@ public class StaticLangApiMethodTransformer {
     return pathTemplateChecks;
   }
 
-  private boolean shouldAllowEmpty(GapicMethodContext context, Field field) {
-    for (Field requiredField : context.getMethodConfig().getRequiredFields()) {
+  private boolean shouldAllowEmpty(GapicMethodContext context, FieldType field) {
+    for (FieldType requiredField : context.getMethodConfig().getRequiredFields()) {
       if (requiredField.equals(field)) {
         return false;
       }
@@ -762,11 +762,11 @@ public class StaticLangApiMethodTransformer {
     SurfaceNamer namer = context.getNamer();
     FeatureConfig featureConfig = context.getFeatureConfig();
     ModelTypeTable typeTable = context.getTypeTable();
-    Field field = fieldConfig.getField();
+    FieldType field = fieldConfig.getField();
 
-    Iterable<Field> requiredFields = context.getMethodConfig().getRequiredFields();
+    Iterable<FieldType> requiredFields = context.getMethodConfig().getRequiredFields();
     boolean isRequired = false;
-    for (Field f : requiredFields) {
+    for (FieldType f : requiredFields) {
       if (f.getSimpleName().equals(field.getSimpleName())) {
         isRequired = true;
       }
@@ -789,13 +789,13 @@ public class StaticLangApiMethodTransformer {
       }
     } else {
       if (namer.shouldImportRequestObjectParamType(field)) {
-        typeName = typeTable.getAndSaveNicknameFor(field.getType());
+        typeName = typeTable.getAndSaveNicknameFor(field);
         if (!isRequired) {
-          typeName = namer.makePrimitiveTypeNullable(typeName, field.getType());
+          typeName = namer.makePrimitiveTypeNullable(typeName, field);
         }
       }
       if (namer.shouldImportRequestObjectParamElementType(field)) {
-        elementTypeName = typeTable.getAndSaveNicknameForElementType(field.getType());
+        elementTypeName = typeTable.getAndSaveNicknameForElementType(field);
       }
     }
 
@@ -816,9 +816,9 @@ public class StaticLangApiMethodTransformer {
     param.setCallName(setCallName);
     param.addCallName(addCallName);
     param.transformParamFunctionName(transformParamFunctionName);
-    param.isMap(field.getType().isMap());
-    param.isArray(!field.getType().isMap() && field.getType().isRepeated());
-    param.isPrimitive(namer.isPrimitive(field.getType()));
+    param.isMap(field.isMap());
+    param.isArray(!field.isMap() && field.isRepeated());
+    param.isPrimitive(namer.isPrimitive(field));
     param.isOptional(!isRequired);
     if (!isRequired) {
       param.optionalDefault(namer.getOptionalFieldDefaultValue(fieldConfig, context));
@@ -837,13 +837,13 @@ public class StaticLangApiMethodTransformer {
       return allDocs;
     }
     for (FieldConfig fieldConfig : fieldConfigs) {
-      Field field = fieldConfig.getField();
+      FieldType field = fieldConfig.getField();
       SimpleParamDocView.Builder paramDoc = SimpleParamDocView.newBuilder();
       paramDoc.paramName(context.getNamer().getVariableName(field));
-      paramDoc.typeName(context.getTypeTable().getAndSaveNicknameFor(field.getType()));
+      paramDoc.typeName(context.getTypeTable().getAndSaveNicknameFor(field));
 
       List<String> docLines = null;
-      GapicMethodConfig methodConfig = context.getMethodConfig();
+      MethodConfig methodConfig = context.getMethodConfig();
       if (methodConfig.isPageStreaming()
           && methodConfig.getPageStreaming().hasPageSizeField()
           && field.equals(methodConfig.getPageStreaming().getPageSizeField())) {
@@ -898,7 +898,7 @@ public class StaticLangApiMethodTransformer {
         .suggestedName(Name.from("request"))
         .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
         .initValueConfigMap(InitCodeTransformer.createCollectionMap(context))
-        .initFields(FieldConfig.toFieldIterable(fieldConfigs))
+        .initFields(FieldConfig.toFieldTypeIterable(fieldConfigs))
         .outputType(initCodeOutputType)
         .fieldConfigMap(FieldConfig.toFieldConfigMap(fieldConfigs))
         .build();

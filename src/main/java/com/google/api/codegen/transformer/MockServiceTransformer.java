@@ -15,9 +15,9 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.InterfaceView;
-import com.google.api.codegen.config.GapicInterfaceConfig;
-import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.viewmodel.testing.MockGrpcMethodView;
 import com.google.api.codegen.viewmodel.testing.MockServiceUsageView;
@@ -49,8 +49,8 @@ public class MockServiceTransformer {
       Model model, GapicProductConfig productConfig, Interface apiInterface) {
     Map<String, Interface> interfaces = new LinkedHashMap<>();
     interfaces.put(apiInterface.getFullName(), apiInterface);
-    GapicInterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
-    for (GapicMethodConfig methodConfig : interfaceConfig.getMethodConfigs()) {
+    InterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
+    for (MethodConfig methodConfig : interfaceConfig.getMethodConfigs()) {
       String reroute = methodConfig.getRerouteToGrpcInterface();
       if (!Strings.isNullOrEmpty(reroute)) {
         Interface targetInterface = model.getSymbolTable().lookupInterface(reroute);
@@ -69,7 +69,7 @@ public class MockServiceTransformer {
           methodContext.getTypeTable().getAndSaveNicknameFor(method.getInputType());
       String responseTypeName =
           methodContext.getTypeTable().getAndSaveNicknameFor(method.getOutputType());
-      GapicMethodConfig methodConfig = methodContext.getMethodConfig();
+      MethodConfig methodConfig = methodContext.getMethodConfig();
       mocks.add(
           MockGrpcMethodView.newBuilder()
               .name(methodContext.getNamer().getApiMethodName(method, VisibilityConfig.PUBLIC))

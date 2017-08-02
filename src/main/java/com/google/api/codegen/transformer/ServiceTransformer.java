@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.config.GapicInterfaceConfig;
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.ServiceDocView;
 import com.google.common.collect.ImmutableList;
@@ -28,7 +28,7 @@ public class ServiceTransformer {
 
     ImmutableList.Builder<String> docLines = ImmutableList.builder();
     docLines.addAll(namer.getDocLines(context.getInterface()));
-    GapicInterfaceConfig conf = context.getInterfaceConfig();
+    InterfaceConfig conf = context.getInterfaceConfig();
     if (!conf.getManualDoc().isEmpty()) {
       docLines.add("");
       docLines.addAll(namer.getDocLines(conf.getManualDoc()));

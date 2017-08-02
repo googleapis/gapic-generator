@@ -18,10 +18,11 @@ import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.config.FlatteningConfig;
-import com.google.api.codegen.config.GapicInterfaceConfig;
-import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProductServiceConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
@@ -56,7 +57,6 @@ import com.google.api.codegen.viewmodel.StaticLangPagedResponseWrappersView;
 import com.google.api.codegen.viewmodel.StaticLangSettingsFileView;
 import com.google.api.codegen.viewmodel.StaticLangSettingsView;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
@@ -268,7 +268,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
   private StaticLangPagedResponseView generatePagedResponseWrapper(
       GapicMethodContext context, ModelTypeTable typeTable) {
     Method method = context.getMethod();
-    Field resourceField = context.getMethodConfig().getPageStreaming().getResourcesField();
+    FieldType resourceField = context.getMethodConfig().getPageStreaming().getResourcesField();
 
     StaticLangPagedResponseView.Builder pagedResponseWrapper =
         StaticLangPagedResponseView.newBuilder();
@@ -283,7 +283,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     pagedResponseWrapper.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
     pagedResponseWrapper.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));
     pagedResponseWrapper.resourceTypeName(
-        typeTable.getAndSaveNicknameForElementType(resourceField.getType()));
+        typeTable.getAndSaveNicknameForElementType(resourceField));
     pagedResponseWrapper.iterateMethods(getIterateMethods(context));
 
     return pagedResponseWrapper.build();
@@ -402,7 +402,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
         retryDefinitionsTransformer.generateRetryCodesDefinitions(context));
     xsettingsClass.retryParamsDefinitions(
         retryDefinitionsTransformer.generateRetryParamsDefinitions(context));
-    GapicInterfaceConfig interfaceConfig = context.getInterfaceConfig();
+    InterfaceConfig interfaceConfig = context.getInterfaceConfig();
     xsettingsClass.hasDefaultServiceAddress(interfaceConfig.hasDefaultServiceAddress());
     xsettingsClass.hasDefaultServiceScopes(interfaceConfig.hasDefaultServiceScopes());
     xsettingsClass.hasDefaultInstance(interfaceConfig.hasDefaultInstance());
@@ -491,7 +491,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("java.util.concurrent.ScheduledExecutorService");
     typeTable.saveNicknameFor("javax.annotation.Generated");
 
-    GapicInterfaceConfig interfaceConfig = context.getInterfaceConfig();
+    InterfaceConfig interfaceConfig = context.getInterfaceConfig();
     if (interfaceConfig.hasPageStreamingMethods()) {
       typeTable.saveNicknameFor("com.google.api.core.ApiFuture");
       typeTable.saveNicknameFor("com.google.api.gax.grpc.CallContext");
@@ -566,7 +566,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
 
     for (Method method : context.getSupportedMethods()) {
-      GapicMethodConfig methodConfig = context.getMethodConfig(method);
+      MethodConfig methodConfig = context.getMethodConfig(method);
       GapicMethodContext requestMethodContext = context.asRequestMethodContext(method);
 
       if (methodConfig.isPageStreaming()) {

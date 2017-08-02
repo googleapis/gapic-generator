@@ -15,14 +15,14 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.BatchingConfig;
-import com.google.api.codegen.config.GapicMethodConfig;
+import com.google.api.codegen.config.FieldType;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.BatchingConfigView;
 import com.google.api.codegen.viewmodel.BatchingDescriptorClassView;
 import com.google.api.codegen.viewmodel.BatchingDescriptorView;
 import com.google.api.codegen.viewmodel.BatchingPartitionKeyView;
 import com.google.api.codegen.viewmodel.FieldCopyView;
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.FieldSelector;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
@@ -47,7 +47,7 @@ public class BatchingTransformer {
       }
 
       descriptor.byteLengthFunctionName(
-          namer.getByteLengthFunctionName(batching.getBatchedField().getType()));
+          namer.getByteLengthFunctionName(batching.getBatchedField()));
       descriptors.add(descriptor.build());
     }
     return descriptors.build();
@@ -58,7 +58,7 @@ public class BatchingTransformer {
     List<BatchingDescriptorClassView> descriptors = new ArrayList<>();
 
     for (Method method : context.getInterface().getMethods()) {
-      GapicMethodConfig methodConfig = context.getMethodConfig(method);
+      MethodConfig methodConfig = context.getMethodConfig(method);
       if (!methodConfig.isBatching()) {
         continue;
       }
@@ -95,37 +95,31 @@ public class BatchingTransformer {
 
   private BatchingDescriptorClassView generateDescriptorClass(GapicMethodContext context) {
     SurfaceNamer namer = context.getNamer();
-    ModelTypeTable typeTable = context.getTypeTable();
     Method method = context.getMethod();
     BatchingConfig batching = context.getMethodConfig().getBatching();
 
-    Field batchedField = batching.getBatchedField();
-    TypeRef batchedType = batchedField.getType();
-    Name batchedTypeName = Name.from(batchedField.getSimpleName());
+    FieldType batchedField = batching.getBatchedField();
 
-    Field subresponseField = batching.getSubresponseField();
+    FieldType subresponseField = batching.getSubresponseField();
 
     BatchingDescriptorClassView.Builder desc = BatchingDescriptorClassView.newBuilder();
 
     desc.name(namer.getBatchingDescriptorConstName(method));
-    desc.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
-    desc.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));
-    desc.batchedFieldTypeName(typeTable.getAndSaveNicknameFor(batchedType));
+    desc.requestTypeName(context.getAndSaveRequestTypeName());
+    desc.responseTypeName(context.getAndSaveResponseTypeName());
+    desc.batchedFieldTypeName(context.getTypeTable().getAndSaveNicknameFor(batchedField));
 
     desc.partitionKeys(generatePartitionKeys(context));
     desc.discriminatorFieldCopies(generateDiscriminatorFieldCopies(context));
 
-    desc.batchedFieldGetFunction(namer.getFieldGetFunctionName(batchedType, batchedTypeName));
-    desc.batchedFieldSetFunction(namer.getFieldSetFunctionName(batchedType, batchedTypeName));
+    desc.batchedFieldGetFunction(namer.getFieldGetFunctionName(batchedField));
+    desc.batchedFieldSetFunction(namer.getFieldSetFunctionName(batchedField));
     desc.batchedFieldCountGetFunction(namer.getFieldCountGetFunctionName(batchedField));
 
     if (subresponseField != null) {
-      TypeRef subresponseType = subresponseField.getType();
-      Name subresponseTypeName = Name.from(subresponseField.getSimpleName());
-      desc.subresponseTypeName(typeTable.getAndSaveNicknameFor(subresponseType));
+      desc.subresponseTypeName(context.getTypeTable().getAndSaveNicknameFor(subresponseField));
       desc.subresponseByIndexGetFunction(namer.getByIndexGetFunctionName(subresponseField));
-      desc.subresponseSetFunction(
-          namer.getFieldSetFunctionName(subresponseType, subresponseTypeName));
+      desc.subresponseSetFunction(namer.getFieldSetFunctionName(subresponseField));
     }
 
     return desc.build();

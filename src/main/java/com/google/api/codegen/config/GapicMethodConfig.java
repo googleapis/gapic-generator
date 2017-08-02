@@ -30,7 +30,6 @@ import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
-import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Strings;
@@ -48,48 +47,8 @@ import org.joda.time.Duration;
  * features like page streaming and parameter flattening.
  */
 @AutoValue
-public abstract class GapicMethodConfig {
+public abstract class GapicMethodConfig extends MethodConfig {
   public abstract Method getMethod();
-
-  @Nullable
-  public abstract PageStreamingConfig getPageStreaming();
-
-  @Nullable
-  public abstract GrpcStreamingConfig getGrpcStreaming();
-
-  @Nullable
-  public abstract ImmutableList<FlatteningConfig> getFlatteningConfigs();
-
-  public abstract String getRetryCodesConfigName();
-
-  public abstract String getRetrySettingsConfigName();
-
-  public abstract Duration getTimeout();
-
-  public abstract Iterable<FieldConfig> getRequiredFieldConfigs();
-
-  public abstract Iterable<FieldConfig> getOptionalFieldConfigs();
-
-  public abstract ResourceNameTreatment getDefaultResourceNameTreatment();
-
-  @Nullable
-  public abstract BatchingConfig getBatching();
-
-  public abstract boolean hasRequestObjectMethod();
-
-  public abstract ImmutableMap<String, String> getFieldNamePatterns();
-
-  public abstract List<String> getSampleCodeInitFields();
-
-  @Nullable
-  public abstract String getRerouteToGrpcInterface();
-
-  public abstract VisibilityConfig getVisibility();
-
-  public abstract ReleaseLevel getReleaseLevel();
-
-  @Nullable
-  public abstract LongRunningConfig getLongRunningConfig();
 
   /**
    * Creates an instance of GapicMethodConfig based on MethodConfigProto, linking it up with the
@@ -251,7 +210,6 @@ public abstract class GapicMethodConfig {
       return null;
     } else {
       return new AutoValue_GapicMethodConfig(
-          method,
           pageStreaming,
           grpcStreaming,
           flattening,
@@ -268,7 +226,8 @@ public abstract class GapicMethodConfig {
           rerouteToGrpcInterface,
           visibility,
           releaseLevel,
-          longRunningConfig);
+          longRunningConfig,
+          method);
     }
   }
 
@@ -303,9 +262,9 @@ public abstract class GapicMethodConfig {
     return flatteningGroupsBuilder.build();
   }
 
-  private static Iterable<Field> getRequiredFields(
+  private static Iterable<FieldType> getRequiredFields(
       DiagCollector diagCollector, Method method, List<String> requiredFieldNames) {
-    ImmutableList.Builder<Field> fieldsBuilder = ImmutableList.builder();
+    ImmutableList.Builder<FieldType> fieldsBuilder = ImmutableList.builder();
     for (String fieldName : requiredFieldNames) {
       Field requiredField = method.getInputMessage().lookupField(fieldName);
       if (requiredField == null) {
@@ -317,18 +276,19 @@ public abstract class GapicMethodConfig {
                 method.getFullName()));
         return null;
       }
-      fieldsBuilder.add(requiredField);
+      fieldsBuilder.add(new ProtoField(requiredField));
     }
     return fieldsBuilder.build();
   }
 
-  private static Iterable<Field> getOptionalFields(Method method, List<String> requiredFieldNames) {
-    ImmutableList.Builder<Field> fieldsBuilder = ImmutableList.builder();
+  private static Iterable<FieldType> getOptionalFields(
+      Method method, List<String> requiredFieldNames) {
+    ImmutableList.Builder<FieldType> fieldsBuilder = ImmutableList.builder();
     for (Field field : method.getInputType().getMessageType().getFields()) {
       if (requiredFieldNames.contains(field.getSimpleName())) {
         continue;
       }
-      fieldsBuilder.add(field);
+      fieldsBuilder.add(new ProtoField(field));
     }
     return fieldsBuilder.build();
   }
@@ -339,9 +299,9 @@ public abstract class GapicMethodConfig {
       ResourceNameTreatment defaultResourceNameTreatment,
       ImmutableMap<String, String> fieldNamePatterns,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      Iterable<Field> fields) {
+      Iterable<FieldType> fields) {
     ImmutableList.Builder<FieldConfig> fieldConfigsBuilder = ImmutableList.builder();
-    for (Field field : fields) {
+    for (FieldType field : fields) {
       fieldConfigsBuilder.add(
           FieldConfig.createFieldConfig(
               diagCollector,
@@ -367,16 +327,19 @@ public abstract class GapicMethodConfig {
   }
 
   /** Returns true if this method has page streaming configured. */
+  @Override
   public boolean isPageStreaming() {
     return getPageStreaming() != null;
   }
 
   /** Returns true if this method has grpc streaming configured. */
+  @Override
   public boolean isGrpcStreaming() {
     return getGrpcStreaming() != null;
   }
 
   /** Returns the grpc streaming configuration of the method. */
+  @Override
   public GrpcStreamingType getGrpcStreamingType() {
     if (isGrpcStreaming()) {
       return getGrpcStreaming().getType();
@@ -385,37 +348,43 @@ public abstract class GapicMethodConfig {
     }
   }
 
-  /** Returns true if this method has flattening configured. */
+  @Override
   public boolean isFlattening() {
     return getFlatteningConfigs() != null;
   }
 
-  /** Returns true if this method has batching configured. */
+  @Override
   public boolean isBatching() {
     return getBatching() != null;
   }
 
+  @Override
   public boolean isLongRunningOperation() {
     return getLongRunningConfig() != null;
   }
 
-  public Iterable<Field> getRequiredFields() {
-    return FieldConfig.toFieldIterable(getRequiredFieldConfigs());
+  @Override
+  public Iterable<FieldType> getRequiredFields() {
+    return FieldConfig.toFieldTypeIterable(getRequiredFieldConfigs());
   }
 
-  public Iterable<Field> getOptionalFields() {
-    return FieldConfig.toFieldIterable(getOptionalFieldConfigs());
+  @Override
+  public Iterable<FieldType> getOptionalFields() {
+    return FieldConfig.toFieldTypeIterable(getOptionalFieldConfigs());
   }
 
   /** Return the list of "one of" instances associated with the fields. */
-  public Iterable<Oneof> getOneofs() {
-    ImmutableSet.Builder<Oneof> answer = ImmutableSet.builder();
+  @Override
+  public Iterable<Iterable<String>> getOneofNames() {
+    ImmutableSet.Builder<Iterable<String>> answer = ImmutableSet.builder();
 
-    for (Field field : getOptionalFields()) {
-      if (field.getOneof() == null) {
+    for (FieldType field : getOptionalFields()) {
+      if (field.getOneofFieldsNames() == null || field.getOneofFieldsNames().size() == 0) {
         continue;
       }
-      answer.add(field.getOneof());
+      ImmutableSet.Builder<String> oneOfFields = ImmutableSet.builder();
+      oneOfFields.addAll(field.getOneofFieldsNames());
+      answer.add(oneOfFields.build());
     }
 
     return answer.build();

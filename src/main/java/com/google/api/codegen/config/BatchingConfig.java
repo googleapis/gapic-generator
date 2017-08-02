@@ -107,9 +107,9 @@ public abstract class BatchingConfig {
         elementCountLimit,
         requestByteLimit,
         delayThresholdMillis,
-        batchedField,
+        batchedField == null ? null : new ProtoField(batchedField),
         discriminatorsBuilder.build(),
-        subresponseField,
+        subresponseField == null ? null : new ProtoField(subresponseField),
         flowControlElementLimit,
         flowControlByteLimit,
         flowControlLimitConfig);
@@ -125,12 +125,12 @@ public abstract class BatchingConfig {
 
   public abstract long getDelayThresholdMillis();
 
-  public abstract Field getBatchedField();
+  public abstract FieldType getBatchedField();
 
   public abstract ImmutableList<FieldSelector> getDiscriminatorFields();
 
   @Nullable
-  public abstract Field getSubresponseField();
+  public abstract FieldType getSubresponseField();
 
   public boolean hasSubresponseField() {
     return getSubresponseField() != null;

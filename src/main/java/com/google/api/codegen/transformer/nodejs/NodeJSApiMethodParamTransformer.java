@@ -14,7 +14,8 @@
  */
 package com.google.api.codegen.transformer.nodejs;
 
-import com.google.api.codegen.config.GapicMethodConfig;
+import com.google.api.codegen.config.FieldType;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.transformer.ApiMethodParamTransformer;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -23,7 +24,6 @@ import com.google.api.codegen.util.js.JSCommentReformatter;
 import com.google.api.codegen.viewmodel.DynamicLangDefaultableParamView;
 import com.google.api.codegen.viewmodel.ParamDocView;
 import com.google.api.codegen.viewmodel.SimpleParamDocView;
-import com.google.api.tools.framework.model.Field;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 
@@ -50,7 +50,7 @@ public class NodeJSApiMethodParamTransformer implements ApiMethodParamTransforme
       return ImmutableList.of();
     }
     ImmutableList.Builder<DynamicLangDefaultableParamView> methodParams = ImmutableList.builder();
-    for (Field field : context.getMethodConfig().getRequiredFields()) {
+    for (FieldType field : context.getMethodConfig().getRequiredFields()) {
       DynamicLangDefaultableParamView param =
           DynamicLangDefaultableParamView.newBuilder()
               .name(context.getNamer().getVariableName(field))
@@ -76,13 +76,13 @@ public class NodeJSApiMethodParamTransformer implements ApiMethodParamTransforme
   }
 
   private ParamDocView generateRequestObjectParamDoc(GapicMethodContext context) {
-    GapicMethodConfig methodConfig = context.getMethodConfig();
+    MethodConfig methodConfig = context.getMethodConfig();
     SimpleParamDocView.Builder paramDoc = SimpleParamDocView.newBuilder();
     paramDoc.paramName(context.getNamer().localVarName(Name.from("request")));
     paramDoc.lines(ImmutableList.of("The request object that will be sent."));
 
     String typeName = "Object";
-    Iterable<Field> optionalParams = removePageTokenFromFields(methodConfig);
+    Iterable<FieldType> optionalParams = removePageTokenFromFields(methodConfig);
     if (!methodConfig.getRequiredFieldConfigs().iterator().hasNext()
         && !optionalParams.iterator().hasNext()) {
       typeName += "=";
@@ -104,9 +104,9 @@ public class NodeJSApiMethodParamTransformer implements ApiMethodParamTransforme
     return paramDoc.build();
   }
 
-  private List<Field> removePageTokenFromFields(GapicMethodConfig methodConfig) {
-    ImmutableList.Builder<Field> newFields = ImmutableList.builder();
-    for (Field field : methodConfig.getOptionalFields()) {
+  private List<FieldType> removePageTokenFromFields(MethodConfig methodConfig) {
+    ImmutableList.Builder<FieldType> newFields = ImmutableList.builder();
+    for (FieldType field : methodConfig.getOptionalFields()) {
       if (methodConfig.isPageStreaming()
           && field.equals(methodConfig.getPageStreaming().getRequestTokenField())) {
         continue;
@@ -117,11 +117,11 @@ public class NodeJSApiMethodParamTransformer implements ApiMethodParamTransforme
   }
 
   private List<ParamDocView> generateMethodParamDocs(
-      GapicMethodContext context, Iterable<Field> fields, boolean isOptional) {
+      GapicMethodContext context, Iterable<FieldType> fields, boolean isOptional) {
     SurfaceNamer namer = context.getNamer();
-    GapicMethodConfig methodConfig = context.getMethodConfig();
+    MethodConfig methodConfig = context.getMethodConfig();
     ImmutableList.Builder<ParamDocView> docs = ImmutableList.builder();
-    for (Field field : fields) {
+    for (FieldType field : fields) {
       if (isRequestTokenParam(methodConfig, field)) {
         continue;
       }
@@ -129,7 +129,7 @@ public class NodeJSApiMethodParamTransformer implements ApiMethodParamTransforme
       SimpleParamDocView.Builder paramDoc = SimpleParamDocView.newBuilder();
       paramDoc.paramName("request." + namer.getVariableName(field));
 
-      String typeName = namer.getParamTypeName(context.getTypeTable(), field.getType());
+      String typeName = namer.getParamTypeName(context.getTypeTable(), field);
       paramDoc.typeName(typeName + (isOptional ? "=" : ""));
       List<String> fieldDocLines = namer.getDocLines(field);
       ImmutableList.Builder<String> docLines = ImmutableList.builder();
@@ -150,12 +150,12 @@ public class NodeJSApiMethodParamTransformer implements ApiMethodParamTransforme
     return docs.build();
   }
 
-  private boolean isRequestTokenParam(GapicMethodConfig methodConfig, Field field) {
+  private boolean isRequestTokenParam(MethodConfig methodConfig, FieldType field) {
     return methodConfig.isPageStreaming()
         && field.equals(methodConfig.getPageStreaming().getRequestTokenField());
   }
 
-  private boolean isPageSizeParam(GapicMethodConfig methodConfig, Field field) {
+  private boolean isPageSizeParam(MethodConfig methodConfig, FieldType field) {
     return methodConfig.isPageStreaming()
         && methodConfig.getPageStreaming().hasPageSizeField()
         && field.equals(methodConfig.getPageStreaming().getPageSizeField());

@@ -22,11 +22,10 @@ import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.LanguageSettingsProto;
 import com.google.api.codegen.LicenseHeaderProto;
 import com.google.api.codegen.ResourceNameTreatment;
-import com.google.api.codegen.discogapic.DiscoGapicInterfaceConfig;
 import com.google.api.codegen.discovery.Document;
+import com.google.api.tools.framework.model.BoundedDiagCollector;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
@@ -154,14 +153,21 @@ public abstract class GapicProductConfig implements ProductConfig {
 
   @Nullable
   public static GapicProductConfig create(Document document, ConfigProto configProto) {
-    ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
-        ImmutableMap.<String, InterfaceConfig>builder()
-            .put(document.name(), DiscoGapicInterfaceConfig.createInterfaceConfig(document))
-            .build();
     // TODO (andrealin): load messageConfigs
-    ResourceNameMessageConfigs messageConfigs = null;
+
+    // TODO(andrealin): put this in config instead of hard coding it
+    String defaultPackage = "com.google.proto";
+
+    DiagCollector diagCollector = new BoundedDiagCollector();
+
+    ResourceNameMessageConfigs messageConfigs =
+        ResourceNameMessageConfigs.createMessageResourceTypesConfig(
+            document, diagCollector, configProto, defaultPackage);
+
     // TODO (andrealin): load resourceNameConfigs
-    ImmutableMap<String, ResourceNameConfig> resourceNameConfigs = ImmutableMap.of();
+
+    ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
+        createResourceNameConfigs(diagCollector, configProto, null);
 
     LanguageSettingsProto settings =
         configProto.getLanguageSettings().get(configProto.getLanguage());
@@ -169,8 +175,12 @@ public abstract class GapicProductConfig implements ProductConfig {
       settings = LanguageSettingsProto.getDefaultInstance();
     }
 
-    ImmutableList<String> copyrightLines = null;
-    ImmutableList<String> licenseLines = null;
+    ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
+        createDiscoGapicInterfaceConfigMap(
+            document, new BoundedDiagCollector(), configProto, settings);
+
+    ImmutableList<String> copyrightLines;
+    ImmutableList<String> licenseLines;
     try {
       LicenseHeaderProto licenseHeader =
           configProto
@@ -180,8 +190,8 @@ public abstract class GapicProductConfig implements ProductConfig {
               .build();
       copyrightLines = getResourceLines(licenseHeader.getCopyrightFile());
       licenseLines = getResourceLines(licenseHeader.getLicenseFile());
-    } catch (IOException e) {
-      // TODO(andrealin): use a DiagCollector to store all the errors.
+    } catch (Exception e) {
+      diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, "Exception: %s", e.getMessage()));
       e.printStackTrace(System.err);
       throw new RuntimeException(e);
     }
@@ -229,8 +239,7 @@ public abstract class GapicProductConfig implements ProductConfig {
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       SymbolTable symbolTable) {
-    ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap =
-        ImmutableMap.<String, InterfaceConfig>builder();
+    ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap = ImmutableMap.builder();
     for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
       Interface apiInterface = symbolTable.lookupInterface(interfaceConfigProto.getName());
       if (apiInterface == null || !apiInterface.isReachable()) {
@@ -253,6 +262,36 @@ public abstract class GapicProductConfig implements ProductConfig {
               interfaceNameOverride,
               messageConfigs,
               resourceNameConfigs);
+      if (interfaceConfig == null) {
+        continue;
+      }
+      interfaceConfigMap.put(interfaceConfigProto.getName(), interfaceConfig);
+    }
+
+    if (diagCollector.getErrorCount() > 0) {
+      return null;
+    } else {
+      return interfaceConfigMap.build();
+    }
+  }
+
+  private static ImmutableMap<String, InterfaceConfig> createDiscoGapicInterfaceConfigMap(
+      Document document,
+      DiagCollector diagCollector,
+      ConfigProto configProto,
+      LanguageSettingsProto languageSettings) {
+    ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap = ImmutableMap.builder();
+    for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
+      String interfaceNameOverride =
+          languageSettings.getInterfaceNames().get(interfaceConfigProto.getName());
+
+      DiscoGapicInterfaceConfig interfaceConfig =
+          DiscoGapicInterfaceConfig.createInterfaceConfig(
+              document,
+              diagCollector,
+              configProto.getLanguage(),
+              interfaceConfigProto,
+              interfaceNameOverride);
       if (interfaceConfig == null) {
         continue;
       }
@@ -421,7 +460,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     if (messageConfig == null) {
       return builder.build();
     }
-    for (Field field : messageConfig.getFieldsWithResourceNamesByMessage().values()) {
+    for (FieldType field : messageConfig.getFieldsWithResourceNamesByMessage().values()) {
       builder.put(
           field.getFullName(),
           FieldConfig.createMessageFieldConfig(
@@ -431,10 +470,11 @@ public abstract class GapicProductConfig implements ProductConfig {
   }
 
   /** Returns the GapicInterfaceConfig for the given API interface. */
-  public GapicInterfaceConfig getInterfaceConfig(Interface apiInterface) {
-    return (GapicInterfaceConfig) getInterfaceConfigMap().get(apiInterface.getFullName());
+  public InterfaceConfig getInterfaceConfig(Interface apiInterface) {
+    return getInterfaceConfigMap().get(apiInterface.getFullName());
   }
 
+  /** Returns the GapicInterfaceConfig for the given API method. */
   public InterfaceConfig getInterfaceConfig(String fullName) {
     return getInterfaceConfigMap().get(fullName);
   }

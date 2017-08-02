@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.IamResourceView;
 import com.google.api.tools.framework.model.Field;
@@ -26,7 +27,9 @@ public class IamResourceTransformer {
   public List<IamResourceView> generateIamResources(GapicInterfaceContext context) {
     List<IamResourceView> resources = new ArrayList<>();
     for (Field field :
-        context.getProductConfig().getInterfaceConfig(context.getInterface()).getIamResources()) {
+        ((GapicInterfaceConfig)
+                context.getProductConfig().getInterfaceConfig(context.getInterface()))
+            .getIamResources()) {
       String resourceTypeName =
           context
               .getModelTypeTable()

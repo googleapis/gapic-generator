@@ -14,8 +14,8 @@
  */
 package com.google.api.codegen.transformer.csharp;
 
-import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.ParamWithSimpleDoc;
@@ -49,7 +49,7 @@ public class CSharpCommonTransformer {
       if (mixinsDisabled && context.getMethodConfig(method).getRerouteToGrpcInterface() != null) {
         continue;
       }
-      GapicMethodConfig methodConfig = context.getMethodConfig(method);
+      MethodConfig methodConfig = context.getMethodConfig(method);
       if (methodConfig.getGrpcStreamingType() != GrpcStreamingType.NonStreaming
           && methodConfig.getGrpcStreamingType() != GrpcStreamingType.BidiStreaming) {
         // Only support non-streaming and duplex-streaming for now

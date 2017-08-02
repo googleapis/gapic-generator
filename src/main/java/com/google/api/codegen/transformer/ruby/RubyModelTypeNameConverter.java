@@ -27,7 +27,7 @@ import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
-public class RubyModelTypeNameConverter implements ModelTypeNameConverter {
+public class RubyModelTypeNameConverter extends ModelTypeNameConverter {
 
   /** A map from primitive types to its default value. */
   private static final ImmutableMap<Type, String> PRIMITIVE_ZERO_VALUE =

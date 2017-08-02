@@ -16,10 +16,13 @@ package com.google.api.codegen.py;
 
 import com.google.api.codegen.GapicContext;
 import com.google.api.codegen.TargetLanguage;
+import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.ProtoField;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
@@ -216,7 +219,9 @@ public class PythonGapicContext extends GapicContext {
     if (type.getCardinality() == Cardinality.REPEATED) {
       if (type.isMap()) {
         prefix =
-            String.format("dict[%s -> ", fieldTypeComment(type.getMapKeyField(), importHandler));
+            String.format(
+                "dict[%s -> ",
+                fieldTypeComment(new ProtoField(type.getMapKeyField()), importHandler));
       } else {
         prefix = "list[";
       }
@@ -229,8 +234,8 @@ public class PythonGapicContext extends GapicContext {
   }
 
   /** Returns type information for a field in Sphinx docstring style. */
-  private String fieldTypeComment(Field field, PythonImportHandler importHandler) {
-    return typeComment(field.getType(), importHandler);
+  private String fieldTypeComment(FieldType field, PythonImportHandler importHandler) {
+    return typeComment(field.getProtoTypeRef(), importHandler);
   }
 
   private String enumClassName(EnumType enumType) {
@@ -307,8 +312,7 @@ public class PythonGapicContext extends GapicContext {
    */
   public String returnTypeComment(
       Interface apiInterface, Method method, PythonImportHandler importHandler) {
-    GapicMethodConfig config =
-        getApiConfig().getInterfaceConfig(apiInterface).getMethodConfig(method);
+    MethodConfig config = getApiConfig().getInterfaceConfig(apiInterface).getMethodConfig(method);
     if (GapicMethodConfig.isReturnEmptyMessageMethod(method)) {
       return "";
     }
@@ -332,7 +336,7 @@ public class PythonGapicContext extends GapicContext {
   }
 
   private String returnTypeCommentPath(
-      Method method, GapicMethodConfig config, PythonImportHandler importHandler) {
+      Method method, MethodConfig config, PythonImportHandler importHandler) {
     if (config.isLongRunningOperation()) {
       return "google.gax._OperationFuture";
     }
@@ -364,8 +368,7 @@ public class PythonGapicContext extends GapicContext {
   }
 
   public String throwsComment(Interface apiInterface, Method method) {
-    GapicMethodConfig config =
-        getApiConfig().getInterfaceConfig(apiInterface).getMethodConfig(method);
+    MethodConfig config = getApiConfig().getInterfaceConfig(apiInterface).getMethodConfig(method);
     StringBuilder contentBuilder = new StringBuilder();
     contentBuilder.append("\nRaises:\n  :exc:`google.gax.errors.GaxError` if the RPC is aborted.");
     if (Iterables.size(config.getRequiredFields()) > 0
@@ -385,8 +388,8 @@ public class PythonGapicContext extends GapicContext {
   }
 
   /** Get required (non-optional) fields. */
-  public List<Field> getRequiredFields(Interface apiInterface, Method method) {
-    GapicMethodConfig methodConfig =
+  public List<FieldType> getRequiredFields(Interface apiInterface, Method method) {
+    MethodConfig methodConfig =
         getApiConfig().getInterfaceConfig(apiInterface).getMethodConfig(method);
     return Lists.newArrayList(methodConfig.getRequiredFields());
   }
@@ -491,7 +494,7 @@ public class PythonGapicContext extends GapicContext {
 
   public List<Interface> getStubInterfaces(Interface apiInterface) {
     Map<String, Interface> interfaces = new TreeMap<>();
-    for (GapicMethodConfig methodConfig :
+    for (MethodConfig methodConfig :
         getApiConfig().getInterfaceConfig(apiInterface).getMethodConfigs()) {
       String rerouteToGrpcInterface = methodConfig.getRerouteToGrpcInterface();
       Interface target =
@@ -506,7 +509,7 @@ public class PythonGapicContext extends GapicContext {
   }
 
   public String stubNameForMethod(Interface apiInterface, Method method) {
-    GapicMethodConfig methodConfig =
+    MethodConfig methodConfig =
         getApiConfig().getInterfaceConfig(apiInterface).getMethodConfig(method);
     String rerouteToGrpcInterface = methodConfig.getRerouteToGrpcInterface();
     Interface target =

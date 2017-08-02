@@ -17,10 +17,11 @@ package com.google.api.codegen.discogapic.transformer.java;
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.discogapic.DiscoGapicInterfaceContext;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
+import com.google.api.codegen.transformer.ApiCallableTransformer;
+import com.google.api.codegen.transformer.DiscoGapicInterfaceContext;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.SchemaTypeTable;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
@@ -44,13 +45,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/** The ModelToViewTransformer to transform a Document into the standard GAPIC surface in Java. */
 public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransformer {
   private final GapicCodePathMapper pathMapper;
+  private final PackageMetadataConfig packageMetadataConfig;
   private final StandardImportSectionTransformer importSectionTransformer =
       new StandardImportSectionTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(importSectionTransformer);
   private final JavaNameFormatter nameFormatter = new JavaNameFormatter();
+  private final ApiCallableTransformer apiCallableTransformer = new ApiCallableTransformer();
+
+  // TODO(andrealin) Create the service, page streaming, batching, etc transformers.
 
   private static final String XAPI_TEMPLATE_FILENAME = "java/main.snip";
   private static final String XSETTINGS_TEMPLATE_FILENAME = "java/settings.snip";
@@ -62,6 +68,7 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
       GapicCodePathMapper pathMapper, PackageMetadataConfig packageMetadataConfig) {
     this.pathMapper = pathMapper;
     // TODO use packageMetadataConfig
+    this.packageMetadataConfig = packageMetadataConfig;
   }
 
   @Override
@@ -81,19 +88,23 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
 
     List<ServiceDocView> serviceDocs = new ArrayList<>();
 
-    DiscoGapicInterfaceContext context =
-        DiscoGapicInterfaceContext.create(
-            document,
-            productConfig,
-            createTypeTable(productConfig.getPackageName()),
-            new JavaDiscoGapicNamer(),
-            namer,
-            JavaFeatureConfig.newBuilder().enableStringFormatFunctions(false).build());
+    for (String interfaceName : productConfig.getInterfaceConfigMap().keySet()) {
+      DiscoGapicInterfaceContext context =
+          DiscoGapicInterfaceContext.createWithInterface(
+              document,
+              interfaceName,
+              productConfig,
+              createTypeTable(productConfig.getPackageName()),
+              new JavaDiscoGapicNamer(),
+              namer,
+              JavaFeatureConfig.newBuilder().enableStringFormatFunctions(false).build());
+      StaticLangApiFileView apiFile = generateApiFile(context);
+      surfaceDocs.add(apiFile);
+      // TODO(andrealin): Service doc.
+      serviceDocs.add(apiFile.api().doc());
 
-    StaticLangApiFileView apiFile = generateApiFile(context);
-    surfaceDocs.add(apiFile);
-
-    serviceDocs.add(apiFile.api().doc());
+      // TODO(andrealin): Settings file.
+    }
 
     return surfaceDocs;
   }
@@ -128,7 +139,7 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
 
     StaticLangApiView.Builder xapiClass = StaticLangApiView.newBuilder();
 
-    String name = context.getNamer().getApiWrapperClassName(context.getInterfaceConfig());
+    String name = context.getNamer().getApiWrapperClassName(context.getDocument());
     xapiClass.releaseLevelAnnotation(context.getNamer().getReleaseAnnotation(ReleaseLevel.ALPHA));
     xapiClass.name(name);
     xapiClass.settingsClassName(
@@ -148,9 +159,7 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
     SchemaTypeTable typeTable = context.getSchemaTypeTable();
     // TODO several of these can be deleted (e.g. DiscoGapic doesn't use grpc)
     typeTable.saveNicknameFor("com.google.api.core.BetaApi");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.ChannelAndExecutor");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryCallable");
-    typeTable.saveNicknameFor("com.google.api.pathtemplate.PathTemplate");
+    typeTable.saveNicknameFor("com.google.auth.Credentials");
     typeTable.saveNicknameFor("io.grpc.ManagedChannel");
     typeTable.saveNicknameFor("java.io.Closeable");
     typeTable.saveNicknameFor("java.io.IOException");

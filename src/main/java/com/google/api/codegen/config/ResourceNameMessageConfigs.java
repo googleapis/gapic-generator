@@ -16,6 +16,9 @@ package com.google.api.codegen.config;
 
 import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.ResourceNameMessageConfigProto;
+import com.google.api.codegen.discovery.Document;
+import com.google.api.codegen.discovery.Schema;
+import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Model;
@@ -25,6 +28,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ListMultimap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nullable;
 
@@ -38,13 +42,12 @@ public abstract class ResourceNameMessageConfigs {
    * Get a map from fully qualified message names to Fields, where each field has a resource name
    * defined.
    */
-  public abstract ListMultimap<String, Field> getFieldsWithResourceNamesByMessage();
+  public abstract ListMultimap<String, FieldType> getFieldsWithResourceNamesByMessage();
 
   @Nullable
   public static ResourceNameMessageConfigs createMessageResourceTypesConfig(
       Model model, ConfigProto configProto, String defaultPackage) {
-    ImmutableMap.Builder<String, ResourceNameMessageConfig> builder =
-        ImmutableMap.<String, ResourceNameMessageConfig>builder();
+    ImmutableMap.Builder<String, ResourceNameMessageConfig> builder = ImmutableMap.builder();
     for (ResourceNameMessageConfigProto messageResourceTypesProto :
         configProto.getResourceNameGenerationList()) {
       ResourceNameMessageConfig messageResourceTypeConfig =
@@ -54,7 +57,8 @@ public abstract class ResourceNameMessageConfigs {
     }
     ImmutableMap<String, ResourceNameMessageConfig> messageResourceTypeConfigMap = builder.build();
 
-    ListMultimap<String, Field> fieldsByMessage = ArrayListMultimap.create();
+    ListMultimap<String, FieldType> fieldsByMessage = ArrayListMultimap.create();
+
     Set<String> seenProtoFiles = new HashSet<>();
     for (ProtoFile protoFile : model.getFiles()) {
       if (!seenProtoFiles.contains(protoFile.getSimpleName())) {
@@ -67,13 +71,37 @@ public abstract class ResourceNameMessageConfigs {
           }
           for (Field field : msg.getFields()) {
             if (messageConfig.getEntityNameForField(field.getSimpleName()) != null) {
-              fieldsByMessage.put(msg.getFullName(), field);
+              fieldsByMessage.put(msg.getFullName(), new ProtoField(field));
             }
           }
         }
       }
     }
+    return new AutoValue_ResourceNameMessageConfigs(messageResourceTypeConfigMap, fieldsByMessage);
+  }
 
+  @Nullable
+  public static ResourceNameMessageConfigs createMessageResourceTypesConfig(
+      Document document,
+      DiagCollector diagCollector,
+      ConfigProto configProto,
+      String defaultPackage) {
+    ImmutableMap.Builder<String, ResourceNameMessageConfig> builder = ImmutableMap.builder();
+    for (ResourceNameMessageConfigProto messageResourceTypesProto :
+        configProto.getResourceNameGenerationList()) {
+      ResourceNameMessageConfig messageResourceTypeConfig =
+          ResourceNameMessageConfig.createResourceNameMessageConfig(
+              diagCollector, messageResourceTypesProto, defaultPackage);
+      builder.put(messageResourceTypeConfig.messageName(), messageResourceTypeConfig);
+    }
+    ImmutableMap<String, ResourceNameMessageConfig> messageResourceTypeConfigMap = builder.build();
+
+    ListMultimap<String, FieldType> fieldsByMessage = ArrayListMultimap.create();
+
+    // TODO(andrealin): implementation.
+    for (Map.Entry<String, Schema> schemaEntry : document.schemas().entrySet()) {
+      fieldsByMessage.put(schemaEntry.getKey(), new DiscoveryField(schemaEntry.getValue()));
+    }
     return new AutoValue_ResourceNameMessageConfigs(messageResourceTypeConfigMap, fieldsByMessage);
   }
 
@@ -81,16 +109,16 @@ public abstract class ResourceNameMessageConfigs {
     return getResourceTypeConfigMap().isEmpty();
   }
 
-  public boolean fieldHasResourceName(Field field) {
-    return fieldHasResourceName(field.getParent().getFullName(), field.getSimpleName());
+  public boolean fieldHasResourceName(FieldType field) {
+    return fieldHasResourceName(field.getParentFullName(), field.getSimpleName());
   }
 
   public boolean fieldHasResourceName(String messageFullName, String fieldSimpleName) {
     return getResourceNameOrNullForField(messageFullName, fieldSimpleName) != null;
   }
 
-  public String getFieldResourceName(Field field) {
-    return getFieldResourceName(field.getParent().getFullName(), field.getSimpleName());
+  public String getFieldResourceName(FieldType field) {
+    return getFieldResourceName(field.getParentFullName(), field.getSimpleName());
   }
 
   public String getFieldResourceName(String messageSimpleName, String fieldSimpleName) {
