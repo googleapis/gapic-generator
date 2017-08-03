@@ -152,8 +152,9 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
   private List<TestCaseView> createTestCaseViews(GapicInterfaceContext context) {
     ImmutableList.Builder<TestCaseView> testCaseViews = ImmutableList.builder();
 
-    // There are situations where a response type name has a collision with a response type name
-    // of a later seen test case. Run twice in order to fully disambiguate these types.
+    // There are situations where a type name has a collision with another type name found in
+    // a later seen test case. When this occurs the first seen type name will become invalid.
+    // Run twice in order to fully disambiguate these types.
     // TODO(landrito): figure out a way to guarantee that python typenames are not bound to a
     // certain string until all of the types have been disambiguated.
     for (int i = 0; i < 2; ++i) {
