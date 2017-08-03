@@ -35,7 +35,7 @@ public abstract class StaticLangFileView<ClassViewT> implements ViewModel {
   }
 
   public static <ClassViewT> Builder<ClassViewT> newBuilder() {
-    return new AutoValue_StaticLangFileView.Builder();
+    return new AutoValue_StaticLangFileView.Builder<>();
   }
 
   @AutoValue.Builder

@@ -18,7 +18,6 @@ import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.ImportSectionTransformer;
-import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.viewmodel.ImportFileView;
@@ -33,15 +32,13 @@ import java.util.TreeSet;
 
 public class RubyImportSectionTransformer implements ImportSectionTransformer {
   @Override
-  public ImportSectionView generateImportSection(InterfaceContext context) {
-    // TODO support non-Gapic inputs
-    GapicInterfaceContext gapicContext = (GapicInterfaceContext) context;
-    Set<String> importFilenames = generateImportFilenames(gapicContext);
+  public ImportSectionView generateImportSection(GapicInterfaceContext context) {
+    Set<String> importFilenames = generateImportFilenames(context);
     ImportSectionView.Builder importSection = ImportSectionView.newBuilder();
     importSection.standardImports(generateStandardImports());
-    importSection.externalImports(generateExternalImports(gapicContext));
-    importSection.appImports(generateAppImports(gapicContext, importFilenames));
-    importSection.serviceImports(generateServiceImports(gapicContext, importFilenames));
+    importSection.externalImports(generateExternalImports(context));
+    importSection.appImports(generateAppImports(context, importFilenames));
+    importSection.serviceImports(generateServiceImports(context, importFilenames));
     return importSection.build();
   }
 
