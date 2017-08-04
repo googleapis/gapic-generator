@@ -124,9 +124,7 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
   public TocContentView generateTocContent(
       Model model, RubyPackageMetadataNamer namer, String version, String clientName) {
     String description = model.getServiceConfig().getDocumentation().getSummary();
-    description = description.replace("\n", " ");
-    // Remove spaces at the end of the string
-    description = description.replaceAll("\\s+$", "");
+    description = description.replace("\n", " ").trim();
     return generateTocContent(description, namer, version, clientName);
   }
 
