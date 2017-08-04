@@ -1,4 +1,4 @@
-============== file: test/google/cloud/gapic/example/library/v1/test_library_service_client_v1.py ==============
+============== file: tests/unit/gapic/v1/test_library_service_client_v1.py ==============
 # Copyright 2017, Google Inc. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -811,6 +811,55 @@ class TestLibraryServiceClient(unittest.TestCase):
         self.assertRaises(errors.GaxError, client.get_book_from_anywhere, name, alt_book_name)
 
     @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_get_book_from_absolutely_anywhere(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_service_client.LibraryServiceClient()
+
+        # Mock request
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+
+        # Mock response
+        name_2 = 'name2-1052831874'
+        author = 'author-1406328437'
+        title = 'title110371416'
+        read = True
+        expected_response = book_from_anywhere_pb2.BookFromAnywhere(name=name_2, author=author, title=title, read=read)
+        grpc_stub.GetBookFromAbsolutelyAnywhere.return_value = expected_response
+
+        response = client.get_book_from_absolutely_anywhere(name)
+        self.assertEqual(expected_response, response)
+
+        grpc_stub.GetBookFromAbsolutelyAnywhere.assert_called_once()
+        args, kwargs = grpc_stub.GetBookFromAbsolutelyAnywhere.call_args
+        self.assertEqual(len(args), 2)
+        self.assertEqual(len(kwargs), 1)
+        self.assertIn('metadata', kwargs)
+        actual_request = args[0]
+
+        expected_request = library_pb2.GetBookFromAbsolutelyAnywhereRequest(name=name)
+        self.assertEqual(expected_request, actual_request)
+
+    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_get_book_from_absolutely_anywhere_exception(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_service_client.LibraryServiceClient()
+
+        # Mock request
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+
+        # Mock exception response
+        grpc_stub.GetBookFromAbsolutelyAnywhere.side_effect = CustomException()
+
+        self.assertRaises(errors.GaxError, client.get_book_from_absolutely_anywhere, name)
+
+    @mock.patch('google.gax.config.create_stub', spec=True)
     def test_update_book_index(self, mock_create_stub):
         # Mock gRPC layer
         grpc_stub = mock.Mock()
@@ -865,7 +914,9 @@ class TestLibraryServiceClient(unittest.TestCase):
         client = library_service_client.LibraryServiceClient()
 
         # Mock response
-        expected_response = library_pb2.StreamShelvesResponse()
+        shelves_element = library_pb2.Shelf()
+        shelves = [shelves_element]
+        expected_response = library_pb2.StreamShelvesResponse(shelves=shelves)
         grpc_stub.StreamShelves.return_value = iter([expected_response])
 
         response = client.stream_shelves()
@@ -1401,3 +1452,4 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub.TestOptionalRequiredFlatteningParams.side_effect = CustomException()
 
         self.assertRaises(errors.GaxError, client.test_optional_required_flattening_params, required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, required_repeated_resource_name, required_repeated_resource_name_oneof, required_repeated_fixed32, required_repeated_fixed64, required_map)
+

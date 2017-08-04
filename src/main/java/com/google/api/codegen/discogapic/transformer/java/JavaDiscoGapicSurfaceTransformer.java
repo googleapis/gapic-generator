@@ -36,7 +36,7 @@ import com.google.api.codegen.viewmodel.FormatResourceFunctionView;
 import com.google.api.codegen.viewmodel.ParseResourceFunctionView;
 import com.google.api.codegen.viewmodel.PathTemplateView;
 import com.google.api.codegen.viewmodel.ServiceDocView;
-import com.google.api.codegen.viewmodel.StaticLangApiFileView;
+import com.google.api.codegen.viewmodel.StaticLangApiAndSettingsFileView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
 import com.google.api.codegen.viewmodel.StaticLangApiView;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -84,7 +84,8 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
   public List<ViewModel> transform(Document document, GapicProductConfig productConfig) {
     List<ViewModel> surfaceDocs = new ArrayList<>();
 
-    SurfaceNamer namer = new JavaSurfaceNamer(productConfig.getPackageName());
+    SurfaceNamer namer =
+        new JavaSurfaceNamer(productConfig.getPackageName(), productConfig.getPackageName());
 
     List<ServiceDocView> serviceDocs = new ArrayList<>();
 
@@ -98,7 +99,7 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
               new JavaDiscoGapicNamer(),
               namer,
               JavaFeatureConfig.newBuilder().enableStringFormatFunctions(false).build());
-      StaticLangApiFileView apiFile = generateApiFile(context);
+      StaticLangApiAndSettingsFileView apiFile = generateApiFile(context);
       surfaceDocs.add(apiFile);
       // TODO(andrealin): Service doc.
       serviceDocs.add(apiFile.api().doc());
@@ -115,8 +116,9 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
         new JavaSchemaTypeNameConverter(implicitPackageName, nameFormatter));
   }
 
-  private StaticLangApiFileView generateApiFile(DiscoGapicInterfaceContext context) {
-    StaticLangApiFileView.Builder apiFile = StaticLangApiFileView.newBuilder();
+  private StaticLangApiAndSettingsFileView generateApiFile(DiscoGapicInterfaceContext context) {
+    StaticLangApiAndSettingsFileView.Builder apiFile =
+        StaticLangApiAndSettingsFileView.newBuilder();
 
     apiFile.templateFileName(XAPI_TEMPLATE_FILENAME);
 

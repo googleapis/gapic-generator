@@ -15,6 +15,7 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableList;
 import java.util.List;
 
 @AutoValue
@@ -24,6 +25,14 @@ public abstract class GrpcEnumValueDocView {
   public abstract Integer number();
 
   public abstract List<String> lines();
+
+  public String firstLine() {
+    return lines().isEmpty() ? "" : lines().get(0);
+  }
+
+  public List<String> remainingLines() {
+    return lines().isEmpty() ? ImmutableList.<String>of() : lines().subList(1, lines().size());
+  }
 
   public static Builder newBuilder() {
     return new AutoValue_GrpcEnumValueDocView.Builder();

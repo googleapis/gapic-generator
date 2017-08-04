@@ -18,7 +18,6 @@ import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
-import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
@@ -43,7 +42,13 @@ public class PhpSurfaceNamer extends SurfaceNamer {
         new ModelTypeFormatterImpl(new PhpModelTypeNameConverter(packageName)),
         new PhpTypeTable(packageName),
         new PhpCommentReformatter(),
+        packageName,
         packageName);
+  }
+
+  @Override
+  public SurfaceNamer cloneWithPackageName(String packageName) {
+    return new PhpSurfaceNamer(packageName);
   }
 
   @Override
@@ -77,11 +82,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getFieldGetFunctionName(TypeRef type, Name identifier) {
-    if (type.isRepeated() && !type.isMap()) {
-      return publicMethodName(Name.from("get").join(identifier).join("list"));
-    } else {
-      return publicMethodName(Name.from("get").join(identifier));
-    }
+    return publicMethodName(Name.from("get").join(identifier));
   }
 
   @Override
@@ -124,11 +125,11 @@ public class PhpSurfaceNamer extends SurfaceNamer {
       case NonStreaming:
         return getModelTypeFormatter().getFullNameFor(method.getOutputType());
       case BidiStreaming:
-        return "\\Google\\GAX\\BidiStreamingResponse";
+        return "\\Google\\GAX\\BidiStream";
       case ClientStreaming:
-        return "\\Google\\GAX\\ClientStreamingResponse";
+        return "\\Google\\GAX\\ClientStream";
       case ServerStreaming:
-        return "\\Google\\GAX\\ServerStreamingResponse";
+        return "\\Google\\GAX\\ServerStream";
       default:
         return getNotImplementedString(
             "SurfaceNamer.getDynamicReturnTypeName grpcStreamingType:"
@@ -201,29 +202,5 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   @Override
   public boolean methodHasRetrySettings(MethodConfig methodConfig) {
     return !methodConfig.isGrpcStreaming();
-  }
-
-  public String getRequestTokenFieldName(PageStreamingConfig pageStreaming) {
-    // Not using keyName since PHP maps the string "requestPageTokenField" to the raw request token
-    // field name from the page streaming config.
-    return pageStreaming.getRequestTokenField().getSimpleName();
-  }
-
-  public String getPageSizeFieldName(PageStreamingConfig pageStreaming) {
-    // Not using keyName since PHP maps the string "requestPageSizeField" to the raw page size
-    // field name from the page streaming config.
-    return pageStreaming.getPageSizeField().getSimpleName();
-  }
-
-  public String getResponseTokenFieldName(PageStreamingConfig pageStreaming) {
-    // Not using keyName since PHP maps the string "responsePageTokenField" to the raw response
-    // token field name from the page streaming config.
-    return pageStreaming.getResponseTokenField().getSimpleName();
-  }
-
-  public String getResourcesFieldName(PageStreamingConfig pageStreaming) {
-    // Not using keyName since PHP maps the string "resourceField" to the raw resource field
-    // from name the page streaming config.
-    return pageStreaming.getResourcesFieldName();
   }
 }

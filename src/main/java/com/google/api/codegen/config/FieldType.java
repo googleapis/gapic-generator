@@ -15,6 +15,7 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.discovery.Schema;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import java.util.List;
@@ -81,7 +82,7 @@ public interface FieldType {
   String getScopedDocumentation();
 
   /* @return the simple name of the Oneof (if it exists) associated with this model. */
-  List<String> getOneofFieldsNames();
+  List<String> getOneofFieldsNames(SurfaceNamer surfaceNamer);
 
   /* @return the type of this object, formatted as a String. */
   String getKind();

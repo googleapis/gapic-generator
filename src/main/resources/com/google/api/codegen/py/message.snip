@@ -1,53 +1,56 @@
-@snippet generateFilename(file)
-    {@context.filePath(file, importHandler)}
-@end
+@extends "py/common.snip"
 
-@snippet generateBody(file)
-@end
-
-@snippet generateModule(file, body, imports)
-    {@licenseSection()}
-    @if imports
-
-        {@importSection(imports)}
+@snippet generate(doc)
+    {@licenseSection(doc.fileHeader)}
+    {@renderImportSection(doc.fileHeader.importSection)}
+    @join element: doc.elementDocs
+        {@documentElement(element)}
     @end
-    @join element: file.getMessages()
-
-
-        class {@element.getSimpleName()}(object):
-            {@messageComments(element)}
-            pass
-    @end
-
 @end
 
-@private licenseSection()
-    @# Copyright 2016 Google Inc. All rights reserved.
-    @#
-    @# Licensed under the Apache License, Version 2.0 (the "License");
-    @# you may not use this file except in compliance with the License.
-    @# You may obtain a copy of the License at
-    @#
-    @# http://www.apache.org/licenses/LICENSE-2.0
-    @#
-    @# Unless required by applicable law or agreed to in writing, software
-    @# distributed under the License is distributed on an "AS IS" BASIS,
-    @# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    @# See the License for the specific language governing permissions and
-    @# limitations under the License.
+@private documentElement(element)
+    @switch element.type
+    @case "GrpcMessageDocView"
+        {@documentMessage(element)}
+    @case "GrpcEnumDocView"
+      # Skip enums
+    @default
+        {@unhandledCase()}
+    @end
 @end
 
-@private importSection(imports)
-    @join import : imports
-        {@import}
-    @end
+@private documentMessage(message)
+
+    class {@message.name}(object):
+        @let comments = messageComments(message)
+            """
+            {@comments}
+            """
+        @end
+        pass
+
 @end
 
 @private messageComments(message)
-    @join comment : context.messageComments(message, importHandler)
+    @join comment : message.lines
         {@comment}
     @end
-@end
 
-@snippet sampleCode(apiMethod)
+    @if message.lines
+
+
+    @end
+    Attributes:
+      @join prop : message.properties
+          @if prop.firstLine
+              {@prop.paramName} ({@prop.typeName}): {@prop.firstLine}
+          @else
+              {@prop.paramName} ({@prop.typeName})
+          @end
+
+            @join comment : prop.remainingLines
+                {@comment}
+            @end
+      @end
+
 @end

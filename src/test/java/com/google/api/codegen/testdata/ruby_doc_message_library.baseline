@@ -116,7 +116,7 @@ module Google
     # If the embedded message type is well-known and has a custom JSON
     # representation, that representation will be embedded adding a field
     # +value+ which holds the custom JSON in addition to the +@type+
-    # field. Example (for message Google::Protobuf::Duration):
+    # field. Example (for message {Google::Protobuf::Duration}):
     #
     #     {
     #       "@type": "type.googleapis.com/google.protobuf.Duration",
@@ -135,7 +135,7 @@ module Google
     #       qualified name of the type (as in +path/google.protobuf.Duration+).
     #       The name should be in a canonical form (e.g., leading "." is
     #       not accepted).
-    #     * An HTTP GET on the URL must yield a Google::Protobuf::Type
+    #     * An HTTP GET on the URL must yield a {Google::Protobuf::Type}
     #       value in binary format, or produce an error.
     #     * Applications are allowed to cache lookup results based on the
     #       URL, or have them precompiled into a binary to avoid any
@@ -554,7 +554,7 @@ module Google
     # 0001-01-01T00:00:00Z to 9999-12-31T23:59:59.999999999Z.
     # By restricting to that range, we ensure that we can convert to
     # and from  RFC 3339 date strings.
-    # See {https://www.ietf.org/rfc/rfc3339.txt}[https://www.ietf.org/rfc/rfc3339.txt].
+    # See [https://www.ietf.org/rfc/rfc3339.txt](https://www.ietf.org/rfc/rfc3339.txt).
     #
     # Example 1: Compute Timestamp from POSIX +time()+.
     #
@@ -718,7 +718,7 @@ module Google
   module Rpc
     # The +Status+ type defines a logical error model that is suitable for different
     # programming environments, including REST APIs and RPC APIs. It is used by
-    # {gRPC}[https://github.com/grpc]. The error model is designed to be:
+    # [gRPC](https://github.com/grpc). The error model is designed to be:
     #
     # * Simple to use and understand for most users
     # * Flexible enough to meet unexpected needs
@@ -727,7 +727,7 @@ module Google
     #
     # The +Status+ message contains three pieces of data: error code, error message,
     # and error details. The error code should be an enum value of
-    # Google::Rpc::Code, but it may accept additional error codes if needed.  The
+    # {Google::Rpc::Code}, but it may accept additional error codes if needed.  The
     # error message should be a developer-facing English message that helps
     # developers *understand* and *resolve* the error. If a localized user-facing
     # error message is needed, put the localized message in the error details or
@@ -770,12 +770,12 @@ module Google
     #   be used directly after any stripping needed for security/privacy reasons.
     # @!attribute [rw] code
     #   @return [Integer]
-    #     The status code, which should be an enum value of Google::Rpc::Code.
+    #     The status code, which should be an enum value of {Google::Rpc::Code}.
     # @!attribute [rw] message
     #   @return [String]
     #     A developer-facing error message, which should be in English. Any
     #     user-facing error message should be localized and sent in the
-    #     Google::Rpc::Status#details field, or localized by the client.
+    #     {Google::Rpc::Status#details} field, or localized by the client.
     # @!attribute [rw] details
     #   @return [Array<Google::Protobuf::Any>]
     #     A list of messages that carry the error details.  There will be a
@@ -991,7 +991,7 @@ module Google
         #   @return [String]
         #     A token identifying a page of results the server should return.
         #     Typically, this is the value of
-        #     ListShelvesResponse#next_page_token
+        #     {Google::Example::Library::V1::ListShelvesResponse#next_page_token ListShelvesResponse#next_page_token}
         #     returned from the previous call to +ListShelves+ method.
         class ListShelvesRequest; end
 
@@ -1003,7 +1003,7 @@ module Google
         #   @return [String]
         #     A token to retrieve next page of results.
         #     Pass this value in the
-        #     ListShelvesRequest#page_token
+        #     {Google::Example::Library::V1::ListShelvesRequest#page_token ListShelvesRequest#page_token}
         #     field in the subsequent call to +ListShelves+ method to retrieve the next
         #     page of results.
         class ListShelvesResponse; end
@@ -1090,7 +1090,7 @@ module Google
         #   @return [String]
         #     A token identifying a page of results the server should return.
         #     Typically, this is the value of
-        #     ListBooksResponse#next_page_token.
+        #     {Google::Example::Library::V1::ListBooksResponse#next_page_token ListBooksResponse#next_page_token}.
         #     returned from the previous call to +ListBooks+ method.
         # @!attribute [rw] filter
         #   @return [String]
@@ -1105,7 +1105,7 @@ module Google
         #   @return [String]
         #     A token to retrieve next page of results.
         #     Pass this value in the
-        #     ListBooksRequest#page_token
+        #     {Google::Example::Library::V1::ListBooksRequest#page_token ListBooksRequest#page_token}
         #     field in the subsequent call to +ListBooks+ method to retrieve the next
         #     page of results.
         class ListBooksResponse; end
@@ -1206,6 +1206,12 @@ module Google
         #     An alternate book name, used to test restricting flattened field to a
         #     single resource name type in a oneof.
         class GetBookFromAnywhereRequest; end
+
+        # Request message for LibraryService.GetBookFromAbsolutelyAnywhere.
+        # @!attribute [rw] name
+        #   @return [String]
+        #     The name of the book to retrieve.
+        class GetBookFromAbsolutelyAnywhereRequest; end
 
         # Request message for LibraryService.UpdateBookIndex.
         # @!attribute [rw] name
@@ -1373,12 +1379,6 @@ module Google
         end
 
         class TestOptionalRequiredFlatteningParamsResponse; end
-
-        module TopLevelEnum
-          FOO = 0
-
-          BAR = 1
-        end
       end
     end
   end

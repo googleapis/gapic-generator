@@ -125,6 +125,16 @@ service LibraryService {
     option (google.api.http) = { get: "/v1/{name=archives/*/books/**}"};
   }
 
+  // Test proper OneOf-Any resource name mapping
+  rpc GetBookFromAbsolutelyAnywhere(GetBookFromAbsolutelyAnywhereRequest) returns (BookFromAnywhere) {
+    option (google.api.http) = {
+      post: "/v1/{name=archives/*/books/*}"
+      additional_bindings {
+        post: "/v1/{name=bookShelves/*/books/*}"
+      }
+    };
+  }
+
   // Updates the index of a book.
   rpc UpdateBookIndex(UpdateBookIndexRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = { post: "/v1/{name=bookShelves/*/books/*}/index" body: "*" };
@@ -554,6 +564,12 @@ message GetBookFromAnywhereRequest {
   // An alternate book name, used to test restricting flattened field to a
   // single resource name type in a oneof.
   string alt_book_name = 2;
+}
+
+// Request message for LibraryService.GetBookFromAbsolutelyAnywhere.
+message GetBookFromAbsolutelyAnywhereRequest {
+  // The name of the book to retrieve.
+  string name = 1;
 }
 
 // Request message for LibraryService.UpdateBookIndex.

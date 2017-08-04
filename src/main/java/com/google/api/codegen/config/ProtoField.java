@@ -19,6 +19,7 @@ import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYP
 import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_STRING;
 
 import com.google.api.codegen.discovery.Schema;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.TypeRef;
@@ -131,11 +132,11 @@ public class ProtoField implements FieldType {
   }
 
   @Override
-  public List<String> getOneofFieldsNames() {
+  public List<String> getOneofFieldsNames(SurfaceNamer namer) {
     if (protoField.getOneof() != null) {
       ImmutableList.Builder<String> fieldNames = ImmutableList.builder();
       for (Field field : protoField.getOneof().getFields()) {
-        fieldNames.add(field.getSimpleName());
+        fieldNames.add(namer.getVariableName(new ProtoField(field)));
       }
       return fieldNames.build();
     }

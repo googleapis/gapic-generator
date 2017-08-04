@@ -5,9 +5,9 @@
 @snippet generate(apiTest)
   {@header(apiTest.fileHeader)}
 
-  {@helpers()}
+  {@helpers(apiTest.testClass.fullyQualifiedCredentialsClassName)}
 
-  {@testClass(apiTest.testClass)}
+  {@testClass(apiTest.apiVersion, apiTest.testClass)}
 @end
 
 @private header(fileHeader)
@@ -20,7 +20,7 @@
   {@importList(fileHeader.importSection.appImports)}
 @end
 
-@private helpers()
+@private helpers(credentialsClassName)
   class CustomTestError < StandardError; end
 
   @# Mock for the GRPC::ClientStub class.
@@ -51,63 +51,76 @@
       end
     end
   end
+  
+  class MockCredentialsClass < {@credentialsClassName}
+    def initialize(method_name)
+      @@method_name = method_name
+    end
+    
+    def updater_proc
+      proc do
+        raise "The method `#{@@method_name}` was trying to make a grpc request. This should not " @\
+            "happen since the grpc layer is being mocked."
+      end
+    end
+  end
 @end
 
-@private testClass(testClass)
+@private testClass(apiVersion, testClass)
   describe {@testClass.apiClassName} do
     @join test : testClass.testCases
 
       describe '{@test.clientMethodName}' do
         custom_error = CustomTestError.new "Custom test error for {@test.fullyQualifiedServiceClassName}#{@test.clientMethodName}."
 
-        {@testCase(test)}
+        {@testCase(apiVersion, testClass.fullyQualifiedCredentialsClassName, test)}
 
-        {@errorTestCase(test)}
+        {@errorTestCase(apiVersion, testClass.fullyQualifiedCredentialsClassName, test)}
       end
     @end
   end
 @end
 
-@private testCase(test)
+@private testCase(apiVersion, credentialsClassName, test)
   @switch test.grpcStreamingType
   @case "NonStreaming"
     @switch test.clientMethodType
     @case "RequestObjectMethod"
-      {@requestObjectTestCase(test)}
+      {@requestObjectTestCase(apiVersion, credentialsClassName, test)}
     @case "PagedRequestObjectMethod"
-      {@pageIterationTestCase(test)}
+      {@pageIterationTestCase(apiVersion, credentialsClassName, test)}
     @case "OperationCallableMethod"
-      {@longrunningTestCase(test)}
+      {@longrunningTestCase(apiVersion, credentialsClassName, test)}
     @default
       $unhandled case: {@test.clientMethodType.toString}$
     @end
   @case "ServerStreaming"
-    {@serverStreamingTest(test)}
+    {@serverStreamingTest(apiVersion, credentialsClassName, test)}
   @case "BidiStreaming"
-    {@bidiStreamingTest(test)}
+    {@bidiStreamingTest(apiVersion, credentialsClassName, test)}
   @case "ClientStreaming"
-    {@clientStreamingTest(test)}
+    {@clientStreamingTest(apiVersion, credentialsClassName, test)}
   @default
     $unhandled case: {@test.grpcStreamingType.toString}$
   @end
 @end
 
-@private errorTestCase(test)
+@private errorTestCase(apiVersion, credentialsClassName, test)
   @switch test.grpcStreamingType
     @case "NonStreaming"
-      {@simpleErrorTestCase(test)}
+      {@simpleErrorTestCase(apiVersion, credentialsClassName, test)}
     @case "ServerStreaming"
-      {@simpleErrorTestCase(test)}
+      {@simpleErrorTestCase(apiVersion, credentialsClassName, test)}
     @case "BidiStreaming"
-      {@clientStreamingErrorTestCase(test)}
+      {@clientStreamingErrorTestCase(apiVersion, credentialsClassName, test)}
     @case "ClientStreaming"
-       {@clientStreamingErrorTestCase(test)}
+       {@clientStreamingErrorTestCase(apiVersion, credentialsClassName, test)}
     @default
       $unhandled case: {@test.grpcStreamingType.toString}$
     @end
 @end
 
-@private requestObjectTestCase(test)
+@private requestObjectTestCase(apiVersion, credentialsClassName, test)
   it 'invokes {@test.clientMethodName} without error' do
     @if initCode(test.initCode)
       @# Create request parameters
@@ -126,23 +139,28 @@
     {@mockUnaryRequest(test)}
     mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
 
+    @# Mock auth layer
+    {@mockAuth(test.clientMethodName)}
+
     {@test.grpcStubCallString}.stub(:new, mock_stub) do
-      client = {@test.fullyQualifiedServiceClassName}.new
+      {@credentialsClassName}.stub(:default, mock_credentials) do
+        client = {@test.fullyQualifiedAliasedServiceClassName}.new(version: :{@apiVersion})
 
-      @# Call method
-      {@methodCallWithResponse(test)}
+        @# Call method
+        {@methodCallWithResponse(test)}
 
-      @# Verify the response
-      @if test.hasReturnValue
-        assert_equal(expected_response, response)
-      @else
-        assert_nil(response)
-      @end
+        @# Verify the response
+        @if test.hasReturnValue
+          assert_equal(expected_response, response)
+        @else
+          assert_nil(response)
+        @end
+      end
     end
   end
 @end
 
-@private pageIterationTestCase(test)
+@private pageIterationTestCase(apiVersion, credentialsClassName, test)
   it 'invokes {@test.clientMethodName} without error' do
     @if initCode(test.initCode)
       @# Create request parameters
@@ -157,24 +175,29 @@
     {@mockUnaryRequest(test)}
     mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
 
+    @# Mock auth layer
+    {@mockAuth(test.clientMethodName)}
+
     {@test.grpcStubCallString}.stub(:new, mock_stub) do
-      client = {@test.fullyQualifiedServiceClassName}.new
+      {@credentialsClassName}.stub(:default, mock_credentials) do
+        client = {@test.fullyQualifiedAliasedServiceClassName}.new(version: :{@apiVersion})
 
-      @# Call method
-      {@methodCallWithResponse(test)}
+        @# Call method
+        {@methodCallWithResponse(test)}
 
-      @# Verify the response
-      assert(response.instance_of?(Google::Gax::PagedEnumerable))
-      assert_equal(expected_response, response.page.response)
-      assert_nil(response.next_page)
-      @join pageResponseView : test.pageStreamingResponseViews on BREAK
-        assert_equal(expected_response.{@pageResponseView.resourcesFieldGetterName}.to_a, response.to_a)
-      @end
+        @# Verify the response
+        assert(response.instance_of?(Google::Gax::PagedEnumerable))
+        assert_equal(expected_response, response.page.response)
+        assert_nil(response.next_page)
+        @join pageResponseView : test.pageStreamingResponseViews on BREAK
+          assert_equal(expected_response.{@pageResponseView.resourcesFieldGetterName}.to_a, response.to_a)
+        @end
+      end
     end
   end
 @end
 
-@private longrunningTestCase(test)
+@private longrunningTestCase(apiVersion, credentialsClassName, test)
   it 'invokes {@test.clientMethodName} without error' do
     @if initCode(test.initCode)
       @# Create request parameters
@@ -196,14 +219,19 @@
     {@mockLongrunningRequest(test)}
     mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
 
+    @# Mock auth layer
+    {@mockAuth(test.clientMethodName)}
+
     {@test.grpcStubCallString}.stub(:new, mock_stub) do
-      client = {@test.fullyQualifiedServiceClassName}.new
+      {@credentialsClassName}.stub(:default, mock_credentials) do
+        client = {@test.fullyQualifiedAliasedServiceClassName}.new(version: :{@apiVersion})
 
-      @# Call method
-      {@methodCallWithResponse(test)}
+        @# Call method
+        {@methodCallWithResponse(test)}
 
-      @# Verify the response
-      assert_equal(expected_response, response.response)
+        @# Verify the response
+        assert_equal(expected_response, response.response)
+      end
     end
   end
 
@@ -228,7 +256,7 @@
     mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
 
     {@test.grpcStubCallString}.stub(:new, mock_stub) do
-      client = {@test.fullyQualifiedServiceClassName}.new
+      client = {@test.fullyQualifiedAliasedServiceClassName}.new(version: :{@apiVersion})
 
       @# Call method
       {@methodCallWithResponse(test)}
@@ -240,7 +268,7 @@
   end
 @end
 
-@private serverStreamingTest(test)
+@private serverStreamingTest(apiVersion, credentialsClassName, test)
   it 'invokes {@test.clientMethodName} without error' do
     @if test.hasRequestParameters
       @# Create request parameters
@@ -255,20 +283,25 @@
     {@mockServerStreamingRequest(test)}
     mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
 
+    @# Mock auth layer
+    {@mockAuth(test.clientMethodName)}
+
     {@test.grpcStubCallString}.stub(:new, mock_stub) do
-      client = {@test.fullyQualifiedServiceClassName}.new
+      {@credentialsClassName}.stub(:default, mock_credentials) do
+        client = {@test.fullyQualifiedAliasedServiceClassName}.new(version: :{@apiVersion})
 
-      @# Call method
-      {@methodCallWithResponse(test)}
+        @# Call method
+        {@methodCallWithResponse(test)}
 
-      @# Verify the response
-      assert_equal(1, response.count)
-      assert_equal(expected_response, response.first)
+        @# Verify the response
+        assert_equal(1, response.count)
+        assert_equal(expected_response, response.first)
+      end
     end
   end
 @end
 
-@private clientStreamingTest(test)
+@private clientStreamingTest(apiVersion, credentialsClassName, test)
   it 'invokes {@test.clientMethodName} without error' do
     @# Create request parameters
     {@initCode(test.initCode)}
@@ -283,23 +316,28 @@
     {@mockClientStreamingRequest(test)}
     mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
 
+    @# Mock auth layer
+    {@mockAuth(test.clientMethodName)}
+
     {@test.grpcStubCallString}.stub(:new, mock_stub) do
-      client = {@test.fullyQualifiedServiceClassName}.new
+      {@credentialsClassName}.stub(:default, mock_credentials) do
+        client = {@test.fullyQualifiedAliasedServiceClassName}.new(version: :{@apiVersion})
 
-      @# Call method
-      {@clientStreamingCall(test)}
+        @# Call method
+        {@clientStreamingCall(test)}
 
-      @# Verify the response
-      @if test.hasReturnValue
-        assert_equal(expected_response, response)
-      @else
-        assert_nil(response)
-      @end
+        @# Verify the response
+        @if test.hasReturnValue
+          assert_equal(expected_response, response)
+        @else
+          assert_nil(response)
+        @end
+      end
     end
   end
 @end
 
-@private bidiStreamingTest(test)
+@private bidiStreamingTest(apiVersion, credentialsClassName, test)
   it 'invokes {@test.clientMethodName} without error' do
     @# Create request parameters
     {@initCode(test.initCode)}
@@ -312,20 +350,25 @@
     {@mockBidiStreamingRequest(test)}
     mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
 
+    @# Mock auth layer
+    {@mockAuth(test.clientMethodName)}
+
     {@test.grpcStubCallString}.stub(:new, mock_stub) do
-      client = {@test.fullyQualifiedServiceClassName}.new
+      {@credentialsClassName}.stub(:default, mock_credentials) do
+        client = {@test.fullyQualifiedAliasedServiceClassName}.new(version: :{@apiVersion})
 
-      @# Call method
-      {@clientStreamingCall(test)}
+        @# Call method
+        {@clientStreamingCall(test)}
 
-      @# Verify the response
-      assert_equal(1, response.count)
-      assert_equal(expected_response, response.first)
+        @# Verify the response
+        assert_equal(1, response.count)
+        assert_equal(expected_response, response.first)
+      end
     end
   end
 @end
 
-@private simpleErrorTestCase(test)
+@private simpleErrorTestCase(apiVersion, credentialsClassName, test)
   it 'invokes {@test.clientMethodName} with error' do
     @if initCode(test.initCode)
       @# Create request parameters
@@ -336,21 +379,26 @@
     {@mockUnaryError(test)}
     mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
 
+    @# Mock auth layer
+    {@mockAuth(test.clientMethodName)}
+
     {@test.grpcStubCallString}.stub(:new, mock_stub) do
-      client = {@test.fullyQualifiedServiceClassName}.new
+      {@credentialsClassName}.stub(:default, mock_credentials) do
+        client = {@test.fullyQualifiedAliasedServiceClassName}.new(version: :{@apiVersion})
 
-      @# Call method
-      err = assert_raises Google::Gax::GaxError do
-        {@methodCall(test)}
+        @# Call method
+        err = assert_raises Google::Gax::GaxError do
+          {@methodCall(test)}
+        end
+
+        @# Verify the GaxError wrapped the custom error that was raised.
+        assert_match(custom_error.message, err.message)
       end
-
-      @# Verify the GaxError wrapped the custom error that was raised.
-      assert_match(custom_error.message, err.message)
     end
   end
 @end
 
-@private clientStreamingErrorTestCase(test)
+@private clientStreamingErrorTestCase(apiVersion, credentialsClassName, test)
   it 'invokes {@test.clientMethodName} with error' do
     @# Create request parameters
     {@initCode(test.initCode)}
@@ -359,16 +407,21 @@
     {@mockClientStreamingError(test)}
     mock_stub = MockGrpcClientStub.new(:{@test.clientMethodName}, mock_method)
 
+    @# Mock auth layer
+    {@mockAuth(test.clientMethodName)}
+
     {@test.grpcStubCallString}.stub(:new, mock_stub) do
-      client = {@test.fullyQualifiedServiceClassName}.new
+      {@credentialsClassName}.stub(:default, mock_credentials) do
+        client = {@test.fullyQualifiedAliasedServiceClassName}.new(version: :{@apiVersion})
 
-      @# Call method
-      err = assert_raises Google::Gax::GaxError do
-        client.{@test.clientMethodName}([request])
+        @# Call method
+        err = assert_raises Google::Gax::GaxError do
+          client.{@test.clientMethodName}([request])
+        end
+
+        @# Verify the GaxError wrapped the custom error that was raised.
+        assert_match(custom_error.message, err.message)
       end
-
-      @# Verify the GaxError wrapped the custom error that was raised.
-      assert_match(custom_error.message, err.message)
     end
   end
 @end
@@ -453,6 +506,10 @@
     @end
     raise custom_error
   end
+@end
+
+@private mockAuth(methodName)
+  mock_credentials = MockCredentialsClass.new("{@methodName}")
 @end
 
 @private requestAsserts(test)

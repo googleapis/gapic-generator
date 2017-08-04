@@ -54,8 +54,14 @@ public class GoSurfaceNamer extends SurfaceNamer {
         new ModelTypeFormatterImpl(converter),
         new GoTypeTable(),
         new PassThroughCommentReformatter(),
+        packageName,
         packageName);
     this.converter = converter;
+  }
+
+  @Override
+  public SurfaceNamer cloneWithPackageName(String packageName) {
+    return new GoSurfaceNamer(packageName);
   }
 
   @Override
@@ -122,7 +128,19 @@ public class GoSurfaceNamer extends SurfaceNamer {
   @Override
   public String getAndSaveOperationResponseTypeName(
       Method method, ImportTypeTable typeTable, MethodConfig methodConfig) {
-    return publicClassName(Name.upperCamel(method.getSimpleName()).join("operation"));
+    return getAndSaveOperationResponseTypeName(method.getSimpleName());
+  }
+
+  @VisibleForTesting
+  String getAndSaveOperationResponseTypeName(String methodName) {
+    Name name = Name.upperCamel(methodName);
+    if (methodName.endsWith("Operation")) {
+      // Avoid creating funny names like "CreateStuffOperationOperation".
+      name = name.join("handle");
+    } else {
+      name = name.join("operation");
+    }
+    return publicClassName(name);
   }
 
   @Override
@@ -189,8 +207,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getApiWrapperClassName(InterfaceConfig interfaceConfig) {
-    // TODO support non-Gapic inputs
-    return publicClassName(clientNamePrefix(interfaceConfig.getSimpleName()).join("client"));
+    return publicClassName(clientNamePrefix(interfaceConfig.getRawName()).join("client"));
   }
 
   @Override
@@ -273,7 +290,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getServiceFileName(InterfaceConfig interfaceConfig) {
-    return classFileNameBase(getReducedServiceName(interfaceConfig.getSimpleName()).join("client"));
+    return classFileNameBase(getReducedServiceName(interfaceConfig.getRawName()).join("client"));
   }
 
   @Override

@@ -25,6 +25,7 @@ import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.SurfaceTreatmentProto;
 import com.google.api.codegen.VisibilityProto;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
@@ -375,18 +376,19 @@ public abstract class GapicMethodConfig extends MethodConfig {
 
   /** Return the list of "one of" instances associated with the fields. */
   @Override
-  public Iterable<Iterable<String>> getOneofNames() {
-    ImmutableSet.Builder<Iterable<String>> answer = ImmutableSet.builder();
+  public List<List<String>> getOneofNames(SurfaceNamer namer) {
+    ImmutableList.Builder<List<String>> oneofParams = ImmutableList.builder();
 
     for (FieldType field : getOptionalFields()) {
-      if (field.getOneofFieldsNames() == null || field.getOneofFieldsNames().size() == 0) {
+      List<String> oneOfFieldsNames = field.getOneofFieldsNames(namer);
+      if (oneOfFieldsNames == null || oneOfFieldsNames.size() == 0) {
         continue;
       }
-      ImmutableSet.Builder<String> oneOfFields = ImmutableSet.builder();
-      oneOfFields.addAll(field.getOneofFieldsNames());
-      answer.add(oneOfFields.build());
+      ImmutableList.Builder<String> oneOfFields = ImmutableList.builder();
+      oneOfFields.addAll(oneOfFieldsNames);
+      oneofParams.add(oneOfFields.build());
     }
 
-    return answer.build();
+    return oneofParams.build();
   }
 }

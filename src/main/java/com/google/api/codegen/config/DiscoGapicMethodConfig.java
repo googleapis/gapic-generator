@@ -21,6 +21,7 @@ import com.google.api.codegen.SurfaceTreatmentProto;
 import com.google.api.codegen.VisibilityProto;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.discovery.Method;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleLocation;
@@ -180,7 +181,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
 
   @Override
   /* Return the list of "one of" instances associated with the fields. */
-  public Iterable<Iterable<String>> getOneofNames() {
+  public List<List<String>> getOneofNames(SurfaceNamer namer) {
     return ImmutableList.of();
   }
 }

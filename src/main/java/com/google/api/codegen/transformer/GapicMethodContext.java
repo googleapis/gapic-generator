@@ -16,9 +16,8 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicInterfaceConfig;
+import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
-import com.google.api.codegen.config.InterfaceConfig;
-import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
@@ -34,23 +33,26 @@ public abstract class GapicMethodContext implements MethodContext {
       ModelTypeTable typeTable,
       SurfaceNamer namer,
       Method method,
-      MethodConfig methodConfig,
+      GapicMethodConfig methodConfig,
       FlatteningConfig flatteningConfig,
       FeatureConfig featureConfig) {
     return new AutoValue_GapicMethodContext(
         apiInterface,
         productConfig,
         namer,
-        methodConfig,
         flatteningConfig,
         featureConfig,
         method,
+        methodConfig,
         surfaceTransformerContext,
         typeTable);
   }
 
   /** The Method for which this object is a transformation context. */
   public abstract Method getMethod();
+
+  @Override
+  public abstract GapicMethodConfig getMethodConfig();
 
   @Override
   public abstract GapicInterfaceContext getSurfaceTransformerContext();
@@ -69,7 +71,7 @@ public abstract class GapicMethodContext implements MethodContext {
   }
 
   @Override
-  public InterfaceConfig getInterfaceConfig() {
+  public GapicInterfaceConfig getInterfaceConfig() {
     return getProductConfig().getInterfaceConfig(getInterface());
   }
 

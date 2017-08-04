@@ -55,6 +55,15 @@ public class DocumentTest {
     Truth.assertThat(methods.get(0).parent() instanceof Document);
     Truth.assertThat(methods.get(0).parent()).isEqualTo(document);
 
+    // Test de-referencing.
+    Truth.assertThat(methods.get(0).request().dereference())
+        .isEqualTo(document.schemas().get("GetBazRequest"));
+    Truth.assertThat(methods.get(0).response().dereference())
+        .isEqualTo(document.schemas().get("Baz"));
+    // De-referencing a schema that references no other should return the same schema.
+    Truth.assertThat(document.schemas().get("Baz").dereference())
+        .isEqualTo(document.schemas().get("Baz"));
+
     Map<String, Schema> parameters = methods.get(0).parameters();
     Truth.assertThat(parameters.get("p1").type()).isEqualTo(Schema.Type.BOOLEAN);
     Truth.assertThat(parameters.get("p1").required()).isTrue();

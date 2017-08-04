@@ -30,8 +30,6 @@ import javax.annotation.Nullable;
 public interface InterfaceConfig {
   String getName();
 
-  String getSimpleName();
-
   @Nullable
   SmokeTestConfig getSmokeTestConfig();
 
@@ -67,4 +65,6 @@ public interface InterfaceConfig {
   ImmutableList<SingleResourceNameConfig> getSingleResourceNameConfigs();
 
   boolean hasInterfaceNameOverride();
+
+  String getRawName();
 }

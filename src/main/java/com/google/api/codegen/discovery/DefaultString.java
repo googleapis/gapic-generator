@@ -93,17 +93,19 @@ public class DefaultString {
       return null;
     }
 
-    StringBuilder ret = new StringBuilder();
+    StringBuilder defaultString = new StringBuilder();
     for (int i = 0; i < elems.size(); i += 2) {
       String literal = elems.get(i).getLiteral();
       String placeholder = Inflector.singularize(literal);
       placeholder = LanguageUtil.lowerCamelToLowerUnderscore(placeholder).replace('_', '-');
-      ret.append('/')
-          .append(literal)
-          .append("/")
-          .append(String.format(placeholderFormat, placeholder));
+      defaultString.append('/').append(literal);
+      // if i + 1 >= elems.size() then the terminating segment is a literal. In
+      // that case, don't append a placeholder.
+      if (i + 1 < elems.size()) {
+        defaultString.append('/').append(String.format(placeholderFormat, placeholder));
+      }
     }
-    return ret.substring(1);
+    return defaultString.substring(1);
   }
 
   /**
@@ -141,13 +143,10 @@ public class DefaultString {
   /**
    * Returns whether the pattern represented by the list is in a form we expect.
    *
-   * <p>A valid pattern must have the same number of literals and wildcards, alternating, and starts
-   * with a literal. Literals must consists of only letters.
+   * <p>A valid pattern must start with a literal and have an alternating pattern of literals and
+   * wildcards. Literals must consists of only letters.
    */
   private static boolean validElems(ImmutableList<Elem> elems) {
-    if (elems.size() % 2 != 0) {
-      return false;
-    }
     ImmutableList<ElemType> expect =
         ImmutableList.<ElemType>of(ElemType.LITERAL, ElemType.WILDCARD);
     for (int i = 0; i < elems.size(); i++) {

@@ -34,6 +34,8 @@ public abstract class RequestObjectParamView {
 
   public abstract String addCallName();
 
+  public abstract String getCallName();
+
   @Nullable
   public abstract String transformParamFunctionName();
 
@@ -86,6 +88,8 @@ public abstract class RequestObjectParamView {
     public abstract Builder setCallName(String val);
 
     public abstract Builder addCallName(String val);
+
+    public abstract Builder getCallName(String val);
 
     public abstract Builder transformParamFunctionName(String val);
 

@@ -138,6 +138,9 @@ public class DiscoveryImporter {
     Service serv = builder.addApis(apiBuilder).build();
     importer.service = serv;
 
+    String rootUrl = disco.get("rootUrl").asText();
+    importer.config.setRootUrl(rootUrl);
+
     importer.config.setApiTitle(serv.getTitle());
     importer.config.setApiName(serv.getApis(0).getName());
     importer.config.setApiVersion(serv.getApis(0).getVersion());

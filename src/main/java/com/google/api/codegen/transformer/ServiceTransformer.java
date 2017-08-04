@@ -41,6 +41,7 @@ public class ServiceTransformer {
     serviceDoc.settingsVarName(namer.getApiSettingsVariableName(context.getInterfaceConfig()));
     serviceDoc.settingsClassName(namer.getApiSettingsClassName(context.getInterfaceConfig()));
     serviceDoc.hasDefaultInstance(context.getInterfaceConfig().hasDefaultInstance());
+    serviceDoc.serviceTitle(context.getModel().getServiceConfig().getTitle());
     return serviceDoc.build();
   }
 }

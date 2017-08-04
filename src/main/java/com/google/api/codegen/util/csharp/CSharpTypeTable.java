@@ -91,6 +91,11 @@ public class CSharpTypeTable implements TypeTable {
     return new CSharpTypeTable(implicitPackageName);
   }
 
+  @Override
+  public TypeTable cloneEmpty(String packageName) {
+    return new CSharpTypeTable(packageName);
+  }
+
   private String resolveInner(String name) {
     return name.replace('+', '.');
   }

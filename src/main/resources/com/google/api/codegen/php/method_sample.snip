@@ -214,19 +214,7 @@
 @private initLineStructure(line)
     ${@line.identifier} = new {@line.typeName}();
     @join fieldSetting : line.fieldSettings
-        @if fieldSetting.isMap
-            foreach (${@fieldSetting.identifier} as $key => $value) {
-                ${@line.identifier}->{@fieldSetting.fieldAddFunction}((new {@fieldSetting.elementTypeName}())->setKey($key)->setValue($value));
-            }
-        @else
-            @if fieldSetting.isArray
-                foreach (${@fieldSetting.identifier} as $elem) {
-                    ${@line.identifier}->{@fieldSetting.fieldAddFunction}($elem);
-                }
-            @else
-                ${@line.identifier}->{@fieldSetting.fieldSetFunction}(${@fieldSetting.identifier});
-            @end
-        @end
+        ${@line.identifier}->{@fieldSetting.fieldSetFunction}(${@fieldSetting.identifier});
     @end
 @end
 

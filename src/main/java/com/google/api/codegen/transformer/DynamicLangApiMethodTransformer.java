@@ -54,6 +54,11 @@ public class DynamicLangApiMethodTransformer {
   }
 
   public OptionalArrayMethodView generateMethod(GapicMethodContext context) {
+    return generateMethod(context, false);
+  }
+
+  public OptionalArrayMethodView generateMethod(
+      GapicMethodContext context, boolean packageHasMultipleServices) {
     SurfaceNamer namer = context.getNamer();
     OptionalArrayMethodView.Builder apiMethod = OptionalArrayMethodView.newBuilder();
 
@@ -65,6 +70,12 @@ public class DynamicLangApiMethodTransformer {
     apiMethod.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
     apiMethod.fullyQualifiedApiClassName(
         namer.getFullyQualifiedApiWrapperClassName(context.getInterfaceConfig()));
+    apiMethod.topLevelAliasedApiClassName(
+        namer.getTopLevelAliasedApiClassName(
+            (context.getInterfaceConfig()), packageHasMultipleServices));
+    apiMethod.versionAliasedApiClassName(
+        namer.getVersionAliasedApiClassName(
+            (context.getInterfaceConfig()), packageHasMultipleServices));
     apiMethod.apiVariableName(namer.getApiWrapperVariableName(context.getInterfaceConfig()));
     apiMethod.apiModuleName(namer.getApiWrapperModuleName());
     InitCodeOutputType initCodeOutputType =
@@ -113,10 +124,16 @@ public class DynamicLangApiMethodTransformer {
         grpcStreamingType.equals(GrpcStreamingType.NonStreaming)
             || grpcStreamingType.equals(GrpcStreamingType.ServerStreaming));
 
+    apiMethod.packageName(namer.getPackageName());
+    apiMethod.packageHasMultipleServices(packageHasMultipleServices);
+    apiMethod.packageServiceName(namer.getPackageServiceName(context.getInterface()));
+    apiMethod.apiVersion(namer.getApiWrapperModuleVersion());
     apiMethod.longRunningView(
         context.getMethodConfig().isLongRunningOperation()
             ? lroTransformer.generateDetailView(context)
             : null);
+
+    apiMethod.oneofParams(context.getMethodConfig().getOneofNames(namer));
 
     return apiMethod.build();
   }
@@ -192,6 +209,7 @@ public class DynamicLangApiMethodTransformer {
     param.elementTypeName(typeTable.getAndSaveNicknameForElementType(field));
     param.setCallName(namer.getFieldSetFunctionName(featureConfig, fieldConfig));
     param.addCallName(namer.getFieldAddFunctionName(field));
+    param.getCallName(namer.getFieldGetFunctionName(featureConfig, fieldConfig));
     param.isMap(field.isMap());
     param.isArray(!field.isMap() && field.isRepeated());
     param.isPrimitive(field.isPrimitive());
