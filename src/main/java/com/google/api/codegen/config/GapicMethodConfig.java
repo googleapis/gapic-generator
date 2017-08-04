@@ -31,6 +31,7 @@ import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
+import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Strings;
@@ -375,20 +376,22 @@ public abstract class GapicMethodConfig extends MethodConfig {
   }
 
   /** Return the list of "one of" instances associated with the fields. */
-  @Override
-  public List<List<String>> getOneofNames(SurfaceNamer namer) {
-    ImmutableList.Builder<List<String>> oneofParams = ImmutableList.builder();
+  public Iterable<Oneof> getOneofs(List<Field> fields) {
+    ImmutableSet.Builder<Oneof> answer = ImmutableSet.builder();
 
-    for (FieldType field : getOptionalFields()) {
-      List<String> oneOfFieldsNames = field.getOneofFieldsNames(namer);
-      if (oneOfFieldsNames == null || oneOfFieldsNames.size() == 0) {
+    for (Field field : fields) {
+      if (field.getOneof() == null) {
         continue;
       }
-      ImmutableList.Builder<String> oneOfFields = ImmutableList.builder();
-      oneOfFields.addAll(oneOfFieldsNames);
-      oneofParams.add(oneOfFields.build());
+      answer.add(field.getOneof());
     }
 
-    return oneofParams.build();
+    return answer.build();
+  }
+
+  /** Return the list of "one of" instances associated with the fields. */
+  @Override
+  public Iterable<Iterable<String>> getOneofNames(SurfaceNamer namer) {
+    return ProtoField.getOneofFieldsNames(getOptionalFields(), namer);
   }
 }

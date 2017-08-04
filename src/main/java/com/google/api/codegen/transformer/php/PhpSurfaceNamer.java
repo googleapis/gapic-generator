@@ -66,7 +66,6 @@ public class PhpSurfaceNamer extends SurfaceNamer {
     return publicMethodName(Name.from("set").join(field.getSimpleName()));
   }
 
-
   @Override
   public String getFieldAddFunctionName(TypeRef type, Name identifier) {
     return publicMethodName(Name.from("add").join(identifier));
