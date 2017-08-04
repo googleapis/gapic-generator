@@ -89,11 +89,11 @@ public class GoCommentReformatter implements CommentReformatter {
 
     @Override
     public void visit(Link link) {
-      // We only want to print the text and ignore the link destination.
-      // Link already has a Text node as a child, so we'll just print there
-      // and do nothing here.
-      // TODO(pongad): maybe put the link destination somewhere?
+      // The text is in the child.
       visitChildren(link);
+      stringBuilder.append(" (at ");
+      stringBuilder.append(link.getDestination());
+      stringBuilder.append(")");
     }
 
     @Override
