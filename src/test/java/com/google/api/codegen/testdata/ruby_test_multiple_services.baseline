@@ -53,6 +53,19 @@ class MockGrpcClientStub
   end
 end
 
+class MockCredentialsClass < Google::Example::Credentials
+  def initialize(method_name)
+    @method_name = method_name
+  end
+
+  def updater_proc
+    proc do
+      raise "The method `#{@method_name}` was trying to make a grpc request. This should not " \
+          "happen since the grpc layer is being mocked."
+    end
+  end
+end
+
 describe Google::Example::V1::DecrementerServiceClient do
 
   describe 'decrement' do
@@ -66,14 +79,19 @@ describe Google::Example::V1::DecrementerServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:decrement, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("decrement")
+
       Google::Cloud::Example::V1::DecrementerService::Stub.stub(:new, mock_stub) do
-        client = Google::Example::Decrementer.new(version: :v1)
+        Google::Example::Credentials.stub(:default, mock_credentials) do
+          client = Google::Example::Decrementer.new(version: :v1)
 
-        # Call method
-        response = client.decrement
+          # Call method
+          response = client.decrement
 
-        # Verify the response
-        assert_nil(response)
+          # Verify the response
+          assert_nil(response)
+        end
       end
     end
 
@@ -84,16 +102,21 @@ describe Google::Example::V1::DecrementerServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:decrement, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("decrement")
+
       Google::Cloud::Example::V1::DecrementerService::Stub.stub(:new, mock_stub) do
-        client = Google::Example::Decrementer.new(version: :v1)
+        Google::Example::Credentials.stub(:default, mock_credentials) do
+          client = Google::Example::Decrementer.new(version: :v1)
 
-        # Call method
-        err = assert_raises Google::Gax::GaxError do
-          client.decrement
+          # Call method
+          err = assert_raises Google::Gax::GaxError do
+            client.decrement
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
         end
-
-        # Verify the GaxError wrapped the custom error that was raised.
-        assert_match(custom_error.message, err.message)
       end
     end
   end
@@ -153,6 +176,19 @@ class MockGrpcClientStub
   end
 end
 
+class MockCredentialsClass < Google::Example::Credentials
+  def initialize(method_name)
+    @method_name = method_name
+  end
+
+  def updater_proc
+    proc do
+      raise "The method `#{@method_name}` was trying to make a grpc request. This should not " \
+          "happen since the grpc layer is being mocked."
+    end
+  end
+end
+
 describe Google::Example::V1::IncrementerServiceClient do
 
   describe 'increment' do
@@ -166,14 +202,19 @@ describe Google::Example::V1::IncrementerServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:increment, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("increment")
+
       Google::Cloud::Example::V1::IncrementerService::Stub.stub(:new, mock_stub) do
-        client = Google::Example::Incrementer.new(version: :v1)
+        Google::Example::Credentials.stub(:default, mock_credentials) do
+          client = Google::Example::Incrementer.new(version: :v1)
 
-        # Call method
-        response = client.increment
+          # Call method
+          response = client.increment
 
-        # Verify the response
-        assert_nil(response)
+          # Verify the response
+          assert_nil(response)
+        end
       end
     end
 
@@ -184,16 +225,21 @@ describe Google::Example::V1::IncrementerServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:increment, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("increment")
+
       Google::Cloud::Example::V1::IncrementerService::Stub.stub(:new, mock_stub) do
-        client = Google::Example::Incrementer.new(version: :v1)
+        Google::Example::Credentials.stub(:default, mock_credentials) do
+          client = Google::Example::Incrementer.new(version: :v1)
 
-        # Call method
-        err = assert_raises Google::Gax::GaxError do
-          client.increment
+          # Call method
+          err = assert_raises Google::Gax::GaxError do
+            client.increment
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
         end
-
-        # Verify the GaxError wrapped the custom error that was raised.
-        assert_match(custom_error.message, err.message)
       end
     end
   end

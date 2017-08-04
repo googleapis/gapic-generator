@@ -209,6 +209,11 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getFullyQualifiedCredentialsClassName() {
+    return getTopLevelNamespace() + "::Credentials";
+  }
+
+  @Override
   public List<String> getThrowsDocLines(GapicMethodConfig methodConfig) {
     return ImmutableList.of("@raise [Google::Gax::GaxError] if the RPC is aborted.");
   }
@@ -275,7 +280,8 @@ public class RubySurfaceNamer extends SurfaceNamer {
         : getPackageName();
   }
 
-  private String getTopLevelNamespace() {
+  @Override
+  public String getTopLevelNamespace() {
     return Joiner.on("::").join(getTopLevelApiModules());
   }
 

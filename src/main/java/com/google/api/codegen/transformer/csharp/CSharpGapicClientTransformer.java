@@ -54,10 +54,12 @@ import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
+import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -184,7 +186,8 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
           || call.type() == ApiCallableImplType.BatchingApiCallable
           || call.type() == ApiCallableImplType.InitialOperationApiCallable
           || (call.type() == ApiCallableImplType.StreamingApiCallable
-              && call.grpcStreamingType() == GrpcStreamingType.BidiStreaming)) {
+              && (call.grpcStreamingType() == GrpcStreamingType.BidiStreaming
+                  || call.grpcStreamingType() == GrpcStreamingType.ServerStreaming))) {
         callables.add(call);
       }
     }
@@ -287,11 +290,17 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     SurfaceNamer namer = context.getNamer();
     ModelTypeTable typeTable = context.getModelTypeTable();
     List<ModifyMethodView> modifyMethods = new ArrayList<>();
+    Set<TypeRef> modifyTypes = new HashSet<TypeRef>();
     for (Method method : csharpCommonTransformer.getSupportedMethods(context)) {
+      TypeRef inputType = method.getInputType();
+      if (modifyTypes.contains(inputType)) {
+        continue;
+      }
+      modifyTypes.add(inputType);
       GapicMethodConfig methodContext = context.asRequestMethodContext(method).getMethodConfig();
       ModifyMethodView.Builder builder = ModifyMethodView.builder();
       builder.name(namer.getModifyMethodName(method));
-      builder.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
+      builder.requestTypeName(typeTable.getAndSaveNicknameFor(inputType));
       builder.grpcStreamingType(methodContext.getGrpcStreamingType());
       modifyMethods.add(builder.build());
     }
