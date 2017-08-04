@@ -73,11 +73,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getFieldGetFunctionName(FieldType field) {
-    if (field.isRepeated() && !field.isMap()) {
-      return publicMethodName(Name.from("get").join(field.getSimpleName()).join("list"));
-    } else {
-      return publicMethodName(Name.from("get").join(field.getSimpleName()));
-    }
+    return publicMethodName(Name.from("get").join(field.getSimpleName()));
   }
 
   @Override
