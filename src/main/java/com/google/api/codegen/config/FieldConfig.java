@@ -212,8 +212,12 @@ public abstract class FieldConfig {
   public boolean requiresParamTransformation() {
     return getResourceNameConfig() != null
         && getMessageResourceNameConfig() != null
-        && getMessageResourceNameConfig().getResourceNameType() != ResourceNameType.ANY
         && !getResourceNameConfig().equals(getMessageResourceNameConfig());
+  }
+
+  public boolean requiresParamTransformationFromAny() {
+    return getMessageResourceNameConfig() != null
+        && getMessageResourceNameConfig().getResourceNameType() == ResourceNameType.ANY;
   }
 
   public FieldConfig getMessageFieldConfig() {

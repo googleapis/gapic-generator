@@ -450,7 +450,15 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
                   + "\"/> resources.");
       }
     } else if (methodConfig.isGrpcStreaming()) {
-      return ImmutableList.of("The client-server stream.");
+      switch (methodConfig.getGrpcStreamingType()) {
+        case ServerStreaming:
+          return ImmutableList.of("The server stream.");
+        case BidiStreaming:
+          return ImmutableList.of("The client-server stream.");
+        default:
+          throw new IllegalStateException(
+              "Invalid streaming: " + methodConfig.getGrpcStreamingType());
+      }
     } else {
       switch (synchronicity) {
         case Sync:

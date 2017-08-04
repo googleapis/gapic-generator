@@ -94,6 +94,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -880,7 +881,7 @@ public class LibraryClientTest {
     Assert.assertEquals(1, actualRequests.size());
     ListStringsRequest actualRequest = (ListStringsRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, actualRequest.getNameAsResourceName());
+    Assert.assertEquals(Objects.toString(name), Objects.toString(actualRequest.getNameAsResourceName()));
   }
 
   @Test
@@ -1067,7 +1068,7 @@ public class LibraryClientTest {
     Assert.assertEquals(1, actualRequests.size());
     GetBookFromAbsolutelyAnywhereRequest actualRequest = (GetBookFromAbsolutelyAnywhereRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, actualRequest.getNameAsResourceName());
+    Assert.assertEquals(Objects.toString(name), Objects.toString(actualRequest.getNameAsResourceName()));
   }
 
   @Test

@@ -182,7 +182,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.packageVersion(
         packageConfig.generatedPackageVersionBound(TargetLanguage.RUBY).lower());
 
-    xapiClass.fullyQualifiedCredentialsClassName(topLevelNamespace(namer) + "::Credentials");
+    xapiClass.fullyQualifiedCredentialsClassName(namer.getFullyQualifiedCredentialsClassName());
     return xapiClass.build();
   }
 
@@ -261,11 +261,13 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
 
     SurfaceNamer namer = new RubySurfaceNamer(productConfig.getPackageName());
 
+    String sanitizedShortName = packageConfig.shortName().replaceAll("[^A-Za-z0-9]", " ");
+    Name.lowerCamel(sanitizedShortName.split(" "));
     String apiSpecificPathEnvVar =
-        namer.inittedConstantName(Name.lowerCamel(packageConfig.shortName()).join("keyfile"));
+        namer.inittedConstantName(Name.lowerCamel(sanitizedShortName.split(" ")).join("keyfile"));
     String apiSpecificJsonEnvVar =
         namer.inittedConstantName(
-            Name.lowerCamel(packageConfig.shortName()).join("keyfile").join("json"));
+            Name.lowerCamel(sanitizedShortName.split(" ")).join("keyfile").join("json"));
 
     List<String> pathEnvVars =
         ImmutableList.<String>builder()
@@ -299,7 +301,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
       if (hasMultipleServices) {
         clientName += "::" + serviceName;
       }
-      String topLevelNamespace = topLevelNamespace(namer);
+      String topLevelNamespace = namer.getTopLevelNamespace();
       requireViews.add(
           VersionIndexRequireView.newBuilder()
               .clientName(clientName)
@@ -404,10 +406,6 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
       paths.add(namer.packageFilePathPiece(Name.upperCamel(part)));
     }
     return Joiner.on(File.separator).join(paths);
-  }
-
-  private String topLevelNamespace(SurfaceNamer namer) {
-    return Joiner.on("::").join(namer.getTopLevelApiModules());
   }
 
   private GapicInterfaceContext createContext(
