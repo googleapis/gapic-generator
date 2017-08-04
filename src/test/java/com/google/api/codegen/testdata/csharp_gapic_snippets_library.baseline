@@ -1645,6 +1645,51 @@ namespace Google.Example.Library.V1.Snippets
             // End snippet
         }
 
+        public async Task StreamShelves()
+        {
+            // Snippet: StreamShelves(StreamShelvesRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument
+            StreamShelvesRequest request = new StreamShelvesRequest();
+            // Make the request, returning a streaming response
+            LibraryServiceClient.StreamShelvesStream streamingResponse = libraryServiceClient.StreamShelves(request);
+
+            // Read streaming responses from server until complete
+            IAsyncEnumerator<StreamShelvesResponse> responseStream = streamingResponse.ResponseStream;
+            while (await responseStream.MoveNext())
+            {
+                StreamShelvesResponse response = responseStream.Current;
+                // Do something with streamed response
+            }
+            // The response stream has completed
+            // End snippet
+        }
+
+        public async Task StreamBooks()
+        {
+            // Snippet: StreamBooks(StreamBooksRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument
+            StreamBooksRequest request = new StreamBooksRequest
+            {
+                Name = "",
+            };
+            // Make the request, returning a streaming response
+            LibraryServiceClient.StreamBooksStream streamingResponse = libraryServiceClient.StreamBooks(request);
+
+            // Read streaming responses from server until complete
+            IAsyncEnumerator<Book> responseStream = streamingResponse.ResponseStream;
+            while (await responseStream.MoveNext())
+            {
+                Book response = responseStream.Current;
+                // Do something with streamed response
+            }
+            // The response stream has completed
+            // End snippet
+        }
+
         public async Task DiscussBook()
         {
             // Snippet: DiscussBook(CallSettings,BidirectionalStreamingSettings)
