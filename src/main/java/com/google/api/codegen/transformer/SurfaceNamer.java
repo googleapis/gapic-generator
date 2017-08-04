@@ -179,6 +179,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return qualifiedName(namePath.withoutHead());
   }
 
+  /** The qualified namespace of an API. */
+  public String getTopLevelNamespace() {
+    return getNotImplementedString("SurfaceNamer.getTopLevelNamespace");
+  }
+
   /** The modules of the package. */
   public ImmutableList<String> getApiModules() {
     return ImmutableList.<String>of();
@@ -187,6 +192,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The top level modules of the package. */
   public List<String> getTopLevelApiModules() {
     return ImmutableList.of();
+  }
+
+  /** The name of the gapic package. */
+  public String getGapicPackageName(String configPackageName) {
+    return "gapic-" + configPackageName;
   }
 
   /////////////////////////////////// Protos methods /////////////////////////////////////////////
@@ -956,6 +966,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   public String getStreamTypeName(GrpcStreamingConfig.GrpcStreamingType type) {
     return getNotImplementedString("SurfaceNamer.getStreamTypeName");
+  }
+
+  public String getFullyQualifiedCredentialsClassName() {
+    return getNotImplementedString("SurfaceNamer.getFullyQualifiedCredentialsClassName");
   }
 
   /////////////////////////////////////// Resource names //////////////////////////////////////////
