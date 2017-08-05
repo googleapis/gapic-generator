@@ -24,6 +24,7 @@ import com.google.api.codegen.transformer.ApiCallableTransformer;
 import com.google.api.codegen.transformer.DiscoGapicInterfaceContext;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.SchemaTypeTable;
+import com.google.api.codegen.transformer.ServiceTransformer;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.java.JavaFeatureConfig;
@@ -36,9 +37,9 @@ import com.google.api.codegen.viewmodel.FormatResourceFunctionView;
 import com.google.api.codegen.viewmodel.ParseResourceFunctionView;
 import com.google.api.codegen.viewmodel.PathTemplateView;
 import com.google.api.codegen.viewmodel.ServiceDocView;
-import com.google.api.codegen.viewmodel.StaticLangApiAndSettingsFileView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
 import com.google.api.codegen.viewmodel.StaticLangApiView;
+import com.google.api.codegen.viewmodel.StaticLangFileView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import java.io.File;
 import java.util.ArrayList;
@@ -49,6 +50,7 @@ import java.util.List;
 public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransformer {
   private final GapicCodePathMapper pathMapper;
   private final PackageMetadataConfig packageMetadataConfig;
+  private final ServiceTransformer serviceTransformer = new ServiceTransformer();
   private final StandardImportSectionTransformer importSectionTransformer =
       new StandardImportSectionTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
@@ -99,10 +101,12 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
               new JavaDiscoGapicNamer(),
               namer,
               JavaFeatureConfig.newBuilder().enableStringFormatFunctions(false).build());
-      StaticLangApiAndSettingsFileView apiFile = generateApiFile(context);
+      StaticLangFileView<StaticLangApiView> apiFile = generateApiFile(context);
+
+      serviceDocs.add(apiFile.classView().doc());
+
       surfaceDocs.add(apiFile);
       // TODO(andrealin): Service doc.
-      serviceDocs.add(apiFile.api().doc());
 
       // TODO(andrealin): Settings file.
     }
@@ -116,13 +120,12 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
         new JavaSchemaTypeNameConverter(implicitPackageName, nameFormatter));
   }
 
-  private StaticLangApiAndSettingsFileView generateApiFile(DiscoGapicInterfaceContext context) {
-    StaticLangApiAndSettingsFileView.Builder apiFile =
-        StaticLangApiAndSettingsFileView.newBuilder();
+  private StaticLangFileView generateApiFile(DiscoGapicInterfaceContext context) {
+    StaticLangFileView.Builder apiFile = StaticLangFileView.newBuilder();
 
     apiFile.templateFileName(XAPI_TEMPLATE_FILENAME);
 
-    apiFile.api(generateApiClass(context));
+    apiFile.classView(generateApiClass(context));
 
     String outputPath = pathMapper.getOutputPath(null, context.getProductConfig());
     String className = context.getNamer().getApiWrapperClassName(context.getInterfaceConfig());
