@@ -14,11 +14,11 @@
  */
 package com.google.api.codegen.transformer.csharp;
 
-import com.google.api.codegen.transformer.GapicMethodContext;
+import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.viewmodel.SimpleParamDocView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
-import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 import org.apache.commons.lang3.NotImplementedException;
@@ -27,21 +27,26 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
 
   @Override
   protected void setServiceResponseTypeName(
-      GapicMethodContext context, StaticLangApiMethodView.Builder methodViewBuilder) {
+      MethodContext context, StaticLangApiMethodView.Builder methodViewBuilder) {
     String responseTypeName =
-        context.getTypeTable().getAndSaveNicknameFor(context.getMethod().getOutputType());
+        context
+            .getMethodModel()
+            .getAndSaveResponseTypeName(context.getTypeTable(), context.getNamer());
     methodViewBuilder.serviceResponseTypeName(responseTypeName);
   }
 
   @Override
   public List<SimpleParamDocView> getRequestObjectParamDocs(
-      GapicMethodContext context, TypeRef typeRef) {
+      MethodContext context, MethodModel method) {
     switch (context.getMethodConfig().getGrpcStreamingType()) {
       case NonStreaming:
         SimpleParamDocView doc =
             SimpleParamDocView.newBuilder()
                 .paramName("request")
-                .typeName(context.getTypeTable().getAndSaveNicknameFor(typeRef))
+                .typeName(
+                    context
+                        .getMethodModel()
+                        .getAndSaveRequestTypeName(context.getTypeTable(), context.getNamer()))
                 .lines(
                     ImmutableList.of(
                         "The request object containing all of the parameters for the API call."))

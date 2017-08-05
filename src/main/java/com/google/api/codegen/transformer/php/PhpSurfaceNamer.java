@@ -14,13 +14,14 @@
  */
 package com.google.api.codegen.transformer.php;
 
-import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
+import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -31,7 +32,6 @@ import com.google.api.codegen.util.php.PhpNameFormatter;
 import com.google.api.codegen.util.php.PhpPackageUtil;
 import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 import java.util.ArrayList;
 
@@ -47,7 +47,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getLroApiMethodName(Method method, VisibilityConfig visibility) {
+  public String getLroApiMethodName(MethodModel method, VisibilityConfig visibility) {
     return getApiMethodName(method, visibility);
   }
 
@@ -77,7 +77,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getPathTemplateName(
-      Interface apiInterface, SingleResourceNameConfig resourceNameConfig) {
+      String apiInterfaceSimpleName, SingleResourceNameConfig resourceNameConfig) {
     return inittedConstantName(Name.from(resourceNameConfig.getEntityName(), "name", "template"));
   }
 
@@ -104,8 +104,8 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getDynamicLangReturnTypeName(Method method, MethodConfig methodConfig) {
-    if (new ServiceMessages().isEmptyType(method.getOutputType())) {
+  public String getDynamicLangReturnTypeName(MethodModel method, MethodConfig methodConfig) {
+    if (method.isOutputTypeEmpty()) {
       return "";
     }
     if (methodConfig.isPageStreaming()) {
@@ -113,7 +113,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
     }
     switch (methodConfig.getGrpcStreamingType()) {
       case NonStreaming:
-        return getModelTypeFormatter().getFullNameFor(method.getOutputType());
+        return method.getOutputTypeFullName(getModelTypeFormatter());
       case BidiStreaming:
         return "\\Google\\GAX\\BidiStreamingResponse";
       case ClientStreaming:
@@ -146,17 +146,17 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getLongRunningOperationTypeName(ModelTypeTable typeTable, TypeRef type) {
-    return typeTable.getAndSaveNicknameFor(type);
+  public String getLongRunningOperationTypeName(ImportTypeTable typeTable, TypeRef type) {
+    return ((ModelTypeTable) typeTable).getAndSaveNicknameFor(type);
   }
 
   @Override
-  public String getRequestTypeName(ModelTypeTable typeTable, TypeRef type) {
-    return typeTable.getAndSaveNicknameFor(type);
+  public String getRequestTypeName(ImportTypeTable typeTable, TypeRef type) {
+    return ((ModelTypeTable) typeTable).getAndSaveNicknameFor(type);
   }
 
   @Override
-  public String getGrpcStubCallString(Interface apiInterface, Method method) {
+  public String getGrpcStubCallString(Interface apiInterface, MethodModel method) {
     return '/' + apiInterface.getFullName() + '/' + getGrpcMethodName(method);
   }
 

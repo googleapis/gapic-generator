@@ -21,8 +21,10 @@ import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoField;
+import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
@@ -144,7 +146,7 @@ public class PythonGapicContext extends GapicContext {
    * <p>TODO(eoogbe): Temporary solution to use MVVM with just sample gen. This class will
    * eventually go away when code gen also converts to MVVM.
    */
-  public ApiMethodView getApiMethodView(Interface apiInterface, Method method) {
+  public ApiMethodView getApiMethodView(Interface apiInterface, MethodModel method) {
     GapicInterfaceContext context = getSurfaceTransformerContextFromService(apiInterface);
     GapicMethodContext methodContext = context.asDynamicMethodContext(method);
     DynamicLangApiMethodTransformer apiMethodTransformer =
@@ -312,7 +314,12 @@ public class PythonGapicContext extends GapicContext {
    */
   public String returnTypeComment(
       Interface apiInterface, Method method, PythonImportHandler importHandler) {
-    MethodConfig config = getApiConfig().getInterfaceConfig(apiInterface).getMethodConfig(method);
+    MethodConfig config =
+        getApiConfig()
+            .getInterfaceConfig(apiInterface)
+            .getMethodConfig(
+                // TODO(andrealin): do something better if this class still exists after merge w/ origin/master
+                new ProtoMethodModel(method));
     if (GapicMethodConfig.isReturnEmptyMessageMethod(method)) {
       return "";
     }
@@ -368,7 +375,10 @@ public class PythonGapicContext extends GapicContext {
   }
 
   public String throwsComment(Interface apiInterface, Method method) {
-    MethodConfig config = getApiConfig().getInterfaceConfig(apiInterface).getMethodConfig(method);
+    MethodConfig config =
+        getApiConfig()
+            .getInterfaceConfig(apiInterface)
+            .getMethodConfig(new ProtoMethodModel(method));
     StringBuilder contentBuilder = new StringBuilder();
     contentBuilder.append("\nRaises:\n  :exc:`google.gax.errors.GaxError` if the RPC is aborted.");
     if (Iterables.size(config.getRequiredFields()) > 0
@@ -390,7 +400,9 @@ public class PythonGapicContext extends GapicContext {
   /** Get required (non-optional) fields. */
   public List<FieldType> getRequiredFields(Interface apiInterface, Method method) {
     MethodConfig methodConfig =
-        getApiConfig().getInterfaceConfig(apiInterface).getMethodConfig(method);
+        getApiConfig()
+            .getInterfaceConfig(apiInterface)
+            .getMethodConfig(new ProtoMethodModel(method));
     return Lists.newArrayList(methodConfig.getRequiredFields());
   }
 
@@ -510,7 +522,9 @@ public class PythonGapicContext extends GapicContext {
 
   public String stubNameForMethod(Interface apiInterface, Method method) {
     MethodConfig methodConfig =
-        getApiConfig().getInterfaceConfig(apiInterface).getMethodConfig(method);
+        getApiConfig()
+            .getInterfaceConfig(apiInterface)
+            .getMethodConfig(new ProtoMethodModel(method));
     String rerouteToGrpcInterface = methodConfig.getRerouteToGrpcInterface();
     Interface target =
         GapicInterfaceConfig.getTargetInterface(apiInterface, rerouteToGrpcInterface);
@@ -520,7 +534,7 @@ public class PythonGapicContext extends GapicContext {
   public boolean isLongrunning(Method method, Interface apiInterface) {
     return getApiConfig()
         .getInterfaceConfig(apiInterface)
-        .getMethodConfig(method)
+        .getMethodConfig(new ProtoMethodModel(method))
         .isLongRunningOperation();
   }
 

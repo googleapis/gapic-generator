@@ -50,7 +50,7 @@ import java.util.Map.Entry;
 /** PathTemplateTransformer generates view objects for path templates from a service model. */
 public class PathTemplateTransformer {
 
-  public List<PathTemplateView> generatePathTemplates(GapicInterfaceContext context) {
+  public List<PathTemplateView> generatePathTemplates(InterfaceContext context) {
     List<PathTemplateView> pathTemplates = new ArrayList<>();
     if (!context.getFeatureConfig().enableStringFormatFunctions()) {
       return pathTemplates;
@@ -60,24 +60,9 @@ public class PathTemplateTransformer {
         interfaceConfig.getSingleResourceNameConfigs()) {
       PathTemplateView.Builder pathTemplate = PathTemplateView.newBuilder();
       pathTemplate.name(
-          context.getNamer().getPathTemplateName(context.getInterface(), resourceNameConfig));
-      pathTemplate.pattern(resourceNameConfig.getNamePattern());
-      pathTemplates.add(pathTemplate.build());
-    }
-
-    return pathTemplates;
-  }
-
-  public List<PathTemplateView> generatePathTemplates(DiscoGapicInterfaceContext context) {
-    List<PathTemplateView> pathTemplates = new ArrayList<>();
-    if (!context.getFeatureConfig().enableStringFormatFunctions()) {
-      return pathTemplates;
-    }
-    InterfaceConfig interfaceConfig = context.getInterfaceConfig();
-    for (SingleResourceNameConfig resourceNameConfig :
-        interfaceConfig.getSingleResourceNameConfigs()) {
-      PathTemplateView.Builder pathTemplate = PathTemplateView.newBuilder();
-      pathTemplate.name(context.getNamer().getPathTemplateName(null, resourceNameConfig));
+          context
+              .getNamer()
+              .getPathTemplateName(context.getInterfaceSimpleName(), resourceNameConfig));
       pathTemplate.pattern(resourceNameConfig.getNamePattern());
       pathTemplates.add(pathTemplate.build());
     }
@@ -91,7 +76,7 @@ public class PathTemplateTransformer {
   }
 
   public List<ResourceNameView> generateResourceNames(
-      GapicInterfaceContext context, Iterable<ResourceNameConfig> configs) {
+      InterfaceContext context, Iterable<ResourceNameConfig> configs) {
     List<ResourceNameView> resourceNames = new ArrayList<>();
     int index = 1;
     for (ResourceNameConfig config : configs) {
@@ -117,7 +102,7 @@ public class PathTemplateTransformer {
   }
 
   private ResourceNameSingleView generateResourceNameSingle(
-      GapicInterfaceContext context, int index, SingleResourceNameConfig config) {
+      InterfaceContext context, int index, SingleResourceNameConfig config) {
     SurfaceNamer namer = context.getNamer();
     ResourceNameSingleView.Builder builder =
         ResourceNameSingleView.newBuilder()
@@ -144,7 +129,7 @@ public class PathTemplateTransformer {
   }
 
   private ResourceNameOneofView generateResourceNameOneof(
-      GapicInterfaceContext context, int index, ResourceNameOneofConfig config) {
+      InterfaceContext context, int index, ResourceNameOneofConfig config) {
     SurfaceNamer namer = context.getNamer();
     ResourceNameOneofView.Builder builder =
         ResourceNameOneofView.newBuilder()
@@ -159,7 +144,7 @@ public class PathTemplateTransformer {
   }
 
   private ResourceNameFixedView generateResourceNameFixed(
-      GapicInterfaceContext context, int index, FixedResourceNameConfig config) {
+      InterfaceContext context, int index, FixedResourceNameConfig config) {
     SurfaceNamer namer = context.getNamer();
     ResourceNameFixedView.Builder builder =
         ResourceNameFixedView.newBuilder()
@@ -232,24 +217,26 @@ public class PathTemplateTransformer {
   }
 
   public List<FormatResourceFunctionView> generateFormatResourceFunctions(
-      GapicInterfaceContext context) {
+      InterfaceContext context) {
     List<FormatResourceFunctionView> functions = new ArrayList<>();
     if (!context.getFeatureConfig().enableStringFormatFunctions()) {
       return functions;
     }
 
     SurfaceNamer namer = context.getNamer();
-    Interface apiInterface = context.getInterface();
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
     for (SingleResourceNameConfig resourceNameConfig :
         interfaceConfig.getSingleResourceNameConfigs()) {
       FormatResourceFunctionView.Builder function =
           FormatResourceFunctionView.newBuilder()
               .entityName(resourceNameConfig.getEntityName())
-              .name(namer.getFormatFunctionName(apiInterface, resourceNameConfig))
-              .pathTemplateName(namer.getPathTemplateName(apiInterface, resourceNameConfig))
+              .name(
+                  namer.getFormatFunctionName(context.getInterfaceSimpleName(), resourceNameConfig))
+              .pathTemplateName(
+                  namer.getPathTemplateName(context.getInterfaceSimpleName(), resourceNameConfig))
               .pathTemplateGetterName(
-                  namer.getPathTemplateNameGetter(apiInterface, resourceNameConfig))
+                  namer.getPathTemplateNameGetter(
+                      context.getInterfaceSimpleName(), resourceNameConfig))
               .pattern(resourceNameConfig.getNamePattern());
       List<ResourceIdParamView> resourceIdParams = new ArrayList<>();
       for (String var : resourceNameConfig.getNameTemplate().vars()) {
@@ -269,51 +256,13 @@ public class PathTemplateTransformer {
     return functions;
   }
 
-  public List<FormatResourceFunctionView> generateFormatResourceFunctions(
-      DiscoGapicInterfaceContext context) {
-    List<FormatResourceFunctionView> functions = new ArrayList<>();
-    if (!context.getFeatureConfig().enableStringFormatFunctions()) {
-      return functions;
-    }
-
-    SurfaceNamer namer = context.getNamer();
-    InterfaceConfig interfaceConfig = context.getInterfaceConfig();
-    for (SingleResourceNameConfig resourceNameConfig :
-        interfaceConfig.getSingleResourceNameConfigs()) {
-      FormatResourceFunctionView.Builder function =
-          FormatResourceFunctionView.newBuilder()
-              .entityName(resourceNameConfig.getEntityName())
-              .name(namer.getFormatFunctionName(null, resourceNameConfig))
-              .pathTemplateName(namer.getPathTemplateName(null, resourceNameConfig))
-              .pathTemplateGetterName(namer.getPathTemplateNameGetter(null, resourceNameConfig))
-              .pattern(resourceNameConfig.getNamePattern());
-      List<ResourceIdParamView> resourceIdParams = new ArrayList<>();
-      for (String var : resourceNameConfig.getNameTemplate().vars()) {
-        ResourceIdParamView param =
-            ResourceIdParamView.newBuilder()
-                .name(namer.getParamName(var))
-                .docName(namer.getParamDocName(var))
-                .templateKey(var)
-                .build();
-        resourceIdParams.add(param);
-      }
-      function.resourceIdParams(resourceIdParams);
-
-      functions.add(function.build());
-    }
-
-    return functions;
-  }
-
-  public List<ParseResourceFunctionView> generateParseResourceFunctions(
-      GapicInterfaceContext context) {
+  public List<ParseResourceFunctionView> generateParseResourceFunctions(InterfaceContext context) {
     List<ParseResourceFunctionView> functions = new ArrayList<>();
     if (!context.getFeatureConfig().enableStringFormatFunctions()) {
       return functions;
     }
 
     SurfaceNamer namer = context.getNamer();
-    Interface apiInterface = context.getInterface();
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
     for (SingleResourceNameConfig resourceNameConfig :
         interfaceConfig.getSingleResourceNameConfigs()) {
@@ -322,36 +271,11 @@ public class PathTemplateTransformer {
             ParseResourceFunctionView.newBuilder()
                 .entityName(resourceNameConfig.getEntityName())
                 .name(namer.getParseFunctionName(var, resourceNameConfig))
-                .pathTemplateName(namer.getPathTemplateName(apiInterface, resourceNameConfig))
+                .pathTemplateName(
+                    namer.getPathTemplateName(context.getInterfaceSimpleName(), resourceNameConfig))
                 .pathTemplateGetterName(
-                    namer.getPathTemplateNameGetter(apiInterface, resourceNameConfig))
-                .entityNameParamName(namer.getEntityNameParamName(resourceNameConfig))
-                .outputResourceId(var);
-        functions.add(function.build());
-      }
-    }
-
-    return functions;
-  }
-
-  public List<ParseResourceFunctionView> generateParseResourceFunctions(
-      DiscoGapicInterfaceContext context) {
-    List<ParseResourceFunctionView> functions = new ArrayList<>();
-    if (!context.getFeatureConfig().enableStringFormatFunctions()) {
-      return functions;
-    }
-
-    SurfaceNamer namer = context.getNamer();
-    InterfaceConfig interfaceConfig = context.getInterfaceConfig();
-    for (SingleResourceNameConfig resourceNameConfig :
-        interfaceConfig.getSingleResourceNameConfigs()) {
-      for (String var : resourceNameConfig.getNameTemplate().vars()) {
-        ParseResourceFunctionView.Builder function =
-            ParseResourceFunctionView.newBuilder()
-                .entityName(resourceNameConfig.getEntityName())
-                .name(namer.getParseFunctionName(var, resourceNameConfig))
-                .pathTemplateName(namer.getPathTemplateName(null, resourceNameConfig))
-                .pathTemplateGetterName(namer.getPathTemplateNameGetter(null, resourceNameConfig))
+                    namer.getPathTemplateNameGetter(
+                        context.getInterfaceSimpleName(), resourceNameConfig))
                 .entityNameParamName(namer.getEntityNameParamName(resourceNameConfig))
                 .outputResourceId(var);
         functions.add(function.build());
@@ -372,9 +296,11 @@ public class PathTemplateTransformer {
         interfaceConfig.getSingleResourceNameConfigs()) {
       PathTemplateGetterFunctionView.Builder function =
           PathTemplateGetterFunctionView.newBuilder()
-              .name(namer.getPathTemplateNameGetter(apiInterface, resourceNameConfig))
+              .name(
+                  namer.getPathTemplateNameGetter(apiInterface.getSimpleName(), resourceNameConfig))
               .resourceName(namer.getPathTemplateResourcePhraseName(resourceNameConfig))
-              .pathTemplateName(namer.getPathTemplateName(apiInterface, resourceNameConfig))
+              .pathTemplateName(
+                  namer.getPathTemplateName(apiInterface.getSimpleName(), resourceNameConfig))
               .pattern(resourceNameConfig.getNamePattern());
 
       List<PathTemplateArgumentView> args = new ArrayList<>();

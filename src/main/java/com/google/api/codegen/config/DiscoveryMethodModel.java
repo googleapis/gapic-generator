@@ -15,7 +15,16 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.config.FieldType.ApiSource;
+import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Method;
+import com.google.api.codegen.transformer.ImportTypeTable;
+import com.google.api.codegen.transformer.SchemaTypeFormatter;
+import com.google.api.codegen.transformer.SchemaTypeNameConverter;
+import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.transformer.TypeFormatter;
+import com.google.api.codegen.transformer.TypeNameConverter;
+import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.TypeName;
 import com.google.common.base.Preconditions;
 
 /** Created by andrealin on 8/1/17. */
@@ -27,6 +36,16 @@ public final class DiscoveryMethodModel implements MethodModel {
   public DiscoveryMethodModel(Method method) {
     Preconditions.checkNotNull(method);
     this.method = method;
+  }
+
+  /* Package private for internal use. */
+  Method getDiscoveryMethod() {
+    return method;
+  }
+
+  @Override
+  public String getOutputTypeSimpleName() {
+    return method.response() == null ? "none" : method.response().id();
   }
 
   @Override
@@ -56,9 +75,55 @@ public final class DiscoveryMethodModel implements MethodModel {
   }
 
   @Override
+  public String getDescription() {
+    return method.description();
+  }
+
+  @Override
+  public String getOutputTypeFullName(TypeFormatter typeFormatter) {
+    // Maybe use Discogapic namer for this?
+    return ((SchemaTypeFormatter) typeFormatter).getFullNameFor(method.response());
+  }
+
+  @Override
+  public String getOutputTypeNickname(TypeFormatter typeFormatter) {
+    return null;
+  }
+
+  @Override
+  public String getInputTypeNickName(TypeFormatter typeFormatter) {
+    return null;
+  }
+
+  @Override
+  public TypeName getOutputTypeName(TypeNameConverter typeFormatter) {
+    return ((SchemaTypeNameConverter) typeFormatter).getTypeName(method.response());
+  }
+
+  @Override
   public GenericFieldSelector getInputFieldSelector(String fieldName) {
     // TODO(andrealin): implement.
     return null;
+  }
+
+  @Override
+  public boolean getRequestStreaming() {
+    return false;
+  }
+
+  @Override
+  public boolean getResponseStreaming() {
+    return false;
+  }
+
+  @Override
+  public Name asName() {
+    return Name.anyCamel(DiscoGapicNamer.getMethodNamePieces(method.id()));
+  }
+
+  @Override
+  public boolean isOutputTypeEmpty() {
+    return method.response() == null;
   }
 
   @Override
@@ -66,5 +131,48 @@ public final class DiscoveryMethodModel implements MethodModel {
     return o != null
         && o instanceof DiscoveryMethodModel
         && ((DiscoveryMethodModel) o).method.equals(method);
+  }
+
+  @Override
+  public String getSimpleName() {
+    return Name.from(DiscoGapicNamer.getMethodNamePieces(method.id())).toLowerCamel();
+  }
+
+  @Override
+  public String getParentSimpleName() {
+    return "parent?????!!?!?!?";
+  }
+
+  @Override
+  public String getParentNickname(TypeNameConverter typeNameConverter) {
+    return null;
+  }
+
+  @Override
+  public String getAndSaveRequestTypeName(ImportTypeTable typeTable, SurfaceNamer discoGapicNamer) {
+    return typeTable.getAndSaveNicknameFor(
+        ((DiscoGapicNamer) discoGapicNamer).getRequestName(method));
+  }
+
+  @Override
+  public String getAndSaveResponseTypeName(
+      ImportTypeTable typeTable, SurfaceNamer discoGapicNamer) {
+    return typeTable.getAndSaveNicknameFor(
+        ((DiscoGapicNamer) discoGapicNamer).getResponseName(method));
+  }
+
+  @Override
+  public String getProtoMethodName() {
+    return getSimpleName();
+  }
+
+  @Override
+  public String getScopedDescription() {
+    return method.description();
+  }
+
+  @Override
+  public boolean hasReturnValue() {
+    return method.response() != null;
   }
 }

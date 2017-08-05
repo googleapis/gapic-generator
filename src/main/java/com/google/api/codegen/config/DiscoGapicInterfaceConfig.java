@@ -248,19 +248,14 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
 
   /** Returns the DiscoGapicMethodConfig for the given method. */
   @Override
-  public DiscoGapicMethodConfig getMethodConfig(Method method) {
+  public DiscoGapicMethodConfig getMethodConfig(MethodModel method) {
     DiscoGapicMethodConfig methodConfig =
-        (DiscoGapicMethodConfig) getMethodConfigMap().get(method.id());
+        (DiscoGapicMethodConfig) getMethodConfigMap().get(method.getFullName());
     if (methodConfig == null) {
-      throw new IllegalArgumentException("no method config for method '" + method.id() + "'");
+      throw new IllegalArgumentException(
+          "no method config for method '" + method.getFullName() + "'");
     }
     return methodConfig;
-  }
-
-  @Override
-  @Nullable
-  public GapicMethodConfig getMethodConfig(com.google.api.tools.framework.model.Method method) {
-    return null;
   }
 
   abstract ImmutableMap<String, ? extends MethodConfig> getMethodConfigMap();

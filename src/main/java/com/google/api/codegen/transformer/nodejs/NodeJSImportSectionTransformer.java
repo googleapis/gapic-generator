@@ -19,8 +19,8 @@ import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.ImportSectionTransformer;
-import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
+import com.google.api.codegen.transformer.TransformationContext;
 import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ImportTypeView;
@@ -31,7 +31,7 @@ import java.util.List;
 
 public class NodeJSImportSectionTransformer implements ImportSectionTransformer {
   @Override
-  public ImportSectionView generateImportSection(InterfaceContext context) {
+  public ImportSectionView generateImportSection(TransformationContext context) {
     ImportSectionView.Builder importSection = ImportSectionView.newBuilder();
     // TODO support non-Gapic inputs
     importSection.externalImports(generateExternalImports((GapicInterfaceContext) context));

@@ -14,23 +14,23 @@
  */
 package com.google.api.codegen.transformer.nodejs;
 
-import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
-import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.Synchronicity;
+import com.google.api.codegen.transformer.TransformationContext;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NamePath;
@@ -95,8 +95,8 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getApiWrapperClassConstructorName(Interface apiInterface) {
-    return publicFieldName(Name.upperCamel(apiInterface.getSimpleName(), "Client"));
+  public String getApiWrapperClassConstructorName(String apiInterfaceSimpleName) {
+    return publicFieldName(Name.upperCamel(apiInterfaceSimpleName, "Client"));
   }
 
   @Override
@@ -110,7 +110,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getPathTemplateName(
-      Interface apiInterface, SingleResourceNameConfig resourceNameConfig) {
+      String apiInterfaceSimpleName, SingleResourceNameConfig resourceNameConfig) {
     return inittedConstantName(Name.from(resourceNameConfig.getEntityName(), "path", "template"));
   }
 
@@ -122,7 +122,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getFormatFunctionName(
-      Interface apiInterface, SingleResourceNameConfig resourceNameConfig) {
+      String apiInterfaceSimpleName, SingleResourceNameConfig resourceNameConfig) {
     return staticFunctionName(Name.from(resourceNameConfig.getEntityName(), "path"));
   }
 
@@ -146,12 +146,12 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getDynamicLangReturnTypeName(Method method, MethodConfig methodConfig) {
-    if (new ServiceMessages().isEmptyType(method.getOutputType())) {
+  public String getDynamicLangReturnTypeName(MethodModel method, MethodConfig methodConfig) {
+    if (method.isOutputTypeEmpty()) {
       return "";
     }
 
-    return getModelTypeFormatter().getFullNameFor(method.getOutputType());
+    return method.getOutputTypeFullName(getModelTypeFormatter());
   }
 
   @Override
@@ -176,14 +176,14 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getAsyncApiMethodName(Method method, VisibilityConfig visibility) {
+  public String getAsyncApiMethodName(MethodModel method, VisibilityConfig visibility) {
     return getApiMethodName(Name.upperCamel(method.getSimpleName()), visibility);
   }
 
   /** Return JSDoc callback comment and return type comment for the given method. */
   @Override
   public List<String> getReturnDocLines(
-      InterfaceContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
+      TransformationContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
     GapicMethodConfig gapicMethodConfig = (GapicMethodConfig) methodConfig;
     Method method = ((GapicMethodConfig) methodConfig).getMethod();
     if (method.getRequestStreaming() && method.getResponseStreaming()) {

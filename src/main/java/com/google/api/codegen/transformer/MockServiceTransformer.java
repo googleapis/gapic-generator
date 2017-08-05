@@ -18,6 +18,8 @@ import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.viewmodel.testing.MockGrpcMethodView;
 import com.google.api.codegen.viewmodel.testing.MockServiceUsageView;
@@ -64,19 +66,27 @@ public class MockServiceTransformer {
     List<Method> methods = context.getInterface().getMethods();
     ArrayList<MockGrpcMethodView> mocks = new ArrayList<>(methods.size());
     for (Method method : methods) {
-      GapicMethodContext methodContext = context.asRequestMethodContext(method);
+      MethodModel methodModel = new ProtoMethodModel(method);
+      GapicMethodContext methodContext = context.asRequestMethodContext(methodModel);
       String requestTypeName =
-          methodContext.getTypeTable().getAndSaveNicknameFor(method.getInputType());
+          methodContext
+              .getMethodModel()
+              .getAndSaveRequestTypeName(methodContext.getTypeTable(), methodContext.getNamer());
       String responseTypeName =
-          methodContext.getTypeTable().getAndSaveNicknameFor(method.getOutputType());
+          methodContext
+              .getMethodModel()
+              .getAndSaveResponseTypeName(methodContext.getTypeTable(), methodContext.getNamer());
       MethodConfig methodConfig = methodContext.getMethodConfig();
       mocks.add(
           MockGrpcMethodView.newBuilder()
-              .name(methodContext.getNamer().getApiMethodName(method, VisibilityConfig.PUBLIC))
+              .name(
+                  methodContext
+                      .getNamer()
+                      .getApiMethodName(methodContext.getMethodModel(), VisibilityConfig.PUBLIC))
               .requestTypeName(requestTypeName)
               .responseTypeName(responseTypeName)
               .grpcStreamingType(methodConfig.getGrpcStreamingType())
-              .streamHandleTypeName(methodContext.getNamer().getStreamingServerName(method))
+              .streamHandleTypeName(methodContext.getNamer().getStreamingServerName(methodModel))
               .build());
     }
     return mocks;

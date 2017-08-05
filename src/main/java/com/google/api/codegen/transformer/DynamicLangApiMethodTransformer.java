@@ -68,7 +68,7 @@ public class DynamicLangApiMethodTransformer {
     apiMethod.apiVariableName(namer.getApiWrapperVariableName(context.getInterfaceConfig()));
     apiMethod.apiModuleName(namer.getApiWrapperModuleName());
     InitCodeOutputType initCodeOutputType =
-        context.getMethod().getRequestStreaming()
+        context.getMethodModel().getRequestStreaming()
             ? InitCodeOutputType.SingleObject
             : InitCodeOutputType.FieldList;
     InitCodeView initCode =
@@ -81,13 +81,14 @@ public class DynamicLangApiMethodTransformer {
     apiMethod.doc(generateMethodDoc(context));
 
     apiMethod.name(
-        namer.getApiMethodName(context.getMethod(), context.getMethodConfig().getVisibility()));
-    apiMethod.requestVariableName(namer.getRequestVariableName(context.getMethod()));
+        namer.getApiMethodName(
+            context.getMethodModel(), context.getMethodConfig().getVisibility()));
+    apiMethod.requestVariableName(namer.getRequestVariableName(context.getMethodModel()));
     apiMethod.requestTypeName(
         namer.getRequestTypeName(context.getTypeTable(), context.getMethod().getInputType()));
     apiMethod.hasReturnValue(!ServiceMessages.s_isEmptyType(context.getMethod().getOutputType()));
-    apiMethod.key(namer.getMethodKey(context.getMethod()));
-    apiMethod.grpcMethodName(namer.getGrpcMethodName(context.getMethod()));
+    apiMethod.key(namer.getMethodKey(context.getMethodModel()));
+    apiMethod.grpcMethodName(namer.getGrpcMethodName(context.getMethodModel()));
     apiMethod.stubName(namer.getStubName(context.getTargetInterface()));
 
     apiMethod.methodParams(apiMethodParamTransformer.generateMethodParams(context));
@@ -127,12 +128,13 @@ public class DynamicLangApiMethodTransformer {
     Method method = context.getMethod();
     MethodConfig methodConfig = context.getMethodConfig();
 
-    docBuilder.mainDocLines(surfaceNamer.getDocLines(method, methodConfig));
+    docBuilder.mainDocLines(surfaceNamer.getDocLines(context.getMethodModel(), methodConfig));
     docBuilder.paramDocs(apiMethodParamTransformer.generateParamDocs(context));
-    docBuilder.returnTypeName(surfaceNamer.getDynamicLangReturnTypeName(method, methodConfig));
+    docBuilder.returnTypeName(
+        surfaceNamer.getDynamicLangReturnTypeName(context.getMethodModel(), methodConfig));
     docBuilder.returnsDocLines(
         surfaceNamer.getReturnDocLines(
-            context.getSurfaceTransformerContext(), methodConfig, Synchronicity.Sync));
+            context.getSurfaceInterfaceContext(), methodConfig, Synchronicity.Sync));
     if (methodConfig.isPageStreaming()) {
       docBuilder.pageStreamingResourceTypeName(
           surfaceNamer.getTypeNameDoc(

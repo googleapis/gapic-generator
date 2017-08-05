@@ -14,6 +14,13 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.codegen.transformer.ImportTypeTable;
+import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.transformer.TypeFormatter;
+import com.google.api.codegen.transformer.TypeNameConverter;
+import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.TypeName;
+
 /** Input-agnostic model of a method. */
 public interface MethodModel {
 
@@ -28,5 +35,41 @@ public interface MethodModel {
 
   String getInputFullName();
 
+  String getSimpleName();
+
+  String getParentSimpleName();
+
+  String getParentNickname(TypeNameConverter typeNameConverter);
+
+  String getDescription();
+
+  String getOutputTypeFullName(TypeFormatter typeFormatter);
+
+  String getInputTypeNickName(TypeFormatter typeFormatter);
+
+  String getOutputTypeNickname(TypeFormatter typeFormatter);
+
+  String getOutputTypeSimpleName();
+
+  String getScopedDescription();
+
+  TypeName getOutputTypeName(TypeNameConverter typeNameConverter);
+
   GenericFieldSelector getInputFieldSelector(String fieldName);
+
+  boolean getRequestStreaming();
+
+  boolean getResponseStreaming();
+
+  String getAndSaveRequestTypeName(ImportTypeTable typeTable, SurfaceNamer surfaceNamer);
+
+  String getAndSaveResponseTypeName(ImportTypeTable typeTable, SurfaceNamer surfaceNamer);
+
+  Name asName();
+
+  boolean isOutputTypeEmpty();
+
+  boolean hasReturnValue();
+
+  String getProtoMethodName();
 }

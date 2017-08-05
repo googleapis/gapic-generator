@@ -16,10 +16,10 @@ package com.google.api.codegen.transformer.csharp;
 
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.ParamWithSimpleDoc;
-import com.google.api.tools.framework.model.Method;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,10 +42,10 @@ public class CSharpCommonTransformer {
     typeTable.saveNicknameFor("System.Collections.Generic.IEnumerable");
   }
 
-  public List<Method> getSupportedMethods(GapicInterfaceContext context) {
-    List<Method> result = new ArrayList<>();
+  public List<MethodModel> getSupportedMethods(GapicInterfaceContext context) {
+    List<MethodModel> result = new ArrayList<>();
     boolean mixinsDisabled = !context.getFeatureConfig().enableMixins();
-    for (Method method : context.getSupportedMethods()) {
+    for (MethodModel method : context.getSupportedMethods()) {
       if (mixinsDisabled && context.getMethodConfig(method).getRerouteToGrpcInterface() != null) {
         continue;
       }

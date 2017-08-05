@@ -22,12 +22,12 @@ import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProductServiceConfig;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.discovery.Document;
-import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
 import com.google.api.codegen.transformer.BatchingTransformer;
@@ -114,11 +114,11 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
   @Override
   public List<ViewModel> transform(Document document, GapicProductConfig productConfig) {
     List<ViewModel> surfaceDocs = new ArrayList<>();
-    SurfaceNamer namer =
-        new JavaSurfaceNamer(productConfig.getPackageName(), new JavaNameFormatter());
+    JavaNameFormatter javaNameFormatter = new JavaNameFormatter();
+    SurfaceNamer namer = new JavaSurfaceNamer(productConfig.getPackageName(), javaNameFormatter);
+    DiscoGapicNamer discoGapicNamer = new DiscoGapicNamer(namer, javaNameFormatter);
 
     List<ServiceDocView> serviceDocs = new ArrayList<>();
-    JavaDiscoGapicNamer discoGapicNamer = new JavaDiscoGapicNamer();
     for (String interfaceName : productConfig.getInterfaceConfigMap().keySet()) {
       boolean enableStringFormatFunctions = productConfig.getResourceNameMessageConfigs().isEmpty();
       DiscoGapicInterfaceContext context =
@@ -128,7 +128,6 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
               productConfig,
               createTypeTable(productConfig.getPackageName()),
               discoGapicNamer,
-              namer,
               JavaFeatureConfig.newBuilder()
                   .enableStringFormatFunctions(enableStringFormatFunctions)
                   .build());
@@ -145,7 +144,6 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
               productConfig,
               createTypeTable(productConfig.getPackageName()),
               discoGapicNamer,
-              namer,
               JavaFeatureConfig.newBuilder()
                   .enableStringFormatFunctions(enableStringFormatFunctions)
                   .build());
@@ -225,7 +223,7 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
       Document model, GapicProductConfig productConfig, ReleaseLevel releaseLevel) {
 
     SurfaceNamer namer = new JavaSurfaceNamer(productConfig.getPackageName());
-    DiscoGapicNamer discoGapicNamer = new DiscoGapicNamer(namer);
+    DiscoGapicNamer discoGapicNamer = new DiscoGapicNamer(namer, new JavaNameFormatter());
     SchemaTypeTable typeTable = createTypeTable(productConfig.getPackageName());
 
     addPagedResponseWrapperImports(typeTable);
@@ -248,16 +246,14 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
               productConfig,
               typeTable,
               discoGapicNamer,
-              namer,
               JavaFeatureConfig.newBuilder()
                   .enableStringFormatFunctions(
                       productConfig.getResourceNameMessageConfigs().isEmpty())
                   .build());
-      for (Method method : context.getSupportedMethods()) {
+      for (MethodModel method : context.getSupportedMethods()) {
         if (context.getMethodConfig(method).isPageStreaming()) {
           pagedResponseWrappersList.add(
-              generatePagedResponseWrapper(
-                  context.asRequestMethodContext(method, context.getInterfaceName()), typeTable));
+              generatePagedResponseWrapper(context.asRequestMethodContext(method), typeTable));
         }
       }
     }
@@ -282,8 +278,7 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
 
   private StaticLangPagedResponseView generatePagedResponseWrapper(
       DiscoGapicMethodContext context, SchemaTypeTable typeTable) {
-    Method method = context.getMethod();
-    DiscoGapicNamer discoGapicNamer = context.getDiscoGapicNamer();
+    MethodModel method = context.getMethodModel();
     FieldType resourceField = context.getMethodConfig().getPageStreaming().getResourcesField();
 
     StaticLangPagedResponseView.Builder pagedResponseWrapper =
@@ -297,8 +292,14 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
     pagedResponseWrapper.fixedSizeCollectionTypeName(
         context.getNamer().getFixedSizeCollectionTypeInnerName(method, typeTable, resourceField));
     pagedResponseWrapper.requestTypeName(
-        typeTable.getAndSaveNicknameFor(discoGapicNamer.getRequestName(method)));
-    pagedResponseWrapper.responseTypeName(typeTable.getAndSaveNicknameFor(method.response()));
+        typeTable.getAndSaveNicknameFor(
+            context
+                .getMethodModel()
+                .getAndSaveRequestTypeName(context.getTypeTable(), context.getNamer())));
+    pagedResponseWrapper.responseTypeName(
+        context
+            .getMethodModel()
+            .getAndSaveResponseTypeName(context.getTypeTable(), context.getNamer()));
     pagedResponseWrapper.resourceTypeName(
         typeTable.getAndSaveNicknameForElementType(resourceField));
     pagedResponseWrapper.iterateMethods(getIterateMethods(context));
@@ -563,10 +564,9 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
   private List<StaticLangApiMethodView> generateApiMethods(DiscoGapicInterfaceContext context) {
     List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
 
-    for (Method method : context.getSupportedMethods()) {
+    for (MethodModel method : context.getSupportedMethods()) {
       MethodConfig methodConfig = context.getMethodConfig(method);
-      DiscoGapicMethodContext requestMethodContext =
-          context.asRequestMethodContext(method, context.getInterfaceName());
+      DiscoGapicMethodContext requestMethodContext = context.asRequestMethodContext(method);
 
       if (methodConfig.isPageStreaming()) {
         if (methodConfig.isFlattening()) {

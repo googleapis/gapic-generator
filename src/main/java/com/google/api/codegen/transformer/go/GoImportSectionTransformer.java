@@ -17,7 +17,7 @@ package com.google.api.codegen.transformer.go;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.ImportSectionTransformer;
-import com.google.api.codegen.transformer.InterfaceContext;
+import com.google.api.codegen.transformer.TransformationContext;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
@@ -27,7 +27,7 @@ import java.util.Map;
 
 public class GoImportSectionTransformer implements ImportSectionTransformer {
   @Override
-  public ImportSectionView generateImportSection(InterfaceContext context) {
+  public ImportSectionView generateImportSection(TransformationContext context) {
     return generateImportSection(context.getImportTypeTable().getTypeTable().getImports());
   }
 

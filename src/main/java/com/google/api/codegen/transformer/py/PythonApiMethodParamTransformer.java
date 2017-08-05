@@ -36,7 +36,7 @@ public class PythonApiMethodParamTransformer implements ApiMethodParamTransforme
   @Override
   public List<ParamDocView> generateParamDocs(GapicMethodContext context) {
     ImmutableList.Builder<ParamDocView> docs = ImmutableList.builder();
-    if (context.getMethod().getRequestStreaming()) {
+    if (context.getMethodModel().getRequestStreaming()) {
       docs.add(generateRequestStreamingParamDoc(context));
     } else {
       docs.addAll(generateMethodParamDocs(context, context.getMethodConfig().getRequiredFields()));

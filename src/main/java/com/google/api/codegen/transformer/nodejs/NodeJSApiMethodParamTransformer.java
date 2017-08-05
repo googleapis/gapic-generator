@@ -46,7 +46,7 @@ public class NodeJSApiMethodParamTransformer implements ApiMethodParamTransforme
 
   private List<DynamicLangDefaultableParamView> generateDefaultableParams(
       GapicMethodContext context) {
-    if (context.getMethod().getRequestStreaming()) {
+    if (context.getMethodModel().getRequestStreaming()) {
       return ImmutableList.of();
     }
     ImmutableList.Builder<DynamicLangDefaultableParamView> methodParams = ImmutableList.builder();
@@ -64,7 +64,7 @@ public class NodeJSApiMethodParamTransformer implements ApiMethodParamTransforme
   @Override
   public List<ParamDocView> generateParamDocs(GapicMethodContext context) {
     ImmutableList.Builder<ParamDocView> docs = ImmutableList.builder();
-    if (!context.getMethod().getRequestStreaming()) {
+    if (!context.getMethodModel().getRequestStreaming()) {
       docs.add(generateRequestObjectParamDoc(context));
       docs.addAll(
           generateMethodParamDocs(context, context.getMethodConfig().getRequiredFields(), false));

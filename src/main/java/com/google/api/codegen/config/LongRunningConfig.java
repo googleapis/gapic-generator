@@ -15,6 +15,9 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.LongRunningConfigProto;
+import com.google.api.codegen.transformer.ImportTypeTable;
+import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Model;
@@ -102,5 +105,14 @@ public abstract class LongRunningConfig {
           longRunningConfigProto.getImplementsCancel(),
           pollingInterval);
     }
+  }
+
+  public String getLongRunningOperationReturnTypeName(ImportTypeTable typeTable) {
+    return ((ModelTypeTable) typeTable).getAndSaveNicknameFor(getReturnType());
+  }
+
+  public String getLongRunningOperationMetadataTypeName(
+      SurfaceNamer namer, ImportTypeTable typeTable) {
+    return namer.getLongRunningOperationTypeName(typeTable, getMetadataType());
   }
 }

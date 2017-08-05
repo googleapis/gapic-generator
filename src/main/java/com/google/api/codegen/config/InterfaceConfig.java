@@ -15,7 +15,6 @@
 package com.google.api.codegen.config;
 
 import com.google.api.gax.core.RetrySettings;
-import com.google.api.tools.framework.model.Method;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -45,9 +44,7 @@ public interface InterfaceConfig {
 
   String getManualDoc();
 
-  MethodConfig getMethodConfig(Method method);
-
-  MethodConfig getMethodConfig(com.google.api.codegen.discovery.Method method);
+  MethodConfig getMethodConfig(MethodModel method);
 
   boolean hasPageStreamingMethods();
 

@@ -44,7 +44,9 @@ import org.joda.time.Duration;
  */
 @AutoValue
 public abstract class DiscoGapicMethodConfig extends MethodConfig {
-  public abstract Method getMethod();
+  public Method getMethod() {
+    return ((DiscoveryMethodModel) getMethodModel()).getDiscoveryMethod();
+  }
 
   @Override
   public boolean isGrpcStreaming() {
@@ -78,7 +80,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
       DiagCollector diagCollector,
       String language,
       MethodConfigProto methodConfigProto,
-      com.google.api.codegen.discovery.Method method,
+      Method method,
       ImmutableSet<String> retryCodesConfigNames,
       ImmutableSet<String> retryParamsConfigNames) {
 
@@ -189,6 +191,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
       return null;
     } else {
       return new AutoValue_DiscoGapicMethodConfig(
+          new DiscoveryMethodModel(method),
           pageStreaming,
           flattening,
           retryCodesName,
@@ -203,8 +206,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
           sampleCodeInitFields,
           visibility,
           releaseLevel,
-          longRunningConfig,
-          method);
+          longRunningConfig);
     }
   }
 

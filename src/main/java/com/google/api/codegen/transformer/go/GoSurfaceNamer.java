@@ -18,11 +18,13 @@ import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.OneofConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
+import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -31,10 +33,8 @@ import com.google.api.codegen.util.PassThroughCommentReformatter;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.go.GoNameFormatter;
 import com.google.api.codegen.util.go.GoTypeTable;
-import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.annotations.VisibleForTesting;
 import io.grpc.Status;
@@ -60,9 +60,9 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getPathTemplateName(
-      Interface apiInterface, SingleResourceNameConfig resourceNameConfig) {
+      String apiInterfaceSimpleName, SingleResourceNameConfig resourceNameConfig) {
     return inittedConstantName(
-        getReducedServiceName(apiInterface.getSimpleName())
+        getReducedServiceName(apiInterfaceSimpleName)
             .join(resourceNameConfig.getEntityName())
             .join("path")
             .join("template"));
@@ -70,32 +70,32 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getPathTemplateNameGetter(
-      Interface apiInterface, SingleResourceNameConfig resourceNameConfig) {
-    return getFormatFunctionName(apiInterface, resourceNameConfig);
+      String apiInterfaceSimpleName, SingleResourceNameConfig resourceNameConfig) {
+    return getFormatFunctionName(apiInterfaceSimpleName, resourceNameConfig);
   }
 
   @Override
   public String getFormatFunctionName(
-      Interface apiInterface, SingleResourceNameConfig resourceNameConfig) {
+      String apiInterfaceSimpleName, SingleResourceNameConfig resourceNameConfig) {
     return publicMethodName(
-        clientNamePrefix(apiInterface.getSimpleName())
+        clientNamePrefix(apiInterfaceSimpleName)
             .join(resourceNameConfig.getEntityName())
             .join("path"));
   }
 
   @Override
-  public String getStaticLangReturnTypeName(Method method, MethodConfig methodConfig) {
-    return converter.getTypeName(method.getOutputType()).getFullName();
+  public String getStaticLangReturnTypeName(MethodModel method, MethodConfig methodConfig) {
+    return method.getOutputTypeName(converter).getFullName();
   }
 
   @Override
-  public String getLongRunningOperationTypeName(ModelTypeTable typeTable, TypeRef type) {
-    return valueType(typeTable.getAndSaveNicknameFor(type));
+  public String getLongRunningOperationTypeName(ImportTypeTable typeTable, TypeRef type) {
+    return valueType(((ModelTypeTable) typeTable).getAndSaveNicknameFor(type));
   }
 
   @Override
-  public List<String> getDocLines(Method method, MethodConfig methodConfig) {
-    String text = DocumentationUtil.getDescription(method);
+  public List<String> getDocLines(MethodModel method, MethodConfig methodConfig) {
+    String text = method.getDescription();
     text = lowerFirstLetter(text);
     return super.getDocLines(getApiMethodName(method, methodConfig.getVisibility()) + " " + text);
   }
@@ -109,7 +109,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getAndSavePagedResponseTypeName(
-      Method method, ImportTypeTable typeTable, FieldConfig resourcesFieldConfig) {
+      MethodContext methodContext, FieldConfig resourcesFieldConfig) {
     String typeName =
         converter.getTypeNameForElementType(resourcesFieldConfig.getField()).getNickname();
     int dotIndex = typeName.indexOf('.');
@@ -121,7 +121,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getAndSaveOperationResponseTypeName(
-      Method method, ImportTypeTable typeTable, MethodConfig methodConfig) {
+      MethodModel method, ImportTypeTable typeTable, MethodConfig methodConfig) {
     return publicClassName(Name.upperCamel(method.getSimpleName()).join("operation"));
   }
 
@@ -183,7 +183,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getCallableName(Method method) {
+  public String getCallableName(MethodModel method) {
     return publicMethodName(Name.upperCamel(method.getSimpleName()));
   }
 
@@ -194,32 +194,35 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getApiWrapperClassConstructorName(Interface apiInterface) {
+  public String getApiWrapperClassConstructorName(String apiInterfaceSimpleName) {
     return publicMethodName(
-        Name.from("new").join(clientNamePrefix(apiInterface.getSimpleName())).join("client"));
+        Name.from("new").join(clientNamePrefix(apiInterfaceSimpleName)).join("client"));
   }
 
   @Override
-  public String getApiWrapperClassConstructorExampleName(Interface apiInterface) {
+  public String getApiWrapperClassConstructorExampleName(String apiInterfaceSimpleName) {
     return publicMethodName(
         Name.from("example")
             .join("new")
-            .join(clientNamePrefix(apiInterface.getSimpleName()))
+            .join(clientNamePrefix(apiInterfaceSimpleName))
             .join("client"));
   }
 
   @Override
-  public String getApiMethodExampleName(Interface apiInterface, Method method) {
-    return exampleFunction(apiInterface, getApiMethodName(method, VisibilityConfig.PUBLIC));
+  public String getApiMethodExampleName(String apiInterfaceSimpleName, MethodModel method) {
+    return exampleFunction(
+        apiInterfaceSimpleName, getApiMethodName(method, VisibilityConfig.PUBLIC));
   }
 
   @Override
-  public String getGrpcStreamingApiMethodExampleName(Interface apiInterface, Method method) {
-    return exampleFunction(apiInterface, getApiMethodName(method, VisibilityConfig.PUBLIC));
+  public String getGrpcStreamingApiMethodExampleName(
+      String apiInterfaceSimpleName, MethodModel method) {
+    return exampleFunction(
+        apiInterfaceSimpleName, getApiMethodName(method, VisibilityConfig.PUBLIC));
   }
 
   @Override
-  public String getAsyncApiMethodName(Method method, VisibilityConfig visibility) {
+  public String getAsyncApiMethodName(MethodModel method, VisibilityConfig visibility) {
     return getApiMethodName(method, visibility);
   }
 
@@ -296,19 +299,21 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getStreamingServerName(Method method) {
+  public String getStreamingServerName(MethodModel method) {
     // Unsafe string manipulation: The name looks like "LibraryService_StreamShelvesServer",
     // neither camel or underscore.
-    return converter.getTypeName(method.getParent()).getNickname()
+    return method.getParentNickname(converter)
         + "_"
         + publicClassName(Name.upperCamel(method.getSimpleName()).join("server"));
   }
 
   @Override
-  public String getGrpcStreamingApiReturnTypeName(Method method, ImportTypeTable typeTable) {
+  public String getGrpcStreamingApiReturnTypeName(
+      MethodContext methodContext, ImportTypeTable typeTable) {
     // Unsafe string manipulation: The name looks like "LibraryService_StreamShelvesClient",
     // neither camel or underscore.
-    return converter.getTypeName(method.getParent()).getNickname()
+    MethodModel method = methodContext.getMethodModel();
+    return method.getParentNickname(converter)
         + "_"
         + publicClassName(Name.upperCamel(method.getSimpleName()).join("client"));
   }
@@ -321,23 +326,22 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getIamResourceGetterFunctionExampleName(Interface apiInterface, Field field) {
-    return exampleFunction(apiInterface, getIamResourceGetterFunctionName(field));
+  public String getIamResourceGetterFunctionExampleName(
+      String apiInterfaceSimpleName, Field field) {
+    return exampleFunction(apiInterfaceSimpleName, getIamResourceGetterFunctionName(field));
   }
 
   @Override
-  public String getSettingsMemberName(Method method) {
+  public String getSettingsMemberName(MethodModel method) {
     return publicFieldName(Name.upperCamel(method.getSimpleName()));
   }
 
-  private String exampleFunction(Interface apiInterface, String functionName) {
+  private String exampleFunction(String apiInterfaceSimpleName, String functionName) {
     // We use "unsafe" string concatenation here.
     // Godoc expects the name to be in format "ExampleMyType_MyMethod";
     // it is the only place we have mixed camel and underscore names.
     return publicMethodName(
-            Name.from("example")
-                .join(clientNamePrefix(apiInterface.getSimpleName()))
-                .join("client"))
+            Name.from("example").join(clientNamePrefix(apiInterfaceSimpleName)).join("client"))
         + "_"
         + functionName;
   }
@@ -355,19 +359,18 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getTestCaseName(SymbolTable symbolTable, Method method) {
+  public String getTestCaseName(SymbolTable symbolTable, MethodModel method) {
     Name testCaseName =
         symbolTable.getNewSymbol(
-            Name.upperCamel("Test", method.getParent().getSimpleName(), method.getSimpleName()));
+            Name.upperCamel("Test", method.getParentSimpleName(), method.getSimpleName()));
     return publicMethodName(testCaseName);
   }
 
   @Override
-  public String getExceptionTestCaseName(SymbolTable symbolTable, Method method) {
+  public String getExceptionTestCaseName(SymbolTable symbolTable, MethodModel method) {
     Name testCaseName =
         symbolTable.getNewSymbol(
-            Name.upperCamel(
-                "Test", method.getParent().getSimpleName(), method.getSimpleName(), "Error"));
+            Name.upperCamel("Test", method.getParentSimpleName(), method.getSimpleName(), "Error"));
     return publicMethodName(testCaseName);
   }
 

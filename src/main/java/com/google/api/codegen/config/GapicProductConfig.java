@@ -52,9 +52,10 @@ import javax.annotation.Nullable;
  */
 @AutoValue
 public abstract class GapicProductConfig implements ProductConfig {
-  public abstract ImmutableMap<String, InterfaceConfig> getInterfaceConfigMap();
+  public abstract ImmutableMap<String, ? extends InterfaceConfig> getInterfaceConfigMap();
 
   /** Returns the package name. */
+  @Override
   public abstract String getPackageName();
 
   /** Returns the location of the domain layer, if any. */
@@ -476,13 +477,13 @@ public abstract class GapicProductConfig implements ProductConfig {
   }
 
   /** Returns the GapicInterfaceConfig for the given API interface. */
-  public InterfaceConfig getInterfaceConfig(Interface apiInterface) {
-    return getInterfaceConfigMap().get(apiInterface.getFullName());
+  public GapicInterfaceConfig getInterfaceConfig(Interface apiInterface) {
+    return (GapicInterfaceConfig) getInterfaceConfigMap().get(apiInterface.getFullName());
   }
 
   /** Returns the GapicInterfaceConfig for the given API method. */
-  public InterfaceConfig getInterfaceConfig(String fullName) {
-    return getInterfaceConfigMap().get(fullName);
+  public GapicInterfaceConfig getInterfaceConfig(String fullName) {
+    return (GapicInterfaceConfig) getInterfaceConfigMap().get(fullName);
   }
 
   public Iterable<SingleResourceNameConfig> getSingleResourceNameConfigs() {

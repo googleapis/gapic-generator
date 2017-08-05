@@ -12,14 +12,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.discogapic.transformer.java;
+package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
-import com.google.api.codegen.util.java.JavaNameFormatter;
+import com.google.api.codegen.config.ProductConfig;
 
-class JavaDiscoGapicNamer extends DiscoGapicNamer {
+/**
+ * The context for transforming an API interface, in an input-agnostic way, into a view model to use
+ * for client library generation.
+ */
+public interface TransformationContext {
 
-  public JavaDiscoGapicNamer() {
-    super(new JavaNameFormatter());
-  }
+  ProductConfig getProductConfig();
+
+  SurfaceNamer getNamer();
+
+  ImportTypeTable getImportTypeTable();
 }

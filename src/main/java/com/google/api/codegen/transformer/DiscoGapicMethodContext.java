@@ -14,46 +14,46 @@
  */
 package com.google.api.codegen.transformer;
 
+import static com.google.api.codegen.config.FieldType.ApiSource.DISCOVERY;
+
 import com.google.api.codegen.config.DiscoGapicMethodConfig;
+import com.google.api.codegen.config.DiscoveryMethodModel;
+import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.FieldType.ApiSource;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
+import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
-import com.google.api.codegen.discovery.Method;
 import com.google.auto.value.AutoValue;
+import com.google.common.base.Preconditions;
 
 /** The context for transforming a method to a view model object. */
 @AutoValue
 public abstract class DiscoGapicMethodContext implements MethodContext {
   public static DiscoGapicMethodContext create(
-      InterfaceContext surfaceTransformerContext,
+      DiscoGapicInterfaceContext surfaceTransformerContext,
       String interfaceName,
       GapicProductConfig productConfig,
       SchemaTypeTable typeTable,
-      SurfaceNamer namer,
-      Method method,
+      DiscoGapicNamer namer,
+      DiscoveryMethodModel method,
       DiscoGapicMethodConfig methodConfig,
       FlatteningConfig flatteningConfig,
       FeatureConfig featureConfig) {
+    Preconditions.checkArgument(method != null && method.getApiSource().equals(DISCOVERY));
     return new AutoValue_DiscoGapicMethodContext(
-        surfaceTransformerContext,
-        null,
         productConfig,
-        namer,
         flatteningConfig,
         featureConfig,
-        method,
-        new DiscoGapicNamer(namer),
         interfaceName,
         methodConfig,
-        typeTable);
+        surfaceTransformerContext,
+        typeTable,
+        method,
+        namer);
   }
-
-  /** The Discovery Method for which this object is a transformation context. */
-  public abstract Method getMethod();
-
-  public abstract DiscoGapicNamer getDiscoGapicNamer();
 
   public abstract String interfaceName();
 
@@ -78,32 +78,106 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
   @Override
   public DiscoGapicMethodContext cloneWithEmptyTypeTable() {
     return create(
-        getSurfaceTransformerContext(),
+        getSurfaceInterfaceContext(),
         interfaceName(),
         getProductConfig(),
         (SchemaTypeTable) getTypeTable().cloneEmpty(),
         getNamer(),
-        getMethod(),
+        getMethodModel(),
         getMethodConfig(),
         getFlatteningConfig(),
         getFeatureConfig());
   }
 
   @Override
+  public abstract DiscoGapicInterfaceContext getSurfaceInterfaceContext();
+
+  @Override
   public abstract SchemaTypeTable getTypeTable();
 
   @Override
-  public String getAndSaveRequestTypeName() {
-    return getTypeTable().getAndSaveNicknameFor(getMethod().request());
+  public abstract DiscoveryMethodModel getMethodModel();
+
+  @Override
+  public ApiSource getApiSource() {
+    return DISCOVERY;
   }
 
   @Override
-  public String getAndSaveResponseTypeName() {
-    return getTypeTable().getAndSaveNicknameFor(getMethod().response());
+  public String getStubName() {
+    return getNamer().getStubName(getInterfaceConfig());
   }
 
   @Override
-  public String getBatchingDescriptorConstName() {
-    return getNamer().getBatchingDescriptorConstName(getMethod());
+  public String getInterfaceSimpleName() {
+    return interfaceName();
+  }
+
+  @Override
+  public abstract DiscoGapicNamer getNamer();
+
+  @Override
+  public String getPageStreamingDescriptorConstName() {
+    return getNamer().getPageStreamingDescriptorConstName(getMethodModel());
+  }
+
+  @Override
+  public String getAndSavePagedResponseTypeName(FieldConfig fieldConfig) {
+    return getNamer().getAndSavePagedResponseTypeName(this, fieldConfig);
+  }
+
+  @Override
+  public String getPagedListResponseFactoryConstName() {
+    return getNamer().getPagedListResponseFactoryConstName(getMethodModel());
+  }
+
+  @Override
+  public String getApiMethodName(VisibilityConfig visibilityConfig) {
+    return getNamer().getApiMethodName(getMethodModel(), visibilityConfig);
+  }
+
+  @Override
+  public String getTargetInterfaceFullName() {
+    return "TargetInterfaceFullName() not yet implemented.";
+  }
+
+  @Override
+  public String getAsyncApiMethodName(VisibilityConfig visibilityConfig) {
+    return getNamer().getAsyncApiMethodName(getMethodModel(), visibilityConfig);
+  }
+
+  @Override
+  public String getGrpcContainerTypeName() {
+    return "getGrpcContainerTypeName() not implemented for Discovery-based APIs.";
+  }
+
+  @Override
+  public String getGrpcMethodConstant() {
+    return "getGrpcMethodConstant() not implemented for Discovery-based APIs.";
+  }
+
+  @Override
+  public String getSettingsMemberName() {
+    return getNamer().getSettingsMemberName(getMethodModel());
+  }
+
+  @Override
+  public String getSettingsFunctionName() {
+    return getNamer().getSettingsFunctionName(getMethodModel());
+  }
+
+  @Override
+  public String getCallableName() {
+    return getNamer().getCallableName(getMethodModel());
+  }
+
+  @Override
+  public String getPagedCallableName() {
+    return getNamer().getPagedCallableName(getMethodModel());
+  }
+
+  @Override
+  public String getInterfaceFileName() {
+    return getTargetInterfaceFullName();
   }
 }

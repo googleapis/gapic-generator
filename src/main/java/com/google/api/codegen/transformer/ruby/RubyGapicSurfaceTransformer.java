@@ -18,6 +18,7 @@ import com.google.api.codegen.GeneratorVersionProvider;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProductServiceConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
@@ -44,7 +45,6 @@ import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexRequireView;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexView;
 import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
@@ -113,7 +113,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.outputPath(namer.getSourceFilePath(subPath, name));
 
     xapiClass.fileHeader(fileHeaderTransformer.generateFileHeader(context));
-    xapiClass.protoFilename(context.getInterface().getFile().getSimpleName());
+    xapiClass.protoFilename(context.getInterfaceFileName());
 
     xapiClass.name(name);
     xapiClass.doc(serviceTransformer.generateServiceDoc(context, methods.get(0)));
@@ -161,7 +161,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private List<ApiMethodView> generateApiMethods(GapicInterfaceContext context) {
     ImmutableList.Builder<ApiMethodView> apiMethods = ImmutableList.builder();
-    for (Method method : context.getSupportedMethods()) {
+    for (MethodModel method : context.getSupportedMethods()) {
       apiMethods.add(apiMethodTransformer.generateMethod(context.asDynamicMethodContext(method)));
     }
     return apiMethods.build();

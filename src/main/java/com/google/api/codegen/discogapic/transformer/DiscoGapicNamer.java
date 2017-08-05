@@ -14,16 +14,37 @@
  */
 package com.google.api.codegen.discogapic.transformer;
 
+import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.discovery.Method;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NameFormatter;
-import com.google.api.codegen.util.NameFormatterDelegator;
 
 /** Provides language-specific names for variables and classes. */
-public class DiscoGapicNamer extends NameFormatterDelegator {
+public class DiscoGapicNamer extends SurfaceNamer {
+  private final SurfaceNamer languageNamer;
 
-  public DiscoGapicNamer(NameFormatter nameFormatter) {
-    super(nameFormatter);
+  /* Create a JavaSurfaceNamer for a Discovery-based API. */
+  public DiscoGapicNamer(SurfaceNamer parentNamer, NameFormatter formatter) {
+    super(
+        formatter,
+        parentNamer.getSchemaTypeFormatter(),
+        parentNamer.getTypeNameConverter(),
+        parentNamer.getCommentReformatter(),
+        parentNamer.getPackageName());
+    this.languageNamer = parentNamer;
+  }
+
+  /* @return the underlying language surface namer. */
+  public SurfaceNamer getLanguageNamer() {
+    return languageNamer;
+  }
+
+  @Override
+  /* The return type name in a static language for the given method. */
+  public String getStaticLangReturnTypeName(MethodModel method, MethodConfig methodConfig) {
+    return getNotImplementedString("idk yet");
   }
 
   /** Returns the variable name for a field. */
@@ -56,7 +77,7 @@ public class DiscoGapicNamer extends NameFormatterDelegator {
    * Returns the array of substrings after the input is split by periods. Ex: Input of
    * "compute.addresses.aggregatedList" returns the array: ["compute", "addresses", "List"].
    */
-  public String[] getMethodNamePieces(String longMethodName) {
+  public static String[] getMethodNamePieces(String longMethodName) {
     String[] pieces = longMethodName.split("\\.");
     if (pieces.length < 3) {
       throw new IllegalArgumentException(
@@ -79,9 +100,27 @@ public class DiscoGapicNamer extends NameFormatterDelegator {
    * Returns the last substring after the input is split by periods. Ex: Input
    * "compute.addresses.aggregatedList" returns "aggregatedList".
    */
+  public String getResponseName(String fullMethodName) {
+    String[] pieces = getMethodNamePieces(fullMethodName);
+    return privateFieldName(
+        Name.anyCamel(pieces[pieces.length - 2], pieces[pieces.length - 1], "http", "response"));
+  }
+
+  /**
+   * Returns the last substring after the input is split by periods. Ex: Input
+   * "compute.addresses.aggregatedList" returns "aggregatedList".
+   */
   public String getRequestName(Method method) {
     return getRequestName(method.id());
   }
 
-  //TODO(andrealin): Naming methods for responses, service name.
+  /**
+   * Returns the last substring after the input is split by periods. Ex: Input
+   * "compute.addresses.aggregatedList" returns "aggregatedList".
+   */
+  public String getResponseName(Method method) {
+    return getResponseName(method.id());
+  }
+
+  //TODO(andrealin): Naming methods for service name.
 }

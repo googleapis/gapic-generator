@@ -18,25 +18,25 @@ import com.google.api.codegen.config.BatchingConfig;
 import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.config.GenericFieldSelector;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.viewmodel.BatchingConfigView;
 import com.google.api.codegen.viewmodel.BatchingDescriptorClassView;
 import com.google.api.codegen.viewmodel.BatchingDescriptorView;
 import com.google.api.codegen.viewmodel.BatchingPartitionKeyView;
 import com.google.api.codegen.viewmodel.FieldCopyView;
-import com.google.api.tools.framework.model.Method;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
 
 public class BatchingTransformer {
 
-  public List<BatchingDescriptorView> generateDescriptors(GapicInterfaceContext context) {
+  public List<BatchingDescriptorView> generateDescriptors(InterfaceContext context) {
     SurfaceNamer namer = context.getNamer();
     ImmutableList.Builder<BatchingDescriptorView> descriptors = ImmutableList.builder();
-    for (Method method : context.getBatchingMethods()) {
+    for (MethodModel method : context.getBatchingMethods()) {
       BatchingConfig batching = context.getMethodConfig(method).getBatching();
       BatchingDescriptorView.Builder descriptor = BatchingDescriptorView.newBuilder();
-      descriptor.methodName(namer.getMethodKey(method));
+      descriptor.methodName(context.getNamer().getMethodKey(method));
       descriptor.batchedFieldName(namer.getFieldName(batching.getBatchedField()));
       descriptor.discriminatorFieldNames(generateDiscriminatorFieldNames(batching));
 
@@ -51,33 +51,15 @@ public class BatchingTransformer {
     return descriptors.build();
   }
 
-  public List<BatchingDescriptorClassView> generateDescriptorClasses(
-      GapicInterfaceContext context) {
+  public List<BatchingDescriptorClassView> generateDescriptorClasses(InterfaceContext context) {
     List<BatchingDescriptorClassView> descriptors = new ArrayList<>();
 
-    for (Method method : context.getInterface().getMethods()) {
+    for (MethodModel method : context.getInterfaceMethods()) {
       MethodConfig methodConfig = context.getMethodConfig(method);
       if (!methodConfig.isBatching()) {
         continue;
       }
       descriptors.add(generateDescriptorClass(context.asRequestMethodContext(method)));
-    }
-
-    return descriptors;
-  }
-
-  public List<BatchingDescriptorClassView> generateDescriptorClasses(
-      DiscoGapicInterfaceContext context) {
-    List<BatchingDescriptorClassView> descriptors = new ArrayList<>();
-
-    for (com.google.api.codegen.discovery.Method method : context.getMethods()) {
-      MethodConfig methodConfig = context.getMethodConfig(method);
-      if (!methodConfig.isBatching()) {
-        continue;
-      }
-      descriptors.add(
-          generateDescriptorClass(
-              context.asRequestMethodContext(method, context.getInterfaceName())));
     }
 
     return descriptors;
@@ -118,9 +100,15 @@ public class BatchingTransformer {
 
     BatchingDescriptorClassView.Builder desc = BatchingDescriptorClassView.newBuilder();
 
-    desc.name(context.getBatchingDescriptorConstName());
-    desc.requestTypeName(context.getAndSaveRequestTypeName());
-    desc.responseTypeName(context.getAndSaveResponseTypeName());
+    desc.name(context.getNamer().getBatchingDescriptorConstName(context.getMethodModel()));
+    desc.requestTypeName(
+        context
+            .getMethodModel()
+            .getAndSaveRequestTypeName(context.getTypeTable(), context.getNamer()));
+    desc.responseTypeName(
+        context
+            .getMethodModel()
+            .getAndSaveResponseTypeName(context.getTypeTable(), context.getNamer()));
     desc.batchedFieldTypeName(context.getTypeTable().getAndSaveNicknameFor(batchedField));
 
     desc.partitionKeys(generatePartitionKeys(context));

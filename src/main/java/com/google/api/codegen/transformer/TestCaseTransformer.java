@@ -34,7 +34,6 @@ import com.google.api.codegen.viewmodel.testing.MockGrpcResponseView;
 import com.google.api.codegen.viewmodel.testing.PageStreamingResponseView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
 import com.google.api.tools.framework.model.Field;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
@@ -54,21 +53,20 @@ public class TestCaseTransformer {
       SymbolTable testNameTable,
       InitCodeContext initCodeContext,
       ClientMethodType clientMethodType) {
-    Method method = methodContext.getMethod();
+    MethodModel method = methodContext.getMethodModel();
     MethodConfig methodConfig = methodContext.getMethodConfig();
     SurfaceNamer namer = methodContext.getNamer();
+    TypeRef outputType = methodContext.getMethod().getOutputType();
+    TypeRef inputType = methodContext.getMethod().getInputType();
 
     String clientMethodName;
     String responseTypeName;
-    String fullyQualifiedResponseTypeName =
-        methodContext.getTypeTable().getFullNameFor(method.getOutputType());
+    String fullyQualifiedResponseTypeName = methodContext.getTypeTable().getFullNameFor(outputType);
     if (methodConfig.isPageStreaming()) {
       clientMethodName = namer.getApiMethodName(method, methodConfig.getVisibility());
       responseTypeName =
           namer.getAndSavePagedResponseTypeName(
-              method,
-              methodContext.getTypeTable(),
-              methodConfig.getPageStreaming().getResourcesFieldConfig());
+              methodContext, methodConfig.getPageStreaming().getResourcesFieldConfig());
     } else if (methodConfig.isLongRunningOperation()) {
       clientMethodName = namer.getLroApiMethodName(method, methodConfig.getVisibility());
       responseTypeName =
@@ -81,16 +79,16 @@ public class TestCaseTransformer {
               .getFullNameFor(methodConfig.getLongRunningConfig().getReturnType());
     } else if (clientMethodType == ClientMethodType.CallableMethod) {
       clientMethodName = namer.getCallableMethodName(method);
-      responseTypeName = methodContext.getTypeTable().getAndSaveNicknameFor(method.getOutputType());
+      responseTypeName = methodContext.getTypeTable().getAndSaveNicknameFor(outputType);
     } else {
       clientMethodName = namer.getApiMethodName(method, methodConfig.getVisibility());
-      responseTypeName = methodContext.getTypeTable().getAndSaveNicknameFor(method.getOutputType());
+      responseTypeName = methodContext.getTypeTable().getAndSaveNicknameFor(outputType);
     }
 
     InitCodeView initCode = initCodeTransformer.generateInitCode(methodContext, initCodeContext);
 
     boolean hasRequestParameters = initCode.lines().size() > 0;
-    boolean hasReturnValue = !ServiceMessages.s_isEmptyType(method.getOutputType());
+    boolean hasReturnValue = !ServiceMessages.s_isEmptyType(outputType);
     if (methodConfig.isLongRunningOperation()) {
       hasReturnValue =
           !ServiceMessages.s_isEmptyType(methodConfig.getLongRunningConfig().getReturnType());
@@ -108,13 +106,12 @@ public class TestCaseTransformer {
         .name(namer.getTestCaseName(testNameTable, method))
         .nameWithException(namer.getExceptionTestCaseName(testNameTable, method))
         .pageStreamingResponseViews(createPageStreamingResponseViews(methodContext))
-        .requestTypeName(methodContext.getTypeTable().getAndSaveNicknameFor(method.getInputType()))
+        .requestTypeName(methodContext.getTypeTable().getAndSaveNicknameFor(inputType))
         .responseTypeName(responseTypeName)
-        .fullyQualifiedRequestTypeName(
-            methodContext.getTypeTable().getFullNameFor(method.getInputType()))
+        .fullyQualifiedRequestTypeName(methodContext.getTypeTable().getFullNameFor(inputType))
         .fullyQualifiedResponseTypeName(fullyQualifiedResponseTypeName)
         .serviceConstructorName(
-            namer.getApiWrapperClassConstructorName(methodContext.getInterface()))
+            namer.getApiWrapperClassConstructorName(methodContext.getInterfaceSimpleName()))
         .fullyQualifiedServiceClassName(
             namer.getFullyQualifiedApiWrapperClassName(methodContext.getInterfaceConfig()))
         .clientMethodName(clientMethodName)

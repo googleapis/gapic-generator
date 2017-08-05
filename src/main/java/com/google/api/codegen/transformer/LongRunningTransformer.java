@@ -17,36 +17,37 @@ package com.google.api.codegen.transformer;
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.LongRunningConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
-import com.google.api.tools.framework.model.Method;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 
 public class LongRunningTransformer {
-  public List<LongRunningOperationDetailView> generateDetailViews(GapicInterfaceContext context) {
+  public List<LongRunningOperationDetailView> generateDetailViews(InterfaceContext context) {
     ImmutableList.Builder<LongRunningOperationDetailView> views = ImmutableList.builder();
-    for (Method method : context.getLongRunningMethods()) {
+    for (MethodModel method : context.getLongRunningMethods()) {
+      // TODO(andrealin): Remove casting.
       views.add(generateDetailView(context.asDynamicMethodContext(method)));
     }
     return views.build();
   }
 
-  public LongRunningOperationDetailView generateDetailView(GapicMethodContext context) {
+  public LongRunningOperationDetailView generateDetailView(MethodContext context) {
     MethodConfig methodConfig = context.getMethodConfig();
     LongRunningConfig lroConfig = methodConfig.getLongRunningConfig();
     SurfaceNamer namer = context.getNamer();
 
     String clientReturnTypeName =
         namer.getAndSaveOperationResponseTypeName(
-            context.getMethod(), context.getTypeTable(), methodConfig);
+            context.getMethodModel(), context.getTypeTable(), methodConfig);
     String operationPayloadTypeName =
         namer.getLongRunningOperationTypeName(context.getTypeTable(), lroConfig.getReturnType());
     String metadataTypeName =
         namer.getLongRunningOperationTypeName(context.getTypeTable(), lroConfig.getMetadataType());
 
     return LongRunningOperationDetailView.newBuilder()
-        .methodName(namer.getApiMethodName(context.getMethod(), VisibilityConfig.PUBLIC))
+        .methodName(namer.getApiMethodName(context.getMethodModel(), VisibilityConfig.PUBLIC))
         .constructorName(namer.getTypeConstructor(clientReturnTypeName))
         .clientReturnTypeName(clientReturnTypeName)
         .operationPayloadTypeName(operationPayloadTypeName)

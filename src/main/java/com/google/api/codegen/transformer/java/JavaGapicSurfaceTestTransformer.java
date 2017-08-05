@@ -19,6 +19,8 @@ import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
@@ -49,7 +51,6 @@ import com.google.api.codegen.viewmodel.testing.MockServiceView;
 import com.google.api.codegen.viewmodel.testing.SmokeTestClassView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
 import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import java.util.ArrayList;
 import java.util.List;
@@ -129,7 +130,9 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
   SmokeTestClassView.Builder createSmokeTestClassViewBuilder(GapicInterfaceContext context) {
     addSmokeTestImports(context);
 
-    Method method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
+    // TODO(andrealin): The SmokeTestConfig should return a MethodModel, instead of creating one here.
+    MethodModel method =
+        new ProtoMethodModel(context.getInterfaceConfig().getSmokeTestConfig().getMethod());
     SurfaceNamer namer = context.getNamer();
 
     FlatteningConfig flatteningGroup =
@@ -194,7 +197,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private List<TestCaseView> createTestCaseViews(GapicInterfaceContext context) {
     ArrayList<TestCaseView> testCaseViews = new ArrayList<>();
     SymbolTable testNameTable = new SymbolTable();
-    for (Method method : context.getSupportedMethods()) {
+    for (MethodModel method : context.getSupportedMethods()) {
       MethodConfig methodConfig = context.getMethodConfig(method);
       if (methodConfig.isGrpcStreaming()) {
         if (methodConfig.getGrpcStreamingType() == GrpcStreamingType.ClientStreaming) {
@@ -203,7 +206,8 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
           continue;
         }
         addGrpcStreamingTestImport(context);
-        GapicMethodContext methodContext = context.asRequestMethodContext(method);
+        GapicMethodContext methodContext =
+            (GapicMethodContext) context.asRequestMethodContext(method);
         InitCodeContext initCodeContext =
             initCodeTransformer.createRequestInitCodeContext(
                 methodContext,

@@ -72,6 +72,21 @@ public class InitCodeTransformer {
    * Generates initialization code from the given GapicMethodContext and InitCodeContext objects.
    */
   public InitCodeView generateInitCode(
+      MethodContext methodContext, InitCodeContext initCodeContext) {
+    switch (methodContext.getApiSource()) {
+      case DISCOVERY:
+        return generateInitCode((DiscoGapicMethodContext) methodContext, initCodeContext);
+      case PROTO:
+        return generateInitCode((GapicMethodContext) methodContext, initCodeContext);
+      default:
+        throw new IllegalArgumentException("Unhandled ApiSource type.");
+    }
+  }
+
+  /**
+   * Generates initialization code from the given GapicMethodContext and InitCodeContext objects.
+   */
+  public InitCodeView generateInitCode(
       GapicMethodContext methodContext, InitCodeContext initCodeContext) {
     InitCodeNode rootNode = InitCodeNode.createTree(initCodeContext);
     if (initCodeContext.outputType() == InitCodeOutputType.FieldList) {
@@ -437,7 +452,8 @@ public class InitCodeTransformer {
             context
                 .getNamer()
                 .getFormatFunctionName(
-                    context.getInterface(), initValueConfig.getSingleResourceNameConfig()));
+                    context.getInterfaceSimpleName(),
+                    initValueConfig.getSingleResourceNameConfig()));
 
         List<String> varList =
             Lists.newArrayList(

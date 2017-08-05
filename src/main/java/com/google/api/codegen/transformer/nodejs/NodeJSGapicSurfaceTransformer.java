@@ -21,6 +21,7 @@ import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig;
 import com.google.api.codegen.config.LongRunningConfig;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProductServiceConfig;
 import com.google.api.codegen.config.ProtoField;
@@ -51,7 +52,6 @@ import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexRequireView;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexView;
 import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
@@ -117,7 +117,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.outputPath(subPath + "/" + namer.getServiceFileName(context.getInterfaceConfig()));
 
     xapiClass.fileHeader(fileHeaderTransformer.generateFileHeader(context));
-    xapiClass.protoFilename(context.getInterface().getFile().getSimpleName());
+    xapiClass.protoFilename(context.getInterfaceFileName());
 
     xapiClass.name(namer.getApiWrapperClassName(context.getInterfaceConfig()));
     xapiClass.doc(serviceTransformer.generateServiceDoc(context, methods.get(0)));
@@ -162,7 +162,8 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
         packageConfig.generatedPackageVersionBound(TargetLanguage.NODEJS).lower());
 
     xapiClass.validDescriptorsNames(generateValidDescriptorsNames(context));
-    xapiClass.constructorName(namer.getApiWrapperClassConstructorName(context.getInterface()));
+    xapiClass.constructorName(
+        namer.getApiWrapperClassConstructorName(context.getInterface().getSimpleName()));
     xapiClass.isGcloud(NodeJSUtils.isGcloud(context.getProductConfig()));
 
     return xapiClass.build();
@@ -188,8 +189,10 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
   private List<ApiMethodView> generateApiMethods(GapicInterfaceContext context) {
     ImmutableList.Builder<ApiMethodView> apiMethods = ImmutableList.builder();
 
-    for (Method method : context.getSupportedMethods()) {
-      apiMethods.add(apiMethodTransformer.generateMethod(context.asDynamicMethodContext(method)));
+    for (MethodModel method : context.getSupportedMethods()) {
+      apiMethods.add(
+          apiMethodTransformer.generateMethod(
+              (GapicMethodContext) context.asDynamicMethodContext(method)));
     }
 
     return apiMethods.build();
@@ -199,7 +202,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
       GapicInterfaceContext context) {
     List<GrpcStreamingDetailView> result = new ArrayList<>();
 
-    for (Method method : context.getGrpcStreamingMethods()) {
+    for (MethodModel method : context.getGrpcStreamingMethods()) {
       GrpcStreamingConfig grpcStreamingConfig =
           context.asDynamicMethodContext(method).getMethodConfig().getGrpcStreaming();
       String resourcesFieldGetFunction = null;
@@ -226,8 +229,9 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
       GapicInterfaceContext context) {
     List<LongRunningOperationDetailView> result = new ArrayList<>();
 
-    for (Method method : context.getLongRunningMethods()) {
-      GapicMethodContext methodContext = context.asDynamicMethodContext(method);
+    for (MethodModel method : context.getLongRunningMethods()) {
+      GapicMethodContext methodContext =
+          (GapicMethodContext) context.asDynamicMethodContext(method);
       LongRunningConfig lroConfig = methodContext.getMethodConfig().getLongRunningConfig();
       TypeRef returnType = lroConfig.getReturnType();
       TypeRef metadataType = lroConfig.getMetadataType();

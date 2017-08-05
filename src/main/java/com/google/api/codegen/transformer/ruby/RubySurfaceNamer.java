@@ -14,22 +14,22 @@
  */
 package com.google.api.codegen.transformer.ruby;
 
-import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
-import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.Synchronicity;
+import com.google.api.codegen.transformer.TransformationContext;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NamePath;
@@ -74,7 +74,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
   /** The function name to format the entity for the given collection. */
   @Override
   public String getFormatFunctionName(
-      Interface apiInterface, SingleResourceNameConfig resourceNameConfig) {
+      String apiInterfaceSimpleName, SingleResourceNameConfig resourceNameConfig) {
     return staticFunctionName(Name.from(resourceNameConfig.getEntityName(), "path"));
   }
 
@@ -91,7 +91,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getRequestVariableName(Method method) {
+  public String getRequestVariableName(MethodModel method) {
     return method.getRequestStreaming() ? "reqs" : "req";
   }
 
@@ -167,12 +167,12 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getDynamicLangReturnTypeName(Method method, MethodConfig methodConfig) {
-    if (ServiceMessages.s_isEmptyType(method.getOutputType())) {
+  public String getDynamicLangReturnTypeName(MethodModel method, MethodConfig methodConfig) {
+    if (method.isOutputTypeEmpty()) {
       return "";
     }
 
-    String classInfo = getModelTypeFormatter().getFullNameForElementType(method.getOutputType());
+    String classInfo = method.getOutputTypeFullName(getModelTypeFormatter());
     if (method.getResponseStreaming()) {
       return "Enumerable<" + classInfo + ">";
     }
@@ -199,13 +199,13 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getLongRunningOperationTypeName(ModelTypeTable typeTable, TypeRef type) {
-    return typeTable.getFullNameFor(type);
+  public String getLongRunningOperationTypeName(ImportTypeTable typeTable, TypeRef type) {
+    return ((ModelTypeTable) typeTable).getFullNameFor(type);
   }
 
   @Override
-  public String getRequestTypeName(ModelTypeTable typeTable, TypeRef type) {
-    return typeTable.getFullNameFor(type);
+  public String getRequestTypeName(ImportTypeTable typeTable, TypeRef type) {
+    return ((ModelTypeTable) typeTable).getFullNameFor(type);
   }
 
   @Override
@@ -215,7 +215,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
 
   @Override
   public List<String> getReturnDocLines(
-      InterfaceContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
+      TransformationContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
     Method method = ((GapicMethodConfig) methodConfig).getMethod();
     if (method.getResponseStreaming()) {
       String classInfo = getModelTypeFormatter().getFullNameForElementType(method.getOutputType());
@@ -320,12 +320,12 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getGrpcStubCallString(Interface apiInterface, Method method) {
+  public String getGrpcStubCallString(Interface apiInterface, MethodModel method) {
     return getFullyQualifiedStubType(apiInterface);
   }
 
   @Override
-  public String getLroApiMethodName(Method method, VisibilityConfig visibility) {
+  public String getLroApiMethodName(MethodModel method, VisibilityConfig visibility) {
     return getMethodKey(method);
   }
 }

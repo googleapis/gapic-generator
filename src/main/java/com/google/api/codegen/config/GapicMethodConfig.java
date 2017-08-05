@@ -48,7 +48,9 @@ import org.joda.time.Duration;
  */
 @AutoValue
 public abstract class GapicMethodConfig extends MethodConfig {
-  public abstract Method getMethod();
+  public Method getMethod() {
+    return ((ProtoMethodModel) getMethodModel()).getProtoMethod();
+  }
 
   @Nullable
   public abstract PageStreamingConfig getPageStreaming();
@@ -61,6 +63,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
 
   public abstract String getRetryCodesConfigName();
 
+  @Override
   public abstract String getRetrySettingsConfigName();
 
   public abstract Duration getTimeout();
@@ -251,7 +254,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
       return null;
     } else {
       return new AutoValue_GapicMethodConfig(
-          method,
+          new ProtoMethodModel(method),
           pageStreaming,
           grpcStreaming,
           flattening,
@@ -357,7 +360,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
   }
 
   /** Returns true if the method is a streaming method */
-  public static boolean isGrpcStreamingMethod(Method method) {
+  public static boolean isGrpcStreamingMethod(MethodModel method) {
     return method.getRequestStreaming() || method.getResponseStreaming();
   }
 

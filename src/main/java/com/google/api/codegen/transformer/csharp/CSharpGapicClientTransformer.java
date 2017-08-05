@@ -20,6 +20,7 @@ import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProductServiceConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
@@ -27,6 +28,7 @@ import com.google.api.codegen.transformer.BatchingTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
+import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PageStreamingTransformer;
@@ -52,7 +54,6 @@ import com.google.api.codegen.viewmodel.StaticLangResourceNamesView;
 import com.google.api.codegen.viewmodel.StaticLangSettingsView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
@@ -255,7 +256,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
   public List<ApiCallSettingsView> generateCallSettings(GapicInterfaceContext context) {
     // This method can be removed once mixins are supported in C#
     List<ApiCallSettingsView> settingsMembers = new ArrayList<>();
-    for (Method method : csharpCommonTransformer.getSupportedMethods(context)) {
+    for (MethodModel method : csharpCommonTransformer.getSupportedMethods(context)) {
       List<ApiCallSettingsView> calls =
           apiCallableTransformer.generateApiCallableSettings(
               context.asRequestMethodContext(method));
@@ -267,7 +268,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
   private List<ReroutedGrpcView> generateReroutedGrpcView(GapicInterfaceContext context) {
     SurfaceNamer namer = context.getNamer();
     Set<ReroutedGrpcView> reroutedViews = new LinkedHashSet<>();
-    for (Method method : csharpCommonTransformer.getSupportedMethods(context)) {
+    for (MethodModel method : csharpCommonTransformer.getSupportedMethods(context)) {
       MethodConfig methodConfig = context.getMethodConfig(method);
       String reroute = methodConfig.getRerouteToGrpcInterface();
       if (reroute != null) {
@@ -285,14 +286,15 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
 
   private List<ModifyMethodView> generateModifyMethods(GapicInterfaceContext context) {
     SurfaceNamer namer = context.getNamer();
-    ModelTypeTable typeTable = context.getModelTypeTable();
     List<ModifyMethodView> modifyMethods = new ArrayList<>();
-    for (Method method : csharpCommonTransformer.getSupportedMethods(context)) {
-      MethodConfig methodContext = context.asRequestMethodContext(method).getMethodConfig();
+    for (MethodModel method : csharpCommonTransformer.getSupportedMethods(context)) {
+      MethodContext methodContext = context.asRequestMethodContext(method);
+      MethodConfig methodConfig = methodContext.getMethodConfig();
       ModifyMethodView.Builder builder = ModifyMethodView.builder();
-      builder.name(namer.getModifyMethodName(method));
-      builder.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
-      builder.grpcStreamingType(methodContext.getGrpcStreamingType());
+      builder.name(namer.getModifyMethodName(methodContext));
+      builder.requestTypeName(
+          method.getAndSaveRequestTypeName(context.getImportTypeTable(), context.getNamer()));
+      builder.grpcStreamingType(methodConfig.getGrpcStreamingType());
       modifyMethods.add(builder.build());
     }
     return modifyMethods;
@@ -306,17 +308,22 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
             .build();
 
     List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
-    for (Method method : csharpCommonTransformer.getSupportedMethods(context)) {
+    for (MethodModel method : csharpCommonTransformer.getSupportedMethods(context)) {
       MethodConfig methodConfig = context.getMethodConfig(method);
-      GapicMethodContext requestMethodContext = context.asRequestMethodContext(method);
+      MethodContext requestMethodContext = context.asRequestMethodContext(method);
       if (methodConfig.isGrpcStreaming()) {
+        // Only for protobuf-based APIs.
         apiMethods.add(
-            apiMethodTransformer.generateGrpcStreamingRequestObjectMethod(requestMethodContext));
+            apiMethodTransformer.generateGrpcStreamingRequestObjectMethod(
+                (GapicMethodContext) requestMethodContext));
       } else if (methodConfig.isLongRunningOperation()) {
+        // Only for protobuf-based APIs.
+        GapicMethodContext gapicMethodContext = (GapicMethodContext) requestMethodContext;
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             GapicMethodContext methodContext =
-                context.asFlattenedMethodContext(method, flatteningGroup);
+                context.asFlattenedMethodContext(
+                    requestMethodContext.getMethodModel(), flatteningGroup);
             apiMethods.add(
                 apiMethodTransformer.generateAsyncOperationFlattenedMethod(
                     methodContext,
@@ -339,7 +346,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
                 requestMethodContext, csharpCommonTransformer.callSettingsParam(), true));
         apiMethods.add(
             apiMethodTransformer.generateOperationRequestObjectMethod(
-                requestMethodContext, csharpCommonTransformer.callSettingsParam()));
+                gapicMethodContext, csharpCommonTransformer.callSettingsParam()));
       } else if (methodConfig.isPageStreaming()) {
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {

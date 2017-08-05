@@ -17,8 +17,9 @@ package com.google.api.codegen.transformer.csharp;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
+import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
-import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
@@ -37,7 +38,6 @@ import com.google.api.codegen.viewmodel.StaticLangApiMethodSnippetView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
@@ -117,9 +117,10 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
   private List<StaticLangApiMethodSnippetView> generateMethods(GapicInterfaceContext context) {
     List<StaticLangApiMethodSnippetView> methods = new ArrayList<>();
 
-    for (Method method : csharpCommonTransformer.getSupportedMethods(context)) {
-      MethodConfig methodConfig = context.getMethodConfig(method);
-      GapicMethodContext methodContext = context.asRequestMethodContext(method);
+    for (MethodModel method : csharpCommonTransformer.getSupportedMethods(context)) {
+      GapicMethodConfig methodConfig = (GapicMethodConfig) context.getMethodConfig(method);
+      GapicMethodContext methodContext =
+          (GapicMethodContext) context.asRequestMethodContext(method);
       if (methodConfig.isGrpcStreaming()) {
         methods.add(generateGrpcStreamingRequestMethod(methodContext));
       } else if (methodConfig.isLongRunningOperation()) {
@@ -130,7 +131,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
             FlatteningConfig flatteningGroup = flatteningGroups.get(i);
             String nameSuffix = requiresNameSuffix ? Integer.toString(i + 1) : "";
             GapicMethodContext methodContextFlat =
-                context.asFlattenedMethodContext(method, flatteningGroup);
+                context.asFlattenedMethodContext(methodContext.getMethodModel(), flatteningGroup);
             methods.add(generateOperationFlattenedAsyncMethod(methodContextFlat, nameSuffix));
             methods.add(generateOperationFlattenedMethod(methodContextFlat, nameSuffix));
           }
@@ -145,7 +146,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
             FlatteningConfig flatteningGroup = flatteningGroups.get(i);
             String nameSuffix = requiresNameSuffix ? Integer.toString(i + 1) : "";
             GapicMethodContext methodContextFlat =
-                context.asFlattenedMethodContext(method, flatteningGroup);
+                context.asFlattenedMethodContext(methodContext.getMethodModel(), flatteningGroup);
             methods.add(generatePagedFlattenedAsyncMethod(methodContextFlat, nameSuffix));
             methods.add(generatePagedFlattenedMethod(methodContextFlat, nameSuffix));
           }
@@ -160,7 +161,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
             FlatteningConfig flatteningGroup = flatteningGroups.get(i);
             String nameSuffix = requiresNameSuffix ? Integer.toString(i + 1) : "";
             GapicMethodContext methodContextFlat =
-                context.asFlattenedMethodContext(method, flatteningGroup);
+                context.asFlattenedMethodContext(methodContext.getMethodModel(), flatteningGroup);
             methods.add(generateFlattenedAsyncMethod(methodContextFlat, nameSuffix));
             methods.add(generateFlattenedMethod(methodContextFlat, nameSuffix));
           }
@@ -263,8 +264,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
     PageStreamingConfig pageStreaming = methodContext.getMethodConfig().getPageStreaming();
     FieldConfig resourceFieldConfig = pageStreaming.getResourcesFieldConfig();
     String callerResponseTypeName =
-        namer.getAndSaveCallerAsyncPagedResponseTypeName(
-            methodContext.getMethod(), methodContext.getTypeTable(), resourceFieldConfig);
+        namer.getAndSaveCallerAsyncPagedResponseTypeName(methodContext, resourceFieldConfig);
     return StaticLangApiMethodSnippetView.newBuilder()
         .method(method)
         .snippetMethodName(method.name() + suffix)
@@ -283,8 +283,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
     PageStreamingConfig pageStreaming = methodContext.getMethodConfig().getPageStreaming();
     FieldConfig resourceFieldConfig = pageStreaming.getResourcesFieldConfig();
     String callerResponseTypeName =
-        namer.getAndSaveCallerPagedResponseTypeName(
-            methodContext.getMethod(), methodContext.getTypeTable(), resourceFieldConfig);
+        namer.getAndSaveCallerPagedResponseTypeName(methodContext, resourceFieldConfig);
     return StaticLangApiMethodSnippetView.newBuilder()
         .method(method)
         .snippetMethodName(method.name() + suffix)
@@ -303,8 +302,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
     PageStreamingConfig pageStreaming = methodContext.getMethodConfig().getPageStreaming();
     FieldConfig resourceFieldConfig = pageStreaming.getResourcesFieldConfig();
     String callerResponseTypeName =
-        namer.getAndSaveCallerAsyncPagedResponseTypeName(
-            methodContext.getMethod(), methodContext.getTypeTable(), resourceFieldConfig);
+        namer.getAndSaveCallerAsyncPagedResponseTypeName(methodContext, resourceFieldConfig);
     return StaticLangApiMethodSnippetView.newBuilder()
         .method(method)
         .snippetMethodName(method.name() + "_RequestObject")
@@ -323,8 +321,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
     PageStreamingConfig pageStreaming = methodContext.getMethodConfig().getPageStreaming();
     FieldConfig resourceFieldConfig = pageStreaming.getResourcesFieldConfig();
     String callerResponseTypeName =
-        namer.getAndSaveCallerPagedResponseTypeName(
-            methodContext.getMethod(), methodContext.getTypeTable(), resourceFieldConfig);
+        namer.getAndSaveCallerPagedResponseTypeName(methodContext, resourceFieldConfig);
     return StaticLangApiMethodSnippetView.newBuilder()
         .method(method)
         .snippetMethodName(method.name() + "_RequestObject")
@@ -345,7 +342,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
             .getTypeTable()
             .getAndSaveNicknameFor(
                 namer.getStaticLangCallerAsyncReturnTypeName(
-                    methodContext.getMethod(), methodContext.getMethodConfig()));
+                    methodContext.getMethodModel(), methodContext.getMethodConfig()));
     return StaticLangApiMethodSnippetView.newBuilder()
         .method(method)
         .snippetMethodName(method.name() + suffix)
@@ -364,7 +361,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
             .getTypeTable()
             .getAndSaveNicknameFor(
                 namer.getStaticLangCallerReturnTypeName(
-                    methodContext.getMethod(), methodContext.getMethodConfig()));
+                    methodContext.getMethodModel(), methodContext.getMethodConfig()));
     return StaticLangApiMethodSnippetView.newBuilder()
         .method(method)
         .snippetMethodName(method.name() + suffix)
@@ -383,7 +380,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
             .getTypeTable()
             .getAndSaveNicknameFor(
                 namer.getStaticLangCallerAsyncReturnTypeName(
-                    methodContext.getMethod(), methodContext.getMethodConfig()));
+                    methodContext.getMethodModel(), methodContext.getMethodConfig()));
     return StaticLangApiMethodSnippetView.newBuilder()
         .method(method)
         .snippetMethodName(method.name() + "_RequestObject")
@@ -403,7 +400,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
             .getTypeTable()
             .getAndSaveNicknameFor(
                 namer.getStaticLangCallerAsyncReturnTypeName(
-                    methodContext.getMethod(), methodContext.getMethodConfig()));
+                    methodContext.getMethodModel(), methodContext.getMethodConfig()));
     return StaticLangApiMethodSnippetView.newBuilder()
         .method(method)
         .snippetMethodName(method.name() + "_RequestObject")

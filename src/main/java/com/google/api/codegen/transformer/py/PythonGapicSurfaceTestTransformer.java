@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer.py;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.metacode.InitCodeContext;
@@ -46,7 +47,6 @@ import com.google.api.codegen.viewmodel.testing.ClientTestFileView;
 import com.google.api.codegen.viewmodel.testing.MockServiceUsageView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
 import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
@@ -141,8 +141,9 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
   private List<TestCaseView> createTestCaseViews(GapicInterfaceContext context) {
     ImmutableList.Builder<TestCaseView> testCaseViews = ImmutableList.builder();
     SymbolTable testNameTable = new SymbolTable();
-    for (Method method : context.getSupportedMethods()) {
-      GapicMethodContext methodContext = context.asRequestMethodContext(method);
+    for (MethodModel method : context.getSupportedMethods()) {
+      GapicMethodContext methodContext =
+          (GapicMethodContext) context.asRequestMethodContext(method);
       ClientMethodType clientMethodType = ClientMethodType.OptionalArrayMethod;
       if (methodContext.getMethodConfig().isLongRunningOperation()) {
         clientMethodType = ClientMethodType.OperationOptionalArrayMethod;
