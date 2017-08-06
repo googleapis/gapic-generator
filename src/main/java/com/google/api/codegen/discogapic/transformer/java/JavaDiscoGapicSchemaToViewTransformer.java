@@ -83,13 +83,14 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
   @Override
   public List<ViewModel> transform(Document document, GapicProductConfig productConfig) {
     List<ViewModel> surfaceSchemas = new ArrayList<>();
-    JavaSurfaceNamer surfaceNamer = new JavaSurfaceNamer(productConfig.getPackageName());
+    JavaSurfaceNamer surfaceNamer =
+        new JavaSurfaceNamer(productConfig.getPackageName(), nameFormatter);
     DiscoGapicInterfaceContext context =
         DiscoGapicInterfaceContext.createWithoutInterface(
             document,
             productConfig,
             createTypeTable(productConfig.getPackageName()),
-            new DiscoGapicNamer(surfaceNamer, new JavaNameFormatter()),
+            new DiscoGapicNamer(surfaceNamer, nameFormatter),
             JavaFeatureConfig.newBuilder().enableStringFormatFunctions(false).build());
 
     // Escape any schema's field names that are Java keywords.

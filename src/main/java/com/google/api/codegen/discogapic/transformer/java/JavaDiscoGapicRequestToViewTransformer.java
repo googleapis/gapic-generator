@@ -105,8 +105,8 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
   @Override
   public List<ViewModel> transform(Document document, GapicProductConfig productConfig) {
     List<ViewModel> surfaceRequests = new ArrayList<>();
-    SurfaceNamer surfaceNamer = new JavaSurfaceNamer(productConfig.getPackageName());
-    DiscoGapicNamer discoGapicNamer = new DiscoGapicNamer(surfaceNamer, new JavaNameFormatter());
+    SurfaceNamer surfaceNamer = new JavaSurfaceNamer(productConfig.getPackageName(), nameFormatter);
+    DiscoGapicNamer discoGapicNamer = new DiscoGapicNamer(surfaceNamer, nameFormatter);
 
     DiscoGapicInterfaceContext context =
         DiscoGapicInterfaceContext.createWithoutInterface(
