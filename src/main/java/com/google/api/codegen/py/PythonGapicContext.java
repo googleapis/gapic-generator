@@ -21,7 +21,6 @@ import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.MethodConfig;
-import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoField;
 import com.google.api.codegen.config.ProtoMethodModel;
@@ -146,9 +145,9 @@ public class PythonGapicContext extends GapicContext {
    * <p>TODO(eoogbe): Temporary solution to use MVVM with just sample gen. This class will
    * eventually go away when code gen also converts to MVVM.
    */
-  public ApiMethodView getApiMethodView(Interface apiInterface, MethodModel method) {
+  public ApiMethodView getApiMethodView(Interface apiInterface, Method method) {
     GapicInterfaceContext context = getSurfaceTransformerContextFromService(apiInterface);
-    GapicMethodContext methodContext = context.asDynamicMethodContext(method);
+    GapicMethodContext methodContext = context.asDynamicMethodContext(new ProtoMethodModel(method));
     DynamicLangApiMethodTransformer apiMethodTransformer =
         new DynamicLangApiMethodTransformer(
             new PythonApiMethodParamTransformer(),
