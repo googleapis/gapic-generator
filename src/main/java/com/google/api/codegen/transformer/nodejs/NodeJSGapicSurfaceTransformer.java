@@ -117,7 +117,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.outputPath(subPath + "/" + namer.getServiceFileName(context.getInterfaceConfig()));
 
     xapiClass.fileHeader(fileHeaderTransformer.generateFileHeader(context));
-    xapiClass.protoFilename(context.getInterfaceFileName());
+    xapiClass.protoFilename(context.getInterface().getFile().getSimpleName());
 
     xapiClass.name(namer.getApiWrapperClassName(context.getInterfaceConfig()));
     xapiClass.doc(serviceTransformer.generateServiceDoc(context, methods.get(0)));

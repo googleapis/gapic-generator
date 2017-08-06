@@ -210,8 +210,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
     ArrayList<TestCaseView> testCaseViews = new ArrayList<>();
     SymbolTable testNameTable = new SymbolTable();
     for (MethodModel method : context.getSupportedMethods()) {
-      GapicMethodContext methodContext =
-          (GapicMethodContext) context.asRequestMethodContext(method);
+      GapicMethodContext methodContext = context.asRequestMethodContext(method);
 
       if (methodContext.getMethodConfig().isGrpcStreaming()) {
         // TODO(shinfan): Remove this check once grpc streaming is supported by test

@@ -19,13 +19,13 @@ import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.ImportSectionTransformer;
-import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.TransformationContext;
 import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ImportTypeView;
+import com.google.api.tools.framework.model.Interface;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.Set;
@@ -96,11 +96,12 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
     return imports.build();
   }
 
-  private Set<String> generateImportFilenames(InterfaceContext context) {
+  private Set<String> generateImportFilenames(GapicInterfaceContext context) {
     Set<String> filenames = new TreeSet<>();
-    filenames.add(context.getInterfaceFileName());
+    filenames.add(context.getInterface().getFile().getSimpleName());
     for (MethodModel method : context.getSupportedMethods()) {
-      filenames.add(context.asRequestMethodContext(method).getInterfaceFileName());
+      Interface targetInterface = context.asRequestMethodContext(method).getTargetInterface();
+      filenames.add(targetInterface.getFile().getSimpleName());
     }
     return filenames;
   }

@@ -113,7 +113,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.outputPath(namer.getSourceFilePath(subPath, name));
 
     xapiClass.fileHeader(fileHeaderTransformer.generateFileHeader(context));
-    xapiClass.protoFilename(context.getInterfaceFileName());
+    xapiClass.protoFilename(context.getInterface().getFile().getSimpleName());
 
     xapiClass.name(name);
     xapiClass.doc(serviceTransformer.generateServiceDoc(context, methods.get(0)));
