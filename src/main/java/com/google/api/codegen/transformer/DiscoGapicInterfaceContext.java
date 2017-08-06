@@ -170,9 +170,8 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   public DiscoGapicMethodConfig getMethodConfig(MethodModel method) {
     for (InterfaceConfig config : getProductConfig().getInterfaceConfigMap().values()) {
       for (MethodConfig methodConfig : config.getMethodConfigs()) {
-        DiscoGapicMethodConfig discoMethodConfig = (DiscoGapicMethodConfig) methodConfig;
-        if (discoMethodConfig.getMethod().equals(method)) {
-          return discoMethodConfig;
+        if (methodConfig.getMethodModel().getFullName().equals(method.getFullName())) {
+          return (DiscoGapicMethodConfig) methodConfig;
         }
       }
     }
@@ -227,7 +226,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
         getInterfaceName(),
         getProductConfig(),
         getSchemaTypeTable(),
-        (DiscoGapicNamer) getNamer(),
+        getDiscoGapicNamer(),
         (DiscoveryMethodModel) method,
         getMethodConfig(method),
         null,
