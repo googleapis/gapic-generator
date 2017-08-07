@@ -117,14 +117,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return typeNameConverter;
   }
 
-  public CommentReformatter getCommentReformatter() {
-    return commentReformatter;
-  }
-
-  public NameFormatter getNameFormatter() {
-    return nameFormatter;
-  }
-
   public String getPackageName() {
     return packageName;
   }

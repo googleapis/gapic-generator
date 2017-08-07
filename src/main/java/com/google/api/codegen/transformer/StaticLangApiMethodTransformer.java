@@ -156,21 +156,6 @@ public class StaticLangApiMethodTransformer {
     return methodViewBuilder.type(ClientMethodType.PagedCallableMethod).build();
   }
 
-  public StaticLangApiMethodView generatePagedCallableMethod(DiscoGapicMethodContext context) {
-    SurfaceNamer namer = context.getNamer();
-    StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
-
-    setCommonFields(context, methodViewBuilder);
-    methodViewBuilder.name(namer.getPagedCallableMethodName(context.getMethodModel()));
-    methodViewBuilder.exampleName(
-        namer.getPagedCallableMethodExampleName(context.getMethodModel()));
-    setListMethodFields(context, Synchronicity.Sync, methodViewBuilder);
-    setCallableMethodFields(
-        context, namer.getPagedCallableName(context.getMethodModel()), methodViewBuilder);
-
-    return methodViewBuilder.type(ClientMethodType.PagedCallableMethod).build();
-  }
-
   public StaticLangApiMethodView generateUnpagedListCallableMethod(MethodContext context) {
     SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
@@ -253,28 +238,6 @@ public class StaticLangApiMethodTransformer {
 
   public StaticLangApiMethodView generateRequestObjectMethod(
       MethodContext context, List<ParamWithSimpleDoc> additionalParams) {
-    SurfaceNamer namer = context.getNamer();
-    StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
-
-    setCommonFields(context, methodViewBuilder);
-    methodViewBuilder.name(
-        namer.getApiMethodName(
-            context.getMethodModel(), context.getMethodConfig().getVisibility()));
-    methodViewBuilder.exampleName(
-        namer.getApiMethodExampleName(context.getInterfaceSimpleName(), context.getMethodModel()));
-    setRequestObjectMethodFields(
-        context,
-        namer.getCallableMethodName(context.getMethodModel()),
-        Synchronicity.Sync,
-        additionalParams,
-        methodViewBuilder);
-    setStaticLangReturnTypeName(context, methodViewBuilder);
-
-    return methodViewBuilder.type(ClientMethodType.RequestObjectMethod).build();
-  }
-
-  public StaticLangApiMethodView generateRequestObjectMethod(
-      DiscoGapicMethodContext context, List<ParamWithSimpleDoc> additionalParams) {
     SurfaceNamer namer = context.getNamer();
     StaticLangApiMethodView.Builder methodViewBuilder = StaticLangApiMethodView.newBuilder();
 
@@ -668,41 +631,6 @@ public class StaticLangApiMethodTransformer {
 
     methodViewBuilder.pathTemplateChecks(generatePathTemplateChecks(context, fieldConfigs));
   }
-
-  //  private void setFlattenedMethodFields(
-  //      DiscoGapicMethodContext context,
-  //      List<ParamWithSimpleDoc> additionalParams,
-  //      Synchronicity synchronicity,
-  //      StaticLangApiMethodView.Builder methodViewBuilder) {
-  //    SurfaceNamer namer = context.getNamer();
-  //    Iterable<FieldConfig> fieldConfigs =
-  //        context.getFlatteningConfig().getFlattenedFieldConfigs().values();
-  //    methodViewBuilder.initCode(
-  //        initCodeTransformer.generateInitCode(context.cloneWithEmptyTypeTable(), null));
-  //    methodViewBuilder.doc(
-  //        ApiMethodDocView.newBuilder()
-  //            // TODO(andrealin): mainDocLines
-  //            .mainDocLines(new LinkedList<String>())
-  //            .paramDocs(getMethodParamDocs(context, fieldConfigs, additionalParams))
-  //            .throwsDocLines(namer.getThrowsDocLines(context.getMethodConfig()))
-  //            .returnsDocLines(
-  //                namer.getReturnDocLines(
-  //                    context.getSurfaceInterfaceContext(), context.getMethodConfig(), synchronicity))
-  //            .build());
-  //
-  //    List<RequestObjectParamView> params = new ArrayList<>();
-  //    for (FieldConfig fieldConfig : fieldConfigs) {
-  //      // TODO(andrealin): ???
-  //      //      params.add(generateRequestObjectParam(context, fieldConfig));
-  //    }
-  //    methodViewBuilder.forwardingMethodParams(params);
-  //    List<RequestObjectParamView> nonforwardingParams = new ArrayList<>(params);
-  //    nonforwardingParams.addAll(ParamWithSimpleDoc.asRequestObjectParamViews(additionalParams));
-  //    methodViewBuilder.methodParams(nonforwardingParams);
-  //    methodViewBuilder.requestObjectParams(params);
-  //
-  //    methodViewBuilder.pathTemplateChecks(generatePathTemplateChecks(context, fieldConfigs));
-  //  }
 
   private void setRequestObjectMethodFields(
       MethodContext context,

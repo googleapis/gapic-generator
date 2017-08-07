@@ -14,26 +14,18 @@
  */
 package com.google.api.codegen.discogapic.transformer;
 
-import com.google.api.codegen.config.MethodConfig;
-import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NameFormatter;
 
 /** Provides language-specific names for variables and classes. */
-public class DiscoGapicNamer extends SurfaceNamer {
+public class DiscoGapicNamer {
   private final SurfaceNamer languageNamer;
   private static final String regexDelimiter = "\\.";
 
   /* Create a JavaSurfaceNamer for a Discovery-based API. */
   public DiscoGapicNamer(SurfaceNamer parentNamer, NameFormatter formatter) {
-    super(
-        formatter,
-        parentNamer.getSchemaTypeFormatter(),
-        parentNamer.getTypeNameConverter(),
-        parentNamer.getCommentReformatter(),
-        parentNamer.getPackageName());
     this.languageNamer = parentNamer;
   }
 
@@ -42,15 +34,9 @@ public class DiscoGapicNamer extends SurfaceNamer {
     return languageNamer;
   }
 
-  @Override
-  /* The return type name in a static language for the given method. */
-  public String getStaticLangReturnTypeName(MethodModel method, MethodConfig methodConfig) {
-    return getNotImplementedString("idk yet");
-  }
-
   /** Returns the variable name for a field. */
   public String getFieldVarName(String fieldName) {
-    return privateFieldName(Name.anyCamel(fieldName));
+    return languageNamer.privateFieldName(Name.anyCamel(fieldName));
   }
 
   /** Returns the resource getter method name for a resource field. */
@@ -61,7 +47,7 @@ public class DiscoGapicNamer extends SurfaceNamer {
     } else {
       name = Name.anyCamel(fieldName);
     }
-    return publicMethodName(Name.anyCamel("get").join(name));
+    return languageNamer.publicMethodName(Name.anyCamel("get").join(name));
   }
   /** Returns the resource getter method name for a resource field. */
   public String getResourceSetterName(String fieldName) {
@@ -71,7 +57,7 @@ public class DiscoGapicNamer extends SurfaceNamer {
     } else {
       name = Name.anyCamel(fieldName);
     }
-    return publicMethodName(Name.anyCamel("set").join(name));
+    return languageNamer.publicMethodName(Name.anyCamel("set").join(name));
   }
 
   /**
@@ -96,20 +82,18 @@ public class DiscoGapicNamer extends SurfaceNamer {
    * Returns the last substring after the input is split by periods. Ex: Input
    * "compute.addresses.aggregatedList" returns "aggregatedList".
    */
-  public String getRequestName(Method method) {
+  public static Name getRequestName(Method method) {
     String[] pieces = method.id().split(regexDelimiter);
-    return privateFieldName(
-        Name.anyCamel(pieces[pieces.length - 2], pieces[pieces.length - 1], "http", "request"));
+    return Name.anyCamel(pieces[pieces.length - 2], pieces[pieces.length - 1], "http", "request");
   }
 
   /**
    * Returns the last substring after the input is split by periods. Ex: Input
    * "compute.addresses.aggregatedList" returns "aggregatedList".
    */
-  public String getResponseName(Method method) {
+  public static Name getResponseName(Method method) {
     String[] pieces = method.id().split(regexDelimiter);
-    return privateFieldName(
-        Name.anyCamel(pieces[pieces.length - 2], pieces[pieces.length - 1], "http", "response"));
+    return Name.anyCamel(pieces[pieces.length - 2], pieces[pieces.length - 1], "http", "response");
   }
 
   //TODO(andrealin): Naming methods for service name.

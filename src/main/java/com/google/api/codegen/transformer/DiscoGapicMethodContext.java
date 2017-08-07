@@ -37,7 +37,8 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
       String interfaceName,
       GapicProductConfig productConfig,
       SchemaTypeTable typeTable,
-      DiscoGapicNamer namer,
+      DiscoGapicNamer discoNamer,
+      SurfaceNamer surfaceNamer,
       DiscoveryMethodModel method,
       DiscoGapicMethodConfig methodConfig,
       FlatteningConfig flatteningConfig,
@@ -52,7 +53,8 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
         surfaceTransformerContext,
         typeTable,
         method,
-        namer);
+        surfaceNamer,
+        discoNamer);
   }
 
   public abstract String interfaceName();
@@ -82,6 +84,7 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
         interfaceName(),
         getProductConfig(),
         (SchemaTypeTable) getTypeTable().cloneEmpty(),
+        getDiscoGapicNamer(),
         getNamer(),
         getMethodModel(),
         getMethodConfig(),
@@ -110,11 +113,13 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
 
   @Override
   public String getInterfaceSimpleName() {
-    return getNamer().getSimpleInterfaceName(interfaceName());
+    return getDiscoGapicNamer().getSimpleInterfaceName(interfaceName());
   }
 
   @Override
-  public abstract DiscoGapicNamer getNamer();
+  public abstract SurfaceNamer getNamer();
+
+  public abstract DiscoGapicNamer getDiscoGapicNamer();
 
   @Override
   public String getPageStreamingDescriptorConstName() {

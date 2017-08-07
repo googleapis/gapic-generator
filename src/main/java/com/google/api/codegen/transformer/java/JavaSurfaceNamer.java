@@ -101,7 +101,7 @@ public class JavaSurfaceNamer extends SurfaceNamer {
     if (method.isOutputTypeEmpty()) {
       return "void";
     }
-    return method.getOutputTypeFullName(getModelTypeFormatter());
+    return method.getOutputTypeFullName(getTypeFormatter());
   }
 
   @Override
@@ -162,19 +162,19 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   @Override
   public String getPagedResponseTypeInnerName(
       MethodModel method, ImportTypeTable typeTable, FieldType resourceField) {
-    return publicClassName(Name.upperCamel(method.getSimpleName(), "PagedResponse"));
+    return publicClassName(Name.anyCamel(method.getSimpleName(), "PagedResponse"));
   }
 
   @Override
   public String getPageTypeInnerName(
       MethodModel method, ImportTypeTable typeTable, FieldType resourceField) {
-    return publicClassName(Name.upperCamel(method.getSimpleName(), "Page"));
+    return publicClassName(Name.anyCamel(method.getSimpleName(), "Page"));
   }
 
   @Override
   public String getFixedSizeCollectionTypeInnerName(
       MethodModel method, ImportTypeTable typeTable, FieldType resourceField) {
-    return publicClassName(Name.upperCamel(method.getSimpleName(), "FixedSizeCollection"));
+    return publicClassName(Name.anyCamel(method.getSimpleName(), "FixedSizeCollection"));
   }
 
   @Override
