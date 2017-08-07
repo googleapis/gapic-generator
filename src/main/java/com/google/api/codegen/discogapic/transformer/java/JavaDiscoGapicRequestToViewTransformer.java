@@ -156,7 +156,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
 
     SymbolTable symbolTable = SymbolTable.fromSeed(reservedKeywords);
 
-    String requestClassId = context.getDiscoGapicNamer().getRequestName(method.id());
+    String requestClassId = context.getDiscoGapicNamer().getRequestName(method);
     String requestName =
         nameFormatter.privateFieldName(Name.anyCamel(symbolTable.getNewSymbol(requestClassId)));
     boolean hasRequiredProperties = false;

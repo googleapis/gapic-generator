@@ -24,6 +24,7 @@ import com.google.api.codegen.util.NameFormatter;
 /** Provides language-specific names for variables and classes. */
 public class DiscoGapicNamer extends SurfaceNamer {
   private final SurfaceNamer languageNamer;
+  private static final String regexDelimiter = "\\.";
 
   /* Create a JavaSurfaceNamer for a Discovery-based API. */
   public DiscoGapicNamer(SurfaceNamer parentNamer, NameFormatter formatter) {
@@ -77,21 +78,26 @@ public class DiscoGapicNamer extends SurfaceNamer {
    * Returns the array of substrings after the input is split by periods. Ex: Input of
    * "compute.addresses.aggregatedList" returns the array: ["compute", "addresses", "List"].
    */
-  public static String[] getMethodNamePieces(String longMethodName) {
-    String[] pieces = longMethodName.split("\\.");
-    if (pieces.length < 3) {
-      throw new IllegalArgumentException(
-          "Fully qualified method name must be in the form [api].[resource].[method]");
+  public static Name methodAsName(Method method) {
+    String[] pieces = method.id().split(regexDelimiter);
+    Name result = Name.anyCamel(pieces[0]);
+    for (int i = 1; i < pieces.length; i++) {
+      result = result.join(Name.anyCamel(pieces[i]));
     }
-    return pieces;
+    return result;
+  }
+
+  public String getSimpleInterfaceName(String interfaceName) {
+    String[] pieces = interfaceName.split(regexDelimiter);
+    return pieces[pieces.length - 1];
   }
 
   /**
    * Returns the last substring after the input is split by periods. Ex: Input
    * "compute.addresses.aggregatedList" returns "aggregatedList".
    */
-  public String getRequestName(String fullMethodName) {
-    String[] pieces = getMethodNamePieces(fullMethodName);
+  public String getRequestName(Method method) {
+    String[] pieces = method.id().split(regexDelimiter);
     return privateFieldName(
         Name.anyCamel(pieces[pieces.length - 2], pieces[pieces.length - 1], "http", "request"));
   }
@@ -100,26 +106,10 @@ public class DiscoGapicNamer extends SurfaceNamer {
    * Returns the last substring after the input is split by periods. Ex: Input
    * "compute.addresses.aggregatedList" returns "aggregatedList".
    */
-  public String getResponseName(String fullMethodName) {
-    String[] pieces = getMethodNamePieces(fullMethodName);
+  public String getResponseName(Method method) {
+    String[] pieces = method.id().split(regexDelimiter);
     return privateFieldName(
         Name.anyCamel(pieces[pieces.length - 2], pieces[pieces.length - 1], "http", "response"));
-  }
-
-  /**
-   * Returns the last substring after the input is split by periods. Ex: Input
-   * "compute.addresses.aggregatedList" returns "aggregatedList".
-   */
-  public String getRequestName(Method method) {
-    return getRequestName(method.id());
-  }
-
-  /**
-   * Returns the last substring after the input is split by periods. Ex: Input
-   * "compute.addresses.aggregatedList" returns "aggregatedList".
-   */
-  public String getResponseName(Method method) {
-    return getResponseName(method.id());
   }
 
   //TODO(andrealin): Naming methods for service name.

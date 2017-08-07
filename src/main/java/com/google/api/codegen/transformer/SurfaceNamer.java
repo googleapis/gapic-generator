@@ -475,32 +475,32 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The name of the callable for the paged callable variant of the given method. */
   public String getPagedCallableName(MethodModel method) {
-    return privateFieldName(Name.upperCamel(method.getSimpleName(), "PagedCallable"));
+    return privateFieldName(Name.anyCamel(method.getSimpleName(), "PagedCallable"));
   }
 
   /** The name of the paged callable variant of the given method. */
   public String getPagedCallableMethodName(MethodModel method) {
-    return publicMethodName(Name.upperCamel(method.getSimpleName(), "PagedCallable"));
+    return publicMethodName(Name.anyCamel(method.getSimpleName(), "PagedCallable"));
   }
 
   /** The name of the plain callable variant of the given method. */
   public String getCallableMethodName(MethodModel method) {
-    return publicMethodName(Name.upperCamel(method.getSimpleName(), "Callable"));
+    return publicMethodName(Name.anyCamel(method.getSimpleName(), "Callable"));
   }
 
   /** The name of the plain callable variant of the given method. */
   public String getCallableAsyncMethodName(MethodModel method) {
-    return publicMethodName(Name.upperCamel(method.getSimpleName(), "CallableAsync"));
+    return publicMethodName(Name.anyCamel(method.getSimpleName(), "CallableAsync"));
   }
 
   /** The name of the operation callable variant of the given method. */
   public String getOperationCallableMethodName(MethodModel method) {
-    return publicMethodName(Name.upperCamel(method.getSimpleName(), "OperationCallable"));
+    return publicMethodName(Name.anyCamel(method.getSimpleName(), "OperationCallable"));
   }
 
   /** The name of the plain callable for the given method. */
   public String getCallableName(MethodModel method) {
-    return privateFieldName(Name.upperCamel(method.getSimpleName(), "Callable"));
+    return privateFieldName(Name.anyCamel(method.getSimpleName(), "Callable"));
   }
 
   private String[] appendToStringArray(String[] head, String tail) {
@@ -514,12 +514,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The name of the operation callable for the given method. */
   public String getOperationCallableName(MethodModel method) {
-    return privateFieldName(Name.upperCamel(method.getSimpleName(), "OperationCallable"));
+    return privateFieldName(Name.anyCamel(method.getSimpleName(), "OperationCallable"));
   }
 
   /** The name of the settings member name for the given method. */
   public String getSettingsMemberName(MethodModel method) {
-    return publicMethodName(Name.upperCamel(method.getSimpleName(), "Settings"));
+    return publicMethodName(Name.anyCamel(method.getSimpleName(), "Settings"));
   }
 
   /** The getter function name for the settings for the given method. */
@@ -577,7 +577,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * interface.
    */
   public String getApiWrapperVariableName(InterfaceConfig interfaceConfig) {
-    return localVarName(Name.upperCamel(getInterfaceName(interfaceConfig), "Client"));
+    return localVarName(Name.anyCamel(getInterfaceName(interfaceConfig), "Client"));
   }
 
   /**
@@ -585,7 +585,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * in most languages.
    */
   public String getApiSettingsVariableName(InterfaceConfig interfaceConfig) {
-    return localVarName(Name.upperCamel(getInterfaceName(interfaceConfig), "Settings"));
+    return localVarName(Name.anyCamel(getInterfaceName(interfaceConfig), "Settings"));
   }
 
   /**
@@ -593,7 +593,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * in most languages.
    */
   public String getApiSettingsBuilderVarName(InterfaceConfig interfaceConfig) {
-    return localVarName(Name.upperCamel(getInterfaceName(interfaceConfig), "SettingsBuilder"));
+    return localVarName(Name.anyCamel(getInterfaceName(interfaceConfig), "SettingsBuilder"));
   }
 
   /** The variable name for the given identifier that is formatted. */
@@ -647,12 +647,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The page streaming descriptor name for the given method. */
   public String getPageStreamingDescriptorName(MethodModel method) {
-    return privateFieldName(Name.upperCamel(method.getSimpleName(), "PageStreamingDescriptor"));
+    return privateFieldName(Name.anyCamel(method.getSimpleName(), "PageStreamingDescriptor"));
   }
 
   /** The page streaming factory name for the given method. */
   public String getPagedListResponseFactoryName(MethodModel method) {
-    return privateFieldName(Name.upperCamel(method.getSimpleName(), "PagedListResponseFactory"));
+    return privateFieldName(Name.anyCamel(method.getSimpleName(), "PagedListResponseFactory"));
   }
 
   /** The variable name of the gRPC request object. */
@@ -1118,7 +1118,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The name of the constant to hold the batching descriptor for the given method. */
   public String getBatchingDescriptorConstName(MethodModel method) {
-    return inittedConstantName(Name.upperCamel(method.getSimpleName()).join("bundling_desc"));
+    return inittedConstantName(Name.anyCamel(method.getSimpleName()).join("bundling_desc"));
   }
 
   /** The key to use in a dictionary for the given method. */
@@ -1181,12 +1181,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The name of the constant to hold the page streaming descriptor for the given method. */
   public String getPageStreamingDescriptorConstName(MethodModel method) {
-    return inittedConstantName(Name.upperCamel(method.getSimpleName()).join("page_str_desc"));
+    return inittedConstantName(Name.anyCamel(method.getSimpleName()).join("page_str_desc"));
   }
 
   /** The name of the constant to hold the page streaming factory for the given method. */
   public String getPagedListResponseFactoryConstName(MethodModel method) {
-    return inittedConstantName(Name.upperCamel(method.getSimpleName()).join("page_str_fact"));
+    return inittedConstantName(Name.anyCamel(method.getSimpleName()).join("page_str_fact"));
   }
 
   /** The string used to identify the method in the gRPC stub. Not all languages will use this. */
@@ -1326,20 +1326,20 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The test case name for the given method. */
   public String getTestCaseName(SymbolTable symbolTable, MethodModel method) {
-    Name testCaseName = symbolTable.getNewSymbol(Name.upperCamel(method.getSimpleName(), "Test"));
+    Name testCaseName = symbolTable.getNewSymbol(Name.anyCamel(method.getSimpleName(), "Test"));
     return publicMethodName(testCaseName);
   }
 
   /** The exception test case name for the given method. */
   public String getExceptionTestCaseName(SymbolTable symbolTable, MethodModel method) {
     Name testCaseName =
-        symbolTable.getNewSymbol(Name.upperCamel(method.getSimpleName(), "ExceptionTest"));
+        symbolTable.getNewSymbol(Name.anyCamel(method.getSimpleName(), "ExceptionTest"));
     return publicMethodName(testCaseName);
   }
 
   /** The unit test class name for the given API interface. */
   public String getUnitTestClassName(InterfaceConfig interfaceConfig) {
-    return publicClassName(Name.upperCamel(getInterfaceName(interfaceConfig), "Client", "Test"));
+    return publicClassName(Name.anyCamel(getInterfaceName(interfaceConfig), "Client", "Test"));
   }
 
   /** The smoke test class name for the given API interface. */

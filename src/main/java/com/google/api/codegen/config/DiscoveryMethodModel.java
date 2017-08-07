@@ -118,7 +118,7 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public Name asName() {
-    return Name.anyCamel(DiscoGapicNamer.getMethodNamePieces(method.id()));
+    return DiscoGapicNamer.methodAsName(method);
   }
 
   @Override
@@ -135,7 +135,7 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public String getSimpleName() {
-    return Name.from(DiscoGapicNamer.getMethodNamePieces(method.id())).toLowerCamel();
+    return DiscoGapicNamer.methodAsName(method).toLowerCamel();
   }
 
   @Override

@@ -222,8 +222,8 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
   private StaticLangPagedResponseWrappersView generatePagedResponseWrappers(
       Document model, GapicProductConfig productConfig, ReleaseLevel releaseLevel) {
 
-    SurfaceNamer namer = new JavaSurfaceNamer(productConfig.getPackageName());
-    DiscoGapicNamer discoGapicNamer = new DiscoGapicNamer(namer, new JavaNameFormatter());
+    SurfaceNamer namer = new JavaSurfaceNamer(productConfig.getPackageName(), nameFormatter);
+    DiscoGapicNamer discoGapicNamer = new DiscoGapicNamer(namer, nameFormatter);
     SchemaTypeTable typeTable = createTypeTable(productConfig.getPackageName());
 
     addPagedResponseWrapperImports(typeTable);

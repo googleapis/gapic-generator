@@ -110,7 +110,7 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
 
   @Override
   public String getInterfaceSimpleName() {
-    return interfaceName();
+    return getNamer().getSimpleInterfaceName(interfaceName());
   }
 
   @Override

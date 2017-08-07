@@ -121,6 +121,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
     return interfaceMethods;
   }
 
+  @Override
   public String getInterfaceSimpleName() {
     return getInterfaceName();
   }
@@ -267,7 +268,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
         interfaceName,
         getProductConfig(),
         getSchemaTypeTable(),
-        (DiscoGapicNamer) getNamer(),
+        getDiscoGapicNamer(),
         (DiscoveryMethodModel) method,
         getMethodConfig(method),
         flatteningConfig,
