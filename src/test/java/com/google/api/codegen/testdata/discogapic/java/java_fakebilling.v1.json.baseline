@@ -3694,6 +3694,7 @@ package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.auth.Credentials;
+import static com.google.cloud.fakebilling.v1.PagedResponseWrappers.BillingAccountsListPagedResponse;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -3712,7 +3713,7 @@ import javax.annotation.Generated;
  * <code>
  * try (BillingAccountAdminClient billingAccountAdminClient = BillingAccountAdminClient.create()) {
  *
- *   BillingAccount response = billingAccountAdminClient.fakebillingBillingAccountsGet();
+ *   BillingAccount response = billingAccountAdminClient.billingAccountsGet();
  * }
  * </code>
  * </pre>
@@ -3762,9 +3763,9 @@ public class BillingAccountAdminClient implements AutoCloseable {
   private final ManagedChannel channel;
   private final List<AutoCloseable> closeables = new ArrayList<>();
 
-  private final UnaryCallable<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse> fakebillingBillingAccountsListCallable;
-  private final UnaryCallable<BillingAccountsListHttpRequest, FakebillingBillingAccountsListPagedResponse> fakebillingBillingAccountsListPagedCallable;
-  private final UnaryCallable<BillingAccountsGetHttpRequest, BillingAccountsGetHttpResponse> fakebillingBillingAccountsGetCallable;
+  private final UnaryCallable<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse> billingAccountsListCallable;
+  private final UnaryCallable<BillingAccountsListHttpRequest, BillingAccountsListPagedResponse> billingAccountsListPagedCallable;
+  private final UnaryCallable<BillingAccountsGetHttpRequest, BillingAccountsGetHttpResponse> billingAccountsGetCallable;
 
   private static final PathTemplate BILLING_ACCOUNT_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("billingAccounts/{billing_account}");
@@ -3822,10 +3823,10 @@ public class BillingAccountAdminClient implements AutoCloseable {
             .build();
 
 
-    this.fakebillingBillingAccountsListCallable = UnaryCallable.create(settings.fakebillingBillingAccountsListSettings(), clientContext);
-    this.fakebillingBillingAccountsListPagedCallable =
-        UnaryCallable.createPagedVariant(settings.fakebillingBillingAccountsListSettings(), clientContext);
-    this.fakebillingBillingAccountsGetCallable = UnaryCallable.create(settings.fakebillingBillingAccountsGetSettings(), clientContext);
+    this.billingAccountsListCallable = UnaryCallable.create(settings.billingAccountsListSettings(), clientContext);
+    this.billingAccountsListPagedCallable =
+        UnaryCallable.createPagedVariant(settings.billingAccountsListSettings(), clientContext);
+    this.billingAccountsGetCallable = UnaryCallable.create(settings.billingAccountsGetSettings(), clientContext);
 
     if (settings.getChannelProvider().shouldAutoClose()) {
       closeables.add(
@@ -3861,7 +3862,7 @@ public class BillingAccountAdminClient implements AutoCloseable {
    * <pre><code>
    * try (BillingAccountAdminClient billingAccountAdminClient = BillingAccountAdminClient.create()) {
    *
-   *   for (ListBillingAccountsResponse element : billingAccountAdminClient.fakebillingBillingAccountsList().iterateAll()) {
+   *   for (ListBillingAccountsResponse element : billingAccountAdminClient.billingAccountsList().iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -3871,8 +3872,8 @@ public class BillingAccountAdminClient implements AutoCloseable {
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   @BetaApi
-  public final FakebillingBillingAccountsListPagedResponse fakebillingBillingAccountsList(BillingAccountsListHttpRequest request) {
-    return fakebillingBillingAccountsListPagedCallable()
+  public final BillingAccountsListPagedResponse billingAccountsList(BillingAccountsListHttpRequest request) {
+    return billingAccountsListPagedCallable()
         .call(request);
   }
 
@@ -3885,7 +3886,7 @@ public class BillingAccountAdminClient implements AutoCloseable {
    * <pre><code>
    * try (BillingAccountAdminClient billingAccountAdminClient = BillingAccountAdminClient.create()) {
    *
-   *   ApiFuture&lt;FakebillingBillingAccountsListPagedResponse&gt; future = billingAccountAdminClient.fakebillingBillingAccountsListPagedCallable().futureCall();
+   *   ApiFuture&lt;BillingAccountsListPagedResponse&gt; future = billingAccountAdminClient.billingAccountsListPagedCallable().futureCall();
    *   // Do something
    *   for (ListBillingAccountsResponse element : future.get().iterateAll()) {
    *     // doThingsWith(element);
@@ -3894,8 +3895,8 @@ public class BillingAccountAdminClient implements AutoCloseable {
    * </code></pre>
    */
   @BetaApi
-  public final UnaryCallable<BillingAccountsListHttpRequest, FakebillingBillingAccountsListPagedResponse> fakebillingBillingAccountsListPagedCallable() {
-    return fakebillingBillingAccountsListPagedCallable;
+  public final UnaryCallable<BillingAccountsListHttpRequest, BillingAccountsListPagedResponse> billingAccountsListPagedCallable() {
+    return billingAccountsListPagedCallable;
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -3908,7 +3909,7 @@ public class BillingAccountAdminClient implements AutoCloseable {
    * try (BillingAccountAdminClient billingAccountAdminClient = BillingAccountAdminClient.create()) {
    *
    *   while (true) {
-   *     BillingAccountsListHttpResponse response = billingAccountAdminClient.fakebillingBillingAccountsListCallable().call();
+   *     BillingAccountsListHttpResponse response = billingAccountAdminClient.billingAccountsListCallable().call();
    *     for (ListBillingAccountsResponse element : response.getResponse()) {
    *       // doThingsWith(element);
    *     }
@@ -3923,8 +3924,8 @@ public class BillingAccountAdminClient implements AutoCloseable {
    * </code></pre>
    */
   @BetaApi
-  public final UnaryCallable<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse> fakebillingBillingAccountsListCallable() {
-    return fakebillingBillingAccountsListCallable;
+  public final UnaryCallable<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse> billingAccountsListCallable() {
+    return billingAccountsListCallable;
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -3937,7 +3938,7 @@ public class BillingAccountAdminClient implements AutoCloseable {
    * <pre><code>
    * try (BillingAccountAdminClient billingAccountAdminClient = BillingAccountAdminClient.create()) {
    *
-   *   BillingAccount response = billingAccountAdminClient.fakebillingBillingAccountsGet();
+   *   BillingAccount response = billingAccountAdminClient.billingAccountsGet();
    * }
    * </code></pre>
    *
@@ -3945,13 +3946,13 @@ public class BillingAccountAdminClient implements AutoCloseable {
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   @BetaApi
-  public final BillingAccount fakebillingBillingAccountsGet(String name) {
+  public final BillingAccount billingAccountsGet(String name) {
 
     BillingAccountsGetHttpRequest request =
         BillingAccountsGetHttpRequest.newBuilder()
         .setName(name)
         .build();
-    return fakebillingBillingAccountsGet(request);
+    return billingAccountsGet(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -3964,7 +3965,7 @@ public class BillingAccountAdminClient implements AutoCloseable {
    * <pre><code>
    * try (BillingAccountAdminClient billingAccountAdminClient = BillingAccountAdminClient.create()) {
    *
-   *   BillingAccount response = billingAccountAdminClient.fakebillingBillingAccountsGet();
+   *   BillingAccount response = billingAccountAdminClient.billingAccountsGet();
    * }
    * </code></pre>
    *
@@ -3972,8 +3973,8 @@ public class BillingAccountAdminClient implements AutoCloseable {
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   @BetaApi
-  private final BillingAccount fakebillingBillingAccountsGet(BillingAccountsGetHttpRequest request) {
-    return fakebillingBillingAccountsGetCallable().call(request);
+  private final BillingAccount billingAccountsGet(BillingAccountsGetHttpRequest request) {
+    return billingAccountsGetCallable().call(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -3986,15 +3987,15 @@ public class BillingAccountAdminClient implements AutoCloseable {
    * <pre><code>
    * try (BillingAccountAdminClient billingAccountAdminClient = BillingAccountAdminClient.create()) {
    *
-   *   ApiFuture&lt;BillingAccount&gt; future = billingAccountAdminClient.fakebillingBillingAccountsGetCallable().futureCall();
+   *   ApiFuture&lt;BillingAccount&gt; future = billingAccountAdminClient.billingAccountsGetCallable().futureCall();
    *   // Do something
    *   BillingAccountsGetHttpResponse response = future.get();
    * }
    * </code></pre>
    */
   @BetaApi
-  public final UnaryCallable<BillingAccountsGetHttpRequest, BillingAccountsGetHttpResponse> fakebillingBillingAccountsGetCallable() {
-    return fakebillingBillingAccountsGetCallable;
+  public final UnaryCallable<BillingAccountsGetHttpRequest, BillingAccountsGetHttpResponse> billingAccountsGetCallable() {
+    return billingAccountsGetCallable;
   }
 
   /**
@@ -4048,6 +4049,7 @@ import com.google.api.gax.grpc.UnaryCallSettings;
 import com.google.api.gax.grpc.UnaryCallable;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.auth.Credentials;
+import static com.google.cloud.fakebilling.v1.PagedResponseWrappers.BillingAccountsListPagedResponse;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -4076,13 +4078,13 @@ import org.threeten.bp.Duration;
  *
  * <p>The builder of this class is recursive, so contained classes are themselves builders.
  * When build() is called, the tree of builders is called to create the complete settings
- * object. For example, to set the total timeout of fakebillingBillingAccountsGet to 30 seconds:
+ * object. For example, to set the total timeout of billingAccountsGet to 30 seconds:
  *
  * <pre>
  * <code>
  * BillingAccountAdminSettings.Builder billingAccountAdminSettingsBuilder =
  *     BillingAccountAdminSettings.defaultBuilder();
- * billingAccountAdminSettingsBuilder.fakebillingBillingAccountsGetSettings().getRetrySettingsBuilder()
+ * billingAccountAdminSettingsBuilder.billingAccountsGetSettings().getRetrySettingsBuilder()
  *     .setTotalTimeout(Duration.ofSeconds(30));
  * BillingAccountAdminSettings billingAccountAdminSettings = billingAccountAdminSettingsBuilder.build();
  * </code>
@@ -4109,30 +4111,30 @@ public class BillingAccountAdminSettings extends ClientSettings {
         io.grpc.MethodDescriptor.create(
             io.grpc.MethodDescriptor.MethodType.UNARY,
             "Full service name./fakebilling.billingAccounts.list",
-            io.grpc.protobuf.ProtoUtils.marshaller(billingAccountsListHttpRequest.getDefaultInstance()),
-            io.grpc.protobuf.ProtoUtils.marshaller(ListBillingAccountsResponse.getDefaultInstance()));
-  private static final io.grpc.MethodDescriptor<billingAccountsGetHttpRequest, BillingAccount> Grpc not used in Discovery-based method. =
+            io.grpc.protobuf.ProtoUtils.marshaller(BillingAccountsListHttpRequest.getDefaultInstance()),
+            io.grpc.protobuf.ProtoUtils.marshaller(BillingAccountsListHttpResponse.getDefaultInstance()));
+  private static final io.grpc.MethodDescriptor<BillingAccountsGetHttpRequest, BillingAccount> Grpc not used in Discovery-based method. =
         io.grpc.MethodDescriptor.create(
             io.grpc.MethodDescriptor.MethodType.UNARY,
             "Full service name./fakebilling.billingAccounts.get",
-            io.grpc.protobuf.ProtoUtils.marshaller(billingAccountsGetHttpRequest.getDefaultInstance()),
-            io.grpc.protobuf.ProtoUtils.marshaller(BillingAccount.getDefaultInstance()));
+            io.grpc.protobuf.ProtoUtils.marshaller(BillingAccountsGetHttpRequest.getDefaultInstance()),
+            io.grpc.protobuf.ProtoUtils.marshaller(BillingAccountsGetHttpResponse.getDefaultInstance()));
 
   private final PagedCallSettings<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse, FakebillingBillingAccountsListPagedResponse> fakebillingBillingAccountsListSettings;
   private final SimpleCallSettings<BillingAccountsGetHttpRequest, BillingAccountsGetHttpResponse> fakebillingBillingAccountsGetSettings;
 
   /**
-   * Returns the object with the settings used for calls to fakebillingBillingAccountsList.
+   * Returns the object with the settings used for calls to billingAccountsList.
    */
-  public PagedCallSettings<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse, FakebillingBillingAccountsListPagedResponse> fakebillingBillingAccountsListSettings() {
-    return fakebillingBillingAccountsListSettings;
+  public PagedCallSettings<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse, BillingAccountsListPagedResponse> billingAccountsListSettings() {
+    return billingAccountsListSettings;
   }
 
   /**
-   * Returns the object with the settings used for calls to fakebillingBillingAccountsGet.
+   * Returns the object with the settings used for calls to billingAccountsGet.
    */
-  public SimpleCallSettings<BillingAccountsGetHttpRequest, BillingAccountsGetHttpResponse> fakebillingBillingAccountsGetSettings() {
-    return fakebillingBillingAccountsGetSettings;
+  public SimpleCallSettings<BillingAccountsGetHttpRequest, BillingAccountsGetHttpResponse> billingAccountsGetSettings() {
+    return billingAccountsGetSettings;
   }
 
 
@@ -4210,11 +4212,11 @@ public class BillingAccountAdminSettings extends ClientSettings {
           settingsBuilder.getChannelProvider(),
           settingsBuilder.getCredentialsProvider());
 
-    fakebillingBillingAccountsListSettings = settingsBuilder.fakebillingBillingAccountsListSettings().build();
-    fakebillingBillingAccountsGetSettings = settingsBuilder.fakebillingBillingAccountsGetSettings().build();
+    billingAccountsListSettings = settingsBuilder.billingAccountsListSettings().build();
+    billingAccountsGetSettings = settingsBuilder.billingAccountsGetSettings().build();
   }
 
-  private static final PagedListDescriptor<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse, ListBillingAccountsResponse> FAKEBILLING_BILLING_ACCOUNTS_LIST_PAGE_STR_DESC =
+  private static final PagedListDescriptor<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse, ListBillingAccountsResponse> BILLING_ACCOUNTS_LIST_PAGE_STR_DESC =
       new PagedListDescriptor<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse, ListBillingAccountsResponse>() {
         @Override
         public String emptyToken() {
@@ -4251,14 +4253,14 @@ public class BillingAccountAdminSettings extends ClientSettings {
   private static final PagedListResponseFactory<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse, FakebillingBillingAccountsListPagedResponse> FAKEBILLING_BILLING_ACCOUNTS_LIST_PAGE_STR_FACT =
       new PagedListResponseFactory<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse, FakebillingBillingAccountsListPagedResponse>() {
         @Override
-        public ApiFuture<FakebillingBillingAccountsListPagedResponse> getFuturePagedResponse(
+        public ApiFuture<BillingAccountsListPagedResponse> getFuturePagedResponse(
             UnaryCallable<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse> callable,
             BillingAccountsListHttpRequest request,
             CallContext context,
             ApiFuture<BillingAccountsListHttpResponse> futureResponse) {
           PageContext<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse, ListBillingAccountsResponse> pageContext =
-              PageContext.create(callable, FAKEBILLING_BILLING_ACCOUNTS_LIST_PAGE_STR_DESC, request, context);
-          return FakebillingBillingAccountsListPagedResponse.createAsync(pageContext, futureResponse);
+              PageContext.create(callable, BILLING_ACCOUNTS_LIST_PAGE_STR_DESC, request, context);
+          return BillingAccountsListPagedResponse.createAsync(pageContext, futureResponse);
         }
       };
 
@@ -4269,8 +4271,8 @@ public class BillingAccountAdminSettings extends ClientSettings {
   public static class Builder extends ClientSettings.Builder {
     private final ImmutableList<UnaryCallSettings.Builder> unaryMethodSettingsBuilders;
 
-    private final PagedCallSettings.Builder<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse, FakebillingBillingAccountsListPagedResponse> fakebillingBillingAccountsListSettings;
-    private final SimpleCallSettings.Builder<BillingAccountsGetHttpRequest, BillingAccountsGetHttpResponse> fakebillingBillingAccountsGetSettings;
+    private final PagedCallSettings.Builder<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse, BillingAccountsListPagedResponse> billingAccountsListSettings;
+    private final SimpleCallSettings.Builder<BillingAccountsGetHttpRequest, BillingAccountsGetHttpResponse> billingAccountsGetSettings;
 
     private static final ImmutableMap<String, ImmutableSet<Status.Code>> RETRYABLE_CODE_DEFINITIONS;
 
@@ -4303,26 +4305,26 @@ public class BillingAccountAdminSettings extends ClientSettings {
       super(defaultChannelProviderBuilder().build());
       setCredentialsProvider(defaultCredentialsProviderBuilder().build());
 
-      fakebillingBillingAccountsListSettings = PagedCallSettings.newBuilder(
+      billingAccountsListSettings = PagedCallSettings.newBuilder(
           Grpc not used in Discovery-based method.,
-          FAKEBILLING_BILLING_ACCOUNTS_LIST_PAGE_STR_FACT);
+          BILLING_ACCOUNTS_LIST_PAGE_STR_FACT);
 
       fakebillingBillingAccountsGetSettings = SimpleCallSettings.newBuilder(Grpc not used in Discovery-based method.);
 
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder>of(
-          fakebillingBillingAccountsListSettings,
-          fakebillingBillingAccountsGetSettings
+          billingAccountsListSettings,
+          billingAccountsGetSettings
       );
     }
 
     private static Builder createDefault() {
       Builder builder = new Builder();
 
-      builder.fakebillingBillingAccountsListSettings()
+      builder.billingAccountsListSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
 
-      builder.fakebillingBillingAccountsGetSettings()
+      builder.billingAccountsGetSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
 
@@ -4332,12 +4334,12 @@ public class BillingAccountAdminSettings extends ClientSettings {
     private Builder(BillingAccountAdminSettings settings) {
       super(settings);
 
-      fakebillingBillingAccountsListSettings = settings.fakebillingBillingAccountsListSettings.toBuilder();
-      fakebillingBillingAccountsGetSettings = settings.fakebillingBillingAccountsGetSettings.toBuilder();
+      billingAccountsListSettings = settings.billingAccountsListSettings.toBuilder();
+      billingAccountsGetSettings = settings.billingAccountsGetSettings.toBuilder();
 
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder>of(
-          fakebillingBillingAccountsListSettings,
-          fakebillingBillingAccountsGetSettings
+          billingAccountsListSettings,
+          billingAccountsGetSettings
       );
     }
 
@@ -4372,17 +4374,17 @@ public class BillingAccountAdminSettings extends ClientSettings {
     }
 
     /**
-     * Returns the builder for the settings used for calls to fakebillingBillingAccountsList.
+     * Returns the builder for the settings used for calls to billingAccountsList.
      */
-    public PagedCallSettings.Builder<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse, FakebillingBillingAccountsListPagedResponse> fakebillingBillingAccountsListSettings() {
-      return fakebillingBillingAccountsListSettings;
+    public PagedCallSettings.Builder<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse, BillingAccountsListPagedResponse> billingAccountsListSettings() {
+      return billingAccountsListSettings;
     }
 
     /**
-     * Returns the builder for the settings used for calls to fakebillingBillingAccountsGet.
+     * Returns the builder for the settings used for calls to billingAccountsGet.
      */
-    public SimpleCallSettings.Builder<BillingAccountsGetHttpRequest, BillingAccountsGetHttpResponse> fakebillingBillingAccountsGetSettings() {
-      return fakebillingBillingAccountsGetSettings;
+    public SimpleCallSettings.Builder<BillingAccountsGetHttpRequest, BillingAccountsGetHttpResponse> billingAccountsGetSettings() {
+      return billingAccountsGetSettings;
     }
 
     @Override
@@ -4430,7 +4432,7 @@ import javax.annotation.Generated;
  * <code>
  * try (ProjectAdminClient projectAdminClient = ProjectAdminClient.create()) {
  *
- *   ProjectBillingInfo response = projectAdminClient.fakebillingProjectsUpdateBillingInfo();
+ *   ProjectBillingInfo response = projectAdminClient.projectsUpdateBillingInfo();
  * }
  * </code>
  * </pre>
@@ -4480,8 +4482,8 @@ public class ProjectAdminClient implements AutoCloseable {
   private final ManagedChannel channel;
   private final List<AutoCloseable> closeables = new ArrayList<>();
 
-  private final UnaryCallable<ProjectsUpdateBillingInfoHttpRequest, ProjectsUpdateBillingInfoHttpResponse> fakebillingProjectsUpdateBillingInfoCallable;
-  private final UnaryCallable<ProjectsGetBillingInfoHttpRequest, ProjectsGetBillingInfoHttpResponse> fakebillingProjectsGetBillingInfoCallable;
+  private final UnaryCallable<ProjectsUpdateBillingInfoHttpRequest, ProjectsUpdateBillingInfoHttpResponse> projectsUpdateBillingInfoCallable;
+  private final UnaryCallable<ProjectsGetBillingInfoHttpRequest, ProjectsGetBillingInfoHttpResponse> projectsGetBillingInfoCallable;
 
   private static final PathTemplate PROJECT_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("projects/{project}");
@@ -4539,8 +4541,8 @@ public class ProjectAdminClient implements AutoCloseable {
             .build();
 
 
-    this.fakebillingProjectsUpdateBillingInfoCallable = UnaryCallable.create(settings.fakebillingProjectsUpdateBillingInfoSettings(), clientContext);
-    this.fakebillingProjectsGetBillingInfoCallable = UnaryCallable.create(settings.fakebillingProjectsGetBillingInfoSettings(), clientContext);
+    this.projectsUpdateBillingInfoCallable = UnaryCallable.create(settings.projectsUpdateBillingInfoSettings(), clientContext);
+    this.projectsGetBillingInfoCallable = UnaryCallable.create(settings.projectsGetBillingInfoSettings(), clientContext);
 
     if (settings.getChannelProvider().shouldAutoClose()) {
       closeables.add(
@@ -4605,7 +4607,7 @@ public class ProjectAdminClient implements AutoCloseable {
    * <pre><code>
    * try (ProjectAdminClient projectAdminClient = ProjectAdminClient.create()) {
    *
-   *   ProjectBillingInfo response = projectAdminClient.fakebillingProjectsUpdateBillingInfo();
+   *   ProjectBillingInfo response = projectAdminClient.projectsUpdateBillingInfo();
    * }
    * </code></pre>
    *
@@ -4613,8 +4615,8 @@ public class ProjectAdminClient implements AutoCloseable {
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   @BetaApi
-  public final ProjectBillingInfo fakebillingProjectsUpdateBillingInfo(ProjectsUpdateBillingInfoHttpRequest request) {
-    return fakebillingProjectsUpdateBillingInfoCallable().call(request);
+  public final ProjectBillingInfo projectsUpdateBillingInfo(ProjectsUpdateBillingInfoHttpRequest request) {
+    return projectsUpdateBillingInfoCallable().call(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -4655,15 +4657,15 @@ public class ProjectAdminClient implements AutoCloseable {
    * <pre><code>
    * try (ProjectAdminClient projectAdminClient = ProjectAdminClient.create()) {
    *
-   *   ApiFuture&lt;ProjectBillingInfo&gt; future = projectAdminClient.fakebillingProjectsUpdateBillingInfoCallable().futureCall();
+   *   ApiFuture&lt;ProjectBillingInfo&gt; future = projectAdminClient.projectsUpdateBillingInfoCallable().futureCall();
    *   // Do something
    *   ProjectsUpdateBillingInfoHttpResponse response = future.get();
    * }
    * </code></pre>
    */
   @BetaApi
-  public final UnaryCallable<ProjectsUpdateBillingInfoHttpRequest, ProjectsUpdateBillingInfoHttpResponse> fakebillingProjectsUpdateBillingInfoCallable() {
-    return fakebillingProjectsUpdateBillingInfoCallable;
+  public final UnaryCallable<ProjectsUpdateBillingInfoHttpRequest, ProjectsUpdateBillingInfoHttpResponse> projectsUpdateBillingInfoCallable() {
+    return projectsUpdateBillingInfoCallable;
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -4677,7 +4679,7 @@ public class ProjectAdminClient implements AutoCloseable {
    * <pre><code>
    * try (ProjectAdminClient projectAdminClient = ProjectAdminClient.create()) {
    *
-   *   ProjectBillingInfo response = projectAdminClient.fakebillingProjectsGetBillingInfo();
+   *   ProjectBillingInfo response = projectAdminClient.projectsGetBillingInfo();
    * }
    * </code></pre>
    *
@@ -4685,8 +4687,8 @@ public class ProjectAdminClient implements AutoCloseable {
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   @BetaApi
-  public final ProjectBillingInfo fakebillingProjectsGetBillingInfo(ProjectsGetBillingInfoHttpRequest request) {
-    return fakebillingProjectsGetBillingInfoCallable().call(request);
+  public final ProjectBillingInfo projectsGetBillingInfo(ProjectsGetBillingInfoHttpRequest request) {
+    return projectsGetBillingInfoCallable().call(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -4700,15 +4702,15 @@ public class ProjectAdminClient implements AutoCloseable {
    * <pre><code>
    * try (ProjectAdminClient projectAdminClient = ProjectAdminClient.create()) {
    *
-   *   ApiFuture&lt;ProjectBillingInfo&gt; future = projectAdminClient.fakebillingProjectsGetBillingInfoCallable().futureCall();
+   *   ApiFuture&lt;ProjectBillingInfo&gt; future = projectAdminClient.projectsGetBillingInfoCallable().futureCall();
    *   // Do something
    *   ProjectsGetBillingInfoHttpResponse response = future.get();
    * }
    * </code></pre>
    */
   @BetaApi
-  public final UnaryCallable<ProjectsGetBillingInfoHttpRequest, ProjectsGetBillingInfoHttpResponse> fakebillingProjectsGetBillingInfoCallable() {
-    return fakebillingProjectsGetBillingInfoCallable;
+  public final UnaryCallable<ProjectsGetBillingInfoHttpRequest, ProjectsGetBillingInfoHttpResponse> projectsGetBillingInfoCallable() {
+    return projectsGetBillingInfoCallable;
   }
 
   /**
@@ -4783,13 +4785,13 @@ import org.threeten.bp.Duration;
  *
  * <p>The builder of this class is recursive, so contained classes are themselves builders.
  * When build() is called, the tree of builders is called to create the complete settings
- * object. For example, to set the total timeout of fakebillingProjectsUpdateBillingInfo to 30 seconds:
+ * object. For example, to set the total timeout of projectsUpdateBillingInfo to 30 seconds:
  *
  * <pre>
  * <code>
  * ProjectAdminSettings.Builder projectAdminSettingsBuilder =
  *     ProjectAdminSettings.defaultBuilder();
- * projectAdminSettingsBuilder.fakebillingProjectsUpdateBillingInfoSettings().getRetrySettingsBuilder()
+ * projectAdminSettingsBuilder.projectsUpdateBillingInfoSettings().getRetrySettingsBuilder()
  *     .setTotalTimeout(Duration.ofSeconds(30));
  * ProjectAdminSettings projectAdminSettings = projectAdminSettingsBuilder.build();
  * </code>
@@ -4829,17 +4831,17 @@ public class ProjectAdminSettings extends ClientSettings {
   private final SimpleCallSettings<ProjectsGetBillingInfoHttpRequest, ProjectsGetBillingInfoHttpResponse> fakebillingProjectsGetBillingInfoSettings;
 
   /**
-   * Returns the object with the settings used for calls to fakebillingProjectsUpdateBillingInfo.
+   * Returns the object with the settings used for calls to projectsUpdateBillingInfo.
    */
-  public SimpleCallSettings<ProjectsUpdateBillingInfoHttpRequest, ProjectsUpdateBillingInfoHttpResponse> fakebillingProjectsUpdateBillingInfoSettings() {
-    return fakebillingProjectsUpdateBillingInfoSettings;
+  public SimpleCallSettings<ProjectsUpdateBillingInfoHttpRequest, ProjectsUpdateBillingInfoHttpResponse> projectsUpdateBillingInfoSettings() {
+    return projectsUpdateBillingInfoSettings;
   }
 
   /**
-   * Returns the object with the settings used for calls to fakebillingProjectsGetBillingInfo.
+   * Returns the object with the settings used for calls to projectsGetBillingInfo.
    */
-  public SimpleCallSettings<ProjectsGetBillingInfoHttpRequest, ProjectsGetBillingInfoHttpResponse> fakebillingProjectsGetBillingInfoSettings() {
-    return fakebillingProjectsGetBillingInfoSettings;
+  public SimpleCallSettings<ProjectsGetBillingInfoHttpRequest, ProjectsGetBillingInfoHttpResponse> projectsGetBillingInfoSettings() {
+    return projectsGetBillingInfoSettings;
   }
 
 
@@ -4917,8 +4919,8 @@ public class ProjectAdminSettings extends ClientSettings {
           settingsBuilder.getChannelProvider(),
           settingsBuilder.getCredentialsProvider());
 
-    fakebillingProjectsUpdateBillingInfoSettings = settingsBuilder.fakebillingProjectsUpdateBillingInfoSettings().build();
-    fakebillingProjectsGetBillingInfoSettings = settingsBuilder.fakebillingProjectsGetBillingInfoSettings().build();
+    projectsUpdateBillingInfoSettings = settingsBuilder.projectsUpdateBillingInfoSettings().build();
+    projectsGetBillingInfoSettings = settingsBuilder.projectsGetBillingInfoSettings().build();
   }
 
 
@@ -4930,8 +4932,8 @@ public class ProjectAdminSettings extends ClientSettings {
   public static class Builder extends ClientSettings.Builder {
     private final ImmutableList<UnaryCallSettings.Builder> unaryMethodSettingsBuilders;
 
-    private final SimpleCallSettings.Builder<ProjectsUpdateBillingInfoHttpRequest, ProjectsUpdateBillingInfoHttpResponse> fakebillingProjectsUpdateBillingInfoSettings;
-    private final SimpleCallSettings.Builder<ProjectsGetBillingInfoHttpRequest, ProjectsGetBillingInfoHttpResponse> fakebillingProjectsGetBillingInfoSettings;
+    private final SimpleCallSettings.Builder<ProjectsUpdateBillingInfoHttpRequest, ProjectsUpdateBillingInfoHttpResponse> projectsUpdateBillingInfoSettings;
+    private final SimpleCallSettings.Builder<ProjectsGetBillingInfoHttpRequest, ProjectsGetBillingInfoHttpResponse> projectsGetBillingInfoSettings;
 
     private static final ImmutableMap<String, ImmutableSet<Status.Code>> RETRYABLE_CODE_DEFINITIONS;
 
@@ -4969,19 +4971,19 @@ public class ProjectAdminSettings extends ClientSettings {
       fakebillingProjectsGetBillingInfoSettings = SimpleCallSettings.newBuilder(Grpc not used in Discovery-based method.);
 
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder>of(
-          fakebillingProjectsUpdateBillingInfoSettings,
-          fakebillingProjectsGetBillingInfoSettings
+          projectsUpdateBillingInfoSettings,
+          projectsGetBillingInfoSettings
       );
     }
 
     private static Builder createDefault() {
       Builder builder = new Builder();
 
-      builder.fakebillingProjectsUpdateBillingInfoSettings()
+      builder.projectsUpdateBillingInfoSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
 
-      builder.fakebillingProjectsGetBillingInfoSettings()
+      builder.projectsGetBillingInfoSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
 
@@ -4991,12 +4993,12 @@ public class ProjectAdminSettings extends ClientSettings {
     private Builder(ProjectAdminSettings settings) {
       super(settings);
 
-      fakebillingProjectsUpdateBillingInfoSettings = settings.fakebillingProjectsUpdateBillingInfoSettings.toBuilder();
-      fakebillingProjectsGetBillingInfoSettings = settings.fakebillingProjectsGetBillingInfoSettings.toBuilder();
+      projectsUpdateBillingInfoSettings = settings.projectsUpdateBillingInfoSettings.toBuilder();
+      projectsGetBillingInfoSettings = settings.projectsGetBillingInfoSettings.toBuilder();
 
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder>of(
-          fakebillingProjectsUpdateBillingInfoSettings,
-          fakebillingProjectsGetBillingInfoSettings
+          projectsUpdateBillingInfoSettings,
+          projectsGetBillingInfoSettings
       );
     }
 
@@ -5031,17 +5033,17 @@ public class ProjectAdminSettings extends ClientSettings {
     }
 
     /**
-     * Returns the builder for the settings used for calls to fakebillingProjectsUpdateBillingInfo.
+     * Returns the builder for the settings used for calls to projectsUpdateBillingInfo.
      */
-    public SimpleCallSettings.Builder<ProjectsUpdateBillingInfoHttpRequest, ProjectsUpdateBillingInfoHttpResponse> fakebillingProjectsUpdateBillingInfoSettings() {
-      return fakebillingProjectsUpdateBillingInfoSettings;
+    public SimpleCallSettings.Builder<ProjectsUpdateBillingInfoHttpRequest, ProjectsUpdateBillingInfoHttpResponse> projectsUpdateBillingInfoSettings() {
+      return projectsUpdateBillingInfoSettings;
     }
 
     /**
-     * Returns the builder for the settings used for calls to fakebillingProjectsGetBillingInfo.
+     * Returns the builder for the settings used for calls to projectsGetBillingInfo.
      */
-    public SimpleCallSettings.Builder<ProjectsGetBillingInfoHttpRequest, ProjectsGetBillingInfoHttpResponse> fakebillingProjectsGetBillingInfoSettings() {
-      return fakebillingProjectsGetBillingInfoSettings;
+    public SimpleCallSettings.Builder<ProjectsGetBillingInfoHttpRequest, ProjectsGetBillingInfoHttpResponse> projectsGetBillingInfoSettings() {
+      return projectsGetBillingInfoSettings;
     }
 
     @Override
@@ -5095,60 +5097,60 @@ import javax.annotation.Generated;
 @Generated("by GAPIC")
 public class PagedResponseWrappers {
 
-  public static class FakebillingBillingAccountsListPagedResponse extends AbstractPagedListResponse<
+  public static class BillingAccountsListPagedResponse extends AbstractPagedListResponse<
       BillingAccountsListHttpRequest,
       BillingAccountsListHttpResponse,
       ListBillingAccountsResponse,
-      FakebillingBillingAccountsListPage,
-      FakebillingBillingAccountsListFixedSizeCollection> {
+      BillingAccountsListPage,
+      BillingAccountsListFixedSizeCollection> {
 
-    public static ApiFuture<FakebillingBillingAccountsListPagedResponse> createAsync(
+    public static ApiFuture<BillingAccountsListPagedResponse> createAsync(
         PageContext<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse, ListBillingAccountsResponse> context,
         ApiFuture<BillingAccountsListHttpResponse> futureResponse) {
-      ApiFuture<FakebillingBillingAccountsListPage> futurePage =
-          FakebillingBillingAccountsListPage.createEmptyPage().createPageAsync(context, futureResponse);
+      ApiFuture<BillingAccountsListPage> futurePage =
+          BillingAccountsListPage.createEmptyPage().createPageAsync(context, futureResponse);
       return ApiFutures.transform(
           futurePage,
-          new ApiFunction<FakebillingBillingAccountsListPage, FakebillingBillingAccountsListPagedResponse>() {
+          new ApiFunction<BillingAccountsListPage, BillingAccountsListPagedResponse>() {
             @Override
-            public FakebillingBillingAccountsListPagedResponse apply(FakebillingBillingAccountsListPage input) {
-              return new FakebillingBillingAccountsListPagedResponse(input);
+            public BillingAccountsListPagedResponse apply(BillingAccountsListPage input) {
+              return new BillingAccountsListPagedResponse(input);
             }
           });
     }
 
-    private FakebillingBillingAccountsListPagedResponse(FakebillingBillingAccountsListPage page) {
-      super(page, FakebillingBillingAccountsListFixedSizeCollection.createEmptyCollection());
+    private BillingAccountsListPagedResponse(BillingAccountsListPage page) {
+      super(page, BillingAccountsListFixedSizeCollection.createEmptyCollection());
     }
 
 
   }
 
-  public static class FakebillingBillingAccountsListPage extends AbstractPage<
+  public static class BillingAccountsListPage extends AbstractPage<
       BillingAccountsListHttpRequest,
       BillingAccountsListHttpResponse,
       ListBillingAccountsResponse,
-      FakebillingBillingAccountsListPage> {
+      BillingAccountsListPage> {
 
-    private FakebillingBillingAccountsListPage(
+    private BillingAccountsListPage(
         PageContext<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse, ListBillingAccountsResponse> context,
         BillingAccountsListHttpResponse response) {
       super(context, response);
     }
 
-    private static FakebillingBillingAccountsListPage createEmptyPage() {
-      return new FakebillingBillingAccountsListPage(null, null);
+    private static BillingAccountsListPage createEmptyPage() {
+      return new BillingAccountsListPage(null, null);
     }
 
     @Override
-    protected FakebillingBillingAccountsListPage createPage(
+    protected BillingAccountsListPage createPage(
         PageContext<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse, ListBillingAccountsResponse> context,
         BillingAccountsListHttpResponse response) {
-      return new FakebillingBillingAccountsListPage(context, response);
+      return new BillingAccountsListPage(context, response);
     }
 
     @Override
-    protected ApiFuture<FakebillingBillingAccountsListPage> createPageAsync(
+    protected ApiFuture<BillingAccountsListPage> createPageAsync(
         PageContext<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse, ListBillingAccountsResponse> context,
         ApiFuture<BillingAccountsListHttpResponse> futureResponse) {
       return super.createPageAsync(context, futureResponse);
@@ -5159,25 +5161,25 @@ public class PagedResponseWrappers {
 
   }
 
-  public static class FakebillingBillingAccountsListFixedSizeCollection extends AbstractFixedSizeCollection<
+  public static class BillingAccountsListFixedSizeCollection extends AbstractFixedSizeCollection<
       BillingAccountsListHttpRequest,
       BillingAccountsListHttpResponse,
       ListBillingAccountsResponse,
-      FakebillingBillingAccountsListPage,
-      FakebillingBillingAccountsListFixedSizeCollection> {
+      BillingAccountsListPage,
+      BillingAccountsListFixedSizeCollection> {
 
-    private FakebillingBillingAccountsListFixedSizeCollection(List<FakebillingBillingAccountsListPage> pages, int collectionSize) {
+    private BillingAccountsListFixedSizeCollection(List<BillingAccountsListPage> pages, int collectionSize) {
       super(pages, collectionSize);
     }
 
-    private static FakebillingBillingAccountsListFixedSizeCollection createEmptyCollection() {
-      return new FakebillingBillingAccountsListFixedSizeCollection(null, 0);
+    private static BillingAccountsListFixedSizeCollection createEmptyCollection() {
+      return new BillingAccountsListFixedSizeCollection(null, 0);
     }
 
     @Override
-    protected FakebillingBillingAccountsListFixedSizeCollection createCollection(
-        List<FakebillingBillingAccountsListPage> pages, int collectionSize) {
-      return new FakebillingBillingAccountsListFixedSizeCollection(pages, collectionSize);
+    protected BillingAccountsListFixedSizeCollection createCollection(
+        List<BillingAccountsListPage> pages, int collectionSize) {
+      return new BillingAccountsListFixedSizeCollection(pages, collectionSize);
     }
 
 
@@ -5217,7 +5219,7 @@ public class PagedResponseWrappers {
  * <code>
  * try (BillingAccountAdminClient billingAccountAdminClient = BillingAccountAdminClient.create()) {
  *
- *   BillingAccount response = billingAccountAdminClient.fakebillingBillingAccountsGet();
+ *   BillingAccount response = billingAccountAdminClient.billingAccountsGet();
  * }
  * </code>
  * </pre>
@@ -5234,7 +5236,7 @@ public class PagedResponseWrappers {
  * <code>
  * try (ProjectAdminClient projectAdminClient = ProjectAdminClient.create()) {
  *
- *   ProjectBillingInfo response = projectAdminClient.fakebillingProjectsUpdateBillingInfo();
+ *   ProjectBillingInfo response = projectAdminClient.projectsUpdateBillingInfo();
  * }
  * </code>
  * </pre>

@@ -61,13 +61,13 @@ public class DiscoGapicNamer {
   }
 
   /**
-   * Returns the array of substrings after the input is split by periods. Ex: Input of
-   * "compute.addresses.aggregatedList" returns the array: ["compute", "addresses", "List"].
+   * Formats the method as a Name. Methods are generally in the format
+   * "[api].[resource].[function]".
    */
   public static Name methodAsName(Method method) {
     String[] pieces = method.id().split(regexDelimiter);
-    Name result = Name.anyCamel(pieces[0]);
-    for (int i = 1; i < pieces.length; i++) {
+    Name result = Name.anyCamel(pieces[1]);
+    for (int i = 2; i < pieces.length; i++) {
       result = result.join(Name.anyCamel(pieces[i]));
     }
     return result;
