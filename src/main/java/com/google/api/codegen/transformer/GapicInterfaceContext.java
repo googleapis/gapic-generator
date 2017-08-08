@@ -15,7 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.InterfaceView;
-import com.google.api.codegen.config.FieldType.ApiSource;
+import com.google.api.codegen.config.ApiSource;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicMethodConfig;
@@ -25,6 +25,7 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.config.VisibilityConfig;
+import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.auto.value.AutoValue;
@@ -109,7 +110,6 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
     return create(
         getInterface(),
         getProductConfig(),
-        // getPackageMetadataConfig(),
         getModelTypeTable().cloneEmpty(),
         getNamer(),
         getFeatureConfig());
@@ -125,12 +125,21 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
     return getInterface().getSimpleName();
   }
 
+  public GapicInterfaceContext withNewTypeTable(String packageName) {
+    return create(
+        getInterface(),
+        getProductConfig(),
+        getModelTypeTable().cloneEmpty(packageName),
+        getNamer().cloneWithPackageName(packageName),
+        getFeatureConfig());
+  }
+
   /**
    * Returns the MethodConfig object of the given gRPC method.
    *
    * <p>If the method is a gRPC re-route method, returns the MethodConfig of the original method.
    */
-  public MethodConfig getMethodConfig(MethodModel method) {
+  public GapicMethodConfig getMethodConfig(MethodModel method) {
     Interface originalInterface = getInterface();
     if (getGrpcRerouteMap().containsKey(originalInterface)) {
       originalInterface = getGrpcRerouteMap().get(originalInterface);
@@ -138,7 +147,7 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
     InterfaceConfig originalInterfaceConfig =
         getProductConfig().getInterfaceConfig(originalInterface);
     if (originalInterfaceConfig != null) {
-      return originalInterfaceConfig.getMethodConfig(method);
+      return (GapicMethodConfig) originalInterfaceConfig.getMethodConfig(method);
     } else {
       throw new IllegalArgumentException(
           "Interface config does not exist for method: " + method.getSimpleName());
@@ -288,5 +297,15 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
   @Override
   public String getInterfaceFileName() {
     return getInterface().getFile().getFullName();
+  }
+
+  @Override
+  public String getInterfaceFullName() {
+    return getInterface().getFullName();
+  }
+
+  @Override
+  public String getInterfaceDescription() {
+    return DocumentationUtil.getScopedDescription(getInterface());
   }
 }

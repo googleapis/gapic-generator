@@ -15,33 +15,34 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldType;
-import com.google.api.codegen.config.LongRunningConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PageStreamingConfig;
-import com.google.api.codegen.config.ProtoField;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.viewmodel.ApiCallSettingsView;
 import com.google.api.codegen.viewmodel.ApiCallableImplType;
 import com.google.api.codegen.viewmodel.ApiCallableView;
+import com.google.api.codegen.viewmodel.DirectCallableView;
+import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
 import com.google.api.codegen.viewmodel.RetryCodesDefinitionView;
 import com.google.api.codegen.viewmodel.RetryParamsDefinitionView;
 import com.google.api.codegen.viewmodel.ServiceMethodType;
-import com.google.api.tools.framework.model.TypeRef;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.joda.time.Duration;
 
 public class ApiCallableTransformer {
+
   private final BatchingTransformer batchingTransformer;
   private final RetryDefinitionsTransformer retryDefinitionsTransformer;
+  private final LongRunningTransformer lroTransformer;
 
   public ApiCallableTransformer() {
     this.batchingTransformer = new BatchingTransformer();
     this.retryDefinitionsTransformer = new RetryDefinitionsTransformer();
+    this.lroTransformer = new LongRunningTransformer();
   }
 
   public List<ApiCallableView> generateStaticLangApiCallables(InterfaceContext context) {
@@ -88,6 +89,7 @@ public class ApiCallableTransformer {
 
   private ApiCallableView generateMainApiCallable(MethodContext context) {
     MethodConfig methodConfig = context.getMethodConfig();
+    MethodModel method = context.getMethodModel();
     SurfaceNamer namer = context.getNamer();
 
     ApiCallableView.Builder apiCallableBuilder = ApiCallableView.newBuilder();
@@ -100,13 +102,16 @@ public class ApiCallableTransformer {
         context
             .getMethodModel()
             .getAndSaveResponseTypeName(context.getTypeTable(), context.getNamer()));
-    apiCallableBuilder.name(context.getCallableName());
+    apiCallableBuilder.name(namer.getCallableName(method));
     apiCallableBuilder.methodName(
-        context.getApiMethodName(context.getMethodConfig().getVisibility()));
-    apiCallableBuilder.asyncMethodName(context.getAsyncApiMethodName(VisibilityConfig.PUBLIC));
-    apiCallableBuilder.memberName(context.getSettingsMemberName());
-    apiCallableBuilder.settingsFunctionName(context.getSettingsFunctionName());
+        namer.getApiMethodName(method, context.getMethodConfig().getVisibility()));
+    apiCallableBuilder.asyncMethodName(
+        namer.getAsyncApiMethodName(method, VisibilityConfig.PUBLIC));
+    apiCallableBuilder.memberName(namer.getSettingsMemberName(method));
+    apiCallableBuilder.settingsFunctionName(namer.getSettingsFunctionName(method));
     apiCallableBuilder.grpcClientVarName(namer.getReroutedGrpcClientVarName(methodConfig));
+
+    setCommonApiCallableFields(context, apiCallableBuilder);
 
     ApiCallableImplType callableImplType = ApiCallableImplType.SimpleApiCallable;
     if (methodConfig.isGrpcStreaming()) {
@@ -127,6 +132,7 @@ public class ApiCallableTransformer {
   private ApiCallableView generatePagedApiCallable(MethodContext context) {
     MethodConfig methodConfig = context.getMethodConfig();
     SurfaceNamer namer = context.getNamer();
+    MethodModel method = context.getMethodModel();
 
     PageStreamingConfig pageStreaming = methodConfig.getPageStreaming();
 
@@ -136,59 +142,69 @@ public class ApiCallableTransformer {
         namer.getApiCallableTypeName(ServiceMethodType.UnaryMethod));
 
     String pagedResponseTypeName =
-        context.getAndSavePagedResponseTypeName(pageStreaming.getResourcesFieldConfig());
+        namer.getAndSavePagedResponseTypeName(context, pageStreaming.getResourcesFieldConfig());
 
     pagedApiCallableBuilder.requestTypeName(
         context
             .getMethodModel()
             .getAndSaveRequestTypeName(context.getTypeTable(), context.getNamer()));
     pagedApiCallableBuilder.responseTypeName(pagedResponseTypeName);
-    pagedApiCallableBuilder.name(context.getPagedCallableName());
+    pagedApiCallableBuilder.name(namer.getPagedCallableName(method));
     pagedApiCallableBuilder.methodName(
-        context.getApiMethodName(context.getMethodConfig().getVisibility()));
-    pagedApiCallableBuilder.asyncMethodName(context.getAsyncApiMethodName(VisibilityConfig.PUBLIC));
-    pagedApiCallableBuilder.memberName(context.getSettingsMemberName());
-    pagedApiCallableBuilder.settingsFunctionName(context.getSettingsFunctionName());
+        namer.getApiMethodName(method, context.getMethodConfig().getVisibility()));
+    pagedApiCallableBuilder.asyncMethodName(
+        namer.getAsyncApiMethodName(method, VisibilityConfig.PUBLIC));
+    pagedApiCallableBuilder.memberName(namer.getSettingsMemberName(method));
+    pagedApiCallableBuilder.settingsFunctionName(namer.getSettingsFunctionName(method));
     pagedApiCallableBuilder.grpcClientVarName(namer.getReroutedGrpcClientVarName(methodConfig));
+    setCommonApiCallableFields(context, pagedApiCallableBuilder);
 
     return pagedApiCallableBuilder.build();
   }
 
   private ApiCallableView generateOperationApiCallable(GapicMethodContext context) {
-    ModelTypeTable typeTable = context.getTypeTable();
     MethodModel method = context.getMethodModel();
-    MethodConfig methodConfig = context.getMethodConfig();
     SurfaceNamer namer = context.getNamer();
-
-    LongRunningConfig longRunning = methodConfig.getLongRunningConfig();
 
     ApiCallableView.Builder operationApiCallableBuilder = ApiCallableView.newBuilder();
     operationApiCallableBuilder.type(ApiCallableImplType.OperationApiCallable);
     operationApiCallableBuilder.interfaceTypeName(
         namer.getApiCallableTypeName(ServiceMethodType.LongRunningMethod));
 
-    String operationResponseTypeName = typeTable.getAndSaveNicknameFor(longRunning.getReturnType());
-
+    LongRunningOperationDetailView lroView = lroTransformer.generateDetailView(context);
     operationApiCallableBuilder.requestTypeName(
         context
             .getMethodModel()
             .getAndSaveRequestTypeName(context.getTypeTable(), context.getNamer()));
-    operationApiCallableBuilder.responseTypeName(operationResponseTypeName);
+    operationApiCallableBuilder.responseTypeName(lroView.operationPayloadTypeName());
+    operationApiCallableBuilder.metadataTypeName(lroView.metadataTypeName());
     operationApiCallableBuilder.name(namer.getOperationCallableName(method));
-    operationApiCallableBuilder.methodName(
-        namer.getApiMethodName(method, context.getMethodConfig().getVisibility()));
-    operationApiCallableBuilder.asyncMethodName(
-        namer.getAsyncApiMethodName(method, VisibilityConfig.PUBLIC));
-    operationApiCallableBuilder.memberName(namer.getSettingsMemberName(method));
-    operationApiCallableBuilder.settingsFunctionName(namer.getSettingsFunctionName(method));
-    operationApiCallableBuilder.grpcClientVarName(namer.getReroutedGrpcClientVarName(methodConfig));
+
+    setCommonApiCallableFields(context, operationApiCallableBuilder);
 
     return operationApiCallableBuilder.build();
+  }
+
+  private void setCommonApiCallableFields(
+      MethodContext context, ApiCallableView.Builder apiCallableBuilder) {
+    MethodModel method = context.getMethodModel();
+    SurfaceNamer namer = context.getNamer();
+    MethodConfig methodConfig = context.getMethodConfig();
+
+    apiCallableBuilder.methodName(
+        namer.getApiMethodName(method, context.getMethodConfig().getVisibility()));
+    apiCallableBuilder.asyncMethodName(
+        namer.getAsyncApiMethodName(method, VisibilityConfig.PUBLIC));
+    apiCallableBuilder.memberName(namer.getSettingsMemberName(method));
+    apiCallableBuilder.settingsFunctionName(namer.getSettingsFunctionName(method));
+    apiCallableBuilder.grpcClientVarName(namer.getReroutedGrpcClientVarName(methodConfig));
+    apiCallableBuilder.grpcDirectCallableName(namer.getDirectCallableName(method));
   }
 
   public List<ApiCallSettingsView> generateApiCallableSettings(MethodContext context) {
     SurfaceNamer namer = context.getNamer();
     ImportTypeTable typeTable = context.getTypeTable();
+    MethodModel method = context.getMethodModel();
     MethodConfig methodConfig = context.getMethodConfig();
     Map<String, RetryCodesDefinitionView> retryCodesByKey = new HashMap<>();
     for (RetryCodesDefinitionView retryCodes :
@@ -205,10 +221,8 @@ public class ApiCallableTransformer {
 
     ApiCallSettingsView.Builder settings = ApiCallSettingsView.newBuilder();
 
-    settings.methodName(context.getApiMethodName(VisibilityConfig.PUBLIC));
-    settings.protoMethodName(context.getMethodModel().getProtoMethodName());
-    settings.fullServiceName(context.getTargetInterfaceFullName());
-    settings.asyncMethodName(context.getAsyncApiMethodName(VisibilityConfig.PUBLIC));
+    settings.methodName(namer.getApiMethodName(method, VisibilityConfig.PUBLIC));
+    settings.asyncMethodName(namer.getAsyncApiMethodName(method, VisibilityConfig.PUBLIC));
     settings.requestTypeName(
         context
             .getMethodModel()
@@ -217,9 +231,10 @@ public class ApiCallableTransformer {
         context
             .getMethodModel()
             .getAndSaveResponseTypeName(context.getTypeTable(), context.getNamer()));
+    settings.grpcMethodConstant(namer.getGrpcMethodConstant(method));
 
     settings.grpcTypeName(typeTable.getAndSaveNicknameFor(context.getGrpcContainerTypeName()));
-    settings.grpcMethodConstant(context.getGrpcMethodConstant());
+    settings.grpcMethodConstant(namer.getGrpcMethodConstant(method));
     settings.retryCodesName(methodConfig.getRetryCodesConfigName());
     settings.retryCodesView(retryCodesByKey.get(methodConfig.getRetryCodesConfigName()));
     settings.retryParamsName(methodConfig.getRetrySettingsConfigName());
@@ -236,15 +251,12 @@ public class ApiCallableTransformer {
         namer.getNotImplementedString(notImplementedPrefix + "pagedListResponseFactoryName"));
     settings.batchingDescriptorName(
         namer.getNotImplementedString(notImplementedPrefix + "batchingDescriptorName"));
-    settings.operationResultTypeName(
-        namer.getNotImplementedString(notImplementedPrefix + "operationResultTypeName"));
 
     if (methodConfig.isGrpcStreaming()) {
       // GrpcStreaming is only applicable to protobuf-based APIs.
       settings.type(ApiCallableImplType.StreamingApiCallable);
       if (methodConfig.getGrpcStreaming().hasResourceField()) {
-        FieldType resourceType =
-            new ProtoField(methodConfig.getGrpcStreaming().getResourcesField());
+        FieldType resourceType = methodConfig.getGrpcStreaming().getResourcesField();
         settings.resourceTypeName(typeTable.getAndSaveNicknameForElementType(resourceType));
       }
       settings.grpcStreamingType(methodConfig.getGrpcStreaming().getType());
@@ -254,32 +266,66 @@ public class ApiCallableTransformer {
           typeTable.getAndSaveNicknameForElementType(
               methodConfig.getPageStreaming().getResourcesField()));
       settings.pagedListResponseTypeName(
-          context.getAndSavePagedResponseTypeName(
-              methodConfig.getPageStreaming().getResourcesFieldConfig()));
-      settings.pageStreamingDescriptorName(context.getPageStreamingDescriptorConstName());
-      settings.pagedListResponseFactoryName(context.getPagedListResponseFactoryConstName());
+          namer.getAndSavePagedResponseTypeName(
+              context, methodConfig.getPageStreaming().getResourcesFieldConfig()));
+      settings.pageStreamingDescriptorName(namer.getPageStreamingDescriptorConstName(method));
+      settings.pagedListResponseFactoryName(namer.getPagedListResponseFactoryConstName(method));
     } else if (methodConfig.isBatching()) {
       settings.type(ApiCallableImplType.BatchingApiCallable);
-      settings.batchingDescriptorName(
-          context.getNamer().getBatchingDescriptorConstName(context.getMethodModel()));
+      settings.batchingDescriptorName(namer.getBatchingDescriptorConstName(method));
       settings.batchingConfig(batchingTransformer.generateBatchingConfig(context));
     } else if (methodConfig.isLongRunningOperation()) {
-      // LongRunningOperations are only applicable to protobuf-based APIs.
       settings.type(ApiCallableImplType.OperationApiCallable);
-      TypeRef operationResultType = methodConfig.getLongRunningConfig().getReturnType();
-      settings.operationResultTypeName(
-          ((ModelTypeTable) typeTable).getAndSaveNicknameForElementType(operationResultType));
-      Duration pollingInterval = methodConfig.getLongRunningConfig().getPollingInterval();
-      if (pollingInterval != null) {
-        settings.operationPollingIntervalMillis(Long.toString(pollingInterval.getMillis()));
-      }
+      settings.operationMethod(lroTransformer.generateDetailView(context));
     } else {
       settings.type(ApiCallableImplType.SimpleApiCallable);
     }
 
-    settings.memberName(context.getSettingsMemberName());
-    settings.settingsGetFunction(context.getSettingsFunctionName());
+    settings.memberName(namer.getSettingsMemberName(method));
+    settings.settingsGetFunction(namer.getSettingsFunctionName(method));
 
     return Arrays.asList(settings.build());
+  }
+
+  public List<DirectCallableView> generateStaticLangDirectCallables(GapicInterfaceContext context) {
+    List<DirectCallableView> callables = new ArrayList<>();
+    boolean excludeMixins = !context.getFeatureConfig().enableMixins();
+
+    for (MethodModel method : context.getSupportedMethods()) {
+      if (excludeMixins && context.getMethodConfig(method).getRerouteToGrpcInterface() != null) {
+        continue;
+      }
+      callables.add(generateDirectCallable(context.asRequestMethodContext(method)));
+    }
+
+    return callables;
+  }
+
+  private DirectCallableView generateDirectCallable(MethodContext context) {
+    ImportTypeTable typeTable = context.getTypeTable();
+    MethodModel method = context.getMethodModel();
+    MethodConfig methodConfig = context.getMethodConfig();
+    SurfaceNamer namer = context.getNamer();
+
+    DirectCallableView.Builder callableBuilder = DirectCallableView.newBuilder();
+
+    ServiceMethodType callableInterfaceType = ServiceMethodType.UnaryMethod;
+    if (methodConfig.isGrpcStreaming()) {
+      callableInterfaceType = ServiceMethodType.GrpcStreamingMethod;
+      callableBuilder.grpcStreamingType(methodConfig.getGrpcStreaming().getType());
+    }
+
+    callableBuilder.interfaceTypeName(namer.getDirectCallableTypeName(callableInterfaceType));
+    callableBuilder.createCallableFunctionName(
+        namer.getCreateCallableFunctionName(callableInterfaceType));
+    callableBuilder.requestTypeName(
+        context.getMethodModel().getAndSaveRequestTypeName(typeTable, context.getNamer()));
+    callableBuilder.responseTypeName(
+        context.getMethodModel().getAndSaveResponseTypeName(typeTable, context.getNamer()));
+    callableBuilder.name(namer.getDirectCallableName(method));
+    callableBuilder.protoMethodName(method.getSimpleName());
+    callableBuilder.fullServiceName(context.getTargetInterfaceFullName());
+
+    return callableBuilder.build();
   }
 }

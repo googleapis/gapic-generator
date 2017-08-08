@@ -59,6 +59,7 @@ import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -133,7 +134,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     StaticLangResourceNamesView.Builder view = StaticLangResourceNamesView.newBuilder();
     view.templateFileName(RESOURCENAMES_TEMPLATE_FILENAME);
     String outputPath =
-        pathMapper.getOutputPath(context.getInterface(), context.getProductConfig());
+        pathMapper.getOutputPath(context.getInterface().getFullName(), context.getProductConfig());
     view.outputPath(outputPath + File.separator + "ResourceNames.cs");
     view.resourceNames(pathTemplateTransformer.generateResourceNames(context));
     view.resourceProtos(pathTemplateTransformer.generateResourceProtos(context));
@@ -155,7 +156,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     fileView.settings(generateSettingsClass(context));
 
     String outputPath =
-        pathMapper.getOutputPath(context.getInterface(), context.getProductConfig());
+        pathMapper.getOutputPath(context.getInterface().getFullName(), context.getProductConfig());
     String name = context.getNamer().getApiWrapperClassName(context.getInterfaceConfig());
     fileView.outputPath(outputPath + File.separator + name + ".cs");
 
@@ -185,7 +186,8 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
           || call.type() == ApiCallableImplType.BatchingApiCallable
           || call.type() == ApiCallableImplType.InitialOperationApiCallable
           || (call.type() == ApiCallableImplType.StreamingApiCallable
-              && call.grpcStreamingType() == GrpcStreamingType.BidiStreaming)) {
+              && (call.grpcStreamingType() == GrpcStreamingType.BidiStreaming
+                  || call.grpcStreamingType() == GrpcStreamingType.ServerStreaming))) {
         callables.add(call);
       }
     }
@@ -287,8 +289,14 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
   private List<ModifyMethodView> generateModifyMethods(GapicInterfaceContext context) {
     SurfaceNamer namer = context.getNamer();
     List<ModifyMethodView> modifyMethods = new ArrayList<>();
+    Set<String> modifyTypeNames = new HashSet<>();
     for (MethodModel method : csharpCommonTransformer.getSupportedMethods(context)) {
       MethodContext methodContext = context.asRequestMethodContext(method);
+      String inputTypeFullName = methodContext.getMethodModel().getInputFullName();
+      if (modifyTypeNames.contains(inputTypeFullName)) {
+        continue;
+      }
+      modifyTypeNames.add(inputTypeFullName);
       MethodConfig methodConfig = methodContext.getMethodConfig();
       ModifyMethodView.Builder builder = ModifyMethodView.builder();
       builder.name(namer.getModifyMethodName(methodContext));

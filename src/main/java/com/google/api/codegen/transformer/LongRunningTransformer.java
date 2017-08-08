@@ -55,6 +55,10 @@ public class LongRunningTransformer {
         .metadataTypeName(metadataTypeName)
         .implementsDelete(lroConfig.implementsDelete())
         .implementsCancel(lroConfig.implementsCancel())
+        .initialPollDelay(lroConfig.getInitialPollDelay().getMillis())
+        .pollDelayMultiplier(lroConfig.getPollDelayMultiplier())
+        .maxPollDelay(lroConfig.getMaxPollDelay().getMillis())
+        .totalPollTimeout(lroConfig.getTotalPollTimeout().getMillis())
         .build();
   }
 }

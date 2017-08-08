@@ -15,12 +15,11 @@
 package com.google.api.codegen.gapic;
 
 import com.google.api.codegen.config.ProductConfig;
-import com.google.api.tools.framework.model.ProtoElement;
 
 /** An implementation of GapicCodePathMapper where the output path is simply the package name. */
 public class PackageNameCodePathMapper implements GapicCodePathMapper {
   @Override
-  public String getOutputPath(ProtoElement element, ProductConfig config) {
+  public String getOutputPath(String elementFullName, ProductConfig config) {
     return config.getPackageName();
   }
 }

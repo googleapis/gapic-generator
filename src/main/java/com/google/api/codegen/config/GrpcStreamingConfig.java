@@ -33,7 +33,7 @@ public class GrpcStreamingConfig {
     BidiStreaming
   }
 
-  private final Field resourcesField;
+  private final FieldType resourcesField;
   private final GrpcStreamingType type;
 
   /**
@@ -89,7 +89,7 @@ public class GrpcStreamingConfig {
   }
 
   private GrpcStreamingConfig(Field resourcesField, GrpcStreamingType type) {
-    this.resourcesField = resourcesField;
+    this.resourcesField = new ProtoField(resourcesField);
     this.type = type;
   }
 
@@ -99,7 +99,7 @@ public class GrpcStreamingConfig {
   }
 
   /** Returns the field used in the response to hold the resource being returned. */
-  public Field getResourcesField() {
+  public FieldType getResourcesField() {
     return resourcesField;
   }
 

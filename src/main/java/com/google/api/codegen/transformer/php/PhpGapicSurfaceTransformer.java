@@ -22,7 +22,6 @@ import com.google.api.codegen.config.GrpcStreamingConfig;
 import com.google.api.codegen.config.LongRunningConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProductServiceConfig;
-import com.google.api.codegen.config.ProtoField;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
@@ -100,7 +99,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
 
   public List<ViewModel> transform(GapicInterfaceContext context) {
     String outputPath =
-        pathMapper.getOutputPath(context.getInterface(), context.getProductConfig());
+        pathMapper.getOutputPath(context.getInterfaceFullName(), context.getProductConfig());
     SurfaceNamer namer = context.getNamer();
 
     List<ViewModel> surfaceData = new ArrayList<>();
@@ -184,6 +183,10 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
               .metadataTypeName(context.getModelTypeTable().getFullNameFor(metadataType))
               .implementsCancel(true)
               .implementsDelete(true)
+              .initialPollDelay(lroConfig.getInitialPollDelay().getMillis())
+              .pollDelayMultiplier(lroConfig.getPollDelayMultiplier())
+              .maxPollDelay(lroConfig.getMaxPollDelay().getMillis())
+              .totalPollTimeout(lroConfig.getTotalPollTimeout().getMillis())
               .build());
     }
 
@@ -200,9 +203,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
       String resourcesFieldGetFunction = null;
       if (grpcStreamingConfig.hasResourceField()) {
         resourcesFieldGetFunction =
-            context
-                .getNamer()
-                .getFieldGetFunctionName(new ProtoField(grpcStreamingConfig.getResourcesField()));
+            context.getNamer().getFieldGetFunctionName(grpcStreamingConfig.getResourcesField());
       }
       result.add(
           GrpcStreamingDetailView.newBuilder()

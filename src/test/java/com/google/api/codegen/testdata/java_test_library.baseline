@@ -1,4 +1,4 @@
-============== file: src/test/java/com/google/gcloud/pubsub/spi/LibraryClientTest.java ==============
+============== file: src/test/java/com/google/gcloud/pubsub/v1/LibraryClientTest.java ==============
 /*
  * Copyright 2017, Google Inc. All rights reserved.
  *
@@ -14,16 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.gcloud.pubsub.spi;
+package com.google.gcloud.pubsub.v1;
 
 import com.google.api.gax.core.NoCredentialsProvider;
 import com.google.api.gax.core.PagedListResponse;
-import com.google.api.gax.grpc.ApiException;
-import com.google.api.gax.grpc.ApiStreamObserver;
-import com.google.api.gax.grpc.StreamingCallable;
+import com.google.api.gax.grpc.GrpcApiException;
+import com.google.api.gax.grpc.GrpcTransportProvider;
 import com.google.api.gax.grpc.testing.MockGrpcService;
 import com.google.api.gax.grpc.testing.MockServiceHelper;
 import com.google.api.gax.grpc.testing.MockStreamObserver;
+import com.google.api.gax.rpc.ApiStreamObserver;
+import com.google.api.gax.rpc.StreamingCallable;
 import com.google.api.resourcenames.ResourceName;
 import com.google.common.collect.Lists;
 import com.google.example.library.v1.AddCommentsRequest;
@@ -42,6 +43,7 @@ import com.google.example.library.v1.DeleteShelfRequest;
 import com.google.example.library.v1.DiscussBookRequest;
 import com.google.example.library.v1.FindRelatedBooksRequest;
 import com.google.example.library.v1.FindRelatedBooksResponse;
+import com.google.example.library.v1.GetBookFromAbsolutelyAnywhereRequest;
 import com.google.example.library.v1.GetBookFromAnywhereRequest;
 import com.google.example.library.v1.GetBookFromArchiveRequest;
 import com.google.example.library.v1.GetBookRequest;
@@ -70,10 +72,10 @@ import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest
 import com.google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse;
 import com.google.example.library.v1.UpdateBookIndexRequest;
 import com.google.example.library.v1.UpdateBookRequest;
-import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.FindRelatedBooksPagedResponse;
-import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.ListBooksPagedResponse;
-import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.ListShelvesPagedResponse;
-import static com.google.gcloud.pubsub.spi.PagedResponseWrappers.ListStringsPagedResponse;
+import static com.google.gcloud.pubsub.v1.PagedResponseWrappers.FindRelatedBooksPagedResponse;
+import static com.google.gcloud.pubsub.v1.PagedResponseWrappers.ListBooksPagedResponse;
+import static com.google.gcloud.pubsub.v1.PagedResponseWrappers.ListShelvesPagedResponse;
+import static com.google.gcloud.pubsub.v1.PagedResponseWrappers.ListStringsPagedResponse;
 import com.google.longrunning.Operation;
 import com.google.protobuf.Any;
 import com.google.protobuf.ByteString;
@@ -92,6 +94,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -124,7 +127,10 @@ public class LibraryClientTest {
   public void setUp() throws IOException {
     serviceHelper.reset();
     LibrarySettings settings = LibrarySettings.defaultBuilder()
-        .setChannelProvider(serviceHelper.createChannelProvider())
+        .setTransportProvider(
+              GrpcTransportProvider.newBuilder()
+                  .setChannelProvider(serviceHelper.createChannelProvider())
+                  .build())
         .setCredentialsProvider(new NoCredentialsProvider())
         .build();
     client = LibraryClient.create(settings);
@@ -172,8 +178,8 @@ public class LibraryClientTest {
 
       client.createShelf(shelf);
       Assert.fail("No exception raised");
-    } catch (ApiException e) {
-      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
+    } catch (GrpcApiException e) {
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode().getCode());
     }
   }
 
@@ -214,8 +220,8 @@ public class LibraryClientTest {
 
       client.getShelf(name);
       Assert.fail("No exception raised");
-    } catch (ApiException e) {
-      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
+    } catch (GrpcApiException e) {
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode().getCode());
     }
   }
 
@@ -259,8 +265,8 @@ public class LibraryClientTest {
 
       client.getShelf(formattedName, message);
       Assert.fail("No exception raised");
-    } catch (ApiException e) {
-      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
+    } catch (GrpcApiException e) {
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode().getCode());
     }
   }
 
@@ -307,8 +313,8 @@ public class LibraryClientTest {
 
       client.getShelf(formattedName, message, stringBuilder);
       Assert.fail("No exception raised");
-    } catch (ApiException e) {
-      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
+    } catch (GrpcApiException e) {
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode().getCode());
     }
   }
 
@@ -349,8 +355,8 @@ public class LibraryClientTest {
 
       client.listShelves();
       Assert.fail("No exception raised");
-    } catch (ApiException e) {
-      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
+    } catch (GrpcApiException e) {
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode().getCode());
     }
   }
 
@@ -382,8 +388,8 @@ public class LibraryClientTest {
 
       client.deleteShelf(name);
       Assert.fail("No exception raised");
-    } catch (ApiException e) {
-      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
+    } catch (GrpcApiException e) {
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode().getCode());
     }
   }
 
@@ -427,8 +433,8 @@ public class LibraryClientTest {
 
       client.mergeShelves(name, otherShelfName);
       Assert.fail("No exception raised");
-    } catch (ApiException e) {
-      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
+    } catch (GrpcApiException e) {
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode().getCode());
     }
   }
 
@@ -474,8 +480,8 @@ public class LibraryClientTest {
 
       client.createBook(formattedName, book);
       Assert.fail("No exception raised");
-    } catch (ApiException e) {
-      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
+    } catch (GrpcApiException e) {
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode().getCode());
     }
   }
 
@@ -528,8 +534,8 @@ public class LibraryClientTest {
 
       client.publishSeries(shelf, books, edition, seriesUuid);
       Assert.fail("No exception raised");
-    } catch (ApiException e) {
-      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
+    } catch (GrpcApiException e) {
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode().getCode());
     }
   }
 
@@ -572,8 +578,8 @@ public class LibraryClientTest {
 
       client.getBook(name);
       Assert.fail("No exception raised");
-    } catch (ApiException e) {
-      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
+    } catch (GrpcApiException e) {
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode().getCode());
     }
   }
 
@@ -618,8 +624,8 @@ public class LibraryClientTest {
 
       client.listBooks(name, filter);
       Assert.fail("No exception raised");
-    } catch (ApiException e) {
-      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
+    } catch (GrpcApiException e) {
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode().getCode());
     }
   }
 
@@ -651,8 +657,8 @@ public class LibraryClientTest {
 
       client.deleteBook(name);
       Assert.fail("No exception raised");
-    } catch (ApiException e) {
-      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
+    } catch (GrpcApiException e) {
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode().getCode());
     }
   }
 
@@ -698,8 +704,8 @@ public class LibraryClientTest {
 
       client.updateBook(name, book);
       Assert.fail("No exception raised");
-    } catch (ApiException e) {
-      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
+    } catch (GrpcApiException e) {
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode().getCode());
     }
   }
 
@@ -751,8 +757,8 @@ public class LibraryClientTest {
 
       client.updateBook(name, book, updateMask, physicalMask);
       Assert.fail("No exception raised");
-    } catch (ApiException e) {
-      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
+    } catch (GrpcApiException e) {
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode().getCode());
     }
   }
 
@@ -798,8 +804,8 @@ public class LibraryClientTest {
 
       client.moveBook(name, otherShelfName);
       Assert.fail("No exception raised");
-    } catch (ApiException e) {
-      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
+    } catch (GrpcApiException e) {
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode().getCode());
     }
   }
 
@@ -843,8 +849,8 @@ public class LibraryClientTest {
 
       client.listStrings();
       Assert.fail("No exception raised");
-    } catch (ApiException e) {
-      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
+    } catch (GrpcApiException e) {
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode().getCode());
     }
   }
 
@@ -875,7 +881,7 @@ public class LibraryClientTest {
     Assert.assertEquals(1, actualRequests.size());
     ListStringsRequest actualRequest = (ListStringsRequest)actualRequests.get(0);
 
-    Assert.assertEquals(name, actualRequest.getNameAsResourceName());
+    Assert.assertEquals(Objects.toString(name), Objects.toString(actualRequest.getNameAsResourceName()));
   }
 
   @Test
@@ -889,8 +895,8 @@ public class LibraryClientTest {
 
       client.listStrings(name);
       Assert.fail("No exception raised");
-    } catch (ApiException e) {
-      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
+    } catch (GrpcApiException e) {
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode().getCode());
     }
   }
 
@@ -941,8 +947,8 @@ public class LibraryClientTest {
 
       client.addComments(formattedName, comments);
       Assert.fail("No exception raised");
-    } catch (ApiException e) {
-      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
+    } catch (GrpcApiException e) {
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode().getCode());
     }
   }
 
@@ -985,8 +991,8 @@ public class LibraryClientTest {
 
       client.getBookFromArchive(name);
       Assert.fail("No exception raised");
-    } catch (ApiException e) {
-      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
+    } catch (GrpcApiException e) {
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode().getCode());
     }
   }
 
@@ -1032,8 +1038,52 @@ public class LibraryClientTest {
 
       client.getBookFromAnywhere(name, altBookName);
       Assert.fail("No exception raised");
-    } catch (ApiException e) {
-      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
+    } catch (GrpcApiException e) {
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode().getCode());
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void getBookFromAbsolutelyAnywhereTest() {
+    BookNameOneof name2 = BookNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
+    String author = "author-1406328437";
+    String title = "title110371416";
+    boolean read = true;
+    BookFromAnywhere expectedResponse = BookFromAnywhere.newBuilder()
+      .setNameWithBookNameOneof(name2)
+      .setAuthor(author)
+      .setTitle(title)
+      .setRead(read)
+      .build();
+    mockLibraryService.addResponse(expectedResponse);
+
+    BookNameOneof name = BookNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
+
+    BookFromAnywhere actualResponse =
+        client.getBookFromAbsolutelyAnywhere(name);
+    Assert.assertEquals(expectedResponse, actualResponse);
+
+    List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
+    Assert.assertEquals(1, actualRequests.size());
+    GetBookFromAbsolutelyAnywhereRequest actualRequest = (GetBookFromAbsolutelyAnywhereRequest)actualRequests.get(0);
+
+    Assert.assertEquals(Objects.toString(name), Objects.toString(actualRequest.getNameAsResourceName()));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void getBookFromAbsolutelyAnywhereExceptionTest() throws Exception {
+    StatusRuntimeException exception = new StatusRuntimeException(Status.INVALID_ARGUMENT);
+    mockLibraryService.addException(exception);
+
+    try {
+      BookNameOneof name = BookNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
+
+      client.getBookFromAbsolutelyAnywhere(name);
+      Assert.fail("No exception raised");
+    } catch (GrpcApiException e) {
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode().getCode());
     }
   }
 
@@ -1075,15 +1125,19 @@ public class LibraryClientTest {
 
       client.updateBookIndex(name, indexName, indexMap);
       Assert.fail("No exception raised");
-    } catch (ApiException e) {
-      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
+    } catch (GrpcApiException e) {
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode().getCode());
     }
   }
 
   @Test
   @SuppressWarnings("all")
   public void streamShelvesTest() throws Exception {
-    StreamShelvesResponse expectedResponse = StreamShelvesResponse.newBuilder().build();
+    Shelf shelvesElement = Shelf.newBuilder().build();
+    List<Shelf> shelves = Arrays.asList(shelvesElement);
+    StreamShelvesResponse expectedResponse = StreamShelvesResponse.newBuilder()
+      .addAllShelves(shelves)
+      .build();
     mockLibraryService.addResponse(expectedResponse);
     StreamShelvesRequest request = StreamShelvesRequest.newBuilder().build();
 
@@ -1282,8 +1336,8 @@ public class LibraryClientTest {
 
       client.findRelatedBooks(names, shelves);
       Assert.fail("No exception raised");
-    } catch (ApiException e) {
-      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
+    } catch (GrpcApiException e) {
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode().getCode());
     }
   }
 
@@ -1320,8 +1374,8 @@ public class LibraryClientTest {
 
       client.addTag(formattedResource, tag);
       Assert.fail("No exception raised");
-    } catch (ApiException e) {
-      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
+    } catch (GrpcApiException e) {
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode().getCode());
     }
   }
 
@@ -1358,8 +1412,8 @@ public class LibraryClientTest {
 
       client.addLabel(formattedResource, label);
       Assert.fail("No exception raised");
-    } catch (ApiException e) {
-      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
+    } catch (GrpcApiException e) {
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode().getCode());
     }
   }
 
@@ -1409,9 +1463,9 @@ public class LibraryClientTest {
       client.getBigBookAsync(name).get();
       Assert.fail("No exception raised");
     } catch (ExecutionException e) {
-      Assert.assertEquals(ApiException.class, e.getCause().getClass());
-      ApiException apiException = (ApiException) e.getCause();
-      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), apiException.getStatusCode());
+      Assert.assertEquals(GrpcApiException.class, e.getCause().getClass());
+      GrpcApiException apiException = (GrpcApiException) e.getCause();
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), apiException.getStatusCode().getCode());
     }
   }
 
@@ -1453,9 +1507,9 @@ public class LibraryClientTest {
       client.getBigNothingAsync(name).get();
       Assert.fail("No exception raised");
     } catch (ExecutionException e) {
-      Assert.assertEquals(ApiException.class, e.getCause().getClass());
-      ApiException apiException = (ApiException) e.getCause();
-      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), apiException.getStatusCode());
+      Assert.assertEquals(GrpcApiException.class, e.getCause().getClass());
+      GrpcApiException apiException = (GrpcApiException) e.getCause();
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), apiException.getStatusCode().getCode());
     }
   }
 
@@ -1489,8 +1543,8 @@ public class LibraryClientTest {
 
       client.testOptionalRequiredFlatteningParams();
       Assert.fail("No exception raised");
-    } catch (ApiException e) {
-      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
+    } catch (GrpcApiException e) {
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode().getCode());
     }
   }
 
@@ -1683,8 +1737,8 @@ public class LibraryClientTest {
 
       client.testOptionalRequiredFlatteningParams(requiredSingularInt32, requiredSingularInt64, requiredSingularFloat, requiredSingularDouble, requiredSingularBool, requiredSingularEnum, requiredSingularString, requiredSingularBytes, requiredSingularMessage, requiredSingularResourceName, requiredSingularResourceNameOneof, requiredSingularFixed32, requiredSingularFixed64, requiredRepeatedInt32, requiredRepeatedInt64, requiredRepeatedFloat, requiredRepeatedDouble, requiredRepeatedBool, requiredRepeatedEnum, requiredRepeatedString, requiredRepeatedBytes, requiredRepeatedMessage, requiredRepeatedResourceName, requiredRepeatedResourceNameOneof, requiredRepeatedFixed32, requiredRepeatedFixed64, requiredMap, optionalSingularInt32, optionalSingularInt64, optionalSingularFloat, optionalSingularDouble, optionalSingularBool, optionalSingularEnum, optionalSingularString, optionalSingularBytes, optionalSingularMessage, optionalSingularResourceName, optionalSingularResourceNameOneof, optionalSingularFixed32, optionalSingularFixed64, optionalRepeatedInt32, optionalRepeatedInt64, optionalRepeatedFloat, optionalRepeatedDouble, optionalRepeatedBool, optionalRepeatedEnum, optionalRepeatedString, optionalRepeatedBytes, optionalRepeatedMessage, optionalRepeatedResourceName, optionalRepeatedResourceNameOneof, optionalRepeatedFixed32, optionalRepeatedFixed64, optionalMap);
       Assert.fail("No exception raised");
-    } catch (ApiException e) {
-      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode());
+    } catch (GrpcApiException e) {
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode().getCode());
     }
   }
 

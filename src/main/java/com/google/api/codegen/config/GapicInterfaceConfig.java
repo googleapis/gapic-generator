@@ -60,11 +60,6 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   public abstract Interface getInterface();
 
   @Override
-  public String getSimpleName() {
-    return getInterface().getSimpleName();
-  }
-
-  @Override
   public abstract List<GapicMethodConfig> getMethodConfigs();
 
   @Nullable
@@ -96,6 +91,11 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   @Override
   public String getName() {
     return hasInterfaceNameOverride() ? getInterfaceNameOverride() : getInterface().getSimpleName();
+  }
+
+  @Override
+  public String getRawName() {
+    return getInterface().getSimpleName();
   }
 
   @Override
@@ -319,20 +319,18 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   /** Returns the GapicMethodConfig for the given method. */
   @Override
   public GapicMethodConfig getMethodConfig(MethodModel method) {
-    GapicMethodConfig methodConfig = getMethodConfigMap().get(method.getSimpleName());
-    if (methodConfig == null) {
-      throw new IllegalArgumentException(
-          "no method config for method '" + method.getFullName() + "'");
-    }
-    return methodConfig;
+    return getMethodConfig(method.getSimpleName(), method.getFullName());
   }
 
   /** Returns the GapicMethodConfig for the given method. */
   public GapicMethodConfig getMethodConfig(Method method) {
-    GapicMethodConfig methodConfig = getMethodConfigMap().get(method.getSimpleName());
+    return getMethodConfig(method.getSimpleName(), method.getFullName());
+  }
+
+  public GapicMethodConfig getMethodConfig(String methodSimpleName, String fullName) {
+    GapicMethodConfig methodConfig = getMethodConfigMap().get(methodSimpleName);
     if (methodConfig == null) {
-      throw new IllegalArgumentException(
-          "no method config for method '" + method.getFullName() + "'");
+      throw new IllegalArgumentException("no method config for method '" + fullName + "'");
     }
     return methodConfig;
   }

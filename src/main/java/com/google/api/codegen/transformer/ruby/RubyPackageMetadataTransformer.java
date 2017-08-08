@@ -39,6 +39,8 @@ import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.api.codegen.viewmodel.metadata.ReadmeMetadataView;
+import com.google.api.codegen.viewmodel.metadata.TocContentView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Strings;
@@ -100,6 +102,53 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
         .build();
   }
 
+  public ReadmeMetadataView.Builder generateReadmeMetadataView(
+      Model model, GapicProductConfig productConfig, RubyPackageMetadataNamer namer) {
+    return ReadmeMetadataView.newBuilder()
+        .identifier(namer.getMetadataIdentifier())
+        .shortName(packageConfig.shortName())
+        .fullName(model.getServiceConfig().getTitle())
+        .apiSummary(model.getServiceConfig().getDocumentation().getSummary())
+        .gapicPackageName("gapic-" + packageConfig.packageName(TargetLanguage.RUBY))
+        .majorVersion(packageConfig.apiVersion())
+        .hasMultipleServices(false)
+        .developmentStatusTitle(
+            namer.getReleaseAnnotation(packageConfig.releaseLevel(TargetLanguage.RUBY)))
+        .targetLanguage("Ruby")
+        .mainReadmeLink(GITHUB_REPO_HOST + MAIN_README_PATH)
+        .libraryDocumentationLink("")
+        .authDocumentationLink(GITHUB_DOC_HOST + AUTH_DOC_PATH)
+        .versioningDocumentationLink(GITHUB_REPO_HOST + VERSIONING_DOC_PATH)
+        .exampleMethods(generateExampleMethods(model, productConfig));
+  }
+
+  public TocContentView generateTocContent(
+      Model model, RubyPackageMetadataNamer namer, String version, String clientName) {
+    return generateTocContent(
+        model.getServiceConfig().getDocumentation().getSummary(), namer, version, clientName);
+  }
+
+  public TocContentView generateDataTypeTocContent(
+      String apiModule, RubyPackageMetadataNamer namer, String version) {
+    return generateTocContent("Data types for " + apiModule, namer, version, "Data Types");
+  }
+
+  private TocContentView generateTocContent(
+      String description, RubyPackageMetadataNamer namer, String version, String clientName) {
+    return TocContentView.newBuilder()
+        .name(clientName)
+        .description(description)
+        .link(
+            GITHUB_DOC_HOST
+                + String.format(
+                    LIB_DOC_PATH, namer.getMetadataIdentifier(), packageConfig.protoPath())
+                + '/'
+                + version
+                + '/'
+                + clientName.replace(" ", "").toLowerCase())
+        .build();
+  }
+
   private ViewModel generateGemspecView(Model model, RubyPackageMetadataNamer namer) {
     return metadataTransformer
         .generateMetadataView(
@@ -110,7 +159,6 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
 
   private ViewModel generateReadmeView(
       Model model, GapicProductConfig productConfig, RubyPackageMetadataNamer namer) {
-    List<ApiMethodView> exampleMethods = generateExampleMethods(model, productConfig);
     return metadataTransformer
         .generateMetadataView(
             packageConfig, model, README_FILE, README_OUTPUT_FILE, TargetLanguage.RUBY)
@@ -120,17 +168,14 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
                 productConfig,
                 ImportSectionView.newBuilder().build(),
                 new RubySurfaceNamer(productConfig.getPackageName())))
-        .developmentStatusTitle(
-            namer.getReleaseAnnotation(packageConfig.releaseLevel(TargetLanguage.RUBY)))
-        .exampleMethods(exampleMethods)
-        .targetLanguage("Ruby")
-        .mainReadmeLink(GITHUB_REPO_HOST + MAIN_README_PATH)
-        .libraryDocumentationLink(
-            GITHUB_DOC_HOST
-                + String.format(
-                    LIB_DOC_PATH, namer.getMetadataIdentifier(), packageConfig.protoPath()))
-        .authDocumentationLink(GITHUB_DOC_HOST + AUTH_DOC_PATH)
-        .versioningDocumentationLink(GITHUB_REPO_HOST + VERSIONING_DOC_PATH)
+        .readmeMetadata(
+            generateReadmeMetadataView(model, productConfig, namer)
+                .moduleName("")
+                .libraryDocumentationLink(
+                    GITHUB_DOC_HOST
+                        + String.format(
+                            LIB_DOC_PATH, namer.getMetadataIdentifier(), packageConfig.protoPath()))
+                .build())
         .build();
   }
 
@@ -140,7 +185,8 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
   private List<ApiMethodView> generateExampleMethods(
       Model model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ApiMethodView> exampleMethods = ImmutableList.builder();
-    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+    InterfaceView interfaceView = new InterfaceView();
+    for (Interface apiInterface : interfaceView.getElementIterable(model)) {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
       if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
         MethodModel method =
@@ -150,16 +196,19 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
                 context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
         GapicMethodContext flattenedMethodContext =
             context.asFlattenedMethodContext(method, flatteningGroup);
-        exampleMethods.add(createExampleApiMethodView(flattenedMethodContext));
+        exampleMethods.add(
+            createExampleApiMethodView(
+                flattenedMethodContext, interfaceView.hasMultipleServices(model)));
       }
     }
     return exampleMethods.build();
   }
 
-  private OptionalArrayMethodView createExampleApiMethodView(GapicMethodContext context) {
+  private OptionalArrayMethodView createExampleApiMethodView(
+      GapicMethodContext context, boolean packageHasMultipleServices) {
     OptionalArrayMethodView initialApiMethodView =
         new DynamicLangApiMethodTransformer(new RubyApiMethodParamTransformer())
-            .generateMethod(context);
+            .generateMethod(context, packageHasMultipleServices);
 
     OptionalArrayMethodView.Builder apiMethodView = initialApiMethodView.toBuilder();
 

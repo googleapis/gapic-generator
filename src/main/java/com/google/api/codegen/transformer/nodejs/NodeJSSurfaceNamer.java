@@ -47,6 +47,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -64,25 +65,27 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
         new ModelTypeFormatterImpl(new NodeJSModelTypeNameConverter(packageName)),
         new JSTypeTable(packageName),
         new JSCommentReformatter(),
+        packageName,
         packageName);
     this.packageName = packageName;
     this.isGcloud = isGcloud;
+  }
+
+  @Override
+  public SurfaceNamer cloneWithPackageName(String packageName) {
+    return new NodeJSSurfaceNamer(packageName, isGcloud);
   }
 
   /**
    * NodeJS uses a special format for ApiWrapperModuleName.
    *
    * <p>The name for the module for this vkit module. This assumes that the package_name in the API
-   * config will be in the format of 'apiname.version', and extracts the 'apiname' and 'version'
-   * part and combine them to lower-camelcased style (like pubsubV1).
+   * config will be in the format of 'apiname.version', and extracts the 'apiname'.
    */
   @Override
   public String getApiWrapperModuleName() {
     List<String> names = Splitter.on(".").splitToList(packageName);
-    if (names.size() < 2) {
-      return packageName;
-    }
-    return names.get(0) + Name.from(names.get(1)).toUpperCamel();
+    return names.get(0);
   }
 
   @Override
@@ -97,6 +100,11 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   @Override
   public String getApiWrapperClassConstructorName(String apiInterfaceSimpleName) {
     return publicFieldName(Name.upperCamel(apiInterfaceSimpleName, "Client"));
+  }
+
+  @Override
+  public String getPackageServiceName(Interface apiInterface) {
+    return getReducedServiceName(apiInterface.getSimpleName()).toLowerCamel();
   }
 
   @Override
@@ -167,6 +175,11 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   @Override
   public String getFieldGetFunctionName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
     FieldType field = fieldConfig.getField();
+    return Name.from(field.getSimpleName()).toLowerCamel();
+  }
+
+  @Override
+  public String getFieldGetFunctionName(FieldType field) {
     return Name.from(field.getSimpleName()).toLowerCamel();
   }
 
@@ -426,8 +439,12 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getServiceFileName(InterfaceConfig interfaceConfig) {
-    return Name.upperCamel(interfaceConfig.getSimpleName()).join("client").toLowerUnderscore()
-        + ".js";
+    return Name.upperCamel(interfaceConfig.getRawName()).join("client").toLowerUnderscore() + ".js";
+  }
+
+  @Override
+  public String getSourceFilePath(String path, String publicClassName) {
+    return path + File.separator + Name.upperCamel(publicClassName).toLowerUnderscore() + ".js";
   }
 
   @Override
@@ -439,20 +456,16 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getByteLengthFunctionName(TypeRef typeRef) {
-    switch (typeRef.getKind()) {
-      case TYPE_MESSAGE:
-        return "gax.createByteLengthFunction(grpcClients."
-            + typeRef.getMessageType().getFullName()
-            + ")";
-      case TYPE_STRING:
-      case TYPE_BYTES:
-        return "function(s) { return s.length; }";
-      default:
-        // There is no easy way to say the actual length of the numeric fields.
-        // For now throwing an exception.
-        throw new IllegalArgumentException(
-            "Can't determine the byte length function for " + typeRef.getKind());
+  public String getByteLengthFunctionName(FieldType typeRef) {
+    if (typeRef.isMessage()) {
+      return "gax.createByteLengthFunction(grpcClients." + typeRef.getTypeFullName() + ")";
+    } else if (typeRef.isString() || typeRef.isBytes()) {
+      return "function(s) { return s.length; }";
+    } else {
+      // There is no easy way to say the actual length of the numeric fields.
+      // For now throwing an exception.
+      throw new IllegalArgumentException(
+          "Can't determine the byte length function for " + typeRef.getKind());
     }
   }
 

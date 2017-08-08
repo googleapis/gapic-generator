@@ -136,7 +136,13 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
         new ModelTypeFormatterImpl(new CSharpModelTypeNameConverter(packageName)),
         new CSharpTypeTable(packageName),
         new CSharpCommentReformatter(),
+        packageName,
         packageName);
+  }
+
+  @Override
+  public SurfaceNamer cloneWithPackageName(String packageName) {
+    return new CSharpSurfaceNamer(packageName);
   }
 
   @Override
@@ -190,7 +196,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
     return "Modify_"
         + privateMethodName(
             Name.upperCamel(
-                methodContext.getMethodModel().getInputTypeNickName(getModelTypeFormatter())));
+                methodContext.getMethodModel().getInputTypeNickname(getModelTypeFormatter())));
   }
 
   @Override
@@ -245,7 +251,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getFieldGetFunctionName(FieldType type, Name identifier) {
-    return privateMethodName(identifier);
+    return privateMethodName(Name.from(type.getSimpleName()));
   }
 
   @Override
@@ -475,7 +481,15 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
                   + "\"/> resources.");
       }
     } else if (methodConfig.isGrpcStreaming()) {
-      return ImmutableList.of("The client-server stream.");
+      switch (methodConfig.getGrpcStreamingType()) {
+        case ServerStreaming:
+          return ImmutableList.of("The server stream.");
+        case BidiStreaming:
+          return ImmutableList.of("The client-server stream.");
+        default:
+          throw new IllegalStateException(
+              "Invalid streaming: " + methodConfig.getGrpcStreamingType());
+      }
     } else {
       switch (synchronicity) {
         case Sync:

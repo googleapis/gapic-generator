@@ -1,4 +1,4 @@
-============== file: Google/Example/Library/V1/ResourceNames.cs ==============
+============== file: /ResourceNames.cs ==============
 // Copyright 2017, Google Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -803,6 +803,19 @@ namespace Google.Example.Library.V1
         public ResourceNameList<BookName> BookNames =>
             new ResourceNameList<BookName>(Names,
                 str => BookName.Parse(str));
+
+    }
+
+    public partial class GetBookFromAbsolutelyAnywhereRequest
+    {
+        /// <summary>
+        /// <see cref="IResourceName"/>-typed view over the <see cref="Name"/> resource name property.
+        /// </summary>
+        public IResourceName AsResourceName
+        {
+            get { return string.IsNullOrEmpty(Name) ? null : UnknownResourceName.Parse(Name); }
+            set { Name = value != null ? value.ToString() : ""; }
+        }
 
     }
 

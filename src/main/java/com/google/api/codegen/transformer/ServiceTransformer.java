@@ -18,42 +18,16 @@ import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.ServiceDocView;
 import com.google.common.collect.ImmutableList;
-import java.util.LinkedList;
 
 public class ServiceTransformer {
 
   public ServiceDocView generateServiceDoc(
-      GapicInterfaceContext context, ApiMethodView exampleApiMethod) {
+      InterfaceContext context, ApiMethodView exampleApiMethod) {
     SurfaceNamer namer = context.getNamer();
     ServiceDocView.Builder serviceDoc = ServiceDocView.newBuilder();
 
     ImmutableList.Builder<String> docLines = ImmutableList.builder();
-    docLines.addAll(namer.getDocLines(context.getInterface()));
-    InterfaceConfig conf = context.getInterfaceConfig();
-    if (!conf.getManualDoc().isEmpty()) {
-      docLines.add("");
-      docLines.addAll(namer.getDocLines(conf.getManualDoc()));
-    }
-    serviceDoc.lines(docLines.build());
-
-    serviceDoc.exampleApiMethod(exampleApiMethod);
-    serviceDoc.apiVarName(namer.getApiWrapperVariableName(context.getInterfaceConfig()));
-    serviceDoc.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
-    serviceDoc.settingsVarName(namer.getApiSettingsVariableName(context.getInterfaceConfig()));
-    serviceDoc.settingsClassName(namer.getApiSettingsClassName(context.getInterfaceConfig()));
-    serviceDoc.hasDefaultInstance(context.getInterfaceConfig().hasDefaultInstance());
-    return serviceDoc.build();
-  }
-
-  public ServiceDocView generateServiceDoc(
-      DiscoGapicInterfaceContext context, ApiMethodView exampleApiMethod) {
-    SurfaceNamer namer = context.getNamer();
-    ServiceDocView.Builder serviceDoc = ServiceDocView.newBuilder();
-
-    ImmutableList.Builder<String> docLines = ImmutableList.builder();
-
-    // TODO(andrealin): docLines.
-    docLines.addAll(new LinkedList<String>());
+    docLines.addAll(namer.getDocLines(context.getInterfaceDescription()));
     InterfaceConfig conf = context.getInterfaceConfig();
     if (!conf.getManualDoc().isEmpty()) {
       docLines.add("");

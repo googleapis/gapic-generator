@@ -38,12 +38,24 @@ public class PageStreamingTransformer {
       PageStreamingDescriptorView.Builder descriptor = PageStreamingDescriptorView.newBuilder();
       descriptor.varName(context.getNamer().getPageStreamingDescriptorName(method));
       descriptor.requestTokenFieldName(context.getNamer().getRequestTokenFieldName(pageStreaming));
+      descriptor.requestTokenGetMethodName(
+          context.getNamer().getFieldGetFunctionName(pageStreaming.getRequestTokenField()));
+      descriptor.requestTokenSetMethodName(
+          context.getNamer().getFieldSetFunctionName(pageStreaming.getRequestTokenField()));
       if (pageStreaming.hasPageSizeField()) {
         descriptor.requestPageSizeFieldName(context.getNamer().getPageSizeFieldName(pageStreaming));
+        descriptor.requestPageSizeGetMethodName(
+            context.getNamer().getFieldGetFunctionName(pageStreaming.getPageSizeField()));
+        descriptor.requestPageSizeSetMethodName(
+            context.getNamer().getFieldSetFunctionName(pageStreaming.getPageSizeField()));
       }
       descriptor.responseTokenFieldName(
           context.getNamer().getResponseTokenFieldName(pageStreaming));
+      descriptor.responseTokenGetMethodName(
+          context.getNamer().getFieldGetFunctionName(pageStreaming.getResponseTokenField()));
       descriptor.resourcesFieldName(context.getNamer().getResourcesFieldName(pageStreaming));
+      descriptor.resourcesGetMethodName(
+          context.getNamer().getFieldGetFunctionName(pageStreaming.getResourcesField()));
       descriptor.methodName(context.getNamer().getMethodKey(method));
 
       descriptors.add(descriptor.build());
@@ -64,6 +76,7 @@ public class PageStreamingTransformer {
   }
 
   private PageStreamingDescriptorClassView generateDescriptorClass(MethodContext context) {
+    MethodModel method = context.getMethodModel();
     SurfaceNamer namer = context.getNamer();
     ImportTypeTable typeTable = context.getTypeTable();
     PageStreamingConfig pageStreaming = context.getMethodConfig().getPageStreaming();
@@ -73,8 +86,8 @@ public class PageStreamingTransformer {
     FieldType resourceField = pageStreaming.getResourcesField();
     FieldConfig resourceFieldConfig = pageStreaming.getResourcesFieldConfig();
 
-    desc.name(context.getPageStreamingDescriptorConstName());
-    desc.typeName(context.getAndSavePagedResponseTypeName(resourceFieldConfig));
+    desc.name(namer.getPageStreamingDescriptorConstName(method));
+    desc.typeName(namer.getAndSavePagedResponseTypeName(context, resourceFieldConfig));
     desc.requestTypeName(
         context
             .getMethodModel()
@@ -118,15 +131,15 @@ public class PageStreamingTransformer {
   }
 
   private PagedListResponseFactoryClassView generateFactoryClass(MethodContext context) {
-    ImportTypeTable typeTable = context.getTypeTable();
+    SurfaceNamer namer = context.getNamer();
+    MethodModel method = context.getMethodModel();
     PageStreamingConfig pageStreaming = context.getMethodConfig().getPageStreaming();
-    FieldType resourceField = pageStreaming.getResourcesField();
     FieldConfig resourceFieldConfig = pageStreaming.getResourcesFieldConfig();
 
     PagedListResponseFactoryClassView.Builder factory =
         PagedListResponseFactoryClassView.newBuilder();
 
-    factory.name(context.getPagedListResponseFactoryConstName());
+    factory.name(namer.getPagedListResponseFactoryConstName(method));
     factory.requestTypeName(
         context
             .getMethodModel()
@@ -135,9 +148,10 @@ public class PageStreamingTransformer {
         context
             .getMethodModel()
             .getAndSaveResponseTypeName(context.getTypeTable(), context.getNamer()));
-    factory.resourceTypeName(typeTable.getAndSaveNicknameForElementType(resourceField));
-    factory.pagedListResponseTypeName(context.getAndSavePagedResponseTypeName(resourceFieldConfig));
-    factory.pageStreamingDescriptorName(context.getPageStreamingDescriptorConstName());
+    factory.resourceTypeName(namer.getAndSavePagedResponseTypeName(context, resourceFieldConfig));
+    factory.pagedListResponseTypeName(
+        namer.getAndSavePagedResponseTypeName(context, resourceFieldConfig));
+    factory.pageStreamingDescriptorName(namer.getPageStreamingDescriptorConstName(method));
 
     return factory.build();
   }

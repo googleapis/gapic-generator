@@ -14,8 +14,6 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.config.FieldType.ApiSource;
-
 /**
  * Wrapper class around the protobuf Field class and the Discovery-doc Schema class.
  *

@@ -19,12 +19,10 @@ import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
-import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.viewmodel.testing.MockGrpcMethodView;
 import com.google.api.codegen.viewmodel.testing.MockServiceUsageView;
 import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Strings;
 import java.util.ArrayList;
@@ -62,20 +60,15 @@ public class MockServiceTransformer {
     return interfaces;
   }
 
-  public List<MockGrpcMethodView> createMockGrpcMethodViews(GapicInterfaceContext context) {
-    List<Method> methods = context.getInterface().getMethods();
+  public List<MockGrpcMethodView> createMockGrpcMethodViews(InterfaceContext context) {
+    List<MethodModel> methods = context.getInterfaceMethods();
     ArrayList<MockGrpcMethodView> mocks = new ArrayList<>(methods.size());
-    for (Method method : methods) {
-      MethodModel methodModel = new ProtoMethodModel(method);
-      GapicMethodContext methodContext = context.asRequestMethodContext(methodModel);
+    for (MethodModel method : methods) {
+      MethodContext methodContext = context.asRequestMethodContext(method);
       String requestTypeName =
-          methodContext
-              .getMethodModel()
-              .getAndSaveRequestTypeName(methodContext.getTypeTable(), methodContext.getNamer());
+          method.getAndSaveRequestTypeName(methodContext.getTypeTable(), methodContext.getNamer());
       String responseTypeName =
-          methodContext
-              .getMethodModel()
-              .getAndSaveResponseTypeName(methodContext.getTypeTable(), methodContext.getNamer());
+          method.getAndSaveResponseTypeName(methodContext.getTypeTable(), methodContext.getNamer());
       MethodConfig methodConfig = methodContext.getMethodConfig();
       mocks.add(
           MockGrpcMethodView.newBuilder()
@@ -86,7 +79,7 @@ public class MockServiceTransformer {
               .requestTypeName(requestTypeName)
               .responseTypeName(responseTypeName)
               .grpcStreamingType(methodConfig.getGrpcStreamingType())
-              .streamHandleTypeName(methodContext.getNamer().getStreamingServerName(methodModel))
+              .streamHandleTypeName(methodContext.getNamer().getStreamingServerName(method))
               .build());
     }
     return mocks;
@@ -99,9 +92,9 @@ public class MockServiceTransformer {
     for (Interface apiInterface : getGrpcInterfacesToMock(model, productConfig)) {
       MockServiceUsageView mockService =
           MockServiceUsageView.newBuilder()
-              .className(namer.getMockServiceClassName(apiInterface))
-              .varName(namer.getMockServiceVarName(apiInterface))
-              .implName(namer.getMockGrpcServiceImplName(apiInterface))
+              .className(namer.getMockServiceClassName(apiInterface.getSimpleName()))
+              .varName(namer.getMockServiceVarName(apiInterface.getSimpleName()))
+              .implName(namer.getMockGrpcServiceImplName(apiInterface.getSimpleName()))
               .registerFunctionName(namer.getServerRegisterFunctionName(apiInterface))
               .build();
       mockServices.add(mockService);

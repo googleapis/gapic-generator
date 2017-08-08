@@ -49,6 +49,7 @@ public class DiscoGapicNamer {
     }
     return languageNamer.publicMethodName(Name.anyCamel("get").join(name));
   }
+
   /** Returns the resource getter method name for a resource field. */
   public String getResourceSetterName(String fieldName) {
     Name name;

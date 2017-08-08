@@ -1,4 +1,4 @@
-============== file: Google/Example/Library/V1/LibraryServiceClient.cs ==============
+============== file: /LibraryServiceClient.cs ==============
 // Copyright 2017, Google Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -69,7 +69,10 @@ namespace Google.Example.Library.V1
             AddCommentsSettings = existing.AddCommentsSettings;
             GetBookFromArchiveSettings = existing.GetBookFromArchiveSettings;
             GetBookFromAnywhereSettings = existing.GetBookFromAnywhereSettings;
+            GetBookFromAbsolutelyAnywhereSettings = existing.GetBookFromAbsolutelyAnywhereSettings;
             UpdateBookIndexSettings = existing.UpdateBookIndexSettings;
+            StreamShelvesSettings = existing.StreamShelvesSettings;
+            StreamBooksSettings = existing.StreamBooksSettings;
             DiscussBookSettings = existing.DiscussBookSettings;
             DiscussBookStreamingSettings = existing.DiscussBookStreamingSettings;
             FindRelatedBooksSettings = existing.FindRelatedBooksSettings;
@@ -624,6 +627,36 @@ namespace Google.Example.Library.V1
 
         /// <summary>
         /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
+        /// <c>LibraryServiceClient.GetBookFromAbsolutelyAnywhere</c> and <c>LibraryServiceClient.GetBookFromAbsolutelyAnywhereAsync</c>.
+        /// </summary>
+        /// <remarks>
+        /// The default <c>LibraryServiceClient.GetBookFromAbsolutelyAnywhere</c> and
+        /// <c>LibraryServiceClient.GetBookFromAbsolutelyAnywhereAsync</c> <see cref="RetrySettings"/> are:
+        /// <list type="bullet">
+        /// <item><description>Initial retry delay: 100 milliseconds</description></item>
+        /// <item><description>Retry delay multiplier: 1.2</description></item>
+        /// <item><description>Retry maximum delay: 1000 milliseconds</description></item>
+        /// <item><description>Initial timeout: 300 milliseconds</description></item>
+        /// <item><description>Timeout multiplier: 1.3</description></item>
+        /// <item><description>Timeout maximum delay: 3000 milliseconds</description></item>
+        /// </list>
+        /// Retry will be attempted on the following response status codes:
+        /// <list>
+        /// <item><description><see cref="StatusCode.DeadlineExceeded"/></description></item>
+        /// <item><description><see cref="StatusCode.Unavailable"/></description></item>
+        /// </list>
+        /// Default RPC expiration is 30000 milliseconds.
+        /// </remarks>
+        public CallSettings GetBookFromAbsolutelyAnywhereSettings { get; set; } = CallSettings.FromCallTiming(
+            CallTiming.FromRetry(new RetrySettings(
+                retryBackoff: GetDefaultRetryBackoff(),
+                timeoutBackoff: GetDefaultTimeoutBackoff(),
+                totalExpiration: Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                retryFilter: IdempotentRetryFilter
+            )));
+
+        /// <summary>
+        /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
         /// <c>LibraryServiceClient.UpdateBookIndex</c> and <c>LibraryServiceClient.UpdateBookIndexAsync</c>.
         /// </summary>
         /// <remarks>
@@ -651,6 +684,24 @@ namespace Google.Example.Library.V1
                 totalExpiration: Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
                 retryFilter: IdempotentRetryFilter
             )));
+
+        /// <summary>
+        /// <see cref="CallSettings"/> for calls to <c>LibraryServiceClient.StreamShelves</c>.
+        /// </summary>
+        /// <remarks>
+        /// Default RPC expiration is 30000 milliseconds.
+        /// </remarks>
+        public CallSettings StreamShelvesSettings { get; set; } = CallSettings.FromCallTiming(
+            CallTiming.FromTimeout(TimeSpan.FromMilliseconds(30000)));
+
+        /// <summary>
+        /// <see cref="CallSettings"/> for calls to <c>LibraryServiceClient.StreamBooks</c>.
+        /// </summary>
+        /// <remarks>
+        /// Default RPC expiration is 30000 milliseconds.
+        /// </remarks>
+        public CallSettings StreamBooksSettings { get; set; } = CallSettings.FromCallTiming(
+            CallTiming.FromTimeout(TimeSpan.FromMilliseconds(30000)));
 
         /// <summary>
         /// <see cref="CallSettings"/> for calls to <c>LibraryServiceClient.DiscussBook</c>.
@@ -3026,6 +3077,104 @@ namespace Google.Example.Library.V1
         }
 
         /// <summary>
+        /// Test proper OneOf-Any resource name mapping
+        /// </summary>
+        /// <param name="name">
+        /// The name of the book to retrieve.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual Task<BookFromAnywhere> GetBookFromAbsolutelyAnywhereAsync(
+            BookNameOneof name,
+            CallSettings callSettings = null) => GetBookFromAbsolutelyAnywhereAsync(
+                new GetBookFromAbsolutelyAnywhereRequest
+                {
+                    AsResourceName = GaxPreconditions.CheckNotNull(name, nameof(name)),
+                },
+                callSettings);
+
+        /// <summary>
+        /// Test proper OneOf-Any resource name mapping
+        /// </summary>
+        /// <param name="name">
+        /// The name of the book to retrieve.
+        /// </param>
+        /// <param name="cancellationToken">
+        /// A <see cref="CancellationToken"/> to use for this RPC.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual Task<BookFromAnywhere> GetBookFromAbsolutelyAnywhereAsync(
+            BookNameOneof name,
+            CancellationToken cancellationToken) => GetBookFromAbsolutelyAnywhereAsync(
+                name,
+                CallSettings.FromCancellationToken(cancellationToken));
+
+        /// <summary>
+        /// Test proper OneOf-Any resource name mapping
+        /// </summary>
+        /// <param name="name">
+        /// The name of the book to retrieve.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public virtual BookFromAnywhere GetBookFromAbsolutelyAnywhere(
+            BookNameOneof name,
+            CallSettings callSettings = null) => GetBookFromAbsolutelyAnywhere(
+                new GetBookFromAbsolutelyAnywhereRequest
+                {
+                    AsResourceName = GaxPreconditions.CheckNotNull(name, nameof(name)),
+                },
+                callSettings);
+
+        /// <summary>
+        /// Test proper OneOf-Any resource name mapping
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public virtual Task<BookFromAnywhere> GetBookFromAbsolutelyAnywhereAsync(
+            GetBookFromAbsolutelyAnywhereRequest request,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Test proper OneOf-Any resource name mapping
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public virtual BookFromAnywhere GetBookFromAbsolutelyAnywhere(
+            GetBookFromAbsolutelyAnywhereRequest request,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Updates the index of a book.
         /// </summary>
         /// <param name="name">
@@ -3151,6 +3300,60 @@ namespace Google.Example.Library.V1
             CallSettings callSettings = null)
         {
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Test server streaming
+        /// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The server stream.
+        /// </returns>
+        public virtual StreamShelvesStream StreamShelves(
+            StreamShelvesRequest request,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Server streaming methods for <c>StreamShelves</c>.
+        /// </summary>
+        public abstract class StreamShelvesStream : ServerStreamingBase<StreamShelvesResponse>
+        {
+        }
+
+        /// <summary>
+        /// Test server streaming, non-paged responses.
+        /// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The server stream.
+        /// </returns>
+        public virtual StreamBooksStream StreamBooks(
+            StreamBooksRequest request,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Server streaming methods for <c>StreamBooks</c>.
+        /// </summary>
+        public abstract class StreamBooksStream : ServerStreamingBase<Book>
+        {
         }
 
         /// <summary>
@@ -4741,7 +4944,10 @@ namespace Google.Example.Library.V1
         private readonly ApiCall<AddCommentsRequest, Empty> _callAddComments;
         private readonly ApiCall<GetBookFromArchiveRequest, BookFromArchive> _callGetBookFromArchive;
         private readonly ApiCall<GetBookFromAnywhereRequest, BookFromAnywhere> _callGetBookFromAnywhere;
+        private readonly ApiCall<GetBookFromAbsolutelyAnywhereRequest, BookFromAnywhere> _callGetBookFromAbsolutelyAnywhere;
         private readonly ApiCall<UpdateBookIndexRequest, Empty> _callUpdateBookIndex;
+        private readonly ApiServerStreamingCall<StreamShelvesRequest, StreamShelvesResponse> _callStreamShelves;
+        private readonly ApiServerStreamingCall<StreamBooksRequest, Book> _callStreamBooks;
         private readonly ApiBidirectionalStreamingCall<DiscussBookRequest, Comment> _callDiscussBook;
         private readonly ApiCall<FindRelatedBooksRequest, FindRelatedBooksResponse> _callFindRelatedBooks;
         private readonly ApiCall<AddTagRequest, AddTagResponse> _callAddTag;
@@ -4757,7 +4963,7 @@ namespace Google.Example.Library.V1
         /// <param name="settings">The base <see cref="LibraryServiceSettings"/> used within this client </param>
         public LibraryServiceClientImpl(LibraryService.LibraryServiceClient grpcClient, LibraryServiceSettings settings)
         {
-            this.GrpcClient = grpcClient;
+            GrpcClient = grpcClient;
             LibraryServiceSettings effectiveSettings = settings ?? LibraryServiceSettings.GetDefault();
             LongRunningOperationsClient = new OperationsClientImpl(
                 grpcClient.CreateOperationsClient(), effectiveSettings.LongRunningOperationsSettings);
@@ -4795,8 +5001,14 @@ namespace Google.Example.Library.V1
                 GrpcClient.GetBookFromArchiveAsync, GrpcClient.GetBookFromArchive, effectiveSettings.GetBookFromArchiveSettings);
             _callGetBookFromAnywhere = clientHelper.BuildApiCall<GetBookFromAnywhereRequest, BookFromAnywhere>(
                 GrpcClient.GetBookFromAnywhereAsync, GrpcClient.GetBookFromAnywhere, effectiveSettings.GetBookFromAnywhereSettings);
+            _callGetBookFromAbsolutelyAnywhere = clientHelper.BuildApiCall<GetBookFromAbsolutelyAnywhereRequest, BookFromAnywhere>(
+                GrpcClient.GetBookFromAbsolutelyAnywhereAsync, GrpcClient.GetBookFromAbsolutelyAnywhere, effectiveSettings.GetBookFromAbsolutelyAnywhereSettings);
             _callUpdateBookIndex = clientHelper.BuildApiCall<UpdateBookIndexRequest, Empty>(
                 GrpcClient.UpdateBookIndexAsync, GrpcClient.UpdateBookIndex, effectiveSettings.UpdateBookIndexSettings);
+            _callStreamShelves = clientHelper.BuildApiCall<StreamShelvesRequest, StreamShelvesResponse>(
+                GrpcClient.StreamShelves, effectiveSettings.StreamShelvesSettings);
+            _callStreamBooks = clientHelper.BuildApiCall<StreamBooksRequest, Book>(
+                GrpcClient.StreamBooks, effectiveSettings.StreamBooksSettings);
             _callDiscussBook = clientHelper.BuildApiCall<DiscussBookRequest, Comment>(
                 GrpcClient.DiscussBook, effectiveSettings.DiscussBookSettings, effectiveSettings.DiscussBookStreamingSettings);
             _callFindRelatedBooks = clientHelper.BuildApiCall<FindRelatedBooksRequest, FindRelatedBooksResponse>(
@@ -4843,14 +5055,15 @@ namespace Google.Example.Library.V1
         partial void Modify_AddCommentsRequest(ref AddCommentsRequest request, ref CallSettings settings);
         partial void Modify_GetBookFromArchiveRequest(ref GetBookFromArchiveRequest request, ref CallSettings settings);
         partial void Modify_GetBookFromAnywhereRequest(ref GetBookFromAnywhereRequest request, ref CallSettings settings);
+        partial void Modify_GetBookFromAbsolutelyAnywhereRequest(ref GetBookFromAbsolutelyAnywhereRequest request, ref CallSettings settings);
         partial void Modify_UpdateBookIndexRequest(ref UpdateBookIndexRequest request, ref CallSettings settings);
+        partial void Modify_StreamShelvesRequest(ref StreamShelvesRequest request, ref CallSettings settings);
+        partial void Modify_StreamBooksRequest(ref StreamBooksRequest request, ref CallSettings settings);
         partial void Modify_DiscussBookRequestCallSettings(ref CallSettings settings);
         partial void Modify_DiscussBookRequestRequest(ref DiscussBookRequest request);
         partial void Modify_FindRelatedBooksRequest(ref FindRelatedBooksRequest request, ref CallSettings settings);
         partial void Modify_AddTagRequest(ref AddTagRequest request, ref CallSettings settings);
         partial void Modify_AddLabelRequest(ref AddLabelRequest request, ref CallSettings settings);
-        partial void Modify_GetBookRequest(ref GetBookRequest request, ref CallSettings settings);
-        partial void Modify_GetBookRequest(ref GetBookRequest request, ref CallSettings settings);
         partial void Modify_TestOptionalRequiredFlatteningParamsRequest(ref TestOptionalRequiredFlatteningParamsRequest request, ref CallSettings settings);
 
         /// <summary>
@@ -5500,6 +5713,46 @@ namespace Google.Example.Library.V1
         }
 
         /// <summary>
+        /// Test proper OneOf-Any resource name mapping
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// A Task containing the RPC response.
+        /// </returns>
+        public override Task<BookFromAnywhere> GetBookFromAbsolutelyAnywhereAsync(
+            GetBookFromAbsolutelyAnywhereRequest request,
+            CallSettings callSettings = null)
+        {
+            Modify_GetBookFromAbsolutelyAnywhereRequest(ref request, ref callSettings);
+            return _callGetBookFromAbsolutelyAnywhere.Async(request, callSettings);
+        }
+
+        /// <summary>
+        /// Test proper OneOf-Any resource name mapping
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The RPC response.
+        /// </returns>
+        public override BookFromAnywhere GetBookFromAbsolutelyAnywhere(
+            GetBookFromAbsolutelyAnywhereRequest request,
+            CallSettings callSettings = null)
+        {
+            Modify_GetBookFromAbsolutelyAnywhereRequest(ref request, ref callSettings);
+            return _callGetBookFromAbsolutelyAnywhere.Sync(request, callSettings);
+        }
+
+        /// <summary>
         /// Updates the index of a book.
         /// </summary>
         /// <param name="request">
@@ -5540,6 +5793,84 @@ namespace Google.Example.Library.V1
         }
 
         /// <summary>
+        /// Test server streaming
+        /// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The server stream.
+        /// </returns>
+        public override StreamShelvesStream StreamShelves(
+            StreamShelvesRequest request,
+            CallSettings callSettings = null)
+        {
+            Modify_StreamShelvesRequest(ref request, ref callSettings);
+            return new StreamShelvesStreamImpl(_callStreamShelves.Call(request, callSettings));
+        }
+
+        internal sealed class StreamShelvesStreamImpl : StreamShelvesStream
+        {
+            /// <summary>
+            /// Construct the server-streaming method for <c>StreamShelves</c>.
+            /// </summary>
+            /// <param name="call">The underlying gRPC server-streaming call.</param>
+            internal StreamShelvesStreamImpl(AsyncServerStreamingCall<StreamShelvesResponse> call)
+            {
+                GrpcCall = call;
+            }
+
+            /// <inheritdoc/>
+            public override AsyncServerStreamingCall<StreamShelvesResponse> GrpcCall { get; }
+
+            /// <inheritdoc/>
+            public override IAsyncEnumerator<StreamShelvesResponse> ResponseStream => GrpcCall.ResponseStream;
+        }
+
+        /// <summary>
+        /// Test server streaming, non-paged responses.
+        /// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+        /// </summary>
+        /// <param name="request">
+        /// The request object containing all of the parameters for the API call.
+        /// </param>
+        /// <param name="callSettings">
+        /// If not null, applies overrides to this RPC call.
+        /// </param>
+        /// <returns>
+        /// The server stream.
+        /// </returns>
+        public override StreamBooksStream StreamBooks(
+            StreamBooksRequest request,
+            CallSettings callSettings = null)
+        {
+            Modify_StreamBooksRequest(ref request, ref callSettings);
+            return new StreamBooksStreamImpl(_callStreamBooks.Call(request, callSettings));
+        }
+
+        internal sealed class StreamBooksStreamImpl : StreamBooksStream
+        {
+            /// <summary>
+            /// Construct the server-streaming method for <c>StreamBooks</c>.
+            /// </summary>
+            /// <param name="call">The underlying gRPC server-streaming call.</param>
+            internal StreamBooksStreamImpl(AsyncServerStreamingCall<Book> call)
+            {
+                GrpcCall = call;
+            }
+
+            /// <inheritdoc/>
+            public override AsyncServerStreamingCall<Book> GrpcCall { get; }
+
+            /// <inheritdoc/>
+            public override IAsyncEnumerator<Book> ResponseStream => GrpcCall.ResponseStream;
+        }
+
+        /// <summary>
         /// Test bidi-streaming.
         /// gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
         /// </summary>
@@ -5567,10 +5898,7 @@ namespace Google.Example.Library.V1
             return new DiscussBookStreamImpl(this, call, writeBuffer);
         }
 
-        /// <summary>
-        /// Bidirectional streaming methods for <c>DiscussBook</c>.
-        /// </summary>
-        public sealed class DiscussBookStreamImpl : DiscussBookStream
+        internal sealed class DiscussBookStreamImpl : DiscussBookStream
         {
             /// <summary>
             /// Construct the bidirectional streaming method for <c>DiscussBook</c>.

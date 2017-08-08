@@ -107,26 +107,6 @@ public abstract class Document implements Node {
     return thisDocument;
   }
 
-  /**
-   * Returns the schema the given schema references.
-   *
-   * <p>If the reference property of a schema is non-empty, then it references another schema. This
-   * method returns the schema that the given schema eventually references. If the given schema does
-   * not reference another schema, it is returned. If schema is null, null is returned.
-   *
-   * @param schema the schema to dereference.
-   * @return the first non-reference schema, or null if schema is null.
-   */
-  public Schema dereferenceSchema(Schema schema) {
-    if (schema == null) {
-      return null;
-    }
-    if (!schema.reference().isEmpty()) {
-      return dereferenceSchema(schemas().get(schema.reference()));
-    }
-    return schema;
-  }
-
   private static List<Method> parseMethods(DiscoveryNode root) {
     List<Method> methods = new ArrayList<>();
     DiscoveryNode methodsNode = root.getObject("methods");

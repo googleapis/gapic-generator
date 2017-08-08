@@ -131,7 +131,7 @@ public class GoGapicSurfaceTransformerTest {
   public void testGetImportsNotLro() {
     MethodModel method = new ProtoMethodModel(getMethod(context.getInterface(), "NotLroMethod"));
     transformer.addXApiImports(context, Collections.singletonList(method));
-    Truth.assertThat(context.getImportTypeTable().getTypeTable().getImports())
+    Truth.assertThat(context.getImportTypeTable().getImports())
         .doesNotContainKey("cloud.google.com/go/longrunning");
   }
 

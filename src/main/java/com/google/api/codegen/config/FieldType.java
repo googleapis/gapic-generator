@@ -15,10 +15,10 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.discovery.Schema;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
-import java.util.List;
 
 /**
  * Wrapper class around the protobuf Field class and the Discovery-doc Schema class.
@@ -28,11 +28,6 @@ import java.util.List;
  */
 public interface FieldType {
 
-  enum ApiSource {
-    DISCOVERY, // Discovery Document.
-    PROTO; // Protobuf.
-  }
-
   /* @return the type of source that this FieldType is based on. */
   ApiSource getApiSource();
 
@@ -41,6 +36,8 @@ public interface FieldType {
   String getFullName();
 
   Name asName();
+
+  String getTypeFullName();
 
   /* @return if the underlying resource is a map type. */
   boolean isMap();
@@ -53,6 +50,12 @@ public interface FieldType {
 
   /* @return if the underlying resource is a proto Messsage. */
   boolean isMessage();
+
+  /* @return if the underlying resource is String-typed. */
+  boolean isString();
+
+  /* @return if the underlying resource is byte-typed. */
+  boolean isBytes();
 
   /* @return if the underlying resource can be repeated in the parent resource. */
   boolean isRepeated();
@@ -81,5 +84,8 @@ public interface FieldType {
   String getScopedDocumentation();
 
   /* @return the simple name of the Oneof (if it exists) associated with this model. */
-  List<String> getOneofFieldsNames();
+  Iterable<String> getOneofFieldsNames(SurfaceNamer surfaceNamer);
+
+  /* @return the type of this object, formatted as a String. */
+  String getKind();
 }

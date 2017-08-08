@@ -14,9 +14,9 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.config.ApiSource;
 import com.google.api.codegen.config.DiscoGapicMethodConfig;
 import com.google.api.codegen.config.DiscoveryMethodModel;
-import com.google.api.codegen.config.FieldType.ApiSource;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
@@ -25,14 +25,12 @@ import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Document;
-import com.google.api.codegen.discovery.Method;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import javax.annotation.Nullable;
 
@@ -51,13 +49,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
       DiscoGapicNamer discoGapicNamer,
       FeatureConfig featureConfig) {
     return new AutoValue_DiscoGapicInterfaceContext(
-        (new ImmutableList.Builder<MethodModel>()).build(),
-        document,
-        productConfig,
-        typeTable,
-        discoGapicNamer,
-        "none",
-        featureConfig);
+        document, productConfig, typeTable, discoGapicNamer, "none", featureConfig);
   }
 
   public static DiscoGapicInterfaceContext createWithInterface(
@@ -70,17 +62,11 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
     ImmutableList.Builder<MethodModel> interfaceMethods = new ImmutableList.Builder<>();
 
     for (MethodConfig method : productConfig.getInterfaceConfig(interfaceName).getMethodConfigs()) {
-      interfaceMethods.add(new DiscoveryMethodModel(((DiscoGapicMethodConfig) method).getMethod()));
+      interfaceMethods.add(method.getMethodModel());
     }
 
     return new AutoValue_DiscoGapicInterfaceContext(
-        interfaceMethods.build(),
-        document,
-        productConfig,
-        typeTable,
-        discoGapicNamer,
-        interfaceName,
-        featureConfig);
+        document, productConfig, typeTable, discoGapicNamer, interfaceName, featureConfig);
   }
 
   public abstract Document getDocument();
@@ -92,16 +78,6 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
 
   public abstract DiscoGapicNamer getDiscoGapicNamer();
 
-  public List<Method> getMethods() {
-    List<Method> methods = new LinkedList<>();
-    for (InterfaceConfig config : getProductConfig().getInterfaceConfigMap().values()) {
-      for (MethodConfig methodConfig : config.getMethodConfigs()) {
-        methods.add(((DiscoGapicMethodConfig) methodConfig).getMethod());
-      }
-    }
-    return methods;
-  }
-
   /** Returns a list of methods for this interface. Memoize the result. */
   @Override
   public List<MethodModel> getInterfaceMethods() {
@@ -111,8 +87,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
 
     ImmutableList.Builder<MethodModel> methodBuilder = ImmutableList.builder();
     for (MethodConfig methodConfig : getInterfaceConfig().getMethodConfigs()) {
-      MethodModel method =
-          new DiscoveryMethodModel(((DiscoGapicMethodConfig) methodConfig).getMethod());
+      MethodModel method = methodConfig.getMethodModel();
       if (isSupported(method)) {
         methodBuilder.add(method);
       }
@@ -124,6 +99,16 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   @Override
   public String getInterfaceSimpleName() {
     return getInterfaceName();
+  }
+
+  @Override
+  public String getInterfaceFullName() {
+    return getInterfaceName();
+  }
+
+  @Override
+  public String getInterfaceDescription() {
+    return getDocument().description();
   }
 
   public abstract String getInterfaceName();
@@ -161,7 +146,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
         });
   }
 
-  private boolean isSupported(MethodModel method) {
+  public boolean isSupported(MethodModel method) {
     return getInterfaceConfig().getMethodConfig(method).getVisibility()
         != VisibilityConfig.DISABLED;
   }
@@ -204,6 +189,11 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   }
 
   @Override
+  public Iterable<MethodModel> getLongRunningMethods() {
+    return ImmutableList.of();
+  }
+
+  @Override
   public DiscoGapicMethodContext asFlattenedMethodContext(
       MethodModel method, FlatteningConfig flatteningConfig) {
     Preconditions.checkArgument(method.getApiSource().equals(ApiSource.DISCOVERY));
@@ -212,8 +202,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
         getInterfaceName(),
         getProductConfig(),
         getSchemaTypeTable(),
-        (DiscoGapicNamer) getDiscoGapicNamer(),
-        getNamer(),
+        getDiscoGapicNamer(),
         (DiscoveryMethodModel) method,
         getMethodConfig(method),
         flatteningConfig,
@@ -229,7 +218,6 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
         getProductConfig(),
         getSchemaTypeTable(),
         getDiscoGapicNamer(),
-        getNamer(),
         (DiscoveryMethodModel) method,
         getMethodConfig(method),
         null,
@@ -245,7 +233,6 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
         getProductConfig(),
         getSchemaTypeTable(),
         getDiscoGapicNamer(),
-        getNamer(),
         (DiscoveryMethodModel) method,
         getMethodConfig(method),
         null,
@@ -272,7 +259,6 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
         getProductConfig(),
         getSchemaTypeTable(),
         getDiscoGapicNamer(),
-        getNamer(),
         (DiscoveryMethodModel) method,
         getMethodConfig(method),
         flatteningConfig,

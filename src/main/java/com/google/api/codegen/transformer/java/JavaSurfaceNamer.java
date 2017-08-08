@@ -43,28 +43,37 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /** The SurfaceNamer for Java. */
 public class JavaSurfaceNamer extends SurfaceNamer {
 
-  /* Create a JavaSurfaceNamer for a protobuf-based API. */
-  public JavaSurfaceNamer(String packageName) {
+  private final Pattern versionPattern = Pattern.compile("^v\\d+");
+
+  public JavaSurfaceNamer(String rootPackageName, String packageName) {
     super(
         new JavaNameFormatter(),
         new ModelTypeFormatterImpl(new JavaModelTypeNameConverter(packageName)),
         new JavaTypeTable(packageName),
         new JavaCommentReformatter(),
+        rootPackageName,
         packageName);
   }
 
   /* Create a JavaSurfaceNamer for a Discovery-based API. */
-  public JavaSurfaceNamer(String packageName, JavaNameFormatter formatter) {
+  public JavaSurfaceNamer(String packageName, String rootPackageName, JavaNameFormatter formatter) {
     super(
         formatter,
         new SchemaTypeFormatterImpl(new JavaSchemaTypeNameConverter(packageName, formatter)),
         new JavaTypeTable(packageName),
         new JavaCommentReformatter(),
+        rootPackageName,
         packageName);
+  }
+
+  @Override
+  public SurfaceNamer cloneWithPackageName(String packageName) {
+    return new JavaSurfaceNamer(getRootPackageName(), packageName);
   }
 
   @Override
@@ -108,10 +117,11 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   public String getAndSaveOperationResponseTypeName(
       MethodModel method, ImportTypeTable typeTable, MethodConfig methodConfig) {
     String responseTypeName =
-        ((ModelTypeTable) typeTable)
-            .getFullNameFor(methodConfig.getLongRunningConfig().getReturnType());
+        methodConfig.getLongRunningConfig().getLongRunningOperationReturnTypeFullName(typeTable);
+    String metadataTypeName =
+        methodConfig.getLongRunningConfig().getLongRunningOperationMetadataTypeFullName(typeTable);
     return typeTable.getAndSaveNicknameForContainer(
-        "com.google.api.gax.grpc.OperationFuture", responseTypeName);
+        "com.google.api.gax.grpc.OperationFuture", responseTypeName, metadataTypeName);
   }
 
   @Override
@@ -218,6 +228,30 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getDirectCallableTypeName(ServiceMethodType serviceMethodType) {
+    switch (serviceMethodType) {
+      case UnaryMethod:
+        return "UnaryCallable";
+      case GrpcStreamingMethod:
+        return "StreamingCallable";
+      default:
+        return getNotImplementedString("getDirectCallableTypeName() for " + serviceMethodType);
+    }
+  }
+
+  @Override
+  public String getCreateCallableFunctionName(ServiceMethodType serviceMethodType) {
+    switch (serviceMethodType) {
+      case UnaryMethod:
+        return "createDirectCallable";
+      case GrpcStreamingMethod:
+        return "createDirectStreamingCallable";
+      default:
+        return getNotImplementedString("getDirectCallableTypeName() for " + serviceMethodType);
+    }
+  }
+
+  @Override
   public String getReleaseAnnotation(ReleaseLevel releaseLevel) {
     switch (releaseLevel) {
       case UNSET_RELEASE_LEVEL:
@@ -240,12 +274,16 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   @Override
   public String getPackagePath() {
     List<String> packagePath = Splitter.on(".").splitToList(getPackageName());
-    int spiIndex = packagePath.indexOf("spi");
-    if (spiIndex != -1) {
-      // Remove the "spi.{version}" suffix
-      return Joiner.on("/").join(packagePath.subList(0, spiIndex));
-    } else {
-      return Joiner.on("/").join(packagePath);
+    int endIndex = packagePath.size();
+    // strip off the last leg of the path if it is a version
+    if (versionPattern.matcher(packagePath.get(packagePath.size() - 1)).find()) {
+      endIndex--;
     }
+    return Joiner.on("/").join(packagePath.subList(0, endIndex));
+  }
+
+  @Override
+  public String getToStringMethod() {
+    return "Objects.toString";
   }
 }

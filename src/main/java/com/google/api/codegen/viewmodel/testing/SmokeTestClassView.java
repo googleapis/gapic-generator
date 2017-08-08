@@ -19,6 +19,7 @@ import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.FileHeaderView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class SmokeTestClassView implements ViewModel {
@@ -29,11 +30,20 @@ public abstract class SmokeTestClassView implements ViewModel {
 
   public abstract String apiClassName();
 
+  @Nullable
+  public abstract String apiVariableName();
+
   public abstract String apiSettingsClassName();
 
+  @Nullable
   public abstract ApiMethodView apiMethod();
 
+  @Nullable
   public abstract TestCaseView method();
+
+  public boolean hasMethod() {
+    return method() != null;
+  }
 
   public abstract boolean requireProjectId();
 
@@ -48,6 +58,9 @@ public abstract class SmokeTestClassView implements ViewModel {
   @Override
   public abstract String outputPath();
 
+  @Nullable
+  public abstract String apiVersion();
+
   public static Builder newBuilder() {
     return new AutoValue_SmokeTestClassView.Builder().requireProjectId(false);
   }
@@ -61,6 +74,8 @@ public abstract class SmokeTestClassView implements ViewModel {
 
     public abstract Builder apiClassName(String val);
 
+    public abstract Builder apiVariableName(String val);
+
     public abstract Builder apiSettingsClassName(String val);
 
     public abstract Builder outputPath(String val);
@@ -72,6 +87,8 @@ public abstract class SmokeTestClassView implements ViewModel {
     public abstract Builder method(TestCaseView val);
 
     public abstract Builder requireProjectId(boolean val);
+
+    public abstract Builder apiVersion(String val);
 
     public abstract SmokeTestClassView build();
   }

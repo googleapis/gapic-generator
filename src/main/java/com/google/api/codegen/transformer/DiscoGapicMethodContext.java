@@ -1,4 +1,5 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
+>>>>>>> merge_master
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +15,15 @@
  */
 package com.google.api.codegen.transformer;
 
-import static com.google.api.codegen.config.FieldType.ApiSource.DISCOVERY;
+import static com.google.api.codegen.config.ApiSource.DISCOVERY;
 
+import com.google.api.codegen.config.ApiSource;
 import com.google.api.codegen.config.DiscoGapicMethodConfig;
 import com.google.api.codegen.config.DiscoveryMethodModel;
-import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.FieldType.ApiSource;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
-import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Preconditions;
@@ -38,7 +37,6 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
       GapicProductConfig productConfig,
       SchemaTypeTable typeTable,
       DiscoGapicNamer discoNamer,
-      SurfaceNamer surfaceNamer,
       DiscoveryMethodModel method,
       DiscoGapicMethodConfig methodConfig,
       FlatteningConfig flatteningConfig,
@@ -53,7 +51,6 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
         surfaceTransformerContext,
         typeTable,
         method,
-        surfaceNamer,
         discoNamer);
   }
 
@@ -85,7 +82,6 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
         getProductConfig(),
         (SchemaTypeTable) getTypeTable().cloneEmpty(),
         getDiscoGapicNamer(),
-        getNamer(),
         getMethodModel(),
         getMethodConfig(),
         getFlatteningConfig(),
@@ -107,39 +103,16 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
   }
 
   @Override
-  public String getStubName() {
-    return getNamer().getStubName(getInterfaceConfig());
-  }
-
-  @Override
   public String getInterfaceSimpleName() {
     return getDiscoGapicNamer().getSimpleInterfaceName(interfaceName());
   }
 
   @Override
-  public abstract SurfaceNamer getNamer();
+  public SurfaceNamer getNamer() {
+    return getDiscoGapicNamer().getLanguageNamer();
+  }
 
   public abstract DiscoGapicNamer getDiscoGapicNamer();
-
-  @Override
-  public String getPageStreamingDescriptorConstName() {
-    return getNamer().getPageStreamingDescriptorConstName(getMethodModel());
-  }
-
-  @Override
-  public String getAndSavePagedResponseTypeName(FieldConfig fieldConfig) {
-    return getNamer().getAndSavePagedResponseTypeName(this, fieldConfig);
-  }
-
-  @Override
-  public String getPagedListResponseFactoryConstName() {
-    return getNamer().getPagedListResponseFactoryConstName(getMethodModel());
-  }
-
-  @Override
-  public String getApiMethodName(VisibilityConfig visibilityConfig) {
-    return getNamer().getApiMethodName(getMethodModel(), visibilityConfig);
-  }
 
   @Override
   public String getTargetInterfaceFullName() {
@@ -147,38 +120,8 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
   }
 
   @Override
-  public String getAsyncApiMethodName(VisibilityConfig visibilityConfig) {
-    return getNamer().getAsyncApiMethodName(getMethodModel(), visibilityConfig);
-  }
-
-  @Override
   public String getGrpcContainerTypeName() {
     return "getGrpcContainerTypeName() not implemented for Discovery-based APIs.";
-  }
-
-  @Override
-  public String getGrpcMethodConstant() {
-    return "getGrpcMethodConstant() not implemented for Discovery-based APIs.";
-  }
-
-  @Override
-  public String getSettingsMemberName() {
-    return getNamer().getSettingsMemberName(getMethodModel());
-  }
-
-  @Override
-  public String getSettingsFunctionName() {
-    return getNamer().getSettingsFunctionName(getMethodModel());
-  }
-
-  @Override
-  public String getCallableName() {
-    return getNamer().getCallableName(getMethodModel());
-  }
-
-  @Override
-  public String getPagedCallableName() {
-    return getNamer().getPagedCallableName(getMethodModel());
   }
 
   @Override

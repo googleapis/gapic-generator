@@ -14,10 +14,12 @@
  */
 package com.google.api.codegen.config;
 
-import static com.google.api.codegen.config.FieldType.ApiSource.DISCOVERY;
+import static com.google.api.codegen.config.ApiSource.DISCOVERY;
 
 import com.google.api.codegen.discovery.Schema;
+import com.google.api.codegen.discovery.Schema.Format;
 import com.google.api.codegen.discovery.Schema.Type;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
@@ -28,7 +30,6 @@ import java.util.List;
 /** Created by andrealin on 7/31/17. */
 public class DiscoveryField implements FieldType {
   private final Schema schema;
-  private final ApiSource apiSource = DISCOVERY;
 
   /* Create a FieldType object from a non-null Schema object. */
   public DiscoveryField(Schema schema) {
@@ -39,7 +40,7 @@ public class DiscoveryField implements FieldType {
   @Override
   /* @return the type of the underlying model resource. */
   public ApiSource getApiSource() {
-    return apiSource;
+    return DISCOVERY;
   }
 
   @Override
@@ -60,6 +61,11 @@ public class DiscoveryField implements FieldType {
   @Override
   public Name asName() {
     return Name.anyCamel(getSimpleName());
+  }
+
+  @Override
+  public String getTypeFullName() {
+    return schema.getIdentifier();
   }
 
   @Override
@@ -109,7 +115,7 @@ public class DiscoveryField implements FieldType {
 
   @Override
   public String toString() {
-    return String.format("Discovery FieldType (%s): {%s}", apiSource, schema.toString());
+    return String.format("Discovery FieldType (%s): {%s}", getApiSource(), schema.toString());
   }
 
   @Override
@@ -127,11 +133,27 @@ public class DiscoveryField implements FieldType {
   @Override
   /* @Get the description of the element scoped to the visibility as currently set in the model. */
   public String getScopedDocumentation() {
-    return "DiscoveryField.getScopedDocumentation() not yet implemented.";
+    return schema.description();
   }
 
   @Override
-  public List<String> getOneofFieldsNames() {
+  public List<String> getOneofFieldsNames(SurfaceNamer surfaceNamer) {
     return ImmutableList.of();
+  }
+
+  @Override
+  public boolean isString() {
+    return schema.type().equals(Type.STRING);
+  }
+
+  @Override
+  public boolean isBytes() {
+    return schema.type().equals(Type.ANY)
+        || (schema.type().equals(Type.STRING) && schema.format().equals(Format.BYTE));
+  }
+
+  @Override
+  public String getKind() {
+    return schema.type().toString();
   }
 }

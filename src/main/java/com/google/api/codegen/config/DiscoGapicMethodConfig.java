@@ -26,6 +26,7 @@ import com.google.api.codegen.VisibilityProto;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleLocation;
@@ -44,9 +45,6 @@ import org.joda.time.Duration;
  */
 @AutoValue
 public abstract class DiscoGapicMethodConfig extends MethodConfig {
-  public Method getMethod() {
-    return ((DiscoveryMethodModel) getMethodModel()).getDiscoveryMethod();
-  }
 
   @Override
   public boolean isGrpcStreaming() {
@@ -85,6 +83,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
       ImmutableSet<String> retryParamsConfigNames) {
 
     boolean error = false;
+    DiscoveryMethodModel methodModel = new DiscoveryMethodModel(method);
 
     PageStreamingConfig pageStreaming = null;
     if (!PageStreamingConfigProto.getDefaultInstance()
@@ -107,7 +106,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
     if (!BatchingConfigProto.getDefaultInstance().equals(methodConfigProto.getBatching())) {
       batching =
           BatchingConfig.createBatching(
-              diagCollector, methodConfigProto.getBatching(), new DiscoveryMethodModel(method));
+              diagCollector, methodConfigProto.getBatching(), methodModel);
       if (batching == null) {
         error = true;
       }
@@ -120,7 +119,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
               SimpleLocation.TOPLEVEL,
               "Retry codes config used but not defined: '%s' (in method %s)",
               retryCodesName,
-              method.id()));
+              methodModel.getFullName()));
       error = true;
     }
 
@@ -131,7 +130,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
               SimpleLocation.TOPLEVEL,
               "Retry parameters config used but not defined: %s (in method %s)",
               retryParamsName,
-              method.id()));
+              methodModel.getFullName()));
       error = true;
     }
 
@@ -141,7 +140,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
           Diag.error(
               SimpleLocation.TOPLEVEL,
               "Default timeout not found or has invalid value (in method %s)",
-              method.id()));
+              methodModel.getFullName()));
       error = true;
     }
 
@@ -274,7 +273,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
 
   @Override
   /* Return the list of "one of" instances associated with the fields. */
-  public Iterable<Iterable<String>> getOneofsNames() {
+  public Iterable<Iterable<String>> getOneofNames(SurfaceNamer namer) {
     return ImmutableList.of();
   }
 }

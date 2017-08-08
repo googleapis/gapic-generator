@@ -18,6 +18,7 @@ import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
+import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.ParamWithSimpleDoc;
 import com.google.common.collect.ImmutableList;
@@ -42,7 +43,7 @@ public class CSharpCommonTransformer {
     typeTable.saveNicknameFor("System.Collections.Generic.IEnumerable");
   }
 
-  public List<MethodModel> getSupportedMethods(GapicInterfaceContext context) {
+  public List<MethodModel> getSupportedMethods(InterfaceContext context) {
     List<MethodModel> result = new ArrayList<>();
     boolean mixinsDisabled = !context.getFeatureConfig().enableMixins();
     for (MethodModel method : context.getSupportedMethods()) {
@@ -50,9 +51,9 @@ public class CSharpCommonTransformer {
         continue;
       }
       MethodConfig methodConfig = context.getMethodConfig(method);
-      if (methodConfig.getGrpcStreamingType() != GrpcStreamingType.NonStreaming
-          && methodConfig.getGrpcStreamingType() != GrpcStreamingType.BidiStreaming) {
-        // Only support non-streaming and duplex-streaming for now
+      if (methodConfig.getGrpcStreamingType() == GrpcStreamingType.ClientStreaming) {
+        // Client-streaming not yet supported
+
         continue;
       }
       result.add(method);
@@ -102,6 +103,7 @@ public class CSharpCommonTransformer {
         .typeName(typeName)
         .setCallName("")
         .addCallName("")
+        .getCallName("")
         .isMap(false)
         .isArray(false)
         .isPrimitive(false)

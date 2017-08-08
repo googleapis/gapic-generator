@@ -45,7 +45,7 @@ public class BatchingTransformer {
       }
 
       descriptor.byteLengthFunctionName(
-          namer.getByteLengthFunctionName(batching.getBatchedField().getProtoTypeRef()));
+          namer.getByteLengthFunctionName(batching.getBatchedField()));
       descriptors.add(descriptor.build());
     }
     return descriptors.build();
@@ -53,7 +53,6 @@ public class BatchingTransformer {
 
   public List<BatchingDescriptorClassView> generateDescriptorClasses(InterfaceContext context) {
     List<BatchingDescriptorClassView> descriptors = new ArrayList<>();
-
     for (MethodModel method : context.getInterfaceMethods()) {
       MethodConfig methodConfig = context.getMethodConfig(method);
       if (!methodConfig.isBatching()) {

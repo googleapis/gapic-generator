@@ -18,12 +18,12 @@ import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.*;
+import com.google.api.codegen.viewmodel.FileHeaderView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.testing.SmokeTestClassView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.Lists;
-import java.util.ArrayList;
 import java.util.List;
 
 /** Responsible for producing sample application related views for Java GAPIC clients */
@@ -35,6 +35,8 @@ public class JavaGapicSampleAppTransformer implements ModelToViewTransformer {
 
   private final GapicCodePathMapper pathMapper;
   private final JavaGapicSurfaceTestTransformer testTransformer;
+  private final FileHeaderTransformer fileHeaderTransformer =
+      new FileHeaderTransformer(new StandardImportSectionTransformer());
 
   public JavaGapicSampleAppTransformer(GapicCodePathMapper javaPathMapper) {
     this.pathMapper = javaPathMapper;
@@ -44,11 +46,7 @@ public class JavaGapicSampleAppTransformer implements ModelToViewTransformer {
   @Override
   public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
     GapicInterfaceContext context = getSampleContext(model, productConfig);
-    if (context != null) {
-      return Lists.newArrayList(createSampleClassView(context));
-    } else {
-      return new ArrayList<>();
-    }
+    return Lists.newArrayList(createSampleClassView(context));
   }
 
   @Override
@@ -64,20 +62,47 @@ public class JavaGapicSampleAppTransformer implements ModelToViewTransformer {
         return testTransformer.createContext(apiInterface, productConfig);
       }
     }
-    throw new IllegalArgumentException("No smoke test config is found.");
+
+    // Use the first interface as the default one if no smoke test config is found
+    Interface defaultInterface = new InterfaceView().getElementIterable(model).iterator().next();
+    return testTransformer.createContext(defaultInterface, productConfig);
   }
 
   private ViewModel createSampleClassView(GapicInterfaceContext context) {
-    String outputPath =
-        pathMapper.getOutputPath(context.getInterface(), context.getProductConfig());
+    if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
+      String outputPath =
+          pathMapper.getOutputPath(context.getInterfaceFullName(), context.getProductConfig());
+      SurfaceNamer namer = context.getNamer();
+      String name = namer.getSampleAppClassName();
+
+      // Most of the fields in the sample view are the same as smoke tests
+      SmokeTestClassView.Builder testClass =
+          testTransformer.createSmokeTestClassViewBuilder(context);
+      testClass.name(name);
+      testClass.outputPath(namer.getSourceFilePath(outputPath, name));
+      return testClass.build();
+    } else {
+      // Create a sample application without a method call (only creating the client) if no smoke test config is found.
+      return createSmokeTestClassViewNoMethod(context);
+    }
+  }
+
+  private SmokeTestClassView createSmokeTestClassViewNoMethod(GapicInterfaceContext context) {
+    testTransformer.addSmokeTestImports(context);
+
     SurfaceNamer namer = context.getNamer();
+    String outputPath =
+        pathMapper.getOutputPath(context.getInterfaceFullName(), context.getProductConfig());
     String name = namer.getSampleAppClassName();
+    FileHeaderView fileHeader = fileHeaderTransformer.generateFileHeader(context);
 
-    // Most of the fields in the sample view are the same as smoke tests
-    SmokeTestClassView.Builder testClass = testTransformer.createSmokeTestClassViewBuilder(context);
-
-    testClass.name(name);
-    testClass.outputPath(namer.getSourceFilePath(outputPath, name));
-    return testClass.build();
+    return SmokeTestClassView.newBuilder()
+        .apiSettingsClassName(namer.getApiSettingsClassName(context.getInterfaceConfig()))
+        .apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()))
+        .templateFileName(SAMPLE_TEMPLATE_FILE)
+        .name(name)
+        .outputPath(namer.getSourceFilePath(outputPath, name))
+        .fileHeader(fileHeader)
+        .build();
   }
 }

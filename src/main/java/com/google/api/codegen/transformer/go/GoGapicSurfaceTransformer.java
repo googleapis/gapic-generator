@@ -30,6 +30,7 @@ import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.IamResourceTransformer;
+import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
@@ -45,6 +46,7 @@ import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
 import com.google.api.codegen.viewmodel.PackageInfoView;
 import com.google.api.codegen.viewmodel.PageStreamingDescriptorClassView;
+import com.google.api.codegen.viewmodel.PathTemplateView;
 import com.google.api.codegen.viewmodel.RetryConfigDefinitionView;
 import com.google.api.codegen.viewmodel.ServiceDocView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
@@ -141,7 +143,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.serviceOriginalName(model.getServiceConfig().getTitle());
     view.servicePhraseName(namer.getServicePhraseName(apiInterface));
 
-    String outputPath = pathMapper.getOutputPath(apiInterface, productConfig);
+    String outputPath = pathMapper.getOutputPath(apiInterface.getFullName(), productConfig);
     String fileName = namer.getServiceFileName(context.getInterfaceConfig());
     view.outputPath(outputPath + File.separator + fileName);
 
@@ -149,7 +151,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
         generateRetryConfigDefinitions(context, context.getSupportedMethods());
     view.retryPairDefinitions(retryDef);
 
-    view.pathTemplates(pathTemplateTransformer.generatePathTemplates(context));
+    view.pathTemplates(Collections.<PathTemplateView>emptyList());
     view.pathTemplateGetters(pathTemplateTransformer.generatePathTemplateGetterFunctions(context));
     view.callSettings(apiCallableTransformer.generateCallSettings(context));
 
@@ -158,10 +160,10 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.apiMethods(apiMethods);
 
     view.iamResources(iamResourceTransformer.generateIamResources(context));
-    if (!((GapicInterfaceConfig) productConfig.getInterfaceConfig(apiInterface))
+    if (!((GapicInterfaceConfig) productConfig.getInterfaceConfig(apiInterface.getFullName()))
         .getIamResources()
         .isEmpty()) {
-      context.getModelTypeTable().saveNicknameFor("cloud.google.com/go/iam;;;");
+      context.getImportTypeTable().saveNicknameFor("cloud.google.com/go/iam;;;");
     }
 
     // In Go, multiple methods share the same iterator type, one iterator type per resource type.
@@ -204,7 +206,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
 
     view.templateFileName(SAMPLE_TEMPLATE_FILENAME);
 
-    String outputPath = pathMapper.getOutputPath(apiInterface, productConfig);
+    String outputPath = pathMapper.getOutputPath(apiInterface.getFullName(), productConfig);
     String fileName = namer.getExampleFileName(apiInterface);
     view.outputPath(outputPath + File.separator + fileName);
 
@@ -322,8 +324,8 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   private static final String EMPTY_PROTO_PKG = "github.com/golang/protobuf/ptypes/empty";
 
   @VisibleForTesting
-  void addXApiImports(GapicInterfaceContext context, Collection<MethodModel> methods) {
-    ModelTypeTable typeTable = context.getModelTypeTable();
+  void addXApiImports(InterfaceContext context, Collection<MethodModel> methods) {
+    ImportTypeTable typeTable = context.getImportTypeTable();
     typeTable.saveNicknameFor("cloud.google.com/go/internal/version;;;");
     typeTable.saveNicknameFor("golang.org/x/net/context;;;");
     typeTable.saveNicknameFor("google.golang.org/grpc;;;");
@@ -347,12 +349,12 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private void addContextImports(
-      GapicInterfaceContext context, ImportContext importContext, Collection<MethodModel> methods) {
+      InterfaceContext context, ImportContext importContext, Collection<MethodModel> methods) {
     for (ImportKind kind : getImportKinds(context.getInterfaceConfig(), methods)) {
       ImmutableList<String> imps = CONTEXTUAL_IMPORTS.get(importContext, kind);
       if (imps != null) {
         for (String imp : imps) {
-          context.getModelTypeTable().saveNicknameFor(imp);
+          context.getImportTypeTable().saveNicknameFor(imp);
         }
       }
     }
@@ -394,6 +396,10 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
                   ImportContext.CLIENT,
                   ImportKind.PAGE_STREAM,
                   ImmutableList.<String>of("math;;;", "google.golang.org/api/iterator;;;"))
+              .put(
+                  ImportContext.EXAMPLE,
+                  ImportKind.PAGE_STREAM,
+                  ImmutableList.<String>of("google.golang.org/api/iterator;;;"))
               .put(
                   ImportContext.CLIENT,
                   ImportKind.LRO,

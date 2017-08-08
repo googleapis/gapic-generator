@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer.ruby;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldType;
+import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
@@ -56,13 +57,25 @@ public class RubySurfaceNamer extends SurfaceNamer {
         new ModelTypeFormatterImpl(new RubyModelTypeNameConverter(packageName)),
         new RubyTypeTable(packageName),
         new RubyCommentReformatter(),
+        packageName,
         packageName);
+  }
+
+  @Override
+  public SurfaceNamer cloneWithPackageName(String packageName) {
+    return new RubySurfaceNamer(packageName);
   }
 
   /** The name of the class that implements snippets for a particular proto interface. */
   @Override
   public String getApiSnippetsClassName(Interface apiInterface) {
     return publicClassName(Name.upperCamel(apiInterface.getSimpleName(), "ClientSnippets"));
+  }
+
+  /** The function name to set a field. */
+  @Override
+  public String getFieldSetFunctionName(FieldType field) {
+    return getFieldGetFunctionName(field);
   }
 
   /** The function name to set a field having the given type and name. */
@@ -213,6 +226,10 @@ public class RubySurfaceNamer extends SurfaceNamer {
     return ImmutableList.of("@raise [Google::Gax::GaxError] if the RPC is aborted.");
   }
 
+  public String getFullyQualifiedCredentialsClassName() {
+    return getTopLevelNamespace() + "::Credentials";
+  }
+
   @Override
   public List<String> getReturnDocLines(
       TransformationContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
@@ -261,8 +278,35 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getTopLevelAliasedApiClassName(
+      GapicInterfaceConfig interfaceConfig, boolean packageHasMultipleServices) {
+    return packageHasMultipleServices
+        ? getTopLevelNamespace() + "::" + getPackageServiceName(interfaceConfig.getInterface())
+        : getTopLevelNamespace();
+  }
+
+  @Override
+  public String getVersionAliasedApiClassName(
+      GapicInterfaceConfig interfaceConfig, boolean packageHasMultipleServices) {
+    return packageHasMultipleServices
+        ? getPackageName() + "::" + getPackageServiceName(interfaceConfig.getInterface())
+        : getPackageName();
+  }
+
+  @Override
+  public String getTopLevelNamespace() {
+    return Joiner.on("::").join(getTopLevelApiModules());
+  }
+
+  @Override
   public ImmutableList<String> getApiModules() {
     return ImmutableList.copyOf(Splitter.on("::").split(getPackageName()));
+  }
+
+  @Override
+  public List<String> getTopLevelApiModules() {
+    List<String> apiModules = getApiModules();
+    return apiModules.subList(0, apiModules.size() - 1);
   }
 
   @Override
@@ -301,6 +345,26 @@ public class RubySurfaceNamer extends SurfaceNamer {
     return getPackageFilePath();
   }
 
+  @Override
+  public String getTopLevelIndexFileImportName() {
+    List<String> newNames = new ArrayList<>();
+    for (String name : getTopLevelNamespace().split("::")) {
+      newNames.add(packageFilePathPiece(Name.upperCamel(name)));
+    }
+    return Joiner.on(File.separator).join(newNames.toArray());
+  }
+
+  @Override
+  public String getCredentialsClassImportName() {
+    // Place credentials in top-level namespace.
+    List<String> paths = new ArrayList<>();
+    for (String part : getTopLevelApiModules()) {
+      paths.add(packageFilePathPiece(Name.upperCamel(part)));
+    }
+    paths.add("credentials");
+    return Joiner.on(File.separator).join(paths);
+  }
+
   private String getPackageFilePath() {
     List<String> newNames = new ArrayList<>();
     for (String name : getPackageName().split("::")) {
@@ -327,5 +391,10 @@ public class RubySurfaceNamer extends SurfaceNamer {
   @Override
   public String getLroApiMethodName(MethodModel method, VisibilityConfig visibility) {
     return getMethodKey(method);
+  }
+
+  @Override
+  public String getPackageServiceName(Interface apiInterface) {
+    return publicClassName(getReducedServiceName(apiInterface.getSimpleName()));
   }
 }

@@ -109,7 +109,7 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
       impls.add(
           MockServiceImplView.newBuilder()
               .grpcClassName(namer.getGrpcServerTypeName(apiInterface))
-              .name(namer.getMockGrpcServiceImplName(apiInterface))
+              .name(namer.getMockGrpcServiceImplName(apiInterface.getSimpleName()))
               .grpcMethods(mockServiceTransformer.createMockGrpcMethodViews(context))
               .build());
     }
@@ -129,6 +129,9 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
                       "GoGapicSurfaceTestTransformer.generateMockServiceView - name"))
               .testCases(createTestCaseViews(context))
               .apiHasLongRunningMethods(context.getInterfaceConfig().hasLongRunningOperations())
+              .missingDefaultServiceAddress(
+                  !context.getInterfaceConfig().hasDefaultServiceAddress())
+              .missingDefaultServiceScopes(!context.getInterfaceConfig().hasDefaultServiceScopes())
               .mockServices(Collections.<MockServiceUsageView>emptyList())
               .build());
     }

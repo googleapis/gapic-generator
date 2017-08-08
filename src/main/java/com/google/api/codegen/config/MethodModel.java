@@ -25,7 +25,7 @@ import com.google.api.codegen.util.TypeName;
 public interface MethodModel {
 
   /* @return the type of source that this FieldType is based on. */
-  FieldType.ApiSource getApiSource();
+  ApiSource getApiSource();
 
   FieldType lookupInputField(String fieldName);
 
@@ -34,6 +34,8 @@ public interface MethodModel {
   String getFullName();
 
   String getInputFullName();
+
+  String getOutputFullName();
 
   String getSimpleName();
 
@@ -45,9 +47,13 @@ public interface MethodModel {
 
   String getOutputTypeFullName(TypeFormatter typeFormatter);
 
-  String getInputTypeNickName(TypeFormatter typeFormatter);
+  String getOutputTypeFullName(ImportTypeTable typeTable);
 
-  String getOutputTypeNickname(TypeFormatter typeFormatter);
+  String getOutputTypeNickname(ImportTypeTable typeTable);
+
+  String getInputTypeNickname(TypeFormatter typeFormatter);
+
+  String getInputTypeFullName(ImportTypeTable typeTable);
 
   String getOutputTypeSimpleName();
 

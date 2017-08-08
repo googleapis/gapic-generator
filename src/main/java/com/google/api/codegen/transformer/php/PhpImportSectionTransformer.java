@@ -15,8 +15,8 @@
 package com.google.api.codegen.transformer.php;
 
 import com.google.api.codegen.metacode.InitCodeNode;
-import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.ImportSectionTransformer;
+import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.TransformationContext;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.viewmodel.ImportFileView;
@@ -33,11 +33,12 @@ public class PhpImportSectionTransformer implements ImportSectionTransformer {
 
   @Override
   public ImportSectionView generateImportSection(
-      GapicMethodContext context, Iterable<InitCodeNode> specItemNodes) {
+      MethodContext context, Iterable<InitCodeNode> specItemNodes) {
     return generateImportSection(context.getTypeTable().getImports());
   }
 
-  private ImportSectionView generateImportSection(Map<String, TypeAlias> typeImports) {
+  /** Package-private for use in PhpGapicSurfaceTestTransformer */
+  ImportSectionView generateImportSection(Map<String, TypeAlias> typeImports) {
     ImmutableList.Builder<ImportFileView> appImports = ImmutableList.builder();
     for (Map.Entry<String, TypeAlias> entry : typeImports.entrySet()) {
       String key = entry.getKey();

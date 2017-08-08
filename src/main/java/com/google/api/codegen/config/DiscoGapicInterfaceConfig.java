@@ -44,11 +44,11 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
 
   @Override
   public String getName() {
-    return hasInterfaceNameOverride() ? getInterfaceNameOverride() : getSimpleName();
+    return hasInterfaceNameOverride() ? getInterfaceNameOverride() : getRawName();
   }
 
   @Override
-  public String getSimpleName() {
+  public String getRawName() {
     // TODO(andrealin): Return actual simple name.
     return getName();
   }
@@ -65,7 +65,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
   @Nullable
   public abstract SmokeTestConfig getSmokeTestConfig();
 
-  public static DiscoGapicInterfaceConfig createInterfaceConfig(
+  static DiscoGapicInterfaceConfig createInterfaceConfig(
       Document document,
       DiagCollector diagCollector,
       String language,

@@ -15,7 +15,6 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.ServiceMessages;
-import com.google.api.codegen.config.FieldType.ApiSource;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.ModelTypeFormatter;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
@@ -33,7 +32,6 @@ import com.google.common.base.Preconditions;
 /** Created by andrealin on 8/1/17. */
 public final class ProtoMethodModel implements MethodModel {
   private final Method method;
-  private final ApiSource apiSource = ApiSource.PROTO;
 
   /* Create a MethodModel object from a non-null Method object. */
   public ProtoMethodModel(Method method) {
@@ -42,8 +40,8 @@ public final class ProtoMethodModel implements MethodModel {
   }
 
   @Override
-  public FieldType.ApiSource getApiSource() {
-    return apiSource;
+  public ApiSource getApiSource() {
+    return ApiSource.PROTO;
   }
 
   @Override
@@ -67,6 +65,21 @@ public final class ProtoMethodModel implements MethodModel {
   }
 
   @Override
+  public String getOutputFullName() {
+    return method.getOutputType().getMessageType().getFullName();
+  }
+
+  @Override
+  public String getInputTypeFullName(ImportTypeTable typeTable) {
+    return ((ModelTypeTable) typeTable).getFullNameFor(method.getInputType());
+  }
+
+  @Override
+  public String getOutputTypeFullName(ImportTypeTable typeTable) {
+    return ((ModelTypeTable) typeTable).getFullNameFor(method.getOutputType());
+  }
+
+  @Override
   public String getParentSimpleName() {
     return method.getParent().getSimpleName();
   }
@@ -82,7 +95,7 @@ public final class ProtoMethodModel implements MethodModel {
   }
 
   @Override
-  public String getInputTypeNickName(TypeFormatter typeFormatter) {
+  public String getInputTypeNickname(TypeFormatter typeFormatter) {
     return ((ModelTypeFormatter) typeFormatter).getNicknameFor(method.getInputType());
   }
 
@@ -108,8 +121,8 @@ public final class ProtoMethodModel implements MethodModel {
   }
 
   @Override
-  public String getOutputTypeNickname(TypeFormatter typeFormatter) {
-    return ((ModelTypeFormatter) typeFormatter).getNicknameFor(method.getOutputType());
+  public String getOutputTypeNickname(ImportTypeTable typeTable) {
+    return ((ModelTypeTable) typeTable).getAndSaveNicknameFor(method.getOutputType());
   }
 
   @Override

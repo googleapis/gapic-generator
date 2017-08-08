@@ -30,7 +30,7 @@ public class StandardImportSectionTransformer implements ImportSectionTransforme
 
   @Override
   public ImportSectionView generateImportSection(
-      GapicMethodContext context, Iterable<InitCodeNode> specItemNodes) {
+      MethodContext context, Iterable<InitCodeNode> specItemNodes) {
     return generateImportSection(context.getTypeTable().getImports());
   }
 

@@ -52,8 +52,8 @@ public interface TypeNameConverter {
 
   /**
    * Provides a TypedValue containing the zero value of the given type, for use internally within
-   * the vkit layer; plus the TypeName of the type. This will often return the same value as {@link
-   * #getSnippetZeroValue(FieldType)}.
+   * the auto-generated layer; plus the TypeName of the type. This will often return the same value
+   * as {@link #getSnippetZeroValue(FieldType)}.
    */
   TypedValue getImplZeroValue(FieldType type);
 

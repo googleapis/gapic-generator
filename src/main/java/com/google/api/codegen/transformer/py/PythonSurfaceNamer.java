@@ -23,8 +23,10 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
+import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
+import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.Synchronicity;
 import com.google.api.codegen.transformer.TransformationContext;
@@ -34,13 +36,18 @@ import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.py.PythonCommentReformatter;
 import com.google.api.codegen.util.py.PythonNameFormatter;
 import com.google.api.codegen.util.py.PythonTypeTable;
+import com.google.api.tools.framework.model.EnumType;
 import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.MessageType;
+import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 
 /** The SurfaceNamer for Python. */
 public class PythonSurfaceNamer extends SurfaceNamer {
@@ -50,7 +57,12 @@ public class PythonSurfaceNamer extends SurfaceNamer {
         new ModelTypeFormatterImpl(new PythonModelTypeNameConverter(packageName)),
         new PythonTypeTable(packageName),
         new PythonCommentReformatter(),
+        packageName,
         packageName);
+  }
+
+  public SurfaceNamer cloneWithPackageName(String packageName) {
+    return new PythonSurfaceNamer(packageName);
   }
 
   @Override
@@ -59,8 +71,18 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getServicePhraseName(Interface apiInterface) {
+    return apiInterface.getParent().getFullName() + " " + apiInterface.getSimpleName() + " API";
+  }
+
+  @Override
   public String getFormattedVariableName(Name identifier) {
     return localVarName(identifier);
+  }
+
+  @Override
+  public String getRequestVariableName(MethodModel method) {
+    return method.getRequestStreaming() ? "requests" : "request";
   }
 
   @Override
@@ -79,6 +101,26 @@ public class PythonSurfaceNamer extends SurfaceNamer {
             getPackageName(),
             getApiWrapperVariableName(interfaceConfig),
             getApiWrapperClassName(interfaceConfig));
+  }
+
+  @Override
+  public String getMessageTypeName(ImportTypeTable typeTable, MessageType message) {
+    return publicClassName(Name.upperCamel(message.getSimpleName()));
+  }
+
+  @Override
+  public String getEnumTypeName(ImportTypeTable typeTable, EnumType enumType) {
+    return publicClassName(Name.upperCamel(enumType.getSimpleName()));
+  }
+
+  @Override
+  public String getRequestTypeName(ImportTypeTable typeTable, TypeRef type) {
+    return ((ModelTypeTable) typeTable).getAndSaveNicknameFor(type);
+  }
+
+  @Override
+  public String getLongRunningOperationTypeName(ImportTypeTable typeTable, TypeRef type) {
+    return ((ModelTypeTable) typeTable).getAndSaveNicknameFor(type);
   }
 
   @Override
@@ -149,6 +191,12 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getClientConfigPath(Interface apiInterface) {
+    return classFileNameBase(Name.upperCamel(apiInterface.getSimpleName()).join("client_config"))
+        + ".json";
+  }
+
+  @Override
   public List<String> getThrowsDocLines(MethodConfig methodConfig) {
     ImmutableList.Builder<String> lines = ImmutableList.builder();
     lines.add(":exc:`google.gax.errors.GaxError` if the RPC is aborted.");
@@ -215,7 +263,23 @@ public class PythonSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getFieldGetFunctionName(FieldType type, Name identifier) {
+    return publicFieldName(Name.from(type.getSimpleName()));
+  }
+
+  @Override
+  public String getFieldGetFunctionName(FieldType field) {
+    return publicFieldName(Name.from(field.getSimpleName()));
+  }
+
+  @Override
+  public String getFieldGetFunctionName(TypeRef type, Name identifier) {
     return publicFieldName(identifier);
+  }
+
+  @Override
+  public String getProtoFileName(ProtoFile file) {
+    String protoFilename = file.getSimpleName();
+    return protoFilename.substring(0, protoFilename.lastIndexOf('.')) + ".py";
   }
 
   @Override
@@ -225,8 +289,14 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getSmokeTestClassName(InterfaceConfig interfaceConfig) {
+    return publicClassName(
+        Name.upperCamelKeepUpperAcronyms("Test", "System", getInterfaceName(interfaceConfig)));
+  }
+
+  @Override
   public String getTestPackageName() {
-    return "test." + getPackageName();
+    return "tests." + getPackageName();
   }
 
   @Override
@@ -240,6 +310,22 @@ public class PythonSurfaceNamer extends SurfaceNamer {
     Name testCaseName =
         symbolTable.getNewSymbol(Name.upperCamel("Test", method.getSimpleName(), "Exception"));
     return publicMethodName(testCaseName);
+  }
+
+  @Override
+  public String injectRandomStringGeneratorCode(String randomString) {
+    Matcher m = InitFieldConfig.RANDOM_TOKEN_PATTERN.matcher(randomString);
+    StringBuffer sb = new StringBuffer();
+    List<String> stringParts = new ArrayList<>();
+    while (m.find()) {
+      m.appendReplacement(sb, "{" + stringParts.size() + "}");
+      stringParts.add("time.time()");
+    }
+    m.appendTail(sb);
+    if (!stringParts.isEmpty()) {
+      sb.append(".format(").append(Joiner.on(", ").join(stringParts)).append(")");
+    }
+    return sb.toString();
   }
 
   @Override

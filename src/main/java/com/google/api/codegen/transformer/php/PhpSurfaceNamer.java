@@ -18,7 +18,6 @@ import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
-import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
@@ -43,7 +42,12 @@ public class PhpSurfaceNamer extends SurfaceNamer {
         new ModelTypeFormatterImpl(new PhpModelTypeNameConverter(packageName)),
         new PhpTypeTable(packageName),
         new PhpCommentReformatter(),
+        packageName,
         packageName);
+  }
+
+  public SurfaceNamer cloneWithPackageName(String packageName) {
+    return new PhpSurfaceNamer(packageName);
   }
 
   @Override
@@ -54,6 +58,11 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   @Override
   public String getFieldSetFunctionName(TypeRef type, Name identifier) {
     return publicMethodName(Name.from("set").join(identifier));
+  }
+
+  @Override
+  public String getFieldSetFunctionName(FieldType field) {
+    return publicMethodName(Name.from("set").join(field.getSimpleName()));
   }
 
   @Override
@@ -115,11 +124,11 @@ public class PhpSurfaceNamer extends SurfaceNamer {
       case NonStreaming:
         return method.getOutputTypeFullName(getModelTypeFormatter());
       case BidiStreaming:
-        return "\\Google\\GAX\\BidiStreamingResponse";
+        return "\\Google\\GAX\\BidiStream";
       case ClientStreaming:
-        return "\\Google\\GAX\\ClientStreamingResponse";
+        return "\\Google\\GAX\\ClientStream";
       case ServerStreaming:
-        return "\\Google\\GAX\\ServerStreamingResponse";
+        return "\\Google\\GAX\\ServerStream";
       default:
         return getNotImplementedString(
             "SurfaceNamer.getDynamicReturnTypeName grpcStreamingType:"
@@ -192,29 +201,5 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   @Override
   public boolean methodHasRetrySettings(MethodConfig methodConfig) {
     return !methodConfig.isGrpcStreaming();
-  }
-
-  public String getRequestTokenFieldName(PageStreamingConfig pageStreaming) {
-    // Not using keyName since PHP maps the string "requestPageTokenField" to the raw request token
-    // field name from the page streaming config.
-    return pageStreaming.getRequestTokenField().getSimpleName();
-  }
-
-  public String getPageSizeFieldName(PageStreamingConfig pageStreaming) {
-    // Not using keyName since PHP maps the string "requestPageSizeField" to the raw page size
-    // field name from the page streaming config.
-    return pageStreaming.getPageSizeField().getSimpleName();
-  }
-
-  public String getResponseTokenFieldName(PageStreamingConfig pageStreaming) {
-    // Not using keyName since PHP maps the string "responsePageTokenField" to the raw response
-    // token field name from the page streaming config.
-    return pageStreaming.getResponseTokenField().getSimpleName();
-  }
-
-  public String getResourcesFieldName(PageStreamingConfig pageStreaming) {
-    // Not using keyName since PHP maps the string "resourceField" to the raw resource field
-    // from name the page streaming config.
-    return pageStreaming.getResourcesFieldName();
   }
 }

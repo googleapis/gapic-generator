@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,13 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.FieldType.ApiSource;
+import com.google.api.codegen.config.ApiSource;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.SingleResourceNameConfig;
-import com.google.api.codegen.config.VisibilityConfig;
 import javax.annotation.Nullable;
 
 /** The context for transforming a method to a view model object. */
@@ -32,9 +30,6 @@ public interface MethodContext {
   MethodModel getMethodModel();
 
   ApiSource getApiSource();
-
-  //  @Nullable
-  //  Interface getInterface();
 
   String getInterfaceSimpleName();
 
@@ -59,31 +54,9 @@ public interface MethodContext {
 
   MethodContext cloneWithEmptyTypeTable();
 
-  String getStubName();
-
-  String getPageStreamingDescriptorConstName();
-
-  String getAndSavePagedResponseTypeName(FieldConfig fieldConfig);
-
-  String getPagedListResponseFactoryConstName();
-
-  String getApiMethodName(VisibilityConfig visibilityConfig);
-
   String getTargetInterfaceFullName();
 
-  String getAsyncApiMethodName(VisibilityConfig visibilityConfig);
+  String getInterfaceFileName();
 
   String getGrpcContainerTypeName();
-
-  String getGrpcMethodConstant();
-
-  String getSettingsMemberName();
-
-  String getSettingsFunctionName();
-
-  String getCallableName();
-
-  String getPagedCallableName();
-
-  String getInterfaceFileName();
 }

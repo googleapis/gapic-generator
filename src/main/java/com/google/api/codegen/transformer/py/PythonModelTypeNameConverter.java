@@ -147,8 +147,7 @@ public class PythonModelTypeNameConverter extends ModelTypeNameConverter {
 
   private List<String> getClassNamePath(ProtoElement elem) {
     List<String> path = new LinkedList<>();
-    path.add(elem.getSimpleName());
-    for (ProtoElement elt = elem.getParent(); elt.getParent() != null; elt = elt.getParent()) {
+    for (ProtoElement elt = elem; elt.getParent() != null; elt = elt.getParent()) {
       path.add(0, elt.getSimpleName());
     }
     return path;

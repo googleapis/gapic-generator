@@ -45,6 +45,10 @@ public interface InterfaceContext extends TransformationContext {
 
   String getInterfaceFileName();
 
+  String getInterfaceFullName();
+
+  String getInterfaceDescription();
+
   String getInterfaceSimpleName();
 
   InterfaceContext withNewTypeTable();

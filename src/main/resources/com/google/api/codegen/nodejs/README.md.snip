@@ -2,6 +2,10 @@
 @extends "readme.snip"
 
 @snippet generate(metadata)
+  {@generateReadme(metadata.readmeMetadata)}
+@end
+
+@private generateReadme(metadata)
   {@readme(metadata, exampleMethods(metadata.exampleMethods, metadata), installationLines(metadata))}
 @end
 
@@ -9,11 +13,7 @@
   @join method : methods on BREAK
     @#### {@method.apiClassName}
     ```js
-     var {@method.apiModuleName} = require('{@metadata.identifier}').{@metadata.majorVersion}({
-       // optional auth parameters.
-     });
-
-     {@decorateSampleCode(method, sampleCode(method))}
+     {@decorateSampleCodeUnversioned(method, sampleCode(method))}
     ```
   @end
 @end

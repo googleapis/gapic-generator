@@ -43,9 +43,20 @@ public abstract class LongRunningConfig {
   /** Reports whether or not the service implements cancel. */
   public abstract boolean implementsCancel();
 
-  /** Returns the polling interval of the operation. */
-  @Nullable
-  public abstract Duration getPollingInterval();
+  /** Returns initial delay after which first poll request will be made. */
+  public abstract Duration getInitialPollDelay();
+
+  /**
+   * Returns multiplier used to gradually increase delay between subsequent polls until it reaches
+   * maximum poll delay.
+   */
+  public abstract double getPollDelayMultiplier();
+
+  /** Returns maximum time between two subsequent poll requests. */
+  public abstract Duration getMaxPollDelay();
+
+  /** Returns total polling timeout. */
+  public abstract Duration getTotalPollTimeout();
 
   /** Creates an instance of LongRunningConfig based on LongRunningConfigProto. */
   @Nullable
@@ -90,9 +101,44 @@ public abstract class LongRunningConfig {
       error = true;
     }
 
-    Duration pollingInterval = null;
-    if (longRunningConfigProto.getPollingIntervalMillis() > 0) {
-      pollingInterval = Duration.millis(longRunningConfigProto.getPollingIntervalMillis());
+    Duration initialPollDelay = Duration.millis(longRunningConfigProto.getInitialPollDelayMillis());
+    if (initialPollDelay.isShorterThan(Duration.ZERO)) {
+      diagCollector.addDiag(
+          Diag.error(
+              SimpleLocation.TOPLEVEL,
+              "Initial poll delay must be provided and set to a positive number: '%s'",
+              longRunningConfigProto.getInitialPollDelayMillis()));
+      error = true;
+    }
+
+    double pollDelayMultiplier = longRunningConfigProto.getPollDelayMultiplier();
+    if (pollDelayMultiplier <= 1.0) {
+      diagCollector.addDiag(
+          Diag.error(
+              SimpleLocation.TOPLEVEL,
+              "Poll delay multiplier must be provided and be greater or equal than 1.0: '%s'",
+              longRunningConfigProto.getPollDelayMultiplier()));
+      error = true;
+    }
+
+    Duration maxPollDelay = Duration.millis(longRunningConfigProto.getMaxPollDelayMillis());
+    if (maxPollDelay.isShorterThan(initialPollDelay)) {
+      diagCollector.addDiag(
+          Diag.error(
+              SimpleLocation.TOPLEVEL,
+              "Max poll delay must be provided and set be equal or greater than initial poll delay: '%s'",
+              longRunningConfigProto.getMaxPollDelayMillis()));
+      error = true;
+    }
+
+    Duration totalPollTimeout = Duration.millis(longRunningConfigProto.getTotalPollTimeoutMillis());
+    if (totalPollTimeout.isShorterThan(maxPollDelay)) {
+      diagCollector.addDiag(
+          Diag.error(
+              SimpleLocation.TOPLEVEL,
+              "Total poll timeout must be provided and be be equal or greater than max poll delay: '%s'",
+              longRunningConfigProto.getTotalPollTimeoutMillis()));
+      error = true;
     }
 
     if (error) {
@@ -103,7 +149,10 @@ public abstract class LongRunningConfig {
           metadataType,
           longRunningConfigProto.getImplementsDelete(),
           longRunningConfigProto.getImplementsCancel(),
-          pollingInterval);
+          initialPollDelay,
+          pollDelayMultiplier,
+          maxPollDelay,
+          totalPollTimeout);
     }
   }
 
@@ -111,8 +160,16 @@ public abstract class LongRunningConfig {
     return ((ModelTypeTable) typeTable).getAndSaveNicknameFor(getReturnType());
   }
 
+  public String getLongRunningOperationReturnTypeFullName(ImportTypeTable typeTable) {
+    return ((ModelTypeTable) typeTable).getFullNameFor(getReturnType());
+  }
+
   public String getLongRunningOperationMetadataTypeName(
       SurfaceNamer namer, ImportTypeTable typeTable) {
     return namer.getLongRunningOperationTypeName(typeTable, getMetadataType());
+  }
+
+  public String getLongRunningOperationMetadataTypeFullName(ImportTypeTable typeTable) {
+    return ((ModelTypeTable) typeTable).getFullNameFor(getMetadataType());
   }
 }

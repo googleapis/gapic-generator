@@ -15,7 +15,9 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameOneofConfig;
+import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
@@ -161,11 +163,18 @@ public class InitCodeTransformer {
 
       String expectedValueIdentifier = getVariableName(methodContext, fieldItemTree);
       String expectedTransformFunction = null;
-      if (methodContext.getFeatureConfig().useResourceNameFormatOption(fieldConfig)
-          && fieldConfig.hasDifferentMessageResourceNameConfig()) {
-        expectedTransformFunction =
-            namer.getResourceOneofCreateMethod(methodContext.getTypeTable(), fieldConfig);
+      String actualTransformFunction = null;
+      if (methodContext.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
+        if (fieldConfig.requiresParamTransformationFromAny()) {
+          expectedTransformFunction = namer.getToStringMethod();
+          actualTransformFunction = namer.getToStringMethod();
+        } else if (fieldConfig.requiresParamTransformation()) {
+          expectedTransformFunction =
+              namer.getResourceOneofCreateMethod(methodContext.getTypeTable(), fieldConfig);
+        }
       }
+
+      boolean isArray = fieldConfig.getField().isRepeated() && !fieldConfig.getField().isMap();
 
       String enumTypeName = null;
       TypeRef fieldType = fieldItemTree.getType();
@@ -182,6 +191,8 @@ public class InitCodeTransformer {
           createAssertView(
               expectedValueIdentifier,
               expectedTransformFunction,
+              actualTransformFunction,
+              isArray,
               getterMethod,
               enumTypeName,
               messageTypeName));
@@ -193,8 +204,7 @@ public class InitCodeTransformer {
    * A utility method which creates the InitValueConfig map that contains the collection config
    * data.
    */
-  public static ImmutableMap<String, InitValueConfig> createCollectionMap(
-      GapicMethodContext context) {
+  public static ImmutableMap<String, InitValueConfig> createCollectionMap(MethodContext context) {
     ImmutableMap.Builder<String, InitValueConfig> mapBuilder = ImmutableMap.builder();
     Map<String, String> fieldNamePatterns = context.getMethodConfig().getFieldNamePatterns();
     for (Map.Entry<String, String> fieldNamePattern : fieldNamePatterns.entrySet()) {
@@ -212,12 +222,16 @@ public class InitCodeTransformer {
   private ClientTestAssertView createAssertView(
       String expected,
       String expectedTransformFunction,
+      String actualTransformFunction,
+      boolean isArray,
       String actual,
       String enumTypeName,
       String messageTypeName) {
     return ClientTestAssertView.newBuilder()
         .expectedValueIdentifier(expected)
+        .isArray(isArray)
         .expectedValueTransformFunction(expectedTransformFunction)
+        .actualValueTransformFunction(actualTransformFunction)
         .actualValueGetter(actual)
         .enumTypeName(enumTypeName)
         .messageTypeName(messageTypeName)
@@ -257,6 +271,7 @@ public class InitCodeTransformer {
         .fieldSettings(getFieldSettings(context, argItems))
         .importSection(importSectionTransformer.generateImportSection(context, orderedItems))
         .versionIndexFileImportName(namer.getVersionIndexFileImportName())
+        .topLevelIndexFileImportName(namer.getTopLevelIndexFileImportName())
         .apiFileName(namer.getServiceFileName(context.getInterfaceConfig()))
         .build();
   }
@@ -400,9 +415,14 @@ public class InitCodeTransformer {
 
     if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
       if (!context.isFlattenedMethodContext()) {
-        // In a non-flattened context, we always use the resource name type set on the message
-        // instead of set on the flattened method
-        fieldConfig = fieldConfig.getMessageFieldConfig();
+        ResourceNameConfig messageResNameConfig = fieldConfig.getMessageResourceNameConfig();
+        if (messageResNameConfig == null
+            || messageResNameConfig.getResourceNameType() != ResourceNameType.ANY) {
+          // In a non-flattened context, we always use the resource name type set on the message
+          // instead of set on the flattened method, unless the resource name type on message
+          // is ANY.
+          fieldConfig = fieldConfig.getMessageFieldConfig();
+        }
       }
       if (item.getType().isRepeated()) {
         return RepeatedResourceNameInitValueView.newBuilder()
@@ -549,13 +569,16 @@ public class InitCodeTransformer {
       FieldConfig fieldConfig = item.getFieldConfig();
 
       if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
-        fieldSetting.fieldSetFunction(namer.getResourceNameFieldSetFunctionName(fieldConfig));
+        fieldSetting.fieldSetFunction(
+            namer.getResourceNameFieldSetFunctionName(fieldConfig.getMessageFieldConfig()));
       } else {
         fieldSetting.fieldSetFunction(
             namer.getFieldSetFunctionName(item.getType(), Name.from(item.getKey())));
       }
       fieldSetting.fieldAddFunction(
           namer.getFieldAddFunctionName(item.getType(), Name.from(item.getKey())));
+      fieldSetting.fieldGetFunction(
+          namer.getFieldGetFunctionName(item.getType(), Name.from(item.getKey())));
 
       fieldSetting.identifier(getVariableName(context, item));
       fieldSetting.initCodeLine(generateSurfaceInitCodeLine(context, item));

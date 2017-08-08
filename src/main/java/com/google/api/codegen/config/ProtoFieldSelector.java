@@ -14,14 +14,12 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.config.FieldType.ApiSource;
 import com.google.api.tools.framework.model.FieldSelector;
 import com.google.common.base.Preconditions;
 
 /** Wrapper around FieldSelector. */
 public final class ProtoFieldSelector implements GenericFieldSelector {
   private final FieldSelector fieldSelector;
-  private final ApiSource apiSource = ApiSource.PROTO;
 
   public ProtoFieldSelector(FieldSelector fieldSelector) {
     Preconditions.checkNotNull(fieldSelector);
@@ -31,7 +29,7 @@ public final class ProtoFieldSelector implements GenericFieldSelector {
   @Override
   /* @return the type of source that this FieldType is based on. */
   public ApiSource getApiSource() {
-    return apiSource;
+    return ApiSource.PROTO;
   }
 
   @Override

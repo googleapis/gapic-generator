@@ -14,12 +14,12 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.config.FieldType.ApiSource;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.SchemaTypeFormatter;
 import com.google.api.codegen.transformer.SchemaTypeNameConverter;
+import com.google.api.codegen.transformer.SchemaTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.TypeFormatter;
 import com.google.api.codegen.transformer.TypeNameConverter;
@@ -30,17 +30,11 @@ import com.google.common.base.Preconditions;
 /** Created by andrealin on 8/1/17. */
 public final class DiscoveryMethodModel implements MethodModel {
   private final Method method;
-  private final ApiSource apiSource = ApiSource.DISCOVERY;
 
   /* Create a DiscoveryMethodModel from a non-null Discovery Method object. */
   public DiscoveryMethodModel(Method method) {
     Preconditions.checkNotNull(method);
     this.method = method;
-  }
-
-  /* Package private for internal use. */
-  Method getDiscoveryMethod() {
-    return method;
   }
 
   @Override
@@ -49,8 +43,8 @@ public final class DiscoveryMethodModel implements MethodModel {
   }
 
   @Override
-  public FieldType.ApiSource getApiSource() {
-    return apiSource;
+  public ApiSource getApiSource() {
+    return ApiSource.DISCOVERY;
   }
 
   @Override
@@ -86,13 +80,28 @@ public final class DiscoveryMethodModel implements MethodModel {
   }
 
   @Override
-  public String getOutputTypeNickname(TypeFormatter typeFormatter) {
+  public String getInputTypeNickname(TypeFormatter typeFormatter) {
     return null;
   }
 
   @Override
-  public String getInputTypeNickName(TypeFormatter typeFormatter) {
-    return null;
+  public String getOutputTypeNickname(ImportTypeTable typeTable) {
+    return ((SchemaTypeTable) typeTable).getNicknameFor(method.response());
+  }
+
+  @Override
+  public String getOutputTypeFullName(ImportTypeTable typeTable) {
+    return ((SchemaTypeTable) typeTable).getFullNameFor(method.response());
+  }
+
+  @Override
+  public String getOutputFullName() {
+    return method.response() == null ? "none" : method.response().getIdentifier();
+  }
+
+  @Override
+  public String getInputTypeFullName(ImportTypeTable typeTable) {
+    return ((SchemaTypeTable) typeTable).getFullNameFor(method.request());
   }
 
   @Override

@@ -14,18 +14,15 @@
  */
 package com.google.api.codegen.transformer;
 
-import static com.google.api.codegen.config.FieldType.ApiSource.PROTO;
+import static com.google.api.codegen.config.ApiSource.PROTO;
 
-import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.FieldType.ApiSource;
+import com.google.api.codegen.config.ApiSource;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicInterfaceConfig;
+import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
-import com.google.api.codegen.config.InterfaceConfig;
-import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.config.SingleResourceNameConfig;
-import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.auto.value.AutoValue;
@@ -33,7 +30,6 @@ import com.google.auto.value.AutoValue;
 /** The context for transforming a method to a view model object. */
 @AutoValue
 public abstract class GapicMethodContext implements MethodContext {
-
   public static GapicMethodContext create(
       GapicInterfaceContext surfaceTransformerContext,
       Interface apiInterface,
@@ -41,16 +37,16 @@ public abstract class GapicMethodContext implements MethodContext {
       ModelTypeTable typeTable,
       SurfaceNamer namer,
       ProtoMethodModel method,
-      MethodConfig methodConfig,
+      GapicMethodConfig methodConfig,
       FlatteningConfig flatteningConfig,
       FeatureConfig featureConfig) {
     return new AutoValue_GapicMethodContext(
         productConfig,
         namer,
-        methodConfig,
         flatteningConfig,
         featureConfig,
         method,
+        methodConfig,
         surfaceTransformerContext,
         typeTable,
         apiInterface);
@@ -68,6 +64,9 @@ public abstract class GapicMethodContext implements MethodContext {
 
   @Override
   public abstract ProtoMethodModel getMethodModel();
+
+  @Override
+  public abstract GapicMethodConfig getMethodConfig();
 
   @Override
   public abstract GapicInterfaceContext getSurfaceInterfaceContext();
@@ -93,7 +92,7 @@ public abstract class GapicMethodContext implements MethodContext {
   }
 
   @Override
-  public InterfaceConfig getInterfaceConfig() {
+  public GapicInterfaceConfig getInterfaceConfig() {
     return getProductConfig().getInterfaceConfig(getInterface());
   }
 
@@ -117,68 +116,13 @@ public abstract class GapicMethodContext implements MethodContext {
   }
 
   @Override
-  public String getStubName() {
-    return getNamer().getStubName(getTargetInterface());
-  }
-
-  @Override
-  public String getPageStreamingDescriptorConstName() {
-    return getNamer().getPageStreamingDescriptorConstName(getMethodModel());
-  }
-
-  @Override
-  public String getAndSavePagedResponseTypeName(FieldConfig fieldConfig) {
-    return getNamer().getAndSavePagedResponseTypeName(this, fieldConfig);
-  }
-
-  @Override
-  public String getPagedListResponseFactoryConstName() {
-    return getNamer().getPagedListResponseFactoryConstName(getMethodModel());
-  }
-
-  @Override
-  public String getApiMethodName(VisibilityConfig visibilityConfig) {
-    return getNamer().getApiMethodName(getMethodModel(), visibilityConfig);
-  }
-
-  @Override
   public String getTargetInterfaceFullName() {
     return getTargetInterface().getFullName();
   }
 
   @Override
-  public String getAsyncApiMethodName(VisibilityConfig visibilityConfig) {
-    return getNamer().getAsyncApiMethodName(getMethodModel(), visibilityConfig);
-  }
-
-  @Override
   public String getGrpcContainerTypeName() {
     return getNamer().getGrpcContainerTypeName(getTargetInterface());
-  }
-
-  @Override
-  public String getGrpcMethodConstant() {
-    return getNamer().getGrpcMethodConstant(getMethodModel());
-  }
-
-  @Override
-  public String getSettingsMemberName() {
-    return getNamer().getSettingsMemberName(getMethodModel());
-  }
-
-  @Override
-  public String getSettingsFunctionName() {
-    return getNamer().getSettingsFunctionName(getMethodModel());
-  }
-
-  @Override
-  public String getCallableName() {
-    return getNamer().getCallableName(getMethodModel());
-  }
-
-  @Override
-  public String getPagedCallableName() {
-    return getNamer().getPagedCallableName(getMethodModel());
   }
 
   @Override

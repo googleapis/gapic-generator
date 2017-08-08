@@ -93,6 +93,10 @@ public class ModelTypeTable implements ImportTypeTable, ModelTypeFormatter {
     return new ModelTypeTable(typeTable.cloneEmpty(), typeNameConverter);
   }
 
+  public ModelTypeTable cloneEmpty(String packageName) {
+    return new ModelTypeTable(typeTable.cloneEmpty(packageName), typeNameConverter);
+  }
+
   /** Compute the nickname for the given fullName and save it in the import set. */
   @Override
   public void saveNicknameFor(String fullName) {

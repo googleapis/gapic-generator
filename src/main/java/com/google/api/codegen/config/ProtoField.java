@@ -14,27 +14,30 @@
  */
 package com.google.api.codegen.config;
 
-import static com.google.api.codegen.config.FieldType.ApiSource.PROTO;
+import static com.google.api.codegen.config.ApiSource.PROTO;
+import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_BYTES;
+import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_STRING;
 
 import com.google.api.codegen.discovery.Schema;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Field;
+import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import java.util.List;
+import com.google.common.collect.ImmutableSet;
 
 /** Created by andrealin on 7/31/17. */
 public class ProtoField implements FieldType {
   private final Field protoField;
-  private final ApiSource apiSource = PROTO;
 
   @Override
   /* @return the type of the underlying model resource. */
   public ApiSource getApiSource() {
-    return apiSource;
+    return PROTO;
   }
 
   /* Create a FieldType object from a non-null Field object. */
@@ -59,45 +62,58 @@ public class ProtoField implements FieldType {
   }
 
   @Override
+  public String getTypeFullName() {
+    return protoField.getType().getMessageType().getFullName();
+  }
+
+  @Override
   public boolean isMap() {
     return protoField.getType().isMap();
   }
 
+  @Override
   public ProtoField getMapKeyField() {
     return new ProtoField(protoField.getType().getMapKeyField());
   }
 
+  @Override
   public ProtoField getMapValueField() {
     return new ProtoField(protoField.getType().getMapValueField());
   }
 
+  @Override
   public boolean isMessage() {
     return protoField.getType().isMessage();
   }
 
+  @Override
   public boolean isRepeated() {
     return protoField.isRepeated();
   }
 
+  @Override
   public String getParentFullName() {
     return protoField.getParent().getFullName();
   }
 
+  @Override
   public Cardinality getCardinality() {
     return protoField.getType().getCardinality();
   }
 
+  @Override
   public boolean isEnum() {
     return protoField.getType().isEnum();
   }
 
+  @Override
   public boolean isPrimitive() {
     return protoField.getType().isPrimitive();
   }
 
   @Override
   public String toString() {
-    return String.format("Protobuf FieldType (%s): {%s}", apiSource, protoField.toString());
+    return String.format("Protobuf FieldType (%s): {%s}", getApiSource(), protoField.toString());
   }
 
   @Override
@@ -122,15 +138,59 @@ public class ProtoField implements FieldType {
     return DocumentationUtil.getScopedDescription(protoField);
   }
 
+  public static Iterable<Iterable<String>> getOneofFieldsNames(
+      Iterable<FieldType> fields, SurfaceNamer namer) {
+    ImmutableSet.Builder<Oneof> oneOfsBuilder = ImmutableSet.builder();
+    for (FieldType field : fields) {
+      Oneof oneof = ((ProtoField) field).protoField.getOneof();
+      if (oneof == null) {
+        continue;
+      }
+      oneOfsBuilder.add(oneof);
+    }
+
+    Iterable<Oneof> oneOfs = oneOfsBuilder.build();
+
+    ImmutableList.Builder<Iterable<String>> fieldsNames = ImmutableList.builder();
+
+    for (Oneof oneof : oneOfs) {
+      boolean hasItems = false;
+      ImmutableSet.Builder<String> fieldNames = ImmutableSet.builder();
+      for (Field field : oneof.getFields()) {
+        fieldNames.add(namer.getVariableName(new ProtoField(field)));
+        hasItems = true;
+      }
+      if (hasItems) {
+        fieldsNames.add(fieldNames.build());
+      }
+    }
+    return fieldsNames.build();
+  }
+
   @Override
-  public List<String> getOneofFieldsNames() {
+  public Iterable<String> getOneofFieldsNames(SurfaceNamer surfaceNamer) {
     if (protoField.getOneof() != null) {
       ImmutableList.Builder<String> fieldNames = ImmutableList.builder();
       for (Field field : protoField.getOneof().getFields()) {
-        fieldNames.add(field.getSimpleName());
+        fieldNames.add(surfaceNamer.getVariableName(new ProtoField(field)));
       }
       return fieldNames.build();
     }
     return null;
+  }
+
+  @Override
+  public boolean isString() {
+    return protoField.getType().equals(TYPE_STRING);
+  }
+
+  @Override
+  public boolean isBytes() {
+    return protoField.getType().equals(TYPE_BYTES);
+  }
+
+  @Override
+  public String getKind() {
+    return protoField.getType().toString();
   }
 }

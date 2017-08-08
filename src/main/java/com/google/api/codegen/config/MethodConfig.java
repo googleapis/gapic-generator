@@ -17,6 +17,7 @@ package com.google.api.codegen.config;
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.tools.framework.model.Method;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -121,5 +122,5 @@ public abstract class MethodConfig {
   }
 
   /** Return the lists of the simple names of the "one of" instances associated with the fields. */
-  public abstract Iterable<Iterable<String>> getOneofsNames();
+  public abstract Iterable<Iterable<String>> getOneofNames(SurfaceNamer namer);
 }
