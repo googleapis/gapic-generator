@@ -131,7 +131,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
             FlatteningConfig flatteningGroup = flatteningGroups.get(i);
             String nameSuffix = requiresNameSuffix ? Integer.toString(i + 1) : "";
             MethodContext methodContextFlat =
-                context.asFlattenedMethodContext(methodContext.getMethodModel(), flatteningGroup);
+                context.asFlattenedMethodContext(method, flatteningGroup);
             methods.add(generateOperationFlattenedAsyncMethod(methodContextFlat, nameSuffix));
             methods.add(generateOperationFlattenedMethod(methodContextFlat, nameSuffix));
           }
@@ -146,7 +146,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
             FlatteningConfig flatteningGroup = flatteningGroups.get(i);
             String nameSuffix = requiresNameSuffix ? Integer.toString(i + 1) : "";
             MethodContext methodContextFlat =
-                context.asFlattenedMethodContext(methodContext.getMethodModel(), flatteningGroup);
+                context.asFlattenedMethodContext(method, flatteningGroup);
             methods.add(generatePagedFlattenedAsyncMethod(methodContextFlat, nameSuffix));
             methods.add(generatePagedFlattenedMethod(methodContextFlat, nameSuffix));
           }
@@ -161,7 +161,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
             FlatteningConfig flatteningGroup = flatteningGroups.get(i);
             String nameSuffix = requiresNameSuffix ? Integer.toString(i + 1) : "";
             MethodContext methodContextFlat =
-                context.asFlattenedMethodContext(methodContext.getMethodModel(), flatteningGroup);
+                context.asFlattenedMethodContext(method, flatteningGroup);
             methods.add(generateFlattenedAsyncMethod(methodContextFlat, nameSuffix));
             methods.add(generateFlattenedMethod(methodContextFlat, nameSuffix));
           }

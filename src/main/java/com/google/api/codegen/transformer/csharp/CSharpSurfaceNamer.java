@@ -25,7 +25,6 @@ import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
-import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.Synchronicity;
 import com.google.api.codegen.transformer.TransformationContext;
@@ -250,6 +249,11 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getFieldGetFunctionName(FieldType field) {
+    return privateMethodName(Name.from(field.getSimpleName()));
+  }
+
+  @Override
   public String getFieldGetFunctionName(FieldType type, Name identifier) {
     return privateMethodName(Name.from(type.getSimpleName()));
   }
@@ -421,11 +425,9 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   public String getAndSaveOperationResponseTypeName(
       MethodModel method, ImportTypeTable typeTable, MethodConfig methodConfig) {
     String responseTypeName =
-        ((ModelTypeTable) typeTable)
-            .getFullNameFor(methodConfig.getLongRunningConfig().getReturnType());
+        methodConfig.getLongRunningConfig().getLongRunningOperationReturnTypeFullName(typeTable);
     String metaTypeName =
-        ((ModelTypeTable) typeTable)
-            .getFullNameFor(methodConfig.getLongRunningConfig().getMetadataType());
+        methodConfig.getLongRunningConfig().getLongRunningOperationMetadataTypeFullName(typeTable);
     return typeTable.getAndSaveNicknameForContainer(
         "Google.LongRunning.Operation", responseTypeName, metaTypeName);
   }
@@ -438,22 +440,14 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
       // Bidirectional streaming
       return typeTable.getAndSaveNicknameForContainer(
           "Grpc.Core.AsyncDuplexStreamingCall",
-          methodContext
-              .getMethodModel()
-              .getAndSaveRequestTypeName(methodContext.getTypeTable(), methodContext.getNamer()),
-          methodContext
-              .getMethodModel()
-              .getAndSaveResponseTypeName(methodContext.getTypeTable(), methodContext.getNamer()));
+          method.getAndSaveRequestTypeName(typeTable, methodContext.getNamer()),
+          method.getAndSaveResponseTypeName(typeTable, methodContext.getNamer()));
     } else if (method.getRequestStreaming()) {
       // Client streaming
       return typeTable.getAndSaveNicknameForContainer(
           "Grpc.Core.AsyncClientStreamingCall",
-          methodContext
-              .getMethodModel()
-              .getAndSaveRequestTypeName(methodContext.getTypeTable(), methodContext.getNamer()),
-          methodContext
-              .getMethodModel()
-              .getAndSaveResponseTypeName(methodContext.getTypeTable(), methodContext.getNamer()));
+          method.getAndSaveRequestTypeName(typeTable, methodContext.getNamer()),
+          method.getAndSaveResponseTypeName(typeTable, methodContext.getNamer()));
     } else if (method.getResponseStreaming()) {
       // Server streaming
       return typeTable.getAndSaveNicknameForContainer(
