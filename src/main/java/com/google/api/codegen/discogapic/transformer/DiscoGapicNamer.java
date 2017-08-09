@@ -28,6 +28,10 @@ public class DiscoGapicNamer {
     this.languageNamer = parentNamer;
   }
 
+  public DiscoGapicNamer cloneWithPackageName(String packageName) {
+    return new DiscoGapicNamer(languageNamer.cloneWithPackageNameForDiscovery(packageName));
+  }
+
   /* @return the underlying language surface namer. */
   public SurfaceNamer getLanguageNamer() {
     return languageNamer;

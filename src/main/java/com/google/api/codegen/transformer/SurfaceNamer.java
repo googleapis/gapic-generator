@@ -67,12 +67,11 @@ import java.util.List;
 // TODO(andrealin): This class should not be exposed to ApiSource.
 public class SurfaceNamer extends NameFormatterDelegator {
   private final TypeFormatter typeFormatter;
-
-  // Private members in any SurfaceNamer.
   private final TypeNameConverter typeNameConverter;
   private final CommentReformatter commentReformatter;
   private final String rootPackageName;
   private final String packageName;
+  private final NameFormatter nameFormatter;
 
   // Create a SurfaceNamer based on .proto.
   public SurfaceNamer(
@@ -88,6 +87,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     this.commentReformatter = commentReformatter;
     this.rootPackageName = rootPackageName;
     this.packageName = packageName;
+    this.nameFormatter = languageNamer;
   }
 
   // Create a SurfaceNamer based on Discovery Documents.
@@ -104,9 +104,14 @@ public class SurfaceNamer extends NameFormatterDelegator {
     this.packageName = packageName;
     this.rootPackageName = rootPackageName;
     this.typeFormatter = typeFormatter;
+    this.nameFormatter = languageNamer;
   }
 
   public SurfaceNamer cloneWithPackageName(String packageName) {
+    throw new UnsupportedOperationException("clone needs to be overridden");
+  }
+
+  public SurfaceNamer cloneWithPackageNameForDiscovery(String packageName) {
     throw new UnsupportedOperationException("clone needs to be overridden");
   }
 
@@ -124,6 +129,14 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   public TypeNameConverter getTypeNameConverter() {
     return typeNameConverter;
+  }
+
+  public NameFormatter getNameFormatter() {
+    return nameFormatter;
+  }
+
+  public CommentReformatter getCommentReformatter() {
+    return commentReformatter;
   }
 
   public String getPackageName() {

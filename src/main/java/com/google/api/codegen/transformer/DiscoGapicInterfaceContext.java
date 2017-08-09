@@ -145,7 +145,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
         getInterfaceName(),
         getProductConfig(),
         getSchemaTypeTable().cloneEmpty(packageName),
-        getDiscoGapicNamer(),
+        getDiscoGapicNamer().cloneWithPackageName(packageName),
         getFeatureConfig());
   }
 
