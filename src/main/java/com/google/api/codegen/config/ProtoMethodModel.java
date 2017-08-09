@@ -135,7 +135,7 @@ public final class ProtoMethodModel implements MethodModel {
     return method.getResponseStreaming();
   }
 
-  // TODO(andrealin): Eliminate usages of this function.
+  // TODO(andrealin): Eliminate all uses of this function.
   @Deprecated
   public Method getProtoMethod() {
     return method;

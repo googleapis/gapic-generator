@@ -164,11 +164,6 @@ public abstract class LongRunningConfig {
     return ((ModelTypeTable) typeTable).getFullNameFor(getReturnType());
   }
 
-  public String getLongRunningOperationMetadataTypeName(
-      SurfaceNamer namer, ImportTypeTable typeTable) {
-    return namer.getLongRunningOperationTypeName(typeTable, getMetadataType());
-  }
-
   public String getLongRunningOperationMetadataTypeFullName(ImportTypeTable typeTable) {
     return ((ModelTypeTable) typeTable).getFullNameFor(getMetadataType());
   }

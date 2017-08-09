@@ -15,10 +15,7 @@
 package com.google.api.codegen.config;
 
 /**
- * Wrapper class around the protobuf Field class and the Discovery-doc Schema class.
- *
- * <p>Each instance of this class contains exactly one of {Field, Schema}. This class abstracts the
- * format (protobuf, discovery, etc) of the source from a resource type definition.
+ * API source-agnostic interface for FieldSelectors.
  */
 public interface GenericFieldSelector {
 

@@ -150,7 +150,6 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
       StaticLangFileView<StaticLangSettingsView> settingsFile =
           generateSettingsFile(context, exampleApiMethod);
       surfaceDocs.add(settingsFile);
-      // TODO(andrealin): StaticLangStubInterfaceView
       context = context.withNewTypeTable(namer.getStubPackageName());
       StaticLangFileView<StaticLangStubInterfaceView> stubInterfaceFile =
           generateStubInterfaceFile(context);
@@ -545,7 +544,10 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
     ImportTypeTable typeTable = context.getImportTypeTable();
     // TODO several of these can be deleted (e.g. DiscoGapic doesn't use grpc)
     typeTable.saveNicknameFor("com.google.api.core.BetaApi");
-    typeTable.saveNicknameFor("com.google.auth.Credentials");
+    typeTable.saveNicknameFor("com.google.api.gax.core.BackgroundResource");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.UnaryCallable");
+    typeTable.saveNicknameFor("com.google.api.pathtemplate.PathTemplate");
+    typeTable.saveNicknameFor("java.util.concurrent.TimeUnit");
     typeTable.saveNicknameFor("java.io.Closeable");
     typeTable.saveNicknameFor("java.io.IOException");
     typeTable.saveNicknameFor("java.util.ArrayList");
@@ -556,19 +558,25 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
 
   private void addSettingsImports(InterfaceContext context) {
     ImportTypeTable typeTable = context.getImportTypeTable();
+    typeTable.saveNicknameFor("com.google.api.core.ApiFunction");
     typeTable.saveNicknameFor("com.google.api.core.BetaApi");
     typeTable.saveNicknameFor("com.google.api.gax.core.CredentialsProvider");
+    typeTable.saveNicknameFor("com.google.api.gax.core.ExecutorProvider");
     typeTable.saveNicknameFor("com.google.api.gax.core.GoogleCredentialsProvider");
+    typeTable.saveNicknameFor("com.google.api.gax.core.InstantiatingExecutorProvider");
     typeTable.saveNicknameFor("com.google.api.gax.core.PropertiesProvider");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.ApiExceptions");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.ChannelProvider");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.ClientSettings");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.ExecutorProvider");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcStatusCode");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcTransport");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcTransportProvider");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.InstantiatingChannelProvider");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.InstantiatingExecutorProvider");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.SimpleCallSettings");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryCallSettings");
     typeTable.saveNicknameFor("com.google.api.gax.retrying.RetrySettings");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.ClientContext");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.ClientSettings");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.StatusCode");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.SimpleCallSettings");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.TransportProvider");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.UnaryCallSettings");
     typeTable.saveNicknameFor("com.google.auth.Credentials");
     typeTable.saveNicknameFor("com.google.common.collect.ImmutableList");
     typeTable.saveNicknameFor("com.google.common.collect.ImmutableMap");
@@ -577,21 +585,21 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
     typeTable.saveNicknameFor("com.google.common.collect.Sets");
     typeTable.saveNicknameFor("io.grpc.ManagedChannel");
     typeTable.saveNicknameFor("io.grpc.Status");
-    typeTable.saveNicknameFor("org.threeten.bp.Duration");
     typeTable.saveNicknameFor("java.io.IOException");
     typeTable.saveNicknameFor("java.util.List");
     typeTable.saveNicknameFor("java.util.concurrent.ScheduledExecutorService");
     typeTable.saveNicknameFor("javax.annotation.Generated");
+    typeTable.saveNicknameFor("org.threeten.bp.Duration");
 
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
     if (interfaceConfig.hasPageStreamingMethods()) {
       typeTable.saveNicknameFor("com.google.api.core.ApiFuture");
-      typeTable.saveNicknameFor("com.google.api.gax.grpc.CallContext");
-      typeTable.saveNicknameFor("com.google.api.gax.grpc.PageContext");
-      typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedCallSettings");
-      typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedListDescriptor");
-      typeTable.saveNicknameFor("com.google.api.gax.grpc.PagedListResponseFactory");
-      typeTable.saveNicknameFor("com.google.api.gax.grpc.UnaryCallable");
+      typeTable.saveNicknameFor("com.google.api.gax.rpc.ApiCallContext");
+      typeTable.saveNicknameFor("com.google.api.gax.rpc.PageContext");
+      typeTable.saveNicknameFor("com.google.api.gax.rpc.PagedCallSettings");
+      typeTable.saveNicknameFor("com.google.api.gax.rpc.PagedListDescriptor");
+      typeTable.saveNicknameFor("com.google.api.gax.rpc.PagedListResponseFactory");
+      typeTable.saveNicknameFor("com.google.api.gax.rpc.UnaryCallable");
     }
     if (interfaceConfig.hasBatchingMethods()) {
       typeTable.saveNicknameFor("com.google.api.gax.batching.BatchingSettings");
@@ -600,12 +608,19 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
       typeTable.saveNicknameFor("com.google.api.gax.batching.FlowControlSettings");
       typeTable.saveNicknameFor("com.google.api.gax.batching.PartitionKey");
       typeTable.saveNicknameFor("com.google.api.gax.batching.RequestBuilder");
-      typeTable.saveNicknameFor("com.google.api.gax.grpc.BatchingCallSettings");
-      typeTable.saveNicknameFor("com.google.api.gax.grpc.BatchedRequestIssuer");
-      typeTable.saveNicknameFor("com.google.api.gax.grpc.BatchingDescriptor");
-      typeTable.saveNicknameFor("com.google.api.gax.grpc.RequestIssuer");
+      typeTable.saveNicknameFor("com.google.api.gax.rpc.BatchedRequestIssuer");
+      typeTable.saveNicknameFor("com.google.api.gax.rpc.BatchingCallSettings");
+      typeTable.saveNicknameFor("com.google.api.gax.rpc.BatchingDescriptor");
       typeTable.saveNicknameFor("java.util.ArrayList");
       typeTable.saveNicknameFor("java.util.Collection");
+    }
+    if (interfaceConfig.hasGrpcStreamingMethods()) {
+      typeTable.saveNicknameFor("com.google.api.gax.rpc.StreamingCallSettings");
+    }
+    if (interfaceConfig.hasLongRunningOperations()) {
+      typeTable.saveNicknameFor("com.google.api.gax.rpc.OperationCallSettings");
+      typeTable.saveNicknameFor("com.google.longrunning.Operation");
+      typeTable.saveNicknameFor("com.google.api.gax.grpc.OperationTimedPollAlgorithm");
     }
   }
 
@@ -629,14 +644,14 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
     typeTable.saveNicknameFor("com.google.api.core.ApiFuture");
     typeTable.saveNicknameFor("com.google.api.core.ApiFutures");
     typeTable.saveNicknameFor("com.google.api.core.BetaApi");
-    typeTable.saveNicknameFor("com.google.api.gax.core.FixedSizeCollection");
-    typeTable.saveNicknameFor("com.google.api.gax.core.Page");
-    typeTable.saveNicknameFor("com.google.api.gax.core.PagedListResponse");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.AbstractPage");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.AbstractPagedListResponse");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.AbstractFixedSizeCollection");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.ApiExceptions");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.PageContext");
+    typeTable.saveNicknameFor("com.google.api.gax.paging.AbstractPage");
+    typeTable.saveNicknameFor("com.google.api.gax.paging.AbstractPagedListResponse");
+    typeTable.saveNicknameFor("com.google.api.gax.paging.AbstractFixedSizeCollection");
+    typeTable.saveNicknameFor("com.google.api.gax.paging.FixedSizeCollection");
+    typeTable.saveNicknameFor("com.google.api.gax.paging.Page");
+    typeTable.saveNicknameFor("com.google.api.gax.paging.PagedListResponse");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.ApiExceptions");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.PageContext");
     typeTable.saveNicknameFor("com.google.common.base.Function");
     typeTable.saveNicknameFor("com.google.common.collect.Iterables");
     typeTable.saveNicknameFor("javax.annotation.Generated");

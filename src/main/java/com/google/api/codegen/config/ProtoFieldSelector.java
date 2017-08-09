@@ -17,7 +17,7 @@ package com.google.api.codegen.config;
 import com.google.api.tools.framework.model.FieldSelector;
 import com.google.common.base.Preconditions;
 
-/** Wrapper around FieldSelector. */
+/** Proto-based wrapper around FieldSelector. */
 public final class ProtoFieldSelector implements GenericFieldSelector {
   private final FieldSelector fieldSelector;
 
