@@ -100,21 +100,6 @@ public abstract class FieldConfig {
         defaultResourceNameTreatment);
   }
 
-  public static FieldConfig createMessageFieldConfig(
-      ResourceNameMessageConfigs messageConfigs,
-      Map<String, ResourceNameConfig> resourceNameConfigs,
-      Field field,
-      ResourceNameTreatment defaultResourceNameTreatment) {
-    return createFieldConfig(
-        null,
-        messageConfigs,
-        null,
-        resourceNameConfigs,
-        new ProtoField(field),
-        ResourceNameTreatment.UNSET_TREATMENT,
-        defaultResourceNameTreatment);
-  }
-
   /** Package-private since this is not used outside the config package. */
   static FieldConfig createFieldConfig(
       DiagCollector diagCollector,

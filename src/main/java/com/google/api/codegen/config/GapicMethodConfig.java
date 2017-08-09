@@ -53,47 +53,6 @@ public abstract class GapicMethodConfig extends MethodConfig {
     return ((ProtoMethodModel) getMethodModel()).getProtoMethod();
   }
 
-  @Nullable
-  public abstract PageStreamingConfig getPageStreaming();
-
-  @Nullable
-  public abstract GrpcStreamingConfig getGrpcStreaming();
-
-  @Nullable
-  public abstract ImmutableList<FlatteningConfig> getFlatteningConfigs();
-
-  public abstract String getRetryCodesConfigName();
-
-  @Override
-  public abstract String getRetrySettingsConfigName();
-
-  public abstract Duration getTimeout();
-
-  public abstract Iterable<FieldConfig> getRequiredFieldConfigs();
-
-  public abstract Iterable<FieldConfig> getOptionalFieldConfigs();
-
-  public abstract ResourceNameTreatment getDefaultResourceNameTreatment();
-
-  @Nullable
-  public abstract BatchingConfig getBatching();
-
-  public abstract boolean hasRequestObjectMethod();
-
-  public abstract ImmutableMap<String, String> getFieldNamePatterns();
-
-  public abstract List<String> getSampleCodeInitFields();
-
-  @Nullable
-  public abstract String getRerouteToGrpcInterface();
-
-  public abstract VisibilityConfig getVisibility();
-
-  public abstract ReleaseLevel getReleaseLevel();
-
-  @Nullable
-  public abstract LongRunningConfig getLongRunningConfig();
-
   /**
    * Creates an instance of GapicMethodConfig based on MethodConfigProto, linking it up with the
    * provided method. On errors, null will be returned, and diagnostics are reported to the diag

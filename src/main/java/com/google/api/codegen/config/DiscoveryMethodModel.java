@@ -149,7 +149,7 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public String getParentSimpleName() {
-    return "parent?????!!?!?!?";
+    return "getParentSimpleName() not implemented.";
   }
 
   @Override

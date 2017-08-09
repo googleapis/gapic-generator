@@ -17,7 +17,6 @@ package com.google.api.codegen.config;
 import com.google.api.codegen.FlatteningGroupProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.ResourceNameTreatment;
-import com.google.api.codegen.discovery.Schema;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleLocation;
@@ -68,55 +67,22 @@ public abstract class FlatteningConfig {
         defaultResourceNameTreatment = ResourceNameTreatment.VALIDATE;
       }
 
-      FieldConfig fieldConfig =
-          FieldConfig.createFieldConfig(
-              diagCollector,
-              messageConfigs,
-              methodConfigProto.getFieldNamePatterns(),
-              resourceNameConfigs,
-              parameterField,
-              flatteningGroup.getParameterResourceNameTreatment().get(parameter),
-              defaultResourceNameTreatment);
-      if (fieldConfig == null) {
-        missing = true;
+      FieldConfig fieldConfig;
+      if (resourceNameConfigs != null) {
+        fieldConfig =
+            FieldConfig.createFieldConfig(
+                diagCollector,
+                messageConfigs,
+                methodConfigProto.getFieldNamePatterns(),
+                resourceNameConfigs,
+                parameterField,
+                flatteningGroup.getParameterResourceNameTreatment().get(parameter),
+                defaultResourceNameTreatment);
       } else {
-        flattenedFieldConfigBuilder.put(parameter, fieldConfig);
+        fieldConfig =
+            FieldConfig.createMessageFieldConfig(
+                null, null, parameterField, ResourceNameTreatment.NONE);
       }
-    }
-    if (missing) {
-      return null;
-    }
-
-    return new AutoValue_FlatteningConfig(
-        flattenedFieldConfigBuilder.build(), flatteningGroup.getFlatteningGroupName());
-  }
-
-  /**
-   * Creates an instance of FlatteningConfig based on a FlatteningGroupProto, linking it up with the
-   * provided method.
-   */
-  @Nullable
-  public static FlatteningConfig createFlattening(
-      DiagCollector diagCollector,
-      FlatteningGroupProto flatteningGroup,
-      com.google.api.codegen.discovery.Method method) {
-
-    boolean missing = false;
-    ImmutableMap.Builder<String, FieldConfig> flattenedFieldConfigBuilder = ImmutableMap.builder();
-    for (String parameter : flatteningGroup.getParametersList()) {
-
-      Schema parameterField = method.parameters().get(parameter);
-      if (parameterField == null) {
-        diagCollector.addDiag(
-            Diag.error(
-                SimpleLocation.TOPLEVEL,
-                "Field missing for flattening: method = %s, field = %s",
-                method.id(),
-                parameter));
-        return null;
-      }
-
-      FieldConfig fieldConfig = FieldConfig.createFieldConfig(parameterField);
       if (fieldConfig == null) {
         missing = true;
       } else {

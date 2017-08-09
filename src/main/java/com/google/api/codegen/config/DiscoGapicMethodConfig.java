@@ -216,7 +216,13 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
     ImmutableList.Builder<FlatteningConfig> flatteningGroupsBuilder = ImmutableList.builder();
     for (FlatteningGroupProto flatteningGroup : methodConfigProto.getFlattening().getGroupsList()) {
       FlatteningConfig groupConfig =
-          FlatteningConfig.createFlattening(diagCollector, flatteningGroup, method);
+          FlatteningConfig.createFlattening(
+              diagCollector,
+              null,
+              null,
+              methodConfigProto,
+              flatteningGroup,
+              new DiscoveryMethodModel(method));
       if (groupConfig == null) {
         missing = true;
       } else {
