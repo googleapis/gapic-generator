@@ -181,7 +181,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
 
   @Override
   /* Return the list of "one of" instances associated with the fields. */
-  public List<List<String>> getOneofNames(SurfaceNamer namer) {
+  public Iterable<Iterable<String>> getOneofNames(SurfaceNamer namer) {
     return ImmutableList.of();
   }
 }
