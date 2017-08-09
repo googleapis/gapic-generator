@@ -234,8 +234,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
     List<LongRunningOperationDetailView> result = new ArrayList<>();
 
     for (MethodModel method : context.getLongRunningMethods()) {
-      GapicMethodContext methodContext =
-          (GapicMethodContext) context.asDynamicMethodContext(method);
+      GapicMethodContext methodContext = context.asDynamicMethodContext(method);
       LongRunningConfig lroConfig = methodContext.getMethodConfig().getLongRunningConfig();
       TypeRef returnType = lroConfig.getReturnType();
       TypeRef metadataType = lroConfig.getMetadataType();
