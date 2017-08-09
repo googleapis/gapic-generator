@@ -154,14 +154,24 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public String getAndSaveRequestTypeName(ImportTypeTable typeTable, SurfaceNamer surfaceNamer) {
-    return typeTable.getAndSaveNicknameFor(
-        surfaceNamer.publicClassName(DiscoGapicNamer.getRequestName(method)));
+    TypeName fullName =
+        typeTable
+            .getTypeTable()
+            .getTypeNameInImplicitPackage(
+                surfaceNamer.publicClassName(DiscoGapicNamer.getRequestName(method)));
+    typeTable.getAndSaveNicknameFor(fullName.getFullName());
+    return typeTable.getAndSaveNicknameFor(fullName.getFullName());
   }
 
   @Override
   public String getAndSaveResponseTypeName(ImportTypeTable typeTable, SurfaceNamer surfaceNamer) {
-    return typeTable.getAndSaveNicknameFor(
-        surfaceNamer.publicClassName((DiscoGapicNamer.getResponseName(method))));
+    TypeName fullName =
+        typeTable
+            .getTypeTable()
+            .getTypeNameInImplicitPackage(
+                surfaceNamer.publicClassName(DiscoGapicNamer.getResponseName(method)));
+    typeTable.getAndSaveNicknameFor(fullName.getFullName());
+    return typeTable.getAndSaveNicknameFor(fullName.getFullName());
   }
 
   @Override

@@ -484,9 +484,7 @@ public class StaticLangApiMethodTransformer {
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
 
     String requestTypeName =
-        context
-            .getMethodModel()
-            .getAndSaveRequestTypeName(context.getTypeTable(), context.getNamer());
+        method.getAndSaveRequestTypeName(context.getTypeTable(), context.getNamer());
     methodViewBuilder.serviceRequestTypeName(requestTypeName);
     methodViewBuilder.serviceRequestTypeConstructor(namer.getTypeConstructor(requestTypeName));
 
