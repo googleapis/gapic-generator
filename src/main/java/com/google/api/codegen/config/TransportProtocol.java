@@ -15,7 +15,7 @@
 package com.google.api.codegen.config;
 
 /* The file type that of the API definition. */
-public enum ApiSource {
-  DISCOVERY, // Discovery Document.
-  PROTO // Protobuf.
+public enum TransportProtocol {
+  GRPC,
+  HTTP
 }

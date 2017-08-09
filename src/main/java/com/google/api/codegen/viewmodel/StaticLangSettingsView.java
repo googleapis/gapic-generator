@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.viewmodel;
 
+import com.google.api.codegen.config.TransportProtocol;
 import com.google.auto.value.AutoValue;
 import java.util.ArrayList;
 import java.util.List;
@@ -82,8 +83,10 @@ public abstract class StaticLangSettingsView {
   @Nullable // Used in Java
   public abstract String grpcStubClassName();
 
+  public abstract TransportProtocol transportProtocol();
+
   public static Builder newBuilder() {
-    return new AutoValue_StaticLangSettingsView.Builder();
+    return new AutoValue_StaticLangSettingsView.Builder().transportProtocol(TransportProtocol.GRPC);
   }
 
   @AutoValue.Builder
@@ -125,6 +128,8 @@ public abstract class StaticLangSettingsView {
     public abstract Builder stubInterfaceName(String apiStubInterfaceName);
 
     public abstract Builder grpcStubClassName(String apiGrpcStubClassName);
+
+    public abstract Builder transportProtocol(TransportProtocol transportProtocol);
 
     public abstract StaticLangSettingsView build();
   }

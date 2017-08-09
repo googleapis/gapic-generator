@@ -26,6 +26,7 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProductServiceConfig;
+import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.discovery.Document;
@@ -433,6 +434,7 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
         retryDefinitionsTransformer.generateRetryCodesDefinitions(context));
     xsettingsClass.retryParamsDefinitions(
         retryDefinitionsTransformer.generateRetryParamsDefinitions(context));
+    xsettingsClass.transportProtocol(TransportProtocol.HTTP);
 
     xsettingsClass.hasDefaultServiceAddress(interfaceConfig.hasDefaultServiceAddress());
     xsettingsClass.hasDefaultServiceScopes(interfaceConfig.hasDefaultServiceScopes());
@@ -623,6 +625,7 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
 
   private void addSettingsImports(InterfaceContext context) {
     ImportTypeTable typeTable = context.getImportTypeTable();
+    typeTable.saveNicknameFor("com.google.api.client.http.HttpStatusCodes");
     typeTable.saveNicknameFor("com.google.api.core.ApiFunction");
     typeTable.saveNicknameFor("com.google.api.core.BetaApi");
     typeTable.saveNicknameFor("com.google.api.gax.core.CredentialsProvider");
@@ -630,8 +633,6 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
     typeTable.saveNicknameFor("com.google.api.gax.core.GoogleCredentialsProvider");
     typeTable.saveNicknameFor("com.google.api.gax.core.InstantiatingExecutorProvider");
     typeTable.saveNicknameFor("com.google.api.gax.core.PropertiesProvider");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.ChannelProvider");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcStatusCode");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcTransport");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcTransportProvider");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.InstantiatingChannelProvider");
@@ -648,8 +649,6 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
     typeTable.saveNicknameFor("com.google.common.collect.ImmutableSet");
     typeTable.saveNicknameFor("com.google.common.collect.Lists");
     typeTable.saveNicknameFor("com.google.common.collect.Sets");
-    typeTable.saveNicknameFor("io.grpc.ManagedChannel");
-    typeTable.saveNicknameFor("io.grpc.Status");
     typeTable.saveNicknameFor("java.io.IOException");
     typeTable.saveNicknameFor("java.util.List");
     typeTable.saveNicknameFor("java.util.concurrent.ScheduledExecutorService");
