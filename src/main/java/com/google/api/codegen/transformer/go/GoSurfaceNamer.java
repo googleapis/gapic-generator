@@ -311,6 +311,11 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getStubName(String apiInterfaceSimpleName) {
+    return privateFieldName(clientNamePrefix(apiInterfaceSimpleName).join("client"));
+  }
+
+  @Override
   public String getCreateStubFunctionName(Interface apiInterface) {
     return getGrpcClientTypeName(apiInterface).replace(".", ".New");
   }
@@ -361,6 +366,12 @@ public class GoSurfaceNamer extends SurfaceNamer {
             Name.from("example").join(clientNamePrefix(apiInterfaceSimpleName)).join("client"))
         + "_"
         + functionName;
+  }
+
+  @Override
+  public String getMockGrpcServiceImplName(String apiInterfaceSimpleName) {
+    return privateClassName(
+        Name.from("mock").join(getReducedServiceName(apiInterfaceSimpleName)).join("server"));
   }
 
   @Override

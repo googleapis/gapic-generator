@@ -27,6 +27,7 @@ import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Preconditions;
@@ -200,9 +201,18 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
         getFeatureConfig());
   }
 
-  /** Returns a list of methods for this interface. Memoize the result. */
   @Override
   public List<MethodModel> getInterfaceMethods() {
+    ImmutableList.Builder<MethodModel> methodBuilder = ImmutableList.builder();
+    for (Method method : getInterface().getMethods()) {
+      methodBuilder.add(new ProtoMethodModel(method));
+    }
+    return methodBuilder.build();
+  }
+
+  /** Returns a list of methods for this interface. Memoize the result. */
+  @Override
+  public List<MethodModel> getInterfaceConfigMethods() {
     if (interfaceMethods != null) {
       return interfaceMethods;
     }
@@ -216,9 +226,10 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
   }
 
   /** Returns a list of supported methods, configured by FeatureConfig. */
+  @Override
   public List<MethodModel> getSupportedMethods() {
     List<MethodModel> methods = new ArrayList<>(getInterfaceConfig().getMethodConfigs().size());
-    for (MethodModel methodModel : getInterfaceMethods()) {
+    for (MethodModel methodModel : getInterfaceConfigMethods()) {
       if (isSupported(methodModel)) {
         methods.add(methodModel);
       }
@@ -232,7 +243,7 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
    */
   public List<MethodModel> getPublicMethods() {
     List<MethodModel> methods = new ArrayList<>(getInterfaceConfig().getMethodConfigs().size());
-    for (MethodModel method : getInterfaceMethods()) {
+    for (MethodModel method : getInterfaceConfigMethods()) {
       VisibilityConfig visibility = getInterfaceConfig().getMethodConfig(method).getVisibility();
       if (isSupported(method) && visibility == VisibilityConfig.PUBLIC) {
         methods.add(method);

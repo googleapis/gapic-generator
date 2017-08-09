@@ -487,7 +487,7 @@ public class StaticLangApiMethodTransformer {
 
     methodViewBuilder.apiClassName(namer.getApiWrapperClassName(interfaceConfig));
     methodViewBuilder.apiVariableName(namer.getApiWrapperVariableName(interfaceConfig));
-    methodViewBuilder.stubName(namer.getStubName(interfaceConfig));
+    methodViewBuilder.stubName(namer.getStubName(context.getTargetInterfaceSimpleName()));
     methodViewBuilder.settingsGetterName(namer.getSettingsFunctionName(context.getMethodModel()));
     methodViewBuilder.callableName(context.getNamer().getCallableName(context.getMethodModel()));
     methodViewBuilder.modifyMethodName(namer.getModifyMethodName(context));

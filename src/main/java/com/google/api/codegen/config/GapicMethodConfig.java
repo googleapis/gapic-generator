@@ -24,7 +24,6 @@ import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.SurfaceTreatmentProto;
 import com.google.api.codegen.VisibilityProto;
-import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
@@ -384,16 +383,6 @@ public abstract class GapicMethodConfig extends MethodConfig {
   @Override
   public boolean isGrpcStreaming() {
     return getGrpcStreaming() != null;
-  }
-
-  /** Returns the grpc streaming configuration of the method. */
-  @Override
-  public GrpcStreamingType getGrpcStreamingType() {
-    if (isGrpcStreaming()) {
-      return getGrpcStreaming().getType();
-    } else {
-      return GrpcStreamingType.NonStreaming;
-    }
   }
 
   @Override

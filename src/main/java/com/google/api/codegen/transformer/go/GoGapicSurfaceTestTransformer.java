@@ -152,8 +152,7 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
     ArrayList<TestCaseView> testCaseViews = new ArrayList<>();
     SymbolTable testNameTable = new SymbolTable();
     for (MethodModel method : context.getSupportedMethods()) {
-      GapicMethodContext methodContext =
-          (GapicMethodContext) context.asRequestMethodContext(method);
+      GapicMethodContext methodContext = context.asRequestMethodContext(method);
       ClientMethodType clientMethodType = ClientMethodType.RequestObjectMethod;
       if (methodContext.getMethodConfig().isPageStreaming()) {
         clientMethodType = ClientMethodType.PagedRequestObjectMethod;

@@ -57,6 +57,8 @@ public interface InterfaceContext extends TransformationContext {
 
   List<MethodModel> getInterfaceMethods();
 
+  List<MethodModel> getInterfaceConfigMethods();
+
   Iterable<MethodModel> getLongRunningMethods();
 
   String serviceTitle();

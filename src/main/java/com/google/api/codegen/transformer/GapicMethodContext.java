@@ -129,4 +129,9 @@ public abstract class GapicMethodContext implements MethodContext {
   public String getInterfaceFileName() {
     return getTargetInterface().getFile().getSimpleName();
   }
+
+  @Override
+  public String getTargetInterfaceSimpleName() {
+    return getTargetInterface().getSimpleName();
+  }
 }

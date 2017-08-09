@@ -631,8 +631,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The name of the variable that will hold the stub for an API interface. */
-  public String getStubName(InterfaceConfig apiInterface) {
-    return privateFieldName(Name.upperCamel(apiInterface.getRawName(), "Stub"));
+  public String getStubName(String apiInterfaceSimpleName) {
+    return privateFieldName(Name.upperCamel(apiInterfaceSimpleName, "Stub"));
   }
 
   /** The name of the array which will hold the methods for a given stub. */

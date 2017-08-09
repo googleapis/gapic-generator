@@ -127,4 +127,9 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
   public String getInterfaceFileName() {
     return getTargetInterfaceFullName();
   }
+
+  @Override
+  public String getTargetInterfaceSimpleName() {
+    return getInterfaceSimpleName();
+  }
 }

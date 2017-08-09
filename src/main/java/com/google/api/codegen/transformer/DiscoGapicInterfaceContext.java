@@ -80,7 +80,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
 
   /** Returns a list of methods for this interface. Memoize the result. */
   @Override
-  public List<MethodModel> getInterfaceMethods() {
+  public List<MethodModel> getInterfaceConfigMethods() {
     if (interfaceMethods != null) {
       return interfaceMethods;
     }
@@ -94,6 +94,13 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
     }
     interfaceMethods = methodBuilder.build();
     return interfaceMethods;
+  }
+
+  /** Returns a list of methods for this interface. Memoize the result. */
+  @Override
+  public List<MethodModel> getInterfaceMethods() {
+    // TODO(andrealin): Should this be different from getInterfaceConfigMethods()?
+    return getInterfaceConfigMethods();
   }
 
   @Override
@@ -137,7 +144,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   /* Returns a list of supported methods, configured by FeatureConfig. Memoize the result. */
   public Iterable<MethodModel> getSupportedMethods() {
     return Iterables.filter(
-        getInterfaceMethods(),
+        getInterfaceConfigMethods(),
         new Predicate<MethodModel>() {
           @Override
           public boolean apply(@Nullable MethodModel methodModel) {

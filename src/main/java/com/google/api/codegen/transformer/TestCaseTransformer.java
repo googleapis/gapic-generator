@@ -92,7 +92,7 @@ public class TestCaseTransformer {
     InitCodeView initCode = initCodeTransformer.generateInitCode(methodContext, initCodeContext);
 
     boolean hasRequestParameters = initCode.lines().size() > 0;
-    boolean hasReturnValue = method.isOutputTypeEmpty();
+    boolean hasReturnValue = !method.isOutputTypeEmpty();
     if (methodConfig.isLongRunningOperation()) {
       hasReturnValue =
           !ServiceMessages.s_isEmptyType(methodConfig.getLongRunningConfig().getReturnType());

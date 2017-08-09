@@ -56,6 +56,8 @@ public interface MethodContext {
 
   String getTargetInterfaceFullName();
 
+  String getTargetInterfaceSimpleName();
+
   String getInterfaceFileName();
 
   String getGrpcContainerTypeName();

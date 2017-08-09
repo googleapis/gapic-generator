@@ -53,7 +53,7 @@ public class BatchingTransformer {
 
   public List<BatchingDescriptorClassView> generateDescriptorClasses(InterfaceContext context) {
     List<BatchingDescriptorClassView> descriptors = new ArrayList<>();
-    for (MethodModel method : context.getInterfaceMethods()) {
+    for (MethodModel method : context.getInterfaceConfigMethods()) {
       MethodConfig methodConfig = context.getMethodConfig(method);
       if (!methodConfig.isBatching()) {
         continue;
