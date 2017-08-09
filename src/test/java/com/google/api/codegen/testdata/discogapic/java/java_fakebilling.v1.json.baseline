@@ -3889,7 +3889,7 @@ public class BillingAccountAdminClient implements BackgroundResource {
    * try (BillingAccountAdminClient billingAccountAdminClient = BillingAccountAdminClient.create()) {
    *
    *   while (true) {
-   *     BillingAccountsListHttpResponse response = billingAccountAdminClient.billingAccountsListCallable().call();
+   *     ListBillingAccountsResponse response = billingAccountAdminClient.billingAccountsListCallable().call();
    *     for (ListBillingAccountsResponse element : response.getResponse()) {
    *       // doThingsWith(element);
    *     }
@@ -3904,7 +3904,7 @@ public class BillingAccountAdminClient implements BackgroundResource {
    * </code></pre>
    */
   @BetaApi
-  public final UnaryCallable<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse> billingAccountsListCallable() {
+  public final UnaryCallable<BillingAccountsListHttpRequest, ListBillingAccountsResponse> billingAccountsListCallable() {
     return stub.billingAccountsListCallable();
   }
 
@@ -3970,12 +3970,12 @@ public class BillingAccountAdminClient implements BackgroundResource {
    *
    *   ApiFuture&lt;BillingAccount&gt; future = billingAccountAdminClient.billingAccountsGetCallable().futureCall();
    *   // Do something
-   *   BillingAccountsGetHttpResponse response = future.get();
+   *   BillingAccount response = future.get();
    * }
    * </code></pre>
    */
   @BetaApi
-  public final UnaryCallable<BillingAccountsGetHttpRequest, BillingAccountsGetHttpResponse> billingAccountsGetCallable() {
+  public final UnaryCallable<BillingAccountsGetHttpRequest, BillingAccount> billingAccountsGetCallable() {
     return stub.billingAccountsGetCallable();
   }
 
@@ -4115,20 +4115,20 @@ public class BillingAccountAdminSettings extends ClientSettings {
 
   private static String gapicVersion;
 
-  private final PagedCallSettings<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse, BillingAccountsListPagedResponse> billingAccountsListSettings;
-  private final SimpleCallSettings<BillingAccountsGetHttpRequest, BillingAccountsGetHttpResponse> billingAccountsGetSettings;
+  private final PagedCallSettings<BillingAccountsListHttpRequest, ListBillingAccountsResponse, BillingAccountsListPagedResponse> billingAccountsListSettings;
+  private final SimpleCallSettings<BillingAccountsGetHttpRequest, BillingAccount> billingAccountsGetSettings;
 
   /**
    * Returns the object with the settings used for calls to billingAccountsList.
    */
-  public PagedCallSettings<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse, BillingAccountsListPagedResponse> billingAccountsListSettings() {
+  public PagedCallSettings<BillingAccountsListHttpRequest, ListBillingAccountsResponse, BillingAccountsListPagedResponse> billingAccountsListSettings() {
     return billingAccountsListSettings;
   }
 
   /**
    * Returns the object with the settings used for calls to billingAccountsGet.
    */
-  public SimpleCallSettings<BillingAccountsGetHttpRequest, BillingAccountsGetHttpResponse> billingAccountsGetSettings() {
+  public SimpleCallSettings<BillingAccountsGetHttpRequest, BillingAccount> billingAccountsGetSettings() {
     return billingAccountsGetSettings;
   }
 
@@ -4247,8 +4247,8 @@ public class BillingAccountAdminSettings extends ClientSettings {
     billingAccountsGetSettings = settingsBuilder.billingAccountsGetSettings().build();
   }
 
-  private static final PagedListDescriptor<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse, ListBillingAccountsResponse> BILLING_ACCOUNTS_LIST_PAGE_STR_DESC =
-      new PagedListDescriptor<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse, ListBillingAccountsResponse>() {
+  private static final PagedListDescriptor<BillingAccountsListHttpRequest, ListBillingAccountsResponse, ListBillingAccountsResponse> BILLING_ACCOUNTS_LIST_PAGE_STR_DESC =
+      new PagedListDescriptor<BillingAccountsListHttpRequest, ListBillingAccountsResponse, ListBillingAccountsResponse>() {
         @Override
         public String emptyToken() {
           return ListBillingAccountsResponse.newBuilder().build();
@@ -4272,24 +4272,24 @@ public class BillingAccountAdminSettings extends ClientSettings {
           return payload.getMaxResults();
         }
         @Override
-        public String extractNextToken(BillingAccountsListHttpResponse payload) {
+        public String extractNextToken(ListBillingAccountsResponse payload) {
           return payload.getListBillingAccountsResponse();
         }
         @Override
-        public Iterable<ListBillingAccountsResponse> extractResources(BillingAccountsListHttpResponse payload) {
+        public Iterable<ListBillingAccountsResponse> extractResources(ListBillingAccountsResponse payload) {
           return payload.getResponse();
         }
       };
 
-  private static final PagedListResponseFactory<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse, BillingAccountsListPagedResponse> BILLING_ACCOUNTS_LIST_PAGE_STR_FACT =
-      new PagedListResponseFactory<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse, BillingAccountsListPagedResponse>() {
+  private static final PagedListResponseFactory<BillingAccountsListHttpRequest, ListBillingAccountsResponse, BillingAccountsListPagedResponse> BILLING_ACCOUNTS_LIST_PAGE_STR_FACT =
+      new PagedListResponseFactory<BillingAccountsListHttpRequest, ListBillingAccountsResponse, BillingAccountsListPagedResponse>() {
         @Override
         public ApiFuture<BillingAccountsListPagedResponse> getFuturePagedResponse(
-            UnaryCallable<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse> callable,
+            UnaryCallable<BillingAccountsListHttpRequest, ListBillingAccountsResponse> callable,
             BillingAccountsListHttpRequest request,
             ApiCallContext context,
-            ApiFuture<BillingAccountsListHttpResponse> futureResponse) {
-          PageContext<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse, ListBillingAccountsResponse> pageContext =
+            ApiFuture<ListBillingAccountsResponse> futureResponse) {
+          PageContext<BillingAccountsListHttpRequest, ListBillingAccountsResponse, ListBillingAccountsResponse> pageContext =
               PageContext.create(callable, BILLING_ACCOUNTS_LIST_PAGE_STR_DESC, request, context);
           return BillingAccountsListPagedResponse.createAsync(pageContext, futureResponse);
         }
@@ -4302,8 +4302,8 @@ public class BillingAccountAdminSettings extends ClientSettings {
   public static class Builder extends ClientSettings.Builder {
     private final ImmutableList<UnaryCallSettings.Builder> unaryMethodSettingsBuilders;
 
-    private final PagedCallSettings.Builder<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse, BillingAccountsListPagedResponse> billingAccountsListSettings;
-    private final SimpleCallSettings.Builder<BillingAccountsGetHttpRequest, BillingAccountsGetHttpResponse> billingAccountsGetSettings;
+    private final PagedCallSettings.Builder<BillingAccountsListHttpRequest, ListBillingAccountsResponse, BillingAccountsListPagedResponse> billingAccountsListSettings;
+    private final SimpleCallSettings.Builder<BillingAccountsGetHttpRequest, BillingAccount> billingAccountsGetSettings;
 
     private static final ImmutableMap<String, ImmutableSet<StatusCode>> RETRYABLE_CODE_DEFINITIONS;
 
@@ -4416,14 +4416,14 @@ public class BillingAccountAdminSettings extends ClientSettings {
     /**
      * Returns the builder for the settings used for calls to billingAccountsList.
      */
-    public PagedCallSettings.Builder<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse, BillingAccountsListPagedResponse> billingAccountsListSettings() {
+    public PagedCallSettings.Builder<BillingAccountsListHttpRequest, ListBillingAccountsResponse, BillingAccountsListPagedResponse> billingAccountsListSettings() {
       return billingAccountsListSettings;
     }
 
     /**
      * Returns the builder for the settings used for calls to billingAccountsGet.
      */
-    public SimpleCallSettings.Builder<BillingAccountsGetHttpRequest, BillingAccountsGetHttpResponse> billingAccountsGetSettings() {
+    public SimpleCallSettings.Builder<BillingAccountsGetHttpRequest, BillingAccount> billingAccountsGetSettings() {
       return billingAccountsGetSettings;
     }
 
@@ -4475,12 +4475,12 @@ public abstract class BillingAccountAdminStub implements BackgroundResource {
   }
 
   @BetaApi
-  public UnaryCallable<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse> billingAccountsListCallable() {
+  public UnaryCallable<BillingAccountsListHttpRequest, ListBillingAccountsResponse> billingAccountsListCallable() {
     throw new UnsupportedOperationException("Not implemented: billingAccountsListCallable()");
   }
 
   @BetaApi
-  public UnaryCallable<BillingAccountsGetHttpRequest, BillingAccountsGetHttpResponse> billingAccountsGetCallable() {
+  public UnaryCallable<BillingAccountsGetHttpRequest, BillingAccount> billingAccountsGetCallable() {
     throw new UnsupportedOperationException("Not implemented: billingAccountsGetCallable()");
   }
 
@@ -4735,12 +4735,12 @@ public class ProjectAdminClient implements BackgroundResource {
    *
    *   ApiFuture&lt;ProjectBillingInfo&gt; future = projectAdminClient.projectsUpdateBillingInfoCallable().futureCall();
    *   // Do something
-   *   ProjectsUpdateBillingInfoHttpResponse response = future.get();
+   *   ProjectBillingInfo response = future.get();
    * }
    * </code></pre>
    */
   @BetaApi
-  public final UnaryCallable<ProjectsUpdateBillingInfoHttpRequest, ProjectsUpdateBillingInfoHttpResponse> projectsUpdateBillingInfoCallable() {
+  public final UnaryCallable<ProjectsUpdateBillingInfoHttpRequest, ProjectBillingInfo> projectsUpdateBillingInfoCallable() {
     return stub.projectsUpdateBillingInfoCallable();
   }
 
@@ -4780,12 +4780,12 @@ public class ProjectAdminClient implements BackgroundResource {
    *
    *   ApiFuture&lt;ProjectBillingInfo&gt; future = projectAdminClient.projectsGetBillingInfoCallable().futureCall();
    *   // Do something
-   *   ProjectsGetBillingInfoHttpResponse response = future.get();
+   *   ProjectBillingInfo response = future.get();
    * }
    * </code></pre>
    */
   @BetaApi
-  public final UnaryCallable<ProjectsGetBillingInfoHttpRequest, ProjectsGetBillingInfoHttpResponse> projectsGetBillingInfoCallable() {
+  public final UnaryCallable<ProjectsGetBillingInfoHttpRequest, ProjectBillingInfo> projectsGetBillingInfoCallable() {
     return stub.projectsGetBillingInfoCallable();
   }
 
@@ -4917,20 +4917,20 @@ public class ProjectAdminSettings extends ClientSettings {
 
   private static String gapicVersion;
 
-  private final SimpleCallSettings<ProjectsUpdateBillingInfoHttpRequest, ProjectsUpdateBillingInfoHttpResponse> projectsUpdateBillingInfoSettings;
-  private final SimpleCallSettings<ProjectsGetBillingInfoHttpRequest, ProjectsGetBillingInfoHttpResponse> projectsGetBillingInfoSettings;
+  private final SimpleCallSettings<ProjectsUpdateBillingInfoHttpRequest, ProjectBillingInfo> projectsUpdateBillingInfoSettings;
+  private final SimpleCallSettings<ProjectsGetBillingInfoHttpRequest, ProjectBillingInfo> projectsGetBillingInfoSettings;
 
   /**
    * Returns the object with the settings used for calls to projectsUpdateBillingInfo.
    */
-  public SimpleCallSettings<ProjectsUpdateBillingInfoHttpRequest, ProjectsUpdateBillingInfoHttpResponse> projectsUpdateBillingInfoSettings() {
+  public SimpleCallSettings<ProjectsUpdateBillingInfoHttpRequest, ProjectBillingInfo> projectsUpdateBillingInfoSettings() {
     return projectsUpdateBillingInfoSettings;
   }
 
   /**
    * Returns the object with the settings used for calls to projectsGetBillingInfo.
    */
-  public SimpleCallSettings<ProjectsGetBillingInfoHttpRequest, ProjectsGetBillingInfoHttpResponse> projectsGetBillingInfoSettings() {
+  public SimpleCallSettings<ProjectsGetBillingInfoHttpRequest, ProjectBillingInfo> projectsGetBillingInfoSettings() {
     return projectsGetBillingInfoSettings;
   }
 
@@ -5058,8 +5058,8 @@ public class ProjectAdminSettings extends ClientSettings {
   public static class Builder extends ClientSettings.Builder {
     private final ImmutableList<UnaryCallSettings.Builder> unaryMethodSettingsBuilders;
 
-    private final SimpleCallSettings.Builder<ProjectsUpdateBillingInfoHttpRequest, ProjectsUpdateBillingInfoHttpResponse> projectsUpdateBillingInfoSettings;
-    private final SimpleCallSettings.Builder<ProjectsGetBillingInfoHttpRequest, ProjectsGetBillingInfoHttpResponse> projectsGetBillingInfoSettings;
+    private final SimpleCallSettings.Builder<ProjectsUpdateBillingInfoHttpRequest, ProjectBillingInfo> projectsUpdateBillingInfoSettings;
+    private final SimpleCallSettings.Builder<ProjectsGetBillingInfoHttpRequest, ProjectBillingInfo> projectsGetBillingInfoSettings;
 
     private static final ImmutableMap<String, ImmutableSet<StatusCode>> RETRYABLE_CODE_DEFINITIONS;
 
@@ -5171,14 +5171,14 @@ public class ProjectAdminSettings extends ClientSettings {
     /**
      * Returns the builder for the settings used for calls to projectsUpdateBillingInfo.
      */
-    public SimpleCallSettings.Builder<ProjectsUpdateBillingInfoHttpRequest, ProjectsUpdateBillingInfoHttpResponse> projectsUpdateBillingInfoSettings() {
+    public SimpleCallSettings.Builder<ProjectsUpdateBillingInfoHttpRequest, ProjectBillingInfo> projectsUpdateBillingInfoSettings() {
       return projectsUpdateBillingInfoSettings;
     }
 
     /**
      * Returns the builder for the settings used for calls to projectsGetBillingInfo.
      */
-    public SimpleCallSettings.Builder<ProjectsGetBillingInfoHttpRequest, ProjectsGetBillingInfoHttpResponse> projectsGetBillingInfoSettings() {
+    public SimpleCallSettings.Builder<ProjectsGetBillingInfoHttpRequest, ProjectBillingInfo> projectsGetBillingInfoSettings() {
       return projectsGetBillingInfoSettings;
     }
 
@@ -5223,12 +5223,12 @@ public abstract class ProjectAdminStub implements BackgroundResource {
 
 
   @BetaApi
-  public UnaryCallable<ProjectsUpdateBillingInfoHttpRequest, ProjectsUpdateBillingInfoHttpResponse> projectsUpdateBillingInfoCallable() {
+  public UnaryCallable<ProjectsUpdateBillingInfoHttpRequest, ProjectBillingInfo> projectsUpdateBillingInfoCallable() {
     throw new UnsupportedOperationException("Not implemented: projectsUpdateBillingInfoCallable()");
   }
 
   @BetaApi
-  public UnaryCallable<ProjectsGetBillingInfoHttpRequest, ProjectsGetBillingInfoHttpResponse> projectsGetBillingInfoCallable() {
+  public UnaryCallable<ProjectsGetBillingInfoHttpRequest, ProjectBillingInfo> projectsGetBillingInfoCallable() {
     throw new UnsupportedOperationException("Not implemented: projectsGetBillingInfoCallable()");
   }
 
@@ -5280,14 +5280,14 @@ public class PagedResponseWrappers {
 
   public static class BillingAccountsListPagedResponse extends AbstractPagedListResponse<
       BillingAccountsListHttpRequest,
-      BillingAccountsListHttpResponse,
+      ListBillingAccountsResponse,
       ListBillingAccountsResponse,
       BillingAccountsListPage,
       BillingAccountsListFixedSizeCollection> {
 
     public static ApiFuture<BillingAccountsListPagedResponse> createAsync(
-        PageContext<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse, ListBillingAccountsResponse> context,
-        ApiFuture<BillingAccountsListHttpResponse> futureResponse) {
+        PageContext<BillingAccountsListHttpRequest, ListBillingAccountsResponse, ListBillingAccountsResponse> context,
+        ApiFuture<ListBillingAccountsResponse> futureResponse) {
       ApiFuture<BillingAccountsListPage> futurePage =
           BillingAccountsListPage.createEmptyPage().createPageAsync(context, futureResponse);
       return ApiFutures.transform(
@@ -5309,13 +5309,13 @@ public class PagedResponseWrappers {
 
   public static class BillingAccountsListPage extends AbstractPage<
       BillingAccountsListHttpRequest,
-      BillingAccountsListHttpResponse,
+      ListBillingAccountsResponse,
       ListBillingAccountsResponse,
       BillingAccountsListPage> {
 
     private BillingAccountsListPage(
-        PageContext<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse, ListBillingAccountsResponse> context,
-        BillingAccountsListHttpResponse response) {
+        PageContext<BillingAccountsListHttpRequest, ListBillingAccountsResponse, ListBillingAccountsResponse> context,
+        ListBillingAccountsResponse response) {
       super(context, response);
     }
 
@@ -5325,15 +5325,15 @@ public class PagedResponseWrappers {
 
     @Override
     protected BillingAccountsListPage createPage(
-        PageContext<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse, ListBillingAccountsResponse> context,
-        BillingAccountsListHttpResponse response) {
+        PageContext<BillingAccountsListHttpRequest, ListBillingAccountsResponse, ListBillingAccountsResponse> context,
+        ListBillingAccountsResponse response) {
       return new BillingAccountsListPage(context, response);
     }
 
     @Override
     public ApiFuture<BillingAccountsListPage> createPageAsync(
-        PageContext<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse, ListBillingAccountsResponse> context,
-        ApiFuture<BillingAccountsListHttpResponse> futureResponse) {
+        PageContext<BillingAccountsListHttpRequest, ListBillingAccountsResponse, ListBillingAccountsResponse> context,
+        ApiFuture<ListBillingAccountsResponse> futureResponse) {
       return super.createPageAsync(context, futureResponse);
     }
 
@@ -5344,7 +5344,7 @@ public class PagedResponseWrappers {
 
   public static class BillingAccountsListFixedSizeCollection extends AbstractFixedSizeCollection<
       BillingAccountsListHttpRequest,
-      BillingAccountsListHttpResponse,
+      ListBillingAccountsResponse,
       ListBillingAccountsResponse,
       BillingAccountsListPage,
       BillingAccountsListFixedSizeCollection> {

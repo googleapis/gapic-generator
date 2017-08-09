@@ -90,8 +90,17 @@ public class DiscoGapicNamer {
 
   /** Get the response type name from a method. */
   public static Name getResponseName(Method method) {
-    String[] pieces = method.id().split(regexDelimiter);
-    return Name.anyCamel(pieces[pieces.length - 2], pieces[pieces.length - 1], "http", "response");
+    if (method.response() != null) {
+      String typeName =
+          method.response().reference() != null
+              ? method.response().reference()
+              : method.response().getIdentifier();
+      return Name.anyCamel(typeName);
+    } else {
+      String[] pieces = method.id().split(regexDelimiter);
+      return Name.anyCamel(
+          pieces[pieces.length - 2], pieces[pieces.length - 1], "http", "response");
+    }
   }
 
   //TODO(andrealin): Naming methods for service name.
