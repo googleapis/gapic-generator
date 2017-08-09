@@ -27,7 +27,7 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
 import com.google.common.base.Preconditions;
 
-/** Created by andrealin on 8/1/17. */
+/** A wrapper around the model of a Discovery Method. */
 public final class DiscoveryMethodModel implements MethodModel {
   private final Method method;
 
@@ -82,11 +82,6 @@ public final class DiscoveryMethodModel implements MethodModel {
   @Override
   public String getInputTypeNickname(TypeFormatter typeFormatter) {
     return null;
-  }
-
-  @Override
-  public String getOutputTypeNickname(ImportTypeTable typeTable) {
-    return ((SchemaTypeTable) typeTable).getNicknameFor(method.response());
   }
 
   @Override

@@ -55,8 +55,10 @@ public interface InterfaceContext extends TransformationContext {
 
   MethodContext asFlattenedMethodContext(MethodModel method, FlatteningConfig flatteningConfig);
 
+  /* @return the methods in the interface. */
   List<MethodModel> getInterfaceMethods();
 
+  /* @return the methods in the interface that have method configs. */
   List<MethodModel> getInterfaceConfigMethods();
 
   Iterable<MethodModel> getLongRunningMethods();

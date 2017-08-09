@@ -18,7 +18,7 @@ import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 
-/** Provides language-specific names for variables and classes. */
+/** Provides language-specific names for variables and classes of Discovery-Document models. */
 public class DiscoGapicNamer {
   private final SurfaceNamer languageNamer;
   private static final String regexDelimiter = "\\.";
@@ -53,7 +53,7 @@ public class DiscoGapicNamer {
     return languageNamer.publicMethodName(Name.anyCamel("get").join(name));
   }
 
-  /** Returns the resource getter method name for a resource field. */
+  /** Returns the resource setter method name for a resource field. */
   public String getResourceSetterName(String fieldName) {
     Name name;
     if (fieldName.contains("_")) {
@@ -82,19 +82,13 @@ public class DiscoGapicNamer {
     return pieces[pieces.length - 1];
   }
 
-  /**
-   * Returns the last substring after the input is split by periods. Ex: Input
-   * "compute.addresses.aggregatedList" returns "aggregatedList".
-   */
+  /** Get the request type name from a method. */
   public static Name getRequestName(Method method) {
     String[] pieces = method.id().split(regexDelimiter);
     return Name.anyCamel(pieces[pieces.length - 2], pieces[pieces.length - 1], "http", "request");
   }
 
-  /**
-   * Returns the last substring after the input is split by periods. Ex: Input
-   * "compute.addresses.aggregatedList" returns "aggregatedList".
-   */
+  /** Get the response type name from a method. */
   public static Name getResponseName(Method method) {
     String[] pieces = method.id().split(regexDelimiter);
     return Name.anyCamel(pieces[pieces.length - 2], pieces[pieces.length - 1], "http", "response");
