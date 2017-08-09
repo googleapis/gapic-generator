@@ -4487,6 +4487,137 @@ public abstract class BillingAccountAdminStub implements BackgroundResource {
   }
 
 }
+============== file: src/main/java/com/google/cloud/fakebilling/v1/stub/GrpcBillingAccountAdminStub.java ==============
+/*
+ * Copyright 2017, Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.fakebilling.v1.stub;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.core.BackgroundResourceAggregation;
+import com.google.api.gax.grpc.HttpCallableFactory;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.fakebilling.v1.BillingAccountAdminSettings;
+import static com.google.cloud.fakebilling.v1.PagedResponseWrappers.BillingAccountsListPagedResponse;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS
+/**
+ * HTTP stub implementation for fakebilling.
+ *
+ * <p>This class is for advanced usage and reflects the underlying API directly.
+ */
+@Generated("by GAPIC v0.0.5")
+public class GrpcBillingAccountAdminStub extends BillingAccountAdminStub {
+  private static final UnaryCallable<BillingAccountsListHttpRequest, ListBillingAccountsResponse> directBillingAccountsListCallable =
+      GrpcCallableFactory.createDirectCallable(
+          io.grpc.MethodDescriptor.create(
+              io.grpc.MethodDescriptor.MethodType.UNARY,
+              "TargetInterfaceFullName() not yet implemented./billingAccountsList",
+              io.grpc.protobuf.ProtoUtils.marshaller(BillingAccountsListHttpRequest.getDefaultInstance()),
+              io.grpc.protobuf.ProtoUtils.marshaller(ListBillingAccountsResponse.getDefaultInstance())));
+  private static final UnaryCallable<BillingAccountsGetHttpRequest, BillingAccount> directBillingAccountsGetCallable =
+      GrpcCallableFactory.createDirectCallable(
+          io.grpc.MethodDescriptor.create(
+              io.grpc.MethodDescriptor.MethodType.UNARY,
+              "TargetInterfaceFullName() not yet implemented./billingAccountsGet",
+              io.grpc.protobuf.ProtoUtils.marshaller(BillingAccountsGetHttpRequest.getDefaultInstance()),
+              io.grpc.protobuf.ProtoUtils.marshaller(BillingAccount.getDefaultInstance())));
+
+  private final BackgroundResource backgroundResources;
+
+  private final UnaryCallable<BillingAccountsListHttpRequest, ListBillingAccountsResponse> billingAccountsListCallable;
+  private final UnaryCallable<BillingAccountsListHttpRequest, BillingAccountsListPagedResponse> billingAccountsListPagedCallable;
+  private final UnaryCallable<BillingAccountsGetHttpRequest, BillingAccount> billingAccountsGetCallable;
+
+  public static final GrpcBillingAccountAdminStub create(BillingAccountAdminSettings settings) throws IOException {
+    return new GrpcBillingAccountAdminStub(settings, ClientContext.create(settings));
+  }
+
+  public static final GrpcBillingAccountAdminStub create(ClientContext clientContext) throws IOException {
+    return new GrpcBillingAccountAdminStub(BillingAccountAdminSettings.defaultBuilder().build(), clientContext);
+  }
+
+  /**
+   * Constructs an instance of GrpcBillingAccountAdminStub, using the given settings.
+   * This is protected so that it is easy to make a subclass, but otherwise, the static
+   * factory methods should be preferred.
+   */
+  protected GrpcBillingAccountAdminStub(BillingAccountAdminSettings settings, ClientContext clientContext) throws IOException {
+
+    this.billingAccountsListCallable = GrpcCallableFactory.create(directBillingAccountsListCallable,settings.billingAccountsListSettings(), clientContext);
+    this.billingAccountsListPagedCallable =
+        GrpcCallableFactory.createPagedVariant(directBillingAccountsListCallable,settings.billingAccountsListSettings(), clientContext);
+    this.billingAccountsGetCallable = GrpcCallableFactory.create(directBillingAccountsGetCallable,settings.billingAccountsGetSettings(), clientContext);
+
+    backgroundResources = new BackgroundResourceAggregation(clientContext.getBackgroundResources());
+  }
+
+
+  @BetaApi
+  public UnaryCallable<BillingAccountsListHttpRequest, BillingAccountsListPagedResponse> billingAccountsListPagedCallable() {
+    return billingAccountsListPagedCallable;
+  }
+
+  @BetaApi
+  public UnaryCallable<BillingAccountsListHttpRequest, ListBillingAccountsResponse> billingAccountsListCallable() {
+    return billingAccountsListCallable;
+  }
+
+  @BetaApi
+  public UnaryCallable<BillingAccountsGetHttpRequest, BillingAccount> billingAccountsGetCallable() {
+    return billingAccountsGetCallable;
+  }
+
+  @Override
+  public final void close() throws Exception {
+    shutdown();
+  }
+
+  @Override
+  public void shutdown() {
+    backgroundResources.shutdown();
+  }
+
+  @Override
+  public boolean isShutdown() {
+    return backgroundResources.isShutdown();
+  }
+
+  @Override
+  public boolean isTerminated() {
+    return backgroundResources.isTerminated();
+  }
+
+  @Override
+  public void shutdownNow() {
+    backgroundResources.shutdownNow();
+  }
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+    return backgroundResources.awaitTermination(duration, unit);
+  }
+
+}
 ============== file: src/main/java/com/google/cloud/fakebilling/v1/ProjectAdminClient.java ==============
 /*
  * Copyright 2017, Google Inc. All rights reserved.
@@ -5234,6 +5365,128 @@ public abstract class ProjectAdminStub implements BackgroundResource {
   @BetaApi
   public UnaryCallable<ProjectsGetBillingInfoHttpRequest, ProjectBillingInfo> projectsGetBillingInfoCallable() {
     throw new UnsupportedOperationException("Not implemented: projectsGetBillingInfoCallable()");
+  }
+
+}
+============== file: src/main/java/com/google/cloud/fakebilling/v1/stub/GrpcProjectAdminStub.java ==============
+/*
+ * Copyright 2017, Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.fakebilling.v1.stub;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.core.BackgroundResourceAggregation;
+import com.google.api.gax.grpc.HttpCallableFactory;
+import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.fakebilling.v1.ProjectAdminSettings;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS
+/**
+ * HTTP stub implementation for fakebilling.
+ *
+ * <p>This class is for advanced usage and reflects the underlying API directly.
+ */
+@Generated("by GAPIC v0.0.5")
+public class GrpcProjectAdminStub extends ProjectAdminStub {
+  private static final UnaryCallable<ProjectsUpdateBillingInfoHttpRequest, ProjectBillingInfo> directProjectsUpdateBillingInfoCallable =
+      GrpcCallableFactory.createDirectCallable(
+          io.grpc.MethodDescriptor.create(
+              io.grpc.MethodDescriptor.MethodType.UNARY,
+              "TargetInterfaceFullName() not yet implemented./projectsUpdateBillingInfo",
+              io.grpc.protobuf.ProtoUtils.marshaller(ProjectsUpdateBillingInfoHttpRequest.getDefaultInstance()),
+              io.grpc.protobuf.ProtoUtils.marshaller(ProjectBillingInfo.getDefaultInstance())));
+  private static final UnaryCallable<ProjectsGetBillingInfoHttpRequest, ProjectBillingInfo> directProjectsGetBillingInfoCallable =
+      GrpcCallableFactory.createDirectCallable(
+          io.grpc.MethodDescriptor.create(
+              io.grpc.MethodDescriptor.MethodType.UNARY,
+              "TargetInterfaceFullName() not yet implemented./projectsGetBillingInfo",
+              io.grpc.protobuf.ProtoUtils.marshaller(ProjectsGetBillingInfoHttpRequest.getDefaultInstance()),
+              io.grpc.protobuf.ProtoUtils.marshaller(ProjectBillingInfo.getDefaultInstance())));
+
+  private final BackgroundResource backgroundResources;
+
+  private final UnaryCallable<ProjectsUpdateBillingInfoHttpRequest, ProjectBillingInfo> projectsUpdateBillingInfoCallable;
+  private final UnaryCallable<ProjectsGetBillingInfoHttpRequest, ProjectBillingInfo> projectsGetBillingInfoCallable;
+
+  public static final GrpcProjectAdminStub create(ProjectAdminSettings settings) throws IOException {
+    return new GrpcProjectAdminStub(settings, ClientContext.create(settings));
+  }
+
+  public static final GrpcProjectAdminStub create(ClientContext clientContext) throws IOException {
+    return new GrpcProjectAdminStub(ProjectAdminSettings.defaultBuilder().build(), clientContext);
+  }
+
+  /**
+   * Constructs an instance of GrpcProjectAdminStub, using the given settings.
+   * This is protected so that it is easy to make a subclass, but otherwise, the static
+   * factory methods should be preferred.
+   */
+  protected GrpcProjectAdminStub(ProjectAdminSettings settings, ClientContext clientContext) throws IOException {
+
+    this.projectsUpdateBillingInfoCallable = GrpcCallableFactory.create(directProjectsUpdateBillingInfoCallable,settings.projectsUpdateBillingInfoSettings(), clientContext);
+    this.projectsGetBillingInfoCallable = GrpcCallableFactory.create(directProjectsGetBillingInfoCallable,settings.projectsGetBillingInfoSettings(), clientContext);
+
+    backgroundResources = new BackgroundResourceAggregation(clientContext.getBackgroundResources());
+  }
+
+
+  @BetaApi
+  public UnaryCallable<ProjectsUpdateBillingInfoHttpRequest, ProjectBillingInfo> projectsUpdateBillingInfoCallable() {
+    return projectsUpdateBillingInfoCallable;
+  }
+
+  @BetaApi
+  public UnaryCallable<ProjectsGetBillingInfoHttpRequest, ProjectBillingInfo> projectsGetBillingInfoCallable() {
+    return projectsGetBillingInfoCallable;
+  }
+
+  @Override
+  public final void close() throws Exception {
+    shutdown();
+  }
+
+  @Override
+  public void shutdown() {
+    backgroundResources.shutdown();
+  }
+
+  @Override
+  public boolean isShutdown() {
+    return backgroundResources.isShutdown();
+  }
+
+  @Override
+  public boolean isTerminated() {
+    return backgroundResources.isTerminated();
+  }
+
+  @Override
+  public void shutdownNow() {
+    backgroundResources.shutdownNow();
+  }
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+    return backgroundResources.awaitTermination(duration, unit);
   }
 
 }

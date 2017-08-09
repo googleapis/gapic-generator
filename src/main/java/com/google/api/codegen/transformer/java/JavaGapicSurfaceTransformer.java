@@ -55,9 +55,9 @@ import com.google.api.codegen.viewmodel.SettingsDocView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
 import com.google.api.codegen.viewmodel.StaticLangApiView;
 import com.google.api.codegen.viewmodel.StaticLangFileView;
-import com.google.api.codegen.viewmodel.StaticLangGrpcStubView;
 import com.google.api.codegen.viewmodel.StaticLangPagedResponseView;
 import com.google.api.codegen.viewmodel.StaticLangPagedResponseWrappersView;
+import com.google.api.codegen.viewmodel.StaticLangRpcStubView;
 import com.google.api.codegen.viewmodel.StaticLangSettingsView;
 import com.google.api.codegen.viewmodel.StaticLangStubInterfaceView;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -148,7 +148,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
       surfaceDocs.add(stubInterfaceFile);
 
       context = context.withNewTypeTable(namer.getStubPackageName());
-      StaticLangFileView<StaticLangGrpcStubView> grpcStubFile = generateGrpcStubClassFile(context);
+      StaticLangFileView<StaticLangRpcStubView> grpcStubFile = generateGrpcStubClassFile(context);
       surfaceDocs.add(grpcStubFile);
     }
 
@@ -478,10 +478,10 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     return stubInterface.build();
   }
 
-  private StaticLangFileView<StaticLangGrpcStubView> generateGrpcStubClassFile(
+  private StaticLangFileView<StaticLangRpcStubView> generateGrpcStubClassFile(
       GapicInterfaceContext context) {
-    StaticLangFileView.Builder<StaticLangGrpcStubView> fileView =
-        StaticLangFileView.<StaticLangGrpcStubView>newBuilder();
+    StaticLangFileView.Builder<StaticLangRpcStubView> fileView =
+        StaticLangFileView.<StaticLangRpcStubView>newBuilder();
 
     fileView.classView(generateGrpcStubClass(context));
     fileView.templateFileName(GRPC_STUB_TEMPLATE_FILENAME);
@@ -498,7 +498,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     return fileView.build();
   }
 
-  private StaticLangGrpcStubView generateGrpcStubClass(GapicInterfaceContext context) {
+  private StaticLangRpcStubView generateGrpcStubClass(GapicInterfaceContext context) {
     SurfaceNamer namer = context.getNamer();
     GapicInterfaceConfig interfaceConfig = context.getInterfaceConfig();
 
@@ -506,7 +506,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
 
     List<StaticLangApiMethodView> methods = generateApiMethods(context);
 
-    StaticLangGrpcStubView.Builder stubClass = StaticLangGrpcStubView.newBuilder();
+    StaticLangRpcStubView.Builder stubClass = StaticLangRpcStubView.newBuilder();
 
     stubClass.doc(serviceTransformer.generateServiceDoc(context, null));
 
