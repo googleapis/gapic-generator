@@ -18,7 +18,7 @@ import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 
-/** Provides language-specific names for variables and classes. */
+/** Provides language-specific names for variables and classes of Discovery-Document models. */
 public class DiscoGapicNamer {
   private final SurfaceNamer languageNamer;
   private static final String regexDelimiter = "\\.";
@@ -49,7 +49,7 @@ public class DiscoGapicNamer {
     return languageNamer.publicMethodName(Name.anyCamel("get").join(name));
   }
 
-  /** Returns the resource getter method name for a resource field. */
+  /** Returns the resource setter method name for a resource field. */
   public String getResourceSetterName(String fieldName) {
     Name name;
     if (fieldName.contains("_")) {

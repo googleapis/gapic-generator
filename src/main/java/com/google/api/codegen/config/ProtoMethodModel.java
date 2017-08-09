@@ -29,7 +29,7 @@ import com.google.api.tools.framework.model.FieldSelector;
 import com.google.api.tools.framework.model.Method;
 import com.google.common.base.Preconditions;
 
-/** Created by andrealin on 8/1/17. */
+/** A wrapper around the model of a protobuf-defined Method. */
 public final class ProtoMethodModel implements MethodModel {
   private final Method method;
 
@@ -118,11 +118,6 @@ public final class ProtoMethodModel implements MethodModel {
   @Override
   public String getParentNickname(TypeNameConverter converter) {
     return ((ModelTypeNameConverter) converter).getTypeName(method.getParent()).getNickname();
-  }
-
-  @Override
-  public String getOutputTypeNickname(ImportTypeTable typeTable) {
-    return ((ModelTypeTable) typeTable).getAndSaveNicknameFor(method.getOutputType());
   }
 
   @Override
