@@ -198,7 +198,9 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
     ImmutableList.Builder<ApiMethodView> apiMethods = ImmutableList.builder();
 
     for (MethodModel method : context.getSupportedMethods()) {
-      apiMethods.add(apiMethodTransformer.generateMethod(context.asDynamicMethodContext(method)));
+      apiMethods.add(
+          apiMethodTransformer.generateMethod(
+              context.asDynamicMethodContext(method), packageHasMultipleServices));
     }
 
     return apiMethods.build();
