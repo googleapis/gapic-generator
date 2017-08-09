@@ -15,16 +15,18 @@
 package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.ReleaseLevel;
-import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
+import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.SchemaTypeFormatterImpl;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
@@ -34,7 +36,6 @@ import com.google.api.codegen.util.java.JavaRenderingUtil;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.ServiceMethodType;
 import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
@@ -53,6 +54,17 @@ public class JavaSurfaceNamer extends SurfaceNamer {
     super(
         new JavaNameFormatter(),
         new ModelTypeFormatterImpl(new JavaModelTypeNameConverter(packageName)),
+        new JavaTypeTable(packageName),
+        new JavaCommentReformatter(),
+        rootPackageName,
+        packageName);
+  }
+
+  /* Create a JavaSurfaceNamer for a Discovery-based API. */
+  public JavaSurfaceNamer(String packageName, String rootPackageName, JavaNameFormatter formatter) {
+    super(
+        formatter,
+        new SchemaTypeFormatterImpl(new JavaSchemaTypeNameConverter(packageName, formatter)),
         new JavaTypeTable(packageName),
         new JavaCommentReformatter(),
         rootPackageName,
@@ -94,37 +106,35 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getStaticLangReturnTypeName(Method method, MethodConfig methodConfig) {
-    if (ServiceMessages.s_isEmptyType(method.getOutputType())) {
+  public String getStaticLangReturnTypeName(MethodModel method, MethodConfig methodConfig) {
+    if (method.isOutputTypeEmpty()) {
       return "void";
     }
-    return getModelTypeFormatter().getFullNameFor(method.getOutputType());
+    return method.getOutputTypeFullName(getTypeFormatter());
   }
 
   @Override
   public String getAndSaveOperationResponseTypeName(
-      Method method, ImportTypeTable typeTable, MethodConfig methodConfig) {
+      MethodModel method, ImportTypeTable typeTable, MethodConfig methodConfig) {
     String responseTypeName =
-        ((ModelTypeTable) typeTable)
-            .getFullNameFor(methodConfig.getLongRunningConfig().getReturnType());
+        methodConfig.getLongRunningConfig().getLongRunningOperationReturnTypeFullName(typeTable);
     String metadataTypeName =
-        ((ModelTypeTable) typeTable)
-            .getFullNameFor(methodConfig.getLongRunningConfig().getMetadataType());
+        methodConfig.getLongRunningConfig().getLongRunningOperationMetadataTypeFullName(typeTable);
     return typeTable.getAndSaveNicknameForContainer(
         "com.google.api.gax.grpc.OperationFuture", responseTypeName, metadataTypeName);
   }
 
   @Override
-  public String getLongRunningOperationTypeName(ModelTypeTable typeTable, TypeRef type) {
-    return typeTable.getAndSaveNicknameForElementType(type);
+  public String getLongRunningOperationTypeName(ImportTypeTable typeTable, TypeRef type) {
+    return ((ModelTypeTable) typeTable).getAndSaveNicknameForElementType(type);
   }
 
   @Override
-  public String getGenericAwareResponseTypeName(TypeRef outputType) {
-    if (ServiceMessages.s_isEmptyType(outputType)) {
+  public String getGenericAwareResponseTypeName(MethodModel method) {
+    if (method.isOutputTypeEmpty()) {
       return "Void";
     } else {
-      return getModelTypeFormatter().getFullNameFor(outputType);
+      return method.getOutputTypeFullName(getTypeFormatter());
     }
   }
 
@@ -148,32 +158,33 @@ public class JavaSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getAndSavePagedResponseTypeName(
-      Method method, ImportTypeTable typeTable, FieldConfig resourceFieldConfig) {
+      MethodContext methodContext, FieldConfig resourceFieldConfig) {
     // TODO(michaelbausor) make sure this uses the typeTable correctly
-
+    ImportTypeTable typeTable = methodContext.getTypeTable();
     String fullPackageWrapperName =
         typeTable.getImplicitPackageFullNameFor(getPagedResponseWrappersClassName());
     String pagedResponseShortName =
-        getPagedResponseTypeInnerName(method, typeTable, resourceFieldConfig.getField());
+        getPagedResponseTypeInnerName(
+            methodContext.getMethodModel(), typeTable, resourceFieldConfig.getField());
     return typeTable.getAndSaveNicknameForInnerType(fullPackageWrapperName, pagedResponseShortName);
   }
 
   @Override
   public String getPagedResponseTypeInnerName(
-      Method method, ImportTypeTable typeTable, FieldType resourceField) {
-    return publicClassName(Name.upperCamel(method.getSimpleName(), "PagedResponse"));
+      MethodModel method, ImportTypeTable typeTable, FieldType resourceField) {
+    return publicClassName(Name.anyCamel(method.getSimpleName(), "PagedResponse"));
   }
 
   @Override
   public String getPageTypeInnerName(
-      Method method, ImportTypeTable typeTable, FieldType resourceField) {
-    return publicClassName(Name.upperCamel(method.getSimpleName(), "Page"));
+      MethodModel method, ImportTypeTable typeTable, FieldType resourceField) {
+    return publicClassName(Name.anyCamel(method.getSimpleName(), "Page"));
   }
 
   @Override
   public String getFixedSizeCollectionTypeInnerName(
-      Method method, ImportTypeTable typeTable, FieldType resourceField) {
-    return publicClassName(Name.upperCamel(method.getSimpleName(), "FixedSizeCollection"));
+      MethodModel method, ImportTypeTable typeTable, FieldType resourceField) {
+    return publicClassName(Name.anyCamel(method.getSimpleName(), "FixedSizeCollection"));
   }
 
   @Override
@@ -256,7 +267,7 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getBatchingDescriptorConstName(Method method) {
+  public String getBatchingDescriptorConstName(MethodModel method) {
     return inittedConstantName(Name.upperCamel(method.getSimpleName()).join("batching_desc"));
   }
 

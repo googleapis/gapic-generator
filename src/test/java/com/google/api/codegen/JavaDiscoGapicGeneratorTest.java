@@ -28,8 +28,11 @@ import org.junit.runners.Parameterized.Parameters;
 public class JavaDiscoGapicGeneratorTest extends DiscoGapicTestBase {
 
   public JavaDiscoGapicGeneratorTest(
-      String name, String discoveryDocFileName, String[] gapicConfigFileNames) {
-    super(name, discoveryDocFileName, gapicConfigFileNames);
+      String name,
+      String discoveryDocFileName,
+      String[] gapicConfigFileNames,
+      String packageConfigFileName) {
+    super(name, discoveryDocFileName, gapicConfigFileNames, packageConfigFileName);
   }
 
   /**
@@ -51,8 +54,9 @@ public class JavaDiscoGapicGeneratorTest extends DiscoGapicTestBase {
             "discogapic/" + fileName,
             new String[] {
               "com/google/api/codegen/java/java_discogapic.yaml",
-              "com/google/api/codegen/testdata/fakebilling_gapic.yaml"
-            }
+              "com/google/api/codegen/testdata/fakebilling_gapic.yaml",
+            },
+            "com/google/api/codegen/testdata/fakebilling_pkg.yaml"
           });
     }
     return builder.build();

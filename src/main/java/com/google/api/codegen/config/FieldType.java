@@ -16,6 +16,7 @@ package com.google.api.codegen.config;
 
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.util.Name;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
 
@@ -33,6 +34,8 @@ public interface FieldType {
   String getSimpleName();
 
   String getFullName();
+
+  Name asName();
 
   String getTypeFullName();
 

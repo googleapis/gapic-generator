@@ -93,6 +93,7 @@ public class ModelTypeTable implements ImportTypeTable, ModelTypeFormatter {
     return new ModelTypeTable(typeTable.cloneEmpty(), typeNameConverter);
   }
 
+  @Override
   public ModelTypeTable cloneEmpty(String packageName) {
     return new ModelTypeTable(typeTable.cloneEmpty(packageName), typeNameConverter);
   }

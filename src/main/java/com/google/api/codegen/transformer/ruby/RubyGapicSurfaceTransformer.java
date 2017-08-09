@@ -19,6 +19,7 @@ import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProductServiceConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
@@ -55,7 +56,6 @@ import com.google.api.codegen.viewmodel.metadata.VersionIndexRequireView;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexType;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexView;
 import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
@@ -130,7 +130,8 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private ViewModel generateApiClass(GapicInterfaceContext context) {
     SurfaceNamer namer = context.getNamer();
-    String subPath = pathMapper.getOutputPath(context.getInterface(), context.getProductConfig());
+    String subPath =
+        pathMapper.getOutputPath(context.getInterface().getFullName(), context.getProductConfig());
     String name = namer.getApiWrapperClassName(context.getInterfaceConfig());
     List<ApiMethodView> methods = generateApiMethods(context);
 
@@ -190,7 +191,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
     ImmutableList.Builder<ApiMethodView> apiMethods = ImmutableList.builder();
     boolean packageHasMultipleServices =
         new InterfaceView().hasMultipleServices(context.getModel());
-    for (Method method : context.getSupportedMethods()) {
+    for (MethodModel method : context.getSupportedMethods()) {
       apiMethods.add(
           apiMethodTransformer.generateMethod(
               context.asDynamicMethodContext(method), packageHasMultipleServices));

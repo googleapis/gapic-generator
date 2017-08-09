@@ -14,9 +14,9 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.viewmodel.GrpcStubView;
 import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,8 +27,8 @@ public class GrpcStubTransformer {
   public List<GrpcStubView> generateGrpcStubs(GapicInterfaceContext context) {
     List<GrpcStubView> stubs = new ArrayList<>();
     Map<String, Interface> interfaces = new TreeMap<>();
-    Map<String, List<Method>> methods = new TreeMap<>();
-    for (Method method : context.getSupportedMethods()) {
+    Map<String, List<MethodModel>> methods = new TreeMap<>();
+    for (MethodModel method : context.getSupportedMethods()) {
       Interface targetInterface = context.asRequestMethodContext(method).getTargetInterface();
       interfaces.put(targetInterface.getFullName(), targetInterface);
       if (methods.containsKey(targetInterface.getFullName())) {
@@ -46,8 +46,8 @@ public class GrpcStubTransformer {
     return stubs;
   }
 
-  public GrpcStubView generateGrpcStub(
-      GapicInterfaceContext context, Interface targetInterface, List<Method> methods) {
+  GrpcStubView generateGrpcStub(
+      GapicInterfaceContext context, Interface targetInterface, List<MethodModel> methods) {
     SurfaceNamer namer = context.getNamer();
     GrpcStubView.Builder stub = GrpcStubView.newBuilder();
 
@@ -61,7 +61,7 @@ public class GrpcStubTransformer {
     stub.grpcClientImportName(namer.getGrpcClientImportName(targetInterface));
 
     List<String> methodNames = new ArrayList<>();
-    for (Method method : methods) {
+    for (MethodModel method : methods) {
       methodNames.add(
           namer.getApiMethodName(method, context.getMethodConfig(method).getVisibility()));
     }

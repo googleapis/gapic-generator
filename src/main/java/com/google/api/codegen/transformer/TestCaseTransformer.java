@@ -35,7 +35,6 @@ import com.google.api.codegen.viewmodel.testing.MockGrpcResponseView;
 import com.google.api.codegen.viewmodel.testing.PageStreamingResponseView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
 import com.google.api.tools.framework.model.Field;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
@@ -61,43 +60,39 @@ public class TestCaseTransformer {
       SymbolTable testNameTable,
       InitCodeContext initCodeContext,
       ClientMethodType clientMethodType) {
-    Method method = methodContext.getMethod();
+    MethodModel method = methodContext.getMethodModel();
     MethodConfig methodConfig = methodContext.getMethodConfig();
     SurfaceNamer namer = methodContext.getNamer();
+    ImportTypeTable typeTable = methodContext.getTypeTable();
 
     String clientMethodName;
     String responseTypeName;
     String fullyQualifiedResponseTypeName =
-        methodContext.getTypeTable().getFullNameFor(method.getOutputType());
+        methodContext.getMethodModel().getOutputTypeFullName(typeTable);
+
     if (methodConfig.isPageStreaming()) {
       clientMethodName = namer.getApiMethodName(method, methodConfig.getVisibility());
       responseTypeName =
           namer.getAndSavePagedResponseTypeName(
-              method,
-              methodContext.getTypeTable(),
-              methodConfig.getPageStreaming().getResourcesFieldConfig());
+              methodContext, methodConfig.getPageStreaming().getResourcesFieldConfig());
     } else if (methodConfig.isLongRunningOperation()) {
       clientMethodName = namer.getLroApiMethodName(method, methodConfig.getVisibility());
       responseTypeName =
-          methodContext
-              .getTypeTable()
-              .getAndSaveNicknameFor(methodConfig.getLongRunningConfig().getReturnType());
+          methodConfig.getLongRunningConfig().getLongRunningOperationReturnTypeName(typeTable);
       fullyQualifiedResponseTypeName =
-          methodContext
-              .getTypeTable()
-              .getFullNameFor(methodConfig.getLongRunningConfig().getReturnType());
+          methodConfig.getLongRunningConfig().getLongRunningOperationReturnTypeFullName(typeTable);
     } else if (clientMethodType == ClientMethodType.CallableMethod) {
       clientMethodName = namer.getCallableMethodName(method);
-      responseTypeName = methodContext.getTypeTable().getAndSaveNicknameFor(method.getOutputType());
+      responseTypeName = method.getAndSaveResponseTypeName(typeTable, namer);
     } else {
       clientMethodName = namer.getApiMethodName(method, methodConfig.getVisibility());
-      responseTypeName = methodContext.getTypeTable().getAndSaveNicknameFor(method.getOutputType());
+      responseTypeName = method.getAndSaveResponseTypeName(typeTable, namer);
     }
 
     InitCodeView initCode = initCodeTransformer.generateInitCode(methodContext, initCodeContext);
 
     boolean hasRequestParameters = initCode.lines().size() > 0;
-    boolean hasReturnValue = !ServiceMessages.s_isEmptyType(method.getOutputType());
+    boolean hasReturnValue = !method.isOutputTypeEmpty();
     if (methodConfig.isLongRunningOperation()) {
       hasReturnValue =
           !ServiceMessages.s_isEmptyType(methodConfig.getLongRunningConfig().getReturnType());
@@ -113,12 +108,12 @@ public class TestCaseTransformer {
       String resourceTypeName = null;
       String resourcesFieldGetterName = null;
       if (methodConfig.getGrpcStreaming().hasResourceField()) {
-        Field resourcesField = methodConfig.getGrpcStreaming().getResourcesField();
+        FieldType resourcesField = methodConfig.getGrpcStreaming().getResourcesField();
         resourceTypeName =
-            methodContext.getTypeTable().getAndSaveNicknameForElementType(resourcesField.getType());
+            methodContext.getTypeTable().getAndSaveNicknameForElementType(resourcesField);
         resourcesFieldGetterName =
             namer.getFieldGetFunctionName(
-                resourcesField.getType(), Name.from(resourcesField.getSimpleName()));
+                resourcesField, Name.from(resourcesField.getSimpleName()));
       }
 
       grpcStreamingView =
@@ -141,25 +136,26 @@ public class TestCaseTransformer {
         .hasReturnValue(hasReturnValue)
         .initCode(initCode)
         .mockResponse(mockGrpcResponseView)
-        .mockServiceVarName(namer.getMockServiceVarName(methodContext.getTargetInterface()))
+        .mockServiceVarName(
+            namer.getMockServiceVarName(methodContext.getTargetInterface().getSimpleName()))
         .name(namer.getTestCaseName(testNameTable, method))
         .nameWithException(namer.getExceptionTestCaseName(testNameTable, method))
         .pageStreamingResponseViews(createPageStreamingResponseViews(methodContext))
         .grpcStreamingView(grpcStreamingView)
-        .requestTypeName(methodContext.getTypeTable().getAndSaveNicknameFor(method.getInputType()))
+        .requestTypeName(method.getAndSaveRequestTypeName(typeTable, namer))
         .responseTypeName(responseTypeName)
-        .fullyQualifiedRequestTypeName(
-            methodContext.getTypeTable().getFullNameFor(method.getInputType()))
+        .fullyQualifiedRequestTypeName(method.getInputTypeFullName(typeTable))
         .fullyQualifiedResponseTypeName(fullyQualifiedResponseTypeName)
         .serviceConstructorName(
-            namer.getApiWrapperClassConstructorName(methodContext.getInterface()))
+            namer.getApiWrapperClassConstructorName(methodContext.getInterfaceSimpleName()))
         .fullyQualifiedServiceClassName(
             namer.getFullyQualifiedApiWrapperClassName(methodContext.getInterfaceConfig()))
         .fullyQualifiedAliasedServiceClassName(
             namer.getTopLevelAliasedApiClassName(
                 (methodContext.getInterfaceConfig()), packageHasMultipleServices))
         .clientMethodName(clientMethodName)
-        .mockGrpcStubTypeName(namer.getMockGrpcServiceImplName(methodContext.getTargetInterface()))
+        .mockGrpcStubTypeName(
+            namer.getMockGrpcServiceImplName(methodContext.getTargetInterface().getSimpleName()))
         .createStubFunctionName(namer.getCreateStubFunctionName(methodContext.getTargetInterface()))
         .grpcStubCallString(namer.getGrpcStubCallString(methodContext.getTargetInterface(), method))
         .build();
@@ -227,14 +223,14 @@ public class TestCaseTransformer {
   }
 
   private MockGrpcResponseView createMockResponseView(
-      GapicMethodContext methodContext, InitCodeContext responseInitCodeContext) {
+      MethodContext methodContext, InitCodeContext responseInitCodeContext) {
 
     InitCodeView initCodeView =
         initCodeTransformer.generateInitCode(methodContext, responseInitCodeContext);
     String typeName =
         methodContext
-            .getTypeTable()
-            .getAndSaveNicknameFor(methodContext.getMethod().getOutputType());
+            .getMethodModel()
+            .getAndSaveResponseTypeName(methodContext.getTypeTable(), methodContext.getNamer());
     return MockGrpcResponseView.newBuilder().typeName(typeName).initCode(initCodeView).build();
   }
 
@@ -256,7 +252,7 @@ public class TestCaseTransformer {
         .suggestedName(Name.from("expected_response"))
         .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
         .initValueConfigMap(ImmutableMap.<String, InitValueConfig>of())
-        .initFields(primitiveFields)
+        .initFields((primitiveFields))
         .fieldConfigMap(context.getProductConfig().getDefaultResourceNameFieldConfigMap())
         .valueGenerator(valueGenerator)
         .additionalInitCodeNodes(createMockResponseAdditionalSubTrees(context))
@@ -345,7 +341,7 @@ public class TestCaseTransformer {
     return false;
   }
 
-  public InitCodeContext createSmokeTestInitContext(GapicMethodContext context) {
+  public InitCodeContext createSmokeTestInitContext(MethodContext context) {
     SmokeTestConfig testConfig = context.getInterfaceConfig().getSmokeTestConfig();
     InitCodeContext.InitCodeOutputType outputType;
     ImmutableMap<String, FieldConfig> fieldConfigMap;

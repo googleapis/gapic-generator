@@ -98,6 +98,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     return getInterface().getSimpleName();
   }
 
+  @Override
   public boolean hasInterfaceNameOverride() {
     return getInterfaceNameOverride() != null;
   }
@@ -317,20 +318,21 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
 
   /** Returns the GapicMethodConfig for the given method. */
   @Override
-  public GapicMethodConfig getMethodConfig(Method method) {
-    GapicMethodConfig methodConfig = getMethodConfigMap().get(method.getSimpleName());
-    if (methodConfig == null) {
-      throw new IllegalArgumentException(
-          "no method config for method '" + method.getFullName() + "'");
-    }
-    return methodConfig;
+  public GapicMethodConfig getMethodConfig(MethodModel method) {
+    return getMethodConfig(method.getSimpleName(), method.getFullName());
   }
 
   /** Returns the GapicMethodConfig for the given method. */
-  @Override
-  @Nullable
-  public DiscoGapicMethodConfig getMethodConfig(com.google.api.codegen.discovery.Method method) {
-    return null;
+  public GapicMethodConfig getMethodConfig(Method method) {
+    return getMethodConfig(method.getSimpleName(), method.getFullName());
+  }
+
+  public GapicMethodConfig getMethodConfig(String methodSimpleName, String fullName) {
+    GapicMethodConfig methodConfig = getMethodConfigMap().get(methodSimpleName);
+    if (methodConfig == null) {
+      throw new IllegalArgumentException("no method config for method '" + fullName + "'");
+    }
+    return methodConfig;
   }
 
   @Override

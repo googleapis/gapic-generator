@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,14 +12,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.gapic;
+package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.ProductConfig;
 
 /**
- * An implementation of CodePathMapper is a strategy object, encapsulating a strategy for
- * constructing a path to the GAPIC output.
+ * The context for transforming an API model, in an input-agnostic way, into a view model to use for
+ * client library generation.
  */
-public interface GapicCodePathMapper {
-  String getOutputPath(String elementFullName, ProductConfig config);
+public interface TransformationContext {
+
+  ProductConfig getProductConfig();
+
+  SurfaceNamer getNamer();
+
+  ImportTypeTable getImportTypeTable();
 }

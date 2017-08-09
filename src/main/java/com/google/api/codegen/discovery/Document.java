@@ -17,6 +17,8 @@ package com.google.api.codegen.discovery;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableList.Builder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -47,12 +49,17 @@ public abstract class Document implements Node {
   public static Document from(DiscoveryNode root) {
     AuthType authType;
     DiscoveryNode scopesNode = root.getObject("auth").getObject("oauth2").getObject("scopes");
+
+    ImmutableList.Builder<String> authScopes = new Builder<>();
     if (scopesNode.isEmpty()) {
       authType = AuthType.API_KEY;
-    } else if (scopesNode.has(CLOUD_PLATFORM_SCOPE)) {
-      authType = AuthType.ADC;
     } else {
-      authType = AuthType.OAUTH_3L;
+      authScopes.addAll(scopesNode.getFieldNames());
+      if (scopesNode.has(CLOUD_PLATFORM_SCOPE)) {
+        authType = AuthType.ADC;
+      } else {
+        authType = AuthType.OAUTH_3L;
+      }
     }
     String canonicalName = root.getString("canonicalName");
     String description = root.getString("description");
@@ -74,6 +81,7 @@ public abstract class Document implements Node {
     Document thisDocument =
         new AutoValue_Document(
             "", // authInstructionsUrl (only intended to be overridden).
+            authScopes.build(),
             authType,
             canonicalName,
             description,
@@ -138,6 +146,9 @@ public abstract class Document implements Node {
   /** @return the auth instructions URL. */
   @JsonProperty("authInstructionsUrl")
   public abstract String authInstructionsUrl();
+
+  /** @return The list of OAuth2 scopes; this can be empty. */
+  public abstract List<String> authScopes();
 
   /** @return the auth type. */
   @JsonProperty("authType")
