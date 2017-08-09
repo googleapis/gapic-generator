@@ -17,8 +17,8 @@ package com.google.api.codegen.transformer;
 import com.google.api.codegen.config.ProductConfig;
 
 /**
- * The context for transforming an API interface, in an input-agnostic way, into a view model to use
- * for client library generation.
+ * The context for transforming an API model, in an input-agnostic way, into a view model to use for
+ * client library generation.
  */
 public interface TransformationContext {
 
