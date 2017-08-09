@@ -16,6 +16,7 @@ package com.google.api.codegen.discogapic.transformer.java;
 
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.TargetLanguage;
+import com.google.api.codegen.config.DiscoGapicInterfaceConfig;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.config.FlatteningConfig;
@@ -64,6 +65,7 @@ import com.google.api.codegen.viewmodel.StaticLangFileView;
 import com.google.api.codegen.viewmodel.StaticLangPagedResponseView;
 import com.google.api.codegen.viewmodel.StaticLangPagedResponseWrappersView;
 import com.google.api.codegen.viewmodel.StaticLangSettingsView;
+import com.google.api.codegen.viewmodel.StaticLangStubInterfaceView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import java.io.File;
 import java.util.ArrayList;
@@ -95,6 +97,7 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
 
   private static final String API_TEMPLATE_FILENAME = "java/main.snip";
   private static final String SETTINGS_TEMPLATE_FILENAME = "java/settings.snip";
+  private static final String STUB_INTERFACE_TEMPLATE_FILENAME = "java/stub_interface.snip";
   private static final String PACKAGE_INFO_TEMPLATE_FILENAME = "java/package-info.snip";
   private static final String PAGE_STREAMING_RESPONSE_TEMPLATE_FILENAME =
       "java/page_streaming_response.snip";
@@ -110,6 +113,7 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
     return Arrays.asList(
         API_TEMPLATE_FILENAME,
         SETTINGS_TEMPLATE_FILENAME,
+        STUB_INTERFACE_TEMPLATE_FILENAME,
         PACKAGE_INFO_TEMPLATE_FILENAME,
         PAGE_STREAMING_RESPONSE_TEMPLATE_FILENAME);
   }
@@ -145,20 +149,24 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
           getExampleApiMethod(apiFile.classView().apiMethods());
       StaticLangFileView<StaticLangSettingsView> settingsFile =
           generateSettingsFile(context, exampleApiMethod);
-      surfaceDocs.add(apiFile);
-
-      StaticLangPagedResponseWrappersView pagedResponseWrappers =
-          generatePagedResponseWrappers(
-              document, productConfig, packageMetadataConfig.releaseLevel(TargetLanguage.JAVA));
-      if (pagedResponseWrappers != null) {
-        surfaceDocs.add(pagedResponseWrappers);
-      }
-
-      PackageInfoView packageInfo =
-          generatePackageInfo(document, productConfig, namer, serviceDocs);
-      surfaceDocs.add(packageInfo);
       surfaceDocs.add(settingsFile);
+      // TODO(andrealin): StaticLangStubInterfaceView
+      context = context.withNewTypeTable(namer.getStubPackageName());
+      StaticLangFileView<StaticLangStubInterfaceView> stubInterfaceFile =
+          generateStubInterfaceFile(context);
+      surfaceDocs.add(stubInterfaceFile);
     }
+
+    StaticLangPagedResponseWrappersView pagedResponseWrappers =
+        generatePagedResponseWrappers(
+            document, productConfig, packageMetadataConfig.releaseLevel(TargetLanguage.JAVA));
+    if (pagedResponseWrappers != null) {
+      surfaceDocs.add(pagedResponseWrappers);
+    }
+
+    PackageInfoView packageInfo = generatePackageInfo(document, productConfig, namer, serviceDocs);
+    surfaceDocs.add(packageInfo);
+
     return surfaceDocs;
   }
 
@@ -186,6 +194,8 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
   }
 
   private StaticLangApiView generateApiClass(DiscoGapicInterfaceContext context) {
+    SurfaceNamer namer = context.getNamer();
+    DiscoGapicInterfaceConfig interfaceConfig = context.getInterfaceConfig();
     addApiImports(context);
 
     List<StaticLangApiMethodView> methods = generateApiMethods(context);
@@ -201,8 +211,10 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
             .getNamer()
             .getReleaseAnnotation(packageMetadataConfig.releaseLevel(TargetLanguage.JAVA)));
     xapiClass.name(name);
-    xapiClass.settingsClassName(
-        context.getNamer().getApiSettingsClassName(context.getInterfaceConfig()));
+    xapiClass.settingsClassName(namer.getApiSettingsClassName(context.getInterfaceConfig()));
+    xapiClass.stubInterfaceName(namer.getApiStubInterfaceName(interfaceConfig));
+    xapiClass.stubInterfaceName(
+        getAndSaveNicknameForStubType(context, namer.getApiStubInterfaceName(interfaceConfig)));
     xapiClass.apiCallableMembers(apiCallableTransformer.generateStaticLangApiCallables(context));
     xapiClass.pathTemplates(pathTemplateTransformer.generatePathTemplates(context));
     xapiClass.formatResourceFunctions(
@@ -426,8 +438,82 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
     xsettingsClass.hasDefaultServiceScopes(interfaceConfig.hasDefaultServiceScopes());
     xsettingsClass.hasDefaultInstance(interfaceConfig.hasDefaultInstance());
     xsettingsClass.packagePath(namer.getPackagePath());
+    xsettingsClass.stubInterfaceName(
+        getAndSaveNicknameForStubType(context, namer.getApiStubInterfaceName(interfaceConfig)));
+    xsettingsClass.grpcStubClassName(
+        getAndSaveNicknameForStubType(context, namer.getApiGrpcStubClassName(interfaceConfig)));
 
     return xsettingsClass.build();
+  }
+
+  private StaticLangFileView<StaticLangStubInterfaceView> generateStubInterfaceFile(
+      DiscoGapicInterfaceContext context) {
+    StaticLangFileView.Builder<StaticLangStubInterfaceView> fileView =
+        StaticLangFileView.<StaticLangStubInterfaceView>newBuilder();
+
+    fileView.classView(generateStubInterface(context));
+    fileView.templateFileName(STUB_INTERFACE_TEMPLATE_FILENAME);
+
+    String outputPath =
+        pathMapper.getOutputPath(context.getInterfaceFullName(), context.getProductConfig());
+    String className = context.getNamer().getApiStubInterfaceName(context.getInterfaceConfig());
+    fileView.outputPath(
+        outputPath + File.separator + "stub" + File.separator + className + ".java");
+
+    // must be done as the last step to catch all imports
+    fileView.fileHeader(fileHeaderTransformer.generateFileHeader(context));
+
+    return fileView.build();
+  }
+
+  private StaticLangStubInterfaceView generateStubInterface(DiscoGapicInterfaceContext context) {
+    DiscoGapicInterfaceConfig interfaceConfig = context.getInterfaceConfig();
+
+    addStubInterfaceImports(context);
+
+    List<StaticLangApiMethodView> methods = generateApiMethods(context);
+
+    StaticLangStubInterfaceView.Builder stubInterface = StaticLangStubInterfaceView.newBuilder();
+
+    stubInterface.doc(serviceTransformer.generateServiceDoc(context, null));
+
+    String name = context.getNamer().getApiStubInterfaceName(context.getInterfaceConfig());
+    stubInterface.releaseLevelAnnotation(
+        context
+            .getNamer()
+            .getReleaseAnnotation(packageMetadataConfig.releaseLevel(TargetLanguage.JAVA)));
+    stubInterface.name(name);
+    stubInterface.callableMethods(filterIncludeCallableMethods(methods));
+    stubInterface.hasLongRunningOperations(interfaceConfig.hasLongRunningOperations());
+
+    return stubInterface.build();
+  }
+
+  private String getAndSaveNicknameForStubType(InterfaceContext context, String nickname) {
+    SurfaceNamer namer = context.getNamer();
+    ImportTypeTable typeTable = context.getImportTypeTable();
+
+    String fullyQualifiedTypeName = namer.getStubPackageName() + "." + nickname;
+    return typeTable.getAndSaveNicknameFor(fullyQualifiedTypeName);
+  }
+
+  private List<StaticLangApiMethodView> filterIncludeCallableMethods(
+      List<StaticLangApiMethodView> inMethods) {
+    List<StaticLangApiMethodView> outMethods = new ArrayList<>();
+
+    for (StaticLangApiMethodView methodView : inMethods) {
+      switch (methodView.type()) {
+        case PagedCallableMethod:
+        case UnpagedListCallableMethod:
+        case CallableMethod:
+        case OperationCallableMethod:
+          outMethods.add(methodView);
+        default:
+          // don't include
+      }
+    }
+
+    return outMethods;
   }
 
   private PackageInfoView generatePackageInfo(
@@ -523,7 +609,22 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
     }
   }
 
-  private void addPagedResponseWrapperImports(SchemaTypeTable typeTable) {
+  private void addStubInterfaceImports(DiscoGapicInterfaceContext context) {
+    ImportTypeTable typeTable = context.getImportTypeTable();
+
+    typeTable.saveNicknameFor("com.google.api.core.BetaApi");
+    typeTable.saveNicknameFor("com.google.api.gax.core.BackgroundResource");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.UnaryCallable");
+    typeTable.saveNicknameFor("javax.annotation.Generated");
+
+    DiscoGapicInterfaceConfig interfaceConfig = context.getInterfaceConfig();
+    if (interfaceConfig.hasLongRunningOperations()) {
+      typeTable.saveNicknameFor("com.google.longrunning.Operation");
+      typeTable.saveNicknameFor("com.google.longrunning.stub.OperationsStub");
+    }
+  }
+
+  private void addPagedResponseWrapperImports(ImportTypeTable typeTable) {
     typeTable.saveNicknameFor("com.google.api.core.ApiFunction");
     typeTable.saveNicknameFor("com.google.api.core.ApiFuture");
     typeTable.saveNicknameFor("com.google.api.core.ApiFutures");

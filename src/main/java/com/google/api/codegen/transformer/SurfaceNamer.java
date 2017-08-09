@@ -533,7 +533,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   public String getDirectCallableName(MethodModel method) {
-    return privateFieldName(Name.upperCamel("Direct", method.getSimpleName(), "Callable"));
+    return privateFieldName(Name.anyCamel("Direct", method.getSimpleName(), "Callable"));
   }
 
   /** The name of the settings member name for the given method. */
@@ -1196,7 +1196,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    */
   public String getGrpcMethodConstant(MethodModel method) {
     return inittedConstantName(
-        Name.from("method").join(Name.upperCamelKeepUpperAcronyms(method.getSimpleName())));
+        Name.from("method").join(Name.anyCamelKeepUpperAcronyms(method.getSimpleName())));
   }
 
   /** The keyword controlling the visiblity, eg "public", "protected". */

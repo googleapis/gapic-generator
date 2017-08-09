@@ -120,7 +120,7 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
 
   @Override
   public String getGrpcContainerTypeName() {
-    return "getGrpcContainerTypeName() not implemented for Discovery-based APIs.";
+    return "";
   }
 
   @Override

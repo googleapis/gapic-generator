@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.ApiSource;
+import com.google.api.codegen.config.DiscoGapicInterfaceConfig;
 import com.google.api.codegen.config.DiscoGapicMethodConfig;
 import com.google.api.codegen.config.DiscoveryMethodModel;
 import com.google.api.codegen.config.FlatteningConfig;
@@ -140,6 +141,16 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
         getFeatureConfig());
   }
 
+  public DiscoGapicInterfaceContext withNewTypeTable(String packageName) {
+    return createWithInterface(
+        getDocument(),
+        getInterfaceName(),
+        getProductConfig(),
+        getSchemaTypeTable().cloneEmpty(packageName),
+        getDiscoGapicNamer(),
+        getFeatureConfig());
+  }
+
   @Override
   /* Returns a list of supported methods, configured by FeatureConfig. Memoize the result. */
   public Iterable<MethodModel> getSupportedMethods() {
@@ -247,8 +258,8 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   }
 
   @Override
-  public InterfaceConfig getInterfaceConfig() {
-    return getProductConfig().getInterfaceConfig(getInterfaceName());
+  public DiscoGapicInterfaceConfig getInterfaceConfig() {
+    return (DiscoGapicInterfaceConfig) getProductConfig().getInterfaceConfig(getInterfaceName());
   }
 
   @Nullable

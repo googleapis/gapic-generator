@@ -82,6 +82,10 @@ public class Name {
     return camelInternal(CheckCase.UPPER, AcronymMode.CAMEL_CASE, pieces);
   }
 
+  public static Name anyCamelKeepUpperAcronyms(String... pieces) {
+    return camelInternal(CheckCase.NO_CHECK, AcronymMode.UPPER_CASE, pieces);
+  }
+
   public static Name upperCamelKeepUpperAcronyms(String... pieces) {
     return camelInternal(CheckCase.UPPER, AcronymMode.UPPER_CASE, pieces);
   }

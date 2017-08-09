@@ -117,6 +117,7 @@ public class InitCodeTransformer {
         .lines(new LinkedList<InitCodeLineView>())
         .topLevelLines(new LinkedList<InitCodeLineView>())
         .versionIndexFileImportName("versionIndexFileImportName")
+        .topLevelIndexFileImportName("topLevelIndexFileImportName")
         .build();
   }
 

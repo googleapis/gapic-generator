@@ -3695,6 +3695,7 @@ package com.google.cloud.fakebilling.v1;
 import com.google.api.core.BetaApi;
 import com.google.auth.Credentials;
 import static com.google.cloud.fakebilling.v1.PagedResponseWrappers.BillingAccountsListPagedResponse;
+import com.google.cloud.fakebilling.v1.stub.BillingAccountAdminStub;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -3704,7 +3705,7 @@ import javax.annotation.Generated;
 
 // AUTO-GENERATED DOCUMENTATION AND SERVICE
 /**
- * Service Description:
+ * Service Description: Test Discovery doc.
  *
  * <p>This class provides the ability to make remote calls to the backing service through method
  * calls that map to API methods. Sample code to get started:
@@ -3756,16 +3757,10 @@ import javax.annotation.Generated;
  * </code>
  * </pre>
  */
-@Generated("by GAPIC")
-public class BillingAccountAdminClient implements AutoCloseable {
+@Generated("by GAPIC v0.0.5")
+public class BillingAccountAdminClient implements BackgroundResource {
   private final BillingAccountAdminSettings settings;
-  private final ScheduledExecutorService executor;
-  private final ManagedChannel channel;
-  private final List<AutoCloseable> closeables = new ArrayList<>();
-
-  private final UnaryCallable<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse> billingAccountsListCallable;
-  private final UnaryCallable<BillingAccountsListHttpRequest, BillingAccountsListPagedResponse> billingAccountsListPagedCallable;
-  private final UnaryCallable<BillingAccountsGetHttpRequest, BillingAccountsGetHttpResponse> billingAccountsGetCallable;
+  private final BillingAccountAdminStub stub;
 
   private static final PathTemplate BILLING_ACCOUNT_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("billingAccounts/{billing_account}");
@@ -3804,52 +3799,34 @@ public class BillingAccountAdminClient implements AutoCloseable {
   }
 
   /**
+   * Constructs an instance of BillingAccountAdminClient, using the given stub for making calls. This is for
+   * advanced usage - prefer to use BillingAccountAdminSettings}.
+   */
+  public static final BillingAccountAdminClient create(BillingAccountAdminStub stub) {
+    return new BillingAccountAdminClient(stub);
+  }
+
+  /**
    * Constructs an instance of BillingAccountAdminClient, using the given settings.
-   * This is protected so that it easy to make a subclass, but otherwise, the static
+   * This is protected so that it is easy to make a subclass, but otherwise, the static
    * factory methods should be preferred.
    */
   protected BillingAccountAdminClient(BillingAccountAdminSettings settings) throws IOException {
     this.settings = settings;
-    ChannelAndExecutor channelAndExecutor = settings.getChannelAndExecutor();
-    this.executor = channelAndExecutor.getExecutor();
-    this.channel = channelAndExecutor.getChannel();
-    Credentials credentials = settings.getCredentialsProvider().getCredentials();
+    this.stub = settings.createStub();
+  }
 
-    ClientContext clientContext =
-        ClientContext.newBuilder()
-            .setExecutor(this.executor)
-            .setChannel(this.channel)
-            .setCredentials(credentials)
-            .build();
-
-
-    this.billingAccountsListCallable = UnaryCallable.create(settings.billingAccountsListSettings(), clientContext);
-    this.billingAccountsListPagedCallable =
-        UnaryCallable.createPagedVariant(settings.billingAccountsListSettings(), clientContext);
-    this.billingAccountsGetCallable = UnaryCallable.create(settings.billingAccountsGetSettings(), clientContext);
-
-    if (settings.getChannelProvider().shouldAutoClose()) {
-      closeables.add(
-        new Closeable() {
-          @Override
-          public void close() throws IOException {
-            channel.shutdown();
-          }
-        });
-    }
-    if (settings.getExecutorProvider().shouldAutoClose()) {
-      closeables.add(
-        new Closeable() {
-          @Override
-          public void close() throws IOException {
-            executor.shutdown();
-          }
-        });
-    }
+  protected BillingAccountAdminClient(BillingAccountAdminStub stub) {
+    this.settings = null;
+    this.stub = stub;
   }
 
   public final BillingAccountAdminSettings getSettings() {
     return settings;
+  }
+
+  public BillingAccountAdminStub getStub() {
+    return stub;
   }
 
 
@@ -3869,7 +3846,7 @@ public class BillingAccountAdminClient implements AutoCloseable {
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   @BetaApi
   public final BillingAccountsListPagedResponse billingAccountsList(BillingAccountsListHttpRequest request) {
@@ -3896,7 +3873,7 @@ public class BillingAccountAdminClient implements AutoCloseable {
    */
   @BetaApi
   public final UnaryCallable<BillingAccountsListHttpRequest, BillingAccountsListPagedResponse> billingAccountsListPagedCallable() {
-    return billingAccountsListPagedCallable;
+    return stub.billingAccountsListPagedCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -3925,7 +3902,7 @@ public class BillingAccountAdminClient implements AutoCloseable {
    */
   @BetaApi
   public final UnaryCallable<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse> billingAccountsListCallable() {
-    return billingAccountsListCallable;
+    return stub.billingAccountsListCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -3942,8 +3919,9 @@ public class BillingAccountAdminClient implements AutoCloseable {
    * }
    * </code></pre>
    *
-   * @param name DiscoveryField.getScopedDocumentation() not yet implemented.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @param name The resource name of the billing account to retrieve. For example,
+   * `billingAccounts/012345-567890-ABCDEF`.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   @BetaApi
   public final BillingAccount billingAccountsGet(String name) {
@@ -3970,7 +3948,7 @@ public class BillingAccountAdminClient implements AutoCloseable {
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   @BetaApi
   private final BillingAccount billingAccountsGet(BillingAccountsGetHttpRequest request) {
@@ -3995,18 +3973,37 @@ public class BillingAccountAdminClient implements AutoCloseable {
    */
   @BetaApi
   public final UnaryCallable<BillingAccountsGetHttpRequest, BillingAccountsGetHttpResponse> billingAccountsGetCallable() {
-    return billingAccountsGetCallable;
+    return stub.billingAccountsGetCallable();
   }
 
-  /**
-   * Initiates an orderly shutdown in which preexisting calls continue but new calls are immediately
-   * cancelled.
-   */
   @Override
   public final void close() throws Exception {
-    for (AutoCloseable closeable : closeables) {
-      closeable.close();
-    }
+    stub.close();
+  }
+
+  @Override
+  public void shutdown() {
+    stub.shutdown();
+  }
+
+  @Override
+  public boolean isShutdown() {
+    return stub.isShutdown();
+  }
+
+  @Override
+  public boolean isTerminated() {
+    return stub.isTerminated();
+  }
+
+  @Override
+  public void shutdownNow() {
+    stub.shutdownNow();
+  }
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+    return stub.awaitTermination(duration, unit);
   }
 
 }
@@ -4050,6 +4047,8 @@ import com.google.api.gax.grpc.UnaryCallable;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.auth.Credentials;
 import static com.google.cloud.fakebilling.v1.PagedResponseWrappers.BillingAccountsListPagedResponse;
+import com.google.cloud.fakebilling.v1.stub.BillingAccountAdminStub;
+import com.google.cloud.fakebilling.v1.stub.GrpcBillingAccountAdminStub;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -4102,26 +4101,13 @@ public class BillingAccountAdminSettings extends ClientSettings {
   private static final String DEFAULT_GAPIC_NAME = "gapic";
   private static final String DEFAULT_GAPIC_VERSION = "";
 
-  private static final String PROPERTIES_FILE = "/com/google/cloud/fakebilling/v1/project.properties";
+  private static final String PROPERTIES_FILE = "/com/google/cloud/fakebilling/project.properties";
   private static final String META_VERSION_KEY = "artifact.version";
 
   private static String gapicVersion;
 
-  private static final io.grpc.MethodDescriptor<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse> getGrpcMethodConstant() not implemented for Discovery-based APIs. =
-        io.grpc.MethodDescriptor.create(
-            io.grpc.MethodDescriptor.MethodType.UNARY,
-            "Full service name./fakebilling.billingAccounts.list",
-            io.grpc.protobuf.ProtoUtils.marshaller(BillingAccountsListHttpRequest.getDefaultInstance()),
-            io.grpc.protobuf.ProtoUtils.marshaller(BillingAccountsListHttpResponse.getDefaultInstance()));
-  private static final io.grpc.MethodDescriptor<BillingAccountsGetHttpRequest, BillingAccount> Grpc not used in Discovery-based method. =
-        io.grpc.MethodDescriptor.create(
-            io.grpc.MethodDescriptor.MethodType.UNARY,
-            "Full service name./fakebilling.billingAccounts.get",
-            io.grpc.protobuf.ProtoUtils.marshaller(BillingAccountsGetHttpRequest.getDefaultInstance()),
-            io.grpc.protobuf.ProtoUtils.marshaller(BillingAccountsGetHttpResponse.getDefaultInstance()));
-
-  private final PagedCallSettings<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse, FakebillingBillingAccountsListPagedResponse> fakebillingBillingAccountsListSettings;
-  private final SimpleCallSettings<BillingAccountsGetHttpRequest, BillingAccountsGetHttpResponse> fakebillingBillingAccountsGetSettings;
+  private final PagedCallSettings<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse, BillingAccountsListPagedResponse> billingAccountsListSettings;
+  private final SimpleCallSettings<BillingAccountsGetHttpRequest, BillingAccountsGetHttpResponse> billingAccountsGetSettings;
 
   /**
    * Returns the object with the settings used for calls to billingAccountsList.
@@ -4137,6 +4123,15 @@ public class BillingAccountAdminSettings extends ClientSettings {
     return billingAccountsGetSettings;
   }
 
+
+  public BillingAccountAdminStub createStub() throws IOException {
+    if (getTransportProvider().getTransportName().equals(GrpcTransport.getGrpcTransportName())) {
+      return GrpcBillingAccountAdminStub.create(this);
+    } else {
+      throw new UnsupportedOperationException(
+          "Transport not supported: " + getTransportProvider().getTransportName());
+    }
+  }
 
   /**
    * Returns a builder for the default ExecutorProvider for this service.
@@ -4171,10 +4166,20 @@ public class BillingAccountAdminSettings extends ClientSettings {
   }
 
   /** Returns a builder for the default ChannelProvider for this service. */
-  public static InstantiatingChannelProvider.Builder defaultChannelProviderBuilder() {
+  public static InstantiatingChannelProvider.Builder defaultGrpcChannelProviderBuilder() {
     return InstantiatingChannelProvider.newBuilder()
         .setEndpoint(getDefaultEndpoint())
         .setGeneratorHeader(DEFAULT_GAPIC_NAME, getGapicVersion());
+  }
+
+  /** Returns a builder for the default ChannelProvider for this service. */
+  public static GrpcTransportProvider.Builder defaultGrpcTransportProviderBuilder() {
+    return GrpcTransportProvider.newBuilder()
+        .setChannelProvider(defaultGrpcChannelProviderBuilder().build());
+  }
+
+  public static TransportProvider defaultTransportProvider() {
+    return defaultGrpcTransportProviderBuilder().build();
   }
 
   private static String getGapicVersion() {
@@ -4194,10 +4199,25 @@ public class BillingAccountAdminSettings extends ClientSettings {
   }
 
   /**
+   * Returns a builder for this class with recommended defaults for API methods, and the given
+   * ClientContext used for executor/transport/credentials.
+   */
+  public static Builder defaultBuilder(ClientContext clientContext) {
+    return new Builder(clientContext);
+  }
+
+  /**
    * Returns a new builder for this class.
    */
   public static Builder newBuilder() {
     return new Builder();
+  }
+
+  /**
+   * Returns a new builder for this class.
+   */
+  public static Builder newBuilder(ClientContext clientContext) {
+    return new Builder(clientContext);
   }
 
   /**
@@ -4208,9 +4228,11 @@ public class BillingAccountAdminSettings extends ClientSettings {
   }
 
   private BillingAccountAdminSettings(Builder settingsBuilder) throws IOException {
-    super(settingsBuilder.getExecutorProvider(),
-          settingsBuilder.getChannelProvider(),
-          settingsBuilder.getCredentialsProvider());
+    super(
+        settingsBuilder.getExecutorProvider(),
+        settingsBuilder.getTransportProvider(),
+        settingsBuilder.getCredentialsProvider(),
+        settingsBuilder.getClock());
 
     billingAccountsListSettings = settingsBuilder.billingAccountsListSettings().build();
     billingAccountsGetSettings = settingsBuilder.billingAccountsGetSettings().build();
@@ -4250,13 +4272,13 @@ public class BillingAccountAdminSettings extends ClientSettings {
         }
       };
 
-  private static final PagedListResponseFactory<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse, FakebillingBillingAccountsListPagedResponse> FAKEBILLING_BILLING_ACCOUNTS_LIST_PAGE_STR_FACT =
-      new PagedListResponseFactory<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse, FakebillingBillingAccountsListPagedResponse>() {
+  private static final PagedListResponseFactory<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse, BillingAccountsListPagedResponse> BILLING_ACCOUNTS_LIST_PAGE_STR_FACT =
+      new PagedListResponseFactory<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse, BillingAccountsListPagedResponse>() {
         @Override
         public ApiFuture<BillingAccountsListPagedResponse> getFuturePagedResponse(
             UnaryCallable<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse> callable,
             BillingAccountsListHttpRequest request,
-            CallContext context,
+            ApiCallContext context,
             ApiFuture<BillingAccountsListHttpResponse> futureResponse) {
           PageContext<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse, ListBillingAccountsResponse> pageContext =
               PageContext.create(callable, BILLING_ACCOUNTS_LIST_PAGE_STR_DESC, request, context);
@@ -4274,59 +4296,70 @@ public class BillingAccountAdminSettings extends ClientSettings {
     private final PagedCallSettings.Builder<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse, BillingAccountsListPagedResponse> billingAccountsListSettings;
     private final SimpleCallSettings.Builder<BillingAccountsGetHttpRequest, BillingAccountsGetHttpResponse> billingAccountsGetSettings;
 
-    private static final ImmutableMap<String, ImmutableSet<Status.Code>> RETRYABLE_CODE_DEFINITIONS;
+    private static final ImmutableMap<String, ImmutableSet<StatusCode>> RETRYABLE_CODE_DEFINITIONS;
 
     static {
-      ImmutableMap.Builder<String, ImmutableSet<Status.Code>> definitions = ImmutableMap.builder();
+      ImmutableMap.Builder<String, ImmutableSet<StatusCode>> definitions = ImmutableMap.builder();
       definitions.put(
           "idempotent",
-          Sets.immutableEnumSet(Lists.<Status.Code>newArrayList(Status.Code.DEADLINE_EXCEEDED, Status.Code.UNAVAILABLE)));
+          ImmutableSet.copyOf(Lists.<StatusCode>newArrayList(GrpcStatusCode.of(Status.Code.DEADLINE_EXCEEDED), GrpcStatusCode.of(Status.Code.UNAVAILABLE))));
       RETRYABLE_CODE_DEFINITIONS = definitions.build();
     }
 
-    private static final ImmutableMap<String, RetrySettings.Builder> RETRY_PARAM_DEFINITIONS;
+    private static final ImmutableMap<String, RetrySettings> RETRY_PARAM_DEFINITIONS;
 
     static {
-      ImmutableMap.Builder<String, RetrySettings.Builder> definitions = ImmutableMap.builder();
-      RetrySettings.Builder settingsBuilder = null;
-      settingsBuilder = RetrySettings.newBuilder()
+      ImmutableMap.Builder<String, RetrySettings> definitions = ImmutableMap.builder();
+      RetrySettings settings = null;
+      settings = RetrySettings.newBuilder()
           .setInitialRetryDelay(Duration.ofMillis(100L))
           .setRetryDelayMultiplier(1.3)
           .setMaxRetryDelay(Duration.ofMillis(60000L))
           .setInitialRpcTimeout(Duration.ofMillis(60000L))
           .setRpcTimeoutMultiplier(1.0)
           .setMaxRpcTimeout(Duration.ofMillis(60000L))
-          .setTotalTimeout(Duration.ofMillis(600000L));
-      definitions.put("default", settingsBuilder);
+          .setTotalTimeout(Duration.ofMillis(600000L))
+          .build();
+      definitions.put("default", settings);
       RETRY_PARAM_DEFINITIONS = definitions.build();
     }
 
     private Builder() {
-      super(defaultChannelProviderBuilder().build());
-      setCredentialsProvider(defaultCredentialsProviderBuilder().build());
+      this((ClientContext) null);
+    }
+
+    private Builder(ClientContext clientContext) {
+      super(clientContext);
 
       billingAccountsListSettings = PagedCallSettings.newBuilder(
-          Grpc not used in Discovery-based method.,
           BILLING_ACCOUNTS_LIST_PAGE_STR_FACT);
 
-      fakebillingBillingAccountsGetSettings = SimpleCallSettings.newBuilder(Grpc not used in Discovery-based method.);
+      billingAccountsGetSettings = SimpleCallSettings.newBuilder();
 
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder>of(
           billingAccountsListSettings,
           billingAccountsGetSettings
       );
+
+      initDefaults(this);
     }
 
     private static Builder createDefault() {
-      Builder builder = new Builder();
+      Builder builder = new Builder((ClientContext) null);
+      builder.setTransportProvider(defaultTransportProvider());
+      builder.setCredentialsProvider(defaultCredentialsProviderBuilder().build());
+      return initDefaults(builder);
+    }
+
+    private static Builder initDefaults(Builder builder) {
 
       builder.billingAccountsListSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
-          .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
+          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.billingAccountsGetSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
-          .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
+          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       return builder;
     }
@@ -4350,8 +4383,8 @@ public class BillingAccountAdminSettings extends ClientSettings {
     }
 
     @Override
-    public Builder setChannelProvider(ChannelProvider channelProvider) {
-      super.setChannelProvider(channelProvider);
+    public Builder setTransportProvider(TransportProvider transportProvider) {
+      super.setTransportProvider(transportProvider);
       return this;
     }
 
@@ -4362,14 +4395,12 @@ public class BillingAccountAdminSettings extends ClientSettings {
     }
 
     /**
-     * Applies the given settings to all of the unary API methods in this service. Only
-     * values that are non-null will be applied, so this method is not capable
-     * of un-setting any values.
+     * Applies the given settings updater function to all of the unary API methods in this service.
      *
      * Note: This method does not support applying settings to streaming methods.
      */
-    public Builder applyToAllUnaryMethods(UnaryCallSettings.Builder unaryCallSettings) throws Exception {
-      super.applyToAllUnaryMethods(unaryMethodSettingsBuilders, unaryCallSettings);
+    public Builder applyToAllUnaryMethods(ApiFunction<UnaryCallSettings.Builder, Void> settingsUpdater) throws Exception {
+      super.applyToAllUnaryMethods(unaryMethodSettingsBuilders, settingsUpdater);
       return this;
     }
 
@@ -4393,6 +4424,58 @@ public class BillingAccountAdminSettings extends ClientSettings {
     }
   }
 }
+============== file: src/main/java/com/google/cloud/fakebilling/v1/stub/BillingAccountAdminStub.java ==============
+/*
+ * Copyright 2017, Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.fakebilling.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.fakebilling.v1.BillingAccount;
+import com.google.cloud.fakebilling.v1.ListBillingAccountsResponse;
+import static com.google.cloud.fakebilling.v1.PagedResponseWrappers.BillingAccountsListPagedResponse;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS
+/**
+ * Base stub class for fakebilling.
+ *
+ * <p>This class is for advanced usage and reflects the underlying API directly.
+ */
+@Generated("by GAPIC v0.0.5")
+public abstract class BillingAccountAdminStub implements BackgroundResource {
+
+
+  @BetaApi
+  public UnaryCallable<BillingAccountsListHttpRequest, BillingAccountsListPagedResponse> billingAccountsListPagedCallable() {
+    throw new UnsupportedOperationException("Not implemented: billingAccountsListPagedCallable()");
+  }
+
+  @BetaApi
+  public UnaryCallable<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse> billingAccountsListCallable() {
+    throw new UnsupportedOperationException("Not implemented: billingAccountsListCallable()");
+  }
+
+  @BetaApi
+  public UnaryCallable<BillingAccountsGetHttpRequest, BillingAccountsGetHttpResponse> billingAccountsGetCallable() {
+    throw new UnsupportedOperationException("Not implemented: billingAccountsGetCallable()");
+  }
+
+}
 ============== file: src/main/java/com/google/cloud/fakebilling/v1/ProjectAdminClient.java ==============
 /*
  * Copyright 2017, Google Inc. All rights reserved.
@@ -4413,6 +4496,7 @@ package com.google.cloud.fakebilling.v1;
 
 import com.google.api.core.BetaApi;
 import com.google.auth.Credentials;
+import com.google.cloud.fakebilling.v1.stub.ProjectAdminStub;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -4422,7 +4506,8 @@ import javax.annotation.Generated;
 
 // AUTO-GENERATED DOCUMENTATION AND SERVICE
 /**
- * Service Description:
+ * Service Description: Test Discovery doc.
+ *
  * Configure billing projects.
  *
  * <p>This class provides the ability to make remote calls to the backing service through method
@@ -4475,15 +4560,10 @@ import javax.annotation.Generated;
  * </code>
  * </pre>
  */
-@Generated("by GAPIC")
-public class ProjectAdminClient implements AutoCloseable {
+@Generated("by GAPIC v0.0.5")
+public class ProjectAdminClient implements BackgroundResource {
   private final ProjectAdminSettings settings;
-  private final ScheduledExecutorService executor;
-  private final ManagedChannel channel;
-  private final List<AutoCloseable> closeables = new ArrayList<>();
-
-  private final UnaryCallable<ProjectsUpdateBillingInfoHttpRequest, ProjectsUpdateBillingInfoHttpResponse> projectsUpdateBillingInfoCallable;
-  private final UnaryCallable<ProjectsGetBillingInfoHttpRequest, ProjectsGetBillingInfoHttpResponse> projectsGetBillingInfoCallable;
+  private final ProjectAdminStub stub;
 
   private static final PathTemplate PROJECT_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("projects/{project}");
@@ -4522,50 +4602,34 @@ public class ProjectAdminClient implements AutoCloseable {
   }
 
   /**
+   * Constructs an instance of ProjectAdminClient, using the given stub for making calls. This is for
+   * advanced usage - prefer to use ProjectAdminSettings}.
+   */
+  public static final ProjectAdminClient create(ProjectAdminStub stub) {
+    return new ProjectAdminClient(stub);
+  }
+
+  /**
    * Constructs an instance of ProjectAdminClient, using the given settings.
-   * This is protected so that it easy to make a subclass, but otherwise, the static
+   * This is protected so that it is easy to make a subclass, but otherwise, the static
    * factory methods should be preferred.
    */
   protected ProjectAdminClient(ProjectAdminSettings settings) throws IOException {
     this.settings = settings;
-    ChannelAndExecutor channelAndExecutor = settings.getChannelAndExecutor();
-    this.executor = channelAndExecutor.getExecutor();
-    this.channel = channelAndExecutor.getChannel();
-    Credentials credentials = settings.getCredentialsProvider().getCredentials();
+    this.stub = settings.createStub();
+  }
 
-    ClientContext clientContext =
-        ClientContext.newBuilder()
-            .setExecutor(this.executor)
-            .setChannel(this.channel)
-            .setCredentials(credentials)
-            .build();
-
-
-    this.projectsUpdateBillingInfoCallable = UnaryCallable.create(settings.projectsUpdateBillingInfoSettings(), clientContext);
-    this.projectsGetBillingInfoCallable = UnaryCallable.create(settings.projectsGetBillingInfoSettings(), clientContext);
-
-    if (settings.getChannelProvider().shouldAutoClose()) {
-      closeables.add(
-        new Closeable() {
-          @Override
-          public void close() throws IOException {
-            channel.shutdown();
-          }
-        });
-    }
-    if (settings.getExecutorProvider().shouldAutoClose()) {
-      closeables.add(
-        new Closeable() {
-          @Override
-          public void close() throws IOException {
-            executor.shutdown();
-          }
-        });
-    }
+  protected ProjectAdminClient(ProjectAdminStub stub) {
+    this.settings = null;
+    this.stub = stub;
   }
 
   public final ProjectAdminSettings getSettings() {
     return settings;
+  }
+
+  public ProjectAdminStub getStub() {
+    return stub;
   }
 
 
@@ -4612,7 +4676,7 @@ public class ProjectAdminClient implements AutoCloseable {
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   @BetaApi
   public final ProjectBillingInfo projectsUpdateBillingInfo(ProjectsUpdateBillingInfoHttpRequest request) {
@@ -4665,7 +4729,7 @@ public class ProjectAdminClient implements AutoCloseable {
    */
   @BetaApi
   public final UnaryCallable<ProjectsUpdateBillingInfoHttpRequest, ProjectsUpdateBillingInfoHttpResponse> projectsUpdateBillingInfoCallable() {
-    return projectsUpdateBillingInfoCallable;
+    return stub.projectsUpdateBillingInfoCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -4684,7 +4748,7 @@ public class ProjectAdminClient implements AutoCloseable {
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
-   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   @BetaApi
   public final ProjectBillingInfo projectsGetBillingInfo(ProjectsGetBillingInfoHttpRequest request) {
@@ -4710,18 +4774,37 @@ public class ProjectAdminClient implements AutoCloseable {
    */
   @BetaApi
   public final UnaryCallable<ProjectsGetBillingInfoHttpRequest, ProjectsGetBillingInfoHttpResponse> projectsGetBillingInfoCallable() {
-    return projectsGetBillingInfoCallable;
+    return stub.projectsGetBillingInfoCallable();
   }
 
-  /**
-   * Initiates an orderly shutdown in which preexisting calls continue but new calls are immediately
-   * cancelled.
-   */
   @Override
   public final void close() throws Exception {
-    for (AutoCloseable closeable : closeables) {
-      closeable.close();
-    }
+    stub.close();
+  }
+
+  @Override
+  public void shutdown() {
+    stub.shutdown();
+  }
+
+  @Override
+  public boolean isShutdown() {
+    return stub.isShutdown();
+  }
+
+  @Override
+  public boolean isTerminated() {
+    return stub.isTerminated();
+  }
+
+  @Override
+  public void shutdownNow() {
+    stub.shutdownNow();
+  }
+
+  @Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+    return stub.awaitTermination(duration, unit);
   }
 
 }
@@ -4757,6 +4840,8 @@ import com.google.api.gax.grpc.SimpleCallSettings;
 import com.google.api.gax.grpc.UnaryCallSettings;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.auth.Credentials;
+import com.google.cloud.fakebilling.v1.stub.GrpcProjectAdminStub;
+import com.google.cloud.fakebilling.v1.stub.ProjectAdminStub;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -4809,26 +4894,13 @@ public class ProjectAdminSettings extends ClientSettings {
   private static final String DEFAULT_GAPIC_NAME = "gapic";
   private static final String DEFAULT_GAPIC_VERSION = "";
 
-  private static final String PROPERTIES_FILE = "/com/google/cloud/fakebilling/v1/project.properties";
+  private static final String PROPERTIES_FILE = "/com/google/cloud/fakebilling/project.properties";
   private static final String META_VERSION_KEY = "artifact.version";
 
   private static String gapicVersion;
 
-  private static final io.grpc.MethodDescriptor<ProjectsUpdateBillingInfoHttpRequest, ProjectsUpdateBillingInfoHttpResponse> getGrpcMethodConstant() not implemented for Discovery-based APIs. =
-        io.grpc.MethodDescriptor.create(
-            io.grpc.MethodDescriptor.MethodType.UNARY,
-            "Full service name./fakebilling.projects.updateBillingInfo",
-            io.grpc.protobuf.ProtoUtils.marshaller(projectsUpdateBillingInfoHttpRequest.getDefaultInstance()),
-            io.grpc.protobuf.ProtoUtils.marshaller(ProjectBillingInfo.getDefaultInstance()));
-  private static final io.grpc.MethodDescriptor<projectsGetBillingInfoHttpRequest, ProjectBillingInfo> Grpc not used in Discovery-based method. =
-        io.grpc.MethodDescriptor.create(
-            io.grpc.MethodDescriptor.MethodType.UNARY,
-            "Full service name./fakebilling.projects.getBillingInfo",
-            io.grpc.protobuf.ProtoUtils.marshaller(projectsGetBillingInfoHttpRequest.getDefaultInstance()),
-            io.grpc.protobuf.ProtoUtils.marshaller(ProjectBillingInfo.getDefaultInstance()));
-
-  private final SimpleCallSettings<ProjectsUpdateBillingInfoHttpRequest, ProjectsUpdateBillingInfoHttpResponse> fakebillingProjectsUpdateBillingInfoSettings;
-  private final SimpleCallSettings<ProjectsGetBillingInfoHttpRequest, ProjectsGetBillingInfoHttpResponse> fakebillingProjectsGetBillingInfoSettings;
+  private final SimpleCallSettings<ProjectsUpdateBillingInfoHttpRequest, ProjectsUpdateBillingInfoHttpResponse> projectsUpdateBillingInfoSettings;
+  private final SimpleCallSettings<ProjectsGetBillingInfoHttpRequest, ProjectsGetBillingInfoHttpResponse> projectsGetBillingInfoSettings;
 
   /**
    * Returns the object with the settings used for calls to projectsUpdateBillingInfo.
@@ -4844,6 +4916,15 @@ public class ProjectAdminSettings extends ClientSettings {
     return projectsGetBillingInfoSettings;
   }
 
+
+  public ProjectAdminStub createStub() throws IOException {
+    if (getTransportProvider().getTransportName().equals(GrpcTransport.getGrpcTransportName())) {
+      return GrpcProjectAdminStub.create(this);
+    } else {
+      throw new UnsupportedOperationException(
+          "Transport not supported: " + getTransportProvider().getTransportName());
+    }
+  }
 
   /**
    * Returns a builder for the default ExecutorProvider for this service.
@@ -4878,10 +4959,20 @@ public class ProjectAdminSettings extends ClientSettings {
   }
 
   /** Returns a builder for the default ChannelProvider for this service. */
-  public static InstantiatingChannelProvider.Builder defaultChannelProviderBuilder() {
+  public static InstantiatingChannelProvider.Builder defaultGrpcChannelProviderBuilder() {
     return InstantiatingChannelProvider.newBuilder()
         .setEndpoint(getDefaultEndpoint())
         .setGeneratorHeader(DEFAULT_GAPIC_NAME, getGapicVersion());
+  }
+
+  /** Returns a builder for the default ChannelProvider for this service. */
+  public static GrpcTransportProvider.Builder defaultGrpcTransportProviderBuilder() {
+    return GrpcTransportProvider.newBuilder()
+        .setChannelProvider(defaultGrpcChannelProviderBuilder().build());
+  }
+
+  public static TransportProvider defaultTransportProvider() {
+    return defaultGrpcTransportProviderBuilder().build();
   }
 
   private static String getGapicVersion() {
@@ -4901,10 +4992,25 @@ public class ProjectAdminSettings extends ClientSettings {
   }
 
   /**
+   * Returns a builder for this class with recommended defaults for API methods, and the given
+   * ClientContext used for executor/transport/credentials.
+   */
+  public static Builder defaultBuilder(ClientContext clientContext) {
+    return new Builder(clientContext);
+  }
+
+  /**
    * Returns a new builder for this class.
    */
   public static Builder newBuilder() {
     return new Builder();
+  }
+
+  /**
+   * Returns a new builder for this class.
+   */
+  public static Builder newBuilder(ClientContext clientContext) {
+    return new Builder(clientContext);
   }
 
   /**
@@ -4915,9 +5021,11 @@ public class ProjectAdminSettings extends ClientSettings {
   }
 
   private ProjectAdminSettings(Builder settingsBuilder) throws IOException {
-    super(settingsBuilder.getExecutorProvider(),
-          settingsBuilder.getChannelProvider(),
-          settingsBuilder.getCredentialsProvider());
+    super(
+        settingsBuilder.getExecutorProvider(),
+        settingsBuilder.getTransportProvider(),
+        settingsBuilder.getCredentialsProvider(),
+        settingsBuilder.getClock());
 
     projectsUpdateBillingInfoSettings = settingsBuilder.projectsUpdateBillingInfoSettings().build();
     projectsGetBillingInfoSettings = settingsBuilder.projectsGetBillingInfoSettings().build();
@@ -4935,57 +5043,69 @@ public class ProjectAdminSettings extends ClientSettings {
     private final SimpleCallSettings.Builder<ProjectsUpdateBillingInfoHttpRequest, ProjectsUpdateBillingInfoHttpResponse> projectsUpdateBillingInfoSettings;
     private final SimpleCallSettings.Builder<ProjectsGetBillingInfoHttpRequest, ProjectsGetBillingInfoHttpResponse> projectsGetBillingInfoSettings;
 
-    private static final ImmutableMap<String, ImmutableSet<Status.Code>> RETRYABLE_CODE_DEFINITIONS;
+    private static final ImmutableMap<String, ImmutableSet<StatusCode>> RETRYABLE_CODE_DEFINITIONS;
 
     static {
-      ImmutableMap.Builder<String, ImmutableSet<Status.Code>> definitions = ImmutableMap.builder();
+      ImmutableMap.Builder<String, ImmutableSet<StatusCode>> definitions = ImmutableMap.builder();
       definitions.put(
           "idempotent",
-          Sets.immutableEnumSet(Lists.<Status.Code>newArrayList(Status.Code.DEADLINE_EXCEEDED, Status.Code.UNAVAILABLE)));
+          ImmutableSet.copyOf(Lists.<StatusCode>newArrayList(GrpcStatusCode.of(Status.Code.DEADLINE_EXCEEDED), GrpcStatusCode.of(Status.Code.UNAVAILABLE))));
       RETRYABLE_CODE_DEFINITIONS = definitions.build();
     }
 
-    private static final ImmutableMap<String, RetrySettings.Builder> RETRY_PARAM_DEFINITIONS;
+    private static final ImmutableMap<String, RetrySettings> RETRY_PARAM_DEFINITIONS;
 
     static {
-      ImmutableMap.Builder<String, RetrySettings.Builder> definitions = ImmutableMap.builder();
-      RetrySettings.Builder settingsBuilder = null;
-      settingsBuilder = RetrySettings.newBuilder()
+      ImmutableMap.Builder<String, RetrySettings> definitions = ImmutableMap.builder();
+      RetrySettings settings = null;
+      settings = RetrySettings.newBuilder()
           .setInitialRetryDelay(Duration.ofMillis(100L))
           .setRetryDelayMultiplier(1.3)
           .setMaxRetryDelay(Duration.ofMillis(60000L))
           .setInitialRpcTimeout(Duration.ofMillis(60000L))
           .setRpcTimeoutMultiplier(1.0)
           .setMaxRpcTimeout(Duration.ofMillis(60000L))
-          .setTotalTimeout(Duration.ofMillis(600000L));
-      definitions.put("default", settingsBuilder);
+          .setTotalTimeout(Duration.ofMillis(600000L))
+          .build();
+      definitions.put("default", settings);
       RETRY_PARAM_DEFINITIONS = definitions.build();
     }
 
     private Builder() {
-      super(defaultChannelProviderBuilder().build());
-      setCredentialsProvider(defaultCredentialsProviderBuilder().build());
+      this((ClientContext) null);
+    }
 
-      fakebillingProjectsUpdateBillingInfoSettings = SimpleCallSettings.newBuilder(Grpc not used in Discovery-based method.);
+    private Builder(ClientContext clientContext) {
+      super(clientContext);
 
-      fakebillingProjectsGetBillingInfoSettings = SimpleCallSettings.newBuilder(Grpc not used in Discovery-based method.);
+      projectsUpdateBillingInfoSettings = SimpleCallSettings.newBuilder();
+
+      projectsGetBillingInfoSettings = SimpleCallSettings.newBuilder();
 
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder>of(
           projectsUpdateBillingInfoSettings,
           projectsGetBillingInfoSettings
       );
+
+      initDefaults(this);
     }
 
     private static Builder createDefault() {
-      Builder builder = new Builder();
+      Builder builder = new Builder((ClientContext) null);
+      builder.setTransportProvider(defaultTransportProvider());
+      builder.setCredentialsProvider(defaultCredentialsProviderBuilder().build());
+      return initDefaults(builder);
+    }
+
+    private static Builder initDefaults(Builder builder) {
 
       builder.projectsUpdateBillingInfoSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
-          .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
+          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.projectsGetBillingInfoSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
-          .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
+          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
       return builder;
     }
@@ -5009,8 +5129,8 @@ public class ProjectAdminSettings extends ClientSettings {
     }
 
     @Override
-    public Builder setChannelProvider(ChannelProvider channelProvider) {
-      super.setChannelProvider(channelProvider);
+    public Builder setTransportProvider(TransportProvider transportProvider) {
+      super.setTransportProvider(transportProvider);
       return this;
     }
 
@@ -5021,14 +5141,12 @@ public class ProjectAdminSettings extends ClientSettings {
     }
 
     /**
-     * Applies the given settings to all of the unary API methods in this service. Only
-     * values that are non-null will be applied, so this method is not capable
-     * of un-setting any values.
+     * Applies the given settings updater function to all of the unary API methods in this service.
      *
      * Note: This method does not support applying settings to streaming methods.
      */
-    public Builder applyToAllUnaryMethods(UnaryCallSettings.Builder unaryCallSettings) throws Exception {
-      super.applyToAllUnaryMethods(unaryMethodSettingsBuilders, unaryCallSettings);
+    public Builder applyToAllUnaryMethods(ApiFunction<UnaryCallSettings.Builder, Void> settingsUpdater) throws Exception {
+      super.applyToAllUnaryMethods(unaryMethodSettingsBuilders, settingsUpdater);
       return this;
     }
 
@@ -5051,6 +5169,51 @@ public class ProjectAdminSettings extends ClientSettings {
       return new ProjectAdminSettings(this);
     }
   }
+}
+============== file: src/main/java/com/google/cloud/fakebilling/v1/stub/ProjectAdminStub.java ==============
+/*
+ * Copyright 2017, Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.fakebilling.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.cloud.fakebilling.v1.ProjectBillingInfo;
+import javax.annotation.Generated;
+
+// AUTO-GENERATED DOCUMENTATION AND CLASS
+/**
+ * Base stub class for fakebilling.
+ *
+ * <p>This class is for advanced usage and reflects the underlying API directly.
+ */
+@Generated("by GAPIC v0.0.5")
+public abstract class ProjectAdminStub implements BackgroundResource {
+
+
+  @BetaApi
+  public UnaryCallable<ProjectsUpdateBillingInfoHttpRequest, ProjectsUpdateBillingInfoHttpResponse> projectsUpdateBillingInfoCallable() {
+    throw new UnsupportedOperationException("Not implemented: projectsUpdateBillingInfoCallable()");
+  }
+
+  @BetaApi
+  public UnaryCallable<ProjectsGetBillingInfoHttpRequest, ProjectsGetBillingInfoHttpResponse> projectsGetBillingInfoCallable() {
+    throw new UnsupportedOperationException("Not implemented: projectsGetBillingInfoCallable()");
+  }
+
 }
 ============== file: src/main/java/com/google/cloud/fakebilling/v1/PagedResponseWrappers.java ==============
 /*
@@ -5150,7 +5313,7 @@ public class PagedResponseWrappers {
     }
 
     @Override
-    protected ApiFuture<BillingAccountsListPage> createPageAsync(
+    public ApiFuture<BillingAccountsListPage> createPageAsync(
         PageContext<BillingAccountsListHttpRequest, BillingAccountsListHttpResponse, ListBillingAccountsResponse> context,
         ApiFuture<BillingAccountsListHttpResponse> futureResponse) {
       return super.createPageAsync(context, futureResponse);
@@ -5212,7 +5375,7 @@ public class PagedResponseWrappers {
  * BillingAccountAdminClient
  * =========================
  *
- * Service Description:
+ * Service Description: Test Discovery doc.
  *
  * Sample for BillingAccountAdminClient:
  * <pre>
@@ -5228,7 +5391,8 @@ public class PagedResponseWrappers {
  * ProjectAdminClient
  * ==================
  *
- * Service Description:
+ * Service Description: Test Discovery doc.
+ *
  * Configure billing projects.
  *
  * Sample for ProjectAdminClient:

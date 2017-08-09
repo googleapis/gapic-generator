@@ -27,6 +27,7 @@ import com.google.api.codegen.discovery.Schema.Type;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.DiscoGapicInterfaceContext;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
+import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.SchemaTypeTable;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.java.JavaFeatureConfig;
@@ -211,7 +212,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     return schemaView.build();
   }
 
-  private void addApiImports(SchemaTypeTable typeTable) {
+  private void addApiImports(ImportTypeTable typeTable) {
     typeTable.getAndSaveNicknameFor("com.google.api.core.BetaApi");
     typeTable.getAndSaveNicknameFor("com.google.api.gax.core.ApiMessage");
     typeTable.getAndSaveNicknameFor("com.google.common.collect.ImmutableList");
