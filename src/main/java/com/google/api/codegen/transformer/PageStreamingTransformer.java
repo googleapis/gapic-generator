@@ -134,6 +134,7 @@ public class PageStreamingTransformer {
     SurfaceNamer namer = context.getNamer();
     MethodModel method = context.getMethodModel();
     PageStreamingConfig pageStreaming = context.getMethodConfig().getPageStreaming();
+    FieldType resourceField = pageStreaming.getResourcesField();
     FieldConfig resourceFieldConfig = pageStreaming.getResourcesFieldConfig();
 
     PagedListResponseFactoryClassView.Builder factory =
@@ -148,7 +149,8 @@ public class PageStreamingTransformer {
         context
             .getMethodModel()
             .getAndSaveResponseTypeName(context.getTypeTable(), context.getNamer()));
-    factory.resourceTypeName(namer.getAndSavePagedResponseTypeName(context, resourceFieldConfig));
+    factory.resourceTypeName(
+        context.getTypeTable().getAndSaveNicknameForElementType(resourceField));
     factory.pagedListResponseTypeName(
         namer.getAndSavePagedResponseTypeName(context, resourceFieldConfig));
     factory.pageStreamingDescriptorName(namer.getPageStreamingDescriptorConstName(method));

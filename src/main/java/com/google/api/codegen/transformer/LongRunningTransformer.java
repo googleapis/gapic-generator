@@ -17,23 +17,11 @@ package com.google.api.codegen.transformer;
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.LongRunningConfig;
 import com.google.api.codegen.config.MethodConfig;
-import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
-import com.google.common.collect.ImmutableList;
-import java.util.List;
 
 public class LongRunningTransformer {
-  public List<LongRunningOperationDetailView> generateDetailViews(InterfaceContext context) {
-    ImmutableList.Builder<LongRunningOperationDetailView> views = ImmutableList.builder();
-    for (MethodModel method : context.getLongRunningMethods()) {
-      // TODO(andrealin): Remove casting.
-      views.add(generateDetailView(context.asDynamicMethodContext(method)));
-    }
-    return views.build();
-  }
-
-  public LongRunningOperationDetailView generateDetailView(MethodContext context) {
+  LongRunningOperationDetailView generateDetailView(MethodContext context) {
     MethodConfig methodConfig = context.getMethodConfig();
     LongRunningConfig lroConfig = methodConfig.getLongRunningConfig();
     SurfaceNamer namer = context.getNamer();

@@ -297,13 +297,9 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     pagedResponseWrapper.fixedSizeCollectionTypeName(
         context.getNamer().getFixedSizeCollectionTypeInnerName(method, typeTable, resourceField));
     pagedResponseWrapper.requestTypeName(
-        context
-            .getMethodModel()
-            .getAndSaveRequestTypeName(context.getTypeTable(), context.getNamer()));
+        method.getAndSaveRequestTypeName(context.getTypeTable(), context.getNamer()));
     pagedResponseWrapper.responseTypeName(
-        context
-            .getMethodModel()
-            .getAndSaveResponseTypeName(context.getTypeTable(), context.getNamer()));
+        method.getAndSaveResponseTypeName(context.getTypeTable(), context.getNamer()));
     pagedResponseWrapper.resourceTypeName(
         typeTable.getAndSaveNicknameForElementType(resourceField));
     pagedResponseWrapper.iterateMethods(getIterateMethods(context));
@@ -776,10 +772,10 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
         apiMethods.add(
             apiMethodTransformer.generateUnpagedListCallableMethod(requestMethodContext));
       } else if (methodConfig.isGrpcStreaming()) {
-        context.getImportTypeTable().saveNicknameFor("com.google.api.gax.grpc.StreamingCallable");
+        context.getImportTypeTable().saveNicknameFor("com.google.api.gax.rpc.StreamingCallable");
         apiMethods.add(apiMethodTransformer.generateCallableMethod(requestMethodContext));
       } else if (methodConfig.isLongRunningOperation()) {
-        context.getImportTypeTable().saveNicknameFor("com.google.api.gax.grpc.OperationCallable");
+        context.getImportTypeTable().saveNicknameFor("com.google.api.gax.rpc.OperationCallable");
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
             MethodContext flattenedMethodContext =

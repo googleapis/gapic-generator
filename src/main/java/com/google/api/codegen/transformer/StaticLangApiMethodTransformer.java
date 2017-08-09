@@ -405,6 +405,7 @@ public class StaticLangApiMethodTransformer {
             .getMethodConfig()
             .getLongRunningConfig()
             .getLongRunningOperationReturnTypeName(context.getTypeTable()));
+    methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
 
     return methodViewBuilder.type(type).build();
   }
@@ -443,6 +444,7 @@ public class StaticLangApiMethodTransformer {
               .getMethodConfig()
               .getLongRunningConfig()
               .getLongRunningOperationReturnTypeName(context.getTypeTable()));
+      methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
     } else {
       throw new IllegalArgumentException(
           "Discovery-based APIs do not have LongRunning operations.");

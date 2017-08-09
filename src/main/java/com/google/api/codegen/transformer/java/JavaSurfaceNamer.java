@@ -102,7 +102,7 @@ public class JavaSurfaceNamer extends SurfaceNamer {
 
   @Override
   public List<String> getThrowsDocLines(MethodConfig methodConfig) {
-    return Arrays.asList("@throws com.google.api.gax.grpc.ApiException if the remote call fails");
+    return Arrays.asList("@throws com.google.api.gax.rpc.ApiException if the remote call fails");
   }
 
   @Override
