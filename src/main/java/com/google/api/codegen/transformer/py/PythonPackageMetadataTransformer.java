@@ -39,6 +39,7 @@ import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.SimpleViewModel;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.api.codegen.viewmodel.metadata.ReadmeMetadataView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
@@ -63,7 +64,7 @@ import java.util.Map;
  * from the corresponding transformers/view models without actually rendering the templates.
  */
 public class PythonPackageMetadataTransformer implements ModelToViewTransformer {
-  private static final String TEST_PREFIX = "test.";
+  private static final String TEST_PREFIX = "tests.";
 
   private static final String GITHUB_DOC_HOST =
       "https://googlecloudplatform.github.io/google-cloud-python/stable";
@@ -141,17 +142,27 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
             computeNamespacePackages(productConfig.getPackageName(), packageConfig.apiVersion()))
         .developmentStatus(
             surfaceNamer.getReleaseAnnotation(packageConfig.releaseLevel(TargetLanguage.PYTHON)))
-        .developmentStatusTitle(
-            namer.getReleaseAnnotation(packageConfig.releaseLevel(TargetLanguage.PYTHON)))
         .apiModules(apiModules)
         .typeModules(typeModules)
-        .exampleMethods(exampleMethods)
-        .targetLanguage("Python")
-        .mainReadmeLink(GITHUB_REPO_HOST + MAIN_README_PATH)
-        .libraryDocumentationLink(
-            GITHUB_DOC_HOST + String.format(LIB_DOC_PATH, packageConfig.shortName()))
-        .authDocumentationLink(GITHUB_DOC_HOST + AUTH_DOC_PATH)
-        .versioningDocumentationLink(GITHUB_REPO_HOST + MAIN_README_PATH)
+        .readmeMetadata(
+            ReadmeMetadataView.newBuilder()
+                .moduleName("")
+                .shortName(packageConfig.shortName())
+                .fullName(model.getServiceConfig().getTitle())
+                .apiSummary(model.getServiceConfig().getDocumentation().getSummary())
+                .hasMultipleServices(false)
+                .gapicPackageName("gapic-" + packageConfig.packageName(TargetLanguage.PYTHON))
+                .majorVersion(packageConfig.apiVersion())
+                .developmentStatusTitle(
+                    namer.getReleaseAnnotation(packageConfig.releaseLevel(TargetLanguage.PYTHON)))
+                .targetLanguage("Python")
+                .mainReadmeLink(GITHUB_REPO_HOST + MAIN_README_PATH)
+                .libraryDocumentationLink(
+                    GITHUB_DOC_HOST + String.format(LIB_DOC_PATH, packageConfig.shortName()))
+                .authDocumentationLink(GITHUB_DOC_HOST + AUTH_DOC_PATH)
+                .versioningDocumentationLink(GITHUB_REPO_HOST + MAIN_README_PATH)
+                .exampleMethods(exampleMethods)
+                .build())
         .build();
   }
 

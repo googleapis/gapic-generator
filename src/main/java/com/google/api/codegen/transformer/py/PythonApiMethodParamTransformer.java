@@ -29,8 +29,44 @@ import java.util.List;
 public class PythonApiMethodParamTransformer implements ApiMethodParamTransformer {
   @Override
   public List<DynamicLangDefaultableParamView> generateMethodParams(GapicMethodContext context) {
-    // TODO(eoogbe): implement this method when migrating to MVVM
-    return ImmutableList.<DynamicLangDefaultableParamView>of();
+    ImmutableList.Builder<DynamicLangDefaultableParamView> methodParams = ImmutableList.builder();
+    methodParams.add(
+        DynamicLangDefaultableParamView.newBuilder().name("self").defaultValue("").build());
+    if (context.getMethod().getRequestStreaming()) {
+      methodParams.add(
+          DynamicLangDefaultableParamView.newBuilder()
+              .name(context.getNamer().getRequestVariableName(context.getMethod()))
+              .defaultValue("")
+              .build());
+    } else {
+      for (FieldType field : context.getMethodConfig().getRequiredFields()) {
+        DynamicLangDefaultableParamView.Builder param =
+            DynamicLangDefaultableParamView.newBuilder();
+        param.name(context.getNamer().getVariableName(field));
+        param.defaultValue("");
+        methodParams.add(param.build());
+      }
+      for (FieldType field : context.getMethodConfig().getOptionalFields()) {
+        if (isRequestTokenParam(context.getMethodConfig(), field)) {
+          continue;
+        }
+        DynamicLangDefaultableParamView.Builder param =
+            DynamicLangDefaultableParamView.newBuilder();
+        param.name(context.getNamer().getVariableName(field));
+        if (field.isRepeated()
+            || field.isMessage()
+            || field.isEnum()
+            || field.getOneofFieldsNames(context.getNamer()) != null) {
+          param.defaultValue("None");
+        } else {
+          param.defaultValue(context.getTypeTable().getSnippetZeroValueAndSaveNicknameFor(field));
+        }
+        methodParams.add(param.build());
+      }
+    }
+    methodParams.add(
+        DynamicLangDefaultableParamView.newBuilder().name("options").defaultValue("None").build());
+    return methodParams.build();
   }
 
   @Override

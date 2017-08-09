@@ -66,6 +66,9 @@ public abstract class StaticLangApiView {
 
   public abstract boolean hasLongRunningOperations();
 
+  @Nullable // Used in Java
+  public abstract String stubInterfaceName();
+
   public static Builder newBuilder() {
     return new AutoValue_StaticLangApiView.Builder();
   }
@@ -106,6 +109,8 @@ public abstract class StaticLangApiView {
     public abstract Builder hasDefaultInstance(boolean val);
 
     public abstract Builder hasLongRunningOperations(boolean val);
+
+    public abstract Builder stubInterfaceName(String apiStubInterfaceName);
 
     public abstract StaticLangApiView build();
   }

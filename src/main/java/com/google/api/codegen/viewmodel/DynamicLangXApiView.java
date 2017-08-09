@@ -45,6 +45,10 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
   public abstract List<ParseResourceFunctionView> parseResourceFunctions();
 
+  public boolean hasFormatOrParseResourceFunctions() {
+    return formatResourceFunctions().size() > 0 || parseResourceFunctions().size() > 0;
+  }
+
   public abstract List<PathTemplateGetterFunctionView> pathTemplateGetterFunctions();
 
   public abstract List<PageStreamingDescriptorView> pageStreamingDescriptors();
@@ -101,6 +105,11 @@ public abstract class DynamicLangXApiView implements ViewModel {
   @Nullable
   public abstract String packageVersion();
 
+  public abstract boolean packageHasMultipleServices();
+
+  @Nullable
+  public abstract String packageServiceName();
+
   @Nullable
   public abstract List<String> validDescriptorsNames();
 
@@ -109,13 +118,28 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
   public abstract boolean isGcloud();
 
+  /**
+   * The name of the class that controls the credentials information of an api. It is currently only
+   * used by Ruby.
+   */
+  @Nullable
+  public abstract String fullyQualifiedCredentialsClassName();
+
+  @Nullable
+  public abstract String servicePhraseName();
+
+  @Nullable
+  public abstract String gapicPackageName();
+
   @Override
   public String resourceRoot() {
     return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
   }
 
   public static Builder newBuilder() {
-    return new AutoValue_DynamicLangXApiView.Builder().isGcloud(false);
+    return new AutoValue_DynamicLangXApiView.Builder()
+        .isGcloud(false)
+        .packageHasMultipleServices(false);
   }
 
   @AutoValue.Builder
@@ -182,11 +206,22 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
     public abstract Builder packageVersion(String val);
 
+    public abstract Builder packageHasMultipleServices(boolean val);
+
+    /** The name of the property of the api export that exports this service. Used in Node.js. */
+    public abstract Builder packageServiceName(String val);
+
     public abstract Builder validDescriptorsNames(List<String> strings);
 
     public abstract Builder constructorName(String val);
 
     public abstract Builder isGcloud(boolean val);
+
+    public abstract Builder fullyQualifiedCredentialsClassName(String val);
+
+    public abstract Builder servicePhraseName(String val);
+
+    public abstract Builder gapicPackageName(String val);
 
     public abstract DynamicLangXApiView build();
   }

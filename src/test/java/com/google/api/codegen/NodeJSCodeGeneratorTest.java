@@ -125,4 +125,38 @@ public class NodeJSCodeGeneratorTest {
       test("no_path_templates");
     }
   }
+
+  @RunWith(Parameterized.class)
+  public static class NodeJSMultipleServicesBaseline extends GapicTestBase {
+
+    public NodeJSMultipleServicesBaseline(
+        String name,
+        String idForFactory,
+        String[] gapicConfigFileNames,
+        String packageConfigFileName,
+        String snippetName) {
+      super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
+      getTestDataLocator().addTestDataSource(getClass(), "nodejs");
+    }
+
+    /**
+     * Declares test parameters, each one an array of values passed to the constructor, with the
+     * first element a name, the second a config of this name.
+     */
+    @Parameters(name = "{0}")
+    public static List<Object[]> testedConfigs() {
+      return GapicTestBase.createTestedConfigs(
+          MainGapicProviderFactory.NODEJS,
+          new String[] {"nodejs_gapic.yaml", "multiple_services_gapic.yaml"},
+          "multiple_services_pkg.yaml");
+    }
+
+    // Tests
+    // =====
+
+    @Test
+    public void multiple_services() throws Exception {
+      test("multiple_services");
+    }
+  }
 }

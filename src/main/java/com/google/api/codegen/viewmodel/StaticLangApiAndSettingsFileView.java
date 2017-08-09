@@ -15,7 +15,6 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.api.codegen.SnippetSetRunner;
-import com.google.api.codegen.viewmodel.StaticLangSettingsFileView.Builder;
 import com.google.auto.value.AutoValue;
 
 // View of both api and settings for static language.

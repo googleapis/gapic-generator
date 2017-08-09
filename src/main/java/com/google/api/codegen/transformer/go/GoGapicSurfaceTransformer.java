@@ -16,7 +16,6 @@ package com.google.api.codegen.transformer.go;
 
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.ServiceMessages;
-import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
@@ -43,6 +42,7 @@ import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
 import com.google.api.codegen.viewmodel.PackageInfoView;
 import com.google.api.codegen.viewmodel.PageStreamingDescriptorClassView;
+import com.google.api.codegen.viewmodel.PathTemplateView;
 import com.google.api.codegen.viewmodel.RetryConfigDefinitionView;
 import com.google.api.codegen.viewmodel.ServiceDocView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
@@ -147,7 +147,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
         generateRetryConfigDefinitions(context, context.getSupportedMethods());
     view.retryPairDefinitions(retryDef);
 
-    view.pathTemplates(pathTemplateTransformer.generatePathTemplates(context));
+    view.pathTemplates(Collections.<PathTemplateView>emptyList());
     view.pathTemplateGetters(pathTemplateTransformer.generatePathTemplateGetterFunctions(context));
     view.callSettings(apiCallableTransformer.generateCallSettings(context));
 
@@ -157,9 +157,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
 
     view.iamResources(iamResourceTransformer.generateIamResources(context));
     // TODO(andrealin): Remove casting after abstracting away API source type from Method.
-    if (!((GapicInterfaceConfig) productConfig.getInterfaceConfig(apiInterface))
-        .getIamResources()
-        .isEmpty()) {
+    if (!(productConfig.getInterfaceConfig(apiInterface)).getIamResources().isEmpty()) {
       context.getModelTypeTable().saveNicknameFor("cloud.google.com/go/iam;;;");
     }
 
@@ -391,6 +389,10 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
                   ImportContext.CLIENT,
                   ImportKind.PAGE_STREAM,
                   ImmutableList.<String>of("math;;;", "google.golang.org/api/iterator;;;"))
+              .put(
+                  ImportContext.EXAMPLE,
+                  ImportKind.PAGE_STREAM,
+                  ImmutableList.<String>of("google.golang.org/api/iterator;;;"))
               .put(
                   ImportContext.CLIENT,
                   ImportKind.LRO,

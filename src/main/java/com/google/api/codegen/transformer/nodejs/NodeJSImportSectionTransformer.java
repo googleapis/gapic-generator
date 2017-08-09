@@ -33,7 +33,6 @@ public class NodeJSImportSectionTransformer implements ImportSectionTransformer 
   @Override
   public ImportSectionView generateImportSection(InterfaceContext context) {
     ImportSectionView.Builder importSection = ImportSectionView.newBuilder();
-    // TODO support non-Gapic inputs
     importSection.externalImports(generateExternalImports((GapicInterfaceContext) context));
     return importSection.build();
   }

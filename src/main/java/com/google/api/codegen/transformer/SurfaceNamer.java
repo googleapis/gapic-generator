@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer;
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldType;
+import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
@@ -51,7 +52,6 @@ import io.grpc.Status;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.annotation.Nullable;
 
 /**
  * A SurfaceNamer provides language-specific names for specific components of a view for a surface.
@@ -66,12 +66,12 @@ import javax.annotation.Nullable;
  */
 // TODO(andrealin): This class should not be exposed to ApiSource.
 public class SurfaceNamer extends NameFormatterDelegator {
-  // Only for proto-based SurfaceNamers.
-  @Nullable private final ModelTypeFormatter modelTypeFormatter;
+  private final ModelTypeFormatter modelTypeFormatter;
 
   // Private members in any SurfaceNamer.
   private final TypeNameConverter typeNameConverter;
   private final CommentReformatter commentReformatter;
+  private final String rootPackageName;
   private final String packageName;
 
   // Create a SurfaceNamer based on .proto.
@@ -80,11 +80,13 @@ public class SurfaceNamer extends NameFormatterDelegator {
       ModelTypeFormatter modelTypeFormatter,
       TypeNameConverter typeNameConverter,
       CommentReformatter commentReformatter,
+      String rootPackageName,
       String packageName) {
     super(languageNamer);
     this.modelTypeFormatter = modelTypeFormatter;
     this.typeNameConverter = typeNameConverter;
     this.commentReformatter = commentReformatter;
+    this.rootPackageName = rootPackageName;
     this.packageName = packageName;
   }
 
@@ -93,12 +95,18 @@ public class SurfaceNamer extends NameFormatterDelegator {
       NameFormatter languageNamer,
       TypeNameConverter typeNameConverter,
       CommentReformatter commentReformatter,
+      String rootPackageName,
       String packageName) {
     super(languageNamer);
     this.typeNameConverter = typeNameConverter;
     this.commentReformatter = commentReformatter;
     this.packageName = packageName;
+    this.rootPackageName = rootPackageName;
     this.modelTypeFormatter = null;
+  }
+
+  public SurfaceNamer cloneWithPackageName(String packageName) {
+    throw new UnsupportedOperationException("clone needs to be overridden");
   }
 
   public ModelTypeFormatter getModelTypeFormatter() {
@@ -111,6 +119,14 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   public String getPackageName() {
     return packageName;
+  }
+
+  public String getRootPackageName() {
+    return rootPackageName;
+  }
+
+  public String getStubPackageName() {
+    return rootPackageName + ".stub";
   }
 
   public String getNotImplementedString(String feature) {
@@ -128,6 +144,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     String name = interfaceSimpleName.replaceAll("V[0-9]+$", "");
     name = name.replaceAll("Service$", "");
     return Name.upperCamel(name);
+  }
+
+  /** Returns the service name exported by the package */
+  public String getPackageServiceName(Interface apiInterface) {
+    return getNotImplementedString("SurfaceNamer.getPackageServiceName");
   }
 
   /** Human-friendly name of this API interface */
@@ -180,9 +201,24 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return qualifiedName(namePath.withoutHead());
   }
 
+  /** The qualified namespace of an API. */
+  public String getTopLevelNamespace() {
+    return getNotImplementedString("SurfaceNamer.getTopLevelNamespace");
+  }
+
   /** The modules of the package. */
   public ImmutableList<String> getApiModules() {
     return ImmutableList.<String>of();
+  }
+
+  /** The top level modules of the package. */
+  public List<String> getTopLevelApiModules() {
+    return ImmutableList.of();
+  }
+
+  /** The name of the gapic package. */
+  public String getGapicPackageName(String configPackageName) {
+    return "gapic-" + configPackageName;
   }
 
   /////////////////////////////////// Protos methods /////////////////////////////////////////////
@@ -233,11 +269,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The function name to add an element to a map or repeated field. */
   public String getFieldAddFunctionName(TypeRef type, Name identifier) {
-    return getNotImplementedString("SurfaceNamer.getFieldAddFunctionName");
-  }
-
-  /** The function name to add an element to a map or repeated field. */
-  public String getFieldAddFunctionName(Schema schema) {
     return getNotImplementedString("SurfaceNamer.getFieldAddFunctionName");
   }
 
@@ -495,6 +526,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return privateFieldName(Name.upperCamel(method.getSimpleName(), "OperationCallable"));
   }
 
+  public String getDirectCallableName(Method method) {
+    return privateFieldName(Name.upperCamel("Direct", method.getSimpleName(), "Callable"));
+  }
+
   /** The name of the settings member name for the given method. */
   public String getSettingsMemberName(Method method) {
     return publicMethodName(Name.upperCamel(method.getSimpleName(), "Settings"));
@@ -673,6 +708,18 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return publicClassName(Name.anyCamel(document.name(), "Settings"));
   }
 
+  /**
+   * The name of the stub interface for a particular proto interface; not used in most languages.
+   */
+  public String getApiStubInterfaceName(InterfaceConfig interfaceConfig) {
+    return publicClassName(Name.upperCamel(interfaceConfig.getRawName(), "Stub"));
+  }
+
+  /** The name of the grpc stub for a particular proto interface; not used in most languages. */
+  public String getApiGrpcStubClassName(InterfaceConfig interfaceConfig) {
+    return publicClassName(Name.upperCamel("Grpc", interfaceConfig.getRawName(), "Stub"));
+  }
+
   /** The name of the class that contains paged list response wrappers. */
   public String getPagedResponseWrappersClassName() {
     return publicClassName(Name.upperCamel("PagedResponseWrappers"));
@@ -704,6 +751,16 @@ public class SurfaceNamer extends NameFormatterDelegator {
    */
   public String getFullyQualifiedApiWrapperClassName(InterfaceConfig interfaceConfig) {
     return getNotImplementedString("SurfaceNamer.getFullyQualifiedApiWrapperClassName");
+  }
+
+  public String getTopLevelAliasedApiClassName(
+      GapicInterfaceConfig interfaceConfig, boolean packageHasMultipleServices) {
+    return getNotImplementedString("SurfaceNamer.getTopLevelAliasedApiClassName");
+  }
+
+  public String getVersionAliasedApiClassName(
+      GapicInterfaceConfig interfaceConfig, boolean packageHasMultipleServices) {
+    return getNotImplementedString("SurfaceNamer.getVersionAliasedApiClassName");
   }
 
   protected Name getResourceTypeNameObject(ResourceNameConfig resourceNameConfig) {
@@ -962,6 +1019,14 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getApiCallableTypeName");
   }
 
+  public String getDirectCallableTypeName(ServiceMethodType serviceMethodType) {
+    return getNotImplementedString("SurfaceNamer.getDirectCallableTypeName");
+  }
+
+  public String getCreateCallableFunctionName(ServiceMethodType serviceMethodType) {
+    return getNotImplementedString("SurfaceNamer.getCreateCallableFunctionName");
+  }
+
   /** Return the type name used to discriminate oneof variants. */
   public String getOneofVariantTypeName(OneofConfig oneof) {
     return getNotImplementedString("SurfaceNamer.getOneofVariantTypeName");
@@ -990,6 +1055,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   public String getStreamTypeName(GrpcStreamingConfig.GrpcStreamingType type) {
     return getNotImplementedString("SurfaceNamer.getStreamTypeName");
+  }
+
+  public String getFullyQualifiedCredentialsClassName() {
+    return getNotImplementedString("SurfaceNamer.getFullyQualifiedCredentialsClassName");
   }
 
   /////////////////////////////////////// Resource names //////////////////////////////////////////
@@ -1197,6 +1266,13 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getVersionIndexFileImportName");
   }
 
+  public String getTopLevelIndexFileImportName() {
+    return getNotImplementedString("SurfaceNamer.getTopLevelIndexFileImportName");
+  }
+
+  public String getCredentialsClassImportName() {
+    return getNotImplementedString("SurfaceNamer.getCredentialsClassImportName");
+  }
   /////////////////////////////////// Docs & Annotations //////////////////////////////////////////
 
   /** The documentation name of a parameter for the given lower-case field name. */
@@ -1440,5 +1516,9 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The default value for an optional field, null if no default value required. */
   public String getOptionalFieldDefaultValue(FieldConfig fieldConfig, GapicMethodContext context) {
     return getNotImplementedString("SurfaceNamer.getOptionalFieldDefaultValue");
+  }
+
+  public String getToStringMethod() {
+    return getNotImplementedString("SurfaceNamer.getToStringMethod");
   }
 }

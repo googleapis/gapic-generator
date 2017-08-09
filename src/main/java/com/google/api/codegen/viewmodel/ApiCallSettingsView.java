@@ -24,10 +24,6 @@ public abstract class ApiCallSettingsView {
 
   public abstract String methodName();
 
-  public abstract String protoMethodName();
-
-  public abstract String fullServiceName();
-
   public abstract String asyncMethodName();
 
   public abstract String requestTypeName();
@@ -58,15 +54,6 @@ public abstract class ApiCallSettingsView {
 
   public abstract String batchingDescriptorName();
 
-  public abstract String operationResultTypeName();
-
-  public boolean hasPollingInterval() {
-    return operationPollingIntervalMillis() != null;
-  }
-
-  @Nullable
-  public abstract String operationPollingIntervalMillis();
-
   public abstract String retryCodesName();
 
   public abstract String retryParamsName();
@@ -80,6 +67,9 @@ public abstract class ApiCallSettingsView {
   @Nullable
   public abstract BatchingConfigView batchingConfig();
 
+  @Nullable
+  public abstract LongRunningOperationDetailView operationMethod();
+
   public abstract Builder toBuilder();
 
   public static Builder newBuilder() {
@@ -92,10 +82,6 @@ public abstract class ApiCallSettingsView {
     public abstract Builder type(ApiCallableImplType type);
 
     public abstract Builder methodName(String apiMethodName);
-
-    public abstract Builder protoMethodName(String val);
-
-    public abstract Builder fullServiceName(String val);
 
     public abstract Builder asyncMethodName(String apiAsyncMethodName);
 
@@ -125,10 +111,6 @@ public abstract class ApiCallSettingsView {
 
     public abstract Builder batchingConfig(BatchingConfigView val);
 
-    public abstract Builder operationResultTypeName(String val);
-
-    public abstract Builder operationPollingIntervalMillis(String val);
-
     public abstract Builder retryCodesName(String val);
 
     public abstract Builder retryParamsName(String val);
@@ -136,6 +118,8 @@ public abstract class ApiCallSettingsView {
     public abstract Builder retryCodesView(RetryCodesDefinitionView val);
 
     public abstract Builder retryParamsView(RetryParamsDefinitionView val);
+
+    public abstract Builder operationMethod(LongRunningOperationDetailView val);
 
     public abstract ApiCallSettingsView build();
   }
