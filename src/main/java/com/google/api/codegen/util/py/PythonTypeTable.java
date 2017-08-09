@@ -183,6 +183,11 @@ public class PythonTypeTable implements TypeTable {
     return imports.build();
   }
 
+  @Override
+  public Map<String, TypeAlias> getAllImports() {
+    return getImports();
+  }
+
   public boolean hasImports() {
     return !getImports().isEmpty();
   }

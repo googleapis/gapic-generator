@@ -192,6 +192,11 @@ public class JavaTypeTable implements TypeTable {
     return cleanedImports;
   }
 
+  @Override
+  public Map<String, TypeAlias> getAllImports() {
+    return new TreeMap<>(imports);
+  }
+
   /**
    * Checks whether the simple type name is implicitly imported from java.lang and memoizes the
    * result.

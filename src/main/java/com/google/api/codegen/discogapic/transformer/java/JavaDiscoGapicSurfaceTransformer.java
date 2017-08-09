@@ -49,6 +49,7 @@ import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.java.JavaFeatureConfig;
 import com.google.api.codegen.transformer.java.JavaSchemaTypeNameConverter;
 import com.google.api.codegen.transformer.java.JavaSurfaceNamer;
+import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.ApiCallSettingsView;
@@ -470,7 +471,14 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
 
     addStubInterfaceImports(context);
 
-    List<StaticLangApiMethodView> methods = generateApiMethods(context);
+    // Stub class has different default package name from methods classes.
+    DiscoGapicInterfaceContext apiMethodsContext =
+        context.withNewTypeTable(context.getNamer().getRootPackageName());
+    List<StaticLangApiMethodView> methods = generateApiMethods(apiMethodsContext);
+    for (TypeAlias alias :
+        apiMethodsContext.getImportTypeTable().getTypeTable().getAllImports().values()) {
+      context.getImportTypeTable().getAndSaveNicknameFor(alias);
+    }
 
     StaticLangStubInterfaceView.Builder stubInterface = StaticLangStubInterfaceView.newBuilder();
 

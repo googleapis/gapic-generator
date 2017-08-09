@@ -63,7 +63,7 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   /* Create a JavaSurfaceNamer for a Discovery-based API. */
-  public JavaSurfaceNamer(String packageName, String rootPackageName, JavaNameFormatter formatter) {
+  public JavaSurfaceNamer(String rootPackageName, String packageName, JavaNameFormatter formatter) {
     super(
         formatter,
         new SchemaTypeFormatterImpl(new JavaSchemaTypeNameConverter(packageName, formatter)),

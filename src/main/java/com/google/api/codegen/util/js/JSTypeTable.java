@@ -100,6 +100,11 @@ public class JSTypeTable implements TypeTable {
     return dynamicTypeTable.getImports();
   }
 
+  @Override
+  public Map<String, TypeAlias> getAllImports() {
+    return dynamicTypeTable.getImports();
+  }
+
   public boolean hasImports() {
     return !getImports().isEmpty();
   }

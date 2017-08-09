@@ -84,6 +84,11 @@ public class GoTypeTable implements TypeTable {
   }
 
   @Override
+  public Map<String, TypeAlias> getAllImports() {
+    return imports;
+  }
+
+  @Override
   public String getAndSaveNicknameForInnerType(
       String containerFullName, String innerTypeShortName) {
     throw new UnsupportedOperationException("getAndSaveNicknameForInnerType not supported by Go");

@@ -59,4 +59,7 @@ public interface TypeTable extends TypeNameConverter {
 
   /** Returns the imports accumulated so far. */
   Map<String, TypeAlias> getImports();
+
+  /** Returns the imports accumulated so far, including implicit imports. */
+  Map<String, TypeAlias> getAllImports();
 }
