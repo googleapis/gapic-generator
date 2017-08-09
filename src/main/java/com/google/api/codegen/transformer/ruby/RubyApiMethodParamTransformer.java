@@ -29,9 +29,9 @@ public class RubyApiMethodParamTransformer implements ApiMethodParamTransformer 
   @Override
   public List<DynamicLangDefaultableParamView> generateMethodParams(GapicMethodContext context) {
     ImmutableList.Builder<DynamicLangDefaultableParamView> methodParams = ImmutableList.builder();
-    if (context.getMethod().getRequestStreaming()) {
+    if (context.getMethodModel().getRequestStreaming()) {
       DynamicLangDefaultableParamView.Builder param = DynamicLangDefaultableParamView.newBuilder();
-      param.name(context.getNamer().getRequestVariableName(context.getMethod()));
+      param.name(context.getNamer().getRequestVariableName(context.getMethodModel()));
       param.defaultValue("");
       methodParams.add(param.build());
     } else {
@@ -67,7 +67,7 @@ public class RubyApiMethodParamTransformer implements ApiMethodParamTransformer 
   @Override
   public List<ParamDocView> generateParamDocs(GapicMethodContext context) {
     ImmutableList.Builder<ParamDocView> docs = ImmutableList.builder();
-    if (context.getMethod().getRequestStreaming()) {
+    if (context.getMethodModel().getRequestStreaming()) {
       docs.add(generateRequestStreamingParamDoc(context));
     } else {
       docs.addAll(generateMethodParamDocs(context, context.getMethodConfig().getRequiredFields()));
@@ -79,7 +79,7 @@ public class RubyApiMethodParamTransformer implements ApiMethodParamTransformer 
 
   private ParamDocView generateRequestStreamingParamDoc(GapicMethodContext context) {
     SimpleParamDocView.Builder paramDoc = SimpleParamDocView.newBuilder();
-    paramDoc.paramName(context.getNamer().getRequestVariableName(context.getMethod()));
+    paramDoc.paramName(context.getNamer().getRequestVariableName(context.getMethodModel()));
     paramDoc.lines(ImmutableList.of("The input requests."));
 
     String requestTypeName =

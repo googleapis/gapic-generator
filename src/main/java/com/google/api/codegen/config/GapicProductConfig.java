@@ -51,9 +51,10 @@ import javax.annotation.Nullable;
  */
 @AutoValue
 public abstract class GapicProductConfig implements ProductConfig {
-  public abstract ImmutableMap<String, InterfaceConfig> getInterfaceConfigMap();
+  public abstract ImmutableMap<String, ? extends InterfaceConfig> getInterfaceConfigMap();
 
   /** Returns the package name. */
+  @Override
   public abstract String getPackageName();
 
   /** Returns the location of the domain layer, if any. */
@@ -177,7 +178,7 @@ public abstract class GapicProductConfig implements ProductConfig {
 
     ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
         createDiscoGapicInterfaceConfigMap(
-            document, new BoundedDiagCollector(), configProto, settings);
+            document, new BoundedDiagCollector(), configProto, settings, resourceNameConfigs);
 
     ImmutableList<String> copyrightLines;
     ImmutableList<String> licenseLines;
@@ -279,7 +280,8 @@ public abstract class GapicProductConfig implements ProductConfig {
       Document document,
       DiagCollector diagCollector,
       ConfigProto configProto,
-      LanguageSettingsProto languageSettings) {
+      LanguageSettingsProto languageSettings,
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs) {
     ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap = ImmutableMap.builder();
     for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
       String interfaceNameOverride =
@@ -291,7 +293,8 @@ public abstract class GapicProductConfig implements ProductConfig {
               diagCollector,
               configProto.getLanguage(),
               interfaceConfigProto,
-              interfaceNameOverride);
+              interfaceNameOverride,
+              resourceNameConfigs);
       if (interfaceConfig == null) {
         continue;
       }

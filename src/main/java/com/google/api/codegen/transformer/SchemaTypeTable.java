@@ -70,8 +70,13 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
 
   /** Creates a new SchemaTypeTable of the same concrete type, but with an empty import set. */
   @Override
-  public ImportTypeTable cloneEmpty() {
+  public SchemaTypeTable cloneEmpty() {
     return new SchemaTypeTable(typeTable.cloneEmpty(), typeNameConverter);
+  }
+
+  @Override
+  public SchemaTypeTable cloneEmpty(String packageName) {
+    return new SchemaTypeTable(typeTable.cloneEmpty(packageName), typeNameConverter);
   }
 
   /** Compute the nickname for the given fullName and save it in the import set. */

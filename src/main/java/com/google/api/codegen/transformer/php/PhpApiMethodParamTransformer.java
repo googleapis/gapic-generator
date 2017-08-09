@@ -56,7 +56,7 @@ public class PhpApiMethodParamTransformer implements ApiMethodParamTransformer {
 
   private List<DynamicLangDefaultableParamView> generateDefaultableParams(
       GapicMethodContext context) {
-    if (context.getMethod().getRequestStreaming()) {
+    if (context.getMethodModel().getRequestStreaming()) {
       return ImmutableList.<DynamicLangDefaultableParamView>of();
     }
     ImmutableList.Builder<DynamicLangDefaultableParamView> methodParams = ImmutableList.builder();
@@ -73,7 +73,7 @@ public class PhpApiMethodParamTransformer implements ApiMethodParamTransformer {
 
   private List<ParamDocView> getMethodParamDocs(
       GapicMethodContext context, Iterable<FieldType> fields) {
-    if (context.getMethod().getRequestStreaming()) {
+    if (context.getMethodModel().getRequestStreaming()) {
       return ImmutableList.of();
     }
     MethodConfig methodConfig = context.getMethodConfig();

@@ -14,21 +14,24 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.config.ApiSource;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.SingleResourceNameConfig;
-import com.google.api.tools.framework.model.Interface;
 import javax.annotation.Nullable;
 
 /** The context for transforming a method to a view model object. */
 public interface MethodContext {
+  InterfaceContext getSurfaceInterfaceContext();
 
-  InterfaceContext getSurfaceTransformerContext();
+  MethodModel getMethodModel();
 
-  @Nullable
-  Interface getInterface();
+  ApiSource getApiSource();
+
+  String getInterfaceSimpleName();
 
   GapicProductConfig getProductConfig();
 
@@ -51,9 +54,11 @@ public interface MethodContext {
 
   MethodContext cloneWithEmptyTypeTable();
 
-  /* Get the request type name and save it in the type table. */
-  String getAndSaveRequestTypeName();
+  String getTargetInterfaceFullName();
 
-  /* Get the response type name and save it in the type table. */
-  String getAndSaveResponseTypeName();
+  String getTargetInterfaceSimpleName();
+
+  String getInterfaceFileName();
+
+  String getGrpcContainerTypeName();
 }

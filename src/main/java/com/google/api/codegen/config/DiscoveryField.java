@@ -20,6 +20,7 @@ import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.discovery.Schema.Format;
 import com.google.api.codegen.discovery.Schema.Type;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.util.Name;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Preconditions;
@@ -55,6 +56,11 @@ public class DiscoveryField implements FieldType {
   @Override
   public String getFullName() {
     return schema.getIdentifier();
+  }
+
+  @Override
+  public Name asName() {
+    return Name.anyCamel(getSimpleName());
   }
 
   @Override
@@ -127,7 +133,7 @@ public class DiscoveryField implements FieldType {
   @Override
   /* @Get the description of the element scoped to the visibility as currently set in the model. */
   public String getScopedDocumentation() {
-    return "Not yet implemented.";
+    return schema.description();
   }
 
   @Override
