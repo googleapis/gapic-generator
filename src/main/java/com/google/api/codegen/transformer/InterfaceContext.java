@@ -59,6 +59,8 @@ public interface InterfaceContext extends TransformationContext {
 
   Iterable<MethodModel> getLongRunningMethods();
 
+  String serviceTitle();
+
   @Override
   ProductConfig getProductConfig();
 

@@ -308,4 +308,9 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
   public String getInterfaceDescription() {
     return DocumentationUtil.getScopedDescription(getInterface());
   }
+
+  @Override
+  public String serviceTitle() {
+    return getModel().getServiceConfig().getTitle();
+  }
 }

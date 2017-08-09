@@ -89,7 +89,7 @@ public class GrpcStreamingConfig {
   }
 
   private GrpcStreamingConfig(Field resourcesField, GrpcStreamingType type) {
-    this.resourcesField = new ProtoField(resourcesField);
+    this.resourcesField = resourcesField == null ? null : new ProtoField(resourcesField);
     this.type = type;
   }
 
