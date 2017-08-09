@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer.csharp;
 
-import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.viewmodel.SimpleParamDocView;
@@ -35,8 +34,7 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
   }
 
   @Override
-  public List<SimpleParamDocView> getRequestObjectParamDocs(
-      MethodContext context, MethodModel method) {
+  public List<SimpleParamDocView> getRequestObjectParamDocs(MethodContext context) {
     String requestTypeName =
         context
             .getMethodModel()

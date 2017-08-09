@@ -33,7 +33,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nullable;
 
 /**
  * The context for transforming a Discovery Doc API into a view model to use for client library
@@ -50,7 +49,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
       DiscoGapicNamer discoGapicNamer,
       FeatureConfig featureConfig) {
     return new AutoValue_DiscoGapicInterfaceContext(
-        document, productConfig, typeTable, discoGapicNamer, "none", featureConfig);
+        document, productConfig, typeTable, discoGapicNamer, "", featureConfig);
   }
 
   public static DiscoGapicInterfaceContext createWithInterface(
@@ -135,7 +134,6 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
         getDocument(),
         getInterfaceName(),
         getProductConfig(),
-        // getPackageMetadataConfig(),
         (SchemaTypeTable) getImportTypeTable().cloneEmpty(),
         getDiscoGapicNamer(),
         getFeatureConfig());
@@ -158,7 +156,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
         getInterfaceConfigMethods(),
         new Predicate<MethodModel>() {
           @Override
-          public boolean apply(@Nullable MethodModel methodModel) {
+          public boolean apply(MethodModel methodModel) {
             return isSupported(methodModel);
           }
         });
@@ -244,7 +242,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
 
   @Override
   public DiscoGapicMethodContext asDynamicMethodContext(MethodModel method) {
-    Preconditions.checkArgument(method.getApiSource().equals(ApiSource.PROTO));
+    Preconditions.checkArgument(method.getApiSource().equals(ApiSource.DISCOVERY));
     return DiscoGapicMethodContext.create(
         this,
         getInterfaceName(),
@@ -262,7 +260,6 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
     return (DiscoGapicInterfaceConfig) getProductConfig().getInterfaceConfig(getInterfaceName());
   }
 
-  @Nullable
   @Override
   public ImportTypeTable getImportTypeTable() {
     return getSchemaTypeTable();

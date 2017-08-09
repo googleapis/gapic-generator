@@ -154,8 +154,7 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
     ImmutableList.Builder<TestCaseView> testCaseViews = ImmutableList.builder();
     SymbolTable testNameTable = new SymbolTable();
     for (MethodModel method : context.getSupportedMethods()) {
-      GapicMethodContext methodContext =
-          (GapicMethodContext) context.asRequestMethodContext(method);
+      GapicMethodContext methodContext = context.asRequestMethodContext(method);
       ClientMethodType clientMethodType = ClientMethodType.OptionalArrayMethod;
       if (methodContext.getMethodConfig().isLongRunningOperation()) {
         clientMethodType = ClientMethodType.OperationOptionalArrayMethod;

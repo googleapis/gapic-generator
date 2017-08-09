@@ -143,8 +143,7 @@ public class GapicContext extends CodegenContext {
    * rerouting. TODO replace getSupportedMethods with this when all languages are migrated.
    */
   public List<Method> getSupportedMethodsV2(Interface apiInterface) {
-    GapicInterfaceConfig interfaceConfig =
-        (GapicInterfaceConfig) getApiConfig().getInterfaceConfig(apiInterface);
+    GapicInterfaceConfig interfaceConfig = getApiConfig().getInterfaceConfig(apiInterface);
     if (interfaceConfig == null) {
       throw new IllegalStateException(
           "Service not configured in GAPIC config: " + apiInterface.getFullName());

@@ -67,7 +67,6 @@ import java.util.List;
 // TODO(andrealin): This class should not be exposed to ApiSource.
 public class SurfaceNamer extends NameFormatterDelegator {
   private final TypeFormatter typeFormatter;
-  private final NameFormatter nameFormatter;
 
   // Private members in any SurfaceNamer.
   private final TypeNameConverter typeNameConverter;
@@ -84,7 +83,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
       String rootPackageName,
       String packageName) {
     super(languageNamer);
-    this.nameFormatter = languageNamer;
     this.typeFormatter = typeFormatter;
     this.typeNameConverter = typeNameConverter;
     this.commentReformatter = commentReformatter;
@@ -101,7 +99,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
       String rootPackageName,
       String packageName) {
     super(languageNamer);
-    this.nameFormatter = languageNamer;
     this.typeNameConverter = typeNameConverter;
     this.commentReformatter = commentReformatter;
     this.packageName = packageName;

@@ -88,14 +88,8 @@ public class PageStreamingTransformer {
 
     desc.name(namer.getPageStreamingDescriptorConstName(method));
     desc.typeName(namer.getAndSavePagedResponseTypeName(context, resourceFieldConfig));
-    desc.requestTypeName(
-        context
-            .getMethodModel()
-            .getAndSaveRequestTypeName(context.getTypeTable(), context.getNamer()));
-    desc.responseTypeName(
-        context
-            .getMethodModel()
-            .getAndSaveResponseTypeName(context.getTypeTable(), context.getNamer()));
+    desc.requestTypeName(method.getAndSaveRequestTypeName(typeTable, namer));
+    desc.responseTypeName(method.getAndSaveResponseTypeName(typeTable, namer));
     desc.resourceTypeName(typeTable.getAndSaveNicknameForElementType(resourceField));
 
     desc.tokenTypeName(typeTable.getAndSaveNicknameFor(pageStreaming.getResponseTokenField()));
@@ -133,6 +127,7 @@ public class PageStreamingTransformer {
   private PagedListResponseFactoryClassView generateFactoryClass(MethodContext context) {
     SurfaceNamer namer = context.getNamer();
     MethodModel method = context.getMethodModel();
+    ImportTypeTable typeTable = context.getTypeTable();
     PageStreamingConfig pageStreaming = context.getMethodConfig().getPageStreaming();
     FieldType resourceField = pageStreaming.getResourcesField();
     FieldConfig resourceFieldConfig = pageStreaming.getResourcesFieldConfig();
@@ -141,16 +136,9 @@ public class PageStreamingTransformer {
         PagedListResponseFactoryClassView.newBuilder();
 
     factory.name(namer.getPagedListResponseFactoryConstName(method));
-    factory.requestTypeName(
-        context
-            .getMethodModel()
-            .getAndSaveRequestTypeName(context.getTypeTable(), context.getNamer()));
-    factory.responseTypeName(
-        context
-            .getMethodModel()
-            .getAndSaveResponseTypeName(context.getTypeTable(), context.getNamer()));
-    factory.resourceTypeName(
-        context.getTypeTable().getAndSaveNicknameForElementType(resourceField));
+    factory.requestTypeName(method.getAndSaveRequestTypeName(typeTable, namer));
+    factory.responseTypeName(method.getAndSaveResponseTypeName(typeTable, namer));
+    factory.resourceTypeName(typeTable.getAndSaveNicknameForElementType(resourceField));
     factory.pagedListResponseTypeName(
         namer.getAndSavePagedResponseTypeName(context, resourceFieldConfig));
     factory.pageStreamingDescriptorName(namer.getPageStreamingDescriptorConstName(method));

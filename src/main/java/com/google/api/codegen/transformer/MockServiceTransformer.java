@@ -72,10 +72,7 @@ public class MockServiceTransformer {
       MethodConfig methodConfig = methodContext.getMethodConfig();
       mocks.add(
           MockGrpcMethodView.newBuilder()
-              .name(
-                  methodContext
-                      .getNamer()
-                      .getApiMethodName(methodContext.getMethodModel(), VisibilityConfig.PUBLIC))
+              .name(methodContext.getNamer().getApiMethodName(method, VisibilityConfig.PUBLIC))
               .requestTypeName(requestTypeName)
               .responseTypeName(responseTypeName)
               .grpcStreamingType(methodConfig.getGrpcStreamingType())

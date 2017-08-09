@@ -79,7 +79,7 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
         getSurfaceInterfaceContext(),
         interfaceName(),
         getProductConfig(),
-        (SchemaTypeTable) getTypeTable().cloneEmpty(),
+        getTypeTable().cloneEmpty(),
         getDiscoGapicNamer(),
         getMethodModel(),
         getMethodConfig(),

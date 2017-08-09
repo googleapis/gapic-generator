@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen;
 
-import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.discogapic.DiscoGapicProvider;
 import com.google.api.tools.framework.model.SimpleDiagCollector;
 import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
@@ -44,7 +43,6 @@ public abstract class DiscoGapicTestBase extends ConfigBaselineTestCase {
   @Nullable private final String packageConfigFileName;
   protected ConfigProto config;
   List<DiscoGapicProvider> discoGapicProviders;
-  protected PackageMetadataConfig packageConfig;
 
   public DiscoGapicTestBase(
       String name, String discoveryDocFileName, String[] gapicConfigFileNames) {

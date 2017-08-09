@@ -141,7 +141,7 @@ public class InitCodeTransformer {
   }
 
   /** Generates assert views for the test of the tested method and its fields. */
-  public List<ClientTestAssertView> generateRequestAssertViews(
+  List<ClientTestAssertView> generateRequestAssertViews(
       GapicMethodContext methodContext, InitCodeContext initContext) {
     InitCodeNode rootNode =
         InitCodeNode.createTree(

@@ -98,13 +98,13 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getApiWrapperClassConstructorName(String apiInterfaceSimpleName) {
-    return publicFieldName(Name.upperCamel(apiInterfaceSimpleName, "Client"));
+  public String getPackageServiceName(Interface apiInterface) {
+    return getReducedServiceName(apiInterface.getSimpleName()).toLowerCamel();
   }
 
   @Override
-  public String getPackageServiceName(Interface apiInterface) {
-    return getReducedServiceName(apiInterface.getSimpleName()).toLowerCamel();
+  public String getApiWrapperClassConstructorName(String apiInterfaceSimpleName) {
+    return publicFieldName(Name.upperCamel(apiInterfaceSimpleName, "Client"));
   }
 
   @Override

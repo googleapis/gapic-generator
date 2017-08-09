@@ -19,6 +19,7 @@ import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.util.Name;
@@ -27,7 +28,6 @@ import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.RequestObjectParamView;
-import com.google.api.tools.framework.model.Method;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import java.util.ArrayList;
@@ -59,6 +59,7 @@ public class DynamicLangApiMethodTransformer {
 
   public OptionalArrayMethodView generateMethod(
       GapicMethodContext context, boolean packageHasMultipleServices) {
+    MethodModel method = context.getMethodModel();
     SurfaceNamer namer = context.getNamer();
     OptionalArrayMethodView.Builder apiMethod = OptionalArrayMethodView.newBuilder();
 
@@ -91,15 +92,13 @@ public class DynamicLangApiMethodTransformer {
 
     apiMethod.doc(generateMethodDoc(context));
 
-    apiMethod.name(
-        namer.getApiMethodName(
-            context.getMethodModel(), context.getMethodConfig().getVisibility()));
-    apiMethod.requestVariableName(namer.getRequestVariableName(context.getMethodModel()));
+    apiMethod.name(namer.getApiMethodName(method, context.getMethodConfig().getVisibility()));
+    apiMethod.requestVariableName(namer.getRequestVariableName(method));
     apiMethod.requestTypeName(
         namer.getRequestTypeName(context.getTypeTable(), context.getMethod().getInputType()));
     apiMethod.hasReturnValue(!ServiceMessages.s_isEmptyType(context.getMethod().getOutputType()));
-    apiMethod.key(namer.getMethodKey(context.getMethodModel()));
-    apiMethod.grpcMethodName(namer.getGrpcMethodName(context.getMethodModel()));
+    apiMethod.key(namer.getMethodKey(method));
+    apiMethod.grpcMethodName(namer.getGrpcMethodName(method));
     apiMethod.stubName(namer.getStubName(context.getTargetInterface()));
 
     apiMethod.methodParams(apiMethodParamTransformer.generateMethodParams(context));
@@ -142,13 +141,12 @@ public class DynamicLangApiMethodTransformer {
   private ApiMethodDocView generateMethodDoc(GapicMethodContext context) {
     ApiMethodDocView.Builder docBuilder = ApiMethodDocView.newBuilder();
     SurfaceNamer surfaceNamer = context.getNamer();
-    Method method = context.getMethod();
+    MethodModel method = context.getMethodModel();
     MethodConfig methodConfig = context.getMethodConfig();
 
-    docBuilder.mainDocLines(surfaceNamer.getDocLines(context.getMethodModel(), methodConfig));
+    docBuilder.mainDocLines(surfaceNamer.getDocLines(method, methodConfig));
     docBuilder.paramDocs(apiMethodParamTransformer.generateParamDocs(context));
-    docBuilder.returnTypeName(
-        surfaceNamer.getDynamicLangReturnTypeName(context.getMethodModel(), methodConfig));
+    docBuilder.returnTypeName(surfaceNamer.getDynamicLangReturnTypeName(method, methodConfig));
     docBuilder.returnsDocLines(
         surfaceNamer.getReturnDocLines(
             context.getSurfaceInterfaceContext(), methodConfig, Synchronicity.Sync));

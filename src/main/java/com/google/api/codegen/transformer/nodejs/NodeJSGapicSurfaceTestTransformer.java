@@ -170,8 +170,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
     ArrayList<TestCaseView> testCaseViews = new ArrayList<>();
     SymbolTable testNameTable = new SymbolTable();
     for (MethodModel method : context.getSupportedMethods()) {
-      GapicMethodContext methodContext =
-          (GapicMethodContext) context.asRequestMethodContext(method);
+      GapicMethodContext methodContext = context.asRequestMethodContext(method);
       if (methodContext.getMethodConfig().getGrpcStreamingType()
           == GrpcStreamingType.ClientStreaming) {
         //TODO: Add unit test generation for ClientStreaming methods

@@ -54,7 +54,7 @@ public class JavaGapicSampleAppTransformer implements ModelToViewTransformer {
     return Lists.newArrayList(SAMPLE_TEMPLATE_FILE);
   }
 
-  public GapicInterfaceContext getSampleContext(Model model, GapicProductConfig productConfig) {
+  GapicInterfaceContext getSampleContext(Model model, GapicProductConfig productConfig) {
     for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
       GapicInterfaceContext context = testTransformer.createContext(apiInterface, productConfig);
       if (context.getInterfaceConfig().getSmokeTestConfig() != null) {

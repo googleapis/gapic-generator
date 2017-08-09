@@ -61,18 +61,19 @@ public class PythonSurfaceNamer extends SurfaceNamer {
         packageName);
   }
 
+  @Override
   public SurfaceNamer cloneWithPackageName(String packageName) {
     return new PythonSurfaceNamer(packageName);
   }
 
   @Override
-  public String getApiWrapperClassConstructorName(String apiInterfaceSimpleName) {
-    return getApiWrapperClassName(apiInterfaceSimpleName);
+  public String getServicePhraseName(Interface apiInterface) {
+    return apiInterface.getParent().getFullName() + " " + apiInterface.getSimpleName() + " API";
   }
 
   @Override
-  public String getServicePhraseName(Interface apiInterface) {
-    return apiInterface.getParent().getFullName() + " " + apiInterface.getSimpleName() + " API";
+  public String getApiWrapperClassConstructorName(String apiInterfaceSimpleName) {
+    return getApiWrapperClassName(apiInterfaceSimpleName);
   }
 
   @Override

@@ -20,7 +20,6 @@ import com.google.api.codegen.transformer.ApiMethodParamTransformer;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
-import com.google.api.codegen.util.js.JSCommentReformatter;
 import com.google.api.codegen.viewmodel.DynamicLangDefaultableParamView;
 import com.google.api.codegen.viewmodel.ParamDocView;
 import com.google.api.codegen.viewmodel.SimpleParamDocView;
@@ -28,7 +27,6 @@ import com.google.common.collect.ImmutableList;
 import java.util.List;
 
 public class NodeJSApiMethodParamTransformer implements ApiMethodParamTransformer {
-  private static JSCommentReformatter commentReformatter = new JSCommentReformatter();
 
   @Override
   public List<DynamicLangDefaultableParamView> generateMethodParams(GapicMethodContext context) {

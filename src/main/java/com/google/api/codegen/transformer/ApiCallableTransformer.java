@@ -95,13 +95,9 @@ public class ApiCallableTransformer {
     ApiCallableView.Builder apiCallableBuilder = ApiCallableView.newBuilder();
 
     apiCallableBuilder.requestTypeName(
-        context
-            .getMethodModel()
-            .getAndSaveRequestTypeName(context.getTypeTable(), context.getNamer()));
+        method.getAndSaveRequestTypeName(context.getTypeTable(), context.getNamer()));
     apiCallableBuilder.responseTypeName(
-        context
-            .getMethodModel()
-            .getAndSaveResponseTypeName(context.getTypeTable(), context.getNamer()));
+        method.getAndSaveResponseTypeName(context.getTypeTable(), context.getNamer()));
     apiCallableBuilder.name(namer.getCallableName(method));
     apiCallableBuilder.methodName(
         namer.getApiMethodName(method, context.getMethodConfig().getVisibility()));
@@ -145,9 +141,7 @@ public class ApiCallableTransformer {
         namer.getAndSavePagedResponseTypeName(context, pageStreaming.getResourcesFieldConfig());
 
     pagedApiCallableBuilder.requestTypeName(
-        context
-            .getMethodModel()
-            .getAndSaveRequestTypeName(context.getTypeTable(), context.getNamer()));
+        method.getAndSaveRequestTypeName(context.getTypeTable(), context.getNamer()));
     pagedApiCallableBuilder.responseTypeName(pagedResponseTypeName);
     pagedApiCallableBuilder.name(namer.getPagedCallableName(method));
     pagedApiCallableBuilder.methodName(
@@ -173,9 +167,7 @@ public class ApiCallableTransformer {
 
     LongRunningOperationDetailView lroView = lroTransformer.generateDetailView(context);
     operationApiCallableBuilder.requestTypeName(
-        context
-            .getMethodModel()
-            .getAndSaveRequestTypeName(context.getTypeTable(), context.getNamer()));
+        method.getAndSaveRequestTypeName(context.getTypeTable(), context.getNamer()));
     operationApiCallableBuilder.responseTypeName(lroView.operationPayloadTypeName());
     operationApiCallableBuilder.metadataTypeName(lroView.metadataTypeName());
     operationApiCallableBuilder.name(namer.getOperationCallableName(method));
@@ -224,14 +216,9 @@ public class ApiCallableTransformer {
     settings.methodName(namer.getApiMethodName(method, VisibilityConfig.PUBLIC));
     settings.asyncMethodName(namer.getAsyncApiMethodName(method, VisibilityConfig.PUBLIC));
     settings.requestTypeName(
-        context
-            .getMethodModel()
-            .getAndSaveRequestTypeName(context.getTypeTable(), context.getNamer()));
+        method.getAndSaveRequestTypeName(context.getTypeTable(), context.getNamer()));
     settings.responseTypeName(
-        context
-            .getMethodModel()
-            .getAndSaveResponseTypeName(context.getTypeTable(), context.getNamer()));
-    settings.grpcMethodConstant(namer.getGrpcMethodConstant(method));
+        method.getAndSaveResponseTypeName(context.getTypeTable(), context.getNamer()));
 
     settings.grpcTypeName(typeTable.getAndSaveNicknameFor(context.getGrpcContainerTypeName()));
     settings.grpcMethodConstant(namer.getGrpcMethodConstant(method));
@@ -253,7 +240,6 @@ public class ApiCallableTransformer {
         namer.getNotImplementedString(notImplementedPrefix + "batchingDescriptorName"));
 
     if (methodConfig.isGrpcStreaming()) {
-      // GrpcStreaming is only applicable to protobuf-based APIs.
       settings.type(ApiCallableImplType.StreamingApiCallable);
       if (methodConfig.getGrpcStreaming().hasResourceField()) {
         FieldType resourceType = methodConfig.getGrpcStreaming().getResourcesField();
@@ -319,9 +305,9 @@ public class ApiCallableTransformer {
     callableBuilder.createCallableFunctionName(
         namer.getCreateCallableFunctionName(callableInterfaceType));
     callableBuilder.requestTypeName(
-        context.getMethodModel().getAndSaveRequestTypeName(typeTable, context.getNamer()));
+        method.getAndSaveRequestTypeName(typeTable, context.getNamer()));
     callableBuilder.responseTypeName(
-        context.getMethodModel().getAndSaveResponseTypeName(typeTable, context.getNamer()));
+        method.getAndSaveResponseTypeName(typeTable, context.getNamer()));
     callableBuilder.name(namer.getDirectCallableName(method));
     callableBuilder.protoMethodName(method.getSimpleName());
     callableBuilder.fullServiceName(context.getTargetInterfaceFullName());

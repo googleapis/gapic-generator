@@ -79,7 +79,7 @@ public class PathTemplateTransformer {
         context, context.getProductConfig().getResourceNameConfigs().values());
   }
 
-  public List<ResourceNameView> generateResourceNames(
+  List<ResourceNameView> generateResourceNames(
       InterfaceContext context, Iterable<ResourceNameConfig> configs) {
     List<ResourceNameView> resourceNames = new ArrayList<>();
     int index = 1;

@@ -210,7 +210,7 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
     return methodBuilder.build();
   }
 
-  /** Returns a list of methods for this interface. Memoize the result. */
+  /** Returns a list of methods for this interface that have method configs. Memoize the result. */
   @Override
   public List<MethodModel> getInterfaceConfigMethods() {
     if (interfaceMethods != null) {

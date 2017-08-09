@@ -53,6 +53,7 @@ public class BatchingTransformer {
 
   public List<BatchingDescriptorClassView> generateDescriptorClasses(InterfaceContext context) {
     List<BatchingDescriptorClassView> descriptors = new ArrayList<>();
+
     for (MethodModel method : context.getInterfaceConfigMethods()) {
       MethodConfig methodConfig = context.getMethodConfig(method);
       if (!methodConfig.isBatching()) {
@@ -91,6 +92,7 @@ public class BatchingTransformer {
 
   private BatchingDescriptorClassView generateDescriptorClass(MethodContext context) {
     SurfaceNamer namer = context.getNamer();
+    MethodModel method = context.getMethodModel();
     BatchingConfig batching = context.getMethodConfig().getBatching();
 
     FieldType batchedField = batching.getBatchedField();
@@ -101,13 +103,9 @@ public class BatchingTransformer {
 
     desc.name(context.getNamer().getBatchingDescriptorConstName(context.getMethodModel()));
     desc.requestTypeName(
-        context
-            .getMethodModel()
-            .getAndSaveRequestTypeName(context.getTypeTable(), context.getNamer()));
+        method.getAndSaveRequestTypeName(context.getTypeTable(), context.getNamer()));
     desc.responseTypeName(
-        context
-            .getMethodModel()
-            .getAndSaveResponseTypeName(context.getTypeTable(), context.getNamer()));
+        method.getAndSaveResponseTypeName(context.getTypeTable(), context.getNamer()));
     desc.batchedFieldTypeName(context.getTypeTable().getAndSaveNicknameFor(batchedField));
 
     desc.partitionKeys(generatePartitionKeys(context));

@@ -17,7 +17,6 @@ package com.google.api.codegen.transformer.ruby;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.config.GapicInterfaceConfig;
-import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
@@ -39,7 +38,6 @@ import com.google.api.codegen.util.ruby.RubyCommentReformatter;
 import com.google.api.codegen.util.ruby.RubyNameFormatter;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
@@ -233,15 +231,15 @@ public class RubySurfaceNamer extends SurfaceNamer {
   @Override
   public List<String> getReturnDocLines(
       TransformationContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
-    Method method = ((GapicMethodConfig) methodConfig).getMethod();
+    MethodModel method = methodConfig.getMethodModel();
     if (method.getResponseStreaming()) {
-      String classInfo = getModelTypeFormatter().getFullNameForElementType(method.getOutputType());
+      String classInfo = method.getOutputTypeFullName(getTypeFormatter());
       return ImmutableList.of("An enumerable of " + classInfo + " instances.", "");
     }
 
     if (methodConfig.isPageStreaming()) {
       String resourceTypeName =
-          getModelTypeFormatter()
+          getTypeFormatter()
               .getFullNameForElementType(methodConfig.getPageStreaming().getResourcesField());
       return ImmutableList.of(
           "An enumerable of " + resourceTypeName + " instances.",

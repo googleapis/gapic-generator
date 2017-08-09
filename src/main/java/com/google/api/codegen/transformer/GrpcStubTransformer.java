@@ -46,7 +46,7 @@ public class GrpcStubTransformer {
     return stubs;
   }
 
-  public GrpcStubView generateGrpcStub(
+  GrpcStubView generateGrpcStub(
       GapicInterfaceContext context, Interface targetInterface, List<MethodModel> methods) {
     SurfaceNamer namer = context.getNamer();
     GrpcStubView.Builder stub = GrpcStubView.newBuilder();
