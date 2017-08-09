@@ -17,7 +17,6 @@ package com.google.api.codegen.discogapic.transformer;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
-import com.google.api.codegen.util.NameFormatter;
 
 /** Provides language-specific names for variables and classes. */
 public class DiscoGapicNamer {
@@ -25,7 +24,7 @@ public class DiscoGapicNamer {
   private static final String regexDelimiter = "\\.";
 
   /* Create a JavaSurfaceNamer for a Discovery-based API. */
-  public DiscoGapicNamer(SurfaceNamer parentNamer, NameFormatter formatter) {
+  public DiscoGapicNamer(SurfaceNamer parentNamer) {
     this.languageNamer = parentNamer;
   }
 

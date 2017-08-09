@@ -17,7 +17,6 @@ package com.google.api.codegen.config;
 import com.google.api.codegen.LongRunningConfigProto;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.ModelTypeTable;
-import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Model;

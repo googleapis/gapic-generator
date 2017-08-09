@@ -86,7 +86,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
     List<ViewModel> surfaceSchemas = new ArrayList<>();
     String packageName = productConfig.getPackageName();
     JavaSurfaceNamer surfaceNamer = new JavaSurfaceNamer(packageName, packageName, nameFormatter);
-    DiscoGapicNamer discoGapicNamer = new DiscoGapicNamer(surfaceNamer, nameFormatter);
+    DiscoGapicNamer discoGapicNamer = new DiscoGapicNamer(surfaceNamer);
     DiscoGapicInterfaceContext context =
         DiscoGapicInterfaceContext.createWithoutInterface(
             document,

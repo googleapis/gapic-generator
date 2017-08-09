@@ -14,9 +14,7 @@
  */
 package com.google.api.codegen.config;
 
-/**
- * API source-agnostic interface for FieldSelectors.
- */
+/** API source-agnostic interface for FieldSelectors. */
 public interface GenericFieldSelector {
 
   /* @return the type of source that this FieldType is based on. */

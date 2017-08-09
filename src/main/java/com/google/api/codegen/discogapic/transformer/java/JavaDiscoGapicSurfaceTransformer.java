@@ -124,7 +124,7 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
     JavaNameFormatter javaNameFormatter = new JavaNameFormatter();
     String packageName = productConfig.getPackageName();
     SurfaceNamer namer = new JavaSurfaceNamer(packageName, packageName, javaNameFormatter);
-    DiscoGapicNamer discoGapicNamer = new DiscoGapicNamer(namer, javaNameFormatter);
+    DiscoGapicNamer discoGapicNamer = new DiscoGapicNamer(namer);
 
     List<ServiceDocView> serviceDocs = new ArrayList<>();
     for (String interfaceName : productConfig.getInterfaceConfigMap().keySet()) {
@@ -232,7 +232,7 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
     String packageName = productConfig.getPackageName();
 
     SurfaceNamer namer = new JavaSurfaceNamer(packageName, packageName, nameFormatter);
-    DiscoGapicNamer discoGapicNamer = new DiscoGapicNamer(namer, nameFormatter);
+    DiscoGapicNamer discoGapicNamer = new DiscoGapicNamer(namer);
     SchemaTypeTable typeTable = createTypeTable(productConfig.getPackageName());
 
     addPagedResponseWrapperImports(typeTable);
