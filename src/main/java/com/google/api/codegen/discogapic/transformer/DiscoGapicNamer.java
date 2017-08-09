@@ -78,19 +78,13 @@ public class DiscoGapicNamer {
     return pieces[pieces.length - 1];
   }
 
-  /**
-   * Returns the last substring after the input is split by periods. Ex: Input
-   * "compute.addresses.aggregatedList" returns "aggregatedList".
-   */
+  /** Get the request type name from a method. */
   public static Name getRequestName(Method method) {
     String[] pieces = method.id().split(regexDelimiter);
     return Name.anyCamel(pieces[pieces.length - 2], pieces[pieces.length - 1], "http", "request");
   }
 
-  /**
-   * Returns the last substring after the input is split by periods. Ex: Input
-   * "compute.addresses.aggregatedList" returns "aggregatedList".
-   */
+  /** Get the response type name from a method. */
   public static Name getResponseName(Method method) {
     String[] pieces = method.id().split(regexDelimiter);
     return Name.anyCamel(pieces[pieces.length - 2], pieces[pieces.length - 1], "http", "response");
