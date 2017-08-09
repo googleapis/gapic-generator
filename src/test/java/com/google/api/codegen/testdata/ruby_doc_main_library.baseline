@@ -32,6 +32,7 @@ require "google/longrunning/operations_client"
 
 require "library_pb"
 require "tagger_pb"
+require "library/credentials"
 
 module Library
   module V1
@@ -39,14 +40,14 @@ module Library
     # resources and Book resources in the library. It defines the following
     # resource model:
     #
-    # * The API has a collection of Shelf
+    # * The API has a collection of {Google::Example::Library::V1::Shelf Shelf}
     #   resources, named +bookShelves/*+
     #
-    # * Each Shelf has a collection of Book
+    # * Each Shelf has a collection of {Google::Example::Library::V1::Book Book}
     #   resources, named +bookShelves/*/books/*+
     #
-    # Check out {cloud docs!}[https://cloud.google.com/library/example/link].
-    # This is {not a cloud link}[http://www.google.com].
+    # Check out [cloud docs!](https://cloud.google.com/library/example/link).
+    # This is [not a cloud link](http://www.google.com).
     #
     # Service comment may include special characters: <>&"+'@.
     #
@@ -161,59 +162,25 @@ module Library
         )
       end
 
-      # Parses the shelf_id from a shelf resource.
-      # @param shelf_name [String]
-      # @return [String]
-      def self.match_shelf_id_from_shelf_name shelf_name
-        SHELF_PATH_TEMPLATE.match(shelf_name)["shelf_id"]
-      end
-
-      # Parses the shelf_id from a book resource.
-      # @param book_name [String]
-      # @return [String]
-      def self.match_shelf_id_from_book_name book_name
-        BOOK_PATH_TEMPLATE.match(book_name)["shelf_id"]
-      end
-
-      # Parses the book_id from a book resource.
-      # @param book_name [String]
-      # @return [String]
-      def self.match_book_id_from_book_name book_name
-        BOOK_PATH_TEMPLATE.match(book_name)["book_id"]
-      end
-
-      # Parses the shelf from a return resource.
-      # @param return_name [String]
-      # @return [String]
-      def self.match_shelf_from_return_name return_name
-        RETURN_PATH_TEMPLATE.match(return_name)["shelf"]
-      end
-
-      # Parses the book from a return resource.
-      # @param return_name [String]
-      # @return [String]
-      def self.match_book_from_return_name return_name
-        RETURN_PATH_TEMPLATE.match(return_name)["book"]
-      end
-
-      # Parses the return from a return resource.
-      # @param return_name [String]
-      # @return [String]
-      def self.match_return_from_return_name return_name
-        RETURN_PATH_TEMPLATE.match(return_name)["return"]
-      end
-
       # @param service_path [String]
       #   The domain name of the API remote host.
       # @param port [Integer]
       #   The port on which to connect to the remote host.
-      # @param channel [Channel]
-      #   A Channel object through which to make calls.
-      # @param chan_creds [Grpc::ChannelCredentials]
-      #   A ChannelCredentials for the setting up the RPC client.
-      # @param updater_proc [Proc]
-      #   A function that transforms the metadata for requests, e.g., to give
-      #   OAuth credentials.
+      # @param credentials
+      #   [Google::Gax::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
+      #   Provides the means for authenticating requests made by the client. This parameter can
+      #   be many types.
+      #   A `Google::Gax::Credentials` uses a the properties of its represented keyfile for
+      #   authenticating requests made by this client.
+      #   A `String` will be treated as the path to the keyfile to be used for the construction of
+      #   credentials for this client.
+      #   A `Hash` will be treated as the contents of a keyfile to be used for the construction of
+      #   credentials for this client.
+      #   A `GRPC::Core::Channel` will be used to make calls through.
+      #   A `GRPC::Core::ChannelCredentials` for the setting up the RPC client. The channel credentials
+      #   should already be composed with a `GRPC::Core::CallCredentials` object.
+      #   A `Proc` will be used as an updater_proc for the Grpc channel. The proc transforms the
+      #   metadata for requests, generally, to give OAuth credentials.
       # @param scopes [Array<String>]
       #   The OAuth scopes for this service. This parameter is ignored if
       #   an updater_proc is supplied.
@@ -230,6 +197,7 @@ module Library
           channel: nil,
           chan_creds: nil,
           updater_proc: nil,
+          credentials: nil,
           scopes: ALL_SCOPES,
           client_config: {},
           timeout: DEFAULT_TIMEOUT,
@@ -244,12 +212,21 @@ module Library
         require "library_services_pb"
         require "tagger_services_pb"
 
+        if channel || chan_creds || updater_proc
+          warn "The `channel`, `chan_creds`, and `updater_proc` parameters will be removed " \
+            "on 2017/09/08"
+          credentials ||= channel
+          credentials ||= chan_creds
+          credentials ||= updater_proc
+        end
+        if app_name || app_version
+          warn "`app_name` and `app_version` are no longer being used in the request headers."
+        end
+
         @operations_client = Google::Longrunning::OperationsClient.new(
           service_path: service_path,
           port: port,
-          channel: channel,
-          chan_creds: chan_creds,
-          updater_proc: updater_proc,
+          credentials: credentials,
           scopes: scopes,
           client_config: client_config,
           timeout: timeout,
@@ -259,8 +236,21 @@ module Library
           lib_version: lib_version,
         )
 
-        if app_name || app_version
-          warn "`app_name` and `app_version` are no longer being used in the request headers."
+        credentials ||= Library::Credentials.default
+        if credentials.is_a?(String) || credentials.is_a?(Hash)
+          updater_proc = Library::Credentials.new(credentials).updater_proc
+        end
+        if credentials.is_a?(GRPC::Core::Channel)
+          channel = credentials
+        end
+        if credentials.is_a?(GRPC::Core::ChannelCredentials)
+          chan_creds = credentials
+        end
+        if credentials.is_a?(Proc)
+          updater_proc = credentials
+        end
+        if credentials.is_a?(Google::Gax::Credentials)
+          updater_proc = credentials.updater_proc
         end
 
         google_api_client = "gl-ruby/#{RUBY_VERSION}"
@@ -369,6 +359,10 @@ module Library
           @library_service_stub.method(:get_book_from_anywhere),
           defaults["get_book_from_anywhere"]
         )
+        @get_book_from_absolutely_anywhere = Google::Gax.create_api_call(
+          @library_service_stub.method(:get_book_from_absolutely_anywhere),
+          defaults["get_book_from_absolutely_anywhere"]
+        )
         @update_book_index = Google::Gax.create_api_call(
           @library_service_stub.method(:update_book_index),
           defaults["update_book_index"]
@@ -432,7 +426,7 @@ module Library
       # @example
       #   require "library/v1"
       #
-      #   library_service_client = Library::V1::LibraryServiceClient.new
+      #   library_service_client = Library::V1.new
       #   shelf = {}
       #   response = library_service_client.create_shelf(shelf)
 
@@ -467,7 +461,7 @@ module Library
       # @example
       #   require "library/v1"
       #
-      #   library_service_client = Library::V1::LibraryServiceClient.new
+      #   library_service_client = Library::V1.new
       #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
       #   options_ = ''
       #   response = library_service_client.get_shelf(formatted_name, options_)
@@ -502,7 +496,7 @@ module Library
       # @example
       #   require "library/v1"
       #
-      #   library_service_client = Library::V1::LibraryServiceClient.new
+      #   library_service_client = Library::V1.new
       #
       #   # Iterate over all results.
       #   library_service_client.list_shelves.each do |element|
@@ -533,7 +527,7 @@ module Library
       # @example
       #   require "library/v1"
       #
-      #   library_service_client = Library::V1::LibraryServiceClient.new
+      #   library_service_client = Library::V1.new
       #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
       #   library_service_client.delete_shelf(formatted_name)
 
@@ -564,7 +558,7 @@ module Library
       # @example
       #   require "library/v1"
       #
-      #   library_service_client = Library::V1::LibraryServiceClient.new
+      #   library_service_client = Library::V1.new
       #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
       #   formatted_other_shelf_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
       #   response = library_service_client.merge_shelves(formatted_name, formatted_other_shelf_name)
@@ -597,7 +591,7 @@ module Library
       # @example
       #   require "library/v1"
       #
-      #   library_service_client = Library::V1::LibraryServiceClient.new
+      #   library_service_client = Library::V1.new
       #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
       #   book = {}
       #   response = library_service_client.create_book(formatted_name, book)
@@ -640,7 +634,7 @@ module Library
       # @example
       #   require "library/v1"
       #
-      #   library_service_client = Library::V1::LibraryServiceClient.new
+      #   library_service_client = Library::V1.new
       #   shelf = {}
       #   books = []
       #   series_string = "foobar"
@@ -677,7 +671,7 @@ module Library
       # @example
       #   require "library/v1"
       #
-      #   library_service_client = Library::V1::LibraryServiceClient.new
+      #   library_service_client = Library::V1.new
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   response = library_service_client.get_book(formatted_name)
 
@@ -715,7 +709,7 @@ module Library
       # @example
       #   require "library/v1"
       #
-      #   library_service_client = Library::V1::LibraryServiceClient.new
+      #   library_service_client = Library::V1.new
       #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
       #
       #   # Iterate over all results.
@@ -756,7 +750,7 @@ module Library
       # @example
       #   require "library/v1"
       #
-      #   library_service_client = Library::V1::LibraryServiceClient.new
+      #   library_service_client = Library::V1.new
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   library_service_client.delete_book(formatted_name)
 
@@ -795,7 +789,7 @@ module Library
       # @example
       #   require "library/v1"
       #
-      #   library_service_client = Library::V1::LibraryServiceClient.new
+      #   library_service_client = Library::V1.new
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   book = {}
       #   response = library_service_client.update_book(formatted_name, book)
@@ -830,7 +824,7 @@ module Library
       # @example
       #   require "library/v1"
       #
-      #   library_service_client = Library::V1::LibraryServiceClient.new
+      #   library_service_client = Library::V1.new
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   formatted_other_shelf_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
       #   response = library_service_client.move_book(formatted_name, formatted_other_shelf_name)
@@ -868,7 +862,7 @@ module Library
       # @example
       #   require "library/v1"
       #
-      #   library_service_client = Library::V1::LibraryServiceClient.new
+      #   library_service_client = Library::V1.new
       #
       #   # Iterate over all results.
       #   library_service_client.list_strings.each do |element|
@@ -908,7 +902,7 @@ module Library
       # @example
       #   require "library/v1"
       #
-      #   library_service_client = Library::V1::LibraryServiceClient.new
+      #   library_service_client = Library::V1.new
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   comment = ''
       #   stage = :UNSET
@@ -946,7 +940,7 @@ module Library
       # @example
       #   require "library/v1"
       #
-      #   library_service_client = Library::V1::LibraryServiceClient.new
+      #   library_service_client = Library::V1.new
       #   formatted_name = Library::V1::LibraryServiceClient.archived_book_path("[ARCHIVE_PATH]", "[BOOK_ID]")
       #   response = library_service_client.get_book_from_archive(formatted_name)
 
@@ -975,7 +969,7 @@ module Library
       # @example
       #   require "library/v1"
       #
-      #   library_service_client = Library::V1::LibraryServiceClient.new
+      #   library_service_client = Library::V1.new
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   formatted_alt_book_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   response = library_service_client.get_book_from_anywhere(formatted_name, formatted_alt_book_name)
@@ -990,6 +984,32 @@ module Library
         }.delete_if { |_, v| v.nil? }
         req = Google::Gax::to_proto(req, Google::Example::Library::V1::GetBookFromAnywhereRequest)
         @get_book_from_anywhere.call(req, options)
+      end
+
+      # Test proper OneOf-Any resource name mapping
+      #
+      # @param name [String]
+      #   The name of the book to retrieve.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @return [Google::Example::Library::V1::BookFromAnywhere]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library/v1"
+      #
+      #   library_service_client = Library::V1.new
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #   response = library_service_client.get_book_from_absolutely_anywhere(formatted_name)
+
+      def get_book_from_absolutely_anywhere \
+          name,
+          options: nil
+        req = {
+          name: name
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Example::Library::V1::GetBookFromAbsolutelyAnywhereRequest)
+        @get_book_from_absolutely_anywhere.call(req, options)
       end
 
       # Updates the index of a book.
@@ -1007,7 +1027,7 @@ module Library
       # @example
       #   require "library/v1"
       #
-      #   library_service_client = Library::V1::LibraryServiceClient.new
+      #   library_service_client = Library::V1.new
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   index_name = "default index"
       #   index_map_item = ''
@@ -1042,7 +1062,7 @@ module Library
       # @example
       #   require "library/v1"
       #
-      #   library_service_client = Library::V1::LibraryServiceClient.new
+      #   library_service_client = Library::V1.new
       #   library_service_client.stream_shelves.each do |element|
       #     # Process element.
       #   end
@@ -1067,7 +1087,7 @@ module Library
       # @example
       #   require "library/v1"
       #
-      #   library_service_client = Library::V1::LibraryServiceClient.new
+      #   library_service_client = Library::V1.new
       #   name = ''
       #   library_service_client.stream_books(name).each do |element|
       #     # Process element.
@@ -1104,7 +1124,7 @@ module Library
       # @example
       #   require "library/v1"
       #
-      #   library_service_client = Library::V1::LibraryServiceClient.new
+      #   library_service_client = Library::V1.new
       #   name = ''
       #   request = { name: name }
       #   requests = [request]
@@ -1135,7 +1155,7 @@ module Library
       # @example
       #   require "library/v1"
       #
-      #   library_service_client = Library::V1::LibraryServiceClient.new
+      #   library_service_client = Library::V1.new
       #   name = ''
       #   request = { name: name }
       #   requests = [request]
@@ -1165,7 +1185,7 @@ module Library
       # @example
       #   require "library/v1"
       #
-      #   library_service_client = Library::V1::LibraryServiceClient.new
+      #   library_service_client = Library::V1.new
       #   names_element = ''
       #   names = [names_element]
       #   shelves = []
@@ -1213,7 +1233,7 @@ module Library
       # @example
       #   require "library/v1"
       #
-      #   library_service_client = Library::V1::LibraryServiceClient.new
+      #   library_service_client = Library::V1.new
       #   formatted_resource = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   tag = ''
       #   response = library_service_client.add_tag(formatted_resource, tag)
@@ -1246,7 +1266,7 @@ module Library
       # @example
       #   require "library/v1"
       #
-      #   library_service_client = Library::V1::LibraryServiceClient.new
+      #   library_service_client = Library::V1.new
       #   formatted_resource = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   label = ''
       #   response = library_service_client.add_label(formatted_resource, label)
@@ -1275,7 +1295,7 @@ module Library
       # @example
       #   require "library/v1"
       #
-      #   library_service_client = Library::V1::LibraryServiceClient.new
+      #   library_service_client = Library::V1.new
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #
       #   # Register a callback during the method call.
@@ -1335,7 +1355,7 @@ module Library
       # @example
       #   require "library/v1"
       #
-      #   library_service_client = Library::V1::LibraryServiceClient.new
+      #   library_service_client = Library::V1.new
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #
       #   # Register a callback during the method call.
@@ -1455,7 +1475,7 @@ module Library
       # @example
       #   require "library/v1"
       #
-      #   library_service_client = Library::V1::LibraryServiceClient.new
+      #   library_service_client = Library::V1.new
       #   required_singular_int32 = 0
       #   required_singular_int64 = 0
       #   required_singular_float = 0.0

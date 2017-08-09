@@ -17,8 +17,8 @@ package com.google.api.codegen.viewmodel.testing;
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.viewmodel.FileHeaderView;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.api.codegen.viewmodel.testing.MockServiceImplView.Builder;
 import com.google.auto.value.AutoValue;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class ClientTestFileView implements ViewModel {
@@ -38,6 +38,9 @@ public abstract class ClientTestFileView implements ViewModel {
   @Override
   public abstract String outputPath();
 
+  @Nullable
+  public abstract String apiVersion();
+
   public static Builder newBuilder() {
     return new AutoValue_ClientTestFileView.Builder();
   }
@@ -52,6 +55,8 @@ public abstract class ClientTestFileView implements ViewModel {
     public abstract Builder outputPath(String val);
 
     public abstract Builder templateFileName(String val);
+
+    public abstract Builder apiVersion(String val);
 
     public abstract ClientTestFileView build();
   }

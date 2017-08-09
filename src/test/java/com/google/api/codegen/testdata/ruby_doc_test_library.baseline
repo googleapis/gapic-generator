@@ -18,6 +18,7 @@ require "minitest/spec"
 
 require "google/gax"
 
+require "library"
 require "library/v1/library_service_client"
 require "library_services_pb"
 require "tagger_services_pb"
@@ -54,6 +55,19 @@ class MockGrpcClientStub
   end
 end
 
+class MockCredentialsClass < Library::Credentials
+  def initialize(method_name)
+    @method_name = method_name
+  end
+
+  def updater_proc
+    proc do
+      raise "The method `#{@method_name}` was trying to make a grpc request. This should not " \
+          "happen since the grpc layer is being mocked."
+    end
+  end
+end
+
 describe Library::V1::LibraryServiceClient do
 
   describe 'create_shelf' do
@@ -82,14 +96,19 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:create_shelf, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("create_shelf")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        response = client.create_shelf(shelf)
+          # Call method
+          response = client.create_shelf(shelf)
 
-        # Verify the response
-        assert_equal(expected_response, response)
+          # Verify the response
+          assert_equal(expected_response, response)
+        end
       end
     end
 
@@ -105,16 +124,21 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:create_shelf, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("create_shelf")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        err = assert_raises Google::Gax::GaxError do
-          client.create_shelf(shelf)
+          # Call method
+          err = assert_raises Google::Gax::GaxError do
+            client.create_shelf(shelf)
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
         end
-
-        # Verify the GaxError wrapped the custom error that was raised.
-        assert_match(custom_error.message, err.message)
       end
     end
   end
@@ -147,14 +171,19 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:get_shelf, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("get_shelf")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        response = client.get_shelf(formatted_name, options_)
+          # Call method
+          response = client.get_shelf(formatted_name, options_)
 
-        # Verify the response
-        assert_equal(expected_response, response)
+          # Verify the response
+          assert_equal(expected_response, response)
+        end
       end
     end
 
@@ -172,16 +201,21 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:get_shelf, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("get_shelf")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        err = assert_raises Google::Gax::GaxError do
-          client.get_shelf(formatted_name, options_)
+          # Call method
+          err = assert_raises Google::Gax::GaxError do
+            client.get_shelf(formatted_name, options_)
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
         end
-
-        # Verify the GaxError wrapped the custom error that was raised.
-        assert_match(custom_error.message, err.message)
       end
     end
   end
@@ -203,17 +237,22 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:list_shelves, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("list_shelves")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        response = client.list_shelves
+          # Call method
+          response = client.list_shelves
 
-        # Verify the response
-        assert(response.instance_of?(Google::Gax::PagedEnumerable))
-        assert_equal(expected_response, response.page.response)
-        assert_nil(response.next_page)
-        assert_equal(expected_response.shelves.to_a, response.to_a)
+          # Verify the response
+          assert(response.instance_of?(Google::Gax::PagedEnumerable))
+          assert_equal(expected_response, response.page.response)
+          assert_nil(response.next_page)
+          assert_equal(expected_response.shelves.to_a, response.to_a)
+        end
       end
     end
 
@@ -224,16 +263,21 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:list_shelves, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("list_shelves")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        err = assert_raises Google::Gax::GaxError do
-          client.list_shelves
+          # Call method
+          err = assert_raises Google::Gax::GaxError do
+            client.list_shelves
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
         end
-
-        # Verify the GaxError wrapped the custom error that was raised.
-        assert_match(custom_error.message, err.message)
       end
     end
   end
@@ -253,14 +297,19 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:delete_shelf, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("delete_shelf")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        response = client.delete_shelf(formatted_name)
+          # Call method
+          response = client.delete_shelf(formatted_name)
 
-        # Verify the response
-        assert_nil(response)
+          # Verify the response
+          assert_nil(response)
+        end
       end
     end
 
@@ -276,16 +325,21 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:delete_shelf, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("delete_shelf")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        err = assert_raises Google::Gax::GaxError do
-          client.delete_shelf(formatted_name)
+          # Call method
+          err = assert_raises Google::Gax::GaxError do
+            client.delete_shelf(formatted_name)
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
         end
-
-        # Verify the GaxError wrapped the custom error that was raised.
-        assert_match(custom_error.message, err.message)
       end
     end
   end
@@ -318,14 +372,19 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:merge_shelves, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("merge_shelves")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        response = client.merge_shelves(formatted_name, formatted_other_shelf_name)
+          # Call method
+          response = client.merge_shelves(formatted_name, formatted_other_shelf_name)
 
-        # Verify the response
-        assert_equal(expected_response, response)
+          # Verify the response
+          assert_equal(expected_response, response)
+        end
       end
     end
 
@@ -343,16 +402,21 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:merge_shelves, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("merge_shelves")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        err = assert_raises Google::Gax::GaxError do
-          client.merge_shelves(formatted_name, formatted_other_shelf_name)
+          # Call method
+          err = assert_raises Google::Gax::GaxError do
+            client.merge_shelves(formatted_name, formatted_other_shelf_name)
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
         end
-
-        # Verify the GaxError wrapped the custom error that was raised.
-        assert_match(custom_error.message, err.message)
       end
     end
   end
@@ -387,14 +451,19 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:create_book, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("create_book")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        response = client.create_book(formatted_name, book)
+          # Call method
+          response = client.create_book(formatted_name, book)
 
-        # Verify the response
-        assert_equal(expected_response, response)
+          # Verify the response
+          assert_equal(expected_response, response)
+        end
       end
     end
 
@@ -412,16 +481,21 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:create_book, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("create_book")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        err = assert_raises Google::Gax::GaxError do
-          client.create_book(formatted_name, book)
+          # Call method
+          err = assert_raises Google::Gax::GaxError do
+            client.create_book(formatted_name, book)
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
         end
-
-        # Verify the GaxError wrapped the custom error that was raised.
-        assert_match(custom_error.message, err.message)
       end
     end
   end
@@ -452,18 +526,23 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:publish_series, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("publish_series")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        response = client.publish_series(
-          shelf,
-          books,
-          series_uuid
-        )
+          # Call method
+          response = client.publish_series(
+            shelf,
+            books,
+            series_uuid
+          )
 
-        # Verify the response
-        assert_equal(expected_response, response)
+          # Verify the response
+          assert_equal(expected_response, response)
+        end
       end
     end
 
@@ -484,20 +563,25 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:publish_series, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("publish_series")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        err = assert_raises Google::Gax::GaxError do
-          client.publish_series(
-            shelf,
-            books,
-            series_uuid
-          )
+          # Call method
+          err = assert_raises Google::Gax::GaxError do
+            client.publish_series(
+              shelf,
+              books,
+              series_uuid
+            )
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
         end
-
-        # Verify the GaxError wrapped the custom error that was raised.
-        assert_match(custom_error.message, err.message)
       end
     end
   end
@@ -530,14 +614,19 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:get_book, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("get_book")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        response = client.get_book(formatted_name)
+          # Call method
+          response = client.get_book(formatted_name)
 
-        # Verify the response
-        assert_equal(expected_response, response)
+          # Verify the response
+          assert_equal(expected_response, response)
+        end
       end
     end
 
@@ -553,16 +642,21 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:get_book, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("get_book")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        err = assert_raises Google::Gax::GaxError do
-          client.get_book(formatted_name)
+          # Call method
+          err = assert_raises Google::Gax::GaxError do
+            client.get_book(formatted_name)
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
         end
-
-        # Verify the GaxError wrapped the custom error that was raised.
-        assert_match(custom_error.message, err.message)
       end
     end
   end
@@ -589,17 +683,22 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:list_books, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("list_books")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        response = client.list_books(formatted_name)
+          # Call method
+          response = client.list_books(formatted_name)
 
-        # Verify the response
-        assert(response.instance_of?(Google::Gax::PagedEnumerable))
-        assert_equal(expected_response, response.page.response)
-        assert_nil(response.next_page)
-        assert_equal(expected_response.books.to_a, response.to_a)
+          # Verify the response
+          assert(response.instance_of?(Google::Gax::PagedEnumerable))
+          assert_equal(expected_response, response.page.response)
+          assert_nil(response.next_page)
+          assert_equal(expected_response.books.to_a, response.to_a)
+        end
       end
     end
 
@@ -615,16 +714,21 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:list_books, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("list_books")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        err = assert_raises Google::Gax::GaxError do
-          client.list_books(formatted_name)
+          # Call method
+          err = assert_raises Google::Gax::GaxError do
+            client.list_books(formatted_name)
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
         end
-
-        # Verify the GaxError wrapped the custom error that was raised.
-        assert_match(custom_error.message, err.message)
       end
     end
   end
@@ -644,14 +748,19 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:delete_book, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("delete_book")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        response = client.delete_book(formatted_name)
+          # Call method
+          response = client.delete_book(formatted_name)
 
-        # Verify the response
-        assert_nil(response)
+          # Verify the response
+          assert_nil(response)
+        end
       end
     end
 
@@ -667,16 +776,21 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:delete_book, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("delete_book")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        err = assert_raises Google::Gax::GaxError do
-          client.delete_book(formatted_name)
+          # Call method
+          err = assert_raises Google::Gax::GaxError do
+            client.delete_book(formatted_name)
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
         end
-
-        # Verify the GaxError wrapped the custom error that was raised.
-        assert_match(custom_error.message, err.message)
       end
     end
   end
@@ -711,14 +825,19 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:update_book, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("update_book")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        response = client.update_book(formatted_name, book)
+          # Call method
+          response = client.update_book(formatted_name, book)
 
-        # Verify the response
-        assert_equal(expected_response, response)
+          # Verify the response
+          assert_equal(expected_response, response)
+        end
       end
     end
 
@@ -736,16 +855,21 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:update_book, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("update_book")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        err = assert_raises Google::Gax::GaxError do
-          client.update_book(formatted_name, book)
+          # Call method
+          err = assert_raises Google::Gax::GaxError do
+            client.update_book(formatted_name, book)
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
         end
-
-        # Verify the GaxError wrapped the custom error that was raised.
-        assert_match(custom_error.message, err.message)
       end
     end
   end
@@ -780,14 +904,19 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:move_book, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("move_book")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        response = client.move_book(formatted_name, formatted_other_shelf_name)
+          # Call method
+          response = client.move_book(formatted_name, formatted_other_shelf_name)
 
-        # Verify the response
-        assert_equal(expected_response, response)
+          # Verify the response
+          assert_equal(expected_response, response)
+        end
       end
     end
 
@@ -805,16 +934,21 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:move_book, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("move_book")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        err = assert_raises Google::Gax::GaxError do
-          client.move_book(formatted_name, formatted_other_shelf_name)
+          # Call method
+          err = assert_raises Google::Gax::GaxError do
+            client.move_book(formatted_name, formatted_other_shelf_name)
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
         end
-
-        # Verify the GaxError wrapped the custom error that was raised.
-        assert_match(custom_error.message, err.message)
       end
     end
   end
@@ -836,17 +970,22 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:list_strings, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("list_strings")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        response = client.list_strings
+          # Call method
+          response = client.list_strings
 
-        # Verify the response
-        assert(response.instance_of?(Google::Gax::PagedEnumerable))
-        assert_equal(expected_response, response.page.response)
-        assert_nil(response.next_page)
-        assert_equal(expected_response.strings.to_a, response.to_a)
+          # Verify the response
+          assert(response.instance_of?(Google::Gax::PagedEnumerable))
+          assert_equal(expected_response, response.page.response)
+          assert_nil(response.next_page)
+          assert_equal(expected_response.strings.to_a, response.to_a)
+        end
       end
     end
 
@@ -857,16 +996,21 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:list_strings, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("list_strings")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        err = assert_raises Google::Gax::GaxError do
-          client.list_strings
+          # Call method
+          err = assert_raises Google::Gax::GaxError do
+            client.list_strings
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
         end
-
-        # Verify the GaxError wrapped the custom error that was raised.
-        assert_match(custom_error.message, err.message)
       end
     end
   end
@@ -896,14 +1040,19 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:add_comments, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("add_comments")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        response = client.add_comments(formatted_name, comments)
+          # Call method
+          response = client.add_comments(formatted_name, comments)
 
-        # Verify the response
-        assert_nil(response)
+          # Verify the response
+          assert_nil(response)
+        end
       end
     end
 
@@ -929,16 +1078,21 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:add_comments, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("add_comments")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        err = assert_raises Google::Gax::GaxError do
-          client.add_comments(formatted_name, comments)
+          # Call method
+          err = assert_raises Google::Gax::GaxError do
+            client.add_comments(formatted_name, comments)
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
         end
-
-        # Verify the GaxError wrapped the custom error that was raised.
-        assert_match(custom_error.message, err.message)
       end
     end
   end
@@ -971,14 +1125,19 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:get_book_from_archive, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("get_book_from_archive")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        response = client.get_book_from_archive(formatted_name)
+          # Call method
+          response = client.get_book_from_archive(formatted_name)
 
-        # Verify the response
-        assert_equal(expected_response, response)
+          # Verify the response
+          assert_equal(expected_response, response)
+        end
       end
     end
 
@@ -994,16 +1153,21 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:get_book_from_archive, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("get_book_from_archive")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        err = assert_raises Google::Gax::GaxError do
-          client.get_book_from_archive(formatted_name)
+          # Call method
+          err = assert_raises Google::Gax::GaxError do
+            client.get_book_from_archive(formatted_name)
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
         end
-
-        # Verify the GaxError wrapped the custom error that was raised.
-        assert_match(custom_error.message, err.message)
       end
     end
   end
@@ -1038,14 +1202,19 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:get_book_from_anywhere, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("get_book_from_anywhere")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        response = client.get_book_from_anywhere(formatted_name, formatted_alt_book_name)
+          # Call method
+          response = client.get_book_from_anywhere(formatted_name, formatted_alt_book_name)
 
-        # Verify the response
-        assert_equal(expected_response, response)
+          # Verify the response
+          assert_equal(expected_response, response)
+        end
       end
     end
 
@@ -1063,16 +1232,96 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:get_book_from_anywhere, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("get_book_from_anywhere")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        err = assert_raises Google::Gax::GaxError do
-          client.get_book_from_anywhere(formatted_name, formatted_alt_book_name)
+          # Call method
+          err = assert_raises Google::Gax::GaxError do
+            client.get_book_from_anywhere(formatted_name, formatted_alt_book_name)
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
         end
+      end
+    end
+  end
 
-        # Verify the GaxError wrapped the custom error that was raised.
-        assert_match(custom_error.message, err.message)
+  describe 'get_book_from_absolutely_anywhere' do
+    custom_error = CustomTestError.new "Custom test error for Library::V1::LibraryServiceClient#get_book_from_absolutely_anywhere."
+
+    it 'invokes get_book_from_absolutely_anywhere without error' do
+      # Create request parameters
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+
+      # Create expected grpc response
+      name_2 = "name2-1052831874"
+      author = "author-1406328437"
+      title = "title110371416"
+      read = true
+      expected_response = {
+        name: name_2,
+        author: author,
+        title: title,
+        read: read
+      }
+      expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::BookFromAnywhere)
+
+      # Mock Grpc layer
+      mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::GetBookFromAbsolutelyAnywhereRequest, request)
+        assert_equal(formatted_name, request.name)
+        expected_response
+      end
+      mock_stub = MockGrpcClientStub.new(:get_book_from_absolutely_anywhere, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("get_book_from_absolutely_anywhere")
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
+
+          # Call method
+          response = client.get_book_from_absolutely_anywhere(formatted_name)
+
+          # Verify the response
+          assert_equal(expected_response, response)
+        end
+      end
+    end
+
+    it 'invokes get_book_from_absolutely_anywhere with error' do
+      # Create request parameters
+      formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+
+      # Mock Grpc layer
+      mock_method = proc do |request|
+        assert_instance_of(Google::Example::Library::V1::GetBookFromAbsolutelyAnywhereRequest, request)
+        assert_equal(formatted_name, request.name)
+        raise custom_error
+      end
+      mock_stub = MockGrpcClientStub.new(:get_book_from_absolutely_anywhere, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("get_book_from_absolutely_anywhere")
+
+      Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
+
+          # Call method
+          err = assert_raises Google::Gax::GaxError do
+            client.get_book_from_absolutely_anywhere(formatted_name)
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
+        end
       end
     end
   end
@@ -1097,18 +1346,23 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:update_book_index, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("update_book_index")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        response = client.update_book_index(
-          formatted_name,
-          index_name,
-          index_map
-        )
+          # Call method
+          response = client.update_book_index(
+            formatted_name,
+            index_name,
+            index_map
+          )
 
-        # Verify the response
-        assert_nil(response)
+          # Verify the response
+          assert_nil(response)
+        end
       end
     end
 
@@ -1129,20 +1383,25 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:update_book_index, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("update_book_index")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        err = assert_raises Google::Gax::GaxError do
-          client.update_book_index(
-            formatted_name,
-            index_name,
-            index_map
-          )
+          # Call method
+          err = assert_raises Google::Gax::GaxError do
+            client.update_book_index(
+              formatted_name,
+              index_name,
+              index_map
+            )
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
         end
-
-        # Verify the GaxError wrapped the custom error that was raised.
-        assert_match(custom_error.message, err.message)
       end
     end
   end
@@ -1155,7 +1414,9 @@ describe Library::V1::LibraryServiceClient do
       request = {}
 
       # Create expected grpc response
-      expected_response = {}
+      shelves_element = {}
+      shelves = [shelves_element]
+      expected_response = { shelves: shelves }
       expected_response = Google::Gax::to_proto(expected_response, Google::Example::Library::V1::StreamShelvesResponse)
 
       # Mock Grpc layer
@@ -1164,15 +1425,20 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:stream_shelves, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("stream_shelves")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        response = client.stream_shelves(request)
+          # Call method
+          response = client.stream_shelves(request)
 
-        # Verify the response
-        assert_equal(1, response.count)
-        assert_equal(expected_response, response.first)
+          # Verify the response
+          assert_equal(1, response.count)
+          assert_equal(expected_response, response.first)
+        end
       end
     end
 
@@ -1186,16 +1452,21 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:stream_shelves, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("stream_shelves")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        err = assert_raises Google::Gax::GaxError do
-          client.stream_shelves(request)
+          # Call method
+          err = assert_raises Google::Gax::GaxError do
+            client.stream_shelves(request)
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
         end
-
-        # Verify the GaxError wrapped the custom error that was raised.
-        assert_match(custom_error.message, err.message)
       end
     end
   end
@@ -1229,15 +1500,20 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:stream_books, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("stream_books")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        response = client.stream_books(request)
+          # Call method
+          response = client.stream_books(request)
 
-        # Verify the response
-        assert_equal(1, response.count)
-        assert_equal(expected_response, response.first)
+          # Verify the response
+          assert_equal(1, response.count)
+          assert_equal(expected_response, response.first)
+        end
       end
     end
 
@@ -1254,16 +1530,21 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:stream_books, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("stream_books")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        err = assert_raises Google::Gax::GaxError do
-          client.stream_books(request)
+          # Call method
+          err = assert_raises Google::Gax::GaxError do
+            client.stream_books(request)
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
         end
-
-        # Verify the GaxError wrapped the custom error that was raised.
-        assert_match(custom_error.message, err.message)
       end
     end
   end
@@ -1291,15 +1572,20 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:discuss_book, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("discuss_book")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        response = client.discuss_book([request])
+          # Call method
+          response = client.discuss_book([request])
 
-        # Verify the response
-        assert_equal(1, response.count)
-        assert_equal(expected_response, response.first)
+          # Verify the response
+          assert_equal(1, response.count)
+          assert_equal(expected_response, response.first)
+        end
       end
     end
 
@@ -1317,16 +1603,21 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:discuss_book, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("discuss_book")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        err = assert_raises Google::Gax::GaxError do
-          client.discuss_book([request])
+          # Call method
+          err = assert_raises Google::Gax::GaxError do
+            client.discuss_book([request])
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
         end
-
-        # Verify the GaxError wrapped the custom error that was raised.
-        assert_match(custom_error.message, err.message)
       end
     end
   end
@@ -1354,14 +1645,19 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:monolog_about_book, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("monolog_about_book")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        response = client.monolog_about_book([request])
+          # Call method
+          response = client.monolog_about_book([request])
 
-        # Verify the response
-        assert_equal(expected_response, response)
+          # Verify the response
+          assert_equal(expected_response, response)
+        end
       end
     end
 
@@ -1379,16 +1675,21 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:monolog_about_book, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("monolog_about_book")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        err = assert_raises Google::Gax::GaxError do
-          client.monolog_about_book([request])
+          # Call method
+          err = assert_raises Google::Gax::GaxError do
+            client.monolog_about_book([request])
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
         end
-
-        # Verify the GaxError wrapped the custom error that was raised.
-        assert_match(custom_error.message, err.message)
       end
     end
   end
@@ -1418,17 +1719,22 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:find_related_books, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("find_related_books")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        response = client.find_related_books(names, shelves)
+          # Call method
+          response = client.find_related_books(names, shelves)
 
-        # Verify the response
-        assert(response.instance_of?(Google::Gax::PagedEnumerable))
-        assert_equal(expected_response, response.page.response)
-        assert_nil(response.next_page)
-        assert_equal(expected_response.names.to_a, response.to_a)
+          # Verify the response
+          assert(response.instance_of?(Google::Gax::PagedEnumerable))
+          assert_equal(expected_response, response.page.response)
+          assert_nil(response.next_page)
+          assert_equal(expected_response.names.to_a, response.to_a)
+        end
       end
     end
 
@@ -1447,16 +1753,21 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:find_related_books, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("find_related_books")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        err = assert_raises Google::Gax::GaxError do
-          client.find_related_books(names, shelves)
+          # Call method
+          err = assert_raises Google::Gax::GaxError do
+            client.find_related_books(names, shelves)
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
         end
-
-        # Verify the GaxError wrapped the custom error that was raised.
-        assert_match(custom_error.message, err.message)
       end
     end
   end
@@ -1482,14 +1793,19 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:add_tag, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("add_tag")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        response = client.add_tag(formatted_resource, tag)
+          # Call method
+          response = client.add_tag(formatted_resource, tag)
 
-        # Verify the response
-        assert_equal(expected_response, response)
+          # Verify the response
+          assert_equal(expected_response, response)
+        end
       end
     end
 
@@ -1507,16 +1823,21 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:add_tag, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("add_tag")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        err = assert_raises Google::Gax::GaxError do
-          client.add_tag(formatted_resource, tag)
+          # Call method
+          err = assert_raises Google::Gax::GaxError do
+            client.add_tag(formatted_resource, tag)
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
         end
-
-        # Verify the GaxError wrapped the custom error that was raised.
-        assert_match(custom_error.message, err.message)
       end
     end
   end
@@ -1542,14 +1863,19 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:add_label, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("add_label")
+
       Google::Tagger::V1::Labeler::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        response = client.add_label(formatted_resource, label)
+          # Call method
+          response = client.add_label(formatted_resource, label)
 
-        # Verify the response
-        assert_equal(expected_response, response)
+          # Verify the response
+          assert_equal(expected_response, response)
+        end
       end
     end
 
@@ -1567,16 +1893,21 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:add_label, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("add_label")
+
       Google::Tagger::V1::Labeler::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        err = assert_raises Google::Gax::GaxError do
-          client.add_label(formatted_resource, label)
+          # Call method
+          err = assert_raises Google::Gax::GaxError do
+            client.add_label(formatted_resource, label)
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
         end
-
-        # Verify the GaxError wrapped the custom error that was raised.
-        assert_match(custom_error.message, err.message)
       end
     end
   end
@@ -1616,14 +1947,19 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:get_big_book, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("get_big_book")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        response = client.get_big_book(formatted_name)
+          # Call method
+          response = client.get_big_book(formatted_name)
 
-        # Verify the response
-        assert_equal(expected_response, response.response)
+          # Verify the response
+          assert_equal(expected_response, response.response)
+        end
       end
     end
 
@@ -1650,7 +1986,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:get_big_book, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         response = client.get_big_book(formatted_name)
@@ -1673,16 +2009,21 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:get_big_book, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("get_big_book")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        err = assert_raises Google::Gax::GaxError do
-          client.get_big_book(formatted_name)
+          # Call method
+          err = assert_raises Google::Gax::GaxError do
+            client.get_big_book(formatted_name)
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
         end
-
-        # Verify the GaxError wrapped the custom error that was raised.
-        assert_match(custom_error.message, err.message)
       end
     end
   end
@@ -1713,14 +2054,19 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:get_big_nothing, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("get_big_nothing")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        response = client.get_big_nothing(formatted_name)
+          # Call method
+          response = client.get_big_nothing(formatted_name)
 
-        # Verify the response
-        assert_equal(expected_response, response.response)
+          # Verify the response
+          assert_equal(expected_response, response.response)
+        end
       end
     end
 
@@ -1747,7 +2093,7 @@ describe Library::V1::LibraryServiceClient do
       mock_stub = MockGrpcClientStub.new(:get_big_nothing, mock_method)
 
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        client = Library.new(version: :v1)
 
         # Call method
         response = client.get_big_nothing(formatted_name)
@@ -1770,16 +2116,21 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:get_big_nothing, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("get_big_nothing")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        err = assert_raises Google::Gax::GaxError do
-          client.get_big_nothing(formatted_name)
+          # Call method
+          err = assert_raises Google::Gax::GaxError do
+            client.get_big_nothing(formatted_name)
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
         end
-
-        # Verify the GaxError wrapped the custom error that was raised.
-        assert_match(custom_error.message, err.message)
       end
     end
   end
@@ -1855,42 +2206,47 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:test_optional_required_flattening_params, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("test_optional_required_flattening_params")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        response = client.test_optional_required_flattening_params(
-          required_singular_int32,
-          required_singular_int64,
-          required_singular_float,
-          required_singular_double,
-          required_singular_bool,
-          required_singular_enum,
-          required_singular_string,
-          required_singular_bytes,
-          required_singular_message,
-          required_singular_resource_name,
-          required_singular_resource_name_oneof,
-          required_singular_fixed32,
-          required_singular_fixed64,
-          required_repeated_int32,
-          required_repeated_int64,
-          required_repeated_float,
-          required_repeated_double,
-          required_repeated_bool,
-          required_repeated_enum,
-          required_repeated_string,
-          required_repeated_bytes,
-          required_repeated_message,
-          formatted_required_repeated_resource_name,
-          formatted_required_repeated_resource_name_oneof,
-          required_repeated_fixed32,
-          required_repeated_fixed64,
-          required_map
-        )
+          # Call method
+          response = client.test_optional_required_flattening_params(
+            required_singular_int32,
+            required_singular_int64,
+            required_singular_float,
+            required_singular_double,
+            required_singular_bool,
+            required_singular_enum,
+            required_singular_string,
+            required_singular_bytes,
+            required_singular_message,
+            required_singular_resource_name,
+            required_singular_resource_name_oneof,
+            required_singular_fixed32,
+            required_singular_fixed64,
+            required_repeated_int32,
+            required_repeated_int64,
+            required_repeated_float,
+            required_repeated_double,
+            required_repeated_bool,
+            required_repeated_enum,
+            required_repeated_string,
+            required_repeated_bytes,
+            required_repeated_message,
+            formatted_required_repeated_resource_name,
+            formatted_required_repeated_resource_name_oneof,
+            required_repeated_fixed32,
+            required_repeated_fixed64,
+            required_map
+          )
 
-        # Verify the response
-        assert_equal(expected_response, response)
+          # Verify the response
+          assert_equal(expected_response, response)
+        end
       end
     end
 
@@ -1958,44 +2314,49 @@ describe Library::V1::LibraryServiceClient do
       end
       mock_stub = MockGrpcClientStub.new(:test_optional_required_flattening_params, mock_method)
 
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("test_optional_required_flattening_params")
+
       Google::Example::Library::V1::LibraryService::Stub.stub(:new, mock_stub) do
-        client = Library::V1::LibraryServiceClient.new
+        Library::Credentials.stub(:default, mock_credentials) do
+          client = Library.new(version: :v1)
 
-        # Call method
-        err = assert_raises Google::Gax::GaxError do
-          client.test_optional_required_flattening_params(
-            required_singular_int32,
-            required_singular_int64,
-            required_singular_float,
-            required_singular_double,
-            required_singular_bool,
-            required_singular_enum,
-            required_singular_string,
-            required_singular_bytes,
-            required_singular_message,
-            required_singular_resource_name,
-            required_singular_resource_name_oneof,
-            required_singular_fixed32,
-            required_singular_fixed64,
-            required_repeated_int32,
-            required_repeated_int64,
-            required_repeated_float,
-            required_repeated_double,
-            required_repeated_bool,
-            required_repeated_enum,
-            required_repeated_string,
-            required_repeated_bytes,
-            required_repeated_message,
-            formatted_required_repeated_resource_name,
-            formatted_required_repeated_resource_name_oneof,
-            required_repeated_fixed32,
-            required_repeated_fixed64,
-            required_map
-          )
+          # Call method
+          err = assert_raises Google::Gax::GaxError do
+            client.test_optional_required_flattening_params(
+              required_singular_int32,
+              required_singular_int64,
+              required_singular_float,
+              required_singular_double,
+              required_singular_bool,
+              required_singular_enum,
+              required_singular_string,
+              required_singular_bytes,
+              required_singular_message,
+              required_singular_resource_name,
+              required_singular_resource_name_oneof,
+              required_singular_fixed32,
+              required_singular_fixed64,
+              required_repeated_int32,
+              required_repeated_int64,
+              required_repeated_float,
+              required_repeated_double,
+              required_repeated_bool,
+              required_repeated_enum,
+              required_repeated_string,
+              required_repeated_bytes,
+              required_repeated_message,
+              formatted_required_repeated_resource_name,
+              formatted_required_repeated_resource_name_oneof,
+              required_repeated_fixed32,
+              required_repeated_fixed64,
+              required_map
+            )
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
         end
-
-        # Verify the GaxError wrapped the custom error that was raised.
-        assert_match(custom_error.message, err.message)
       end
     end
   end

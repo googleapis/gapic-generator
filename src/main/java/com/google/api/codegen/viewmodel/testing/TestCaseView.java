@@ -19,6 +19,7 @@ import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.auto.value.AutoValue;
 import java.util.List;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class TestCaseView {
@@ -43,6 +44,9 @@ public abstract class TestCaseView {
 
   public abstract List<PageStreamingResponseView> pageStreamingResponseViews();
 
+  @Nullable
+  public abstract GrpcStreamingView grpcStreamingView();
+
   public abstract String name();
 
   public abstract String nameWithException();
@@ -50,6 +54,12 @@ public abstract class TestCaseView {
   public abstract String serviceConstructorName();
 
   public abstract String fullyQualifiedServiceClassName();
+
+  /**
+   * In Ruby, the initializer of the service class is aliased. This name is the aliased method used
+   * to initialize a service class.
+   */
+  public abstract String fullyQualifiedAliasedServiceClassName();
 
   public abstract String mockServiceVarName();
 
@@ -82,6 +92,8 @@ public abstract class TestCaseView {
 
     public abstract Builder fullyQualifiedServiceClassName(String val);
 
+    public abstract Builder fullyQualifiedAliasedServiceClassName(String val);
+
     public abstract Builder mockServiceVarName(String val);
 
     public abstract Builder initCode(InitCodeView val);
@@ -101,6 +113,8 @@ public abstract class TestCaseView {
     public abstract Builder fullyQualifiedResponseTypeName(String val);
 
     public abstract Builder pageStreamingResponseViews(List<PageStreamingResponseView> val);
+
+    public abstract Builder grpcStreamingView(GrpcStreamingView val);
 
     public abstract Builder hasRequestParameters(boolean val);
 

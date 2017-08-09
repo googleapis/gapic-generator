@@ -395,6 +395,7 @@ public class StaticLangApiMethodTransformer {
     }
     TypeRef returnType = context.getMethodConfig().getLongRunningConfig().getReturnType();
     methodViewBuilder.responseTypeName(context.getTypeTable().getAndSaveNicknameFor(returnType));
+    methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
 
     return methodViewBuilder.type(type).build();
   }
@@ -429,6 +430,7 @@ public class StaticLangApiMethodTransformer {
     }
     TypeRef returnType = context.getMethodConfig().getLongRunningConfig().getReturnType();
     methodViewBuilder.responseTypeName(context.getTypeTable().getAndSaveNicknameFor(returnType));
+    methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
 
     return methodViewBuilder.type(ClientMethodType.AsyncOperationRequestObjectMethod).build();
   }
@@ -447,6 +449,7 @@ public class StaticLangApiMethodTransformer {
         context, namer.getOperationCallableName(context.getMethod()), methodViewBuilder);
     TypeRef returnType = context.getMethodConfig().getLongRunningConfig().getReturnType();
     methodViewBuilder.responseTypeName(context.getTypeTable().getAndSaveNicknameFor(returnType));
+    methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
 
     return methodViewBuilder.type(ClientMethodType.OperationCallableMethod).build();
   }
@@ -801,10 +804,13 @@ public class StaticLangApiMethodTransformer {
 
     String setCallName = namer.getFieldSetFunctionName(featureConfig, fieldConfig);
     String addCallName = namer.getFieldAddFunctionName(field);
+    String getCallName = namer.getFieldGetFunctionName(field);
     String transformParamFunctionName = null;
     if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)
-        && fieldConfig.hasDifferentMessageResourceNameConfig()) {
-      transformParamFunctionName = namer.getResourceOneofCreateMethod(typeTable, fieldConfig);
+        && fieldConfig.requiresParamTransformation()) {
+      if (!fieldConfig.requiresParamTransformationFromAny()) {
+        transformParamFunctionName = namer.getResourceOneofCreateMethod(typeTable, fieldConfig);
+      }
     }
 
     RequestObjectParamView.Builder param = RequestObjectParamView.newBuilder();
@@ -815,6 +821,7 @@ public class StaticLangApiMethodTransformer {
     param.elementTypeName(elementTypeName);
     param.setCallName(setCallName);
     param.addCallName(addCallName);
+    param.getCallName(getCallName);
     param.transformParamFunctionName(transformParamFunctionName);
     param.isMap(field.isMap());
     param.isArray(!field.isMap() && field.isRepeated());

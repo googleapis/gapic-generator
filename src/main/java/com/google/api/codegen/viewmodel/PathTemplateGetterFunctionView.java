@@ -26,6 +26,8 @@ public abstract class PathTemplateGetterFunctionView {
 
   public abstract List<PathTemplateArgumentView> args();
 
+  public abstract PathTemplateRenderView render();
+
   public abstract String pathTemplateName();
 
   public abstract String pattern();
@@ -43,6 +45,8 @@ public abstract class PathTemplateGetterFunctionView {
     public abstract Builder pathTemplateName(String val);
 
     public abstract Builder args(List<PathTemplateArgumentView> val);
+
+    public abstract Builder render(PathTemplateRenderView val);
 
     public abstract Builder pattern(String val);
 

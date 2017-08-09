@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.FlatteningConfig;
+import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
@@ -100,15 +101,23 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
     return create(
         getInterface(),
         getProductConfig(),
-        // getPackageMetadataConfig(),
         getModelTypeTable().cloneEmpty(),
         getNamer(),
         getFeatureConfig());
   }
 
   @Override
-  public InterfaceConfig getInterfaceConfig() {
+  public GapicInterfaceConfig getInterfaceConfig() {
     return getProductConfig().getInterfaceConfig(getInterface());
+  }
+
+  public GapicInterfaceContext withNewTypeTable(String packageName) {
+    return create(
+        getInterface(),
+        getProductConfig(),
+        getModelTypeTable().cloneEmpty(packageName),
+        getNamer().cloneWithPackageName(packageName),
+        getFeatureConfig());
   }
 
   /**
@@ -116,12 +125,12 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
    *
    * <p>If the method is a gRPC re-route method, returns the MethodConfig of the original method.
    */
-  public MethodConfig getMethodConfig(Method method) {
+  public GapicMethodConfig getMethodConfig(Method method) {
     Interface originalInterface = getInterface();
     if (getGrpcRerouteMap().containsKey(originalInterface)) {
       originalInterface = getGrpcRerouteMap().get(originalInterface);
     }
-    InterfaceConfig originalInterfaceConfig =
+    GapicInterfaceConfig originalInterfaceConfig =
         getProductConfig().getInterfaceConfig(originalInterface);
     if (originalInterfaceConfig != null) {
       return originalInterfaceConfig.getMethodConfig(method);

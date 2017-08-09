@@ -19,6 +19,7 @@ import static com.google.api.codegen.config.ApiSource.DISCOVERY;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.discovery.Schema.Format;
 import com.google.api.codegen.discovery.Schema.Type;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Preconditions;
@@ -130,7 +131,7 @@ public class DiscoveryField implements FieldType {
   }
 
   @Override
-  public List<String> getOneofFieldsNames() {
+  public List<String> getOneofFieldsNames(SurfaceNamer surfaceNamer) {
     return ImmutableList.of();
   }
 

@@ -60,11 +60,6 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   public abstract Interface getInterface();
 
   @Override
-  public String getSimpleName() {
-    return getInterface().getSimpleName();
-  }
-
-  @Override
   public abstract List<GapicMethodConfig> getMethodConfigs();
 
   @Nullable
@@ -99,6 +94,10 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   }
 
   @Override
+  public String getRawName() {
+    return getInterface().getSimpleName();
+  }
+
   public boolean hasInterfaceNameOverride() {
     return getInterfaceNameOverride() != null;
   }

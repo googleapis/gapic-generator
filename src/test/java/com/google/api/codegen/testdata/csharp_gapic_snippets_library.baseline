@@ -1,4 +1,4 @@
-============== file: Google/Example/Library/V1/LibraryServiceClientSnippets.g.cs ==============
+============== file: /LibraryServiceClientSnippets.g.cs ==============
 // Copyright 2017, Google Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -1517,6 +1517,61 @@ namespace Google.Example.Library.V1.Snippets
             // End snippet
         }
 
+        public async Task GetBookFromAbsolutelyAnywhereAsync()
+        {
+            // Snippet: GetBookFromAbsolutelyAnywhereAsync(BookNameOneof,CallSettings)
+            // Additional: GetBookFromAbsolutelyAnywhereAsync(BookNameOneof,CancellationToken)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF_ID]", "[BOOK_ID]"));
+            // Make the request
+            BookFromAnywhere response = await libraryServiceClient.GetBookFromAbsolutelyAnywhereAsync(name);
+            // End snippet
+        }
+
+        public void GetBookFromAbsolutelyAnywhere()
+        {
+            // Snippet: GetBookFromAbsolutelyAnywhere(BookNameOneof,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            BookNameOneof name = BookNameOneof.From(new BookName("[SHELF_ID]", "[BOOK_ID]"));
+            // Make the request
+            BookFromAnywhere response = libraryServiceClient.GetBookFromAbsolutelyAnywhere(name);
+            // End snippet
+        }
+
+        public async Task GetBookFromAbsolutelyAnywhereAsync_RequestObject()
+        {
+            // Snippet: GetBookFromAbsolutelyAnywhereAsync(GetBookFromAbsolutelyAnywhereRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
+            // Initialize request argument(s)
+            GetBookFromAbsolutelyAnywhereRequest request = new GetBookFromAbsolutelyAnywhereRequest
+            {
+                AsResourceName = BookNameOneof.From(new BookName("[SHELF_ID]", "[BOOK_ID]")),
+            };
+            // Make the request
+            BookFromAnywhere response = await libraryServiceClient.GetBookFromAbsolutelyAnywhereAsync(request);
+            // End snippet
+        }
+
+        public void GetBookFromAbsolutelyAnywhere_RequestObject()
+        {
+            // Snippet: GetBookFromAbsolutelyAnywhere(GetBookFromAbsolutelyAnywhereRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument(s)
+            GetBookFromAbsolutelyAnywhereRequest request = new GetBookFromAbsolutelyAnywhereRequest
+            {
+                AsResourceName = BookNameOneof.From(new BookName("[SHELF_ID]", "[BOOK_ID]")),
+            };
+            // Make the request
+            BookFromAnywhere response = libraryServiceClient.GetBookFromAbsolutelyAnywhere(request);
+            // End snippet
+        }
+
         public async Task UpdateBookIndexAsync()
         {
             // Snippet: UpdateBookIndexAsync(BookName,string,IDictionary<string, string>,CallSettings)
@@ -1587,6 +1642,51 @@ namespace Google.Example.Library.V1.Snippets
             };
             // Make the request
             libraryServiceClient.UpdateBookIndex(request);
+            // End snippet
+        }
+
+        public async Task StreamShelves()
+        {
+            // Snippet: StreamShelves(StreamShelvesRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument
+            StreamShelvesRequest request = new StreamShelvesRequest();
+            // Make the request, returning a streaming response
+            LibraryServiceClient.StreamShelvesStream streamingResponse = libraryServiceClient.StreamShelves(request);
+
+            // Read streaming responses from server until complete
+            IAsyncEnumerator<StreamShelvesResponse> responseStream = streamingResponse.ResponseStream;
+            while (await responseStream.MoveNext())
+            {
+                StreamShelvesResponse response = responseStream.Current;
+                // Do something with streamed response
+            }
+            // The response stream has completed
+            // End snippet
+        }
+
+        public async Task StreamBooks()
+        {
+            // Snippet: StreamBooks(StreamBooksRequest,CallSettings)
+            // Create client
+            LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
+            // Initialize request argument
+            StreamBooksRequest request = new StreamBooksRequest
+            {
+                Name = "",
+            };
+            // Make the request, returning a streaming response
+            LibraryServiceClient.StreamBooksStream streamingResponse = libraryServiceClient.StreamBooks(request);
+
+            // Read streaming responses from server until complete
+            IAsyncEnumerator<Book> responseStream = streamingResponse.ResponseStream;
+            while (await responseStream.MoveNext())
+            {
+                Book response = responseStream.Current;
+                // Do something with streamed response
+            }
+            // The response stream has completed
             // End snippet
         }
 

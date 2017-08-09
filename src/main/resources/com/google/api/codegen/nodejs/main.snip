@@ -76,15 +76,18 @@
     }
 
     @join stub : xapi.stubs on BREAK.add(BREAK)
-      @if xapi.isGcloud
-        var {@stub.grpcClientVariableName} = gaxGrpc.load([{
+      var {@stub.grpcClientVariableName} = gaxGrpc.load([{
+        @if xapi.isGcloud
           root: require('google-proto-files')('..'),
-          file: '{@stub.protoFileName}'
-        }]);
-      @else
-        var {@stub.grpcClientVariableName} = require('{@stub.grpcClientImportName}').client;
-      @end
-
+        @else
+          @if xapi.fileHeader.hasVersion
+            root: require('path').join(__dirname, '..', '..', 'proto'),
+          @else
+            root: require('path').join(__dirname, '..', 'proto'),
+          @end
+        @end
+        file: '{@stub.protoFileName}'
+      }]);
       extend(this, {@stub.grpcClientVariableName}.{@stub.namespace});
     @end
 
@@ -137,7 +140,7 @@
 
   var DEFAULT_SERVICE_PORT = {@xapi.servicePort};
 
-  var CODE_GEN_NAME_VERSION = 'gapic/{@xapi.packageVersion}';
+  var CODE_GEN_NAME_VERSION = 'gapic/{@xapi.toolkitVersion}';
   @if xapi.hasPageStreamingMethods
 
     var PAGE_DESCRIPTORS = {
@@ -175,21 +178,6 @@
      {@comments(xapi.doc.lines)}
      *
    @end
-   * This will be created through a builder function which can be obtained by the module.
-   * See the following example of how to initialize the module and how to access to the builder.
-   * @@see {@@link {@xapi.constructorName}}
-   *
-   * @@example
-   @if xapi.fileHeader.hasVersion
-     * var {@xapi.fileHeader.localPackageName} = require('{@xapi.fileHeader.packageName()}').{@xapi.fileHeader.version}({
-     *   // optional auth parameters.
-     * });
-   @else
-     * var {@xapi.fileHeader.localPackageName} = require('{@xapi.fileHeader.packageName()}')({
-     *   // optional auth parameters.
-     * });
-   @end
-   * var client = {@xapi.fileHeader.localPackageName}.{@xapi.constructorName}();
    *
    * @@class
    */

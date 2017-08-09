@@ -37,7 +37,8 @@ public class PhpImportSectionTransformer implements ImportSectionTransformer {
     return generateImportSection(context.getTypeTable().getImports());
   }
 
-  private ImportSectionView generateImportSection(Map<String, TypeAlias> typeImports) {
+  /** Package-private for use in PhpGapicSurfaceTestTransformer */
+  ImportSectionView generateImportSection(Map<String, TypeAlias> typeImports) {
     ImmutableList.Builder<ImportFileView> appImports = ImmutableList.builder();
     for (Map.Entry<String, TypeAlias> entry : typeImports.entrySet()) {
       String key = entry.getKey();

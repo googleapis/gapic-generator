@@ -18,6 +18,7 @@ import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.discovery.Schema;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Method;
@@ -164,5 +165,5 @@ public abstract class MethodConfig {
   }
 
   /** Return the lists of the simple names of the "one of" instances associated with the fields. */
-  public abstract Iterable<Iterable<String>> getOneofNames();
+  public abstract Iterable<Iterable<String>> getOneofNames(SurfaceNamer namer);
 }

@@ -71,6 +71,11 @@ public class TypeNameTest {
     }
 
     @Override
+    public TypeTable cloneEmpty(String packageName) {
+      return new MockTypeTable();
+    }
+
+    @Override
     public String getAndSaveNicknameFor(String fullName) {
       return null;
     }

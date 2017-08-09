@@ -111,7 +111,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
             productConfig,
             createTypeTable(productConfig.getPackageName()),
             discoGapicNamer,
-            new JavaSurfaceNamer(productConfig.getPackageName()),
+            new JavaSurfaceNamer(productConfig.getPackageName(), productConfig.getPackageName()),
             JavaFeatureConfig.newBuilder().enableStringFormatFunctions(false).build());
 
     for (Method method : context.getDocument().methods()) {

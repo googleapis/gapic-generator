@@ -22,6 +22,7 @@ import (
 
     "cloud.google.com/go/library/apiv1"
     "golang.org/x/net/context"
+    "google.golang.org/api/iterator"
     librarypb "google.golang.org/genproto/googleapis/example/library/v1"
 )
 
@@ -102,9 +103,11 @@ func ExampleClient_ListShelves() {
     it := c.ListShelves(ctx, req)
     for {
         resp, err := it.Next()
+        if err == iterator.Done {
+            break
+        }
         if err != nil {
             // TODO: Handle error.
-            break
         }
         // TODO: Use resp.
         _ = resp
@@ -212,9 +215,11 @@ func ExampleClient_ListBooks() {
     it := c.ListBooks(ctx, req)
     for {
         resp, err := it.Next()
+        if err == iterator.Done {
+            break
+        }
         if err != nil {
             // TODO: Handle error.
-            break
         }
         // TODO: Use resp.
         _ = resp
@@ -286,9 +291,11 @@ func ExampleClient_ListStrings() {
     it := c.ListStrings(ctx, req)
     for {
         resp, err := it.Next()
+        if err == iterator.Done {
+            break
+        }
         if err != nil {
             // TODO: Handle error.
-            break
         }
         // TODO: Use resp.
         _ = resp
@@ -340,6 +347,24 @@ func ExampleClient_GetBookFromAnywhere() {
         // TODO: Fill request struct fields.
     }
     resp, err := c.GetBookFromAnywhere(ctx, req)
+    if err != nil {
+        // TODO: Handle error.
+    }
+    // TODO: Use resp.
+    _ = resp
+}
+
+func ExampleClient_GetBookFromAbsolutelyAnywhere() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    if err != nil {
+        // TODO: Handle error.
+    }
+
+    req := &librarypb.GetBookFromAbsolutelyAnywhereRequest{
+        // TODO: Fill request struct fields.
+    }
+    resp, err := c.GetBookFromAbsolutelyAnywhere(ctx, req)
     if err != nil {
         // TODO: Handle error.
     }
@@ -490,9 +515,11 @@ func ExampleClient_FindRelatedBooks() {
     it := c.FindRelatedBooks(ctx, req)
     for {
         resp, err := it.Next()
+        if err == iterator.Done {
+            break
+        }
         if err != nil {
             // TODO: Handle error.
-            break
         }
         // TODO: Use resp.
         _ = resp
