@@ -71,11 +71,30 @@ import javax.annotation.Generated;
  * <p>This class can be customized by passing in a custom instance of NoTemplatesApiServiceSettings to
  * create(). For example:
  *
+ * To customize credentials:
+ *
  * <pre>
  * <code>
  * NoTemplatesApiServiceSettings noTemplatesApiServiceSettings =
  *     NoTemplatesApiServiceSettings.defaultBuilder()
  *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
+ *         .build();
+ * NoTemplatesApiServiceClient noTemplatesApiServiceClient =
+ *     NoTemplatesApiServiceClient.create(noTemplatesApiServiceSettings);
+ * </code>
+ * </pre>
+ *
+ * To customize the endpoint:
+ *
+ * <pre>
+ * <code>
+ * NoTemplatesApiServiceSettings noTemplatesApiServiceSettings =
+ *     NoTemplatesApiServiceSettings.defaultBuilder()
+ *         .setTransportProvider(NoTemplatesApiServiceSettings.defaultGrpcTransportProviderBuilder()
+ *             .setChannelProvider(NoTemplatesApiServiceSettings.defaultGrpcChannelProviderBuilder()
+ *                 .setEndpoint(myEndpoint)
+ *                 .build())
+ *             .build())
  *         .build();
  * NoTemplatesApiServiceClient noTemplatesApiServiceClient =
  *     NoTemplatesApiServiceClient.create(noTemplatesApiServiceSettings);
