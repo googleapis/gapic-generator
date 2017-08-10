@@ -13,6 +13,7 @@
         {@implClient(common.api, common.settings)}
 
         {@partialPageStreaming(common.api, common.settings)}
+        {@partialGrpc(common.api, common.settings)}
     }
 
 @end
@@ -287,7 +288,7 @@
         public static {@api.name} Create(Channel channel, {@settings.name} settings = null)
         {
             GaxPreconditions.CheckNotNull(channel, nameof(channel));
-            {@api.grpcTypeName} grpcClient = new {@api.grpcTypeName}(channel);
+            {@api.grpcTypeNameOuter}.{@api.grpcTypeNameInner} grpcClient = new {@api.grpcTypeNameOuter}.{@api.grpcTypeNameInner}(channel);
             return new {@api.implName}(grpcClient, settings);
         }
 
@@ -305,7 +306,7 @@
         /// <summary>
         /// The underlying gRPC {@api.grpcServiceName} client.
         /// </summary>
-        public virtual {@api.grpcTypeName} GrpcClient
+        public virtual {@api.grpcTypeNameOuter}.{@api.grpcTypeNameInner} GrpcClient
         {
             get { throw new NotImplementedException(); }
         }
@@ -354,7 +355,7 @@
         /// </summary>
         /// <param name="grpcClient">The underlying gRPC client.</param>
         /// <param name="settings">The base <see cref="{@settings.name}"/> used within this client </param>
-        public {@api.implName}({@api.grpcTypeName} grpcClient, {@settings.name} settings)
+        public {@api.implName}({@api.grpcTypeNameOuter}.{@api.grpcTypeNameInner} grpcClient, {@settings.name} settings)
         {
             GrpcClient = grpcClient;
             {@settings.name} effectiveSettings = settings ?? {@settings.name}.GetDefault();
@@ -364,6 +365,7 @@
             @end
             ClientHelper clientHelper = new ClientHelper(effectiveSettings);
             @join rerouted : api.reroutedGrpcClients
+                # rerouted: ReroutedGrpcView
                 {@rerouted.typeName} {@rerouted.grpcClientVarName} = grpcClient.{@rerouted.getMethodName}();
             @end
             @join call : api.apiCallableMembers
@@ -384,12 +386,12 @@
             OnConstruction(grpcClient, effectiveSettings, clientHelper);
         }
 
-        partial void OnConstruction({@api.grpcTypeName} grpcClient, {@settings.name} effectiveSettings, ClientHelper clientHelper);
+        partial void OnConstruction({@api.grpcTypeNameOuter}.{@api.grpcTypeNameInner} grpcClient, {@settings.name} effectiveSettings, ClientHelper clientHelper);
 
         /// <summary>
         /// The underlying gRPC {@api.grpcServiceName} client.
         /// </summary>
-        public override {@api.grpcTypeName} GrpcClient { get; }
+        public override {@api.grpcTypeNameOuter}.{@api.grpcTypeNameInner} GrpcClient { get; }
 
         @if api.hasLongRunningOperations
             /// <summary>
@@ -964,6 +966,42 @@
             /// <inheritdoc/>
             IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         }
+
+    @end
+@end
+
+# api: StaticLangApiView, settings: StaticLangSettingsView
+@private partialGrpc(api, settings)
+    @if api.hasLongRunningOperations
+        // Partial Grpc class to enable LRO client creation
+        public static partial class {@api.grpcTypeNameOuter}
+        {
+            public partial class {@api.grpcTypeNameInner}
+            {
+                /// <summary>
+                /// Creates a new instance of <see cref="Operations.OperationsClient"/> using the same call invoker as this client.
+                /// </summary>
+                /// <returns>A new Operations client for the same target as this client.</returns>
+                public virtual Operations.OperationsClient CreateOperationsClient() => new Operations.OperationsClient(CallInvoker);
+            }
+        }
+
+
+    @end
+    @join rerouted : api.reroutedGrpcClients
+        // Partial Grpc class to enable {@rerouted.typeName} client creation
+        public static partial class {@api.grpcTypeNameOuter}
+        {
+            public partial class {@api.grpcTypeNameInner}
+            {
+                /// <summary>
+                /// Creates a new instance of <see cref="{@rerouted.typeName}"/> using the same call invoker as this client.
+                /// </summary>
+                /// <returns>A new {@rerouted.typeName} for the same target as this client.</returns>
+                public virtual {@rerouted.typeName} {@rerouted.getMethodName}() => new {@rerouted.typeName}(CallInvoker);
+            }
+        }
+
 
     @end
 @end
