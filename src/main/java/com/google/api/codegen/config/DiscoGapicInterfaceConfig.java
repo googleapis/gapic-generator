@@ -19,6 +19,8 @@ import static com.google.api.codegen.config.DiscoGapicMethodConfig.createDiscoGa
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
+import com.google.api.codegen.RetryCodesDefinitionProto;
+import com.google.api.codegen.RetryParamsDefinitionProto;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.gax.core.RetrySettings;
@@ -30,9 +32,9 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import io.grpc.Status;
 import java.util.List;
 import javax.annotation.Nullable;
+import org.joda.time.Duration;
 
 @AutoValue
 public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
@@ -73,10 +75,11 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
       String interfaceNameOverride,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs) {
 
-    ImmutableMap<String, ImmutableSet<Status.Code>> retryCodesDefinition =
-        GapicInterfaceConfig.createRetryCodesDefinition(diagCollector, interfaceConfigProto);
+    ImmutableMap<String, ImmutableSet<String>> retryCodesDefinition =
+        DiscoGapicInterfaceConfig.createRetryCodesDefinition(interfaceConfigProto);
     ImmutableMap<String, RetrySettings> retrySettingsDefinition =
-        GapicInterfaceConfig.createRetrySettingsDefinition(diagCollector, interfaceConfigProto);
+        DiscoGapicInterfaceConfig.createRetrySettingsDefinition(
+            diagCollector, interfaceConfigProto);
 
     List<DiscoGapicMethodConfig> methodConfigs = null;
     ImmutableMap<String, DiscoGapicMethodConfig> methodConfigMap = null;
@@ -149,6 +152,49 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
       }
     }
     return null;
+  }
+
+  static ImmutableMap<String, ImmutableSet<String>> createRetryCodesDefinition(
+      InterfaceConfigProto interfaceConfigProto) {
+    ImmutableMap.Builder<String, ImmutableSet<String>> builder = ImmutableMap.builder();
+    for (RetryCodesDefinitionProto retryDef : interfaceConfigProto.getRetryCodesDefList()) {
+      ImmutableSet.Builder<String> codes = ImmutableSet.builder();
+      codes.addAll(retryDef.getRetryCodesList());
+      builder.put(retryDef.getName(), codes.build());
+    }
+    return builder.build();
+  }
+
+  static ImmutableMap<String, RetrySettings> createRetrySettingsDefinition(
+      DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto) {
+    ImmutableMap.Builder<String, RetrySettings> builder =
+        ImmutableMap.<String, RetrySettings>builder();
+    for (RetryParamsDefinitionProto retryDef : interfaceConfigProto.getRetryParamsDefList()) {
+      try {
+        RetrySettings settings =
+            RetrySettings.newBuilder()
+                .setInitialRetryDelay(Duration.millis(retryDef.getInitialRetryDelayMillis()))
+                .setRetryDelayMultiplier(retryDef.getRetryDelayMultiplier())
+                .setMaxRetryDelay(Duration.millis(retryDef.getMaxRetryDelayMillis()))
+                .setInitialRpcTimeout(Duration.millis(retryDef.getInitialRpcTimeoutMillis()))
+                .setRpcTimeoutMultiplier(retryDef.getRpcTimeoutMultiplier())
+                .setMaxRpcTimeout(Duration.millis(retryDef.getMaxRpcTimeoutMillis()))
+                .setTotalTimeout(Duration.millis(retryDef.getTotalTimeoutMillis()))
+                .build();
+        builder.put(retryDef.getName(), settings);
+      } catch (IllegalStateException | NullPointerException e) {
+        diagCollector.addDiag(
+            Diag.error(
+                SimpleLocation.TOPLEVEL,
+                "error while creating retry params: %s (in interface %s)",
+                e,
+                interfaceConfigProto.getName()));
+      }
+    }
+    if (diagCollector.getErrorCount() > 0) {
+      return null;
+    }
+    return builder.build();
   }
 
   private static ImmutableMap<String, DiscoGapicMethodConfig> createMethodConfigMap(

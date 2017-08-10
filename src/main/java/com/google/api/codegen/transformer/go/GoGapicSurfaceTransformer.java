@@ -60,7 +60,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableTable;
-import io.grpc.Status.Code;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -293,17 +292,17 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     }
 
     TreeMap<RetryConfigDefinitionView.Name, RetryConfigDefinitionView> retryDef = new TreeMap<>();
-    Map<String, ImmutableSet<Code>> retryCodesDef =
+    Map<String, ImmutableSet<String>> retryCodesDef =
         context.getInterfaceConfig().getRetryCodesDefinition();
     Map<String, RetrySettings> retryParamsDef =
         context.getInterfaceConfig().getRetrySettingsDefinition();
     for (RetryConfigDefinitionView.Name name : retryNames) {
-      ImmutableSet<Code> codes = retryCodesDef.get(name.retryCodesConfigName());
+      ImmutableSet<String> codes = retryCodesDef.get(name.retryCodesConfigName());
       if (codes.isEmpty()) {
         continue;
       }
       List<String> retryCodeNames = new ArrayList<>();
-      for (Code code : codes) {
+      for (String code : codes) {
         retryCodeNames.add(context.getNamer().getStatusCodeName(code));
       }
       retryDef.put(

@@ -34,11 +34,10 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
-import io.grpc.Status;
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import javax.annotation.Nullable;
 import org.joda.time.Duration;
 
@@ -69,7 +68,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   abstract ImmutableMap<String, GapicMethodConfig> getMethodConfigMap();
 
   @Override
-  public abstract ImmutableMap<String, ImmutableSet<Status.Code>> getRetryCodesDefinition();
+  public abstract ImmutableMap<String, ImmutableSet<String>> getRetryCodesDefinition();
 
   @Override
   public abstract ImmutableMap<String, RetrySettings> getRetrySettingsDefinition();
@@ -118,7 +117,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs) {
 
-    ImmutableMap<String, ImmutableSet<Status.Code>> retryCodesDefinition =
+    ImmutableMap<String, ImmutableSet<String>> retryCodesDefinition =
         createRetryCodesDefinition(diagCollector, interfaceConfigProto);
     ImmutableMap<String, RetrySettings> retrySettingsDefinition =
         createRetrySettingsDefinition(diagCollector, interfaceConfigProto);
@@ -205,15 +204,15 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     }
   }
 
-  static ImmutableMap<String, ImmutableSet<Status.Code>> createRetryCodesDefinition(
+  static ImmutableMap<String, ImmutableSet<String>> createRetryCodesDefinition(
       DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto) {
-    ImmutableMap.Builder<String, ImmutableSet<Status.Code>> builder =
-        ImmutableMap.<String, ImmutableSet<Status.Code>>builder();
+    ImmutableMap.Builder<String, ImmutableSet<String>> builder = ImmutableMap.builder();
     for (RetryCodesDefinitionProto retryDef : interfaceConfigProto.getRetryCodesDefList()) {
-      EnumSet<Status.Code> codes = EnumSet.noneOf(Status.Code.class);
+      // Enforce ordering on set for baseline test consistency.
+      Set<String> codes = new TreeSet<>();
       for (String codeText : retryDef.getRetryCodesList()) {
         try {
-          codes.add(Status.Code.valueOf(codeText));
+          codes.add(String.valueOf(codeText));
         } catch (IllegalArgumentException e) {
           diagCollector.addDiag(
               Diag.error(
@@ -223,7 +222,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
                   interfaceConfigProto.getName()));
         }
       }
-      builder.put(retryDef.getName(), Sets.immutableEnumSet(codes));
+      builder.put(retryDef.getName(), (new ImmutableSet.Builder<String>()).addAll(codes).build());
     }
     if (diagCollector.getErrorCount() > 0) {
       return null;

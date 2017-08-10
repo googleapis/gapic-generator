@@ -48,7 +48,6 @@ import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
-import io.grpc.Status;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -1234,8 +1233,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The name of an RPC status code */
-  public String getStatusCodeName(Status.Code code) {
-    return privateMethodName(Name.upperUnderscore(code.toString()));
+  public String getStatusCodeName(String code) {
+    return privateMethodName(Name.upperUnderscore(code));
   }
 
   /** The name of the constant to hold the page streaming descriptor for the given method. */

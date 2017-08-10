@@ -19,8 +19,8 @@ import com.google.api.codegen.viewmodel.RetryCodesDefinitionView;
 import com.google.api.codegen.viewmodel.RetryParamsDefinitionView;
 import com.google.api.gax.core.RetrySettings;
 import com.google.common.collect.ImmutableSet;
-import io.grpc.Status.Code;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -31,12 +31,13 @@ public class RetryDefinitionsTransformer {
     List<RetryCodesDefinitionView> definitions = new ArrayList<>();
 
     final SurfaceNamer namer = context.getNamer();
-    for (Entry<String, ImmutableSet<Code>> retryCodesDef :
+    for (Entry<String, ImmutableSet<String>> retryCodesDef :
         context.getInterfaceConfig().getRetryCodesDefinition().entrySet()) {
       List<String> codeNames = new ArrayList<>();
-      for (Code code : retryCodesDef.getValue()) {
+      for (String code : retryCodesDef.getValue()) {
         codeNames.add(namer.getStatusCodeName(code));
       }
+      Collections.sort(codeNames);
       definitions.add(
           RetryCodesDefinitionView.newBuilder()
               .key(retryCodesDef.getKey())

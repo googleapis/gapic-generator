@@ -4308,7 +4308,7 @@ public class BillingAccountAdminSettings extends ClientSettings {
       ImmutableMap.Builder<String, ImmutableSet<StatusCode>> definitions = ImmutableMap.builder();
       definitions.put(
           "idempotent",
-          ImmutableSet.copyOf(Lists.<StatusCode>newArrayList(HttpJsonStatusCode.of(DEADLINE_EXCEEDED), HttpJsonStatusCode.of(UNAVAILABLE))));
+          ImmutableSet.copyOf(Lists.<StatusCode>newArrayList(HttpJsonStatusCode.of(STATUS_CODE_SERVICE_UNAVAILABLE), HttpJsonStatusCode.of(STATUS_CODE_SERVER_ERROR))));
       RETRYABLE_CODE_DEFINITIONS = definitions.build();
     }
 
@@ -5194,7 +5194,7 @@ public class ProjectAdminSettings extends ClientSettings {
       ImmutableMap.Builder<String, ImmutableSet<StatusCode>> definitions = ImmutableMap.builder();
       definitions.put(
           "idempotent",
-          ImmutableSet.copyOf(Lists.<StatusCode>newArrayList(HttpJsonStatusCode.of(DEADLINE_EXCEEDED), HttpJsonStatusCode.of(UNAVAILABLE))));
+          ImmutableSet.copyOf(Lists.<StatusCode>newArrayList(HttpJsonStatusCode.of(UNAVAILABLE), HttpJsonStatusCode.of(DEADLINE_EXCEEDED))));
       RETRYABLE_CODE_DEFINITIONS = definitions.build();
     }
 

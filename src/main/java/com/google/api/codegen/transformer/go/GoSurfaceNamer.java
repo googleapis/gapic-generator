@@ -37,7 +37,6 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.annotations.VisibleForTesting;
-import io.grpc.Status;
 import java.util.List;
 
 public class GoSurfaceNamer extends SurfaceNamer {
@@ -270,9 +269,8 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getStatusCodeName(Status.Code code) {
-    String codeString = code.toString();
-    if (code.equals(Status.Code.CANCELLED)) {
+  public String getStatusCodeName(String codeString) {
+    if (codeString.equals("CANCELLED")) {
       codeString = "CANCELED";
     }
     return publicFieldName(Name.upperUnderscore(codeString));
