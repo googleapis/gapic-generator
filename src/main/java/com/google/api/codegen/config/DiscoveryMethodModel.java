@@ -16,6 +16,7 @@ package com.google.api.codegen.config;
 
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Method;
+import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.SchemaTypeFormatter;
 import com.google.api.codegen.transformer.SchemaTypeNameConverter;
@@ -49,7 +50,11 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public FieldType lookupInputField(String fieldName) {
-    return new DiscoveryField(method.parameters().get(fieldName));
+    Schema targetSchema = method.parameters().get(fieldName);
+    if (targetSchema == null) {
+      return null;
+    }
+    return new DiscoveryField(targetSchema);
   }
 
   @Override

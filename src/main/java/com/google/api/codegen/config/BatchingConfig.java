@@ -34,15 +34,14 @@ public abstract class BatchingConfig {
    * collector.
    */
   @Nullable
-  public static BatchingConfig createBatching(
+  static BatchingConfig createBatching(
       DiagCollector diagCollector, BatchingConfigProto batchingConfig, MethodModel method) {
 
     BatchingDescriptorProto batchDescriptor = batchingConfig.getBatchDescriptor();
     String batchedFieldName = batchDescriptor.getBatchedField();
-    FieldType batchedField = null;
-    try {
-      batchedField = method.lookupInputField(batchedFieldName);
-    } catch (NullPointerException e) {
+    FieldType batchedField;
+    batchedField = method.lookupInputField(batchedFieldName);
+    if (batchedField == null) {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
