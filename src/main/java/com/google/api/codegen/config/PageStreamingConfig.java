@@ -17,6 +17,7 @@ package com.google.api.codegen.config;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.PageStreamingConfigProto;
 import com.google.api.codegen.discovery.Schema;
+import com.google.api.codegen.discovery.Schema.Type;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Method;
@@ -176,7 +177,15 @@ public abstract class PageStreamingConfig {
               responseTokenFieldName));
     }
 
-    Schema resourcesField = method.response();
+    Schema responseField = method.response().dereference();
+    Schema resourcesField = null;
+    for (Schema property : responseField.properties().values()) {
+      // Assume the List response has exactly one Array property.
+      if (property.type().equals(Type.ARRAY)) {
+        resourcesField = property;
+        break;
+      }
+    }
     FieldConfig resourcesFieldConfig;
     if (resourcesField == null) {
       diagCollector.addDiag(

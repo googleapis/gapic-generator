@@ -670,7 +670,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The name of the field. */
   public String getFieldName(FieldType field) {
-    return publicFieldName(Name.from(field.getSimpleName()));
+    return publicFieldName(field.asName());
   }
 
   /** The page streaming descriptor name for the given method. */
