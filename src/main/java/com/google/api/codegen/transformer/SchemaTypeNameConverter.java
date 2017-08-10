@@ -61,6 +61,9 @@ public interface SchemaTypeNameConverter {
    */
   TypedValue getEnumValue(Schema schema, String value);
 
+  /** Provides a TypeName for the element type of the given FieldType. */
+  TypeName getTypeNameForElementType(Schema type);
+
   /**
    * Provides a TypedValue containing the zero value of the given type, for use internally within
    * the vkit layer; plus the TypeName of the type. This will often return the same value as {@link

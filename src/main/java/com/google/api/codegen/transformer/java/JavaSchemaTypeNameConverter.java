@@ -105,10 +105,50 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
    * @param schema The Schema to generate a TypeName from.
    *     <p>This method will be recursively called on the given schema's children.
    */
+  private TypeName getTypeNameForElementType(Schema schema, BoxingBehavior boxingBehavior) {
+    String primitiveTypeName = getPrimitiveTypeName(schema);
+    if (primitiveTypeName != null) {
+      if (primitiveTypeName.contains(".")) {
+        // Fully qualified type name, use regular type name resolver. Can skip boxing logic
+        // because those types are already boxed.
+        return typeNameConverter.getTypeName(primitiveTypeName);
+      } else {
+        switch (boxingBehavior) {
+          case BOX_PRIMITIVES:
+            return new TypeName(JavaTypeTable.getBoxedTypeName(primitiveTypeName));
+          case NO_BOX_PRIMTIVES:
+            return new TypeName(primitiveTypeName);
+          default:
+            throw new IllegalArgumentException(
+                String.format("Unhandled boxing behavior: %s", boxingBehavior.name()));
+        }
+      }
+    }
+    if (schema.type().equals(Type.ARRAY)) {
+      String packageName = implicitPackageName;
+      Schema element = schema.items();
+      String shortName =
+          element.reference() != null ? element.reference() : element.getIdentifier();
+
+      String longName = packageName + "." + shortName;
+      return new TypeName(longName, shortName);
+    } else {
+      throw new IllegalArgumentException("unknown type kind: " + schema.type());
+    }
+  }
+
+  /**
+   * Returns the Java representation of a type, with cardinality. If the type is a Java primitive,
+   * basicTypeName returns it in unboxed form.
+   *
+   * @param schema The Schema to generate a TypeName from.
+   *     <p>This method will be recursively called on the given schema's children.
+   */
+  @Override
   public TypeName getTypeName(Schema schema, BoxingBehavior boxingBehavior) {
     String primitiveTypeName = getPrimitiveTypeName(schema);
     if (primitiveTypeName != null) {
-      TypeName primitiveType = null;
+      TypeName primitiveType;
       if (primitiveTypeName.contains(".")) {
         // Fully qualified type name, use regular type name resolver. Can skip boxing logic
         // because those types are already boxed.
@@ -158,6 +198,11 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
 
       return new TypeName(longName, shortName);
     }
+  }
+
+  @Override
+  public TypeName getTypeNameForElementType(Schema type) {
+    return getTypeNameForElementType(type, BoxingBehavior.BOX_PRIMITIVES);
   }
 
   @Override

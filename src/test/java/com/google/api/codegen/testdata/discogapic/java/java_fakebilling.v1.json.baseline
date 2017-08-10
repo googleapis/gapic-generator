@@ -4546,7 +4546,7 @@ public class BillingAccountAdminClient implements BackgroundResource {
    * <pre><code>
    * try (BillingAccountAdminClient billingAccountAdminClient = BillingAccountAdminClient.create()) {
    *
-   *   for (List&lt;BillingAccount&gt; element : billingAccountAdminClient.billingAccountsList().iterateAll()) {
+   *   for (BillingAccount element : billingAccountAdminClient.billingAccountsList().iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -4572,7 +4572,7 @@ public class BillingAccountAdminClient implements BackgroundResource {
    *
    *   ApiFuture&lt;BillingAccountsListPagedResponse&gt; future = billingAccountAdminClient.billingAccountsListPagedCallable().futureCall();
    *   // Do something
-   *   for (List&lt;BillingAccount&gt; element : future.get().iterateAll()) {
+   *   for (BillingAccount element : future.get().iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -4594,7 +4594,7 @@ public class BillingAccountAdminClient implements BackgroundResource {
    *
    *   while (true) {
    *     ListBillingAccountsResponse response = billingAccountAdminClient.billingAccountsListCallable().call();
-   *     for (List&lt;BillingAccount&gt; element : response.getBillingAccountsList()) {
+   *     for (BillingAccount element : response.getBillingAccountsList()) {
    *       // doThingsWith(element);
    *     }
    *     String nextPageToken = response.getNextPageToken();
@@ -4949,8 +4949,8 @@ public class BillingAccountAdminSettings extends ClientSettings {
     billingAccountsGetSettings = settingsBuilder.billingAccountsGetSettings().build();
   }
 
-  private static final PagedListDescriptor<BillingAccountsListHttpRequest, ListBillingAccountsResponse, List<BillingAccount>> BILLING_ACCOUNTS_LIST_PAGE_STR_DESC =
-      new PagedListDescriptor<BillingAccountsListHttpRequest, ListBillingAccountsResponse, List<BillingAccount>>() {
+  private static final PagedListDescriptor<BillingAccountsListHttpRequest, ListBillingAccountsResponse, BillingAccount> BILLING_ACCOUNTS_LIST_PAGE_STR_DESC =
+      new PagedListDescriptor<BillingAccountsListHttpRequest, ListBillingAccountsResponse, BillingAccount>() {
         @Override
         public String emptyToken() {
           return "";
@@ -4978,7 +4978,7 @@ public class BillingAccountAdminSettings extends ClientSettings {
           return payload.getNextPageToken();
         }
         @Override
-        public Iterable<List<BillingAccount>> extractResources(ListBillingAccountsResponse payload) {
+        public Iterable<BillingAccount> extractResources(ListBillingAccountsResponse payload) {
           return payload.getBillingAccountsList();
         }
       };
@@ -4991,7 +4991,7 @@ public class BillingAccountAdminSettings extends ClientSettings {
             BillingAccountsListHttpRequest request,
             ApiCallContext context,
             ApiFuture<ListBillingAccountsResponse> futureResponse) {
-          PageContext<BillingAccountsListHttpRequest, ListBillingAccountsResponse, List<BillingAccount>> pageContext =
+          PageContext<BillingAccountsListHttpRequest, ListBillingAccountsResponse, BillingAccount> pageContext =
               PageContext.create(callable, BILLING_ACCOUNTS_LIST_PAGE_STR_DESC, request, context);
           return BillingAccountsListPagedResponse.createAsync(pageContext, futureResponse);
         }
@@ -5161,7 +5161,6 @@ import com.google.cloud.fakebilling.v1.BillingAccountsGetHttpRequest;
 import com.google.cloud.fakebilling.v1.BillingAccountsListHttpRequest;
 import com.google.cloud.fakebilling.v1.ListBillingAccountsResponse;
 import static com.google.cloud.fakebilling.v1.PagedResponseWrappers.BillingAccountsListPagedResponse;
-import java.util.List;
 import javax.annotation.Generated;
 
 // AUTO-GENERATED DOCUMENTATION AND CLASS
@@ -6240,12 +6239,12 @@ public class PagedResponseWrappers {
   public static class BillingAccountsListPagedResponse extends AbstractPagedListResponse<
       BillingAccountsListHttpRequest,
       ListBillingAccountsResponse,
-      List<BillingAccount>,
+      BillingAccount,
       BillingAccountsListPage,
       BillingAccountsListFixedSizeCollection> {
 
     public static ApiFuture<BillingAccountsListPagedResponse> createAsync(
-        PageContext<BillingAccountsListHttpRequest, ListBillingAccountsResponse, List<BillingAccount>> context,
+        PageContext<BillingAccountsListHttpRequest, ListBillingAccountsResponse, BillingAccount> context,
         ApiFuture<ListBillingAccountsResponse> futureResponse) {
       ApiFuture<BillingAccountsListPage> futurePage =
           BillingAccountsListPage.createEmptyPage().createPageAsync(context, futureResponse);
@@ -6269,11 +6268,11 @@ public class PagedResponseWrappers {
   public static class BillingAccountsListPage extends AbstractPage<
       BillingAccountsListHttpRequest,
       ListBillingAccountsResponse,
-      List<BillingAccount>,
+      BillingAccount,
       BillingAccountsListPage> {
 
     private BillingAccountsListPage(
-        PageContext<BillingAccountsListHttpRequest, ListBillingAccountsResponse, List<BillingAccount>> context,
+        PageContext<BillingAccountsListHttpRequest, ListBillingAccountsResponse, BillingAccount> context,
         ListBillingAccountsResponse response) {
       super(context, response);
     }
@@ -6284,14 +6283,14 @@ public class PagedResponseWrappers {
 
     @Override
     protected BillingAccountsListPage createPage(
-        PageContext<BillingAccountsListHttpRequest, ListBillingAccountsResponse, List<BillingAccount>> context,
+        PageContext<BillingAccountsListHttpRequest, ListBillingAccountsResponse, BillingAccount> context,
         ListBillingAccountsResponse response) {
       return new BillingAccountsListPage(context, response);
     }
 
     @Override
     public ApiFuture<BillingAccountsListPage> createPageAsync(
-        PageContext<BillingAccountsListHttpRequest, ListBillingAccountsResponse, List<BillingAccount>> context,
+        PageContext<BillingAccountsListHttpRequest, ListBillingAccountsResponse, BillingAccount> context,
         ApiFuture<ListBillingAccountsResponse> futureResponse) {
       return super.createPageAsync(context, futureResponse);
     }
@@ -6304,7 +6303,7 @@ public class PagedResponseWrappers {
   public static class BillingAccountsListFixedSizeCollection extends AbstractFixedSizeCollection<
       BillingAccountsListHttpRequest,
       ListBillingAccountsResponse,
-      List<BillingAccount>,
+      BillingAccount,
       BillingAccountsListPage,
       BillingAccountsListFixedSizeCollection> {
 

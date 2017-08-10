@@ -172,7 +172,8 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
 
   @Override
   public String getAndSaveNicknameForElementType(FieldType type) {
-    return getAndSaveNicknameFor(type.getDiscoveryField());
+    return typeTable.getAndSaveNicknameFor(
+        typeNameConverter.getTypeNameForElementType(type.getDiscoveryField()));
   }
 
   @Override
