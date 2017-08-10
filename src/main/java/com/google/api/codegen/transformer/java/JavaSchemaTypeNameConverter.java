@@ -44,13 +44,7 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
   private static String getPrimitiveTypeName(Schema schema) {
     switch (schema.type()) {
       case INTEGER:
-        switch (schema.format()) {
-          case INT32:
-            return "int";
-          case UINT32:
-          default:
-            return "long";
-        }
+        return "int";
       case NUMBER:
         switch (schema.format()) {
           case FLOAT:
