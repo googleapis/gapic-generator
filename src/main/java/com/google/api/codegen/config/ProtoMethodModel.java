@@ -45,12 +45,12 @@ public final class ProtoMethodModel implements MethodModel {
   }
 
   @Override
-  public FieldType lookupInputField(String fieldName) {
+  public FieldType getInputField(String fieldName) {
     return new ProtoField(method.getInputType().getMessageType().lookupField(fieldName));
   }
 
   @Override
-  public FieldType lookupOutputField(String fieldName) {
+  public FieldType getOutputField(String fieldName) {
     return new ProtoField(method.getOutputType().getMessageType().lookupField(fieldName));
   }
 

@@ -28,10 +28,10 @@ public interface MethodModel {
   ApiSource getApiSource();
 
   /* @return find a nested field in the method's input type by the nested field's name. */
-  FieldType lookupInputField(String fieldName);
+  FieldType getInputField(String fieldName);
 
   /* @return find a nested field in the method's output type by the nested field's name. */
-  FieldType lookupOutputField(String fieldName);
+  FieldType getOutputField(String fieldName);
 
   /* @return the full name of this method. */
   String getFullName();

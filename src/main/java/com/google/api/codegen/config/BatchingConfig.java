@@ -40,7 +40,7 @@ public abstract class BatchingConfig {
     BatchingDescriptorProto batchDescriptor = batchingConfig.getBatchDescriptor();
     String batchedFieldName = batchDescriptor.getBatchedField();
     FieldType batchedField;
-    batchedField = method.lookupInputField(batchedFieldName);
+    batchedField = method.getInputField(batchedFieldName);
     if (batchedField == null) {
       diagCollector.addDiag(
           Diag.error(
@@ -70,10 +70,7 @@ public abstract class BatchingConfig {
     String subresponseFieldName = batchDescriptor.getSubresponseField();
     FieldType subresponseField = null;
     if (!subresponseFieldName.isEmpty()) {
-      try {
-        subresponseField = method.lookupOutputField(subresponseFieldName);
-      } catch (NullPointerException e) {
-      }
+      subresponseField = method.getOutputField(subresponseFieldName);
     }
 
     BatchingSettingsProto batchingSettings = batchingConfig.getThresholds();

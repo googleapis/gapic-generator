@@ -20,7 +20,6 @@ import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Strings;
@@ -53,7 +52,7 @@ public abstract class PageStreamingConfig {
       MethodModel method) {
     PageStreamingConfigProto pageStreaming = methodConfigProto.getPageStreaming();
     String requestTokenFieldName = pageStreaming.getRequest().getTokenField();
-    FieldType requestTokenField = method.lookupInputField(requestTokenFieldName);
+    FieldType requestTokenField = method.getInputField(requestTokenFieldName);
     if (requestTokenField == null) {
       diagCollector.addDiag(
           Diag.error(
@@ -67,7 +66,7 @@ public abstract class PageStreamingConfig {
     String pageSizeFieldName = pageStreaming.getRequest().getPageSizeField();
     FieldType pageSizeField = null;
     if (!Strings.isNullOrEmpty(pageSizeFieldName)) {
-      pageSizeField = method.lookupInputField(pageSizeFieldName);
+      pageSizeField = method.getInputField(pageSizeFieldName);
       if (pageSizeField == null) {
         diagCollector.addDiag(
             Diag.error(
@@ -80,7 +79,7 @@ public abstract class PageStreamingConfig {
     }
 
     String responseTokenFieldName = pageStreaming.getResponse().getTokenField();
-    FieldType responseTokenField = method.lookupOutputField(responseTokenFieldName);
+    FieldType responseTokenField = method.getOutputField(responseTokenFieldName);
     if (responseTokenField == null) {
       diagCollector.addDiag(
           Diag.error(
@@ -92,7 +91,7 @@ public abstract class PageStreamingConfig {
     }
 
     String resourcesFieldName = pageStreaming.getResponse().getResourcesField();
-    FieldType resourcesField = method.lookupOutputField(resourcesFieldName);
+    FieldType resourcesField = method.getOutputField(resourcesFieldName);
     FieldConfig resourcesFieldConfig;
 
     if (resourcesField == null) {
