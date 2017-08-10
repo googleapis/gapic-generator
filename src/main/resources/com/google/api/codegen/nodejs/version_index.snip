@@ -49,28 +49,33 @@
     {@comments(@service.doc.lines)}
     *
     * @@param {object=} options - [Configuration object](#/docs).
-    * @@param {string=} options.key - API key to use form communication with the
-    *     service.
-    * @@param {string=} options.keyFilename - Path to a key file to use for an
-    *     API key.
-    * @@param {(string|number)=} options.logLevel - An integer from 0-5
-    *     inclusive or a decimal representation of an integer from 0-5 inclusive
-    *     in String form.
+    * @@param {boolean} [options.autoRetry=true] - Automatically retry requests
+    *     if the response is related to rate limits or certain intermittent
+    *     server errors. We will exponentially backoff subsequent requests by
+    *     default.
+    * @@param {object=} options.credentials - Credentials object.
+    * @@param {string=} options.credentials.client_email
+    * @@param {string=} options.credentials.private_key
+    * @@param {string=} options.email - Account email address. Required when using a
+    *     .pem or .p12 keyFilename.
+    * @@param {string=} options.keyFilename - Full path to the a .json, .pem, or
+    *     .p12 key downloaded from the Google Developers Console. If you provide
+    *     a path to a JSON file, the projectId option above is not necessary.
+    *     NOTE: .pem and .p12 require you to specify options.email as well.
+    * @@param {number} [options.maxRetries=3] - Maximum number of automatic
+    *     retries attempted before returning the error.
     * @@param {number=} options.port - The port on which to connect to
     *     the remote host.
-    * @@param {string=} options.projectId - The projectId of the project
-    *     deployed.
-    * @@param {object=} options.serviceContext - The service context of the
-    *     application.
-    * @@param {string=} options.serviceContext.service - The service the
-    *     application is running on.
-    * @@param {string=} options.serviceContext.version - The version the hosting
-    *     application is currently labelled as.
+    * @@param {string=} options.projectId - The project ID from the Google
+    *     Developer's Console, e.g. 'grape-spaceship-123'. We will also check
+    *     the environment variable GCLOUD_PROJECT for your project ID. If your
+    *     app is running in an environment which supports
+    *     {@@link https://developers.google.com/identity/protocols/application-default-credentials Application Default Credentials},
+    *     your project ID will be detected automatically.
+    * @@param {function=} options.promise - Custom promise module to use instead
+    *     of native Promises.
     * @@param {string=} options.servicePath - The domain name of the
     *     API remote host.
-    * @@param {uncaughtHandlingEnum}
-    *     [onCaughtException=uncaughtHandlingEnum.ignore] - One of the uncaught
-    *     handling options.
     */
    function {@service.localName}(options) {
      // Define the header options.
