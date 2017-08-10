@@ -4040,6 +4040,7 @@ import com.google.api.gax.core.PropertiesProvider;
 import com.google.api.gax.grpc.GrpcTransport;
 import com.google.api.gax.grpc.GrpcTransportProvider;
 import com.google.api.gax.grpc.InstantiatingChannelProvider;
+import com.google.api.gax.httpjson.HttpJsonStatusCode;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.gax.rpc.ApiCallContext;
 import com.google.api.gax.rpc.ClientContext;
@@ -4248,7 +4249,7 @@ public class BillingAccountAdminSettings extends ClientSettings {
       new PagedListDescriptor<BillingAccountsListHttpRequest, ListBillingAccountsResponse, ListBillingAccountsResponse>() {
         @Override
         public String emptyToken() {
-          return ListBillingAccountsResponse.newBuilder().build();
+          return "";
         }
         @Override
         public BillingAccountsListHttpRequest injectToken(BillingAccountsListHttpRequest payload, String token) {
@@ -4270,7 +4271,7 @@ public class BillingAccountAdminSettings extends ClientSettings {
         }
         @Override
         public String extractNextToken(ListBillingAccountsResponse payload) {
-          return payload.getListBillingAccountsResponse();
+          return payload.getNextPageToken();
         }
         @Override
         public Iterable<ListBillingAccountsResponse> extractResources(ListBillingAccountsResponse payload) {
@@ -4308,7 +4309,7 @@ public class BillingAccountAdminSettings extends ClientSettings {
       ImmutableMap.Builder<String, ImmutableSet<StatusCode>> definitions = ImmutableMap.builder();
       definitions.put(
           "idempotent",
-          ImmutableSet.copyOf(Lists.<StatusCode>newArrayList(HttpStatusCodes.STATUS_CODE_SERVICE_UNAVAILABLE, HttpStatusCodes.STATUS_CODE_SERVER_ERROR)));
+          ImmutableSet.copyOf(Lists.<StatusCode>newArrayList(HttpJsonStatusCode.of(HttpStatusCodes.STATUS_CODE_SERVICE_UNAVAILABLE), HttpJsonStatusCode.of(HttpStatusCodes.STATUS_CODE_SERVER_ERROR))));
       RETRYABLE_CODE_DEFINITIONS = definitions.build();
     }
 
@@ -4979,6 +4980,7 @@ import com.google.api.gax.core.PropertiesProvider;
 import com.google.api.gax.grpc.GrpcTransport;
 import com.google.api.gax.grpc.GrpcTransportProvider;
 import com.google.api.gax.grpc.InstantiatingChannelProvider;
+import com.google.api.gax.httpjson.HttpJsonStatusCode;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.gax.rpc.ClientContext;
 import com.google.api.gax.rpc.ClientSettings;
@@ -5194,7 +5196,7 @@ public class ProjectAdminSettings extends ClientSettings {
       ImmutableMap.Builder<String, ImmutableSet<StatusCode>> definitions = ImmutableMap.builder();
       definitions.put(
           "idempotent",
-          ImmutableSet.copyOf(Lists.<StatusCode>newArrayList(HttpStatusCodes.STATUS_CODE_SERVICE_UNAVAILABLE, HttpStatusCodes.STATUS_CODE_SERVER_ERROR)));
+          ImmutableSet.copyOf(Lists.<StatusCode>newArrayList(HttpJsonStatusCode.of(HttpStatusCodes.STATUS_CODE_SERVICE_UNAVAILABLE), HttpJsonStatusCode.of(HttpStatusCodes.STATUS_CODE_SERVER_ERROR))));
       RETRYABLE_CODE_DEFINITIONS = definitions.build();
     }
 

@@ -16,7 +16,6 @@ package com.google.api.codegen.config;
 
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.PageStreamingConfigProto;
-import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
@@ -129,7 +128,7 @@ public abstract class PageStreamingConfig {
    */
   @Nullable
   // TODO(andrealin): Merge this function into the createPageStreaming(... Method protoMethod) function.
-  public static PageStreamingConfig createPageStreaming(
+  static PageStreamingConfig createPageStreaming(
       DiagCollector diagCollector, com.google.api.codegen.discovery.Method method) {
     // TODO(andrealin): Put this in yaml file somewhere instead of hardcoding.
     String pageSizeFieldName = "maxResults";
@@ -162,11 +161,9 @@ public abstract class PageStreamingConfig {
     }
 
     Schema responseTokenField = null;
-    if (method.response().hasProperty(responseTokenFieldName)) {
-      responseTokenField = method.response().properties().get(responseTokenFieldName);
-    } else if (!method.response().reference().isEmpty()) {
-      Document document = method.getRootDocument();
-      responseTokenField = document.schemas().get(method.response().reference());
+    Schema responseSchema = method.response().dereference();
+    if (responseSchema.hasProperty(responseTokenFieldName)) {
+      responseTokenField = responseSchema.properties().get(responseTokenFieldName);
     }
 
     if (responseTokenField == null) {
