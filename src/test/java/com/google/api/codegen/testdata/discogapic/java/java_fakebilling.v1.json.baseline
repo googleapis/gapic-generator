@@ -37,6 +37,15 @@ public final class AttachedDisk implements ApiMessage {
   private final String mode;
   private final String type;
 
+  private AttachedDisk() {
+    this.index = null;
+    this.interface2 = null;
+    this.licenses = null;
+    this.mode = null;
+    this.type = null;
+  }
+
+
   private AttachedDisk(
       Integer index,
       Interface interface2,
@@ -94,7 +103,22 @@ public final class AttachedDisk implements ApiMessage {
 
 
   public static Builder newBuilder() {
-    return new AttachedDisk.Builder();
+    return DEFAULT_INSTANCE.toBuilder();
+  }
+  public static Builder newBuilder(AttachedDisk prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
+
+  public static AttachedDisk getDefaultInstance() {
+  return DEFAULT_INSTANCE;
+  }
+  private static final AttachedDisk DEFAULT_INSTANCE;
+  static {
+  DEFAULT_INSTANCE = new AttachedDisk();
   }
 
   public static class Builder {
@@ -105,6 +129,26 @@ public final class AttachedDisk implements ApiMessage {
     private String type;
 
     Builder() {}
+
+    public Builder mergeFrom(AttachedDisk other) {
+      if (other == AttachedDisk.getDefaultInstance()) return this;
+      if (other.getIndex() != null) {
+        this.index = other.index;
+      }
+      if (other.getInterface() != null) {
+        this.interface2 = other.interface2;
+      }
+      if (other.getLicenses() != null) {
+        this.licenses = other.licenses;
+      }
+      if (other.getMode() != null) {
+        this.mode = other.mode;
+      }
+      if (other.getType() != null) {
+        this.type = other.type;
+      }
+      return this;
+    }
 
     Builder(AttachedDisk source) {
       this.index = source.index;
@@ -262,6 +306,12 @@ public final class BillingAccount implements ApiMessage {
   private final String name;
   private final Boolean open;
 
+  private BillingAccount() {
+    this.name = null;
+    this.open = null;
+  }
+
+
   private BillingAccount(
       String name,
       Boolean open
@@ -292,7 +342,22 @@ public final class BillingAccount implements ApiMessage {
 
 
   public static Builder newBuilder() {
-    return new BillingAccount.Builder();
+    return DEFAULT_INSTANCE.toBuilder();
+  }
+  public static Builder newBuilder(BillingAccount prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
+
+  public static BillingAccount getDefaultInstance() {
+  return DEFAULT_INSTANCE;
+  }
+  private static final BillingAccount DEFAULT_INSTANCE;
+  static {
+  DEFAULT_INSTANCE = new BillingAccount();
   }
 
   public static class Builder {
@@ -300,6 +365,17 @@ public final class BillingAccount implements ApiMessage {
     private Boolean open;
 
     Builder() {}
+
+    public Builder mergeFrom(BillingAccount other) {
+      if (other == BillingAccount.getDefaultInstance()) return this;
+      if (other.getName() != null) {
+        this.name = other.name;
+      }
+      if (other.getOpen() != null) {
+        this.open = other.open;
+      }
+      return this;
+    }
 
     Builder(BillingAccount source) {
       this.name = source.name;
@@ -409,6 +485,12 @@ public final class Data implements ApiMessage {
   private final String key;
   private final String value;
 
+  private Data() {
+    this.key = null;
+    this.value = null;
+  }
+
+
   private Data(
       String key,
       String value
@@ -439,7 +521,22 @@ public final class Data implements ApiMessage {
 
 
   public static Builder newBuilder() {
-    return new Data.Builder();
+    return DEFAULT_INSTANCE.toBuilder();
+  }
+  public static Builder newBuilder(Data prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
+
+  public static Data getDefaultInstance() {
+  return DEFAULT_INSTANCE;
+  }
+  private static final Data DEFAULT_INSTANCE;
+  static {
+  DEFAULT_INSTANCE = new Data();
   }
 
   public static class Builder {
@@ -447,6 +544,17 @@ public final class Data implements ApiMessage {
     private String value;
 
     Builder() {}
+
+    public Builder mergeFrom(Data other) {
+      if (other == Data.getDefaultInstance()) return this;
+      if (other.getKey() != null) {
+        this.key = other.key;
+      }
+      if (other.getValue() != null) {
+        this.value = other.value;
+      }
+      return this;
+    }
 
     Builder(Data source) {
       this.key = source.key;
@@ -555,6 +663,11 @@ import javax.annotation.Generated;
 public final class Error implements ApiMessage {
   private final List<Errors> errors;
 
+  private Error() {
+    this.errors = null;
+  }
+
+
   private Error(
       List<Errors> errors
       ) {
@@ -576,13 +689,36 @@ public final class Error implements ApiMessage {
 
 
   public static Builder newBuilder() {
-    return new Error.Builder();
+    return DEFAULT_INSTANCE.toBuilder();
+  }
+  public static Builder newBuilder(Error prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
+
+  public static Error getDefaultInstance() {
+  return DEFAULT_INSTANCE;
+  }
+  private static final Error DEFAULT_INSTANCE;
+  static {
+  DEFAULT_INSTANCE = new Error();
   }
 
   public static class Builder {
     private List<Errors> errors;
 
     Builder() {}
+
+    public Builder mergeFrom(Error other) {
+      if (other == Error.getDefaultInstance()) return this;
+      if (other.getErrors() != null) {
+        this.errors = other.errors;
+      }
+      return this;
+    }
 
     Builder(Error source) {
       this.errors = source.errors;
@@ -677,6 +813,13 @@ public final class Errors implements ApiMessage {
   private final String location;
   private final String message;
 
+  private Errors() {
+    this.code = null;
+    this.location = null;
+    this.message = null;
+  }
+
+
   private Errors(
       String code,
       String location,
@@ -716,7 +859,22 @@ public final class Errors implements ApiMessage {
 
 
   public static Builder newBuilder() {
-    return new Errors.Builder();
+    return DEFAULT_INSTANCE.toBuilder();
+  }
+  public static Builder newBuilder(Errors prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
+
+  public static Errors getDefaultInstance() {
+  return DEFAULT_INSTANCE;
+  }
+  private static final Errors DEFAULT_INSTANCE;
+  static {
+  DEFAULT_INSTANCE = new Errors();
   }
 
   public static class Builder {
@@ -725,6 +883,20 @@ public final class Errors implements ApiMessage {
     private String message;
 
     Builder() {}
+
+    public Builder mergeFrom(Errors other) {
+      if (other == Errors.getDefaultInstance()) return this;
+      if (other.getCode() != null) {
+        this.code = other.code;
+      }
+      if (other.getLocation() != null) {
+        this.location = other.location;
+      }
+      if (other.getMessage() != null) {
+        this.message = other.message;
+      }
+      return this;
+    }
 
     Builder(Errors source) {
       this.code = source.code;
@@ -851,6 +1023,13 @@ public final class Interface implements ApiMessage {
   private final Boolean inter;
   private final String interface2;
 
+  private Interface() {
+    this.face = null;
+    this.inter = null;
+    this.interface2 = null;
+  }
+
+
   private Interface(
       String face,
       Boolean inter,
@@ -890,7 +1069,22 @@ public final class Interface implements ApiMessage {
 
 
   public static Builder newBuilder() {
-    return new Interface.Builder();
+    return DEFAULT_INSTANCE.toBuilder();
+  }
+  public static Builder newBuilder(Interface prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
+
+  public static Interface getDefaultInstance() {
+  return DEFAULT_INSTANCE;
+  }
+  private static final Interface DEFAULT_INSTANCE;
+  static {
+  DEFAULT_INSTANCE = new Interface();
   }
 
   public static class Builder {
@@ -899,6 +1093,20 @@ public final class Interface implements ApiMessage {
     private String interface2;
 
     Builder() {}
+
+    public Builder mergeFrom(Interface other) {
+      if (other == Interface.getDefaultInstance()) return this;
+      if (other.getFace() != null) {
+        this.face = other.face;
+      }
+      if (other.getInter() != null) {
+        this.inter = other.inter;
+      }
+      if (other.getInterface() != null) {
+        this.interface2 = other.interface2;
+      }
+      return this;
+    }
 
     Builder(Interface source) {
       this.face = source.face;
@@ -1024,6 +1232,12 @@ public final class ListBillingAccountsResponse implements ApiMessage {
   private final List<BillingAccount> billingAccounts;
   private final String nextPageToken;
 
+  private ListBillingAccountsResponse() {
+    this.billingAccounts = null;
+    this.nextPageToken = null;
+  }
+
+
   private ListBillingAccountsResponse(
       List<BillingAccount> billingAccounts,
       String nextPageToken
@@ -1054,7 +1268,22 @@ public final class ListBillingAccountsResponse implements ApiMessage {
 
 
   public static Builder newBuilder() {
-    return new ListBillingAccountsResponse.Builder();
+    return DEFAULT_INSTANCE.toBuilder();
+  }
+  public static Builder newBuilder(ListBillingAccountsResponse prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
+
+  public static ListBillingAccountsResponse getDefaultInstance() {
+  return DEFAULT_INSTANCE;
+  }
+  private static final ListBillingAccountsResponse DEFAULT_INSTANCE;
+  static {
+  DEFAULT_INSTANCE = new ListBillingAccountsResponse();
   }
 
   public static class Builder {
@@ -1062,6 +1291,17 @@ public final class ListBillingAccountsResponse implements ApiMessage {
     private String nextPageToken;
 
     Builder() {}
+
+    public Builder mergeFrom(ListBillingAccountsResponse other) {
+      if (other == ListBillingAccountsResponse.getDefaultInstance()) return this;
+      if (other.getBillingAccounts() != null) {
+        this.billingAccounts = other.billingAccounts;
+      }
+      if (other.getNextPageToken() != null) {
+        this.nextPageToken = other.nextPageToken;
+      }
+      return this;
+    }
 
     Builder(ListBillingAccountsResponse source) {
       this.billingAccounts = source.billingAccounts;
@@ -1171,6 +1411,12 @@ public final class ListProjectBillingInfoResponse implements ApiMessage {
   private final String nextPageToken;
   private final List<ProjectBillingInfo> projectBillingInfo;
 
+  private ListProjectBillingInfoResponse() {
+    this.nextPageToken = null;
+    this.projectBillingInfo = null;
+  }
+
+
   private ListProjectBillingInfoResponse(
       String nextPageToken,
       List<ProjectBillingInfo> projectBillingInfo
@@ -1201,7 +1447,22 @@ public final class ListProjectBillingInfoResponse implements ApiMessage {
 
 
   public static Builder newBuilder() {
-    return new ListProjectBillingInfoResponse.Builder();
+    return DEFAULT_INSTANCE.toBuilder();
+  }
+  public static Builder newBuilder(ListProjectBillingInfoResponse prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
+
+  public static ListProjectBillingInfoResponse getDefaultInstance() {
+  return DEFAULT_INSTANCE;
+  }
+  private static final ListProjectBillingInfoResponse DEFAULT_INSTANCE;
+  static {
+  DEFAULT_INSTANCE = new ListProjectBillingInfoResponse();
   }
 
   public static class Builder {
@@ -1209,6 +1470,17 @@ public final class ListProjectBillingInfoResponse implements ApiMessage {
     private List<ProjectBillingInfo> projectBillingInfo;
 
     Builder() {}
+
+    public Builder mergeFrom(ListProjectBillingInfoResponse other) {
+      if (other == ListProjectBillingInfoResponse.getDefaultInstance()) return this;
+      if (other.getNextPageToken() != null) {
+        this.nextPageToken = other.nextPageToken;
+      }
+      if (other.getProjectBillingInfo() != null) {
+        this.projectBillingInfo = other.projectBillingInfo;
+      }
+      return this;
+    }
 
     Builder(ListProjectBillingInfoResponse source) {
       this.nextPageToken = source.nextPageToken;
@@ -1324,6 +1596,18 @@ public final class Operation implements ApiMessage {
   private final String status;
   private final List<Warnings> warnings;
 
+  private Operation() {
+    this.creationTimestamp = null;
+    this.description = null;
+    this.error = null;
+    this.httpErrorStatusCode = null;
+    this.id = null;
+    this.name = null;
+    this.status = null;
+    this.warnings = null;
+  }
+
+
   private Operation(
       String creationTimestamp,
       String description,
@@ -1408,7 +1692,22 @@ public final class Operation implements ApiMessage {
 
 
   public static Builder newBuilder() {
-    return new Operation.Builder();
+    return DEFAULT_INSTANCE.toBuilder();
+  }
+  public static Builder newBuilder(Operation prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
+
+  public static Operation getDefaultInstance() {
+  return DEFAULT_INSTANCE;
+  }
+  private static final Operation DEFAULT_INSTANCE;
+  static {
+  DEFAULT_INSTANCE = new Operation();
   }
 
   public static class Builder {
@@ -1422,6 +1721,35 @@ public final class Operation implements ApiMessage {
     private List<Warnings> warnings;
 
     Builder() {}
+
+    public Builder mergeFrom(Operation other) {
+      if (other == Operation.getDefaultInstance()) return this;
+      if (other.getCreationTimestamp() != null) {
+        this.creationTimestamp = other.creationTimestamp;
+      }
+      if (other.getDescription() != null) {
+        this.description = other.description;
+      }
+      if (other.getError() != null) {
+        this.error = other.error;
+      }
+      if (other.getHttpErrorStatusCode() != null) {
+        this.httpErrorStatusCode = other.httpErrorStatusCode;
+      }
+      if (other.getId() != null) {
+        this.id = other.id;
+      }
+      if (other.getName() != null) {
+        this.name = other.name;
+      }
+      if (other.getStatus() != null) {
+        this.status = other.status;
+      }
+      if (other.getWarnings() != null) {
+        this.warnings = other.warnings;
+      }
+      return this;
+    }
 
     Builder(Operation source) {
       this.creationTimestamp = source.creationTimestamp;
@@ -1627,6 +1955,12 @@ public final class ProjectBillingInfo implements ApiMessage {
   private final Boolean billingEnabled;
   private final String projectId;
 
+  private ProjectBillingInfo() {
+    this.billingEnabled = null;
+    this.projectId = null;
+  }
+
+
   private ProjectBillingInfo(
       Boolean billingEnabled,
       String projectId
@@ -1657,7 +1991,22 @@ public final class ProjectBillingInfo implements ApiMessage {
 
 
   public static Builder newBuilder() {
-    return new ProjectBillingInfo.Builder();
+    return DEFAULT_INSTANCE.toBuilder();
+  }
+  public static Builder newBuilder(ProjectBillingInfo prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
+
+  public static ProjectBillingInfo getDefaultInstance() {
+  return DEFAULT_INSTANCE;
+  }
+  private static final ProjectBillingInfo DEFAULT_INSTANCE;
+  static {
+  DEFAULT_INSTANCE = new ProjectBillingInfo();
   }
 
   public static class Builder {
@@ -1665,6 +2014,17 @@ public final class ProjectBillingInfo implements ApiMessage {
     private String projectId;
 
     Builder() {}
+
+    public Builder mergeFrom(ProjectBillingInfo other) {
+      if (other == ProjectBillingInfo.getDefaultInstance()) return this;
+      if (other.getBillingEnabled() != null) {
+        this.billingEnabled = other.billingEnabled;
+      }
+      if (other.getProjectId() != null) {
+        this.projectId = other.projectId;
+      }
+      return this;
+    }
 
     Builder(ProjectBillingInfo source) {
       this.billingEnabled = source.billingEnabled;
@@ -1776,6 +2136,14 @@ public final class Warnings implements ApiMessage {
   private final String message;
   private final ProjectBillingInfo projectBillingInfo;
 
+  private Warnings() {
+    this.code = null;
+    this.data = null;
+    this.message = null;
+    this.projectBillingInfo = null;
+  }
+
+
   private Warnings(
       String code,
       List<Data> data,
@@ -1824,7 +2192,22 @@ public final class Warnings implements ApiMessage {
 
 
   public static Builder newBuilder() {
-    return new Warnings.Builder();
+    return DEFAULT_INSTANCE.toBuilder();
+  }
+  public static Builder newBuilder(Warnings prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
+
+  public static Warnings getDefaultInstance() {
+  return DEFAULT_INSTANCE;
+  }
+  private static final Warnings DEFAULT_INSTANCE;
+  static {
+  DEFAULT_INSTANCE = new Warnings();
   }
 
   public static class Builder {
@@ -1834,6 +2217,23 @@ public final class Warnings implements ApiMessage {
     private ProjectBillingInfo projectBillingInfo;
 
     Builder() {}
+
+    public Builder mergeFrom(Warnings other) {
+      if (other == Warnings.getDefaultInstance()) return this;
+      if (other.getCode() != null) {
+        this.code = other.code;
+      }
+      if (other.getData() != null) {
+        this.data = other.data;
+      }
+      if (other.getMessage() != null) {
+        this.message = other.message;
+      }
+      if (other.getProjectBillingInfo() != null) {
+        this.projectBillingInfo = other.projectBillingInfo;
+      }
+      return this;
+    }
 
     Builder(Warnings source) {
       this.code = source.code;
@@ -1982,6 +2382,19 @@ public final class BillingAccountsGetHttpRequest implements ApiMessage {
   private final String quotaUser;
   private final String userIp;
 
+  private BillingAccountsGetHttpRequest() {
+    this.access_token = null;
+    this.callback = null;
+    this.fields = null;
+    this.fooRepeated = null;
+    this.key = null;
+    this.name = null;
+    this.prettyPrint = null;
+    this.quotaUser = null;
+    this.userIp = null;
+  }
+
+
   private BillingAccountsGetHttpRequest(
       String access_token,
       String callback,
@@ -2075,7 +2488,22 @@ public final class BillingAccountsGetHttpRequest implements ApiMessage {
 
 
   public static Builder newBuilder() {
-    return new BillingAccountsGetHttpRequest.Builder();
+    return DEFAULT_INSTANCE.toBuilder();
+  }
+  public static Builder newBuilder(BillingAccountsGetHttpRequest prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
+
+  public static BillingAccountsGetHttpRequest getDefaultInstance() {
+  return DEFAULT_INSTANCE;
+  }
+  private static final BillingAccountsGetHttpRequest DEFAULT_INSTANCE;
+  static {
+  DEFAULT_INSTANCE = new BillingAccountsGetHttpRequest();
   }
 
   public static class Builder {
@@ -2090,6 +2518,38 @@ public final class BillingAccountsGetHttpRequest implements ApiMessage {
     private String userIp;
 
     Builder() {}
+
+    public Builder mergeFrom(BillingAccountsGetHttpRequest other) {
+      if (other == BillingAccountsGetHttpRequest.getDefaultInstance()) return this;
+      if (other.getAccessToken() != null) {
+        this.access_token = other.access_token;
+      }
+      if (other.getCallback() != null) {
+        this.callback = other.callback;
+      }
+      if (other.getFields() != null) {
+        this.fields = other.fields;
+      }
+      if (other.getFooRepeated() != null) {
+        this.fooRepeated = other.fooRepeated;
+      }
+      if (other.getKey() != null) {
+        this.key = other.key;
+      }
+      if (other.getName() != null) {
+        this.name = other.name;
+      }
+      if (other.getPrettyPrint() != null) {
+        this.prettyPrint = other.prettyPrint;
+      }
+      if (other.getQuotaUser() != null) {
+        this.quotaUser = other.quotaUser;
+      }
+      if (other.getUserIp() != null) {
+        this.userIp = other.userIp;
+      }
+      return this;
+    }
 
     Builder(BillingAccountsGetHttpRequest source) {
       this.access_token = source.access_token;
@@ -2326,6 +2786,20 @@ public final class BillingAccountsListHttpRequest implements ApiMessage {
   private final String quotaUser;
   private final String userIp;
 
+  private BillingAccountsListHttpRequest() {
+    this.access_token = null;
+    this.callback = null;
+    this.fields = null;
+    this.key = null;
+    this.maxResults = null;
+    this.pageSize = null;
+    this.pageToken = null;
+    this.prettyPrint = null;
+    this.quotaUser = null;
+    this.userIp = null;
+  }
+
+
   private BillingAccountsListHttpRequest(
       String access_token,
       String callback,
@@ -2428,7 +2902,22 @@ public final class BillingAccountsListHttpRequest implements ApiMessage {
 
 
   public static Builder newBuilder() {
-    return new BillingAccountsListHttpRequest.Builder();
+    return DEFAULT_INSTANCE.toBuilder();
+  }
+  public static Builder newBuilder(BillingAccountsListHttpRequest prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
+
+  public static BillingAccountsListHttpRequest getDefaultInstance() {
+  return DEFAULT_INSTANCE;
+  }
+  private static final BillingAccountsListHttpRequest DEFAULT_INSTANCE;
+  static {
+  DEFAULT_INSTANCE = new BillingAccountsListHttpRequest();
   }
 
   public static class Builder {
@@ -2444,6 +2933,41 @@ public final class BillingAccountsListHttpRequest implements ApiMessage {
     private String userIp;
 
     Builder() {}
+
+    public Builder mergeFrom(BillingAccountsListHttpRequest other) {
+      if (other == BillingAccountsListHttpRequest.getDefaultInstance()) return this;
+      if (other.getAccessToken() != null) {
+        this.access_token = other.access_token;
+      }
+      if (other.getCallback() != null) {
+        this.callback = other.callback;
+      }
+      if (other.getFields() != null) {
+        this.fields = other.fields;
+      }
+      if (other.getKey() != null) {
+        this.key = other.key;
+      }
+      if (other.getMaxResults() != null) {
+        this.maxResults = other.maxResults;
+      }
+      if (other.getPageSize() != null) {
+        this.pageSize = other.pageSize;
+      }
+      if (other.getPageToken() != null) {
+        this.pageToken = other.pageToken;
+      }
+      if (other.getPrettyPrint() != null) {
+        this.prettyPrint = other.prettyPrint;
+      }
+      if (other.getQuotaUser() != null) {
+        this.quotaUser = other.quotaUser;
+      }
+      if (other.getUserIp() != null) {
+        this.userIp = other.userIp;
+      }
+      return this;
+    }
 
     Builder(BillingAccountsListHttpRequest source) {
       this.access_token = source.access_token;
@@ -2687,6 +3211,18 @@ public final class ProjectsGetBillingInfoHttpRequest implements ApiMessage {
   private final String quotaUser;
   private final String userIp;
 
+  private ProjectsGetBillingInfoHttpRequest() {
+    this.access_token = null;
+    this.callback = null;
+    this.fields = null;
+    this.key = null;
+    this.name = null;
+    this.prettyPrint = null;
+    this.quotaUser = null;
+    this.userIp = null;
+  }
+
+
   private ProjectsGetBillingInfoHttpRequest(
       String access_token,
       String callback,
@@ -2771,7 +3307,22 @@ public final class ProjectsGetBillingInfoHttpRequest implements ApiMessage {
 
 
   public static Builder newBuilder() {
-    return new ProjectsGetBillingInfoHttpRequest.Builder();
+    return DEFAULT_INSTANCE.toBuilder();
+  }
+  public static Builder newBuilder(ProjectsGetBillingInfoHttpRequest prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
+
+  public static ProjectsGetBillingInfoHttpRequest getDefaultInstance() {
+  return DEFAULT_INSTANCE;
+  }
+  private static final ProjectsGetBillingInfoHttpRequest DEFAULT_INSTANCE;
+  static {
+  DEFAULT_INSTANCE = new ProjectsGetBillingInfoHttpRequest();
   }
 
   public static class Builder {
@@ -2785,6 +3336,35 @@ public final class ProjectsGetBillingInfoHttpRequest implements ApiMessage {
     private String userIp;
 
     Builder() {}
+
+    public Builder mergeFrom(ProjectsGetBillingInfoHttpRequest other) {
+      if (other == ProjectsGetBillingInfoHttpRequest.getDefaultInstance()) return this;
+      if (other.getAccessToken() != null) {
+        this.access_token = other.access_token;
+      }
+      if (other.getCallback() != null) {
+        this.callback = other.callback;
+      }
+      if (other.getFields() != null) {
+        this.fields = other.fields;
+      }
+      if (other.getKey() != null) {
+        this.key = other.key;
+      }
+      if (other.getName() != null) {
+        this.name = other.name;
+      }
+      if (other.getPrettyPrint() != null) {
+        this.prettyPrint = other.prettyPrint;
+      }
+      if (other.getQuotaUser() != null) {
+        this.quotaUser = other.quotaUser;
+      }
+      if (other.getUserIp() != null) {
+        this.userIp = other.userIp;
+      }
+      return this;
+    }
 
     Builder(ProjectsGetBillingInfoHttpRequest source) {
       this.access_token = source.access_token;
@@ -3005,6 +3585,20 @@ public final class ProjectsListHttpRequest implements ApiMessage {
   private final String quotaUser;
   private final String userIp;
 
+  private ProjectsListHttpRequest() {
+    this.access_token = null;
+    this.callback = null;
+    this.fields = null;
+    this.key = null;
+    this.name = null;
+    this.pageSize = null;
+    this.pageToken = null;
+    this.prettyPrint = null;
+    this.quotaUser = null;
+    this.userIp = null;
+  }
+
+
   private ProjectsListHttpRequest(
       String access_token,
       String callback,
@@ -3107,7 +3701,22 @@ public final class ProjectsListHttpRequest implements ApiMessage {
 
 
   public static Builder newBuilder() {
-    return new ProjectsListHttpRequest.Builder();
+    return DEFAULT_INSTANCE.toBuilder();
+  }
+  public static Builder newBuilder(ProjectsListHttpRequest prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
+
+  public static ProjectsListHttpRequest getDefaultInstance() {
+  return DEFAULT_INSTANCE;
+  }
+  private static final ProjectsListHttpRequest DEFAULT_INSTANCE;
+  static {
+  DEFAULT_INSTANCE = new ProjectsListHttpRequest();
   }
 
   public static class Builder {
@@ -3123,6 +3732,41 @@ public final class ProjectsListHttpRequest implements ApiMessage {
     private String userIp;
 
     Builder() {}
+
+    public Builder mergeFrom(ProjectsListHttpRequest other) {
+      if (other == ProjectsListHttpRequest.getDefaultInstance()) return this;
+      if (other.getAccessToken() != null) {
+        this.access_token = other.access_token;
+      }
+      if (other.getCallback() != null) {
+        this.callback = other.callback;
+      }
+      if (other.getFields() != null) {
+        this.fields = other.fields;
+      }
+      if (other.getKey() != null) {
+        this.key = other.key;
+      }
+      if (other.getName() != null) {
+        this.name = other.name;
+      }
+      if (other.getPageSize() != null) {
+        this.pageSize = other.pageSize;
+      }
+      if (other.getPageToken() != null) {
+        this.pageToken = other.pageToken;
+      }
+      if (other.getPrettyPrint() != null) {
+        this.prettyPrint = other.prettyPrint;
+      }
+      if (other.getQuotaUser() != null) {
+        this.quotaUser = other.quotaUser;
+      }
+      if (other.getUserIp() != null) {
+        this.userIp = other.userIp;
+      }
+      return this;
+    }
 
     Builder(ProjectsListHttpRequest source) {
       this.access_token = source.access_token;
@@ -3374,6 +4018,19 @@ public final class ProjectsUpdateBillingInfoHttpRequest implements ApiMessage {
   private final ProjectBillingInfo request;
   private final String userIp;
 
+  private ProjectsUpdateBillingInfoHttpRequest() {
+    this.access_token = null;
+    this.callback = null;
+    this.fields = null;
+    this.key = null;
+    this.name = null;
+    this.prettyPrint = null;
+    this.quotaUser = null;
+    this.request = null;
+    this.userIp = null;
+  }
+
+
   private ProjectsUpdateBillingInfoHttpRequest(
       String access_token,
       String callback,
@@ -3467,7 +4124,22 @@ public final class ProjectsUpdateBillingInfoHttpRequest implements ApiMessage {
 
 
   public static Builder newBuilder() {
-    return new ProjectsUpdateBillingInfoHttpRequest.Builder();
+    return DEFAULT_INSTANCE.toBuilder();
+  }
+  public static Builder newBuilder(ProjectsUpdateBillingInfoHttpRequest prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
+
+  public static ProjectsUpdateBillingInfoHttpRequest getDefaultInstance() {
+  return DEFAULT_INSTANCE;
+  }
+  private static final ProjectsUpdateBillingInfoHttpRequest DEFAULT_INSTANCE;
+  static {
+  DEFAULT_INSTANCE = new ProjectsUpdateBillingInfoHttpRequest();
   }
 
   public static class Builder {
@@ -3482,6 +4154,38 @@ public final class ProjectsUpdateBillingInfoHttpRequest implements ApiMessage {
     private String userIp;
 
     Builder() {}
+
+    public Builder mergeFrom(ProjectsUpdateBillingInfoHttpRequest other) {
+      if (other == ProjectsUpdateBillingInfoHttpRequest.getDefaultInstance()) return this;
+      if (other.getAccessToken() != null) {
+        this.access_token = other.access_token;
+      }
+      if (other.getCallback() != null) {
+        this.callback = other.callback;
+      }
+      if (other.getFields() != null) {
+        this.fields = other.fields;
+      }
+      if (other.getKey() != null) {
+        this.key = other.key;
+      }
+      if (other.getName() != null) {
+        this.name = other.name;
+      }
+      if (other.getPrettyPrint() != null) {
+        this.prettyPrint = other.prettyPrint;
+      }
+      if (other.getQuotaUser() != null) {
+        this.quotaUser = other.quotaUser;
+      }
+      if (other.getRequest() != null) {
+        this.request = other.request;
+      }
+      if (other.getUserIp() != null) {
+        this.userIp = other.userIp;
+      }
+      return this;
+    }
 
     Builder(ProjectsUpdateBillingInfoHttpRequest source) {
       this.access_token = source.access_token;
