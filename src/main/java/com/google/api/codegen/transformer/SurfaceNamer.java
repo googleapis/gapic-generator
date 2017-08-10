@@ -874,22 +874,22 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The return type name in a dynamic language for the given method. */
-  public String getDynamicLangReturnTypeName(MethodModel method, MethodConfig methodConfig) {
+  public String getDynamicLangReturnTypeName(MethodContext methodContext) {
     return getNotImplementedString("SurfaceNamer.getDynamicReturnTypeName");
   }
 
   /** The return type name in a static language for the given method. */
-  public String getStaticLangReturnTypeName(MethodModel method, MethodConfig methodConfig) {
+  public String getStaticLangReturnTypeName(MethodContext methodContext) {
     return getNotImplementedString("SurfaceNamer.getStaticLangReturnTypeName");
   }
 
   /** The return type name in a static language that is used by the caller */
-  public String getStaticLangCallerReturnTypeName(MethodModel method, MethodConfig methodConfig) {
-    return getStaticLangReturnTypeName(method, methodConfig);
+  public String getStaticLangCallerReturnTypeName(MethodContext methodContext) {
+    return getStaticLangReturnTypeName(methodContext);
   }
 
   /** The async return type name in a static language for the given method. */
-  public String getStaticLangAsyncReturnTypeName(MethodModel method, MethodConfig methodConfig) {
+  public String getStaticLangAsyncReturnTypeName(MethodContext methodContext) {
     return getNotImplementedString("SurfaceNamer.getStaticLangAsyncReturnTypeName");
   }
 
@@ -911,9 +911,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The async return type name in a static language that is used by the caller */
-  public String getStaticLangCallerAsyncReturnTypeName(
-      MethodModel method, MethodConfig methodConfig) {
-    return getStaticLangAsyncReturnTypeName(method, methodConfig);
+  public String getStaticLangCallerAsyncReturnTypeName(MethodContext methodContext) {
+    return getStaticLangAsyncReturnTypeName(methodContext);
   }
 
   /** The name used in Grpc for the given API method. This needs to match what Grpc generates. */
@@ -944,7 +943,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * The generic-aware response type name for the given type. For example, in Java, this will be the
    * type used for Future&lt;...&gt;.
    */
-  public String getGenericAwareResponseTypeName(MethodModel method) {
+  public String getGenericAwareResponseTypeName(MethodContext methodContext) {
     return getNotImplementedString("SurfaceNamer.getGenericAwareResponseType");
   }
 
@@ -1317,7 +1316,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The doc lines that describe the return value for an API method. */
   public List<String> getReturnDocLines(
-      TransformationContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
+      TransformationContext context, MethodContext methodContext, Synchronicity synchronicity) {
     return Collections.singletonList(getNotImplementedString("SurfaceNamer.getReturnDocLines"));
   }
 

@@ -16,7 +16,6 @@ package com.google.api.codegen.config;
 
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.transformer.TypeFormatter;
 import com.google.api.codegen.transformer.TypeNameConverter;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
@@ -54,24 +53,16 @@ public interface MethodModel {
   /* @return the description of this method. */
   String getDescription();
 
-  /* @return the formatted full name of the output type. */
-  String getOutputTypeFullName(TypeFormatter typeFormatter);
+  /* @return theTypeName for the output type. Save it in the table. */
+  TypeName getOutputTypeName(ImportTypeTable typeTable);
 
-  /* @return the formatted full name of the output type. Save it in the table. */
-  String getOutputTypeFullName(ImportTypeTable typeTable);
-
-  /* @return the formatted nickname of the input type. */
-  String getInputTypeNickname(TypeFormatter typeFormatter);
-
-  /* @return the formatted full name of the input type. Save it in the table. */
-  String getInputTypeFullName(ImportTypeTable typeTable);
+  /* @return the TypeName for the input type. Save it in the table. */
+  TypeName getInputTypeName(ImportTypeTable typeTable);
 
   /* @return a short name for the output type. */
   String getOutputTypeSimpleName();
 
   String getScopedDescription();
-
-  TypeName getOutputTypeName(TypeNameConverter typeNameConverter);
 
   GenericFieldSelector getInputFieldSelector(String fieldName);
 

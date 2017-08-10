@@ -146,10 +146,10 @@ public class DynamicLangApiMethodTransformer {
 
     docBuilder.mainDocLines(surfaceNamer.getDocLines(method, methodConfig));
     docBuilder.paramDocs(apiMethodParamTransformer.generateParamDocs(context));
-    docBuilder.returnTypeName(surfaceNamer.getDynamicLangReturnTypeName(method, methodConfig));
+    docBuilder.returnTypeName(surfaceNamer.getDynamicLangReturnTypeName(context));
     docBuilder.returnsDocLines(
         surfaceNamer.getReturnDocLines(
-            context.getSurfaceInterfaceContext(), methodConfig, Synchronicity.Sync));
+            context.getSurfaceInterfaceContext(), context, Synchronicity.Sync));
     if (methodConfig.isPageStreaming()) {
       docBuilder.pageStreamingResourceTypeName(
           surfaceNamer.getTypeNameDoc(

@@ -19,13 +19,13 @@ import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.InterfaceConfig;
-import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
+import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -154,12 +154,13 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getDynamicLangReturnTypeName(MethodModel method, MethodConfig methodConfig) {
+  public String getDynamicLangReturnTypeName(MethodContext methodContext) {
+    MethodModel method = methodContext.getMethodModel();
     if (method.isOutputTypeEmpty()) {
       return "";
     }
 
-    return method.getOutputTypeFullName(getModelTypeFormatter());
+    return method.getOutputTypeName(methodContext.getTypeTable()).getFullName();
   }
 
   @Override
@@ -196,19 +197,18 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   /** Return JSDoc callback comment and return type comment for the given method. */
   @Override
   public List<String> getReturnDocLines(
-      TransformationContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
-    GapicMethodConfig gapicMethodConfig = (GapicMethodConfig) methodConfig;
-    Method method = ((GapicMethodConfig) methodConfig).getMethod();
+      TransformationContext context, MethodContext methodContext, Synchronicity synchronicity) {
+    GapicMethodConfig methodConfig = (GapicMethodConfig) methodContext.getMethodConfig();
+    Method method = methodConfig.getMethod();
     if (method.getRequestStreaming() && method.getResponseStreaming()) {
       return bidiStreamingReturnDocLines(method);
     } else if (method.getResponseStreaming()) {
       return responseStreamingReturnDocLines(method);
     }
 
-    List<String> callbackLines =
-        returnCallbackDocLines(context.getImportTypeTable(), gapicMethodConfig);
+    List<String> callbackLines = returnCallbackDocLines(context.getImportTypeTable(), methodConfig);
     List<String> returnObjectLines =
-        returnObjectDocLines(context.getImportTypeTable(), gapicMethodConfig);
+        returnObjectDocLines(context.getImportTypeTable(), methodConfig);
     return ImmutableList.<String>builder().addAll(callbackLines).addAll(returnObjectLines).build();
   }
 

@@ -21,6 +21,7 @@ import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
+import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -114,7 +115,9 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getDynamicLangReturnTypeName(MethodModel method, MethodConfig methodConfig) {
+  public String getDynamicLangReturnTypeName(MethodContext methodContext) {
+    MethodModel method = methodContext.getMethodModel();
+    MethodConfig methodConfig = methodContext.getMethodConfig();
     if (method.isOutputTypeEmpty()) {
       return "";
     }
@@ -123,7 +126,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
     }
     switch (methodConfig.getGrpcStreamingType()) {
       case NonStreaming:
-        return method.getOutputTypeFullName(getModelTypeFormatter());
+        return method.getOutputTypeName(methodContext.getTypeTable()).getFullName();
       case BidiStreaming:
         return "\\Google\\GAX\\BidiStream";
       case ClientStreaming:

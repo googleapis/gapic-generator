@@ -18,11 +18,8 @@ import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.transformer.ImportTypeTable;
-import com.google.api.codegen.transformer.SchemaTypeFormatter;
-import com.google.api.codegen.transformer.SchemaTypeNameConverter;
 import com.google.api.codegen.transformer.SchemaTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.transformer.TypeFormatter;
 import com.google.api.codegen.transformer.TypeNameConverter;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
@@ -79,19 +76,11 @@ public final class DiscoveryMethodModel implements MethodModel {
   }
 
   @Override
-  public String getOutputTypeFullName(TypeFormatter typeFormatter) {
+  public TypeName getOutputTypeName(ImportTypeTable typeTable) {
     // Maybe use Discogapic namer for this?
-    return ((SchemaTypeFormatter) typeFormatter).getFullNameFor(method.response());
-  }
-
-  @Override
-  public String getInputTypeNickname(TypeFormatter typeFormatter) {
-    return null;
-  }
-
-  @Override
-  public String getOutputTypeFullName(ImportTypeTable typeTable) {
-    return ((SchemaTypeTable) typeTable).getFullNameFor(method.response());
+    return typeTable
+        .getTypeTable()
+        .getTypeName(((SchemaTypeTable) typeTable).getFullNameFor(method.response()));
   }
 
   @Override
@@ -100,13 +89,10 @@ public final class DiscoveryMethodModel implements MethodModel {
   }
 
   @Override
-  public String getInputTypeFullName(ImportTypeTable typeTable) {
-    return ((SchemaTypeTable) typeTable).getFullNameFor(method.request());
-  }
-
-  @Override
-  public TypeName getOutputTypeName(TypeNameConverter typeFormatter) {
-    return ((SchemaTypeNameConverter) typeFormatter).getTypeName(method.response());
+  public TypeName getInputTypeName(ImportTypeTable typeTable) {
+    return typeTable
+        .getTypeTable()
+        .getTypeName(((SchemaTypeTable) typeTable).getFullNameFor(method.request()));
   }
 
   @Override

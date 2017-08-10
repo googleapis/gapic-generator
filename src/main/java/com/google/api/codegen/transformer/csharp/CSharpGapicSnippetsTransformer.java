@@ -339,9 +339,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
     String callerResponseTypeName =
         methodContext
             .getTypeTable()
-            .getAndSaveNicknameFor(
-                namer.getStaticLangCallerAsyncReturnTypeName(
-                    methodContext.getMethodModel(), methodContext.getMethodConfig()));
+            .getAndSaveNicknameFor(namer.getStaticLangCallerAsyncReturnTypeName(methodContext));
     return StaticLangApiMethodSnippetView.newBuilder()
         .method(method)
         .snippetMethodName(method.name() + suffix)
@@ -358,9 +356,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
     String callerResponseTypeName =
         methodContext
             .getTypeTable()
-            .getAndSaveNicknameFor(
-                namer.getStaticLangCallerReturnTypeName(
-                    methodContext.getMethodModel(), methodContext.getMethodConfig()));
+            .getAndSaveNicknameFor(namer.getStaticLangCallerReturnTypeName(methodContext));
     return StaticLangApiMethodSnippetView.newBuilder()
         .method(method)
         .snippetMethodName(method.name() + suffix)
@@ -377,9 +373,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
     String callerResponseTypeName =
         methodContext
             .getTypeTable()
-            .getAndSaveNicknameFor(
-                namer.getStaticLangCallerAsyncReturnTypeName(
-                    methodContext.getMethodModel(), methodContext.getMethodConfig()));
+            .getAndSaveNicknameFor(namer.getStaticLangCallerAsyncReturnTypeName(methodContext));
     return StaticLangApiMethodSnippetView.newBuilder()
         .method(method)
         .snippetMethodName(method.name() + "_RequestObject")
@@ -396,9 +390,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
     String callerResponseTypeName =
         methodContext
             .getTypeTable()
-            .getAndSaveNicknameFor(
-                namer.getStaticLangCallerAsyncReturnTypeName(
-                    methodContext.getMethodModel(), methodContext.getMethodConfig()));
+            .getAndSaveNicknameFor(namer.getStaticLangCallerAsyncReturnTypeName(methodContext));
     return StaticLangApiMethodSnippetView.newBuilder()
         .method(method)
         .snippetMethodName(method.name() + "_RequestObject")

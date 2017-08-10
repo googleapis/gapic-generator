@@ -623,7 +623,7 @@ public class StaticLangApiMethodTransformer {
             .throwsDocLines(namer.getThrowsDocLines(context.getMethodConfig()))
             .returnsDocLines(
                 namer.getReturnDocLines(
-                    context.getSurfaceInterfaceContext(), context.getMethodConfig(), synchronicity))
+                    context.getSurfaceInterfaceContext(), context, synchronicity))
             .build());
 
     List<RequestObjectParamView> params = new ArrayList<>();
@@ -669,8 +669,7 @@ public class StaticLangApiMethodTransformer {
             .paramDocs(paramDocs)
             .throwsDocLines(namer.getThrowsDocLines(context.getMethodConfig()))
             .returnsDocLines(
-                namer.getReturnDocLines(
-                    context.getSurfaceInterfaceContext(), context.getMethodConfig(), sync))
+                namer.getReturnDocLines(context.getSurfaceInterfaceContext(), context, sync))
             .build());
     // TODO(andrealin): refactor InitCodeView/Transformer to be API source agsnostic.
     InitCodeView initCode = null;
@@ -740,7 +739,7 @@ public class StaticLangApiMethodTransformer {
     methodViewBuilder.pathTemplateChecks(new ArrayList<PathTemplateCheckView>());
 
     String genericAwareResponseTypeFullName =
-        context.getNamer().getGenericAwareResponseTypeName(method);
+        context.getNamer().getGenericAwareResponseTypeName(context);
     String genericAwareResponseType =
         context.getTypeTable().getAndSaveNicknameFor(genericAwareResponseTypeFullName);
     methodViewBuilder.callableMethod(
@@ -752,10 +751,8 @@ public class StaticLangApiMethodTransformer {
 
   private void setStaticLangAsyncReturnTypeName(
       MethodContext context, StaticLangApiMethodView.Builder methodViewBuilder) {
-    MethodModel method = context.getMethodModel();
     SurfaceNamer namer = context.getNamer();
-    String returnTypeFullName =
-        namer.getStaticLangAsyncReturnTypeName(method, context.getMethodConfig());
+    String returnTypeFullName = namer.getStaticLangAsyncReturnTypeName(context);
     String returnTypeNickname = context.getTypeTable().getAndSaveNicknameFor(returnTypeFullName);
     methodViewBuilder.responseTypeName(returnTypeNickname);
   }
@@ -764,8 +761,7 @@ public class StaticLangApiMethodTransformer {
       MethodContext context, StaticLangApiMethodView.Builder methodViewBuilder) {
     MethodModel method = context.getMethodModel();
     SurfaceNamer namer = context.getNamer();
-    String returnTypeFullName =
-        namer.getStaticLangReturnTypeName(method, context.getMethodConfig());
+    String returnTypeFullName = namer.getStaticLangReturnTypeName(context);
     String returnTypeNickname = context.getTypeTable().getAndSaveNicknameFor(returnTypeFullName);
     methodViewBuilder.responseTypeName(returnTypeNickname);
   }

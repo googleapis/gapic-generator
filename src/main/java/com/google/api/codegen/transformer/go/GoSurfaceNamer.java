@@ -90,8 +90,11 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getStaticLangReturnTypeName(MethodModel method, MethodConfig methodConfig) {
-    return method.getOutputTypeName(converter).getFullName();
+  public String getStaticLangReturnTypeName(MethodContext methodContext) {
+    return methodContext
+        .getMethodModel()
+        .getOutputTypeName(methodContext.getTypeTable())
+        .getFullName();
   }
 
   @Override

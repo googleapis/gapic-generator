@@ -25,6 +25,7 @@ import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
+import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -219,7 +220,8 @@ public class PythonSurfaceNamer extends SurfaceNamer {
 
   @Override
   public List<String> getReturnDocLines(
-      TransformationContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
+      TransformationContext context, MethodContext methodContext, Synchronicity synchronicity) {
+    MethodConfig methodConfig = methodContext.getMethodConfig();
     TypeRef outputType = ((GapicMethodConfig) methodConfig).getMethod().getOutputType();
     if (ServiceMessages.s_isEmptyType(outputType)) {
       return ImmutableList.<String>of();

@@ -16,11 +16,9 @@ package com.google.api.codegen.config;
 
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.transformer.ImportTypeTable;
-import com.google.api.codegen.transformer.ModelTypeFormatter;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.transformer.TypeFormatter;
 import com.google.api.codegen.transformer.TypeNameConverter;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
@@ -70,13 +68,17 @@ public final class ProtoMethodModel implements MethodModel {
   }
 
   @Override
-  public String getInputTypeFullName(ImportTypeTable typeTable) {
-    return ((ModelTypeTable) typeTable).getFullNameFor(method.getInputType());
+  public TypeName getInputTypeName(ImportTypeTable typeTable) {
+    return typeTable
+        .getTypeTable()
+        .getTypeName(((ModelTypeTable) typeTable).getFullNameFor(method.getInputType()));
   }
 
   @Override
-  public String getOutputTypeFullName(ImportTypeTable typeTable) {
-    return ((ModelTypeTable) typeTable).getFullNameFor(method.getOutputType());
+  public TypeName getOutputTypeName(ImportTypeTable typeTable) {
+    return typeTable
+        .getTypeTable()
+        .getTypeName(((ModelTypeTable) typeTable).getFullNameFor(method.getOutputType()));
   }
 
   @Override
@@ -87,21 +89,6 @@ public final class ProtoMethodModel implements MethodModel {
   @Override
   public String getDescription() {
     return DocumentationUtil.getDescription(method);
-  }
-
-  @Override
-  public String getOutputTypeFullName(TypeFormatter typeFormatter) {
-    return ((ModelTypeFormatter) typeFormatter).getFullNameFor(method.getOutputType());
-  }
-
-  @Override
-  public String getInputTypeNickname(TypeFormatter typeFormatter) {
-    return ((ModelTypeFormatter) typeFormatter).getNicknameFor(method.getInputType());
-  }
-
-  @Override
-  public TypeName getOutputTypeName(TypeNameConverter typeFormatter) {
-    return ((ModelTypeNameConverter) typeFormatter).getTypeName(method.getOutputType());
   }
 
   @Override

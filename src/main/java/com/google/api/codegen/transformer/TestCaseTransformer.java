@@ -68,7 +68,7 @@ public class TestCaseTransformer {
     String clientMethodName;
     String responseTypeName;
     String fullyQualifiedResponseTypeName =
-        methodContext.getMethodModel().getOutputTypeFullName(typeTable);
+        methodContext.getMethodModel().getOutputTypeName(typeTable).getFullName();
 
     if (methodConfig.isPageStreaming()) {
       clientMethodName = namer.getApiMethodName(method, methodConfig.getVisibility());
@@ -144,7 +144,7 @@ public class TestCaseTransformer {
         .grpcStreamingView(grpcStreamingView)
         .requestTypeName(method.getAndSaveRequestTypeName(typeTable, namer))
         .responseTypeName(responseTypeName)
-        .fullyQualifiedRequestTypeName(method.getInputTypeFullName(typeTable))
+        .fullyQualifiedRequestTypeName(method.getInputTypeName(typeTable).getFullName())
         .fullyQualifiedResponseTypeName(fullyQualifiedResponseTypeName)
         .serviceConstructorName(
             namer.getApiWrapperClassConstructorName(methodContext.getInterfaceSimpleName()))

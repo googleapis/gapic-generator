@@ -155,28 +155,29 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getStaticLangReturnTypeName(MethodModel method, MethodConfig methodConfig) {
+  public String getStaticLangReturnTypeName(MethodContext methodContext) {
+    MethodModel method = methodContext.getMethodModel();
     if (method.isOutputTypeEmpty()) {
       return "void";
     }
-    return method.getOutputTypeFullName(getModelTypeFormatter());
+    return method.getOutputTypeName(methodContext.getTypeTable()).getFullName();
   }
 
   @Override
-  public String getStaticLangAsyncReturnTypeName(MethodModel method, MethodConfig methodConfig) {
+  public String getStaticLangAsyncReturnTypeName(MethodContext methodContext) {
+    MethodModel method = methodContext.getMethodModel();
     if (method.isOutputTypeEmpty()) {
       return "System.Threading.Tasks.Task";
     }
     return "System.Threading.Tasks.Task<"
-        + method.getOutputTypeFullName(getModelTypeFormatter())
+        + method.getOutputTypeName(methodContext.getTypeTable()).getFullName()
         + ">";
   }
 
   @Override
-  public String getStaticLangCallerAsyncReturnTypeName(
-      MethodModel method, MethodConfig methodConfig) {
+  public String getStaticLangCallerAsyncReturnTypeName(MethodContext methodContext) {
     // Same as sync because of 'await'
-    return getStaticLangReturnTypeName(method, methodConfig);
+    return getStaticLangReturnTypeName(methodContext);
   }
 
   @Override
@@ -195,7 +196,10 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
     return "Modify_"
         + privateMethodName(
             Name.upperCamel(
-                methodContext.getMethodModel().getInputTypeNickname(getModelTypeFormatter())));
+                methodContext
+                    .getMethodModel()
+                    .getInputTypeName(methodContext.getTypeTable())
+                    .getNickname()));
   }
 
   @Override
@@ -451,7 +455,8 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
     } else if (method.getResponseStreaming()) {
       // Server streaming
       return typeTable.getAndSaveNicknameForContainer(
-          "Grpc.Core.AsyncServerStreamingCall", method.getOutputTypeFullName(getTypeFormatter()));
+          "Grpc.Core.AsyncServerStreamingCall",
+          method.getOutputTypeName(methodContext.getTypeTable()).getFullName());
     } else {
       throw new IllegalArgumentException("Expected some sort of streaming here.");
     }
@@ -459,7 +464,8 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public List<String> getReturnDocLines(
-      TransformationContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
+      TransformationContext context, MethodContext methodContext, Synchronicity synchronicity) {
+    MethodConfig methodConfig = methodContext.getMethodConfig();
     if (methodConfig.isPageStreaming()) {
       FieldType resourceType = methodConfig.getPageStreaming().getResourcesField();
       String resourceTypeName =

@@ -106,11 +106,12 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getStaticLangReturnTypeName(MethodModel method, MethodConfig methodConfig) {
+  public String getStaticLangReturnTypeName(MethodContext methodContext) {
+    MethodModel method = methodContext.getMethodModel();
     if (method.isOutputTypeEmpty()) {
       return "void";
     }
-    return method.getOutputTypeFullName(getTypeFormatter());
+    return method.getOutputTypeName(methodContext.getTypeTable()).getFullName();
   }
 
   @Override
@@ -130,11 +131,12 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getGenericAwareResponseTypeName(MethodModel method) {
+  public String getGenericAwareResponseTypeName(MethodContext methodContext) {
+    MethodModel method = methodContext.getMethodModel();
     if (method.isOutputTypeEmpty()) {
       return "Void";
     } else {
-      return method.getOutputTypeFullName(getTypeFormatter());
+      return method.getOutputTypeName(methodContext.getTypeTable()).getFullName();
     }
   }
 

@@ -25,6 +25,7 @@ import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
+import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -178,12 +179,14 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getDynamicLangReturnTypeName(MethodModel method, MethodConfig methodConfig) {
+  public String getDynamicLangReturnTypeName(MethodContext methodContext) {
+    MethodModel method = methodContext.getMethodModel();
+    MethodConfig methodConfig = methodContext.getMethodConfig();
     if (method.isOutputTypeEmpty()) {
       return "";
     }
 
-    String classInfo = method.getOutputTypeFullName(getModelTypeFormatter());
+    String classInfo = method.getOutputTypeName(methodContext.getTypeTable()).getFullName();
     if (method.getResponseStreaming()) {
       return "Enumerable<" + classInfo + ">";
     }
@@ -230,10 +233,11 @@ public class RubySurfaceNamer extends SurfaceNamer {
 
   @Override
   public List<String> getReturnDocLines(
-      TransformationContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
-    MethodModel method = methodConfig.getMethodModel();
+      TransformationContext context, MethodContext methodContext, Synchronicity synchronicity) {
+    MethodModel method = methodContext.getMethodModel();
+    MethodConfig methodConfig = methodContext.getMethodConfig();
     if (method.getResponseStreaming()) {
-      String classInfo = method.getOutputTypeFullName(getTypeFormatter());
+      String classInfo = method.getOutputTypeName(methodContext.getTypeTable()).getFullName();
       return ImmutableList.of("An enumerable of " + classInfo + " instances.", "");
     }
 
