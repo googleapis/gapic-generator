@@ -35,6 +35,8 @@ public abstract class StaticLangClientFileView implements ViewModel {
 
   public abstract FileHeaderView fileHeader();
 
+  public abstract String domainLayerLocation();
+
   public abstract List<PathTemplateView> pathTemplates();
 
   public abstract List<PathTemplateGetterFunctionView> pathTemplateGetters();
@@ -85,6 +87,8 @@ public abstract class StaticLangClientFileView implements ViewModel {
     public abstract Builder apiMethods(List<StaticLangApiMethodView> val);
 
     public abstract Builder fileHeader(FileHeaderView val);
+
+    public abstract Builder domainLayerLocation(String val);
 
     public abstract Builder clientTypeName(String val);
 
