@@ -17,7 +17,7 @@
 'use strict';
 
 var assert = require('assert');
-var example = require('../src');
+var multipleServices = require('../src');
 
 var FAKE_STATUS_CODE = 1;
 var error = new Error();
@@ -26,7 +26,7 @@ error.code = FAKE_STATUS_CODE;
 describe('IncrementerServiceClient', function() {
   describe('increment', function() {
     it('invokes increment without error', function(done) {
-      var client = example.v1.incrementer();
+      var client = multipleServices.v1.incrementer();
 
       // Mock request
       var request = {};
@@ -41,7 +41,7 @@ describe('IncrementerServiceClient', function() {
     });
 
     it('invokes increment with error', function(done) {
-      var client = example.v1.incrementer();
+      var client = multipleServices.v1.incrementer();
 
       // Mock request
       var request = {};
@@ -61,7 +61,7 @@ describe('IncrementerServiceClient', function() {
 describe('DecrementerServiceClient', function() {
   describe('decrement', function() {
     it('invokes decrement without error', function(done) {
-      var client = example.v1.decrementer();
+      var client = multipleServices.v1.decrementer();
 
       // Mock request
       var request = {};
@@ -76,7 +76,7 @@ describe('DecrementerServiceClient', function() {
     });
 
     it('invokes decrement with error', function(done) {
-      var client = example.v1.decrementer();
+      var client = multipleServices.v1.decrementer();
 
       // Mock request
       var request = {};
