@@ -160,8 +160,8 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
       surfaceDocs.add(stubInterfaceFile);
 
       context = context.withNewTypeTable(namer.getStubPackageName());
-      StaticLangFileView<StaticLangRpcStubView> grpcStubFile = generateHttpStubClassFile(context);
-      surfaceDocs.add(grpcStubFile);
+      StaticLangFileView<StaticLangRpcStubView> rpcStubFile = generateHttpStubClassFile(context);
+      surfaceDocs.add(rpcStubFile);
     }
 
     StaticLangPagedResponseWrappersView pagedResponseWrappers =
@@ -441,8 +441,8 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
     xsettingsClass.packagePath(namer.getPackagePath());
     xsettingsClass.stubInterfaceName(
         getAndSaveNicknameForStubType(context, namer.getApiStubInterfaceName(interfaceConfig)));
-    xsettingsClass.grpcStubClassName(
-        getAndSaveNicknameForStubType(context, namer.getApiGrpcStubClassName(interfaceConfig)));
+    xsettingsClass.rpcStubClassName(
+        getAndSaveNicknameForStubType(context, namer.getApiHttpStubClassName(interfaceConfig)));
 
     return xsettingsClass.build();
   }
@@ -503,13 +503,13 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
     StaticLangFileView.Builder<StaticLangRpcStubView> fileView =
         StaticLangFileView.<StaticLangRpcStubView>newBuilder();
 
-    fileView.classView(generateGrpcStubClass(context));
+    fileView.classView(generateRpcStubClass(context));
     fileView.templateFileName(RPC_STUB_TEMPLATE_FILENAME);
 
     String outputPath =
         pathMapper.getOutputPath(
             context.getInterfaceModel().getFullName(), context.getProductConfig());
-    String className = context.getNamer().getApiGrpcStubClassName(context.getInterfaceConfig());
+    String className = context.getNamer().getApiHttpStubClassName(context.getInterfaceConfig());
     fileView.outputPath(
         outputPath + File.separator + "stub" + File.separator + className + ".java");
 
@@ -519,11 +519,11 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
     return fileView.build();
   }
 
-  private StaticLangRpcStubView generateGrpcStubClass(DiscoGapicInterfaceContext context) {
+  private StaticLangRpcStubView generateRpcStubClass(DiscoGapicInterfaceContext context) {
     SurfaceNamer namer = context.getNamer();
     DiscoGapicInterfaceConfig interfaceConfig = context.getInterfaceConfig();
 
-    addGrpcStubImports(context);
+    addRpcStubImports(context);
 
     // Stub class has different default package name from method, request, and resource classes.
     DiscoGapicInterfaceContext apiMethodsContext =
@@ -534,7 +534,7 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
 
     stubClass.doc(serviceTransformer.generateServiceDoc(context, null));
 
-    String name = namer.getApiGrpcStubClassName(interfaceConfig);
+    String name = namer.getApiHttpStubClassName(interfaceConfig);
     stubClass.releaseLevelAnnotation(
         namer.getReleaseAnnotation(packageMetadataConfig.releaseLevel(TargetLanguage.JAVA)));
     stubClass.name(name);
@@ -691,23 +691,15 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
       typeTable.saveNicknameFor("java.util.ArrayList");
       typeTable.saveNicknameFor("java.util.Collection");
     }
-    if (interfaceConfig.hasGrpcStreamingMethods()) {
-      typeTable.saveNicknameFor("com.google.api.gax.rpc.StreamingCallSettings");
-    }
-    if (interfaceConfig.hasLongRunningOperations()) {
-      typeTable.saveNicknameFor("com.google.api.gax.rpc.OperationCallSettings");
-      typeTable.saveNicknameFor("com.google.longrunning.Operation");
-      typeTable.saveNicknameFor("com.google.api.gax.grpc.OperationTimedPollAlgorithm");
-    }
   }
 
-  private void addGrpcStubImports(DiscoGapicInterfaceContext context) {
+  private void addRpcStubImports(DiscoGapicInterfaceContext context) {
     ImportTypeTable typeTable = context.getImportTypeTable();
 
     typeTable.saveNicknameFor("com.google.api.core.BetaApi");
     typeTable.saveNicknameFor("com.google.api.gax.core.BackgroundResource");
     typeTable.saveNicknameFor("com.google.api.gax.core.BackgroundResourceAggregation");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.HttpCallableFactory");
+    typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonCallableFactory");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.ClientContext");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.UnaryCallable");
     typeTable.saveNicknameFor("java.io.IOException");

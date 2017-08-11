@@ -81,7 +81,7 @@ public abstract class StaticLangSettingsView {
   public abstract String stubInterfaceName();
 
   @Nullable // Used in Java
-  public abstract String grpcStubClassName();
+  public abstract String rpcStubClassName();
 
   public abstract TransportProtocol transportProtocol();
 
@@ -127,7 +127,7 @@ public abstract class StaticLangSettingsView {
 
     public abstract Builder stubInterfaceName(String apiStubInterfaceName);
 
-    public abstract Builder grpcStubClassName(String apiGrpcStubClassName);
+    public abstract Builder rpcStubClassName(String apiRpcStubClassName);
 
     public abstract Builder transportProtocol(TransportProtocol transportProtocol);
 

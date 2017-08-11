@@ -735,6 +735,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return publicClassName(Name.upperCamel("Grpc", interfaceConfig.getRawName(), "Stub"));
   }
 
+  /** The name of the http stub for a particular proto interface; not used in most languages. */
+  public String getApiHttpStubClassName(InterfaceConfig interfaceConfig) {
+    return publicClassName(Name.upperCamel("Http", interfaceConfig.getRawName(), "Stub"));
+  }
+
   /** The name of the class that contains paged list response wrappers. */
   public String getPagedResponseWrappersClassName() {
     return publicClassName(Name.upperCamel("PagedResponseWrappers"));

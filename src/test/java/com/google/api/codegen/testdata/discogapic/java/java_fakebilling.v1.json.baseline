@@ -4761,7 +4761,7 @@ import com.google.api.gax.rpc.UnaryCallable;
 import com.google.auth.Credentials;
 import static com.google.cloud.fakebilling.v1.PagedResponseWrappers.BillingAccountsListPagedResponse;
 import com.google.cloud.fakebilling.v1.stub.BillingAccountAdminStub;
-import com.google.cloud.fakebilling.v1.stub.GrpcBillingAccountAdminStub;
+import com.google.cloud.fakebilling.v1.stub.HttpBillingAccountAdminStub;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -4837,7 +4837,7 @@ public class BillingAccountAdminSettings extends ClientSettings {
 
   public BillingAccountAdminStub createStub() throws IOException {
     if (getTransportProvider().getTransportName().equals(GrpcTransport.getGrpcTransportName())) {
-      return GrpcBillingAccountAdminStub.create(this);
+      return HttpBillingAccountAdminStub.create(this);
     } else {
       throw new UnsupportedOperationException(
           "Transport not supported: " + getTransportProvider().getTransportName());
@@ -5189,7 +5189,7 @@ public abstract class BillingAccountAdminStub implements BackgroundResource {
   }
 
 }
-============== file: src/main/java/com/google/cloud/fakebilling/v1/stub/GrpcBillingAccountAdminStub.java ==============
+============== file: src/main/java/com/google/cloud/fakebilling/v1/stub/HttpBillingAccountAdminStub.java ==============
 /*
  * Copyright 2017, Google Inc. All rights reserved.
  *
@@ -5210,7 +5210,7 @@ package com.google.cloud.fakebilling.v1.stub;
 import com.google.api.core.BetaApi;
 import com.google.api.gax.core.BackgroundResource;
 import com.google.api.gax.core.BackgroundResourceAggregation;
-import com.google.api.gax.grpc.HttpCallableFactory;
+import com.google.api.gax.httpjson.HttpJsonCallableFactory;
 import com.google.api.gax.rpc.ClientContext;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.cloud.fakebilling.v1.BillingAccount;
@@ -5232,16 +5232,16 @@ import javax.annotation.Generated;
  * <p>This class is for advanced usage and reflects the underlying API directly.
  */
 @Generated("by GAPIC v0.0.5")
-public class GrpcBillingAccountAdminStub extends BillingAccountAdminStub {
+public class HttpBillingAccountAdminStub extends BillingAccountAdminStub {
   private static final UnaryCallable<BillingAccountsListHttpRequest, ListBillingAccountsResponse> directBillingAccountsListCallable =
-      GrpcCallableFactory.createDirectCallable(
+      HttpJsonCallableFactory.createDirectCallable(
           io.grpc.MethodDescriptor.create(
               io.grpc.MethodDescriptor.MethodType.UNARY,
               "google.fakebilling.v1.BillingAccounts/billingAccountsList",
               io.grpc.protobuf.ProtoUtils.marshaller(BillingAccountsListHttpRequest.getDefaultInstance()),
               io.grpc.protobuf.ProtoUtils.marshaller(ListBillingAccountsResponse.getDefaultInstance())));
   private static final UnaryCallable<BillingAccountsGetHttpRequest, BillingAccount> directBillingAccountsGetCallable =
-      GrpcCallableFactory.createDirectCallable(
+      HttpJsonCallableFactory.createDirectCallable(
           io.grpc.MethodDescriptor.create(
               io.grpc.MethodDescriptor.MethodType.UNARY,
               "google.fakebilling.v1.BillingAccounts/billingAccountsGet",
@@ -5254,25 +5254,25 @@ public class GrpcBillingAccountAdminStub extends BillingAccountAdminStub {
   private final UnaryCallable<BillingAccountsListHttpRequest, BillingAccountsListPagedResponse> billingAccountsListPagedCallable;
   private final UnaryCallable<BillingAccountsGetHttpRequest, BillingAccount> billingAccountsGetCallable;
 
-  public static final GrpcBillingAccountAdminStub create(BillingAccountAdminSettings settings) throws IOException {
-    return new GrpcBillingAccountAdminStub(settings, ClientContext.create(settings));
+  public static final HttpBillingAccountAdminStub create(BillingAccountAdminSettings settings) throws IOException {
+    return new HttpBillingAccountAdminStub(settings, ClientContext.create(settings));
   }
 
-  public static final GrpcBillingAccountAdminStub create(ClientContext clientContext) throws IOException {
-    return new GrpcBillingAccountAdminStub(BillingAccountAdminSettings.defaultBuilder().build(), clientContext);
+  public static final HttpBillingAccountAdminStub create(ClientContext clientContext) throws IOException {
+    return new HttpBillingAccountAdminStub(BillingAccountAdminSettings.defaultBuilder().build(), clientContext);
   }
 
   /**
-   * Constructs an instance of GrpcBillingAccountAdminStub, using the given settings.
+   * Constructs an instance of HttpBillingAccountAdminStub, using the given settings.
    * This is protected so that it is easy to make a subclass, but otherwise, the static
    * factory methods should be preferred.
    */
-  protected GrpcBillingAccountAdminStub(BillingAccountAdminSettings settings, ClientContext clientContext) throws IOException {
+  protected HttpBillingAccountAdminStub(BillingAccountAdminSettings settings, ClientContext clientContext) throws IOException {
 
-    this.billingAccountsListCallable = GrpcCallableFactory.create(directBillingAccountsListCallable,settings.billingAccountsListSettings(), clientContext);
+    this.billingAccountsListCallable = HttpJsonCallableFactory.create(directBillingAccountsListCallable,settings.billingAccountsListSettings(), clientContext);
     this.billingAccountsListPagedCallable =
-        GrpcCallableFactory.createPagedVariant(directBillingAccountsListCallable,settings.billingAccountsListSettings(), clientContext);
-    this.billingAccountsGetCallable = GrpcCallableFactory.create(directBillingAccountsGetCallable,settings.billingAccountsGetSettings(), clientContext);
+        HttpJsonCallableFactory.createPagedVariant(directBillingAccountsListCallable,settings.billingAccountsListSettings(), clientContext);
+    this.billingAccountsGetCallable = HttpJsonCallableFactory.create(directBillingAccountsGetCallable,settings.billingAccountsGetSettings(), clientContext);
 
     backgroundResources = new BackgroundResourceAggregation(clientContext.getBackgroundResources());
   }
@@ -5697,7 +5697,7 @@ import com.google.api.gax.rpc.StatusCode;
 import com.google.api.gax.rpc.TransportProvider;
 import com.google.api.gax.rpc.UnaryCallSettings;
 import com.google.auth.Credentials;
-import com.google.cloud.fakebilling.v1.stub.GrpcProjectAdminStub;
+import com.google.cloud.fakebilling.v1.stub.HttpProjectAdminStub;
 import com.google.cloud.fakebilling.v1.stub.ProjectAdminStub;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -5774,7 +5774,7 @@ public class ProjectAdminSettings extends ClientSettings {
 
   public ProjectAdminStub createStub() throws IOException {
     if (getTransportProvider().getTransportName().equals(GrpcTransport.getGrpcTransportName())) {
-      return GrpcProjectAdminStub.create(this);
+      return HttpProjectAdminStub.create(this);
     } else {
       throw new UnsupportedOperationException(
           "Transport not supported: " + getTransportProvider().getTransportName());
@@ -6072,7 +6072,7 @@ public abstract class ProjectAdminStub implements BackgroundResource {
   }
 
 }
-============== file: src/main/java/com/google/cloud/fakebilling/v1/stub/GrpcProjectAdminStub.java ==============
+============== file: src/main/java/com/google/cloud/fakebilling/v1/stub/HttpProjectAdminStub.java ==============
 /*
  * Copyright 2017, Google Inc. All rights reserved.
  *
@@ -6093,7 +6093,7 @@ package com.google.cloud.fakebilling.v1.stub;
 import com.google.api.core.BetaApi;
 import com.google.api.gax.core.BackgroundResource;
 import com.google.api.gax.core.BackgroundResourceAggregation;
-import com.google.api.gax.grpc.HttpCallableFactory;
+import com.google.api.gax.httpjson.HttpJsonCallableFactory;
 import com.google.api.gax.rpc.ClientContext;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.cloud.fakebilling.v1.ProjectAdminSettings;
@@ -6113,16 +6113,16 @@ import javax.annotation.Generated;
  * <p>This class is for advanced usage and reflects the underlying API directly.
  */
 @Generated("by GAPIC v0.0.5")
-public class GrpcProjectAdminStub extends ProjectAdminStub {
+public class HttpProjectAdminStub extends ProjectAdminStub {
   private static final UnaryCallable<ProjectsUpdateBillingInfoHttpRequest, ProjectBillingInfo> directProjectsUpdateBillingInfoCallable =
-      GrpcCallableFactory.createDirectCallable(
+      HttpJsonCallableFactory.createDirectCallable(
           io.grpc.MethodDescriptor.create(
               io.grpc.MethodDescriptor.MethodType.UNARY,
               "google.fakebilling.v1.Projects/projectsUpdateBillingInfo",
               io.grpc.protobuf.ProtoUtils.marshaller(ProjectsUpdateBillingInfoHttpRequest.getDefaultInstance()),
               io.grpc.protobuf.ProtoUtils.marshaller(ProjectBillingInfo.getDefaultInstance())));
   private static final UnaryCallable<ProjectsGetBillingInfoHttpRequest, ProjectBillingInfo> directProjectsGetBillingInfoCallable =
-      GrpcCallableFactory.createDirectCallable(
+      HttpJsonCallableFactory.createDirectCallable(
           io.grpc.MethodDescriptor.create(
               io.grpc.MethodDescriptor.MethodType.UNARY,
               "google.fakebilling.v1.Projects/projectsGetBillingInfo",
@@ -6134,23 +6134,23 @@ public class GrpcProjectAdminStub extends ProjectAdminStub {
   private final UnaryCallable<ProjectsUpdateBillingInfoHttpRequest, ProjectBillingInfo> projectsUpdateBillingInfoCallable;
   private final UnaryCallable<ProjectsGetBillingInfoHttpRequest, ProjectBillingInfo> projectsGetBillingInfoCallable;
 
-  public static final GrpcProjectAdminStub create(ProjectAdminSettings settings) throws IOException {
-    return new GrpcProjectAdminStub(settings, ClientContext.create(settings));
+  public static final HttpProjectAdminStub create(ProjectAdminSettings settings) throws IOException {
+    return new HttpProjectAdminStub(settings, ClientContext.create(settings));
   }
 
-  public static final GrpcProjectAdminStub create(ClientContext clientContext) throws IOException {
-    return new GrpcProjectAdminStub(ProjectAdminSettings.defaultBuilder().build(), clientContext);
+  public static final HttpProjectAdminStub create(ClientContext clientContext) throws IOException {
+    return new HttpProjectAdminStub(ProjectAdminSettings.defaultBuilder().build(), clientContext);
   }
 
   /**
-   * Constructs an instance of GrpcProjectAdminStub, using the given settings.
+   * Constructs an instance of HttpProjectAdminStub, using the given settings.
    * This is protected so that it is easy to make a subclass, but otherwise, the static
    * factory methods should be preferred.
    */
-  protected GrpcProjectAdminStub(ProjectAdminSettings settings, ClientContext clientContext) throws IOException {
+  protected HttpProjectAdminStub(ProjectAdminSettings settings, ClientContext clientContext) throws IOException {
 
-    this.projectsUpdateBillingInfoCallable = GrpcCallableFactory.create(directProjectsUpdateBillingInfoCallable,settings.projectsUpdateBillingInfoSettings(), clientContext);
-    this.projectsGetBillingInfoCallable = GrpcCallableFactory.create(directProjectsGetBillingInfoCallable,settings.projectsGetBillingInfoSettings(), clientContext);
+    this.projectsUpdateBillingInfoCallable = HttpJsonCallableFactory.create(directProjectsUpdateBillingInfoCallable,settings.projectsUpdateBillingInfoSettings(), clientContext);
+    this.projectsGetBillingInfoCallable = HttpJsonCallableFactory.create(directProjectsGetBillingInfoCallable,settings.projectsGetBillingInfoSettings(), clientContext);
 
     backgroundResources = new BackgroundResourceAggregation(clientContext.getBackgroundResources());
   }

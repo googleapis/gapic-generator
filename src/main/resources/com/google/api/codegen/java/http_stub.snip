@@ -51,7 +51,7 @@
 
 @private grpcMethodCallable(callable)
   private static final {@callable.interfaceTypeName}<{@callable.requestTypeName}, {@callable.responseTypeName}> {@callable.name} =
-      GrpcCallableFactory.{@callable.createCallableFunctionName}(
+      HttpJsonCallableFactory.{@callable.createCallableFunctionName}(
           io.grpc.MethodDescriptor.create(
               {@streamingTypeEnum(callable.grpcStreamingType)},
               "{@callable.fullServiceName}/{@callable.protoMethodName}",
@@ -125,23 +125,23 @@
     @join callable : stubClass.apiCallables
       @switch callable.type
       @case "SimpleApiCallable"
-        this.{@callable.name} = GrpcCallableFactory.create({@callable.grpcDirectCallableName},\
+        this.{@callable.name} = HttpJsonCallableFactory.create({@callable.grpcDirectCallableName},\
             settings.{@callable.settingsFunctionName}(), clientContext);
       @case "PagedApiCallable"
         this.{@callable.name} =
-            GrpcCallableFactory.createPagedVariant({@callable.grpcDirectCallableName},\
+            HttpJsonCallableFactory.createPagedVariant({@callable.grpcDirectCallableName},\
             settings.{@callable.settingsFunctionName}(), clientContext);
       @case "BatchingApiCallable"
-        this.{@callable.name} = GrpcCallableFactory.create({@callable.grpcDirectCallableName},\
+        this.{@callable.name} = HttpJsonCallableFactory.create({@callable.grpcDirectCallableName},\
             settings.{@callable.settingsFunctionName}(), clientContext);
       @case "StreamingApiCallable"
-        this.{@callable.name} = GrpcCallableFactory.create({@callable.grpcDirectCallableName},\
+        this.{@callable.name} = HttpJsonCallableFactory.create({@callable.grpcDirectCallableName},\
             settings.{@callable.settingsFunctionName}(), clientContext);
       @case "InitialOperationApiCallable"
-        this.{@callable.name} = GrpcCallableFactory.create({@callable.grpcDirectCallableName},\
+        this.{@callable.name} = HttpJsonCallableFactory.create({@callable.grpcDirectCallableName},\
             settings.{@callable.settingsFunctionName}().getInitialCallSettings(), clientContext);
       @case "OperationApiCallable"
-        this.{@callable.name} = GrpcCallableFactory.create({@callable.grpcDirectCallableName},\
+        this.{@callable.name} = HttpJsonCallableFactory.create({@callable.grpcDirectCallableName},\
             settings.{@callable.settingsFunctionName}(), clientContext, this.operationsStub);
       @default
         $unhandledCase: {@callable.type}$

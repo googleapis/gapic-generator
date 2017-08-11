@@ -430,7 +430,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     xsettingsClass.packagePath(namer.getPackagePath());
     xsettingsClass.stubInterfaceName(
         getAndSaveNicknameForStubType(context, namer.getApiStubInterfaceName(interfaceConfig)));
-    xsettingsClass.grpcStubClassName(
+    xsettingsClass.rpcStubClassName(
         getAndSaveNicknameForStubType(context, namer.getApiGrpcStubClassName(interfaceConfig)));
 
     return xsettingsClass.build();
