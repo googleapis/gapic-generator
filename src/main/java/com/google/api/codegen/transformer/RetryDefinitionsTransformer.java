@@ -89,8 +89,7 @@ public class RetryDefinitionsTransformer {
 
   public static ImmutableMap<String, RetrySettings> createRetrySettingsDefinition(
       DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto) {
-    ImmutableMap.Builder<String, RetrySettings> builder =
-        ImmutableMap.builder();
+    ImmutableMap.Builder<String, RetrySettings> builder = ImmutableMap.builder();
     for (RetryParamsDefinitionProto retryDef : interfaceConfigProto.getRetryParamsDefList()) {
       try {
         RetrySettings settings =

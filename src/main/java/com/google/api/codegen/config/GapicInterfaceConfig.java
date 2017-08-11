@@ -18,8 +18,6 @@ import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.IamResourceProto;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
-import com.google.api.codegen.RetryCodesDefinitionProto;
-import com.google.api.codegen.RetryParamsDefinitionProto;
 import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
 import com.google.api.gax.core.RetrySettings;
 import com.google.api.tools.framework.model.Diag;
@@ -37,10 +35,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 import javax.annotation.Nullable;
-import org.joda.time.Duration;
 
 /**
  * GapicInterfaceConfig represents the client code-gen config for an API interface, and includes the
@@ -127,7 +122,8 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     ImmutableMap<String, ImmutableSet<String>> retryCodesDefinition =
         RetryDefinitionsTransformer.createRetryCodesDefinition(diagCollector, interfaceConfigProto);
     ImmutableMap<String, RetrySettings> retrySettingsDefinition =
-        RetryDefinitionsTransformer.createRetrySettingsDefinition(diagCollector, interfaceConfigProto);
+        RetryDefinitionsTransformer.createRetrySettingsDefinition(
+            diagCollector, interfaceConfigProto);
 
     List<GapicMethodConfig> methodConfigs = null;
     ImmutableMap<String, GapicMethodConfig> methodConfigMap = null;

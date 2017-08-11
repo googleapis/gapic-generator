@@ -19,8 +19,6 @@ import static com.google.api.codegen.config.DiscoGapicMethodConfig.createDiscoGa
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
-import com.google.api.codegen.RetryCodesDefinitionProto;
-import com.google.api.codegen.RetryParamsDefinitionProto;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
@@ -35,7 +33,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import java.util.List;
 import javax.annotation.Nullable;
-import org.joda.time.Duration;
 
 @AutoValue
 public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
