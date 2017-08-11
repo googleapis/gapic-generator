@@ -101,11 +101,7 @@ public class JavaSurfaceNamer extends SurfaceNamer {
 
   @Override
   public boolean shouldImportRequestObjectParamElementType(FieldModel field) {
-    if (field.isMap()) {
-      return false;
-    } else {
-      return true;
-    }
+    return !field.isMap();
   }
 
   @Override
