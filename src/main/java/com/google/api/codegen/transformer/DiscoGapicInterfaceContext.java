@@ -88,7 +88,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
     ImmutableList.Builder<MethodModel> interfaceMethods = new ImmutableList.Builder<>();
 
     for (MethodConfig method :
-        productConfig.getInterfaceConfig(interfaceModel.getSimpleName()).getMethodConfigs()) {
+        productConfig.getInterfaceConfig(interfaceModel.getFullName()).getMethodConfigs()) {
       interfaceMethods.add(method.getMethodModel());
     }
 
