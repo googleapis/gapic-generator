@@ -15,6 +15,8 @@
 package com.google.api.codegen.util.go;
 
 import com.google.api.codegen.util.CommentReformatter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.commonmark.node.BulletList;
 import org.commonmark.node.Code;
 import org.commonmark.node.Document;
@@ -31,6 +33,8 @@ import org.commonmark.parser.Parser;
 
 public class GoCommentReformatter implements CommentReformatter {
 
+  private static final Logger LOGGER = Logger.getLogger(GoCommentReformatter.class.getName());
+
   // Might as well create only one. Parser is thread-safe.
   private static final Parser PARSER = Parser.builder().build();
 
@@ -38,8 +42,14 @@ public class GoCommentReformatter implements CommentReformatter {
   public String reformat(String comment) {
     Node root = PARSER.parse(comment);
     GoVisitor visitor = new GoVisitor();
-    root.accept(visitor);
-    return visitor.toString();
+    try {
+      root.accept(visitor);
+      return visitor.toString();
+    } catch (ErrorMarkdownVisitor.UnimplementedRenderException e) {
+      LOGGER.log(
+          Level.WARNING, "markdown contains elements we don't handle; copying doc verbatim", e);
+      return comment;
+    }
   }
 
   private static class GoVisitor extends ErrorMarkdownVisitor {

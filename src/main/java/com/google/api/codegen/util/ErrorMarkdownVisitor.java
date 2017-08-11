@@ -48,7 +48,7 @@ import org.commonmark.node.Visitor;
  */
 public class ErrorMarkdownVisitor implements Visitor {
 
-  private static class UnimplementedRenderException extends RuntimeException {
+  public static class UnimplementedRenderException extends RuntimeException {
     UnimplementedRenderException(String val) {
       super(val);
     }
