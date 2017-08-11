@@ -183,14 +183,18 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
         new JavaSchemaTypeNameConverter(implicitPackageName, nameFormatter));
   }
 
-  private StaticLangFileView generateApiFile(DiscoGapicInterfaceContext context) {
-    StaticLangFileView.Builder apiFile = StaticLangFileView.newBuilder();
+  private StaticLangFileView<StaticLangApiView> generateApiFile(
+      DiscoGapicInterfaceContext context) {
+    StaticLangFileView.Builder<StaticLangApiView> apiFile =
+        StaticLangFileView.<StaticLangApiView>newBuilder();
 
     apiFile.templateFileName(API_TEMPLATE_FILENAME);
 
     apiFile.classView(generateApiClass(context));
 
-    String outputPath = pathMapper.getOutputPath(null, context.getProductConfig());
+    String outputPath =
+        pathMapper.getOutputPath(
+            context.getInterfaceModel().getFullName(), context.getProductConfig());
     String className = context.getNamer().getApiWrapperClassName(context.getInterfaceConfig());
     apiFile.outputPath(outputPath + File.separator + className + ".java");
 
@@ -764,6 +768,7 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
     return settingsDoc.build();
   }
 
+  // TODO(andrealin): Stick this in a util class shared with the Java gapic transformer.
   private List<StaticLangApiMethodView> generateApiMethods(DiscoGapicInterfaceContext context) {
     List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
 
