@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.ReleaseLevel;
+import com.google.api.codegen.config.ApiSource;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldType;
 import com.google.api.codegen.config.GapicInterfaceConfig;
@@ -351,6 +352,9 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The function name to get a field having the given type and name. */
   public String getFieldGetFunctionName(FieldType type, Name identifier) {
+    if (type.getApiSource().equals(ApiSource.DISCOVERY)) {
+      return publicMethodName(Name.from("get").join(identifier));
+    }
     if (type.isRepeated() && !type.isMap()) {
       return publicMethodName(Name.from("get").join(identifier).join("list"));
     } else if (type.isMap()) {
