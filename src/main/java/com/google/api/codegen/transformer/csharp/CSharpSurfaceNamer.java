@@ -15,8 +15,9 @@
 package com.google.api.codegen.transformer.csharp;
 
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.FieldType;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ResourceNameConfig;
@@ -35,7 +36,6 @@ import com.google.api.codegen.util.TypedValue;
 import com.google.api.codegen.util.csharp.CSharpCommentReformatter;
 import com.google.api.codegen.util.csharp.CSharpNameFormatter;
 import com.google.api.codegen.util.csharp.CSharpTypeTable;
-import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
@@ -155,32 +155,33 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getStaticLangReturnTypeName(MethodModel method, MethodConfig methodConfig) {
+  public String getStaticLangReturnTypeName(MethodContext methodContext) {
+    MethodModel method = methodContext.getMethodModel();
     if (method.isOutputTypeEmpty()) {
       return "void";
     }
-    return method.getOutputTypeFullName(getModelTypeFormatter());
+    return method.getOutputTypeName(methodContext.getTypeTable()).getFullName();
   }
 
   @Override
-  public String getStaticLangAsyncReturnTypeName(MethodModel method, MethodConfig methodConfig) {
+  public String getStaticLangAsyncReturnTypeName(MethodContext methodContext) {
+    MethodModel method = methodContext.getMethodModel();
     if (method.isOutputTypeEmpty()) {
       return "System.Threading.Tasks.Task";
     }
     return "System.Threading.Tasks.Task<"
-        + method.getOutputTypeFullName(getModelTypeFormatter())
+        + method.getOutputTypeName(methodContext.getTypeTable()).getFullName()
         + ">";
   }
 
   @Override
-  public String getStaticLangCallerAsyncReturnTypeName(
-      MethodModel method, MethodConfig methodConfig) {
+  public String getStaticLangCallerAsyncReturnTypeName(MethodContext methodContext) {
     // Same as sync because of 'await'
-    return getStaticLangReturnTypeName(method, methodConfig);
+    return getStaticLangReturnTypeName(methodContext);
   }
 
   @Override
-  public String getApiSnippetsClassName(Interface apiInterface) {
+  public String getApiSnippetsClassName(InterfaceModel apiInterface) {
     return publicClassName(
         Name.upperCamel("Generated", apiInterface.getSimpleName(), "ClientSnippets"));
   }
@@ -195,18 +196,21 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
     return "Modify_"
         + privateMethodName(
             Name.upperCamel(
-                methodContext.getMethodModel().getInputTypeNickname(getModelTypeFormatter())));
+                methodContext
+                    .getMethodModel()
+                    .getInputTypeName(methodContext.getTypeTable())
+                    .getNickname()));
   }
 
   @Override
   public String getPathTemplateName(
-      String apiInterfaceSimpleName, SingleResourceNameConfig resourceNameConfig) {
+      InterfaceModel apiInterface, SingleResourceNameConfig resourceNameConfig) {
     return inittedConstantName(Name.from(resourceNameConfig.getEntityName(), "template"));
   }
 
   @Override
   public String getResourceNameFieldGetFunctionName(FieldConfig fieldConfig) {
-    FieldType type = fieldConfig.getField();
+    FieldModel type = fieldConfig.getField();
     String fieldName = fieldConfig.getField().getSimpleName();
     Name identifier = Name.from(fieldName);
     Name resourceName;
@@ -249,12 +253,12 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFieldGetFunctionName(FieldType field) {
+  public String getFieldGetFunctionName(FieldModel field) {
     return privateMethodName(Name.from(field.getSimpleName()));
   }
 
   @Override
-  public String getFieldGetFunctionName(FieldType type, Name identifier) {
+  public String getFieldGetFunctionName(FieldModel type, Name identifier) {
     return privateMethodName(Name.from(type.getSimpleName()));
   }
 
@@ -278,7 +282,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getFormatFunctionName(
-      String apiInterfaceSimpleName, SingleResourceNameConfig resourceNameConfig) {
+      InterfaceModel apiInterface, SingleResourceNameConfig resourceNameConfig) {
     return getResourceTypeName(resourceNameConfig);
   }
 
@@ -348,7 +352,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getGrpcContainerTypeName(Interface apiInterface) {
+  public String getGrpcContainerTypeName(InterfaceModel apiInterface) {
     return publicClassName(Name.upperCamel(apiInterface.getSimpleName()));
   }
 
@@ -370,14 +374,14 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getGrpcServiceClassName(Interface apiInterface) {
+  public String getGrpcServiceClassName(InterfaceModel apiInterface) {
     return publicClassName(Name.upperCamel(apiInterface.getSimpleName()))
         + "."
         + publicClassName(Name.upperCamel(apiInterface.getSimpleName(), "Client"));
   }
 
   @Override
-  public String getApiWrapperClassImplName(Interface apiInterface) {
+  public String getApiWrapperClassImplName(InterfaceModel apiInterface) {
     return publicClassName(Name.upperCamel(apiInterface.getSimpleName(), "ClientImpl"));
   }
 
@@ -451,7 +455,8 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
     } else if (method.getResponseStreaming()) {
       // Server streaming
       return typeTable.getAndSaveNicknameForContainer(
-          "Grpc.Core.AsyncServerStreamingCall", method.getOutputTypeFullName(getTypeFormatter()));
+          "Grpc.Core.AsyncServerStreamingCall",
+          method.getOutputTypeName(methodContext.getTypeTable()).getFullName());
     } else {
       throw new IllegalArgumentException("Expected some sort of streaming here.");
     }
@@ -459,9 +464,10 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public List<String> getReturnDocLines(
-      TransformationContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
+      TransformationContext context, MethodContext methodContext, Synchronicity synchronicity) {
+    MethodConfig methodConfig = methodContext.getMethodConfig();
     if (methodConfig.isPageStreaming()) {
-      FieldType resourceType = methodConfig.getPageStreaming().getResourcesField();
+      FieldModel resourceType = methodConfig.getPageStreaming().getResourcesField();
       String resourceTypeName =
           context.getImportTypeTable().getAndSaveNicknameForElementType(resourceType);
       switch (synchronicity) {
@@ -502,7 +508,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String makePrimitiveTypeNullable(String typeName, FieldType type) {
+  public String makePrimitiveTypeNullable(String typeName, FieldModel type) {
     return isPrimitive(type) ? typeName + "?" : typeName;
   }
 
@@ -533,14 +539,14 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public boolean isPrimitive(FieldType type) {
+  public boolean isPrimitive(FieldModel type) {
     return isPrimitive(type.getProtoTypeRef());
   }
 
   @Override
   public String getOptionalFieldDefaultValue(FieldConfig fieldConfig, MethodContext context) {
     // Need to provide defaults for primitives, enums, strings, and repeated (including maps)
-    FieldType type = fieldConfig.getField();
+    FieldModel type = fieldConfig.getField();
     if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
       if (type.isRepeated()) {
         TypeName elementTypeName =

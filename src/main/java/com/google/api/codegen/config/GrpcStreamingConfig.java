@@ -33,7 +33,7 @@ public class GrpcStreamingConfig {
     BidiStreaming
   }
 
-  private final FieldType resourcesField;
+  private final FieldModel resourcesField;
   private final GrpcStreamingType type;
 
   /**
@@ -99,7 +99,7 @@ public class GrpcStreamingConfig {
   }
 
   /** Returns the field used in the response to hold the resource being returned. */
-  public FieldType getResourcesField() {
+  public FieldModel getResourcesField() {
     return resourcesField;
   }
 

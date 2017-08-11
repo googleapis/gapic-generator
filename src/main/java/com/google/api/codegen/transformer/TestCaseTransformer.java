@@ -68,7 +68,7 @@ public class TestCaseTransformer {
     String clientMethodName;
     String responseTypeName;
     String fullyQualifiedResponseTypeName =
-        methodContext.getMethodModel().getOutputTypeFullName(typeTable);
+        methodContext.getMethodModel().getOutputTypeName(typeTable).getFullName();
 
     if (methodConfig.isPageStreaming()) {
       clientMethodName = namer.getApiMethodName(method, methodConfig.getVisibility());
@@ -108,7 +108,7 @@ public class TestCaseTransformer {
       String resourceTypeName = null;
       String resourcesFieldGetterName = null;
       if (methodConfig.getGrpcStreaming().hasResourceField()) {
-        FieldType resourcesField = methodConfig.getGrpcStreaming().getResourcesField();
+        FieldModel resourcesField = methodConfig.getGrpcStreaming().getResourcesField();
         resourceTypeName =
             methodContext.getTypeTable().getAndSaveNicknameForElementType(resourcesField);
         resourcesFieldGetterName =
@@ -136,26 +136,24 @@ public class TestCaseTransformer {
         .hasReturnValue(hasReturnValue)
         .initCode(initCode)
         .mockResponse(mockGrpcResponseView)
-        .mockServiceVarName(
-            namer.getMockServiceVarName(methodContext.getTargetInterface().getSimpleName()))
+        .mockServiceVarName(namer.getMockServiceVarName(methodContext.getTargetInterface()))
         .name(namer.getTestCaseName(testNameTable, method))
         .nameWithException(namer.getExceptionTestCaseName(testNameTable, method))
         .pageStreamingResponseViews(createPageStreamingResponseViews(methodContext))
         .grpcStreamingView(grpcStreamingView)
         .requestTypeName(method.getAndSaveRequestTypeName(typeTable, namer))
         .responseTypeName(responseTypeName)
-        .fullyQualifiedRequestTypeName(method.getInputTypeFullName(typeTable))
+        .fullyQualifiedRequestTypeName(method.getInputTypeName(typeTable).getFullName())
         .fullyQualifiedResponseTypeName(fullyQualifiedResponseTypeName)
         .serviceConstructorName(
-            namer.getApiWrapperClassConstructorName(methodContext.getInterfaceSimpleName()))
+            namer.getApiWrapperClassConstructorName(methodContext.getInterfaceModel()))
         .fullyQualifiedServiceClassName(
             namer.getFullyQualifiedApiWrapperClassName(methodContext.getInterfaceConfig()))
         .fullyQualifiedAliasedServiceClassName(
             namer.getTopLevelAliasedApiClassName(
                 (methodContext.getInterfaceConfig()), packageHasMultipleServices))
         .clientMethodName(clientMethodName)
-        .mockGrpcStubTypeName(
-            namer.getMockGrpcServiceImplName(methodContext.getTargetInterface().getSimpleName()))
+        .mockGrpcStubTypeName(namer.getMockGrpcServiceImplName(methodContext.getTargetInterface()))
         .createStubFunctionName(namer.getCreateStubFunctionName(methodContext.getTargetInterface()))
         .grpcStubCallString(namer.getGrpcStubCallString(methodContext.getTargetInterface(), method))
         .build();
@@ -174,7 +172,7 @@ public class TestCaseTransformer {
     }
 
     FieldConfig resourcesFieldConfig = methodConfig.getPageStreaming().getResourcesFieldConfig();
-    FieldType resourcesField = resourcesFieldConfig.getField();
+    FieldModel resourcesField = resourcesFieldConfig.getField();
     String resourceTypeName =
         methodContext.getTypeTable().getAndSaveNicknameForElementType(resourcesField);
     String resourcesFieldGetterName = namer.getFieldGetFunctionName(resourcesField);
@@ -236,7 +234,7 @@ public class TestCaseTransformer {
 
   private InitCodeContext createResponseInitCodeContext(
       GapicMethodContext context, SymbolTable symbolTable) {
-    ArrayList<FieldType> primitiveFields = new ArrayList<>();
+    ArrayList<FieldModel> primitiveFields = new ArrayList<>();
     TypeRef outputType = context.getMethod().getOutputType();
     if (context.getMethodConfig().isLongRunningOperation()) {
       outputType = context.getMethodConfig().getLongRunningConfig().getReturnType();
@@ -252,7 +250,7 @@ public class TestCaseTransformer {
         .suggestedName(Name.from("expected_response"))
         .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
         .initValueConfigMap(ImmutableMap.<String, InitValueConfig>of())
-        .initFields((primitiveFields))
+        .initFields(primitiveFields)
         .fieldConfigMap(context.getProductConfig().getDefaultResourceNameFieldConfigMap())
         .valueGenerator(valueGenerator)
         .additionalInitCodeNodes(createMockResponseAdditionalSubTrees(context))

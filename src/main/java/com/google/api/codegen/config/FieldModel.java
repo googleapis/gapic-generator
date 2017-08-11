@@ -15,20 +15,22 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.discovery.Schema;
+import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.TypeName;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
 
 /**
  * Wrapper class around the protobuf Field class and the Discovery-doc Schema class.
  *
- * <p>Each instance of this class contains exactly one of {Field, Schema}. This class abstracts the
- * format (protobuf, discovery, etc) of the source from a resource type definition.
+ * <p>This class abstracts the format (protobuf, discovery, etc) of the source from a resource type
+ * definition.
  */
-public interface FieldType {
+public interface FieldModel {
 
-  /* @return the type of source that this FieldType is based on. */
+  /* @return the type of source that this FieldModel is based on. */
   ApiSource getApiSource();
 
   String getSimpleName();
@@ -43,10 +45,10 @@ public interface FieldType {
   boolean isMap();
 
   /* @return the resource type of the map key. */
-  FieldType getMapKeyField();
+  FieldModel getMapKeyField();
 
   /* @return the resource type of the map value. */
-  FieldType getMapValueField();
+  FieldModel getMapValueField();
 
   /* @return if the underlying resource is a proto Messsage. */
   boolean isMessage();
@@ -62,6 +64,12 @@ public interface FieldType {
 
   /* @return the full name of the parent. */
   String getParentFullName();
+
+  /* @return the simple name of the parent. */
+  String getParentSimpleName();
+
+  /* @return the parent of this model, if the parent is a FieldModel, else return this object. */
+  TypeName getParentTypeName(ImportTypeTable typeTable);
 
   /* @return the cardinality of the resource. */
   Cardinality getCardinality();

@@ -18,6 +18,7 @@ import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoMethodModel;
@@ -46,6 +47,7 @@ import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -258,8 +260,10 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
 
     boolean hasSmokeTests = false;
     Iterable<Interface> interfaces = new InterfaceView().getElementIterable(model);
+    List<InterfaceModel> interfaceModels = new LinkedList<>();
     for (Interface apiInterface : interfaces) {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
+      interfaceModels.add(context.getInterfaceModel());
       if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
         hasSmokeTests = true;
         break;
@@ -276,13 +280,13 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
                 productConfig, ImportSectionView.newBuilder().build(), surfaceNamer))
         .hasSmokeTests(hasSmokeTests)
         .versionPath(surfaceNamer.getVersionIndexFileImportName())
-        .versionNamespace(validVersionNamespace(interfaces, surfaceNamer))
+        .versionNamespace(validVersionNamespace(interfaceModels, surfaceNamer))
         .build();
   }
 
-  private String validVersionNamespace(Iterable<Interface> interfaces, SurfaceNamer namer) {
+  private String validVersionNamespace(Iterable<InterfaceModel> interfaces, SurfaceNamer namer) {
     Set<String> versionNamespaces = new HashSet<>();
-    for (Interface apiInterface : interfaces) {
+    for (InterfaceModel apiInterface : interfaces) {
       versionNamespaces.add(namer.getNamespace(apiInterface));
     }
     if (versionNamespaces.size() > 1) {

@@ -34,15 +34,14 @@ public abstract class BatchingConfig {
    * collector.
    */
   @Nullable
-  public static BatchingConfig createBatching(
+  static BatchingConfig createBatching(
       DiagCollector diagCollector, BatchingConfigProto batchingConfig, MethodModel method) {
 
     BatchingDescriptorProto batchDescriptor = batchingConfig.getBatchDescriptor();
     String batchedFieldName = batchDescriptor.getBatchedField();
-    FieldType batchedField = null;
-    try {
-      batchedField = method.lookupInputField(batchedFieldName);
-    } catch (NullPointerException e) {
+    FieldModel batchedField;
+    batchedField = method.getInputField(batchedFieldName);
+    if (batchedField == null) {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
@@ -69,12 +68,9 @@ public abstract class BatchingConfig {
     }
 
     String subresponseFieldName = batchDescriptor.getSubresponseField();
-    FieldType subresponseField = null;
+    FieldModel subresponseField = null;
     if (!subresponseFieldName.isEmpty()) {
-      try {
-        subresponseField = method.lookupOutputField(subresponseFieldName);
-      } catch (NullPointerException e) {
-      }
+      subresponseField = method.getOutputField(subresponseFieldName);
     }
 
     BatchingSettingsProto batchingSettings = batchingConfig.getThresholds();
@@ -124,12 +120,12 @@ public abstract class BatchingConfig {
 
   public abstract long getDelayThresholdMillis();
 
-  public abstract FieldType getBatchedField();
+  public abstract FieldModel getBatchedField();
 
   public abstract ImmutableList<GenericFieldSelector> getDiscriminatorFields();
 
   @Nullable
-  public abstract FieldType getSubresponseField();
+  public abstract FieldModel getSubresponseField();
 
   public boolean hasSubresponseField() {
     return getSubresponseField() != null;

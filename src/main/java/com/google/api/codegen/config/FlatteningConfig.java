@@ -48,7 +48,7 @@ public abstract class FlatteningConfig {
     ImmutableMap.Builder<String, FieldConfig> flattenedFieldConfigBuilder = ImmutableMap.builder();
     for (String parameter : flatteningGroup.getParametersList()) {
 
-      FieldType parameterField = method.lookupInputField(parameter);
+      FieldModel parameterField = method.getInputField(parameter);
       if (parameterField == null) {
         diagCollector.addDiag(
             Diag.error(
@@ -97,7 +97,7 @@ public abstract class FlatteningConfig {
         flattenedFieldConfigBuilder.build(), flatteningGroup.getFlatteningGroupName());
   }
 
-  public Iterable<FieldType> getFlattenedFields() {
+  public Iterable<FieldModel> getFlattenedFields() {
     return FieldConfig.toFieldTypeIterable(getFlattenedFieldConfigs().values());
   }
 }

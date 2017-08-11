@@ -18,6 +18,7 @@ import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
+import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
@@ -100,10 +101,10 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
       SurfaceNamer testPackageNamer) {
     List<MockServiceImplFileView> mockFiles = new ArrayList<>();
 
-    for (Interface grpcInterface :
+    for (InterfaceModel grpcInterface :
         mockServiceTransformer.getGrpcInterfacesToMock(model, productConfig)) {
       ModelTypeTable typeTable = createTypeTable(surfacePackageNamer.getTestPackageName());
-      String name = surfacePackageNamer.getMockGrpcServiceImplName(grpcInterface.getSimpleName());
+      String name = surfacePackageNamer.getMockGrpcServiceImplName(grpcInterface);
       String grpcClassName =
           typeTable.getAndSaveNicknameFor(surfacePackageNamer.getGrpcClientTypeName(grpcInterface));
       MockServiceImplView mockImpl =
@@ -146,12 +147,12 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
               apiInterface, productConfig, typeTable, surfacePackageNamer, featureConfig);
       List<MockServiceUsageView> mockServiceList = new ArrayList<>();
 
-      for (Interface grpcInterface :
+      for (InterfaceModel grpcInterface :
           mockServiceTransformer
               .getGrpcInterfacesForService(model, productConfig, apiInterface)
               .values()) {
-        String name = surfacePackageNamer.getMockGrpcServiceImplName(grpcInterface.getSimpleName());
-        String varName = surfacePackageNamer.getMockServiceVarName(grpcInterface.getSimpleName());
+        String name = surfacePackageNamer.getMockGrpcServiceImplName(grpcInterface);
+        String varName = surfacePackageNamer.getMockServiceVarName(grpcInterface);
         String grpcClassName =
             typeTable.getAndSaveNicknameFor(
                 surfacePackageNamer.getGrpcClientTypeName(grpcInterface));
@@ -192,7 +193,8 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
       addUnitTestImports(typeTable);
 
-      String outputPath = pathMapper.getOutputPath(context.getInterfaceFullName(), productConfig);
+      String outputPath =
+          pathMapper.getOutputPath(context.getInterfaceModel().getFullName(), productConfig);
       ImportSectionView importSection =
           importSectionTransformer.generateImportSection(typeTable.getImports());
       testViews.add(

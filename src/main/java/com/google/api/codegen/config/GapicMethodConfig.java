@@ -268,9 +268,9 @@ public abstract class GapicMethodConfig extends MethodConfig {
     return flatteningGroupsBuilder.build();
   }
 
-  private static Iterable<FieldType> getRequiredFields(
+  private static Iterable<FieldModel> getRequiredFields(
       DiagCollector diagCollector, Method method, List<String> requiredFieldNames) {
-    ImmutableList.Builder<FieldType> fieldsBuilder = ImmutableList.builder();
+    ImmutableList.Builder<FieldModel> fieldsBuilder = ImmutableList.builder();
     for (String fieldName : requiredFieldNames) {
       Field requiredField = method.getInputMessage().lookupField(fieldName);
       if (requiredField == null) {
@@ -287,9 +287,9 @@ public abstract class GapicMethodConfig extends MethodConfig {
     return fieldsBuilder.build();
   }
 
-  private static Iterable<FieldType> getOptionalFields(
+  private static Iterable<FieldModel> getOptionalFields(
       Method method, List<String> requiredFieldNames) {
-    ImmutableList.Builder<FieldType> fieldsBuilder = ImmutableList.builder();
+    ImmutableList.Builder<FieldModel> fieldsBuilder = ImmutableList.builder();
     for (Field field : method.getInputType().getMessageType().getFields()) {
       if (requiredFieldNames.contains(field.getSimpleName())) {
         continue;
@@ -305,9 +305,9 @@ public abstract class GapicMethodConfig extends MethodConfig {
       ResourceNameTreatment defaultResourceNameTreatment,
       ImmutableMap<String, String> fieldNamePatterns,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      Iterable<FieldType> fields) {
+      Iterable<FieldModel> fields) {
     ImmutableList.Builder<FieldConfig> fieldConfigsBuilder = ImmutableList.builder();
-    for (FieldType field : fields) {
+    for (FieldModel field : fields) {
       fieldConfigsBuilder.add(
           FieldConfig.createFieldConfig(
               diagCollector,
@@ -360,12 +360,12 @@ public abstract class GapicMethodConfig extends MethodConfig {
   }
 
   @Override
-  public Iterable<FieldType> getRequiredFields() {
+  public Iterable<FieldModel> getRequiredFields() {
     return FieldConfig.toFieldTypeIterable(getRequiredFieldConfigs());
   }
 
   @Override
-  public Iterable<FieldType> getOptionalFields() {
+  public Iterable<FieldModel> getOptionalFields() {
     return FieldConfig.toFieldTypeIterable(getOptionalFieldConfigs());
   }
 

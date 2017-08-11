@@ -18,7 +18,7 @@ import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.DiscoGapicInterfaceConfig;
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.FieldType;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
@@ -295,22 +295,20 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
   private StaticLangPagedResponseView generatePagedResponseWrapper(
       MethodContext context, SchemaTypeTable typeTable) {
     MethodModel method = context.getMethodModel();
-    FieldType resourceField = context.getMethodConfig().getPageStreaming().getResourcesField();
+    SurfaceNamer namer = context.getNamer();
+    FieldModel resourceField = context.getMethodConfig().getPageStreaming().getResourcesField();
 
     StaticLangPagedResponseView.Builder pagedResponseWrapper =
         StaticLangPagedResponseView.newBuilder();
 
     String pagedResponseTypeName =
-        context.getNamer().getPagedResponseTypeInnerName(method, typeTable, resourceField);
+        namer.getPagedResponseTypeInnerName(method, typeTable, resourceField);
     pagedResponseWrapper.pagedResponseTypeName(pagedResponseTypeName);
-    pagedResponseWrapper.pageTypeName(
-        context.getNamer().getPageTypeInnerName(method, typeTable, resourceField));
+    pagedResponseWrapper.pageTypeName(namer.getPageTypeInnerName(method, typeTable, resourceField));
     pagedResponseWrapper.fixedSizeCollectionTypeName(
-        context.getNamer().getFixedSizeCollectionTypeInnerName(method, typeTable, resourceField));
-    pagedResponseWrapper.requestTypeName(
-        method.getAndSaveRequestTypeName(context.getTypeTable(), context.getNamer()));
-    pagedResponseWrapper.responseTypeName(
-        method.getAndSaveResponseTypeName(context.getTypeTable(), context.getNamer()));
+        namer.getFixedSizeCollectionTypeInnerName(method, typeTable, resourceField));
+    pagedResponseWrapper.requestTypeName(method.getAndSaveRequestTypeName(typeTable, namer));
+    pagedResponseWrapper.responseTypeName(method.getAndSaveResponseTypeName(typeTable, namer));
     pagedResponseWrapper.resourceTypeName(
         typeTable.getAndSaveNicknameForElementType(resourceField));
     pagedResponseWrapper.iterateMethods(getIterateMethods(context));
@@ -391,7 +389,8 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
     settingsFile.templateFileName(SETTINGS_TEMPLATE_FILENAME);
 
     String outputPath =
-        pathMapper.getOutputPath(context.getInterfaceFullName(), context.getProductConfig());
+        pathMapper.getOutputPath(
+            context.getInterfaceModel().getFullName(), context.getProductConfig());
     String className = context.getNamer().getApiSettingsClassName(context.getInterfaceConfig());
     settingsFile.outputPath(outputPath + File.separator + className + ".java");
 
@@ -457,7 +456,8 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
     fileView.templateFileName(STUB_INTERFACE_TEMPLATE_FILENAME);
 
     String outputPath =
-        pathMapper.getOutputPath(context.getInterfaceFullName(), context.getProductConfig());
+        pathMapper.getOutputPath(
+            context.getInterfaceModel().getFullName(), context.getProductConfig());
     String className = context.getNamer().getApiStubInterfaceName(context.getInterfaceConfig());
     fileView.outputPath(
         outputPath + File.separator + "stub" + File.separator + className + ".java");
@@ -507,7 +507,8 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
     fileView.templateFileName(RPC_STUB_TEMPLATE_FILENAME);
 
     String outputPath =
-        pathMapper.getOutputPath(context.getInterfaceFullName(), context.getProductConfig());
+        pathMapper.getOutputPath(
+            context.getInterfaceModel().getFullName(), context.getProductConfig());
     String className = context.getNamer().getApiGrpcStubClassName(context.getInterfaceConfig());
     fileView.outputPath(
         outputPath + File.separator + "stub" + File.separator + className + ".java");
@@ -524,7 +525,10 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
 
     addGrpcStubImports(context);
 
-    List<StaticLangApiMethodView> methods = generateApiMethods(context);
+    // Stub class has different default package name from method, request, and resource classes.
+    DiscoGapicInterfaceContext apiMethodsContext =
+        context.withNewTypeTable(context.getNamer().getRootPackageName());
+    List<StaticLangApiMethodView> methods = generateApiMethods(apiMethodsContext);
 
     StaticLangRpcStubView.Builder stubClass = StaticLangRpcStubView.newBuilder();
 
@@ -536,12 +540,20 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
     stubClass.name(name);
     stubClass.parentName(namer.getApiStubInterfaceName(interfaceConfig));
     stubClass.settingsClassName(
-        getAndSaveNicknameForRootType(context, namer.getApiSettingsClassName(interfaceConfig)));
-    stubClass.directCallables(apiCallableTransformer.generateStaticLangDirectCallables(context));
-    stubClass.apiCallables(apiCallableTransformer.generateStaticLangApiCallables(context));
+        getAndSaveNicknameForRootType(
+            apiMethodsContext, namer.getApiSettingsClassName(interfaceConfig)));
+    stubClass.directCallables(
+        apiCallableTransformer.generateStaticLangDirectCallables(apiMethodsContext));
+    stubClass.apiCallables(
+        apiCallableTransformer.generateStaticLangApiCallables(apiMethodsContext));
     stubClass.callableMethods(filterIncludeCallableMethods(methods));
     stubClass.hasDefaultInstance(interfaceConfig.hasDefaultInstance());
     stubClass.hasLongRunningOperations(interfaceConfig.hasLongRunningOperations());
+
+    for (TypeAlias alias :
+        apiMethodsContext.getImportTypeTable().getTypeTable().getAllImports().values()) {
+      context.getImportTypeTable().getAndSaveNicknameFor(alias);
+    }
 
     return stubClass.build();
   }

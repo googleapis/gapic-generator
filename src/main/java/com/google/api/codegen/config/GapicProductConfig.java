@@ -463,7 +463,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     if (messageConfig == null) {
       return builder.build();
     }
-    for (FieldType field : messageConfig.getFieldsWithResourceNamesByMessage().values()) {
+    for (FieldModel field : messageConfig.getFieldsWithResourceNamesByMessage().values()) {
       builder.put(
           field.getFullName(),
           FieldConfig.createMessageFieldConfig(
@@ -474,6 +474,12 @@ public abstract class GapicProductConfig implements ProductConfig {
 
   /** Returns the GapicInterfaceConfig for the given API interface. */
   public GapicInterfaceConfig getInterfaceConfig(Interface apiInterface) {
+    return (GapicInterfaceConfig) getInterfaceConfigMap().get(apiInterface.getFullName());
+  }
+
+  /** Returns the GapicInterfaceConfig for the given API interface. */
+  @Override
+  public GapicInterfaceConfig getInterfaceConfig(InterfaceModel apiInterface) {
     return (GapicInterfaceConfig) getInterfaceConfigMap().get(apiInterface.getFullName());
   }
 

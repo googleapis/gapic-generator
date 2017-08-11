@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.transformer.php;
 
-import com.google.api.codegen.config.FieldType;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.transformer.ApiMethodParamTransformer;
 import com.google.api.codegen.transformer.GapicMethodContext;
@@ -60,7 +60,7 @@ public class PhpApiMethodParamTransformer implements ApiMethodParamTransformer {
       return ImmutableList.<DynamicLangDefaultableParamView>of();
     }
     ImmutableList.Builder<DynamicLangDefaultableParamView> methodParams = ImmutableList.builder();
-    for (FieldType field : context.getMethodConfig().getRequiredFields()) {
+    for (FieldModel field : context.getMethodConfig().getRequiredFields()) {
       DynamicLangDefaultableParamView param =
           DynamicLangDefaultableParamView.newBuilder()
               .name(context.getNamer().getVariableName(field))
@@ -72,13 +72,13 @@ public class PhpApiMethodParamTransformer implements ApiMethodParamTransformer {
   }
 
   private List<ParamDocView> getMethodParamDocs(
-      GapicMethodContext context, Iterable<FieldType> fields) {
+      GapicMethodContext context, Iterable<FieldModel> fields) {
     if (context.getMethodModel().getRequestStreaming()) {
       return ImmutableList.of();
     }
     MethodConfig methodConfig = context.getMethodConfig();
     ImmutableList.Builder<ParamDocView> paramDocs = ImmutableList.builder();
-    for (FieldType field : fields) {
+    for (FieldModel field : fields) {
       SimpleParamDocView.Builder paramDoc = SimpleParamDocView.newBuilder();
       paramDoc.paramName(context.getNamer().getVariableName(field));
       paramDoc.typeName(context.getTypeTable().getAndSaveNicknameFor(field));
@@ -124,7 +124,7 @@ public class PhpApiMethodParamTransformer implements ApiMethodParamTransformer {
   }
 
   private ParamDocView getOptionalArrayParamDoc(
-      GapicMethodContext context, Iterable<FieldType> fields) {
+      GapicMethodContext context, Iterable<FieldModel> fields) {
     MapParamDocView.Builder paramDoc = MapParamDocView.newBuilder();
 
     Name optionalArgsName = Name.from("optional", "args");

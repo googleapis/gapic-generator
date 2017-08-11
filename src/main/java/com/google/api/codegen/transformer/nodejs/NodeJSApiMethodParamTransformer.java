@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.transformer.nodejs;
 
-import com.google.api.codegen.config.FieldType;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.transformer.ApiMethodParamTransformer;
 import com.google.api.codegen.transformer.GapicMethodContext;
@@ -48,7 +48,7 @@ public class NodeJSApiMethodParamTransformer implements ApiMethodParamTransforme
       return ImmutableList.of();
     }
     ImmutableList.Builder<DynamicLangDefaultableParamView> methodParams = ImmutableList.builder();
-    for (FieldType field : context.getMethodConfig().getRequiredFields()) {
+    for (FieldModel field : context.getMethodConfig().getRequiredFields()) {
       DynamicLangDefaultableParamView param =
           DynamicLangDefaultableParamView.newBuilder()
               .name(context.getNamer().getVariableName(field))
@@ -80,7 +80,7 @@ public class NodeJSApiMethodParamTransformer implements ApiMethodParamTransforme
     paramDoc.lines(ImmutableList.of("The request object that will be sent."));
 
     String typeName = "Object";
-    Iterable<FieldType> optionalParams = removePageTokenFromFields(methodConfig);
+    Iterable<FieldModel> optionalParams = removePageTokenFromFields(methodConfig);
     if (!methodConfig.getRequiredFieldConfigs().iterator().hasNext()
         && !optionalParams.iterator().hasNext()) {
       typeName += "=";
@@ -102,9 +102,9 @@ public class NodeJSApiMethodParamTransformer implements ApiMethodParamTransforme
     return paramDoc.build();
   }
 
-  private List<FieldType> removePageTokenFromFields(MethodConfig methodConfig) {
-    ImmutableList.Builder<FieldType> newFields = ImmutableList.builder();
-    for (FieldType field : methodConfig.getOptionalFields()) {
+  private List<FieldModel> removePageTokenFromFields(MethodConfig methodConfig) {
+    ImmutableList.Builder<FieldModel> newFields = ImmutableList.builder();
+    for (FieldModel field : methodConfig.getOptionalFields()) {
       if (methodConfig.isPageStreaming()
           && field.equals(methodConfig.getPageStreaming().getRequestTokenField())) {
         continue;
@@ -115,11 +115,11 @@ public class NodeJSApiMethodParamTransformer implements ApiMethodParamTransforme
   }
 
   private List<ParamDocView> generateMethodParamDocs(
-      GapicMethodContext context, Iterable<FieldType> fields, boolean isOptional) {
+      GapicMethodContext context, Iterable<FieldModel> fields, boolean isOptional) {
     SurfaceNamer namer = context.getNamer();
     MethodConfig methodConfig = context.getMethodConfig();
     ImmutableList.Builder<ParamDocView> docs = ImmutableList.builder();
-    for (FieldType field : fields) {
+    for (FieldModel field : fields) {
       if (isRequestTokenParam(methodConfig, field)) {
         continue;
       }
@@ -148,12 +148,12 @@ public class NodeJSApiMethodParamTransformer implements ApiMethodParamTransforme
     return docs.build();
   }
 
-  private boolean isRequestTokenParam(MethodConfig methodConfig, FieldType field) {
+  private boolean isRequestTokenParam(MethodConfig methodConfig, FieldModel field) {
     return methodConfig.isPageStreaming()
         && field.equals(methodConfig.getPageStreaming().getRequestTokenField());
   }
 
-  private boolean isPageSizeParam(MethodConfig methodConfig, FieldType field) {
+  private boolean isPageSizeParam(MethodConfig methodConfig, FieldModel field) {
     return methodConfig.isPageStreaming()
         && methodConfig.getPageStreaming().hasPageSizeField()
         && field.equals(methodConfig.getPageStreaming().getPageSizeField());

@@ -42,7 +42,7 @@ public abstract class ResourceNameMessageConfigs {
    * Get a map from fully qualified message names to Fields, where each field has a resource name
    * defined.
    */
-  public abstract ListMultimap<String, FieldType> getFieldsWithResourceNamesByMessage();
+  public abstract ListMultimap<String, FieldModel> getFieldsWithResourceNamesByMessage();
 
   @Nullable
   public static ResourceNameMessageConfigs createMessageResourceTypesConfig(
@@ -57,7 +57,7 @@ public abstract class ResourceNameMessageConfigs {
     }
     ImmutableMap<String, ResourceNameMessageConfig> messageResourceTypeConfigMap = builder.build();
 
-    ListMultimap<String, FieldType> fieldsByMessage = ArrayListMultimap.create();
+    ListMultimap<String, FieldModel> fieldsByMessage = ArrayListMultimap.create();
 
     Set<String> seenProtoFiles = new HashSet<>();
     for (ProtoFile protoFile : model.getFiles()) {
@@ -96,7 +96,7 @@ public abstract class ResourceNameMessageConfigs {
     }
     ImmutableMap<String, ResourceNameMessageConfig> messageResourceTypeConfigMap = builder.build();
 
-    ListMultimap<String, FieldType> fieldsByMessage = ArrayListMultimap.create();
+    ListMultimap<String, FieldModel> fieldsByMessage = ArrayListMultimap.create();
 
     // TODO(andrealin): implementation.
     for (Map.Entry<String, Schema> schemaEntry : document.schemas().entrySet()) {
@@ -109,7 +109,7 @@ public abstract class ResourceNameMessageConfigs {
     return getResourceTypeConfigMap().isEmpty();
   }
 
-  public boolean fieldHasResourceName(FieldType field) {
+  public boolean fieldHasResourceName(FieldModel field) {
     return fieldHasResourceName(field.getParentFullName(), field.getSimpleName());
   }
 
@@ -117,7 +117,7 @@ public abstract class ResourceNameMessageConfigs {
     return getResourceNameOrNullForField(messageFullName, fieldSimpleName) != null;
   }
 
-  public String getFieldResourceName(FieldType field) {
+  public String getFieldResourceName(FieldModel field) {
     return getFieldResourceName(field.getParentFullName(), field.getSimpleName());
   }
 

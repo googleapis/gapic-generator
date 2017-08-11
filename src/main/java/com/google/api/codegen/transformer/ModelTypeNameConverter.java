@@ -15,7 +15,9 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.FieldType;
+import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypedValue;
 import com.google.api.tools.framework.model.EnumValue;
@@ -26,6 +28,12 @@ import com.google.api.tools.framework.model.TypeRef;
 public abstract class ModelTypeNameConverter implements TypeNameConverter {
   /** Provides a TypeName for the given TypeRef. */
   public abstract TypeName getTypeName(TypeRef type);
+
+  /** Provides a TypeName for the given TypeRef. */
+  @Override
+  public TypeName getTypeName(InterfaceModel interfaceModel) {
+    return getTypeName(((ProtoInterfaceModel) interfaceModel).getInterface());
+  }
 
   /** Provides a TypedValue for the given enum TypeRef. */
   public abstract TypedValue getEnumValue(TypeRef type, EnumValue value);
@@ -71,21 +79,21 @@ public abstract class ModelTypeNameConverter implements TypeNameConverter {
 
   // Overriden interface methods call the overloaded method on the underlying Field object.
 
-  /** Provides a TypeName for the given FieldType. */
+  /** Provides a TypeName for the given FieldModel. */
   @Override
-  public TypeName getTypeName(FieldType type) {
+  public TypeName getTypeName(FieldModel type) {
     return getTypeName(type.getProtoTypeRef());
   }
 
-  /** Provides a TypedValue for the given enum FieldType. */
+  /** Provides a TypedValue for the given enum FieldModel. */
   @Override
-  public TypedValue getEnumValue(FieldType type, EnumValue value) {
+  public TypedValue getEnumValue(FieldModel type, EnumValue value) {
     return getEnumValue(type.getProtoTypeRef(), value);
   }
 
-  /** Provides a TypeName for the element type of the given FieldType. */
+  /** Provides a TypeName for the element type of the given FieldModel. */
   @Override
-  public TypeName getTypeNameForElementType(FieldType type) {
+  public TypeName getTypeNameForElementType(FieldModel type) {
     return getTypeNameForElementType(type.getProtoTypeRef());
   }
 
@@ -94,23 +102,23 @@ public abstract class ModelTypeNameConverter implements TypeNameConverter {
    * type; suitable for use within code snippets.
    */
   @Override
-  public TypedValue getSnippetZeroValue(FieldType type) {
+  public TypedValue getSnippetZeroValue(FieldModel type) {
     return getSnippetZeroValue(type.getProtoTypeRef());
   }
 
   /**
    * Provides a TypedValue containing the zero value of the given type, for use internally within
    * the vkit layer; plus the TypeName of the type. This will often return the same value as {@link
-   * #getSnippetZeroValue(FieldType)}.
+   * #getSnippetZeroValue(FieldModel)}.
    */
   @Override
-  public TypedValue getImplZeroValue(FieldType type) {
+  public TypedValue getImplZeroValue(FieldModel type) {
     return getImplZeroValue(type.getProtoTypeRef());
   }
 
   /** Renders the given value if it is a primitive type. */
   @Override
-  public String renderPrimitiveValue(FieldType type, String value) {
+  public String renderPrimitiveValue(FieldModel type, String value) {
     return renderPrimitiveValue(type.getProtoTypeRef(), value);
   }
 }

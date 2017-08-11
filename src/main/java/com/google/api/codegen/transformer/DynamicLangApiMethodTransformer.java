@@ -16,7 +16,7 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.FieldType;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
@@ -126,7 +126,7 @@ public class DynamicLangApiMethodTransformer {
 
     apiMethod.packageName(namer.getPackageName());
     apiMethod.packageHasMultipleServices(packageHasMultipleServices);
-    apiMethod.packageServiceName(namer.getPackageServiceName(context.getInterface()));
+    apiMethod.packageServiceName(namer.getPackageServiceName(context.getInterfaceModel()));
     apiMethod.apiVersion(namer.getApiWrapperModuleVersion());
     apiMethod.longRunningView(
         context.getMethodConfig().isLongRunningOperation()
@@ -146,10 +146,10 @@ public class DynamicLangApiMethodTransformer {
 
     docBuilder.mainDocLines(surfaceNamer.getDocLines(method, methodConfig));
     docBuilder.paramDocs(apiMethodParamTransformer.generateParamDocs(context));
-    docBuilder.returnTypeName(surfaceNamer.getDynamicLangReturnTypeName(method, methodConfig));
+    docBuilder.returnTypeName(surfaceNamer.getDynamicLangReturnTypeName(context));
     docBuilder.returnsDocLines(
         surfaceNamer.getReturnDocLines(
-            context.getSurfaceInterfaceContext(), methodConfig, Synchronicity.Sync));
+            context.getSurfaceInterfaceContext(), context, Synchronicity.Sync));
     if (methodConfig.isPageStreaming()) {
       docBuilder.pageStreamingResourceTypeName(
           surfaceNamer.getTypeNameDoc(
@@ -175,7 +175,7 @@ public class DynamicLangApiMethodTransformer {
     if (methodConfig == null || !methodConfig.isPageStreaming()) {
       return fieldConfigs;
     }
-    final FieldType requestTokenField = methodConfig.getPageStreaming().getRequestTokenField();
+    final FieldModel requestTokenField = methodConfig.getPageStreaming().getRequestTokenField();
     return Iterables.filter(
         fieldConfigs,
         new Predicate<FieldConfig>() {
@@ -191,11 +191,11 @@ public class DynamicLangApiMethodTransformer {
     SurfaceNamer namer = context.getNamer();
     FeatureConfig featureConfig = context.getFeatureConfig();
     ModelTypeTable typeTable = context.getTypeTable();
-    FieldType field = fieldConfig.getField();
+    FieldModel field = fieldConfig.getField();
 
-    Iterable<FieldType> requiredFields = context.getMethodConfig().getRequiredFields();
+    Iterable<FieldModel> requiredFields = context.getMethodConfig().getRequiredFields();
     boolean isRequired = false;
-    for (FieldType f : requiredFields) {
+    for (FieldModel f : requiredFields) {
       if (f.getSimpleName().equals(field.getSimpleName())) {
         isRequired = true;
       }

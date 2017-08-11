@@ -14,16 +14,18 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.common.collect.ImmutableList;
+/** API-source-agnostic wrapper classes for Interfaces. */
+public interface InterfaceModel {
+  /* @return the type of source that this FieldModel is based on. */
+  ApiSource getApiSource();
 
-/** ProductConfig represents client code-gen config for an API product in an input-agnostic way. */
-public interface ProductConfig {
+  String getSimpleName();
 
-  String getPackageName();
+  String getFullName();
 
-  ImmutableList<String> getCopyrightLines();
+  String getParentFullName();
 
-  ImmutableList<String> getLicenseLines();
+  String getFileSimpleName();
 
-  InterfaceConfig getInterfaceConfig(InterfaceModel interfaceModel);
+  String getFileFullName();
 }

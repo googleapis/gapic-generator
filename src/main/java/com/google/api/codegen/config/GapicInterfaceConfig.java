@@ -56,7 +56,12 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   private static final ImmutableSet<String> CONSTRUCTOR_PARAMS =
       ImmutableSet.<String>of(SERVICE_ADDRESS_PARAM, SCOPES_PARAM);
 
-  public abstract Interface getInterface();
+  public Interface getInterface() {
+    return getInterfaceModel().getInterface();
+  }
+
+  @Override
+  public abstract ProtoInterfaceModel getInterfaceModel();
 
   @Override
   public abstract List<GapicMethodConfig> getMethodConfigs();
@@ -73,7 +78,8 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   @Override
   public abstract ImmutableMap<String, RetrySettings> getRetrySettingsDefinition();
 
-  public abstract ImmutableList<Field> getIamResources();
+  @Override
+  public abstract ImmutableList<FieldModel> getIamResources();
 
   @Override
   public abstract ImmutableList<String> getRequiredConstructorParams();
@@ -108,7 +114,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
    * diagnostics are reported to the model.
    */
   @Nullable
-  public static GapicInterfaceConfig createInterfaceConfig(
+  static GapicInterfaceConfig createInterfaceConfig(
       DiagCollector diagCollector,
       String language,
       InterfaceConfigProto interfaceConfigProto,
@@ -141,7 +147,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     SmokeTestConfig smokeTestConfig =
         createSmokeTestConfig(diagCollector, apiInterface, interfaceConfigProto);
 
-    ImmutableList<Field> iamResources =
+    ImmutableList<FieldModel> iamResources =
         createIamResources(
             apiInterface.getModel(),
             interfaceConfigProto.getExperimentalFeatures().getIamResourcesList());
@@ -178,7 +184,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       return null;
     } else {
       return new AutoValue_GapicInterfaceConfig(
-          apiInterface,
+          new ProtoInterfaceModel(apiInterface),
           methodConfigs,
           smokeTestConfig,
           methodConfigMap,
@@ -368,9 +374,9 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   }
 
   /** Creates a list of fields that can be turned into IAM resources */
-  private static ImmutableList<Field> createIamResources(
+  private static ImmutableList<FieldModel> createIamResources(
       Model model, List<IamResourceProto> resources) {
-    ImmutableList.Builder<Field> fields = ImmutableList.builder();
+    ImmutableList.Builder<FieldModel> fields = ImmutableList.builder();
     for (IamResourceProto resource : resources) {
       TypeRef type = model.getSymbolTable().lookupType(resource.getType());
       if (type == null) {
@@ -385,7 +391,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
             String.format(
                 "type %s does not have field %s", resource.getType(), resource.getField()));
       }
-      fields.add(field);
+      fields.add(new ProtoField(field));
     }
     return fields.build();
   }

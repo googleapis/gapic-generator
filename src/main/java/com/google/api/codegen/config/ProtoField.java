@@ -19,10 +19,14 @@ import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYP
 import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_STRING;
 
 import com.google.api.codegen.discovery.Schema;
+import com.google.api.codegen.transformer.ImportTypeTable;
+import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.TypeName;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Field;
+import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
@@ -31,7 +35,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 /** Created by andrealin on 7/31/17. */
-public class ProtoField implements FieldType {
+public class ProtoField implements FieldModel {
   private final Field protoField;
 
   @Override
@@ -40,7 +44,7 @@ public class ProtoField implements FieldType {
     return PROTO;
   }
 
-  /* Create a FieldType object from a non-null Field object. */
+  /* Create a FieldModel object from a non-null Field object. */
   public ProtoField(Field protoField) {
     Preconditions.checkNotNull(protoField);
     this.protoField = protoField;
@@ -97,6 +101,20 @@ public class ProtoField implements FieldType {
   }
 
   @Override
+  public String getParentSimpleName() {
+    return protoField.getParent().getSimpleName();
+  }
+
+  @Override
+  public TypeName getParentTypeName(ImportTypeTable typeTable) {
+    return typeTable
+        .getTypeTable()
+        .getTypeName(
+            ((ModelTypeTable) typeTable)
+                .getFullNameFor(TypeRef.of((MessageType) protoField.getParent())));
+  }
+
+  @Override
   public Cardinality getCardinality() {
     return protoField.getType().getCardinality();
   }
@@ -113,7 +131,7 @@ public class ProtoField implements FieldType {
 
   @Override
   public String toString() {
-    return String.format("Protobuf FieldType (%s): {%s}", getApiSource(), protoField.toString());
+    return String.format("Protobuf FieldModel (%s): {%s}", getApiSource(), protoField.toString());
   }
 
   @Override
@@ -139,9 +157,9 @@ public class ProtoField implements FieldType {
   }
 
   public static Iterable<Iterable<String>> getOneofFieldsNames(
-      Iterable<FieldType> fields, SurfaceNamer namer) {
+      Iterable<FieldModel> fields, SurfaceNamer namer) {
     ImmutableSet.Builder<Oneof> oneOfsBuilder = ImmutableSet.builder();
-    for (FieldType field : fields) {
+    for (FieldModel field : fields) {
       Oneof oneof = ((ProtoField) field).protoField.getOneof();
       if (oneof == null) {
         continue;

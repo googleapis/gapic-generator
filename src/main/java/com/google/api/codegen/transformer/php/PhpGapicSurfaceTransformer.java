@@ -99,7 +99,8 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
 
   public List<ViewModel> transform(GapicInterfaceContext context) {
     String outputPath =
-        pathMapper.getOutputPath(context.getInterfaceFullName(), context.getProductConfig());
+        pathMapper.getOutputPath(
+            context.getInterfaceModel().getFullName(), context.getProductConfig());
     SurfaceNamer namer = context.getNamer();
 
     List<ViewModel> surfaceData = new ArrayList<>();
@@ -138,11 +139,11 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.grpcStreamingDescriptors(createGrpcStreamingDescriptors(context));
 
     xapiClass.methodKeys(generateMethodKeys(context));
-    xapiClass.clientConfigPath(namer.getClientConfigPath(context.getInterface()));
+    xapiClass.clientConfigPath(namer.getClientConfigPath(context.getInterfaceModel()));
     xapiClass.interfaceKey(context.getInterface().getFullName());
     String grpcClientTypeName =
         namer.getAndSaveNicknameForGrpcClientTypeName(
-            context.getModelTypeTable(), context.getInterface());
+            context.getModelTypeTable(), context.getInterfaceModel());
     xapiClass.grpcClientTypeName(grpcClientTypeName);
 
     xapiClass.apiMethods(methods);

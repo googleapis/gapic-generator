@@ -50,6 +50,9 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
   }
 
   @Override
+  public abstract DiscoInterfaceModel getInterfaceModel();
+
+  @Override
   public String getRawName() {
     // TODO(andrealin): Return actual simple name.
     return getName();
@@ -66,6 +69,11 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
   @Override
   @Nullable
   public abstract SmokeTestConfig getSmokeTestConfig();
+
+  @Override
+  public ImmutableList<FieldModel> getIamResources() {
+    return ImmutableList.of();
+  }
 
   static DiscoGapicInterfaceConfig createInterfaceConfig(
       Document document,
@@ -138,6 +146,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
           retrySettingsDefinition,
           requiredConstructorParams,
           manualDoc,
+          new DiscoInterfaceModel(interfaceNameOverride),
           interfaceNameOverride,
           smokeTestConfig,
           methodConfigMap,

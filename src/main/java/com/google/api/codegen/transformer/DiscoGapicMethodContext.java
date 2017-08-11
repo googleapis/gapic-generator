@@ -18,10 +18,12 @@ import static com.google.api.codegen.config.ApiSource.DISCOVERY;
 
 import com.google.api.codegen.config.ApiSource;
 import com.google.api.codegen.config.DiscoGapicMethodConfig;
+import com.google.api.codegen.config.DiscoInterfaceModel;
 import com.google.api.codegen.config.DiscoveryMethodModel;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.auto.value.AutoValue;
@@ -45,7 +47,7 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
         productConfig,
         flatteningConfig,
         featureConfig,
-        interfaceName,
+        new DiscoInterfaceModel(interfaceName),
         methodConfig,
         surfaceTransformerContext,
         typeTable,
@@ -53,7 +55,12 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
         discoNamer);
   }
 
-  public abstract String interfaceName();
+  public String interfaceName() {
+    return getInterfaceModel().getFullName();
+  }
+
+  @Override
+  public abstract InterfaceModel getInterfaceModel();
 
   @Override
   public abstract DiscoGapicMethodConfig getMethodConfig();
@@ -102,11 +109,6 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
   }
 
   @Override
-  public String getInterfaceSimpleName() {
-    return getDiscoGapicNamer().getSimpleInterfaceName(interfaceName());
-  }
-
-  @Override
   public SurfaceNamer getNamer() {
     return getDiscoGapicNamer().getLanguageNamer();
   }
@@ -114,22 +116,12 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
   public abstract DiscoGapicNamer getDiscoGapicNamer();
 
   @Override
-  public String getTargetInterfaceFullName() {
-    return "TargetInterfaceFullName() not yet implemented.";
-  }
-
-  @Override
   public String getGrpcContainerTypeName() {
     return "";
   }
 
   @Override
-  public String getInterfaceFileName() {
-    return getTargetInterfaceFullName();
-  }
-
-  @Override
-  public String getTargetInterfaceSimpleName() {
-    return getInterfaceSimpleName();
+  public DiscoInterfaceModel getTargetInterface() {
+    return new DiscoInterfaceModel(getInterfaceModel().getFullName());
   }
 }

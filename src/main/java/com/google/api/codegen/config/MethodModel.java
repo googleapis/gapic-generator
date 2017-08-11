@@ -16,7 +16,6 @@ package com.google.api.codegen.config;
 
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.transformer.TypeFormatter;
 import com.google.api.codegen.transformer.TypeNameConverter;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
@@ -24,14 +23,14 @@ import com.google.api.codegen.util.TypeName;
 /** Input-agnostic model of a method. */
 public interface MethodModel {
 
-  /* @return the type of source that this FieldType is based on. */
+  /* @return the type of source that this FieldModel is based on. */
   ApiSource getApiSource();
 
   /* @return find a nested field in the method's input type by the nested field's name. */
-  FieldType lookupInputField(String fieldName);
+  FieldModel getInputField(String fieldName);
 
   /* @return find a nested field in the method's output type by the nested field's name. */
-  FieldType lookupOutputField(String fieldName);
+  FieldModel getOutputField(String fieldName);
 
   /* @return the full name of this method. */
   String getFullName();
@@ -54,24 +53,16 @@ public interface MethodModel {
   /* @return the description of this method. */
   String getDescription();
 
-  /* @return the formatted full name of the output type. */
-  String getOutputTypeFullName(TypeFormatter typeFormatter);
+  /* @return theTypeName for the output type. Save it in the table. */
+  TypeName getOutputTypeName(ImportTypeTable typeTable);
 
-  /* @return the formatted full name of the output type. Save it in the table. */
-  String getOutputTypeFullName(ImportTypeTable typeTable);
-
-  /* @return the formatted nickname of the input type. */
-  String getInputTypeNickname(TypeFormatter typeFormatter);
-
-  /* @return the formatted full name of the input type. Save it in the table. */
-  String getInputTypeFullName(ImportTypeTable typeTable);
+  /* @return the TypeName for the input type. Save it in the table. */
+  TypeName getInputTypeName(ImportTypeTable typeTable);
 
   /* @return a short name for the output type. */
   String getOutputTypeSimpleName();
 
   String getScopedDescription();
-
-  TypeName getOutputTypeName(TypeNameConverter typeNameConverter);
 
   GenericFieldSelector getInputFieldSelector(String fieldName);
 
