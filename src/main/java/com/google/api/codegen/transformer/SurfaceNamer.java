@@ -333,7 +333,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
-  /** The function name to get the given proto field. */
+  /** The function name to get the given field. */
   public String getFieldGetFunctionName(FieldType field) {
     return getFieldGetFunctionName(field, field.asName());
   }
@@ -867,11 +867,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The type name for the message property */
   public String getMessagePropertyTypeName(ImportTypeTable typeTable, FieldType type) {
-    return getParamTypeName(typeTable, type);
-  }
-
-  /** The type name for the message property */
-  public String getMessagePropertyTypeName(ModelTypeTable typeTable, TypeRef type) {
     return getParamTypeName(typeTable, type);
   }
 
