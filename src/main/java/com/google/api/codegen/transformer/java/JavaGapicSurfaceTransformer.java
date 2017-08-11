@@ -32,6 +32,7 @@ import com.google.api.codegen.transformer.ApiCallableTransformer;
 import com.google.api.codegen.transformer.BatchingTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
+import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
@@ -171,7 +172,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
         new JavaModelTypeNameConverter(implicitPackageName));
   }
 
-  private StaticLangFileView<StaticLangApiView> generateApiFile(GapicInterfaceContext context) {
+  private StaticLangFileView<StaticLangApiView> generateApiFile(InterfaceContext context) {
     StaticLangFileView.Builder<StaticLangApiView> apiFile =
         StaticLangFileView.<StaticLangApiView>newBuilder();
 
@@ -180,7 +181,8 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     apiFile.classView(generateApiClass(context));
 
     String outputPath =
-        pathMapper.getOutputPath(context.getInterface().getFullName(), context.getProductConfig());
+        pathMapper.getOutputPath(
+            context.getInterfaceModel().getFullName(), context.getProductConfig());
     String className = context.getNamer().getApiWrapperClassName(context.getInterfaceConfig());
     apiFile.outputPath(outputPath + File.separator + className + ".java");
 
@@ -190,9 +192,9 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     return apiFile.build();
   }
 
-  private StaticLangApiView generateApiClass(GapicInterfaceContext context) {
+  private StaticLangApiView generateApiClass(InterfaceContext context) {
     SurfaceNamer namer = context.getNamer();
-    GapicInterfaceConfig interfaceConfig = context.getInterfaceConfig();
+    InterfaceConfig interfaceConfig = context.getInterfaceConfig();
 
     addApiImports(context);
 
@@ -501,9 +503,9 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     return fileView.build();
   }
 
-  private StaticLangGrpcStubView generateGrpcStubClass(GapicInterfaceContext context) {
+  private StaticLangGrpcStubView generateGrpcStubClass(InterfaceContext context) {
     SurfaceNamer namer = context.getNamer();
-    GapicInterfaceConfig interfaceConfig = context.getInterfaceConfig();
+    InterfaceConfig interfaceConfig = context.getInterfaceConfig();
 
     addGrpcStubImports(context);
 
@@ -529,17 +531,17 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     return stubClass.build();
   }
 
-  private String getAndSaveNicknameForRootType(GapicInterfaceContext context, String nickname) {
+  private String getAndSaveNicknameForRootType(InterfaceContext context, String nickname) {
     SurfaceNamer namer = context.getNamer();
-    ModelTypeTable typeTable = context.getModelTypeTable();
+    ImportTypeTable typeTable = context.getImportTypeTable();
 
     String fullyQualifiedTypeName = namer.getRootPackageName() + "." + nickname;
     return typeTable.getAndSaveNicknameFor(fullyQualifiedTypeName);
   }
 
-  private String getAndSaveNicknameForStubType(GapicInterfaceContext context, String nickname) {
+  private String getAndSaveNicknameForStubType(InterfaceContext context, String nickname) {
     SurfaceNamer namer = context.getNamer();
-    ModelTypeTable typeTable = context.getModelTypeTable();
+    ImportTypeTable typeTable = context.getImportTypeTable();
 
     String fullyQualifiedTypeName = namer.getStubPackageName() + "." + nickname;
     return typeTable.getAndSaveNicknameFor(fullyQualifiedTypeName);
@@ -589,8 +591,8 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     return packageInfo.build();
   }
 
-  private void addApiImports(GapicInterfaceContext context) {
-    ModelTypeTable typeTable = context.getModelTypeTable();
+  private void addApiImports(InterfaceContext context) {
+    ImportTypeTable typeTable = context.getImportTypeTable();
     typeTable.saveNicknameFor("com.google.api.core.BetaApi");
     typeTable.saveNicknameFor("com.google.api.gax.core.BackgroundResource");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.UnaryCallable");
@@ -607,8 +609,8 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     }
   }
 
-  private void addSettingsImports(GapicInterfaceContext context) {
-    ModelTypeTable typeTable = context.getModelTypeTable();
+  private void addSettingsImports(InterfaceContext context) {
+    ImportTypeTable typeTable = context.getImportTypeTable();
     typeTable.saveNicknameFor("com.google.api.core.ApiFunction");
     typeTable.saveNicknameFor("com.google.api.core.BetaApi");
     typeTable.saveNicknameFor("com.google.api.gax.core.CredentialsProvider");
@@ -675,8 +677,8 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     }
   }
 
-  private void addGrpcStubImports(GapicInterfaceContext context) {
-    ModelTypeTable typeTable = context.getModelTypeTable();
+  private void addGrpcStubImports(InterfaceContext context) {
+    ImportTypeTable typeTable = context.getImportTypeTable();
 
     typeTable.saveNicknameFor("com.google.api.core.BetaApi");
     typeTable.saveNicknameFor("com.google.api.gax.core.BackgroundResource");
@@ -690,7 +692,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("java.util.concurrent.TimeUnit");
     typeTable.saveNicknameFor("javax.annotation.Generated");
 
-    GapicInterfaceConfig interfaceConfig = context.getInterfaceConfig();
+    InterfaceConfig interfaceConfig = context.getInterfaceConfig();
     if (interfaceConfig.hasGrpcStreamingMethods()) {
       typeTable.saveNicknameFor("com.google.api.gax.rpc.StreamingCallable");
     }
@@ -700,22 +702,22 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     }
   }
 
-  private void addStubInterfaceImports(GapicInterfaceContext context) {
-    ModelTypeTable typeTable = context.getModelTypeTable();
+  private void addStubInterfaceImports(InterfaceContext context) {
+    ImportTypeTable typeTable = context.getImportTypeTable();
 
     typeTable.saveNicknameFor("com.google.api.core.BetaApi");
     typeTable.saveNicknameFor("com.google.api.gax.core.BackgroundResource");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.UnaryCallable");
     typeTable.saveNicknameFor("javax.annotation.Generated");
 
-    GapicInterfaceConfig interfaceConfig = context.getInterfaceConfig();
+    InterfaceConfig interfaceConfig = context.getInterfaceConfig();
     if (interfaceConfig.hasLongRunningOperations()) {
       typeTable.saveNicknameFor("com.google.longrunning.Operation");
       typeTable.saveNicknameFor("com.google.longrunning.stub.OperationsStub");
     }
   }
 
-  private void addPagedResponseWrapperImports(ModelTypeTable typeTable) {
+  private void addPagedResponseWrapperImports(ImportTypeTable typeTable) {
     typeTable.saveNicknameFor("com.google.api.core.ApiFunction");
     typeTable.saveNicknameFor("com.google.api.core.ApiFuture");
     typeTable.saveNicknameFor("com.google.api.core.ApiFutures");

@@ -93,8 +93,6 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
 
   private final JavaNameFormatter nameFormatter = new JavaNameFormatter();
 
-  // TODO(andrealin) Create the service, page streaming, batching, etc transformers.
-
   private static final String API_TEMPLATE_FILENAME = "java/main.snip";
   private static final String SETTINGS_TEMPLATE_FILENAME = "java/settings.snip";
   private static final String STUB_INTERFACE_TEMPLATE_FILENAME = "java/stub_interface.snip";
@@ -150,6 +148,7 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
       StaticLangFileView<StaticLangSettingsView> settingsFile =
           generateSettingsFile(context, exampleApiMethod);
       surfaceDocs.add(settingsFile);
+
       context = context.withNewTypeTable(namer.getStubPackageName());
       StaticLangFileView<StaticLangStubInterfaceView> stubInterfaceFile =
           generateStubInterfaceFile(context);
@@ -175,14 +174,18 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
         new JavaSchemaTypeNameConverter(implicitPackageName, nameFormatter));
   }
 
-  private StaticLangFileView generateApiFile(DiscoGapicInterfaceContext context) {
-    StaticLangFileView.Builder apiFile = StaticLangFileView.newBuilder();
+  private StaticLangFileView<StaticLangApiView> generateApiFile(
+      DiscoGapicInterfaceContext context) {
+    StaticLangFileView.Builder<StaticLangApiView> apiFile =
+        StaticLangFileView.<StaticLangApiView>newBuilder();
 
     apiFile.templateFileName(API_TEMPLATE_FILENAME);
 
     apiFile.classView(generateApiClass(context));
 
-    String outputPath = pathMapper.getOutputPath(null, context.getProductConfig());
+    String outputPath =
+        pathMapper.getOutputPath(
+            context.getInterfaceModel().getFullName(), context.getProductConfig());
     String className = context.getNamer().getApiWrapperClassName(context.getInterfaceConfig());
     apiFile.outputPath(outputPath + File.separator + className + ".java");
 

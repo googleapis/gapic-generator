@@ -273,7 +273,7 @@ public class ApiCallableTransformer {
     return Arrays.asList(settings.build());
   }
 
-  public List<DirectCallableView> generateStaticLangDirectCallables(GapicInterfaceContext context) {
+  public List<DirectCallableView> generateStaticLangDirectCallables(InterfaceContext context) {
     List<DirectCallableView> callables = new ArrayList<>();
     boolean excludeMixins = !context.getFeatureConfig().enableMixins();
 
