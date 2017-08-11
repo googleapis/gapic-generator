@@ -20,6 +20,7 @@ import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
+import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -79,11 +80,12 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer, Surf
       InterfaceModel apiInterface,
       GapicProductConfig productConfig,
       SurfaceNamer namer,
+      ImportTypeTable typeTable,
       boolean enableStringFormatFunctions) {
     return GapicInterfaceContext.create(
         apiInterface,
         productConfig,
-        createTypeTable(productConfig.getPackageName()),
+        typeTable,
         namer,
         JavaFeatureConfig.newBuilder()
             .enableStringFormatFunctions(enableStringFormatFunctions)

@@ -53,25 +53,31 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
   public static GapicInterfaceContext create(
       Interface apiInterface,
       GapicProductConfig productConfig,
-      ModelTypeTable typeTable,
+      ImportTypeTable typeTable,
       SurfaceNamer namer,
       FeatureConfig featureConfig) {
+    Preconditions.checkArgument(typeTable instanceof ModelTypeTable);
     return create(
-        new ProtoInterfaceModel(apiInterface), productConfig, typeTable, namer, featureConfig);
+        new ProtoInterfaceModel(apiInterface),
+        productConfig,
+        (ModelTypeTable) typeTable,
+        namer,
+        featureConfig);
   }
 
   public static GapicInterfaceContext create(
       InterfaceModel apiInterface,
       GapicProductConfig productConfig,
-      ModelTypeTable typeTable,
+      ImportTypeTable typeTable,
       SurfaceNamer namer,
       FeatureConfig featureConfig) {
     Preconditions.checkArgument(apiInterface.getApiSource().equals(ApiSource.PROTO));
     ProtoInterfaceModel protoInterface = (ProtoInterfaceModel) apiInterface;
+    Preconditions.checkArgument(typeTable instanceof ModelTypeTable);
     return new AutoValue_GapicInterfaceContext(
         protoInterface,
         productConfig,
-        typeTable,
+        (ModelTypeTable) typeTable,
         namer,
         featureConfig,
         createGrpcRerouteMap(protoInterface.getInterface().getModel(), productConfig));

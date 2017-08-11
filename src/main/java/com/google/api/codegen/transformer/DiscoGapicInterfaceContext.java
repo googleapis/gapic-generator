@@ -83,10 +83,11 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   public static DiscoGapicInterfaceContext createWithInterface(
       InterfaceModel interfaceModel,
       GapicProductConfig productConfig,
-      SchemaTypeTable typeTable,
+      ImportTypeTable typeTable,
       DiscoGapicNamer discoGapicNamer,
       FeatureConfig featureConfig) {
     Preconditions.checkArgument(interfaceModel.getApiSource().equals(ApiSource.DISCOVERY));
+    Preconditions.checkArgument(typeTable instanceof SchemaTypeTable);
     ImmutableList.Builder<MethodModel> interfaceMethods = new ImmutableList.Builder<>();
 
     for (MethodConfig method :
@@ -96,7 +97,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
 
     return new AutoValue_DiscoGapicInterfaceContext(
         productConfig,
-        typeTable,
+        (SchemaTypeTable) typeTable,
         discoGapicNamer,
         (DiscoInterfaceModel) interfaceModel,
         featureConfig);

@@ -110,9 +110,11 @@ public class JavaSurfaceTransformer {
     List<ServiceDocView> serviceDocs = new ArrayList<>();
     for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
       boolean enableStringFormatFunctions = productConfig.getResourceNameMessageConfigs().isEmpty();
+      ImportTypeTable typeTable =
+          surfaceTransformer.createTypeTable(productConfig.getPackageName());
       InterfaceContext context =
           surfaceTransformer.createInterfaceContext(
-              apiInterface, productConfig, namer, enableStringFormatFunctions);
+              apiInterface, productConfig, namer, typeTable, enableStringFormatFunctions);
       StaticLangFileView<StaticLangApiView> apiFile = generateApiFile(context);
       surfaceDocs.add(apiFile);
 
@@ -227,12 +229,12 @@ public class JavaSurfaceTransformer {
               apiInterface,
               productConfig,
               namer,
+              typeTable,
               productConfig.getResourceNameMessageConfigs().isEmpty());
       for (MethodModel method : context.getSupportedMethods()) {
         if (context.getMethodConfig(method).isPageStreaming()) {
           pagedResponseWrappersList.add(
-              generatePagedResponseWrapper(
-                  context.asRequestMethodContext(method), context.getImportTypeTable()));
+              generatePagedResponseWrapper(context.asRequestMethodContext(method), typeTable));
         }
       }
     }

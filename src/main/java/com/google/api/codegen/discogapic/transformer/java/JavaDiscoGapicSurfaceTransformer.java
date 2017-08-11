@@ -136,11 +136,12 @@ public class JavaDiscoGapicSurfaceTransformer
       InterfaceModel apiInterface,
       GapicProductConfig productConfig,
       SurfaceNamer namer,
+      ImportTypeTable importTypeTable,
       boolean enableStringFormatFunctions) {
     return DiscoGapicInterfaceContext.createWithInterface(
         apiInterface,
         productConfig,
-        createTypeTable(productConfig.getPackageName()),
+        importTypeTable,
         new DiscoGapicNamer(namer),
         JavaFeatureConfig.newBuilder()
             .enableStringFormatFunctions(enableStringFormatFunctions)
