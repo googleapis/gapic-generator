@@ -15,7 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.FieldType;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PageStreamingConfig;
@@ -83,7 +83,7 @@ public class PageStreamingTransformer {
 
     PageStreamingDescriptorClassView.Builder desc = PageStreamingDescriptorClassView.newBuilder();
 
-    FieldType resourceField = pageStreaming.getResourcesField();
+    FieldModel resourceField = pageStreaming.getResourcesField();
     FieldConfig resourceFieldConfig = pageStreaming.getResourcesFieldConfig();
 
     desc.name(namer.getPageStreamingDescriptorConstName(method));
@@ -129,7 +129,7 @@ public class PageStreamingTransformer {
     MethodModel method = context.getMethodModel();
     ImportTypeTable typeTable = context.getTypeTable();
     PageStreamingConfig pageStreaming = context.getMethodConfig().getPageStreaming();
-    FieldType resourceField = pageStreaming.getResourcesField();
+    FieldModel resourceField = pageStreaming.getResourcesField();
     FieldConfig resourceFieldConfig = pageStreaming.getResourcesFieldConfig();
 
     PagedListResponseFactoryClassView.Builder factory =

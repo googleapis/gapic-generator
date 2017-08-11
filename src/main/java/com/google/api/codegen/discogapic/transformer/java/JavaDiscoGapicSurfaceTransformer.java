@@ -18,7 +18,7 @@ import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.DiscoGapicInterfaceConfig;
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.FieldType;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
@@ -288,7 +288,7 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
   private StaticLangPagedResponseView generatePagedResponseWrapper(
       MethodContext context, SchemaTypeTable typeTable) {
     MethodModel method = context.getMethodModel();
-    FieldType resourceField = context.getMethodConfig().getPageStreaming().getResourcesField();
+    FieldModel resourceField = context.getMethodConfig().getPageStreaming().getResourcesField();
 
     StaticLangPagedResponseView.Builder pagedResponseWrapper =
         StaticLangPagedResponseView.newBuilder();

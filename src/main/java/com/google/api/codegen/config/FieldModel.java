@@ -26,9 +26,9 @@ import com.google.api.tools.framework.model.TypeRef.Cardinality;
  * <p>Each instance of this class contains exactly one of {Field, Schema}. This class abstracts the
  * format (protobuf, discovery, etc) of the source from a resource type definition.
  */
-public interface FieldType {
+public interface FieldModel {
 
-  /* @return the type of source that this FieldType is based on. */
+  /* @return the type of source that this FieldModel is based on. */
   ApiSource getApiSource();
 
   String getSimpleName();
@@ -43,10 +43,10 @@ public interface FieldType {
   boolean isMap();
 
   /* @return the resource type of the map key. */
-  FieldType getMapKeyField();
+  FieldModel getMapKeyField();
 
   /* @return the resource type of the map value. */
-  FieldType getMapValueField();
+  FieldModel getMapValueField();
 
   /* @return if the underlying resource is a proto Messsage. */
   boolean isMessage();

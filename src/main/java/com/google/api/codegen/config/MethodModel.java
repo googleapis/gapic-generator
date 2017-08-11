@@ -23,14 +23,14 @@ import com.google.api.codegen.util.TypeName;
 /** Input-agnostic model of a method. */
 public interface MethodModel {
 
-  /* @return the type of source that this FieldType is based on. */
+  /* @return the type of source that this FieldModel is based on. */
   ApiSource getApiSource();
 
   /* @return find a nested field in the method's input type by the nested field's name. */
-  FieldType getInputField(String fieldName);
+  FieldModel getInputField(String fieldName);
 
   /* @return find a nested field in the method's output type by the nested field's name. */
-  FieldType getOutputField(String fieldName);
+  FieldModel getOutputField(String fieldName);
 
   /* @return the full name of this method. */
   String getFullName();

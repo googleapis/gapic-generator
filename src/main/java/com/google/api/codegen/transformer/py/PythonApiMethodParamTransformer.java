@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.transformer.py;
 
-import com.google.api.codegen.config.FieldType;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.transformer.ApiMethodParamTransformer;
 import com.google.api.codegen.transformer.GapicMethodContext;
@@ -39,14 +39,14 @@ public class PythonApiMethodParamTransformer implements ApiMethodParamTransforme
               .defaultValue("")
               .build());
     } else {
-      for (FieldType field : context.getMethodConfig().getRequiredFields()) {
+      for (FieldModel field : context.getMethodConfig().getRequiredFields()) {
         DynamicLangDefaultableParamView.Builder param =
             DynamicLangDefaultableParamView.newBuilder();
         param.name(context.getNamer().getVariableName(field));
         param.defaultValue("");
         methodParams.add(param.build());
       }
-      for (FieldType field : context.getMethodConfig().getOptionalFields()) {
+      for (FieldModel field : context.getMethodConfig().getOptionalFields()) {
         if (isRequestTokenParam(context.getMethodConfig(), field)) {
           continue;
         }
@@ -94,11 +94,11 @@ public class PythonApiMethodParamTransformer implements ApiMethodParamTransforme
   }
 
   private List<ParamDocView> generateMethodParamDocs(
-      GapicMethodContext context, Iterable<FieldType> fields) {
+      GapicMethodContext context, Iterable<FieldModel> fields) {
     SurfaceNamer namer = context.getNamer();
     MethodConfig methodConfig = context.getMethodConfig();
     ImmutableList.Builder<ParamDocView> docs = ImmutableList.builder();
-    for (FieldType field : fields) {
+    for (FieldModel field : fields) {
       if (isRequestTokenParam(methodConfig, field)) {
         continue;
       }
@@ -123,13 +123,13 @@ public class PythonApiMethodParamTransformer implements ApiMethodParamTransforme
     return docs.build();
   }
 
-  private boolean isPageSizeParam(MethodConfig methodConfig, FieldType field) {
+  private boolean isPageSizeParam(MethodConfig methodConfig, FieldModel field) {
     return methodConfig.isPageStreaming()
         && methodConfig.getPageStreaming().hasPageSizeField()
         && field.equals(methodConfig.getPageStreaming().getPageSizeField());
   }
 
-  private boolean isRequestTokenParam(MethodConfig methodConfig, FieldType field) {
+  private boolean isRequestTokenParam(MethodConfig methodConfig, FieldModel field) {
     return methodConfig.isPageStreaming()
         && field.equals(methodConfig.getPageStreaming().getRequestTokenField());
   }

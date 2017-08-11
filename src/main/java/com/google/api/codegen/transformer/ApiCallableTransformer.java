@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.config.FieldType;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PageStreamingConfig;
@@ -242,7 +242,7 @@ public class ApiCallableTransformer {
     if (methodConfig.isGrpcStreaming()) {
       settings.type(ApiCallableImplType.StreamingApiCallable);
       if (methodConfig.getGrpcStreaming().hasResourceField()) {
-        FieldType resourceType = methodConfig.getGrpcStreaming().getResourcesField();
+        FieldModel resourceType = methodConfig.getGrpcStreaming().getResourcesField();
         settings.resourceTypeName(typeTable.getAndSaveNicknameForElementType(resourceType));
       }
       settings.grpcStreamingType(methodConfig.getGrpcStreaming().getType());

@@ -31,7 +31,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 /** Created by andrealin on 7/31/17. */
-public class ProtoField implements FieldType {
+public class ProtoField implements FieldModel {
   private final Field protoField;
 
   @Override
@@ -40,7 +40,7 @@ public class ProtoField implements FieldType {
     return PROTO;
   }
 
-  /* Create a FieldType object from a non-null Field object. */
+  /* Create a FieldModel object from a non-null Field object. */
   public ProtoField(Field protoField) {
     Preconditions.checkNotNull(protoField);
     this.protoField = protoField;
@@ -113,7 +113,7 @@ public class ProtoField implements FieldType {
 
   @Override
   public String toString() {
-    return String.format("Protobuf FieldType (%s): {%s}", getApiSource(), protoField.toString());
+    return String.format("Protobuf FieldModel (%s): {%s}", getApiSource(), protoField.toString());
   }
 
   @Override
@@ -139,9 +139,9 @@ public class ProtoField implements FieldType {
   }
 
   public static Iterable<Iterable<String>> getOneofFieldsNames(
-      Iterable<FieldType> fields, SurfaceNamer namer) {
+      Iterable<FieldModel> fields, SurfaceNamer namer) {
     ImmutableSet.Builder<Oneof> oneOfsBuilder = ImmutableSet.builder();
-    for (FieldType field : fields) {
+    for (FieldModel field : fields) {
       Oneof oneof = ((ProtoField) field).protoField.getOneof();
       if (oneof == null) {
         continue;

@@ -15,7 +15,7 @@
 package com.google.api.codegen.transformer.ruby;
 
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.FieldType;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
@@ -73,7 +73,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
 
   /** The function name to set a field. */
   @Override
-  public String getFieldSetFunctionName(FieldType field) {
+  public String getFieldSetFunctionName(FieldModel field) {
     return getFieldGetFunctionName(field);
   }
 
@@ -117,7 +117,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getParamTypeName(ImportTypeTable typeTable, FieldType type) {
+  public String getParamTypeName(ImportTypeTable typeTable, FieldModel type) {
     if (type.isMap()) {
       String keyTypeName = typeTable.getFullNameForElementType(type.getMapKeyField());
       String valueTypeName = typeTable.getFullNameForElementType(type.getMapValueField());
@@ -151,31 +151,31 @@ public class RubySurfaceNamer extends SurfaceNamer {
 
   /** The type name for the message property */
   @Override
-  public String getMessagePropertyTypeName(ImportTypeTable importTypeTable, FieldType fieldType) {
-    if (fieldType.isMap()) {
-      String keyTypeName = importTypeTable.getFullNameForElementType(fieldType.getMapKeyField());
+  public String getMessagePropertyTypeName(ImportTypeTable importTypeTable, FieldModel fieldModel) {
+    if (fieldModel.isMap()) {
+      String keyTypeName = importTypeTable.getFullNameForElementType(fieldModel.getMapKeyField());
       String valueTypeName =
-          importTypeTable.getFullNameForElementType(fieldType.getMapValueField());
+          importTypeTable.getFullNameForElementType(fieldModel.getMapValueField());
       return new TypeName(
-              importTypeTable.getFullNameFor(fieldType),
-              importTypeTable.getNicknameFor(fieldType),
+              importTypeTable.getFullNameFor(fieldModel),
+              importTypeTable.getNicknameFor(fieldModel),
               "%s{%i => %i}",
               new TypeName(keyTypeName),
               new TypeName(valueTypeName))
           .getFullName();
     }
 
-    if (fieldType.isRepeated()) {
-      String elementTypeName = importTypeTable.getFullNameForElementType(fieldType);
+    if (fieldModel.isRepeated()) {
+      String elementTypeName = importTypeTable.getFullNameForElementType(fieldModel);
       return new TypeName(
-              importTypeTable.getFullNameFor(fieldType),
-              importTypeTable.getNicknameFor(fieldType),
+              importTypeTable.getFullNameFor(fieldModel),
+              importTypeTable.getNicknameFor(fieldModel),
               "%s<%i>",
               new TypeName(elementTypeName))
           .getFullName();
     }
 
-    return importTypeTable.getFullNameForElementType(fieldType);
+    return importTypeTable.getFullNameForElementType(fieldModel);
   }
 
   @Override
@@ -381,7 +381,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFieldGetFunctionName(FieldType type, Name identifier) {
+  public String getFieldGetFunctionName(FieldModel type, Name identifier) {
     return keyName(identifier);
   }
 

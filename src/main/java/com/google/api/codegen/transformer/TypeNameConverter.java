@@ -15,21 +15,21 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.FieldType;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypedValue;
 import com.google.api.tools.framework.model.EnumValue;
 
-/** ModelTypeNameConverter maps FieldType instances to TypeName instances. */
+/** ModelTypeNameConverter maps FieldModel instances to TypeName instances. */
 public interface TypeNameConverter {
-  /** Provides a TypeName for the given FieldType. */
-  TypeName getTypeName(FieldType type);
+  /** Provides a TypeName for the given FieldModel. */
+  TypeName getTypeName(FieldModel type);
 
-  /** Provides a TypedValue for the given enum FieldType. */
-  TypedValue getEnumValue(FieldType type, EnumValue value);
+  /** Provides a TypedValue for the given enum FieldModel. */
+  TypedValue getEnumValue(FieldModel type, EnumValue value);
 
-  /** Provides a TypeName for the element type of the given FieldType. */
-  TypeName getTypeNameForElementType(FieldType type);
+  /** Provides a TypeName for the element type of the given FieldModel. */
+  TypeName getTypeNameForElementType(FieldModel type);
 
   /** Provides a TypeName for the given FieldConfig and resource short name. */
   TypeName getTypeNameForTypedResourceName(FieldConfig fieldConfig, String typedResourceShortName);
@@ -48,15 +48,15 @@ public interface TypeNameConverter {
    * Provides a TypedValue containing the zero value of the given type, plus the TypeName of the
    * type; suitable for use within code snippets.
    */
-  TypedValue getSnippetZeroValue(FieldType type);
+  TypedValue getSnippetZeroValue(FieldModel type);
 
   /**
    * Provides a TypedValue containing the zero value of the given type, for use internally within
    * the auto-generated layer; plus the TypeName of the type. This will often return the same value
-   * as {@link #getSnippetZeroValue(FieldType)}.
+   * as {@link #getSnippetZeroValue(FieldModel)}.
    */
-  TypedValue getImplZeroValue(FieldType type);
+  TypedValue getImplZeroValue(FieldModel type);
 
   /** Renders the given value if it is a primitive type. */
-  String renderPrimitiveValue(FieldType type, String value);
+  String renderPrimitiveValue(FieldModel type, String value);
 }

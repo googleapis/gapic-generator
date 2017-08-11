@@ -46,7 +46,7 @@ public final class DiscoveryMethodModel implements MethodModel {
   }
 
   @Override
-  public FieldType getInputField(String fieldName) {
+  public FieldModel getInputField(String fieldName) {
     Schema targetSchema = method.parameters().get(fieldName);
     if (targetSchema == null) {
       return null;
@@ -55,7 +55,7 @@ public final class DiscoveryMethodModel implements MethodModel {
   }
 
   @Override
-  public FieldType getOutputField(String fieldName) {
+  public FieldModel getOutputField(String fieldName) {
     return null;
   }
 

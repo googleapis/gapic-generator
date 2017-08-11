@@ -29,12 +29,12 @@ import javax.annotation.Nullable;
 /** PageStreamingConfig represents the page streaming configuration for a method. */
 @AutoValue
 public abstract class PageStreamingConfig {
-  public abstract FieldType getRequestTokenField();
+  public abstract FieldModel getRequestTokenField();
 
   @Nullable
-  public abstract FieldType getPageSizeField();
+  public abstract FieldModel getPageSizeField();
 
-  public abstract FieldType getResponseTokenField();
+  public abstract FieldModel getResponseTokenField();
 
   public abstract FieldConfig getResourcesFieldConfig();
 
@@ -52,7 +52,7 @@ public abstract class PageStreamingConfig {
       MethodModel method) {
     PageStreamingConfigProto pageStreaming = methodConfigProto.getPageStreaming();
     String requestTokenFieldName = pageStreaming.getRequest().getTokenField();
-    FieldType requestTokenField = method.getInputField(requestTokenFieldName);
+    FieldModel requestTokenField = method.getInputField(requestTokenFieldName);
     if (requestTokenField == null) {
       diagCollector.addDiag(
           Diag.error(
@@ -64,7 +64,7 @@ public abstract class PageStreamingConfig {
     }
 
     String pageSizeFieldName = pageStreaming.getRequest().getPageSizeField();
-    FieldType pageSizeField = null;
+    FieldModel pageSizeField = null;
     if (!Strings.isNullOrEmpty(pageSizeFieldName)) {
       pageSizeField = method.getInputField(pageSizeFieldName);
       if (pageSizeField == null) {
@@ -79,7 +79,7 @@ public abstract class PageStreamingConfig {
     }
 
     String responseTokenFieldName = pageStreaming.getResponse().getTokenField();
-    FieldType responseTokenField = method.getOutputField(responseTokenFieldName);
+    FieldModel responseTokenField = method.getOutputField(responseTokenFieldName);
     if (responseTokenField == null) {
       diagCollector.addDiag(
           Diag.error(
@@ -91,7 +91,7 @@ public abstract class PageStreamingConfig {
     }
 
     String resourcesFieldName = pageStreaming.getResponse().getResourcesField();
-    FieldType resourcesField = method.getOutputField(resourcesFieldName);
+    FieldModel resourcesField = method.getOutputField(resourcesFieldName);
     FieldConfig resourcesFieldConfig;
 
     if (resourcesField == null) {
@@ -208,7 +208,7 @@ public abstract class PageStreamingConfig {
     return getPageSizeField() != null;
   }
 
-  public FieldType getResourcesField() {
+  public FieldModel getResourcesField() {
     return getResourcesFieldConfig().getField();
   }
 

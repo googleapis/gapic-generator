@@ -28,10 +28,10 @@ import com.google.common.collect.ImmutableList;
 import java.util.List;
 
 /** Created by andrealin on 7/31/17. */
-public class DiscoveryField implements FieldType {
+public class DiscoveryField implements FieldModel {
   private final Schema schema;
 
-  /* Create a FieldType object from a non-null Schema object. */
+  /* Create a FieldModel object from a non-null Schema object. */
   public DiscoveryField(Schema schema) {
     Preconditions.checkNotNull(schema);
     this.schema = schema;
@@ -74,12 +74,12 @@ public class DiscoveryField implements FieldType {
   }
 
   @Override
-  public FieldType getMapKeyField() {
+  public FieldModel getMapKeyField() {
     throw new IllegalArgumentException("Discovery model types have no map keys.");
   }
 
   @Override
-  public FieldType getMapValueField() {
+  public FieldModel getMapValueField() {
     throw new IllegalArgumentException("Discovery model types have no map values.");
   }
 
@@ -115,7 +115,7 @@ public class DiscoveryField implements FieldType {
 
   @Override
   public String toString() {
-    return String.format("Discovery FieldType (%s): {%s}", getApiSource(), schema.toString());
+    return String.format("Discovery FieldModel (%s): {%s}", getApiSource(), schema.toString());
   }
 
   @Override

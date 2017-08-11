@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.transformer.php;
 
-import com.google.api.codegen.config.FieldType;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
@@ -62,7 +62,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFieldSetFunctionName(FieldType field) {
+  public String getFieldSetFunctionName(FieldModel field) {
     return publicMethodName(Name.from("set").join(field.getSimpleName()));
   }
 
@@ -72,17 +72,17 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFieldAddFunctionName(FieldType field) {
+  public String getFieldAddFunctionName(FieldModel field) {
     return publicMethodName(Name.from("add").join(field.getSimpleName()));
   }
 
   @Override
-  public String getFieldGetFunctionName(FieldType field) {
+  public String getFieldGetFunctionName(FieldModel field) {
     return publicMethodName(Name.from("get").join(field.getSimpleName()));
   }
 
   @Override
-  public String getFieldGetFunctionName(FieldType type, Name identifier) {
+  public String getFieldGetFunctionName(FieldModel type, Name identifier) {
     return publicMethodName(Name.from("get").join(identifier));
   }
 
@@ -100,7 +100,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public boolean shouldImportRequestObjectParamType(FieldType field) {
+  public boolean shouldImportRequestObjectParamType(FieldModel field) {
     return field.isMap();
   }
 

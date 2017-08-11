@@ -108,7 +108,7 @@ public class TestCaseTransformer {
       String resourceTypeName = null;
       String resourcesFieldGetterName = null;
       if (methodConfig.getGrpcStreaming().hasResourceField()) {
-        FieldType resourcesField = methodConfig.getGrpcStreaming().getResourcesField();
+        FieldModel resourcesField = methodConfig.getGrpcStreaming().getResourcesField();
         resourceTypeName =
             methodContext.getTypeTable().getAndSaveNicknameForElementType(resourcesField);
         resourcesFieldGetterName =
@@ -174,7 +174,7 @@ public class TestCaseTransformer {
     }
 
     FieldConfig resourcesFieldConfig = methodConfig.getPageStreaming().getResourcesFieldConfig();
-    FieldType resourcesField = resourcesFieldConfig.getField();
+    FieldModel resourcesField = resourcesFieldConfig.getField();
     String resourceTypeName =
         methodContext.getTypeTable().getAndSaveNicknameForElementType(resourcesField);
     String resourcesFieldGetterName = namer.getFieldGetFunctionName(resourcesField);
@@ -236,7 +236,7 @@ public class TestCaseTransformer {
 
   private InitCodeContext createResponseInitCodeContext(
       GapicMethodContext context, SymbolTable symbolTable) {
-    ArrayList<FieldType> primitiveFields = new ArrayList<>();
+    ArrayList<FieldModel> primitiveFields = new ArrayList<>();
     TypeRef outputType = context.getMethod().getOutputType();
     if (context.getMethodConfig().isLongRunningOperation()) {
       outputType = context.getMethodConfig().getLongRunningConfig().getReturnType();

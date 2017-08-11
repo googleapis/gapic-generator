@@ -15,7 +15,7 @@
 package com.google.api.codegen.transformer.nodejs;
 
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.FieldType;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.InterfaceConfig;
@@ -144,7 +144,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public boolean shouldImportRequestObjectParamType(FieldType field) {
+  public boolean shouldImportRequestObjectParamType(FieldModel field) {
     return field.isMap();
   }
 
@@ -175,17 +175,17 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getFieldGetFunctionName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
-    FieldType field = fieldConfig.getField();
+    FieldModel field = fieldConfig.getField();
     return Name.from(field.getSimpleName()).toLowerCamel();
   }
 
   @Override
-  public String getFieldGetFunctionName(FieldType field) {
+  public String getFieldGetFunctionName(FieldModel field) {
     return Name.from(field.getSimpleName()).toLowerCamel();
   }
 
   @Override
-  public String getFieldGetFunctionName(FieldType type, Name identifier) {
+  public String getFieldGetFunctionName(FieldModel type, Name identifier) {
     return identifier.toLowerCamel();
   }
 
@@ -341,7 +341,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     String returnTypeDoc = "";
     if (methodConfig.isPageStreaming()) {
       returnTypeDoc = "Array of ";
-      FieldType resourcesType = methodConfig.getPageStreaming().getResourcesField();
+      FieldModel resourcesType = methodConfig.getPageStreaming().getResourcesField();
       if (resourcesType.isMessage()) {
         returnTypeDoc +=
             commentReformatter.getLinkedElementName(
@@ -388,7 +388,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public List<String> getDocLines(FieldType field) {
+  public List<String> getDocLines(FieldModel field) {
     ImmutableList.Builder<String> lines = ImmutableList.builder();
     List<String> fieldDocLines = getDocLines(field.getScopedDocumentation());
     String extraFieldDescription = getExtraFieldDescription(field);
@@ -404,7 +404,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     return lines.build();
   }
 
-  private String getExtraFieldDescription(FieldType field) {
+  private String getExtraFieldDescription(FieldModel field) {
     boolean fieldIsMessage = field.isMessage() && !field.isMap();
     boolean fieldIsEnum = field.isEnum();
     if (fieldIsMessage) {
@@ -456,7 +456,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getByteLengthFunctionName(FieldType typeRef) {
+  public String getByteLengthFunctionName(FieldModel typeRef) {
     if (typeRef.isMessage()) {
       return "gax.createByteLengthFunction(grpcClients." + typeRef.getTypeFullName() + ")";
     } else if (typeRef.isString() || typeRef.isBytes()) {

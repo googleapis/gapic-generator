@@ -15,7 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.FieldType;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.FixedResourceNameConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.ResourceNameConfig;
@@ -166,18 +166,18 @@ public class PathTemplateTransformer {
     SurfaceNamer namer = context.getNamer();
     ResourceNameMessageConfigs resourceConfigs =
         context.getProductConfig().getResourceNameMessageConfigs();
-    ListMultimap<String, FieldType> fieldsByMessage =
+    ListMultimap<String, FieldModel> fieldsByMessage =
         resourceConfigs.getFieldsWithResourceNamesByMessage();
     Map<String, FieldConfig> fieldConfigMap =
         context.getProductConfig().getDefaultResourceNameFieldConfigMap();
     List<ResourceProtoView> protos = new ArrayList<>();
-    for (Entry<String, Collection<FieldType>> entry : fieldsByMessage.asMap().entrySet()) {
+    for (Entry<String, Collection<FieldModel>> entry : fieldsByMessage.asMap().entrySet()) {
       String msgName = entry.getKey();
-      Collection<FieldType> fields = new ArrayList<>(entry.getValue());
+      Collection<FieldModel> fields = new ArrayList<>(entry.getValue());
       ResourceProtoView.Builder protoBuilder = ResourceProtoView.newBuilder();
       protoBuilder.protoClassName(namer.getTypeNameConverter().getTypeName(msgName).getNickname());
       List<ResourceProtoFieldView> fieldViews = new ArrayList<>();
-      for (FieldType field : fields) {
+      for (FieldModel field : fields) {
         FieldConfig fieldConfig = fieldConfigMap.get(field.getFullName());
         String fieldTypeSimpleName = namer.getResourceTypeName(fieldConfig.getResourceNameConfig());
         String fieldTypeName =

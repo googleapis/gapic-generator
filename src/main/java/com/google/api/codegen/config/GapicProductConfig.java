@@ -463,7 +463,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     if (messageConfig == null) {
       return builder.build();
     }
-    for (FieldType field : messageConfig.getFieldsWithResourceNamesByMessage().values()) {
+    for (FieldModel field : messageConfig.getFieldsWithResourceNamesByMessage().values()) {
       builder.put(
           field.getFullName(),
           FieldConfig.createMessageFieldConfig(

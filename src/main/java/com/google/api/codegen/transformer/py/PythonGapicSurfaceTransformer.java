@@ -17,7 +17,7 @@ package com.google.api.codegen.transformer.py;
 import com.google.api.codegen.GeneratorVersionProvider;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.TargetLanguage;
-import com.google.api.codegen.config.FieldType;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.MethodModel;
@@ -143,8 +143,8 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
     addFieldsImports(typeTable, methodConfig.getOptionalFields());
   }
 
-  private void addFieldsImports(ModelTypeTable typeTable, Iterable<FieldType> fields) {
-    for (FieldType field : fields) {
+  private void addFieldsImports(ModelTypeTable typeTable, Iterable<FieldModel> fields) {
+    for (FieldModel field : fields) {
       typeTable.getAndSaveNicknameFor(field);
     }
   }

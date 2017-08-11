@@ -16,7 +16,7 @@ package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.FieldType;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
@@ -87,7 +87,7 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public boolean shouldImportRequestObjectParamElementType(FieldType field) {
+  public boolean shouldImportRequestObjectParamElementType(FieldModel field) {
     if (field.isMap()) {
       return false;
     } else {
@@ -173,19 +173,19 @@ public class JavaSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getPagedResponseTypeInnerName(
-      MethodModel method, ImportTypeTable typeTable, FieldType resourceField) {
+      MethodModel method, ImportTypeTable typeTable, FieldModel resourceField) {
     return publicClassName(Name.anyCamel(method.getSimpleName(), "PagedResponse"));
   }
 
   @Override
   public String getPageTypeInnerName(
-      MethodModel method, ImportTypeTable typeTable, FieldType resourceField) {
+      MethodModel method, ImportTypeTable typeTable, FieldModel resourceField) {
     return publicClassName(Name.anyCamel(method.getSimpleName(), "Page"));
   }
 
   @Override
   public String getFixedSizeCollectionTypeInnerName(
-      MethodModel method, ImportTypeTable typeTable, FieldType resourceField) {
+      MethodModel method, ImportTypeTable typeTable, FieldModel resourceField) {
     return publicClassName(Name.anyCamel(method.getSimpleName(), "FixedSizeCollection"));
   }
 

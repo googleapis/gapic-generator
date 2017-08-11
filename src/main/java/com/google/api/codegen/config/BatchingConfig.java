@@ -39,7 +39,7 @@ public abstract class BatchingConfig {
 
     BatchingDescriptorProto batchDescriptor = batchingConfig.getBatchDescriptor();
     String batchedFieldName = batchDescriptor.getBatchedField();
-    FieldType batchedField;
+    FieldModel batchedField;
     batchedField = method.getInputField(batchedFieldName);
     if (batchedField == null) {
       diagCollector.addDiag(
@@ -68,7 +68,7 @@ public abstract class BatchingConfig {
     }
 
     String subresponseFieldName = batchDescriptor.getSubresponseField();
-    FieldType subresponseField = null;
+    FieldModel subresponseField = null;
     if (!subresponseFieldName.isEmpty()) {
       subresponseField = method.getOutputField(subresponseFieldName);
     }
@@ -120,12 +120,12 @@ public abstract class BatchingConfig {
 
   public abstract long getDelayThresholdMillis();
 
-  public abstract FieldType getBatchedField();
+  public abstract FieldModel getBatchedField();
 
   public abstract ImmutableList<GenericFieldSelector> getDiscriminatorFields();
 
   @Nullable
-  public abstract FieldType getSubresponseField();
+  public abstract FieldModel getSubresponseField();
 
   public boolean hasSubresponseField() {
     return getSubresponseField() != null;

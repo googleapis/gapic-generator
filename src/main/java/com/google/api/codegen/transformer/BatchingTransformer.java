@@ -15,7 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.BatchingConfig;
-import com.google.api.codegen.config.FieldType;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GenericFieldSelector;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
@@ -95,9 +95,9 @@ public class BatchingTransformer {
     MethodModel method = context.getMethodModel();
     BatchingConfig batching = context.getMethodConfig().getBatching();
 
-    FieldType batchedField = batching.getBatchedField();
+    FieldModel batchedField = batching.getBatchedField();
 
-    FieldType subresponseField = batching.getSubresponseField();
+    FieldModel subresponseField = batching.getSubresponseField();
 
     BatchingDescriptorClassView.Builder desc = BatchingDescriptorClassView.newBuilder();
 
@@ -128,7 +128,7 @@ public class BatchingTransformer {
     List<BatchingPartitionKeyView> keys = new ArrayList<>();
     BatchingConfig batching = context.getMethodConfig().getBatching();
     for (GenericFieldSelector fieldSelector : batching.getDiscriminatorFields()) {
-      FieldType selectedType = fieldSelector.getLastField();
+      FieldModel selectedType = fieldSelector.getLastField();
       BatchingPartitionKeyView key =
           BatchingPartitionKeyView.newBuilder()
               .fieldGetFunction(context.getNamer().getFieldGetFunctionName(selectedType))
@@ -142,7 +142,7 @@ public class BatchingTransformer {
     List<FieldCopyView> fieldCopies = new ArrayList<>();
     BatchingConfig batching = context.getMethodConfig().getBatching();
     for (GenericFieldSelector fieldSelector : batching.getDiscriminatorFields()) {
-      FieldType selectedType = fieldSelector.getLastField();
+      FieldModel selectedType = fieldSelector.getLastField();
       FieldCopyView fieldCopy =
           FieldCopyView.newBuilder()
               .fieldGetFunction(context.getNamer().getFieldGetFunctionName(selectedType))

@@ -113,11 +113,11 @@ public abstract class MethodConfig {
     return getLongRunningConfig() != null;
   }
 
-  public Iterable<FieldType> getRequiredFields() {
+  public Iterable<FieldModel> getRequiredFields() {
     return FieldConfig.toFieldTypeIterable(getRequiredFieldConfigs());
   }
 
-  public Iterable<FieldType> getOptionalFields() {
+  public Iterable<FieldModel> getOptionalFields() {
     return FieldConfig.toFieldTypeIterable(getOptionalFieldConfigs());
   }
 

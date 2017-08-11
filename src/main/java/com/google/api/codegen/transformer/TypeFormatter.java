@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.config.FieldType;
+import com.google.api.codegen.config.FieldModel;
 
 /**
  * A read-only interface for mapping TypeRef instances to a corresponding String representation for
@@ -27,14 +27,14 @@ public interface TypeFormatter {
   String getImplicitPackageFullNameFor(String shortName);
 
   /** Get the full name for the given type. */
-  String getFullNameFor(FieldType type);
+  String getFullNameFor(FieldModel type);
 
   /** Get the full name for the element type of the given type. */
-  String getFullNameForElementType(FieldType type);
+  String getFullNameForElementType(FieldModel type);
 
   /** Returns the nickname for the given type (without adding the full name to the import set). */
-  String getNicknameFor(FieldType type);
+  String getNicknameFor(FieldModel type);
 
   /** Renders the primitive value of the given type. */
-  String renderPrimitiveValue(FieldType type, String key);
+  String renderPrimitiveValue(FieldModel type, String key);
 }

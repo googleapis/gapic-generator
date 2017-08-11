@@ -18,7 +18,7 @@ import static com.google.api.codegen.config.ApiSource.PROTO;
 
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.FieldType;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
@@ -545,7 +545,7 @@ public class StaticLangApiMethodTransformer {
         method.getAndSaveResponseTypeName(context.getTypeTable(), context.getNamer());
 
     FieldConfig resourceFieldConfig = pageStreaming.getResourcesFieldConfig();
-    FieldType resourceField = resourceFieldConfig.getField();
+    FieldModel resourceField = resourceFieldConfig.getField();
 
     String resourceTypeName;
 
@@ -787,7 +787,7 @@ public class StaticLangApiMethodTransformer {
         // Don't generate a path template check if fieldConfig is not configured to use validation.
         continue;
       }
-      FieldType field = fieldConfig.getField();
+      FieldModel field = fieldConfig.getField();
       ImmutableMap<String, String> fieldNamePatterns =
           context.getMethodConfig().getFieldNamePatterns();
       String entityName = fieldNamePatterns.get(field.getSimpleName());
@@ -821,8 +821,8 @@ public class StaticLangApiMethodTransformer {
     return pathTemplateChecks;
   }
 
-  private boolean shouldAllowEmpty(MethodContext context, FieldType field) {
-    for (FieldType requiredField : context.getMethodConfig().getRequiredFields()) {
+  private boolean shouldAllowEmpty(MethodContext context, FieldModel field) {
+    for (FieldModel requiredField : context.getMethodConfig().getRequiredFields()) {
       if (requiredField.equals(field)) {
         return false;
       }
@@ -835,11 +835,11 @@ public class StaticLangApiMethodTransformer {
     SurfaceNamer namer = context.getNamer();
     FeatureConfig featureConfig = context.getFeatureConfig();
     ImportTypeTable typeTable = context.getTypeTable();
-    FieldType field = fieldConfig.getField();
+    FieldModel field = fieldConfig.getField();
 
-    Iterable<FieldType> requiredFields = context.getMethodConfig().getRequiredFields();
+    Iterable<FieldModel> requiredFields = context.getMethodConfig().getRequiredFields();
     boolean isRequired = false;
-    for (FieldType f : requiredFields) {
+    for (FieldModel f : requiredFields) {
       if (f.getSimpleName().equals(field.getSimpleName())) {
         isRequired = true;
       }
@@ -915,7 +915,7 @@ public class StaticLangApiMethodTransformer {
       return allDocs;
     }
     for (FieldConfig fieldConfig : fieldConfigs) {
-      FieldType field = fieldConfig.getField();
+      FieldModel field = fieldConfig.getField();
       SimpleParamDocView.Builder paramDoc = SimpleParamDocView.newBuilder();
       paramDoc.paramName(context.getNamer().getVariableName(field));
       paramDoc.typeName(context.getTypeTable().getAndSaveNicknameFor(field));

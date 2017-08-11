@@ -15,7 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.FieldType;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
@@ -83,7 +83,7 @@ public class ModelTypeTable implements ImportTypeTable, ModelTypeFormatter {
 
   /** Returns the enum value string */
   @Override
-  public String getEnumValue(FieldType type, String value) {
+  public String getEnumValue(FieldModel type, String value) {
     return getEnumValue(type.getProtoTypeRef(), value);
   }
 
@@ -142,7 +142,7 @@ public class ModelTypeTable implements ImportTypeTable, ModelTypeFormatter {
    * nickname.
    */
   @Override
-  public String getAndSaveNicknameFor(FieldType type) {
+  public String getAndSaveNicknameFor(FieldModel type) {
     return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeName(type));
   }
 
@@ -186,7 +186,7 @@ public class ModelTypeTable implements ImportTypeTable, ModelTypeFormatter {
    * the type.
    */
   @Override
-  public String getAndSaveNicknameForElementType(FieldType type) {
+  public String getAndSaveNicknameForElementType(FieldModel type) {
     return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeNameForElementType(type));
   }
 
@@ -210,36 +210,36 @@ public class ModelTypeTable implements ImportTypeTable, ModelTypeFormatter {
    * zero value for that type.
    */
   @Override
-  public String getSnippetZeroValueAndSaveNicknameFor(FieldType type) {
+  public String getSnippetZeroValueAndSaveNicknameFor(FieldModel type) {
     return typeNameConverter.getSnippetZeroValue(type).getValueAndSaveTypeNicknameIn(typeTable);
   }
 
   @Override
-  public String getImplZeroValueAndSaveNicknameFor(FieldType type) {
+  public String getImplZeroValueAndSaveNicknameFor(FieldModel type) {
     return typeNameConverter.getImplZeroValue(type).getValueAndSaveTypeNicknameIn(typeTable);
   }
 
   /** Get the full name for the given type. */
   @Override
-  public String getFullNameFor(FieldType type) {
+  public String getFullNameFor(FieldModel type) {
     return getFullNameFor(type.getProtoTypeRef());
   }
 
   /** Get the full name for the element type of the given type. */
   @Override
-  public String getFullNameForElementType(FieldType type) {
+  public String getFullNameForElementType(FieldModel type) {
     return getFullNameForElementType(type.getProtoTypeRef());
   }
 
   /** Returns the nickname for the given type (without adding the full name to the import set). */
   @Override
-  public String getNicknameFor(FieldType type) {
+  public String getNicknameFor(FieldModel type) {
     return getNicknameFor(type.getProtoTypeRef());
   }
 
   /** Renders the primitive value of the given type. */
   @Override
-  public String renderPrimitiveValue(FieldType type, String key) {
+  public String renderPrimitiveValue(FieldModel type, String key) {
     return renderPrimitiveValue(type.getProtoTypeRef(), key);
   }
 

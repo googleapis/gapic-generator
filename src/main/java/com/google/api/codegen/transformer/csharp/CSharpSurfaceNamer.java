@@ -15,7 +15,7 @@
 package com.google.api.codegen.transformer.csharp;
 
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.FieldType;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
@@ -210,7 +210,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getResourceNameFieldGetFunctionName(FieldConfig fieldConfig) {
-    FieldType type = fieldConfig.getField();
+    FieldModel type = fieldConfig.getField();
     String fieldName = fieldConfig.getField().getSimpleName();
     Name identifier = Name.from(fieldName);
     Name resourceName;
@@ -253,12 +253,12 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFieldGetFunctionName(FieldType field) {
+  public String getFieldGetFunctionName(FieldModel field) {
     return privateMethodName(Name.from(field.getSimpleName()));
   }
 
   @Override
-  public String getFieldGetFunctionName(FieldType type, Name identifier) {
+  public String getFieldGetFunctionName(FieldModel type, Name identifier) {
     return privateMethodName(Name.from(type.getSimpleName()));
   }
 
@@ -467,7 +467,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
       TransformationContext context, MethodContext methodContext, Synchronicity synchronicity) {
     MethodConfig methodConfig = methodContext.getMethodConfig();
     if (methodConfig.isPageStreaming()) {
-      FieldType resourceType = methodConfig.getPageStreaming().getResourcesField();
+      FieldModel resourceType = methodConfig.getPageStreaming().getResourcesField();
       String resourceTypeName =
           context.getImportTypeTable().getAndSaveNicknameForElementType(resourceType);
       switch (synchronicity) {
@@ -508,7 +508,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String makePrimitiveTypeNullable(String typeName, FieldType type) {
+  public String makePrimitiveTypeNullable(String typeName, FieldModel type) {
     return isPrimitive(type) ? typeName + "?" : typeName;
   }
 
@@ -539,14 +539,14 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public boolean isPrimitive(FieldType type) {
+  public boolean isPrimitive(FieldModel type) {
     return isPrimitive(type.getProtoTypeRef());
   }
 
   @Override
   public String getOptionalFieldDefaultValue(FieldConfig fieldConfig, MethodContext context) {
     // Need to provide defaults for primitives, enums, strings, and repeated (including maps)
-    FieldType type = fieldConfig.getField();
+    FieldModel type = fieldConfig.getField();
     if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
       if (type.isRepeated()) {
         TypeName elementTypeName =

@@ -16,7 +16,7 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.FieldType;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig;
 import com.google.api.codegen.config.InterfaceConfig;
@@ -234,7 +234,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The function name to set the given proto field. */
   public String getFieldSetFunctionName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
-    FieldType field = fieldConfig.getField();
+    FieldModel field = fieldConfig.getField();
     if (featureConfig.useResourceNameFormatOption(fieldConfig)) {
       return getResourceNameFieldSetFunctionName(fieldConfig.getMessageFieldConfig());
     } else {
@@ -243,7 +243,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The function name to set the given proto field. */
-  public String getFieldSetFunctionName(FieldType field) {
+  public String getFieldSetFunctionName(FieldModel field) {
     if (field.isMap()) {
       return publicMethodName(Name.from("put", "all").join(field.asName()));
     } else if (field.isRepeated()) {
@@ -266,7 +266,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The function name to add an element to a map or repeated field. */
-  public String getFieldAddFunctionName(FieldType field) {
+  public String getFieldAddFunctionName(FieldModel field) {
     if (field.isMap()) {
       return publicMethodName(Name.from("put", "all").join(field.getSimpleName()));
     } else if (field.isRepeated()) {
@@ -288,7 +288,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The function name to set a field that is a resource name class. */
   public String getResourceNameFieldSetFunctionName(FieldConfig fieldConfig) {
-    FieldType type = fieldConfig.getField();
+    FieldModel type = fieldConfig.getField();
     Name identifier = Name.from(fieldConfig.getField().getSimpleName());
     Name resourceName = getResourceTypeNameObject(fieldConfig.getResourceNameConfig());
     if (type.isMap()) {
@@ -301,7 +301,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
-  public String getFullNameForElementType(FieldType type) {
+  public String getFullNameForElementType(FieldModel type) {
     switch (type.getApiSource()) {
       case PROTO:
         getModelTypeFormatter().getFullNameForElementType(type);
@@ -313,7 +313,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The function name to get the given proto field. */
   public String getFieldGetFunctionName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
-    FieldType field = fieldConfig.getField();
+    FieldModel field = fieldConfig.getField();
     if (featureConfig.useResourceNameFormatOption(fieldConfig)) {
       return getResourceNameFieldGetFunctionName(fieldConfig.getMessageFieldConfig());
     } else {
@@ -322,7 +322,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The function name to get the given proto field. */
-  public String getFieldGetFunctionName(FieldType field) {
+  public String getFieldGetFunctionName(FieldModel field) {
     return getFieldGetFunctionName(field, field.asName());
   }
 
@@ -338,7 +338,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The function name to get a field having the given type and name. */
-  public String getFieldGetFunctionName(FieldType type, Name identifier) {
+  public String getFieldGetFunctionName(FieldModel type, Name identifier) {
     if (type.isRepeated() && !type.isMap()) {
       return publicMethodName(Name.from("get").join(identifier).join("list"));
     } else if (type.isMap()) {
@@ -350,7 +350,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The function name to get a field that is a resource name class. */
   public String getResourceNameFieldGetFunctionName(FieldConfig fieldConfig) {
-    FieldType type = fieldConfig.getField();
+    FieldModel type = fieldConfig.getField();
     Name identifier = Name.from(fieldConfig.getField().getSimpleName());
     Name resourceName = getResourceTypeNameObject(fieldConfig.getResourceNameConfig());
     if (type.isMap()) {
@@ -368,7 +368,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    *
    * @throws IllegalArgumentException if the field is not a repeated field.
    */
-  public String getFieldCountGetFunctionName(FieldType field) {
+  public String getFieldCountGetFunctionName(FieldModel field) {
     if (field.isRepeated()) {
       return publicMethodName(Name.from("get", field.getSimpleName(), "count"));
     } else {
@@ -382,7 +382,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    *
    * @throws IllegalArgumentException if the field is not a repeated field.
    */
-  public String getByIndexGetFunctionName(FieldType field) {
+  public String getByIndexGetFunctionName(FieldModel field) {
     if (field.isRepeated()) {
       return publicMethodName(Name.from("get", field.getSimpleName()));
     } else {
@@ -574,7 +574,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getAsyncApiMethodName(method, visibility);
   }
 
-  public String getByteLengthFunctionName(FieldType typeRef) {
+  public String getByteLengthFunctionName(FieldModel typeRef) {
     return getNotImplementedString("SurfaceNamer.getByteLengthFunctionName");
   }
 
@@ -584,7 +584,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * The name of a variable to hold a value for the given proto message field (such as a flattened
    * parameter).
    */
-  public String getVariableName(FieldType field) {
+  public String getVariableName(FieldModel field) {
     return localVarName(Name.from(field.getSimpleName()));
   }
 
@@ -657,7 +657,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The name of the field. */
-  public String getFieldName(FieldType field) {
+  public String getFieldName(FieldModel field) {
     return publicFieldName(Name.from(field.getSimpleName()));
   }
 
@@ -838,7 +838,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The type name for the method param */
-  public String getParamTypeName(ImportTypeTable typeTable, FieldType type) {
+  public String getParamTypeName(ImportTypeTable typeTable, FieldModel type) {
     // TODO(andrealin): Remove the switch statement and getProtoTypeRef().
     switch (type.getApiSource()) {
       case PROTO:
@@ -854,7 +854,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The type name for the message property */
-  public String getMessagePropertyTypeName(ImportTypeTable typeTable, FieldType type) {
+  public String getMessagePropertyTypeName(ImportTypeTable typeTable, FieldModel type) {
     return getParamTypeName(typeTable, type);
   }
 
@@ -958,13 +958,13 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The inner type name of the paged response type for the given method and resources field. */
   public String getPagedResponseTypeInnerName(
-      MethodModel method, ImportTypeTable typeTable, FieldType resourcesField) {
+      MethodModel method, ImportTypeTable typeTable, FieldModel resourcesField) {
     return getNotImplementedString("SurfaceNamer.getAndSavePagedResponseTypeInnerName");
   }
 
   /** The inner type name of the page type for the given method and resources field. */
   public String getPageTypeInnerName(
-      MethodModel method, ImportTypeTable typeTable, FieldType resourceField) {
+      MethodModel method, ImportTypeTable typeTable, FieldModel resourceField) {
     return getNotImplementedString("SurfaceNamer.getPageTypeInnerName");
   }
 
@@ -972,7 +972,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * The inner type name of the fixed size collection type for the given method and resources field.
    */
   public String getFixedSizeCollectionTypeInnerName(
-      MethodModel method, ImportTypeTable typeTable, FieldType resourceField) {
+      MethodModel method, ImportTypeTable typeTable, FieldModel resourceField) {
     return getNotImplementedString("SurfaceNamer.getPageTypeInnerName");
   }
 
@@ -1172,7 +1172,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The key to use in a dictionary for the given field. */
-  public String getFieldKey(FieldType field) {
+  public String getFieldKey(FieldModel field) {
     return keyName(Name.from(field.getSimpleName()));
   }
 
@@ -1247,14 +1247,14 @@ public class SurfaceNamer extends NameFormatterDelegator {
   ///////////////////////////////////////// Imports ///////////////////////////////////////////////
 
   /** Returns true if the request object param type for the given field should be imported. */
-  public boolean shouldImportRequestObjectParamType(FieldType field) {
+  public boolean shouldImportRequestObjectParamType(FieldModel field) {
     return true;
   }
 
   /**
    * Returns true if the request object param element type for the given field should be imported.
    */
-  public boolean shouldImportRequestObjectParamElementType(FieldType field) {
+  public boolean shouldImportRequestObjectParamElementType(FieldModel field) {
     return true;
   }
 
@@ -1300,7 +1300,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** Provides the doc lines for the given field in the current language. */
-  public List<String> getDocLines(FieldType field) {
+  public List<String> getDocLines(FieldModel field) {
     return getDocLines(field.getScopedDocumentation());
   }
 
@@ -1335,7 +1335,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The name of a type with with qualifying articles and descriptions. */
-  public String getTypeNameDoc(ImportTypeTable typeTable, FieldType type) {
+  public String getTypeNameDoc(ImportTypeTable typeTable, FieldModel type) {
     switch (type.getApiSource()) {
       case PROTO:
         return getTypeNameDoc(typeTable, type.getProtoTypeRef());
@@ -1510,7 +1510,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** Make the given type name able to accept nulls, if it is a primitive type */
-  public String makePrimitiveTypeNullable(String typeName, FieldType type) {
+  public String makePrimitiveTypeNullable(String typeName, FieldModel type) {
     return typeName;
   }
 
@@ -1520,7 +1520,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** Is this type a primitive, according to target language. */
-  public boolean isPrimitive(FieldType type) {
+  public boolean isPrimitive(FieldModel type) {
     return type.isPrimitive();
   }
 

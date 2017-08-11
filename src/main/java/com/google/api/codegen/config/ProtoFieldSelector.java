@@ -27,7 +27,7 @@ public final class ProtoFieldSelector implements GenericFieldSelector {
   }
 
   @Override
-  /* @return the type of source that this FieldType is based on. */
+  /* @return the type of source that this FieldModel is based on. */
   public ApiSource getApiSource() {
     return ApiSource.PROTO;
   }
@@ -38,7 +38,7 @@ public final class ProtoFieldSelector implements GenericFieldSelector {
   }
 
   @Override
-  public FieldType getLastField() {
+  public FieldModel getLastField() {
     return new ProtoField(fieldSelector.getLastField());
   }
 }
