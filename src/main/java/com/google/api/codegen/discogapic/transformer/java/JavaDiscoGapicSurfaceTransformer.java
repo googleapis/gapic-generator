@@ -16,7 +16,10 @@ package com.google.api.codegen.discogapic.transformer.java;
 
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.TargetLanguage;
+import com.google.api.codegen.config.ApiModel;
+import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.config.DiscoGapicInterfaceConfig;
+import com.google.api.codegen.config.DiscoInterfaceModel;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.FlatteningConfig;
@@ -25,7 +28,6 @@ import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.config.ProductServiceConfig;
 import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
@@ -92,7 +94,6 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
       new FileHeaderTransformer(importSectionTransformer);
   private final RetryDefinitionsTransformer retryDefinitionsTransformer =
       new RetryDefinitionsTransformer();
-  private final ProductServiceConfig productServiceConfig = new ProductServiceConfig();
 
   private final JavaNameFormatter nameFormatter = new JavaNameFormatter();
 
@@ -130,12 +131,12 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
     DiscoGapicNamer discoGapicNamer = new DiscoGapicNamer(namer);
 
     List<ServiceDocView> serviceDocs = new ArrayList<>();
-    for (String interfaceName : productConfig.getInterfaceConfigMap().keySet()) {
+    DiscoApiModel model = new DiscoApiModel(document);
+    for (DiscoInterfaceModel interfaceModel : model.getInterfaces(productConfig)) {
       boolean enableStringFormatFunctions = productConfig.getResourceNameMessageConfigs().isEmpty();
       DiscoGapicInterfaceContext context =
           DiscoGapicInterfaceContext.createWithInterface(
-              document,
-              interfaceName,
+              interfaceModel,
               productConfig,
               createTypeTable(productConfig.getPackageName()),
               discoGapicNamer,
@@ -171,7 +172,7 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
       surfaceDocs.add(pagedResponseWrappers);
     }
 
-    PackageInfoView packageInfo = generatePackageInfo(document, productConfig, namer, serviceDocs);
+    PackageInfoView packageInfo = generatePackageInfo(model, productConfig, namer, serviceDocs);
     surfaceDocs.add(packageInfo);
 
     return surfaceDocs;
@@ -406,6 +407,7 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
 
   private StaticLangSettingsView generateSettingsClass(
       DiscoGapicInterfaceContext context, StaticLangApiMethodView exampleApiMethod) {
+    ApiModel model = context.getApiModel();
     addSettingsImports(context);
 
     SurfaceNamer namer = context.getNamer();
@@ -422,8 +424,8 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
 
     // TODO(andrealin): Service address.
     xsettingsClass.serviceAddress("Service address.");
-    xsettingsClass.servicePort(productServiceConfig.getServicePort());
-    xsettingsClass.authScopes(productServiceConfig.getAuthScopes(context.getDocument()));
+    xsettingsClass.servicePort(model.getServicePort());
+    xsettingsClass.authScopes(model.getAuthScopes());
 
     List<ApiCallSettingsView> apiCallSettings =
         apiCallableTransformer.generateCallSettings(context);
@@ -599,7 +601,7 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
   }
 
   private PackageInfoView generatePackageInfo(
-      Document model,
+      ApiModel model,
       GapicProductConfig productConfig,
       SurfaceNamer namer,
       List<ServiceDocView> serviceDocs) {
@@ -611,7 +613,7 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
     packageInfo.serviceTitle("Service title.");
     packageInfo.serviceDocs(serviceDocs);
     packageInfo.domainLayerLocation(productConfig.getDomainLayerLocation());
-    packageInfo.authScopes(productServiceConfig.getAuthScopes(model));
+    packageInfo.authScopes(model.getAuthScopes());
 
     packageInfo.fileHeader(
         fileHeaderTransformer.generateFileHeader(
@@ -752,11 +754,11 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
       DiscoGapicInterfaceContext context, StaticLangApiMethodView exampleApiMethod) {
     SurfaceNamer namer = context.getNamer();
     SettingsDocView.Builder settingsDoc = SettingsDocView.newBuilder();
-    ProductServiceConfig productServiceConfig = new ProductServiceConfig();
+    ApiModel model = context.getApiModel();
 
     // TODO(andrealin): Service address.
     settingsDoc.serviceAddress("Service address.");
-    settingsDoc.servicePort(productServiceConfig.getServicePort());
+    settingsDoc.servicePort(model.getServicePort());
     settingsDoc.exampleApiMethodName(exampleApiMethod.name());
     settingsDoc.exampleApiMethodSettingsGetter(exampleApiMethod.settingsGetterName());
     settingsDoc.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));

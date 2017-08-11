@@ -15,14 +15,15 @@
 package com.google.api.codegen.transformer.py;
 
 import com.google.api.codegen.GeneratorVersionProvider;
-import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.TargetLanguage;
+import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.config.ProductServiceConfig;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
@@ -54,7 +55,6 @@ import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
 import com.google.api.codegen.viewmodel.ParamDocView;
 import com.google.api.codegen.viewmodel.PathTemplateGetterFunctionView;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoContainerElement;
@@ -102,8 +102,9 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
             new PythonModelTypeNameConverter(productConfig.getPackageName()));
     SurfaceNamer namer = new PythonSurfaceNamer(productConfig.getPackageName());
     FeatureConfig featureConfig = new DefaultFeatureConfig();
+    ProtoApiModel apiModel = new ProtoApiModel(model);
     ImmutableList.Builder<ViewModel> serviceSurfaces = ImmutableList.builder();
-    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+    for (InterfaceModel apiInterface : apiModel.getInterfaces(productConfig)) {
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
               apiInterface, productConfig, modelTypeTable, namer, featureConfig);
@@ -169,12 +170,11 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.doc(serviceTransformer.generateServiceDoc(context, methods.get(0)));
     xapiClass.stubs(grpcStubTransformer.generateGrpcStubs(context));
 
-    ProductServiceConfig productServiceConfig = new ProductServiceConfig();
-    xapiClass.serviceAddress(
-        productServiceConfig.getServiceAddress(context.getInterface().getModel()));
-    xapiClass.servicePort(productServiceConfig.getServicePort());
-    xapiClass.serviceTitle(productServiceConfig.getTitle(context.getInterface().getModel()));
-    xapiClass.authScopes(productServiceConfig.getAuthScopes(context.getInterface().getModel()));
+    ApiModel model = context.getApiModel();
+    xapiClass.serviceAddress(model.getServiceAddress());
+    xapiClass.servicePort(model.getServicePort());
+    xapiClass.serviceTitle(model.getTitle());
+    xapiClass.authScopes(model.getAuthScopes());
     xapiClass.hasDefaultServiceAddress(context.getInterfaceConfig().hasDefaultServiceAddress());
     xapiClass.hasDefaultServiceScopes(context.getInterfaceConfig().hasDefaultServiceScopes());
 

@@ -15,13 +15,16 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
+import com.google.api.codegen.discovery.Document;
 
 /** Discovery-based InterfaceModel. */
 public class DiscoInterfaceModel implements InterfaceModel {
   private final String interfaceName;
+  private final DiscoApiModel apiModel;
 
-  public DiscoInterfaceModel(String interfaceName) {
+  public DiscoInterfaceModel(String interfaceName, Document document) {
     this.interfaceName = interfaceName;
+    this.apiModel = new DiscoApiModel(document);
   }
 
   @Override
@@ -52,5 +55,16 @@ public class DiscoInterfaceModel implements InterfaceModel {
   @Override
   public String getParentFullName() {
     return interfaceName;
+  }
+
+  @Override
+  public boolean isReachable() {
+    // TODO(andrealin): Implement.
+    return true;
+  }
+
+  @Override
+  public DiscoApiModel getApiModel() {
+    return apiModel;
   }
 }

@@ -14,19 +14,20 @@
  */
 package com.google.api.codegen.transformer.java;
 
-import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.TargetLanguage;
+import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.config.ProductServiceConfig;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
 import com.google.api.codegen.transformer.BatchingTransformer;
@@ -62,7 +63,6 @@ import com.google.api.codegen.viewmodel.StaticLangRpcStubView;
 import com.google.api.codegen.viewmodel.StaticLangSettingsView;
 import com.google.api.codegen.viewmodel.StaticLangStubInterfaceView;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import java.io.File;
 import java.util.ArrayList;
@@ -86,7 +86,6 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
       new FileHeaderTransformer(importSectionTransformer);
   private final RetryDefinitionsTransformer retryDefinitionsTransformer =
       new RetryDefinitionsTransformer();
-  private final ProductServiceConfig productServiceConfig = new ProductServiceConfig();
 
   private static final String API_TEMPLATE_FILENAME = "java/main.snip";
   private static final String SETTINGS_TEMPLATE_FILENAME = "java/settings.snip";
@@ -118,9 +117,10 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     List<ViewModel> surfaceDocs = new ArrayList<>();
     SurfaceNamer namer =
         new JavaSurfaceNamer(productConfig.getPackageName(), productConfig.getPackageName());
+    ProtoApiModel apiModel = new ProtoApiModel(model);
 
     List<ServiceDocView> serviceDocs = new ArrayList<>();
-    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+    for (InterfaceModel apiInterface : apiModel.getInterfaces(productConfig)) {
       boolean enableStringFormatFunctions = productConfig.getResourceNameMessageConfigs().isEmpty();
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
@@ -155,12 +155,12 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
 
     StaticLangPagedResponseWrappersView pagedResponseWrappers =
         generatePagedResponseWrappers(
-            model, productConfig, packageMetadataConfig.releaseLevel(TargetLanguage.JAVA));
+            apiModel, productConfig, packageMetadataConfig.releaseLevel(TargetLanguage.JAVA));
     if (pagedResponseWrappers != null) {
       surfaceDocs.add(pagedResponseWrappers);
     }
 
-    PackageInfoView packageInfo = generatePackageInfo(model, productConfig, namer, serviceDocs);
+    PackageInfoView packageInfo = generatePackageInfo(apiModel, productConfig, namer, serviceDocs);
     surfaceDocs.add(packageInfo);
 
     return surfaceDocs;
@@ -227,7 +227,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private StaticLangPagedResponseWrappersView generatePagedResponseWrappers(
-      Model model, GapicProductConfig productConfig, ReleaseLevel releaseLevel) {
+      ApiModel model, GapicProductConfig productConfig, ReleaseLevel releaseLevel) {
 
     SurfaceNamer namer =
         new JavaSurfaceNamer(productConfig.getPackageName(), productConfig.getPackageName());
@@ -245,7 +245,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     pagedResponseWrappers.name(name);
 
     List<StaticLangPagedResponseView> pagedResponseWrappersList = new ArrayList<>();
-    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
               apiInterface,
@@ -276,7 +276,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     pagedResponseWrappers.fileHeader(
         fileHeaderTransformer.generateFileHeader(productConfig, importSection, namer));
 
-    Interface firstInterface = new InterfaceView().getElementIterable(model).iterator().next();
+    InterfaceModel firstInterface = model.getInterfaces(productConfig).iterator().next();
     String outputPath = pathMapper.getOutputPath(firstInterface.getFullName(), productConfig);
     pagedResponseWrappers.outputPath(outputPath + File.separator + name + ".java");
 
@@ -374,7 +374,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private StaticLangFileView<StaticLangSettingsView> generateSettingsFile(
-      GapicInterfaceContext context, StaticLangApiMethodView exampleApiMethod) {
+      InterfaceContext context, StaticLangApiMethodView exampleApiMethod) {
     StaticLangFileView.Builder<StaticLangSettingsView> settingsFile =
         StaticLangFileView.<StaticLangSettingsView>newBuilder();
 
@@ -394,11 +394,12 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private StaticLangSettingsView generateSettingsClass(
-      GapicInterfaceContext context, StaticLangApiMethodView exampleApiMethod) {
+      InterfaceContext context, StaticLangApiMethodView exampleApiMethod) {
     addSettingsImports(context);
 
     SurfaceNamer namer = context.getNamer();
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
+    ApiModel model = context.getApiModel();
 
     StaticLangSettingsView.Builder xsettingsClass = StaticLangSettingsView.newBuilder();
     xsettingsClass.releaseLevelAnnotation(
@@ -408,11 +409,9 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     xsettingsClass.doc(generateSettingsDoc(context, exampleApiMethod));
     String name = namer.getApiSettingsClassName(context.getInterfaceConfig());
     xsettingsClass.name(name);
-    xsettingsClass.serviceAddress(
-        productServiceConfig.getServiceAddress(context.getInterface().getModel()));
-    xsettingsClass.servicePort(productServiceConfig.getServicePort());
-    xsettingsClass.authScopes(
-        productServiceConfig.getAuthScopes(context.getInterface().getModel()));
+    xsettingsClass.serviceAddress(model.getServiceAddress());
+    xsettingsClass.servicePort(model.getServicePort());
+    xsettingsClass.authScopes(model.getAuthScopes());
 
     List<ApiCallSettingsView> apiCallSettings =
         apiCallableTransformer.generateCallSettings(context);
@@ -567,7 +566,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private PackageInfoView generatePackageInfo(
-      Model model,
+      ApiModel model,
       GapicProductConfig productConfig,
       SurfaceNamer namer,
       List<ServiceDocView> serviceDocs) {
@@ -575,16 +574,16 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
 
     packageInfo.templateFileName(PACKAGE_INFO_TEMPLATE_FILENAME);
 
-    packageInfo.serviceTitle(model.getServiceConfig().getTitle());
+    packageInfo.serviceTitle(model.getTitle());
     packageInfo.serviceDocs(serviceDocs);
     packageInfo.domainLayerLocation(productConfig.getDomainLayerLocation());
-    packageInfo.authScopes(productServiceConfig.getAuthScopes(model));
+    packageInfo.authScopes(model.getAuthScopes());
 
     packageInfo.fileHeader(
         fileHeaderTransformer.generateFileHeader(
             productConfig, ImportSectionView.newBuilder().build(), namer));
 
-    Interface firstInterface = new InterfaceView().getElementIterable(model).iterator().next();
+    InterfaceModel firstInterface = model.getInterfaces(productConfig).iterator().next();
     String outputPath = pathMapper.getOutputPath(firstInterface.getFullName(), productConfig);
     packageInfo.outputPath(outputPath + File.separator + "package-info.java");
 
@@ -738,13 +737,12 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   public SettingsDocView generateSettingsDoc(
-      GapicInterfaceContext context, StaticLangApiMethodView exampleApiMethod) {
+      InterfaceContext context, StaticLangApiMethodView exampleApiMethod) {
     SurfaceNamer namer = context.getNamer();
     SettingsDocView.Builder settingsDoc = SettingsDocView.newBuilder();
-    ProductServiceConfig productServiceConfig = new ProductServiceConfig();
-    settingsDoc.serviceAddress(
-        productServiceConfig.getServiceAddress(context.getInterface().getModel()));
-    settingsDoc.servicePort(productServiceConfig.getServicePort());
+    ApiModel model = context.getApiModel();
+    settingsDoc.serviceAddress(model.getServiceAddress());
+    settingsDoc.servicePort(model.getServicePort());
     settingsDoc.exampleApiMethodName(exampleApiMethod.name());
     settingsDoc.exampleApiMethodSettingsGetter(exampleApiMethod.settingsGetterName());
     settingsDoc.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));

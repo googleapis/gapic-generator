@@ -14,14 +14,15 @@
  */
 package com.google.api.codegen.transformer.csharp;
 
-import com.google.api.codegen.InterfaceView;
+import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
-import com.google.api.codegen.config.ProductServiceConfig;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
 import com.google.api.codegen.transformer.BatchingTransformer;
@@ -53,7 +54,6 @@ import com.google.api.codegen.viewmodel.StaticLangApiView;
 import com.google.api.codegen.viewmodel.StaticLangResourceNamesView;
 import com.google.api.codegen.viewmodel.StaticLangSettingsView;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
@@ -93,8 +93,10 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     SurfaceNamer namer = new CSharpSurfaceNamer(productConfig.getPackageName());
     CSharpFeatureConfig featureConfig = new CSharpFeatureConfig();
 
-    Interface lastApiInterface = null;
-    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+    ProtoApiModel apiModel = new ProtoApiModel(model);
+
+    InterfaceModel lastApiInterface = null;
+    for (InterfaceModel apiInterface : apiModel.getInterfaces(productConfig)) {
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
               apiInterface,
@@ -232,11 +234,10 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     settingsClass.doc(generateSettingsDoc(context));
     String name = context.getNamer().getApiSettingsClassName(context.getInterfaceConfig());
     settingsClass.name(name);
-    ProductServiceConfig productServiceConfig = new ProductServiceConfig();
-    settingsClass.serviceAddress(
-        productServiceConfig.getServiceAddress(context.getInterface().getModel()));
-    settingsClass.servicePort(productServiceConfig.getServicePort());
-    settingsClass.authScopes(productServiceConfig.getAuthScopes(context.getInterface().getModel()));
+    ApiModel model = context.getApiModel();
+    settingsClass.serviceAddress(model.getServiceAddress());
+    settingsClass.servicePort(model.getServicePort());
+    settingsClass.authScopes(model.getAuthScopes());
     settingsClass.callSettings(generateCallSettings(context));
     settingsClass.pageStreamingDescriptors(
         pageStreamingTransformer.generateDescriptorClasses(context));
@@ -408,10 +409,9 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
   public SettingsDocView generateSettingsDoc(GapicInterfaceContext context) {
     SurfaceNamer namer = context.getNamer();
     SettingsDocView.Builder settingsDoc = SettingsDocView.newBuilder();
-    ProductServiceConfig productServiceConfig = new ProductServiceConfig();
-    settingsDoc.serviceAddress(
-        productServiceConfig.getServiceAddress(context.getInterface().getModel()));
-    settingsDoc.servicePort(productServiceConfig.getServicePort());
+    ApiModel model = context.getApiModel();
+    settingsDoc.serviceAddress(model.getServiceAddress());
+    settingsDoc.servicePort(model.getServicePort());
     settingsDoc.exampleApiMethodName(""); // Unused in C#
     settingsDoc.exampleApiMethodSettingsGetter(""); // Unused in C#
     settingsDoc.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));

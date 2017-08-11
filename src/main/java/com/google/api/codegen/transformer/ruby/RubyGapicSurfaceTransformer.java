@@ -17,11 +17,13 @@ package com.google.api.codegen.transformer.ruby;
 import com.google.api.codegen.GeneratorVersionProvider;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.TargetLanguage;
+import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.config.ProductServiceConfig;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.BatchingTransformer;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
@@ -55,7 +57,6 @@ import com.google.api.codegen.viewmodel.metadata.VersionIndexModuleView;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexRequireView;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexType;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexView;
-import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
@@ -103,19 +104,20 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
 
   @Override
   public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
+    ProtoApiModel apiModel = new ProtoApiModel(model);
     ImmutableList.Builder<ViewModel> views = ImmutableList.builder();
-    views.add(generateVersionIndexView(model, productConfig));
-    views.add(generateTopLevelIndexView(model, productConfig));
-    views.addAll(generateApiClasses(model, productConfig));
-    views.add(generateCredentialsView(model, productConfig));
+    views.add(generateVersionIndexView(apiModel, productConfig));
+    views.add(generateTopLevelIndexView(apiModel, productConfig));
+    views.addAll(generateApiClasses(apiModel, productConfig));
+    views.add(generateCredentialsView(apiModel, productConfig));
     return views.build();
   }
 
-  private List<ViewModel> generateApiClasses(Model model, GapicProductConfig productConfig) {
+  private List<ViewModel> generateApiClasses(ApiModel model, GapicProductConfig productConfig) {
     SurfaceNamer namer = new RubySurfaceNamer(productConfig.getPackageName());
     FeatureConfig featureConfig = new RubyFeatureConfig();
     ImmutableList.Builder<ViewModel> serviceSurfaces = ImmutableList.builder();
-    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
       ModelTypeTable modelTypeTable =
           new ModelTypeTable(
               new RubyTypeTable(productConfig.getPackageName()),
@@ -146,12 +148,11 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.doc(serviceTransformer.generateServiceDoc(context, methods.get(0)));
     xapiClass.stubs(grpcStubTransformer.generateGrpcStubs(context));
 
-    ProductServiceConfig productServiceConfig = new ProductServiceConfig();
-    xapiClass.serviceAddress(
-        productServiceConfig.getServiceAddress(context.getInterface().getModel()));
-    xapiClass.servicePort(productServiceConfig.getServicePort());
-    xapiClass.serviceTitle(productServiceConfig.getTitle(context.getInterface().getModel()));
-    xapiClass.authScopes(productServiceConfig.getAuthScopes(context.getInterface().getModel()));
+    ApiModel model = context.getApiModel();
+    xapiClass.serviceAddress(model.getServiceAddress());
+    xapiClass.servicePort(model.getServicePort());
+    xapiClass.serviceTitle(model.getTitle());
+    xapiClass.authScopes(model.getAuthScopes());
     xapiClass.hasDefaultServiceAddress(context.getInterfaceConfig().hasDefaultServiceAddress());
     xapiClass.hasDefaultServiceScopes(context.getInterfaceConfig().hasDefaultServiceScopes());
 
@@ -199,12 +200,12 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
     return apiMethods.build();
   }
 
-  private ViewModel generateVersionIndexView(Model model, GapicProductConfig productConfig) {
+  private ViewModel generateVersionIndexView(ApiModel model, GapicProductConfig productConfig) {
     SurfaceNamer namer = new RubySurfaceNamer(productConfig.getPackageName());
 
     ImmutableList.Builder<VersionIndexRequireView> requireViews = ImmutableList.builder();
-    Iterable<Interface> interfaces = new InterfaceView().getElementIterable(model);
-    for (Interface apiInterface : interfaces) {
+    Iterable<? extends InterfaceModel> interfaces = model.getInterfaces(productConfig);
+    for (InterfaceModel apiInterface : interfaces) {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
       GapicInterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
       requireViews.add(
@@ -233,7 +234,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
         .build();
   }
 
-  private ViewModel generateCredentialsView(Model model, GapicProductConfig productConfig) {
+  private ViewModel generateCredentialsView(ApiModel model, GapicProductConfig productConfig) {
     SurfaceNamer namer = new RubySurfaceNamer(productConfig.getPackageName());
     CredentialsClassView credentialsClass = generateCredentialsClass(model, productConfig);
     ImportSectionView importSection =
@@ -257,8 +258,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private CredentialsClassView generateCredentialsClass(
-      Model model, GapicProductConfig productConfig) {
-    ProductServiceConfig productServiceConfig = new ProductServiceConfig();
+      ApiModel model, GapicProductConfig productConfig) {
 
     SurfaceNamer namer = new RubySurfaceNamer(productConfig.getPackageName());
 
@@ -284,18 +284,18 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
     return CredentialsClassView.newBuilder()
         .pathEnvVars(pathEnvVars)
         .jsonEnvVars(jsonEnvVars)
-        .scopes(productServiceConfig.getAuthScopes(model))
+        .scopes(model.getAuthScopes())
         .build();
   }
 
-  private ViewModel generateTopLevelIndexView(Model model, GapicProductConfig productConfig) {
+  private ViewModel generateTopLevelIndexView(ApiModel model, GapicProductConfig productConfig) {
     SurfaceNamer namer = new RubySurfaceNamer(productConfig.getPackageName());
 
     ImmutableList.Builder<VersionIndexRequireView> requireViews = ImmutableList.builder();
-    Iterable<Interface> interfaces = new InterfaceView().getElementIterable(model);
+    Iterable<? extends InterfaceModel> interfaces = model.getInterfaces(productConfig);
     List<String> modules = namer.getTopLevelApiModules();
     boolean hasMultipleServices = Iterables.size(interfaces) > 1;
-    for (Interface apiInterface : interfaces) {
+    for (InterfaceModel apiInterface : interfaces) {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
       String clientName = namer.getPackageName();
       String serviceName = namer.getPackageServiceName(context.getInterfaceModel());
@@ -335,7 +335,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private List<VersionIndexModuleView> generateModuleViews(
-      Model model, GapicProductConfig productConfig, boolean includeVersionModule) {
+      ApiModel model, GapicProductConfig productConfig, boolean includeVersionModule) {
     SurfaceNamer namer = new RubySurfaceNamer(productConfig.getPackageName());
     RubyPackageMetadataTransformer metadataTransformer =
         new RubyPackageMetadataTransformer(packageConfig);
@@ -365,16 +365,16 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private TocModuleView generateTocModuleView(
-      Model model, GapicProductConfig productConfig, String moduleName) {
+      ApiModel model, GapicProductConfig productConfig, String moduleName) {
     SurfaceNamer namer = new RubySurfaceNamer(productConfig.getPackageName());
     RubyPackageMetadataTransformer metadataTransformer =
         new RubyPackageMetadataTransformer(packageConfig);
     RubyPackageMetadataNamer packageNamer =
         new RubyPackageMetadataNamer(productConfig.getPackageName());
     String version = packageConfig.apiVersion();
-    Iterable<Interface> interfaces = new InterfaceView().getElementIterable(model);
+    Iterable<? extends InterfaceModel> interfaces = model.getInterfaces(productConfig);
     ImmutableList.Builder<TocContentView> tocContents = ImmutableList.builder();
-    for (Interface apiInterface : interfaces) {
+    for (InterfaceModel apiInterface : interfaces) {
       GapicInterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
       tocContents.add(
           metadataTransformer.generateTocContent(
@@ -387,7 +387,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
 
     return TocModuleView.newBuilder()
         .moduleName(moduleName)
-        .fullName(model.getServiceConfig().getTitle())
+        .fullName(model.getTitle())
         .contents(tocContents.build())
         .build();
   }
@@ -410,7 +410,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private GapicInterfaceContext createContext(
-      Interface apiInterface, GapicProductConfig productConfig) {
+      InterfaceModel apiInterface, GapicProductConfig productConfig) {
     return GapicInterfaceContext.create(
         apiInterface,
         productConfig,

@@ -19,6 +19,9 @@ public interface InterfaceModel {
   /* @return the type of source that this FieldModel is based on. */
   ApiSource getApiSource();
 
+  /* @return the Model from which this interface came from. */
+  ApiModel getApiModel();
+
   String getSimpleName();
 
   String getFullName();
@@ -28,4 +31,7 @@ public interface InterfaceModel {
   String getFileSimpleName();
 
   String getFileFullName();
+
+  /* @return true if the element is reachable with the current scoper. */
+  boolean isReachable();
 }

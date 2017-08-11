@@ -15,11 +15,11 @@
 package com.google.api.codegen.grpcmetadatagen.py;
 
 import com.google.api.codegen.TargetLanguage;
+import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.transformer.PackageMetadataTransformer;
 import com.google.api.codegen.transformer.py.PythonSurfaceNamer;
 import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
-import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import java.nio.file.Paths;
@@ -45,7 +45,7 @@ public class PythonGrpcMetadataTransformer {
     this.copierResult = copierResult;
   }
 
-  public List<PackageMetadataView> transform(Model model, PackageMetadataConfig config) {
+  public List<PackageMetadataView> transform(ApiModel model, PackageMetadataConfig config) {
     ArrayList<PackageMetadataView> views = new ArrayList<>();
     PythonSurfaceNamer surfaceNamer =
         new PythonSurfaceNamer(config.packageName(TargetLanguage.PYTHON));

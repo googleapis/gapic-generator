@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.ApiSource;
+import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.config.DiscoGapicInterfaceConfig;
 import com.google.api.codegen.config.DiscoGapicMethodConfig;
 import com.google.api.codegen.config.DiscoInterfaceModel;
@@ -50,11 +51,10 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
       DiscoGapicNamer discoGapicNamer,
       FeatureConfig featureConfig) {
     return new AutoValue_DiscoGapicInterfaceContext(
-        document,
         productConfig,
         typeTable,
         discoGapicNamer,
-        new DiscoInterfaceModel(""),
+        new DiscoInterfaceModel("", document),
         featureConfig);
   }
 
@@ -72,15 +72,38 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
     }
 
     return new AutoValue_DiscoGapicInterfaceContext(
-        document,
         productConfig,
         typeTable,
         discoGapicNamer,
-        new DiscoInterfaceModel(interfaceName),
+        new DiscoInterfaceModel(interfaceName, document),
         featureConfig);
   }
 
-  public abstract Document getDocument();
+  public static DiscoGapicInterfaceContext createWithInterface(
+      DiscoInterfaceModel interfaceModel,
+      GapicProductConfig productConfig,
+      SchemaTypeTable typeTable,
+      DiscoGapicNamer discoGapicNamer,
+      FeatureConfig featureConfig) {
+    ImmutableList.Builder<MethodModel> interfaceMethods = new ImmutableList.Builder<>();
+
+    for (MethodConfig method :
+        productConfig.getInterfaceConfig(interfaceModel.getSimpleName()).getMethodConfigs()) {
+      interfaceMethods.add(method.getMethodModel());
+    }
+
+    return new AutoValue_DiscoGapicInterfaceContext(
+        productConfig, typeTable, discoGapicNamer, interfaceModel, featureConfig);
+  }
+
+  public Document getDocument() {
+    return getApiModel().getDocument();
+  }
+
+  @Override
+  public DiscoApiModel getApiModel() {
+    return getInterfaceModel().getApiModel();
+  }
 
   @Override
   public abstract GapicProductConfig getProductConfig();

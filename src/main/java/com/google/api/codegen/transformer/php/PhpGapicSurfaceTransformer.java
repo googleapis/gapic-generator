@@ -15,13 +15,14 @@
 package com.google.api.codegen.transformer.php;
 
 import com.google.api.codegen.GeneratorVersionProvider;
-import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.ServiceMessages;
+import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig;
+import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.LongRunningConfig;
 import com.google.api.codegen.config.MethodModel;
-import com.google.api.codegen.config.ProductServiceConfig;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
@@ -41,7 +42,6 @@ import com.google.api.codegen.viewmodel.DynamicLangXApiView;
 import com.google.api.codegen.viewmodel.GrpcStreamingDetailView;
 import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.TypeRef;
 import java.util.ArrayList;
@@ -80,7 +80,8 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
   @Override
   public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
     List<ViewModel> surfaceDocs = new ArrayList<>();
-    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+    ProtoApiModel apiModel = new ProtoApiModel(model);
+    for (InterfaceModel apiInterface : apiModel.getInterfaces(productConfig)) {
       ModelTypeTable modelTypeTable =
           new ModelTypeTable(
               new PhpTypeTable(productConfig.getPackageName()),
@@ -117,12 +118,11 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.protoFilename(context.getInterface().getFile().getSimpleName());
     String name = namer.getApiWrapperClassName(context.getInterfaceConfig());
     xapiClass.name(name);
-    ProductServiceConfig productServiceConfig = new ProductServiceConfig();
-    xapiClass.serviceAddress(
-        productServiceConfig.getServiceAddress(context.getInterface().getModel()));
-    xapiClass.servicePort(productServiceConfig.getServicePort());
-    xapiClass.serviceTitle(productServiceConfig.getTitle(context.getInterface().getModel()));
-    xapiClass.authScopes(productServiceConfig.getAuthScopes(context.getInterface().getModel()));
+    ApiModel model = context.getApiModel();
+    xapiClass.serviceAddress(model.getServiceAddress());
+    xapiClass.servicePort(model.getServicePort());
+    xapiClass.serviceTitle(model.getTitle());
+    xapiClass.authScopes(model.getAuthScopes());
 
     xapiClass.pathTemplates(pathTemplateTransformer.generatePathTemplates(context));
     xapiClass.formatResourceFunctions(

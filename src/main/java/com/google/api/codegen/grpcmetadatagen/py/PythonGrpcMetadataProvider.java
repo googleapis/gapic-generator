@@ -15,6 +15,7 @@
 package com.google.api.codegen.grpcmetadatagen.py;
 
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.grpcmetadatagen.GrpcMetadataProvider;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
@@ -45,7 +46,8 @@ public class PythonGrpcMetadataProvider implements GrpcMetadataProvider {
     docs.putAll(copierResult.docs());
     PythonGrpcMetadataTransformer pythonTransformer =
         new PythonGrpcMetadataTransformer(copierResult);
-    metadataViews.addAll(pythonTransformer.transform(model, config));
+    ProtoApiModel apiModel = new ProtoApiModel(model);
+    metadataViews.addAll(pythonTransformer.transform(apiModel, config));
 
     for (PackageMetadataView view : metadataViews) {
       CommonSnippetSetRunner runner = new CommonSnippetSetRunner(view);

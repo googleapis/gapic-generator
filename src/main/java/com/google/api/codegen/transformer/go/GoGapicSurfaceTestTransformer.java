@@ -14,10 +14,11 @@
  */
 package com.google.api.codegen.transformer.go;
 
-import com.google.api.codegen.InterfaceView;
+import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
@@ -47,7 +48,6 @@ import com.google.api.codegen.viewmodel.testing.MockServiceImplView;
 import com.google.api.codegen.viewmodel.testing.MockServiceUsageView;
 import com.google.api.codegen.viewmodel.testing.SmokeTestClassView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
-import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import java.io.File;
 import java.util.ArrayList;
@@ -79,9 +79,10 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
   public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
     GoSurfaceNamer namer = new GoSurfaceNamer(productConfig.getPackageName());
     List<ViewModel> models = new ArrayList<ViewModel>();
-    models.add(generateMockServiceView(model, productConfig, namer));
+    ProtoApiModel apiModel = new ProtoApiModel(model);
+    models.add(generateMockServiceView(apiModel, productConfig, namer));
 
-    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+    for (InterfaceModel apiInterface : apiModel.getInterfaces(productConfig)) {
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
               apiInterface,
@@ -97,7 +98,7 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
   }
 
   private MockCombinedView generateMockServiceView(
-      Model model, GapicProductConfig productConfig, SurfaceNamer namer) {
+      ApiModel model, GapicProductConfig productConfig, SurfaceNamer namer) {
     ModelTypeTable typeTable = GoGapicSurfaceTransformer.createTypeTable();
     List<MockServiceImplView> impls = new ArrayList<>();
     List<ClientTestClassView> testClasses = new ArrayList<>();
@@ -114,7 +115,7 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
               .grpcMethods(mockServiceTransformer.createMockGrpcMethodViews(context))
               .build());
     }
-    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
       // We don't need any import here.
       GapicInterfaceContext context =
           GapicInterfaceContext.create(

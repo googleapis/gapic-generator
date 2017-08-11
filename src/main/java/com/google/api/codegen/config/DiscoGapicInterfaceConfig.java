@@ -146,7 +146,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
           retrySettingsDefinition,
           requiredConstructorParams,
           manualDoc,
-          new DiscoInterfaceModel(interfaceNameOverride),
+          new DiscoInterfaceModel(interfaceNameOverride, document),
           interfaceNameOverride,
           smokeTestConfig,
           methodConfigMap,

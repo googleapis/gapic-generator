@@ -15,15 +15,16 @@
 package com.google.api.codegen.transformer.nodejs;
 
 import com.google.api.codegen.GeneratorVersionProvider;
-import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.TargetLanguage;
+import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig;
+import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.LongRunningConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.config.ProductServiceConfig;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.nodejs.NodeJSUtils;
@@ -51,7 +52,6 @@ import com.google.api.codegen.viewmodel.PathTemplateGetterFunctionView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexRequireView;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexView;
-import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
@@ -91,18 +91,19 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
 
   @Override
   public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
-    Iterable<Interface> apiInterfaces = new InterfaceView().getElementIterable(model);
+    ApiModel apiModel = new ProtoApiModel(model);
+    Iterable<? extends InterfaceModel> apiInterfaces = apiModel.getInterfaces(productConfig);
     ImmutableList.Builder<ViewModel> models = ImmutableList.builder();
     models.addAll(generateIndexViews(apiInterfaces, productConfig));
-    models.addAll(generateApiClasses(model, productConfig));
+    models.addAll(generateApiClasses(apiModel, productConfig));
     return models.build();
   }
 
-  private List<ViewModel> generateApiClasses(Model model, GapicProductConfig productConfig) {
+  private List<ViewModel> generateApiClasses(ApiModel model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ViewModel> models = ImmutableList.builder();
-    Iterable<Interface> interfaces = new InterfaceView().getElementIterable(model);
+    Iterable<? extends InterfaceModel> interfaces = model.getInterfaces(productConfig);
     boolean hasMultipleServices = Iterables.size(interfaces) > 1;
-    for (Interface apiInterface : interfaces) {
+    for (InterfaceModel apiInterface : interfaces) {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
       models.add(generateApiClass(context, hasMultipleServices));
     }
@@ -127,12 +128,11 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.doc(serviceTransformer.generateServiceDoc(context, methods.get(0)));
     xapiClass.stubs(grpcStubTransformer.generateGrpcStubs(context));
 
-    ProductServiceConfig productServiceConfig = new ProductServiceConfig();
-    xapiClass.serviceAddress(
-        productServiceConfig.getServiceAddress(context.getInterface().getModel()));
-    xapiClass.servicePort(productServiceConfig.getServicePort());
-    xapiClass.serviceTitle(productServiceConfig.getTitle(context.getInterface().getModel()));
-    xapiClass.authScopes(productServiceConfig.getAuthScopes(context.getInterface().getModel()));
+    ApiModel model = context.getApiModel();
+    xapiClass.serviceAddress(model.getServiceAddress());
+    xapiClass.servicePort(model.getServicePort());
+    xapiClass.serviceTitle(model.getTitle());
+    xapiClass.authScopes(model.getAuthScopes());
     xapiClass.hasDefaultServiceAddress(context.getInterfaceConfig().hasDefaultServiceAddress());
     xapiClass.hasDefaultServiceScopes(context.getInterfaceConfig().hasDefaultServiceScopes());
 
@@ -260,7 +260,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private List<ViewModel> generateIndexViews(
-      Iterable<Interface> apiInterfaces, GapicProductConfig productConfig) {
+      Iterable<? extends InterfaceModel> apiInterfaces, GapicProductConfig productConfig) {
     ArrayList<ViewModel> indexViews = new ArrayList<>();
     NodeJSSurfaceNamer namer =
         new NodeJSSurfaceNamer(productConfig.getPackageName(), NodeJSUtils.isGcloud(productConfig));
@@ -268,7 +268,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
     boolean hasVersion = version != null && !version.isEmpty();
     ArrayList<VersionIndexRequireView> requireViews = new ArrayList<>();
     boolean packageHasMultipleServices = Iterables.size(apiInterfaces) > 1;
-    for (Interface apiInterface : apiInterfaces) {
+    for (InterfaceModel apiInterface : apiInterfaces) {
       Name serviceName = namer.getReducedServiceName(apiInterface.getSimpleName());
       String localName =
           hasVersion ? serviceName.join(version).toLowerCamel() : serviceName.toLowerCamel();
@@ -327,9 +327,9 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private List<GrpcStubView> versionIndexStubs(
-      Iterable<Interface> apiInterfaces, GapicProductConfig productConfig) {
+      Iterable<? extends InterfaceModel> apiInterfaces, GapicProductConfig productConfig) {
     ImmutableList.Builder<GrpcStubView> stubs = ImmutableList.builder();
-    for (Interface apiInterface : apiInterfaces) {
+    for (InterfaceModel apiInterface : apiInterfaces) {
       stubs.addAll(
           grpcStubTransformer.generateGrpcStubs(createContext(apiInterface, productConfig)));
     }
@@ -337,7 +337,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private GapicInterfaceContext createContext(
-      Interface apiInterface, GapicProductConfig productConfig) {
+      InterfaceModel apiInterface, GapicProductConfig productConfig) {
     return GapicInterfaceContext.create(
         apiInterface,
         productConfig,

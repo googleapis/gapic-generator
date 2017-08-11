@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
@@ -27,6 +28,8 @@ import java.util.List;
  * for client library generation.
  */
 public interface InterfaceContext extends TransformationContext {
+
+  ApiModel getApiModel();
 
   InterfaceConfig getInterfaceConfig();
 

@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.InterfaceView;
+import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.ApiSource;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicInterfaceConfig;
@@ -97,6 +98,11 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
 
   public Model getModel() {
     return getInterface().getModel();
+  }
+
+  @Override
+  public ApiModel getApiModel() {
+    return getInterfaceModel().getApiModel();
   }
 
   public Interface getInterface() {
@@ -326,6 +332,6 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
 
   @Override
   public String serviceTitle() {
-    return getModel().getServiceConfig().getTitle();
+    return getApiModel().getTitle();
   }
 }

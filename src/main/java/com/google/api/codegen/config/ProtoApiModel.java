@@ -17,8 +17,11 @@ package com.google.api.codegen.config;
 import com.google.api.Authentication;
 import com.google.api.AuthenticationRule;
 import com.google.api.Service;
-import com.google.api.codegen.discovery.Document;
+import com.google.api.codegen.InterfaceView;
+import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -29,25 +32,39 @@ import java.util.TreeSet;
  *
  * <p>The scope of this configuration is at the product level, and covers multiple API interfaces.
  */
-public class ProductServiceConfig {
-  /** Return the service address. */
-  public String getServiceAddress(Model model) {
-    return model.getServiceConfig().getName();
+public class ProtoApiModel implements ApiModel {
+  private final Model protoModel;
+  private ImmutableList<ProtoInterfaceModel> interfaceModels;
+
+  public ProtoApiModel(Model protoModel) {
+    this.protoModel = protoModel;
+  }
+
+  @Override
+  public ApiSource getApiSource() {
+    return ApiSource.PROTO;
+  }
+
+  @Override
+  public String getServiceAddress() {
+    return protoModel.getServiceConfig().getName();
   }
 
   /** Return the service port. TODO(cbao): Read the port from config. */
+  @Override
   public Integer getServicePort() {
     return 443;
   }
 
-  public String getTitle(Model model) {
-    return model.getServiceConfig().getTitle();
+  @Override
+  public String getTitle() {
+    return protoModel.getServiceConfig().getTitle();
   }
 
-  /** Return a list of scopes for authentication. */
-  public List<String> getAuthScopes(Model model) {
+  @Override
+  public List<String> getAuthScopes() {
     Set<String> result = new TreeSet<>();
-    Service config = model.getServiceConfig();
+    Service config = protoModel.getServiceConfig();
     Authentication auth = config.getAuthentication();
     for (AuthenticationRule rule : auth.getRulesList()) {
       // Scopes form a union and the union is used for down-scoping, so adding more scopes that
@@ -62,8 +79,37 @@ public class ProductServiceConfig {
     return new ArrayList<>(result);
   }
 
-  /** Return a list of scopes for authentication. */
-  public List<String> getAuthScopes(Document document) {
-    return document.authScopes();
+  @Override
+  public ProtoInterfaceModel lookupInterface(String interfaceName) {
+    return new ProtoInterfaceModel(protoModel.getSymbolTable().lookupInterface(interfaceName));
+  }
+
+  @Override
+  public boolean hasMultipleServices(GapicProductConfig productConfig) {
+    return Iterables.size(getInterfaces(productConfig)) > 1;
+  }
+
+  @Override
+  public String getServiceName() {
+    return protoModel.getServiceConfig().getName();
+  }
+
+  @Override
+  public String getDocumentationSummary() {
+    return protoModel.getServiceConfig().getDocumentation().getSummary();
+  }
+
+  @Override
+  public Iterable<ProtoInterfaceModel> getInterfaces(GapicProductConfig productConfig) {
+    if (interfaceModels != null) {
+      return interfaceModels;
+    }
+    Iterable<Interface> interfaces = new InterfaceView().getElementIterable(protoModel);
+    ImmutableList.Builder<ProtoInterfaceModel> intfModels = ImmutableList.builder();
+    for (Interface intf : interfaces) {
+      intfModels.add(new ProtoInterfaceModel(intf));
+    }
+    interfaceModels = intfModels.build();
+    return interfaceModels;
   }
 }
