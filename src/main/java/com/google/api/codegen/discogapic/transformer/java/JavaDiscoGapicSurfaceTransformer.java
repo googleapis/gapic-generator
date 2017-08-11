@@ -684,6 +684,7 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
     return settingsDoc.build();
   }
 
+  // TODO(andrealin): Stick this in a util class shared with the Java gapic transformer.
   private List<StaticLangApiMethodView> generateApiMethods(DiscoGapicInterfaceContext context) {
     List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
 
