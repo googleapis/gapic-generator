@@ -18,13 +18,12 @@ import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.DiscoApiModel;
-import com.google.api.codegen.config.DiscoGapicInterfaceConfig;
-import com.google.api.codegen.config.DiscoInterfaceModel;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
@@ -36,7 +35,6 @@ import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
 import com.google.api.codegen.transformer.BatchingTransformer;
 import com.google.api.codegen.transformer.DiscoGapicInterfaceContext;
-import com.google.api.codegen.transformer.DiscoGapicMethodContext;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.InterfaceContext;
@@ -49,9 +47,11 @@ import com.google.api.codegen.transformer.ServiceTransformer;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.transformer.SurfaceTransformer;
 import com.google.api.codegen.transformer.java.JavaFeatureConfig;
 import com.google.api.codegen.transformer.java.JavaSchemaTypeNameConverter;
 import com.google.api.codegen.transformer.java.JavaSurfaceNamer;
+import com.google.api.codegen.transformer.java.JavaSurfaceTransformer;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaTypeTable;
@@ -78,7 +78,8 @@ import java.util.Arrays;
 import java.util.List;
 
 /** The ModelToViewTransformer to transform a Document into the standard GAPIC surface in Java. */
-public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransformer {
+public class JavaDiscoGapicSurfaceTransformer
+    implements DocumentToViewTransformer, SurfaceTransformer {
   private final GapicCodePathMapper pathMapper;
   private final PackageMetadataConfig packageMetadataConfig;
   private final ServiceTransformer serviceTransformer = new ServiceTransformer();
@@ -124,68 +125,42 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
 
   @Override
   public List<ViewModel> transform(Document document, GapicProductConfig productConfig) {
-    List<ViewModel> surfaceDocs = new ArrayList<>();
-    JavaNameFormatter javaNameFormatter = new JavaNameFormatter();
-    String packageName = productConfig.getPackageName();
-    SurfaceNamer namer = new JavaSurfaceNamer(packageName, packageName, javaNameFormatter);
-    DiscoGapicNamer discoGapicNamer = new DiscoGapicNamer(namer);
-
-    List<ServiceDocView> serviceDocs = new ArrayList<>();
-    DiscoApiModel model = new DiscoApiModel(document);
-    for (DiscoInterfaceModel interfaceModel : model.getInterfaces(productConfig)) {
-      boolean enableStringFormatFunctions = productConfig.getResourceNameMessageConfigs().isEmpty();
-      DiscoGapicInterfaceContext context =
-          DiscoGapicInterfaceContext.createWithInterface(
-              interfaceModel,
-              productConfig,
-              createTypeTable(productConfig.getPackageName()),
-              discoGapicNamer,
-              JavaFeatureConfig.newBuilder()
-                  .enableStringFormatFunctions(enableStringFormatFunctions)
-                  .build());
-      StaticLangFileView<StaticLangApiView> apiFile = generateApiFile(context);
-      surfaceDocs.add(apiFile);
-
-      serviceDocs.add(apiFile.classView().doc());
-
-      context = context.withNewTypeTable();
-      StaticLangApiMethodView exampleApiMethod =
-          getExampleApiMethod(apiFile.classView().apiMethods());
-      StaticLangFileView<StaticLangSettingsView> settingsFile =
-          generateSettingsFile(context, exampleApiMethod);
-      surfaceDocs.add(settingsFile);
-
-      context = context.withNewTypeTable(namer.getStubPackageName());
-      StaticLangFileView<StaticLangStubInterfaceView> stubInterfaceFile =
-          generateStubInterfaceFile(context);
-      surfaceDocs.add(stubInterfaceFile);
-
-      context = context.withNewTypeTable(namer.getStubPackageName());
-      StaticLangFileView<StaticLangRpcStubView> rpcStubFile = generateHttpStubClassFile(context);
-      surfaceDocs.add(rpcStubFile);
-    }
-
-    StaticLangPagedResponseWrappersView pagedResponseWrappers =
-        generatePagedResponseWrappers(
-            document, productConfig, packageMetadataConfig.releaseLevel(TargetLanguage.JAVA));
-    if (pagedResponseWrappers != null) {
-      surfaceDocs.add(pagedResponseWrappers);
-    }
-
-    PackageInfoView packageInfo = generatePackageInfo(model, productConfig, namer, serviceDocs);
-    surfaceDocs.add(packageInfo);
-
-    return surfaceDocs;
+    JavaSurfaceTransformer surfaceTransformer =
+        new JavaSurfaceTransformer(
+            pathMapper, packageMetadataConfig, this, RPC_STUB_TEMPLATE_FILENAME);
+    return surfaceTransformer.transform(new DiscoApiModel(document), productConfig);
   }
 
-  private SchemaTypeTable createTypeTable(String implicitPackageName) {
+  @Override
+  public DiscoGapicInterfaceContext createInterfaceContext(
+      InterfaceModel apiInterface,
+      GapicProductConfig productConfig,
+      SurfaceNamer namer,
+      boolean enableStringFormatFunctions) {
+    return DiscoGapicInterfaceContext.createWithInterface(
+        apiInterface,
+        productConfig,
+        createTypeTable(productConfig.getPackageName()),
+        new DiscoGapicNamer(namer),
+        JavaFeatureConfig.newBuilder()
+            .enableStringFormatFunctions(enableStringFormatFunctions)
+            .build());
+  }
+
+  @Override
+  public SchemaTypeTable createTypeTable(String implicitPackageName) {
     return new SchemaTypeTable(
         new JavaTypeTable(implicitPackageName),
         new JavaSchemaTypeNameConverter(implicitPackageName, nameFormatter));
   }
 
-  private StaticLangFileView<StaticLangApiView> generateApiFile(
-      DiscoGapicInterfaceContext context) {
+  @Override
+  public JavaSurfaceNamer createSurfaceNamer(GapicProductConfig productConfig) {
+    return new JavaSurfaceNamer(
+        productConfig.getPackageName(), productConfig.getPackageName(), new JavaNameFormatter());
+  }
+
+  private StaticLangFileView<StaticLangApiView> generateApiFile(InterfaceContext context) {
     StaticLangFileView.Builder<StaticLangApiView> apiFile =
         StaticLangFileView.<StaticLangApiView>newBuilder();
 
@@ -205,9 +180,9 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
     return apiFile.build();
   }
 
-  private StaticLangApiView generateApiClass(DiscoGapicInterfaceContext context) {
+  private StaticLangApiView generateApiClass(InterfaceContext context) {
     SurfaceNamer namer = context.getNamer();
-    DiscoGapicInterfaceConfig interfaceConfig = context.getInterfaceConfig();
+    InterfaceConfig interfaceConfig = context.getInterfaceConfig();
 
     addApiImports(context);
 
@@ -406,7 +381,7 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
   }
 
   private StaticLangSettingsView generateSettingsClass(
-      DiscoGapicInterfaceContext context, StaticLangApiMethodView exampleApiMethod) {
+      InterfaceContext context, StaticLangApiMethodView exampleApiMethod) {
     ApiModel model = context.getApiModel();
     addSettingsImports(context);
 
@@ -448,13 +423,14 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
     xsettingsClass.stubInterfaceName(
         getAndSaveNicknameForStubType(context, namer.getApiStubInterfaceName(interfaceConfig)));
     xsettingsClass.rpcStubClassName(
-        getAndSaveNicknameForStubType(context, namer.getApiHttpStubClassName(interfaceConfig)));
+        getAndSaveNicknameForStubType(
+            context, namer.getApiRpcStubClassName(interfaceConfig, TransportProtocol.HTTP)));
 
     return xsettingsClass.build();
   }
 
   private StaticLangFileView<StaticLangStubInterfaceView> generateStubInterfaceFile(
-      DiscoGapicInterfaceContext context) {
+      InterfaceContext context) {
     StaticLangFileView.Builder<StaticLangStubInterfaceView> fileView =
         StaticLangFileView.<StaticLangStubInterfaceView>newBuilder();
 
@@ -474,13 +450,13 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
     return fileView.build();
   }
 
-  private StaticLangStubInterfaceView generateStubInterface(DiscoGapicInterfaceContext context) {
-    DiscoGapicInterfaceConfig interfaceConfig = context.getInterfaceConfig();
+  private StaticLangStubInterfaceView generateStubInterface(InterfaceContext context) {
+    InterfaceConfig interfaceConfig = context.getInterfaceConfig();
 
     addStubInterfaceImports(context);
 
     // Stub class has different default package name from methods classes.
-    DiscoGapicInterfaceContext apiMethodsContext =
+    InterfaceContext apiMethodsContext =
         context.withNewTypeTable(context.getNamer().getRootPackageName());
     List<StaticLangApiMethodView> methods = generateApiMethods(apiMethodsContext);
     for (TypeAlias alias :
@@ -515,7 +491,10 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
     String outputPath =
         pathMapper.getOutputPath(
             context.getInterfaceModel().getFullName(), context.getProductConfig());
-    String className = context.getNamer().getApiHttpStubClassName(context.getInterfaceConfig());
+    String className =
+        context
+            .getNamer()
+            .getApiRpcStubClassName(context.getInterfaceConfig(), TransportProtocol.HTTP);
     fileView.outputPath(
         outputPath + File.separator + "stub" + File.separator + className + ".java");
 
@@ -525,14 +504,14 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
     return fileView.build();
   }
 
-  private StaticLangRpcStubView generateRpcStubClass(DiscoGapicInterfaceContext context) {
+  private StaticLangRpcStubView generateRpcStubClass(InterfaceContext context) {
     SurfaceNamer namer = context.getNamer();
-    DiscoGapicInterfaceConfig interfaceConfig = context.getInterfaceConfig();
+    InterfaceConfig interfaceConfig = context.getInterfaceConfig();
 
     addRpcStubImports(context);
 
     // Stub class has different default package name from method, request, and resource classes.
-    DiscoGapicInterfaceContext apiMethodsContext =
+    InterfaceContext apiMethodsContext =
         context.withNewTypeTable(context.getNamer().getRootPackageName());
     List<StaticLangApiMethodView> methods = generateApiMethods(apiMethodsContext);
 
@@ -540,7 +519,7 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
 
     stubClass.doc(serviceTransformer.generateServiceDoc(context, null));
 
-    String name = namer.getApiHttpStubClassName(interfaceConfig);
+    String name = namer.getApiRpcStubClassName(interfaceConfig, TransportProtocol.HTTP);
     stubClass.releaseLevelAnnotation(
         namer.getReleaseAnnotation(packageMetadataConfig.releaseLevel(TargetLanguage.JAVA)));
     stubClass.name(name);
@@ -564,8 +543,7 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
     return stubClass.build();
   }
 
-  private String getAndSaveNicknameForRootType(
-      DiscoGapicInterfaceContext context, String nickname) {
+  private String getAndSaveNicknameForRootType(InterfaceContext context, String nickname) {
     SurfaceNamer namer = context.getNamer();
     ImportTypeTable typeTable = context.getImportTypeTable();
 
@@ -627,7 +605,6 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
 
   private void addApiImports(InterfaceContext context) {
     ImportTypeTable typeTable = context.getImportTypeTable();
-    // TODO several of these can be deleted (e.g. DiscoGapic doesn't use grpc)
     typeTable.saveNicknameFor("com.google.api.core.BetaApi");
     typeTable.saveNicknameFor("com.google.api.gax.core.BackgroundResource");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.UnaryCallable");
@@ -699,7 +676,7 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
     }
   }
 
-  private void addRpcStubImports(DiscoGapicInterfaceContext context) {
+  private void addRpcStubImports(InterfaceContext context) {
     ImportTypeTable typeTable = context.getImportTypeTable();
 
     typeTable.saveNicknameFor("com.google.api.core.BetaApi");
@@ -715,7 +692,7 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
     typeTable.saveNicknameFor("javax.annotation.Generated");
   }
 
-  private void addStubInterfaceImports(DiscoGapicInterfaceContext context) {
+  private void addStubInterfaceImports(InterfaceContext context) {
     ImportTypeTable typeTable = context.getImportTypeTable();
 
     typeTable.saveNicknameFor("com.google.api.core.BetaApi");
@@ -723,7 +700,7 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
     typeTable.saveNicknameFor("com.google.api.gax.rpc.UnaryCallable");
     typeTable.saveNicknameFor("javax.annotation.Generated");
 
-    DiscoGapicInterfaceConfig interfaceConfig = context.getInterfaceConfig();
+    InterfaceConfig interfaceConfig = context.getInterfaceConfig();
     if (interfaceConfig.hasLongRunningOperations()) {
       typeTable.saveNicknameFor("com.google.longrunning.Operation");
       typeTable.saveNicknameFor("com.google.longrunning.stub.OperationsStub");
@@ -751,7 +728,7 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
   }
 
   public SettingsDocView generateSettingsDoc(
-      DiscoGapicInterfaceContext context, StaticLangApiMethodView exampleApiMethod) {
+      InterfaceContext context, StaticLangApiMethodView exampleApiMethod) {
     SurfaceNamer namer = context.getNamer();
     SettingsDocView.Builder settingsDoc = SettingsDocView.newBuilder();
     ApiModel model = context.getApiModel();
@@ -771,19 +748,18 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
   }
 
   // TODO(andrealin): Stick this in a util class shared with the Java gapic transformer.
-  private List<StaticLangApiMethodView> generateApiMethods(DiscoGapicInterfaceContext context) {
+  private List<StaticLangApiMethodView> generateApiMethods(InterfaceContext context) {
     List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
 
     for (MethodModel method : context.getSupportedMethods()) {
       MethodConfig methodConfig = context.getMethodConfig(method);
-      DiscoGapicMethodContext requestMethodContext = context.asRequestMethodContext(method);
+      MethodContext requestMethodContext = context.asRequestMethodContext(method);
 
       if (methodConfig.isPageStreaming()) {
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
-            DiscoGapicMethodContext flattenedMethodContext =
-                context.asFlattenedMethodContext(
-                    method, flatteningGroup, context.getInterfaceName());
+            MethodContext flattenedMethodContext =
+                context.asFlattenedMethodContext(method, flatteningGroup);
             apiMethods.add(
                 apiMethodTransformer.generatePagedFlattenedMethod(flattenedMethodContext));
           }
@@ -795,9 +771,8 @@ public class JavaDiscoGapicSurfaceTransformer implements DocumentToViewTransform
       } else {
         if (methodConfig.isFlattening()) {
           for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
-            DiscoGapicMethodContext flattenedMethodContext =
-                context.asFlattenedMethodContext(
-                    method, flatteningGroup, context.getInterfaceName());
+            MethodContext flattenedMethodContext =
+                context.asFlattenedMethodContext(method, flatteningGroup);
             apiMethods.add(apiMethodTransformer.generateFlattenedMethod(flattenedMethodContext));
           }
         }

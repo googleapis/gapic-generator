@@ -501,7 +501,10 @@ public class JavaSurfaceTransformer {
 
     addRpcStubImports(context);
 
-    List<StaticLangApiMethodView> methods = generateApiMethods(context);
+    // Stub class has different default package name from method, request, and resource classes.
+    InterfaceContext apiMethodsContext =
+        context.withNewTypeTable(context.getNamer().getRootPackageName());
+    List<StaticLangApiMethodView> methods = generateApiMethods(apiMethodsContext);
 
     StaticLangRpcStubView.Builder stubClass = StaticLangRpcStubView.newBuilder();
 
@@ -514,12 +517,20 @@ public class JavaSurfaceTransformer {
     stubClass.name(name);
     stubClass.parentName(namer.getApiStubInterfaceName(interfaceConfig));
     stubClass.settingsClassName(
-        getAndSaveNicknameForRootType(context, namer.getApiSettingsClassName(interfaceConfig)));
-    stubClass.directCallables(apiCallableTransformer.generateStaticLangDirectCallables(context));
-    stubClass.apiCallables(apiCallableTransformer.generateStaticLangApiCallables(context));
+        getAndSaveNicknameForRootType(
+            apiMethodsContext, namer.getApiSettingsClassName(interfaceConfig)));
+    stubClass.directCallables(
+        apiCallableTransformer.generateStaticLangDirectCallables(apiMethodsContext));
+    stubClass.apiCallables(
+        apiCallableTransformer.generateStaticLangApiCallables(apiMethodsContext));
     stubClass.callableMethods(filterIncludeCallableMethods(methods));
     stubClass.hasDefaultInstance(interfaceConfig.hasDefaultInstance());
     stubClass.hasLongRunningOperations(interfaceConfig.hasLongRunningOperations());
+
+    for (TypeAlias alias :
+        apiMethodsContext.getImportTypeTable().getTypeTable().getAllImports().values()) {
+      context.getImportTypeTable().getAndSaveNicknameFor(alias);
+    }
 
     return stubClass.build();
   }
@@ -590,9 +601,12 @@ public class JavaSurfaceTransformer {
     typeTable.saveNicknameFor("com.google.api.gax.core.BackgroundResource");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.UnaryCallable");
     typeTable.saveNicknameFor("com.google.api.pathtemplate.PathTemplate");
+    typeTable.saveNicknameFor("java.util.concurrent.TimeUnit");
     typeTable.saveNicknameFor("java.io.Closeable");
     typeTable.saveNicknameFor("java.io.IOException");
-    typeTable.saveNicknameFor("java.util.concurrent.TimeUnit");
+    typeTable.saveNicknameFor("java.util.ArrayList");
+    typeTable.saveNicknameFor("java.util.List");
+    typeTable.saveNicknameFor("java.util.concurrent.ScheduledExecutorService");
     typeTable.saveNicknameFor("javax.annotation.Generated");
 
     if (context.getInterfaceConfig().hasLongRunningOperations()) {
@@ -685,7 +699,6 @@ public class JavaSurfaceTransformer {
     typeTable.saveNicknameFor("com.google.api.core.BetaApi");
     typeTable.saveNicknameFor("com.google.api.gax.core.BackgroundResource");
     typeTable.saveNicknameFor("com.google.api.gax.core.BackgroundResourceAggregation");
-
     typeTable.saveNicknameFor("com.google.api.gax.rpc.ClientContext");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.UnaryCallable");
     typeTable.saveNicknameFor("java.io.IOException");
