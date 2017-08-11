@@ -100,9 +100,31 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public List<String> getDocLines(Method method, GapicMethodConfig methodConfig) {
-    String text = DocumentationUtil.getDescription(method);
-    text = lowerFirstLetter(text);
-    return super.getDocLines(getApiMethodName(method, methodConfig.getVisibility()) + " " + text);
+    return super.getDocLines(
+        putDocMethodName(
+            method.getSimpleName(),
+            DocumentationUtil.getDescription(method),
+            methodConfig.getVisibility()));
+  }
+
+  /**
+   * Docs in Go usually starts with the name of the method. Prepend the method name if the name
+   * isn't already the first word.
+   */
+  @VisibleForTesting
+  String putDocMethodName(String methodName, String doc, VisibilityConfig visibility) {
+    doc = doc.trim();
+    String firstWord = doc.trim();
+    for (int i = 0; i < firstWord.length(); i++) {
+      if (Character.isWhitespace(firstWord.charAt(i))) {
+        firstWord = firstWord.substring(0, i);
+        break;
+      }
+    }
+    if (firstWord.equalsIgnoreCase(methodName)) {
+      return doc;
+    }
+    return getApiMethodName(Name.upperCamel(methodName), visibility) + " " + lowerFirstLetter(doc);
   }
 
   private static String lowerFirstLetter(String s) {
