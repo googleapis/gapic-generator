@@ -87,11 +87,12 @@ public class DiscoApiModel implements ApiModel {
 
   @Override
   public ApiSource getApiSource() {
-    return ApiSource.PROTO;
+    return ApiSource.DISCOVERY;
   }
 
   @Override
   public String getServiceAddress() {
+    // TODO(andrealin): Implement.
     return document.servicePath();
   }
 

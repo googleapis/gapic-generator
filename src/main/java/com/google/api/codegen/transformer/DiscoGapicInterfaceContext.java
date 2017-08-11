@@ -23,6 +23,7 @@ import com.google.api.codegen.config.DiscoveryMethodModel;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.VisibilityConfig;
@@ -80,11 +81,12 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   }
 
   public static DiscoGapicInterfaceContext createWithInterface(
-      DiscoInterfaceModel interfaceModel,
+      InterfaceModel interfaceModel,
       GapicProductConfig productConfig,
       SchemaTypeTable typeTable,
       DiscoGapicNamer discoGapicNamer,
       FeatureConfig featureConfig) {
+    Preconditions.checkArgument(interfaceModel.getApiSource().equals(ApiSource.DISCOVERY));
     ImmutableList.Builder<MethodModel> interfaceMethods = new ImmutableList.Builder<>();
 
     for (MethodConfig method :
@@ -93,7 +95,11 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
     }
 
     return new AutoValue_DiscoGapicInterfaceContext(
-        productConfig, typeTable, discoGapicNamer, interfaceModel, featureConfig);
+        productConfig,
+        typeTable,
+        discoGapicNamer,
+        (DiscoInterfaceModel) interfaceModel,
+        featureConfig);
   }
 
   public Document getDocument() {
@@ -168,6 +174,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
         getFeatureConfig());
   }
 
+  @Override
   public DiscoGapicInterfaceContext withNewTypeTable(String packageName) {
     return createWithInterface(
         getDocument(),

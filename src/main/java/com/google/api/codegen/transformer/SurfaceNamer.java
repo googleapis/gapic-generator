@@ -28,6 +28,7 @@ import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.config.SingleResourceNameConfig;
+import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Schema;
@@ -731,13 +732,16 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The name of the grpc stub for a particular proto interface; not used in most languages. */
-  public String getApiGrpcStubClassName(InterfaceConfig interfaceConfig) {
-    return publicClassName(Name.upperCamel("Grpc", interfaceConfig.getRawName(), "Stub"));
+  public String getApiRpcStubClassName(InterfaceConfig interfaceConfig) {
+    return getApiRpcStubClassName(interfaceConfig, TransportProtocol.GRPC);
   }
 
   /** The name of the http stub for a particular proto interface; not used in most languages. */
-  public String getApiHttpStubClassName(InterfaceConfig interfaceConfig) {
-    return publicClassName(Name.upperCamel("Http", interfaceConfig.getRawName(), "Stub"));
+  public String getApiRpcStubClassName(
+      InterfaceConfig interfaceConfig, TransportProtocol transportProtocol) {
+    return publicClassName(
+        Name.anyCamel(
+            transportProtocol.toString().toLowerCase(), interfaceConfig.getRawName(), "Stub"));
   }
 
   /** The name of the class that contains paged list response wrappers. */

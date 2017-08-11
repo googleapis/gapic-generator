@@ -55,6 +55,8 @@ public interface InterfaceContext extends TransformationContext {
 
   InterfaceContext withNewTypeTable();
 
+  InterfaceContext withNewTypeTable(String newPackageName);
+
   MethodContext asFlattenedMethodContext(MethodModel method, FlatteningConfig flatteningConfig);
 
   /* @return the methods in the interface. */

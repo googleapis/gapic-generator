@@ -145,6 +145,7 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
     return getProductConfig().getInterfaceConfig(getInterface());
   }
 
+  @Override
   public GapicInterfaceContext withNewTypeTable(String packageName) {
     return create(
         getInterface(),
