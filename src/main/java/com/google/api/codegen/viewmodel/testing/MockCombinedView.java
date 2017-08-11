@@ -68,7 +68,7 @@ public abstract class MockCombinedView implements ViewModel {
   }
 
   @Nullable
-  public abstract String apiWrapperModuleName();
+  public abstract String localPackageName();
 
   public abstract boolean packageHasMultipleServices();
 
@@ -97,7 +97,7 @@ public abstract class MockCombinedView implements ViewModel {
 
     public abstract Builder mockServices(List<MockServiceUsageView> val);
 
-    public abstract Builder apiWrapperModuleName(String val);
+    public abstract Builder localPackageName(String val);
 
     public abstract Builder outputPath(String val);
 
