@@ -156,6 +156,7 @@ public abstract class LongRunningConfig {
   }
 
   public String getLongRunningOperationReturnTypeName(ImportTypeTable typeTable) {
+    // TODO(andrealin): Support Discovery
     return ((ModelTypeTable) typeTable).getAndSaveNicknameFor(getReturnType());
   }
 
