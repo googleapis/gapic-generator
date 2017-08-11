@@ -15,7 +15,8 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.FieldType;
+import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.transformer.SchemaTypeNameConverter.BoxingBehavior;
 import com.google.api.codegen.util.TypeAlias;
@@ -64,14 +65,19 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
   }
 
   @Override
-  public String getEnumValue(FieldType type, String value) {
+  public String getEnumValue(FieldModel type, String value) {
     return getNotImplementedString("SchemaTypeTable.getFullNameFor(TypeRef type)");
   }
 
   /** Creates a new SchemaTypeTable of the same concrete type, but with an empty import set. */
   @Override
-  public ImportTypeTable cloneEmpty() {
+  public SchemaTypeTable cloneEmpty() {
     return new SchemaTypeTable(typeTable.cloneEmpty(), typeNameConverter);
+  }
+
+  @Override
+  public SchemaTypeTable cloneEmpty(String packageName) {
+    return new SchemaTypeTable(typeTable.cloneEmpty(packageName), typeNameConverter);
   }
 
   /** Compute the nickname for the given fullName and save it in the import set. */
@@ -120,25 +126,30 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
 
   /** Get the full name for the given type. */
   @Override
-  public String getFullNameFor(FieldType type) {
+  public String getFullNameFor(FieldModel type) {
     return getFullNameFor(type.getDiscoveryField());
+  }
+
+  @Override
+  public String getFullNameFor(InterfaceModel type) {
+    return type.getFullName();
   }
 
   /** Get the full name for the element type of the given type. */
   @Override
-  public String getFullNameForElementType(FieldType type) {
+  public String getFullNameForElementType(FieldModel type) {
     return getFullNameForElementType(type.getDiscoveryField());
   }
 
   /** Returns the nickname for the given type (without adding the full name to the import set). */
   @Override
-  public String getNicknameFor(FieldType type) {
+  public String getNicknameFor(FieldModel type) {
     return typeFormatter.getNicknameFor(type);
   }
 
   /** Renders the primitive value of the given type. */
   @Override
-  public String renderPrimitiveValue(FieldType type, String key) {
+  public String renderPrimitiveValue(FieldModel type, String key) {
     return renderPrimitiveValue(type.getDiscoveryField(), key);
   }
 
@@ -147,7 +158,7 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
    * nickname.
    */
   @Override
-  public String getAndSaveNicknameFor(FieldType type) {
+  public String getAndSaveNicknameFor(FieldModel type) {
     return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeName(type.getDiscoveryField()));
   }
 
@@ -166,7 +177,7 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
   }
 
   @Override
-  public String getAndSaveNicknameForElementType(FieldType type) {
+  public String getAndSaveNicknameForElementType(FieldModel type) {
     return getAndSaveNicknameFor(type.getDiscoveryField());
   }
 
@@ -178,14 +189,14 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
   }
 
   @Override
-  public String getSnippetZeroValueAndSaveNicknameFor(FieldType type) {
+  public String getSnippetZeroValueAndSaveNicknameFor(FieldModel type) {
     return typeNameConverter
         .getSnippetZeroValue(type.getDiscoveryField())
         .getValueAndSaveTypeNicknameIn(typeTable);
   }
 
   @Override
-  public String getImplZeroValueAndSaveNicknameFor(FieldType type) {
+  public String getImplZeroValueAndSaveNicknameFor(FieldModel type) {
     return typeNameConverter
         .getImplZeroValue(type.getDiscoveryField())
         .getValueAndSaveTypeNicknameIn(typeTable);

@@ -16,19 +16,26 @@ package com.google.api.codegen.transformer.go;
 
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.ServiceMessages;
+import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.ProductConfig;
 import com.google.api.codegen.config.ProductServiceConfig;
+import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
-import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.IamResourceTransformer;
+import com.google.api.codegen.transformer.ImportTypeTable;
+import com.google.api.codegen.transformer.InterfaceContext;
+import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PageStreamingTransformer;
@@ -51,7 +58,6 @@ import com.google.api.codegen.viewmodel.StaticLangClientFileView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.gax.core.RetrySettings;
 import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
@@ -126,7 +132,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
 
     SurfaceNamer namer = context.getNamer();
     Model model = context.getModel();
-    Interface apiInterface = context.getInterface();
+    ProtoInterfaceModel apiInterface = context.getInterfaceModel();
     GapicProductConfig productConfig = context.getProductConfig();
 
     view.templateFileName(API_TEMPLATE_FILENAME);
@@ -139,7 +145,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.serviceOriginalName(model.getServiceConfig().getTitle());
     view.servicePhraseName(namer.getServicePhraseName(apiInterface));
 
-    String outputPath = pathMapper.getOutputPath(apiInterface, productConfig);
+    String outputPath = pathMapper.getOutputPath(apiInterface.getFullName(), productConfig);
     String fileName = namer.getServiceFileName(context.getInterfaceConfig());
     view.outputPath(outputPath + File.separator + fileName);
 
@@ -156,9 +162,10 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.apiMethods(apiMethods);
 
     view.iamResources(iamResourceTransformer.generateIamResources(context));
-    // TODO(andrealin): Remove casting after abstracting away API source type from Method.
-    if (!(productConfig.getInterfaceConfig(apiInterface)).getIamResources().isEmpty()) {
-      context.getModelTypeTable().saveNicknameFor("cloud.google.com/go/iam;;;");
+    if (!((GapicInterfaceConfig) productConfig.getInterfaceConfig(apiInterface.getFullName()))
+        .getIamResources()
+        .isEmpty()) {
+      context.getImportTypeTable().saveNicknameFor("cloud.google.com/go/iam;;;");
     }
 
     // In Go, multiple methods share the same iterator type, one iterator type per resource type.
@@ -181,7 +188,8 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     }
     view.lroDetailViews(new ArrayList<LongRunningOperationDetailView>(lros.values()));
 
-    view.serviceAddress(productServiceConfig.getServiceAddress(apiInterface.getModel()));
+    view.serviceAddress(
+        productServiceConfig.getServiceAddress(apiInterface.getInterface().getModel()));
     view.servicePort(productServiceConfig.getServicePort());
 
     view.stubs(grpcStubTransformer.generateGrpcStubs(context));
@@ -192,17 +200,17 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     return view.build();
   }
 
-  private StaticLangClientExampleFileView generateExample(GapicInterfaceContext context) {
+  private StaticLangClientExampleFileView generateExample(InterfaceContext context) {
     StaticLangClientExampleFileView.Builder view = StaticLangClientExampleFileView.newBuilder();
 
     SurfaceNamer namer = context.getNamer();
-    Interface apiInterface = context.getInterface();
-    GapicProductConfig productConfig = context.getProductConfig();
+    InterfaceModel apiInterface = context.getInterfaceModel();
+    ProductConfig productConfig = context.getProductConfig();
 
     view.templateFileName(SAMPLE_TEMPLATE_FILENAME);
 
-    String outputPath = pathMapper.getOutputPath(apiInterface, productConfig);
-    String fileName = namer.getExampleFileName(apiInterface);
+    String outputPath = pathMapper.getOutputPath(apiInterface.getFullName(), productConfig);
+    String fileName = namer.getExampleFileName(context.getInterfaceModel());
     view.outputPath(outputPath + File.separator + fileName);
 
     view.clientTypeName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
@@ -217,7 +225,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     //   - The VKit generated library, that's what the sample is for
     //   - The input types of the methods, to initialize the requests
     // So, we clear all imports; addXExampleImports will add back the ones we want.
-    context.getModelTypeTable().getImports().clear();
+    context.getImportTypeTable().getImports().clear();
     addXExampleImports(context, context.getPublicMethods());
     view.fileHeader(fileHeaderTransformer.generateFileHeader(context));
 
@@ -254,11 +262,11 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
 
   @VisibleForTesting
   List<StaticLangApiMethodView> generateApiMethods(
-      GapicInterfaceContext context, List<Method> methods) {
+      InterfaceContext context, Iterable<MethodModel> methods) {
     List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
-    for (Method method : methods) {
+    for (MethodModel method : methods) {
       MethodConfig methodConfig = context.getMethodConfig(method);
-      GapicMethodContext methodContext = context.asRequestMethodContext(method);
+      MethodContext methodContext = context.asRequestMethodContext(method);
 
       if (method.getRequestStreaming() || method.getResponseStreaming()) {
         apiMethods.add(
@@ -276,9 +284,9 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
 
   @VisibleForTesting
   List<RetryConfigDefinitionView> generateRetryConfigDefinitions(
-      GapicInterfaceContext context, List<Method> methods) {
+      InterfaceContext context, List<MethodModel> methods) {
     Set<RetryConfigDefinitionView.Name> retryNames = new HashSet<>();
-    for (Method method : methods) {
+    for (MethodModel method : methods) {
       MethodConfig conf = context.getMethodConfig(method);
       retryNames.add(
           RetryConfigDefinitionView.Name.create(
@@ -308,8 +316,8 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
               .build());
     }
     if (!retryDef.isEmpty()) {
-      context.getModelTypeTable().saveNicknameFor("time;;;");
-      context.getModelTypeTable().saveNicknameFor("google.golang.org/grpc/codes;;;");
+      context.getImportTypeTable().saveNicknameFor("time;;;");
+      context.getImportTypeTable().saveNicknameFor("google.golang.org/grpc/codes;;;");
     }
     return new ArrayList<>(retryDef.values());
   }
@@ -317,8 +325,8 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   private static final String EMPTY_PROTO_PKG = "github.com/golang/protobuf/ptypes/empty";
 
   @VisibleForTesting
-  void addXApiImports(GapicInterfaceContext context, Collection<Method> methods) {
-    ModelTypeTable typeTable = context.getModelTypeTable();
+  void addXApiImports(InterfaceContext context, Collection<MethodModel> methods) {
+    ImportTypeTable typeTable = context.getImportTypeTable();
     typeTable.saveNicknameFor("cloud.google.com/go/internal/version;;;");
     typeTable.saveNicknameFor("golang.org/x/net/context;;;");
     typeTable.saveNicknameFor("google.golang.org/grpc;;;");
@@ -330,33 +338,33 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   @VisibleForTesting
-  void addXExampleImports(GapicInterfaceContext context, Collection<Method> methods) {
-    ModelTypeTable typeTable = context.getModelTypeTable();
+  void addXExampleImports(InterfaceContext context, Iterable<MethodModel> methods) {
+    ImportTypeTable typeTable = context.getImportTypeTable();
     typeTable.saveNicknameFor("golang.org/x/net/context;;;");
     typeTable.saveNicknameFor(context.getProductConfig().getPackageName() + ";;;");
 
-    for (Method method : methods) {
-      typeTable.getAndSaveNicknameFor(method.getInputType());
+    for (MethodModel method : methods) {
+      method.getAndSaveRequestTypeName(context.getImportTypeTable(), context.getNamer());
     }
     addContextImports(context, ImportContext.EXAMPLE, methods);
   }
 
   private void addContextImports(
-      GapicInterfaceContext context, ImportContext importContext, Collection<Method> methods) {
+      InterfaceContext context, ImportContext importContext, Iterable<MethodModel> methods) {
     for (ImportKind kind : getImportKinds(context.getInterfaceConfig(), methods)) {
       ImmutableList<String> imps = CONTEXTUAL_IMPORTS.get(importContext, kind);
       if (imps != null) {
         for (String imp : imps) {
-          context.getModelTypeTable().saveNicknameFor(imp);
+          context.getImportTypeTable().saveNicknameFor(imp);
         }
       }
     }
   }
 
   private Set<ImportKind> getImportKinds(
-      InterfaceConfig interfaceConfig, Collection<Method> methods) {
+      InterfaceConfig interfaceConfig, Iterable<MethodModel> methods) {
     EnumSet<ImportKind> kinds = EnumSet.noneOf(ImportKind.class);
-    for (Method method : methods) {
+    for (MethodModel method : methods) {
       if (method.getResponseStreaming()) {
         kinds.add(ImportKind.SERVER_STREAM);
       }

@@ -20,8 +20,8 @@ import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig;
 import com.google.api.codegen.config.LongRunningConfig;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProductServiceConfig;
-import com.google.api.codegen.config.ProtoField;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
@@ -42,7 +42,6 @@ import com.google.api.codegen.viewmodel.GrpcStreamingDetailView;
 import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.TypeRef;
 import java.util.ArrayList;
@@ -100,7 +99,8 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
 
   public List<ViewModel> transform(GapicInterfaceContext context) {
     String outputPath =
-        pathMapper.getOutputPath(context.getInterface(), context.getProductConfig());
+        pathMapper.getOutputPath(
+            context.getInterfaceModel().getFullName(), context.getProductConfig());
     SurfaceNamer namer = context.getNamer();
 
     List<ViewModel> surfaceData = new ArrayList<>();
@@ -139,11 +139,11 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.grpcStreamingDescriptors(createGrpcStreamingDescriptors(context));
 
     xapiClass.methodKeys(generateMethodKeys(context));
-    xapiClass.clientConfigPath(namer.getClientConfigPath(context.getInterface()));
+    xapiClass.clientConfigPath(namer.getClientConfigPath(context.getInterfaceModel()));
     xapiClass.interfaceKey(context.getInterface().getFullName());
     String grpcClientTypeName =
         namer.getAndSaveNicknameForGrpcClientTypeName(
-            context.getModelTypeTable(), context.getInterface());
+            context.getModelTypeTable(), context.getInterfaceModel());
     xapiClass.grpcClientTypeName(grpcClientTypeName);
 
     xapiClass.apiMethods(methods);
@@ -169,7 +169,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
       GapicInterfaceContext context) {
     List<LongRunningOperationDetailView> result = new ArrayList<>();
 
-    for (Method method : context.getLongRunningMethods()) {
+    for (MethodModel method : context.getLongRunningMethods()) {
       GapicMethodContext methodContext = context.asDynamicMethodContext(method);
       LongRunningConfig lroConfig = methodContext.getMethodConfig().getLongRunningConfig();
       TypeRef returnType = lroConfig.getReturnType();
@@ -198,15 +198,13 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
       GapicInterfaceContext context) {
     List<GrpcStreamingDetailView> result = new ArrayList<>();
 
-    for (Method method : context.getGrpcStreamingMethods()) {
+    for (MethodModel method : context.getGrpcStreamingMethods()) {
       GrpcStreamingConfig grpcStreamingConfig =
           context.asDynamicMethodContext(method).getMethodConfig().getGrpcStreaming();
       String resourcesFieldGetFunction = null;
       if (grpcStreamingConfig.hasResourceField()) {
         resourcesFieldGetFunction =
-            context
-                .getNamer()
-                .getFieldGetFunctionName(new ProtoField(grpcStreamingConfig.getResourcesField()));
+            context.getNamer().getFieldGetFunctionName(grpcStreamingConfig.getResourcesField());
       }
       result.add(
           GrpcStreamingDetailView.newBuilder()
@@ -242,7 +240,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
   private List<String> generateMethodKeys(GapicInterfaceContext context) {
     List<String> methodKeys = new ArrayList<>(context.getInterface().getMethods().size());
 
-    for (Method method : context.getSupportedMethods()) {
+    for (MethodModel method : context.getSupportedMethods()) {
       methodKeys.add(context.getNamer().getMethodKey(method));
     }
 
@@ -252,7 +250,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
   private List<ApiMethodView> generateApiMethods(GapicInterfaceContext context) {
     List<ApiMethodView> apiMethods = new ArrayList<>(context.getInterface().getMethods().size());
 
-    for (Method method : context.getSupportedMethods()) {
+    for (MethodModel method : context.getSupportedMethods()) {
       apiMethods.add(apiMethodTransformer.generateMethod(context.asDynamicMethodContext(method)));
     }
 

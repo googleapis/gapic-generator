@@ -18,7 +18,9 @@ import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
@@ -51,7 +53,6 @@ import com.google.api.codegen.viewmodel.testing.MockServiceUsageView;
 import com.google.api.codegen.viewmodel.testing.SmokeTestClassView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
 import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
@@ -120,7 +121,8 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
               .name(testClassName)
               .apiName(
                   surfacePackageNamer.publicClassName(
-                      Name.upperCamelKeepUpperAcronyms(apiInterface.getSimpleName())))
+                      Name.upperCamelKeepUpperAcronyms(
+                          context.getInterfaceModel().getSimpleName())))
               .testCases(createTestCaseViews(context))
               .apiHasLongRunningMethods(context.getInterfaceConfig().hasLongRunningOperations())
               .missingDefaultServiceAddress(
@@ -152,7 +154,7 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
   private List<TestCaseView> createTestCaseViews(GapicInterfaceContext context) {
     ImmutableList.Builder<TestCaseView> testCaseViews = ImmutableList.builder();
     SymbolTable testNameTable = new SymbolTable();
-    for (Method method : context.getSupportedMethods()) {
+    for (MethodModel method : context.getSupportedMethods()) {
       GapicMethodContext methodContext = context.asRequestMethodContext(method);
       ClientMethodType clientMethodType = ClientMethodType.OptionalArrayMethod;
       if (methodContext.getMethodConfig().isLongRunningOperation()) {
@@ -213,7 +215,8 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
     String outputPath =
         Joiner.on(File.separator).join("tests", "system", "gapic", version, filename);
 
-    Method method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
+    MethodModel method =
+        new ProtoMethodModel(context.getInterfaceConfig().getSmokeTestConfig().getMethod());
     FlatteningConfig flatteningGroup =
         testCaseTransformer.getSmokeTestFlatteningGroup(
             context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());

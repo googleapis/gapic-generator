@@ -19,7 +19,10 @@ import static com.google.api.codegen.config.ApiSource.DISCOVERY;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.discovery.Schema.Format;
 import com.google.api.codegen.discovery.Schema.Type;
+import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.TypeName;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Preconditions;
@@ -27,10 +30,10 @@ import com.google.common.collect.ImmutableList;
 import java.util.List;
 
 /** Created by andrealin on 7/31/17. */
-public class DiscoveryField implements FieldType {
+public class DiscoveryField implements FieldModel {
   private final Schema schema;
 
-  /* Create a FieldType object from a non-null Schema object. */
+  /* Create a FieldModel object from a non-null Schema object. */
   public DiscoveryField(Schema schema) {
     Preconditions.checkNotNull(schema);
     this.schema = schema;
@@ -58,6 +61,11 @@ public class DiscoveryField implements FieldType {
   }
 
   @Override
+  public Name asName() {
+    return Name.anyCamel(getSimpleName());
+  }
+
+  @Override
   public String getTypeFullName() {
     return schema.getIdentifier();
   }
@@ -68,12 +76,12 @@ public class DiscoveryField implements FieldType {
   }
 
   @Override
-  public FieldType getMapKeyField() {
+  public FieldModel getMapKeyField() {
     throw new IllegalArgumentException("Discovery model types have no map keys.");
   }
 
   @Override
-  public FieldType getMapValueField() {
+  public FieldModel getMapValueField() {
     throw new IllegalArgumentException("Discovery model types have no map values.");
   }
 
@@ -93,6 +101,20 @@ public class DiscoveryField implements FieldType {
   }
 
   @Override
+  public String getParentSimpleName() {
+    return schema.parent().id();
+  }
+
+  @Override
+  public TypeName getParentTypeName(ImportTypeTable typeTable) {
+    if (schema.parent() instanceof Schema) {
+      DiscoveryField parent = new DiscoveryField((Schema) schema.parent());
+      return typeTable.getTypeTable().getTypeName(typeTable.getFullNameFor(parent));
+    }
+    return typeTable.getTypeTable().getTypeName(typeTable.getFullNameFor(this));
+  }
+
+  @Override
   public Cardinality getCardinality() {
     throw new IllegalArgumentException("Discovery model types have no defined Cardinality.");
   }
@@ -109,7 +131,7 @@ public class DiscoveryField implements FieldType {
 
   @Override
   public String toString() {
-    return String.format("Discovery FieldType (%s): {%s}", getApiSource(), schema.toString());
+    return String.format("Discovery FieldModel (%s): {%s}", getApiSource(), schema.toString());
   }
 
   @Override
@@ -127,7 +149,7 @@ public class DiscoveryField implements FieldType {
   @Override
   /* @Get the description of the element scoped to the visibility as currently set in the model. */
   public String getScopedDocumentation() {
-    return "Not yet implemented.";
+    return schema.description();
   }
 
   @Override

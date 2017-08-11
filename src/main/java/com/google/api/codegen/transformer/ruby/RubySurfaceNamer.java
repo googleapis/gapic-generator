@@ -14,23 +14,24 @@
  */
 package com.google.api.codegen.transformer.ruby;
 
-import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.FieldType;
-import com.google.api.codegen.config.GapicInterfaceConfig;
-import com.google.api.codegen.config.GapicMethodConfig;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
-import com.google.api.codegen.transformer.InterfaceContext;
+import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.Synchronicity;
+import com.google.api.codegen.transformer.TransformationContext;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NamePath;
@@ -39,7 +40,6 @@ import com.google.api.codegen.util.ruby.RubyCommentReformatter;
 import com.google.api.codegen.util.ruby.RubyNameFormatter;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
@@ -68,13 +68,13 @@ public class RubySurfaceNamer extends SurfaceNamer {
 
   /** The name of the class that implements snippets for a particular proto interface. */
   @Override
-  public String getApiSnippetsClassName(Interface apiInterface) {
+  public String getApiSnippetsClassName(InterfaceModel apiInterface) {
     return publicClassName(Name.upperCamel(apiInterface.getSimpleName(), "ClientSnippets"));
   }
 
   /** The function name to set a field. */
   @Override
-  public String getFieldSetFunctionName(FieldType field) {
+  public String getFieldSetFunctionName(FieldModel field) {
     return getFieldGetFunctionName(field);
   }
 
@@ -87,7 +87,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
   /** The function name to format the entity for the given collection. */
   @Override
   public String getFormatFunctionName(
-      Interface apiInterface, SingleResourceNameConfig resourceNameConfig) {
+      InterfaceModel apiInterface, SingleResourceNameConfig resourceNameConfig) {
     return staticFunctionName(Name.from(resourceNameConfig.getEntityName(), "path"));
   }
 
@@ -98,13 +98,13 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getClientConfigPath(Interface apiInterface) {
+  public String getClientConfigPath(InterfaceModel apiInterface) {
     return Name.upperCamel(apiInterface.getSimpleName()).join("client_config").toLowerUnderscore()
         + ".json";
   }
 
   @Override
-  public String getRequestVariableName(Method method) {
+  public String getRequestVariableName(MethodModel method) {
     return method.getRequestStreaming() ? "reqs" : "req";
   }
 
@@ -114,11 +114,20 @@ public class RubySurfaceNamer extends SurfaceNamer {
    */
   @Override
   public String getGrpcClientTypeName(Interface apiInterface) {
-    return getModelTypeFormatter().getFullNameFor(apiInterface);
+    return getGrpcClientTypeName(new ProtoInterfaceModel(apiInterface));
+  }
+
+  /**
+   * The type name of the Grpc client class. This needs to match what Grpc generates for the
+   * particular language.
+   */
+  @Override
+  public String getGrpcClientTypeName(InterfaceModel apiInterface) {
+    return getTypeFormatter().getFullNameFor(apiInterface);
   }
 
   @Override
-  public String getParamTypeName(ImportTypeTable typeTable, FieldType type) {
+  public String getParamTypeName(ImportTypeTable typeTable, FieldModel type) {
     if (type.isMap()) {
       String keyTypeName = typeTable.getFullNameForElementType(type.getMapKeyField());
       String valueTypeName = typeTable.getFullNameForElementType(type.getMapValueField());
@@ -152,40 +161,42 @@ public class RubySurfaceNamer extends SurfaceNamer {
 
   /** The type name for the message property */
   @Override
-  public String getMessagePropertyTypeName(ImportTypeTable importTypeTable, FieldType fieldType) {
-    if (fieldType.isMap()) {
-      String keyTypeName = importTypeTable.getFullNameForElementType(fieldType.getMapKeyField());
+  public String getMessagePropertyTypeName(ImportTypeTable importTypeTable, FieldModel fieldModel) {
+    if (fieldModel.isMap()) {
+      String keyTypeName = importTypeTable.getFullNameForElementType(fieldModel.getMapKeyField());
       String valueTypeName =
-          importTypeTable.getFullNameForElementType(fieldType.getMapValueField());
+          importTypeTable.getFullNameForElementType(fieldModel.getMapValueField());
       return new TypeName(
-              importTypeTable.getFullNameFor(fieldType),
-              importTypeTable.getNicknameFor(fieldType),
+              importTypeTable.getFullNameFor(fieldModel),
+              importTypeTable.getNicknameFor(fieldModel),
               "%s{%i => %i}",
               new TypeName(keyTypeName),
               new TypeName(valueTypeName))
           .getFullName();
     }
 
-    if (fieldType.isRepeated()) {
-      String elementTypeName = importTypeTable.getFullNameForElementType(fieldType);
+    if (fieldModel.isRepeated()) {
+      String elementTypeName = importTypeTable.getFullNameForElementType(fieldModel);
       return new TypeName(
-              importTypeTable.getFullNameFor(fieldType),
-              importTypeTable.getNicknameFor(fieldType),
+              importTypeTable.getFullNameFor(fieldModel),
+              importTypeTable.getNicknameFor(fieldModel),
               "%s<%i>",
               new TypeName(elementTypeName))
           .getFullName();
     }
 
-    return importTypeTable.getFullNameForElementType(fieldType);
+    return importTypeTable.getFullNameForElementType(fieldModel);
   }
 
   @Override
-  public String getDynamicLangReturnTypeName(Method method, MethodConfig methodConfig) {
-    if (ServiceMessages.s_isEmptyType(method.getOutputType())) {
+  public String getDynamicLangReturnTypeName(MethodContext methodContext) {
+    MethodModel method = methodContext.getMethodModel();
+    MethodConfig methodConfig = methodContext.getMethodConfig();
+    if (method.isOutputTypeEmpty()) {
       return "";
     }
 
-    String classInfo = getModelTypeFormatter().getFullNameForElementType(method.getOutputType());
+    String classInfo = method.getOutputTypeName(methodContext.getTypeTable()).getFullName();
     if (method.getResponseStreaming()) {
       return "Enumerable<" + classInfo + ">";
     }
@@ -205,20 +216,20 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFullyQualifiedStubType(Interface apiInterface) {
+  public String getFullyQualifiedStubType(InterfaceModel apiInterface) {
     NamePath namePath =
         getTypeNameConverter().getNamePath(getModelTypeFormatter().getFullNameFor(apiInterface));
     return qualifiedName(namePath.append("Stub"));
   }
 
   @Override
-  public String getLongRunningOperationTypeName(ModelTypeTable typeTable, TypeRef type) {
-    return typeTable.getFullNameFor(type);
+  public String getLongRunningOperationTypeName(ImportTypeTable typeTable, TypeRef type) {
+    return ((ModelTypeTable) typeTable).getFullNameFor(type);
   }
 
   @Override
-  public String getRequestTypeName(ModelTypeTable typeTable, TypeRef type) {
-    return typeTable.getFullNameFor(type);
+  public String getRequestTypeName(ImportTypeTable typeTable, TypeRef type) {
+    return ((ModelTypeTable) typeTable).getFullNameFor(type);
   }
 
   @Override
@@ -232,17 +243,17 @@ public class RubySurfaceNamer extends SurfaceNamer {
 
   @Override
   public List<String> getReturnDocLines(
-      InterfaceContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
-    // TODO(andrealin): remove casting after abstracting API source type from Method.
-    Method method = ((GapicMethodConfig) methodConfig).getMethod();
+      TransformationContext context, MethodContext methodContext, Synchronicity synchronicity) {
+    MethodModel method = methodContext.getMethodModel();
+    MethodConfig methodConfig = methodContext.getMethodConfig();
     if (method.getResponseStreaming()) {
-      String classInfo = getModelTypeFormatter().getFullNameForElementType(method.getOutputType());
+      String classInfo = method.getOutputTypeName(methodContext.getTypeTable()).getFullName();
       return ImmutableList.of("An enumerable of " + classInfo + " instances.", "");
     }
 
     if (methodConfig.isPageStreaming()) {
       String resourceTypeName =
-          getModelTypeFormatter()
+          getTypeFormatter()
               .getFullNameForElementType(methodConfig.getPageStreaming().getResourcesField());
       return ImmutableList.of(
           "An enumerable of " + resourceTypeName + " instances.",
@@ -280,17 +291,17 @@ public class RubySurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getTopLevelAliasedApiClassName(
-      GapicInterfaceConfig interfaceConfig, boolean packageHasMultipleServices) {
+      InterfaceConfig interfaceConfig, boolean packageHasMultipleServices) {
     return packageHasMultipleServices
-        ? getTopLevelNamespace() + "::" + getPackageServiceName(interfaceConfig.getInterface())
+        ? getTopLevelNamespace() + "::" + getPackageServiceName(interfaceConfig.getInterfaceModel())
         : getTopLevelNamespace();
   }
 
   @Override
   public String getVersionAliasedApiClassName(
-      GapicInterfaceConfig interfaceConfig, boolean packageHasMultipleServices) {
+      InterfaceConfig interfaceConfig, boolean packageHasMultipleServices) {
     return packageHasMultipleServices
-        ? getPackageName() + "::" + getPackageServiceName(interfaceConfig.getInterface())
+        ? getPackageName() + "::" + getPackageServiceName(interfaceConfig.getInterfaceModel())
         : getPackageName();
   }
 
@@ -380,27 +391,22 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFieldGetFunctionName(FieldType field) {
-    return keyName(Name.from(field.getSimpleName()));
-  }
-
-  @Override
-  public String getFieldGetFunctionName(TypeRef type, Name identifier) {
+  public String getFieldGetFunctionName(FieldModel type, Name identifier) {
     return keyName(identifier);
   }
 
   @Override
-  public String getGrpcStubCallString(Interface apiInterface, Method method) {
+  public String getGrpcStubCallString(InterfaceModel apiInterface, MethodModel method) {
     return getFullyQualifiedStubType(apiInterface);
   }
 
   @Override
-  public String getLroApiMethodName(Method method, VisibilityConfig visibility) {
+  public String getLroApiMethodName(MethodModel method, VisibilityConfig visibility) {
     return getMethodKey(method);
   }
 
   @Override
-  public String getPackageServiceName(Interface apiInterface) {
+  public String getPackageServiceName(InterfaceModel apiInterface) {
     return publicClassName(getReducedServiceName(apiInterface.getSimpleName()));
   }
 }

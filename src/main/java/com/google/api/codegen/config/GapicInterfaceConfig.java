@@ -57,7 +57,12 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   private static final ImmutableSet<String> CONSTRUCTOR_PARAMS =
       ImmutableSet.<String>of(SERVICE_ADDRESS_PARAM, SCOPES_PARAM);
 
-  public abstract Interface getInterface();
+  public Interface getInterface() {
+    return getInterfaceModel().getInterface();
+  }
+
+  @Override
+  public abstract ProtoInterfaceModel getInterfaceModel();
 
   @Override
   public abstract List<GapicMethodConfig> getMethodConfigs();
@@ -74,7 +79,8 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   @Override
   public abstract ImmutableMap<String, RetrySettings> getRetrySettingsDefinition();
 
-  public abstract ImmutableList<Field> getIamResources();
+  @Override
+  public abstract ImmutableList<FieldModel> getIamResources();
 
   @Override
   public abstract ImmutableList<String> getRequiredConstructorParams();
@@ -98,6 +104,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     return getInterface().getSimpleName();
   }
 
+  @Override
   public boolean hasInterfaceNameOverride() {
     return getInterfaceNameOverride() != null;
   }
@@ -141,7 +148,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     SmokeTestConfig smokeTestConfig =
         createSmokeTestConfig(diagCollector, apiInterface, interfaceConfigProto);
 
-    ImmutableList<Field> iamResources =
+    ImmutableList<FieldModel> iamResources =
         createIamResources(
             apiInterface.getModel(),
             interfaceConfigProto.getExperimentalFeatures().getIamResourcesList());
@@ -178,7 +185,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       return null;
     } else {
       return new AutoValue_GapicInterfaceConfig(
-          apiInterface,
+          new ProtoInterfaceModel(apiInterface),
           methodConfigs,
           smokeTestConfig,
           methodConfigMap,
@@ -317,20 +324,21 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
 
   /** Returns the GapicMethodConfig for the given method. */
   @Override
-  public GapicMethodConfig getMethodConfig(Method method) {
-    GapicMethodConfig methodConfig = getMethodConfigMap().get(method.getSimpleName());
-    if (methodConfig == null) {
-      throw new IllegalArgumentException(
-          "no method config for method '" + method.getFullName() + "'");
-    }
-    return methodConfig;
+  public GapicMethodConfig getMethodConfig(MethodModel method) {
+    return getMethodConfig(method.getSimpleName(), method.getFullName());
   }
 
   /** Returns the GapicMethodConfig for the given method. */
-  @Override
-  @Nullable
-  public DiscoGapicMethodConfig getMethodConfig(com.google.api.codegen.discovery.Method method) {
-    return null;
+  public GapicMethodConfig getMethodConfig(Method method) {
+    return getMethodConfig(method.getSimpleName(), method.getFullName());
+  }
+
+  public GapicMethodConfig getMethodConfig(String methodSimpleName, String fullName) {
+    GapicMethodConfig methodConfig = getMethodConfigMap().get(methodSimpleName);
+    if (methodConfig == null) {
+      throw new IllegalArgumentException("no method config for method '" + fullName + "'");
+    }
+    return methodConfig;
   }
 
   @Override
@@ -367,9 +375,9 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   }
 
   /** Creates a list of fields that can be turned into IAM resources */
-  private static ImmutableList<Field> createIamResources(
+  private static ImmutableList<FieldModel> createIamResources(
       Model model, List<IamResourceProto> resources) {
-    ImmutableList.Builder<Field> fields = ImmutableList.builder();
+    ImmutableList.Builder<FieldModel> fields = ImmutableList.builder();
     for (IamResourceProto resource : resources) {
       TypeRef type = model.getSymbolTable().lookupType(resource.getType());
       if (type == null) {
@@ -384,7 +392,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
             String.format(
                 "type %s does not have field %s", resource.getType(), resource.getField()));
       }
-      fields.add(field);
+      fields.add(new ProtoField(field));
     }
     return fields.build();
   }

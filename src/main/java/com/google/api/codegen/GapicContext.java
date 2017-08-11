@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen;
 
-import com.google.api.codegen.config.FieldType;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
@@ -97,10 +97,10 @@ public class GapicContext extends CodegenContext {
    * Returns the list of optional fields from the given GapicMethodConfig, excluding the Page Token
    * field
    */
-  public List<FieldType> removePageTokenFromFields(
-      Iterable<FieldType> fields, MethodConfig methodConfig) {
-    List<FieldType> newFields = new ArrayList<>();
-    for (FieldType field : fields) {
+  public List<FieldModel> removePageTokenFromFields(
+      Iterable<FieldModel> fields, MethodConfig methodConfig) {
+    List<FieldModel> newFields = new ArrayList<>();
+    for (FieldModel field : fields) {
       if (methodConfig.isPageStreaming()
           && field.equals(methodConfig.getPageStreaming().getRequestTokenField())) {
         continue;

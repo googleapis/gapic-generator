@@ -19,6 +19,7 @@ import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProductServiceConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
@@ -55,7 +56,6 @@ import com.google.api.codegen.viewmodel.metadata.VersionIndexRequireView;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexType;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexView;
 import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
@@ -130,7 +130,8 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private ViewModel generateApiClass(GapicInterfaceContext context) {
     SurfaceNamer namer = context.getNamer();
-    String subPath = pathMapper.getOutputPath(context.getInterface(), context.getProductConfig());
+    String subPath =
+        pathMapper.getOutputPath(context.getInterface().getFullName(), context.getProductConfig());
     String name = namer.getApiWrapperClassName(context.getInterfaceConfig());
     List<ApiMethodView> methods = generateApiMethods(context);
 
@@ -171,10 +172,10 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
 
     xapiClass.methodKeys(ImmutableList.<String>of());
     xapiClass.interfaceKey(context.getInterface().getFullName());
-    xapiClass.clientConfigPath(namer.getClientConfigPath(context.getInterface()));
+    xapiClass.clientConfigPath(namer.getClientConfigPath(context.getInterfaceModel()));
     xapiClass.grpcClientTypeName(
         namer.getAndSaveNicknameForGrpcClientTypeName(
-            context.getModelTypeTable(), context.getInterface()));
+            context.getModelTypeTable(), context.getInterfaceModel()));
 
     xapiClass.apiMethods(methods);
 
@@ -190,7 +191,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
     ImmutableList.Builder<ApiMethodView> apiMethods = ImmutableList.builder();
     boolean packageHasMultipleServices =
         new InterfaceView().hasMultipleServices(context.getModel());
-    for (Method method : context.getSupportedMethods()) {
+    for (MethodModel method : context.getSupportedMethods()) {
       apiMethods.add(
           apiMethodTransformer.generateMethod(
               context.asDynamicMethodContext(method), packageHasMultipleServices));
@@ -210,7 +211,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
           VersionIndexRequireView.newBuilder()
               .clientName(namer.getFullyQualifiedApiWrapperClassName(interfaceConfig))
               .fileName(namer.getServiceFileName(interfaceConfig))
-              .serviceName(namer.getPackageServiceName(apiInterface))
+              .serviceName(namer.getPackageServiceName(context.getInterfaceModel()))
               .doc(
                   serviceTransformer.generateServiceDoc(
                       context, generateApiMethods(context).get(0)))
@@ -297,7 +298,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
     for (Interface apiInterface : interfaces) {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
       String clientName = namer.getPackageName();
-      String serviceName = namer.getPackageServiceName(apiInterface);
+      String serviceName = namer.getPackageServiceName(context.getInterfaceModel());
       if (hasMultipleServices) {
         clientName += "::" + serviceName;
       }

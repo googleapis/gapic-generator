@@ -15,24 +15,27 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.FieldType;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeTable;
 import java.util.Map;
 
 /**
  * A ModelTypeTable manages the imports for a set of fully-qualified type names, and provides helper
- * methods for importing instances of FieldType.
+ * methods for importing instances of FieldModel.
  */
 public interface ImportTypeTable extends TypeFormatter {
   /** Returns the underlying TypeTable. */
   TypeTable getTypeTable();
 
   /** Returns the enum value string. */
-  String getEnumValue(FieldType type, String value);
+  String getEnumValue(FieldModel type, String value);
 
   /** Creates a new ModelTypeTable of the same concrete type, but with an empty import set. */
   ImportTypeTable cloneEmpty();
+
+  /** Creates a new ModelTypeTable of the same concrete type, but with an empty import set. */
+  ImportTypeTable cloneEmpty(String packageName);
 
   /** Compute the nickname for the given fullName and save it in the import set. */
   void saveNicknameFor(String fullName);
@@ -56,7 +59,7 @@ public interface ImportTypeTable extends TypeFormatter {
    * Computes the nickname for the given type, adds the full name to the import set, and returns the
    * nickname.
    */
-  String getAndSaveNicknameFor(FieldType type);
+  String getAndSaveNicknameFor(FieldModel type);
 
   /*
    * Computes the nickname for the given FieldConfig, and ResourceName. Adds the full name to
@@ -78,7 +81,7 @@ public interface ImportTypeTable extends TypeFormatter {
    * contained type; if the type is not a repeated type, then the element type is the boxed form of
    * the type.
    */
-  String getAndSaveNicknameForElementType(FieldType type);
+  String getAndSaveNicknameForElementType(FieldModel type);
 
   String getAndSaveNicknameForContainer(String containerFullName, String... elementFullNames);
 
@@ -86,9 +89,9 @@ public interface ImportTypeTable extends TypeFormatter {
    * If the given type is not implicitly imported, the add it to the import set, then return the
    * zero value for that type.
    */
-  String getSnippetZeroValueAndSaveNicknameFor(FieldType type);
+  String getSnippetZeroValueAndSaveNicknameFor(FieldModel type);
 
-  String getImplZeroValueAndSaveNicknameFor(FieldType type);
+  String getImplZeroValueAndSaveNicknameFor(FieldModel type);
 
   /** Returns the imports accumulated so far. */
   Map<String, TypeAlias> getImports();

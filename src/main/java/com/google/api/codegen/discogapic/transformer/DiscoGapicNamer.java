@@ -14,15 +14,28 @@
  */
 package com.google.api.codegen.discogapic.transformer;
 
+import com.google.api.codegen.discovery.Method;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
-import com.google.api.codegen.util.NameFormatter;
-import com.google.api.codegen.util.NameFormatterDelegator;
 
-/** Provides language-specific names for variables and classes. */
-public class DiscoGapicNamer extends NameFormatterDelegator {
+/** Provides language-specific names for variables and classes of Discovery-Document models. */
+public class DiscoGapicNamer {
+  private final SurfaceNamer languageNamer;
+  private static final String regexDelimiter = "\\.";
 
-  public DiscoGapicNamer(NameFormatter nameFormatter) {
-    super(nameFormatter);
+  /* Create a JavaSurfaceNamer for a Discovery-based API. */
+  public DiscoGapicNamer(SurfaceNamer parentNamer) {
+    this.languageNamer = parentNamer;
+  }
+
+  /* @return the underlying language surface namer. */
+  public SurfaceNamer getLanguageNamer() {
+    return languageNamer;
+  }
+
+  /** Returns the variable name for a field. */
+  public String getFieldVarName(String fieldName) {
+    return languageNamer.privateFieldName(Name.anyCamel(fieldName));
   }
 
   /** Returns the resource getter method name for a resource field. */
@@ -33,10 +46,10 @@ public class DiscoGapicNamer extends NameFormatterDelegator {
     } else {
       name = Name.anyCamel(fieldName);
     }
-    return publicMethodName(Name.anyCamel("get").join(name));
+    return languageNamer.publicMethodName(Name.anyCamel("get").join(name));
   }
 
-  /** Returns the resource getter method name for a resource field. */
+  /** Returns the resource setter method name for a resource field. */
   public String getResourceSetterName(String fieldName) {
     Name name;
     if (fieldName.contains("_")) {
@@ -44,22 +57,38 @@ public class DiscoGapicNamer extends NameFormatterDelegator {
     } else {
       name = Name.anyCamel(fieldName);
     }
-    return publicMethodName(Name.anyCamel("set").join(name));
+    return languageNamer.publicMethodName(Name.anyCamel("set").join(name));
   }
 
   /**
-   * Returns the last substring after the input is split by periods. Ex: Input
-   * "compute.addresses.aggregatedList" returns "aggregatedList".
+   * Formats the method as a Name. Methods are generally in the format
+   * "[api].[resource].[function]".
    */
-  public String getRequestName(String fullMethodName) {
-    String[] pieces = fullMethodName.split("\\.");
-    if (pieces.length < 3) {
-      throw new IllegalArgumentException(
-          "Fully qualified method name must be in the form [api].[resource].[method]");
+  public static Name methodAsName(Method method) {
+    String[] pieces = method.id().split(regexDelimiter);
+    Name result = Name.anyCamel(pieces[1]);
+    for (int i = 2; i < pieces.length; i++) {
+      result = result.join(Name.anyCamel(pieces[i]));
     }
-    return privateFieldName(
-        Name.anyCamel(pieces[pieces.length - 2], pieces[pieces.length - 1], "http", "request"));
+    return result;
   }
 
-  //TODO(andrealin): Naming methods for responses, service name.
+  public static String getSimpleInterfaceName(String interfaceName) {
+    String[] pieces = interfaceName.split(regexDelimiter);
+    return pieces[pieces.length - 1];
+  }
+
+  /** Get the request type name from a method. */
+  public static Name getRequestName(Method method) {
+    String[] pieces = method.id().split(regexDelimiter);
+    return Name.anyCamel(pieces[pieces.length - 2], pieces[pieces.length - 1], "http", "request");
+  }
+
+  /** Get the response type name from a method. */
+  public static Name getResponseName(Method method) {
+    String[] pieces = method.id().split(regexDelimiter);
+    return Name.anyCamel(pieces[pieces.length - 2], pieces[pieces.length - 1], "http", "response");
+  }
+
+  //TODO(andrealin): Naming methods for service name.
 }

@@ -16,19 +16,23 @@ package com.google.api.codegen.transformer.py;
 
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ServiceMessages;
-import com.google.api.codegen.config.FieldType;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
-import com.google.api.codegen.transformer.InterfaceContext;
+import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.Synchronicity;
+import com.google.api.codegen.transformer.TransformationContext;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.TypeName;
@@ -38,7 +42,6 @@ import com.google.api.codegen.util.py.PythonTypeTable;
 import com.google.api.tools.framework.model.EnumType;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
@@ -67,12 +70,12 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getServicePhraseName(Interface apiInterface) {
-    return apiInterface.getParent().getFullName() + " " + apiInterface.getSimpleName() + " API";
+  public String getServicePhraseName(InterfaceModel apiInterface) {
+    return apiInterface.getParentFullName() + " " + apiInterface.getSimpleName() + " API";
   }
 
   @Override
-  public String getApiWrapperClassConstructorName(Interface apiInterface) {
+  public String getApiWrapperClassConstructorName(InterfaceModel apiInterface) {
     return getApiWrapperClassName(apiInterface.getSimpleName());
   }
 
@@ -82,7 +85,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getRequestVariableName(Method method) {
+  public String getRequestVariableName(MethodModel method) {
     return method.getRequestStreaming() ? "requests" : "request";
   }
 
@@ -115,13 +118,13 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getRequestTypeName(ModelTypeTable typeTable, TypeRef type) {
-    return typeTable.getAndSaveNicknameFor(type);
+  public String getRequestTypeName(ImportTypeTable typeTable, TypeRef type) {
+    return ((ModelTypeTable) typeTable).getAndSaveNicknameFor(type);
   }
 
   @Override
-  public String getLongRunningOperationTypeName(ModelTypeTable typeTable, TypeRef type) {
-    return typeTable.getAndSaveNicknameFor(type);
+  public String getLongRunningOperationTypeName(ImportTypeTable typeTable, TypeRef type) {
+    return ((ModelTypeTable) typeTable).getAndSaveNicknameFor(type);
   }
 
   @Override
@@ -168,14 +171,14 @@ public class PythonSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getPathTemplateName(
-      Interface service, SingleResourceNameConfig resourceNameConfig) {
+      InterfaceModel apiInterface, SingleResourceNameConfig resourceNameConfig) {
     return "_"
         + inittedConstantName(Name.from(resourceNameConfig.getEntityName(), "path", "template"));
   }
 
   @Override
   public String getFormatFunctionName(
-      Interface apiInterface, SingleResourceNameConfig resourceNameConfig) {
+      InterfaceModel apiInterface, SingleResourceNameConfig resourceNameConfig) {
     return staticFunctionName(Name.from(resourceNameConfig.getEntityName(), "path"));
   }
 
@@ -187,12 +190,17 @@ public class PythonSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getGrpcClientTypeName(Interface apiInterface) {
+    return getGrpcClientTypeName(new ProtoInterfaceModel(apiInterface));
+  }
+
+  @Override
+  public String getGrpcClientTypeName(InterfaceModel apiInterface) {
     String fullName = getModelTypeFormatter().getFullNameFor(apiInterface) + "Stub";
     return getTypeNameConverter().getTypeName(fullName).getNickname();
   }
 
   @Override
-  public String getClientConfigPath(Interface apiInterface) {
+  public String getClientConfigPath(InterfaceModel apiInterface) {
     return classFileNameBase(Name.upperCamel(apiInterface.getSimpleName()).join("client_config"))
         + ".json";
   }
@@ -219,7 +227,8 @@ public class PythonSurfaceNamer extends SurfaceNamer {
 
   @Override
   public List<String> getReturnDocLines(
-      InterfaceContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
+      TransformationContext context, MethodContext methodContext, Synchronicity synchronicity) {
+    MethodConfig methodConfig = methodContext.getMethodConfig();
     TypeRef outputType = ((GapicMethodConfig) methodConfig).getMethod().getOutputType();
     if (ServiceMessages.s_isEmptyType(outputType)) {
       return ImmutableList.<String>of();
@@ -253,17 +262,22 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getLroApiMethodName(Method method, VisibilityConfig visibility) {
+  public String getLroApiMethodName(MethodModel method, VisibilityConfig visibility) {
     return getApiMethodName(method, visibility);
   }
 
   @Override
-  public String getGrpcStubCallString(Interface apiInterface, Method method) {
+  public String getGrpcStubCallString(InterfaceModel apiInterface, MethodModel method) {
     return getGrpcMethodName(method);
   }
 
   @Override
-  public String getFieldGetFunctionName(FieldType field) {
+  public String getFieldGetFunctionName(FieldModel type, Name identifier) {
+    return publicFieldName(Name.from(type.getSimpleName()));
+  }
+
+  @Override
+  public String getFieldGetFunctionName(FieldModel field) {
     return publicFieldName(Name.from(field.getSimpleName()));
   }
 
@@ -296,13 +310,13 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getTestCaseName(SymbolTable symbolTable, Method method) {
+  public String getTestCaseName(SymbolTable symbolTable, MethodModel method) {
     Name testCaseName = symbolTable.getNewSymbol(Name.upperCamel("Test", method.getSimpleName()));
     return publicMethodName(testCaseName);
   }
 
   @Override
-  public String getExceptionTestCaseName(SymbolTable symbolTable, Method method) {
+  public String getExceptionTestCaseName(SymbolTable symbolTable, MethodModel method) {
     Name testCaseName =
         symbolTable.getNewSymbol(Name.upperCamel("Test", method.getSimpleName(), "Exception"));
     return publicMethodName(testCaseName);

@@ -19,7 +19,9 @@ import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
@@ -49,7 +51,6 @@ import com.google.api.codegen.viewmodel.testing.MockServiceUsageView;
 import com.google.api.codegen.viewmodel.testing.SmokeTestClassView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
 import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
@@ -97,7 +98,8 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
     for (Interface apiInterface : interfaceView.getElementIterable(model)) {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
       String testClassName = namer.getUnitTestClassName(context.getInterfaceConfig());
-      String outputPath = pathMapper.getOutputPath(context.getInterface(), productConfig);
+      String outputPath =
+          pathMapper.getOutputPath(context.getInterface().getFullName(), productConfig);
       ImportSectionView importSection = importSectionTransformer.generateTestImportSection(context);
       views.add(
           ClientTestFileView.newBuilder()
@@ -138,7 +140,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private List<TestCaseView> createUnitTestCaseViews(
       GapicInterfaceContext context, boolean packageHasMultipleServices) {
     ImmutableList.Builder<TestCaseView> testCases = ImmutableList.builder();
-    for (Method method : context.getSupportedMethods()) {
+    for (MethodModel method : context.getSupportedMethods()) {
       GapicMethodContext requestMethodContext =
           context.withNewTypeTable().asRequestMethodContext(method);
       MethodConfig methodConfig = requestMethodContext.getMethodConfig();
@@ -148,7 +150,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
           testCaseTransformer.createTestCaseView(
               requestMethodContext,
               new SymbolTable(),
-              createUnitTestCaseInitCodeContext(context, method),
+              createUnitTestCaseInitCodeContext(context, (ProtoMethodModel) method),
               getMethodType(methodConfig));
       testCases.add(testCase);
     }
@@ -156,7 +158,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
   }
 
   private InitCodeContext createUnitTestCaseInitCodeContext(
-      GapicInterfaceContext context, Method method) {
+      GapicInterfaceContext context, ProtoMethodModel method) {
     GapicMethodContext requestMethodContext = context.asRequestMethodContext(method);
     GapicMethodContext dynamicMethodContext = context.asDynamicMethodContext(method);
     MethodConfig methodConfig = requestMethodContext.getMethodConfig();
@@ -168,7 +170,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
             : InitCodeOutputType.FieldList;
 
     return InitCodeContext.newBuilder()
-        .initObjectType(method.getInputType())
+        .initObjectType(method.getProtoMethod().getInputType())
         .suggestedName(Name.from("request"))
         .initFieldConfigStrings(methodConfig.getSampleCodeInitFields())
         .initValueConfigMap(InitCodeTransformer.createCollectionMap(dynamicMethodContext))
@@ -209,11 +211,12 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private SmokeTestClassView createSmokeTestClassView(
       GapicInterfaceContext context, boolean packageHasMultipleServices) {
     String outputPath =
-        pathMapper.getOutputPath(context.getInterface(), context.getProductConfig());
+        pathMapper.getOutputPath(context.getInterface().getFullName(), context.getProductConfig());
     SurfaceNamer namer = context.getNamer();
     String name = namer.getSmokeTestClassName(context.getInterfaceConfig());
 
-    Method method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
+    MethodModel method =
+        new ProtoMethodModel(context.getInterfaceConfig().getSmokeTestConfig().getMethod());
     TestCaseTransformer testCaseTransformer =
         new TestCaseTransformer(valueProducer, packageHasMultipleServices);
     FlatteningConfig flatteningGroup =

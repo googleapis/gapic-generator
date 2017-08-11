@@ -17,9 +17,10 @@ package com.google.api.codegen.transformer.py;
 import com.google.api.codegen.GeneratorVersionProvider;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.TargetLanguage;
-import com.google.api.codegen.config.FieldType;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProductServiceConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
@@ -55,7 +56,6 @@ import com.google.api.codegen.viewmodel.PathTemplateGetterFunctionView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoContainerElement;
 import com.google.api.tools.framework.model.ProtoFile;
@@ -125,7 +125,7 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
       }
     }
 
-    for (Method method : context.getSupportedMethods()) {
+    for (MethodModel method : context.getSupportedMethods()) {
       addMethodImports(context.asDynamicMethodContext(method));
     }
   }
@@ -143,15 +143,17 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
     addFieldsImports(typeTable, methodConfig.getOptionalFields());
   }
 
-  private void addFieldsImports(ModelTypeTable typeTable, Iterable<FieldType> fields) {
-    for (FieldType field : fields) {
+  private void addFieldsImports(ModelTypeTable typeTable, Iterable<FieldModel> fields) {
+    for (FieldModel field : fields) {
       typeTable.getAndSaveNicknameFor(field);
     }
   }
 
   private ViewModel generateApiClass(GapicInterfaceContext context) {
     SurfaceNamer namer = context.getNamer();
-    String subPath = pathMapper.getOutputPath(context.getInterface(), context.getProductConfig());
+    String subPath =
+        pathMapper.getOutputPath(
+            context.getInterfaceModel().getFullName(), context.getProductConfig());
     String name = namer.getApiWrapperClassName(context.getInterfaceConfig());
     List<ApiMethodView> methods = generateApiMethods(context);
 
@@ -161,7 +163,7 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
 
     xapiClass.fileHeader(fileHeaderTransformer.generateFileHeader(context));
     xapiClass.protoFilename(context.getInterface().getFile().getSimpleName());
-    xapiClass.servicePhraseName(namer.getServicePhraseName(context.getInterface()));
+    xapiClass.servicePhraseName(namer.getServicePhraseName(context.getInterfaceModel()));
 
     xapiClass.name(name);
     xapiClass.doc(serviceTransformer.generateServiceDoc(context, methods.get(0)));
@@ -193,10 +195,10 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
 
     xapiClass.methodKeys(ImmutableList.<String>of());
     xapiClass.interfaceKey(context.getInterface().getFullName());
-    xapiClass.clientConfigPath(namer.getClientConfigPath(context.getInterface()));
+    xapiClass.clientConfigPath(namer.getClientConfigPath(context.getInterfaceModel()));
     xapiClass.grpcClientTypeName(
         namer.getAndSaveNicknameForGrpcClientTypeName(
-            context.getModelTypeTable(), context.getInterface()));
+            context.getModelTypeTable(), context.getInterfaceModel()));
 
     xapiClass.apiMethods(methods);
 
@@ -210,7 +212,7 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
   private List<ApiMethodView> generateApiMethods(GapicInterfaceContext context) {
     ImmutableList.Builder<ApiMethodView> apiMethods = ImmutableList.builder();
 
-    for (Method method : context.getSupportedMethods()) {
+    for (MethodModel method : context.getSupportedMethods()) {
       apiMethods.add(apiMethodTransformer.generateMethod(context.asDynamicMethodContext(method)));
     }
 

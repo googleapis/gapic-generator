@@ -17,12 +17,8 @@ package com.google.api.codegen.config;
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
-import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.tools.framework.model.Diag;
-import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Method;
-import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.util.List;
@@ -36,6 +32,8 @@ import org.joda.time.Duration;
  * <p>Subclasses should have a field to contain the method for which this a config.
  */
 public abstract class MethodConfig {
+  // TODO(andrealin): Consider combining this with MethodModel.
+  public abstract MethodModel getMethodModel();
 
   @Nullable
   public abstract PageStreamingConfig getPageStreaming();
@@ -77,47 +75,6 @@ public abstract class MethodConfig {
   @Nullable
   public abstract LongRunningConfig getLongRunningConfig();
 
-  static Iterable<Schema> getRequiredFields(
-      DiagCollector diagCollector,
-      com.google.api.codegen.discovery.Method method,
-      List<String> requiredFieldNames) {
-    ImmutableList.Builder<Schema> fieldsBuilder = ImmutableList.builder();
-    for (String fieldName : requiredFieldNames) {
-      Schema requiredField = method.parameters().get(fieldName);
-      if (requiredField == null) {
-        diagCollector.addDiag(
-            Diag.error(
-                SimpleLocation.TOPLEVEL,
-                "Required field '%s' not found (in method %s)",
-                fieldName,
-                method.id()));
-        return null;
-      }
-      fieldsBuilder.add(requiredField);
-    }
-    return fieldsBuilder.build();
-  }
-
-  static Iterable<Schema> getOptionalFields(
-      com.google.api.codegen.discovery.Method method, List<String> requiredFieldNames) {
-    ImmutableList.Builder<Schema> fieldsBuilder = ImmutableList.builder();
-    for (Schema field : method.parameters().values()) {
-      if (requiredFieldNames.contains(field.getIdentifier())) {
-        continue;
-      }
-      fieldsBuilder.add(field);
-    }
-    return fieldsBuilder.build();
-  }
-
-  static Iterable<FieldConfig> createFieldNameConfigs(Iterable<Schema> fields) {
-    ImmutableList.Builder<FieldConfig> fieldConfigsBuilder = ImmutableList.builder();
-    for (Schema field : fields) {
-      fieldConfigsBuilder.add(FieldConfig.createFieldConfig(field));
-    }
-    return fieldConfigsBuilder.build();
-  }
-
   /** Returns true if the method is a streaming method */
   public static boolean isGrpcStreamingMethod(Method method) {
     return method.getRequestStreaming() || method.getResponseStreaming();
@@ -156,11 +113,11 @@ public abstract class MethodConfig {
     return getLongRunningConfig() != null;
   }
 
-  public Iterable<FieldType> getRequiredFields() {
+  public Iterable<FieldModel> getRequiredFields() {
     return FieldConfig.toFieldTypeIterable(getRequiredFieldConfigs());
   }
 
-  public Iterable<FieldType> getOptionalFields() {
+  public Iterable<FieldModel> getOptionalFields() {
     return FieldConfig.toFieldTypeIterable(getOptionalFieldConfigs());
   }
 

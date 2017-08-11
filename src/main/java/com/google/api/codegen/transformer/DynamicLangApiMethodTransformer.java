@@ -16,9 +16,10 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.FieldType;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.util.Name;
@@ -27,7 +28,6 @@ import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.RequestObjectParamView;
-import com.google.api.tools.framework.model.Method;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import java.util.ArrayList;
@@ -59,6 +59,7 @@ public class DynamicLangApiMethodTransformer {
 
   public OptionalArrayMethodView generateMethod(
       GapicMethodContext context, boolean packageHasMultipleServices) {
+    MethodModel method = context.getMethodModel();
     SurfaceNamer namer = context.getNamer();
     OptionalArrayMethodView.Builder apiMethod = OptionalArrayMethodView.newBuilder();
 
@@ -79,7 +80,7 @@ public class DynamicLangApiMethodTransformer {
     apiMethod.apiVariableName(namer.getApiWrapperVariableName(context.getInterfaceConfig()));
     apiMethod.apiModuleName(namer.getApiWrapperModuleName());
     InitCodeOutputType initCodeOutputType =
-        context.getMethod().getRequestStreaming()
+        context.getMethodModel().getRequestStreaming()
             ? InitCodeOutputType.SingleObject
             : InitCodeOutputType.FieldList;
     InitCodeView initCode =
@@ -91,14 +92,13 @@ public class DynamicLangApiMethodTransformer {
 
     apiMethod.doc(generateMethodDoc(context));
 
-    apiMethod.name(
-        namer.getApiMethodName(context.getMethod(), context.getMethodConfig().getVisibility()));
-    apiMethod.requestVariableName(namer.getRequestVariableName(context.getMethod()));
+    apiMethod.name(namer.getApiMethodName(method, context.getMethodConfig().getVisibility()));
+    apiMethod.requestVariableName(namer.getRequestVariableName(method));
     apiMethod.requestTypeName(
         namer.getRequestTypeName(context.getTypeTable(), context.getMethod().getInputType()));
     apiMethod.hasReturnValue(!ServiceMessages.s_isEmptyType(context.getMethod().getOutputType()));
-    apiMethod.key(namer.getMethodKey(context.getMethod()));
-    apiMethod.grpcMethodName(namer.getGrpcMethodName(context.getMethod()));
+    apiMethod.key(namer.getMethodKey(method));
+    apiMethod.grpcMethodName(namer.getGrpcMethodName(method));
     apiMethod.stubName(namer.getStubName(context.getTargetInterface()));
 
     apiMethod.methodParams(apiMethodParamTransformer.generateMethodParams(context));
@@ -126,7 +126,7 @@ public class DynamicLangApiMethodTransformer {
 
     apiMethod.packageName(namer.getPackageName());
     apiMethod.packageHasMultipleServices(packageHasMultipleServices);
-    apiMethod.packageServiceName(namer.getPackageServiceName(context.getInterface()));
+    apiMethod.packageServiceName(namer.getPackageServiceName(context.getInterfaceModel()));
     apiMethod.apiVersion(namer.getApiWrapperModuleVersion());
     apiMethod.longRunningView(
         context.getMethodConfig().isLongRunningOperation()
@@ -141,15 +141,15 @@ public class DynamicLangApiMethodTransformer {
   private ApiMethodDocView generateMethodDoc(GapicMethodContext context) {
     ApiMethodDocView.Builder docBuilder = ApiMethodDocView.newBuilder();
     SurfaceNamer surfaceNamer = context.getNamer();
-    Method method = context.getMethod();
+    MethodModel method = context.getMethodModel();
     MethodConfig methodConfig = context.getMethodConfig();
 
     docBuilder.mainDocLines(surfaceNamer.getDocLines(method, methodConfig));
     docBuilder.paramDocs(apiMethodParamTransformer.generateParamDocs(context));
-    docBuilder.returnTypeName(surfaceNamer.getDynamicLangReturnTypeName(method, methodConfig));
+    docBuilder.returnTypeName(surfaceNamer.getDynamicLangReturnTypeName(context));
     docBuilder.returnsDocLines(
         surfaceNamer.getReturnDocLines(
-            context.getSurfaceTransformerContext(), methodConfig, Synchronicity.Sync));
+            context.getSurfaceInterfaceContext(), context, Synchronicity.Sync));
     if (methodConfig.isPageStreaming()) {
       docBuilder.pageStreamingResourceTypeName(
           surfaceNamer.getTypeNameDoc(
@@ -175,7 +175,7 @@ public class DynamicLangApiMethodTransformer {
     if (methodConfig == null || !methodConfig.isPageStreaming()) {
       return fieldConfigs;
     }
-    final FieldType requestTokenField = methodConfig.getPageStreaming().getRequestTokenField();
+    final FieldModel requestTokenField = methodConfig.getPageStreaming().getRequestTokenField();
     return Iterables.filter(
         fieldConfigs,
         new Predicate<FieldConfig>() {
@@ -191,11 +191,11 @@ public class DynamicLangApiMethodTransformer {
     SurfaceNamer namer = context.getNamer();
     FeatureConfig featureConfig = context.getFeatureConfig();
     ModelTypeTable typeTable = context.getTypeTable();
-    FieldType field = fieldConfig.getField();
+    FieldModel field = fieldConfig.getField();
 
-    Iterable<FieldType> requiredFields = context.getMethodConfig().getRequiredFields();
+    Iterable<FieldModel> requiredFields = context.getMethodConfig().getRequiredFields();
     boolean isRequired = false;
-    for (FieldType f : requiredFields) {
+    for (FieldModel f : requiredFields) {
       if (f.getSimpleName().equals(field.getSimpleName())) {
         isRequired = true;
       }

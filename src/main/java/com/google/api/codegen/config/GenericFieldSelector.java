@@ -12,14 +12,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.discogapic.transformer.java;
+package com.google.api.codegen.config;
 
-import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
-import com.google.api.codegen.util.java.JavaNameFormatter;
+/** API source-agnostic interface for FieldSelectors. */
+public interface GenericFieldSelector {
 
-class JavaDiscoGapicNamer extends DiscoGapicNamer {
+  /* @return the type of source that this FieldModel is based on. */
+  ApiSource getApiSource();
 
-  public JavaDiscoGapicNamer() {
-    super(new JavaNameFormatter());
-  }
+  String getParamName();
+
+  FieldModel getLastField();
 }

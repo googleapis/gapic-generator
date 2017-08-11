@@ -14,12 +14,16 @@
  */
 package com.google.api.codegen.transformer.php;
 
-import com.google.api.codegen.ServiceMessages;
-import com.google.api.codegen.config.FieldType;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
+import com.google.api.codegen.transformer.ImportTypeTable;
+import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -30,7 +34,6 @@ import com.google.api.codegen.util.php.PhpNameFormatter;
 import com.google.api.codegen.util.php.PhpPackageUtil;
 import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 import java.util.ArrayList;
 
@@ -46,13 +49,12 @@ public class PhpSurfaceNamer extends SurfaceNamer {
         packageName);
   }
 
-  @Override
   public SurfaceNamer cloneWithPackageName(String packageName) {
     return new PhpSurfaceNamer(packageName);
   }
 
   @Override
-  public String getLroApiMethodName(Method method, VisibilityConfig visibility) {
+  public String getLroApiMethodName(MethodModel method, VisibilityConfig visibility) {
     return getApiMethodName(method, visibility);
   }
 
@@ -62,7 +64,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFieldSetFunctionName(FieldType field) {
+  public String getFieldSetFunctionName(FieldModel field) {
     return publicMethodName(Name.from("set").join(field.getSimpleName()));
   }
 
@@ -72,35 +74,35 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFieldAddFunctionName(FieldType field) {
+  public String getFieldAddFunctionName(FieldModel field) {
     return publicMethodName(Name.from("add").join(field.getSimpleName()));
   }
 
   @Override
-  public String getFieldGetFunctionName(FieldType field) {
+  public String getFieldGetFunctionName(FieldModel field) {
     return publicMethodName(Name.from("get").join(field.getSimpleName()));
   }
 
   @Override
-  public String getFieldGetFunctionName(TypeRef type, Name identifier) {
+  public String getFieldGetFunctionName(FieldModel type, Name identifier) {
     return publicMethodName(Name.from("get").join(identifier));
   }
 
   @Override
   public String getPathTemplateName(
-      Interface apiInterface, SingleResourceNameConfig resourceNameConfig) {
+      InterfaceModel apiInterface, SingleResourceNameConfig resourceNameConfig) {
     return inittedConstantName(Name.from(resourceNameConfig.getEntityName(), "name", "template"));
   }
 
   @Override
-  public String getClientConfigPath(Interface apiInterface) {
+  public String getClientConfigPath(InterfaceModel apiInterface) {
     return "resources/"
         + Name.upperCamel(apiInterface.getSimpleName()).join("client_config").toLowerUnderscore()
         + ".json";
   }
 
   @Override
-  public boolean shouldImportRequestObjectParamType(FieldType field) {
+  public boolean shouldImportRequestObjectParamType(FieldModel field) {
     return field.isMap();
   }
 
@@ -115,8 +117,10 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getDynamicLangReturnTypeName(Method method, MethodConfig methodConfig) {
-    if (new ServiceMessages().isEmptyType(method.getOutputType())) {
+  public String getDynamicLangReturnTypeName(MethodContext methodContext) {
+    MethodModel method = methodContext.getMethodModel();
+    MethodConfig methodConfig = methodContext.getMethodConfig();
+    if (method.isOutputTypeEmpty()) {
       return "";
     }
     if (methodConfig.isPageStreaming()) {
@@ -124,7 +128,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
     }
     switch (methodConfig.getGrpcStreamingType()) {
       case NonStreaming:
-        return getModelTypeFormatter().getFullNameFor(method.getOutputType());
+        return method.getOutputTypeName(methodContext.getTypeTable()).getFullName();
       case BidiStreaming:
         return "\\Google\\GAX\\BidiStream";
       case ClientStreaming:
@@ -145,10 +149,15 @@ public class PhpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getGrpcClientTypeName(Interface apiInterface) {
+    return getGrpcClientTypeName(new ProtoInterfaceModel(apiInterface));
+  }
+
+  @Override
+  public String getGrpcClientTypeName(InterfaceModel apiInterface) {
     return qualifiedName(getGrpcClientTypeName(apiInterface, "GrpcClient"));
   }
 
-  private NamePath getGrpcClientTypeName(Interface apiInterface, String suffix) {
+  private NamePath getGrpcClientTypeName(InterfaceModel apiInterface, String suffix) {
     NamePath namePath =
         getTypeNameConverter().getNamePath(getModelTypeFormatter().getFullNameFor(apiInterface));
     String publicClassName =
@@ -157,17 +166,17 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getLongRunningOperationTypeName(ModelTypeTable typeTable, TypeRef type) {
-    return typeTable.getAndSaveNicknameFor(type);
+  public String getLongRunningOperationTypeName(ImportTypeTable typeTable, TypeRef type) {
+    return ((ModelTypeTable) typeTable).getAndSaveNicknameFor(type);
   }
 
   @Override
-  public String getRequestTypeName(ModelTypeTable typeTable, TypeRef type) {
-    return typeTable.getAndSaveNicknameFor(type);
+  public String getRequestTypeName(ImportTypeTable typeTable, TypeRef type) {
+    return ((ModelTypeTable) typeTable).getAndSaveNicknameFor(type);
   }
 
   @Override
-  public String getGrpcStubCallString(Interface apiInterface, Method method) {
+  public String getGrpcStubCallString(InterfaceModel apiInterface, MethodModel method) {
     return '/' + apiInterface.getFullName() + '/' + getGrpcMethodName(method);
   }
 

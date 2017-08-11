@@ -18,6 +18,8 @@ import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
+import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.php.PhpGapicCodePathMapper;
@@ -47,7 +49,6 @@ import com.google.api.codegen.viewmodel.testing.MockServiceImplView;
 import com.google.api.codegen.viewmodel.testing.MockServiceUsageView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
 import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
@@ -100,7 +101,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
       SurfaceNamer testPackageNamer) {
     List<MockServiceImplFileView> mockFiles = new ArrayList<>();
 
-    for (Interface grpcInterface :
+    for (InterfaceModel grpcInterface :
         mockServiceTransformer.getGrpcInterfacesToMock(model, productConfig)) {
       ModelTypeTable typeTable = createTypeTable(surfacePackageNamer.getTestPackageName());
       String name = surfacePackageNamer.getMockGrpcServiceImplName(grpcInterface);
@@ -112,7 +113,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
               .grpcClassName(grpcClassName)
               .grpcMethods(new ArrayList<MockGrpcMethodView>())
               .build();
-      String outputPath = pathMapper.getOutputPath(grpcInterface, productConfig);
+      String outputPath = pathMapper.getOutputPath(grpcInterface.getFullName(), productConfig);
 
       addUnitTestImports(typeTable);
 
@@ -146,7 +147,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
               apiInterface, productConfig, typeTable, surfacePackageNamer, featureConfig);
       List<MockServiceUsageView> mockServiceList = new ArrayList<>();
 
-      for (Interface grpcInterface :
+      for (InterfaceModel grpcInterface :
           mockServiceTransformer
               .getGrpcInterfacesForService(model, productConfig, apiInterface)
               .values()) {
@@ -192,7 +193,8 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
       addUnitTestImports(typeTable);
 
-      String outputPath = pathMapper.getOutputPath(context.getInterface(), productConfig);
+      String outputPath =
+          pathMapper.getOutputPath(context.getInterfaceModel().getFullName(), productConfig);
       ImportSectionView importSection =
           importSectionTransformer.generateImportSection(typeTable.getImports());
       testViews.add(
@@ -212,7 +214,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private List<TestCaseView> createTestCaseViews(GapicInterfaceContext context) {
     ArrayList<TestCaseView> testCaseViews = new ArrayList<>();
     SymbolTable testNameTable = new SymbolTable();
-    for (Method method : context.getSupportedMethods()) {
+    for (MethodModel method : context.getSupportedMethods()) {
       GapicMethodContext methodContext = context.asRequestMethodContext(method);
 
       if (methodContext.getMethodConfig().getGrpcStreamingType()

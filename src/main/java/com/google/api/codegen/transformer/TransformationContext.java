@@ -12,18 +12,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.config;
+package com.google.api.codegen.transformer;
 
-import com.google.common.collect.ImmutableList;
+import com.google.api.codegen.config.ProductConfig;
 
-/** ProductConfig represents client code-gen config for an API product in an input-agnostic way. */
-public interface ProductConfig {
+/**
+ * The context for transforming an API model, in an input-agnostic way, into a view model to use for
+ * client library generation.
+ */
+public interface TransformationContext {
 
-  String getPackageName();
+  ProductConfig getProductConfig();
 
-  ImmutableList<String> getCopyrightLines();
+  SurfaceNamer getNamer();
 
-  ImmutableList<String> getLicenseLines();
-
-  InterfaceConfig getInterfaceConfig(InterfaceModel interfaceModel);
+  ImportTypeTable getImportTypeTable();
 }

@@ -14,23 +14,24 @@
  */
 package com.google.api.codegen.transformer.nodejs;
 
-import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.FieldType;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.InterfaceConfig;
-import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
-import com.google.api.codegen.transformer.InterfaceContext;
+import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.Synchronicity;
+import com.google.api.codegen.transformer.TransformationContext;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NamePath;
@@ -38,7 +39,6 @@ import com.google.api.codegen.util.js.JSCommentReformatter;
 import com.google.api.codegen.util.js.JSNameFormatter;
 import com.google.api.codegen.util.js.JSTypeTable;
 import com.google.api.tools.framework.model.EnumType;
-import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoFile;
@@ -98,12 +98,12 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getPackageServiceName(Interface apiInterface) {
+  public String getPackageServiceName(InterfaceModel apiInterface) {
     return getReducedServiceName(apiInterface.getSimpleName()).toLowerCamel();
   }
 
   @Override
-  public String getApiWrapperClassConstructorName(Interface apiInterface) {
+  public String getApiWrapperClassConstructorName(InterfaceModel apiInterface) {
     return publicFieldName(Name.upperCamel(apiInterface.getSimpleName(), "Client"));
   }
 
@@ -118,7 +118,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getPathTemplateName(
-      Interface apiInterface, SingleResourceNameConfig resourceNameConfig) {
+      InterfaceModel apiInterface, SingleResourceNameConfig resourceNameConfig) {
     return inittedConstantName(Name.from(resourceNameConfig.getEntityName(), "path", "template"));
   }
 
@@ -130,21 +130,21 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getFormatFunctionName(
-      Interface apiInterface, SingleResourceNameConfig resourceNameConfig) {
+      InterfaceModel apiInterface, SingleResourceNameConfig resourceNameConfig) {
     return staticFunctionName(Name.from(resourceNameConfig.getEntityName(), "path"));
   }
 
   @Override
-  public String getClientConfigPath(Interface apiInterface) {
+  public String getClientConfigPath(InterfaceModel apiInterface) {
     return Name.upperCamel(apiInterface.getSimpleName()).join("client_config").toLowerUnderscore();
   }
 
-  public String getClientFileName(Interface apiInterface) {
+  public String getClientFileName(InterfaceModel apiInterface) {
     return Name.upperCamel(apiInterface.getSimpleName()).join("client").toLowerUnderscore();
   }
 
   @Override
-  public boolean shouldImportRequestObjectParamType(FieldType field) {
+  public boolean shouldImportRequestObjectParamType(FieldModel field) {
     return field.isMap();
   }
 
@@ -154,61 +154,61 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getDynamicLangReturnTypeName(Method method, MethodConfig methodConfig) {
-    if (new ServiceMessages().isEmptyType(method.getOutputType())) {
+  public String getDynamicLangReturnTypeName(MethodContext methodContext) {
+    MethodModel method = methodContext.getMethodModel();
+    if (method.isOutputTypeEmpty()) {
       return "";
     }
 
-    return getModelTypeFormatter().getFullNameFor(method.getOutputType());
+    return method.getOutputTypeName(methodContext.getTypeTable()).getFullName();
   }
 
   @Override
-  public String getFullyQualifiedStubType(Interface apiInterface) {
+  public String getFullyQualifiedStubType(InterfaceModel apiInterface) {
     return getModelTypeFormatter().getFullNameFor(apiInterface);
   }
 
   @Override
-  public String getGrpcClientImportName(Interface apiInterface) {
-    return "grpc-" + NamePath.dotted(apiInterface.getFile().getFullName()).toDashed();
+  public String getGrpcClientImportName(InterfaceModel apiInterface) {
+    return "grpc-" + NamePath.dotted(apiInterface.getFileFullName()).toDashed();
   }
 
   @Override
   public String getFieldGetFunctionName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
-    FieldType field = fieldConfig.getField();
+    FieldModel field = fieldConfig.getField();
     return Name.from(field.getSimpleName()).toLowerCamel();
   }
 
   @Override
-  public String getFieldGetFunctionName(FieldType field) {
+  public String getFieldGetFunctionName(FieldModel field) {
     return Name.from(field.getSimpleName()).toLowerCamel();
   }
 
   @Override
-  public String getFieldGetFunctionName(TypeRef type, Name identifier) {
+  public String getFieldGetFunctionName(FieldModel type, Name identifier) {
     return identifier.toLowerCamel();
   }
 
   @Override
-  public String getAsyncApiMethodName(Method method, VisibilityConfig visibility) {
+  public String getAsyncApiMethodName(MethodModel method, VisibilityConfig visibility) {
     return getApiMethodName(Name.upperCamel(method.getSimpleName()), visibility);
   }
 
   /** Return JSDoc callback comment and return type comment for the given method. */
   @Override
   public List<String> getReturnDocLines(
-      InterfaceContext context, MethodConfig methodConfig, Synchronicity synchronicity) {
-    GapicMethodConfig gapicMethodConfig = (GapicMethodConfig) methodConfig;
-    Method method = ((GapicMethodConfig) methodConfig).getMethod();
+      TransformationContext context, MethodContext methodContext, Synchronicity synchronicity) {
+    GapicMethodConfig methodConfig = (GapicMethodConfig) methodContext.getMethodConfig();
+    Method method = methodConfig.getMethod();
     if (method.getRequestStreaming() && method.getResponseStreaming()) {
       return bidiStreamingReturnDocLines(method);
     } else if (method.getResponseStreaming()) {
       return responseStreamingReturnDocLines(method);
     }
 
-    List<String> callbackLines =
-        returnCallbackDocLines(context.getImportTypeTable(), gapicMethodConfig);
+    List<String> callbackLines = returnCallbackDocLines(context.getImportTypeTable(), methodConfig);
     List<String> returnObjectLines =
-        returnObjectDocLines(context.getImportTypeTable(), gapicMethodConfig);
+        returnObjectDocLines(context.getImportTypeTable(), methodConfig);
     return ImmutableList.<String>builder().addAll(callbackLines).addAll(returnObjectLines).build();
   }
 
@@ -341,7 +341,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     String returnTypeDoc = "";
     if (methodConfig.isPageStreaming()) {
       returnTypeDoc = "Array of ";
-      FieldType resourcesType = methodConfig.getPageStreaming().getResourcesField();
+      FieldModel resourcesType = methodConfig.getPageStreaming().getResourcesField();
       if (resourcesType.isMessage()) {
         returnTypeDoc +=
             commentReformatter.getLinkedElementName(
@@ -388,7 +388,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public List<String> getDocLines(FieldType field) {
+  public List<String> getDocLines(FieldModel field) {
     ImmutableList.Builder<String> lines = ImmutableList.builder();
     List<String> fieldDocLines = getDocLines(field.getScopedDocumentation());
     String extraFieldDescription = getExtraFieldDescription(field);
@@ -404,7 +404,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     return lines.build();
   }
 
-  private String getExtraFieldDescription(FieldType field) {
+  private String getExtraFieldDescription(FieldModel field) {
     boolean fieldIsMessage = field.isMessage() && !field.isMap();
     boolean fieldIsEnum = field.isEnum();
     if (fieldIsMessage) {
@@ -456,7 +456,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getByteLengthFunctionName(FieldType typeRef) {
+  public String getByteLengthFunctionName(FieldModel typeRef) {
     if (typeRef.isMessage()) {
       return "gax.createByteLengthFunction(grpcClients." + typeRef.getTypeFullName() + ")";
     } else if (typeRef.isString() || typeRef.isBytes()) {

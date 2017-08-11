@@ -14,22 +14,62 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProductConfig;
-import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * The context for transforming an API interface, in an input-agnostic way, into a view model to use
  * for client library generation.
  */
-public interface InterfaceContext {
+public interface InterfaceContext extends TransformationContext {
 
+  InterfaceConfig getInterfaceConfig();
+
+  InterfaceModel getInterfaceModel();
+
+  FeatureConfig getFeatureConfig();
+
+  Iterable<MethodModel> getSupportedMethods();
+
+  Iterable<MethodModel> getPublicMethods();
+
+  Iterable<MethodModel> getPageStreamingMethods();
+
+  Iterable<MethodModel> getBatchingMethods();
+
+  MethodConfig getMethodConfig(MethodModel method);
+
+  MethodContext asRequestMethodContext(MethodModel method);
+
+  MethodContext asDynamicMethodContext(MethodModel method);
+
+  String getInterfaceDescription();
+
+  InterfaceContext withNewTypeTable();
+
+  MethodContext asFlattenedMethodContext(MethodModel method, FlatteningConfig flatteningConfig);
+
+  /* @return the methods in the interface. */
+  List<MethodModel> getInterfaceMethods();
+
+  /* @return the methods in the interface that have method configs. */
+  List<MethodModel> getInterfaceConfigMethods();
+
+  Iterable<MethodModel> getLongRunningMethods();
+
+  String serviceTitle();
+
+  @Override
   ProductConfig getProductConfig();
 
+  @Override
   SurfaceNamer getNamer();
 
+  @Override
   ImportTypeTable getImportTypeTable();
-
-  @Nullable
-  InterfaceConfig getInterfaceConfig();
 }

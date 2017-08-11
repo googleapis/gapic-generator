@@ -30,6 +30,8 @@ import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.codegen.viewmodel.FieldSettingView;
 import com.google.api.codegen.viewmodel.FormattedInitValueView;
+import com.google.api.codegen.viewmodel.ImportFileView;
+import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.InitCodeLineView;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.InitValueView;
@@ -49,6 +51,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -71,6 +74,21 @@ public class InitCodeTransformer {
    * Generates initialization code from the given GapicMethodContext and InitCodeContext objects.
    */
   public InitCodeView generateInitCode(
+      MethodContext methodContext, InitCodeContext initCodeContext) {
+    switch (methodContext.getApiSource()) {
+      case DISCOVERY:
+        return generateInitCode((DiscoGapicMethodContext) methodContext, initCodeContext);
+      case PROTO:
+        return generateInitCode((GapicMethodContext) methodContext, initCodeContext);
+      default:
+        throw new IllegalArgumentException("Unhandled ApiSource type.");
+    }
+  }
+
+  /**
+   * Generates initialization code from the given GapicMethodContext and InitCodeContext objects.
+   */
+  public InitCodeView generateInitCode(
       GapicMethodContext methodContext, InitCodeContext initCodeContext) {
     InitCodeNode rootNode = InitCodeNode.createTree(initCodeContext);
     if (initCodeContext.outputType() == InitCodeOutputType.FieldList) {
@@ -78,6 +96,29 @@ public class InitCodeTransformer {
     } else {
       return buildInitCodeViewRequestObject(methodContext, rootNode);
     }
+  }
+
+  /**
+   * Generates initialization code from the given GapicMethodContext and InitCodeContext objects.
+   */
+  public InitCodeView generateInitCode(
+      DiscoGapicMethodContext methodContext, InitCodeContext initCodeContext) {
+    // TODO(andrealin): Implementation.
+    return InitCodeView.newBuilder()
+        .apiFileName("apiFileName")
+        .fieldSettings(new LinkedList<FieldSettingView>())
+        .importSection(
+            ImportSectionView.newBuilder()
+                .appImports(new LinkedList<ImportFileView>())
+                .externalImports(new LinkedList<ImportFileView>())
+                .serviceImports(new LinkedList<ImportFileView>())
+                .standardImports(new LinkedList<ImportFileView>())
+                .build())
+        .lines(new LinkedList<InitCodeLineView>())
+        .topLevelLines(new LinkedList<InitCodeLineView>())
+        .versionIndexFileImportName("versionIndexFileImportName")
+        .topLevelIndexFileImportName("topLevelIndexFileImportName")
+        .build();
   }
 
   public InitCodeContext createRequestInitCodeContext(
@@ -100,7 +141,7 @@ public class InitCodeTransformer {
   }
 
   /** Generates assert views for the test of the tested method and its fields. */
-  public List<ClientTestAssertView> generateRequestAssertViews(
+  List<ClientTestAssertView> generateRequestAssertViews(
       GapicMethodContext methodContext, InitCodeContext initContext) {
     InitCodeNode rootNode =
         InitCodeNode.createTree(
@@ -164,8 +205,7 @@ public class InitCodeTransformer {
    * A utility method which creates the InitValueConfig map that contains the collection config
    * data.
    */
-  public static ImmutableMap<String, InitValueConfig> createCollectionMap(
-      GapicMethodContext context) {
+  public static ImmutableMap<String, InitValueConfig> createCollectionMap(MethodContext context) {
     ImmutableMap.Builder<String, InitValueConfig> mapBuilder = ImmutableMap.builder();
     Map<String, String> fieldNamePatterns = context.getMethodConfig().getFieldNamePatterns();
     for (Map.Entry<String, String> fieldNamePattern : fieldNamePatterns.entrySet()) {
@@ -433,7 +473,7 @@ public class InitCodeTransformer {
             context
                 .getNamer()
                 .getFormatFunctionName(
-                    context.getInterface(), initValueConfig.getSingleResourceNameConfig()));
+                    context.getInterfaceModel(), initValueConfig.getSingleResourceNameConfig()));
 
         List<String> varList =
             Lists.newArrayList(

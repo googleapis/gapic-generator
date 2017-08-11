@@ -31,7 +31,7 @@ import javax.annotation.Nullable;
 /** FieldConfig represents a configuration for a Field, derived from the GAPIC config. */
 @AutoValue
 public abstract class FieldConfig {
-  public abstract FieldType getField();
+  public abstract FieldModel getField();
 
   @Nullable
   public abstract ResourceNameTreatment getResourceNameTreatment();
@@ -57,7 +57,7 @@ public abstract class FieldConfig {
   }
 
   private static FieldConfig createFieldConfig(
-      FieldType field,
+      FieldModel field,
       ResourceNameTreatment resourceNameTreatment,
       ResourceNameConfig resourceNameConfig,
       ResourceNameConfig messageResourceNameConfig) {
@@ -74,7 +74,7 @@ public abstract class FieldConfig {
         field, resourceNameTreatment, resourceNameConfig, messageResourceNameConfig);
   }
 
-  public static FieldConfig createFieldConfig(Schema field) {
+  static FieldConfig createFieldConfig(Schema field) {
     return new AutoValue_FieldConfig(
         new DiscoveryField(field), ResourceNameTreatment.NONE, null, null);
   }
@@ -85,10 +85,10 @@ public abstract class FieldConfig {
         new ProtoField(field), ResourceNameTreatment.NONE, null, null);
   }
 
-  public static FieldConfig createMessageFieldConfig(
+  static FieldConfig createMessageFieldConfig(
       ResourceNameMessageConfigs messageConfigs,
       Map<String, ResourceNameConfig> resourceNameConfigs,
-      FieldType field,
+      FieldModel field,
       ResourceNameTreatment defaultResourceNameTreatment) {
     return createFieldConfig(
         null,
@@ -100,28 +100,13 @@ public abstract class FieldConfig {
         defaultResourceNameTreatment);
   }
 
-  public static FieldConfig createMessageFieldConfig(
-      ResourceNameMessageConfigs messageConfigs,
-      Map<String, ResourceNameConfig> resourceNameConfigs,
-      Field field,
-      ResourceNameTreatment defaultResourceNameTreatment) {
-    return createFieldConfig(
-        null,
-        messageConfigs,
-        null,
-        resourceNameConfigs,
-        new ProtoField(field),
-        ResourceNameTreatment.UNSET_TREATMENT,
-        defaultResourceNameTreatment);
-  }
-
   /** Package-private since this is not used outside the config package. */
   static FieldConfig createFieldConfig(
       DiagCollector diagCollector,
       ResourceNameMessageConfigs messageConfigs,
       Map<String, String> fieldNamePatterns,
       Map<String, ResourceNameConfig> resourceNameConfigs,
-      FieldType field,
+      FieldModel field,
       ResourceNameTreatment treatment,
       ResourceNameTreatment defaultResourceNameTreatment) {
     String messageFieldEntityName = null;
@@ -254,7 +239,7 @@ public abstract class FieldConfig {
    */
   public static void validate(
       ResourceNameMessageConfigs messageConfigs,
-      FieldType field,
+      FieldModel field,
       ResourceNameTreatment treatment,
       ResourceNameConfig resourceNameConfig) {
     if (field.getApiSource().equals(ApiSource.DISCOVERY)) {
@@ -287,19 +272,19 @@ public abstract class FieldConfig {
     }
   }
 
-  private static Function<FieldConfig, FieldType> selectFieldFunction() {
-    return new Function<FieldConfig, FieldType>() {
+  private static Function<FieldConfig, FieldModel> selectFieldFunction() {
+    return new Function<FieldConfig, FieldModel>() {
       @Override
-      public FieldType apply(FieldConfig fieldConfig) {
+      public FieldModel apply(FieldConfig fieldConfig) {
         return fieldConfig.getField();
       }
     };
   }
 
-  private static Function<Field, FieldType> createFieldTypeFunction() {
-    return new Function<Field, FieldType>() {
+  private static Function<Field, FieldModel> createFieldTypeFunction() {
+    return new Function<Field, FieldModel>() {
       @Override
-      public FieldType apply(Field field) {
+      public FieldModel apply(Field field) {
         return new ProtoField(field);
       }
     };
@@ -314,11 +299,11 @@ public abstract class FieldConfig {
     };
   }
 
-  public static Iterable<FieldType> toFieldTypeIterable(Iterable<FieldConfig> fieldConfigs) {
+  public static Iterable<FieldModel> toFieldTypeIterable(Iterable<FieldConfig> fieldConfigs) {
     return Iterables.transform(fieldConfigs, selectFieldFunction());
   }
 
-  public static Iterable<FieldType> toFieldTypeIterableFromField(Iterable<Field> fieldConfigs) {
+  public static Iterable<FieldModel> toFieldTypeIterableFromField(Iterable<Field> fieldConfigs) {
     return Iterables.transform(fieldConfigs, createFieldTypeFunction());
   }
 

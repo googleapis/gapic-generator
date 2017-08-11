@@ -15,7 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.FieldType;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.viewmodel.GrpcElementDocView;
 import com.google.api.codegen.viewmodel.GrpcEnumDocView;
 import com.google.api.codegen.viewmodel.GrpcEnumValueDocView;
@@ -63,9 +63,9 @@ public class GrpcElementDocTransformer {
   }
 
   private List<ParamDocView> generateMessagePropertyDocs(
-      ModelTypeTable typeTable, SurfaceNamer namer, Iterable<FieldType> fields) {
+      ModelTypeTable typeTable, SurfaceNamer namer, Iterable<FieldModel> fields) {
     ImmutableList.Builder<ParamDocView> propertyDocs = ImmutableList.builder();
-    for (FieldType field : fields) {
+    for (FieldModel field : fields) {
       SimpleParamDocView.Builder doc = SimpleParamDocView.newBuilder();
       doc.paramName(namer.getFieldKey(field));
       doc.typeName(namer.getMessagePropertyTypeName(typeTable, field));
