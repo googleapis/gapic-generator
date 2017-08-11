@@ -171,8 +171,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * The name of the constructor for the apiInterface client. The client is VKit generated, not
    * GRPC.
    */
-  public String getApiWrapperClassConstructorName(String apiInterfaceSimpleName) {
-    return publicClassName(Name.upperCamel(apiInterfaceSimpleName, "Client"));
+  public String getApiWrapperClassConstructorName(InterfaceModel apiInterface) {
+    return publicClassName(Name.upperCamel(apiInterface.getSimpleName(), "Client"));
   }
 
   /** Constructor name for the type with the given nickname. */
@@ -565,7 +565,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** Function used to register the GRPC server. */
-  public String getServerRegisterFunctionName(Interface apiInterface) {
+  public String getServerRegisterFunctionName(InterfaceModel apiInterface) {
     return getNotImplementedString("SurfaceNamer.getServerRegisterFunctionName");
   }
 
@@ -625,11 +625,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The name of the variable that will hold the stub for an API interface. */
   public String getStubName(InterfaceModel apiInterface) {
     return privateFieldName(Name.upperCamel(apiInterface.getSimpleName(), "Stub"));
-  }
-
-  /** The name of the variable that will hold the stub for an API interface. */
-  public String getStubName(String apiInterfaceSimpleName) {
-    return privateFieldName(Name.upperCamel(apiInterfaceSimpleName, "Stub"));
   }
 
   /** The name of the array which will hold the methods for a given stub. */
@@ -1104,13 +1099,13 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * class.
    */
   public String getPathTemplateName(
-      String apiInterfaceSimpleName, SingleResourceNameConfig resourceNameConfig) {
+      InterfaceModel apiInterface, SingleResourceNameConfig resourceNameConfig) {
     return inittedConstantName(Name.from(resourceNameConfig.getEntityName(), "path", "template"));
   }
 
   /** The name of a getter function to get a particular path template for the given collection. */
   public String getPathTemplateNameGetter(
-      String apiInterfaceSimpleName, SingleResourceNameConfig resourceNameConfig) {
+      InterfaceModel apiInterface, SingleResourceNameConfig resourceNameConfig) {
     return publicMethodName(
         Name.from("get", resourceNameConfig.getEntityName(), "name", "template"));
   }
@@ -1122,7 +1117,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The function name to format the entity for the given collection. */
   public String getFormatFunctionName(
-      String apiInterfaceSimpleName, SingleResourceNameConfig resourceNameConfig) {
+      InterfaceModel apiInterface, SingleResourceNameConfig resourceNameConfig) {
     return staticFunctionName(Name.from("format", resourceNameConfig.getEntityName(), "name"));
   }
 
@@ -1408,19 +1403,19 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The class name of the mock gRPC service for the given API interface. */
-  public String getMockServiceClassName(String apiInterfaceSimpleName) {
-    return publicClassName(Name.upperCamelKeepUpperAcronyms("Mock", apiInterfaceSimpleName));
+  public String getMockServiceClassName(InterfaceModel apiInterface) {
+    return publicClassName(Name.upperCamelKeepUpperAcronyms("Mock", apiInterface.getSimpleName()));
   }
 
   /** The class name of a variable to hold the mock gRPC service for the given API interface. */
-  public String getMockServiceVarName(String apiInterfaceSimpleName) {
-    return localVarName(Name.upperCamelKeepUpperAcronyms("Mock", apiInterfaceSimpleName));
+  public String getMockServiceVarName(InterfaceModel apiInterface) {
+    return localVarName(Name.upperCamelKeepUpperAcronyms("Mock", apiInterface.getSimpleName()));
   }
 
   /** The class name of the mock gRPC service implementation for the given API interface. */
-  public String getMockGrpcServiceImplName(String apiInterfaceSimpleName) {
+  public String getMockGrpcServiceImplName(InterfaceModel apiInterface) {
     return publicClassName(
-        Name.upperCamelKeepUpperAcronyms("Mock", apiInterfaceSimpleName, "Impl"));
+        Name.upperCamelKeepUpperAcronyms("Mock", apiInterface.getSimpleName(), "Impl"));
   }
 
   /** Inject random value generator code to the given string. */
@@ -1444,8 +1439,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * The name of example of the constructor for the service client. The client is VKit generated,
    * not GRPC.
    */
-  public String getApiWrapperClassConstructorExampleName(String apiInterfaceSimpleName) {
-    return getApiWrapperClassConstructorName(apiInterfaceSimpleName);
+  public String getApiWrapperClassConstructorExampleName(InterfaceModel apiInterface) {
+    return getApiWrapperClassConstructorName(apiInterface);
   }
 
   /** The name of the example for the paged callable variant. */
@@ -1464,8 +1459,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The name of the example for the method. */
-  public String getApiMethodExampleName(String apiInterfaceSimpleName, MethodModel method) {
-    return getApiMethodName(Name.anyCamel(apiInterfaceSimpleName), VisibilityConfig.PUBLIC);
+  public String getApiMethodExampleName(InterfaceModel apiInterface, MethodModel method) {
+    return getApiMethodName(Name.anyCamel(apiInterface.getSimpleName()), VisibilityConfig.PUBLIC);
   }
 
   /** The name of the example for the async variant of the given method. */
@@ -1478,13 +1473,13 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * method.
    */
   public String getGrpcStreamingApiMethodExampleName(
-      String apiInterfaceSimpleName, MethodModel method) {
+      InterfaceModel apiInterface, MethodModel method) {
     return getGrpcStreamingApiMethodName(method, VisibilityConfig.PUBLIC);
   }
 
   /** The example name of the IAM resource getter function. */
   public String getIamResourceGetterFunctionExampleName(
-      String apiInterfaceSimpleName, FieldModel field) {
+      InterfaceModel apiInterface, FieldModel field) {
     return getIamResourceGetterFunctionName(field);
   }
 

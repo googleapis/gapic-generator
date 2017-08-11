@@ -138,8 +138,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.templateFileName(API_TEMPLATE_FILENAME);
     view.serviceDoc(serviceTransformer.generateServiceDoc(context, null));
     view.clientTypeName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
-    view.clientConstructorName(
-        namer.getApiWrapperClassConstructorName(apiInterface.getSimpleName()));
+    view.clientConstructorName(namer.getApiWrapperClassConstructorName(apiInterface));
     view.defaultClientOptionFunctionName(namer.getDefaultApiSettingsFunctionName(apiInterface));
     view.defaultCallOptionFunctionName(namer.getDefaultCallSettingsFunctionName(apiInterface));
     view.callOptionsTypeName(namer.getCallSettingsTypeName(apiInterface));
@@ -215,10 +214,8 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.outputPath(outputPath + File.separator + fileName);
 
     view.clientTypeName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
-    view.clientConstructorName(
-        namer.getApiWrapperClassConstructorName(apiInterface.getSimpleName()));
-    view.clientConstructorExampleName(
-        namer.getApiWrapperClassConstructorExampleName(apiInterface.getSimpleName()));
+    view.clientConstructorName(namer.getApiWrapperClassConstructorName(apiInterface));
+    view.clientConstructorExampleName(namer.getApiWrapperClassConstructorExampleName(apiInterface));
     view.apiMethods(generateApiMethods(context, context.getPublicMethods()));
     view.iamResources(iamResourceTransformer.generateIamResources(context));
 

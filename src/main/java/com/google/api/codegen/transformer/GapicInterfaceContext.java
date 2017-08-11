@@ -21,6 +21,7 @@ import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProtoInterfaceModel;
@@ -54,13 +55,25 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
       ModelTypeTable typeTable,
       SurfaceNamer namer,
       FeatureConfig featureConfig) {
+    return create(
+        new ProtoInterfaceModel(apiInterface), productConfig, typeTable, namer, featureConfig);
+  }
+
+  public static GapicInterfaceContext create(
+      InterfaceModel apiInterface,
+      GapicProductConfig productConfig,
+      ModelTypeTable typeTable,
+      SurfaceNamer namer,
+      FeatureConfig featureConfig) {
+    Preconditions.checkArgument(apiInterface.getApiSource().equals(ApiSource.PROTO));
+    ProtoInterfaceModel protoInterface = (ProtoInterfaceModel) apiInterface;
     return new AutoValue_GapicInterfaceContext(
-        new ProtoInterfaceModel(apiInterface),
+        protoInterface,
         productConfig,
         typeTable,
         namer,
         featureConfig,
-        createGrpcRerouteMap(apiInterface.getModel(), productConfig));
+        createGrpcRerouteMap(protoInterface.getInterface().getModel(), productConfig));
   }
 
   private static Map<Interface, Interface> createGrpcRerouteMap(

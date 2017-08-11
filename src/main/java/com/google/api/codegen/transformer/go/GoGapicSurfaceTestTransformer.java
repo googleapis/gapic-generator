@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer.go;
 
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.metacode.InitCodeContext;
@@ -101,7 +102,7 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
     List<MockServiceImplView> impls = new ArrayList<>();
     List<ClientTestClassView> testClasses = new ArrayList<>();
 
-    for (Interface apiInterface :
+    for (InterfaceModel apiInterface :
         mockServiceTransformer.getGrpcInterfacesToMock(model, productConfig)) {
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
@@ -109,7 +110,7 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
       impls.add(
           MockServiceImplView.newBuilder()
               .grpcClassName(namer.getGrpcServerTypeName(context.getInterfaceModel()))
-              .name(namer.getMockGrpcServiceImplName(apiInterface.getSimpleName()))
+              .name(namer.getMockGrpcServiceImplName(apiInterface))
               .grpcMethods(mockServiceTransformer.createMockGrpcMethodViews(context))
               .build());
     }

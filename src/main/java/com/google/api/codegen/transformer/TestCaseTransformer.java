@@ -136,8 +136,7 @@ public class TestCaseTransformer {
         .hasReturnValue(hasReturnValue)
         .initCode(initCode)
         .mockResponse(mockGrpcResponseView)
-        .mockServiceVarName(
-            namer.getMockServiceVarName(methodContext.getTargetInterface().getSimpleName()))
+        .mockServiceVarName(namer.getMockServiceVarName(methodContext.getTargetInterface()))
         .name(namer.getTestCaseName(testNameTable, method))
         .nameWithException(namer.getExceptionTestCaseName(testNameTable, method))
         .pageStreamingResponseViews(createPageStreamingResponseViews(methodContext))
@@ -147,16 +146,14 @@ public class TestCaseTransformer {
         .fullyQualifiedRequestTypeName(method.getInputTypeName(typeTable).getFullName())
         .fullyQualifiedResponseTypeName(fullyQualifiedResponseTypeName)
         .serviceConstructorName(
-            namer.getApiWrapperClassConstructorName(
-                methodContext.getInterfaceModel().getSimpleName()))
+            namer.getApiWrapperClassConstructorName(methodContext.getInterfaceModel()))
         .fullyQualifiedServiceClassName(
             namer.getFullyQualifiedApiWrapperClassName(methodContext.getInterfaceConfig()))
         .fullyQualifiedAliasedServiceClassName(
             namer.getTopLevelAliasedApiClassName(
                 (methodContext.getInterfaceConfig()), packageHasMultipleServices))
         .clientMethodName(clientMethodName)
-        .mockGrpcStubTypeName(
-            namer.getMockGrpcServiceImplName(methodContext.getTargetInterface().getSimpleName()))
+        .mockGrpcStubTypeName(namer.getMockGrpcServiceImplName(methodContext.getTargetInterface()))
         .createStubFunctionName(namer.getCreateStubFunctionName(methodContext.getTargetInterface()))
         .grpcStubCallString(namer.getGrpcStubCallString(methodContext.getTargetInterface(), method))
         .build();

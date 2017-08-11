@@ -87,7 +87,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
   /** The function name to format the entity for the given collection. */
   @Override
   public String getFormatFunctionName(
-      String apiInterfaceSimpleName, SingleResourceNameConfig resourceNameConfig) {
+      InterfaceModel apiInterface, SingleResourceNameConfig resourceNameConfig) {
     return staticFunctionName(Name.from(resourceNameConfig.getEntityName(), "path"));
   }
 

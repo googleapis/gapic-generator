@@ -75,8 +75,8 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getApiWrapperClassConstructorName(String apiInterfaceSimpleName) {
-    return getApiWrapperClassName(apiInterfaceSimpleName);
+  public String getApiWrapperClassConstructorName(InterfaceModel apiInterface) {
+    return getApiWrapperClassName(apiInterface.getSimpleName());
   }
 
   @Override
@@ -171,14 +171,14 @@ public class PythonSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getPathTemplateName(
-      String apiInterfaceSimpleName, SingleResourceNameConfig resourceNameConfig) {
+      InterfaceModel apiInterface, SingleResourceNameConfig resourceNameConfig) {
     return "_"
         + inittedConstantName(Name.from(resourceNameConfig.getEntityName(), "path", "template"));
   }
 
   @Override
   public String getFormatFunctionName(
-      String apiInterfaceSimpleName, SingleResourceNameConfig resourceNameConfig) {
+      InterfaceModel apiInterface, SingleResourceNameConfig resourceNameConfig) {
     return staticFunctionName(Name.from(resourceNameConfig.getEntityName(), "path"));
   }
 

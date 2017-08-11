@@ -18,8 +18,10 @@ import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
+import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.metacode.InitCodeContext;
@@ -91,14 +93,15 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
   public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
     List<ViewModel> views = new ArrayList<>();
     for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
-      GapicInterfaceContext context = createContext(apiInterface, productConfig);
+      ProtoInterfaceModel protoInterfaceModel = new ProtoInterfaceModel(apiInterface);
+      GapicInterfaceContext context = createContext(protoInterfaceModel, productConfig);
       views.add(createUnitTestFileView(context));
       if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
-        context = createContext(apiInterface, productConfig);
+        context = createContext(protoInterfaceModel, productConfig);
         views.add(createSmokeTestClassView(context));
       }
     }
-    for (Interface apiInterface :
+    for (InterfaceModel apiInterface :
         mockServiceTransformer.getGrpcInterfacesToMock(model, productConfig)) {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
       views.add(createMockServiceImplFileView(context));
@@ -266,13 +269,12 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     String outputPath =
         pathMapper.getOutputPath(
             context.getInterfaceModel().getFullName(), context.getProductConfig());
-    String name = namer.getMockServiceClassName(context.getInterfaceModel().getSimpleName());
+    String name = namer.getMockServiceClassName(context.getInterfaceModel());
 
     MockServiceView.Builder mockService = MockServiceView.newBuilder();
 
     mockService.name(name);
-    mockService.serviceImplClassName(
-        namer.getMockGrpcServiceImplName(context.getInterfaceModel().getSimpleName()));
+    mockService.serviceImplClassName(namer.getMockGrpcServiceImplName(context.getInterfaceModel()));
     mockService.outputPath(namer.getSourceFilePath(outputPath, name));
     mockService.templateFileName(MOCK_SERVICE_FILE);
 
@@ -290,7 +292,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     String outputPath =
         pathMapper.getOutputPath(
             context.getInterfaceModel().getFullName(), context.getProductConfig());
-    String name = namer.getMockGrpcServiceImplName(context.getInterfaceModel().getSimpleName());
+    String name = namer.getMockGrpcServiceImplName(context.getInterfaceModel());
     String grpcClassName =
         context
             .getImportTypeTable()
@@ -318,7 +320,8 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
   /////////////////////////////////// General Helpers //////////////////////////////////////
 
   /** Package-private */
-  GapicInterfaceContext createContext(Interface apiInterface, GapicProductConfig productConfig) {
+  GapicInterfaceContext createContext(
+      InterfaceModel apiInterface, GapicProductConfig productConfig) {
     ModelTypeTable typeTable =
         new ModelTypeTable(
             new JavaTypeTable(productConfig.getPackageName()),

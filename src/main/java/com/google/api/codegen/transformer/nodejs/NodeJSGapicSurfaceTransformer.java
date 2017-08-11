@@ -169,8 +169,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.packageServiceName(namer.getPackageServiceName(context.getInterfaceModel()));
 
     xapiClass.validDescriptorsNames(generateValidDescriptorsNames(context));
-    xapiClass.constructorName(
-        namer.getApiWrapperClassConstructorName(context.getInterfaceModel().getSimpleName()));
+    xapiClass.constructorName(namer.getApiWrapperClassConstructorName(context.getInterfaceModel()));
     xapiClass.isGcloud(NodeJSUtils.isGcloud(context.getProductConfig()));
 
     return xapiClass.build();

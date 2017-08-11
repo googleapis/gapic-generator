@@ -204,7 +204,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getPathTemplateName(
-      String apiInterfaceSimpleName, SingleResourceNameConfig resourceNameConfig) {
+      InterfaceModel apiInterface, SingleResourceNameConfig resourceNameConfig) {
     return inittedConstantName(Name.from(resourceNameConfig.getEntityName(), "template"));
   }
 
@@ -282,7 +282,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getFormatFunctionName(
-      String apiInterfaceSimpleName, SingleResourceNameConfig resourceNameConfig) {
+      InterfaceModel apiInterface, SingleResourceNameConfig resourceNameConfig) {
     return getResourceTypeName(resourceNameConfig);
   }
 

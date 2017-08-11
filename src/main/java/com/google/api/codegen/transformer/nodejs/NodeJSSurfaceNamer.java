@@ -103,8 +103,8 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getApiWrapperClassConstructorName(String apiInterfaceSimpleName) {
-    return publicFieldName(Name.upperCamel(apiInterfaceSimpleName, "Client"));
+  public String getApiWrapperClassConstructorName(InterfaceModel apiInterface) {
+    return publicFieldName(Name.upperCamel(apiInterface.getSimpleName(), "Client"));
   }
 
   @Override
@@ -118,7 +118,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getPathTemplateName(
-      String apiInterfaceSimpleName, SingleResourceNameConfig resourceNameConfig) {
+      InterfaceModel apiInterface, SingleResourceNameConfig resourceNameConfig) {
     return inittedConstantName(Name.from(resourceNameConfig.getEntityName(), "path", "template"));
   }
 
@@ -130,7 +130,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getFormatFunctionName(
-      String apiInterfaceSimpleName, SingleResourceNameConfig resourceNameConfig) {
+      InterfaceModel apiInterface, SingleResourceNameConfig resourceNameConfig) {
     return staticFunctionName(Name.from(resourceNameConfig.getEntityName(), "path"));
   }
 

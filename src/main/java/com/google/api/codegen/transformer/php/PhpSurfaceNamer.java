@@ -90,7 +90,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getPathTemplateName(
-      String apiInterfaceSimpleName, SingleResourceNameConfig resourceNameConfig) {
+      InterfaceModel apiInterface, SingleResourceNameConfig resourceNameConfig) {
     return inittedConstantName(Name.from(resourceNameConfig.getEntityName(), "name", "template"));
   }
 
