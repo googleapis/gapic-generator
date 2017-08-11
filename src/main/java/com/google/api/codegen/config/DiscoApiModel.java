@@ -27,8 +27,6 @@ public class DiscoApiModel implements ApiModel {
   private final Document document;
   private ImmutableList<DiscoInterfaceModel> interfaceModels;
 
-  private GapicProductConfig productConfig;
-
   @Override
   public String getServiceName() {
     return document.canonicalName();
@@ -37,11 +35,6 @@ public class DiscoApiModel implements ApiModel {
   @Override
   public String getDocumentationSummary() {
     return document.description();
-  }
-
-  /* Set the GapicProductConfig, which is required to list interfaces. */
-  public void setGapicProductConfig(GapicProductConfig productConfig) {
-    this.productConfig = productConfig;
   }
 
   @Override

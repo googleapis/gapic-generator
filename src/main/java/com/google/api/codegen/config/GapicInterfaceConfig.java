@@ -20,6 +20,7 @@ import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.RetryCodesDefinitionProto;
 import com.google.api.codegen.RetryParamsDefinitionProto;
+import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
 import com.google.api.gax.core.RetrySettings;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
@@ -124,9 +125,9 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs) {
 
     ImmutableMap<String, ImmutableSet<String>> retryCodesDefinition =
-        createRetryCodesDefinition(diagCollector, interfaceConfigProto);
+        RetryDefinitionsTransformer.createRetryCodesDefinition(diagCollector, interfaceConfigProto);
     ImmutableMap<String, RetrySettings> retrySettingsDefinition =
-        createRetrySettingsDefinition(diagCollector, interfaceConfigProto);
+        RetryDefinitionsTransformer.createRetrySettingsDefinition(diagCollector, interfaceConfigProto);
 
     List<GapicMethodConfig> methodConfigs = null;
     ImmutableMap<String, GapicMethodConfig> methodConfigMap = null;
@@ -208,64 +209,6 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     } else {
       return null;
     }
-  }
-
-  static ImmutableMap<String, ImmutableSet<String>> createRetryCodesDefinition(
-      DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto) {
-    ImmutableMap.Builder<String, ImmutableSet<String>> builder = ImmutableMap.builder();
-    for (RetryCodesDefinitionProto retryDef : interfaceConfigProto.getRetryCodesDefList()) {
-      // Enforce ordering on set for baseline test consistency.
-      Set<String> codes = new TreeSet<>();
-      for (String codeText : retryDef.getRetryCodesList()) {
-        try {
-          codes.add(String.valueOf(codeText));
-        } catch (IllegalArgumentException e) {
-          diagCollector.addDiag(
-              Diag.error(
-                  SimpleLocation.TOPLEVEL,
-                  "status code not found: '%s' (in interface %s)",
-                  codeText,
-                  interfaceConfigProto.getName()));
-        }
-      }
-      builder.put(retryDef.getName(), (new ImmutableSet.Builder<String>()).addAll(codes).build());
-    }
-    if (diagCollector.getErrorCount() > 0) {
-      return null;
-    }
-    return builder.build();
-  }
-
-  static ImmutableMap<String, RetrySettings> createRetrySettingsDefinition(
-      DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto) {
-    ImmutableMap.Builder<String, RetrySettings> builder =
-        ImmutableMap.<String, RetrySettings>builder();
-    for (RetryParamsDefinitionProto retryDef : interfaceConfigProto.getRetryParamsDefList()) {
-      try {
-        RetrySettings settings =
-            RetrySettings.newBuilder()
-                .setInitialRetryDelay(Duration.millis(retryDef.getInitialRetryDelayMillis()))
-                .setRetryDelayMultiplier(retryDef.getRetryDelayMultiplier())
-                .setMaxRetryDelay(Duration.millis(retryDef.getMaxRetryDelayMillis()))
-                .setInitialRpcTimeout(Duration.millis(retryDef.getInitialRpcTimeoutMillis()))
-                .setRpcTimeoutMultiplier(retryDef.getRpcTimeoutMultiplier())
-                .setMaxRpcTimeout(Duration.millis(retryDef.getMaxRpcTimeoutMillis()))
-                .setTotalTimeout(Duration.millis(retryDef.getTotalTimeoutMillis()))
-                .build();
-        builder.put(retryDef.getName(), settings);
-      } catch (IllegalStateException | NullPointerException e) {
-        diagCollector.addDiag(
-            Diag.error(
-                SimpleLocation.TOPLEVEL,
-                "error while creating retry params: %s (in interface %s)",
-                e,
-                interfaceConfigProto.getName()));
-      }
-    }
-    if (diagCollector.getErrorCount() > 0) {
-      return null;
-    }
-    return builder.build();
   }
 
   private static ImmutableMap<String, GapicMethodConfig> createMethodConfigMap(

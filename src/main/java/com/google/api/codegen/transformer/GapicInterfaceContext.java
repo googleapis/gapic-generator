@@ -56,11 +56,10 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
       ImportTypeTable typeTable,
       SurfaceNamer namer,
       FeatureConfig featureConfig) {
-    Preconditions.checkArgument(typeTable instanceof ModelTypeTable);
     return create(
         new ProtoInterfaceModel(apiInterface),
         productConfig,
-        (ModelTypeTable) typeTable,
+        typeTable,
         namer,
         featureConfig);
   }

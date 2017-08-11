@@ -29,7 +29,7 @@ public interface ApiModel {
   String getServiceName();
 
   /** Return the service address. */
-  public String getServiceAddress();
+  String getServiceAddress();
 
   /** Return the service port. TODO(cbao): Read the port from config. */
   Integer getServicePort();
