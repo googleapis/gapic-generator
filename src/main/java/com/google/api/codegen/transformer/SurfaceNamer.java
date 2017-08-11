@@ -1333,11 +1333,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The name of a type with with qualifying articles and descriptions. */
-  public String getTypeNameDoc(ImportTypeTable typeTable, Schema type) {
-    return getNotImplementedString("SurfaceNamer.getTypeNameDoc");
-  }
-
-  /** The name of a type with with qualifying articles and descriptions. */
   public String getTypeNameDoc(ImportTypeTable typeTable, FieldModel type) {
     switch (type.getApiSource()) {
       case PROTO:

@@ -57,5 +57,6 @@ public interface MethodContext {
 
   MethodContext cloneWithEmptyTypeTable();
 
+  // TODO(andrealin): Move this out when HTTP is implemented in gax.
   String getGrpcContainerTypeName();
 }
