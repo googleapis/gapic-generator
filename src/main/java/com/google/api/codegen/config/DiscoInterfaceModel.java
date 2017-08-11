@@ -26,7 +26,7 @@ public class DiscoInterfaceModel implements InterfaceModel {
 
   @Override
   public ApiSource getApiSource() {
-    return ApiSource.PROTO;
+    return ApiSource.DISCOVERY;
   }
 
   @Override

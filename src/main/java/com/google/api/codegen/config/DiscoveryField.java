@@ -107,7 +107,6 @@ public class DiscoveryField implements FieldModel {
 
   @Override
   public TypeName getParentTypeName(ImportTypeTable typeTable) {
-
     if (schema.parent() instanceof Schema) {
       DiscoveryField parent = new DiscoveryField((Schema) schema.parent());
       return typeTable.getTypeTable().getTypeName(typeTable.getFullNameFor(parent));
