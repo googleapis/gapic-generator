@@ -177,7 +177,10 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     apiClass.name(namer.getApiWrapperClassName(context.getInterfaceConfig()));
     apiClass.implName(namer.getApiWrapperClassImplName(context.getInterfaceConfig()));
     apiClass.grpcServiceName(namer.getGrpcContainerTypeName(context.getInterface()));
-    apiClass.grpcTypeName(namer.getGrpcServiceClassName(context.getInterface()));
+    String grpcTypeName = namer.getGrpcServiceClassName(context.getInterface());
+    int dotIndex = grpcTypeName.indexOf('.');
+    apiClass.grpcTypeNameOuter(grpcTypeName.substring(0, dotIndex));
+    apiClass.grpcTypeNameInner(grpcTypeName.substring(dotIndex + 1, grpcTypeName.length()));
     apiClass.settingsClassName(
         context.getNamer().getApiSettingsClassName(context.getInterfaceConfig()));
     List<ApiCallableView> callables = new ArrayList<>();
@@ -277,7 +280,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
         ReroutedGrpcView rerouted =
             ReroutedGrpcView.newBuilder()
                 .grpcClientVarName(namer.getReroutedGrpcClientVarName(methodConfig))
-                .typeName("var") // TODO: Add explicit type.
+                .typeName(namer.getReroutedGrpcTypeName(context.getModelTypeTable(), methodConfig))
                 .getMethodName(namer.getReroutedGrpcMethodName(methodConfig))
                 .build();
         reroutedViews.add(rerouted);

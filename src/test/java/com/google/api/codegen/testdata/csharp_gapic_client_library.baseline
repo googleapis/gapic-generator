@@ -17,6 +17,7 @@
 
 using Google.Api.Gax;
 using Google.Api.Gax.Grpc;
+using Google.Cloud.Tagger.V1;
 using Google.LongRunning;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
@@ -4968,7 +4969,7 @@ namespace Google.Example.Library.V1
             LongRunningOperationsClient = new OperationsClientImpl(
                 grpcClient.CreateOperationsClient(), effectiveSettings.LongRunningOperationsSettings);
             ClientHelper clientHelper = new ClientHelper(effectiveSettings);
-            var grpcLabelerClient = grpcClient.CreateLabelerClient();
+            Labeler.LabelerClient grpcLabelerClient = grpcClient.CreateLabelerClient();
             _callCreateShelf = clientHelper.BuildApiCall<CreateShelfRequest, Shelf>(
                 GrpcClient.CreateShelfAsync, GrpcClient.CreateShelf, effectiveSettings.CreateShelfSettings);
             _callGetShelf = clientHelper.BuildApiCall<GetShelfRequest, Shelf>(
@@ -6253,6 +6254,33 @@ namespace Google.Example.Library.V1
         /// <inheritdoc/>
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
+
+    // Partial Grpc class to enable LRO client creation
+    public static partial class LibraryService
+    {
+        public partial class LibraryServiceClient
+        {
+            /// <summary>
+            /// Creates a new instance of <see cref="Operations.OperationsClient"/> using the same call invoker as this client.
+            /// </summary>
+            /// <returns>A new Operations client for the same target as this client.</returns>
+            public virtual Operations.OperationsClient CreateOperationsClient() => new Operations.OperationsClient(CallInvoker);
+        }
+    }
+
+    // Partial Grpc class to enable Labeler.LabelerClient client creation
+    public static partial class LibraryService
+    {
+        public partial class LibraryServiceClient
+        {
+            /// <summary>
+            /// Creates a new instance of <see cref="Labeler.LabelerClient"/> using the same call invoker as this client.
+            /// </summary>
+            /// <returns>A new Labeler.LabelerClient for the same target as this client.</returns>
+            public virtual Labeler.LabelerClient CreateLabelerClient() => new Labeler.LabelerClient(CallInvoker);
+        }
+    }
+
 
 }
 

@@ -465,7 +465,8 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getLocalPackageName() {
-    return getApiWrapperModuleName();
+    // NodeJS module names can be hyphen separated.
+    return Name.from(getApiWrapperModuleName().split("[^a-zA-Z0-9']+")).toLowerCamel();
   }
 
   @Override
