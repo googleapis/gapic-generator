@@ -19,8 +19,10 @@ import static com.google.api.codegen.config.ApiSource.DISCOVERY;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.discovery.Schema.Format;
 import com.google.api.codegen.discovery.Schema.Type;
+import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.TypeName;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Preconditions;
@@ -96,6 +98,21 @@ public class DiscoveryField implements FieldModel {
   @Override
   public String getParentFullName() {
     return schema.parent().id();
+  }
+
+  @Override
+  public String getParentSimpleName() {
+    return schema.parent().id();
+  }
+
+  @Override
+  public TypeName getParentTypeName(ImportTypeTable typeTable) {
+
+    if (schema.parent() instanceof Schema) {
+      DiscoveryField parent = new DiscoveryField((Schema) schema.parent());
+      return typeTable.getTypeTable().getTypeName(typeTable.getFullNameFor(parent));
+    }
+    return typeTable.getTypeTable().getTypeName(typeTable.getFullNameFor(this));
   }
 
   @Override

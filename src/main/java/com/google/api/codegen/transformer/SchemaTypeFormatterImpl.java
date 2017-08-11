@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.discovery.Schema;
 
 /** Default implementation of SchemaTypeFormatter. */
@@ -53,6 +54,11 @@ public class SchemaTypeFormatterImpl implements SchemaTypeFormatter {
   @Override
   public String getFullNameFor(FieldModel type) {
     return getFullNameFor(type.getDiscoveryField());
+  }
+
+  @Override
+  public String getFullNameFor(InterfaceModel type) {
+    return type.getFullName();
   }
 
   @Override

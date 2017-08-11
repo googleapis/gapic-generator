@@ -192,7 +192,8 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
       addUnitTestImports(typeTable);
 
-      String outputPath = pathMapper.getOutputPath(context.getInterfaceFullName(), productConfig);
+      String outputPath =
+          pathMapper.getOutputPath(context.getInterfaceModel().getFullName(), productConfig);
       ImportSectionView importSection =
           importSectionTransformer.generateImportSection(typeTable.getImports());
       testViews.add(

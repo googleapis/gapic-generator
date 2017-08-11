@@ -73,7 +73,7 @@ public class DiscoGapicNamer {
     return result;
   }
 
-  public String getSimpleInterfaceName(String interfaceName) {
+  public static String getSimpleInterfaceName(String interfaceName) {
     String[] pieces = interfaceName.split(regexDelimiter);
     return pieces[pieces.length - 1];
   }

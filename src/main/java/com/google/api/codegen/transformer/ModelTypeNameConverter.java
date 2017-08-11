@@ -16,6 +16,8 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypedValue;
 import com.google.api.tools.framework.model.EnumValue;
@@ -26,6 +28,12 @@ import com.google.api.tools.framework.model.TypeRef;
 public abstract class ModelTypeNameConverter implements TypeNameConverter {
   /** Provides a TypeName for the given TypeRef. */
   public abstract TypeName getTypeName(TypeRef type);
+
+  /** Provides a TypeName for the given TypeRef. */
+  @Override
+  public TypeName getTypeName(InterfaceModel interfaceModel) {
+    return getTypeName(((ProtoInterfaceModel) interfaceModel).getInterface());
+  }
 
   /** Provides a TypedValue for the given enum TypeRef. */
   public abstract TypedValue getEnumValue(TypeRef type, EnumValue value);

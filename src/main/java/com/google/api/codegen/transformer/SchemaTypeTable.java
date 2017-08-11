@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.transformer.SchemaTypeNameConverter.BoxingBehavior;
 import com.google.api.codegen.util.TypeAlias;
@@ -127,6 +128,11 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
   @Override
   public String getFullNameFor(FieldModel type) {
     return getFullNameFor(type.getDiscoveryField());
+  }
+
+  @Override
+  public String getFullNameFor(InterfaceModel type) {
+    return type.getFullName();
   }
 
   /** Get the full name for the element type of the given type. */

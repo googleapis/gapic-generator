@@ -14,17 +14,18 @@
  */
 package com.google.api.codegen.transformer.nodejs;
 
+import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.ImportSectionTransformer;
+import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.TransformationContext;
 import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ImportTypeView;
-import com.google.api.tools.framework.model.Interface;
 import com.google.common.collect.ImmutableList;
 import java.util.Collections;
 import java.util.List;
@@ -43,9 +44,9 @@ public class NodeJSImportSectionTransformer implements ImportSectionTransformer 
     return new StandardImportSectionTransformer().generateImportSection(context, specItemNodes);
   }
 
-  private List<ImportFileView> generateExternalImports(GapicInterfaceContext context) {
+  private List<ImportFileView> generateExternalImports(InterfaceContext context) {
     ImmutableList.Builder<ImportFileView> imports = ImmutableList.builder();
-    Interface apiInterface = context.getInterface();
+    InterfaceModel apiInterface = context.getInterfaceModel();
     String configModule = context.getNamer().getClientConfigPath(apiInterface);
     imports.add(createImport("configData", "./" + configModule));
     imports.add(createImport("extend", "extend"));

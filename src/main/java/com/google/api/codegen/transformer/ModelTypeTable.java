@@ -16,6 +16,8 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
@@ -42,6 +44,11 @@ public class ModelTypeTable implements ImportTypeTable, ModelTypeFormatter {
   @Override
   public String getImplicitPackageFullNameFor(String shortName) {
     return typeFormatter.getImplicitPackageFullNameFor(shortName);
+  }
+
+  @Override
+  public String getFullNameFor(InterfaceModel type) {
+    return getFullNameFor(((ProtoInterfaceModel) type).getInterface());
   }
 
   @Override

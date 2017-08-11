@@ -18,6 +18,7 @@ import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ResourceNameType;
@@ -35,7 +36,6 @@ import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaRenderingUtil;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.ServiceMethodType;
-import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
@@ -77,7 +77,7 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getApiSnippetsClassName(Interface apiInterface) {
+  public String getApiSnippetsClassName(InterfaceModel apiInterface) {
     return publicClassName(Name.upperCamel(apiInterface.getSimpleName(), "ClientSnippets"));
   }
 

@@ -101,7 +101,8 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
     Set<String> filenames = new TreeSet<>();
     filenames.add(context.getInterface().getFile().getSimpleName());
     for (MethodModel method : context.getSupportedMethods()) {
-      Interface targetInterface = context.asRequestMethodContext(method).getTargetInterface();
+      Interface targetInterface =
+          context.asRequestMethodContext(method).getTargetInterface().getInterface();
       filenames.add(targetInterface.getFile().getSimpleName());
     }
     return filenames;

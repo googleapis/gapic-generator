@@ -71,7 +71,8 @@ public class JavaGapicSampleAppTransformer implements ModelToViewTransformer {
   private ViewModel createSampleClassView(GapicInterfaceContext context) {
     if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
       String outputPath =
-          pathMapper.getOutputPath(context.getInterfaceFullName(), context.getProductConfig());
+          pathMapper.getOutputPath(
+              context.getInterfaceModel().getFullName(), context.getProductConfig());
       SurfaceNamer namer = context.getNamer();
       String name = namer.getSampleAppClassName();
 
@@ -92,7 +93,8 @@ public class JavaGapicSampleAppTransformer implements ModelToViewTransformer {
 
     SurfaceNamer namer = context.getNamer();
     String outputPath =
-        pathMapper.getOutputPath(context.getInterfaceFullName(), context.getProductConfig());
+        pathMapper.getOutputPath(
+            context.getInterfaceModel().getFullName(), context.getProductConfig());
     String name = namer.getSampleAppClassName();
     FileHeaderView fileHeader = fileHeaderTransformer.generateFileHeader(context);
 

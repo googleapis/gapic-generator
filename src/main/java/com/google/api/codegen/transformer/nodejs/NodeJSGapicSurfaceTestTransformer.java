@@ -113,7 +113,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
               apiInterface, productConfig, typeTable, namer, featureConfig);
       impls.add(
           MockServiceImplView.newBuilder()
-              .grpcClassName(namer.getGrpcServerTypeName(apiInterface))
+              .grpcClassName(namer.getGrpcServerTypeName(context.getInterfaceModel()))
               .name(namer.getMockGrpcServiceImplName(apiInterface.getSimpleName()))
               .grpcMethods(mockServiceTransformer.createMockGrpcMethodViews(context))
               .build());
@@ -135,7 +135,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
                       "NodeJSGapicSurfaceTestTransformer.generateTestView - name"))
               .testCases(createTestCaseViews(context))
               .apiHasLongRunningMethods(context.getInterfaceConfig().hasLongRunningOperations())
-              .packageServiceName(namer.getPackageServiceName(apiInterface))
+              .packageServiceName(namer.getPackageServiceName(context.getInterfaceModel()))
               .missingDefaultServiceAddress(
                   !context.getInterfaceConfig().hasDefaultServiceAddress())
               .missingDefaultServiceScopes(!context.getInterfaceConfig().hasDefaultServiceScopes())

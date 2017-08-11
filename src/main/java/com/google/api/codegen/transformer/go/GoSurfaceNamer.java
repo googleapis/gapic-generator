@@ -17,9 +17,11 @@ package com.google.api.codegen.transformer.go;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.OneofConfig;
+import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
@@ -33,7 +35,6 @@ import com.google.api.codegen.util.PassThroughCommentReformatter;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.go.GoNameFormatter;
 import com.google.api.codegen.util.go.GoTypeTable;
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.annotations.VisibleForTesting;
@@ -165,12 +166,17 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getGrpcServerTypeName(Interface apiInterface) {
+  public String getGrpcServerTypeName(InterfaceModel apiInterface) {
     return converter.getTypeName(apiInterface).getNickname() + "Server";
   }
 
   @Override
   public String getGrpcClientTypeName(Interface apiInterface) {
+    return getGrpcClientTypeName(new ProtoInterfaceModel(apiInterface));
+  }
+
+  @Override
+  public String getGrpcClientTypeName(InterfaceModel apiInterface) {
     return converter.getTypeName(apiInterface).getNickname() + "Client";
   }
 
@@ -180,13 +186,13 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getCallSettingsTypeName(Interface apiInterface) {
+  public String getCallSettingsTypeName(InterfaceModel apiInterface) {
     return publicClassName(
         clientNamePrefix(apiInterface.getSimpleName()).join("call").join("options"));
   }
 
   @Override
-  public String getDefaultApiSettingsFunctionName(Interface apiInterface) {
+  public String getDefaultApiSettingsFunctionName(InterfaceModel apiInterface) {
     return privateMethodName(
         Name.from("default")
             .join(clientNamePrefix(apiInterface.getSimpleName()))
@@ -195,7 +201,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getDefaultCallSettingsFunctionName(Interface apiInterface) {
+  public String getDefaultCallSettingsFunctionName(InterfaceModel apiInterface) {
     return privateMethodName(
         Name.from("default")
             .join(clientNamePrefix(apiInterface.getSimpleName()))
@@ -290,7 +296,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getGrpcContainerTypeName(Interface apiInterface) {
+  public String getGrpcContainerTypeName(InterfaceModel apiInterface) {
     return "";
   }
 
@@ -300,7 +306,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getExampleFileName(Interface apiInterface) {
+  public String getExampleFileName(InterfaceModel apiInterface) {
     return classFileNameBase(
         getReducedServiceName(apiInterface.getSimpleName())
             .join("client")
@@ -309,7 +315,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getStubName(Interface apiInterface) {
+  public String getStubName(InterfaceModel apiInterface) {
     return privateFieldName(clientNamePrefix(apiInterface.getSimpleName()).join("client"));
   }
 
@@ -319,7 +325,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getCreateStubFunctionName(Interface apiInterface) {
+  public String getCreateStubFunctionName(InterfaceModel apiInterface) {
     return getGrpcClientTypeName(apiInterface).replace(".", ".New");
   }
 
@@ -344,15 +350,15 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getIamResourceGetterFunctionName(Field field) {
-    return Name.upperCamel(field.getParent().getSimpleName())
+  public String getIamResourceGetterFunctionName(FieldModel field) {
+    return Name.upperCamel(field.getParentSimpleName())
         .join(Name.upperCamelKeepUpperAcronyms("IAM"))
         .toUpperCamel();
   }
 
   @Override
   public String getIamResourceGetterFunctionExampleName(
-      String apiInterfaceSimpleName, Field field) {
+      String apiInterfaceSimpleName, FieldModel field) {
     return exampleFunction(apiInterfaceSimpleName, getIamResourceGetterFunctionName(field));
   }
 

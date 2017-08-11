@@ -19,6 +19,7 @@ import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
@@ -38,7 +39,6 @@ import com.google.api.codegen.util.js.JSCommentReformatter;
 import com.google.api.codegen.util.js.JSNameFormatter;
 import com.google.api.codegen.util.js.JSTypeTable;
 import com.google.api.tools.framework.model.EnumType;
-import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoFile;
@@ -98,7 +98,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getPackageServiceName(Interface apiInterface) {
+  public String getPackageServiceName(InterfaceModel apiInterface) {
     return getReducedServiceName(apiInterface.getSimpleName()).toLowerCamel();
   }
 
@@ -135,11 +135,11 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getClientConfigPath(Interface apiInterface) {
+  public String getClientConfigPath(InterfaceModel apiInterface) {
     return Name.upperCamel(apiInterface.getSimpleName()).join("client_config").toLowerUnderscore();
   }
 
-  public String getClientFileName(Interface apiInterface) {
+  public String getClientFileName(InterfaceModel apiInterface) {
     return Name.upperCamel(apiInterface.getSimpleName()).join("client").toLowerUnderscore();
   }
 
@@ -164,13 +164,13 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFullyQualifiedStubType(Interface apiInterface) {
+  public String getFullyQualifiedStubType(InterfaceModel apiInterface) {
     return getModelTypeFormatter().getFullNameFor(apiInterface);
   }
 
   @Override
-  public String getGrpcClientImportName(Interface apiInterface) {
-    return "grpc-" + NamePath.dotted(apiInterface.getFile().getFullName()).toDashed();
+  public String getGrpcClientImportName(InterfaceModel apiInterface) {
+    return "grpc-" + NamePath.dotted(apiInterface.getFileFullName()).toDashed();
   }
 
   @Override

@@ -172,10 +172,10 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
 
     xapiClass.methodKeys(ImmutableList.<String>of());
     xapiClass.interfaceKey(context.getInterface().getFullName());
-    xapiClass.clientConfigPath(namer.getClientConfigPath(context.getInterface()));
+    xapiClass.clientConfigPath(namer.getClientConfigPath(context.getInterfaceModel()));
     xapiClass.grpcClientTypeName(
         namer.getAndSaveNicknameForGrpcClientTypeName(
-            context.getModelTypeTable(), context.getInterface()));
+            context.getModelTypeTable(), context.getInterfaceModel()));
 
     xapiClass.apiMethods(methods);
 
@@ -211,7 +211,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
           VersionIndexRequireView.newBuilder()
               .clientName(namer.getFullyQualifiedApiWrapperClassName(interfaceConfig))
               .fileName(namer.getServiceFileName(interfaceConfig))
-              .serviceName(namer.getPackageServiceName(apiInterface))
+              .serviceName(namer.getPackageServiceName(context.getInterfaceModel()))
               .doc(
                   serviceTransformer.generateServiceDoc(
                       context, generateApiMethods(context).get(0)))
@@ -298,7 +298,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
     for (Interface apiInterface : interfaces) {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
       String clientName = namer.getPackageName();
-      String serviceName = namer.getPackageServiceName(apiInterface);
+      String serviceName = namer.getPackageServiceName(context.getInterfaceModel());
       if (hasMultipleServices) {
         clientName += "::" + serviceName;
       }

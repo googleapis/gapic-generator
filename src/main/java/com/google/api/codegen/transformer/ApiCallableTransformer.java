@@ -310,7 +310,7 @@ public class ApiCallableTransformer {
         method.getAndSaveResponseTypeName(typeTable, context.getNamer()));
     callableBuilder.name(namer.getDirectCallableName(method));
     callableBuilder.protoMethodName(method.getSimpleName());
-    callableBuilder.fullServiceName(context.getTargetInterfaceFullName());
+    callableBuilder.fullServiceName(context.getTargetInterface().getFullName());
 
     return callableBuilder.build();
   }

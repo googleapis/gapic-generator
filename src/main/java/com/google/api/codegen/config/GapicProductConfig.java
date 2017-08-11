@@ -477,6 +477,12 @@ public abstract class GapicProductConfig implements ProductConfig {
     return (GapicInterfaceConfig) getInterfaceConfigMap().get(apiInterface.getFullName());
   }
 
+  /** Returns the GapicInterfaceConfig for the given API interface. */
+  @Override
+  public GapicInterfaceConfig getInterfaceConfig(InterfaceModel apiInterface) {
+    return (GapicInterfaceConfig) getInterfaceConfigMap().get(apiInterface.getFullName());
+  }
+
   /** Returns the GapicInterfaceConfig for the given API method. */
   public InterfaceConfig getInterfaceConfig(String fullName) {
     return getInterfaceConfigMap().get(fullName);

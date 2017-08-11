@@ -16,8 +16,10 @@ package com.google.api.codegen.transformer.php;
 
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
@@ -93,7 +95,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getClientConfigPath(Interface apiInterface) {
+  public String getClientConfigPath(InterfaceModel apiInterface) {
     return "resources/"
         + Name.upperCamel(apiInterface.getSimpleName()).join("client_config").toLowerUnderscore()
         + ".json";
@@ -147,10 +149,15 @@ public class PhpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getGrpcClientTypeName(Interface apiInterface) {
+    return getGrpcClientTypeName(new ProtoInterfaceModel(apiInterface));
+  }
+
+  @Override
+  public String getGrpcClientTypeName(InterfaceModel apiInterface) {
     return qualifiedName(getGrpcClientTypeName(apiInterface, "GrpcClient"));
   }
 
-  private NamePath getGrpcClientTypeName(Interface apiInterface, String suffix) {
+  private NamePath getGrpcClientTypeName(InterfaceModel apiInterface, String suffix) {
     NamePath namePath =
         getTypeNameConverter().getNamePath(getModelTypeFormatter().getFullNameFor(apiInterface));
     String publicClassName =
@@ -169,7 +176,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getGrpcStubCallString(Interface apiInterface, MethodModel method) {
+  public String getGrpcStubCallString(InterfaceModel apiInterface, MethodModel method) {
     return '/' + apiInterface.getFullName() + '/' + getGrpcMethodName(method);
   }
 

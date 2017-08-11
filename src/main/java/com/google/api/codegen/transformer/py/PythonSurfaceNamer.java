@@ -19,8 +19,10 @@ import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
@@ -68,8 +70,8 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getServicePhraseName(Interface apiInterface) {
-    return apiInterface.getParent().getFullName() + " " + apiInterface.getSimpleName() + " API";
+  public String getServicePhraseName(InterfaceModel apiInterface) {
+    return apiInterface.getParentFullName() + " " + apiInterface.getSimpleName() + " API";
   }
 
   @Override
@@ -188,12 +190,17 @@ public class PythonSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getGrpcClientTypeName(Interface apiInterface) {
+    return getGrpcClientTypeName(new ProtoInterfaceModel(apiInterface));
+  }
+
+  @Override
+  public String getGrpcClientTypeName(InterfaceModel apiInterface) {
     String fullName = getModelTypeFormatter().getFullNameFor(apiInterface) + "Stub";
     return getTypeNameConverter().getTypeName(fullName).getNickname();
   }
 
   @Override
-  public String getClientConfigPath(Interface apiInterface) {
+  public String getClientConfigPath(InterfaceModel apiInterface) {
     return classFileNameBase(Name.upperCamel(apiInterface.getSimpleName()).join("client_config"))
         + ".json";
   }
@@ -260,7 +267,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getGrpcStubCallString(Interface apiInterface, MethodModel method) {
+  public String getGrpcStubCallString(InterfaceModel apiInterface, MethodModel method) {
     return getGrpcMethodName(method);
   }
 

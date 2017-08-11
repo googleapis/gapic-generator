@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer.csharp;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ResourceNameConfig;
@@ -35,7 +36,6 @@ import com.google.api.codegen.util.TypedValue;
 import com.google.api.codegen.util.csharp.CSharpCommentReformatter;
 import com.google.api.codegen.util.csharp.CSharpNameFormatter;
 import com.google.api.codegen.util.csharp.CSharpTypeTable;
-import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
@@ -181,7 +181,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getApiSnippetsClassName(Interface apiInterface) {
+  public String getApiSnippetsClassName(InterfaceModel apiInterface) {
     return publicClassName(
         Name.upperCamel("Generated", apiInterface.getSimpleName(), "ClientSnippets"));
   }
@@ -352,7 +352,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getGrpcContainerTypeName(Interface apiInterface) {
+  public String getGrpcContainerTypeName(InterfaceModel apiInterface) {
     return publicClassName(Name.upperCamel(apiInterface.getSimpleName()));
   }
 
@@ -374,14 +374,14 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getGrpcServiceClassName(Interface apiInterface) {
+  public String getGrpcServiceClassName(InterfaceModel apiInterface) {
     return publicClassName(Name.upperCamel(apiInterface.getSimpleName()))
         + "."
         + publicClassName(Name.upperCamel(apiInterface.getSimpleName(), "Client"));
   }
 
   @Override
-  public String getApiWrapperClassImplName(Interface apiInterface) {
+  public String getApiWrapperClassImplName(InterfaceModel apiInterface) {
     return publicClassName(Name.upperCamel(apiInterface.getSimpleName(), "ClientImpl"));
   }
 

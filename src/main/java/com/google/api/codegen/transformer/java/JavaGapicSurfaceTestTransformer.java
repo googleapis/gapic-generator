@@ -113,7 +113,8 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
   private SmokeTestClassView createSmokeTestClassView(GapicInterfaceContext context) {
     String outputPath =
-        pathMapper.getOutputPath(context.getInterfaceFullName(), context.getProductConfig());
+        pathMapper.getOutputPath(
+            context.getInterfaceModel().getFullName(), context.getProductConfig());
     SurfaceNamer namer = context.getNamer();
     String name = namer.getSmokeTestClassName(context.getInterfaceConfig());
 
@@ -263,14 +264,15 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
     SurfaceNamer namer = context.getNamer();
     String outputPath =
-        pathMapper.getOutputPath(context.getInterfaceFullName(), context.getProductConfig());
-    String name = namer.getMockServiceClassName(context.getInterfaceSimpleName());
+        pathMapper.getOutputPath(
+            context.getInterfaceModel().getFullName(), context.getProductConfig());
+    String name = namer.getMockServiceClassName(context.getInterfaceModel().getSimpleName());
 
     MockServiceView.Builder mockService = MockServiceView.newBuilder();
 
     mockService.name(name);
     mockService.serviceImplClassName(
-        namer.getMockGrpcServiceImplName(context.getInterfaceSimpleName()));
+        namer.getMockGrpcServiceImplName(context.getInterfaceModel().getSimpleName()));
     mockService.outputPath(namer.getSourceFilePath(outputPath, name));
     mockService.templateFileName(MOCK_SERVICE_FILE);
 
@@ -281,18 +283,18 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     return mockService.build();
   }
 
-  private MockServiceImplFileView createMockServiceImplFileView(GapicInterfaceContext context) {
+  private MockServiceImplFileView createMockServiceImplFileView(InterfaceContext context) {
     addMockServiceImplImports(context);
 
-    Interface apiInterface = context.getInterface();
     SurfaceNamer namer = context.getNamer();
     String outputPath =
-        pathMapper.getOutputPath(context.getInterfaceFullName(), context.getProductConfig());
-    String name = namer.getMockGrpcServiceImplName(context.getInterfaceSimpleName());
+        pathMapper.getOutputPath(
+            context.getInterfaceModel().getFullName(), context.getProductConfig());
+    String name = namer.getMockGrpcServiceImplName(context.getInterfaceModel().getSimpleName());
     String grpcClassName =
         context
             .getImportTypeTable()
-            .getAndSaveNicknameFor(namer.getGrpcServiceClassName(apiInterface));
+            .getAndSaveNicknameFor(namer.getGrpcServiceClassName(context.getInterfaceModel()));
 
     MockServiceImplFileView.Builder mockServiceImplFile = MockServiceImplFileView.newBuilder();
 

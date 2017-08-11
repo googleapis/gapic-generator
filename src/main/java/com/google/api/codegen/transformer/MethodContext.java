@@ -18,6 +18,7 @@ import com.google.api.codegen.config.ApiSource;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.SingleResourceNameConfig;
@@ -31,7 +32,11 @@ public interface MethodContext {
 
   ApiSource getApiSource();
 
-  String getInterfaceSimpleName();
+  InterfaceModel getTargetInterface();
+
+  InterfaceModel getInterfaceModel();
+
+  InterfaceConfig getInterfaceConfig();
 
   GapicProductConfig getProductConfig();
 
@@ -48,17 +53,9 @@ public interface MethodContext {
 
   boolean isFlattenedMethodContext();
 
-  InterfaceConfig getInterfaceConfig();
-
   SingleResourceNameConfig getSingleResourceNameConfig(String entityName);
 
   MethodContext cloneWithEmptyTypeTable();
-
-  String getTargetInterfaceFullName();
-
-  String getTargetInterfaceSimpleName();
-
-  String getInterfaceFileName();
 
   String getGrpcContainerTypeName();
 }

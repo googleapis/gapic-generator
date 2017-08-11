@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.InterfaceModel;
 
 /**
  * A read-only interface for mapping TypeRef instances to a corresponding String representation for
@@ -28,6 +29,9 @@ public interface TypeFormatter {
 
   /** Get the full name for the given type. */
   String getFullNameFor(FieldModel type);
+
+  /** Get the full name for the given type. */
+  String getFullNameFor(InterfaceModel type);
 
   /** Get the full name for the element type of the given type. */
   String getFullNameForElementType(FieldModel type);

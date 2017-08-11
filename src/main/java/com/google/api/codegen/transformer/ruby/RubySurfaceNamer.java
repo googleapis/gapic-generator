@@ -16,10 +16,11 @@ package com.google.api.codegen.transformer.ruby;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
-import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
@@ -67,7 +68,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
 
   /** The name of the class that implements snippets for a particular proto interface. */
   @Override
-  public String getApiSnippetsClassName(Interface apiInterface) {
+  public String getApiSnippetsClassName(InterfaceModel apiInterface) {
     return publicClassName(Name.upperCamel(apiInterface.getSimpleName(), "ClientSnippets"));
   }
 
@@ -97,7 +98,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getClientConfigPath(Interface apiInterface) {
+  public String getClientConfigPath(InterfaceModel apiInterface) {
     return Name.upperCamel(apiInterface.getSimpleName()).join("client_config").toLowerUnderscore()
         + ".json";
   }
@@ -113,7 +114,16 @@ public class RubySurfaceNamer extends SurfaceNamer {
    */
   @Override
   public String getGrpcClientTypeName(Interface apiInterface) {
-    return getModelTypeFormatter().getFullNameFor(apiInterface);
+    return getGrpcClientTypeName(new ProtoInterfaceModel(apiInterface));
+  }
+
+  /**
+   * The type name of the Grpc client class. This needs to match what Grpc generates for the
+   * particular language.
+   */
+  @Override
+  public String getGrpcClientTypeName(InterfaceModel apiInterface) {
+    return getTypeFormatter().getFullNameFor(apiInterface);
   }
 
   @Override
@@ -206,7 +216,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFullyQualifiedStubType(Interface apiInterface) {
+  public String getFullyQualifiedStubType(InterfaceModel apiInterface) {
     NamePath namePath =
         getTypeNameConverter().getNamePath(getModelTypeFormatter().getFullNameFor(apiInterface));
     return qualifiedName(namePath.append("Stub"));
@@ -281,17 +291,17 @@ public class RubySurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getTopLevelAliasedApiClassName(
-      GapicInterfaceConfig interfaceConfig, boolean packageHasMultipleServices) {
+      InterfaceConfig interfaceConfig, boolean packageHasMultipleServices) {
     return packageHasMultipleServices
-        ? getTopLevelNamespace() + "::" + getPackageServiceName(interfaceConfig.getInterface())
+        ? getTopLevelNamespace() + "::" + getPackageServiceName(interfaceConfig.getInterfaceModel())
         : getTopLevelNamespace();
   }
 
   @Override
   public String getVersionAliasedApiClassName(
-      GapicInterfaceConfig interfaceConfig, boolean packageHasMultipleServices) {
+      InterfaceConfig interfaceConfig, boolean packageHasMultipleServices) {
     return packageHasMultipleServices
-        ? getPackageName() + "::" + getPackageServiceName(interfaceConfig.getInterface())
+        ? getPackageName() + "::" + getPackageServiceName(interfaceConfig.getInterfaceModel())
         : getPackageName();
   }
 
@@ -386,7 +396,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getGrpcStubCallString(Interface apiInterface, MethodModel method) {
+  public String getGrpcStubCallString(InterfaceModel apiInterface, MethodModel method) {
     return getFullyQualifiedStubType(apiInterface);
   }
 
@@ -396,7 +406,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getPackageServiceName(Interface apiInterface) {
+  public String getPackageServiceName(InterfaceModel apiInterface) {
     return publicClassName(getReducedServiceName(apiInterface.getSimpleName()));
   }
 }

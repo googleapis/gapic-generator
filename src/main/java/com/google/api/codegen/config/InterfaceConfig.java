@@ -29,6 +29,8 @@ import javax.annotation.Nullable;
 public interface InterfaceConfig {
   String getName();
 
+  InterfaceModel getInterfaceModel();
+
   @Nullable
   SmokeTestConfig getSmokeTestConfig();
 
@@ -57,6 +59,8 @@ public interface InterfaceConfig {
   boolean hasGrpcStreamingMethods();
 
   boolean hasDefaultInstance();
+
+  ImmutableList<? extends FieldModel> getIamResources();
 
   ImmutableList<SingleResourceNameConfig> getSingleResourceNameConfigs();
 

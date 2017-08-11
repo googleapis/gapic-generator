@@ -23,6 +23,7 @@ import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
@@ -54,7 +55,7 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
       SurfaceNamer namer,
       FeatureConfig featureConfig) {
     return new AutoValue_GapicInterfaceContext(
-        apiInterface,
+        new ProtoInterfaceModel(apiInterface),
         productConfig,
         typeTable,
         namer,
@@ -85,7 +86,11 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
     return getInterface().getModel();
   }
 
-  public abstract Interface getInterface();
+  public Interface getInterface() {
+    return getInterfaceModel().getInterface();
+  }
+
+  public abstract ProtoInterfaceModel getInterfaceModel();
 
   @Override
   public abstract GapicProductConfig getProductConfig();
@@ -119,11 +124,6 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
   @Override
   public GapicInterfaceConfig getInterfaceConfig() {
     return getProductConfig().getInterfaceConfig(getInterface());
-  }
-
-  @Override
-  public String getInterfaceSimpleName() {
-    return getInterface().getSimpleName();
   }
 
   public GapicInterfaceContext withNewTypeTable(String packageName) {
@@ -241,6 +241,7 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
    * Returns a list of methods with samples, similar to getSupportedMethods, but also filter out
    * private methods.
    */
+  @Override
   public List<MethodModel> getPublicMethods() {
     List<MethodModel> methods = new ArrayList<>(getInterfaceConfig().getMethodConfigs().size());
     for (MethodModel method : getInterfaceConfigMethods()) {
@@ -303,16 +304,6 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
       }
     }
     return methods;
-  }
-
-  @Override
-  public String getInterfaceFileName() {
-    return getInterface().getFile().getFullName();
-  }
-
-  @Override
-  public String getInterfaceFullName() {
-    return getInterface().getFullName();
   }
 
   @Override

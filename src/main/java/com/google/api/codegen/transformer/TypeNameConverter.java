@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypedValue;
 import com.google.api.tools.framework.model.EnumValue;
@@ -24,6 +25,8 @@ import com.google.api.tools.framework.model.EnumValue;
 public interface TypeNameConverter {
   /** Provides a TypeName for the given FieldModel. */
   TypeName getTypeName(FieldModel type);
+
+  TypeName getTypeName(InterfaceModel interfaceModel);
 
   /** Provides a TypedValue for the given enum FieldModel. */
   TypedValue getEnumValue(FieldModel type, EnumValue value);

@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer;
 import com.google.api.codegen.config.ApiSource;
 import com.google.api.codegen.config.DiscoGapicInterfaceConfig;
 import com.google.api.codegen.config.DiscoGapicMethodConfig;
+import com.google.api.codegen.config.DiscoInterfaceModel;
 import com.google.api.codegen.config.DiscoveryMethodModel;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
@@ -49,7 +50,12 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
       DiscoGapicNamer discoGapicNamer,
       FeatureConfig featureConfig) {
     return new AutoValue_DiscoGapicInterfaceContext(
-        document, productConfig, typeTable, discoGapicNamer, "", featureConfig);
+        document,
+        productConfig,
+        typeTable,
+        discoGapicNamer,
+        new DiscoInterfaceModel(""),
+        featureConfig);
   }
 
   public static DiscoGapicInterfaceContext createWithInterface(
@@ -66,7 +72,12 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
     }
 
     return new AutoValue_DiscoGapicInterfaceContext(
-        document, productConfig, typeTable, discoGapicNamer, interfaceName, featureConfig);
+        document,
+        productConfig,
+        typeTable,
+        discoGapicNamer,
+        new DiscoInterfaceModel(interfaceName),
+        featureConfig);
   }
 
   public abstract Document getDocument();
@@ -104,21 +115,16 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   }
 
   @Override
-  public String getInterfaceSimpleName() {
-    return getInterfaceName();
-  }
-
-  @Override
-  public String getInterfaceFullName() {
-    return getInterfaceName();
-  }
-
-  @Override
   public String getInterfaceDescription() {
     return getDocument().description();
   }
 
-  public abstract String getInterfaceName();
+  public String getInterfaceName() {
+    return getInterfaceModel().getFullName();
+  }
+
+  @Override
+  public abstract DiscoInterfaceModel getInterfaceModel();
 
   @Override
   public SurfaceNamer getNamer() {
@@ -147,6 +153,19 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
         getSchemaTypeTable().cloneEmpty(packageName),
         getDiscoGapicNamer(),
         getFeatureConfig());
+  }
+
+  @Override
+  /* Returns a list of public methods, configured by FeatureConfig. Memoize the result. */
+  public Iterable<MethodModel> getPublicMethods() {
+    return Iterables.filter(
+        getInterfaceConfigMethods(),
+        new Predicate<MethodModel>() {
+          @Override
+          public boolean apply(MethodModel methodModel) {
+            return isSupported(methodModel);
+          }
+        });
   }
 
   @Override
@@ -278,11 +297,6 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
         getMethodConfig(method),
         flatteningConfig,
         getFeatureConfig());
-  }
-
-  @Override
-  public String getInterfaceFileName() {
-    return getInterfaceName();
   }
 
   @Override

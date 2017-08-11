@@ -380,7 +380,8 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     settingsFile.templateFileName(SETTINGS_TEMPLATE_FILENAME);
 
     String outputPath =
-        pathMapper.getOutputPath(context.getInterfaceFullName(), context.getProductConfig());
+        pathMapper.getOutputPath(
+            context.getInterfaceModel().getFullName(), context.getProductConfig());
     String className = context.getNamer().getApiSettingsClassName(context.getInterfaceConfig());
     settingsFile.outputPath(outputPath + File.separator + className + ".java");
 
@@ -444,7 +445,8 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     fileView.templateFileName(STUB_INTERFACE_TEMPLATE_FILENAME);
 
     String outputPath =
-        pathMapper.getOutputPath(context.getInterfaceFullName(), context.getProductConfig());
+        pathMapper.getOutputPath(
+            context.getInterfaceModel().getFullName(), context.getProductConfig());
     String className = context.getNamer().getApiStubInterfaceName(context.getInterfaceConfig());
     fileView.outputPath(
         outputPath + File.separator + "stub" + File.separator + className + ".java");
@@ -487,7 +489,8 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     fileView.templateFileName(GRPC_STUB_TEMPLATE_FILENAME);
 
     String outputPath =
-        pathMapper.getOutputPath(context.getInterfaceFullName(), context.getProductConfig());
+        pathMapper.getOutputPath(
+            context.getInterfaceModel().getFullName(), context.getProductConfig());
     String className = context.getNamer().getApiGrpcStubClassName(context.getInterfaceConfig());
     fileView.outputPath(
         outputPath + File.separator + "stub" + File.separator + className + ".java");

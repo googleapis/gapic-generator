@@ -21,6 +21,7 @@ import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.tools.framework.model.Interface;
@@ -49,12 +50,16 @@ public abstract class GapicMethodContext implements MethodContext {
         methodConfig,
         surfaceTransformerContext,
         typeTable,
-        apiInterface);
+        new ProtoInterfaceModel(apiInterface));
   }
 
   /** The Method for which this object is a transformation context. */
   public Method getMethod() {
     return getMethodModel().getProtoMethod();
+  }
+
+  public Interface getInterface() {
+    return getInterfaceModel().getInterface();
   }
 
   @Override
@@ -74,26 +79,24 @@ public abstract class GapicMethodContext implements MethodContext {
   @Override
   public abstract ModelTypeTable getTypeTable();
 
-  public abstract Interface getInterface();
-
   @Override
-  public String getInterfaceSimpleName() {
-    return getInterface().getSimpleName();
-  }
+  public abstract ProtoInterfaceModel getInterfaceModel();
 
   @Override
   public boolean isFlattenedMethodContext() {
     return getFlatteningConfig() != null;
   }
 
-  public Interface getTargetInterface() {
-    return GapicInterfaceConfig.getTargetInterface(
-        getInterface(), getMethodConfig().getRerouteToGrpcInterface());
+  @Override
+  public ProtoInterfaceModel getTargetInterface() {
+    return new ProtoInterfaceModel(
+        GapicInterfaceConfig.getTargetInterface(
+            getInterface(), getMethodConfig().getRerouteToGrpcInterface()));
   }
 
   @Override
   public GapicInterfaceConfig getInterfaceConfig() {
-    return getProductConfig().getInterfaceConfig(getInterface());
+    return getProductConfig().getInterfaceConfig(getInterfaceModel().getInterface());
   }
 
   @Override
@@ -105,7 +108,7 @@ public abstract class GapicMethodContext implements MethodContext {
   public GapicMethodContext cloneWithEmptyTypeTable() {
     return create(
         getSurfaceInterfaceContext(),
-        getInterface(),
+        getInterfaceModel().getInterface(),
         getProductConfig(),
         getTypeTable().cloneEmpty(),
         getNamer(),
@@ -116,22 +119,7 @@ public abstract class GapicMethodContext implements MethodContext {
   }
 
   @Override
-  public String getTargetInterfaceFullName() {
-    return getTargetInterface().getFullName();
-  }
-
-  @Override
   public String getGrpcContainerTypeName() {
     return getNamer().getGrpcContainerTypeName(getTargetInterface());
-  }
-
-  @Override
-  public String getInterfaceFileName() {
-    return getTargetInterface().getFile().getSimpleName();
-  }
-
-  @Override
-  public String getTargetInterfaceSimpleName() {
-    return getTargetInterface().getSimpleName();
   }
 }
