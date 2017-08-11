@@ -604,15 +604,19 @@ public class JavaSurfaceTransformer {
     typeTable.saveNicknameFor("java.util.concurrent.TimeUnit");
     typeTable.saveNicknameFor("java.io.Closeable");
     typeTable.saveNicknameFor("java.io.IOException");
-    typeTable.saveNicknameFor("java.util.ArrayList");
     typeTable.saveNicknameFor("java.util.List");
-    typeTable.saveNicknameFor("java.util.concurrent.ScheduledExecutorService");
     typeTable.saveNicknameFor("javax.annotation.Generated");
 
     if (context.getInterfaceConfig().hasLongRunningOperations()) {
       typeTable.saveNicknameFor("com.google.api.gax.rpc.OperationFuture");
       typeTable.saveNicknameFor("com.google.longrunning.Operation");
       typeTable.saveNicknameFor("com.google.longrunning.OperationsClient");
+    }
+
+    switch (context.getApiModel().getApiSource()) {
+      case DISCOVERY:
+        typeTable.saveNicknameFor("java.util.ArrayList");
+        typeTable.saveNicknameFor("java.util.concurrent.ScheduledExecutorService");
     }
   }
 
