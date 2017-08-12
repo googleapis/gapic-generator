@@ -72,7 +72,7 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
     return new AutoValue_GapicInterfaceContext(
         protoInterface,
         productConfig,
-        (ModelTypeTable) typeTable,
+        typeTable,
         namer,
         featureConfig,
         createGrpcRerouteMap(protoInterface.getInterface().getModel(), productConfig));

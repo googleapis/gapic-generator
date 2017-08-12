@@ -17,7 +17,7 @@ package com.google.api.codegen.transformer;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceModel;
 
-/** Created by andrealin on 8/11/17. */
+/** Interface for transformers to provide objects required for surface transformations. */
 public interface SurfaceTransformer {
 
   InterfaceContext createInterfaceContext(

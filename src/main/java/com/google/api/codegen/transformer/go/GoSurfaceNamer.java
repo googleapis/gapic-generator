@@ -156,14 +156,6 @@ public class GoSurfaceNamer extends SurfaceNamer {
     return "";
   }
 
-  private String unqualifyTypeName(String typeName) {
-    int dotIndex = typeName.indexOf('.');
-    if (dotIndex >= 0) {
-      typeName = typeName.substring(dotIndex + 1);
-    }
-    return typeName;
-  }
-
   @Override
   public String getGrpcServerTypeName(InterfaceModel apiInterface) {
     return converter.getTypeName(apiInterface).getNickname() + "Server";
