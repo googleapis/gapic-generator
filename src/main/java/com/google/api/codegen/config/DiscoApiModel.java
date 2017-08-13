@@ -104,4 +104,9 @@ public class DiscoApiModel implements ApiModel {
   public List<String> getAuthScopes() {
     return document.authScopes();
   }
+
+  @Override
+  public boolean equals(Object o) {
+    return o != null && o instanceof DiscoApiModel && ((DiscoApiModel) o).document.equals(document);
+  }
 }

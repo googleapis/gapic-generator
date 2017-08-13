@@ -112,4 +112,11 @@ public class ProtoApiModel implements ApiModel {
     interfaceModels = intfModels.build();
     return interfaceModels;
   }
+
+  @Override
+  public boolean equals(Object o) {
+    return o != null
+        && o instanceof ProtoApiModel
+        && ((ProtoApiModel) o).protoModel.equals(protoModel);
+  }
 }

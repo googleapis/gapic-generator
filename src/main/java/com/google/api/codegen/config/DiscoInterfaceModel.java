@@ -67,4 +67,12 @@ public class DiscoInterfaceModel implements InterfaceModel {
   public DiscoApiModel getApiModel() {
     return apiModel;
   }
+
+  @Override
+  public boolean equals(Object o) {
+    return o != null
+        && o instanceof DiscoInterfaceModel
+        && ((DiscoInterfaceModel) o).interfaceName.equals(interfaceName)
+        && ((DiscoInterfaceModel) o).apiModel.equals(apiModel);
+  }
 }
