@@ -21,6 +21,7 @@ import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.ProtoField;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
@@ -323,8 +324,8 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     String cardinalityComment = "";
     if (type.getCardinality() == TypeRef.Cardinality.REPEATED) {
       if (type.isMap()) {
-        String keyType = getParamTypeName(typeTable, type.getMapKeyField().getType());
-        String valueType = getParamTypeName(typeTable, type.getMapValueField().getType());
+        String keyType = getParamTypeName(typeTable, new ProtoField(type.getMapKeyField()));
+        String valueType = getParamTypeName(typeTable, new ProtoField(type.getMapValueField()));
         return String.format("Object.<%s, %s>", keyType, valueType);
       } else {
         cardinalityComment = "[]";

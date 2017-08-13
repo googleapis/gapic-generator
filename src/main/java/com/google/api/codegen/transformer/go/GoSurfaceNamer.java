@@ -38,7 +38,6 @@ import com.google.api.codegen.util.go.GoTypeTable;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.annotations.VisibleForTesting;
-import io.grpc.Status;
 import java.util.List;
 
 public class GoSurfaceNamer extends SurfaceNamer {
@@ -157,14 +156,6 @@ public class GoSurfaceNamer extends SurfaceNamer {
     return "";
   }
 
-  private String unqualifyTypeName(String typeName) {
-    int dotIndex = typeName.indexOf('.');
-    if (dotIndex >= 0) {
-      typeName = typeName.substring(dotIndex + 1);
-    }
-    return typeName;
-  }
-
   @Override
   public String getGrpcServerTypeName(InterfaceModel apiInterface) {
     return converter.getTypeName(apiInterface).getNickname() + "Server";
@@ -277,9 +268,8 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getStatusCodeName(Status.Code code) {
-    String codeString = code.toString();
-    if (code.equals(Status.Code.CANCELLED)) {
+  public String getStatusCodeName(String codeString) {
+    if (codeString.equals("CANCELLED")) {
       codeString = "CANCELED";
     }
     return publicFieldName(Name.upperUnderscore(codeString));

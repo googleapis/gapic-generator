@@ -15,6 +15,7 @@
 package com.google.api.codegen.grpcmetadatagen.java;
 
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.grpcmetadatagen.GrpcMetadataProvider;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
@@ -51,9 +52,9 @@ public class JavaGrpcMetadataProvider implements GrpcMetadataProvider {
   public Map<String, Doc> generate(Model model, PackageMetadataConfig config) throws IOException {
     ImmutableMap.Builder<String, Doc> docs = new ImmutableMap.Builder<String, Doc>();
     copier.run();
-
+    ProtoApiModel apiModel = new ProtoApiModel(model);
     ArrayList<PackageMetadataView> metadataViews = new ArrayList<>();
-    metadataViews.addAll(transformer.transform(model, config));
+    metadataViews.addAll(transformer.transform(apiModel, config));
 
     for (PackageMetadataView view : metadataViews) {
       CommonSnippetSetRunner runner = new CommonSnippetSetRunner(view);

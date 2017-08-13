@@ -20,8 +20,21 @@ import com.google.api.tools.framework.model.Interface;
 public class ProtoInterfaceModel implements InterfaceModel {
   private final Interface protoInterface;
 
+  @Override
+  public boolean isReachable() {
+    return protoInterface.isReachable();
+  }
+
+  private final ProtoApiModel apiModel;
+
   public ProtoInterfaceModel(Interface protoInterface) {
     this.protoInterface = protoInterface;
+    apiModel = new ProtoApiModel(protoInterface.getModel());
+  }
+
+  @Override
+  public ProtoApiModel getApiModel() {
+    return apiModel;
   }
 
   public Interface getInterface() {

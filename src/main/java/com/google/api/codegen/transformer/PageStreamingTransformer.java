@@ -94,9 +94,7 @@ public class PageStreamingTransformer {
 
     desc.tokenTypeName(typeTable.getAndSaveNicknameFor(pageStreaming.getResponseTokenField()));
     desc.defaultTokenValue(
-        context
-            .getTypeTable()
-            .getSnippetZeroValueAndSaveNicknameFor(pageStreaming.getResponseTokenField()));
+        typeTable.getSnippetZeroValueAndSaveNicknameFor(pageStreaming.getResponseTokenField()));
 
     desc.requestTokenSetFunction(
         namer.getFieldSetFunctionName(pageStreaming.getRequestTokenField()));

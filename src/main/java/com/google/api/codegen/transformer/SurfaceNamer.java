@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.ReleaseLevel;
+import com.google.api.codegen.config.ApiSource;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GrpcStreamingConfig;
@@ -27,6 +28,7 @@ import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.config.SingleResourceNameConfig;
+import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Schema;
@@ -48,7 +50,6 @@ import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
-import io.grpc.Status;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -64,15 +65,13 @@ import java.util.List;
  * <p>This class delegates step 2 to the provided name formatter, which generally would be a
  * language-specific namer.
  */
-// TODO(andrealin): This class should not be exposed to ApiSource.
 public class SurfaceNamer extends NameFormatterDelegator {
   private final TypeFormatter typeFormatter;
-
-  // Private members in any SurfaceNamer.
   private final TypeNameConverter typeNameConverter;
   private final CommentReformatter commentReformatter;
   private final String rootPackageName;
   private final String packageName;
+  private final NameFormatter nameFormatter;
 
   // Create a SurfaceNamer based on .proto.
   public SurfaceNamer(
@@ -88,6 +87,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     this.commentReformatter = commentReformatter;
     this.rootPackageName = rootPackageName;
     this.packageName = packageName;
+    this.nameFormatter = languageNamer;
   }
 
   // Create a SurfaceNamer based on Discovery Documents.
@@ -104,9 +104,14 @@ public class SurfaceNamer extends NameFormatterDelegator {
     this.packageName = packageName;
     this.rootPackageName = rootPackageName;
     this.typeFormatter = typeFormatter;
+    this.nameFormatter = languageNamer;
   }
 
   public SurfaceNamer cloneWithPackageName(String packageName) {
+    throw new UnsupportedOperationException("clone needs to be overridden");
+  }
+
+  public SurfaceNamer cloneWithPackageNameForDiscovery(String packageName) {
     throw new UnsupportedOperationException("clone needs to be overridden");
   }
 
@@ -124,6 +129,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   public TypeNameConverter getTypeNameConverter() {
     return typeNameConverter;
+  }
+
+  public NameFormatter getNameFormatter() {
+    return nameFormatter;
   }
 
   public String getPackageName() {
@@ -339,6 +348,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The function name to get a field having the given type and name. */
   public String getFieldGetFunctionName(FieldModel type, Name identifier) {
+    // TODO(andrealin): Make a Disco subclass of SurfaceNamer so that ApiSource is not exposed here.
+    if (type.getApiSource().equals(ApiSource.DISCOVERY)) {
+      return publicMethodName(Name.from("get").join(identifier));
+    }
     if (type.isRepeated() && !type.isMap()) {
       return publicMethodName(Name.from("get").join(identifier).join("list"));
     } else if (type.isMap()) {
@@ -653,7 +666,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The name of the field. */
   public String getFieldName(FieldModel field) {
-    return publicFieldName(Name.from(field.getSimpleName()));
+    return publicFieldName(field.asName());
   }
 
   /** The page streaming descriptor name for the given method. */
@@ -719,8 +732,16 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The name of the grpc stub for a particular proto interface; not used in most languages. */
-  public String getApiGrpcStubClassName(InterfaceConfig interfaceConfig) {
-    return publicClassName(Name.upperCamel("Grpc", interfaceConfig.getRawName(), "Stub"));
+  public String getApiRpcStubClassName(InterfaceConfig interfaceConfig) {
+    return getApiRpcStubClassName(interfaceConfig, TransportProtocol.GRPC);
+  }
+
+  /** The name of the http stub for a particular proto interface; not used in most languages. */
+  public String getApiRpcStubClassName(
+      InterfaceConfig interfaceConfig, TransportProtocol transportProtocol) {
+    return publicClassName(
+        Name.anyCamel(
+            transportProtocol.toString().toLowerCase(), interfaceConfig.getRawName(), "Stub"));
   }
 
   /** The name of the class that contains paged list response wrappers. */
@@ -858,11 +879,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The type name for the message property */
   public String getMessagePropertyTypeName(ImportTypeTable typeTable, FieldModel type) {
-    return getParamTypeName(typeTable, type);
-  }
-
-  /** The type name for the message property */
-  public String getMessagePropertyTypeName(ModelTypeTable typeTable, TypeRef type) {
     return getParamTypeName(typeTable, type);
   }
 
@@ -1223,8 +1239,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The name of an RPC status code */
-  public String getStatusCodeName(Status.Code code) {
-    return privateMethodName(Name.upperUnderscore(code.toString()));
+  public String getStatusCodeName(String code) {
+    return privateMethodName(Name.upperUnderscore(code));
   }
 
   /** The name of the constant to hold the page streaming descriptor for the given method. */

@@ -47,7 +47,7 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
         productConfig,
         flatteningConfig,
         featureConfig,
-        new DiscoInterfaceModel(interfaceName),
+        new DiscoInterfaceModel(interfaceName, surfaceTransformerContext.getDocument()),
         methodConfig,
         surfaceTransformerContext,
         typeTable,
@@ -122,6 +122,7 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
 
   @Override
   public DiscoInterfaceModel getTargetInterface() {
-    return new DiscoInterfaceModel(getInterfaceModel().getFullName());
+    return new DiscoInterfaceModel(
+        getInterfaceModel().getFullName(), getSurfaceInterfaceContext().getDocument());
   }
 }

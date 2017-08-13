@@ -21,6 +21,7 @@ import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Method;
+import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
 import com.google.api.gax.core.RetrySettings;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
@@ -30,7 +31,6 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import io.grpc.Status;
 import java.util.List;
 import javax.annotation.Nullable;
 
@@ -81,10 +81,11 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
       String interfaceNameOverride,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs) {
 
-    ImmutableMap<String, ImmutableSet<Status.Code>> retryCodesDefinition =
-        GapicInterfaceConfig.createRetryCodesDefinition(diagCollector, interfaceConfigProto);
+    ImmutableMap<String, ImmutableSet<String>> retryCodesDefinition =
+        RetryDefinitionsTransformer.createRetryCodesDefinition(diagCollector, interfaceConfigProto);
     ImmutableMap<String, RetrySettings> retrySettingsDefinition =
-        GapicInterfaceConfig.createRetrySettingsDefinition(diagCollector, interfaceConfigProto);
+        RetryDefinitionsTransformer.createRetrySettingsDefinition(
+            diagCollector, interfaceConfigProto);
 
     List<DiscoGapicMethodConfig> methodConfigs = null;
     ImmutableMap<String, DiscoGapicMethodConfig> methodConfigMap = null;
@@ -143,7 +144,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
           retrySettingsDefinition,
           requiredConstructorParams,
           manualDoc,
-          new DiscoInterfaceModel(interfaceNameOverride),
+          new DiscoInterfaceModel(interfaceNameOverride, document),
           interfaceNameOverride,
           smokeTestConfig,
           methodConfigMap,

@@ -15,12 +15,15 @@
 package com.google.api.codegen.transformer.ruby;
 
 import com.google.api.codegen.InterfaceView;
+import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.metacode.InitCodeContext;
@@ -50,7 +53,6 @@ import com.google.api.codegen.viewmodel.testing.ClientTestFileView;
 import com.google.api.codegen.viewmodel.testing.MockServiceUsageView;
 import com.google.api.codegen.viewmodel.testing.SmokeTestClassView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
-import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
@@ -82,20 +84,20 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
   @Override
   public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ViewModel> views = ImmutableList.builder();
-    views.addAll(createUnitTestViews(model, productConfig));
-    views.addAll(createSmokeTestViews(model, productConfig));
+    ProtoApiModel apiModel = new ProtoApiModel(model);
+    views.addAll(createUnitTestViews(apiModel, productConfig));
+    views.addAll(createSmokeTestViews(apiModel, productConfig));
     return views.build();
   }
 
   ///////////////////////////////////// Unit Test ///////////////////////////////////////
 
   private List<ClientTestFileView> createUnitTestViews(
-      Model model, GapicProductConfig productConfig) {
+      ApiModel model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ClientTestFileView> views = ImmutableList.builder();
     SurfaceNamer namer = new RubySurfaceNamer(productConfig.getPackageName());
-    InterfaceView interfaceView = new InterfaceView();
-    boolean packageHasMultipleServices = interfaceView.hasMultipleServices(model);
-    for (Interface apiInterface : interfaceView.getElementIterable(model)) {
+    boolean packageHasMultipleServices = model.hasMultipleServices(productConfig);
+    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
       String testClassName = namer.getUnitTestClassName(context.getInterfaceConfig());
       String outputPath =
@@ -194,12 +196,11 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
   ///////////////////////////////////// Smoke Test ///////////////////////////////////////
 
-  private List<ViewModel> createSmokeTestViews(Model model, GapicProductConfig productConfig) {
+  private List<ViewModel> createSmokeTestViews(ApiModel model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ViewModel> views = ImmutableList.builder();
-    InterfaceView interfaceView = new InterfaceView();
-    boolean packageHasMultipleServices = interfaceView.hasMultipleServices(model);
+    boolean packageHasMultipleServices = model.hasMultipleServices(productConfig);
 
-    for (Interface apiInterface : interfaceView.getElementIterable(model)) {
+    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
       if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
         views.add(createSmokeTestClassView(context, packageHasMultipleServices));
@@ -277,7 +278,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
   /////////////////////////////////// General Helpers //////////////////////////////////////
 
   private GapicInterfaceContext createContext(
-      Interface apiInterface, GapicProductConfig productConfig) {
+      InterfaceModel apiInterface, GapicProductConfig productConfig) {
     return GapicInterfaceContext.create(
         apiInterface,
         productConfig,

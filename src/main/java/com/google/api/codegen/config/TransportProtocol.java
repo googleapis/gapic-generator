@@ -14,24 +14,8 @@
  */
 package com.google.api.codegen.config;
 
-/** API-source-agnostic wrapper classes for Interfaces. */
-public interface InterfaceModel {
-  /* @return the type of source that this FieldModel is based on. */
-  ApiSource getApiSource();
-
-  /* @return the Model from which this interface came from. */
-  ApiModel getApiModel();
-
-  String getSimpleName();
-
-  String getFullName();
-
-  String getParentFullName();
-
-  String getFileSimpleName();
-
-  String getFileFullName();
-
-  /* @return true if the element is reachable with the current scoper. */
-  boolean isReachable();
+/* The type of transport protocol used by the generated surface. */
+public enum TransportProtocol {
+  GRPC,
+  HTTP
 }

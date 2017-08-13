@@ -75,6 +75,9 @@ public abstract class GapicProductConfig implements ProductConfig {
   /** Returns a map from entity names to resource name configs. */
   public abstract ImmutableMap<String, ResourceNameConfig> getResourceNameConfigs();
 
+  /** Returns the type of transport for the generated client. Defaults to Grpc. */
+  public abstract TransportProtocol getTransportProtocol();
+
   /**
    * Returns a map from fully qualified field names to FieldConfigs for all fields that have a
    * resource name type specified. This is the default field config for each field, and should be
@@ -102,6 +105,8 @@ public abstract class GapicProductConfig implements ProductConfig {
 
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
         createResourceNameConfigs(model.getDiagCollector(), configProto, file);
+
+    TransportProtocol transportProtocol = TransportProtocol.GRPC;
 
     LanguageSettingsProto settings =
         configProto.getLanguageSettings().get(configProto.getLanguage());
@@ -148,6 +153,7 @@ public abstract class GapicProductConfig implements ProductConfig {
           copyrightLines,
           licenseLines,
           resourceNameConfigs,
+          transportProtocol,
           createResponseFieldConfigMap(messageConfigs, resourceNameConfigs));
     }
   }
@@ -158,6 +164,8 @@ public abstract class GapicProductConfig implements ProductConfig {
 
     // TODO(andrealin): put this in config instead of hard coding it
     String defaultPackage = "com.google.proto";
+
+    TransportProtocol transportProtocol = TransportProtocol.HTTP;
 
     DiagCollector diagCollector = new BoundedDiagCollector();
 
@@ -205,6 +213,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         copyrightLines,
         licenseLines,
         resourceNameConfigs,
+        transportProtocol,
         createResponseFieldConfigMap(messageConfigs, resourceNameConfigs));
   }
 
@@ -229,6 +238,8 @@ public abstract class GapicProductConfig implements ProductConfig {
         ImmutableList.<String>of(),
         ImmutableList.<String>of(),
         ImmutableMap.<String, ResourceNameConfig>of(),
+        // Default to gRPC.
+        TransportProtocol.GRPC,
         createResponseFieldConfigMap(
             messageConfigs, ImmutableMap.<String, ResourceNameConfig>of()));
   }

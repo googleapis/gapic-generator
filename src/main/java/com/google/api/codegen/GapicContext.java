@@ -19,7 +19,6 @@ import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.MethodConfig;
-import com.google.api.codegen.config.ProductServiceConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Field;
@@ -41,7 +40,6 @@ public class GapicContext extends CodegenContext {
   private final GapicProductConfig productConfig;
 
   private final ServiceMessages serviceMessages;
-  private final ProductServiceConfig productServiceConfig;
 
   public static final String API_WRAPPER_SUFFIX = "Client";
 
@@ -50,7 +48,6 @@ public class GapicContext extends CodegenContext {
     this.model = Preconditions.checkNotNull(model);
     this.productConfig = Preconditions.checkNotNull(productConfig);
     this.serviceMessages = new ServiceMessages();
-    this.productServiceConfig = new ProductServiceConfig();
   }
 
   /** Returns the associated model. */
@@ -69,13 +66,6 @@ public class GapicContext extends CodegenContext {
 
   public ServiceMessages messages() {
     return serviceMessages;
-  }
-
-  /*
-   * NOTE: The name here is out of date, but this whole class will be deprecated soon.
-   */
-  public ProductServiceConfig getServiceConfig() {
-    return productServiceConfig;
   }
 
   /** Return the name of the class which is the GAPIC wrapper for this API interface. */

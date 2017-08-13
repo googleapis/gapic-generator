@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer.nodejs;
 
 import com.google.api.codegen.InterfaceView;
+import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
@@ -22,6 +23,7 @@ import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
@@ -55,7 +57,6 @@ import com.google.api.codegen.viewmodel.testing.MockServiceImplView;
 import com.google.api.codegen.viewmodel.testing.MockServiceUsageView;
 import com.google.api.codegen.viewmodel.testing.SmokeTestClassView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
-import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -88,10 +89,11 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
   @Override
   public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
     List<ViewModel> models = new ArrayList<ViewModel>();
+    ApiModel apiModel = new ProtoApiModel(model);
     NodeJSSurfaceNamer namer =
         new NodeJSSurfaceNamer(productConfig.getPackageName(), NodeJSUtils.isGcloud(productConfig));
-    models.add(generateTestView(model, productConfig, namer));
-    models.addAll(createSmokeTestViews(model, productConfig));
+    models.add(generateTestView(apiModel, productConfig, namer));
+    models.addAll(createSmokeTestViews(apiModel, productConfig));
     return models;
   }
 
@@ -102,7 +104,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
   }
 
   private MockCombinedView generateTestView(
-      Model model, GapicProductConfig productConfig, SurfaceNamer namer) {
+      ApiModel model, GapicProductConfig productConfig, SurfaceNamer namer) {
     ModelTypeTable typeTable = createTypeTable(productConfig);
     List<MockServiceImplView> impls = new ArrayList<>();
     List<ClientTestClassView> testClasses = new ArrayList<>();
@@ -120,7 +122,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
               .build());
     }
     InterfaceView interfaceView = new InterfaceView();
-    for (Interface apiInterface : interfaceView.getElementIterable(model)) {
+    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
       // We don't need any imports here.
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
@@ -153,7 +155,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
         .testClasses(testClasses)
         .apiWrapperModuleName(namer.getApiWrapperModuleName())
         .templateFileName(TEST_TEMPLATE_FILE)
-        .packageHasMultipleServices(interfaceView.hasMultipleServices(model))
+        .packageHasMultipleServices(model.hasMultipleServices(productConfig))
         .fileHeader(fileHeaderTransformer.generateFileHeader(productConfig, importSection, namer))
         .build();
   }
@@ -214,13 +216,12 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
     return clientMethodType;
   }
 
-  private List<ViewModel> createSmokeTestViews(Model model, GapicProductConfig productConfig) {
+  private List<ViewModel> createSmokeTestViews(ApiModel model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ViewModel> views = ImmutableList.builder();
-    InterfaceView interfaceView = new InterfaceView();
-    for (Interface apiInterface : interfaceView.getElementIterable(model)) {
+    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
       if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
-        views.add(createSmokeTestClassView(context, interfaceView.hasMultipleServices(model)));
+        views.add(createSmokeTestClassView(context, model.hasMultipleServices(productConfig)));
       }
     }
     return views.build();
@@ -279,7 +280,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
   }
 
   private GapicInterfaceContext createContext(
-      Interface apiInterface, GapicProductConfig productConfig) {
+      InterfaceModel apiInterface, GapicProductConfig productConfig) {
     return GapicInterfaceContext.create(
         apiInterface,
         productConfig,

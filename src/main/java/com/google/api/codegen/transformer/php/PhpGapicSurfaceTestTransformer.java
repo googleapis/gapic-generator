@@ -14,12 +14,13 @@
  */
 package com.google.api.codegen.transformer.php;
 
-import com.google.api.codegen.InterfaceView;
+import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.php.PhpGapicCodePathMapper;
@@ -48,7 +49,6 @@ import com.google.api.codegen.viewmodel.testing.MockServiceImplFileView;
 import com.google.api.codegen.viewmodel.testing.MockServiceImplView;
 import com.google.api.codegen.viewmodel.testing.MockServiceUsageView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
-import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
@@ -79,13 +79,15 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
   @Override
   public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
+    ProtoApiModel apiModel = new ProtoApiModel(model);
     List<ViewModel> models = new ArrayList<ViewModel>();
     PhpSurfaceNamer surfacePackageNamer = new PhpSurfaceNamer(productConfig.getPackageName());
     PhpSurfaceNamer testPackageNamer =
         new PhpSurfaceNamer(surfacePackageNamer.getTestPackageName());
-    models.addAll(generateTestViews(model, productConfig, surfacePackageNamer, testPackageNamer));
     models.addAll(
-        generateMockServiceViews(model, productConfig, surfacePackageNamer, testPackageNamer));
+        generateTestViews(apiModel, productConfig, surfacePackageNamer, testPackageNamer));
+    models.addAll(
+        generateMockServiceViews(apiModel, productConfig, surfacePackageNamer, testPackageNamer));
     return models;
   }
 
@@ -95,7 +97,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
   }
 
   private List<MockServiceImplFileView> generateMockServiceViews(
-      Model model,
+      ApiModel model,
       GapicProductConfig productConfig,
       SurfaceNamer surfacePackageNamer,
       SurfaceNamer testPackageNamer) {
@@ -133,13 +135,13 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
   }
 
   private List<ClientTestFileView> generateTestViews(
-      Model model,
+      ApiModel model,
       GapicProductConfig productConfig,
       SurfaceNamer surfacePackageNamer,
       SurfaceNamer testPackageNamer) {
     List<ClientTestFileView> testViews = new ArrayList<>();
 
-    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
       ModelTypeTable typeTable = createTypeTable(surfacePackageNamer.getTestPackageName());
       List<MockServiceImplView> impls = new ArrayList<>();
       GapicInterfaceContext context =

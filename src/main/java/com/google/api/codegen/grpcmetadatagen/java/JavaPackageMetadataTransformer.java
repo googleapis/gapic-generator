@@ -15,11 +15,11 @@
 package com.google.api.codegen.grpcmetadatagen.java;
 
 import com.google.api.codegen.TargetLanguage;
+import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.transformer.PackageMetadataTransformer;
 import com.google.api.codegen.transformer.java.JavaPackageMetadataNamer;
 import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
-import com.google.api.tools.framework.model.Model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +31,7 @@ public abstract class JavaPackageMetadataTransformer {
 
   protected abstract Map<String, String> getSnippetsOutput();
 
-  public List<PackageMetadataView> transform(Model model, PackageMetadataConfig config) {
+  public List<PackageMetadataView> transform(ApiModel model, PackageMetadataConfig config) {
     List<PackageMetadataView> views = new ArrayList<>();
     for (PackageMetadataView.Builder builder : generateMetadataViewBuilders(model, config)) {
       views.add(builder.build());
@@ -43,7 +43,7 @@ public abstract class JavaPackageMetadataTransformer {
    * Creates a partially initialized builders that can be used to build PackageMetadataViews later.
    */
   protected final List<PackageMetadataView.Builder> generateMetadataViewBuilders(
-      Model model, PackageMetadataConfig config) {
+      ApiModel model, PackageMetadataConfig config) {
     JavaPackageMetadataNamer namer =
         new JavaPackageMetadataNamer(
             config.packageName(TargetLanguage.JAVA), config.generationLayer());

@@ -84,6 +84,11 @@ public class RubyTypeTable implements TypeTable {
     return HashBiMap.create(inverseMap).inverse();
   }
 
+  @Override
+  public Map<String, TypeAlias> getAllImports() {
+    return dynamicTypeTable.getAllImports();
+  }
+
   public boolean hasImports() {
     return !getImports().isEmpty();
   }

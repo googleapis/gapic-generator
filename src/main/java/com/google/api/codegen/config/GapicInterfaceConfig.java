@@ -18,8 +18,7 @@ import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.IamResourceProto;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
-import com.google.api.codegen.RetryCodesDefinitionProto;
-import com.google.api.codegen.RetryParamsDefinitionProto;
+import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
 import com.google.api.gax.core.RetrySettings;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
@@ -34,13 +33,9 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
-import io.grpc.Status;
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 import javax.annotation.Nullable;
-import org.joda.time.Duration;
 
 /**
  * GapicInterfaceConfig represents the client code-gen config for an API interface, and includes the
@@ -74,7 +69,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   abstract ImmutableMap<String, GapicMethodConfig> getMethodConfigMap();
 
   @Override
-  public abstract ImmutableMap<String, ImmutableSet<Status.Code>> getRetryCodesDefinition();
+  public abstract ImmutableMap<String, ImmutableSet<String>> getRetryCodesDefinition();
 
   @Override
   public abstract ImmutableMap<String, RetrySettings> getRetrySettingsDefinition();
@@ -115,7 +110,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
    * diagnostics are reported to the model.
    */
   @Nullable
-  public static GapicInterfaceConfig createInterfaceConfig(
+  static GapicInterfaceConfig createInterfaceConfig(
       DiagCollector diagCollector,
       String language,
       InterfaceConfigProto interfaceConfigProto,
@@ -124,10 +119,11 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       ResourceNameMessageConfigs messageConfigs,
       ImmutableMap<String, ResourceNameConfig> resourceNameConfigs) {
 
-    ImmutableMap<String, ImmutableSet<Status.Code>> retryCodesDefinition =
-        createRetryCodesDefinition(diagCollector, interfaceConfigProto);
+    ImmutableMap<String, ImmutableSet<String>> retryCodesDefinition =
+        RetryDefinitionsTransformer.createRetryCodesDefinition(diagCollector, interfaceConfigProto);
     ImmutableMap<String, RetrySettings> retrySettingsDefinition =
-        createRetrySettingsDefinition(diagCollector, interfaceConfigProto);
+        RetryDefinitionsTransformer.createRetrySettingsDefinition(
+            diagCollector, interfaceConfigProto);
 
     List<GapicMethodConfig> methodConfigs = null;
     ImmutableMap<String, GapicMethodConfig> methodConfigMap = null;
@@ -209,64 +205,6 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     } else {
       return null;
     }
-  }
-
-  static ImmutableMap<String, ImmutableSet<Status.Code>> createRetryCodesDefinition(
-      DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto) {
-    ImmutableMap.Builder<String, ImmutableSet<Status.Code>> builder =
-        ImmutableMap.<String, ImmutableSet<Status.Code>>builder();
-    for (RetryCodesDefinitionProto retryDef : interfaceConfigProto.getRetryCodesDefList()) {
-      EnumSet<Status.Code> codes = EnumSet.noneOf(Status.Code.class);
-      for (String codeText : retryDef.getRetryCodesList()) {
-        try {
-          codes.add(Status.Code.valueOf(codeText));
-        } catch (IllegalArgumentException e) {
-          diagCollector.addDiag(
-              Diag.error(
-                  SimpleLocation.TOPLEVEL,
-                  "status code not found: '%s' (in interface %s)",
-                  codeText,
-                  interfaceConfigProto.getName()));
-        }
-      }
-      builder.put(retryDef.getName(), Sets.immutableEnumSet(codes));
-    }
-    if (diagCollector.getErrorCount() > 0) {
-      return null;
-    }
-    return builder.build();
-  }
-
-  static ImmutableMap<String, RetrySettings> createRetrySettingsDefinition(
-      DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto) {
-    ImmutableMap.Builder<String, RetrySettings> builder =
-        ImmutableMap.<String, RetrySettings>builder();
-    for (RetryParamsDefinitionProto retryDef : interfaceConfigProto.getRetryParamsDefList()) {
-      try {
-        RetrySettings settings =
-            RetrySettings.newBuilder()
-                .setInitialRetryDelay(Duration.millis(retryDef.getInitialRetryDelayMillis()))
-                .setRetryDelayMultiplier(retryDef.getRetryDelayMultiplier())
-                .setMaxRetryDelay(Duration.millis(retryDef.getMaxRetryDelayMillis()))
-                .setInitialRpcTimeout(Duration.millis(retryDef.getInitialRpcTimeoutMillis()))
-                .setRpcTimeoutMultiplier(retryDef.getRpcTimeoutMultiplier())
-                .setMaxRpcTimeout(Duration.millis(retryDef.getMaxRpcTimeoutMillis()))
-                .setTotalTimeout(Duration.millis(retryDef.getTotalTimeoutMillis()))
-                .build();
-        builder.put(retryDef.getName(), settings);
-      } catch (IllegalStateException | NullPointerException e) {
-        diagCollector.addDiag(
-            Diag.error(
-                SimpleLocation.TOPLEVEL,
-                "error while creating retry params: %s (in interface %s)",
-                e,
-                interfaceConfigProto.getName()));
-      }
-    }
-    if (diagCollector.getErrorCount() > 0) {
-      return null;
-    }
-    return builder.build();
   }
 
   private static ImmutableMap<String, GapicMethodConfig> createMethodConfigMap(

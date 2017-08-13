@@ -18,7 +18,6 @@ import com.google.api.gax.core.RetrySettings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import io.grpc.Status.Code;
 import java.util.List;
 import javax.annotation.Nullable;
 
@@ -36,7 +35,7 @@ public interface InterfaceConfig {
 
   List<? extends MethodConfig> getMethodConfigs();
 
-  ImmutableMap<String, ImmutableSet<Code>> getRetryCodesDefinition();
+  ImmutableMap<String, ImmutableSet<String>> getRetryCodesDefinition();
 
   ImmutableMap<String, RetrySettings> getRetrySettingsDefinition();
 

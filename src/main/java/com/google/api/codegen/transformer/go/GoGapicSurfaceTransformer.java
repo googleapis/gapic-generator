@@ -14,8 +14,8 @@
  */
 package com.google.api.codegen.transformer.go;
 
-import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.ServiceMessages;
+import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
@@ -23,7 +23,7 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProductConfig;
-import com.google.api.codegen.config.ProductServiceConfig;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
@@ -57,13 +57,11 @@ import com.google.api.codegen.viewmodel.StaticLangClientExampleFileView;
 import com.google.api.codegen.viewmodel.StaticLangClientFileView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.gax.core.RetrySettings;
-import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableTable;
-import io.grpc.Status.Code;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -96,7 +94,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
   private final ServiceMessages serviceMessages = new ServiceMessages();
   private final ServiceTransformer serviceTransformer = new ServiceTransformer();
-  private final ProductServiceConfig productServiceConfig = new ProductServiceConfig();
+
   private final GapicCodePathMapper pathMapper;
 
   public GoGapicSurfaceTransformer(GapicCodePathMapper pathMapper) {
@@ -111,8 +109,9 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   @Override
   public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
     List<ViewModel> models = new ArrayList<ViewModel>();
+    ApiModel apiModel = new ProtoApiModel(model);
     GoSurfaceNamer namer = new GoSurfaceNamer(productConfig.getPackageName());
-    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+    for (InterfaceModel apiInterface : apiModel.getInterfaces(productConfig)) {
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
               apiInterface, productConfig, createTypeTable(), namer, featureConfig);
@@ -123,7 +122,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
               apiInterface, productConfig, createTypeTable(), namer, featureConfig);
       models.add(generateExample(context));
     }
-    models.add(generatePackageInfo(model, productConfig, namer));
+    models.add(generatePackageInfo(apiModel, productConfig, namer));
     return models;
   }
 
@@ -131,7 +130,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     StaticLangClientFileView.Builder view = StaticLangClientFileView.newBuilder();
 
     SurfaceNamer namer = context.getNamer();
-    Model model = context.getModel();
+    ApiModel model = context.getApiModel();
     ProtoInterfaceModel apiInterface = context.getInterfaceModel();
     GapicProductConfig productConfig = context.getProductConfig();
 
@@ -142,7 +141,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     view.defaultClientOptionFunctionName(namer.getDefaultApiSettingsFunctionName(apiInterface));
     view.defaultCallOptionFunctionName(namer.getDefaultCallSettingsFunctionName(apiInterface));
     view.callOptionsTypeName(namer.getCallSettingsTypeName(apiInterface));
-    view.serviceOriginalName(model.getServiceConfig().getTitle());
+    view.serviceOriginalName(model.getTitle());
     view.servicePhraseName(namer.getServicePhraseName(apiInterface));
 
     String outputPath = pathMapper.getOutputPath(apiInterface.getFullName(), productConfig);
@@ -188,9 +187,8 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     }
     view.lroDetailViews(new ArrayList<LongRunningOperationDetailView>(lros.values()));
 
-    view.serviceAddress(
-        productServiceConfig.getServiceAddress(apiInterface.getInterface().getModel()));
-    view.servicePort(productServiceConfig.getServicePort());
+    view.serviceAddress(context.getApiModel().getServiceAddress());
+    view.servicePort(model.getServicePort());
 
     view.stubs(grpcStubTransformer.generateGrpcStubs(context));
 
@@ -233,21 +231,20 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private PackageInfoView generatePackageInfo(
-      Model model, GapicProductConfig productConfig, SurfaceNamer namer) {
+      ApiModel model, GapicProductConfig productConfig, SurfaceNamer namer) {
     String outputPath = productConfig.getPackageName();
     String fileName = "doc.go";
     PackageInfoView.Builder packageInfo = PackageInfoView.newBuilder();
 
     packageInfo.templateFileName(DOC_TEMPLATE_FILENAME);
     packageInfo.outputPath(outputPath + File.separator + fileName);
-    packageInfo.serviceTitle(model.getServiceConfig().getTitle());
+    packageInfo.serviceTitle(model.getTitle());
     packageInfo.importPath(productConfig.getPackageName());
     packageInfo.serviceDocs(Collections.<ServiceDocView>emptyList());
     packageInfo.packageDoc(
-        CommonRenderingUtil.getDocLines(
-            model.getServiceConfig().getDocumentation().getSummary(), COMMENT_LINE_LENGTH));
+        CommonRenderingUtil.getDocLines(model.getDocumentationSummary(), COMMENT_LINE_LENGTH));
     packageInfo.domainLayerLocation(productConfig.getDomainLayerLocation());
-    packageInfo.authScopes(productServiceConfig.getAuthScopes(model));
+    packageInfo.authScopes(model.getAuthScopes());
 
     packageInfo.fileHeader(
         fileHeaderTransformer.generateFileHeader(
@@ -294,17 +291,17 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     }
 
     TreeMap<RetryConfigDefinitionView.Name, RetryConfigDefinitionView> retryDef = new TreeMap<>();
-    Map<String, ImmutableSet<Code>> retryCodesDef =
+    Map<String, ImmutableSet<String>> retryCodesDef =
         context.getInterfaceConfig().getRetryCodesDefinition();
     Map<String, RetrySettings> retryParamsDef =
         context.getInterfaceConfig().getRetrySettingsDefinition();
     for (RetryConfigDefinitionView.Name name : retryNames) {
-      ImmutableSet<Code> codes = retryCodesDef.get(name.retryCodesConfigName());
+      ImmutableSet<String> codes = retryCodesDef.get(name.retryCodesConfigName());
       if (codes.isEmpty()) {
         continue;
       }
       List<String> retryCodeNames = new ArrayList<>();
-      for (Code code : codes) {
+      for (String code : codes) {
         retryCodeNames.add(context.getNamer().getStatusCodeName(code));
       }
       retryDef.put(

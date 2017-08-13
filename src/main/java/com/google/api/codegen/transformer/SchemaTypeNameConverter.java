@@ -27,7 +27,7 @@ public interface SchemaTypeNameConverter {
     BOX_PRIMITIVES,
 
     // Don't box primitive types.
-    NO_BOX_PRIMTIVES
+    NO_BOX_PRIMITIVES
   }
 
   /** Provides a TypeName for the given Schema. */
@@ -60,6 +60,9 @@ public interface SchemaTypeNameConverter {
    * type; suitable for use within code snippets.
    */
   TypedValue getEnumValue(Schema schema, String value);
+
+  /** Provides a TypeName for the element type of the given FieldType. */
+  TypeName getTypeNameForElementType(Schema type);
 
   /**
    * Provides a TypedValue containing the zero value of the given type, for use internally within

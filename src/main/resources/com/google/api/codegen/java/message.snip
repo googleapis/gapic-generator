@@ -96,8 +96,23 @@
 @end
 
 @private newBuilder(schema)
-  public static Builder newBuilder() {
-    return new {@schema.innerTypeName}.Builder();
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder({@schema.innerTypeName} prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+  }
+
+  public static {@schema.innerTypeName} getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+  }
+  private static final {@schema.innerTypeName} DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new {@schema.innerTypeName}();
   }
 @end
 
@@ -111,6 +126,13 @@
 @end
 
 @private constructors(schema)
+  private {@schema.innerTypeName}() {
+    @join param : schema.properties
+      this.{@param.name} = null;
+    @end
+  }
+
+
   private {@schema.innerTypeName}(
       @join param : schema.properties on ",".add(BREAK)
         {@param.typeName} {@param.name}
@@ -129,6 +151,16 @@
     @end
 
     Builder() {}
+
+    public Builder mergeFrom({@schema.innerTypeName} other) {
+      if (other == {@schema.innerTypeName}.getDefaultInstance()) return this;
+      @join property : schema.properties
+        if (other.{@property.fieldGetFunction}() != null) {
+          this.{@property.name} = other.{@property.name};
+        }
+      @end
+      return this;
+    }
 
     Builder({@schema.innerTypeName} source) {
       @join property : schema.properties

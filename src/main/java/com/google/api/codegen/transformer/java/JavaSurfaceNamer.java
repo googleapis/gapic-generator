@@ -49,6 +49,7 @@ import java.util.regex.Pattern;
 public class JavaSurfaceNamer extends SurfaceNamer {
 
   private final Pattern versionPattern = Pattern.compile("^v\\d+");
+  private final JavaNameFormatter nameFormatter;
 
   public JavaSurfaceNamer(String rootPackageName, String packageName) {
     super(
@@ -58,10 +59,11 @@ public class JavaSurfaceNamer extends SurfaceNamer {
         new JavaCommentReformatter(),
         rootPackageName,
         packageName);
+    nameFormatter = (JavaNameFormatter) super.getNameFormatter();
   }
 
   /* Create a JavaSurfaceNamer for a Discovery-based API. */
-  public JavaSurfaceNamer(String packageName, String rootPackageName, JavaNameFormatter formatter) {
+  public JavaSurfaceNamer(String rootPackageName, String packageName, JavaNameFormatter formatter) {
     super(
         formatter,
         new SchemaTypeFormatterImpl(new JavaSchemaTypeNameConverter(packageName, formatter)),
@@ -69,11 +71,22 @@ public class JavaSurfaceNamer extends SurfaceNamer {
         new JavaCommentReformatter(),
         rootPackageName,
         packageName);
+    nameFormatter = formatter;
   }
 
   @Override
   public SurfaceNamer cloneWithPackageName(String packageName) {
     return new JavaSurfaceNamer(getRootPackageName(), packageName);
+  }
+
+  @Override
+  public SurfaceNamer cloneWithPackageNameForDiscovery(String packageName) {
+    return new JavaSurfaceNamer(getRootPackageName(), packageName, getNameFormatter());
+  }
+
+  @Override
+  public JavaNameFormatter getNameFormatter() {
+    return nameFormatter;
   }
 
   @Override
@@ -88,11 +101,7 @@ public class JavaSurfaceNamer extends SurfaceNamer {
 
   @Override
   public boolean shouldImportRequestObjectParamElementType(FieldModel field) {
-    if (field.isMap()) {
-      return false;
-    } else {
-      return true;
-    }
+    return !field.isMap();
   }
 
   @Override

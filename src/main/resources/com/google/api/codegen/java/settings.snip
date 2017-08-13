@@ -86,7 +86,7 @@
 
   public {@xsettingsClass.stubInterfaceName} createStub() throws IOException {
     if (getTransportProvider().getTransportName().equals(GrpcTransport.getGrpcTransportName())) {
-      return {@xsettingsClass.grpcStubClassName}.create(this);
+      return {@xsettingsClass.rpcStubClassName}.create(this);
     } else {
       throw new UnsupportedOperationException(
           "Transport not supported: " + getTransportProvider().getTransportName());
@@ -491,7 +491,7 @@
     @join retryCodesDef : xsettingsClass.retryCodesDefinitions
       definitions.put(
           "{@retryCodesDef.key}",
-          ImmutableSet.copyOf(Lists.<StatusCode>newArrayList({@statusCodes(retryCodesDef.codes)})));
+          ImmutableSet.copyOf(Lists.<StatusCode>newArrayList({@statusCodes(retryCodesDef.codes, xsettingsClass.transportProtocol)})));
     @end
     RETRYABLE_CODE_DEFINITIONS = definitions.build();
   }
@@ -517,9 +517,14 @@
   }
 @end
 
-@private statusCodes(codes)
+@private statusCodes(codes, protocolType)
   @join code : codes on ", "
-    GrpcStatusCode.of(Status.Code.{@code})
+    @switch protocolType
+      @case "GRPC"
+        GrpcStatusCode.of(Status.Code.{@code})
+      @case "HTTP"
+        HttpJsonStatusCode.of(HttpStatusCodes.{@code})
+    @end
   @end
 @end
 
