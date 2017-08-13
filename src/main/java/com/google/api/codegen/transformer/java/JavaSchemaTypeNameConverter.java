@@ -90,7 +90,7 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
 
   @Override
   public TypeName getTypeName(Schema schema) {
-    return getTypeName(schema, BoxingBehavior.NO_BOX_PRIMTIVES);
+    return getTypeName(schema, BoxingBehavior.NO_BOX_PRIMITIVES);
   }
 
   @Override
@@ -116,7 +116,7 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
         switch (boxingBehavior) {
           case BOX_PRIMITIVES:
             return new TypeName(JavaTypeTable.getBoxedTypeName(primitiveTypeName));
-          case NO_BOX_PRIMTIVES:
+          case NO_BOX_PRIMITIVES:
             return new TypeName(primitiveTypeName);
           default:
             throw new IllegalArgumentException(
@@ -158,7 +158,7 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
           case BOX_PRIMITIVES:
             primitiveType = new TypeName(JavaTypeTable.getBoxedTypeName(primitiveTypeName));
             break;
-          case NO_BOX_PRIMTIVES:
+          case NO_BOX_PRIMITIVES:
             primitiveType = new TypeName(primitiveTypeName);
             break;
           default:

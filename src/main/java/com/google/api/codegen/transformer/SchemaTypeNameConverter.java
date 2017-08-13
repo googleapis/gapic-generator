@@ -27,7 +27,7 @@ public interface SchemaTypeNameConverter {
     BOX_PRIMITIVES,
 
     // Don't box primitive types.
-    NO_BOX_PRIMTIVES
+    NO_BOX_PRIMITIVES
   }
 
   /** Provides a TypeName for the given Schema. */
