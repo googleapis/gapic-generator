@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.config;
 
-/* The file type that of the API definition. */
+/* The type of transport protocol used by the generated surface. */
 public enum TransportProtocol {
   GRPC,
   HTTP
