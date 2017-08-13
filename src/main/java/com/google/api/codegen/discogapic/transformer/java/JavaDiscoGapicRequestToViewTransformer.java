@@ -16,6 +16,7 @@ package com.google.api.codegen.discogapic.transformer.java;
 
 import static com.google.api.codegen.util.java.JavaTypeTable.JavaLangResolution.IGNORE_JAVA_LANG_CLASH;
 
+import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.discogapic.SchemaTransformationContext;
@@ -108,10 +109,11 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     String packageName = productConfig.getPackageName();
     SurfaceNamer surfaceNamer = new JavaSurfaceNamer(packageName, packageName, nameFormatter);
     DiscoGapicNamer discoGapicNamer = new DiscoGapicNamer(surfaceNamer);
+    DiscoApiModel apiModel = new DiscoApiModel(document);
 
     DiscoGapicInterfaceContext context =
         DiscoGapicInterfaceContext.createWithoutInterface(
-            document,
+            apiModel,
             productConfig,
             createTypeTable(productConfig.getPackageName()),
             discoGapicNamer,
