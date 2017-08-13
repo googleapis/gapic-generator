@@ -43,7 +43,7 @@ public interface ApiModel {
 
   boolean hasMultipleServices(GapicProductConfig productConfig);
 
-  InterfaceModel getInterface(String interfaceName);
+  InterfaceModel lookupInterface(String interfaceName);
 
   String getDocumentationSummary();
 }

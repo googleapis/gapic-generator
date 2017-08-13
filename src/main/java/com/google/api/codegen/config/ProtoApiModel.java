@@ -80,7 +80,7 @@ public class ProtoApiModel implements ApiModel {
   }
 
   @Override
-  public ProtoInterfaceModel getInterface(String interfaceName) {
+  public ProtoInterfaceModel lookupInterface(String interfaceName) {
     return new ProtoInterfaceModel(protoModel.getSymbolTable().lookupInterface(interfaceName));
   }
 

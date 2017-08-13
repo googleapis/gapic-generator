@@ -60,7 +60,7 @@ public class DiscoApiModel implements ApiModel {
   }
 
   @Override
-  public InterfaceModel getInterface(String interfaceName) {
+  public InterfaceModel lookupInterface(String interfaceName) {
     for (InterfaceModel interfaceModel : interfaceModels) {
       if (interfaceModel.getSimpleName().equals(interfaceName)
           || interfaceModel.getFullName().equals(interfaceName)) {

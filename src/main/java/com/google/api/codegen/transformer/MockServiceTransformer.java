@@ -53,7 +53,7 @@ public class MockServiceTransformer {
     for (MethodConfig methodConfig : interfaceConfig.getMethodConfigs()) {
       String reroute = methodConfig.getRerouteToGrpcInterface();
       if (!Strings.isNullOrEmpty(reroute)) {
-        InterfaceModel targetInterface = model.getInterface(reroute);
+        InterfaceModel targetInterface = model.lookupInterface(reroute);
         interfaces.put(reroute, targetInterface);
       }
     }
