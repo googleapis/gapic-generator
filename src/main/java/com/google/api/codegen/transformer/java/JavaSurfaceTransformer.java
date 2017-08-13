@@ -68,6 +68,7 @@ public class JavaSurfaceTransformer {
   private final GapicCodePathMapper pathMapper;
   private final PackageMetadataConfig packageMetadataConfig;
   private final SurfaceTransformer surfaceTransformer;
+  private final String rpcStubTemplateFilename;
 
   private final ServiceTransformer serviceTransformer = new ServiceTransformer();
   private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
@@ -82,7 +83,6 @@ public class JavaSurfaceTransformer {
       new FileHeaderTransformer(importSectionTransformer);
   private final RetryDefinitionsTransformer retryDefinitionsTransformer =
       new RetryDefinitionsTransformer();
-  private final String RPC_STUB_TEMPLATE_FILENAME;
 
   private static final String API_TEMPLATE_FILENAME = "java/main.snip";
   private static final String SETTINGS_TEMPLATE_FILENAME = "java/settings.snip";
@@ -100,7 +100,7 @@ public class JavaSurfaceTransformer {
     this.pathMapper = pathMapper;
     this.packageMetadataConfig = packageMetadataConfig;
     this.surfaceTransformer = surfaceTransformer;
-    this.RPC_STUB_TEMPLATE_FILENAME = rpcStubSnippetFileName;
+    this.rpcStubTemplateFilename = rpcStubSnippetFileName;
   }
 
   public List<ViewModel> transform(ApiModel model, GapicProductConfig productConfig) {
@@ -477,7 +477,7 @@ public class JavaSurfaceTransformer {
         StaticLangFileView.<StaticLangRpcStubView>newBuilder();
 
     fileView.classView(generateRpcStubClass(context, productConfig));
-    fileView.templateFileName(RPC_STUB_TEMPLATE_FILENAME);
+    fileView.templateFileName(rpcStubTemplateFilename);
 
     String outputPath =
         pathMapper.getOutputPath(
