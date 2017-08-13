@@ -65,7 +65,6 @@ import java.util.List;
  * <p>This class delegates step 2 to the provided name formatter, which generally would be a
  * language-specific namer.
  */
-// TODO(andrealin): This class should not be exposed to ApiSource.
 public class SurfaceNamer extends NameFormatterDelegator {
   private final TypeFormatter typeFormatter;
   private final TypeNameConverter typeNameConverter;
@@ -349,6 +348,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The function name to get a field having the given type and name. */
   public String getFieldGetFunctionName(FieldModel type, Name identifier) {
+    // TODO(andrealin): Make a Disco subclass of SurfaceNamer so that ApiSource is not exposed here.
     if (type.getApiSource().equals(ApiSource.DISCOVERY)) {
       return publicMethodName(Name.from("get").join(identifier));
     }
