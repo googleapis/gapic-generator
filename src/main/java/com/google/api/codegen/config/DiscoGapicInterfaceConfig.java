@@ -19,7 +19,6 @@ import static com.google.api.codegen.config.DiscoGapicMethodConfig.createDiscoGa
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
-import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
 import com.google.api.gax.core.RetrySettings;
@@ -74,7 +73,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
   }
 
   static DiscoGapicInterfaceConfig createInterfaceConfig(
-      Document document,
+      DiscoApiModel discoApiModel,
       DiagCollector diagCollector,
       String language,
       InterfaceConfigProto interfaceConfigProto,
@@ -92,7 +91,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
     if (retryCodesDefinition != null && retrySettingsDefinition != null) {
       methodConfigMap =
           createMethodConfigMap(
-              document,
+              discoApiModel,
               diagCollector,
               language,
               interfaceConfigProto,
@@ -144,7 +143,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
           retrySettingsDefinition,
           requiredConstructorParams,
           manualDoc,
-          new DiscoInterfaceModel(interfaceNameOverride, document),
+          new DiscoInterfaceModel(interfaceNameOverride, discoApiModel),
           interfaceNameOverride,
           smokeTestConfig,
           methodConfigMap,
@@ -152,8 +151,8 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
     }
   }
 
-  private static Method lookupMethod(Document source, String lookupMethod) {
-    for (com.google.api.codegen.discovery.Method method : source.methods()) {
+  private static Method lookupMethod(DiscoApiModel source, String lookupMethod) {
+    for (com.google.api.codegen.discovery.Method method : source.getDocument().methods()) {
       if (method.id().equals(lookupMethod)) {
         return method;
       }
@@ -162,7 +161,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
   }
 
   private static ImmutableMap<String, DiscoGapicMethodConfig> createMethodConfigMap(
-      Document document,
+      DiscoApiModel apiModel,
       DiagCollector diagCollector,
       String language,
       InterfaceConfigProto interfaceConfigProto,
@@ -173,7 +172,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
 
     for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {
       com.google.api.codegen.discovery.Method method =
-          lookupMethod(document, methodConfigProto.getName());
+          lookupMethod(apiModel, methodConfigProto.getName());
       if (method == null) {
         diagCollector.addDiag(
             Diag.error(

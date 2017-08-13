@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer;
 import static com.google.api.codegen.config.ApiSource.DISCOVERY;
 
 import com.google.api.codegen.config.ApiSource;
+import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.config.DiscoGapicMethodConfig;
 import com.google.api.codegen.config.DiscoInterfaceModel;
 import com.google.api.codegen.config.DiscoveryMethodModel;
@@ -47,7 +48,8 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
         productConfig,
         flatteningConfig,
         featureConfig,
-        new DiscoInterfaceModel(interfaceName, surfaceTransformerContext.getDocument()),
+        new DiscoInterfaceModel(
+            interfaceName, new DiscoApiModel(surfaceTransformerContext.getDocument())),
         methodConfig,
         surfaceTransformerContext,
         typeTable,
@@ -123,6 +125,6 @@ public abstract class DiscoGapicMethodContext implements MethodContext {
   @Override
   public DiscoInterfaceModel getTargetInterface() {
     return new DiscoInterfaceModel(
-        getInterfaceModel().getFullName(), getSurfaceInterfaceContext().getDocument());
+        getInterfaceModel().getFullName(), getSurfaceInterfaceContext().getApiModel());
   }
 }

@@ -16,6 +16,7 @@ package com.google.api.codegen;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.api.codegen.config.DiscoApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.discogapic.DiscoGapicProvider;
@@ -106,6 +107,7 @@ public class DiscoGapicGeneratorApi {
     JsonNode root = mapper.readTree(reader);
 
     Document document = Document.from(new DiscoveryNode(root));
+    DiscoApiModel apiModel = new DiscoApiModel(document);
 
     // Read the YAML config and convert it to proto.
     if (configFileNames.size() == 0) {
@@ -124,7 +126,7 @@ public class DiscoGapicGeneratorApi {
       packageConfig = PackageMetadataConfig.createFromString(contents);
     }
     GeneratorProto generator = configProto.getGenerator();
-    GapicProductConfig productConfig = GapicProductConfig.create(document, configProto);
+    GapicProductConfig productConfig = GapicProductConfig.create(apiModel, configProto);
 
     String factory = generator.getFactory();
     String id = generator.getId();

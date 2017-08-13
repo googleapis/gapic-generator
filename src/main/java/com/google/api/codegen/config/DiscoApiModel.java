@@ -53,7 +53,7 @@ public class DiscoApiModel implements ApiModel {
 
     ImmutableList.Builder<DiscoInterfaceModel> intfModels = ImmutableList.builder();
     for (String interfaceName : productConfig.getInterfaceConfigMap().keySet()) {
-      intfModels.add(new DiscoInterfaceModel(interfaceName, document));
+      intfModels.add(new DiscoInterfaceModel(interfaceName, new DiscoApiModel(document)));
     }
     interfaceModels = intfModels.build();
     return interfaceModels;
