@@ -16,6 +16,7 @@ package com.google.api.codegen.config;
 
 import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.ResourceNameMessageConfigProto;
+import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
@@ -80,8 +81,8 @@ public abstract class ResourceNameMessageConfigs {
   }
 
   @Nullable
-  static ResourceNameMessageConfigs createMessageResourceTypesConfig(
-      DiscoApiModel apiModel,
+  public static ResourceNameMessageConfigs createMessageResourceTypesConfig(
+      Document document,
       DiagCollector diagCollector,
       ConfigProto configProto,
       String defaultPackage) {
@@ -98,7 +99,7 @@ public abstract class ResourceNameMessageConfigs {
     ListMultimap<String, FieldModel> fieldsByMessage = ArrayListMultimap.create();
 
     // TODO(andrealin): implementation.
-    for (Map.Entry<String, Schema> schemaEntry : apiModel.getDocument().schemas().entrySet()) {
+    for (Map.Entry<String, Schema> schemaEntry : document.schemas().entrySet()) {
       fieldsByMessage.put(schemaEntry.getKey(), new DiscoveryField(schemaEntry.getValue()));
     }
     return new AutoValue_ResourceNameMessageConfigs(messageResourceTypeConfigMap, fieldsByMessage);

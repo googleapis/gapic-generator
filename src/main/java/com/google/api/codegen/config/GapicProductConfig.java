@@ -22,6 +22,7 @@ import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.LanguageSettingsProto;
 import com.google.api.codegen.LicenseHeaderProto;
 import com.google.api.codegen.ResourceNameTreatment;
+import com.google.api.codegen.discovery.Document;
 import com.google.api.tools.framework.model.BoundedDiagCollector;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
@@ -158,7 +159,7 @@ public abstract class GapicProductConfig implements ProductConfig {
   }
 
   @Nullable
-  public static GapicProductConfig create(DiscoApiModel discoApiModel, ConfigProto configProto) {
+  public static GapicProductConfig create(Document document, ConfigProto configProto) {
     // TODO (andrealin): load messageConfigs
 
     // TODO(andrealin): put this in config instead of hard coding it
@@ -170,7 +171,7 @@ public abstract class GapicProductConfig implements ProductConfig {
 
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
-            discoApiModel, diagCollector, configProto, defaultPackage);
+            document, diagCollector, configProto, defaultPackage);
 
     // TODO (andrealin): load resourceNameConfigs
 
@@ -185,7 +186,7 @@ public abstract class GapicProductConfig implements ProductConfig {
 
     ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
         createDiscoGapicInterfaceConfigMap(
-            discoApiModel, new BoundedDiagCollector(), configProto, settings, resourceNameConfigs);
+            document, new BoundedDiagCollector(), configProto, settings, resourceNameConfigs);
 
     ImmutableList<String> copyrightLines;
     ImmutableList<String> licenseLines;
@@ -287,7 +288,7 @@ public abstract class GapicProductConfig implements ProductConfig {
   }
 
   private static ImmutableMap<String, InterfaceConfig> createDiscoGapicInterfaceConfigMap(
-      DiscoApiModel apiModel,
+      Document document,
       DiagCollector diagCollector,
       ConfigProto configProto,
       LanguageSettingsProto languageSettings,
@@ -299,7 +300,7 @@ public abstract class GapicProductConfig implements ProductConfig {
 
       DiscoGapicInterfaceConfig interfaceConfig =
           DiscoGapicInterfaceConfig.createInterfaceConfig(
-              apiModel,
+              document,
               diagCollector,
               configProto.getLanguage(),
               interfaceConfigProto,

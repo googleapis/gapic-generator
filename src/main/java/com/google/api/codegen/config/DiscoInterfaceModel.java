@@ -15,15 +15,16 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
+import com.google.api.codegen.discovery.Document;
 
 /** Discovery-based InterfaceModel. */
 public class DiscoInterfaceModel implements InterfaceModel {
   private final String interfaceName;
   private final DiscoApiModel apiModel;
 
-  public DiscoInterfaceModel(String interfaceName, DiscoApiModel apiModel) {
+  public DiscoInterfaceModel(String interfaceName, Document document) {
     this.interfaceName = interfaceName;
-    this.apiModel = apiModel;
+    this.apiModel = new DiscoApiModel(document);
   }
 
   @Override

@@ -46,7 +46,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   private ImmutableList<MethodModel> interfaceMethods;
 
   public static DiscoGapicInterfaceContext createWithoutInterface(
-      DiscoApiModel apiModel,
+      Document document,
       GapicProductConfig productConfig,
       SchemaTypeTable typeTable,
       DiscoGapicNamer discoGapicNamer,
@@ -55,12 +55,12 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
         productConfig,
         typeTable,
         discoGapicNamer,
-        new DiscoInterfaceModel("", apiModel),
+        new DiscoInterfaceModel("", document),
         featureConfig);
   }
 
-  static DiscoGapicInterfaceContext createWithInterface(
-      DiscoApiModel apiModel,
+  public static DiscoGapicInterfaceContext createWithInterface(
+      Document document,
       String interfaceName,
       GapicProductConfig productConfig,
       SchemaTypeTable typeTable,
@@ -76,7 +76,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
         productConfig,
         typeTable,
         discoGapicNamer,
-        new DiscoInterfaceModel(interfaceName, apiModel),
+        new DiscoInterfaceModel(interfaceName, document),
         featureConfig);
   }
 
@@ -167,7 +167,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   @Override
   public DiscoGapicInterfaceContext withNewTypeTable() {
     return createWithInterface(
-        getApiModel(),
+        getDocument(),
         getInterfaceName(),
         getProductConfig(),
         (SchemaTypeTable) getImportTypeTable().cloneEmpty(),
@@ -178,7 +178,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
   @Override
   public DiscoGapicInterfaceContext withNewTypeTable(String packageName) {
     return createWithInterface(
-        getApiModel(),
+        getDocument(),
         getInterfaceName(),
         getProductConfig(),
         getSchemaTypeTable().cloneEmpty(packageName),
