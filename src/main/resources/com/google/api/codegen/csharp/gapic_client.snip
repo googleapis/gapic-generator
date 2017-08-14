@@ -54,9 +54,10 @@
                 @default
                     *** ERROR: Cannot handle grpc streaming type '{@call.grpcStreamingType.toString}' ***
                 @end
-            @end
-            @if api.hasLongRunningOperations
-                LongRunningOperationsSettings = existing.LongRunningOperationsSettings?.Clone();
+
+                @if call.type.toString == "OperationApiCallable"
+                    {@call.methodName}OperationsSettings = existing.{@call.methodName}OperationsSettings?.Clone();
+                @end
             @end
             OnCopy(existing);
         }
@@ -197,13 +198,25 @@
             @end
 
 
-        @end
-        @if api.hasLongRunningOperations
-            /// <summary>
-            /// Settings used for long running operations.
-            /// </summary>
-            public OperationsSettings LongRunningOperationsSettings { get; set; }
+            @if call.type.toString == "OperationApiCallable"
+                /// <summary>
+                /// Long Running Operation settings for calls to <c>{@api.name}.{@call.methodName}</c>.
+                /// </summary>
+                /// <remarks>
+                /// Uses default <see cref="PollSettings"/> of:
+                /// <list type="bullet">
+                /// <item><description>Initial delay: {@call.operationMethod.initialPollDelay} milliseconds</description></item>
+                /// <item><description>Total timeout: {@call.operationMethod.totalPollTimeout} milliseconds</description></item>
+                /// </list>
+                /// </remarks>
+                public OperationsSettings {@call.methodName}OperationsSettings { get; set; } = new OperationsSettings
+                {
+                    DefaultPollSettings = new PollSettings(
+                        Expiration.FromTimeout(TimeSpan.FromMilliseconds({@call.operationMethod.totalPollTimeout}L)),
+                        TimeSpan.FromMilliseconds({@call.operationMethod.initialPollDelay}L))
+                };
 
+            @end
         @end
         /// <summary>
         /// Creates a deep clone of this object, with all the same property values.
@@ -311,16 +324,6 @@
             get { throw new NotImplementedException(); }
         }
 
-        @if api.hasLongRunningOperations
-            /// <summary>
-            /// The client for long-running operations.
-            /// </summary>
-            public virtual OperationsClient LongRunningOperationsClient
-            {
-                get { throw new NotImplementedException(); }
-            }
-
-        @end
         # method: StaticLangApiMethodView
         @join method : api.apiMethods
             {@xmlDoc(method.doc)}
@@ -338,6 +341,7 @@
     public sealed partial class {@api.implName} : {@api.name}
     {
         @join call : api.apiCallableMembers
+            # call: ApiCallableView
             @switch call.grpcStreamingType.toString
             @case "NonStreaming"
                 private readonly ApiCall<{@call.requestTypeName}, {@call.responseTypeName}> {@call.name};
@@ -359,16 +363,18 @@
         {
             GrpcClient = grpcClient;
             {@settings.name} effectiveSettings = settings ?? {@settings.name}.GetDefault();
-            @if api.hasLongRunningOperations
-                LongRunningOperationsClient = new OperationsClientImpl(
-                    grpcClient.CreateOperationsClient(), effectiveSettings.LongRunningOperationsSettings);
-            @end
             ClientHelper clientHelper = new ClientHelper(effectiveSettings);
             @join rerouted : api.reroutedGrpcClients
                 # rerouted: ReroutedGrpcView
                 {@rerouted.typeName} {@rerouted.grpcClientVarName} = grpcClient.{@rerouted.getMethodName}();
             @end
+            @join call : settings.callSettings if call.type.toString == "OperationApiCallable"
+                # call: ApiCallSettingsView
+                {@call.methodName}OperationsClient = new OperationsClientImpl(
+                        grpcClient.CreateOperationsClient(), effectiveSettings.{@call.methodName}OperationsSettings);
+            @end
             @join call : api.apiCallableMembers
+                # call: ApiCallableView
                 @switch call.grpcStreamingType.toString
                 @case "NonStreaming"
                     {@call.name} = clientHelper.BuildApiCall<{@call.requestTypeName}, {@call.responseTypeName}>(
@@ -393,13 +399,6 @@
         /// </summary>
         public override {@api.grpcTypeNameOuter}.{@api.grpcTypeNameInner} GrpcClient { get; }
 
-        @if api.hasLongRunningOperations
-            /// <summary>
-            /// The client for long-running operations.
-            /// </summary>
-            public override OperationsClient LongRunningOperationsClient { get; }
-
-        @end
         // Partial modifier methods contain '_' to ensure no name conflicts with RPC methods.
         # method: ModifyMethodView
         @join method : api.modifyMethods
@@ -453,7 +452,20 @@
     @case "OperationRequestObjectMethod"
         {@operationRequestObjectMethodSync(method, isImpl)}
         @if isImpl
+
+            /// <summary>
+            /// The long-running operations client for <c>{@method.name}</c>.
+            /// </summary>
+            public override OperationsClient {@method.name}OperationsClient { get; }
         @else
+
+            /// <summary>
+            /// The long-running operations client for <c>{@method.name}</c>.
+            /// </summary>
+            public virtual OperationsClient {@method.name}OperationsClient
+            {
+                get { throw new NotImplementedException(); }
+            }
 
             {@operationRequestObjectPollOnceMethodSync(method)}
         @end
@@ -774,7 +786,7 @@
         {
             {@method.modifyMethodName}(ref request, ref callSettings);
             return new {@method.operationMethod.clientReturnTypeName}(
-                {@method.callableName}.Sync(request, callSettings), LongRunningOperationsClient);
+                {@method.callableName}.Sync(request, callSettings), {@method.name}OperationsClient);
         }
     @else
         public virtual {@method.operationMethod.clientReturnTypeName} {@method.name}(
@@ -798,7 +810,7 @@
         string operationName,
         CallSettings callSettings = null) => {@method.operationMethod.clientReturnTypeName}.PollOnceFromName(
             GaxPreconditions.CheckNotNullOrEmpty(operationName, nameof(operationName)),
-            LongRunningOperationsClient,
+            {@method.name}OperationsClient,
             callSettings);
 @end
 
@@ -811,7 +823,7 @@
         {
             {@method.modifyMethodName}(ref request, ref callSettings);
             return new {@method.operationMethod.clientReturnTypeName}(
-                await {@method.callableName}.Async(request, callSettings).ConfigureAwait(false), LongRunningOperationsClient);
+                await {@method.callableName}.Async(request, callSettings).ConfigureAwait(false), {@syncName(method)}OperationsClient);
         }
     @else
         public virtual Task<{@method.operationMethod.clientReturnTypeName}> {@method.name}(
@@ -835,8 +847,13 @@
         string operationName,
         CallSettings callSettings = null) => {@method.operationMethod.clientReturnTypeName}.PollOnceFromNameAsync(
             GaxPreconditions.CheckNotNullOrEmpty(operationName, nameof(operationName)),
-            LongRunningOperationsClient,
+            {@syncName(method)}OperationsClient,
             callSettings);
+@end
+
+# method: StaticLangApiMethodView
+@private syncName(method)
+    {@method.callableName.subSequence(5,method.name.length())}
 @end
 
 # method: StaticLangApiMethodView, isImpl: boolean
