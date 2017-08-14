@@ -23,10 +23,12 @@ license_header:
 interfaces:
 - name: google.simplecompute.v1.Addresses
   collections:
-  - name_pattern: {project}/regions/{region}/addresses/{address}
+  - name_pattern: addresses/{address}
     entity_name: address
-  - name_patter: {project}/regions/{region}/addresses
-    entity_name: address_list
+  - name_pattern: regions/{region}
+    entity_name: region
+  - name_pattern: project/{project}
+    entity_name: project
   retry_codes_def:
   - name: idempotent
     retry_codes:
@@ -71,4 +73,4 @@ interfaces:
     retry_params_name: default
     timeout_millis: 60000
     field_name_patterns:
-      name: address_list
+      address: address
