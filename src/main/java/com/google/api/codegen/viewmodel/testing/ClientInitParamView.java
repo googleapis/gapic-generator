@@ -17,6 +17,7 @@ package com.google.api.codegen.viewmodel.testing;
 import com.google.auto.value.AutoValue;
 import javax.annotation.Nullable;
 
+/** Parameter used for the instantiation of a client. */
 @AutoValue
 public abstract class ClientInitParamView {
   /** The value of the parameter. */

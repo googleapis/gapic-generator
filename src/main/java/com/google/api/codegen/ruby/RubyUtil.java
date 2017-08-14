@@ -14,13 +14,11 @@
  */
 package com.google.api.codegen.ruby;
 
-import java.util.Arrays;
-import java.util.List;
+import com.google.api.codegen.util.NamePath;
 import java.util.regex.Pattern;
 
 public class RubyUtil {
   private static final String LONGRUNNING_PACKAGE_NAME = "Google::Longrunning";
-  private static final String RUBY_PACKAGE_SEPERATOR = "::";
 
   private static final Pattern VERSION_PATTERN = Pattern.compile("^[vV]\\d+");
 
@@ -29,8 +27,6 @@ public class RubyUtil {
   }
 
   public static boolean hasMajorVersion(String packageName) {
-    List<String> parts = Arrays.asList(packageName.split(RUBY_PACKAGE_SEPERATOR));
-    String lastPart = parts.get(parts.size() - 1);
-    return VERSION_PATTERN.matcher(lastPart).matches();
+    return VERSION_PATTERN.matcher(NamePath.doubleColoned(packageName).getHead()).matches();
   }
 }
