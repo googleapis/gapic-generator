@@ -76,6 +76,12 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getVersionedDirectoryNamespace() {
+    String namespace = getPackageName();
+    return namespace.substring(0, namespace.lastIndexOf('.'));
+  }
+
+  @Override
   public String getFormattedVariableName(Name identifier) {
     return localVarName(identifier);
   }
