@@ -109,12 +109,12 @@ class LibraryServiceClientTest extends GeneratedTest
 
     private function createStub($createGrpcStub)
     {
-        $grpcCredentialsHelper = new GrpcCredentialsHelper([]);
-        return $grpcCredentialsHelper->createStub(
-            $createGrpcStub,
-            LibraryServiceClient::SERVICE_ADDRESS,
-            LibraryServiceClient::DEFAULT_SERVICE_PORT
-        );
+        $grpcCredentialsHelper = new GrpcCredentialsHelper([
+            'serviceAddress' => LibraryServiceClient::SERVICE_ADDRESS,
+            'port' => LibraryServiceClient::DEFAULT_SERVICE_PORT,
+            'scopes' => ['unknown-service-scopes'],
+        ]);
+        return $grpcCredentialsHelper->createStub($createGrpcStub);
     }
 
     /**
