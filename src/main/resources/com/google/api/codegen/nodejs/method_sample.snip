@@ -2,14 +2,14 @@
 
 @snippet decorateSampleCode(apiMethod, coreSampleCode)
     @if apiMethod.hasApiVersion
-        var {@apiMethod.apiModuleName} = require('{@apiMethod.packageName}');
+        var {@apiMethod.localPackageName} = require('{@apiMethod.packageName}');
 
         @if apiMethod.packageHasMultipleServices
-            var client = {@apiMethod.apiModuleName}.{@apiMethod.apiVersion}.{@apiMethod.packageServiceName}({
+            var client = {@apiMethod.localPackageName}.{@apiMethod.apiVersion}.{@apiMethod.packageServiceName}({
               // optional auth parameters.
             });
         @else
-            var client = {@apiMethod.apiModuleName}.{@apiMethod.apiVersion}({
+            var client = {@apiMethod.localPackageName}.{@apiMethod.apiVersion}({
               // optional auth parameters.
             });
         @end
@@ -21,14 +21,14 @@
 @end
 
 @snippet decorateSampleCodeUnversioned(apiMethod, coreSampleCode)
-    var {@apiMethod.apiModuleName} = require('{@apiMethod.packageName}');
+    var {@apiMethod.localPackageName} = require('{@apiMethod.packageName}');
 
     @if apiMethod.packageHasMultipleServices
-        var client = {@apiMethod.apiModuleName}.{@apiMethod.packageServiceName}({
+        var client = {@apiMethod.localPackageName}.{@apiMethod.packageServiceName}({
            // optional auth parameters.
         });
     @else
-        var client = {@apiMethod.apiModuleName}({
+        var client = {@apiMethod.localPackageName}({
            // optional auth parameters.
         });
     @end
