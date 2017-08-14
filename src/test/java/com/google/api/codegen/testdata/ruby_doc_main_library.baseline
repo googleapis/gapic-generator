@@ -223,6 +223,8 @@ module Library
           warn "`app_name` and `app_version` are no longer being used in the request headers."
         end
 
+        credentials ||= Library::Credentials.default
+
         @operations_client = Google::Longrunning::OperationsClient.new(
           service_path: service_path,
           port: port,
@@ -236,7 +238,6 @@ module Library
           lib_version: lib_version,
         )
 
-        credentials ||= Library::Credentials.default
         if credentials.is_a?(String) || credentials.is_a?(Hash)
           updater_proc = Library::Credentials.new(credentials).updater_proc
         end
