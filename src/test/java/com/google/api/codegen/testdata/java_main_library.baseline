@@ -147,11 +147,30 @@ import javax.annotation.Generated;
  * <p>This class can be customized by passing in a custom instance of LibrarySettings to
  * create(). For example:
  *
+ * To customize credentials:
+ *
  * <pre>
  * <code>
  * LibrarySettings librarySettings =
  *     LibrarySettings.defaultBuilder()
  *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
+ *         .build();
+ * LibraryClient libraryClient =
+ *     LibraryClient.create(librarySettings);
+ * </code>
+ * </pre>
+ *
+ * To customize the endpoint:
+ *
+ * <pre>
+ * <code>
+ * LibrarySettings librarySettings =
+ *     LibrarySettings.defaultBuilder()
+ *         .setTransportProvider(LibrarySettings.defaultGrpcTransportProviderBuilder()
+ *             .setChannelProvider(LibrarySettings.defaultGrpcChannelProviderBuilder()
+ *                 .setEndpoint(myEndpoint)
+ *                 .build())
+ *             .build())
  *         .build();
  * LibraryClient libraryClient =
  *     LibraryClient.create(librarySettings);

@@ -141,11 +141,8 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
     for (InitCodeNode item : specItemNodes) {
       TypeRef type = item.getType();
       // Exclude map entry types
-      if (!type.isRepeated() && type.isMessage()) {
-        String fullName = typeTable.getFullNameFor(type);
-        String nickname = typeTable.getNicknameFor(type);
-        protoImports.add(generateAppImport(fullName, nickname));
-      } else if (type.isEnum()) {
+      // Exclude message types since the samples show the use of dicts rather than protobufs.
+      if (type.isEnum()) {
         protoImports.add(createImport(context.getProductConfig().getPackageName(), "enums"));
       }
     }

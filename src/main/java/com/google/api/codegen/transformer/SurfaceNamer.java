@@ -333,6 +333,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getReroutedGrpcMethodName");
   }
 
+  /** The type name of a rerouted gRPC type. Used in C# */
+  public String getReroutedGrpcTypeName(ModelTypeTable typeTable, GapicMethodConfig methodConfig) {
+    return getNotImplementedString("SurfaceNamer.getReroutedGrpcTypeName");
+  }
+
   /** The name of the surface method which can call the given API method. */
   public String getApiMethodName(Method method, VisibilityConfig visibility) {
     return getApiMethodName(Name.upperCamel(method.getSimpleName()), visibility);
@@ -619,7 +624,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The name of the implementation class that implements a particular proto interface. */
-  public String getApiWrapperClassImplName(Interface apiInterface) {
+  public String getApiWrapperClassImplName(InterfaceConfig interfaceConfig) {
     return getNotImplementedString("SurfaceNamer.getApiWrapperClassImplName");
   }
 

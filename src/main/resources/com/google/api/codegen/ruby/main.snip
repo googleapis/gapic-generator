@@ -167,6 +167,8 @@
       warn "`app_name` and `app_version` are no longer being used in the request headers."
     end
 
+    credentials ||= {@xapiClass.fullyQualifiedCredentialsClassName}.default
+
     @if xapiClass.hasLongRunningOperations
       @@operations_client = Google::Longrunning::OperationsClient.new(
         service_path: service_path,
@@ -182,7 +184,6 @@
       )
 
     @end
-    credentials ||= {@xapiClass.fullyQualifiedCredentialsClassName}.default
     if credentials.is_a?(String) || credentials.is_a?(Hash)
       updater_proc = {@xapiClass.fullyQualifiedCredentialsClassName}.new(credentials).updater_proc
     end
@@ -307,7 +308,14 @@
 
   @if apiMethod.hasRequestStreaming
     def {@apiMethod.name} {@inlineParamList(apiMethod.methodParams)}
-      {@makeApiCall(apiMethod)}
+      request_protos = reqs.lazy.map do |req|
+        Google::Gax::to_proto(req, {@apiMethod.requestTypeName})
+      end
+      @@{@apiMethod.name}.call(request_protos, options)
+      @if apiMethod.hasReturnValue
+      @else
+        nil
+      @end
     end
   @else
     @if apiMethod.hasRequestParameters
