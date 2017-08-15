@@ -19,8 +19,8 @@ import com.google.auto.value.AutoValue;
 /** Groups a field name of the request types with an entity name of the collections. */
 @AutoValue
 public abstract class FieldNamePatternView {
-  /** The path of the field. */
-  public abstract String fieldPath();
+  /** The template representing the structure of the resource name encoded in the field. */
+  public abstract String pathTemplate();
 
   /** The name to be used as a basis for generated methods and classes. */
   public abstract String entityName();
@@ -31,7 +31,7 @@ public abstract class FieldNamePatternView {
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder fieldPath(String val);
+    public abstract Builder pathTemplate(String val);
 
     public abstract Builder entityName(String val);
 

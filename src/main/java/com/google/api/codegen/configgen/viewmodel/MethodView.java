@@ -33,7 +33,7 @@ public abstract class MethodView {
     return flattening() != null;
   }
 
-  /** The fields taht are always required for a request to be valid. */
+  /** The fields that are always required for a request to be valid. */
   public abstract List<String> requiredFields();
 
   /** Turns on or off generation of a method whose sole parameter is a request object. */

@@ -182,7 +182,7 @@ public class MethodTransformer {
       String resourceNameString = collectionPattern.getTemplatizedResourcePath();
       fieldNamePatterns.add(
           FieldNamePatternView.newBuilder()
-              .fieldPath(collectionPattern.getFieldPath())
+              .pathTemplate(collectionPattern.getFieldPath())
               .entityName(nameMap.get(resourceNameString))
               .build());
     }

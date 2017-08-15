@@ -30,7 +30,7 @@ public abstract class PageStreamingRequestView {
   }
 
   /**
-   * The name of the field in the request specifying the maximum numbert of elements to be returned
+   * The name of the field in the request specifying the maximum number of elements to be returned
    * in the response.
    */
   @Nullable
