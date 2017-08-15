@@ -174,7 +174,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
     Iterable<FieldConfig> fieldConfigs = methodConfig.getRequiredFieldConfigs();
 
     InitCodeOutputType outputType =
-        methodConfig.isGrpcStreaming()
+        method.getRequestStreaming()
             ? InitCodeOutputType.SingleObject
             : InitCodeOutputType.FieldList;
 

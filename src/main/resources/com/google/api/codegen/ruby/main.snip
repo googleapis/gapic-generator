@@ -308,7 +308,14 @@
 
   @if apiMethod.hasRequestStreaming
     def {@apiMethod.name} {@inlineParamList(apiMethod.methodParams)}
-      {@makeApiCall(apiMethod)}
+      request_protos = reqs.lazy.map do |req|
+        Google::Gax::to_proto(req, {@apiMethod.requestTypeName})
+      end
+      @@{@apiMethod.name}.call(request_protos, options)
+      @if apiMethod.hasReturnValue
+      @else
+        nil
+      @end
     end
   @else
     @if apiMethod.hasRequestParameters

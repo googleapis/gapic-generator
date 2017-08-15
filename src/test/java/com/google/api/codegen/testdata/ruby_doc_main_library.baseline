@@ -1134,7 +1134,10 @@ module Library
       #   end
 
       def discuss_book reqs, options: nil
-        @discuss_book.call(reqs, options)
+        request_protos = reqs.lazy.map do |req|
+          Google::Gax::to_proto(req, Google::Example::Library::V1::DiscussBookRequest)
+        end
+        @discuss_book.call(request_protos, options)
       end
 
       # Test client streaming.
@@ -1163,7 +1166,10 @@ module Library
       #   response = library_service_client.monolog_about_book(requests)
 
       def monolog_about_book reqs, options: nil
-        @monolog_about_book.call(reqs, options)
+        request_protos = reqs.lazy.map do |req|
+          Google::Gax::to_proto(req, Google::Example::Library::V1::DiscussBookRequest)
+        end
+        @monolog_about_book.call(request_protos, options)
       end
 
       # @param names [Array<String>]
