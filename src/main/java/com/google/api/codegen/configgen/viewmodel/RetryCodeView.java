@@ -17,10 +17,13 @@ package com.google.api.codegen.configgen.viewmodel;
 import com.google.auto.value.AutoValue;
 import java.util.List;
 
+/** Represents the definition for retryable codes. */
 @AutoValue
 public abstract class RetryCodeView {
+  /** The name of the configuration. */
   public abstract String name();
 
+  /** The codes used for this definition. */
   public abstract List<String> retryCodes();
 
   public static Builder newBuilder() {

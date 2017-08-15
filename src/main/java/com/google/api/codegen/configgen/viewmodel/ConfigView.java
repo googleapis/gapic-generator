@@ -19,18 +19,25 @@ import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
 import java.util.List;
 
+/** Represents the GAPIC config being generated. */
 @AutoValue
 public abstract class ConfigView implements ViewModel {
+  @Override
   public abstract String templateFileName();
 
+  @Override
   public abstract String outputPath();
 
+  /** The type of the config's proto. */
   public abstract String type();
 
+  /** The settings of generated code in a specific language. */
   public abstract List<LanguageSettingView> languageSettings();
 
+  /** The configuration for the license header to put on generated files. */
   public abstract LicenseView license();
 
+  /** The API interface configurations. */
   public abstract List<InterfaceView> interfaces();
 
   @Override

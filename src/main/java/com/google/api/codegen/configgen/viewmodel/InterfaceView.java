@@ -17,16 +17,22 @@ package com.google.api.codegen.configgen.viewmodel;
 import com.google.auto.value.AutoValue;
 import java.util.List;
 
+/** Represents the API interface configuration. */
 @AutoValue
 public abstract class InterfaceView {
+  /** The fully-qualified name of the API interface. */
   public abstract String name();
 
+  /** The definition for retryable codes. */
   public abstract List<RetryCodeView> retryCodesDef();
 
+  /** The defintion for retry/backoff parameters. */
   public abstract List<RetryParamView> retryParamsDef();
 
+  /** The list of resource collection configurations. */
   public abstract List<CollectionView> collections();
 
+  /** The list of method configurations. */
   public abstract List<MethodView> methods();
 
   public static Builder newBuilder() {

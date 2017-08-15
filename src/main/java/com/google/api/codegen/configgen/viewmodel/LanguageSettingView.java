@@ -16,10 +16,13 @@ package com.google.api.codegen.configgen.viewmodel;
 
 import com.google.auto.value.AutoValue;
 
+/** Represents the settings of generated code in a specific language. */
 @AutoValue
 public abstract class LanguageSettingView {
+  /** The language the setting is used for. */
   public abstract String language();
 
+  /** The name of the package specific to the language. */
   public abstract String packageName();
 
   public static Builder newBuilder() {

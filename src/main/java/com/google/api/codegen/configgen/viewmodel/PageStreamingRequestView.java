@@ -17,18 +17,26 @@ package com.google.api.codegen.configgen.viewmodel;
 import com.google.auto.value.AutoValue;
 import javax.annotation.Nullable;
 
+/** Represents the request information of the page streaming method. */
 @AutoValue
 public abstract class PageStreamingRequestView {
+  /** The name of the field in the request containing the page token. */
   @Nullable
   public abstract String tokenField();
 
+  /** True if the tokenField property exists. */
   public boolean hasTokenField() {
     return tokenField() != null;
   }
 
+  /**
+   * The name of the field in the request specifying the maximum numbert of elements to be returned
+   * in the response.
+   */
   @Nullable
   public abstract String pageSizeField();
 
+  /** True if the pageSizeField property exists. */
   public boolean hasPageSizeField() {
     return pageSizeField() != null;
   }

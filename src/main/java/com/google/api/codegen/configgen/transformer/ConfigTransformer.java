@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+/** Generates the config view object using a model and output path. */
 public class ConfigTransformer {
   private static final String CONFIG_TEMPLATE_FILE = "configgen/gapic_config.snip";
   private static final String CONFIG_DEFAULT_COPYRIGHT_FILE = "copyright-google.txt";

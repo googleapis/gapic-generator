@@ -16,10 +16,13 @@ package com.google.api.codegen.configgen.viewmodel;
 
 import com.google.auto.value.AutoValue;
 
+/** Groups a field name of the request types with an entity name of the collections. */
 @AutoValue
 public abstract class FieldNamePatternView {
+  /** The path of the field. */
   public abstract String fieldPath();
 
+  /** The name to be used as a basis for generated methods and classes. */
   public abstract String entityName();
 
   public static Builder newBuilder() {

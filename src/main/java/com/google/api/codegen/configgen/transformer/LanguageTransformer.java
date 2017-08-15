@@ -26,6 +26,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+/** Generates language setting view objects using a package name. */
 public class LanguageTransformer {
   private static final String DEFAULT_PACKAGE_SEPARATOR = ".";
 

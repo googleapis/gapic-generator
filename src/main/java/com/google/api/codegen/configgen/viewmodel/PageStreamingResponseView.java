@@ -16,10 +16,15 @@ package com.google.api.codegen.configgen.viewmodel;
 
 import com.google.auto.value.AutoValue;
 
+/** Represents the response information of the page streaming method. */
 @AutoValue
 public abstract class PageStreamingResponseView {
+  /** The name of the field int he response containing the next page token. */
   public abstract String tokenField();
 
+  /**
+   * The name of the field in the response containing the list of resources belonging to the page.
+   */
   public abstract String resourcesField();
 
   public static Builder newBuilder() {

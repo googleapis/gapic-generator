@@ -18,34 +18,49 @@ import com.google.auto.value.AutoValue;
 import java.util.List;
 import javax.annotation.Nullable;
 
+/** Represents the method configuration. */
 @AutoValue
 public abstract class MethodView {
+  /** The simple name of the method. */
   public abstract String name();
 
+  /** The configuration for parameter flattening. */
   @Nullable
   public abstract FlatteningView flattening();
 
+  /** True if the flattening property exists. */
   public boolean hasFlattening() {
     return flattening() != null;
   }
 
+  /** The fields taht are always required for a request to be valid. */
   public abstract List<String> requiredFields();
 
+  /** Turns on or off generation of a method whose sole parameter is a request object. */
   public abstract boolean requestObjectMethod();
 
+  /** The configuration for paging. */
   @Nullable
   public abstract PageStreamingView pageStreaming();
 
+  /** True of the pageStreaming property exists. */
   public boolean hasPageStreaming() {
     return pageStreaming() != null;
   }
 
+  /** The configuration for retryable codes. */
   public abstract String retryCodesName();
 
+  /** The configuration for retry/backoff parameters. */
   public abstract String retryParamsName();
 
+  /**
+   * The entires of the map from the field names of the request type to the entity names of the
+   * collection.
+   */
   public abstract List<FieldNamePatternView> fieldNamePatterns();
 
+  /** The default timeout for a non-retrying call. */
   public abstract String timeoutMillis();
 
   public static Builder newBuilder() {

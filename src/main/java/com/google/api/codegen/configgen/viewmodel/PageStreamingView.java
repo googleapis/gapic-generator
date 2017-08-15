@@ -16,10 +16,13 @@ package com.google.api.codegen.configgen.viewmodel;
 
 import com.google.auto.value.AutoValue;
 
+/** Represents the configuration for paging. */
 @AutoValue
 public abstract class PageStreamingView {
+  /** The request information of the method. */
   public abstract PageStreamingRequestView request();
 
+  /** The response information of the method. */
   public abstract PageStreamingResponseView response();
 
   public static Builder newBuilder() {

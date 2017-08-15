@@ -16,10 +16,13 @@ package com.google.api.codegen.configgen.viewmodel;
 
 import com.google.auto.value.AutoValue;
 
+/** Represents the resource collection configurations. */
 @AutoValue
 public abstract class CollectionView {
+  /** Pattern to describe the names of the resources. */
   public abstract String namePattern();
 
+  /** Name to be used as a basis for generated methods and classes. */
   public abstract String entityName();
 
   public static Builder newBuilder() {

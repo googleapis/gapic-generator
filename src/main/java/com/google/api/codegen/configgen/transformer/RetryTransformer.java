@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableList;
 import io.grpc.Status;
 import java.util.List;
 
+/** Generates view objects for the retry codes def and retry params def. */
 public class RetryTransformer {
   public static final String RETRY_CODES_IDEMPOTENT_NAME = "idempotent";
   public static final String RETRY_CODES_NON_IDEMPOTENT_NAME = "non_idempotent";

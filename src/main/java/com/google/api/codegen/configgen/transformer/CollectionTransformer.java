@@ -19,6 +19,7 @@ import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.Map;
 
+/** Generates collection view objects from a map of collection name patterns to entities. */
 public class CollectionTransformer {
   public List<CollectionView> generateCollections(Map<String, String> nameMap) {
     ImmutableList.Builder<CollectionView> collections = ImmutableList.builder();

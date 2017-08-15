@@ -17,8 +17,10 @@ package com.google.api.codegen.configgen.viewmodel;
 import com.google.auto.value.AutoValue;
 import java.util.List;
 
+/** Represents a list of parameters to be flattened. */
 @AutoValue
 public abstract class FlatteningGroupView {
+  /** Fileds of the request message to be flattened. */
   public abstract List<String> parameters();
 
   public static Builder newBuilder() {

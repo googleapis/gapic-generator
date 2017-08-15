@@ -17,8 +17,13 @@ package com.google.api.codegen.configgen.viewmodel;
 import com.google.auto.value.AutoValue;
 import java.util.List;
 
+/**
+ * Represents the parameter groups for which a generator should produce method overloads which allow
+ * a client to directly pass request message fields as method parameters.
+ */
 @AutoValue
 public abstract class FlatteningView {
+  /** The groups of parameters for flattening. */
   public abstract List<FlatteningGroupView> groups();
 
   public static Builder newBuilder() {

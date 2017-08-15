@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/** Generates method view objects from an API interface and collection name map. */
 public class MethodTransformer {
   private static final String PARAMETER_PAGE_TOKEN = "page_token";
   private static final String PARAMETER_PAGE_SIZE = "page_size";
