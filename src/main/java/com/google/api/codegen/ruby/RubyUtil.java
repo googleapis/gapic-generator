@@ -20,7 +20,11 @@ import java.util.regex.Pattern;
 public class RubyUtil {
   private static final String LONGRUNNING_PACKAGE_NAME = "Google::Longrunning";
 
-  private static final Pattern VERSION_PATTERN = Pattern.compile("^[vV]\\d+");
+  private static final Pattern VERSION_PATTERN =
+      Pattern.compile(
+          "^([vV]\\d+)" // Major version eg: v1
+              + "([pP]\\d+)?" // Point release eg: p2
+              + "(([aA]lpha|[bB]eta)\\d*)?"); //  Release level eg: alpha3
 
   public static boolean isLongrunning(String packageName) {
     return packageName.equals(LONGRUNNING_PACKAGE_NAME);
