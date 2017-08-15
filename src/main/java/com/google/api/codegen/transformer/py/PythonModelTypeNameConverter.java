@@ -171,7 +171,7 @@ public class PythonModelTypeNameConverter implements ModelTypeNameConverter {
       return TypedValue.create(getTypeName(type), PRIMITIVE_ZERO_VALUE.get(type.getKind()));
     }
     if (type.isMessage()) {
-      return TypedValue.create(getTypeName(type), "%s()");
+      return TypedValue.create(getTypeName(type), "{}");
     }
     if (type.isEnum()) {
       return getEnumValue(type, type.getEnumType().getValues().get(0));
