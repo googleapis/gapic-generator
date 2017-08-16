@@ -121,17 +121,10 @@ public class GoSurfaceNamer extends SurfaceNamer {
         break;
       }
     }
-    if (upperFirstLetter(firstWord).equals(methodName)) {
-      return doc;
+    if (firstWord.equalsIgnoreCase(methodName)) {
+      doc = doc.substring(firstWord.length()).trim();
     }
     return getApiMethodName(Name.upperCamel(methodName), visibility) + " " + lowerFirstLetter(doc);
-  }
-
-  private static String upperFirstLetter(String s) {
-    if (s.length() > 0) {
-      s = Character.toUpperCase(s.charAt(0)) + s.substring(1);
-    }
-    return s;
   }
 
   private static String lowerFirstLetter(String s) {

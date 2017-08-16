@@ -62,5 +62,13 @@ public class GoSurfaceNamerTest {
             namer.putDocMethodName(
                 "Create", "Create is used to create things", VisibilityConfig.PUBLIC))
         .isEqualTo("Create is used to create things");
+    Truth.assertThat(
+            namer.putDocMethodName(
+                "Create", "creAte is used to create things", VisibilityConfig.PUBLIC))
+        .isEqualTo("Create is used to create things");
+    Truth.assertThat(
+            namer.putDocMethodName(
+                "CreateThing", "creatething is used to create things", VisibilityConfig.PUBLIC))
+        .isEqualTo("CreateThing is used to create things");
   }
 }
