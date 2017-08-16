@@ -107,7 +107,10 @@
     @join pathTemplate : xapiClass.pathTemplates
         private static ${@pathTemplate.name};
     @end
-    {@BREAK}
+    {@""}
+    private static $gapicVersion = null;
+    private static $gapicVersionLoaded = false;
+    {@""}
 @end
 
 @private members(xapiClass)
@@ -125,14 +128,6 @@
 @end
 
 @private staticFunctions(xapiClass)
-    @join function : xapiClass.formatResourceFunctions
-        {@formatResourceFunction(function)}
-    @end
-    {@""}
-    @join function : xapiClass.parseResourceFunctions
-        {@parseResourceFunction(function)}
-    @end
-    {@""}
     @join function : xapiClass.pathTemplateGetterFunctions
         {@pathTemplateGetterFunction(function)}
     @end
@@ -153,7 +148,7 @@
      * @@return string The formatted {@function.entityName} resource.
      * @@experimental
      */
-    public static function {@function.name}(\
+    public function {@function.name}(\
             {@formatResourceFunctionParams(function.resourceIdParams)})
     {
         return self::{@function.pathTemplateGetterName}()->render([
@@ -173,23 +168,6 @@
     @join param : resourceIdParams on ",".add(BREAK)
         '{@param.templateKey}' => ${@param.name}
     @end
-@end
-
-@private parseResourceFunction(function)
-    /**
-     * Parses the {@function.outputResourceId} from the given fully-qualified path which
-     * represents a {@function.entityName} resource.
-     *
-     * @@param string ${@function.entityNameParamName} The fully-qualified {@function.entityName} resource.
-     * @@return string The extracted {@function.outputResourceId} value.
-     * @@experimental
-     */
-    public static function {@function.name}(${@function.entityNameParamName})
-    {
-        return self::{@function.pathTemplateGetterName}()\
-            ->match(${@function.entityNameParamName})['{@function.outputResourceId}'];
-    }
-    {@""}
 @end
 
 @private pathTemplateGetterFunction(function)
@@ -273,18 +251,24 @@
 @private gapicVersionFunction()
     private static function getGapicVersion()
     {
-        if (file_exists(__DIR__ . "/../VERSION")) {
-          return trim(file_get_contents(__DIR__ . "/../VERSION"));
-        } elseif (class_exists('\Google\Cloud\ServiceBuilder')) {
-          return \Google\Cloud\ServiceBuilder::VERSION;
-        } else {
-          return;
+        if (!self::$gapicVersionLoaded) {
+            if (file_exists(__DIR__ . "/../VERSION")) {
+              self::$gapicVersion = trim(file_get_contents(__DIR__ . "/../VERSION"));
+            } elseif (class_exists('\Google\Cloud\ServiceBuilder')) {
+              self::$gapicVersion = \Google\Cloud\ServiceBuilder::VERSION;
+            }
+            self::$gapicVersionLoaded = true;
         }
+        return self::$gapicVersion;
     }
     {@""}
 @end
 
 @private functions(xapiClass)
+    @join function : xapiClass.formatResourceFunctions
+        {@formatResourceFunction(function)}
+    @end
+    {@""}
     @if xapiClass.hasLongRunningOperations
         /**
          * Return an OperationsClient object with the same endpoint as $this.

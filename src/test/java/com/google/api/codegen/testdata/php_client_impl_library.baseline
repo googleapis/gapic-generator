@@ -153,6 +153,10 @@ class LibraryServiceGapicClient
     private static $bookNameTemplate;
     private static $returnNameTemplate;
 
+    private static $gapicVersion = null;
+    private static $gapicVersionLoaded = false;
+
+
     protected $grpcCredentialsHelper;
     protected $libraryServiceStub;
     protected $labelerStub;
@@ -160,136 +164,6 @@ class LibraryServiceGapicClient
     private $defaultCallSettings;
     private $descriptors;
     private $operationsClient;
-
-    /**
-     * Formats a string containing the fully-qualified path to represent
-     * a shelf resource.
-     *
-     * @param string $shelfId
-     * @return string The formatted shelf resource.
-     * @experimental
-     */
-    public static function formatShelfName($shelfId)
-    {
-        return self::getShelfNameTemplate()->render([
-            'shelf_id' => $shelfId,
-        ]);
-    }
-
-    /**
-     * Formats a string containing the fully-qualified path to represent
-     * a book resource.
-     *
-     * @param string $shelfId
-     * @param string $bookId
-     * @return string The formatted book resource.
-     * @experimental
-     */
-    public static function formatBookName($shelfId, $bookId)
-    {
-        return self::getBookNameTemplate()->render([
-            'shelf_id' => $shelfId,
-            'book_id' => $bookId,
-        ]);
-    }
-
-    /**
-     * Formats a string containing the fully-qualified path to represent
-     * a return resource.
-     *
-     * @param string $shelf
-     * @param string $book
-     * @param string $return
-     * @return string The formatted return resource.
-     * @experimental
-     */
-    public static function formatReturnName($shelf, $book, $return)
-    {
-        return self::getReturnNameTemplate()->render([
-            'shelf' => $shelf,
-            'book' => $book,
-            'return' => $return,
-        ]);
-    }
-
-    /**
-     * Parses the shelf_id from the given fully-qualified path which
-     * represents a shelf resource.
-     *
-     * @param string $shelfName The fully-qualified shelf resource.
-     * @return string The extracted shelf_id value.
-     * @experimental
-     */
-    public static function parseShelfIdFromShelfName($shelfName)
-    {
-        return self::getShelfNameTemplate()->match($shelfName)['shelf_id'];
-    }
-
-    /**
-     * Parses the shelf_id from the given fully-qualified path which
-     * represents a book resource.
-     *
-     * @param string $bookName The fully-qualified book resource.
-     * @return string The extracted shelf_id value.
-     * @experimental
-     */
-    public static function parseShelfIdFromBookName($bookName)
-    {
-        return self::getBookNameTemplate()->match($bookName)['shelf_id'];
-    }
-
-    /**
-     * Parses the book_id from the given fully-qualified path which
-     * represents a book resource.
-     *
-     * @param string $bookName The fully-qualified book resource.
-     * @return string The extracted book_id value.
-     * @experimental
-     */
-    public static function parseBookIdFromBookName($bookName)
-    {
-        return self::getBookNameTemplate()->match($bookName)['book_id'];
-    }
-
-    /**
-     * Parses the shelf from the given fully-qualified path which
-     * represents a return resource.
-     *
-     * @param string $returnName The fully-qualified return resource.
-     * @return string The extracted shelf value.
-     * @experimental
-     */
-    public static function parseShelfFromReturnName($returnName)
-    {
-        return self::getReturnNameTemplate()->match($returnName)['shelf'];
-    }
-
-    /**
-     * Parses the book from the given fully-qualified path which
-     * represents a return resource.
-     *
-     * @param string $returnName The fully-qualified return resource.
-     * @return string The extracted book value.
-     * @experimental
-     */
-    public static function parseBookFromReturnName($returnName)
-    {
-        return self::getReturnNameTemplate()->match($returnName)['book'];
-    }
-
-    /**
-     * Parses the return from the given fully-qualified path which
-     * represents a return resource.
-     *
-     * @param string $returnName The fully-qualified return resource.
-     * @return string The extracted return value.
-     * @experimental
-     */
-    public static function parseReturnFromReturnName($returnName)
-    {
-        return self::getReturnNameTemplate()->match($returnName)['return'];
-    }
-
 
     private static function getShelfNameTemplate()
     {
@@ -317,7 +191,6 @@ class LibraryServiceGapicClient
 
         return self::$returnNameTemplate;
     }
-
     private static function getPageStreamingDescriptors()
     {
         $listShelvesPageStreamingDescriptor =
@@ -400,13 +273,66 @@ class LibraryServiceGapicClient
 
     private static function getGapicVersion()
     {
-        if (file_exists(__DIR__ . "/../VERSION")) {
-          return trim(file_get_contents(__DIR__ . "/../VERSION"));
-        } elseif (class_exists('\Google\Cloud\ServiceBuilder')) {
-          return \Google\Cloud\ServiceBuilder::VERSION;
-        } else {
-          return;
+        if (!self::$gapicVersionLoaded) {
+            if (file_exists(__DIR__ . "/../VERSION")) {
+              self::$gapicVersion = trim(file_get_contents(__DIR__ . "/../VERSION"));
+            } elseif (class_exists('\Google\Cloud\ServiceBuilder')) {
+              self::$gapicVersion = \Google\Cloud\ServiceBuilder::VERSION;
+            }
+            self::$gapicVersionLoaded = true;
         }
+        return self::$gapicVersion;
+    }
+
+    /**
+     * Formats a string containing the fully-qualified path to represent
+     * a shelf resource.
+     *
+     * @param string $shelfId
+     * @return string The formatted shelf resource.
+     * @experimental
+     */
+    public function shelfPath($shelfId)
+    {
+        return self::getShelfNameTemplate()->render([
+            'shelf_id' => $shelfId,
+        ]);
+    }
+
+    /**
+     * Formats a string containing the fully-qualified path to represent
+     * a book resource.
+     *
+     * @param string $shelfId
+     * @param string $bookId
+     * @return string The formatted book resource.
+     * @experimental
+     */
+    public function bookPath($shelfId, $bookId)
+    {
+        return self::getBookNameTemplate()->render([
+            'shelf_id' => $shelfId,
+            'book_id' => $bookId,
+        ]);
+    }
+
+    /**
+     * Formats a string containing the fully-qualified path to represent
+     * a return resource.
+     *
+     * @param string $shelf
+     * @param string $book
+     * @param string $return
+     * @return string The formatted return resource.
+     * @experimental
+     */
+    public function returnPath($shelf, $book, $return)
+    {
+        return self::getReturnNameTemplate()->render([
+            'shelf' => $shelf,
+            'book' => $book,
+            'return' => $return,
+        ]);
     }
 
     /**
@@ -444,6 +370,7 @@ class LibraryServiceGapicClient
         $operation->reload();
         return $operation;
     }
+
 
     /**
      * Constructor.
@@ -645,7 +572,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+     *     $formattedName = $this->shelfPath("[SHELF_ID]");
      *     $options = "";
      *     $response = $libraryServiceClient->getShelf($formattedName, $options);
      * } finally {
@@ -767,7 +694,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+     *     $formattedName = $this->shelfPath("[SHELF_ID]");
      *     $libraryServiceClient->deleteShelf($formattedName);
      * } finally {
      *     $libraryServiceClient->close();
@@ -813,8 +740,8 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
-     *     $formattedOtherShelfName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+     *     $formattedName = $this->shelfPath("[SHELF_ID]");
+     *     $formattedOtherShelfName = $this->shelfPath("[SHELF_ID]");
      *     $response = $libraryServiceClient->mergeShelves($formattedName, $formattedOtherShelfName);
      * } finally {
      *     $libraryServiceClient->close();
@@ -862,7 +789,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+     *     $formattedName = $this->shelfPath("[SHELF_ID]");
      *     $book = new Book();
      *     $response = $libraryServiceClient->createBook($formattedName, $book);
      * } finally {
@@ -975,7 +902,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
      *     $response = $libraryServiceClient->getBook($formattedName);
      * } finally {
      *     $libraryServiceClient->close();
@@ -1021,7 +948,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+     *     $formattedName = $this->shelfPath("[SHELF_ID]");
      *     // Iterate through all elements
      *     $pagedResponse = $libraryServiceClient->listBooks($formattedName);
      *     foreach ($pagedResponse->iterateAllElements() as $element) {
@@ -1099,7 +1026,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
      *     $libraryServiceClient->deleteBook($formattedName);
      * } finally {
      *     $libraryServiceClient->close();
@@ -1143,7 +1070,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
      *     $book = new Book();
      *     $response = $libraryServiceClient->updateBook($formattedName, $book);
      * } finally {
@@ -1202,8 +1129,8 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
-     *     $formattedOtherShelfName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+     *     $formattedName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedOtherShelfName = $this->shelfPath("[SHELF_ID]");
      *     $response = $libraryServiceClient->moveBook($formattedName, $formattedOtherShelfName);
      * } finally {
      *     $libraryServiceClient->close();
@@ -1326,7 +1253,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
      *     $comment = "";
      *     $stage = Stage::UNSET;
      *     $alignment = Alignment::CHAR;
@@ -1380,7 +1307,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = LibraryServiceClient::formatArchivedBookName("[ARCHIVE_PATH]", "[BOOK_ID]");
+     *     $formattedName = $this->archivedBookPath("[ARCHIVE_PATH]", "[BOOK_ID]");
      *     $response = $libraryServiceClient->getBookFromArchive($formattedName);
      * } finally {
      *     $libraryServiceClient->close();
@@ -1426,8 +1353,8 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
-     *     $formattedAltBookName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedAltBookName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
      *     $response = $libraryServiceClient->getBookFromAnywhere($formattedName, $formattedAltBookName);
      * } finally {
      *     $libraryServiceClient->close();
@@ -1476,7 +1403,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
      *     $response = $libraryServiceClient->getBookFromAbsolutelyAnywhere($formattedName);
      * } finally {
      *     $libraryServiceClient->close();
@@ -1522,7 +1449,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
      *     $indexName = "default index";
      *     $indexMapItem = "";
      *     $indexMap = ["default_key" => $indexMapItem,];
@@ -1862,7 +1789,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedResource = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedResource = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
      *     $tag = "";
      *     $response = $libraryServiceClient->addTag($formattedResource, $tag);
      * } finally {
@@ -1913,7 +1840,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedResource = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedResource = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
      *     $label = "";
      *     $response = $libraryServiceClient->addLabel($formattedResource, $label);
      * } finally {
@@ -1964,7 +1891,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
      *     $operationResponse = $libraryServiceClient->getBigBook($formattedName);
      *     $operationResponse->pollUntilComplete();
      *     if ($operationResponse->operationSucceeded()) {
@@ -2035,7 +1962,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
      *     $operationResponse = $libraryServiceClient->getBigNothing($formattedName);
      *     $operationResponse->pollUntilComplete();
      *     if ($operationResponse->operationSucceeded()) {
