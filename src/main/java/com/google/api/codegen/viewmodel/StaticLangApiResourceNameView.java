@@ -36,6 +36,9 @@ public abstract class StaticLangApiResourceNameView
   // The type name for this Schema when rendered as a field in its parent Schema, e.g. "List<Operation>".
   public abstract String typeName();
 
+  // The name of the class that implements ResourceNameType.
+  public abstract String nameTypeName();
+
   // The template for the path, e.g. "projects/{projects}/topic/{topic}"
   public abstract String pathTemplate();
 
@@ -48,11 +51,13 @@ public abstract class StaticLangApiResourceNameView
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract StaticLangApiResourceNameView.Builder typeName(String val);
-
     public abstract StaticLangApiResourceNameView.Builder name(String val);
 
-    public abstract StaticLangApiResourceNameView.Builder path(String val);
+    public abstract StaticLangApiResourceNameView.Builder typeName(String val);
+
+    public abstract StaticLangApiResourceNameView.Builder nameTypeName(String val);
+
+    public abstract StaticLangApiResourceNameView.Builder pathTemplate(String val);
 
     public abstract StaticLangApiResourceNameView.Builder pathParams(List<StaticMemberView> val);
 

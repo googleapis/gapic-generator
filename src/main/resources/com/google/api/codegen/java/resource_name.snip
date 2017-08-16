@@ -6,28 +6,28 @@
 
   @@Generated("by GAPIC")
   @@BetaApi
-  {@schemaClassDef(apiFile.schema)}
+  {@nameClassDef(apiFile.resourceName)}
 @end
 
-@private schemaClassDef(schema)
-  public final class {@schema.typeName} implements ResourceName {
-    {@members(schema)}
+@private nameClassDef(resourceName)
+  public final class {@resourceName.typeName} implements ResourceName {
+    {@members(resourceName)}
 
-    {@constructors(schema)}
+    {@constructors(resourceName)}
 
-    {@populateMapMethod(schema)}
+    {@populateMapMethod(resourceName)}
 
-    {@getters(schema)}
+    {@getters(resourceName)}
 
-    {@newBuilder(schema)}
+    {@newBuilder(resourceName)}
 
-    {@builder(schema)}
+    {@builder(resourceName)}
 
-    {@toString(schema)}
+    {@toString(resourceName)}
 
-    {@equalsMethod(schema)}
+    {@equalsMethod(resourceName)}
 
-    {@hashCode(schema)}
+    {@hashCode(resourceName)}
   }
 
 @end
@@ -36,7 +36,7 @@
   @@Override
   public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
     Map<String, List<String>> fieldMap = new HashMap<>();
-    @join param : schema.properties
+    @join param : schema.pathParams
       if (fieldNames.contains("{@param.name}")) {
         @if param.canRepeat
           fieldMap.put("{@param.name}", {@param.name});
@@ -50,19 +50,26 @@
 @end
 
 @private members(schema)
-  @join property : schema.properties
+  @join property : schema.pathParams
     private final {@property.typeName} {@property.name};
   @end
+@end
+
+@private getTypeFunction(schema)
+  @Override
+  public ResourceNameType getType() {
+    return {@schema.nameType}.instance();
+  }
 @end
 
 @private toString(schema)
   @@Override
   public String toString() {
-    return "{@schema.typeName}{"
-        @join property : schema.properties on " + \", \"".add(BREAK)
-          + "{@property.name}=" + {@property.name}
+    return PATH_TEMPLATE.instantiate(
+        @join property : schema.pathParams on ",".add(BREAK)
+          + "{@property.name}", {@property.name}
         @end
-        + "}";
+        ")";
   }
 @end
 
@@ -75,7 +82,7 @@
     if (o instanceof {@schema.typeName}) {
       {@schema.typeName} that = ({@schema.typeName}) o;
       return
-          @join param : schema.properties on " &&".add(BREAK)
+          @join param : schema.pathParams on " &&".add(BREAK)
             Objects.equals(this.{@param.name}, that.{@param.fieldGetFunction}())
           @end
           ;
@@ -88,8 +95,8 @@
   @@Override
   public int hashCode() {
     return Objects.hash(
-      @join properties : schema.properties on ", ".add(BREAK)
-        {@properties.name}
+      @join pathParams : schema.pathParams on ", ".add(BREAK)
+        {@pathParams.name}
       @end
     );
   }
@@ -117,7 +124,7 @@
 @end
 
 @private getters(schema)
-  @join param : schema.properties
+  @join param : schema.pathParams
     public {@param.typeName} {@param.fieldGetFunction}() {
       return {@param.name};
     }
@@ -126,89 +133,54 @@
 @end
 
 @private constructors(schema)
-  private {@schema.typeName}() {
-    @join param : schema.properties
-      this.{@param.name} = null;
+  private {@schema.typeName}(Builder builder) {
+    @join param : schema.pathParams
+      {@param.name} = Preconditions.checkNotNull(builder.{@schema.fieldGetFunction}());
     @end
   }
 
-
-  private {@schema.typeName}(
-      @join param : schema.properties on ",".add(BREAK)
+  public static {@schema.typeName} create(
+      @join param : schema.pathParams on ",".add(BREAK)
         {@param.typeName} {@param.name}
       @end
       ) {
-    @join param : schema.properties
-      this.{@param.name} = {@param.name};
+    return newBuilder()
+    @join param : schema.pathParams
+      .@{param.fieldSetFunction)({@param.name})
     @end
+      .build();
   }
 @end
 
 @private builder(schema)
   public static class Builder {
-    @join param : schema.properties
+    @join param : schema.pathParams
       private {@param.typeName} {@param.name};
     @end
 
-    Builder() {}
-
-    public Builder mergeFrom({@schema.typeName} other) {
-      if (other == {@schema.typeName}.getDefaultInstance()) return this;
-      @join property : schema.properties
-        if (other.{@property.fieldGetFunction}() != null) {
-          this.{@property.name} = other.{@property.name};
-        }
-      @end
-      return this;
-    }
-
-    Builder({@schema.typeName} source) {
-      @join property : schema.properties
-        this.{@property.name} = source.{@property.name};
-      @end
-    }
-
-    @join property : schema.properties
+    @join property : schema.pathParams
       public {@property.typeName} {@property.fieldGetFunction}() {
         return {@property.name};
       }
+    @end
 
+    @join property: schema.pathParams
       public Builder {@property.fieldSetFunction}({@property.typeName} {@property.name}) {
         this.{@property.name} = {@property.name};
         return this;
       }
-
     @end
 
-    public {@schema.typeName} build() {
-      @if schema.hasRequiredProperties
-        String missing = "";
+    private Builder() {}
+
+    public Builder ({@schema.typeName} {@schema.name}) {
+      @join property : schema.pathParams
+        {@property.name} = {@schema.name}.{@property.name};
       @end
-      @join param : schema.properties
-        @if param.isRequired
-          if ({@param.name} == null) {
-            missing += " {@param.name}";
-          }
-        @end
-      @end
-      @if schema.hasRequiredProperties
-        if (!missing.isEmpty()) {
-          throw new IllegalStateException("Missing required properties:" + missing);
-        }
-      @end
-      return new {@schema.typeName}(
-        @join param : schema.properties on ", ".add(BREAK)
-          {@param.name}
-        @end
-      );
     }
 
-    public Builder clone() {
-      Builder newBuilder = new Builder();
-      @join param : schema.properties
-        newBuilder.{@param.fieldSetFunction}(this.{@param.name});
-      @end
-      return newBuilder;
+    public {@schema.typeName} build() {
+      return new {@schema.typeName}(this);
     }
   }
 @end

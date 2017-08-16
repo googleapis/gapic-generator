@@ -25,7 +25,7 @@ import com.google.auto.value.AutoValue;
  */
 @AutoValue
 public abstract class StaticLangApiResourceNameFileView implements ViewModel {
-  public abstract StaticLangApiResourceNameView schema();
+  public abstract StaticLangApiResourceNameView resourceName();
 
   public abstract FileHeaderView fileHeader();
 
@@ -41,12 +41,13 @@ public abstract class StaticLangApiResourceNameFileView implements ViewModel {
   public abstract String outputPath();
 
   public static StaticLangApiResourceNameFileView.Builder newBuilder() {
-    return new AutoValue_StaticLangApiMessageFileView.Builder();
+    return new AutoValue_StaticLangApiResourceNameFileView.Builder();
   }
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract StaticLangApiResourceNameFileView.Builder schema(StaticLangApiResourceNameView val);
+    public abstract StaticLangApiResourceNameFileView.Builder resourceName(
+        StaticLangApiResourceNameView val);
 
     public abstract StaticLangApiResourceNameFileView.Builder templateFileName(String val);
 
