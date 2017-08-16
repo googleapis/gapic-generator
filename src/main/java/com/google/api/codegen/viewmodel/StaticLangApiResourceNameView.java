@@ -15,6 +15,7 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
+import java.util.List;
 
 /**
  * This ViewModel defines the view model structure of a generic message.
@@ -26,38 +27,40 @@ import com.google.auto.value.AutoValue;
  * https://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.7.
  */
 @AutoValue
-public abstract class StaticMemberView implements Comparable<StaticMemberView> {
+public abstract class StaticLangApiResourceNameView
+    implements Comparable<StaticLangApiResourceNameView> {
+
   // The possibly-transformed ID of the schema from the Discovery Doc
   public abstract String name();
 
-  // The type of this object; most likely a String.
+  // The type name for this Schema when rendered as a field in its parent Schema, e.g. "List<Operation>".
   public abstract String typeName();
 
-  // The name of the function to set this variable.
-  public abstract String fieldSetFunction();
+  // The template for the path, e.g. "projects/{projects}/topic/{topic}"
+  public abstract String pathTemplate();
 
-  // The name of the function to get this variable.
-  public abstract String fieldGetFunction();
+  // The list of path parameter views.
+  public abstract List<StaticMemberView> pathParams();
 
   public static Builder newBuilder() {
-    return new AutoValue_StaticMemberView.Builder();
+    return new AutoValue_StaticLangApiResourceNameView.Builder();
   }
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder typeName(String val);
+    public abstract StaticLangApiResourceNameView.Builder typeName(String val);
 
-    public abstract Builder name(String val);
+    public abstract StaticLangApiResourceNameView.Builder name(String val);
 
-    public abstract Builder fieldSetFunction(String val);
+    public abstract StaticLangApiResourceNameView.Builder path(String val);
 
-    public abstract Builder fieldGetFunction(String val);
+    public abstract StaticLangApiResourceNameView.Builder pathParams(List<StaticMemberView> val);
 
-    public abstract StaticMemberView build();
+    public abstract StaticLangApiResourceNameView build();
   }
 
   @Override
-  public int compareTo(StaticMemberView o) {
+  public int compareTo(StaticLangApiResourceNameView o) {
     return this.name().compareTo(o.name());
   }
 }

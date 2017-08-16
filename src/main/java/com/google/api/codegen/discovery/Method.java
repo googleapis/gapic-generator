@@ -112,6 +112,7 @@ public abstract class Method implements Comparable<Method>, Node {
     this.parent = parent;
   }
 
+  @Override
   public Node parent() {
     return parent;
   }
@@ -123,6 +124,7 @@ public abstract class Method implements Comparable<Method>, Node {
   public abstract String httpMethod();
 
   /** @return the ID. */
+  @Override
   public abstract String id();
 
   /** @return the order of parameter names. */

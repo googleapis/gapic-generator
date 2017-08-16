@@ -18,6 +18,7 @@ import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.discogapic.transformer.java.JavaDiscoGapicRequestToViewTransformer;
+import com.google.api.codegen.discogapic.transformer.java.JavaDiscoGapicResourceNameToViewTransformer;
 import com.google.api.codegen.discogapic.transformer.java.JavaDiscoGapicSchemaToViewTransformer;
 import com.google.api.codegen.discogapic.transformer.java.JavaDiscoGapicSurfaceTransformer;
 import com.google.api.codegen.discovery.Document;
@@ -55,6 +56,7 @@ public class MainDiscoGapicProviderFactory implements DiscoGapicProviderFactory 
                 .build();
         List<DocumentToViewTransformer> transformers =
             Arrays.asList(
+                new JavaDiscoGapicResourceNameToViewTransformer(javaPathMapper, packageConfig),
                 new JavaDiscoGapicSchemaToViewTransformer(javaPathMapper, packageConfig),
                 new JavaDiscoGapicRequestToViewTransformer(javaPathMapper, packageConfig),
                 new JavaDiscoGapicSurfaceTransformer(javaPathMapper, packageConfig));
