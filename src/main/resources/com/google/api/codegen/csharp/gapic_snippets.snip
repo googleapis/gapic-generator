@@ -265,7 +265,7 @@
         // Exact sequence will depend on client/server behavior.
         
         // Create task to do something with responses from server
-        Task.Run(async () =>
+        Task responseHandlerTask = Task.Run(async () =>
         {
             IAsyncEnumerator<{@snippetMethod.method.serviceResponseTypeName}> responseStream = duplexStream.ResponseStream;
             while (await responseStream.MoveNext())
