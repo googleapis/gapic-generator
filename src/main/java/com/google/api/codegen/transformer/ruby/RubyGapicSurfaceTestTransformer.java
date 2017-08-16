@@ -23,6 +23,7 @@ import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
+import com.google.api.codegen.ruby.RubyUtil;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
@@ -43,6 +44,7 @@ import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.api.codegen.viewmodel.testing.ClientInitParamView;
 import com.google.api.codegen.viewmodel.testing.ClientTestClassView;
 import com.google.api.codegen.viewmodel.testing.ClientTestFileView;
 import com.google.api.codegen.viewmodel.testing.MockServiceUsageView;
@@ -122,6 +124,14 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
         namer.getNotImplementedString(
             "RubyGapicSurfaceTestTransformer.generateUnitTestClassView - name");
 
+    ImmutableList.Builder<ClientInitParamView> clientInitOptionalParams = ImmutableList.builder();
+    if (RubyUtil.hasMajorVersion(context.getProductConfig().getPackageName())) {
+      clientInitOptionalParams.add(
+          ClientInitParamView.newBuilder()
+              .key("version")
+              .value(":" + packageConfig.apiVersion())
+              .build());
+    }
     return ClientTestClassView.newBuilder()
         .apiSettingsClassName(apiSettingsClassName)
         .apiClassName(namer.getFullyQualifiedApiWrapperClassName(context.getInterfaceConfig()))
@@ -131,6 +141,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
         .missingDefaultServiceAddress(!context.getInterfaceConfig().hasDefaultServiceAddress())
         .missingDefaultServiceScopes(!context.getInterfaceConfig().hasDefaultServiceScopes())
         .fullyQualifiedCredentialsClassName(namer.getFullyQualifiedCredentialsClassName())
+        .clientInitOptionalParams(clientInitOptionalParams.build())
         .mockServices(ImmutableList.<MockServiceUsageView>of())
         .build();
   }
@@ -163,7 +174,7 @@ public class RubyGapicSurfaceTestTransformer implements ModelToViewTransformer {
     Iterable<FieldConfig> fieldConfigs = methodConfig.getRequiredFieldConfigs();
 
     InitCodeOutputType outputType =
-        methodConfig.isGrpcStreaming()
+        method.getRequestStreaming()
             ? InitCodeOutputType.SingleObject
             : InitCodeOutputType.FieldList;
 
