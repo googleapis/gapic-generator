@@ -24,6 +24,7 @@ import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.codegen.util.TypedValue;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaTypeTable;
+import com.google.common.base.Strings;
 
 /** The Schema TypeName converter for Java. */
 public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
@@ -127,11 +128,14 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
     if (schema.type().equals(Type.ARRAY)) {
       String packageName = implicitPackageName;
       Schema element = schema.items();
-      String shortName =
-          element.reference() != null ? element.reference() : element.getIdentifier();
-
-      String longName = packageName + "." + shortName;
-      return new TypeName(longName, shortName);
+      if (!Strings.isNullOrEmpty(element.reference())) {
+        String shortName =
+            element.reference() != null ? element.reference() : element.getIdentifier();
+        String longName = packageName + "." + shortName;
+        return new TypeName(longName, shortName);
+      } else {
+        return getTypeName(schema.items(), BoxingBehavior.BOX_PRIMITIVES);
+      }
     } else {
       String packageName =
           !implicitPackageName.isEmpty() ? implicitPackageName : DEFAULT_JAVA_PACKAGE_PREFIX;
