@@ -106,6 +106,7 @@ public abstract class StaticLangApiMessageView implements Comparable<StaticLangA
     public abstract StaticLangApiMessageView build();
   }
 
+  @Override
   public int compareTo(StaticLangApiMessageView o) {
     return this.name().compareTo(o.name());
   }

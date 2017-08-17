@@ -27,4 +27,8 @@ public interface TransformationContext {
   SurfaceNamer getNamer();
 
   ImportTypeTable getImportTypeTable();
+
+  TransformationContext withNewTypeTable();
+
+  TransformationContext withNewTypeTable(String newPackageName);
 }
