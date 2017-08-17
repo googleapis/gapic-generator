@@ -140,9 +140,9 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     view.outputPath(outputPath + File.separator + "ResourceNames.cs");
     view.resourceNames(pathTemplateTransformer.generateResourceNames(context));
     view.resourceProtos(pathTemplateTransformer.generateResourceProtos(context));
-    context.getModelTypeTable().saveNicknameFor("Google.Api.Gax.GaxPreconditions");
-    context.getModelTypeTable().saveNicknameFor("System.Linq.Enumerable");
-    context.getModelTypeTable().saveNicknameFor("System.InvalidOperationException");
+    context.getImportTypeTable().saveNicknameFor("Google.Api.Gax.GaxPreconditions");
+    context.getImportTypeTable().saveNicknameFor("System.Linq.Enumerable");
+    context.getImportTypeTable().saveNicknameFor("System.InvalidOperationException");
     view.fileHeader(fileHeaderTransformer.generateFileHeader(context));
     return view.build();
   }

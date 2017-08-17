@@ -197,7 +197,8 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
 
   private List<ImportFileView> generateTestAppImports(GapicInterfaceContext context) {
     Set<ImportFileView> appImports = new TreeSet<>(importFileViewComparator());
-    for (Map.Entry<String, TypeAlias> entry : context.getModelTypeTable().getImports().entrySet()) {
+    for (Map.Entry<String, TypeAlias> entry :
+        context.getImportTypeTable().getImports().entrySet()) {
       String fullName = entry.getKey();
       if (fullName.startsWith(context.getNamer().getTestPackageName() + ".enums")) {
         appImports.add(createImport(context.getProductConfig().getPackageName(), "enums"));

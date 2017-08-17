@@ -121,7 +121,7 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
   private void addApiImports(GapicInterfaceContext context) {
     for (TypeRef type : context.getInterface().getModel().getSymbolTable().getDeclaredTypes()) {
       if (type.isEnum() && type.getEnumType().isReachable()) {
-        context.getModelTypeTable().getAndSaveNicknameFor(type);
+        context.getImportTypeTable().getAndSaveNicknameFor(type);
         break;
       }
     }
@@ -198,7 +198,7 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.clientConfigPath(namer.getClientConfigPath(context.getInterfaceModel()));
     xapiClass.grpcClientTypeName(
         namer.getAndSaveNicknameForGrpcClientTypeName(
-            context.getModelTypeTable(), context.getInterfaceModel()));
+            context.getImportTypeTable(), context.getInterfaceModel()));
 
     xapiClass.apiMethods(methods);
 

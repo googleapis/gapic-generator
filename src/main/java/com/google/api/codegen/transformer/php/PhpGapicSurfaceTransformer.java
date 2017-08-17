@@ -143,7 +143,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.interfaceKey(context.getInterface().getFullName());
     String grpcClientTypeName =
         namer.getAndSaveNicknameForGrpcClientTypeName(
-            context.getModelTypeTable(), context.getInterfaceModel());
+            context.getImportTypeTable(), context.getInterfaceModel());
     xapiClass.grpcClientTypeName(grpcClientTypeName);
 
     xapiClass.apiMethods(methods);
@@ -179,9 +179,9 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
               .methodName(context.getNamer().getApiMethodName(method, VisibilityConfig.PUBLIC))
               .constructorName("")
               .clientReturnTypeName("")
-              .operationPayloadTypeName(context.getModelTypeTable().getFullNameFor(returnType))
+              .operationPayloadTypeName(context.getImportTypeTable().getFullNameFor(returnType))
               .isEmptyOperation(ServiceMessages.s_isEmptyType(lroConfig.getReturnType()))
-              .metadataTypeName(context.getModelTypeTable().getFullNameFor(metadataType))
+              .metadataTypeName(context.getImportTypeTable().getFullNameFor(metadataType))
               .implementsCancel(true)
               .implementsDelete(true)
               .initialPollDelay(lroConfig.getInitialPollDelay().getMillis())
@@ -218,7 +218,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private void addApiImports(GapicInterfaceContext context) {
-    ModelTypeTable typeTable = context.getModelTypeTable();
+    ModelTypeTable typeTable = context.getImportTypeTable();
     typeTable.saveNicknameFor("\\Google\\GAX\\AgentHeaderDescriptor");
     typeTable.saveNicknameFor("\\Google\\GAX\\ApiCallable");
     typeTable.saveNicknameFor("\\Google\\GAX\\CallSettings");

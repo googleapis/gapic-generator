@@ -91,8 +91,8 @@ public class GoGapicSurfaceTransformerTest {
     MethodModel method = new ProtoMethodModel(getMethod(context.getInterface(), "SimpleMethod"));
     transformer.addXApiImports(context, Collections.singletonList(method));
     transformer.generateRetryConfigDefinitions(context, Collections.singletonList(method));
-    Truth.assertThat(context.getModelTypeTable().getImports()).doesNotContainKey("time");
-    Truth.assertThat(context.getModelTypeTable().getImports())
+    Truth.assertThat(context.getImportTypeTable().getImports()).doesNotContainKey("time");
+    Truth.assertThat(context.getImportTypeTable().getImports())
         .doesNotContainKey("cloud.google.com/go/longrunning");
   }
 
@@ -101,8 +101,8 @@ public class GoGapicSurfaceTransformerTest {
     MethodModel method = new ProtoMethodModel(getMethod(context.getInterface(), "RetryMethod"));
     transformer.addXApiImports(context, Collections.singletonList(method));
     transformer.generateRetryConfigDefinitions(context, Collections.singletonList(method));
-    Truth.assertThat(context.getModelTypeTable().getImports()).containsKey("time");
-    Truth.assertThat(context.getModelTypeTable().getImports())
+    Truth.assertThat(context.getImportTypeTable().getImports()).containsKey("time");
+    Truth.assertThat(context.getImportTypeTable().getImports())
         .doesNotContainKey("cloud.google.com/go/longrunning");
   }
 
@@ -112,8 +112,8 @@ public class GoGapicSurfaceTransformerTest {
         new ProtoMethodModel(getMethod(context.getInterface(), "PageStreamMethod"));
     transformer.addXApiImports(context, Collections.singletonList(method));
     transformer.generateRetryConfigDefinitions(context, Collections.singletonList(method));
-    Truth.assertThat(context.getModelTypeTable().getImports()).containsKey("math");
-    Truth.assertThat(context.getModelTypeTable().getImports())
+    Truth.assertThat(context.getImportTypeTable().getImports()).containsKey("math");
+    Truth.assertThat(context.getImportTypeTable().getImports())
         .doesNotContainKey("cloud.google.com/go/longrunning");
   }
 
@@ -122,8 +122,8 @@ public class GoGapicSurfaceTransformerTest {
     MethodModel method = new ProtoMethodModel(getMethod(context.getInterface(), "LroMethod"));
     transformer.addXApiImports(context, Collections.singletonList(method));
     transformer.generateRetryConfigDefinitions(context, Collections.singletonList(method));
-    Truth.assertThat(context.getModelTypeTable().getImports()).doesNotContainKey("math");
-    Truth.assertThat(context.getModelTypeTable().getImports())
+    Truth.assertThat(context.getImportTypeTable().getImports()).doesNotContainKey("math");
+    Truth.assertThat(context.getImportTypeTable().getImports())
         .containsKey("cloud.google.com/go/longrunning");
   }
 
@@ -140,7 +140,7 @@ public class GoGapicSurfaceTransformerTest {
     MethodModel method =
         new ProtoMethodModel(getMethod(context.getInterface(), "ServerStreamMethod"));
     transformer.addXExampleImports(context, Collections.singletonList(method));
-    Truth.assertThat(context.getModelTypeTable().getImports()).containsKey("io");
+    Truth.assertThat(context.getImportTypeTable().getImports()).containsKey("io");
   }
 
   @Test
@@ -148,7 +148,7 @@ public class GoGapicSurfaceTransformerTest {
     MethodModel method =
         new ProtoMethodModel(getMethod(context.getInterface(), "BidiStreamMethod"));
     transformer.addXExampleImports(context, Collections.singletonList(method));
-    Truth.assertThat(context.getModelTypeTable().getImports()).containsKey("io");
+    Truth.assertThat(context.getImportTypeTable().getImports()).containsKey("io");
   }
 
   @Test
@@ -156,27 +156,27 @@ public class GoGapicSurfaceTransformerTest {
     MethodModel method =
         new ProtoMethodModel(getMethod(context.getInterface(), "ClientStreamMethod"));
     transformer.addXExampleImports(context, Collections.singletonList(method));
-    Truth.assertThat(context.getModelTypeTable().getImports()).doesNotContainKey("io");
+    Truth.assertThat(context.getImportTypeTable().getImports()).doesNotContainKey("io");
   }
 
   @Test
   public void testExampleImports() {
     transformer.addXExampleImports(context, context.getSupportedMethods());
-    Truth.assertThat(context.getModelTypeTable().getImports())
+    Truth.assertThat(context.getImportTypeTable().getImports())
         .containsEntry(
             "golang.org/x/net/context", TypeAlias.create("golang.org/x/net/context", ""));
-    Truth.assertThat(context.getModelTypeTable().getImports())
+    Truth.assertThat(context.getImportTypeTable().getImports())
         .containsEntry(
             "cloud.google.com/go/gopher/apiv1",
             TypeAlias.create("cloud.google.com/go/gopher/apiv1", ""));
-    Truth.assertThat(context.getModelTypeTable().getImports())
+    Truth.assertThat(context.getImportTypeTable().getImports())
         .containsEntry(
             "google.golang.org/genproto/googleapis/example/myproto/v1",
             TypeAlias.create(
                 "google.golang.org/genproto/googleapis/example/myproto/v1", "myprotopb"));
 
     // Only shows up in response, not needed for example.
-    Truth.assertThat(context.getModelTypeTable().getImports())
+    Truth.assertThat(context.getImportTypeTable().getImports())
         .doesNotContainKey("google.golang.org/genproto/googleapis/example/odd/v1");
   }
 

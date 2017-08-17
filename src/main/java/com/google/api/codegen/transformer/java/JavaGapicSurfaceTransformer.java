@@ -85,7 +85,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer, Surf
     return GapicInterfaceContext.create(
         apiInterface,
         productConfig,
-        typeTable,
+        (ModelTypeTable) typeTable,
         namer,
         JavaFeatureConfig.newBuilder()
             .enableStringFormatFunctions(enableStringFormatFunctions)

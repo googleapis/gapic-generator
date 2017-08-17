@@ -156,7 +156,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.clientConfigPath(namer.getClientConfigPath(context.getInterfaceModel()));
     xapiClass.grpcClientTypeName(
         namer.getAndSaveNicknameForGrpcClientTypeName(
-            context.getModelTypeTable(), context.getInterfaceModel()));
+            context.getImportTypeTable(), context.getInterfaceModel()));
 
     xapiClass.apiMethods(methods);
 
@@ -244,9 +244,9 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
               .methodName(context.getNamer().getApiMethodName(method, VisibilityConfig.PUBLIC))
               .constructorName("")
               .clientReturnTypeName("")
-              .operationPayloadTypeName(context.getModelTypeTable().getFullNameFor(returnType))
+              .operationPayloadTypeName(context.getImportTypeTable().getFullNameFor(returnType))
               .isEmptyOperation(ServiceMessages.s_isEmptyType(lroConfig.getReturnType()))
-              .metadataTypeName(context.getModelTypeTable().getFullNameFor(metadataType))
+              .metadataTypeName(context.getImportTypeTable().getFullNameFor(metadataType))
               .implementsCancel(true)
               .implementsDelete(true)
               .initialPollDelay(lroConfig.getInitialPollDelay().getMillis())
