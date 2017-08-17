@@ -14,7 +14,8 @@
  */
 package com.google.api.codegen;
 
-import com.google.api.codegen.gapic.MainGapicProviderFactory;
+import static com.google.api.codegen.config.LanguageStrings.GO;
+
 import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,7 +43,7 @@ public class GoCodeGeneratorTest extends GapicTestBase {
   @Parameters(name = "{0}")
   public static List<Object[]> testedConfigs() {
     return GapicTestBase.createTestedConfigs(
-        MainGapicProviderFactory.GO, new String[] {"go_gapic.yaml", "library_gapic.yaml"});
+        GO, new String[] {"go_gapic.yaml", "library_gapic.yaml"});
   }
 
   // Tests

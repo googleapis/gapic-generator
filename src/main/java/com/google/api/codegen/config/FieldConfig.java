@@ -74,7 +74,7 @@ public abstract class FieldConfig {
   }
 
   static FieldConfig createFieldConfig(FieldModel field) {
-    return new AutoValue_FieldConfig(field, ResourceNameTreatment.NONE, null, null);
+    return FieldConfig.createFieldConfig(field, ResourceNameTreatment.NONE, null, null);
   }
 
   /** Creates a FieldConfig for the given Field with ResourceNameTreatment set to None. */
@@ -240,10 +240,10 @@ public abstract class FieldConfig {
       FieldModel field,
       ResourceNameTreatment treatment,
       ResourceNameConfig resourceNameConfig) {
-    if (field.getApiSource().equals(ApiSource.DISCOVERY)) {
-      // TODO(andrealin): validate discovery doc types
-      return;
-    }
+    //    if (field.getApiSource().equals(ApiSource.DISCOVERY)) {
+    //      // TODO(andrealin): validate discovery doc types
+    //      return;
+    //    }
     switch (treatment) {
       case NONE:
         break;

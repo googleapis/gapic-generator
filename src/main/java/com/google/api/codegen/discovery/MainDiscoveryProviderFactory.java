@@ -14,6 +14,15 @@
  */
 package com.google.api.codegen.discovery;
 
+import static com.google.api.codegen.config.LanguageStrings.CSHARP;
+import static com.google.api.codegen.config.LanguageStrings.GO;
+import static com.google.api.codegen.config.LanguageStrings.JAVA;
+import static com.google.api.codegen.config.LanguageStrings.JS;
+import static com.google.api.codegen.config.LanguageStrings.NODEJS;
+import static com.google.api.codegen.config.LanguageStrings.PHP;
+import static com.google.api.codegen.config.LanguageStrings.PYTHON;
+import static com.google.api.codegen.config.LanguageStrings.RUBY;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.api.Service;
 import com.google.api.codegen.ApiaryConfig;
@@ -51,15 +60,6 @@ import org.apache.commons.lang3.NotImplementedException;
  * Creates DiscoveryProvider instances based on an ID.
  */
 public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
-
-  public static final String CSHARP = "csharp";
-  public static final String GO = "go";
-  public static final String JAVA = "java";
-  public static final String JS = "js";
-  public static final String NODEJS = "nodejs";
-  public static final String PHP = "php";
-  public static final String PYTHON = "python";
-  public static final String RUBY = "ruby";
 
   private static final Map<String, Class<? extends SampleMethodToViewTransformer>>
       SAMPLE_METHOD_TO_VIEW_TRANSFORMER_MAP =

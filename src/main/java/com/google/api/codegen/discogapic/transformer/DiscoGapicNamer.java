@@ -17,6 +17,8 @@ package com.google.api.codegen.discogapic.transformer;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.TypeName;
+import com.google.api.codegen.util.TypeNameConverter;
 
 /** Provides language-specific names for variables and classes of Discovery-Document models. */
 public class DiscoGapicNamer {
@@ -102,6 +104,13 @@ public class DiscoGapicNamer {
   public static Name getRequestName(Method method) {
     String[] pieces = method.id().split(regexDelimiter);
     return Name.anyCamel(pieces[pieces.length - 2], pieces[pieces.length - 1], "http", "request");
+  }
+
+  /** Get the request type name from a method. */
+  public TypeName getRequestTypeName(Method method) {
+    TypeNameConverter typeNameConverter = languageNamer.getTypeNameConverter();
+    return typeNameConverter.getTypeNameInImplicitPackage(
+        languageNamer.publicClassName(getRequestName(method)));
   }
 
   /** Get the response type name from a method. */

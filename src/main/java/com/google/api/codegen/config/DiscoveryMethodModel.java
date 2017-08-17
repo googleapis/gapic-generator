@@ -31,11 +31,13 @@ import com.google.common.collect.ImmutableList;
 public final class DiscoveryMethodModel implements MethodModel {
   private final Method method;
   private Iterable<FieldModel> inputFields;
+  private final DiscoGapicNamer discoGapicNamer;
 
   /* Create a DiscoveryMethodModel from a non-null Discovery Method object. */
-  public DiscoveryMethodModel(Method method) {
+  public DiscoveryMethodModel(Method method, DiscoGapicNamer discoGapicNamer) {
     Preconditions.checkNotNull(method);
     this.method = method;
+    this.discoGapicNamer = discoGapicNamer;
   }
 
   @Override
@@ -56,12 +58,12 @@ public final class DiscoveryMethodModel implements MethodModel {
   public FieldModel getInputField(String fieldName) {
     Schema targetSchema = method.parameters().get(fieldName);
     if (targetSchema != null) {
-      return new DiscoveryField(targetSchema);
+      return new DiscoveryField(targetSchema, discoGapicNamer);
     }
     if (method.request() != null
         && !Strings.isNullOrEmpty(method.request().reference())
         && method.request().reference().toLowerCase().equals(fieldName.toLowerCase())) {
-      return new DiscoveryField(method.request().dereference());
+      return new DiscoveryField(method.request().dereference(), discoGapicNamer);
     }
     return null;
   }
@@ -198,10 +200,10 @@ public final class DiscoveryMethodModel implements MethodModel {
 
     ImmutableList.Builder<FieldModel> fieldsBuilder = ImmutableList.builder();
     for (Schema field : method.parameters().values()) {
-      fieldsBuilder.add(new DiscoveryField(field));
+      fieldsBuilder.add(new DiscoveryField(field, discoGapicNamer));
     }
     if (method.request() != null && !Strings.isNullOrEmpty(method.request().reference())) {
-      fieldsBuilder.add(new DiscoveryField(method.request().dereference()));
+      fieldsBuilder.add(new DiscoveryField(method.request().dereference(), discoGapicNamer));
     }
     inputFields = fieldsBuilder.build();
     return inputFields;

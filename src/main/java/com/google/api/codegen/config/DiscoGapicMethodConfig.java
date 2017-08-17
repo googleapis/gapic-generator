@@ -23,6 +23,7 @@ import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.SurfaceTreatmentProto;
 import com.google.api.codegen.VisibilityProto;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
+import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.tools.framework.model.Diag;
@@ -77,16 +78,20 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
       String language,
       MethodConfigProto methodConfigProto,
       Method method,
+      ResourceNameMessageConfigs messageConfigs,
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       ImmutableSet<String> retryCodesConfigNames,
-      ImmutableSet<String> retryParamsConfigNames) {
+      ImmutableSet<String> retryParamsConfigNames,
+      DiscoGapicNamer discoGapicNamer) {
 
     boolean error = false;
-    DiscoveryMethodModel methodModel = new DiscoveryMethodModel(method);
+    DiscoveryMethodModel methodModel = new DiscoveryMethodModel(method, discoGapicNamer);
 
     PageStreamingConfig pageStreaming = null;
     if (!PageStreamingConfigProto.getDefaultInstance()
         .equals(methodConfigProto.getPageStreaming())) {
-      pageStreaming = PageStreamingConfig.createPageStreaming(diagCollector, method);
+      pageStreaming =
+          PageStreamingConfig.createPageStreaming(diagCollector, method, discoGapicNamer);
       if (pageStreaming == null) {
         error = true;
       }
@@ -94,7 +99,9 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
 
     ImmutableList<FlatteningConfig> flattening = null;
     if (!FlatteningConfigProto.getDefaultInstance().equals(methodConfigProto.getFlattening())) {
-      flattening = createFlattening(diagCollector, null, null, methodConfigProto, methodModel);
+      flattening =
+          createFlattening(
+              diagCollector, messageConfigs, resourceNameConfigs, methodConfigProto, methodModel);
       if (flattening == null) {
         error = true;
       }

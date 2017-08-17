@@ -67,22 +67,15 @@ public abstract class FlatteningConfig {
         defaultResourceNameTreatment = ResourceNameTreatment.VALIDATE;
       }
 
-      FieldConfig fieldConfig;
-      if (resourceNameConfigs != null) {
-        fieldConfig =
-            FieldConfig.createFieldConfig(
-                diagCollector,
-                messageConfigs,
-                methodConfigProto.getFieldNamePatterns(),
-                resourceNameConfigs,
-                parameterField,
-                flatteningGroup.getParameterResourceNameTreatment().get(parameter),
-                defaultResourceNameTreatment);
-      } else {
-        fieldConfig =
-            FieldConfig.createMessageFieldConfig(
-                null, null, parameterField, ResourceNameTreatment.NONE);
-      }
+      FieldConfig fieldConfig =
+          FieldConfig.createFieldConfig(
+              diagCollector,
+              messageConfigs,
+              methodConfigProto.getFieldNamePatterns(),
+              resourceNameConfigs,
+              parameterField,
+              flatteningGroup.getParameterResourceNameTreatment().get(parameter),
+              defaultResourceNameTreatment);
       if (fieldConfig == null) {
         missing = true;
       } else {

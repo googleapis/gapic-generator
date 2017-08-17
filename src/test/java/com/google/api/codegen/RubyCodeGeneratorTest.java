@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen;
 
+import static com.google.api.codegen.config.LanguageStrings.RUBY;
+
 import com.google.api.codegen.gapic.MainGapicProviderFactory;
 import java.util.List;
 import org.junit.Test;
@@ -44,9 +46,7 @@ public class RubyCodeGeneratorTest {
     @Parameters(name = "{0}")
     public static List<Object[]> testedConfigs() {
       return GapicTestBase.createTestedConfigs(
-          MainGapicProviderFactory.RUBY,
-          new String[] {"ruby_gapic.yaml", "library_gapic.yaml"},
-          "library_pkg.yaml");
+          RUBY, new String[] {"ruby_gapic.yaml", "library_gapic.yaml"}, "library_pkg.yaml");
     }
 
     // Tests
@@ -112,7 +112,7 @@ public class RubyCodeGeneratorTest {
     @Parameters(name = "{0}")
     public static List<Object[]> testedConfigs() {
       return GapicTestBase.createTestedConfigs(
-          MainGapicProviderFactory.RUBY,
+          RUBY,
           new String[] {"ruby_gapic.yaml", "multiple_services_gapic.yaml"},
           "multiple_services_pkg.yaml");
     }
