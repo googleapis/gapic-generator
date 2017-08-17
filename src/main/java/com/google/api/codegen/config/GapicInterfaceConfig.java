@@ -399,6 +399,15 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
     return false;
   }
 
+  public boolean hasGrpcStreamingMethods(GrpcStreamingConfig.GrpcStreamingType streamingType) {
+    for (GapicMethodConfig methodConfig : getMethodConfigs()) {
+      if (methodConfig.isGrpcStreaming() && methodConfig.getGrpcStreamingType() == streamingType) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   public boolean hasLongRunningOperations() {
     for (GapicMethodConfig methodConfig : getMethodConfigs()) {
       if (methodConfig.isLongRunningOperation()) {
