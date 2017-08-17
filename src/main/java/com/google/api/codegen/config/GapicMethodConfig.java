@@ -26,17 +26,13 @@ import com.google.api.codegen.VisibilityProto;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
-import com.google.api.tools.framework.model.Field;
-import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
-import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.protobuf.Empty;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -83,7 +79,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
     }
 
     GrpcStreamingConfig grpcStreaming = null;
-    if (isGrpcStreamingMethod(method)) {
+    if (isGrpcStreamingMethod(methodModel)) {
       if (PageStreamingConfigProto.getDefaultInstance()
           .equals(methodConfigProto.getGrpcStreaming())) {
         grpcStreaming = GrpcStreamingConfig.createGrpcStreaming(diagCollector, method);
@@ -111,7 +107,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
     if (!BatchingConfigProto.getDefaultInstance().equals(methodConfigProto.getBatching())) {
       batching =
           BatchingConfig.createBatching(
-              diagCollector, methodConfigProto.getBatching(), new ProtoMethodModel(method));
+              diagCollector, methodConfigProto.getBatching(), methodModel);
       if (batching == null) {
         error = true;
       }
@@ -234,90 +230,6 @@ public abstract class GapicMethodConfig extends MethodConfig {
           releaseLevel,
           longRunningConfig);
     }
-  }
-
-  private static Iterable<FieldConfig> createFieldNameConfigs(
-      DiagCollector diagCollector,
-      ResourceNameMessageConfigs messageConfigs,
-      ResourceNameTreatment defaultResourceNameTreatment,
-      ImmutableMap<String, String> fieldNamePatterns,
-      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      Iterable<FieldModel> fields) {
-    ImmutableList.Builder<FieldConfig> fieldConfigsBuilder = ImmutableList.builder();
-    for (FieldModel field : fields) {
-      fieldConfigsBuilder.add(
-          FieldConfig.createFieldConfig(
-              diagCollector,
-              messageConfigs,
-              fieldNamePatterns,
-              resourceNameConfigs,
-              field,
-              null,
-              defaultResourceNameTreatment));
-    }
-    return fieldConfigsBuilder.build();
-  }
-
-  /** Returns true if the method is a streaming method */
-  public static boolean isGrpcStreamingMethod(MethodModel method) {
-    return method.getRequestStreaming() || method.getResponseStreaming();
-  }
-
-  /** Returns true if the method returns google.protobuf.empty message */
-  public static boolean isReturnEmptyMessageMethod(Method method) {
-    MessageType returnMessageType = method.getOutputMessage();
-    return Empty.getDescriptor().getFullName().equals(returnMessageType.getFullName());
-  }
-
-  /** Returns true if this method has page streaming configured. */
-  @Override
-  public boolean isPageStreaming() {
-    return getPageStreaming() != null;
-  }
-
-  /** Returns true if this method has grpc streaming configured. */
-  @Override
-  public boolean isGrpcStreaming() {
-    return getGrpcStreaming() != null;
-  }
-
-  @Override
-  public boolean isFlattening() {
-    return getFlatteningConfigs() != null;
-  }
-
-  @Override
-  public boolean isBatching() {
-    return getBatching() != null;
-  }
-
-  @Override
-  public boolean isLongRunningOperation() {
-    return getLongRunningConfig() != null;
-  }
-
-  @Override
-  public Iterable<FieldModel> getRequiredFields() {
-    return FieldConfig.toFieldTypeIterable(getRequiredFieldConfigs());
-  }
-
-  @Override
-  public Iterable<FieldModel> getOptionalFields() {
-    return FieldConfig.toFieldTypeIterable(getOptionalFieldConfigs());
-  }
-
-  /** Return the list of "one of" instances associated with the fields. */
-  public Iterable<Oneof> getOneofs(List<Field> fields) {
-    ImmutableSet.Builder<Oneof> answer = ImmutableSet.builder();
-
-    for (Field field : fields) {
-      if (field.getOneof() == null) {
-        continue;
-      }
-      answer.add(field.getOneof());
-    }
-
-    return answer.build();
   }
 
   /** Return the list of "one of" instances associated with the fields. */

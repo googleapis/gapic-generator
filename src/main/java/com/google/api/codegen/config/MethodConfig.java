@@ -22,7 +22,6 @@ import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -81,7 +80,7 @@ public abstract class MethodConfig {
   public abstract LongRunningConfig getLongRunningConfig();
 
   /** Returns true if the method is a streaming method */
-  public static boolean isGrpcStreamingMethod(Method method) {
+  public static boolean isGrpcStreamingMethod(MethodModel method) {
     return method.getRequestStreaming() || method.getResponseStreaming();
   }
 
@@ -189,5 +188,27 @@ public abstract class MethodConfig {
     }
 
     return flatteningGroupsBuilder.build();
+  }
+
+  static Iterable<FieldConfig> createFieldNameConfigs(
+      DiagCollector diagCollector,
+      ResourceNameMessageConfigs messageConfigs,
+      ResourceNameTreatment defaultResourceNameTreatment,
+      ImmutableMap<String, String> fieldNamePatterns,
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
+      Iterable<FieldModel> fields) {
+    ImmutableList.Builder<FieldConfig> fieldConfigsBuilder = ImmutableList.builder();
+    for (FieldModel field : fields) {
+      fieldConfigsBuilder.add(
+          FieldConfig.createFieldConfig(
+              diagCollector,
+              messageConfigs,
+              fieldNamePatterns,
+              resourceNameConfigs,
+              field,
+              null,
+              defaultResourceNameTreatment));
+    }
+    return fieldConfigsBuilder.build();
   }
 }
