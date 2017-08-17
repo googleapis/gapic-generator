@@ -81,8 +81,9 @@ public class MethodTransformer {
     // use all fields for the following check; if there are ignored fields for flattening
     // purposes, the caller still needs a way to set them (by using the request object method).
     methodView.requestObjectMethod(
-        message.getFields().size() > REQUEST_OBJECT_METHOD_THRESHOLD
-            || message.getFields().size() != parameterList.size());
+        (message.getFields().size() > REQUEST_OBJECT_METHOD_THRESHOLD
+                || message.getFields().size() != parameterList.size())
+            && !method.getRequestStreaming());
   }
 
   private FlatteningView generateFlattening(List<String> parameterList) {
