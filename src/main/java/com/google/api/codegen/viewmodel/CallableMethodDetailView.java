@@ -20,6 +20,8 @@ import com.google.auto.value.AutoValue;
 public abstract class CallableMethodDetailView {
   public abstract String callableName();
 
+  public abstract String interfaceTypeName();
+
   public abstract String genericAwareResponseType();
 
   public static Builder newBuilder() {
@@ -29,6 +31,8 @@ public abstract class CallableMethodDetailView {
   @AutoValue.Builder
   public abstract static class Builder {
     public abstract Builder callableName(String name);
+
+    public abstract Builder interfaceTypeName(String name);
 
     public abstract Builder genericAwareResponseType(String name);
 
