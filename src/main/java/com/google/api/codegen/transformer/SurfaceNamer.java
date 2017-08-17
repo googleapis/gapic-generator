@@ -598,7 +598,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * parameter).
    */
   public String getVariableName(FieldModel field) {
-    return localVarName(Name.from(field.getSimpleName()));
+    return localVarName(field.asName());
   }
 
   /**
