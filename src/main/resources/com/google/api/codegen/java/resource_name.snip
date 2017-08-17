@@ -15,8 +15,6 @@
 
     {@constructors(resourceName)}
 
-    {@populateMapMethod(resourceName)}
-
     {@getters(resourceName)}
 
     {@newBuilder(resourceName)}
@@ -32,23 +30,6 @@
 
 @end
 
-@private populateMapMethod(schema)
-  @@Override
-  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
-    Map<String, List<String>> fieldMap = new HashMap<>();
-    @join param : schema.pathParams
-      if (fieldNames.contains("{@param.name}")) {
-        @if param.canRepeat
-          fieldMap.put("{@param.name}", {@param.name});
-        @else
-          fieldMap.put("{@param.name}", Collections.singletonList(String.valueOf({@param.name})));
-        @end
-      }
-    @end
-    return fieldMap;
-  }
-@end
-
 @private members(schema)
   @join property : schema.pathParams
     private final {@property.typeName} {@property.name};
@@ -56,7 +37,7 @@
 @end
 
 @private getTypeFunction(schema)
-  @Override
+  @@Override
   public ResourceNameType getType() {
     return {@schema.nameType}.instance();
   }
@@ -132,20 +113,20 @@
   @end
 @end
 
-@private constructors(schema)
-  private {@schema.typeName}(Builder builder) {
-    @join param : schema.pathParams
-      {@param.name} = Preconditions.checkNotNull(builder.{@schema.fieldGetFunction}());
+@private constructors(resourceName)
+  private {@resourceName.typeName}(Builder builder) {
+    @join param : resourceName.pathParams
+      {@param.name} = Preconditions.checkNotNull(builder.{@param.fieldGetFunction}());
     @end
   }
 
-  public static {@schema.typeName} create(
-      @join param : schema.pathParams on ",".add(BREAK)
+  public static {@resourceName.typeName} create(
+      @join param : resourceName.pathParams on ",".add(BREAK)
         {@param.typeName} {@param.name}
       @end
       ) {
     return newBuilder()
-    @join param : schema.pathParams
+    @join param : resourceName.pathParams
       .@{param.fieldSetFunction)({@param.name})
     @end
       .build();
