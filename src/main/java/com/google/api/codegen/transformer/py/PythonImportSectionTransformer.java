@@ -130,15 +130,15 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
   private List<ImportFileView> generateInitCodeAppImports(
       GapicMethodContext context, Iterable<InitCodeNode> specItemNodes) {
     return ImmutableList.<ImportFileView>builder()
-        .add(generateApiImport(context))
+        .add(generateApiImport(context.getNamer()))
         .addAll(generateProtoImports(context, specItemNodes))
         .addAll(generatePageStreamingImports(context))
         .build();
   }
 
-  private ImportFileView generateApiImport(GapicMethodContext context) {
-    String moduleName = context.getNamer().getTopLevelNamespace();
-    String attributeName = context.getNamer().getApiWrapperModuleName();
+  private ImportFileView generateApiImport(SurfaceNamer namer) {
+    String moduleName = namer.getTopLevelNamespace();
+    String attributeName = namer.getApiWrapperModuleName();
     if (Strings.isNullOrEmpty(moduleName)) {
       return createImport(attributeName);
     }
@@ -209,6 +209,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
         appImports.add(generateAppImport(entry.getKey(), entry.getValue().getNickname()));
       }
     }
+    appImports.add(generateApiImport(context.getNamer()));
     return new ArrayList<>(appImports);
   }
 
