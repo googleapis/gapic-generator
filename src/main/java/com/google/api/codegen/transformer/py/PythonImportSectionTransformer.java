@@ -17,7 +17,6 @@ package com.google.api.codegen.transformer.py;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
-import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
@@ -34,6 +33,7 @@ import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import java.util.ArrayList;
@@ -137,15 +137,16 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
   }
 
   private ImportFileView generateApiImport(GapicMethodContext context) {
-    String moduleName = context.getNamer().getVersionedDirectoryNamespace();
-    String attributeName =
-        context.getNamer().getApiWrapperVariableName(context.getInterfaceConfig());
+    String moduleName = context.getNamer().getTopLevelNamespace();
+    String attributeName = context.getNamer().getApiWrapperModuleName();
+    if (Strings.isNullOrEmpty(moduleName)) {
+      return createImport(attributeName);
+    }
     return createImport(moduleName, attributeName);
   }
 
   private List<ImportFileView> generateProtoImports(
       GapicMethodContext context, Iterable<InitCodeNode> specItemNodes) {
-    ModelTypeTable typeTable = context.getTypeTable();
     Set<ImportFileView> protoImports = new TreeSet<>(importFileViewComparator());
     for (InitCodeNode item : specItemNodes) {
       TypeRef type = item.getType();
@@ -355,15 +356,9 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
   }
 
   public ImportSectionView generateVersionedInitImportSection(
-      Model model,
-      GapicProductConfig productConfig,
-      PackageMetadataConfig packageConfig,
-      SurfaceNamer namer,
-      boolean packageHasEnums) {
+      Model model, GapicProductConfig productConfig, SurfaceNamer namer, boolean packageHasEnums) {
     return ImportSectionView.newBuilder()
-        .appImports(
-            generateVersionedInitAppImports(
-                model, productConfig, packageConfig, namer, packageHasEnums))
+        .appImports(generateVersionedInitAppImports(model, productConfig, namer, packageHasEnums))
         .standardImports(generateVersionedInitStandardImports())
         .build();
   }
@@ -373,26 +368,18 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
   }
 
   private List<ImportFileView> generateVersionedInitAppImports(
-      Model model,
-      GapicProductConfig productConfig,
-      PackageMetadataConfig packageConfig,
-      SurfaceNamer namer,
-      boolean packageHasEnums) {
-
-    Iterable<Interface> apiInterfaces = new InterfaceView().getElementIterable(model);
-    ModelTypeTable typeTable = emptyTypeTable(productConfig);
-    for (Interface apiInterface : apiInterfaces) {
-      namer.getAndSaveNicknameForGrpcClientTypeName(typeTable, apiInterface);
-    }
-
+      Model model, GapicProductConfig productConfig, SurfaceNamer namer, boolean packageHasEnums) {
     Set<ImportFileView> imports = new TreeSet<>(importFileViewComparator());
+    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+      imports.add(
+          createImport(
+              productConfig.getPackageName(),
+              namer.getApiWrapperVariableName(productConfig.getInterfaceConfig(apiInterface))));
+    }
     if (packageHasEnums) {
       imports.add(createImport(productConfig.getPackageName(), "enums"));
     }
     imports.add(createImport(namer.getVersionedDirectoryNamespace(), "types"));
-    for (Map.Entry<String, TypeAlias> entry : typeTable.getImports().entrySet()) {
-      imports.add(generateAppImport(entry.getKey(), entry.getValue().getNickname()));
-    }
     return ImmutableList.<ImportFileView>builder().addAll(imports).build();
   }
 }

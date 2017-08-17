@@ -115,8 +115,7 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
                       "PythonGapicSurfaceTestTransformer.createUnitTestViews - apiSettingsClassName"))
               .apiClassName(
                   surfacePackageNamer.getApiWrapperClassName(context.getInterfaceConfig()))
-              .apiVariableName(
-                  surfacePackageNamer.getApiWrapperVariableName(context.getInterfaceConfig()))
+              .apiVariableName(surfacePackageNamer.getApiWrapperModuleName())
               .name(testClassName)
               .apiName(
                   surfacePackageNamer.publicClassName(
@@ -244,7 +243,7 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
     return SmokeTestClassView.newBuilder()
         .apiSettingsClassName(namer.getApiSettingsClassName(context.getInterfaceConfig()))
         .apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()))
-        .apiVariableName(namer.getApiWrapperVariableName(context.getInterfaceConfig()))
+        .apiVariableName(namer.getApiWrapperModuleName())
         .name(name)
         .outputPath(outputPath)
         .templateFileName(SMOKE_TEST_TEMPLATE_FILE)

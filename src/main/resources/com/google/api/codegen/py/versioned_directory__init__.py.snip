@@ -12,16 +12,6 @@
     {@renderImportSection(fileHeader.importSection)}
 @end
 
-@private licenseSection(fileHeader)
-    @join line : fileHeader.copyrightLines
-        @# {@line}
-    @end
-    {@BREAK}@#
-    @join line : fileHeader.licenseLines
-        @# {@line}
-    @end
-@end
-
 @private body(hasEnums, requireViews)
     {@clients(hasEnums, requireViews)}
 
@@ -31,8 +21,8 @@
 
 @private clients(hasEnums, requireViews)
     @join view : requireViews on BREAK.add(BREAK)
-        class {@view.localName}({@view.clientName}):
-                __doc__ = {@view.clientName}.__doc__
+        class {@view.clientName}({@view.localName}.{@view.clientName}):
+                __doc__ = {@view.localName}.{@view.clientName}.__doc__
                 @if hasEnums
                     enums = enums
                 @end
@@ -45,8 +35,8 @@
             'enums',
         @end
         'types',
-        @join view : requireViews on ",".add(BREAK)
-            '{@view.localName}'
+        @join view : requireViews on BREAK
+            '{@view.clientName}',
         @end
     )
 @end

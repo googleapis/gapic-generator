@@ -12,16 +12,6 @@
     {@renderImportSection(fileHeader.importSection)}
 @end
 
-@private licenseSection(fileHeader)
-    @join line : fileHeader.copyrightLines
-        @# {@line}
-    @end
-    {@BREAK}@#
-    @join line : fileHeader.licenseLines
-        @# {@line}
-    @end
-@end
-
 @private body(view)
   names = []
   for module in ({@importedModules(view.fileHeader.importSection.appImports)}):
@@ -38,9 +28,9 @@
   @join import : imports on BREAK
     @join type : import.types
       @if type.nickname
-        {@type.nickname}
+        {@type.nickname},
       @else
-        {@type.fullName}
+        {@type.fullName},
       @end
     @end
   @end

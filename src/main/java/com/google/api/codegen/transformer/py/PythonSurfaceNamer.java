@@ -76,6 +76,21 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getApiWrapperModuleName() {
+    String namespace = getVersionedDirectoryNamespace();
+    return namespace.substring(namespace.lastIndexOf('.') + 1);
+  }
+
+  @Override
+  public String getTopLevelNamespace() {
+    String namespace = getVersionedDirectoryNamespace();
+    if (namespace.lastIndexOf('.') > -1) {
+      return namespace.substring(0, namespace.lastIndexOf('.'));
+    }
+    return "";
+  }
+
+  @Override
   public String getVersionedDirectoryNamespace() {
     String namespace = getPackageName();
     return namespace.substring(0, namespace.lastIndexOf('.'));
@@ -103,10 +118,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   @Override
   public String getFullyQualifiedApiWrapperClassName(GapicInterfaceConfig interfaceConfig) {
     return Joiner.on(".")
-        .join(
-            getPackageName(),
-            getApiWrapperVariableName(interfaceConfig),
-            getApiWrapperClassName(interfaceConfig));
+        .join(getVersionedDirectoryNamespace(), getApiWrapperClassName(interfaceConfig));
   }
 
   @Override

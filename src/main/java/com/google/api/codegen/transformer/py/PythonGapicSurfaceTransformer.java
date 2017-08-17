@@ -303,16 +303,10 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private ViewModel generateVersionedInitView(Model model, GapicProductConfig productConfig) {
     SurfaceNamer namer = new PythonSurfaceNamer(productConfig.getPackageName());
-    boolean packageHasEnums = false;
-    for (TypeRef type : model.getSymbolTable().getDeclaredTypes()) {
-      if (type.isEnum() && type.getEnumType().isReachable()) {
-        packageHasEnums = true;
-        break;
-      }
-    }
+    boolean packageHasEnums = packageHasEnums(model);
     ImportSectionView imports =
         importSectionTransformer.generateVersionedInitImportSection(
-            model, productConfig, packageConfig, namer, packageHasEnums);
+            model, productConfig, namer, packageHasEnums);
     return VersionIndexView.newBuilder()
         .templateFileName(VERSIONED_INIT_TEMPLATE_FILENAME)
         .outputPath(versionedInitOutputFile(namer))
@@ -325,6 +319,15 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
         .build();
   }
 
+  private boolean packageHasEnums(Model model) {
+    for (TypeRef type : model.getSymbolTable().getDeclaredTypes()) {
+      if (type.isEnum() && type.getEnumType().isReachable()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   private List<VersionIndexRequireView> versionedInitRequireViews(
       Model model, GapicProductConfig productConfig, SurfaceNamer namer) {
     ImmutableList.Builder<VersionIndexRequireView> views = ImmutableList.builder();
@@ -333,9 +336,10 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
     for (Interface apiInterface : apiInterfaces) {
       views.add(
           VersionIndexRequireView.newBuilder()
-              .clientName(namer.getAndSaveNicknameForGrpcClientTypeName(typeTable, apiInterface))
-              .localName(
+              .clientName(
                   namer.getApiWrapperClassName(productConfig.getInterfaceConfig(apiInterface)))
+              .localName(
+                  namer.getApiWrapperVariableName(productConfig.getInterfaceConfig(apiInterface)))
               .fileName(namer.getNotImplementedString("VersionIndexRequireView.fileName"))
               .build());
     }
