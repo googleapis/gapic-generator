@@ -1,3 +1,310 @@
+============== file: src/main/java/com/google/cloud/fakebilling/v1/BillingAccountsName.java ==============
+/*
+ * Copyright 2017, Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.fakebilling.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.pathtemplate.PathTemplate;
+import com.google.api.resourcenames.ResourceName;
+import com.google.api.resourcenames.ResourceNameType;
+import com.google.common.base.Preconditions;
+import java.io.IOException;
+import java.util.Map;
+import java.util.Objects;
+import javax.annotation.Generated;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class BillingAccountsName implements ResourceName {
+
+  private static final PathTemplate PATH_TEMPLATE =
+        PathTemplate.createWithoutUrlEncoding("v1/billingAccounts");
+
+  public static Builder newBuilder() {
+    return new Builder();
+  }
+
+  public Builder toBuilder() {
+    return new Builder(this);
+  }
+
+  private BillingAccountsName(Builder builder) {
+  }
+
+  public static BillingAccountsName create(
+      ) {
+    return newBuilder()
+      .build();
+  }
+
+
+
+  public static BillingAccountsName parse(String formattedString) {
+    Map<String, String> matchMap =
+        PATH_TEMPLATE.validatedMatch(formattedString, "BillingAccountsName.parse: formattedString not in valid format");
+    return create(
+    );
+  }
+
+  public static boolean isParsableFrom(String formattedString) {
+    return PATH_TEMPLATE.matches(formattedString);
+  }
+
+  @Override
+  public ResourceNameType getType() {
+    return BillingAccountsNameType.instance();
+  }
+
+  public static class Builder {
+
+
+
+    private Builder() {}
+
+    public Builder (BillingAccountsName billingAccountsName) {
+    }
+
+    public BillingAccountsName build() {
+      return new BillingAccountsName(this);
+    }
+  }
+
+  @Override
+  public String toString() {
+    return PATH_TEMPLATE.instantiate(
+        );
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof BillingAccountsName) {
+      BillingAccountsName that = (BillingAccountsName) o;
+      return
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+    );
+  }
+}
+
+============== file: src/main/java/com/google/cloud/fakebilling/v1/BillingAccountsNameType.java ==============
+/*
+ * Copyright 2017, Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.fakebilling.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.resourcenames.ResourceNameType;
+import javax.annotation.Generated;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class BillingAccountsNameType implements ResourceNameType {
+  private static BillingAccountsNameType instance = new BillingAccountsNameType();
+
+  private BillingAccountsNameType() {}
+
+  public static BillingAccountsNameType instance() {
+    return instance;
+  }
+}
+
+============== file: src/main/java/com/google/cloud/fakebilling/v1/ProjectsName.java ==============
+/*
+ * Copyright 2017, Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.fakebilling.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.pathtemplate.PathTemplate;
+import com.google.api.resourcenames.ResourceName;
+import com.google.api.resourcenames.ResourceNameType;
+import com.google.common.base.Preconditions;
+import java.io.IOException;
+import java.util.Map;
+import java.util.Objects;
+import javax.annotation.Generated;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class ProjectsName implements ResourceName {
+  private final String name;
+  private static final PathTemplate PATH_TEMPLATE =
+        PathTemplate.createWithoutUrlEncoding("v1/projects/{projectsId}/billingInfo");
+
+  public static Builder newBuilder() {
+    return new Builder();
+  }
+
+  public Builder toBuilder() {
+    return new Builder(this);
+  }
+
+  private ProjectsName(Builder builder) {
+    name = Preconditions.checkNotNull(builder.getName());
+  }
+
+  public static ProjectsName create(
+      String name
+      ) {
+    return newBuilder()
+    .setName(name)
+      .build();
+  }
+
+  public String getName() {
+    return name;
+  }
+
+
+  public static ProjectsName parse(String formattedString) {
+    Map<String, String> matchMap =
+        PATH_TEMPLATE.validatedMatch(formattedString, "ProjectsName.parse: formattedString not in valid format");
+    return create(
+      matchMap.get("name")
+    );
+  }
+
+  public static boolean isParsableFrom(String formattedString) {
+    return PATH_TEMPLATE.matches(formattedString);
+  }
+
+  @Override
+  public ResourceNameType getType() {
+    return ProjectsNameType.instance();
+  }
+
+  public static class Builder {
+    private String name;
+
+    public String getName() {
+      return name;
+    }
+
+    public Builder setName(String name) {
+      this.name = name;
+      return this;
+    }
+
+    private Builder() {}
+
+    public Builder (ProjectsName projectsName) {
+      name = projectsName.name;
+    }
+
+    public ProjectsName build() {
+      return new ProjectsName(this);
+    }
+  }
+
+  @Override
+  public String toString() {
+    return PATH_TEMPLATE.instantiate(
+        "name", name
+        );
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof ProjectsName) {
+      ProjectsName that = (ProjectsName) o;
+      return
+          Objects.equals(this.name, that.getName())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+      name
+    );
+  }
+}
+
+============== file: src/main/java/com/google/cloud/fakebilling/v1/ProjectsNameType.java ==============
+/*
+ * Copyright 2017, Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.fakebilling.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.resourcenames.ResourceNameType;
+import javax.annotation.Generated;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class ProjectsNameType implements ResourceNameType {
+  private static ProjectsNameType instance = new ProjectsNameType();
+
+  private ProjectsNameType() {}
+
+  public static ProjectsNameType instance() {
+    return instance;
+  }
+}
+
 ============== file: src/main/java/com/google/cloud/fakebilling/v1/AttachedDisk.java ==============
 /*
  * Copyright 2017, Google Inc. All rights reserved.

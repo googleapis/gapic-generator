@@ -41,6 +41,7 @@ public abstract class Method implements Comparable<Method>, Node {
     String httpMethod = root.getString("httpMethod");
     String id = root.getString("id");
     String path = root.getString("path");
+    String flatPath = root.has("flatPath") ? root.getString("flatPath") : path;
     List<String> parameterOrder = new ArrayList<>();
     for (DiscoveryNode nameNode : root.getArray("parameterOrder").getElements()) {
       parameterOrder.add(nameNode.asText());
@@ -76,6 +77,7 @@ public abstract class Method implements Comparable<Method>, Node {
     Method thisMethod =
         new AutoValue_Method(
             description,
+            flatPath,
             httpMethod,
             id,
             parameterOrder,
@@ -120,6 +122,9 @@ public abstract class Method implements Comparable<Method>, Node {
   /** @return the description. */
   public abstract String description();
 
+  /** @return the flat URI path of this REST method. */
+  public abstract String flatPath();
+
   /** @return the HTTP method. */
   public abstract String httpMethod();
 
@@ -133,7 +138,7 @@ public abstract class Method implements Comparable<Method>, Node {
   /** @return the map of parameter names to schemas. */
   public abstract Map<String, Schema> parameters();
 
-  /** @return the The URI path of this REST method. */
+  /** @return the URI path of this REST method. */
   public abstract String path();
 
   /** @return the request schema, or null if none. */

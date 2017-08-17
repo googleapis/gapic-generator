@@ -64,6 +64,16 @@ public class DiscoGapicNamer {
     return languageNamer.publicMethodName(Name.anyCamel("set").join(name));
   }
 
+  /** Returns the name for a ResourceName for the resource of the given method. */
+  public String getResourceNameName(Method method) {
+    return languageNamer.localVarName(getResourceIdentifier(method).join("name"));
+  }
+
+  /** Returns the name for a ResourceName for the resource of the given method. */
+  public String getResourceNameTypeName(Method method) {
+    return languageNamer.publicClassName(getResourceIdentifier(method).join("name").join("type"));
+  }
+
   /**
    * Formats the method as a Name. Methods are generally in the format
    * "[api].[resource].[function]".
@@ -75,6 +85,12 @@ public class DiscoGapicNamer {
       result = result.join(Name.anyCamel(pieces[i]));
     }
     return result;
+  }
+
+  /** Return the name of the resource from a given method. */
+  private static Name getResourceIdentifier(Method method) {
+    String[] pieces = method.id().split(regexDelimiter);
+    return Name.anyCamel(pieces[pieces.length - 2]);
   }
 
   public static String getSimpleInterfaceName(String interfaceName) {

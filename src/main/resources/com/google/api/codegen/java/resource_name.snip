@@ -17,7 +17,7 @@
 
     {@getters(resourceName)}
 
-    {@newBuilder(resourceName)}
+    {@staticMethods(resourceName)}
 
     {@builder(resourceName)}
 
@@ -30,40 +30,64 @@
 
 @end
 
-@private members(schema)
-  @join property : schema.pathParams
+@private members(resourceName)
+  @join property : resourceName.pathParams
     private final {@property.typeName} {@property.name};
   @end
+
+  private static final PathTemplate PATH_TEMPLATE =
+        PathTemplate.createWithoutUrlEncoding("{@resourceName.pathTemplate}");
 @end
 
-@private getTypeFunction(schema)
+@private staticMethods(resourceName)
+  public static {@resourceName.typeName} parse(String formattedString) {
+    Map<String, String> matchMap =
+        PATH_TEMPLATE.validatedMatch(formattedString, "{@resourceName.typeName}.parse: formattedString not in valid format");
+    return create(
+      @join param : resourceName.pathParams on ",".add(BREAK)
+        matchMap.get("{@param.name}")
+      @end
+    );
+  }
+
+  public static boolean isParsableFrom(String formattedString) {
+    return PATH_TEMPLATE.matches(formattedString);
+  }
+
   @@Override
   public ResourceNameType getType() {
-    return {@schema.nameType}.instance();
+    return {@resourceName.nameTypeName}.instance();
   }
 @end
 
-@private toString(schema)
+@private getTypeFunction(resourceName)
+  @@Override
+  public ResourceNameType getType() {
+    return {@resourceName.nameType}.instance();
+  }
+@end
+
+@private toString(resourceName)
   @@Override
   public String toString() {
     return PATH_TEMPLATE.instantiate(
-        @join property : schema.pathParams on ",".add(BREAK)
-          + "{@property.name}", {@property.name}
+        @join property : resourceName.pathParams on ",".add(BREAK)
+          "{@property.name}", {@property.name}
         @end
-        ")";
+        );
   }
 @end
 
-@private equalsMethod(schema)
+@private equalsMethod(resourceName)
   @@Override
   public boolean equals(Object o) {
     if (o == this) {
       return true;
     }
-    if (o instanceof {@schema.typeName}) {
-      {@schema.typeName} that = ({@schema.typeName}) o;
+    if (o instanceof {@resourceName.typeName}) {
+      {@resourceName.typeName} that = ({@resourceName.typeName}) o;
       return
-          @join param : schema.pathParams on " &&".add(BREAK)
+          @join param : resourceName.pathParams on " &&".add(BREAK)
             Objects.equals(this.{@param.name}, that.{@param.fieldGetFunction}())
           @end
           ;
@@ -72,40 +96,19 @@
   }
 @end
 
-@private hashCode(schema)
+@private hashCode(resourceName)
   @@Override
   public int hashCode() {
     return Objects.hash(
-      @join pathParams : schema.pathParams on ", ".add(BREAK)
+      @join pathParams : resourceName.pathParams on ", ".add(BREAK)
         {@pathParams.name}
       @end
     );
   }
 @end
 
-@private newBuilder(schema)
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder({@schema.typeName} prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-  }
-
-  public static {@schema.typeName} getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-  }
-  private static final {@schema.typeName} DEFAULT_INSTANCE;
-  static {
-    DEFAULT_INSTANCE = new {@schema.typeName}();
-  }
-@end
-
-@private getters(schema)
-  @join param : schema.pathParams
+@private getters(resourceName)
+  @join param : resourceName.pathParams
     public {@param.typeName} {@param.fieldGetFunction}() {
       return {@param.name};
     }
@@ -114,6 +117,14 @@
 @end
 
 @private constructors(resourceName)
+  public static Builder newBuilder() {
+    return new Builder();
+  }
+
+  public Builder toBuilder() {
+    return new Builder(this);
+  }
+
   private {@resourceName.typeName}(Builder builder) {
     @join param : resourceName.pathParams
       {@param.name} = Preconditions.checkNotNull(builder.{@param.fieldGetFunction}());
@@ -127,25 +138,25 @@
       ) {
     return newBuilder()
     @join param : resourceName.pathParams
-      .@{param.fieldSetFunction)({@param.name})
+      .{@param.fieldSetFunction}({@param.name})
     @end
       .build();
   }
 @end
 
-@private builder(schema)
+@private builder(resourceName)
   public static class Builder {
-    @join param : schema.pathParams
+    @join param : resourceName.pathParams
       private {@param.typeName} {@param.name};
     @end
 
-    @join property : schema.pathParams
+    @join property : resourceName.pathParams
       public {@property.typeName} {@property.fieldGetFunction}() {
         return {@property.name};
       }
     @end
 
-    @join property: schema.pathParams
+    @join property: resourceName.pathParams
       public Builder {@property.fieldSetFunction}({@property.typeName} {@property.name}) {
         this.{@property.name} = {@property.name};
         return this;
@@ -154,14 +165,14 @@
 
     private Builder() {}
 
-    public Builder ({@schema.typeName} {@schema.name}) {
-      @join property : schema.pathParams
-        {@property.name} = {@schema.name}.{@property.name};
+    public Builder ({@resourceName.typeName} {@resourceName.name}) {
+      @join property : resourceName.pathParams
+        {@property.name} = {@resourceName.name}.{@property.name};
       @end
     }
 
-    public {@schema.typeName} build() {
-      return new {@schema.typeName}(this);
+    public {@resourceName.typeName} build() {
+      return new {@resourceName.typeName}(this);
     }
   }
 @end

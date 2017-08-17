@@ -71,7 +71,7 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
   }
 
   private static final String RESOURCE_NAME_TEMPLATE_FILENAME = "java/resource_name.snip";
-  private static final String RESOURCE_NAME_TYPE_TEMPLATE_FILENAME = "java/resource_name_type.snip";
+  private static final String NAME_TYPE_TEMPLATE_FILENAME = "java/resource_name_type.snip";
 
   public JavaDiscoGapicResourceNameToViewTransformer(
       GapicCodePathMapper pathMapper, PackageMetadataConfig packageMetadataConfig) {
@@ -82,7 +82,7 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
 
   @Override
   public List<String> getTemplateFileNames() {
-    return Arrays.asList(RESOURCE_NAME_TEMPLATE_FILENAME, RESOURCE_NAME_TYPE_TEMPLATE_FILENAME);
+    return Arrays.asList(RESOURCE_NAME_TEMPLATE_FILENAME, NAME_TYPE_TEMPLATE_FILENAME);
   }
 
   @Override
@@ -144,12 +144,11 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
   private StaticLangApiNameTypeFileView generateNameTypeFile(
       SchemaTransformationContext context, Method method) {
     StaticLangApiNameTypeFileView.Builder apiFile = StaticLangApiNameTypeFileView.newBuilder();
-    SymbolTable symbolTable = SymbolTable.fromSeed(reservedKeywords);
-    String className = getNameTypeName(symbolTable, context);
+    String className = context.getDiscoGapicNamer().getResourceNameTypeName(method);
     apiFile.name(className);
 
-    apiFile.templateFileName(RESOURCE_NAME_TEMPLATE_FILENAME);
-    addResourceNameClassImports(context.getImportTypeTable());
+    apiFile.templateFileName(NAME_TYPE_TEMPLATE_FILENAME);
+    addNameTypeClassImports(context.getImportTypeTable());
     String outputPath = pathMapper.getOutputPath(null, context.getDocContext().getProductConfig());
     apiFile.outputPath(outputPath + File.separator + className + ".java");
 
@@ -167,11 +166,11 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
     SymbolTable symbolTable = SymbolTable.fromSeed(reservedKeywords);
 
     String resourceName =
-        symbolTable.getNewSymbol(context.getNamer().localVarName(Name.lowerCamel("name")));
+        symbolTable.getNewSymbol(context.getDiscoGapicNamer().getResourceNameName(method));
     resourceNameView.name(resourceName);
     resourceNameView.typeName(nameFormatter.publicClassName(Name.anyCamel(resourceName)));
-    resourceNameView.nameTypeName(getNameTypeName(symbolTable, context));
-    resourceNameView.pathTemplate(method.path());
+    resourceNameView.nameTypeName(context.getDiscoGapicNamer().getResourceNameTypeName(method));
+    resourceNameView.pathTemplate(method.flatPath());
 
     List<StaticMemberView> properties = new LinkedList<>();
     for (Map.Entry<String, Schema> entry : method.parameters().entrySet()) {
@@ -200,22 +199,22 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
     return paramView.build();
   }
 
-  private String getNameTypeName(SymbolTable symbolTable, SchemaTransformationContext context) {
-    return symbolTable.getNewSymbol(context.getNamer().localVarName(Name.from("name", "type")));
-  }
-
   private void addResourceNameClassImports(ImportTypeTable typeTable) {
     typeTable.getAndSaveNicknameFor("com.google.api.core.BetaApi");
-    typeTable.getAndSaveNicknameFor("com.google.common.collect.ImmutableLMap");
     typeTable.getAndSaveNicknameFor("com.google.common.base.Preconditions");
     typeTable.getAndSaveNicknameFor("com.google.api.pathtemplate.PathTemplate");
     typeTable.getAndSaveNicknameFor("com.google.api.resourcenames.ResourceName");
     typeTable.getAndSaveNicknameFor("com.google.api.resourcenames.ResourceNameType");
     typeTable.getAndSaveNicknameFor("java.io.IOException");
+    typeTable.getAndSaveNicknameFor("java.util.Map");
+    typeTable.getAndSaveNicknameFor("java.util.Objects");
+    typeTable.getAndSaveNicknameFor("javax.annotation.Generated");
   }
 
   private void addNameTypeClassImports(ImportTypeTable typeTable) {
+    typeTable.getAndSaveNicknameFor("com.google.api.core.BetaApi");
     typeTable.getAndSaveNicknameFor("com.google.api.resourcenames.ResourceNameType");
+    typeTable.getAndSaveNicknameFor("javax.annotation.Generated");
   }
 
   private SchemaTypeTable createTypeTable(String implicitPackageName) {
