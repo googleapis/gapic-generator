@@ -25,10 +25,12 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 
 /** A wrapper around the model of a Discovery Method. */
 public final class DiscoveryMethodModel implements MethodModel {
   private final Method method;
+  private Iterable<FieldModel> inputFields;
 
   /* Create a DiscoveryMethodModel from a non-null Discovery Method object. */
   public DiscoveryMethodModel(Method method) {
@@ -186,5 +188,22 @@ public final class DiscoveryMethodModel implements MethodModel {
   @Override
   public boolean hasReturnValue() {
     return method.response() != null;
+  }
+
+  @Override
+  public Iterable<FieldModel> getInputFields() {
+    if (inputFields != null) {
+      return inputFields;
+    }
+
+    ImmutableList.Builder<FieldModel> fieldsBuilder = ImmutableList.builder();
+    for (Schema field : method.parameters().values()) {
+      fieldsBuilder.add(new DiscoveryField(field));
+    }
+    if (method.request() != null && !Strings.isNullOrEmpty(method.request().reference())) {
+      fieldsBuilder.add(new DiscoveryField(method.request().dereference()));
+    }
+    inputFields = fieldsBuilder.build();
+    return inputFields;
   }
 }

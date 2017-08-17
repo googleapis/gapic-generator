@@ -196,7 +196,7 @@ public abstract class PageStreamingConfig {
               resourcesField.getIdentifier()));
       resourcesFieldConfig = null;
     } else {
-      resourcesFieldConfig = FieldConfig.createFieldConfig(resourcesField);
+      resourcesFieldConfig = FieldConfig.createFieldConfig(new DiscoveryField(resourcesField));
     }
 
     if (requestTokenField == null || responseTokenField == null || resourcesFieldConfig == null) {

@@ -81,7 +81,7 @@ public abstract class ResourceNameMessageConfigs {
   }
 
   @Nullable
-  public static ResourceNameMessageConfigs createMessageResourceTypesConfig(
+  static ResourceNameMessageConfigs createMessageResourceTypesConfig(
       Document document,
       DiagCollector diagCollector,
       ConfigProto configProto,

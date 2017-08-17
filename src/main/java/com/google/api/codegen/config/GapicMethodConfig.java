@@ -16,7 +16,6 @@ package com.google.api.codegen.config;
 
 import com.google.api.codegen.BatchingConfigProto;
 import com.google.api.codegen.FlatteningConfigProto;
-import com.google.api.codegen.FlatteningGroupProto;
 import com.google.api.codegen.LongRunningConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.PageStreamingConfigProto;
@@ -102,7 +101,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
     if (!FlatteningConfigProto.getDefaultInstance().equals(methodConfigProto.getFlattening())) {
       flattening =
           createFlattening(
-              diagCollector, messageConfigs, resourceNameConfigs, methodConfigProto, method);
+              diagCollector, messageConfigs, resourceNameConfigs, methodConfigProto, methodModel);
       if (flattening == null) {
         error = true;
       }
@@ -169,7 +168,8 @@ public abstract class GapicMethodConfig extends MethodConfig {
             defaultResourceNameTreatment,
             fieldNamePatterns,
             resourceNameConfigs,
-            getRequiredFields(diagCollector, method, methodConfigProto.getRequiredFieldsList()));
+            getRequiredFields(
+                diagCollector, methodModel, methodConfigProto.getRequiredFieldsList()));
 
     Iterable<FieldConfig> optionalFieldConfigs =
         createFieldNameConfigs(
@@ -178,7 +178,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
             defaultResourceNameTreatment,
             fieldNamePatterns,
             resourceNameConfigs,
-            getOptionalFields(method, methodConfigProto.getRequiredFieldsList()));
+            getOptionalFields(methodModel, methodConfigProto.getRequiredFieldsList()));
 
     List<String> sampleCodeInitFields = new ArrayList<>();
     sampleCodeInitFields.addAll(methodConfigProto.getRequiredFieldsList());
@@ -234,69 +234,6 @@ public abstract class GapicMethodConfig extends MethodConfig {
           releaseLevel,
           longRunningConfig);
     }
-  }
-
-  @Nullable
-  private static ImmutableList<FlatteningConfig> createFlattening(
-      DiagCollector diagCollector,
-      ResourceNameMessageConfigs messageConfigs,
-      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
-      MethodConfigProto methodConfigProto,
-      Method method) {
-    boolean missing = false;
-    ProtoMethodModel methodModel = new ProtoMethodModel(method);
-    ImmutableList.Builder<FlatteningConfig> flatteningGroupsBuilder = ImmutableList.builder();
-    for (FlatteningGroupProto flatteningGroup : methodConfigProto.getFlattening().getGroupsList()) {
-      FlatteningConfig groupConfig =
-          FlatteningConfig.createFlattening(
-              diagCollector,
-              messageConfigs,
-              resourceNameConfigs,
-              methodConfigProto,
-              flatteningGroup,
-              methodModel);
-      if (groupConfig == null) {
-        missing = true;
-      } else {
-        flatteningGroupsBuilder.add(groupConfig);
-      }
-    }
-    if (missing) {
-      return null;
-    }
-
-    return flatteningGroupsBuilder.build();
-  }
-
-  private static Iterable<FieldModel> getRequiredFields(
-      DiagCollector diagCollector, Method method, List<String> requiredFieldNames) {
-    ImmutableList.Builder<FieldModel> fieldsBuilder = ImmutableList.builder();
-    for (String fieldName : requiredFieldNames) {
-      Field requiredField = method.getInputMessage().lookupField(fieldName);
-      if (requiredField == null) {
-        diagCollector.addDiag(
-            Diag.error(
-                SimpleLocation.TOPLEVEL,
-                "Required field '%s' not found (in method %s)",
-                fieldName,
-                method.getFullName()));
-        return null;
-      }
-      fieldsBuilder.add(new ProtoField(requiredField));
-    }
-    return fieldsBuilder.build();
-  }
-
-  private static Iterable<FieldModel> getOptionalFields(
-      Method method, List<String> requiredFieldNames) {
-    ImmutableList.Builder<FieldModel> fieldsBuilder = ImmutableList.builder();
-    for (Field field : method.getInputType().getMessageType().getFields()) {
-      if (requiredFieldNames.contains(field.getSimpleName())) {
-        continue;
-      }
-      fieldsBuilder.add(new ProtoField(field));
-    }
-    return fieldsBuilder.build();
   }
 
   private static Iterable<FieldConfig> createFieldNameConfigs(
