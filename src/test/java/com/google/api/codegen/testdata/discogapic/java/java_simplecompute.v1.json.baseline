@@ -4517,6 +4517,35 @@ public class AddressAdminClient implements BackgroundResource {
    * }
    * </code></pre>
    *
+   * @param project Project ID for this request.
+   * @param region Name of the region for this request.
+   * @param address A reserved address resource.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  public final Operation addressesInsert(String project, String region, Address address) {
+
+    AddressesInsertHttpRequest request =
+        AddressesInsertHttpRequest.newBuilder()
+        .setProject(project)
+        .setRegion(region)
+        .setAddress(address)
+        .build();
+    return addressesInsert(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Creates an address resource in the specified project using the data included in the request.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
+   *
+   *   Operation response = addressAdminClient.addressesInsert();
+   * }
+   * </code></pre>
+   *
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
@@ -4628,6 +4657,35 @@ public class AddressAdminClient implements BackgroundResource {
    * }
    * </code></pre>
    *
+   * @param project Project ID for this request.
+   * @param region Name of the region for this request.
+   * @param address Name of the address resource to return.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  public final Address addressesGet(String project, String region, String address) {
+
+    AddressesGetHttpRequest request =
+        AddressesGetHttpRequest.newBuilder()
+        .setProject(project)
+        .setRegion(region)
+        .setAddress(address)
+        .build();
+    return addressesGet(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Returns the specified address resource.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
+   *
+   *   Address response = addressAdminClient.addressesGet();
+   * }
+   * </code></pre>
+   *
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
@@ -4653,6 +4711,35 @@ public class AddressAdminClient implements BackgroundResource {
   @BetaApi
   public final UnaryCallable<AddressesGetHttpRequest, Address> addressesGetCallable() {
     return stub.addressesGetCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Deletes the specified address resource.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
+   *
+   *   Operation response = addressAdminClient.addressesDelete();
+   * }
+   * </code></pre>
+   *
+   * @param project Project ID for this request.
+   * @param region Name of the region for this request.
+   * @param address Name of the address resource to delete.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  public final Operation addressesDelete(String project, String region, String address) {
+
+    AddressesDeleteHttpRequest request =
+        AddressesDeleteHttpRequest.newBuilder()
+        .setProject(project)
+        .setRegion(region)
+        .setAddress(address)
+        .build();
+    return addressesDelete(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
