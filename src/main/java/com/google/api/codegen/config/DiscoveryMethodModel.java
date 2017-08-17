@@ -24,6 +24,7 @@ import com.google.api.codegen.transformer.TypeNameConverter;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 
 /** A wrapper around the model of a Discovery Method. */
 public final class DiscoveryMethodModel implements MethodModel {
@@ -45,13 +46,22 @@ public final class DiscoveryMethodModel implements MethodModel {
     return ApiSource.DISCOVERY;
   }
 
+  /**
+   * Returns the parameter with the fieldName if it exists, otherwise returns the request object
+   * with name fieldName, if it exists.
+   */
   @Override
   public FieldModel getInputField(String fieldName) {
     Schema targetSchema = method.parameters().get(fieldName);
-    if (targetSchema == null) {
-      return null;
+    if (targetSchema != null) {
+      return new DiscoveryField(targetSchema);
     }
-    return new DiscoveryField(targetSchema);
+    if (method.request() != null
+        && !Strings.isNullOrEmpty(method.request().reference())
+        && method.request().reference().toLowerCase().equals(fieldName.toLowerCase())) {
+      return new DiscoveryField(method.request().dereference());
+    }
+    return null;
   }
 
   @Override
