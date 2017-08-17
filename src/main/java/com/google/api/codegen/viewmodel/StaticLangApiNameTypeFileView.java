@@ -17,9 +17,7 @@ package com.google.api.codegen.viewmodel;
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.auto.value.AutoValue;
 
-/**
- * ViewModel representing the file containing a ResourceNameType.
- */
+/** ViewModel representing the file containing a ResourceNameType. */
 @AutoValue
 public abstract class StaticLangApiNameTypeFileView implements ViewModel {
   // The name of the generated ResourceTypeName class.
