@@ -3368,6 +3368,7 @@ import javax.annotation.Generated;
 @BetaApi
 public final class AddressesInsertHttpRequest implements ApiMessage {
   private final String access_token;
+  private final Address address;
   private final String callback;
   private final String fields;
   private final String key;
@@ -3375,11 +3376,11 @@ public final class AddressesInsertHttpRequest implements ApiMessage {
   private final String project;
   private final String quotaUser;
   private final String region;
-  private final Address request;
   private final String userIp;
 
   private AddressesInsertHttpRequest() {
     this.access_token = null;
+    this.address = null;
     this.callback = null;
     this.fields = null;
     this.key = null;
@@ -3387,13 +3388,13 @@ public final class AddressesInsertHttpRequest implements ApiMessage {
     this.project = null;
     this.quotaUser = null;
     this.region = null;
-    this.request = null;
     this.userIp = null;
   }
 
 
   private AddressesInsertHttpRequest(
       String access_token,
+      Address address,
       String callback,
       String fields,
       String key,
@@ -3401,10 +3402,10 @@ public final class AddressesInsertHttpRequest implements ApiMessage {
       String project,
       String quotaUser,
       String region,
-      Address request,
       String userIp
       ) {
     this.access_token = access_token;
+    this.address = address;
     this.callback = callback;
     this.fields = fields;
     this.key = key;
@@ -3412,7 +3413,6 @@ public final class AddressesInsertHttpRequest implements ApiMessage {
     this.project = project;
     this.quotaUser = quotaUser;
     this.region = region;
-    this.request = request;
     this.userIp = userIp;
   }
 
@@ -3421,6 +3421,9 @@ public final class AddressesInsertHttpRequest implements ApiMessage {
     Map<String, List<String>> fieldMap = new HashMap<>();
     if (fieldNames.contains("access_token")) {
       fieldMap.put("access_token", Collections.singletonList(String.valueOf(access_token)));
+    }
+    if (fieldNames.contains("address")) {
+      fieldMap.put("address", Collections.singletonList(String.valueOf(address)));
     }
     if (fieldNames.contains("callback")) {
       fieldMap.put("callback", Collections.singletonList(String.valueOf(callback)));
@@ -3443,9 +3446,6 @@ public final class AddressesInsertHttpRequest implements ApiMessage {
     if (fieldNames.contains("region")) {
       fieldMap.put("region", Collections.singletonList(String.valueOf(region)));
     }
-    if (fieldNames.contains("request")) {
-      fieldMap.put("request", Collections.singletonList(String.valueOf(request)));
-    }
     if (fieldNames.contains("userIp")) {
       fieldMap.put("userIp", Collections.singletonList(String.valueOf(userIp)));
     }
@@ -3454,6 +3454,10 @@ public final class AddressesInsertHttpRequest implements ApiMessage {
 
   public String getAccessToken() {
     return access_token;
+  }
+
+  public Address getAddress() {
+    return address;
   }
 
   public String getCallback() {
@@ -3484,10 +3488,6 @@ public final class AddressesInsertHttpRequest implements ApiMessage {
     return region;
   }
 
-  public Address getRequest() {
-    return request;
-  }
-
   public String getUserIp() {
     return userIp;
   }
@@ -3514,6 +3514,7 @@ public final class AddressesInsertHttpRequest implements ApiMessage {
 
   public static class Builder {
     private String access_token;
+    private Address address;
     private String callback;
     private String fields;
     private String key;
@@ -3521,7 +3522,6 @@ public final class AddressesInsertHttpRequest implements ApiMessage {
     private String project;
     private String quotaUser;
     private String region;
-    private Address request;
     private String userIp;
 
     Builder() {}
@@ -3530,6 +3530,9 @@ public final class AddressesInsertHttpRequest implements ApiMessage {
       if (other == AddressesInsertHttpRequest.getDefaultInstance()) return this;
       if (other.getAccessToken() != null) {
         this.access_token = other.access_token;
+      }
+      if (other.getAddress() != null) {
+        this.address = other.address;
       }
       if (other.getCallback() != null) {
         this.callback = other.callback;
@@ -3552,9 +3555,6 @@ public final class AddressesInsertHttpRequest implements ApiMessage {
       if (other.getRegion() != null) {
         this.region = other.region;
       }
-      if (other.getRequest() != null) {
-        this.request = other.request;
-      }
       if (other.getUserIp() != null) {
         this.userIp = other.userIp;
       }
@@ -3563,6 +3563,7 @@ public final class AddressesInsertHttpRequest implements ApiMessage {
 
     Builder(AddressesInsertHttpRequest source) {
       this.access_token = source.access_token;
+      this.address = source.address;
       this.callback = source.callback;
       this.fields = source.fields;
       this.key = source.key;
@@ -3570,7 +3571,6 @@ public final class AddressesInsertHttpRequest implements ApiMessage {
       this.project = source.project;
       this.quotaUser = source.quotaUser;
       this.region = source.region;
-      this.request = source.request;
       this.userIp = source.userIp;
     }
 
@@ -3580,6 +3580,15 @@ public final class AddressesInsertHttpRequest implements ApiMessage {
 
     public Builder setAccessToken(String access_token) {
       this.access_token = access_token;
+      return this;
+    }
+
+    public Address getAddress() {
+      return address;
+    }
+
+    public Builder setAddress(Address address) {
+      this.address = address;
       return this;
     }
 
@@ -3646,15 +3655,6 @@ public final class AddressesInsertHttpRequest implements ApiMessage {
       return this;
     }
 
-    public Address getRequest() {
-      return request;
-    }
-
-    public Builder setRequest(Address request) {
-      this.request = request;
-      return this;
-    }
-
     public String getUserIp() {
       return userIp;
     }
@@ -3672,6 +3672,7 @@ public final class AddressesInsertHttpRequest implements ApiMessage {
 
 
 
+
       if (project == null) {
         missing += " project";
       }
@@ -3680,12 +3681,12 @@ public final class AddressesInsertHttpRequest implements ApiMessage {
         missing += " region";
       }
 
-
       if (!missing.isEmpty()) {
         throw new IllegalStateException("Missing required properties:" + missing);
       }
       return new AddressesInsertHttpRequest(
         access_token,
+        address,
         callback,
         fields,
         key,
@@ -3693,7 +3694,6 @@ public final class AddressesInsertHttpRequest implements ApiMessage {
         project,
         quotaUser,
         region,
-        request,
         userIp
       );
     }
@@ -3701,6 +3701,7 @@ public final class AddressesInsertHttpRequest implements ApiMessage {
     public Builder clone() {
       Builder newBuilder = new Builder();
       newBuilder.setAccessToken(this.access_token);
+      newBuilder.setAddress(this.address);
       newBuilder.setCallback(this.callback);
       newBuilder.setFields(this.fields);
       newBuilder.setKey(this.key);
@@ -3708,7 +3709,6 @@ public final class AddressesInsertHttpRequest implements ApiMessage {
       newBuilder.setProject(this.project);
       newBuilder.setQuotaUser(this.quotaUser);
       newBuilder.setRegion(this.region);
-      newBuilder.setRequest(this.request);
       newBuilder.setUserIp(this.userIp);
       return newBuilder;
     }
@@ -3718,6 +3718,7 @@ public final class AddressesInsertHttpRequest implements ApiMessage {
   public String toString() {
     return "AddressesInsertHttpRequest{"
         + "access_token=" + access_token + ", "
+        + "address=" + address + ", "
         + "callback=" + callback + ", "
         + "fields=" + fields + ", "
         + "key=" + key + ", "
@@ -3725,7 +3726,6 @@ public final class AddressesInsertHttpRequest implements ApiMessage {
         + "project=" + project + ", "
         + "quotaUser=" + quotaUser + ", "
         + "region=" + region + ", "
-        + "request=" + request + ", "
         + "userIp=" + userIp
         + "}";
   }
@@ -3739,6 +3739,7 @@ public final class AddressesInsertHttpRequest implements ApiMessage {
       AddressesInsertHttpRequest that = (AddressesInsertHttpRequest) o;
       return
           Objects.equals(this.access_token, that.getAccessToken()) &&
+          Objects.equals(this.address, that.getAddress()) &&
           Objects.equals(this.callback, that.getCallback()) &&
           Objects.equals(this.fields, that.getFields()) &&
           Objects.equals(this.key, that.getKey()) &&
@@ -3746,7 +3747,6 @@ public final class AddressesInsertHttpRequest implements ApiMessage {
           Objects.equals(this.project, that.getProject()) &&
           Objects.equals(this.quotaUser, that.getQuotaUser()) &&
           Objects.equals(this.region, that.getRegion()) &&
-          Objects.equals(this.request, that.getRequest()) &&
           Objects.equals(this.userIp, that.getUserIp())
           ;
     }
@@ -3757,6 +3757,7 @@ public final class AddressesInsertHttpRequest implements ApiMessage {
   public int hashCode() {
     return Objects.hash(
       access_token,
+      address,
       callback,
       fields,
       key,
@@ -3764,7 +3765,6 @@ public final class AddressesInsertHttpRequest implements ApiMessage {
       project,
       quotaUser,
       region,
-      request,
       userIp
     );
   }

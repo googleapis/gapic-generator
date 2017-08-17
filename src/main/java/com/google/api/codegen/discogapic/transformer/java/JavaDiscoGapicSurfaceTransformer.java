@@ -113,9 +113,7 @@ public class JavaDiscoGapicSurfaceTransformer
         importTypeTable,
         new DiscoGapicNamer(namer),
         // Always enable string format functions.
-        JavaFeatureConfig.newBuilder()
-            .enableStringFormatFunctions(true)
-            .build());
+        JavaFeatureConfig.newBuilder().enableStringFormatFunctions(true).build());
   }
 
   @Override

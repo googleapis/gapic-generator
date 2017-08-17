@@ -201,7 +201,12 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     }
 
     if (method.request() != null) {
-      properties.add(schemaToParamView(context, method.request(), symbolTable));
+      properties.add(
+          schemaToParamView(
+              context,
+              method.request(),
+              method.request().dereference().getIdentifier(),
+              symbolTable));
     }
     Collections.sort(properties);
 
@@ -217,18 +222,26 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
   // Transforms a request/response Schema object into a StaticLangApiMessageView.
   private StaticLangApiMessageView schemaToParamView(
       SchemaTransformationContext context, Schema schema, SymbolTable symbolTable) {
+    return schemaToParamView(context, schema, schema.getIdentifier(), symbolTable);
+  }
+
+  // Transforms a request/response Schema object into a StaticLangApiMessageView.
+  private StaticLangApiMessageView schemaToParamView(
+      SchemaTransformationContext context,
+      Schema schema,
+      String preferredName,
+      SymbolTable symbolTable) {
     StaticLangApiMessageView.Builder paramView = StaticLangApiMessageView.newBuilder();
     String typeName = context.getSchemaTypeTable().getAndSaveNicknameFor(schema);
     paramView.description(schema.description());
-    paramView.name(symbolTable.getNewSymbol(schema.getIdentifier()));
+    String name = context.getNamer().privateFieldName(Name.anyCamel(preferredName));
+    paramView.name(symbolTable.getNewSymbol(name));
     paramView.typeName(typeName);
     paramView.innerTypeName(typeName);
     paramView.isRequired(schema.required());
     paramView.canRepeat(schema.repeated());
-    paramView.fieldGetFunction(
-        context.getDiscoGapicNamer().getResourceGetterName(schema.getIdentifier()));
-    paramView.fieldSetFunction(
-        context.getDiscoGapicNamer().getResourceSetterName(schema.getIdentifier()));
+    paramView.fieldGetFunction(context.getDiscoGapicNamer().getResourceGetterName(name));
+    paramView.fieldSetFunction(context.getDiscoGapicNamer().getResourceSetterName(name));
     paramView.properties(new LinkedList<StaticLangApiMessageView>());
     paramView.isRequestMessage(false);
     paramView.hasRequiredProperties(false);
