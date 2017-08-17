@@ -133,53 +133,6 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
       String longName = packageName + "." + shortName;
       return new TypeName(longName, shortName);
     } else {
-      throw new IllegalArgumentException("unknown type kind: " + schema.type());
-    }
-  }
-
-  /**
-   * Returns the Java representation of a type, with cardinality. If the type is a Java primitive,
-   * basicTypeName returns it in unboxed form.
-   *
-   * @param schema The Schema to generate a TypeName from.
-   *     <p>This method will be recursively called on the given schema's children.
-   */
-  @Override
-  public TypeName getTypeName(Schema schema, BoxingBehavior boxingBehavior) {
-    String primitiveTypeName = getPrimitiveTypeName(schema);
-    if (primitiveTypeName != null) {
-      TypeName primitiveType;
-      if (primitiveTypeName.contains(".")) {
-        // Fully qualified type name, use regular type name resolver. Can skip boxing logic
-        // because those types are already boxed.
-        primitiveType = typeNameConverter.getTypeName(primitiveTypeName);
-      } else {
-        switch (boxingBehavior) {
-          case BOX_PRIMITIVES:
-            primitiveType = new TypeName(JavaTypeTable.getBoxedTypeName(primitiveTypeName));
-            break;
-          case NO_BOX_PRIMITIVES:
-            primitiveType = new TypeName(primitiveTypeName);
-            break;
-          default:
-            throw new IllegalArgumentException(
-                String.format("Unhandled boxing behavior: %s", boxingBehavior.name()));
-        }
-      }
-      if (schema.repeated()) {
-        TypeName listTypeName = typeNameConverter.getTypeName("java.util.List");
-        return new TypeName(
-            listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", primitiveType);
-      } else {
-        return primitiveType;
-      }
-    } else if (schema.type() == Type.ARRAY) {
-      // TODO(andrealin): ensure that this handles arrays of arrays.
-      TypeName listTypeName = typeNameConverter.getTypeName("java.util.List");
-      TypeName elementTypeName = getTypeName(schema.items(), BoxingBehavior.BOX_PRIMITIVES);
-      return new TypeName(
-          listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", elementTypeName);
-    } else {
       String packageName =
           !implicitPackageName.isEmpty() ? implicitPackageName : DEFAULT_JAVA_PACKAGE_PREFIX;
       String shortName = "";
@@ -197,6 +150,25 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
       String longName = packageName + "." + shortName;
 
       return new TypeName(longName, shortName);
+    }
+  }
+
+  /**
+   * Returns the Java representation of a type, with cardinality. If the type is a Java primitive,
+   * basicTypeName returns it in unboxed form.
+   *
+   * @param schema The Schema to generate a TypeName from.
+   *     <p>This method will be recursively called on the given schema's children.
+   */
+  @Override
+  public TypeName getTypeName(Schema schema, BoxingBehavior boxingBehavior) {
+    TypeName elementTypeName = getTypeNameForElementType(schema, BoxingBehavior.BOX_PRIMITIVES);
+    if (schema.repeated() || schema.type().equals(Type.ARRAY)) {
+      TypeName listTypeName = typeNameConverter.getTypeName("java.util.List");
+      return new TypeName(
+          listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", elementTypeName);
+    } else {
+      return elementTypeName;
     }
   }
 
