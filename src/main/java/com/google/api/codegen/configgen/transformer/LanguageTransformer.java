@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,34 +12,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.configgen;
+package com.google.api.codegen.configgen.transformer;
 
+import com.google.api.codegen.configgen.viewmodel.LanguageSettingView;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Generator for language settings section. Currently the only language setting is the package name.
- */
-public class LanguageGenerator {
-
+/** Generates language setting view objects using a package name. */
+public class LanguageTransformer {
   private static final String DEFAULT_PACKAGE_SEPARATOR = ".";
-
-  private static final String CONFIG_KEY_PACKAGE_NAME = "package_name";
 
   private static final Map<String, LanguageFormatter> LANGUAGE_FORMATTERS;
 
   static {
     List<RewriteRule> javaRewriteRules =
         Arrays.asList(
-            new RewriteRule("^google", "com.google.cloud"),
+            new RewriteRule("^google(\\.cloud)?", "com.google.cloud"),
             new RewriteRule("(.v[^.]+)$", ".spi$1"));
     List<RewriteRule> pythonRewriteRules =
         Arrays.asList(new RewriteRule("^google(?!\\.cloud)", "google.cloud.gapic"));
@@ -57,30 +53,17 @@ public class LanguageGenerator {
             .build();
   }
 
-  public static Map<String, Object> generate(String packageName) {
-
-    Map<String, Object> languages = new LinkedHashMap<>();
-    for (String language : LANGUAGE_FORMATTERS.keySet()) {
-      LanguageFormatter formatter = LANGUAGE_FORMATTERS.get(language);
-      String formattedPackageName = formatter.getFormattedPackageName(packageName);
-
-      Map<String, Object> packageNameMap = new LinkedHashMap<>();
-      packageNameMap.put(CONFIG_KEY_PACKAGE_NAME, formattedPackageName);
-      languages.put(language, packageNameMap);
+  public List<LanguageSettingView> generateLanguageSettings(String packageName) {
+    ImmutableList.Builder<LanguageSettingView> languageSettings = ImmutableList.builder();
+    for (Map.Entry<String, LanguageFormatter> entry : LANGUAGE_FORMATTERS.entrySet()) {
+      LanguageFormatter languageFormatter = entry.getValue();
+      languageSettings.add(
+          LanguageSettingView.newBuilder()
+              .language(entry.getKey())
+              .packageName(languageFormatter.getFormattedPackageName(packageName))
+              .build());
     }
-    return languages;
-  }
-
-  private static String firstCharToUpperCase(String string) {
-    return Character.toUpperCase(string.charAt(0)) + string.substring(1);
-  }
-
-  /** Returns true if it is a Google Cloud API. */
-  private static boolean isApiGoogleCloud(List<String> nameComponents) {
-    int size = nameComponents.size();
-    return size >= 3
-        && nameComponents.get(0).equals("google")
-        && nameComponents.get(size - 1).startsWith("v");
+    return languageSettings.build();
   }
 
   private interface LanguageFormatter {
@@ -91,17 +74,17 @@ public class LanguageGenerator {
 
     private final String separator;
     private final List<RewriteRule> rewriteRules;
-    private final boolean capitalize;
+    private final boolean shouldCapitalize;
 
     public SimpleLanguageFormatter(
-        String separator, List<RewriteRule> rewriteRules, boolean capitalize) {
+        String separator, List<RewriteRule> rewriteRules, boolean shouldCapitalize) {
       this.separator = separator;
       if (rewriteRules != null) {
         this.rewriteRules = rewriteRules;
       } else {
         this.rewriteRules = new ArrayList<>();
       }
-      this.capitalize = capitalize;
+      this.shouldCapitalize = shouldCapitalize;
     }
 
     public String getFormattedPackageName(String packageName) {
@@ -110,13 +93,17 @@ public class LanguageGenerator {
       }
       List<String> elements = new LinkedList<>();
       for (String component : Splitter.on(DEFAULT_PACKAGE_SEPARATOR).split(packageName)) {
-        if (capitalize) {
-          elements.add(firstCharToUpperCase(component));
+        if (shouldCapitalize) {
+          elements.add(capitalize(component));
         } else {
           elements.add(component);
         }
       }
       return Joiner.on(separator).join(elements);
+    }
+
+    private String capitalize(String string) {
+      return Character.toUpperCase(string.charAt(0)) + string.substring(1);
     }
   }
 
@@ -138,6 +125,14 @@ public class LanguageGenerator {
           + Joiner.on("/").join(nameComponents.subList(1, size - 1))
           + "/api"
           + nameComponents.get(size - 1);
+    }
+
+    /** Returns true if it is a Google Cloud API. */
+    private boolean isApiGoogleCloud(List<String> nameComponents) {
+      int size = nameComponents.size();
+      return size >= 3
+          && nameComponents.get(0).equals("google")
+          && nameComponents.get(size - 1).startsWith("v");
     }
   }
 
