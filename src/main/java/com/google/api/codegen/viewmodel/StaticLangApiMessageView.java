@@ -77,35 +77,36 @@ public abstract class StaticLangApiMessageView implements Comparable<StaticLangA
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract StaticLangApiMessageView.Builder typeName(String val);
+    public abstract Builder typeName(String val);
 
-    public abstract StaticLangApiMessageView.Builder name(String val);
+    public abstract Builder name(String val);
 
-    public abstract StaticLangApiMessageView.Builder description(String val);
+    public abstract Builder description(String val);
 
-    public abstract StaticLangApiMessageView.Builder defaultValue(String val);
+    public abstract Builder defaultValue(String val);
 
-    public abstract StaticLangApiMessageView.Builder enumValues(List<String> val);
+    public abstract Builder enumValues(List<String> val);
 
-    public abstract StaticLangApiMessageView.Builder innerTypeName(String val);
+    public abstract Builder innerTypeName(String val);
 
-    public abstract StaticLangApiMessageView.Builder fieldGetFunction(String val);
+    public abstract Builder fieldGetFunction(String val);
 
-    public abstract StaticLangApiMessageView.Builder fieldSetFunction(String val);
+    public abstract Builder fieldSetFunction(String val);
 
-    public abstract StaticLangApiMessageView.Builder properties(List<StaticLangApiMessageView> val);
+    public abstract Builder properties(List<StaticLangApiMessageView> val);
 
-    public abstract StaticLangApiMessageView.Builder hasRequiredProperties(boolean val);
+    public abstract Builder hasRequiredProperties(boolean val);
 
-    public abstract StaticLangApiMessageView.Builder isRequired(boolean val);
+    public abstract Builder isRequired(boolean val);
 
-    public abstract StaticLangApiMessageView.Builder canRepeat(boolean val);
+    public abstract Builder canRepeat(boolean val);
 
-    public abstract StaticLangApiMessageView.Builder isRequestMessage(boolean val);
+    public abstract Builder isRequestMessage(boolean val);
 
     public abstract StaticLangApiMessageView build();
   }
 
+  @Override
   public int compareTo(StaticLangApiMessageView o) {
     return this.name().compareTo(o.name());
   }

@@ -69,6 +69,16 @@ public abstract class SchemaTransformationContext implements TransformationConte
     return getSchemaTypeTable();
   }
 
+  @Override
+  public SchemaTransformationContext withNewTypeTable() {
+    return create(id(), getSchemaTypeTable().cloneEmpty(), getDocContext());
+  }
+
+  @Override
+  public SchemaTransformationContext withNewTypeTable(String newPackageName) {
+    return create(id(), getSchemaTypeTable().cloneEmpty(newPackageName), getDocContext());
+  }
+
   public static Comparator<SchemaTransformationContext> comparator =
       new Comparator<SchemaTransformationContext>() {
         @Override

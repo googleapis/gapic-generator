@@ -53,8 +53,10 @@ public interface InterfaceContext extends TransformationContext {
 
   String getInterfaceDescription();
 
+  @Override
   InterfaceContext withNewTypeTable();
 
+  @Override
   InterfaceContext withNewTypeTable(String newPackageName);
 
   MethodContext asFlattenedMethodContext(MethodModel method, FlatteningConfig flatteningConfig);

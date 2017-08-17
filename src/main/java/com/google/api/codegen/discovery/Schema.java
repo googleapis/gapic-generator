@@ -287,4 +287,8 @@ public abstract class Schema implements Node {
       return EMPTY;
     }
   }
+
+  public boolean isPathParam() {
+    return location().equals("path");
+  }
 }
