@@ -108,7 +108,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
   }
 
   /**
-   * Docs in Go usually starts with the name of the method. Prepend the method name if the name
+   * Docs in Go usually start with the name of the method. Prepend the method name if the name
    * isn't already the first word.
    */
   @VisibleForTesting
