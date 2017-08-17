@@ -1,0 +1,103 @@
+type: com.google.api.codegen.ConfigProto
+language_settings:
+  java:
+    package_name: com.google.cloud.simplecompute.v1
+    interface_names:
+      google.simplecompute.v1.Addresses: AddressAdmin
+  python:
+    package_name: google.cloud.gapic.simplecompute.v1
+  go:
+    package_name: cloud.google.com/go/simplecompute/apiv1
+  csharp:
+    package_name: Google.Cloud.Simplecompute.V1
+  ruby:
+    package_name: Google::Cloud::Simplecompute::V1
+  php:
+    package_name: Google\Cloud\Simplecompute\V1
+  nodejs:
+    package_name: simplecompute.v1
+    domain_layer_location: google-cloud
+license_header:
+  copyright_file: copyright-google.txt
+  license_file: license-header-apache-2.0.txt
+interfaces:
+- name: google.simplecompute.v1.Addresses
+  collections:
+  - name_pattern: project/{project}/regions/{region}/addresses/{address}
+    entity_name: address
+  - name_pattern: project/{project}/regions/{region}
+    entity_name: region
+  retry_codes_def:
+  - name: idempotent
+    retry_codes:
+    - STATUS_CODE_SERVICE_UNAVAILABLE
+    - STATUS_CODE_SERVER_ERROR
+  retry_params_def:
+  - name: default
+    initial_retry_delay_millis: 100
+    retry_delay_multiplier: 1.3
+    max_retry_delay_millis: 60000 # 60 seconds
+    initial_rpc_timeout_millis: 60000 # 60 seconds
+    rpc_timeout_multiplier: 1
+    max_rpc_timeout_millis: 60000 # 60 seconds
+    total_timeout_millis: 600000 # 10 minutes
+  methods:
+  - name: compute.addresses.insert
+# TODO(andrealin): Use flattening and required_fields configs when DiscoGapic can handle it.
+#    flattening:
+#      groups:
+#      - parameters:
+#        - name
+#        - address
+#    required_fields:
+#    - name
+#    - address
+    request_object_method: true
+    resource_name_treatment: STATIC_TYPES
+    retry_codes_name: idempotent
+    retry_params_name: default
+    field_name_patterns:
+      name: region
+    timeout_millis: 60000
+  - name: compute.addresses.list
+    request_object_method: true
+    resource_name_treatment: STATIC_TYPES
+    page_streaming:
+      request:
+        page_size_field: page_size
+        token_field: page_token
+      response:
+        token_field: next_page_token
+        resources_field: AddressList
+    retry_codes_name: idempotent
+    retry_params_name: default
+    timeout_millis: 60000
+  - name: compute.addresses.get
+#    flattening:
+#      groups:
+#      - parameters:
+#        - name
+#        - address
+#    required_fields:
+#    - name
+#    - address
+    request_object_method: false
+    retry_codes_name: idempotent
+    retry_params_name: default
+    timeout_millis: 60000
+    field_name_patterns:
+      name: address
+  - name: compute.addresses.delete
+#    flattening:
+#      groups:
+#      - parameters:
+#        - name
+#    required_fields:
+#    - name
+    request_object_method: false
+    resource_name_treatment: STATIC_TYPES
+    retry_codes_name: idempotent
+    retry_params_name: default
+    field_name_patterns:
+      name: address
+    timeout_millis: 60000
