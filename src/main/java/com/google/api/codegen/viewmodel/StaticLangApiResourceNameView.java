@@ -51,15 +51,15 @@ public abstract class StaticLangApiResourceNameView
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract StaticLangApiResourceNameView.Builder name(String val);
+    public abstract Builder name(String val);
 
-    public abstract StaticLangApiResourceNameView.Builder typeName(String val);
+    public abstract Builder typeName(String val);
 
-    public abstract StaticLangApiResourceNameView.Builder nameTypeName(String val);
+    public abstract Builder nameTypeName(String val);
 
-    public abstract StaticLangApiResourceNameView.Builder pathTemplate(String val);
+    public abstract Builder pathTemplate(String val);
 
-    public abstract StaticLangApiResourceNameView.Builder pathParams(List<StaticMemberView> val);
+    public abstract Builder pathParams(List<StaticMemberView> val);
 
     public abstract StaticLangApiResourceNameView build();
   }
