@@ -63,8 +63,9 @@ public class FieldConfigGenerator implements MethodConfigGenerator {
     }
     // use all fields for the following check; if there are ignored fields for flattening
     // purposes, the caller still needs a way to set them (by using the request object method).
-    if (message.getFields().size() > REQUEST_OBJECT_METHOD_THRESHOLD
-        || message.getFields().size() != parameterList.size()) {
+    if ((message.getFields().size() > REQUEST_OBJECT_METHOD_THRESHOLD
+            || message.getFields().size() != parameterList.size())
+        && !method.getRequestStreaming()) {
       result.put(CONFIG_KEY_REQUEST_OBJECT_METHOD, true);
     } else {
       result.put(CONFIG_KEY_REQUEST_OBJECT_METHOD, false);
