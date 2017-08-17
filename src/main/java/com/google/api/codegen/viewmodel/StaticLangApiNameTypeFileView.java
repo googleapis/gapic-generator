@@ -18,10 +18,7 @@ import com.google.api.codegen.SnippetSetRunner;
 import com.google.auto.value.AutoValue;
 
 /**
- * ViewModel representing the file containing a message.
- *
- * <p>For example, this can be used to represent a class file containing a Discovery Document's
- * schemas.
+ * ViewModel representing the file containing a ResourceNameType.
  */
 @AutoValue
 public abstract class StaticLangApiNameTypeFileView implements ViewModel {

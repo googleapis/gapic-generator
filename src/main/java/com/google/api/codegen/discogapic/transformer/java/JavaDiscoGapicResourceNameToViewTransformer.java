@@ -122,7 +122,7 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
     return surfaceRequests;
   }
 
-  /* Given a message view, creates a top-level message file view. */
+  /* Given a ResourceName view, creates a top-level ResourceName file view. */
   private StaticLangApiResourceNameFileView generateResourceNameFile(
       SchemaTransformationContext context, StaticLangApiResourceNameView messageView) {
     StaticLangApiResourceNameFileView.Builder apiFile =
@@ -134,13 +134,12 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
     String outputPath = pathMapper.getOutputPath(null, context.getDocContext().getProductConfig());
     apiFile.outputPath(outputPath + File.separator + messageView.typeName() + ".java");
 
-    // must be done as the last step to catch all imports
     apiFile.fileHeader(fileHeaderTransformer.generateFileHeader(context));
 
     return apiFile.build();
   }
 
-  /* Given a message view, creates a top-level message file view. */
+  /* Given a ResourceNameType view, creates a top-level ResourceNameType file view. */
   private StaticLangApiNameTypeFileView generateNameTypeFile(
       SchemaTransformationContext context, Method method) {
     StaticLangApiNameTypeFileView.Builder apiFile = StaticLangApiNameTypeFileView.newBuilder();

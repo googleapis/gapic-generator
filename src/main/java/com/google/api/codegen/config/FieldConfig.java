@@ -62,7 +62,8 @@ public abstract class FieldConfig {
       ResourceNameConfig resourceNameConfig,
       ResourceNameConfig messageResourceNameConfig) {
     if (resourceNameTreatment != ResourceNameTreatment.NONE && resourceNameConfig == null) {
-      throw new IllegalArgumentException("name may only be null if resourceNameTreatment is NONE");
+      throw new IllegalArgumentException(
+          "resourceName may only be null if resourceNameTreatment is NONE");
     }
     if (resourceNameConfig != null
         && resourceNameConfig.getResourceNameType() == ResourceNameType.FIXED) {
