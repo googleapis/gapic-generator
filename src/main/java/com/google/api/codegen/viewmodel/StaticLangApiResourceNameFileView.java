@@ -46,14 +46,13 @@ public abstract class StaticLangApiResourceNameFileView implements ViewModel {
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract StaticLangApiResourceNameFileView.Builder resourceName(
-        StaticLangApiResourceNameView val);
+    public abstract Builder resourceName(StaticLangApiResourceNameView val);
 
-    public abstract StaticLangApiResourceNameFileView.Builder templateFileName(String val);
+    public abstract Builder templateFileName(String val);
 
-    public abstract StaticLangApiResourceNameFileView.Builder outputPath(String val);
+    public abstract Builder outputPath(String val);
 
-    public abstract StaticLangApiResourceNameFileView.Builder fileHeader(FileHeaderView val);
+    public abstract Builder fileHeader(FileHeaderView val);
 
     public abstract StaticLangApiResourceNameFileView build();
   }
