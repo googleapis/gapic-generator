@@ -51,6 +51,14 @@ public class PhpPackageUtil {
     return Joiner.on(PACKAGE_SEPARATOR).join(components);
   }
 
+  public static String buildPackageName(String... components) {
+    return buildPackageName(Arrays.asList(components));
+  }
+
+  public static String getFullyQualifiedName(String packageName, String objectName) {
+    return Joiner.on(PACKAGE_SEPARATOR).join(packageName, objectName);
+  }
+
   public static boolean isPackageVersion(String versionString) {
     return versionString.matches(PACKAGE_VERSION_REGEX);
   }

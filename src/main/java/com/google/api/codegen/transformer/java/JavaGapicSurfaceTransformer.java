@@ -442,8 +442,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     String outputPath =
         pathMapper.getOutputPath(context.getInterface(), context.getProductConfig());
     String className = context.getNamer().getApiStubInterfaceName(context.getInterfaceConfig());
-    fileView.outputPath(
-        outputPath + File.separator + "stub" + File.separator + className + ".java");
+    fileView.outputPath(outputPath + File.separator + className + ".java");
 
     // must be done as the last step to catch all imports
     fileView.fileHeader(fileHeaderTransformer.generateFileHeader(context));
@@ -485,8 +484,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     String outputPath =
         pathMapper.getOutputPath(context.getInterface(), context.getProductConfig());
     String className = context.getNamer().getApiGrpcStubClassName(context.getInterfaceConfig());
-    fileView.outputPath(
-        outputPath + File.separator + "stub" + File.separator + className + ".java");
+    fileView.outputPath(outputPath + File.separator + className + ".java");
 
     // must be done as the last step to catch all imports
     fileView.fileHeader(fileHeaderTransformer.generateFileHeader(context));
