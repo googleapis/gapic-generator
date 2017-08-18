@@ -17,6 +17,7 @@ package com.google.api.codegen.discogapic.transformer.java;
 import static com.google.api.codegen.util.java.JavaTypeTable.JavaLangResolution.IGNORE_JAVA_LANG_CLASH;
 
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.discogapic.SchemaTransformationContext;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
@@ -56,6 +57,7 @@ import java.util.Set;
 /* Creates the ViewModel for Discovery-Doc-based ResourceName and ResourceTypeName Java classes. */
 public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToViewTransformer {
   private final GapicCodePathMapper pathMapper;
+  private final PackageMetadataConfig packageConfig;
   private final StandardImportSectionTransformer importSectionTransformer =
       new StandardImportSectionTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
@@ -71,8 +73,11 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
   private static final String RESOURCE_NAME_TEMPLATE_FILENAME = "java/resource_name.snip";
   private static final String NAME_TYPE_TEMPLATE_FILENAME = "java/resource_name_type.snip";
 
-  public JavaDiscoGapicResourceNameToViewTransformer(GapicCodePathMapper pathMapper) {
+  public JavaDiscoGapicResourceNameToViewTransformer(
+      GapicCodePathMapper pathMapper, PackageMetadataConfig packageMetadataConfig) {
     this.pathMapper = pathMapper;
+    this.packageConfig = packageMetadataConfig;
+    // TODO use packageMetadataConfig
   }
 
   @Override

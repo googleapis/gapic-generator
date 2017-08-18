@@ -56,7 +56,7 @@ public class MainDiscoGapicProviderFactory implements DiscoGapicProviderFactory 
                 .build();
         List<DocumentToViewTransformer> transformers =
             Arrays.asList(
-                new JavaDiscoGapicResourceNameToViewTransformer(javaPathMapper),
+                new JavaDiscoGapicResourceNameToViewTransformer(javaPathMapper, packageConfig),
                 new JavaDiscoGapicSchemaToViewTransformer(javaPathMapper, packageConfig),
                 new JavaDiscoGapicRequestToViewTransformer(javaPathMapper, packageConfig),
                 new JavaDiscoGapicSurfaceTransformer(javaPathMapper, packageConfig));
