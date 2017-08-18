@@ -342,7 +342,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
   }
 
   private List<ImportFileView> generateTypesStandardImports() {
-    return ImmutableList.of(createImport("__future__", "absoulute_import"), createImport("sys"));
+    return ImmutableList.of(createImport("__future__", "absolute_import"), createImport("sys"));
   }
 
   private void populateTypeTable(List<ProtoFile> protoFileDependencies, ModelTypeTable typeTable) {
@@ -365,7 +365,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
   }
 
   private List<ImportFileView> generateVersionedInitStandardImports() {
-    return ImmutableList.of(createImport("__future__", "absoulte_import"));
+    return ImmutableList.of(createImport("__future__", "absolute_import"));
   }
 
   private List<ImportFileView> generateVersionedInitAppImports(
