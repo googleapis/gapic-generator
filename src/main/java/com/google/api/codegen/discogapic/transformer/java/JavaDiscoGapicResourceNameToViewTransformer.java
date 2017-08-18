@@ -57,7 +57,6 @@ import java.util.Set;
 /* Creates the ViewModel for Discovery-Doc-based ResourceName and ResourceTypeName Java classes. */
 public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToViewTransformer {
   private final GapicCodePathMapper pathMapper;
-  private final PackageMetadataConfig packageConfig;
   private final StandardImportSectionTransformer importSectionTransformer =
       new StandardImportSectionTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
@@ -74,10 +73,8 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
   private static final String NAME_TYPE_TEMPLATE_FILENAME = "java/resource_name_type.snip";
 
   public JavaDiscoGapicResourceNameToViewTransformer(
-      GapicCodePathMapper pathMapper, PackageMetadataConfig packageMetadataConfig) {
+      GapicCodePathMapper pathMapper) {
     this.pathMapper = pathMapper;
-    this.packageConfig = packageMetadataConfig;
-    // TODO use packageMetadataConfig
   }
 
   @Override

@@ -1,4 +1,4 @@
-============== file: src/main/java/com/google/cloud/simplecompute/v1/AddressesName.java ==============
+============== file: src/main/java/com/google/cloud/simplecompute/v1/AddressName.java ==============
 /*
  * Copyright 2017, Google Inc. All rights reserved.
  *
@@ -28,7 +28,212 @@ import javax.annotation.Generated;
 
 @Generated("by GAPIC")
 @BetaApi
-public final class AddressesName implements ResourceName {
+public final class AddressName implements ResourceName {
+  private final String address;
+  private final String project;
+  private final String region;
+  private static final PathTemplate PATH_TEMPLATE =
+        PathTemplate.createWithoutUrlEncoding("{project}/regions/{region}/addresses/{address}");
+
+  public static Builder newBuilder() {
+    return new Builder();
+  }
+
+  public Builder toBuilder() {
+    return new Builder(this);
+  }
+
+  private AddressName(Builder builder) {
+    address = Preconditions.checkNotNull(builder.getAddress());
+    project = Preconditions.checkNotNull(builder.getProject());
+    region = Preconditions.checkNotNull(builder.getRegion());
+  }
+
+  public static AddressName create(
+      String address,
+      String project,
+      String region
+      ) {
+    return newBuilder()
+    .setAddress(address)
+    .setProject(project)
+    .setRegion(region)
+      .build();
+  }
+
+  public String getAddress() {
+    return address;
+  }
+
+  public String getProject() {
+    return project;
+  }
+
+  public String getRegion() {
+    return region;
+  }
+
+
+  public static AddressName parse(String formattedString) {
+    Map<String, String> matchMap =
+        PATH_TEMPLATE.validatedMatch(formattedString, "AddressName.parse: formattedString not in valid format");
+    return create(
+      matchMap.get("address"),
+      matchMap.get("project"),
+      matchMap.get("region")
+    );
+  }
+
+  public static boolean isParsableFrom(String formattedString) {
+    return PATH_TEMPLATE.matches(formattedString);
+  }
+
+  @Override
+  public ResourceNameType getType() {
+    return AddressNameType.instance();
+  }
+
+  public static class Builder {
+    private String address;
+    private String project;
+    private String region;
+
+    public String getAddress() {
+      return address;
+    }
+    public String getProject() {
+      return project;
+    }
+    public String getRegion() {
+      return region;
+    }
+
+    public Builder setAddress(String address) {
+      this.address = address;
+      return this;
+    }
+    public Builder setProject(String project) {
+      this.project = project;
+      return this;
+    }
+    public Builder setRegion(String region) {
+      this.region = region;
+      return this;
+    }
+
+    private Builder() {}
+
+    public Builder (AddressName addressName) {
+      address = addressName.address;
+      project = addressName.project;
+      region = addressName.region;
+    }
+
+    public AddressName build() {
+      return new AddressName(this);
+    }
+  }
+
+  @Override
+  public String toString() {
+    return PATH_TEMPLATE.instantiate(
+        "address", address,
+        "project", project,
+        "region", region
+        );
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof AddressName) {
+      AddressName that = (AddressName) o;
+      return
+          Objects.equals(this.address, that.getAddress()) &&
+          Objects.equals(this.project, that.getProject()) &&
+          Objects.equals(this.region, that.getRegion())
+          ;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+      address,
+      project,
+      region
+    );
+  }
+}
+
+============== file: src/main/java/com/google/cloud/simplecompute/v1/AddressNameType.java ==============
+/*
+ * Copyright 2017, Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.resourcenames.ResourceNameType;
+import javax.annotation.Generated;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class AddressNameType implements ResourceNameType {
+  private static AddressNameType instance = new AddressNameType();
+
+  private AddressNameType() {}
+
+  public static AddressNameType instance() {
+    return instance;
+  }
+}
+
+============== file: src/main/java/com/google/cloud/simplecompute/v1/RegionName.java ==============
+/*
+ * Copyright 2017, Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.google.cloud.simplecompute.v1;
+
+import com.google.api.core.BetaApi;
+import com.google.api.pathtemplate.PathTemplate;
+import com.google.api.resourcenames.ResourceName;
+import com.google.api.resourcenames.ResourceNameType;
+import com.google.common.base.Preconditions;
+import java.io.IOException;
+import java.util.Map;
+import java.util.Objects;
+import javax.annotation.Generated;
+
+@Generated("by GAPIC")
+@BetaApi
+public final class RegionName implements ResourceName {
   private final String project;
   private final String region;
   private static final PathTemplate PATH_TEMPLATE =
@@ -42,12 +247,12 @@ public final class AddressesName implements ResourceName {
     return new Builder(this);
   }
 
-  private AddressesName(Builder builder) {
+  private RegionName(Builder builder) {
     project = Preconditions.checkNotNull(builder.getProject());
     region = Preconditions.checkNotNull(builder.getRegion());
   }
 
-  public static AddressesName create(
+  public static RegionName create(
       String project,
       String region
       ) {
@@ -66,9 +271,9 @@ public final class AddressesName implements ResourceName {
   }
 
 
-  public static AddressesName parse(String formattedString) {
+  public static RegionName parse(String formattedString) {
     Map<String, String> matchMap =
-        PATH_TEMPLATE.validatedMatch(formattedString, "AddressesName.parse: formattedString not in valid format");
+        PATH_TEMPLATE.validatedMatch(formattedString, "RegionName.parse: formattedString not in valid format");
     return create(
       matchMap.get("project"),
       matchMap.get("region")
@@ -81,7 +286,7 @@ public final class AddressesName implements ResourceName {
 
   @Override
   public ResourceNameType getType() {
-    return AddressesNameType.instance();
+    return RegionNameType.instance();
   }
 
   public static class Builder {
@@ -106,13 +311,13 @@ public final class AddressesName implements ResourceName {
 
     private Builder() {}
 
-    public Builder (AddressesName addressesName) {
-      project = addressesName.project;
-      region = addressesName.region;
+    public Builder (RegionName regionName) {
+      project = regionName.project;
+      region = regionName.region;
     }
 
-    public AddressesName build() {
-      return new AddressesName(this);
+    public RegionName build() {
+      return new RegionName(this);
     }
   }
 
@@ -129,8 +334,8 @@ public final class AddressesName implements ResourceName {
     if (o == this) {
       return true;
     }
-    if (o instanceof AddressesName) {
-      AddressesName that = (AddressesName) o;
+    if (o instanceof RegionName) {
+      RegionName that = (RegionName) o;
       return
           Objects.equals(this.project, that.getProject()) &&
           Objects.equals(this.region, that.getRegion())
@@ -148,7 +353,7 @@ public final class AddressesName implements ResourceName {
   }
 }
 
-============== file: src/main/java/com/google/cloud/simplecompute/v1/AddressesNameType.java ==============
+============== file: src/main/java/com/google/cloud/simplecompute/v1/RegionNameType.java ==============
 /*
  * Copyright 2017, Google Inc. All rights reserved.
  *
@@ -172,12 +377,12 @@ import javax.annotation.Generated;
 
 @Generated("by GAPIC")
 @BetaApi
-public final class AddressesNameType implements ResourceNameType {
-  private static AddressesNameType instance = new AddressesNameType();
+public final class RegionNameType implements ResourceNameType {
+  private static RegionNameType instance = new RegionNameType();
 
-  private AddressesNameType() {}
+  private RegionNameType() {}
 
-  public static AddressesNameType instance() {
+  public static RegionNameType instance() {
     return instance;
   }
 }
@@ -4517,17 +4722,15 @@ public class AddressAdminClient implements BackgroundResource {
    * }
    * </code></pre>
    *
-   * @param project Project ID for this request.
    * @param region Name of the region for this request.
    * @param address A reserved address resource.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   @BetaApi
-  public final Operation addressesInsert(String project, RegionName region, Address address) {
+  public final Operation addressesInsert(RegionName region, Address address) {
 
     AddressesInsertHttpRequest request =
         AddressesInsertHttpRequest.newBuilder()
-        .setProject(project)
         .setRegionWithRegionName(region)
         .setAddress(address)
         .build();
@@ -4725,18 +4928,14 @@ public class AddressAdminClient implements BackgroundResource {
    * }
    * </code></pre>
    *
-   * @param project Project ID for this request.
-   * @param region Name of the region for this request.
    * @param address Name of the address resource to delete.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   @BetaApi
-  public final Operation addressesDelete(String project, String region, AddressName address) {
+  public final Operation addressesDelete(AddressName address) {
 
     AddressesDeleteHttpRequest request =
         AddressesDeleteHttpRequest.newBuilder()
-        .setProject(project)
-        .setRegion(region)
         .setAddressWithAddressName(address)
         .build();
     return addressesDelete(request);

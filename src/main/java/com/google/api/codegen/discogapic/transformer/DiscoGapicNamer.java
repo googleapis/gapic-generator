@@ -19,6 +19,8 @@ import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /** Provides language-specific names for variables and classes of Discovery-Document models. */
 public class DiscoGapicNamer {
@@ -91,8 +93,10 @@ public class DiscoGapicNamer {
 
   /** Return the name of the resource from a given method. */
   private static Name getResourceIdentifier(Method method) {
-    String[] pieces = method.id().split(regexDelimiter);
-    return Name.anyCamel(pieces[pieces.length - 2]);
+    // Assumes the resource is the last curly-bracketed String in the path.
+    String path = method.flatPath();
+    String resourceName = path.substring(path.lastIndexOf('{') + 1, path.lastIndexOf('}'));
+    return Name.anyCamel(resourceName);
   }
 
   public static String getSimpleInterfaceName(String interfaceName) {
