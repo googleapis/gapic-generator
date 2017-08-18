@@ -26,9 +26,11 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
 import com.google.api.codegen.transformer.BatchingTransformer;
+import com.google.api.codegen.transformer.DiscoGapicInterfaceContext;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.InterfaceContext;
@@ -532,6 +534,11 @@ public class JavaSurfaceTransformer {
     for (TypeAlias alias :
         apiMethodsContext.getImportTypeTable().getTypeTable().getAllImports().values()) {
       context.getImportTypeTable().getAndSaveNicknameFor(alias);
+    }
+
+    // TODO(andrealin): Move the baseUrl to gapic.yaml and pull value from GapicProductConfig.
+    if (productConfig.getTransportProtocol().equals(TransportProtocol.HTTP)) {
+      stubClass.baseUrl(((DiscoGapicInterfaceContext) context).getDocument().baseUrl());
     }
 
     return stubClass.build();
