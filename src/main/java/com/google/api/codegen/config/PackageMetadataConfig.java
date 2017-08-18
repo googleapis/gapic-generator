@@ -58,7 +58,9 @@ public abstract class PackageMetadataConfig {
 
   protected abstract Map<TargetLanguage, VersionBound> authVersionBound();
 
-  protected abstract Map<TargetLanguage, VersionBound> generatedPackageVersionBound();
+  protected abstract Map<TargetLanguage, VersionBound> generatedNonGAPackageVersionBound();
+
+  protected abstract Map<TargetLanguage, VersionBound> generatedGAPackageVersionBound();
 
   protected abstract Map<TargetLanguage, String> packageName();
 
@@ -99,7 +101,14 @@ public abstract class PackageMetadataConfig {
 
   /** The version the client library package. E.g., "0.14.0". Configured per language. */
   public VersionBound generatedPackageVersionBound(TargetLanguage language) {
-    return generatedPackageVersionBound().get(language);
+    if (releaseLevel(language) == ReleaseLevel.GA
+        && generatedGAPackageVersionBound() != null
+        && generatedGAPackageVersionBound().containsKey(language)) {
+      return generatedGAPackageVersionBound().get(language);
+    } else {
+      // Default to non-GA version since not all languages config GA version explicitly.
+      return generatedNonGAPackageVersionBound().get(language);
+    }
   }
 
   /** The version the auth library package that this package depends on. Configured per language. */
@@ -196,7 +205,10 @@ public abstract class PackageMetadataConfig {
 
     abstract Builder packageName(Map<TargetLanguage, String> val);
 
-    abstract Builder generatedPackageVersionBound(Map<TargetLanguage, VersionBound> val);
+    abstract Builder generatedNonGAPackageVersionBound(Map<TargetLanguage, VersionBound> val);
+
+    @Nullable
+    abstract Builder generatedGAPackageVersionBound(Map<TargetLanguage, VersionBound> val);
 
     abstract Builder protoPackageDependencies(Map<TargetLanguage, Map<String, VersionBound>> val);
 
@@ -241,7 +253,8 @@ public abstract class PackageMetadataConfig {
         .packageName(ImmutableMap.<TargetLanguage, String>of())
         .authVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
         .apiCommonVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
-        .generatedPackageVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
+        .generatedNonGAPackageVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
+        .generatedGAPackageVersionBound(ImmutableMap.<TargetLanguage, VersionBound>of())
         .protoPackageDependencies(ImmutableMap.<TargetLanguage, Map<String, VersionBound>>of())
         .releaseLevel(ImmutableMap.<TargetLanguage, ReleaseLevel>of())
         .shortName("")
@@ -262,6 +275,8 @@ public abstract class PackageMetadataConfig {
   public static PackageMetadataConfig createFromString(String yamlContents) {
     Yaml yaml = new Yaml();
     Map<String, Object> configMap = (Map<String, Object>) yaml.load(yamlContents);
+    Map<String, Map<String, Map<String, String>>> generatedVersionMap =
+        (Map<String, Map<String, Map<String, String>>>) configMap.get("generated_package_version");
 
     Builder builder =
         newBuilder()
@@ -276,9 +291,7 @@ public abstract class PackageMetadataConfig {
                 createVersionMap((Map<String, Map<String, String>>) configMap.get("proto_version")))
             .authVersionBound(
                 createVersionMap((Map<String, Map<String, String>>) configMap.get("auth_version")))
-            .generatedPackageVersionBound(
-                createVersionMap(
-                    (Map<String, Map<String, String>>) configMap.get("generated_package_version")))
+            .generatedNonGAPackageVersionBound(createVersionMap(generatedVersionMap.get("non_ga")))
             .apiCommonVersionBound(
                 createVersionMap(
                     (Map<String, Map<String, String>>) configMap.get("api_common_version")))
@@ -302,6 +315,10 @@ public abstract class PackageMetadataConfig {
     if (configMap.containsKey("proto_test_deps")) {
       builder.protoPackageTestDependencies(
           createProtoPackageDependencies(configMap, "proto_test_deps", TEST_PROTO_PACKAGE_PREFIX));
+    }
+
+    if (generatedVersionMap.containsKey("ga")) {
+      builder.generatedGAPackageVersionBound(createVersionMap(generatedVersionMap.get("ga")));
     }
     return builder.build();
   }
