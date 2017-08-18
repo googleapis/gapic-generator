@@ -16,7 +16,7 @@
   names = []
   for module in ({@importedModules(view.fileHeader.importSection.appImports)}):
       for name, message in get_messages(module).items():
-          message.__module__ = '{@view.namespace}'
+          message.__module__ = '{@view.namespace}.types'
           setattr(sys.modules[__name__], name, message)
           names.append(name)
 
