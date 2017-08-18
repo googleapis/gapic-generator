@@ -109,8 +109,9 @@ public class DiscoGapicNamer {
     return Name.anyCamel(pieces[pieces.length - 2], pieces[pieces.length - 1], "http", "request");
   }
 
-  /** Get the request type name from a method. Assumes the input's fullName follows the pattern
-   *  ([a-zA-Z]+\.){2}[a-zA-Z]+
+  /**
+   * Get the request type name from a method. Assumes the input's fullName follows the pattern
+   * ([a-zA-Z]+\.){2}[a-zA-Z]+
    */
   public static Name getRequestName(MethodModel method) {
     String[] pieces = method.getFullName().split(regexDelimiter);

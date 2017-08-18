@@ -153,8 +153,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
           }
         }
 
-        StaticLangApiMessageView requestView =
-            generateRequestClass(requestContext, method, params);
+        StaticLangApiMessageView requestView = generateRequestClass(requestContext, method, params);
         surfaceRequests.add(generateRequestFile(requestContext, requestView));
       }
     }
