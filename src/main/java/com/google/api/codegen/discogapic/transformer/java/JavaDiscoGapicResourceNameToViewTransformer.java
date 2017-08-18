@@ -17,7 +17,6 @@ package com.google.api.codegen.discogapic.transformer.java;
 import static com.google.api.codegen.util.java.JavaTypeTable.JavaLangResolution.IGNORE_JAVA_LANG_CLASH;
 
 import com.google.api.codegen.config.GapicProductConfig;
-import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.discogapic.SchemaTransformationContext;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
@@ -72,8 +71,7 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
   private static final String RESOURCE_NAME_TEMPLATE_FILENAME = "java/resource_name.snip";
   private static final String NAME_TYPE_TEMPLATE_FILENAME = "java/resource_name_type.snip";
 
-  public JavaDiscoGapicResourceNameToViewTransformer(
-      GapicCodePathMapper pathMapper) {
+  public JavaDiscoGapicResourceNameToViewTransformer(GapicCodePathMapper pathMapper) {
     this.pathMapper = pathMapper;
   }
 
