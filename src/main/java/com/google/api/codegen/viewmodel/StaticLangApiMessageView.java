@@ -15,6 +15,7 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
+import java.util.LinkedList;
 import java.util.List;
 import javax.annotation.Nullable;
 
@@ -71,8 +72,12 @@ public abstract class StaticLangApiMessageView implements Comparable<StaticLangA
 
   public abstract boolean hasRequiredProperties();
 
+  // List of ResourceNames that this message contains.
+  public abstract List<RequestObjectParamView> resourceNames();
+
   public static StaticLangApiMessageView.Builder newBuilder() {
-    return new AutoValue_StaticLangApiMessageView.Builder();
+    return new AutoValue_StaticLangApiMessageView.Builder()
+        .resourceNames(new LinkedList<RequestObjectParamView>());
   }
 
   @AutoValue.Builder
@@ -94,6 +99,8 @@ public abstract class StaticLangApiMessageView implements Comparable<StaticLangA
     public abstract Builder fieldSetFunction(String val);
 
     public abstract Builder properties(List<StaticLangApiMessageView> val);
+
+    public abstract Builder resourceNames(List<RequestObjectParamView> val);
 
     public abstract Builder hasRequiredProperties(boolean val);
 

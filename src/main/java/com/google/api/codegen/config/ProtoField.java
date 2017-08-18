@@ -91,6 +91,12 @@ public class ProtoField implements FieldModel {
   }
 
   @Override
+  public boolean isRequired() {
+    // TODO(andrealin): implement.
+    return false;
+  }
+
+  @Override
   public boolean isRepeated() {
     return protoField.isRepeated();
   }
@@ -112,6 +118,13 @@ public class ProtoField implements FieldModel {
         .getTypeName(
             ((ModelTypeTable) typeTable)
                 .getFullNameFor(TypeRef.of((MessageType) protoField.getParent())));
+  }
+
+  @Override
+  public TypeName getTypeName(ImportTypeTable typeTable) {
+    return typeTable
+        .getTypeTable()
+        .getTypeName(((ModelTypeTable) typeTable).getFullNameFor(protoField));
   }
 
   @Override
