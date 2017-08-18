@@ -4523,12 +4523,12 @@ public class AddressAdminClient implements BackgroundResource {
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   @BetaApi
-  public final Operation addressesInsert(String project, String region, Address address) {
+  public final Operation addressesInsert(String project, RegionName region, Address address) {
 
     AddressesInsertHttpRequest request =
         AddressesInsertHttpRequest.newBuilder()
         .setProject(project)
-        .setRegion(region)
+        .setRegionWithRegionName(region)
         .setAddress(address)
         .build();
     return addressesInsert(request);
@@ -4664,7 +4664,7 @@ public class AddressAdminClient implements BackgroundResource {
    */
   @BetaApi
   public final Address addressesGet(String project, String region, String address) {
-
+    ADDRESS_PATH_TEMPLATE.validate(address, "addressesGet");
     AddressesGetHttpRequest request =
         AddressesGetHttpRequest.newBuilder()
         .setProject(project)
@@ -4731,13 +4731,13 @@ public class AddressAdminClient implements BackgroundResource {
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   @BetaApi
-  public final Operation addressesDelete(String project, String region, String address) {
+  public final Operation addressesDelete(String project, String region, AddressName address) {
 
     AddressesDeleteHttpRequest request =
         AddressesDeleteHttpRequest.newBuilder()
         .setProject(project)
         .setRegion(region)
-        .setAddress(address)
+        .setAddressWithAddressName(address)
         .build();
     return addressesDelete(request);
   }
@@ -5313,12 +5313,14 @@ import com.google.api.gax.core.BackgroundResource;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.cloud.simplecompute.v1.Address;
 import com.google.cloud.simplecompute.v1.AddressList;
+import com.google.cloud.simplecompute.v1.AddressName;
 import com.google.cloud.simplecompute.v1.AddressesDeleteHttpRequest;
 import com.google.cloud.simplecompute.v1.AddressesGetHttpRequest;
 import com.google.cloud.simplecompute.v1.AddressesInsertHttpRequest;
 import com.google.cloud.simplecompute.v1.AddressesListHttpRequest;
 import com.google.cloud.simplecompute.v1.Operation;
 import static com.google.cloud.simplecompute.v1.PagedResponseWrappers.AddressesListPagedResponse;
+import com.google.cloud.simplecompute.v1.RegionName;
 import javax.annotation.Generated;
 
 // AUTO-GENERATED DOCUMENTATION AND CLASS
@@ -5384,12 +5386,14 @@ import com.google.api.gax.rpc.UnaryCallable;
 import com.google.cloud.simplecompute.v1.Address;
 import com.google.cloud.simplecompute.v1.AddressAdminSettings;
 import com.google.cloud.simplecompute.v1.AddressList;
+import com.google.cloud.simplecompute.v1.AddressName;
 import com.google.cloud.simplecompute.v1.AddressesDeleteHttpRequest;
 import com.google.cloud.simplecompute.v1.AddressesGetHttpRequest;
 import com.google.cloud.simplecompute.v1.AddressesInsertHttpRequest;
 import com.google.cloud.simplecompute.v1.AddressesListHttpRequest;
 import com.google.cloud.simplecompute.v1.Operation;
 import static com.google.cloud.simplecompute.v1.PagedResponseWrappers.AddressesListPagedResponse;
+import com.google.cloud.simplecompute.v1.RegionName;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;

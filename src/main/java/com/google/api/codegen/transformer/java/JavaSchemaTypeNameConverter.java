@@ -15,6 +15,8 @@
 package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.discovery.Schema.Type;
 import com.google.api.codegen.transformer.SchemaTypeNameConverter;
@@ -231,17 +233,35 @@ public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
     return getSnippetZeroValue(type);
   }
 
+  private TypeName getTypeNameForTypedResourceName(
+      ResourceNameConfig resourceNameConfig, FieldModel type, String typedResourceShortName) {
+    String packageName = implicitPackageName;
+    String longName = packageName + "." + typedResourceShortName;
+
+    TypeName simpleTypeName = new TypeName(longName, typedResourceShortName);
+
+    if (type.isMap()) {
+      throw new IllegalArgumentException("Map type not supported for typed resource name");
+    } else if (type.isRepeated()) {
+      TypeName listTypeName = typeNameConverter.getTypeName("java.util.List");
+      return new TypeName(
+          listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", simpleTypeName);
+    } else {
+      return simpleTypeName;
+    }
+  }
+
   @Override
   public TypeName getTypeNameForTypedResourceName(
       FieldConfig fieldConfig, String typedResourceShortName) {
-    // TODO(andrealin)
-    return null;
+    return getTypeNameForTypedResourceName(
+        fieldConfig.getResourceNameConfig(), fieldConfig.getField(), typedResourceShortName);
   }
 
   @Override
   public TypeName getTypeNameForResourceNameElementType(
       FieldConfig fieldConfig, String typedResourceShortName) {
-    // TODO(andrealin)
-    return null;
+    return getTypeNameForTypedResourceName(
+        fieldConfig.getResourceNameConfig(), fieldConfig.getField(), typedResourceShortName);
   }
 }

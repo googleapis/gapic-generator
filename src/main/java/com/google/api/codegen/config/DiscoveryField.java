@@ -17,6 +17,7 @@ package com.google.api.codegen.config;
 import static com.google.api.codegen.config.ApiSource.DISCOVERY;
 
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
+import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.discovery.Schema.Format;
@@ -62,7 +63,12 @@ public class DiscoveryField implements FieldModel {
 
   @Override
   public String getFullName() {
-    return schema.getIdentifier();
+    SurfaceNamer surfaceNamer = discoGapicNamer.getLanguageNamer();
+    TypeNameConverter typeNameConverter = surfaceNamer.getTypeNameConverter();
+    return typeNameConverter
+        .getTypeNameInImplicitPackage(
+            surfaceNamer.publicClassName(Name.anyCamel(schema.getIdentifier())))
+        .getFullName();
   }
 
   @Override
@@ -104,10 +110,22 @@ public class DiscoveryField implements FieldModel {
   public String getParentFullName() {
     SurfaceNamer surfaceNamer = discoGapicNamer.getLanguageNamer();
     TypeNameConverter typeNameConverter = surfaceNamer.getTypeNameConverter();
-    return typeNameConverter
-        .getTypeNameInImplicitPackage(
-            surfaceNamer.publicClassName(DiscoGapicNamer.getRequestName((Method) schema.parent())))
-        .getFullName();
+    if (schema.parent() instanceof Method) {
+      return typeNameConverter
+          .getTypeNameInImplicitPackage(
+              surfaceNamer.publicClassName(
+                  DiscoGapicNamer.getRequestName((Method) schema.parent())))
+          .getFullName();
+    } else if (schema.parent() instanceof Schema) {
+      return typeNameConverter
+          .getTypeNameInImplicitPackage(
+              surfaceNamer.publicClassName(
+                  Name.anyCamel(((Schema) schema.parent()).getIdentifier())))
+          .getFullName();
+    } else if (schema.parent() instanceof Document) {
+      return ((Document) schema.parent()).name();
+    }
+    return "";
   }
 
   @Override

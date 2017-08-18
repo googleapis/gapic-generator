@@ -43,7 +43,9 @@ import com.google.common.io.CharStreams;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import javax.annotation.Nullable;
 
 /**
@@ -487,12 +489,14 @@ public abstract class GapicProductConfig implements ProductConfig {
     if (messageConfig == null) {
       return builder.build();
     }
+    Map<String, FieldConfig> map = new HashMap<>();
     for (FieldModel field : messageConfig.getFieldsWithResourceNamesByMessage().values()) {
-      builder.put(
+      map.put(
           field.getFullName(),
           FieldConfig.createMessageFieldConfig(
               messageConfig, resourceNameConfigs, field, ResourceNameTreatment.STATIC_TYPES));
     }
+    builder.putAll(map);
     return builder.build();
   }
 
