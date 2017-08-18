@@ -22,6 +22,7 @@ import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.viewmodel.ApiCallableImplType;
 import com.google.api.codegen.viewmodel.ApiMethodDocView;
 import com.google.api.codegen.viewmodel.CallableMethodDetailView;
 import com.google.api.codegen.viewmodel.ClientMethodType;
@@ -674,10 +675,23 @@ public class StaticLangApiMethodTransformer {
         context.getNamer().getGenericAwareResponseTypeName(context.getMethod().getOutputType());
     String genericAwareResponseType =
         context.getTypeTable().getAndSaveNicknameFor(genericAwareResponseTypeFullName);
+
+    GapicMethodConfig methodConfig = context.getMethodConfig();
+    ApiCallableImplType callableImplType = ApiCallableImplType.SimpleApiCallable;
+    if (methodConfig.isGrpcStreaming()) {
+      callableImplType = ApiCallableImplType.of(methodConfig.getGrpcStreamingType());
+    } else if (methodConfig.isBatching()) {
+      callableImplType = ApiCallableImplType.BatchingApiCallable;
+    } else if (methodConfig.isLongRunningOperation()) {
+      callableImplType = ApiCallableImplType.InitialOperationApiCallable;
+    }
+
     methodViewBuilder.callableMethod(
         CallableMethodDetailView.newBuilder()
             .genericAwareResponseType(genericAwareResponseType)
             .callableName(callableName)
+            .interfaceTypeName(
+                context.getNamer().getApiCallableTypeName(callableImplType.serviceMethodType()))
             .build());
   }
 

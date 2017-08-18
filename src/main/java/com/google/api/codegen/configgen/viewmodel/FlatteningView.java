@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,30 +12,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.viewmodel;
+package com.google.api.codegen.configgen.viewmodel;
 
 import com.google.auto.value.AutoValue;
+import java.util.List;
 
+/**
+ * Represents the parameter groups for which a generator should produce method overloads which allow
+ * a client to directly pass request message fields as method parameters.
+ */
 @AutoValue
-public abstract class CallableMethodDetailView {
-  public abstract String callableName();
-
-  public abstract String interfaceTypeName();
-
-  public abstract String genericAwareResponseType();
+public abstract class FlatteningView {
+  /** The groups of parameters for flattening. */
+  public abstract List<FlatteningGroupView> groups();
 
   public static Builder newBuilder() {
-    return new AutoValue_CallableMethodDetailView.Builder();
+    return new AutoValue_FlatteningView.Builder();
   }
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder callableName(String name);
+    public abstract Builder groups(List<FlatteningGroupView> val);
 
-    public abstract Builder interfaceTypeName(String name);
-
-    public abstract Builder genericAwareResponseType(String name);
-
-    public abstract CallableMethodDetailView build();
+    public abstract FlatteningView build();
   }
 }

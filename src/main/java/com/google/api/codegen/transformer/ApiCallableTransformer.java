@@ -103,8 +103,8 @@ public class ApiCallableTransformer {
 
     ApiCallableImplType callableImplType = ApiCallableImplType.SimpleApiCallable;
     if (methodConfig.isGrpcStreaming()) {
-      callableImplType = ApiCallableImplType.StreamingApiCallable;
-      apiCallableBuilder.grpcStreamingType(methodConfig.getGrpcStreaming().getType());
+      callableImplType = ApiCallableImplType.of(methodConfig.getGrpcStreamingType());
+      apiCallableBuilder.grpcStreamingType(methodConfig.getGrpcStreamingType());
     } else if (methodConfig.isBatching()) {
       callableImplType = ApiCallableImplType.BatchingApiCallable;
     } else if (methodConfig.isLongRunningOperation()) {
@@ -230,7 +230,7 @@ public class ApiCallableTransformer {
         namer.getNotImplementedString(notImplementedPrefix + "batchingDescriptorName"));
 
     if (methodConfig.isGrpcStreaming()) {
-      settings.type(ApiCallableImplType.StreamingApiCallable);
+      settings.type(ApiCallableImplType.of(methodConfig.getGrpcStreamingType()));
       if (methodConfig.getGrpcStreaming().hasResourceField()) {
         TypeRef resourceType = methodConfig.getGrpcStreaming().getResourcesField().getType();
         settings.resourceTypeName(typeTable.getAndSaveNicknameForElementType(resourceType));
@@ -289,7 +289,8 @@ public class ApiCallableTransformer {
 
     ServiceMethodType callableInterfaceType = ServiceMethodType.UnaryMethod;
     if (methodConfig.isGrpcStreaming()) {
-      callableInterfaceType = ServiceMethodType.GrpcStreamingMethod;
+      callableInterfaceType =
+          ApiCallableImplType.of(methodConfig.getGrpcStreamingType()).serviceMethodType();
       callableBuilder.grpcStreamingType(methodConfig.getGrpcStreaming().getType());
     }
 

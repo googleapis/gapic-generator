@@ -206,6 +206,8 @@
                 /// Uses default <see cref="PollSettings"/> of:
                 /// <list type="bullet">
                 /// <item><description>Initial delay: {@call.operationMethod.initialPollDelay} milliseconds</description></item>
+                /// <item><description>Delay multiplier: {@call.operationMethod.pollDelayMultiplier}</description></item>
+                /// <item><description>Maximum delay: {@call.operationMethod.maxPollDelay} milliseconds</description></item>
                 /// <item><description>Total timeout: {@call.operationMethod.totalPollTimeout} milliseconds</description></item>
                 /// </list>
                 /// </remarks>
@@ -213,7 +215,9 @@
                 {
                     DefaultPollSettings = new PollSettings(
                         Expiration.FromTimeout(TimeSpan.FromMilliseconds({@call.operationMethod.totalPollTimeout}L)),
-                        TimeSpan.FromMilliseconds({@call.operationMethod.initialPollDelay}L))
+                        TimeSpan.FromMilliseconds({@call.operationMethod.initialPollDelay}L),
+                        {@call.operationMethod.pollDelayMultiplier},
+                        TimeSpan.FromMilliseconds({@call.operationMethod.maxPollDelay}L))
                 };
 
             @end
