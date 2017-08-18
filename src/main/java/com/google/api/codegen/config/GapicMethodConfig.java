@@ -120,7 +120,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
               SimpleLocation.TOPLEVEL,
               "Retry codes config used but not defined: '%s' (in method %s)",
               retryCodesName,
-              method.getFullName()));
+              methodModel.getFullName()));
       error = true;
     }
 
@@ -131,7 +131,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
               SimpleLocation.TOPLEVEL,
               "Retry parameters config used but not defined: %s (in method %s)",
               retryParamsName,
-              method.getFullName()));
+              methodModel.getFullName()));
       error = true;
     }
 
@@ -141,7 +141,7 @@ public abstract class GapicMethodConfig extends MethodConfig {
           Diag.error(
               SimpleLocation.TOPLEVEL,
               "Default timeout not found or has invalid value (in method %s)",
-              method.getFullName()));
+              methodModel.getFullName()));
       error = true;
     }
 

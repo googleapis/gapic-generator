@@ -100,7 +100,6 @@ public abstract class ResourceNameMessageConfigs {
 
     ListMultimap<String, FieldModel> fieldsByMessage = ArrayListMultimap.create();
 
-    // TODO(andrealin): implementation.
     for (Method method : document.methods()) {
       String fullName = discoGapicNamer.getRequestTypeName(method).getFullName();
       ResourceNameMessageConfig messageConfig = messageResourceTypeConfigMap.get(fullName);
@@ -109,7 +108,6 @@ public abstract class ResourceNameMessageConfigs {
       }
       for (Schema property : method.parameters().values()) {
         if (messageConfig.getEntityNameForField(property.getIdentifier()) != null) {
-          // TODO(andrealin): the map value should be the parent schema...
           fieldsByMessage.put(fullName, new DiscoveryField(property, discoGapicNamer));
         }
       }

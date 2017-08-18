@@ -164,9 +164,6 @@ public abstract class GapicProductConfig implements ProductConfig {
   @Nullable
   public static GapicProductConfig create(
       Document document, ConfigProto configProto, DiscoGapicNamer discoGapicNamer) {
-    // TODO (andrealin): load messageConfigs
-
-    // TODO(andrealin): put this in config instead of hard coding it
     String defaultPackage =
         configProto.getLanguageSettingsMap().get(configProto.getLanguage()).getPackageName();
 

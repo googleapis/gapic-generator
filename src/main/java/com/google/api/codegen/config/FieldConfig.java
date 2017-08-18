@@ -240,10 +240,6 @@ public abstract class FieldConfig {
       FieldModel field,
       ResourceNameTreatment treatment,
       ResourceNameConfig resourceNameConfig) {
-    //    if (field.getApiSource().equals(ApiSource.DISCOVERY)) {
-    //      // TODO(andrealin): validate discovery doc types
-    //      return;
-    //    }
     switch (treatment) {
       case NONE:
         break;

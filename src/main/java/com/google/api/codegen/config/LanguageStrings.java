@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.config;
 
-/** Created by andrealin on 8/17/17. */
+/** Names of supported language. */
 public final class LanguageStrings {
 
   public static final String CSHARP = "csharp";

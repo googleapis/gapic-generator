@@ -4595,72 +4595,7 @@ public class AddressAdminClient implements BackgroundResource {
   private final AddressAdminSettings settings;
   private final AddressAdminStub stub;
 
-  private static final PathTemplate ADDRESS_PATH_TEMPLATE =
-      PathTemplate.createWithoutUrlEncoding("project/{project}/regions/{region}/addresses/{address}");
 
-  private static final PathTemplate REGION_PATH_TEMPLATE =
-      PathTemplate.createWithoutUrlEncoding("project/{project}/regions/{region}");
-
-  /**
-   * Formats a string containing the fully-qualified path to represent
-   * a address resource.
-   */
-  public static final String formatAddressName(String project, String region, String address) {
-    return ADDRESS_PATH_TEMPLATE.instantiate(
-        "project", project,
-        "region", region,
-        "address", address);
-  }
-
-  /**
-   * Formats a string containing the fully-qualified path to represent
-   * a region resource.
-   */
-  public static final String formatRegionName(String project, String region) {
-    return REGION_PATH_TEMPLATE.instantiate(
-        "project", project,
-        "region", region);
-  }
-
-  /**
-   * Parses the project from the given fully-qualified path which
-   * represents a address resource.
-   */
-  public static final String parseProjectFromAddressName(String addressName) {
-    return ADDRESS_PATH_TEMPLATE.parse(addressName).get("project");
-  }
-
-  /**
-   * Parses the region from the given fully-qualified path which
-   * represents a address resource.
-   */
-  public static final String parseRegionFromAddressName(String addressName) {
-    return ADDRESS_PATH_TEMPLATE.parse(addressName).get("region");
-  }
-
-  /**
-   * Parses the address from the given fully-qualified path which
-   * represents a address resource.
-   */
-  public static final String parseAddressFromAddressName(String addressName) {
-    return ADDRESS_PATH_TEMPLATE.parse(addressName).get("address");
-  }
-
-  /**
-   * Parses the project from the given fully-qualified path which
-   * represents a region resource.
-   */
-  public static final String parseProjectFromRegionName(String regionName) {
-    return REGION_PATH_TEMPLATE.parse(regionName).get("project");
-  }
-
-  /**
-   * Parses the region from the given fully-qualified path which
-   * represents a region resource.
-   */
-  public static final String parseRegionFromRegionName(String regionName) {
-    return REGION_PATH_TEMPLATE.parse(regionName).get("region");
-  }
 
   /**
    * Constructs an instance of AddressAdminClient with default settings.
@@ -4867,7 +4802,7 @@ public class AddressAdminClient implements BackgroundResource {
    */
   @BetaApi
   public final Address addressesGet(String project, String region, String address) {
-    ADDRESS_PATH_TEMPLATE.validate(address, "addressesGet");
+
     AddressesGetHttpRequest request =
         AddressesGetHttpRequest.newBuilder()
         .setProject(project)
