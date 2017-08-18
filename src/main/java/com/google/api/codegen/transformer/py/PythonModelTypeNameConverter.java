@@ -56,7 +56,7 @@ public class PythonModelTypeNameConverter implements ModelTypeNameConverter {
           .put(Type.TYPE_SFIXED32, "int")
           .put(Type.TYPE_SFIXED64, "long")
           .put(Type.TYPE_BOOL, "bool")
-          .put(Type.TYPE_STRING, "string")
+          .put(Type.TYPE_STRING, "str")
           .put(Type.TYPE_BYTES, "bytes")
           .build();
 
