@@ -15,7 +15,6 @@
 package com.google.api.codegen;
 
 import com.google.api.codegen.configgen.CollectionPattern;
-import com.google.api.gax.grpc.ApiCallable;
 import com.google.api.tools.framework.aspects.http.model.HttpAttribute.FieldSegment;
 import com.google.api.tools.framework.aspects.http.model.HttpAttribute.LiteralSegment;
 import com.google.api.tools.framework.aspects.http.model.HttpAttribute.PathSegment;
@@ -28,7 +27,6 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Tests for {@link ApiCallable}. */
 @RunWith(JUnit4.class)
 public class CollectionPatternTest {
 
