@@ -1,0 +1,189 @@
+@snippet generate(config)
+  {@renderTopLevelTodo()}
+  {@renderType(config.type)}
+  {@renderLanguageSettings(config.languageSettings)}
+  {@renderLicense(config.license)}
+  {@renderInterfaces(config.interfaces)}
+@end
+
+@private renderTopLevelTodo()
+  @# TODO: Address all the TODOs in this auto-generated config before using it
+  @# for client generation. Remove this paragraph after you closed all the
+  @# TODOs. The retry_codes_name, required_fields, flattening, and timeout
+  @# properties cannot be precisely decided by the tooling and may require some
+  @# configuration.
+@end
+
+@private renderType(type)
+  type: {@type}
+@end
+
+@private renderLanguageSettings(languageSettings)
+  @# The settings of generated code in a specific language.
+  language_settings:
+    @join entry : languageSettings
+      {@entry.language}:
+        package_name: {@entry.packageName}
+    @end
+@end
+
+@private renderLicense(license)
+  @# The configuration for the license header to put on generated files.
+  license_header:
+    @# The file containing the copyright line(s).
+    copyright_file: {@license.copyrightFile}
+    @# The file containing the raw license header without any copyright line(s).
+    license_file: {@license.licenseFile}
+@end
+
+@private renderInterfaces(interfaces)
+  @# A list of API interface configurations.
+  interfaces:
+  @join interface : interfaces
+    {@"  # "}The fully qualified name of the API interface.
+    - name: {@interface.name}
+      @# A list of resource collection configurations.
+      @# Consists of a name_pattern and an entity_name.
+      @# The name_pattern is a pattern to describe the names of the resources of this
+      @# collection, using the platform's conventions for URI patterns. A generator
+      @# may use this to generate methods to compose and decompose such names. The
+      @# pattern should use named placeholders as in `shelves/{shelf}/books/{book}`;
+      @# those will be taken as hints for the parameter names of the generated
+      @# methods. If empty, no name methods are generated.
+      @# The entity_name is the name to be used as a basis for generated methods and
+      @# classes.
+      @if interface.collections
+        collections:
+        @join collection : interface.collections
+          - name_pattern: {@collection.namePattern}
+            entity_name: {@collection.entityName}
+        @end
+      @else
+        collections: []
+      @end
+      @# Definition for retryable codes.
+      retry_codes_def:
+      @join def : interface.retryCodesDef
+        - name: {@def.name}
+          @if def.retryCodes
+            retry_codes:
+            {@renderStringList(def.retryCodes)}
+          @else
+            retry_codes: []
+          @end
+      @end
+      @# Definition for retry/backoff parameters.
+      retry_params_def:
+      @join def : interface.retryParamsDef
+        - name: {@def.name}
+          initial_retry_delay_millis: {@def.initialRetryDelayMillis}
+          retry_delay_multiplier: {@def.retryDelayMultiplier}
+          max_retry_delay_millis: {@def.maxRetryDelayMillis}
+          initial_rpc_timeout_millis: {@def.initialRpcTimeoutMillis}
+          rpc_timeout_multiplier: {@def.rpcTimeoutMultiplier}
+          max_rpc_timeout_millis: {@def.maxRpcTimeoutMillis}
+          total_timeout_millis: {@def.totalTimeoutMillis}
+      @end
+      @# A list of method configurations.
+      @# Common properties:
+      @#   name - The simple name of the method.
+      @#   flattening - Specifies the configuration for parameter flattening.
+      @#       Describes the parameter groups for which a generator should produce
+      @#       method overloads which allow a client to directly pass request message
+      @#       fields as method parameters. This information may or may not be used,
+      @#       depending on the target language.
+      @#       Consists of groups, which each represent a list of parameters to be
+      @#       flattened. Each parameter listed must be a field of the request
+      @#       message.
+      @#   required_fields - Fields that are always required for a request to be
+      @#       valid.
+      @#   request_object_method - Turns on or off the generation of a method whose
+      @#       sole parameter is a request object. Not all languages will generate
+      @#       this method.
+      @#   page_streaming - Specifies the configuration for paging.
+      @#       Describes information for generating a method which transforms a
+      @#       paging list RPC into a stream of resources.
+      @#       Consists of a request and a response.
+      @#       The request specifies request information of the list method. It
+      @#       defines which fields match the paging pattern in the request. The
+      @#       request consists of a page_size_field and a token_field. The
+      @#       page_size_field is the name of the optional field specifying the
+      @#       maximum number of elements to be returned in the response. The
+      @#       token_field is the name of the field in the request containing the
+      @#       page token.
+      @#       The response specifies response information of the list method. It
+      @#       defines which fields match the paging pattern in the response. The
+      @#       response consists of a token_field and a resources_field. The
+      @#       token_field is the name of the field in the response containing the
+      @#       next page token. The resources_field is the name of the field in the
+      @#       response containing the list of resources belonging to the page.
+      @#   retry_codes_name - Specifies the configuration for retryable codes. The
+      @#       name must be defined in interfaces.retry_codes_def.
+      @#   retry_params_name - Specifies the configuration for retry/backoff
+      @#       parameters. The name must be defined in interfaces.retry_params_def.
+      @#   field_name_patterns - Maps the field name of the request type to
+      @#       entity_name of interfaces.collections.
+      @#       Specifies the string pattern that the field must follow.
+      @#   timeout_millis - Specifies the default timeout for a non-retrying call. If
+      @#       the call is retrying, refer to retry_params_name instead.
+      methods:
+      @join method : interface.methods
+        - name: {@method.name}
+          @if method.hasFlattening
+            {@renderFlattening(method.flattening)}
+          @end
+          @if method.requiredFields
+            @# TODO: Configure which fields are required.
+            required_fields:
+            {@renderStringList(method.requiredFields)}
+          @end
+          request_object_method: {@method.requestObjectMethod}
+          @if method.hasPageStreaming
+            {@renderPageStreaming(method.pageStreaming)}
+          @end
+          @# TODO: Configure the retryable codes for this method.
+          retry_codes_name: {@method.retryCodesName}
+          @# TODO: Configure the retryable params for this method.
+          retry_params_name: {@method.retryParamsName}
+          @if method.fieldNamePatterns
+            field_name_patterns:
+              @join pattern : method.fieldNamePatterns
+                {@pattern.pathTemplate}: {@pattern.entityName}
+              @end
+          @end
+          @# TODO: Configure the default timeout for a non-retrying call.
+          timeout_millis: {@method.timeoutMillis}
+      @end
+  @end
+@end
+
+@private renderFlattening(flattening)
+  @# TODO: Configure which groups of fields should be flattened into method
+  @# params.
+  flattening:
+    groups:
+    @join group : flattening.groups
+    - parameters:
+      {@renderStringList(group.parameters)}
+    @end
+@end
+
+@private renderPageStreaming(pageStreaming)
+  page_streaming:
+    request:
+      @if pageStreaming.request.hasPageSizeField
+        page_size_field: {@pageStreaming.request.pageSizeField}
+      @end
+      @if pageStreaming.request.hasTokenField
+        token_field: {@pageStreaming.request.tokenField}
+      @end
+    response:
+      token_field: {@pageStreaming.response.tokenField}
+      resources_field: {@pageStreaming.response.resourcesField}
+@end
+
+@private renderStringList(list)
+  @join elem : list
+    - {@elem}
+  @end
+@end

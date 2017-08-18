@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,30 +12,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.viewmodel;
+package com.google.api.codegen.configgen.viewmodel;
 
 import com.google.auto.value.AutoValue;
 
+/** Groups a field name of the request types with an entity name of the collections. */
 @AutoValue
-public abstract class CallableMethodDetailView {
-  public abstract String callableName();
+public abstract class FieldNamePatternView {
+  /** The template representing the structure of the resource name encoded in the field. */
+  public abstract String pathTemplate();
 
-  public abstract String interfaceTypeName();
-
-  public abstract String genericAwareResponseType();
+  /** The name to be used as a basis for generated methods and classes. */
+  public abstract String entityName();
 
   public static Builder newBuilder() {
-    return new AutoValue_CallableMethodDetailView.Builder();
+    return new AutoValue_FieldNamePatternView.Builder();
   }
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder callableName(String name);
+    public abstract Builder pathTemplate(String val);
 
-    public abstract Builder interfaceTypeName(String name);
+    public abstract Builder entityName(String val);
 
-    public abstract Builder genericAwareResponseType(String name);
-
-    public abstract CallableMethodDetailView build();
+    public abstract FieldNamePatternView build();
   }
 }

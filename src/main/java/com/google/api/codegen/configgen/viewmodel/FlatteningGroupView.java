@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2017 Google Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,30 +12,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.viewmodel;
+package com.google.api.codegen.configgen.viewmodel;
 
 import com.google.auto.value.AutoValue;
+import java.util.List;
 
+/** Represents a list of parameters to be flattened. */
 @AutoValue
-public abstract class CallableMethodDetailView {
-  public abstract String callableName();
-
-  public abstract String interfaceTypeName();
-
-  public abstract String genericAwareResponseType();
+public abstract class FlatteningGroupView {
+  /** Fileds of the request message to be flattened. */
+  public abstract List<String> parameters();
 
   public static Builder newBuilder() {
-    return new AutoValue_CallableMethodDetailView.Builder();
+    return new AutoValue_FlatteningGroupView.Builder();
   }
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder callableName(String name);
+    public abstract Builder parameters(List<String> val);
 
-    public abstract Builder interfaceTypeName(String name);
-
-    public abstract Builder genericAwareResponseType(String name);
-
-    public abstract CallableMethodDetailView build();
+    public abstract FlatteningGroupView build();
   }
 }
