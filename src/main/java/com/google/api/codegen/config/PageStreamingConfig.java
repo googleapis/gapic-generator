@@ -16,6 +16,7 @@ package com.google.api.codegen.config;
 
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.PageStreamingConfigProto;
+import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.discovery.Schema.Type;
 import com.google.api.tools.framework.model.Diag;
@@ -129,7 +130,9 @@ public abstract class PageStreamingConfig {
   @Nullable
   // TODO(andrealin): Merge this function into the createPageStreaming(... Method protoMethod) function.
   static PageStreamingConfig createPageStreaming(
-      DiagCollector diagCollector, com.google.api.codegen.discovery.Method method) {
+      DiagCollector diagCollector,
+      com.google.api.codegen.discovery.Method method,
+      DiscoGapicNamer discoGapicNamer) {
     // TODO(andrealin): Put this in yaml file somewhere instead of hardcoding.
     String pageSizeFieldName = "maxResults";
     String requestTokenFieldName = "pageToken";
@@ -196,16 +199,17 @@ public abstract class PageStreamingConfig {
               resourcesField.getIdentifier()));
       resourcesFieldConfig = null;
     } else {
-      resourcesFieldConfig = FieldConfig.createFieldConfig(resourcesField);
+      resourcesFieldConfig =
+          FieldConfig.createFieldConfig(new DiscoveryField(resourcesField, discoGapicNamer));
     }
 
     if (requestTokenField == null || responseTokenField == null || resourcesFieldConfig == null) {
       return null;
     }
     return new AutoValue_PageStreamingConfig(
-        new DiscoveryField(requestTokenField),
-        new DiscoveryField(pageSizeField),
-        new DiscoveryField(responseTokenField),
+        new DiscoveryField(requestTokenField, discoGapicNamer),
+        new DiscoveryField(pageSizeField, discoGapicNamer),
+        new DiscoveryField(responseTokenField, discoGapicNamer),
         resourcesFieldConfig);
   }
 

@@ -43,21 +43,20 @@ interfaces:
     total_timeout_millis: 600000 # 10 minutes
   methods:
   - name: compute.addresses.insert
-# TODO(andrealin): Use flattening and required_fields configs when DiscoGapic can handle it.
-#    flattening:
-#      groups:
-#      - parameters:
-#        - name
-#        - address
-#    required_fields:
-#    - name
-#    - address
+    flattening:
+      groups:
+      - parameters:
+        - region
+        - address
+    required_fields:
+    - region
+    - address
     request_object_method: true
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: idempotent
     retry_params_name: default
     field_name_patterns:
-      name: region
+      region: region
     timeout_millis: 60000
   - name: compute.addresses.list
     request_object_method: true
@@ -73,31 +72,46 @@ interfaces:
     retry_params_name: default
     timeout_millis: 60000
   - name: compute.addresses.get
-#    flattening:
-#      groups:
-#      - parameters:
-#        - name
-#        - address
-#    required_fields:
-#    - name
-#    - address
+    flattening:
+      groups:
+      - parameters:
+        - project
+        - region
+        - address
+    required_fields:
+    - project
+    - region
+    - address
     request_object_method: false
     retry_codes_name: idempotent
     retry_params_name: default
     timeout_millis: 60000
     field_name_patterns:
-      name: address
+      address: address
   - name: compute.addresses.delete
-#    flattening:
-#      groups:
-#      - parameters:
-#        - name
-#    required_fields:
-#    - name
+    flattening:
+      groups:
+      - parameters:
+        - address
+    required_fields:
+    - address
     request_object_method: false
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: idempotent
     retry_params_name: default
     field_name_patterns:
-      name: address
+      address: address
     timeout_millis: 60000
+resource_name_generation:
+- message_name: DeleteAddressHttpRequest
+  field_entity_map:
+    address: address
+- message_name: GetAddressHttpRequest
+  field_entity_map:
+    address: address
+- message_name: InsertAddressHttpRequest
+  field_entity_map:
+    region: region
+- message_name: ListAddressesHttpRequest
+  field_entity_map:
+    region: region

@@ -14,7 +14,8 @@
  */
 package com.google.api.codegen;
 
-import com.google.api.codegen.gapic.MainGapicProviderFactory;
+import static com.google.api.codegen.config.LanguageStrings.JAVA;
+
 import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,7 +42,7 @@ public class JavaNoPathTemplatesCodeGeneratorTest extends GapicTestBase {
   @Parameters(name = "{0}")
   public static List<Object[]> testedConfigs() {
     return GapicTestBase.createTestedConfigs(
-        MainGapicProviderFactory.JAVA,
+        JAVA,
         new String[] {"java_gapic.yaml", "no_path_templates_gapic.yaml"},
         "no_path_templates_pkg.yaml");
   }

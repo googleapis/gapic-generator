@@ -16,7 +16,6 @@ package com.google.api.codegen.config;
 
 import com.google.api.codegen.BatchingConfigProto;
 import com.google.api.codegen.FlatteningConfigProto;
-import com.google.api.codegen.FlatteningGroupProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.PageStreamingConfigProto;
 import com.google.api.codegen.ReleaseLevel;
@@ -24,8 +23,8 @@ import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.SurfaceTreatmentProto;
 import com.google.api.codegen.VisibilityProto;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
+import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Method;
-import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
@@ -79,16 +78,20 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
       String language,
       MethodConfigProto methodConfigProto,
       Method method,
+      ResourceNameMessageConfigs messageConfigs,
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       ImmutableSet<String> retryCodesConfigNames,
-      ImmutableSet<String> retryParamsConfigNames) {
+      ImmutableSet<String> retryParamsConfigNames,
+      DiscoGapicNamer discoGapicNamer) {
 
     boolean error = false;
-    DiscoveryMethodModel methodModel = new DiscoveryMethodModel(method);
+    DiscoveryMethodModel methodModel = new DiscoveryMethodModel(method, discoGapicNamer);
 
     PageStreamingConfig pageStreaming = null;
     if (!PageStreamingConfigProto.getDefaultInstance()
         .equals(methodConfigProto.getPageStreaming())) {
-      pageStreaming = PageStreamingConfig.createPageStreaming(diagCollector, method);
+      pageStreaming =
+          PageStreamingConfig.createPageStreaming(diagCollector, method, discoGapicNamer);
       if (pageStreaming == null) {
         error = true;
       }
@@ -96,7 +99,9 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
 
     ImmutableList<FlatteningConfig> flattening = null;
     if (!FlatteningConfigProto.getDefaultInstance().equals(methodConfigProto.getFlattening())) {
-      flattening = createFlattening(diagCollector, methodConfigProto, method);
+      flattening =
+          createFlattening(
+              diagCollector, messageConfigs, resourceNameConfigs, methodConfigProto, methodModel);
       if (flattening == null) {
         error = true;
       }
@@ -159,12 +164,12 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
     Iterable<FieldConfig> requiredFieldConfigs =
         DiscoGapicMethodConfig.createFieldNameConfigs(
             DiscoGapicMethodConfig.getRequiredFields(
-                diagCollector, method, methodConfigProto.getRequiredFieldsList()));
+                diagCollector, methodModel, methodConfigProto.getRequiredFieldsList()));
 
     Iterable<FieldConfig> optionalFieldConfigs =
         DiscoGapicMethodConfig.createFieldNameConfigs(
             DiscoGapicMethodConfig.getOptionalFields(
-                method, methodConfigProto.getRequiredFieldsList()));
+                methodModel, methodConfigProto.getRequiredFieldsList()));
 
     List<String> sampleCodeInitFields = new ArrayList<>();
     sampleCodeInitFields.addAll(methodConfigProto.getRequiredFieldsList());
@@ -190,7 +195,7 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
       return null;
     } else {
       return new AutoValue_DiscoGapicMethodConfig(
-          new DiscoveryMethodModel(method),
+          methodModel,
           pageStreaming,
           flattening,
           retryCodesName,
@@ -209,69 +214,9 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
     }
   }
 
-  @Nullable
-  private static ImmutableList<FlatteningConfig> createFlattening(
-      DiagCollector diagCollector, MethodConfigProto methodConfigProto, Method method) {
-    boolean missing = false;
-    ImmutableList.Builder<FlatteningConfig> flatteningGroupsBuilder = ImmutableList.builder();
-    for (FlatteningGroupProto flatteningGroup : methodConfigProto.getFlattening().getGroupsList()) {
-      FlatteningConfig groupConfig =
-          FlatteningConfig.createFlattening(
-              diagCollector,
-              null,
-              null,
-              methodConfigProto,
-              flatteningGroup,
-              new DiscoveryMethodModel(method));
-      if (groupConfig == null) {
-        missing = true;
-      } else {
-        flatteningGroupsBuilder.add(groupConfig);
-      }
-    }
-    if (missing) {
-      return null;
-    }
-
-    return flatteningGroupsBuilder.build();
-  }
-
-  private static Iterable<Schema> getRequiredFields(
-      DiagCollector diagCollector,
-      com.google.api.codegen.discovery.Method method,
-      List<String> requiredFieldNames) {
-    ImmutableList.Builder<Schema> fieldsBuilder = ImmutableList.builder();
-    for (String fieldName : requiredFieldNames) {
-      Schema requiredField = method.parameters().get(fieldName);
-      if (requiredField == null) {
-        diagCollector.addDiag(
-            Diag.error(
-                SimpleLocation.TOPLEVEL,
-                "Required field '%s' not found (in method %s)",
-                fieldName,
-                method.id()));
-        return null;
-      }
-      fieldsBuilder.add(requiredField);
-    }
-    return fieldsBuilder.build();
-  }
-
-  private static Iterable<Schema> getOptionalFields(
-      com.google.api.codegen.discovery.Method method, List<String> requiredFieldNames) {
-    ImmutableList.Builder<Schema> fieldsBuilder = ImmutableList.builder();
-    for (Schema field : method.parameters().values()) {
-      if (requiredFieldNames.contains(field.getIdentifier())) {
-        continue;
-      }
-      fieldsBuilder.add(field);
-    }
-    return fieldsBuilder.build();
-  }
-
-  private static Iterable<FieldConfig> createFieldNameConfigs(Iterable<Schema> fields) {
+  private static Iterable<FieldConfig> createFieldNameConfigs(Iterable<FieldModel> fields) {
     ImmutableList.Builder<FieldConfig> fieldConfigsBuilder = ImmutableList.builder();
-    for (Schema field : fields) {
+    for (FieldModel field : fields) {
       fieldConfigsBuilder.add(FieldConfig.createFieldConfig(field));
     }
     return fieldConfigsBuilder.build();

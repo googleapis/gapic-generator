@@ -291,4 +291,9 @@ public abstract class Schema implements Node {
   public boolean isPathParam() {
     return location().equals("path");
   }
+
+  @Override
+  public String toString() {
+    return String.format("Schema \"%s\", type %s", getIdentifier(), type());
+  }
 }

@@ -277,11 +277,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The function name to add an element to a map or repeated field. */
   public String getFieldAddFunctionName(FieldModel field) {
     if (field.isMap()) {
-      return publicMethodName(Name.from("put", "all").join(field.getSimpleName()));
+      return publicMethodName(Name.from("put", "all").join(field.asName()));
     } else if (field.isRepeated()) {
-      return publicMethodName(Name.from("add", "all").join(field.getSimpleName()));
+      return publicMethodName(Name.from("add", "all").join(field.asName()));
     } else {
-      return publicMethodName(Name.from("set").join(field.getSimpleName()));
+      return publicMethodName(Name.from("set").join(field.asName()));
     }
   }
 
@@ -383,7 +383,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    */
   public String getFieldCountGetFunctionName(FieldModel field) {
     if (field.isRepeated()) {
-      return publicMethodName(Name.from("get", field.getSimpleName(), "count"));
+      return publicMethodName(Name.from("get").join(field.asName()).join("count"));
     } else {
       throw new IllegalArgumentException(
           "Non-repeated field " + field.getSimpleName() + " has no count function.");
@@ -509,37 +509,37 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The name of the callable for the paged callable variant of the given method. */
   public String getPagedCallableName(MethodModel method) {
-    return privateFieldName(Name.anyCamel(method.getSimpleName(), "PagedCallable"));
+    return privateFieldName(method.asName().join(Name.from("paged", "callable")));
   }
 
   /** The name of the paged callable variant of the given method. */
   public String getPagedCallableMethodName(MethodModel method) {
-    return publicMethodName(Name.anyCamel(method.getSimpleName(), "PagedCallable"));
+    return publicMethodName(method.asName().join(Name.from("paged", "callable")));
   }
 
   /** The name of the plain callable variant of the given method. */
   public String getCallableMethodName(MethodModel method) {
-    return publicMethodName(Name.anyCamel(method.getSimpleName(), "Callable"));
+    return publicMethodName(method.asName().join("callable"));
   }
 
   /** The name of the plain callable variant of the given method. */
   public String getCallableAsyncMethodName(MethodModel method) {
-    return publicMethodName(Name.anyCamel(method.getSimpleName(), "CallableAsync"));
+    return publicMethodName(method.asName().join(Name.from("callable", "async")));
   }
 
   /** The name of the operation callable variant of the given method. */
   public String getOperationCallableMethodName(MethodModel method) {
-    return publicMethodName(Name.anyCamel(method.getSimpleName(), "OperationCallable"));
+    return publicMethodName(method.asName().join(Name.from("operation", "callable")));
   }
 
   /** The name of the plain callable for the given method. */
   public String getCallableName(MethodModel method) {
-    return privateFieldName(Name.anyCamel(method.getSimpleName(), "Callable"));
+    return privateFieldName(method.asName().join("callable"));
   }
 
   /** The name of the operation callable for the given method. */
   public String getOperationCallableName(MethodModel method) {
-    return privateFieldName(Name.anyCamel(method.getSimpleName(), "OperationCallable"));
+    return privateFieldName(method.asName().join(Name.from("operation", "callable")));
   }
 
   public String getDirectCallableName(MethodModel method) {
@@ -548,7 +548,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The name of the settings member name for the given method. */
   public String getSettingsMemberName(MethodModel method) {
-    return publicMethodName(Name.anyCamel(method.getSimpleName(), "Settings"));
+    return publicMethodName(method.asName().join("settings"));
   }
 
   /** The getter function name for the settings for the given method. */
@@ -598,7 +598,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * parameter).
    */
   public String getVariableName(FieldModel field) {
-    return localVarName(Name.from(field.getSimpleName()));
+    return localVarName(field.asName());
   }
 
   /**
@@ -671,12 +671,13 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The page streaming descriptor name for the given method. */
   public String getPageStreamingDescriptorName(MethodModel method) {
-    return privateFieldName(Name.anyCamel(method.getSimpleName(), "PageStreamingDescriptor"));
+    return privateFieldName(method.asName().join(Name.from("page", "streaming", "descriptor")));
   }
 
   /** The page streaming factory name for the given method. */
   public String getPagedListResponseFactoryName(MethodModel method) {
-    return privateFieldName(Name.anyCamel(method.getSimpleName(), "PagedListResponseFactory"));
+    return privateFieldName(
+        method.asName().join(Name.from("paged", "list", "response", "factory")));
   }
 
   /** The variable name of the gRPC request object. */
@@ -1192,7 +1193,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The key to use in a dictionary for the given field. */
   public String getFieldKey(FieldModel field) {
-    return keyName(Name.from(field.getSimpleName()));
+    return keyName(field.asName());
   }
 
   /** The key to use in a dictionary for the given field. */
@@ -1392,14 +1393,14 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The test case name for the given method. */
   public String getTestCaseName(SymbolTable symbolTable, MethodModel method) {
-    Name testCaseName = symbolTable.getNewSymbol(Name.anyCamel(method.getSimpleName(), "Test"));
+    Name testCaseName = symbolTable.getNewSymbol(method.asName().join("test"));
     return publicMethodName(testCaseName);
   }
 
   /** The exception test case name for the given method. */
   public String getExceptionTestCaseName(SymbolTable symbolTable, MethodModel method) {
     Name testCaseName =
-        symbolTable.getNewSymbol(Name.anyCamel(method.getSimpleName(), "ExceptionTest"));
+        symbolTable.getNewSymbol(method.asName().join(Name.from("exception", "test")));
     return publicMethodName(testCaseName);
   }
 

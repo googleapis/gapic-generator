@@ -203,7 +203,7 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
     // The shared code above add imports both for input and output.
     // Since we use short decls, we don't need to import anything for output.
-    context.getModelTypeTable().getImports().clear();
+    context.getImportTypeTable().getImports().clear();
     method.getAndSaveRequestTypeName(methodContext.getTypeTable(), methodContext.getNamer());
 
     FileHeaderView fileHeader = fileHeaderTransformer.generateFileHeader(context);

@@ -16,7 +16,9 @@ package com.google.api.codegen.config;
 
 import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.ResourceNameMessageConfigProto;
+import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Document;
+import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
@@ -28,7 +30,6 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ListMultimap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nullable;
 
@@ -81,11 +82,12 @@ public abstract class ResourceNameMessageConfigs {
   }
 
   @Nullable
-  public static ResourceNameMessageConfigs createMessageResourceTypesConfig(
+  static ResourceNameMessageConfigs createMessageResourceTypesConfig(
       Document document,
       DiagCollector diagCollector,
       ConfigProto configProto,
-      String defaultPackage) {
+      String defaultPackage,
+      DiscoGapicNamer discoGapicNamer) {
     ImmutableMap.Builder<String, ResourceNameMessageConfig> builder = ImmutableMap.builder();
     for (ResourceNameMessageConfigProto messageResourceTypesProto :
         configProto.getResourceNameGenerationList()) {
@@ -98,9 +100,17 @@ public abstract class ResourceNameMessageConfigs {
 
     ListMultimap<String, FieldModel> fieldsByMessage = ArrayListMultimap.create();
 
-    // TODO(andrealin): implementation.
-    for (Map.Entry<String, Schema> schemaEntry : document.schemas().entrySet()) {
-      fieldsByMessage.put(schemaEntry.getKey(), new DiscoveryField(schemaEntry.getValue()));
+    for (Method method : document.methods()) {
+      String fullName = discoGapicNamer.getRequestTypeName(method).getFullName();
+      ResourceNameMessageConfig messageConfig = messageResourceTypeConfigMap.get(fullName);
+      if (messageConfig == null) {
+        continue;
+      }
+      for (Schema property : method.parameters().values()) {
+        if (messageConfig.getEntityNameForField(property.getIdentifier()) != null) {
+          fieldsByMessage.put(fullName, new DiscoveryField(property, discoGapicNamer));
+        }
+      }
     }
     return new AutoValue_ResourceNameMessageConfigs(messageResourceTypeConfigMap, fieldsByMessage);
   }

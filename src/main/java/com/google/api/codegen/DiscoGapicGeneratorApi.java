@@ -14,16 +14,22 @@
  */
 package com.google.api.codegen;
 
+import static com.google.api.codegen.config.LanguageStrings.JAVA;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.discogapic.DiscoGapicProvider;
 import com.google.api.codegen.discogapic.DiscoGapicProviderFactory;
+import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.DiscoveryNode;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.gapic.GapicGeneratorConfig;
+import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.transformer.java.JavaSurfaceNamer;
 import com.google.api.codegen.util.ClassInstantiator;
+import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleDiagCollector;
 import com.google.api.tools.framework.snippet.Doc;
@@ -50,6 +56,7 @@ import java.util.List;
 import java.util.Map;
 
 public class DiscoGapicGeneratorApi {
+
   public static final Option<String> DISCOVERY_DOC =
       ToolOptions.createOption(
           String.class,
@@ -124,7 +131,23 @@ public class DiscoGapicGeneratorApi {
       packageConfig = PackageMetadataConfig.createFromString(contents);
     }
     GeneratorProto generator = configProto.getGenerator();
-    GapicProductConfig productConfig = GapicProductConfig.create(document, configProto);
+    String language = configProto.getLanguage();
+    String defaultPackageName = configProto.getLanguageSettingsMap().get(language).getPackageName();
+    SurfaceNamer surfaceNamer = null;
+
+    if (language.equals(JAVA)) {
+      surfaceNamer =
+          new JavaSurfaceNamer(defaultPackageName, defaultPackageName, new JavaNameFormatter());
+    }
+    if (surfaceNamer == null) {
+      throw new UnsupportedOperationException(
+          "DiscoGapicGeneratorApi: language \"" + language + "\" not yet supported");
+    }
+
+    DiscoGapicNamer discoGapicNamer = new DiscoGapicNamer(surfaceNamer);
+
+    GapicProductConfig productConfig =
+        GapicProductConfig.create(document, configProto, discoGapicNamer);
 
     String factory = generator.getFactory();
     String id = generator.getId();

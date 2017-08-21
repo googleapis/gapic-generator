@@ -53,7 +53,7 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
   public static GapicInterfaceContext create(
       Interface apiInterface,
       GapicProductConfig productConfig,
-      ImportTypeTable typeTable,
+      ModelTypeTable typeTable,
       SurfaceNamer namer,
       FeatureConfig featureConfig) {
     return create(
@@ -63,7 +63,7 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
   public static GapicInterfaceContext create(
       InterfaceModel apiInterface,
       GapicProductConfig productConfig,
-      ImportTypeTable typeTable,
+      ModelTypeTable typeTable,
       SurfaceNamer namer,
       FeatureConfig featureConfig) {
     Preconditions.checkArgument(apiInterface.getApiSource().equals(ApiSource.PROTO));
@@ -110,6 +110,7 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
     return getInterfaceModel().getInterface();
   }
 
+  @Override
   public abstract ProtoInterfaceModel getInterfaceModel();
 
   @Override
@@ -119,7 +120,8 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
     return (ModelTypeTable) getImportTypeTable();
   }
 
-  public abstract ImportTypeTable getImportTypeTable();
+  @Override
+  public abstract ModelTypeTable getImportTypeTable();
 
   @Override
   public abstract SurfaceNamer getNamer();
@@ -277,8 +279,7 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
   private boolean isSupported(MethodModel method) {
     boolean supported = true;
     supported &=
-        getFeatureConfig().enableGrpcStreaming()
-            || !GapicMethodConfig.isGrpcStreamingMethod(method);
+        getFeatureConfig().enableGrpcStreaming() || !MethodConfig.isGrpcStreamingMethod(method);
     supported &=
         getInterfaceConfig().getMethodConfig(method).getVisibility() != VisibilityConfig.DISABLED;
     return supported;

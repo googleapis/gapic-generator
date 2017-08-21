@@ -22,6 +22,7 @@ import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.LanguageSettingsProto;
 import com.google.api.codegen.LicenseHeaderProto;
 import com.google.api.codegen.ResourceNameTreatment;
+import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.tools.framework.model.BoundedDiagCollector;
 import com.google.api.tools.framework.model.Diag;
@@ -42,7 +43,9 @@ import com.google.common.io.CharStreams;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import javax.annotation.Nullable;
 
 /**
@@ -159,11 +162,10 @@ public abstract class GapicProductConfig implements ProductConfig {
   }
 
   @Nullable
-  public static GapicProductConfig create(Document document, ConfigProto configProto) {
-    // TODO (andrealin): load messageConfigs
-
-    // TODO(andrealin): put this in config instead of hard coding it
-    String defaultPackage = "com.google.proto";
+  public static GapicProductConfig create(
+      Document document, ConfigProto configProto, DiscoGapicNamer discoGapicNamer) {
+    String defaultPackage =
+        configProto.getLanguageSettingsMap().get(configProto.getLanguage()).getPackageName();
 
     TransportProtocol transportProtocol = TransportProtocol.HTTP;
 
@@ -171,7 +173,7 @@ public abstract class GapicProductConfig implements ProductConfig {
 
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
-            document, diagCollector, configProto, defaultPackage);
+            document, diagCollector, configProto, defaultPackage, discoGapicNamer);
 
     // TODO (andrealin): load resourceNameConfigs
 
@@ -179,14 +181,20 @@ public abstract class GapicProductConfig implements ProductConfig {
         createResourceNameConfigs(diagCollector, configProto, null);
 
     LanguageSettingsProto settings =
-        configProto.getLanguageSettings().get(configProto.getLanguage());
+        configProto.getLanguageSettingsMap().get(configProto.getLanguage());
     if (settings == null) {
       settings = LanguageSettingsProto.getDefaultInstance();
     }
 
     ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
         createDiscoGapicInterfaceConfigMap(
-            document, new BoundedDiagCollector(), configProto, settings, resourceNameConfigs);
+            document,
+            new BoundedDiagCollector(),
+            configProto,
+            settings,
+            messageConfigs,
+            resourceNameConfigs,
+            discoGapicNamer);
 
     ImmutableList<String> copyrightLines;
     ImmutableList<String> licenseLines;
@@ -292,7 +300,9 @@ public abstract class GapicProductConfig implements ProductConfig {
       DiagCollector diagCollector,
       ConfigProto configProto,
       LanguageSettingsProto languageSettings,
-      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs) {
+      ResourceNameMessageConfigs messageConfigs,
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
+      DiscoGapicNamer discoGapicNamer) {
     ImmutableMap.Builder<String, InterfaceConfig> interfaceConfigMap = ImmutableMap.builder();
     for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
       String interfaceNameOverride =
@@ -305,7 +315,9 @@ public abstract class GapicProductConfig implements ProductConfig {
               configProto.getLanguage(),
               interfaceConfigProto,
               interfaceNameOverride,
-              resourceNameConfigs);
+              messageConfigs,
+              resourceNameConfigs,
+              discoGapicNamer);
       if (interfaceConfig == null) {
         continue;
       }
@@ -474,12 +486,14 @@ public abstract class GapicProductConfig implements ProductConfig {
     if (messageConfig == null) {
       return builder.build();
     }
+    Map<String, FieldConfig> map = new HashMap<>();
     for (FieldModel field : messageConfig.getFieldsWithResourceNamesByMessage().values()) {
-      builder.put(
+      map.put(
           field.getFullName(),
           FieldConfig.createMessageFieldConfig(
               messageConfig, resourceNameConfigs, field, ResourceNameTreatment.STATIC_TYPES));
     }
+    builder.putAll(map);
     return builder.build();
   }
 

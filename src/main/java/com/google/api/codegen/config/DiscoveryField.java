@@ -16,6 +16,9 @@ package com.google.api.codegen.config;
 
 import static com.google.api.codegen.config.ApiSource.DISCOVERY;
 
+import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
+import com.google.api.codegen.discovery.Document;
+import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.discovery.Schema.Format;
 import com.google.api.codegen.discovery.Schema.Type;
@@ -23,6 +26,7 @@ import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
+import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Preconditions;
@@ -32,11 +36,13 @@ import java.util.List;
 /** Created by andrealin on 7/31/17. */
 public class DiscoveryField implements FieldModel {
   private final Schema schema;
+  private final DiscoGapicNamer discoGapicNamer;
 
   /* Create a FieldModel object from a non-null Schema object. */
-  public DiscoveryField(Schema schema) {
+  public DiscoveryField(Schema schema, DiscoGapicNamer discoGapicNamer) {
     Preconditions.checkNotNull(schema);
     this.schema = schema;
+    this.discoGapicNamer = discoGapicNamer;
   }
 
   @Override
@@ -57,7 +63,12 @@ public class DiscoveryField implements FieldModel {
 
   @Override
   public String getFullName() {
-    return schema.getIdentifier();
+    SurfaceNamer surfaceNamer = discoGapicNamer.getLanguageNamer();
+    TypeNameConverter typeNameConverter = surfaceNamer.getTypeNameConverter();
+    return typeNameConverter
+        .getTypeNameInImplicitPackage(
+            surfaceNamer.publicClassName(Name.anyCamel(schema.getIdentifier())))
+        .getFullName();
   }
 
   @Override
@@ -97,7 +108,24 @@ public class DiscoveryField implements FieldModel {
 
   @Override
   public String getParentFullName() {
-    return schema.parent().id();
+    SurfaceNamer surfaceNamer = discoGapicNamer.getLanguageNamer();
+    TypeNameConverter typeNameConverter = surfaceNamer.getTypeNameConverter();
+    if (schema.parent() instanceof Method) {
+      return typeNameConverter
+          .getTypeNameInImplicitPackage(
+              surfaceNamer.publicClassName(
+                  DiscoGapicNamer.getRequestName((Method) schema.parent())))
+          .getFullName();
+    } else if (schema.parent() instanceof Schema) {
+      return typeNameConverter
+          .getTypeNameInImplicitPackage(
+              surfaceNamer.publicClassName(
+                  Name.anyCamel(((Schema) schema.parent()).getIdentifier())))
+          .getFullName();
+    } else if (schema.parent() instanceof Document) {
+      return ((Document) schema.parent()).name();
+    }
+    return "";
   }
 
   @Override
@@ -108,7 +136,7 @@ public class DiscoveryField implements FieldModel {
   @Override
   public TypeName getParentTypeName(ImportTypeTable typeTable) {
     if (schema.parent() instanceof Schema) {
-      DiscoveryField parent = new DiscoveryField((Schema) schema.parent());
+      DiscoveryField parent = new DiscoveryField((Schema) schema.parent(), discoGapicNamer);
       return typeTable.getTypeTable().getTypeName(typeTable.getFullNameFor(parent));
     }
     return typeTable.getTypeTable().getTypeName(typeTable.getFullNameFor(this));
@@ -171,5 +199,9 @@ public class DiscoveryField implements FieldModel {
   @Override
   public String getKind() {
     return schema.type().toString();
+  }
+
+  public DiscoGapicNamer getDiscoGapicNamer() {
+    return discoGapicNamer;
   }
 }

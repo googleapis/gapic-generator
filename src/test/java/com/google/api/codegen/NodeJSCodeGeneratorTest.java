@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen;
 
+import static com.google.api.codegen.config.LanguageStrings.NODEJS;
+
 import com.google.api.codegen.gapic.MainGapicProviderFactory;
 import java.util.List;
 import org.junit.Test;
@@ -44,9 +46,7 @@ public class NodeJSCodeGeneratorTest {
     @Parameters(name = "{0}")
     public static List<Object[]> testedConfigs() {
       return GapicTestBase.createTestedConfigs(
-          MainGapicProviderFactory.NODEJS,
-          new String[] {"nodejs_gapic.yaml", "library_gapic.yaml"},
-          "library_pkg.yaml");
+          NODEJS, new String[] {"nodejs_gapic.yaml", "library_gapic.yaml"}, "library_pkg.yaml");
     }
 
     // Tests
@@ -112,7 +112,7 @@ public class NodeJSCodeGeneratorTest {
     @Parameters(name = "{0}")
     public static List<Object[]> testedConfigs() {
       return GapicTestBase.createTestedConfigs(
-          MainGapicProviderFactory.NODEJS,
+          NODEJS,
           new String[] {"nodejs_gapic.yaml", "no_path_templates_gapic.yaml"},
           "library_pkg.yaml");
     }
@@ -146,7 +146,7 @@ public class NodeJSCodeGeneratorTest {
     @Parameters(name = "{0}")
     public static List<Object[]> testedConfigs() {
       return GapicTestBase.createTestedConfigs(
-          MainGapicProviderFactory.NODEJS,
+          NODEJS,
           new String[] {"nodejs_gapic.yaml", "multiple_services_gapic.yaml"},
           "multiple_services_pkg.yaml");
     }

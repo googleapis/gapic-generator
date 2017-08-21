@@ -14,11 +14,15 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.codegen.FlatteningGroupProto;
+import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.tools.framework.model.Method;
+import com.google.api.tools.framework.model.Diag;
+import com.google.api.tools.framework.model.DiagCollector;
+import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.util.List;
@@ -76,7 +80,7 @@ public abstract class MethodConfig {
   public abstract LongRunningConfig getLongRunningConfig();
 
   /** Returns true if the method is a streaming method */
-  public static boolean isGrpcStreamingMethod(Method method) {
+  public static boolean isGrpcStreamingMethod(MethodModel method) {
     return method.getRequestStreaming() || method.getResponseStreaming();
   }
 
@@ -123,4 +127,88 @@ public abstract class MethodConfig {
 
   /** Return the lists of the simple names of the "one of" instances associated with the fields. */
   public abstract Iterable<Iterable<String>> getOneofNames(SurfaceNamer namer);
+
+  static Iterable<FieldModel> getOptionalFields(
+      MethodModel method, List<String> requiredFieldNames) {
+    ImmutableList.Builder<FieldModel> fieldsBuilder = ImmutableList.builder();
+    for (FieldModel field : method.getInputFields()) {
+      if (requiredFieldNames.contains(field.getSimpleName())) {
+        continue;
+      }
+      fieldsBuilder.add(field);
+    }
+    return fieldsBuilder.build();
+  }
+
+  static Iterable<FieldModel> getRequiredFields(
+      DiagCollector diagCollector, MethodModel method, List<String> requiredFieldNames) {
+    ImmutableList.Builder<FieldModel> fieldsBuilder = ImmutableList.builder();
+    for (String fieldName : requiredFieldNames) {
+      FieldModel requiredField = method.getInputField(fieldName);
+      if (requiredField == null) {
+        diagCollector.addDiag(
+            Diag.error(
+                SimpleLocation.TOPLEVEL,
+                "Required field '%s' not found (in method %s)",
+                fieldName,
+                method.getFullName()));
+        return null;
+      }
+      fieldsBuilder.add(requiredField);
+    }
+    return fieldsBuilder.build();
+  }
+
+  @Nullable
+  static ImmutableList<FlatteningConfig> createFlattening(
+      DiagCollector diagCollector,
+      ResourceNameMessageConfigs messageConfigs,
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
+      MethodConfigProto methodConfigProto,
+      MethodModel method) {
+    boolean missing = false;
+    ImmutableList.Builder<FlatteningConfig> flatteningGroupsBuilder = ImmutableList.builder();
+    for (FlatteningGroupProto flatteningGroup : methodConfigProto.getFlattening().getGroupsList()) {
+      FlatteningConfig groupConfig =
+          FlatteningConfig.createFlattening(
+              diagCollector,
+              messageConfigs,
+              resourceNameConfigs,
+              methodConfigProto,
+              flatteningGroup,
+              method);
+      if (groupConfig == null) {
+        missing = true;
+      } else {
+        flatteningGroupsBuilder.add(groupConfig);
+      }
+    }
+    if (missing) {
+      return null;
+    }
+
+    return flatteningGroupsBuilder.build();
+  }
+
+  static Iterable<FieldConfig> createFieldNameConfigs(
+      DiagCollector diagCollector,
+      ResourceNameMessageConfigs messageConfigs,
+      ResourceNameTreatment defaultResourceNameTreatment,
+      ImmutableMap<String, String> fieldNamePatterns,
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
+      Iterable<FieldModel> fields) {
+    ImmutableList.Builder<FieldConfig> fieldConfigsBuilder = ImmutableList.builder();
+    for (FieldModel field : fields) {
+      fieldConfigsBuilder.add(
+          FieldConfig.createFieldConfig(
+              diagCollector,
+              messageConfigs,
+              fieldNamePatterns,
+              resourceNameConfigs,
+              field,
+              null,
+              defaultResourceNameTreatment));
+    }
+    return fieldConfigsBuilder.build();
+  }
 }

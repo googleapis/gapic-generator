@@ -77,8 +77,8 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
               namer,
               new CSharpFeatureConfig());
       csharpCommonTransformer.addCommonImports(context);
-      context.getModelTypeTable().saveNicknameFor("Google.Protobuf.Bytestring");
-      context.getModelTypeTable().saveNicknameFor("System.Linq.__import__");
+      context.getImportTypeTable().saveNicknameFor("Google.Protobuf.Bytestring");
+      context.getImportTypeTable().saveNicknameFor("System.Linq.__import__");
       SnippetsFileView snippets = generateSnippets(context);
       surfaceDocs.add(snippets);
     }

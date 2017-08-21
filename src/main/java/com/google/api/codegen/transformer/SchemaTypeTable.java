@@ -162,18 +162,27 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
     return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeName(type.getDiscoveryField()));
   }
 
+  /*
+   * Computes the nickname for the given FieldConfig, and ResourceName. Adds the full name to
+   * the import set, and returns the nickname.
+   */
   @Override
   public String getAndSaveNicknameForTypedResourceName(
       FieldConfig fieldConfig, String typedResourceShortName) {
-    return getNotImplementedString(
-        "getAndSaveNicknameForTypedResourceName(FieldConfig fieldConfig, String typedResourceShortName)");
+    return typeTable.getAndSaveNicknameFor(
+        typeNameConverter.getTypeNameForTypedResourceName(fieldConfig, typedResourceShortName));
   }
 
+  /*
+   * Computes the nickname for the element type given FieldConfig, and ResourceName. Adds the full
+   * name to the import set, and returns the nickname.
+   */
   @Override
   public String getAndSaveNicknameForResourceNameElementType(
       FieldConfig fieldConfig, String typedResourceShortName) {
-    return getNotImplementedString(
-        "SchemaTypeTable.getAndSaveNicknameForResourceNameElementType(FieldConfig fieldConfig, String typedResourceShortName)");
+    return typeTable.getAndSaveNicknameFor(
+        typeNameConverter.getTypeNameForResourceNameElementType(
+            fieldConfig, typedResourceShortName));
   }
 
   @Override

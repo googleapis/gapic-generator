@@ -23,13 +23,16 @@ import com.google.api.codegen.transformer.TypeNameConverter;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
+import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.FieldSelector;
 import com.google.api.tools.framework.model.Method;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 
 /** A wrapper around the model of a protobuf-defined Method. */
 public final class ProtoMethodModel implements MethodModel {
   private final Method method;
+  private Iterable<FieldModel> inputFields;
 
   /* Create a MethodModel object from a non-null Method object. */
   public ProtoMethodModel(Method method) {
@@ -163,6 +166,20 @@ public final class ProtoMethodModel implements MethodModel {
   @Override
   public String getScopedDescription() {
     return DocumentationUtil.getScopedDescription(method);
+  }
+
+  @Override
+  public Iterable<FieldModel> getInputFields() {
+    if (inputFields != null) {
+      return inputFields;
+    }
+
+    ImmutableList.Builder<FieldModel> fieldsBuilder = ImmutableList.builder();
+    for (Field field : method.getInputType().getMessageType().getFields()) {
+      fieldsBuilder.add(new ProtoField(field));
+    }
+    inputFields = fieldsBuilder.build();
+    return inputFields;
   }
 
   @Override

@@ -15,7 +15,6 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.ResourceNameTreatment;
-import com.google.api.codegen.discovery.Schema;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
@@ -74,9 +73,8 @@ public abstract class FieldConfig {
         field, resourceNameTreatment, resourceNameConfig, messageResourceNameConfig);
   }
 
-  static FieldConfig createFieldConfig(Schema field) {
-    return new AutoValue_FieldConfig(
-        new DiscoveryField(field), ResourceNameTreatment.NONE, null, null);
+  static FieldConfig createFieldConfig(FieldModel field) {
+    return FieldConfig.createFieldConfig(field, ResourceNameTreatment.NONE, null, null);
   }
 
   /** Creates a FieldConfig for the given Field with ResourceNameTreatment set to None. */
@@ -242,10 +240,6 @@ public abstract class FieldConfig {
       FieldModel field,
       ResourceNameTreatment treatment,
       ResourceNameConfig resourceNameConfig) {
-    if (field.getApiSource().equals(ApiSource.DISCOVERY)) {
-      // TODO(andrealin): validate discovery doc types
-      return;
-    }
     switch (treatment) {
       case NONE:
         break;

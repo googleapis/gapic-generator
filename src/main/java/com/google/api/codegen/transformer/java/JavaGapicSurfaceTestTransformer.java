@@ -406,7 +406,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
   }
 
   private void addGrpcStreamingTestImports(GapicInterfaceContext context) {
-    ModelTypeTable typeTable = context.getModelTypeTable();
+    ModelTypeTable typeTable = context.getImportTypeTable();
     typeTable.saveNicknameFor("com.google.api.gax.grpc.testing.MockStreamObserver");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.ApiStreamObserver");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.StreamingCallable");

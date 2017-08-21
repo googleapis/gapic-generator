@@ -19,6 +19,7 @@ import static com.google.api.codegen.config.DiscoGapicMethodConfig.createDiscoGa
 import com.google.api.codegen.CollectionConfigProto;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
+import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
@@ -79,7 +80,9 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
       String language,
       InterfaceConfigProto interfaceConfigProto,
       String interfaceNameOverride,
-      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs) {
+      ResourceNameMessageConfigs messageConfigs,
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
+      DiscoGapicNamer discoGapicNamer) {
 
     ImmutableMap<String, ImmutableSet<String>> retryCodesDefinition =
         RetryDefinitionsTransformer.createRetryCodesDefinition(diagCollector, interfaceConfigProto);
@@ -96,8 +99,11 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
               diagCollector,
               language,
               interfaceConfigProto,
+              messageConfigs,
+              resourceNameConfigs,
               retryCodesDefinition.keySet(),
-              retrySettingsDefinition.keySet());
+              retrySettingsDefinition.keySet(),
+              discoGapicNamer);
       methodConfigs =
           GapicInterfaceConfig.createMethodConfigs(methodConfigMap, interfaceConfigProto);
     }
@@ -166,8 +172,11 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
       DiagCollector diagCollector,
       String language,
       InterfaceConfigProto interfaceConfigProto,
+      ResourceNameMessageConfigs messageConfigs,
+      ImmutableMap<String, ResourceNameConfig> resourceNameConfigs,
       ImmutableSet<String> retryCodesConfigNames,
-      ImmutableSet<String> retryParamsConfigNames) {
+      ImmutableSet<String> retryParamsConfigNames,
+      DiscoGapicNamer discoGapicNamer) {
     ImmutableMap.Builder<String, DiscoGapicMethodConfig> methodConfigMapBuilder =
         ImmutableMap.builder();
 
@@ -186,8 +195,11 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
               language,
               methodConfigProto,
               method,
+              messageConfigs,
+              resourceNameConfigs,
               retryCodesConfigNames,
-              retryParamsConfigNames);
+              retryParamsConfigNames,
+              discoGapicNamer);
       if (methodConfig == null) {
         continue;
       }

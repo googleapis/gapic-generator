@@ -81,4 +81,6 @@ public interface MethodModel {
   boolean hasReturnValue();
 
   String getProtoMethodName();
+
+  Iterable<FieldModel> getInputFields();
 }
