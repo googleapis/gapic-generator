@@ -83,11 +83,12 @@ public class DiscoGapicNamer {
    */
   public static Name methodAsName(Method method) {
     String[] pieces = method.id().split(regexDelimiter);
-    Name result = Name.anyCamel(pieces[1]);
-    for (int i = 2; i < pieces.length; i++) {
-      result = result.join(Name.anyCamel(pieces[i]));
+    Name resource = Name.anyCamel(pieces[1]);
+    for (int i = 2; i < pieces.length - 1; i++) {
+      resource = resource.join(Name.anyCamel(pieces[i]));
     }
-    return result;
+    Name function = Name.anyCamel(pieces[pieces.length - 1]);
+    return function.join(resource);
   }
 
   /** Return the name of the resource from a given method. */
