@@ -26,6 +26,9 @@ public class Inflector {
     } else if (in.endsWith("ies")) {
       return in.substring(0, in.length() - 3) + "y";
 
+    } else if (in.endsWith("ses")) {
+      return in.substring(0, in.length() - 3) + "s";
+
     } else if (in.charAt(in.length() - 1) == 's') {
       return in.substring(0, in.length() - 1);
     }

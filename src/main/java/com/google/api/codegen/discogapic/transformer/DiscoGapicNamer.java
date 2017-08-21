@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.discogapic.transformer;
 
+import com.google.api.codegen.Inflector;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
@@ -82,9 +83,15 @@ public class DiscoGapicNamer {
    */
   public static Name methodAsName(Method method) {
     String[] pieces = method.id().split(regexDelimiter);
-    Name resource = Name.anyCamel(pieces[1]);
-    for (int i = 2; i < pieces.length - 1; i++) {
-      resource = resource.join(Name.anyCamel(pieces[i]));
+    String resourceLastString = pieces[pieces.length - 2];
+    Name resource;
+    if (method.parameters().containsKey("maxResults")) {
+      resource = Name.anyCamel(resourceLastString);
+    } else {
+      resource = Name.anyCamel(Inflector.singularize(resourceLastString));
+    }
+    for (int i = pieces.length - 3; i > 0; i--) {
+      resource = Name.anyCamel(pieces[i]).join(resource);
     }
     Name function = Name.anyCamel(pieces[pieces.length - 1]);
     return function.join(resource);
