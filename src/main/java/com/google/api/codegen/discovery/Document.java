@@ -162,7 +162,7 @@ public abstract class Document implements Node {
   @JsonProperty("authType")
   public abstract AuthType authType();
 
-  /** @return the canonical name. */
+  /** @return the base URL. */
   @JsonProperty("baseUrl")
   public abstract String baseUrl();
 
