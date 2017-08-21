@@ -83,13 +83,11 @@ public class DiscoGapicNamer {
    */
   public static Name methodAsName(Method method) {
     String[] pieces = method.id().split(regexDelimiter);
-    String resourceLastString = pieces[pieces.length - 2];
-    Name resource;
-    if (method.parameters().containsKey("maxResults")) {
-      resource = Name.anyCamel(resourceLastString);
-    } else {
-      resource = Name.anyCamel(Inflector.singularize(resourceLastString));
+    String resourceLastName = pieces[pieces.length - 2];
+    if (!method.isPluralMethod()) {
+      resourceLastName = Inflector.singularize(resourceLastName);
     }
+    Name resource = Name.anyCamel(resourceLastName);
     for (int i = pieces.length - 3; i > 0; i--) {
       resource = Name.anyCamel(pieces[i]).join(resource);
     }
@@ -97,7 +95,7 @@ public class DiscoGapicNamer {
     return function.join(resource);
   }
 
-  /** Return the name of the resource from a given method. */
+  /** Return the name of the resource from a given method's path. */
   private static Name getResourceIdentifier(Method method) {
     // Assumes the resource is the last curly-bracketed String in the path.
     String path = method.flatPath();
@@ -113,7 +111,12 @@ public class DiscoGapicNamer {
   /** Get the request type name from a method. */
   public static Name getRequestName(Method method) {
     String[] pieces = method.id().split(regexDelimiter);
-    return Name.anyCamel(pieces[pieces.length - 2], pieces[pieces.length - 1], "http", "request");
+    String methodName = pieces[pieces.length - 1];
+    String resourceName = pieces[pieces.length - 2];
+    if (!method.isPluralMethod()) {
+      resourceName = Inflector.singularize(resourceName);
+    }
+    return Name.anyCamel(methodName, resourceName, "http", "request");
   }
 
   /** Get the request type name from a method. */
@@ -133,8 +136,12 @@ public class DiscoGapicNamer {
       return Name.anyCamel(typeName);
     } else {
       String[] pieces = method.id().split(regexDelimiter);
-      return Name.anyCamel(
-          pieces[pieces.length - 2], pieces[pieces.length - 1], "http", "response");
+      String methodName = pieces[pieces.length - 1];
+      String resourceName = pieces[pieces.length - 2];
+      if (!method.isPluralMethod()) {
+        resourceName = Inflector.singularize(resourceName);
+      }
+      return Name.anyCamel(methodName, resourceName, "http", "response");
     }
   }
 

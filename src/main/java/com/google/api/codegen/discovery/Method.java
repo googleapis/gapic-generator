@@ -166,4 +166,12 @@ public abstract class Method implements Comparable<Method>, Node {
     }
     return (Document) node.parent();
   }
+
+  /**
+   * @return if the method acts on a set of resources whose size may be greater than 1, e.g. List
+   *     methods.
+   */
+  public boolean isPluralMethod() {
+    return parameters().containsKey("maxResults");
+  }
 }
