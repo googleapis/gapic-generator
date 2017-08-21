@@ -17,6 +17,7 @@ package com.google.api.codegen.discogapic.transformer.java;
 import static com.google.api.codegen.util.java.JavaTypeTable.JavaLangResolution.IGNORE_JAVA_LANG_CLASH;
 
 import com.google.api.codegen.config.DiscoApiModel;
+import com.google.api.codegen.config.DiscoveryMethodModel;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.FlatteningConfig;
@@ -194,7 +195,10 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     SymbolTable symbolTable = SymbolTable.fromSeed(reservedKeywords);
 
     String requestClassId =
-        context.getNamer().privateFieldName(DiscoGapicNamer.getRequestName(method));
+        context
+            .getNamer()
+            .privateFieldName(
+                DiscoGapicNamer.getRequestName(((DiscoveryMethodModel) method).getDiscoMethod()));
     String requestName =
         nameFormatter.privateFieldName(Name.anyCamel(symbolTable.getNewSymbol(requestClassId)));
     boolean hasRequiredProperties = false;

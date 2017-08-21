@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.discogapic.transformer;
 
-import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.Inflector;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
@@ -83,15 +83,19 @@ public class DiscoGapicNamer {
    */
   public static Name methodAsName(Method method) {
     String[] pieces = method.id().split(regexDelimiter);
-    Name resource = Name.anyCamel(pieces[1]);
-    for (int i = 2; i < pieces.length - 1; i++) {
-      resource = resource.join(Name.anyCamel(pieces[i]));
+    String resourceLastName = pieces[pieces.length - 2];
+    if (!method.isPluralMethod()) {
+      resourceLastName = Inflector.singularize(resourceLastName);
+    }
+    Name resource = Name.anyCamel(resourceLastName);
+    for (int i = pieces.length - 3; i > 0; i--) {
+      resource = Name.anyCamel(pieces[i]).join(resource);
     }
     Name function = Name.anyCamel(pieces[pieces.length - 1]);
     return function.join(resource);
   }
 
-  /** Return the name of the resource from a given method. */
+  /** Return the name of the resource from a given method's path. */
   private static Name getResourceIdentifier(Method method) {
     // Assumes the resource is the last curly-bracketed String in the path.
     String path = method.flatPath();
@@ -107,16 +111,12 @@ public class DiscoGapicNamer {
   /** Get the request type name from a method. */
   public static Name getRequestName(Method method) {
     String[] pieces = method.id().split(regexDelimiter);
-    return Name.anyCamel(pieces[pieces.length - 2], pieces[pieces.length - 1], "http", "request");
-  }
-
-  /**
-   * Get the request type name from a method. Assumes the input's fullName follows the pattern
-   * ([a-zA-Z]+\.){2}[a-zA-Z]+
-   */
-  public static Name getRequestName(MethodModel method) {
-    String[] pieces = method.getFullName().split(regexDelimiter);
-    return Name.anyCamel(pieces[pieces.length - 2], pieces[pieces.length - 1], "http", "request");
+    String methodName = pieces[pieces.length - 1];
+    String resourceName = pieces[pieces.length - 2];
+    if (!method.isPluralMethod()) {
+      resourceName = Inflector.singularize(resourceName);
+    }
+    return Name.anyCamel(methodName, resourceName, "http", "request");
   }
 
   /** Get the request type name from a method. */
@@ -136,8 +136,12 @@ public class DiscoGapicNamer {
       return Name.anyCamel(typeName);
     } else {
       String[] pieces = method.id().split(regexDelimiter);
-      return Name.anyCamel(
-          pieces[pieces.length - 2], pieces[pieces.length - 1], "http", "response");
+      String methodName = pieces[pieces.length - 1];
+      String resourceName = pieces[pieces.length - 2];
+      if (!method.isPluralMethod()) {
+        resourceName = Inflector.singularize(resourceName);
+      }
+      return Name.anyCamel(methodName, resourceName, "http", "response");
     }
   }
 
