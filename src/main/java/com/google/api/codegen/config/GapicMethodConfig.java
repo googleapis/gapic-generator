@@ -41,7 +41,7 @@ import com.google.protobuf.Empty;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
-import org.joda.time.Duration;
+import org.threeten.bp.Duration;
 
 /**
  * GapicMethodConfig represents the code-gen config for a method, and includes the specification of
@@ -176,8 +176,8 @@ public abstract class GapicMethodConfig {
       error = true;
     }
 
-    Duration timeout = Duration.millis(methodConfigProto.getTimeoutMillis());
-    if (timeout.getMillis() <= 0) {
+    Duration timeout = Duration.ofMillis(methodConfigProto.getTimeoutMillis());
+    if (timeout.toMillis() <= 0) {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
@@ -187,6 +187,14 @@ public abstract class GapicMethodConfig {
     }
 
     boolean hasRequestObjectMethod = methodConfigProto.getRequestObjectMethod();
+    if (hasRequestObjectMethod && method.getRequestStreaming()) {
+      diagCollector.addDiag(
+          Diag.error(
+              SimpleLocation.TOPLEVEL,
+              "request_object_method incompatible with streaming method %s",
+              method.getFullName()));
+      error = true;
+    }
 
     ImmutableMap<String, String> fieldNamePatterns =
         ImmutableMap.copyOf(methodConfigProto.getFieldNamePatterns());

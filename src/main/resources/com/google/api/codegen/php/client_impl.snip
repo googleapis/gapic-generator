@@ -111,9 +111,9 @@
 @end
 
 @private members(xapiClass)
-    private $grpcCredentialsHelper;
+    protected $grpcCredentialsHelper;
     @join stub : xapiClass.stubs
-        private ${@stub.name};
+        protected ${@stub.name};
     @end
     private $scopes;
     private $defaultCallSettings;
@@ -327,7 +327,6 @@
 
 @private constructor(xapiClass)
 
-    // TODO(garrettjones): add channel (when supported in gRPC)
     /**
      * Constructor.
      *
@@ -346,13 +345,22 @@
          *     @@type string $serviceAddress Required. The domain name of the API remote host.
      @end
      *     @@type mixed $port The port on which to connect to the remote host. Default {@xapiClass.servicePort}.
+     *     @@type \Grpc\Channel $channel
+     *           A `Channel` object to be used by gRPC. If not specified, a channel will be constructed.
      *     @@type \Grpc\ChannelCredentials $sslCreds
-     *           A `ChannelCredentials` for use with an SSL-enabled channel.
+     *           A `ChannelCredentials` object for use with an SSL-enabled channel.
      *           Default: a credentials object returned from
      *           \Grpc\ChannelCredentials::createSsl()
+     *           NOTE: if the $channel optional argument is specified, then this argument is unused.
+     *     @@type bool $forceNewChannel
+     *           If true, this forces gRPC to create a new channel instead of using a persistent channel.
+     *           Defaults to false.
+     *           NOTE: if the $channel optional argument is specified, then this option is unused.
+     *     @@type \Google\Auth\CredentialsLoader $credentialsLoader
+     *           A CredentialsLoader object created using the Google\Auth library.
      @if xapiClass.hasDefaultServiceScopes
          *     @@type array $scopes A string array of scopes to use when acquiring credentials.
-         *                         Default the scopes for the {@xapiClass.serviceTitle}.
+         *                          Defaults to the scopes for the {@xapiClass.serviceTitle}.
      @else
          *     @@type array $scopes Required. A string array of scopes to use when acquiring credentials.
      @end
@@ -365,9 +373,6 @@
      *                              that don't use retries. For calls that use retries,
      *                              set the timeout in RetryOptions.
      *                              Default: 30000 (30 seconds)
-     *     @@type \Google\Auth\CredentialsLoader $credentialsLoader
-     *                              A CredentialsLoader object created using the
-     *                              Google\Auth library.
      * }
      @if xapiClass.hasMissingDefaultOptions
          * @@throws ValidationException Throws a ValidationException if required arguments are missing
@@ -465,21 +470,16 @@
         if (array_key_exists('sslCreds', $options)) {
             $createStubOptions['sslCreds'] = $options['sslCreds'];
         }
-        $grpcCredentialsHelperOptions = array_diff_key($options, $defaultOptions);
-        $this->grpcCredentialsHelper = new GrpcCredentialsHelper($this->scopes, $grpcCredentialsHelperOptions);
+        $this->grpcCredentialsHelper = new GrpcCredentialsHelper($options);
 
         @join stub : xapiClass.stubs
-            ${@stub.createStubFunctionName} = function ($hostname, $opts) {
-                return new {@stub.grpcClientTypeName}($hostname, $opts);
+            ${@stub.createStubFunctionName} = function ($hostname, $opts, $channel) {
+                return new {@stub.grpcClientTypeName}($hostname, $opts, $channel);
             };
             if (array_key_exists('{@stub.createStubFunctionName}', $options)) {
                 ${@stub.createStubFunctionName} = $options['{@stub.createStubFunctionName}'];
             }
-            $this->{@stub.name} = $this->grpcCredentialsHelper->createStub(
-                ${@stub.createStubFunctionName},
-                $options['serviceAddress'],
-                $options['port'],
-                $createStubOptions);
+            $this->{@stub.name} = $this->grpcCredentialsHelper->createStub(${@stub.createStubFunctionName});
         @end
     }
     {@""}

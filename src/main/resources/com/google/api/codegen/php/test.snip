@@ -36,16 +36,16 @@
     @end
     private function createStub($createGrpcStub)
     {
-        $grpcCredentialsHelper = new GrpcCredentialsHelper([]);
-        return $grpcCredentialsHelper->createStub(
-            $createGrpcStub,
+        $grpcCredentialsHelper = new GrpcCredentialsHelper([
             @if testClass.missingDefaultServiceAddress
-                'unknown-service-address',
+                'serviceAddress' => 'unknown-service-address',
             @else
-                {@testClass.apiClassName}::SERVICE_ADDRESS,
+                'serviceAddress' => {@testClass.apiClassName}::SERVICE_ADDRESS,
             @end
-            {@testClass.apiClassName}::DEFAULT_SERVICE_PORT
-        );
+            'port' => {@testClass.apiClassName}::DEFAULT_SERVICE_PORT,
+            'scopes' => ['unknown-service-scopes'],
+        ]);
+        return $grpcCredentialsHelper->createStub($createGrpcStub);
     }
 
     /**
@@ -497,11 +497,7 @@
 @end
 
 @private assertFunction(assert)
-    @if assert.isArray
-        assertRepeatedFieldEquals
-    @else
-        assertEquals
-    @end
+    assertProtobufEquals
 @end
 
 @private singleCallTestSetup(test)
