@@ -275,8 +275,6 @@ public abstract class PackageMetadataConfig {
   public static PackageMetadataConfig createFromString(String yamlContents) {
     Yaml yaml = new Yaml();
     Map<String, Object> configMap = (Map<String, Object>) yaml.load(yamlContents);
-    Map<String, Map<String, Map<String, String>>> generatedVersionMap =
-        (Map<String, Map<String, Map<String, String>>>) configMap.get("generated_package_version");
 
     Builder builder =
         newBuilder()
@@ -291,7 +289,9 @@ public abstract class PackageMetadataConfig {
                 createVersionMap((Map<String, Map<String, String>>) configMap.get("proto_version")))
             .authVersionBound(
                 createVersionMap((Map<String, Map<String, String>>) configMap.get("auth_version")))
-            .generatedNonGAPackageVersionBound(createVersionMap(generatedVersionMap.get("non_ga")))
+            .generatedNonGAPackageVersionBound(
+                createVersionMap(
+                    (Map<String, Map<String, String>>) configMap.get("generated_package_version")))
             .apiCommonVersionBound(
                 createVersionMap(
                     (Map<String, Map<String, String>>) configMap.get("api_common_version")))
@@ -317,8 +317,10 @@ public abstract class PackageMetadataConfig {
           createProtoPackageDependencies(configMap, "proto_test_deps", TEST_PROTO_PACKAGE_PREFIX));
     }
 
-    if (generatedVersionMap.containsKey("ga")) {
-      builder.generatedGAPackageVersionBound(createVersionMap(generatedVersionMap.get("ga")));
+    if (configMap.containsKey("generated_ga_package_version")) {
+      builder.generatedGAPackageVersionBound(
+          createVersionMap(
+              (Map<String, Map<String, String>>) configMap.get("generated_ga_package_version")));
     }
     return builder.build();
   }
