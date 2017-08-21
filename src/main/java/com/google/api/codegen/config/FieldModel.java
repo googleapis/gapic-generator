@@ -62,6 +62,9 @@ public interface FieldModel {
   /* @return if the underlying resource can be repeated in the parent resource. */
   boolean isRepeated();
 
+  /* @return if this field is required to be non-null in the parent object. */
+  boolean isRequired();
+
   /* @return the full name of the parent. */
   String getParentFullName();
 
@@ -96,4 +99,6 @@ public interface FieldModel {
 
   /* @return the type of this object, formatted as a String. */
   String getKind();
+
+  TypeName getTypeName(ImportTypeTable typeTable);
 }

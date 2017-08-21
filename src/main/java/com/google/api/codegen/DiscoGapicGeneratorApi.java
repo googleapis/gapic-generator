@@ -14,14 +14,7 @@
  */
 package com.google.api.codegen;
 
-import static com.google.api.codegen.config.LanguageStrings.CSHARP;
-import static com.google.api.codegen.config.LanguageStrings.GO;
 import static com.google.api.codegen.config.LanguageStrings.JAVA;
-import static com.google.api.codegen.config.LanguageStrings.JS;
-import static com.google.api.codegen.config.LanguageStrings.NODEJS;
-import static com.google.api.codegen.config.LanguageStrings.PHP;
-import static com.google.api.codegen.config.LanguageStrings.PYTHON;
-import static com.google.api.codegen.config.LanguageStrings.RUBY;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,13 +27,7 @@ import com.google.api.codegen.discovery.DiscoveryNode;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.gapic.GapicGeneratorConfig;
 import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.transformer.csharp.CSharpSurfaceNamer;
-import com.google.api.codegen.transformer.go.GoSurfaceNamer;
 import com.google.api.codegen.transformer.java.JavaSurfaceNamer;
-import com.google.api.codegen.transformer.nodejs.NodeJSSurfaceNamer;
-import com.google.api.codegen.transformer.php.PhpSurfaceNamer;
-import com.google.api.codegen.transformer.py.PythonSurfaceNamer;
-import com.google.api.codegen.transformer.ruby.RubySurfaceNamer;
 import com.google.api.codegen.util.ClassInstantiator;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.tools.framework.model.DiagCollector;
@@ -67,7 +54,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.lang3.NotImplementedException;
 
 public class DiscoGapicGeneratorApi {
 
@@ -104,18 +90,6 @@ public class DiscoGapicGeneratorApi {
           ImmutableList.<String>of());
 
   private final ToolOptions options;
-
-  private static final Map<String, Class<? extends SurfaceNamer>> SURFACE_NAMER_MAP =
-      ImmutableMap.<String, Class<? extends SurfaceNamer>>builder()
-          .put(CSHARP, CSharpSurfaceNamer.class)
-          .put(GO, GoSurfaceNamer.class)
-          .put(JAVA, JavaSurfaceNamer.class)
-          .put(JS, SurfaceNamer.class)
-          .put(NODEJS, NodeJSSurfaceNamer.class)
-          .put(PHP, PhpSurfaceNamer.class)
-          .put(PYTHON, PythonSurfaceNamer.class)
-          .put(RUBY, RubySurfaceNamer.class)
-          .build();
 
   /** Constructs a code generator api based on given options. */
   public DiscoGapicGeneratorApi(ToolOptions options) {
@@ -166,7 +140,7 @@ public class DiscoGapicGeneratorApi {
           new JavaSurfaceNamer(defaultPackageName, defaultPackageName, new JavaNameFormatter());
     }
     if (surfaceNamer == null) {
-      throw new NotImplementedException(
+      throw new UnsupportedOperationException(
           "DiscoGapicGeneratorApi: language \"" + language + "\" not yet supported");
     }
 
