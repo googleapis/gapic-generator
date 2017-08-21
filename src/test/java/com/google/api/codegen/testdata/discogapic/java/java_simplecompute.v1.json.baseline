@@ -562,7 +562,7 @@ public final class Address implements ApiMessage {
   }
   private static final Address DEFAULT_INSTANCE;
   static {
-  DEFAULT_INSTANCE = new Address();
+    DEFAULT_INSTANCE = new Address();
   }
 
   public static class Builder {
@@ -934,7 +934,7 @@ public final class AddressList implements ApiMessage {
   }
   private static final AddressList DEFAULT_INSTANCE;
   static {
-  DEFAULT_INSTANCE = new AddressList();
+    DEFAULT_INSTANCE = new AddressList();
   }
 
   public static class Builder {
@@ -1173,7 +1173,7 @@ public final class Data implements ApiMessage {
   }
   private static final Data DEFAULT_INSTANCE;
   static {
-  DEFAULT_INSTANCE = new Data();
+    DEFAULT_INSTANCE = new Data();
   }
 
   public static class Builder {
@@ -1341,7 +1341,7 @@ public final class Error implements ApiMessage {
   }
   private static final Error DEFAULT_INSTANCE;
   static {
-  DEFAULT_INSTANCE = new Error();
+    DEFAULT_INSTANCE = new Error();
   }
 
   public static class Builder {
@@ -1511,7 +1511,7 @@ public final class Errors implements ApiMessage {
   }
   private static final Errors DEFAULT_INSTANCE;
   static {
-  DEFAULT_INSTANCE = new Errors();
+    DEFAULT_INSTANCE = new Errors();
   }
 
   public static class Builder {
@@ -1941,7 +1941,7 @@ public final class Operation implements ApiMessage {
   }
   private static final Operation DEFAULT_INSTANCE;
   static {
-  DEFAULT_INSTANCE = new Operation();
+    DEFAULT_INSTANCE = new Operation();
   }
 
   public static class Builder {
@@ -2551,7 +2551,7 @@ public final class Warnings implements ApiMessage {
   }
   private static final Warnings DEFAULT_INSTANCE;
   static {
-  DEFAULT_INSTANCE = new Warnings();
+    DEFAULT_INSTANCE = new Warnings();
   }
 
   public static class Builder {
@@ -2838,7 +2838,7 @@ public final class AddressesDeleteHttpRequest implements ApiMessage {
   }
   private static final AddressesDeleteHttpRequest DEFAULT_INSTANCE;
   static {
-  DEFAULT_INSTANCE = new AddressesDeleteHttpRequest();
+    DEFAULT_INSTANCE = new AddressesDeleteHttpRequest();
   }
 
   public static class Builder {
@@ -3276,7 +3276,7 @@ public final class AddressesGetHttpRequest implements ApiMessage {
   }
   private static final AddressesGetHttpRequest DEFAULT_INSTANCE;
   static {
-  DEFAULT_INSTANCE = new AddressesGetHttpRequest();
+    DEFAULT_INSTANCE = new AddressesGetHttpRequest();
   }
 
   public static class Builder {
@@ -3714,7 +3714,7 @@ public final class AddressesInsertHttpRequest implements ApiMessage {
   }
   private static final AddressesInsertHttpRequest DEFAULT_INSTANCE;
   static {
-  DEFAULT_INSTANCE = new AddressesInsertHttpRequest();
+    DEFAULT_INSTANCE = new AddressesInsertHttpRequest();
   }
 
   public static class Builder {
@@ -4183,7 +4183,7 @@ public final class AddressesListHttpRequest implements ApiMessage {
   }
   private static final AddressesListHttpRequest DEFAULT_INSTANCE;
   static {
-  DEFAULT_INSTANCE = new AddressesListHttpRequest();
+    DEFAULT_INSTANCE = new AddressesListHttpRequest();
   }
 
   public static class Builder {
@@ -4526,7 +4526,7 @@ import com.google.api.core.BetaApi;
 import com.google.api.gax.core.BackgroundResource;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.api.pathtemplate.PathTemplate;
-import static com.google.cloud.simplecompute.v1.PagedResponseWrappers.AddressesListPagedResponse;
+import static com.google.cloud.simplecompute.v1.PagedResponseWrappers.ListAddressesPagedResponse;
 import com.google.cloud.simplecompute.v1.stub.AddressAdminStub;
 import java.io.Closeable;
 import java.io.IOException;
@@ -4547,7 +4547,7 @@ import javax.annotation.Generated;
  * <code>
  * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
  *
- *   Operation response = addressAdminClient.addressesInsert();
+ *   Operation response = addressAdminClient.insertAddresses();
  * }
  * </code>
  * </pre>
@@ -4653,7 +4653,7 @@ public class AddressAdminClient implements BackgroundResource {
    * <pre><code>
    * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
    *
-   *   Operation response = addressAdminClient.addressesInsert();
+   *   Operation response = addressAdminClient.insertAddresses();
    * }
    * </code></pre>
    *
@@ -4662,14 +4662,14 @@ public class AddressAdminClient implements BackgroundResource {
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   @BetaApi
-  public final Operation addressesInsert(RegionName region, Address address) {
+  public final Operation insertAddresses(RegionName region, Address address) {
 
     AddressesInsertHttpRequest request =
         AddressesInsertHttpRequest.newBuilder()
         .setRegionWithRegionName(region)
         .setAddress(address)
         .build();
-    return addressesInsert(request);
+    return insertAddresses(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -4680,7 +4680,7 @@ public class AddressAdminClient implements BackgroundResource {
    * <pre><code>
    * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
    *
-   *   Operation response = addressAdminClient.addressesInsert();
+   *   Operation response = addressAdminClient.insertAddresses();
    * }
    * </code></pre>
    *
@@ -4688,8 +4688,8 @@ public class AddressAdminClient implements BackgroundResource {
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   @BetaApi
-  public final Operation addressesInsert(AddressesInsertHttpRequest request) {
-    return addressesInsertCallable().call(request);
+  public final Operation insertAddresses(AddressesInsertHttpRequest request) {
+    return insertAddressesCallable().call(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -4700,15 +4700,15 @@ public class AddressAdminClient implements BackgroundResource {
    * <pre><code>
    * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
    *
-   *   ApiFuture&lt;Operation&gt; future = addressAdminClient.addressesInsertCallable().futureCall();
+   *   ApiFuture&lt;Operation&gt; future = addressAdminClient.insertAddressesCallable().futureCall();
    *   // Do something
    *   Operation response = future.get();
    * }
    * </code></pre>
    */
   @BetaApi
-  public final UnaryCallable<AddressesInsertHttpRequest, Operation> addressesInsertCallable() {
-    return stub.addressesInsertCallable();
+  public final UnaryCallable<AddressesInsertHttpRequest, Operation> insertAddressesCallable() {
+    return stub.insertAddressesCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -4719,7 +4719,7 @@ public class AddressAdminClient implements BackgroundResource {
    * <pre><code>
    * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
    *
-   *   for (Address element : addressAdminClient.addressesList().iterateAll()) {
+   *   for (Address element : addressAdminClient.listAddresses().iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -4729,8 +4729,8 @@ public class AddressAdminClient implements BackgroundResource {
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   @BetaApi
-  public final AddressesListPagedResponse addressesList(AddressesListHttpRequest request) {
-    return addressesListPagedCallable()
+  public final ListAddressesPagedResponse listAddresses(AddressesListHttpRequest request) {
+    return listAddressesPagedCallable()
         .call(request);
   }
 
@@ -4742,7 +4742,7 @@ public class AddressAdminClient implements BackgroundResource {
    * <pre><code>
    * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
    *
-   *   ApiFuture&lt;AddressesListPagedResponse&gt; future = addressAdminClient.addressesListPagedCallable().futureCall();
+   *   ApiFuture&lt;ListAddressesPagedResponse&gt; future = addressAdminClient.listAddressesPagedCallable().futureCall();
    *   // Do something
    *   for (Address element : future.get().iterateAll()) {
    *     // doThingsWith(element);
@@ -4751,8 +4751,8 @@ public class AddressAdminClient implements BackgroundResource {
    * </code></pre>
    */
   @BetaApi
-  public final UnaryCallable<AddressesListHttpRequest, AddressesListPagedResponse> addressesListPagedCallable() {
-    return stub.addressesListPagedCallable();
+  public final UnaryCallable<AddressesListHttpRequest, ListAddressesPagedResponse> listAddressesPagedCallable() {
+    return stub.listAddressesPagedCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -4764,7 +4764,7 @@ public class AddressAdminClient implements BackgroundResource {
    * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
    *
    *   while (true) {
-   *     AddressList response = addressAdminClient.addressesListCallable().call();
+   *     AddressList response = addressAdminClient.listAddressesCallable().call();
    *     for (Address element : response.getItems()) {
    *       // doThingsWith(element);
    *     }
@@ -4779,8 +4779,8 @@ public class AddressAdminClient implements BackgroundResource {
    * </code></pre>
    */
   @BetaApi
-  public final UnaryCallable<AddressesListHttpRequest, AddressList> addressesListCallable() {
-    return stub.addressesListCallable();
+  public final UnaryCallable<AddressesListHttpRequest, AddressList> listAddressesCallable() {
+    return stub.listAddressesCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -4791,7 +4791,7 @@ public class AddressAdminClient implements BackgroundResource {
    * <pre><code>
    * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
    *
-   *   Address response = addressAdminClient.addressesGet();
+   *   Address response = addressAdminClient.getAddresses();
    * }
    * </code></pre>
    *
@@ -4801,7 +4801,7 @@ public class AddressAdminClient implements BackgroundResource {
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   @BetaApi
-  public final Address addressesGet(String project, String region, String address) {
+  public final Address getAddresses(String project, String region, String address) {
 
     AddressesGetHttpRequest request =
         AddressesGetHttpRequest.newBuilder()
@@ -4809,7 +4809,7 @@ public class AddressAdminClient implements BackgroundResource {
         .setRegion(region)
         .setAddress(address)
         .build();
-    return addressesGet(request);
+    return getAddresses(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -4820,7 +4820,7 @@ public class AddressAdminClient implements BackgroundResource {
    * <pre><code>
    * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
    *
-   *   Address response = addressAdminClient.addressesGet();
+   *   Address response = addressAdminClient.getAddresses();
    * }
    * </code></pre>
    *
@@ -4828,8 +4828,8 @@ public class AddressAdminClient implements BackgroundResource {
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   @BetaApi
-  private final Address addressesGet(AddressesGetHttpRequest request) {
-    return addressesGetCallable().call(request);
+  private final Address getAddresses(AddressesGetHttpRequest request) {
+    return getAddressesCallable().call(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -4840,15 +4840,15 @@ public class AddressAdminClient implements BackgroundResource {
    * <pre><code>
    * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
    *
-   *   ApiFuture&lt;Address&gt; future = addressAdminClient.addressesGetCallable().futureCall();
+   *   ApiFuture&lt;Address&gt; future = addressAdminClient.getAddressesCallable().futureCall();
    *   // Do something
    *   Address response = future.get();
    * }
    * </code></pre>
    */
   @BetaApi
-  public final UnaryCallable<AddressesGetHttpRequest, Address> addressesGetCallable() {
-    return stub.addressesGetCallable();
+  public final UnaryCallable<AddressesGetHttpRequest, Address> getAddressesCallable() {
+    return stub.getAddressesCallable();
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -4859,7 +4859,7 @@ public class AddressAdminClient implements BackgroundResource {
    * <pre><code>
    * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
    *
-   *   Operation response = addressAdminClient.addressesDelete();
+   *   Operation response = addressAdminClient.deleteAddresses();
    * }
    * </code></pre>
    *
@@ -4867,13 +4867,13 @@ public class AddressAdminClient implements BackgroundResource {
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   @BetaApi
-  public final Operation addressesDelete(AddressName address) {
+  public final Operation deleteAddresses(AddressName address) {
 
     AddressesDeleteHttpRequest request =
         AddressesDeleteHttpRequest.newBuilder()
         .setAddressWithAddressName(address)
         .build();
-    return addressesDelete(request);
+    return deleteAddresses(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -4884,7 +4884,7 @@ public class AddressAdminClient implements BackgroundResource {
    * <pre><code>
    * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
    *
-   *   Operation response = addressAdminClient.addressesDelete();
+   *   Operation response = addressAdminClient.deleteAddresses();
    * }
    * </code></pre>
    *
@@ -4892,8 +4892,8 @@ public class AddressAdminClient implements BackgroundResource {
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   @BetaApi
-  private final Operation addressesDelete(AddressesDeleteHttpRequest request) {
-    return addressesDeleteCallable().call(request);
+  private final Operation deleteAddresses(AddressesDeleteHttpRequest request) {
+    return deleteAddressesCallable().call(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
@@ -4904,15 +4904,15 @@ public class AddressAdminClient implements BackgroundResource {
    * <pre><code>
    * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
    *
-   *   ApiFuture&lt;Operation&gt; future = addressAdminClient.addressesDeleteCallable().futureCall();
+   *   ApiFuture&lt;Operation&gt; future = addressAdminClient.deleteAddressesCallable().futureCall();
    *   // Do something
    *   Operation response = future.get();
    * }
    * </code></pre>
    */
   @BetaApi
-  public final UnaryCallable<AddressesDeleteHttpRequest, Operation> addressesDeleteCallable() {
-    return stub.addressesDeleteCallable();
+  public final UnaryCallable<AddressesDeleteHttpRequest, Operation> deleteAddressesCallable() {
+    return stub.deleteAddressesCallable();
   }
 
   @Override
@@ -4991,7 +4991,7 @@ import com.google.api.gax.rpc.TransportProvider;
 import com.google.api.gax.rpc.UnaryCallSettings;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.auth.Credentials;
-import static com.google.cloud.simplecompute.v1.PagedResponseWrappers.AddressesListPagedResponse;
+import static com.google.cloud.simplecompute.v1.PagedResponseWrappers.ListAddressesPagedResponse;
 import com.google.cloud.simplecompute.v1.stub.AddressAdminStub;
 import com.google.cloud.simplecompute.v1.stub.HttpAddressAdminStub;
 import com.google.common.collect.ImmutableList;
@@ -5020,13 +5020,13 @@ import org.threeten.bp.Duration;
  *
  * <p>The builder of this class is recursive, so contained classes are themselves builders.
  * When build() is called, the tree of builders is called to create the complete settings
- * object. For example, to set the total timeout of addressesInsert to 30 seconds:
+ * object. For example, to set the total timeout of insertAddresses to 30 seconds:
  *
  * <pre>
  * <code>
  * AddressAdminSettings.Builder addressAdminSettingsBuilder =
  *     AddressAdminSettings.defaultBuilder();
- * addressAdminSettingsBuilder.addressesInsertSettings().getRetrySettingsBuilder()
+ * addressAdminSettingsBuilder.insertAddressesSettings().getRetrySettingsBuilder()
  *     .setTotalTimeout(Duration.ofSeconds(30));
  * AddressAdminSettings addressAdminSettings = addressAdminSettingsBuilder.build();
  * </code>
@@ -5054,37 +5054,37 @@ public class AddressAdminSettings extends ClientSettings {
 
   private static String gapicVersion;
 
-  private final SimpleCallSettings<AddressesInsertHttpRequest, Operation> addressesInsertSettings;
-  private final PagedCallSettings<AddressesListHttpRequest, AddressList, AddressesListPagedResponse> addressesListSettings;
-  private final SimpleCallSettings<AddressesGetHttpRequest, Address> addressesGetSettings;
-  private final SimpleCallSettings<AddressesDeleteHttpRequest, Operation> addressesDeleteSettings;
+  private final SimpleCallSettings<AddressesInsertHttpRequest, Operation> insertAddressesSettings;
+  private final PagedCallSettings<AddressesListHttpRequest, AddressList, ListAddressesPagedResponse> listAddressesSettings;
+  private final SimpleCallSettings<AddressesGetHttpRequest, Address> getAddressesSettings;
+  private final SimpleCallSettings<AddressesDeleteHttpRequest, Operation> deleteAddressesSettings;
 
   /**
-   * Returns the object with the settings used for calls to addressesInsert.
+   * Returns the object with the settings used for calls to insertAddresses.
    */
-  public SimpleCallSettings<AddressesInsertHttpRequest, Operation> addressesInsertSettings() {
-    return addressesInsertSettings;
+  public SimpleCallSettings<AddressesInsertHttpRequest, Operation> insertAddressesSettings() {
+    return insertAddressesSettings;
   }
 
   /**
-   * Returns the object with the settings used for calls to addressesList.
+   * Returns the object with the settings used for calls to listAddresses.
    */
-  public PagedCallSettings<AddressesListHttpRequest, AddressList, AddressesListPagedResponse> addressesListSettings() {
-    return addressesListSettings;
+  public PagedCallSettings<AddressesListHttpRequest, AddressList, ListAddressesPagedResponse> listAddressesSettings() {
+    return listAddressesSettings;
   }
 
   /**
-   * Returns the object with the settings used for calls to addressesGet.
+   * Returns the object with the settings used for calls to getAddresses.
    */
-  public SimpleCallSettings<AddressesGetHttpRequest, Address> addressesGetSettings() {
-    return addressesGetSettings;
+  public SimpleCallSettings<AddressesGetHttpRequest, Address> getAddressesSettings() {
+    return getAddressesSettings;
   }
 
   /**
-   * Returns the object with the settings used for calls to addressesDelete.
+   * Returns the object with the settings used for calls to deleteAddresses.
    */
-  public SimpleCallSettings<AddressesDeleteHttpRequest, Operation> addressesDeleteSettings() {
-    return addressesDeleteSettings;
+  public SimpleCallSettings<AddressesDeleteHttpRequest, Operation> deleteAddressesSettings() {
+    return deleteAddressesSettings;
   }
 
 
@@ -5198,13 +5198,13 @@ public class AddressAdminSettings extends ClientSettings {
         settingsBuilder.getCredentialsProvider(),
         settingsBuilder.getClock());
 
-    addressesInsertSettings = settingsBuilder.addressesInsertSettings().build();
-    addressesListSettings = settingsBuilder.addressesListSettings().build();
-    addressesGetSettings = settingsBuilder.addressesGetSettings().build();
-    addressesDeleteSettings = settingsBuilder.addressesDeleteSettings().build();
+    insertAddressesSettings = settingsBuilder.insertAddressesSettings().build();
+    listAddressesSettings = settingsBuilder.listAddressesSettings().build();
+    getAddressesSettings = settingsBuilder.getAddressesSettings().build();
+    deleteAddressesSettings = settingsBuilder.deleteAddressesSettings().build();
   }
 
-  private static final PagedListDescriptor<AddressesListHttpRequest, AddressList, Address> ADDRESSES_LIST_PAGE_STR_DESC =
+  private static final PagedListDescriptor<AddressesListHttpRequest, AddressList, Address> LIST_ADDRESSES_PAGE_STR_DESC =
       new PagedListDescriptor<AddressesListHttpRequest, AddressList, Address>() {
         @Override
         public String emptyToken() {
@@ -5238,17 +5238,17 @@ public class AddressAdminSettings extends ClientSettings {
         }
       };
 
-  private static final PagedListResponseFactory<AddressesListHttpRequest, AddressList, AddressesListPagedResponse> ADDRESSES_LIST_PAGE_STR_FACT =
-      new PagedListResponseFactory<AddressesListHttpRequest, AddressList, AddressesListPagedResponse>() {
+  private static final PagedListResponseFactory<AddressesListHttpRequest, AddressList, ListAddressesPagedResponse> LIST_ADDRESSES_PAGE_STR_FACT =
+      new PagedListResponseFactory<AddressesListHttpRequest, AddressList, ListAddressesPagedResponse>() {
         @Override
-        public ApiFuture<AddressesListPagedResponse> getFuturePagedResponse(
+        public ApiFuture<ListAddressesPagedResponse> getFuturePagedResponse(
             UnaryCallable<AddressesListHttpRequest, AddressList> callable,
             AddressesListHttpRequest request,
             ApiCallContext context,
             ApiFuture<AddressList> futureResponse) {
           PageContext<AddressesListHttpRequest, AddressList, Address> pageContext =
-              PageContext.create(callable, ADDRESSES_LIST_PAGE_STR_DESC, request, context);
-          return AddressesListPagedResponse.createAsync(pageContext, futureResponse);
+              PageContext.create(callable, LIST_ADDRESSES_PAGE_STR_DESC, request, context);
+          return ListAddressesPagedResponse.createAsync(pageContext, futureResponse);
         }
       };
 
@@ -5259,10 +5259,10 @@ public class AddressAdminSettings extends ClientSettings {
   public static class Builder extends ClientSettings.Builder {
     private final ImmutableList<UnaryCallSettings.Builder> unaryMethodSettingsBuilders;
 
-    private final SimpleCallSettings.Builder<AddressesInsertHttpRequest, Operation> addressesInsertSettings;
-    private final PagedCallSettings.Builder<AddressesListHttpRequest, AddressList, AddressesListPagedResponse> addressesListSettings;
-    private final SimpleCallSettings.Builder<AddressesGetHttpRequest, Address> addressesGetSettings;
-    private final SimpleCallSettings.Builder<AddressesDeleteHttpRequest, Operation> addressesDeleteSettings;
+    private final SimpleCallSettings.Builder<AddressesInsertHttpRequest, Operation> insertAddressesSettings;
+    private final PagedCallSettings.Builder<AddressesListHttpRequest, AddressList, ListAddressesPagedResponse> listAddressesSettings;
+    private final SimpleCallSettings.Builder<AddressesGetHttpRequest, Address> getAddressesSettings;
+    private final SimpleCallSettings.Builder<AddressesDeleteHttpRequest, Operation> deleteAddressesSettings;
 
     private static final ImmutableMap<String, ImmutableSet<StatusCode>> RETRYABLE_CODE_DEFINITIONS;
 
@@ -5299,20 +5299,20 @@ public class AddressAdminSettings extends ClientSettings {
     private Builder(ClientContext clientContext) {
       super(clientContext);
 
-      addressesInsertSettings = SimpleCallSettings.newBuilder();
+      insertAddressesSettings = SimpleCallSettings.newBuilder();
 
-      addressesListSettings = PagedCallSettings.newBuilder(
-          ADDRESSES_LIST_PAGE_STR_FACT);
+      listAddressesSettings = PagedCallSettings.newBuilder(
+          LIST_ADDRESSES_PAGE_STR_FACT);
 
-      addressesGetSettings = SimpleCallSettings.newBuilder();
+      getAddressesSettings = SimpleCallSettings.newBuilder();
 
-      addressesDeleteSettings = SimpleCallSettings.newBuilder();
+      deleteAddressesSettings = SimpleCallSettings.newBuilder();
 
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder>of(
-          addressesInsertSettings,
-          addressesListSettings,
-          addressesGetSettings,
-          addressesDeleteSettings
+          insertAddressesSettings,
+          listAddressesSettings,
+          getAddressesSettings,
+          deleteAddressesSettings
       );
 
       initDefaults(this);
@@ -5327,19 +5327,19 @@ public class AddressAdminSettings extends ClientSettings {
 
     private static Builder initDefaults(Builder builder) {
 
-      builder.addressesInsertSettings()
+      builder.insertAddressesSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
-      builder.addressesListSettings()
+      builder.listAddressesSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
-      builder.addressesGetSettings()
+      builder.getAddressesSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
-      builder.addressesDeleteSettings()
+      builder.deleteAddressesSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
@@ -5349,16 +5349,16 @@ public class AddressAdminSettings extends ClientSettings {
     private Builder(AddressAdminSettings settings) {
       super(settings);
 
-      addressesInsertSettings = settings.addressesInsertSettings.toBuilder();
-      addressesListSettings = settings.addressesListSettings.toBuilder();
-      addressesGetSettings = settings.addressesGetSettings.toBuilder();
-      addressesDeleteSettings = settings.addressesDeleteSettings.toBuilder();
+      insertAddressesSettings = settings.insertAddressesSettings.toBuilder();
+      listAddressesSettings = settings.listAddressesSettings.toBuilder();
+      getAddressesSettings = settings.getAddressesSettings.toBuilder();
+      deleteAddressesSettings = settings.deleteAddressesSettings.toBuilder();
 
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder>of(
-          addressesInsertSettings,
-          addressesListSettings,
-          addressesGetSettings,
-          addressesDeleteSettings
+          insertAddressesSettings,
+          listAddressesSettings,
+          getAddressesSettings,
+          deleteAddressesSettings
       );
     }
 
@@ -5391,31 +5391,31 @@ public class AddressAdminSettings extends ClientSettings {
     }
 
     /**
-     * Returns the builder for the settings used for calls to addressesInsert.
+     * Returns the builder for the settings used for calls to insertAddresses.
      */
-    public SimpleCallSettings.Builder<AddressesInsertHttpRequest, Operation> addressesInsertSettings() {
-      return addressesInsertSettings;
+    public SimpleCallSettings.Builder<AddressesInsertHttpRequest, Operation> insertAddressesSettings() {
+      return insertAddressesSettings;
     }
 
     /**
-     * Returns the builder for the settings used for calls to addressesList.
+     * Returns the builder for the settings used for calls to listAddresses.
      */
-    public PagedCallSettings.Builder<AddressesListHttpRequest, AddressList, AddressesListPagedResponse> addressesListSettings() {
-      return addressesListSettings;
+    public PagedCallSettings.Builder<AddressesListHttpRequest, AddressList, ListAddressesPagedResponse> listAddressesSettings() {
+      return listAddressesSettings;
     }
 
     /**
-     * Returns the builder for the settings used for calls to addressesGet.
+     * Returns the builder for the settings used for calls to getAddresses.
      */
-    public SimpleCallSettings.Builder<AddressesGetHttpRequest, Address> addressesGetSettings() {
-      return addressesGetSettings;
+    public SimpleCallSettings.Builder<AddressesGetHttpRequest, Address> getAddressesSettings() {
+      return getAddressesSettings;
     }
 
     /**
-     * Returns the builder for the settings used for calls to addressesDelete.
+     * Returns the builder for the settings used for calls to deleteAddresses.
      */
-    public SimpleCallSettings.Builder<AddressesDeleteHttpRequest, Operation> addressesDeleteSettings() {
-      return addressesDeleteSettings;
+    public SimpleCallSettings.Builder<AddressesDeleteHttpRequest, Operation> deleteAddressesSettings() {
+      return deleteAddressesSettings;
     }
 
     @Override
@@ -5453,7 +5453,7 @@ import com.google.cloud.simplecompute.v1.AddressesGetHttpRequest;
 import com.google.cloud.simplecompute.v1.AddressesInsertHttpRequest;
 import com.google.cloud.simplecompute.v1.AddressesListHttpRequest;
 import com.google.cloud.simplecompute.v1.Operation;
-import static com.google.cloud.simplecompute.v1.PagedResponseWrappers.AddressesListPagedResponse;
+import static com.google.cloud.simplecompute.v1.PagedResponseWrappers.ListAddressesPagedResponse;
 import com.google.cloud.simplecompute.v1.RegionName;
 import javax.annotation.Generated;
 
@@ -5468,28 +5468,28 @@ public abstract class AddressAdminStub implements BackgroundResource {
 
 
   @BetaApi
-  public UnaryCallable<AddressesInsertHttpRequest, Operation> addressesInsertCallable() {
-    throw new UnsupportedOperationException("Not implemented: addressesInsertCallable()");
+  public UnaryCallable<AddressesInsertHttpRequest, Operation> insertAddressesCallable() {
+    throw new UnsupportedOperationException("Not implemented: insertAddressesCallable()");
   }
 
   @BetaApi
-  public UnaryCallable<AddressesListHttpRequest, AddressesListPagedResponse> addressesListPagedCallable() {
-    throw new UnsupportedOperationException("Not implemented: addressesListPagedCallable()");
+  public UnaryCallable<AddressesListHttpRequest, ListAddressesPagedResponse> listAddressesPagedCallable() {
+    throw new UnsupportedOperationException("Not implemented: listAddressesPagedCallable()");
   }
 
   @BetaApi
-  public UnaryCallable<AddressesListHttpRequest, AddressList> addressesListCallable() {
-    throw new UnsupportedOperationException("Not implemented: addressesListCallable()");
+  public UnaryCallable<AddressesListHttpRequest, AddressList> listAddressesCallable() {
+    throw new UnsupportedOperationException("Not implemented: listAddressesCallable()");
   }
 
   @BetaApi
-  public UnaryCallable<AddressesGetHttpRequest, Address> addressesGetCallable() {
-    throw new UnsupportedOperationException("Not implemented: addressesGetCallable()");
+  public UnaryCallable<AddressesGetHttpRequest, Address> getAddressesCallable() {
+    throw new UnsupportedOperationException("Not implemented: getAddressesCallable()");
   }
 
   @BetaApi
-  public UnaryCallable<AddressesDeleteHttpRequest, Operation> addressesDeleteCallable() {
-    throw new UnsupportedOperationException("Not implemented: addressesDeleteCallable()");
+  public UnaryCallable<AddressesDeleteHttpRequest, Operation> deleteAddressesCallable() {
+    throw new UnsupportedOperationException("Not implemented: deleteAddressesCallable()");
   }
 
 }
@@ -5526,7 +5526,7 @@ import com.google.cloud.simplecompute.v1.AddressesGetHttpRequest;
 import com.google.cloud.simplecompute.v1.AddressesInsertHttpRequest;
 import com.google.cloud.simplecompute.v1.AddressesListHttpRequest;
 import com.google.cloud.simplecompute.v1.Operation;
-import static com.google.cloud.simplecompute.v1.PagedResponseWrappers.AddressesListPagedResponse;
+import static com.google.cloud.simplecompute.v1.PagedResponseWrappers.ListAddressesPagedResponse;
 import com.google.cloud.simplecompute.v1.RegionName;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -5542,42 +5542,42 @@ import javax.annotation.Generated;
  */
 @Generated("by GAPIC v0.0.5")
 public class HttpAddressAdminStub extends AddressAdminStub {
-  private static final UnaryCallable<AddressesInsertHttpRequest, Operation> directAddressesInsertCallable =
+  private static final UnaryCallable<AddressesInsertHttpRequest, Operation> directInsertAddressesCallable =
       HttpJsonCallableFactory.createDirectCallable(
           io.grpc.MethodDescriptor.create(
               io.grpc.MethodDescriptor.MethodType.UNARY,
-              "google.simplecompute.v1.Addresses/addressesInsert",
+              "google.simplecompute.v1.Addresses/insertAddresses",
               io.grpc.protobuf.ProtoUtils.marshaller(AddressesInsertHttpRequest.getDefaultInstance()),
               io.grpc.protobuf.ProtoUtils.marshaller(Operation.getDefaultInstance())));
-  private static final UnaryCallable<AddressesListHttpRequest, AddressList> directAddressesListCallable =
+  private static final UnaryCallable<AddressesListHttpRequest, AddressList> directListAddressesCallable =
       HttpJsonCallableFactory.createDirectCallable(
           io.grpc.MethodDescriptor.create(
               io.grpc.MethodDescriptor.MethodType.UNARY,
-              "google.simplecompute.v1.Addresses/addressesList",
+              "google.simplecompute.v1.Addresses/listAddresses",
               io.grpc.protobuf.ProtoUtils.marshaller(AddressesListHttpRequest.getDefaultInstance()),
               io.grpc.protobuf.ProtoUtils.marshaller(AddressList.getDefaultInstance())));
-  private static final UnaryCallable<AddressesGetHttpRequest, Address> directAddressesGetCallable =
+  private static final UnaryCallable<AddressesGetHttpRequest, Address> directGetAddressesCallable =
       HttpJsonCallableFactory.createDirectCallable(
           io.grpc.MethodDescriptor.create(
               io.grpc.MethodDescriptor.MethodType.UNARY,
-              "google.simplecompute.v1.Addresses/addressesGet",
+              "google.simplecompute.v1.Addresses/getAddresses",
               io.grpc.protobuf.ProtoUtils.marshaller(AddressesGetHttpRequest.getDefaultInstance()),
               io.grpc.protobuf.ProtoUtils.marshaller(Address.getDefaultInstance())));
-  private static final UnaryCallable<AddressesDeleteHttpRequest, Operation> directAddressesDeleteCallable =
+  private static final UnaryCallable<AddressesDeleteHttpRequest, Operation> directDeleteAddressesCallable =
       HttpJsonCallableFactory.createDirectCallable(
           io.grpc.MethodDescriptor.create(
               io.grpc.MethodDescriptor.MethodType.UNARY,
-              "google.simplecompute.v1.Addresses/addressesDelete",
+              "google.simplecompute.v1.Addresses/deleteAddresses",
               io.grpc.protobuf.ProtoUtils.marshaller(AddressesDeleteHttpRequest.getDefaultInstance()),
               io.grpc.protobuf.ProtoUtils.marshaller(Operation.getDefaultInstance())));
 
   private final BackgroundResource backgroundResources;
 
-  private final UnaryCallable<AddressesInsertHttpRequest, Operation> addressesInsertCallable;
-  private final UnaryCallable<AddressesListHttpRequest, AddressList> addressesListCallable;
-  private final UnaryCallable<AddressesListHttpRequest, AddressesListPagedResponse> addressesListPagedCallable;
-  private final UnaryCallable<AddressesGetHttpRequest, Address> addressesGetCallable;
-  private final UnaryCallable<AddressesDeleteHttpRequest, Operation> addressesDeleteCallable;
+  private final UnaryCallable<AddressesInsertHttpRequest, Operation> insertAddressesCallable;
+  private final UnaryCallable<AddressesListHttpRequest, AddressList> listAddressesCallable;
+  private final UnaryCallable<AddressesListHttpRequest, ListAddressesPagedResponse> listAddressesPagedCallable;
+  private final UnaryCallable<AddressesGetHttpRequest, Address> getAddressesCallable;
+  private final UnaryCallable<AddressesDeleteHttpRequest, Operation> deleteAddressesCallable;
 
   public static final HttpAddressAdminStub create(AddressAdminSettings settings) throws IOException {
     return new HttpAddressAdminStub(settings, ClientContext.create(settings));
@@ -5594,40 +5594,40 @@ public class HttpAddressAdminStub extends AddressAdminStub {
    */
   protected HttpAddressAdminStub(AddressAdminSettings settings, ClientContext clientContext) throws IOException {
 
-    this.addressesInsertCallable = HttpJsonCallableFactory.create(directAddressesInsertCallable,settings.addressesInsertSettings(), clientContext);
-    this.addressesListCallable = HttpJsonCallableFactory.create(directAddressesListCallable,settings.addressesListSettings(), clientContext);
-    this.addressesListPagedCallable =
-        HttpJsonCallableFactory.createPagedVariant(directAddressesListCallable,settings.addressesListSettings(), clientContext);
-    this.addressesGetCallable = HttpJsonCallableFactory.create(directAddressesGetCallable,settings.addressesGetSettings(), clientContext);
-    this.addressesDeleteCallable = HttpJsonCallableFactory.create(directAddressesDeleteCallable,settings.addressesDeleteSettings(), clientContext);
+    this.insertAddressesCallable = HttpJsonCallableFactory.create(directInsertAddressesCallable,settings.insertAddressesSettings(), clientContext);
+    this.listAddressesCallable = HttpJsonCallableFactory.create(directListAddressesCallable,settings.listAddressesSettings(), clientContext);
+    this.listAddressesPagedCallable =
+        HttpJsonCallableFactory.createPagedVariant(directListAddressesCallable,settings.listAddressesSettings(), clientContext);
+    this.getAddressesCallable = HttpJsonCallableFactory.create(directGetAddressesCallable,settings.getAddressesSettings(), clientContext);
+    this.deleteAddressesCallable = HttpJsonCallableFactory.create(directDeleteAddressesCallable,settings.deleteAddressesSettings(), clientContext);
 
     backgroundResources = new BackgroundResourceAggregation(clientContext.getBackgroundResources());
   }
 
 
   @BetaApi
-  public UnaryCallable<AddressesInsertHttpRequest, Operation> addressesInsertCallable() {
-    return addressesInsertCallable;
+  public UnaryCallable<AddressesInsertHttpRequest, Operation> insertAddressesCallable() {
+    return insertAddressesCallable;
   }
 
   @BetaApi
-  public UnaryCallable<AddressesListHttpRequest, AddressesListPagedResponse> addressesListPagedCallable() {
-    return addressesListPagedCallable;
+  public UnaryCallable<AddressesListHttpRequest, ListAddressesPagedResponse> listAddressesPagedCallable() {
+    return listAddressesPagedCallable;
   }
 
   @BetaApi
-  public UnaryCallable<AddressesListHttpRequest, AddressList> addressesListCallable() {
-    return addressesListCallable;
+  public UnaryCallable<AddressesListHttpRequest, AddressList> listAddressesCallable() {
+    return listAddressesCallable;
   }
 
   @BetaApi
-  public UnaryCallable<AddressesGetHttpRequest, Address> addressesGetCallable() {
-    return addressesGetCallable;
+  public UnaryCallable<AddressesGetHttpRequest, Address> getAddressesCallable() {
+    return getAddressesCallable;
   }
 
   @BetaApi
-  public UnaryCallable<AddressesDeleteHttpRequest, Operation> addressesDeleteCallable() {
-    return addressesDeleteCallable;
+  public UnaryCallable<AddressesDeleteHttpRequest, Operation> deleteAddressesCallable() {
+    return deleteAddressesCallable;
   }
 
   @Override
@@ -5706,60 +5706,60 @@ import javax.annotation.Generated;
 @Generated("by GAPIC")
 public class PagedResponseWrappers {
 
-  public static class AddressesListPagedResponse extends AbstractPagedListResponse<
+  public static class ListAddressesPagedResponse extends AbstractPagedListResponse<
       AddressesListHttpRequest,
       AddressList,
       Address,
-      AddressesListPage,
-      AddressesListFixedSizeCollection> {
+      ListAddressesPage,
+      ListAddressesFixedSizeCollection> {
 
-    public static ApiFuture<AddressesListPagedResponse> createAsync(
+    public static ApiFuture<ListAddressesPagedResponse> createAsync(
         PageContext<AddressesListHttpRequest, AddressList, Address> context,
         ApiFuture<AddressList> futureResponse) {
-      ApiFuture<AddressesListPage> futurePage =
-          AddressesListPage.createEmptyPage().createPageAsync(context, futureResponse);
+      ApiFuture<ListAddressesPage> futurePage =
+          ListAddressesPage.createEmptyPage().createPageAsync(context, futureResponse);
       return ApiFutures.transform(
           futurePage,
-          new ApiFunction<AddressesListPage, AddressesListPagedResponse>() {
+          new ApiFunction<ListAddressesPage, ListAddressesPagedResponse>() {
             @Override
-            public AddressesListPagedResponse apply(AddressesListPage input) {
-              return new AddressesListPagedResponse(input);
+            public ListAddressesPagedResponse apply(ListAddressesPage input) {
+              return new ListAddressesPagedResponse(input);
             }
           });
     }
 
-    private AddressesListPagedResponse(AddressesListPage page) {
-      super(page, AddressesListFixedSizeCollection.createEmptyCollection());
+    private ListAddressesPagedResponse(ListAddressesPage page) {
+      super(page, ListAddressesFixedSizeCollection.createEmptyCollection());
     }
 
 
   }
 
-  public static class AddressesListPage extends AbstractPage<
+  public static class ListAddressesPage extends AbstractPage<
       AddressesListHttpRequest,
       AddressList,
       Address,
-      AddressesListPage> {
+      ListAddressesPage> {
 
-    private AddressesListPage(
+    private ListAddressesPage(
         PageContext<AddressesListHttpRequest, AddressList, Address> context,
         AddressList response) {
       super(context, response);
     }
 
-    private static AddressesListPage createEmptyPage() {
-      return new AddressesListPage(null, null);
+    private static ListAddressesPage createEmptyPage() {
+      return new ListAddressesPage(null, null);
     }
 
     @Override
-    protected AddressesListPage createPage(
+    protected ListAddressesPage createPage(
         PageContext<AddressesListHttpRequest, AddressList, Address> context,
         AddressList response) {
-      return new AddressesListPage(context, response);
+      return new ListAddressesPage(context, response);
     }
 
     @Override
-    public ApiFuture<AddressesListPage> createPageAsync(
+    public ApiFuture<ListAddressesPage> createPageAsync(
         PageContext<AddressesListHttpRequest, AddressList, Address> context,
         ApiFuture<AddressList> futureResponse) {
       return super.createPageAsync(context, futureResponse);
@@ -5770,25 +5770,25 @@ public class PagedResponseWrappers {
 
   }
 
-  public static class AddressesListFixedSizeCollection extends AbstractFixedSizeCollection<
+  public static class ListAddressesFixedSizeCollection extends AbstractFixedSizeCollection<
       AddressesListHttpRequest,
       AddressList,
       Address,
-      AddressesListPage,
-      AddressesListFixedSizeCollection> {
+      ListAddressesPage,
+      ListAddressesFixedSizeCollection> {
 
-    private AddressesListFixedSizeCollection(List<AddressesListPage> pages, int collectionSize) {
+    private ListAddressesFixedSizeCollection(List<ListAddressesPage> pages, int collectionSize) {
       super(pages, collectionSize);
     }
 
-    private static AddressesListFixedSizeCollection createEmptyCollection() {
-      return new AddressesListFixedSizeCollection(null, 0);
+    private static ListAddressesFixedSizeCollection createEmptyCollection() {
+      return new ListAddressesFixedSizeCollection(null, 0);
     }
 
     @Override
-    protected AddressesListFixedSizeCollection createCollection(
-        List<AddressesListPage> pages, int collectionSize) {
-      return new AddressesListFixedSizeCollection(pages, collectionSize);
+    protected ListAddressesFixedSizeCollection createCollection(
+        List<ListAddressesPage> pages, int collectionSize) {
+      return new ListAddressesFixedSizeCollection(pages, collectionSize);
     }
 
 
@@ -5828,7 +5828,7 @@ public class PagedResponseWrappers {
  * <code>
  * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
  *
- *   Operation response = addressAdminClient.addressesInsert();
+ *   Operation response = addressAdminClient.insertAddresses();
  * }
  * </code>
  * </pre>
