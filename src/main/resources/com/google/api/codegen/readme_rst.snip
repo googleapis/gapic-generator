@@ -1,72 +1,78 @@
 @snippet readme(metadata, samples, installationLines)
-  {@title(metadata)}
+    {@intro(metadata)}
 
-  {@quickStart(metadata, samples, installationLines)}
+    {@quickStart(metadata, samples, installationLines)}
+@end
+
+@private intro(metadata)
+    {@title(metadata)}
+    @join _ : metadata.characters(title(metadata)) on ""
+        =
+    @end
+
+    `{@metadata.fullName}`_: {@metadata.apiSummary}
+
+    - `Client Library Documentation`_
+    - `Product Documentation`_
+
+    .. _{@metadata.developmentStatusTitle}: {@metadata.versioningDocumentationLink}
+    .. _{@metadata.fullName}: {@productDocumentation(metadata)}
+    .. _Client Library Documentation: {@metadata.libraryDocumentationLink}
+    .. _Product Documentation:  {@productDocumentation(metadata)}
 @end
 
 @private title(metadata)
-  {@metadata.targetLanguage} Client{@plurality(metadata.hasMultipleServices)} for {@metadata.fullName} (`{@metadata.developmentStatusTitle}`_)
-  ==================================================================================================
-
-  `{@metadata.fullName}`_: {@metadata.apiSummary}
-
-  - `Client Library Documentation`_
-  - `Product Documentation`_
-
-  .. _{@metadata.developmentStatusTitle}: {@metadata.versioningDocumentationLink}
-  .. _{@metadata.fullName}: {@productDocumentation(metadata)}
-  .. _Client Library Documentation: {@metadata.libraryDocumentationLink}
-  .. _Product Documentation:  {@productDocumentation(metadata)}
+    {@metadata.targetLanguage} Client{@plurality(metadata.hasMultipleServices)} for {@metadata.fullName} (`{@metadata.developmentStatusTitle}`_)
 @end
 
 @private plurality(isPlural)
-  @if isPlural
-    s
-  @end
+    @if isPlural
+        s
+    @end
 @end
 
 @private quickStart(metadata, samples, installationLines)
-  Quick Start
-  -----------
+    Quick Start
+    -----------
 
-  In order to use this library, you first need to go through the following steps:
+    In order to use this library, you first need to go through the following steps:
 
-  1. `Select or create a Cloud Platform project.`_
-  2. `Enable the {@metadata.fullName}.`_
-  3. `Setup Authentication.`_
+    1. `Select or create a Cloud Platform project.`_
+    2. `Enable the {@metadata.fullName}.`_
+    3. `Setup Authentication.`_
 
-  .. _Select or create a Cloud Platform project.: https://console.cloud.google.com/project
-  .. _Enable the {@metadata.fullName}.:  {@productDocumentation(metadata)}
-  .. _Setup Authentication.: {@metadata.authDocumentationLink}
+    .. _Select or create a Cloud Platform project.: https://console.cloud.google.com/project
+    .. _Enable the {@metadata.fullName}.:  {@productDocumentation(metadata)}
+    .. _Setup Authentication.: {@metadata.authDocumentationLink}
 
-  @if installationLines
-    Installation
-    ~~~~~~~~~~~~
+    @if installationLines
+        Installation
+        ~~~~~~~~~~~~
 
-    {@installationLines}
+        {@installationLines}
 
-  @end
-  @if samples
-    Preview
-    ~~~~~~~
+    @end
+    @if samples
+        Preview
+        ~~~~~~~
 
-    {@samples}
+        {@samples}
 
-  @end
-  Next Steps
-  ~~~~~~~~~~
+    @end
+    Next Steps
+    ~~~~~~~~~~
 
-  -  Read the `Client Library Documentation`_ for {@metadata.fullName}
-     API to see other available methods on the client.
-  -  Read the `{@metadata.fullName} Product documentation`_ to learn
-     more about the product and see How-to Guides.
-  -  View this `repository’s main README`_ to see the full list of Cloud
-     APIs that we cover.
+    -  Read the `Client Library Documentation`_ for {@metadata.fullName}
+       API to see other available methods on the client.
+    -  Read the `{@metadata.fullName} Product documentation`_ to learn
+       more about the product and see How-to Guides.
+    -  View this `repository’s main README`_ to see the full list of Cloud
+       APIs that we cover.
 
-  .. _{@metadata.fullName} Product documentation:  {@productDocumentation(metadata)}
-  .. _repository’s main README: {@metadata.mainReadmeLink}
+    .. _{@metadata.fullName} Product documentation:  {@productDocumentation(metadata)}
+    .. _repository’s main README: {@metadata.mainReadmeLink}
 @end
 
 @private productDocumentation(metadata)
-  https://cloud.google.com/{@metadata.shortName}
+    https://cloud.google.com/{@metadata.shortName}
 @end
