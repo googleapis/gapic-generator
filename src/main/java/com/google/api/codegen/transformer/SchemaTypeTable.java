@@ -40,6 +40,11 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
   }
 
   @Override
+  public SchemaTypeNameConverter getTypeNameConverter() {
+    return typeNameConverter;
+  }
+
+  @Override
   public String renderPrimitiveValue(Schema type, String value) {
     return typeFormatter.renderPrimitiveValue(type, value);
   }

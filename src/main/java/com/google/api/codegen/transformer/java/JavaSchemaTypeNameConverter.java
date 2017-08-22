@@ -29,7 +29,7 @@ import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.common.base.Strings;
 
 /** The Schema TypeName converter for Java. */
-public class JavaSchemaTypeNameConverter implements SchemaTypeNameConverter {
+public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
 
   /** The package prefix protoc uses if no java package option was provided. */
   private static final String DEFAULT_JAVA_PACKAGE_PREFIX = "com.google.discovery";

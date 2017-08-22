@@ -210,5 +210,22 @@
       @end
       return newBuilder;
     }
+    @join resourceName : schema.resourceNames
+
+      public final Builder {@resourceName.setCallName}({@resourceName.typeName} value) {
+        if (value == null) {
+          return {@resourceName.addCallName}("");
+        }
+        return {@resourceName.addCallName}(value.toString());
+      }
+
+      public final {@resourceName.typeName} {@resourceName.nameAsMethodName}() {
+        java.lang.String str = {@resourceName.getCallName}();
+        if (str.isEmpty()) {
+          return null;
+        }
+        return {@resourceName.typeName}.parse(str);
+      }
+    @end
   }
 @end

@@ -16,28 +16,36 @@ package com.google.api.codegen.discogapic.transformer.java;
 
 import static com.google.api.codegen.util.java.JavaTypeTable.JavaLangResolution.IGNORE_JAVA_LANG_CLASH;
 
+import com.google.api.codegen.config.DiscoApiModel;
+import com.google.api.codegen.config.DiscoveryMethodModel;
+import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.discogapic.SchemaTransformationContext;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.discovery.Document;
-import com.google.api.codegen.discovery.Method;
-import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.DiscoGapicInterfaceContext;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.ImportTypeTable;
+import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.SchemaTypeTable;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
+import com.google.api.codegen.transformer.StaticLangResourceObjectTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.transformer.java.JavaFeatureConfig;
 import com.google.api.codegen.transformer.java.JavaSchemaTypeNameConverter;
 import com.google.api.codegen.transformer.java.JavaSurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaTypeTable;
+import com.google.api.codegen.viewmodel.RequestObjectParamView;
 import com.google.api.codegen.viewmodel.StaticLangApiMessageFileView;
 import com.google.api.codegen.viewmodel.StaticLangApiMessageView;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -61,6 +69,8 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
       new StandardImportSectionTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(importSectionTransformer);
+  private final StaticLangResourceObjectTransformer resourceObjectTransformer =
+      new StaticLangResourceObjectTransformer();
   private final JavaNameFormatter nameFormatter = new JavaNameFormatter();
   private static Set<String> reservedKeywords = new HashSet<>();
 
@@ -107,21 +117,26 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     List<ViewModel> surfaceRequests = new ArrayList<>();
     String packageName = productConfig.getPackageName();
     SurfaceNamer surfaceNamer = new JavaSurfaceNamer(packageName, packageName, nameFormatter);
-    DiscoGapicNamer discoGapicNamer = new DiscoGapicNamer(surfaceNamer);
+    DiscoApiModel model = new DiscoApiModel(document);
 
-    DiscoGapicInterfaceContext context =
-        DiscoGapicInterfaceContext.createWithoutInterface(
-            document,
-            productConfig,
-            createTypeTable(productConfig.getPackageName()),
-            discoGapicNamer,
-            JavaFeatureConfig.newBuilder().enableStringFormatFunctions(false).build());
+    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
+      boolean enableStringFormatFunctions = productConfig.getResourceNameMessageConfigs().isEmpty();
+      DiscoGapicInterfaceContext context =
+          JavaDiscoGapicSurfaceTransformer.newInterfaceContext(
+              apiInterface,
+              productConfig,
+              surfaceNamer,
+              createTypeTable(productConfig.getPackageName()),
+              enableStringFormatFunctions);
 
-    for (Method method : context.getDocument().methods()) {
-      SchemaTransformationContext requestContext =
-          SchemaTransformationContext.create(method.id(), context.getSchemaTypeTable(), context);
-      StaticLangApiMessageView requestView = generateRequestClass(requestContext, method);
-      surfaceRequests.add(generateRequestFile(requestContext, requestView));
+      for (MethodModel method : context.getSupportedMethods()) {
+        SchemaTransformationContext requestContext =
+            SchemaTransformationContext.create(
+                method.getFullName(), context.getSchemaTypeTable(), context);
+        List<RequestObjectParamView> params = getRequestObjectParams(context, method);
+        StaticLangApiMessageView requestView = generateRequestClass(requestContext, method, params);
+        surfaceRequests.add(generateRequestFile(requestContext, requestView));
+      }
     }
     Collections.sort(
         surfaceRequests,
@@ -132,6 +147,32 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
           }
         });
     return surfaceRequests;
+  }
+
+  private List<RequestObjectParamView> getRequestObjectParams(
+      DiscoGapicInterfaceContext context, MethodModel method) {
+    MethodConfig methodConfig = context.getMethodConfig(method);
+
+    List<RequestObjectParamView> params = new LinkedList<>();
+
+    // Generate the ResourceName methods.
+    if (methodConfig.isFlattening()) {
+      for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
+        MethodContext flattenedMethodContext =
+            context.asFlattenedMethodContext(method, flatteningGroup);
+        Iterable<FieldConfig> fieldConfigs =
+            flattenedMethodContext.getFlatteningConfig().getFlattenedFieldConfigs().values();
+        for (FieldConfig fieldConfig : fieldConfigs) {
+          if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
+            params.add(
+                resourceObjectTransformer.generateRequestObjectParam(
+                    flattenedMethodContext, fieldConfig));
+          }
+        }
+      }
+    }
+
+    return params;
   }
 
   /* Given a message view, creates a top-level message file view. */
@@ -152,19 +193,24 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
   }
 
   private StaticLangApiMessageView generateRequestClass(
-      SchemaTransformationContext context, Method method) {
+      SchemaTransformationContext context,
+      MethodModel method,
+      List<RequestObjectParamView> resourceNames) {
     StaticLangApiMessageView.Builder requestView = StaticLangApiMessageView.newBuilder();
 
     SymbolTable symbolTable = SymbolTable.fromSeed(reservedKeywords);
 
     String requestClassId =
-        context.getNamer().privateFieldName(DiscoGapicNamer.getRequestName(method));
+        context
+            .getNamer()
+            .privateFieldName(
+                DiscoGapicNamer.getRequestName(((DiscoveryMethodModel) method).getDiscoMethod()));
     String requestName =
         nameFormatter.privateFieldName(Name.anyCamel(symbolTable.getNewSymbol(requestClassId)));
     boolean hasRequiredProperties = false;
 
     requestView.name(requestName);
-    requestView.description(method.description());
+    requestView.description(method.getDescription());
 
     String requestTypeName = nameFormatter.publicClassName(Name.anyCamel(requestClassId));
     requestView.typeName(requestTypeName);
@@ -174,7 +220,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
 
     // Add the standard query parameters.
     for (String param : STANDARD_QUERY_PARAMS.keySet()) {
-      if (method.parameters().containsKey(param)) {
+      if (method.getInputField(param) != null) {
         continue;
       }
       StaticLangApiMessageView.Builder paramView = StaticLangApiMessageView.newBuilder();
@@ -192,22 +238,13 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
       properties.add(paramView.build());
     }
 
-    for (Map.Entry<String, Schema> entry : method.parameters().entrySet()) {
-      Schema param = entry.getValue();
-      properties.add(schemaToParamView(context, param, symbolTable));
-      if (param.required()) {
+    for (FieldModel entry : method.getInputFields()) {
+      properties.add(schemaToParamView(context, entry, symbolTable));
+      if (entry.isRequired()) {
         hasRequiredProperties = true;
       }
     }
 
-    if (method.request() != null) {
-      properties.add(
-          schemaToParamView(
-              context,
-              method.request(),
-              method.request().dereference().getIdentifier(),
-              symbolTable));
-    }
     Collections.sort(properties);
 
     requestView.canRepeat(false);
@@ -216,30 +253,32 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     requestView.hasRequiredProperties(hasRequiredProperties);
     requestView.isRequestMessage(true);
 
+    requestView.resourceNames(resourceNames);
+
     return requestView.build();
   }
 
   // Transforms a request/response Schema object into a StaticLangApiMessageView.
   private StaticLangApiMessageView schemaToParamView(
-      SchemaTransformationContext context, Schema schema, SymbolTable symbolTable) {
-    return schemaToParamView(context, schema, schema.getIdentifier(), symbolTable);
+      SchemaTransformationContext context, FieldModel schema, SymbolTable symbolTable) {
+    return schemaToParamView(context, schema, schema.getSimpleName(), symbolTable);
   }
 
   // Transforms a request/response Schema object into a StaticLangApiMessageView.
   private StaticLangApiMessageView schemaToParamView(
       SchemaTransformationContext context,
-      Schema schema,
+      FieldModel schema,
       String preferredName,
       SymbolTable symbolTable) {
     StaticLangApiMessageView.Builder paramView = StaticLangApiMessageView.newBuilder();
     String typeName = context.getSchemaTypeTable().getAndSaveNicknameFor(schema);
-    paramView.description(schema.description());
+    paramView.description(schema.getScopedDocumentation());
     String name = context.getNamer().privateFieldName(Name.anyCamel(preferredName));
     paramView.name(symbolTable.getNewSymbol(name));
     paramView.typeName(typeName);
     paramView.innerTypeName(typeName);
-    paramView.isRequired(schema.required());
-    paramView.canRepeat(schema.repeated());
+    paramView.isRequired(schema.isRequired());
+    paramView.canRepeat(schema.isRepeated());
     paramView.fieldGetFunction(context.getDiscoGapicNamer().getResourceGetterName(name));
     paramView.fieldSetFunction(context.getDiscoGapicNamer().getResourceSetterName(name));
     paramView.properties(new LinkedList<StaticLangApiMessageView>());

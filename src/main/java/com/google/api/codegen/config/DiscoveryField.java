@@ -102,6 +102,11 @@ public class DiscoveryField implements FieldModel {
   }
 
   @Override
+  public boolean isRequired() {
+    return schema.required();
+  }
+
+  @Override
   public boolean isRepeated() {
     return schema.type() == Type.ARRAY;
   }
