@@ -638,10 +638,6 @@ public class JavaSurfaceTransformer {
     typeTable.saveNicknameFor("com.google.api.gax.core.GoogleCredentialsProvider");
     typeTable.saveNicknameFor("com.google.api.gax.core.InstantiatingExecutorProvider");
     typeTable.saveNicknameFor("com.google.api.gax.core.PropertiesProvider");
-
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcTransport");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcTransportProvider");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.InstantiatingChannelProvider");
     typeTable.saveNicknameFor("com.google.api.gax.retrying.RetrySettings");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.ClientContext");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.ClientSettings");
@@ -696,6 +692,9 @@ public class JavaSurfaceTransformer {
       case PROTO:
         typeTable.saveNicknameFor("com.google.api.gax.grpc.ChannelProvider");
         typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcStatusCode");
+        typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcTransport");
+        typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcTransportProvider");
+        typeTable.saveNicknameFor("com.google.api.gax.grpc.InstantiatingChannelProvider");
         typeTable.saveNicknameFor("io.grpc.ManagedChannel");
         typeTable.saveNicknameFor("io.grpc.Status");
         break;
