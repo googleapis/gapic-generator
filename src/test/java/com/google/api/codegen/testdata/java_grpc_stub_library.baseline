@@ -21,9 +21,11 @@ import com.google.api.gax.core.BackgroundResource;
 import com.google.api.gax.core.BackgroundResourceAggregation;
 import com.google.api.gax.grpc.GrpcCallableFactory;
 import com.google.api.gax.grpc.OperationFuture;
+import com.google.api.gax.rpc.BidiStreamingCallable;
 import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.ClientStreamingCallable;
 import com.google.api.gax.rpc.OperationCallable;
-import com.google.api.gax.rpc.StreamingCallable;
+import com.google.api.gax.rpc.ServerStreamingCallable;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.api.resourcenames.ResourceName;
 import com.google.example.library.v1.AddCommentsRequest;
@@ -225,29 +227,29 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
               "google.example.library.v1.LibraryService/UpdateBookIndex",
               io.grpc.protobuf.ProtoUtils.marshaller(UpdateBookIndexRequest.getDefaultInstance()),
               io.grpc.protobuf.ProtoUtils.marshaller(Empty.getDefaultInstance())));
-  private static final StreamingCallable<StreamShelvesRequest, StreamShelvesResponse> directStreamShelvesCallable =
-      GrpcCallableFactory.createDirectStreamingCallable(
+  private static final ServerStreamingCallable<StreamShelvesRequest, StreamShelvesResponse> directStreamShelvesCallable =
+      GrpcCallableFactory.createDirectServerStreamingCallable(
           io.grpc.MethodDescriptor.create(
               io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING,
               "google.example.library.v1.LibraryService/StreamShelves",
               io.grpc.protobuf.ProtoUtils.marshaller(StreamShelvesRequest.getDefaultInstance()),
               io.grpc.protobuf.ProtoUtils.marshaller(StreamShelvesResponse.getDefaultInstance())));
-  private static final StreamingCallable<StreamBooksRequest, Book> directStreamBooksCallable =
-      GrpcCallableFactory.createDirectStreamingCallable(
+  private static final ServerStreamingCallable<StreamBooksRequest, Book> directStreamBooksCallable =
+      GrpcCallableFactory.createDirectServerStreamingCallable(
           io.grpc.MethodDescriptor.create(
               io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING,
               "google.example.library.v1.LibraryService/StreamBooks",
               io.grpc.protobuf.ProtoUtils.marshaller(StreamBooksRequest.getDefaultInstance()),
               io.grpc.protobuf.ProtoUtils.marshaller(Book.getDefaultInstance())));
-  private static final StreamingCallable<DiscussBookRequest, Comment> directDiscussBookCallable =
-      GrpcCallableFactory.createDirectStreamingCallable(
+  private static final BidiStreamingCallable<DiscussBookRequest, Comment> directDiscussBookCallable =
+      GrpcCallableFactory.createDirectBidiStreamingCallable(
           io.grpc.MethodDescriptor.create(
               io.grpc.MethodDescriptor.MethodType.BIDI_STREAMING,
               "google.example.library.v1.LibraryService/DiscussBook",
               io.grpc.protobuf.ProtoUtils.marshaller(DiscussBookRequest.getDefaultInstance()),
               io.grpc.protobuf.ProtoUtils.marshaller(Comment.getDefaultInstance())));
-  private static final StreamingCallable<DiscussBookRequest, Comment> directMonologAboutBookCallable =
-      GrpcCallableFactory.createDirectStreamingCallable(
+  private static final ClientStreamingCallable<DiscussBookRequest, Comment> directMonologAboutBookCallable =
+      GrpcCallableFactory.createDirectClientStreamingCallable(
           io.grpc.MethodDescriptor.create(
               io.grpc.MethodDescriptor.MethodType.CLIENT_STREAMING,
               "google.example.library.v1.LibraryService/MonologAboutBook",
@@ -320,10 +322,10 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
   private final UnaryCallable<GetBookFromAnywhereRequest, BookFromAnywhere> getBookFromAnywhereCallable;
   private final UnaryCallable<GetBookFromAbsolutelyAnywhereRequest, BookFromAnywhere> getBookFromAbsolutelyAnywhereCallable;
   private final UnaryCallable<UpdateBookIndexRequest, Empty> updateBookIndexCallable;
-  private final StreamingCallable<StreamShelvesRequest, StreamShelvesResponse> streamShelvesCallable;
-  private final StreamingCallable<StreamBooksRequest, Book> streamBooksCallable;
-  private final StreamingCallable<DiscussBookRequest, Comment> discussBookCallable;
-  private final StreamingCallable<DiscussBookRequest, Comment> monologAboutBookCallable;
+  private final ServerStreamingCallable<StreamShelvesRequest, StreamShelvesResponse> streamShelvesCallable;
+  private final ServerStreamingCallable<StreamBooksRequest, Book> streamBooksCallable;
+  private final BidiStreamingCallable<DiscussBookRequest, Comment> discussBookCallable;
+  private final ClientStreamingCallable<DiscussBookRequest, Comment> monologAboutBookCallable;
   private final UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> findRelatedBooksCallable;
   private final UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksPagedResponse> findRelatedBooksPagedCallable;
   private final UnaryCallable<AddTagRequest, AddTagResponse> addTagCallable;
@@ -479,19 +481,19 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
     return updateBookIndexCallable;
   }
 
-  public StreamingCallable<StreamShelvesRequest, StreamShelvesResponse> streamShelvesCallable() {
+  public ServerStreamingCallable<StreamShelvesRequest, StreamShelvesResponse> streamShelvesCallable() {
     return streamShelvesCallable;
   }
 
-  public StreamingCallable<StreamBooksRequest, Book> streamBooksCallable() {
+  public ServerStreamingCallable<StreamBooksRequest, Book> streamBooksCallable() {
     return streamBooksCallable;
   }
 
-  public StreamingCallable<DiscussBookRequest, Comment> discussBookCallable() {
+  public BidiStreamingCallable<DiscussBookRequest, Comment> discussBookCallable() {
     return discussBookCallable;
   }
 
-  public StreamingCallable<DiscussBookRequest, Comment> monologAboutBookCallable() {
+  public ClientStreamingCallable<DiscussBookRequest, Comment> monologAboutBookCallable() {
     return monologAboutBookCallable;
   }
 

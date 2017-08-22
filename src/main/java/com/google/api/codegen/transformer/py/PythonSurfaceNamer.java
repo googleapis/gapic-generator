@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer.py;
 
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ServiceMessages;
+import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.InterfaceConfig;
@@ -75,6 +76,27 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getApiWrapperModuleName() {
+    String namespace = getVersionedDirectoryNamespace();
+    return namespace.substring(namespace.lastIndexOf('.') + 1);
+  }
+
+  @Override
+  public String getTopLevelNamespace() {
+    String namespace = getVersionedDirectoryNamespace();
+    if (namespace.lastIndexOf('.') > -1) {
+      return namespace.substring(0, namespace.lastIndexOf('.'));
+    }
+    return "";
+  }
+
+  @Override
+  public String getVersionedDirectoryNamespace() {
+    String namespace = getPackageName();
+    return namespace.substring(0, namespace.lastIndexOf('.'));
+  }
+
+  @Override
   public String getFormattedVariableName(Name identifier) {
     return localVarName(identifier);
   }
@@ -96,10 +118,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   @Override
   public String getFullyQualifiedApiWrapperClassName(GapicInterfaceConfig interfaceConfig) {
     return Joiner.on(".")
-        .join(
-            getPackageName(),
-            getApiWrapperVariableName(interfaceConfig),
-            getApiWrapperClassName(interfaceConfig));
+        .join(getVersionedDirectoryNamespace(), getApiWrapperClassName(interfaceConfig));
   }
 
   @Override
@@ -127,9 +146,10 @@ public class PythonSurfaceNamer extends SurfaceNamer {
     if (type.isMap()) {
       TypeName mapTypeName = new TypeName("dict");
       TypeName keyTypeName =
-          new TypeName(getParamTypeNameForElementType(type.getMapKeyField().getType()));
+          new TypeName(getParamTypeNameForElementType(typeTable, type.getMapKeyField().getType()));
       TypeName valueTypeName =
-          new TypeName(getParamTypeNameForElementType(type.getMapValueField().getType()));
+          new TypeName(
+              getParamTypeNameForElementType(typeTable, type.getMapValueField().getType()));
       return new TypeName(
               mapTypeName.getFullName(),
               mapTypeName.getNickname(),
@@ -141,27 +161,43 @@ public class PythonSurfaceNamer extends SurfaceNamer {
 
     if (type.isRepeated()) {
       TypeName listTypeName = new TypeName("list");
-      TypeName elementTypeName = new TypeName(getParamTypeNameForElementType(type));
+      TypeName elementTypeName = new TypeName(getParamTypeNameForElementType(typeTable, type));
       return new TypeName(
               listTypeName.getFullName(), listTypeName.getNickname(), "%s[%i]", elementTypeName)
           .getFullName();
     }
 
-    return getParamTypeNameForElementType(type);
+    return getParamTypeNameForElementType(typeTable, type);
   }
 
-  private String getParamTypeNameForElementType(TypeRef type) {
+  @Override
+  public String getAndSavePagedResponseTypeName(
+      Method method, ModelTypeTable typeTable, FieldConfig resourcesFieldConfig) {
+    return typeTable.getAndSaveNicknameFor(method.getOutputType());
+  }
+
+  private String getParamTypeNameForElementType(ModelTypeTable typeTable, TypeRef type) {
     String typeName = getModelTypeFormatter().getFullNameForElementType(type);
 
     if (type.isMessage()) {
-      return ":class:`" + typeName + "`";
+      return "Union[dict|:class:`" + typeName + "`]";
     }
 
     if (type.isEnum()) {
-      return "enum :class:`" + typeName + "`";
+      String nickname = typeTable.cloneEmpty().getAndSaveNicknameFor(typeName);
+      return "~." + nickname;
     }
 
     return typeName;
+  }
+
+  private String getResponseTypeNameForElementType(ModelTypeTable typeTable, TypeRef type) {
+    if (type.isMessage()) {
+      String typeName = getModelTypeFormatter().getFullNameForElementType(type);
+      return ":class:`" + typeName + "`";
+    }
+
+    return getParamTypeNameForElementType(typeTable, type);
   }
 
   @Override
@@ -230,14 +266,16 @@ public class PythonSurfaceNamer extends SurfaceNamer {
     String classInfo = ":class:`" + returnTypeName + "`";
 
     if (methodConfig.getMethod().getResponseStreaming()) {
-      return ImmutableList.of("iterator[" + classInfo + "].");
+      return ImmutableList.of("Iterable[" + classInfo + "].");
     }
 
     if (methodConfig.isPageStreaming()) {
       TypeRef resourceType = methodConfig.getPageStreaming().getResourcesField().getType();
       return ImmutableList.of(
           "A :class:`google.gax.PageIterator` instance. By default, this",
-          "is an iterable of " + getParamTypeNameForElementType(resourceType) + " instances.",
+          "is an iterable of "
+              + getResponseTypeNameForElementType(context.getModelTypeTable(), resourceType)
+              + " instances.",
           "This object can also be configured to iterate over the pages",
           "of the response through the `CallOptions` parameter.");
     }

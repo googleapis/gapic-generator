@@ -18,7 +18,7 @@ class FieldMask(object):
     """
 
     Attributes:
-      materials (list[enum :class:`google.cloud.gapic.example.library.v1.enums.FieldMask.Material`])
+      materials (list[~.enums.FieldMask.Material])
 
     """
     pass
@@ -122,7 +122,7 @@ class Any(object):
         }
 
     Attributes:
-      type_url (string): A URL/resource name whose content describes the type of the
+      type_url (str): A URL/resource name whose content describes the type of the
         serialized protocol buffer message.
 
         For URLs which use the scheme ``http``, ``https``, or no scheme, the
@@ -479,7 +479,7 @@ class FieldMask(object):
     paths.
 
     Attributes:
-      paths (list[string]): The set of field mask paths.
+      paths (list[str]): The set of field mask paths.
 
     """
     pass
@@ -512,7 +512,7 @@ class Struct(object):
     The JSON representation for ``Struct`` is JSON object.
 
     Attributes:
-      fields (dict[string -> :class:`google.protobuf.struct_pb2.Value`]): Unordered map of dynamically typed values.
+      fields (dict[str -> Union[dict|:class:`google.protobuf.struct_pb2.Value`]]): Unordered map of dynamically typed values.
 
     """
     pass
@@ -528,12 +528,12 @@ class Value(object):
     The JSON representation for ``Value`` is JSON value.
 
     Attributes:
-      null_value (enum :class:`google.cloud.gapic.example.library.v1.enums.NullValue`): Represents a null value.
+      null_value (~.enums.NullValue): Represents a null value.
       number_value (float): Represents a double value.
-      string_value (string): Represents a string value.
+      string_value (str): Represents a string value.
       bool_value (bool): Represents a boolean value.
-      struct_value (:class:`google.protobuf.struct_pb2.Struct`): Represents a structured value.
-      list_value (:class:`google.protobuf.struct_pb2.ListValue`): Represents a repeated ``Value``.
+      struct_value (Union[dict|:class:`google.protobuf.struct_pb2.Struct`]): Represents a structured value.
+      list_value (Union[dict|:class:`google.protobuf.struct_pb2.ListValue`]): Represents a repeated ``Value``.
 
     """
     pass
@@ -546,7 +546,7 @@ class ListValue(object):
     The JSON representation for ``ListValue`` is JSON array.
 
     Attributes:
-      values (list[:class:`google.protobuf.struct_pb2.Value`]): Repeated field of dynamically typed values.
+      values (list[Union[dict|:class:`google.protobuf.struct_pb2.Value`]]): Repeated field of dynamically typed values.
 
     """
     pass
@@ -758,7 +758,7 @@ class StringValue(object):
     The JSON representation for ``StringValue`` is JSON string.
 
     Attributes:
-      value (string): The string value.
+      value (str): The string value.
 
     """
     pass
@@ -861,10 +861,10 @@ class Status(object):
 
     Attributes:
       code (int): The status code, which should be an enum value of ``google.rpc.Code``.
-      message (string): A developer-facing error message, which should be in English. Any
+      message (str): A developer-facing error message, which should be in English. Any
         user-facing error message should be localized and sent in the
         ``google.rpc.Status.details`` field, or localized by the client.
-      details (list[:class:`google.protobuf.any_pb2.Any`]): A list of messages that carry the error details.  There will be a
+      details (list[Union[dict|:class:`google.protobuf.any_pb2.Any`]]): A list of messages that carry the error details.  There will be a
         common set of message types for APIs to use.
 
     """
@@ -901,31 +901,31 @@ class Book(object):
     Message comment may include special characters: <>&\"``'@.
 
     Attributes:
-      name (string): The resource name of the book.
+      name (str): The resource name of the book.
         Book names have the form ``bookShelves/{shelf_id}/books/{book_id}``.
         Message field comment may include special characters: <>&\"``'@.
-      author (string): The name of the book author.
-      title (string): The title of the book.
+      author (str): The name of the book author.
+      title (str): The title of the book.
       read (bool): Value indicating whether the book has been read.
-      rating (enum :class:`google.cloud.gapic.example.library.v1.enums.Book.Rating`): For testing enums.
-      any_value (:class:`google.protobuf.any_pb2.Any`): For testing all well-known types.
-      struct_value (:class:`google.protobuf.struct_pb2.Struct`)
-      value_value (:class:`google.protobuf.struct_pb2.Value`)
-      list_value_value (:class:`google.protobuf.struct_pb2.ListValue`)
-      map_list_value_value (dict[string -> :class:`google.protobuf.struct_pb2.ListValue`])
-      time_value (:class:`google.protobuf.timestamp_pb2.Timestamp`)
-      duration_value (:class:`google.protobuf.duration_pb2.Duration`)
-      field_mask_value (:class:`google.protobuf.field_mask_pb2.FieldMask`)
-      int32_value (:class:`google.protobuf.wrappers_pb2.Int32Value`)
-      uint32_value (:class:`google.protobuf.wrappers_pb2.UInt32Value`)
-      int64_value (:class:`google.protobuf.wrappers_pb2.Int64Value`)
-      uint64_value (:class:`google.protobuf.wrappers_pb2.UInt64Value`)
-      float_value (:class:`google.protobuf.wrappers_pb2.FloatValue`)
-      double_value (:class:`google.protobuf.wrappers_pb2.DoubleValue`)
-      string_value (:class:`google.protobuf.wrappers_pb2.StringValue`)
-      bool_value (:class:`google.protobuf.wrappers_pb2.BoolValue`)
-      bytes_value (:class:`google.protobuf.wrappers_pb2.BytesValue`)
-      map_string_value (dict[int -> string]): Test doc generation of lists:
+      rating (~.enums.Book.Rating): For testing enums.
+      any_value (Union[dict|:class:`google.protobuf.any_pb2.Any`]): For testing all well-known types.
+      struct_value (Union[dict|:class:`google.protobuf.struct_pb2.Struct`])
+      value_value (Union[dict|:class:`google.protobuf.struct_pb2.Value`])
+      list_value_value (Union[dict|:class:`google.protobuf.struct_pb2.ListValue`])
+      map_list_value_value (dict[str -> Union[dict|:class:`google.protobuf.struct_pb2.ListValue`]])
+      time_value (Union[dict|:class:`google.protobuf.timestamp_pb2.Timestamp`])
+      duration_value (Union[dict|:class:`google.protobuf.duration_pb2.Duration`])
+      field_mask_value (Union[dict|:class:`google.protobuf.field_mask_pb2.FieldMask`])
+      int32_value (Union[dict|:class:`google.protobuf.wrappers_pb2.Int32Value`])
+      uint32_value (Union[dict|:class:`google.protobuf.wrappers_pb2.UInt32Value`])
+      int64_value (Union[dict|:class:`google.protobuf.wrappers_pb2.Int64Value`])
+      uint64_value (Union[dict|:class:`google.protobuf.wrappers_pb2.UInt64Value`])
+      float_value (Union[dict|:class:`google.protobuf.wrappers_pb2.FloatValue`])
+      double_value (Union[dict|:class:`google.protobuf.wrappers_pb2.DoubleValue`])
+      string_value (Union[dict|:class:`google.protobuf.wrappers_pb2.StringValue`])
+      bool_value (Union[dict|:class:`google.protobuf.wrappers_pb2.BoolValue`])
+      bytes_value (Union[dict|:class:`google.protobuf.wrappers_pb2.BytesValue`])
+      map_string_value (dict[int -> str]): Test doc generation of lists:
 
         +   Here is a sentence about the first element of the list that continues
         ::
@@ -939,8 +939,8 @@ class Book(object):
 
             The second paragraph of the list
         that doesn't have a hanging indent.
-      map_message_value (dict[string -> :class:`google.cloud.proto.example.library.v1.library_pb2.SomeMessage`])
-      resource (:class:`google.cloud.proto.test.shared.data.shared_type_pb2.Used`): Tests Python doc generation: should generate a dummy file for shared_type
+      map_message_value (dict[str -> Union[dict|:class:`google.cloud.proto.example.library.v1.library_pb2.SomeMessage`]])
+      resource (Union[dict|:class:`google.cloud.proto.test.shared.data.shared_type_pb2.Used`]): Tests Python doc generation: should generate a dummy file for shared_type
         resource, but *not* its import, other_shared_type
 
     """
@@ -952,10 +952,10 @@ class BookFromArchive(object):
     A single book in the archives.
 
     Attributes:
-      name (string): The resource name of the book.
+      name (str): The resource name of the book.
         Book names have the form ``archives/{archive_id}/books/{book_id}``.
-      author (string): The name of the book author.
-      title (string): The title of the book.
+      author (str): The name of the book author.
+      title (str): The title of the book.
       read (bool): Value indicating whether the book has been read.
 
     """
@@ -967,8 +967,8 @@ class SomeMessage(object):
 
     Attributes:
       field (int)
-      field2 (:class:`google.cloud.proto.example.library.v1.library_pb2.SomeMessage2`)
-      alignment (enum :class:`google.cloud.gapic.example.library.v1.enums.SomeMessage.Alignment`)
+      field2 (Union[dict|:class:`google.cloud.proto.example.library.v1.library_pb2.SomeMessage2`])
+      alignment (~.enums.SomeMessage.Alignment)
 
     """
     pass
@@ -979,7 +979,7 @@ class SomeMessage2(object):
 
     Attributes:
       field1 (int)
-      format (enum :class:`google.cloud.gapic.example.library.v1.enums.SomeMessage2.Alignment`)
+      format (~.enums.SomeMessage2.Alignment)
 
     """
     pass
@@ -990,10 +990,10 @@ class Shelf(object):
     A Shelf contains a collection of books with a theme.
 
     Attributes:
-      name (string): The resource name of the shelf.
+      name (str): The resource name of the shelf.
         Shelf names have the form ``bookShelves/{shelf_id}``.
-      theme (string): The theme of the shelf
-      internal_theme (string): Internal theme that is visible to trusted testers only.
+      theme (str): The theme of the shelf
+      internal_theme (str): Internal theme that is visible to trusted testers only.
 
     """
     pass
@@ -1004,7 +1004,7 @@ class CreateShelfRequest(object):
     Request message for LibraryService.CreateShelf.
 
     Attributes:
-      shelf (:class:`google.cloud.proto.example.library.v1.library_pb2.Shelf`): The shelf to create.
+      shelf (Union[dict|:class:`google.cloud.proto.example.library.v1.library_pb2.Shelf`]): The shelf to create.
 
     """
     pass
@@ -1015,10 +1015,10 @@ class GetShelfRequest(object):
     Request message for LibraryService.GetShelf.
 
     Attributes:
-      name (string): The name of the shelf to retrieve.
-      message (:class:`google.cloud.proto.example.library.v1.library_pb2.SomeMessage`): Field to verify that message-type query parameter gets flattened.
-      string_builder (:class:`google.cloud.proto.example.library.v1.library_pb2.StringBuilder`)
-      options (string): To test 'options' parameter name conflict.
+      name (str): The name of the shelf to retrieve.
+      message (Union[dict|:class:`google.cloud.proto.example.library.v1.library_pb2.SomeMessage`]): Field to verify that message-type query parameter gets flattened.
+      string_builder (Union[dict|:class:`google.cloud.proto.example.library.v1.library_pb2.StringBuilder`])
+      options (str): To test 'options' parameter name conflict.
 
     """
     pass
@@ -1029,7 +1029,7 @@ class StringBuilder(object):
     Creates a name conflict with java.lang type
 
     Attributes:
-      name (string)
+      name (str)
 
     """
     pass
@@ -1040,7 +1040,7 @@ class ListShelvesRequest(object):
     Request message for LibraryService.ListShelves.
 
     Attributes:
-      page_token (string): A token identifying a page of results the server should return.
+      page_token (str): A token identifying a page of results the server should return.
         Typically, this is the value of
         ``ListShelvesResponse.next_page_token``
         returned from the previous call to ``ListShelves`` method.
@@ -1054,8 +1054,8 @@ class ListShelvesResponse(object):
     Response message for LibraryService.ListShelves.
 
     Attributes:
-      shelves (list[:class:`google.cloud.proto.example.library.v1.library_pb2.Shelf`]): The list of shelves.
-      next_page_token (string): A token to retrieve next page of results.
+      shelves (list[Union[dict|:class:`google.cloud.proto.example.library.v1.library_pb2.Shelf`]]): The list of shelves.
+      next_page_token (str): A token to retrieve next page of results.
         Pass this value in the
         ``ListShelvesRequest.page_token``
         field in the subsequent call to ``ListShelves`` method to retrieve the next
@@ -1080,7 +1080,7 @@ class StreamShelvesResponse(object):
     Response message for LibraryService.StreamShelves.
 
     Attributes:
-      shelves (list[:class:`google.cloud.proto.example.library.v1.library_pb2.Shelf`]): The list of shelves.
+      shelves (list[Union[dict|:class:`google.cloud.proto.example.library.v1.library_pb2.Shelf`]]): The list of shelves.
 
     """
     pass
@@ -1091,7 +1091,7 @@ class DeleteShelfRequest(object):
     Request message for LibraryService.DeleteShelf.
 
     Attributes:
-      name (string): The name of the shelf to delete.
+      name (str): The name of the shelf to delete.
 
     """
     pass
@@ -1103,8 +1103,8 @@ class MergeShelvesRequest(object):
     (name) in this merge.
 
     Attributes:
-      name (string): The name of the shelf we're adding books to.
-      other_shelf_name (string): The name of the shelf we're removing books from and deleting.
+      name (str): The name of the shelf we're adding books to.
+      other_shelf_name (str): The name of the shelf we're removing books from and deleting.
 
     """
     pass
@@ -1115,8 +1115,8 @@ class CreateBookRequest(object):
     Request message for LibraryService.CreateBook.
 
     Attributes:
-      name (string): The name of the shelf in which the book is created.
-      book (:class:`google.cloud.proto.example.library.v1.library_pb2.Book`): The book to create.
+      name (str): The name of the shelf in which the book is created.
+      book (Union[dict|:class:`google.cloud.proto.example.library.v1.library_pb2.Book`]): The book to create.
 
     """
     pass
@@ -1127,11 +1127,11 @@ class PublishSeriesRequest(object):
     Request message for LibraryService.PublishSeries.
 
     Attributes:
-      shelf (:class:`google.cloud.proto.example.library.v1.library_pb2.Shelf`): The shelf in which the series is created.
-      books (list[:class:`google.cloud.proto.example.library.v1.library_pb2.Book`]): The books to publish in the series.
+      shelf (Union[dict|:class:`google.cloud.proto.example.library.v1.library_pb2.Shelf`]): The shelf in which the series is created.
+      books (list[Union[dict|:class:`google.cloud.proto.example.library.v1.library_pb2.Book`]]): The books to publish in the series.
       edition (int): The edition of the series
       review_copy (bool): If the book is in a pre-publish state
-      series_uuid (:class:`google.cloud.proto.example.library.v1.library_pb2.SeriesUuid`): Uniquely identifies the series to the publishing house.
+      series_uuid (Union[dict|:class:`google.cloud.proto.example.library.v1.library_pb2.SeriesUuid`]): Uniquely identifies the series to the publishing house.
 
     """
     pass
@@ -1142,7 +1142,7 @@ class SeriesUuid(object):
 
     Attributes:
       series_bytes (bytes)
-      series_string (string)
+      series_string (str)
 
     """
     pass
@@ -1153,7 +1153,7 @@ class PublishSeriesResponse(object):
     Response message for LibraryService.PublishSeries.
 
     Attributes:
-      book_names (list[string]): The names of the books in the series that were published
+      book_names (list[str]): The names of the books in the series that were published
 
     """
     pass
@@ -1164,7 +1164,7 @@ class GetBookRequest(object):
     Request message for LibraryService.GetBook.
 
     Attributes:
-      name (string): The name of the book to retrieve.
+      name (str): The name of the book to retrieve.
 
     """
     pass
@@ -1175,14 +1175,14 @@ class ListBooksRequest(object):
     Request message for LibraryService.ListBooks.
 
     Attributes:
-      name (string): The name of the shelf whose books we'd like to list.
+      name (str): The name of the shelf whose books we'd like to list.
       page_size (int): Requested page size. Server may return fewer books than requested.
         If unspecified, server will pick an appropriate default.
-      page_token (string): A token identifying a page of results the server should return.
+      page_token (str): A token identifying a page of results the server should return.
         Typically, this is the value of
         ``ListBooksResponse.next_page_token``.
         returned from the previous call to ``ListBooks`` method.
-      filter (string): To test python built-in wrapping.
+      filter (str): To test python built-in wrapping.
 
     """
     pass
@@ -1193,8 +1193,8 @@ class ListBooksResponse(object):
     Response message for LibraryService.ListBooks.
 
     Attributes:
-      books (list[:class:`google.cloud.proto.example.library.v1.library_pb2.Book`]): The list of books.
-      next_page_token (string): A token to retrieve next page of results.
+      books (list[Union[dict|:class:`google.cloud.proto.example.library.v1.library_pb2.Book`]]): The list of books.
+      next_page_token (str): A token to retrieve next page of results.
         Pass this value in the
         ``ListBooksRequest.page_token``
         field in the subsequent call to ``ListBooks`` method to retrieve the next
@@ -1209,7 +1209,7 @@ class StreamBooksRequest(object):
     Request message for LibraryService.StreamBooks.
 
     Attributes:
-      name (string): The name of the shelf whose books we'd like to list.
+      name (str): The name of the shelf whose books we'd like to list.
 
     """
     pass
@@ -1220,10 +1220,10 @@ class UpdateBookRequest(object):
     Request message for LibraryService.UpdateBook.
 
     Attributes:
-      name (string): The name of the book to update.
-      book (:class:`google.cloud.proto.example.library.v1.library_pb2.Book`): The book to update with.
-      update_mask (:class:`google.protobuf.field_mask_pb2.FieldMask`): A field mask to apply, rendered as an HTTP parameter.
-      physical_mask (:class:`google.cloud.proto.example.library.v1.field_mask_pb2.FieldMask`): To test Python import clash resolution.
+      name (str): The name of the book to update.
+      book (Union[dict|:class:`google.cloud.proto.example.library.v1.library_pb2.Book`]): The book to update with.
+      update_mask (Union[dict|:class:`google.protobuf.field_mask_pb2.FieldMask`]): A field mask to apply, rendered as an HTTP parameter.
+      physical_mask (Union[dict|:class:`google.cloud.proto.example.library.v1.field_mask_pb2.FieldMask`]): To test Python import clash resolution.
 
     """
     pass
@@ -1234,7 +1234,7 @@ class DeleteBookRequest(object):
     Request message for LibraryService.DeleteBook.
 
     Attributes:
-      name (string): The name of the book to delete.
+      name (str): The name of the book to delete.
 
     """
     pass
@@ -1246,8 +1246,8 @@ class MoveBookRequest(object):
     to (other_shelf_name).
 
     Attributes:
-      name (string): The name of the book to move.
-      other_shelf_name (string): The name of the destination shelf.
+      name (str): The name of the book to move.
+      other_shelf_name (str): The name of the destination shelf.
 
     """
     pass
@@ -1257,9 +1257,9 @@ class ListStringsRequest(object):
     """
 
     Attributes:
-      name (string)
+      name (str)
       page_size (int)
-      page_token (string)
+      page_token (str)
 
     """
     pass
@@ -1269,8 +1269,8 @@ class ListStringsResponse(object):
     """
 
     Attributes:
-      strings (list[string])
-      next_page_token (string)
+      strings (list[str])
+      next_page_token (str)
 
     """
     pass
@@ -1280,8 +1280,8 @@ class AddCommentsRequest(object):
     """
 
     Attributes:
-      name (string)
-      comments (list[:class:`google.cloud.proto.example.library.v1.library_pb2.Comment`])
+      name (str)
+      comments (list[Union[dict|:class:`google.cloud.proto.example.library.v1.library_pb2.Comment`]])
 
     """
     pass
@@ -1291,10 +1291,10 @@ class Comment(object):
     """
 
     Attributes:
-      user_name (string): won't be filled in by the sample generator
+      user_name (str): won't be filled in by the sample generator
       comment (bytes): should be filled in by the sample generator
-      stage (enum :class:`google.cloud.gapic.example.library.v1.enums.Comment.Stage`): should be filled in by the sample generator
-      alignment (enum :class:`google.cloud.gapic.example.library.v1.enums.SomeMessage2.SomeMessage3.Alignment`): Tests Python nested enums
+      stage (~.enums.Comment.Stage): should be filled in by the sample generator
+      alignment (~.enums.SomeMessage2.SomeMessage3.Alignment): Tests Python nested enums
 
     """
     pass
@@ -1305,7 +1305,7 @@ class GetBookFromArchiveRequest(object):
     Request message for LibraryService.GetBookFromArchive.
 
     Attributes:
-      name (string): The name of the book to retrieve.
+      name (str): The name of the book to retrieve.
 
     """
     pass
@@ -1316,8 +1316,8 @@ class GetBookFromAnywhereRequest(object):
     Request message for LibraryService.GetBookFromAnywhere.
 
     Attributes:
-      name (string): The name of the book to retrieve.
-      alt_book_name (string): An alternate book name, used to test restricting flattened field to a
+      name (str): The name of the book to retrieve.
+      alt_book_name (str): An alternate book name, used to test restricting flattened field to a
         single resource name type in a oneof.
 
     """
@@ -1329,7 +1329,7 @@ class GetBookFromAbsolutelyAnywhereRequest(object):
     Request message for LibraryService.GetBookFromAbsolutelyAnywhere.
 
     Attributes:
-      name (string): The name of the book to retrieve.
+      name (str): The name of the book to retrieve.
 
     """
     pass
@@ -1340,9 +1340,9 @@ class UpdateBookIndexRequest(object):
     Request message for LibraryService.UpdateBookIndex.
 
     Attributes:
-      name (string): The name of the book to update.
-      index_name (string): The name of the index for the book
-      index_map (dict[string -> string]): The index to update the book with
+      name (str): The name of the book to update.
+      index_name (str): The name of the index for the book
+      index_map (dict[str -> str]): The index to update the book with
 
     """
     pass
@@ -1352,10 +1352,10 @@ class DiscussBookRequest(object):
     """
 
     Attributes:
-      name (string): The name of the book to be discussed. If this is in the middle
+      name (str): The name of the book to be discussed. If this is in the middle
         of the stream and this is not specified, the name in the previous
         message will be reused.
-      comment (:class:`google.cloud.proto.example.library.v1.library_pb2.Comment`): The new comment.
+      comment (Union[dict|:class:`google.cloud.proto.example.library.v1.library_pb2.Comment`]): The new comment.
 
     """
     pass
@@ -1366,10 +1366,10 @@ class FindRelatedBooksRequest(object):
     Test repeated field with resource name format in request
 
     Attributes:
-      names (list[string])
-      shelves (list[string])
+      names (list[str])
+      shelves (list[str])
       page_size (int)
-      page_token (string)
+      page_token (str)
 
     """
     pass
@@ -1380,8 +1380,8 @@ class FindRelatedBooksResponse(object):
     Test repeated field with resource name format in page streaming response
 
     Attributes:
-      names (list[string])
-      next_page_token (string)
+      names (list[str])
+      next_page_token (str)
 
     """
     pass
@@ -1407,12 +1407,12 @@ class TestOptionalRequiredFlatteningParamsRequest(object):
       required_singular_float (float)
       required_singular_double (float)
       required_singular_bool (bool)
-      required_singular_enum (enum :class:`google.cloud.gapic.example.library.v1.enums.TestOptionalRequiredFlatteningParamsRequest.InnerEnum`)
-      required_singular_string (string)
+      required_singular_enum (~.enums.TestOptionalRequiredFlatteningParamsRequest.InnerEnum)
+      required_singular_string (str)
       required_singular_bytes (bytes)
-      required_singular_message (:class:`google.cloud.proto.example.library.v1.library_pb2.TestOptionalRequiredFlatteningParamsRequest.InnerMessage`)
-      required_singular_resource_name (string)
-      required_singular_resource_name_oneof (string)
+      required_singular_message (Union[dict|:class:`google.cloud.proto.example.library.v1.library_pb2.TestOptionalRequiredFlatteningParamsRequest.InnerMessage`])
+      required_singular_resource_name (str)
+      required_singular_resource_name_oneof (str)
       required_singular_fixed32 (int)
       required_singular_fixed64 (long)
       required_repeated_int32 (list[int])
@@ -1420,26 +1420,26 @@ class TestOptionalRequiredFlatteningParamsRequest(object):
       required_repeated_float (list[float])
       required_repeated_double (list[float])
       required_repeated_bool (list[bool])
-      required_repeated_enum (list[enum :class:`google.cloud.gapic.example.library.v1.enums.TestOptionalRequiredFlatteningParamsRequest.InnerEnum`])
-      required_repeated_string (list[string])
+      required_repeated_enum (list[~.enums.TestOptionalRequiredFlatteningParamsRequest.InnerEnum])
+      required_repeated_string (list[str])
       required_repeated_bytes (list[bytes])
-      required_repeated_message (list[:class:`google.cloud.proto.example.library.v1.library_pb2.TestOptionalRequiredFlatteningParamsRequest.InnerMessage`])
-      required_repeated_resource_name (list[string])
-      required_repeated_resource_name_oneof (list[string])
+      required_repeated_message (list[Union[dict|:class:`google.cloud.proto.example.library.v1.library_pb2.TestOptionalRequiredFlatteningParamsRequest.InnerMessage`]])
+      required_repeated_resource_name (list[str])
+      required_repeated_resource_name_oneof (list[str])
       required_repeated_fixed32 (list[int])
       required_repeated_fixed64 (list[long])
-      required_map (dict[int -> string])
+      required_map (dict[int -> str])
       optional_singular_int32 (int)
       optional_singular_int64 (long)
       optional_singular_float (float)
       optional_singular_double (float)
       optional_singular_bool (bool)
-      optional_singular_enum (enum :class:`google.cloud.gapic.example.library.v1.enums.TestOptionalRequiredFlatteningParamsRequest.InnerEnum`)
-      optional_singular_string (string)
+      optional_singular_enum (~.enums.TestOptionalRequiredFlatteningParamsRequest.InnerEnum)
+      optional_singular_string (str)
       optional_singular_bytes (bytes)
-      optional_singular_message (:class:`google.cloud.proto.example.library.v1.library_pb2.TestOptionalRequiredFlatteningParamsRequest.InnerMessage`)
-      optional_singular_resource_name (string)
-      optional_singular_resource_name_oneof (string)
+      optional_singular_message (Union[dict|:class:`google.cloud.proto.example.library.v1.library_pb2.TestOptionalRequiredFlatteningParamsRequest.InnerMessage`])
+      optional_singular_resource_name (str)
+      optional_singular_resource_name_oneof (str)
       optional_singular_fixed32 (int)
       optional_singular_fixed64 (long)
       optional_repeated_int32 (list[int])
@@ -1447,15 +1447,15 @@ class TestOptionalRequiredFlatteningParamsRequest(object):
       optional_repeated_float (list[float])
       optional_repeated_double (list[float])
       optional_repeated_bool (list[bool])
-      optional_repeated_enum (list[enum :class:`google.cloud.gapic.example.library.v1.enums.TestOptionalRequiredFlatteningParamsRequest.InnerEnum`])
-      optional_repeated_string (list[string])
+      optional_repeated_enum (list[~.enums.TestOptionalRequiredFlatteningParamsRequest.InnerEnum])
+      optional_repeated_string (list[str])
       optional_repeated_bytes (list[bytes])
-      optional_repeated_message (list[:class:`google.cloud.proto.example.library.v1.library_pb2.TestOptionalRequiredFlatteningParamsRequest.InnerMessage`])
-      optional_repeated_resource_name (list[string])
-      optional_repeated_resource_name_oneof (list[string])
+      optional_repeated_message (list[Union[dict|:class:`google.cloud.proto.example.library.v1.library_pb2.TestOptionalRequiredFlatteningParamsRequest.InnerMessage`]])
+      optional_repeated_resource_name (list[str])
+      optional_repeated_resource_name_oneof (list[str])
       optional_repeated_fixed32 (list[int])
       optional_repeated_fixed64 (list[long])
-      optional_map (dict[int -> string])
+      optional_map (dict[int -> str])
 
     """
     pass
@@ -1503,7 +1503,7 @@ class Unused(object):
     other_shared_type.proto.
 
     Attributes:
-      other (:class:`google.cloud.proto.test.shared.data.other_shared_type_pb2.OtherType`)
+      other (Union[dict|:class:`google.cloud.proto.test.shared.data.other_shared_type_pb2.OtherType`])
 
     """
     pass

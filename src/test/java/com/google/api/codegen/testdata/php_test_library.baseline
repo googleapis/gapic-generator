@@ -109,12 +109,12 @@ class LibraryServiceClientTest extends GeneratedTest
 
     private function createStub($createGrpcStub)
     {
-        $grpcCredentialsHelper = new GrpcCredentialsHelper([]);
-        return $grpcCredentialsHelper->createStub(
-            $createGrpcStub,
-            LibraryServiceClient::SERVICE_ADDRESS,
-            LibraryServiceClient::DEFAULT_SERVICE_PORT
-        );
+        $grpcCredentialsHelper = new GrpcCredentialsHelper([
+            'serviceAddress' => LibraryServiceClient::SERVICE_ADDRESS,
+            'port' => LibraryServiceClient::DEFAULT_SERVICE_PORT,
+            'scopes' => ['unknown-service-scopes'],
+        ]);
+        return $grpcCredentialsHelper->createStub($createGrpcStub);
     }
 
     /**
@@ -159,7 +159,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/CreateShelf', $actualFuncCall);
 
-        $this->assertEquals($shelf, $actualRequestObject->getShelf());
+        $this->assertProtobufEquals($shelf, $actualRequestObject->getShelf());
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -235,8 +235,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/GetShelf', $actualFuncCall);
 
-        $this->assertEquals($formattedName, $actualRequestObject->getName());
-        $this->assertEquals($options, $actualRequestObject->getOptions());
+        $this->assertProtobufEquals($formattedName, $actualRequestObject->getName());
+        $this->assertProtobufEquals($options, $actualRequestObject->getOptions());
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -375,7 +375,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/DeleteShelf', $actualFuncCall);
 
-        $this->assertEquals($formattedName, $actualRequestObject->getName());
+        $this->assertProtobufEquals($formattedName, $actualRequestObject->getName());
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -451,8 +451,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/MergeShelves', $actualFuncCall);
 
-        $this->assertEquals($formattedName, $actualRequestObject->getName());
-        $this->assertEquals($formattedOtherShelfName, $actualRequestObject->getOtherShelfName());
+        $this->assertProtobufEquals($formattedName, $actualRequestObject->getName());
+        $this->assertProtobufEquals($formattedOtherShelfName, $actualRequestObject->getOtherShelfName());
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -531,8 +531,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/CreateBook', $actualFuncCall);
 
-        $this->assertEquals($formattedName, $actualRequestObject->getName());
-        $this->assertEquals($book, $actualRequestObject->getBook());
+        $this->assertProtobufEquals($formattedName, $actualRequestObject->getName());
+        $this->assertProtobufEquals($book, $actualRequestObject->getBook());
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -609,9 +609,9 @@ class LibraryServiceClientTest extends GeneratedTest
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/PublishSeries', $actualFuncCall);
 
-        $this->assertEquals($shelf, $actualRequestObject->getShelf());
-        $this->assertRepeatedFieldEquals($books, $actualRequestObject->getBooks());
-        $this->assertEquals($seriesUuid, $actualRequestObject->getSeriesUuid());
+        $this->assertProtobufEquals($shelf, $actualRequestObject->getShelf());
+        $this->assertProtobufEquals($books, $actualRequestObject->getBooks());
+        $this->assertProtobufEquals($seriesUuid, $actualRequestObject->getSeriesUuid());
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -692,7 +692,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/GetBook', $actualFuncCall);
 
-        $this->assertEquals($formattedName, $actualRequestObject->getName());
+        $this->assertProtobufEquals($formattedName, $actualRequestObject->getName());
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -770,7 +770,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/ListBooks', $actualFuncCall);
 
-        $this->assertEquals($formattedName, $actualRequestObject->getName());
+        $this->assertProtobufEquals($formattedName, $actualRequestObject->getName());
         $this->assertTrue($grpcStub->isExhausted());
     }
 
@@ -837,7 +837,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/DeleteBook', $actualFuncCall);
 
-        $this->assertEquals($formattedName, $actualRequestObject->getName());
+        $this->assertProtobufEquals($formattedName, $actualRequestObject->getName());
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -915,8 +915,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/UpdateBook', $actualFuncCall);
 
-        $this->assertEquals($formattedName, $actualRequestObject->getName());
-        $this->assertEquals($book, $actualRequestObject->getBook());
+        $this->assertProtobufEquals($formattedName, $actualRequestObject->getName());
+        $this->assertProtobufEquals($book, $actualRequestObject->getBook());
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -995,8 +995,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/MoveBook', $actualFuncCall);
 
-        $this->assertEquals($formattedName, $actualRequestObject->getName());
-        $this->assertEquals($formattedOtherShelfName, $actualRequestObject->getOtherShelfName());
+        $this->assertProtobufEquals($formattedName, $actualRequestObject->getName());
+        $this->assertProtobufEquals($formattedOtherShelfName, $actualRequestObject->getOtherShelfName());
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -1143,8 +1143,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/AddComments', $actualFuncCall);
 
-        $this->assertEquals($formattedName, $actualRequestObject->getName());
-        $this->assertRepeatedFieldEquals($comments, $actualRequestObject->getComments());
+        $this->assertProtobufEquals($formattedName, $actualRequestObject->getName());
+        $this->assertProtobufEquals($comments, $actualRequestObject->getComments());
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -1229,7 +1229,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/GetBookFromArchive', $actualFuncCall);
 
-        $this->assertEquals($formattedName, $actualRequestObject->getName());
+        $this->assertProtobufEquals($formattedName, $actualRequestObject->getName());
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -1307,8 +1307,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/GetBookFromAnywhere', $actualFuncCall);
 
-        $this->assertEquals($formattedName, $actualRequestObject->getName());
-        $this->assertEquals($formattedAltBookName, $actualRequestObject->getAltBookName());
+        $this->assertProtobufEquals($formattedName, $actualRequestObject->getName());
+        $this->assertProtobufEquals($formattedAltBookName, $actualRequestObject->getAltBookName());
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -1386,7 +1386,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/GetBookFromAbsolutelyAnywhere', $actualFuncCall);
 
-        $this->assertEquals($formattedName, $actualRequestObject->getName());
+        $this->assertProtobufEquals($formattedName, $actualRequestObject->getName());
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -1457,9 +1457,9 @@ class LibraryServiceClientTest extends GeneratedTest
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/UpdateBookIndex', $actualFuncCall);
 
-        $this->assertEquals($formattedName, $actualRequestObject->getName());
-        $this->assertEquals($indexName, $actualRequestObject->getIndexName());
-        $this->assertEquals($indexMap, $actualRequestObject->getIndexMap());
+        $this->assertProtobufEquals($formattedName, $actualRequestObject->getName());
+        $this->assertProtobufEquals($indexName, $actualRequestObject->getIndexName());
+        $this->assertProtobufEquals($indexMap, $actualRequestObject->getIndexMap());
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -1662,7 +1662,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/StreamBooks', $actualFuncCall);
 
-        $this->assertEquals($name, $actualRequestObject->getName());
+        $this->assertProtobufEquals($name, $actualRequestObject->getName());
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -1866,8 +1866,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/FindRelatedBooks', $actualFuncCall);
 
-        $this->assertRepeatedFieldEquals($names, $actualRequestObject->getNames());
-        $this->assertRepeatedFieldEquals($shelves, $actualRequestObject->getShelves());
+        $this->assertProtobufEquals($names, $actualRequestObject->getNames());
+        $this->assertProtobufEquals($shelves, $actualRequestObject->getShelves());
         $this->assertTrue($grpcStub->isExhausted());
     }
 
@@ -1938,8 +1938,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/AddTag', $actualFuncCall);
 
-        $this->assertEquals($formattedResource, $actualRequestObject->getResource());
-        $this->assertEquals($tag, $actualRequestObject->getTag());
+        $this->assertProtobufEquals($formattedResource, $actualRequestObject->getResource());
+        $this->assertProtobufEquals($tag, $actualRequestObject->getTag());
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -2010,8 +2010,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.tagger.v1.Labeler/AddLabel', $actualFuncCall);
 
-        $this->assertEquals($formattedResource, $actualRequestObject->getResource());
-        $this->assertEquals($label, $actualRequestObject->getLabel());
+        $this->assertProtobufEquals($formattedResource, $actualRequestObject->getResource());
+        $this->assertProtobufEquals($label, $actualRequestObject->getLabel());
 
         $this->assertTrue($grpcStub->isExhausted());
     }
@@ -2113,7 +2113,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $actualApiFuncCall = $apiRequests[0]->getFuncCall();
         $actualApiRequestObject = $apiRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/GetBigBook', $actualApiFuncCall);
-        $this->assertEquals($formattedName, $actualApiRequestObject->getName());
+        $this->assertProtobufEquals($formattedName, $actualApiRequestObject->getName());
 
         $expectedOperationsRequestObject = new GetOperationRequest();
         $expectedOperationsRequestObject->setName('operations/getBigBookTest');
@@ -2249,7 +2249,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $actualApiFuncCall = $apiRequests[0]->getFuncCall();
         $actualApiRequestObject = $apiRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/GetBigNothing', $actualApiFuncCall);
-        $this->assertEquals($formattedName, $actualApiRequestObject->getName());
+        $this->assertProtobufEquals($formattedName, $actualApiRequestObject->getName());
 
         $expectedOperationsRequestObject = new GetOperationRequest();
         $expectedOperationsRequestObject->setName('operations/getBigNothingTest');
@@ -2387,33 +2387,33 @@ class LibraryServiceClientTest extends GeneratedTest
         $actualRequestObject = $actualRequests[0]->getRequestObject();
         $this->assertSame('/google.example.library.v1.LibraryService/TestOptionalRequiredFlatteningParams', $actualFuncCall);
 
-        $this->assertEquals($requiredSingularInt32, $actualRequestObject->getRequiredSingularInt32());
-        $this->assertEquals($requiredSingularInt64, $actualRequestObject->getRequiredSingularInt64());
-        $this->assertEquals($requiredSingularFloat, $actualRequestObject->getRequiredSingularFloat());
-        $this->assertEquals($requiredSingularDouble, $actualRequestObject->getRequiredSingularDouble());
-        $this->assertEquals($requiredSingularBool, $actualRequestObject->getRequiredSingularBool());
-        $this->assertEquals($requiredSingularEnum, $actualRequestObject->getRequiredSingularEnum());
-        $this->assertEquals($requiredSingularString, $actualRequestObject->getRequiredSingularString());
-        $this->assertEquals($requiredSingularBytes, $actualRequestObject->getRequiredSingularBytes());
-        $this->assertEquals($requiredSingularMessage, $actualRequestObject->getRequiredSingularMessage());
-        $this->assertEquals($requiredSingularResourceName, $actualRequestObject->getRequiredSingularResourceName());
-        $this->assertEquals($requiredSingularResourceNameOneof, $actualRequestObject->getRequiredSingularResourceNameOneof());
-        $this->assertEquals($requiredSingularFixed32, $actualRequestObject->getRequiredSingularFixed32());
-        $this->assertEquals($requiredSingularFixed64, $actualRequestObject->getRequiredSingularFixed64());
-        $this->assertRepeatedFieldEquals($requiredRepeatedInt32, $actualRequestObject->getRequiredRepeatedInt32());
-        $this->assertRepeatedFieldEquals($requiredRepeatedInt64, $actualRequestObject->getRequiredRepeatedInt64());
-        $this->assertRepeatedFieldEquals($requiredRepeatedFloat, $actualRequestObject->getRequiredRepeatedFloat());
-        $this->assertRepeatedFieldEquals($requiredRepeatedDouble, $actualRequestObject->getRequiredRepeatedDouble());
-        $this->assertRepeatedFieldEquals($requiredRepeatedBool, $actualRequestObject->getRequiredRepeatedBool());
-        $this->assertRepeatedFieldEquals($requiredRepeatedEnum, $actualRequestObject->getRequiredRepeatedEnum());
-        $this->assertRepeatedFieldEquals($requiredRepeatedString, $actualRequestObject->getRequiredRepeatedString());
-        $this->assertRepeatedFieldEquals($requiredRepeatedBytes, $actualRequestObject->getRequiredRepeatedBytes());
-        $this->assertRepeatedFieldEquals($requiredRepeatedMessage, $actualRequestObject->getRequiredRepeatedMessage());
-        $this->assertRepeatedFieldEquals($formattedRequiredRepeatedResourceName, $actualRequestObject->getRequiredRepeatedResourceName());
-        $this->assertRepeatedFieldEquals($formattedRequiredRepeatedResourceNameOneof, $actualRequestObject->getRequiredRepeatedResourceNameOneof());
-        $this->assertRepeatedFieldEquals($requiredRepeatedFixed32, $actualRequestObject->getRequiredRepeatedFixed32());
-        $this->assertRepeatedFieldEquals($requiredRepeatedFixed64, $actualRequestObject->getRequiredRepeatedFixed64());
-        $this->assertEquals($requiredMap, $actualRequestObject->getRequiredMap());
+        $this->assertProtobufEquals($requiredSingularInt32, $actualRequestObject->getRequiredSingularInt32());
+        $this->assertProtobufEquals($requiredSingularInt64, $actualRequestObject->getRequiredSingularInt64());
+        $this->assertProtobufEquals($requiredSingularFloat, $actualRequestObject->getRequiredSingularFloat());
+        $this->assertProtobufEquals($requiredSingularDouble, $actualRequestObject->getRequiredSingularDouble());
+        $this->assertProtobufEquals($requiredSingularBool, $actualRequestObject->getRequiredSingularBool());
+        $this->assertProtobufEquals($requiredSingularEnum, $actualRequestObject->getRequiredSingularEnum());
+        $this->assertProtobufEquals($requiredSingularString, $actualRequestObject->getRequiredSingularString());
+        $this->assertProtobufEquals($requiredSingularBytes, $actualRequestObject->getRequiredSingularBytes());
+        $this->assertProtobufEquals($requiredSingularMessage, $actualRequestObject->getRequiredSingularMessage());
+        $this->assertProtobufEquals($requiredSingularResourceName, $actualRequestObject->getRequiredSingularResourceName());
+        $this->assertProtobufEquals($requiredSingularResourceNameOneof, $actualRequestObject->getRequiredSingularResourceNameOneof());
+        $this->assertProtobufEquals($requiredSingularFixed32, $actualRequestObject->getRequiredSingularFixed32());
+        $this->assertProtobufEquals($requiredSingularFixed64, $actualRequestObject->getRequiredSingularFixed64());
+        $this->assertProtobufEquals($requiredRepeatedInt32, $actualRequestObject->getRequiredRepeatedInt32());
+        $this->assertProtobufEquals($requiredRepeatedInt64, $actualRequestObject->getRequiredRepeatedInt64());
+        $this->assertProtobufEquals($requiredRepeatedFloat, $actualRequestObject->getRequiredRepeatedFloat());
+        $this->assertProtobufEquals($requiredRepeatedDouble, $actualRequestObject->getRequiredRepeatedDouble());
+        $this->assertProtobufEquals($requiredRepeatedBool, $actualRequestObject->getRequiredRepeatedBool());
+        $this->assertProtobufEquals($requiredRepeatedEnum, $actualRequestObject->getRequiredRepeatedEnum());
+        $this->assertProtobufEquals($requiredRepeatedString, $actualRequestObject->getRequiredRepeatedString());
+        $this->assertProtobufEquals($requiredRepeatedBytes, $actualRequestObject->getRequiredRepeatedBytes());
+        $this->assertProtobufEquals($requiredRepeatedMessage, $actualRequestObject->getRequiredRepeatedMessage());
+        $this->assertProtobufEquals($formattedRequiredRepeatedResourceName, $actualRequestObject->getRequiredRepeatedResourceName());
+        $this->assertProtobufEquals($formattedRequiredRepeatedResourceNameOneof, $actualRequestObject->getRequiredRepeatedResourceNameOneof());
+        $this->assertProtobufEquals($requiredRepeatedFixed32, $actualRequestObject->getRequiredRepeatedFixed32());
+        $this->assertProtobufEquals($requiredRepeatedFixed64, $actualRequestObject->getRequiredRepeatedFixed64());
+        $this->assertProtobufEquals($requiredMap, $actualRequestObject->getRequiredMap());
 
         $this->assertTrue($grpcStub->isExhausted());
     }

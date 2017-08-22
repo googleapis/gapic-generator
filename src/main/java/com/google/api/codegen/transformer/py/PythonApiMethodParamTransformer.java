@@ -115,6 +115,23 @@ public class PythonApiMethodParamTransformer implements ApiMethodParamTransforme
             "of resources in a page.");
       } else {
         docLines.addAll(namer.getDocLines(field));
+        boolean isMessageField = field.getType().isMessage() && !field.getType().isMap();
+        boolean isMapContainingMessage =
+            field.getType().isMap() && field.getType().getMapValueField().getType().isMessage();
+        if (isMessageField || isMapContainingMessage) {
+          String messageType;
+          if (isMapContainingMessage) {
+            messageType =
+                context
+                    .getTypeTable()
+                    .getFullNameForElementType(field.getType().getMapValueField().getType());
+          } else {
+            messageType = context.getTypeTable().getFullNameForElementType(field.getType());
+          }
+          docLines.add(
+              "If a dict is provided, it must be of the same form as the protobuf",
+              String.format("message :class:`%s`", messageType));
+        }
       }
       paramDoc.lines(docLines.build());
       docs.add(paramDoc.build());

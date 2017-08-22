@@ -148,14 +148,14 @@ type Client struct {
 // resources and Book resources in the library. It defines the following
 // resource model:
 //
-// - The API has a collection of [Shelf][google.example.library.v1.Shelf]
-//   resources, named ``bookShelves/*``
+//   The API has a collection of [Shelf][google.example.library.v1.Shelf]
+//   resources, named bookShelves/*
 //
-// - Each Shelf has a collection of [Book][google.example.library.v1.Book]
-//   resources, named `bookShelves/*/books/*`
+//   Each Shelf has a collection of [Book][google.example.library.v1.Book]
+//   resources, named bookShelves/*/books/*
 //
-// Check out [cloud docs!](/library/example/link).
-// This is [not a cloud link](http://www.google.com).
+// Check out cloud docs! (at /library/example/link).
+// This is not a cloud link (at http://www.google.com).
 //
 // Service comment may include special characters: <>&"`'@.
 //
@@ -324,8 +324,8 @@ func (c *Client) DeleteShelf(ctx context.Context, req *librarypb.DeleteShelfRequ
 }
 
 // MergeShelves merges two shelves by adding all books from the shelf named
-// `other_shelf_name` to shelf `name`, and deletes
-// `other_shelf_name`. Returns the updated shelf.
+// other_shelf_name to shelf name, and deletes
+// other_shelf_name. Returns the updated shelf.
 func (c *Client) MergeShelves(ctx context.Context, req *librarypb.MergeShelvesRequest, opts ...gax.CallOption) (*librarypb.Shelf, error) {
     ctx = insertXGoog(ctx, c.xGoogHeader)
     opts = append(c.CallOptions.MergeShelves[0:len(c.CallOptions.MergeShelves):len(c.CallOptions.MergeShelves)], opts...)

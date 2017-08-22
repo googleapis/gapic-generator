@@ -21,8 +21,8 @@ import unittest
 from google.gax import errors
 from google.rpc import status_pb2
 
-from google.cloud.gapic.example.library.v1 import enums
-from google.cloud.gapic.example.library.v1 import library_service_client
+from google.cloud.example import library_v1
+from google.cloud.example.library_v1 import enums
 from google.cloud.proto.example.library.v1 import book_from_anywhere_pb2
 from google.cloud.proto.example.library.v1 import library_pb2
 from google.cloud.proto.tagger.v1 import tagger_pb2
@@ -42,16 +42,17 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
-        shelf = library_pb2.Shelf()
+        shelf = {}
 
         # Mock response
         name = 'name3373707'
         theme = 'theme110327241'
         internal_theme = 'internalTheme792518087'
-        expected_response = library_pb2.Shelf(name=name, theme=theme, internal_theme=internal_theme)
+        expected_response = {'name': name, 'theme': theme, 'internal_theme': internal_theme}
+        expected_response = library_pb2.Shelf(**expected_response)
         grpc_stub.CreateShelf.return_value = expected_response
 
         response = client.create_shelf(shelf)
@@ -74,10 +75,10 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
-        shelf = library_pb2.Shelf()
+        shelf = {}
 
         # Mock exception response
         grpc_stub.CreateShelf.side_effect = CustomException()
@@ -90,7 +91,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         name = client.shelf_path('[SHELF_ID]')
@@ -100,7 +101,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         name_2 = 'name2-1052831874'
         theme = 'theme110327241'
         internal_theme = 'internalTheme792518087'
-        expected_response = library_pb2.Shelf(name=name_2, theme=theme, internal_theme=internal_theme)
+        expected_response = {'name': name_2, 'theme': theme, 'internal_theme': internal_theme}
+        expected_response = library_pb2.Shelf(**expected_response)
         grpc_stub.GetShelf.return_value = expected_response
 
         response = client.get_shelf(name, options_)
@@ -123,7 +125,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         name = client.shelf_path('[SHELF_ID]')
@@ -140,13 +142,14 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock response
         next_page_token = ''
-        shelves_element = library_pb2.Shelf()
+        shelves_element = {}
         shelves = [shelves_element]
-        expected_response = library_pb2.ListShelvesResponse(next_page_token=next_page_token, shelves=shelves)
+        expected_response = {'next_page_token': next_page_token, 'shelves': shelves}
+        expected_response = library_pb2.ListShelvesResponse(**expected_response)
         grpc_stub.ListShelves.return_value = expected_response
 
         paged_list_response = client.list_shelves()
@@ -171,7 +174,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock exception response
         grpc_stub.ListShelves.side_effect = CustomException()
@@ -185,7 +188,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         name = client.shelf_path('[SHELF_ID]')
@@ -209,7 +212,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         name = client.shelf_path('[SHELF_ID]')
@@ -225,7 +228,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         name = client.shelf_path('[SHELF_ID]')
@@ -235,7 +238,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         name_2 = 'name2-1052831874'
         theme = 'theme110327241'
         internal_theme = 'internalTheme792518087'
-        expected_response = library_pb2.Shelf(name=name_2, theme=theme, internal_theme=internal_theme)
+        expected_response = {'name': name_2, 'theme': theme, 'internal_theme': internal_theme}
+        expected_response = library_pb2.Shelf(**expected_response)
         grpc_stub.MergeShelves.return_value = expected_response
 
         response = client.merge_shelves(name, other_shelf_name)
@@ -258,7 +262,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         name = client.shelf_path('[SHELF_ID]')
@@ -275,18 +279,19 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         name = client.shelf_path('[SHELF_ID]')
-        book = library_pb2.Book()
+        book = {}
 
         # Mock response
         name_2 = 'name2-1052831874'
         author = 'author-1406328437'
         title = 'title110371416'
         read = True
-        expected_response = library_pb2.Book(name=name_2, author=author, title=title, read=read)
+        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read}
+        expected_response = library_pb2.Book(**expected_response)
         grpc_stub.CreateBook.return_value = expected_response
 
         response = client.create_book(name, book)
@@ -309,11 +314,11 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         name = client.shelf_path('[SHELF_ID]')
-        book = library_pb2.Book()
+        book = {}
 
         # Mock exception response
         grpc_stub.CreateBook.side_effect = CustomException()
@@ -326,18 +331,19 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
-        shelf = library_pb2.Shelf()
+        shelf = {}
         books = []
         series_string = 'foobar'
-        series_uuid = library_pb2.SeriesUuid(series_string=series_string)
+        series_uuid = {'series_string': series_string}
 
         # Mock response
         book_names_element = 'bookNamesElement1491670575'
         book_names = [book_names_element]
-        expected_response = library_pb2.PublishSeriesResponse(book_names=book_names)
+        expected_response = {'book_names': book_names}
+        expected_response = library_pb2.PublishSeriesResponse(**expected_response)
         grpc_stub.PublishSeries.return_value = expected_response
 
         response = client.publish_series(shelf, books, series_uuid)
@@ -360,13 +366,13 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
-        shelf = library_pb2.Shelf()
+        shelf = {}
         books = []
         series_string = 'foobar'
-        series_uuid = library_pb2.SeriesUuid(series_string=series_string)
+        series_uuid = {'series_string': series_string}
 
         # Mock exception response
         grpc_stub.PublishSeries.side_effect = CustomException()
@@ -379,7 +385,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -389,7 +395,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         author = 'author-1406328437'
         title = 'title110371416'
         read = True
-        expected_response = library_pb2.Book(name=name_2, author=author, title=title, read=read)
+        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read}
+        expected_response = library_pb2.Book(**expected_response)
         grpc_stub.GetBook.return_value = expected_response
 
         response = client.get_book(name)
@@ -412,7 +419,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -428,16 +435,17 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         name = client.shelf_path('[SHELF_ID]')
 
         # Mock response
         next_page_token = ''
-        books_element = library_pb2.Book()
+        books_element = {}
         books = [books_element]
-        expected_response = library_pb2.ListBooksResponse(next_page_token=next_page_token, books=books)
+        expected_response = {'next_page_token': next_page_token, 'books': books}
+        expected_response = library_pb2.ListBooksResponse(**expected_response)
         grpc_stub.ListBooks.return_value = expected_response
 
         paged_list_response = client.list_books(name)
@@ -462,7 +470,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         name = client.shelf_path('[SHELF_ID]')
@@ -479,7 +487,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -503,7 +511,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -519,18 +527,19 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
-        book = library_pb2.Book()
+        book = {}
 
         # Mock response
         name_2 = 'name2-1052831874'
         author = 'author-1406328437'
         title = 'title110371416'
         read = True
-        expected_response = library_pb2.Book(name=name_2, author=author, title=title, read=read)
+        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read}
+        expected_response = library_pb2.Book(**expected_response)
         grpc_stub.UpdateBook.return_value = expected_response
 
         response = client.update_book(name, book)
@@ -553,11 +562,11 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
-        book = library_pb2.Book()
+        book = {}
 
         # Mock exception response
         grpc_stub.UpdateBook.side_effect = CustomException()
@@ -570,7 +579,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -581,7 +590,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         author = 'author-1406328437'
         title = 'title110371416'
         read = True
-        expected_response = library_pb2.Book(name=name_2, author=author, title=title, read=read)
+        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read}
+        expected_response = library_pb2.Book(**expected_response)
         grpc_stub.MoveBook.return_value = expected_response
 
         response = client.move_book(name, other_shelf_name)
@@ -604,7 +614,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -621,13 +631,14 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock response
         next_page_token = ''
         strings_element = 'stringsElement474465855'
         strings = [strings_element]
-        expected_response = library_pb2.ListStringsResponse(next_page_token=next_page_token, strings=strings)
+        expected_response = {'next_page_token': next_page_token, 'strings': strings}
+        expected_response = library_pb2.ListStringsResponse(**expected_response)
         grpc_stub.ListStrings.return_value = expected_response
 
         paged_list_response = client.list_strings()
@@ -652,7 +663,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock exception response
         grpc_stub.ListStrings.side_effect = CustomException()
@@ -666,14 +677,14 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
         comment = b'95'
         stage = enums.Comment.Stage.UNSET
         alignment = enums.SomeMessage2.SomeMessage3.Alignment.CHAR
-        comments_element = library_pb2.Comment(comment=comment, stage=stage, alignment=alignment)
+        comments_element = {'comment': comment, 'stage': stage, 'alignment': alignment}
         comments = [comments_element]
 
         client.add_comments(name, comments)
@@ -695,14 +706,14 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
         comment = b'95'
         stage = enums.Comment.Stage.UNSET
         alignment = enums.SomeMessage2.SomeMessage3.Alignment.CHAR
-        comments_element = library_pb2.Comment(comment=comment, stage=stage, alignment=alignment)
+        comments_element = {'comment': comment, 'stage': stage, 'alignment': alignment}
         comments = [comments_element]
 
         # Mock exception response
@@ -716,7 +727,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         name = client.archived_book_path('[ARCHIVE_PATH]', '[BOOK_ID]')
@@ -726,7 +737,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         author = 'author-1406328437'
         title = 'title110371416'
         read = True
-        expected_response = library_pb2.BookFromArchive(name=name_2, author=author, title=title, read=read)
+        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read}
+        expected_response = library_pb2.BookFromArchive(**expected_response)
         grpc_stub.GetBookFromArchive.return_value = expected_response
 
         response = client.get_book_from_archive(name)
@@ -749,7 +761,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         name = client.archived_book_path('[ARCHIVE_PATH]', '[BOOK_ID]')
@@ -765,7 +777,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -776,7 +788,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         author = 'author-1406328437'
         title = 'title110371416'
         read = True
-        expected_response = book_from_anywhere_pb2.BookFromAnywhere(name=name_2, author=author, title=title, read=read)
+        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read}
+        expected_response = book_from_anywhere_pb2.BookFromAnywhere(**expected_response)
         grpc_stub.GetBookFromAnywhere.return_value = expected_response
 
         response = client.get_book_from_anywhere(name, alt_book_name)
@@ -799,7 +812,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -816,7 +829,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -826,7 +839,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         author = 'author-1406328437'
         title = 'title110371416'
         read = True
-        expected_response = book_from_anywhere_pb2.BookFromAnywhere(name=name_2, author=author, title=title, read=read)
+        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read}
+        expected_response = book_from_anywhere_pb2.BookFromAnywhere(**expected_response)
         grpc_stub.GetBookFromAbsolutelyAnywhere.return_value = expected_response
 
         response = client.get_book_from_absolutely_anywhere(name)
@@ -849,7 +863,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -865,7 +879,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -892,7 +906,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -911,12 +925,13 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock response
-        shelves_element = library_pb2.Shelf()
+        shelves_element = {}
         shelves = [shelves_element]
-        expected_response = library_pb2.StreamShelvesResponse(shelves=shelves)
+        expected_response = {'shelves': shelves}
+        expected_response = library_pb2.StreamShelvesResponse(**expected_response)
         grpc_stub.StreamShelves.return_value = iter([expected_response])
 
         response = client.stream_shelves()
@@ -941,7 +956,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock exception response
         grpc_stub.StreamShelves.side_effect = CustomException()
@@ -954,7 +969,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         name = 'name3373707'
@@ -964,7 +979,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         author = 'author-1406328437'
         title = 'title110371416'
         read = True
-        expected_response = library_pb2.Book(name=name_2, author=author, title=title, read=read)
+        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read}
+        expected_response = library_pb2.Book(**expected_response)
         grpc_stub.StreamBooks.return_value = iter([expected_response])
 
         response = client.stream_books(name)
@@ -989,7 +1005,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         name = 'name3373707'
@@ -1005,17 +1021,18 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         name = 'name3373707'
-        request = library_pb2.DiscussBookRequest(name=name)
+        request = {'name': name}
         requests = [request]
 
         # Mock response
         user_name = 'userName339340927'
         comment = b'95'
-        expected_response = library_pb2.Comment(user_name=user_name, comment=comment)
+        expected_response = {'user_name': user_name, 'comment': comment}
+        expected_response = library_pb2.Comment(**expected_response)
         grpc_stub.DiscussBook.return_value = iter([expected_response])
 
         response = client.discuss_book(requests)
@@ -1040,11 +1057,11 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         name = 'name3373707'
-        request = library_pb2.DiscussBookRequest(name=name)
+        request = {'name': name}
         requests = [request]
 
         # Mock exception response
@@ -1058,17 +1075,18 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         name = 'name3373707'
-        request = library_pb2.DiscussBookRequest(name=name)
+        request = {'name': name}
         requests = [request]
 
         # Mock response
         user_name = 'userName339340927'
         comment = b'95'
-        expected_response = library_pb2.Comment(user_name=user_name, comment=comment)
+        expected_response = {'user_name': user_name, 'comment': comment}
+        expected_response = library_pb2.Comment(**expected_response)
         grpc_stub.MonologAboutBook.return_value = expected_response
 
         response = client.monolog_about_book(requests)
@@ -1091,11 +1109,11 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         name = 'name3373707'
-        request = library_pb2.DiscussBookRequest(name=name)
+        request = {'name': name}
         requests = [request]
 
         # Mock exception response
@@ -1109,7 +1127,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         names_element = 'namesElement-249113339'
@@ -1120,7 +1138,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         next_page_token = ''
         names_element_2 = 'namesElement21120252792'
         names_2 = [names_element_2]
-        expected_response = library_pb2.FindRelatedBooksResponse(next_page_token=next_page_token, names=names_2)
+        expected_response = {'next_page_token': next_page_token, 'names': names_2}
+        expected_response = library_pb2.FindRelatedBooksResponse(**expected_response)
         grpc_stub.FindRelatedBooks.return_value = expected_response
 
         paged_list_response = client.find_related_books(names, shelves)
@@ -1145,7 +1164,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         names_element = 'namesElement-249113339'
@@ -1164,14 +1183,15 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         resource = client.book_path('[SHELF_ID]', '[BOOK_ID]')
         tag = 'tag114586'
 
         # Mock response
-        expected_response = tagger_pb2.AddTagResponse()
+        expected_response = {}
+        expected_response = tagger_pb2.AddTagResponse(**expected_response)
         grpc_stub.AddTag.return_value = expected_response
 
         response = client.add_tag(resource, tag)
@@ -1194,7 +1214,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         resource = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -1211,14 +1231,15 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         resource = client.book_path('[SHELF_ID]', '[BOOK_ID]')
         label = 'label102727412'
 
         # Mock response
-        expected_response = tagger_pb2.AddLabelResponse()
+        expected_response = {}
+        expected_response = tagger_pb2.AddLabelResponse(**expected_response)
         grpc_stub.AddLabel.return_value = expected_response
 
         response = client.add_label(resource, label)
@@ -1241,7 +1262,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         resource = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -1258,7 +1279,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -1268,7 +1289,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         author = 'author-1406328437'
         title = 'title110371416'
         read = True
-        expected_response = library_pb2.Book(name=name_2, author=author, title=title, read=read)
+        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read}
+        expected_response = library_pb2.Book(**expected_response)
         operation = operations_pb2.Operation(name='operations/test_get_big_book', done=True)
         operation.response.Pack(expected_response)
         grpc_stub.GetBigBook.return_value = operation
@@ -1292,7 +1314,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -1312,13 +1334,14 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
 
         # Mock response
-        expected_response = empty_pb2.Empty()
+        expected_response = {}
+        expected_response = empty_pb2.Empty(**expected_response)
         operation = operations_pb2.Operation(name='operations/test_get_big_nothing', done=True)
         operation.response.Pack(expected_response)
         grpc_stub.GetBigNothing.return_value = operation
@@ -1342,7 +1365,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
@@ -1362,7 +1385,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         required_singular_int32 = -72313594
@@ -1373,7 +1396,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         required_singular_enum = enums.TestOptionalRequiredFlatteningParamsRequest.InnerEnum.ZERO
         required_singular_string = 'requiredSingularString-1949894503'
         required_singular_bytes = b'-29'
-        required_singular_message = library_pb2.TestOptionalRequiredFlatteningParamsRequest.InnerMessage()
+        required_singular_message = {}
         required_singular_resource_name = 'requiredSingularResourceName-1701575020'
         required_singular_resource_name_oneof = 'requiredSingularResourceNameOneof-25303726'
         required_singular_fixed32 = 720656715
@@ -1394,7 +1417,8 @@ class TestLibraryServiceClient(unittest.TestCase):
         required_map = {}
 
         # Mock response
-        expected_response = library_pb2.TestOptionalRequiredFlatteningParamsResponse()
+        expected_response = {}
+        expected_response = library_pb2.TestOptionalRequiredFlatteningParamsResponse(**expected_response)
         grpc_stub.TestOptionalRequiredFlatteningParams.return_value = expected_response
 
         response = client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, required_repeated_resource_name, required_repeated_resource_name_oneof, required_repeated_fixed32, required_repeated_fixed64, required_map)
@@ -1417,7 +1441,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = library_service_client.LibraryServiceClient()
+        client = library_v1.LibraryServiceClient()
 
         # Mock request
         required_singular_int32 = -72313594
@@ -1428,7 +1452,7 @@ class TestLibraryServiceClient(unittest.TestCase):
         required_singular_enum = enums.TestOptionalRequiredFlatteningParamsRequest.InnerEnum.ZERO
         required_singular_string = 'requiredSingularString-1949894503'
         required_singular_bytes = b'-29'
-        required_singular_message = library_pb2.TestOptionalRequiredFlatteningParamsRequest.InnerMessage()
+        required_singular_message = {}
         required_singular_resource_name = 'requiredSingularResourceName-1701575020'
         required_singular_resource_name_oneof = 'requiredSingularResourceNameOneof-25303726'
         required_singular_fixed32 = 720656715

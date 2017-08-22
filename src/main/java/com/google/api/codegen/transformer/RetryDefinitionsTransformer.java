@@ -17,7 +17,7 @@ package com.google.api.codegen.transformer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.RetryCodesDefinitionView;
 import com.google.api.codegen.viewmodel.RetryParamsDefinitionView;
-import com.google.api.gax.core.RetrySettings;
+import com.google.api.gax.retrying.RetrySettings;
 import com.google.common.collect.ImmutableSet;
 import io.grpc.Status.Code;
 import java.util.ArrayList;

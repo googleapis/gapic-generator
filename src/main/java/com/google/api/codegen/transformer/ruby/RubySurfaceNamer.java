@@ -21,6 +21,7 @@ import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
+import com.google.api.codegen.ruby.RubyUtil;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
@@ -210,6 +211,9 @@ public class RubySurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getFullyQualifiedCredentialsClassName() {
+    if (RubyUtil.isLongrunning(getPackageName())) {
+      return "Google::Gax::Credentials";
+    }
     return getTopLevelNamespace() + "::Credentials";
   }
 
@@ -267,6 +271,9 @@ public class RubySurfaceNamer extends SurfaceNamer {
   @Override
   public String getTopLevelAliasedApiClassName(
       GapicInterfaceConfig interfaceConfig, boolean packageHasMultipleServices) {
+    if (!RubyUtil.hasMajorVersion(getPackageName())) {
+      return getVersionAliasedApiClassName(interfaceConfig, packageHasMultipleServices);
+    }
     return packageHasMultipleServices
         ? getTopLevelNamespace() + "::" + getPackageServiceName(interfaceConfig.getInterface())
         : getTopLevelNamespace();
