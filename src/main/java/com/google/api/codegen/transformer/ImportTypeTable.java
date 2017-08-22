@@ -95,4 +95,7 @@ public interface ImportTypeTable extends TypeFormatter {
 
   /** Returns the imports accumulated so far. */
   Map<String, TypeAlias> getImports();
+
+  /** Returns the TypeNameConverter. */
+  TypeNameConverter getTypeNameConverter();
 }

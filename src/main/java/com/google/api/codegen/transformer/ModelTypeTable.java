@@ -260,4 +260,9 @@ public class ModelTypeTable implements ImportTypeTable, ModelTypeFormatter {
   public TypeTable getTypeTable() {
     return typeTable;
   }
+
+  @Override
+  public ModelTypeNameConverter getTypeNameConverter() {
+    return typeNameConverter;
+  }
 }

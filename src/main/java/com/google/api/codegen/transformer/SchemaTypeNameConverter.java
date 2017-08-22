@@ -14,15 +14,17 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypedValue;
+import com.google.api.tools.framework.model.EnumValue;
 
 /** SchemaTypeNameConverter maps Schema instances to TypeName instances. */
-public interface SchemaTypeNameConverter {
+public abstract class SchemaTypeNameConverter implements TypeNameConverter {
 
-  enum BoxingBehavior {
+  public enum BoxingBehavior {
     // Box primitive types, e.g. Boolean instead of boolean.
     BOX_PRIMITIVES,
 
@@ -31,46 +33,68 @@ public interface SchemaTypeNameConverter {
   }
 
   /** Provides a TypeName for the given Schema. */
-  TypeName getTypeName(Schema type);
+  public abstract TypeName getTypeName(Schema type);
 
   /** Provides a TypeName for the given Schema. */
-  TypeName getTypeName(Schema type, BoxingBehavior boxingBehavior);
-
-  /** Provides a TypeName for the given FieldConfig and resource short name. */
-  TypeName getTypeNameForTypedResourceName(FieldConfig fieldConfig, String typedResourceShortName);
-
-  /**
-   * Provides a TypeName for the given FieldConfig and resource short name, using the inner type if
-   * the underlying field is repeated.
-   */
-  TypeName getTypeNameForResourceNameElementType(
-      FieldConfig fieldConfig, String typedResourceShortName);
-
-  /** Provides a TypeName for the given short name, using the default package. */
-  TypeName getTypeNameInImplicitPackage(String shortName);
+  public abstract TypeName getTypeName(Schema type, BoxingBehavior boxingBehavior);
 
   /**
    * Provides a TypedValue containing the zero value of the given type, plus the TypeName of the
    * type; suitable for use within code snippets.
    */
-  TypedValue getSnippetZeroValue(Schema schema);
+  public abstract TypedValue getSnippetZeroValue(Schema schema);
 
   /**
    * Provides a TypedValue containing the zero value of the given type, plus the TypeName of the
    * type; suitable for use within code snippets.
    */
-  TypedValue getEnumValue(Schema schema, String value);
+  public abstract TypedValue getEnumValue(Schema schema, String value);
 
   /** Provides a TypeName for the element type of the given FieldType. */
-  TypeName getTypeNameForElementType(Schema type);
+  public abstract TypeName getTypeNameForElementType(Schema type);
 
   /**
    * Provides a TypedValue containing the zero value of the given type, for use internally within
    * the vkit layer; plus the TypeName of the type. This will often return the same value as {@link
    * #getSnippetZeroValue(Schema)}.
    */
-  TypedValue getImplZeroValue(Schema schema);
+  public abstract TypedValue getImplZeroValue(Schema schema);
 
   /** Renders the given value if it is a primitive type. */
-  String renderPrimitiveValue(Schema schema, String value);
+  public abstract String renderPrimitiveValue(Schema schema, String value);
+
+  @Override
+  public TypeName getTypeName(InterfaceModel interfaceModel) {
+    return new TypeName(interfaceModel.getFullName());
+  }
+
+  @Override
+  public TypeName getTypeName(FieldModel type) {
+    return getTypeName(type.getDiscoveryField());
+  }
+
+  @Override
+  public TypedValue getEnumValue(FieldModel type, EnumValue value) {
+    return TypedValue.create(getTypeName(type), "%s." + value.getSimpleName());
+  }
+
+  @Override
+  public TypeName getTypeNameForElementType(FieldModel type) {
+    return getTypeNameForElementType(type.getDiscoveryField());
+  }
+
+  @Override
+  public TypedValue getSnippetZeroValue(FieldModel type) {
+    return getSnippetZeroValue((type.getDiscoveryField()));
+  }
+
+  @Override
+  public TypedValue getImplZeroValue(FieldModel type) {
+    return getImplZeroValue((type.getDiscoveryField()));
+  }
+
+  @Override
+  public String renderPrimitiveValue(FieldModel type, String value) {
+    return renderPrimitiveValue(type.getDiscoveryField(), value);
+  }
 }
