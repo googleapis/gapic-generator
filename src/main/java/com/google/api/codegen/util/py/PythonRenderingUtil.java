@@ -39,14 +39,18 @@ public class PythonRenderingUtil {
   }
 
   public String sectionHeaderLine(String title) {
-    return title.replaceAll(".", "=");
+    return headerLine(title, '=');
   }
 
   public String subSectionHeaderLine(String title) {
-    return title.replaceAll(".", "-");
+    return headerLine(title, '-');
   }
 
   public String subSubSectionHeaderLine(String title) {
-    return title.replaceAll(".", "^");
+    return headerLine(title, '^');
+  }
+
+  private String headerLine(String title, char c) {
+    return title.replaceAll(".", String.valueOf(c));
   }
 }
