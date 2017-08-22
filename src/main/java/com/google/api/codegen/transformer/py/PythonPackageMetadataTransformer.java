@@ -31,6 +31,7 @@ import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PackageMetadataNamer;
 import com.google.api.codegen.transformer.PackageMetadataTransformer;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.TestCaseTransformer;
 import com.google.api.codegen.util.py.PythonTypeTable;
 import com.google.api.codegen.util.testing.PythonValueProducer;
@@ -92,12 +93,13 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
 
   @Override
   public List<ViewModel> transform(final Model model, final GapicProductConfig productConfig) {
-    String version = packageConfig.apiVersion();
+    SurfaceNamer surfaceNamer = new PythonSurfaceNamer(productConfig.getPackageName());
     List<ViewModel> metadata =
-        computeInitFiles(computePackages(productConfig.getPackageName()), version);
+        computeInitFiles(computePackages(productConfig.getPackageName()), surfaceNamer);
     PackageMetadataNamer namer = new PackageMetadataNamer();
     for (String templateFileName : getTopLevelTemplateFileNames()) {
-      metadata.add(generateMetadataView(model, productConfig, templateFileName, namer));
+      metadata.add(
+          generateMetadataView(model, productConfig, templateFileName, namer, surfaceNamer));
     }
     return metadata;
   }
@@ -130,7 +132,11 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
   }
 
   private ViewModel generateMetadataView(
-      Model model, GapicProductConfig productConfig, String template, PackageMetadataNamer namer) {
+      Model model,
+      GapicProductConfig productConfig,
+      String template,
+      PackageMetadataNamer metadataNamer,
+      SurfaceNamer surfaceNamer) {
     List<ApiMethodView> exampleMethods = generateExampleMethods(model, productConfig);
     String noLeadingPyDir = template.startsWith("py/") ? template.substring(3) : template;
     int extensionIndex = noLeadingPyDir.lastIndexOf(".");
@@ -138,8 +144,7 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
     computeModules(gapicProviders);
     return metadataTransformer
         .generateMetadataView(packageConfig, model, template, outputPath, TargetLanguage.PYTHON)
-        .namespacePackages(
-            computeNamespacePackages(productConfig.getPackageName(), packageConfig.apiVersion()))
+        .namespacePackages(computeNamespacePackages(productConfig.getPackageName(), surfaceNamer))
         .developmentStatus(
             surfaceNamer.getReleaseAnnotation(packageConfig.releaseLevel(TargetLanguage.PYTHON)))
         .apiModules(apiModules)
@@ -154,7 +159,8 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
                 .gapicPackageName("gapic-" + packageConfig.packageName(TargetLanguage.PYTHON))
                 .majorVersion(packageConfig.apiVersion())
                 .developmentStatusTitle(
-                    namer.getReleaseAnnotation(packageConfig.releaseLevel(TargetLanguage.PYTHON)))
+                    metadataNamer.getReleaseAnnotation(
+                        packageConfig.releaseLevel(TargetLanguage.PYTHON)))
                 .targetLanguage("Python")
                 .mainReadmeLink(GITHUB_REPO_HOST + MAIN_README_PATH)
                 .libraryDocumentationLink(
@@ -239,10 +245,10 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
     return packages;
   }
 
-  private List<String> computeNamespacePackages(String packageName, final String apiVersion) {
+  private List<String> computeNamespacePackages(String packageName, SurfaceNamer namer) {
     List<String> namespacePackages = new ArrayList<>();
     for (String subPackage : computePackages(packageName)) {
-      if (isNamespacePackage(subPackage, apiVersion)) {
+      if (isNamespacePackage(namer, subPackage)) {
         namespacePackages.add(subPackage);
       }
     }
@@ -250,9 +256,9 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
   }
 
   /** Set all packages to be namespace packages except for the version package (if present) */
-  private boolean isNamespacePackage(String packageName, String apiVersion) {
-    int lastDot = packageName.lastIndexOf(".");
-    return lastDot < 0 || !packageName.substring(lastDot + 1).equals(apiVersion);
+  private boolean isNamespacePackage(SurfaceNamer namer, String packageName) {
+    return !namer.getPackageName().equals(packageName)
+        && !namer.getVersionedDirectoryNamespace().equals(packageName);
   }
 
   /**
@@ -260,12 +266,14 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
    * package corresponds to exactly one __init__.py file, although the contents of that file depend
    * on whether the package is a namespace package.
    */
-  private List<ViewModel> computeInitFiles(List<String> packages, final String apiVersion) {
+  private List<ViewModel> computeInitFiles(List<String> packages, SurfaceNamer namer) {
     List<ViewModel> initFiles = new ArrayList<>();
     for (String packageName : packages) {
       final String template;
-      if (isNamespacePackage(packageName, apiVersion)) {
+      if (isNamespacePackage(namer, packageName)) {
         template = "py/namespace__init__.py.snip";
+      } else if (isVersionedDirectoryPackage(namer, packageName)) {
+        continue;
       } else {
         template = "py/__init__.py.snip";
       }
@@ -275,6 +283,10 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
           SimpleViewModel.create(SnippetSetRunner.SNIPPET_RESOURCE_ROOT, template, outputPath));
     }
     return initFiles;
+  }
+
+  private boolean isVersionedDirectoryPackage(SurfaceNamer namer, String packageName) {
+    return namer.getVersionedDirectoryNamespace().equals(packageName);
   }
 
   private GapicInterfaceContext createContext(

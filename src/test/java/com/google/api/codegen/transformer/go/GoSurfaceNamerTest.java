@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer.go;
 
+import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.util.Name;
 import com.google.common.truth.Truth;
 import org.junit.Test;
@@ -48,5 +49,26 @@ public class GoSurfaceNamerTest {
         .isEqualTo("CreateStuffOperation");
     Truth.assertThat(namer.getAndSaveOperationResponseTypeName("CreateStuffOperation"))
         .isEqualTo("CreateStuffOperationHandle");
+  }
+
+  @Test
+  public void testPutDocMethodName() {
+    GoSurfaceNamer namer = new GoSurfaceNamer("cloud.google.com/go/gopher/apiv1");
+    Truth.assertThat(namer.putDocMethodName("Create", "creates things", VisibilityConfig.PUBLIC))
+        .isEqualTo("Create creates things");
+    Truth.assertThat(namer.putDocMethodName("Create", "Creates things", VisibilityConfig.PUBLIC))
+        .isEqualTo("Create creates things");
+    Truth.assertThat(
+            namer.putDocMethodName(
+                "Create", "Create is used to create things", VisibilityConfig.PUBLIC))
+        .isEqualTo("Create is used to create things");
+    Truth.assertThat(
+            namer.putDocMethodName(
+                "Create", "creAte is used to create things", VisibilityConfig.PUBLIC))
+        .isEqualTo("Create is used to create things");
+    Truth.assertThat(
+            namer.putDocMethodName(
+                "CreateThing", "creatething is used to create things", VisibilityConfig.PUBLIC))
+        .isEqualTo("CreateThing is used to create things");
   }
 }

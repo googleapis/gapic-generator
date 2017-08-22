@@ -184,6 +184,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getTopLevelNamespace");
   }
 
+  /** The versioned namespace of an api. Example: google.cloud.vision_v1 */
+  public String getVersionedDirectoryNamespace() {
+    return getNotImplementedString("SurfaceNamer.getVersionedDirectoryNamespace");
+  }
+
   /** The modules of the package. */
   public ImmutableList<String> getApiModules() {
     return ImmutableList.<String>of();

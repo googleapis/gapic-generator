@@ -291,7 +291,6 @@
     @case "RequestObjectMethod"
       {@requestObjectMethod(apiMethod)}
     @case "CallableMethod"
-    # TODO create a GrpcStreaming ApiMethodType
       @if apiMethod.isStreaming
         {@streamingCallableMethod(apiMethod)}
       @else
@@ -455,7 +454,8 @@
     {@apiMethod.releaseLevelAnnotation}
 
   @end
-  {@apiMethod.visibility} final StreamingCallable<{@apiMethod.serviceRequestTypeName}, \
+  {@apiMethod.visibility} final {@apiMethod.callableMethod.interfaceTypeName}\
+      <{@apiMethod.serviceRequestTypeName}, \
       {@apiMethod.responseTypeName}> {@apiMethod.name}() {
     return stub.{@apiMethod.callableMethod.callableName}();
   }

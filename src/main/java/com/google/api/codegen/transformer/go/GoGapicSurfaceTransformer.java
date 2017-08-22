@@ -49,7 +49,7 @@ import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
 import com.google.api.codegen.viewmodel.StaticLangClientExampleFileView;
 import com.google.api.codegen.viewmodel.StaticLangClientFileView;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.api.gax.core.RetrySettings;
+import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
@@ -131,6 +131,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
 
     view.templateFileName(API_TEMPLATE_FILENAME);
     view.serviceDoc(serviceTransformer.generateServiceDoc(context, null));
+    view.domainLayerLocation(productConfig.getDomainLayerLocation());
     view.clientTypeName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
     view.clientConstructorName(namer.getApiWrapperClassConstructorName(apiInterface));
     view.defaultClientOptionFunctionName(namer.getDefaultApiSettingsFunctionName(apiInterface));
