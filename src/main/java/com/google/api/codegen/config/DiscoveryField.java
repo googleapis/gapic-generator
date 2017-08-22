@@ -72,11 +72,6 @@ public class DiscoveryField implements FieldModel {
   }
 
   @Override
-  public TypeName getTypeName(ImportTypeTable typeTable) {
-    return typeTable.getTypeNameConverter().getTypeName(this);
-  }
-
-  @Override
   public Name asName() {
     return Name.anyCamel(getSimpleName());
   }

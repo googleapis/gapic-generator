@@ -83,6 +83,12 @@ public interface FieldModel {
   /* @return if this is a primitive type. */
   boolean isPrimitive();
 
+  /* Get the description of the element scoped to the visibility as currently set in the model. */
+  String getScopedDocumentation();
+
+  /* @return the simple name of the Oneof (if it exists) associated with this model. */
+  Iterable<String> getOneofFieldsNames(SurfaceNamer surfaceNamer);
+
   // Functions that are specific to the source type.
 
   /* @return the TypeRef of the underlying protobuf Field, if it exists. */
@@ -91,14 +97,6 @@ public interface FieldModel {
   /* @return the underlying Schema, if it exists. */
   Schema getDiscoveryField();
 
-  /* Get the description of the element scoped to the visibility as currently set in the model. */
-  String getScopedDocumentation();
-
-  /* @return the simple name of the Oneof (if it exists) associated with this model. */
-  Iterable<String> getOneofFieldsNames(SurfaceNamer surfaceNamer);
-
   /* @return the type of this object, formatted as a String. */
   String getKind();
-
-  TypeName getTypeName(ImportTypeTable typeTable);
 }

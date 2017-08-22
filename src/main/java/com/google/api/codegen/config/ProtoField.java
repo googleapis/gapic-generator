@@ -117,11 +117,6 @@ public class ProtoField implements FieldModel {
   }
 
   @Override
-  public TypeName getTypeName(ImportTypeTable typeTable) {
-    return typeTable.getTypeNameConverter().getTypeName(this);
-  }
-
-  @Override
   public Cardinality getCardinality() {
     return protoField.getType().getCardinality();
   }
