@@ -43,6 +43,7 @@ public abstract class VersionIndexView implements ViewModel {
 
   public abstract String packageVersion();
 
+  @Nullable
   public abstract String toolkitVersion();
 
   @Nullable
@@ -62,6 +63,11 @@ public abstract class VersionIndexView implements ViewModel {
   @Nullable
   public abstract String versionFileBasePath();
 
+  @Nullable
+  public abstract String namespace();
+
+  public abstract boolean packageHasEnums();
+
   public boolean hasMultipleServices() {
     return requireViews().size() > 1;
   }
@@ -71,6 +77,7 @@ public abstract class VersionIndexView implements ViewModel {
     return new AutoValue_VersionIndexView.Builder()
         .apiVersion("v1")
         .isGcloud(false)
+        .packageHasEnums(false)
         .type(VersionIndexType.Unspecified);
   }
 
@@ -101,6 +108,10 @@ public abstract class VersionIndexView implements ViewModel {
     public abstract Builder type(VersionIndexType val);
 
     public abstract Builder versionFileBasePath(String val);
+
+    public abstract Builder namespace(String val);
+
+    public abstract Builder packageHasEnums(boolean val);
 
     public abstract VersionIndexView build();
   }
