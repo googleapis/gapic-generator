@@ -23,7 +23,6 @@ import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.discovery.Schema.Format;
 import com.google.api.codegen.discovery.Schema.Type;
 import com.google.api.codegen.transformer.ImportTypeTable;
-import com.google.api.codegen.transformer.SchemaTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
@@ -70,13 +69,6 @@ public class DiscoveryField implements FieldModel {
         .getTypeNameInImplicitPackage(
             surfaceNamer.publicClassName(Name.anyCamel(schema.getIdentifier())))
         .getFullName();
-  }
-
-  @Override
-  public TypeName getTypeName(ImportTypeTable typeTable) {
-    return typeTable
-        .getTypeTable()
-        .getTypeName(((SchemaTypeTable) typeTable).getFullNameFor(schema));
   }
 
   @Override
