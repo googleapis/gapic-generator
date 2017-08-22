@@ -393,7 +393,7 @@ public class MainGapicProviderFactory
             ViewModelGapicProvider.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
-                .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new PythonRenderingUtil()))
                 .setModelToViewTransformer(
                     new PythonPackageMetadataTransformer(
                         packageConfig, ImmutableList.copyOf(providers)))

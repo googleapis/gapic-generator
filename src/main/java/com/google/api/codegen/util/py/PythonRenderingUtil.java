@@ -37,4 +37,16 @@ public class PythonRenderingUtil {
   public List<String> getDocLines(String text) {
     return CommonRenderingUtil.getDocLines(text);
   }
+
+  public String sectionHeaderLine(String title) {
+    return title.replaceAll(".", "=");
+  }
+
+  public String subSectionHeaderLine(String title) {
+    return title.replaceAll(".", "-");
+  }
+
+  public String subSubSectionHeaderLine(String title) {
+    return title.replaceAll(".", "^");
+  }
 }

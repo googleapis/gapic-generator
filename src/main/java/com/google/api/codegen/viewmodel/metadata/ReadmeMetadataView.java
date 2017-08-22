@@ -17,7 +17,6 @@ package com.google.api.codegen.viewmodel.metadata;
 
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.auto.value.AutoValue;
-import com.google.common.primitives.Chars;
 import java.util.List;
 import javax.annotation.Nullable;
 
@@ -60,11 +59,6 @@ public abstract class ReadmeMetadataView implements VersionIndexModuleView {
 
   public String type() {
     return ReadmeMetadataView.class.getSimpleName();
-  }
-
-  // Used to make header lines in rst readmes.
-  public List<Character> characters(String str) {
-    return Chars.asList(str.toCharArray());
   }
 
   @AutoValue.Builder
