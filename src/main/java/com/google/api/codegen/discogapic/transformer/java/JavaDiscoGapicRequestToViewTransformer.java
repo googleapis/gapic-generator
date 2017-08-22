@@ -133,27 +133,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
         SchemaTransformationContext requestContext =
             SchemaTransformationContext.create(
                 method.getFullName(), context.getSchemaTypeTable(), context);
-        MethodConfig methodConfig = context.getMethodConfig(method);
-
-        List<RequestObjectParamView> params = new LinkedList<>();
-
-        // Generate the ResourceName methods.
-        if (methodConfig.isFlattening()) {
-          for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
-            MethodContext flattenedMethodContext =
-                context.asFlattenedMethodContext(method, flatteningGroup);
-            Iterable<FieldConfig> fieldConfigs =
-                flattenedMethodContext.getFlatteningConfig().getFlattenedFieldConfigs().values();
-            for (FieldConfig fieldConfig : fieldConfigs) {
-              if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
-                params.add(
-                    resourceObjectTransformer.generateRequestObjectParam(
-                        flattenedMethodContext, fieldConfig));
-              }
-            }
-          }
-        }
-
+        List<RequestObjectParamView> params = getRequestObjectParams(context, method);
         StaticLangApiMessageView requestView = generateRequestClass(requestContext, method, params);
         surfaceRequests.add(generateRequestFile(requestContext, requestView));
       }
@@ -167,6 +147,32 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
           }
         });
     return surfaceRequests;
+  }
+
+  private List<RequestObjectParamView> getRequestObjectParams(
+      DiscoGapicInterfaceContext context, MethodModel method) {
+    MethodConfig methodConfig = context.getMethodConfig(method);
+
+    List<RequestObjectParamView> params = new LinkedList<>();
+
+    // Generate the ResourceName methods.
+    if (methodConfig.isFlattening()) {
+      for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
+        MethodContext flattenedMethodContext =
+            context.asFlattenedMethodContext(method, flatteningGroup);
+        Iterable<FieldConfig> fieldConfigs =
+            flattenedMethodContext.getFlatteningConfig().getFlattenedFieldConfigs().values();
+        for (FieldConfig fieldConfig : fieldConfigs) {
+          if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
+            params.add(
+                resourceObjectTransformer.generateRequestObjectParam(
+                    flattenedMethodContext, fieldConfig));
+          }
+        }
+      }
+    }
+
+    return params;
   }
 
   /* Given a message view, creates a top-level message file view. */
