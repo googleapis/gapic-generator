@@ -5004,6 +5004,9 @@ import com.google.api.gax.core.GoogleCredentialsProvider;
 import com.google.api.gax.core.InstantiatingExecutorProvider;
 import com.google.api.gax.core.PropertiesProvider;
 import com.google.api.gax.httpjson.HttpJsonStatusCode;
+import com.google.api.gax.httpjson.HttpJsonTransport;
+import com.google.api.gax.httpjson.HttpJsonTransportProvider;
+import com.google.api.gax.httpjson.InstantiatingHttpJsonChannelProvider;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.gax.rpc.ApiCallContext;
 import com.google.api.gax.rpc.ClientContext;
@@ -5116,7 +5119,7 @@ public class AddressAdminSettings extends ClientSettings {
 
 
   public AddressAdminStub createStub() throws IOException {
-    if (getTransportProvider().getTransportName().equals(GrpcTransport.getGrpcTransportName())) {
+    if (getTransportProvider().getTransportName().equals(HttpJsonTransport.getHttpJsonTransportName())) {
       return HttpAddressAdminStub.create(this);
     } else {
       throw new UnsupportedOperationException(
@@ -5157,20 +5160,20 @@ public class AddressAdminSettings extends ClientSettings {
   }
 
   /** Returns a builder for the default ChannelProvider for this service. */
-  public static InstantiatingChannelProvider.Builder defaultGrpcChannelProviderBuilder() {
-    return InstantiatingChannelProvider.newBuilder()
+  public static InstantiatingHttpJsonChannelProvider.Builder defaultHttpJsonChannelProviderBuilder() {
+    return InstantiatingHttpJsonChannelProvider.newBuilder()
         .setEndpoint(getDefaultEndpoint())
         .setGeneratorHeader(DEFAULT_GAPIC_NAME, getGapicVersion());
   }
 
   /** Returns a builder for the default ChannelProvider for this service. */
-  public static GrpcTransportProvider.Builder defaultGrpcTransportProviderBuilder() {
-    return GrpcTransportProvider.newBuilder()
-        .setChannelProvider(defaultGrpcChannelProviderBuilder().build());
+  public static HttpJsonTransportProvider.Builder defaultHttpJsonTransportProviderBuilder() {
+    return HttpJsonTransportProvider.newBuilder()
+        .setChannelProvider(defaultHttpJsonChannelProviderBuilder().build());
   }
 
   public static TransportProvider defaultTransportProvider() {
-    return defaultGrpcTransportProviderBuilder().build();
+    return defaultHttpJsonTransportProviderBuilder().build();
   }
 
   private static String getGapicVersion() {

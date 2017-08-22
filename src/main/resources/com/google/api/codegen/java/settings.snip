@@ -18,7 +18,12 @@
 @private renderClass(classView)
   public class {@classView.name} extends ClientSettings {
     {@constants(classView)}
-    {@members(classView)}
+    @switch classView.transportProtocol
+      @case "GRPC"
+        {@members(classView, "Grpc")}
+      @case "HTTP"
+        {@members(classView, "HttpJson")}
+    @end
     {@constructors(classView)}
     {@descriptors(classView)}
     {@innerBuilderClass(classView)}
@@ -80,12 +85,12 @@
   {@""}
 @end
 
-@private members(xsettingsClass)
+@private members(xsettingsClass, transportProtocol)
   {@methodMembers(xsettingsClass)}
   {@methodGetters(xsettingsClass)}
 
   public {@xsettingsClass.stubInterfaceName} createStub() throws IOException {
-    if (getTransportProvider().getTransportName().equals(GrpcTransport.getGrpcTransportName())) {
+    if (getTransportProvider().getTransportName().equals({@transportProtocol}Transport.get{@transportProtocol}TransportName())) {
       return {@xsettingsClass.rpcStubClassName}.create(this);
     } else {
       throw new UnsupportedOperationException(
@@ -132,8 +137,14 @@
   }
 
   /** Returns a builder for the default ChannelProvider for this service. */
-  public static InstantiatingChannelProvider.Builder defaultGrpcChannelProviderBuilder() {
-    return InstantiatingChannelProvider.newBuilder()
+  @switch xsettingsClass.transportProtocol
+  @case "GRPC"
+    public static InstantiatingChannelProvider.Builder default{@transportProtocol}ChannelProviderBuilder() {
+      return InstantiatingChannelProvider.newBuilder()
+  @case "HTTP"
+    public static InstantiatingHttpJsonChannelProvider.Builder default{@transportProtocol}ChannelProviderBuilder() {
+      return InstantiatingHttpJsonChannelProvider.newBuilder()
+  @end
         @if xsettingsClass.hasDefaultServiceAddress
             .setEndpoint(getDefaultEndpoint())
         @end
@@ -142,13 +153,13 @@
 
   @if xsettingsClass.hasDefaultServiceAddress
     /** Returns a builder for the default ChannelProvider for this service. */
-    public static GrpcTransportProvider.Builder defaultGrpcTransportProviderBuilder() {
-      return GrpcTransportProvider.newBuilder()
-          .setChannelProvider(defaultGrpcChannelProviderBuilder().build());
+    public static {@transportProtocol}TransportProvider.Builder default{@transportProtocol}TransportProviderBuilder() {
+      return {@transportProtocol}TransportProvider.newBuilder()
+          .setChannelProvider(default{@transportProtocol}ChannelProviderBuilder().build());
     }
 
     public static TransportProvider defaultTransportProvider() {
-      return defaultGrpcTransportProviderBuilder().build();
+      return default{@transportProtocol}TransportProviderBuilder().build();
     }
   @end
 
