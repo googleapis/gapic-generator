@@ -32,6 +32,7 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.py.PythonCommentReformatter;
+import com.google.api.codegen.util.py.PythonDocstringUtil;
 import com.google.api.codegen.util.py.PythonNameFormatter;
 import com.google.api.codegen.util.py.PythonTypeTable;
 import com.google.api.tools.framework.model.EnumType;
@@ -179,22 +180,24 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   private String getParamTypeNameForElementType(ModelTypeTable typeTable, TypeRef type) {
     String typeName = getModelTypeFormatter().getFullNameForElementType(type);
 
+    if (type.isMessage() || type.isEnum()) {
+      typeName = PythonDocstringUtil.napoleonType(typeName, typeTable);
+    }
+
     if (type.isMessage()) {
-      return "Union[dict|:class:`" + typeName + "`]";
+      return "Union[dict|" + typeName + "]";
     }
 
     if (type.isEnum()) {
-      String nickname = typeTable.cloneEmpty().getAndSaveNicknameFor(typeName);
-      return "~." + nickname;
+      return typeName;
     }
-
     return typeName;
   }
 
   private String getResponseTypeNameForElementType(ModelTypeTable typeTable, TypeRef type) {
     if (type.isMessage()) {
       String typeName = getModelTypeFormatter().getFullNameForElementType(type);
-      return ":class:`" + typeName + "`";
+      return PythonDocstringUtil.napoleonType(typeName, typeTable);
     }
 
     return getParamTypeNameForElementType(typeTable, type);
@@ -263,7 +266,8 @@ public class PythonSurfaceNamer extends SurfaceNamer {
         methodConfig.isLongRunningOperation()
             ? "google.gax._OperationFuture"
             : getModelTypeFormatter().getFullNameFor(outputType);
-    String classInfo = ":class:`" + returnTypeName + "`";
+    String classInfo =
+        PythonDocstringUtil.napoleonType(returnTypeName, context.getModelTypeTable());
 
     if (methodConfig.getMethod().getResponseStreaming()) {
       return ImmutableList.of("Iterable[" + classInfo + "].");
@@ -272,12 +276,12 @@ public class PythonSurfaceNamer extends SurfaceNamer {
     if (methodConfig.isPageStreaming()) {
       TypeRef resourceType = methodConfig.getPageStreaming().getResourcesField().getType();
       return ImmutableList.of(
-          "A :class:`google.gax.PageIterator` instance. By default, this",
+          "A ~.google.gax.PageIterator instance. By default, this",
           "is an iterable of "
               + getResponseTypeNameForElementType(context.getModelTypeTable(), resourceType)
               + " instances.",
           "This object can also be configured to iterate over the pages",
-          "of the response through the `CallOptions` parameter.");
+          "of the response through the `options` parameter.");
     }
 
     return ImmutableList.of("A " + classInfo + " instance.");

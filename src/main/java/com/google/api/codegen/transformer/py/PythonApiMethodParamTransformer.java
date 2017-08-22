@@ -19,6 +19,7 @@ import com.google.api.codegen.transformer.ApiMethodParamTransformer;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.py.PythonDocstringUtil;
 import com.google.api.codegen.viewmodel.DynamicLangDefaultableParamView;
 import com.google.api.codegen.viewmodel.ParamDocView;
 import com.google.api.codegen.viewmodel.SimpleParamDocView;
@@ -84,11 +85,16 @@ public class PythonApiMethodParamTransformer implements ApiMethodParamTransforme
   private ParamDocView generateRequestStreamingParamDoc(GapicMethodContext context) {
     SimpleParamDocView.Builder paramDoc = SimpleParamDocView.newBuilder();
     paramDoc.paramName(context.getNamer().localVarName(Name.from("requests")));
-    paramDoc.lines(ImmutableList.of("The input objects."));
+    TypeRef inputType = context.getMethod().getInputType();
+    String requestTypeName = context.getTypeTable().getFullNameFor(inputType);
+    paramDoc.lines(
+        ImmutableList.of(
+            "The input objects. If a dict is provided, it must be of the",
+            String.format(
+                "same form as the protobuf message %s",
+                PythonDocstringUtil.napoleonType(requestTypeName, context.getTypeTable()))));
 
-    String requestTypeName =
-        context.getTypeTable().getFullNameFor(context.getMethod().getInputType());
-    paramDoc.typeName("iterator[:class:`" + requestTypeName + "`]");
+    paramDoc.typeName("iterator[dict|" + requestTypeName + "]");
     return paramDoc.build();
   }
 
@@ -130,7 +136,9 @@ public class PythonApiMethodParamTransformer implements ApiMethodParamTransforme
           }
           docLines.add(
               "If a dict is provided, it must be of the same form as the protobuf",
-              String.format("message :class:`%s`", messageType));
+              String.format(
+                  "message %s",
+                  PythonDocstringUtil.napoleonType(messageType, context.getTypeTable())));
         }
       }
       paramDoc.lines(docLines.build());
@@ -153,7 +161,7 @@ public class PythonApiMethodParamTransformer implements ApiMethodParamTransforme
   private ParamDocView generateOptionsParamDoc() {
     SimpleParamDocView.Builder paramDoc = SimpleParamDocView.newBuilder();
     paramDoc.paramName("options");
-    paramDoc.typeName(":class:`google.gax.CallOptions`");
+    paramDoc.typeName("~.google.gax.CallOptions");
     paramDoc.lines(
         ImmutableList.of(
             "Overrides the default", "settings for this call, e.g, timeout, retries etc."));
