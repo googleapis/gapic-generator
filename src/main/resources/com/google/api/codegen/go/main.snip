@@ -90,7 +90,7 @@
                 {@stub.name}: {@stub.createStubFunctionName}(conn),
             @end
         }
-        c.SetGoogleClientInfo()
+        c.{@setClientInfoFunc(view)}()
         @if view.hasLongRunningOperations
 
             c.LROClient, err = lroauto.NewOperationsClient(ctx, option.WithGRPCConn(conn))
@@ -118,10 +118,10 @@
         return c.conn.Close()
     }
 
-    // SetGoogleClientInfo sets the name and version of the application in
+    // {@setClientInfoFunc(view)} sets the name and version of the application in
     // the `x-goog-api-client` header passed on each request. Intended for
     // use by Google-written clients.
-    func (c *{@view.clientTypeName}) SetGoogleClientInfo(keyval ...string) {
+    func (c *{@view.clientTypeName}) {@setClientInfoFunc(view)}(keyval ...string) {
         kv := append([]string{"gl-go", version.Go()}, keyval...)
         kv = append(kv, "gapic", version.Repo, "gax", gax.Version, "grpc", grpc.Version)
         c.xGoogHeader = []string{gax.XGoogHeader(kv...)}
@@ -461,4 +461,12 @@
 
 @private mergeOptions(getterName)
     append(c.CallOptions.{@getterName}[0:len(c.CallOptions.{@getterName}):len(c.CallOptions.{@getterName})], opts...)
+@end
+
+@private setClientInfoFunc(view)
+    @if view.domainLayerLocation
+        SetGoogleClientInfo
+    @else
+        setGoogleClientInfo
+    @end
 @end
