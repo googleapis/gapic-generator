@@ -20,13 +20,12 @@ import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYP
 
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.transformer.ImportTypeTable;
-import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.ModelTypeNameConverter;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Field;
-import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
@@ -113,18 +112,13 @@ public class ProtoField implements FieldModel {
 
   @Override
   public TypeName getParentTypeName(ImportTypeTable typeTable) {
-    return typeTable
-        .getTypeTable()
-        .getTypeName(
-            ((ModelTypeTable) typeTable)
-                .getFullNameFor(TypeRef.of((MessageType) protoField.getParent())));
+    return ((ModelTypeNameConverter) typeTable.getTypeNameConverter())
+        .getTypeName(protoField.getParent());
   }
 
   @Override
   public TypeName getTypeName(ImportTypeTable typeTable) {
-    return typeTable
-        .getTypeTable()
-        .getTypeName(((ModelTypeTable) typeTable).getFullNameFor(protoField));
+    return typeTable.getTypeNameConverter().getTypeName(this);
   }
 
   @Override
