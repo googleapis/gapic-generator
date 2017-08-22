@@ -19,7 +19,6 @@ import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
-import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.ProductServiceConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
@@ -188,9 +187,8 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
       if (call.type() == ApiCallableImplType.SimpleApiCallable
           || call.type() == ApiCallableImplType.BatchingApiCallable
           || call.type() == ApiCallableImplType.InitialOperationApiCallable
-          || (call.type() == ApiCallableImplType.StreamingApiCallable
-              && (call.grpcStreamingType() == GrpcStreamingType.BidiStreaming
-                  || call.grpcStreamingType() == GrpcStreamingType.ServerStreaming))) {
+          || call.type() == ApiCallableImplType.BidiStreamingApiCallable
+          || call.type() == ApiCallableImplType.ServerStreamingApiCallable) {
         callables.add(call);
       }
     }

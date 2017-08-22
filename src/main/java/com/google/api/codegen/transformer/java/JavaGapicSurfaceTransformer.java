@@ -22,6 +22,7 @@ import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.GrpcStreamingConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProductServiceConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
@@ -684,8 +685,17 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("javax.annotation.Generated");
 
     GapicInterfaceConfig interfaceConfig = context.getInterfaceConfig();
-    if (interfaceConfig.hasGrpcStreamingMethods()) {
-      typeTable.saveNicknameFor("com.google.api.gax.rpc.StreamingCallable");
+    if (interfaceConfig.hasGrpcStreamingMethods(
+        GrpcStreamingConfig.GrpcStreamingType.BidiStreaming)) {
+      typeTable.saveNicknameFor("com.google.api.gax.rpc.BidiStreamingCallable");
+    }
+    if (interfaceConfig.hasGrpcStreamingMethods(
+        GrpcStreamingConfig.GrpcStreamingType.ServerStreaming)) {
+      typeTable.saveNicknameFor("com.google.api.gax.rpc.ServerStreamingCallable");
+    }
+    if (interfaceConfig.hasGrpcStreamingMethods(
+        GrpcStreamingConfig.GrpcStreamingType.ClientStreaming)) {
+      typeTable.saveNicknameFor("com.google.api.gax.rpc.ClientStreamingCallable");
     }
     if (interfaceConfig.hasLongRunningOperations()) {
       typeTable.saveNicknameFor("com.google.longrunning.Operation");
@@ -768,7 +778,21 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
         apiMethods.add(
             apiMethodTransformer.generateUnpagedListCallableMethod(requestMethodContext));
       } else if (methodConfig.isGrpcStreaming()) {
-        context.getModelTypeTable().saveNicknameFor("com.google.api.gax.rpc.StreamingCallable");
+        ModelTypeTable typeTable = context.getModelTypeTable();
+        switch (methodConfig.getGrpcStreamingType()) {
+          case BidiStreaming:
+            typeTable.saveNicknameFor("com.google.api.gax.rpc.BidiStreamingCallable");
+            break;
+          case ClientStreaming:
+            typeTable.saveNicknameFor("com.google.api.gax.rpc.ClientStreamingCallable");
+            break;
+          case ServerStreaming:
+            typeTable.saveNicknameFor("com.google.api.gax.rpc.ServerStreamingCallable");
+            break;
+          default:
+            throw new IllegalArgumentException(
+                "Invalid streaming type: " + methodConfig.getGrpcStreamingType());
+        }
         apiMethods.add(apiMethodTransformer.generateCallableMethod(requestMethodContext));
       } else if (methodConfig.isLongRunningOperation()) {
         context.getModelTypeTable().saveNicknameFor("com.google.api.gax.rpc.OperationCallable");

@@ -20,9 +20,9 @@ import unittest
 
 from google.gax import errors
 
-from example import no_templates_api_service_client
 from google.cloud.proto.example.v1 import no_path_templates_pb2
 from google.protobuf import empty_pb2
+import example
 
 
 class CustomException(Exception):
@@ -37,7 +37,7 @@ class TestNoTemplatesAPIServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = no_templates_api_service_client.NoTemplatesAPIServiceClient()
+        client = example.NoTemplatesAPIServiceClient()
 
         client.increment()
 
@@ -58,7 +58,7 @@ class TestNoTemplatesAPIServiceClient(unittest.TestCase):
         grpc_stub = mock.Mock()
         mock_create_stub.return_value = grpc_stub
 
-        client = no_templates_api_service_client.NoTemplatesAPIServiceClient()
+        client = example.NoTemplatesAPIServiceClient()
 
         # Mock exception response
         grpc_stub.Increment.side_effect = CustomException()
