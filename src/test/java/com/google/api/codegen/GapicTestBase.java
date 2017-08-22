@@ -27,6 +27,7 @@ import com.google.api.tools.framework.model.stages.Merged;
 import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -35,46 +36,36 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.TreeMap;
 import javax.annotation.Nullable;
 
 /** Base class for code generator baseline tests. */
-public abstract class GapicTestBase extends ConfigBaselineTestCase {
-
-  // example: library[ruby_message]
-  // example 2: library[java_package-info]
-  private static final Pattern BASELINE_PATTERN = Pattern.compile("((?:-|\\w)+)\\[((?:-|\\w)+)\\]");
-
+public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
   // Wiring
   // ======
 
-  private final String name;
   private final String idForFactory;
   private final String[] gapicConfigFileNames;
   @Nullable private final String packageConfigFileName;
-  private final String snippetName;
+  private final ImmutableList<String> snippetNames;
   protected ConfigProto gapicConfig;
   protected PackageMetadataConfig packageConfig;
+  private final String baselineFile;
 
-  public GapicTestBase(
-      String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
-    this(name, idForFactory, gapicConfigFileNames, null, snippetName);
-  }
-
-  public GapicTestBase(
-      String name,
+  public GapicTestBase2(
       String idForFactory,
       String[] gapicConfigFileNames,
       String packageConfigFileName,
-      String snippetName) {
-    this.name = name;
+      List<String> snippetNames,
+      String baselineFile) {
     this.idForFactory = idForFactory;
     this.gapicConfigFileNames = gapicConfigFileNames;
     this.packageConfigFileName = packageConfigFileName;
-    this.snippetName = snippetName;
+    this.snippetNames = ImmutableList.copyOf(snippetNames);
+    this.baselineFile = baselineFile;
   }
 
   @Override
@@ -113,26 +104,18 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
     return true;
   }
 
-  @Override
-  protected String baselineFileName() {
-    String methodName = testName.getMethodName();
-    Matcher m = BASELINE_PATTERN.matcher(methodName);
-    if (m.find()) {
-      return m.group(2) + "_" + m.group(1) + ".baseline";
-    } else {
-      return name + "_" + methodName + ".baseline";
-    }
-  }
-
   /**
-   * Creates the constructor arguments to be passed onto this class (GapicTestBase) to create test
+   * Creates the constructor arguments to be passed onto this class (GapicTestBase2) to create test
    * methods. The idForFactory String is passed to GapicProviderFactory to get the GapicProviders
    * provided by that id, and then the snippet file names are scraped from those providers, and a
    * set of arguments is created for each combination of GapicProvider x snippet that
    * GapicProviderFactory returns.
    */
-  public static List<Object[]> createTestedConfigs(
-      String idForFactory, String[] gapicConfigFileNames, String packageConfigFileName) {
+  public static Object[] createTestConfig(
+      String idForFactory,
+      String[] gapicConfigFileNames,
+      String packageConfigFileName,
+      String apiName) {
     Model model = Model.create(Service.getDefaultInstance());
     GapicProductConfig productConfig = GapicProductConfig.createDummyInstance();
     PackageMetadataConfig packageConfig = PackageMetadataConfig.createDummyPackageMetadataConfig();
@@ -145,27 +128,22 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
     List<GapicProvider<? extends Object>> providers =
         MainGapicProviderFactory.defaultCreate(
             model, productConfig, generatorConfig, packageConfig, "");
-    List<Object[]> testArgs = new ArrayList<>();
+
+    List<String> snippetNames = new ArrayList<>();
     for (GapicProvider<? extends Object> provider : providers) {
-      for (String snippetFileName : provider.getSnippetFileNames()) {
-        String fileNamePath = snippetFileName.split("\\.")[0];
-        String fileName =
-            fileNamePath.indexOf("/") > 0
-                ? fileNamePath.split("/", 2)[1].replace("/", "_")
-                : fileNamePath;
-        String id = idForFactory + "_" + fileName;
-        testArgs.add(
-            new Object[] {
-              id, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetFileName
-            });
-      }
+      snippetNames.addAll(provider.getSnippetFileNames());
     }
-    return testArgs;
+
+    String baseline = idForFactory + "_" + apiName + ".baseline";
+
+    return new Object[] {
+      idForFactory, gapicConfigFileNames, packageConfigFileName, snippetNames, apiName, baseline
+    };
   }
 
-  public static List<Object[]> createTestedConfigs(
-      String idForFactory, String[] gapicConfigFileNames) {
-    return createTestedConfigs(idForFactory, gapicConfigFileNames, null);
+  @Override
+  protected String baselineFileName() {
+    return baselineFile;
   }
 
   @Override
@@ -186,7 +164,7 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
       return null;
     }
 
-    List<String> enabledArtifacts = Arrays.asList();
+    List<String> enabledArtifacts = Collections.emptyList();
     if (hasSmokeTestConfig(productConfig)) {
       enabledArtifacts = Arrays.asList("surface", "test", "sample_app");
     }
@@ -199,34 +177,33 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
     List<GapicProvider<? extends Object>> providers =
         MainGapicProviderFactory.defaultCreate(
             model, productConfig, generatorConfig, packageConfig, "");
-    GapicProvider<? extends Object> testedProvider = null;
+
+    List<String> disabledGen = new ArrayList<>(snippetNames);
     for (GapicProvider<? extends Object> provider : providers) {
-      for (String snippetFileName : provider.getSnippetFileNames()) {
-        if (snippetFileName.equals(snippetName)) {
-          testedProvider = provider;
-          break;
-        }
-      }
-      if (testedProvider != null) {
-        break;
-      }
+      disabledGen.removeAll(provider.getSnippetFileNames());
+    }
+    for (String gen : disabledGen) {
+      testOutput().printf("%s generation is not enabled for this test case.\n", gen);
     }
 
-    if (testedProvider != null) {
-      Map<String, Doc> output = testedProvider.generate(snippetName);
+    boolean reportDiag = false;
+    Map<String, Doc> output = new TreeMap<>();
+    for (GapicProvider<? extends Object> provider : providers) {
+      Map<String, Doc> out = provider.generate();
       if (output == null) {
-        // Report diagnosis to baseline file.
-        for (Diag diag : model.getDiagCollector().getDiags()) {
-          testOutput().println(diag.toString());
-        }
+        reportDiag = true;
+      } else {
+        output.putAll(out);
       }
-
-      return output;
-    } else {
-      testOutput().printf("%s generation is not enabled for this test case.\n", snippetName);
     }
 
-    return null;
+    if (reportDiag) {
+      for (Diag diag : model.getDiagCollector().getDiags()) {
+        testOutput().println(diag.toString());
+      }
+    }
+
+    return output;
   }
 
   private static boolean hasSmokeTestConfig(GapicProductConfig productConfig) {
