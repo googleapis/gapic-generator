@@ -14,10 +14,10 @@
  */
 package com.google.api.codegen.viewmodel;
 
-import com.google.api.gax.core.RetrySettings.Builder;
+import com.google.api.gax.retrying.RetrySettings.Builder;
 import com.google.auto.value.AutoValue;
 import javax.annotation.Nullable;
-import org.joda.time.Duration;
+import org.threeten.bp.Duration;
 
 @AutoValue
 public abstract class RetryParamsDefinitionView {
