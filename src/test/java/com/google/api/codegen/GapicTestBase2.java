@@ -36,7 +36,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -164,9 +163,9 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
       return null;
     }
 
-    List<String> enabledArtifacts = Collections.emptyList();
+    List<String> enabledArtifacts = new ArrayList<>();
     if (hasSmokeTestConfig(productConfig)) {
-      enabledArtifacts = Arrays.asList("surface", "test", "sample_app");
+      enabledArtifacts.addAll(Arrays.asList("surface", "test", "sample_app"));
     }
 
     GapicGeneratorConfig generatorConfig =
