@@ -509,13 +509,13 @@
     RetrySettings settings = null;
     @join retryParamsDef : xsettingsClass.retryParamsDefinitions
       settings = RetrySettings.newBuilder()
-          .setInitialRetryDelay(Duration.ofMillis({@retryParamsDef.initialRetryDelay.getMillis}L))
+          .setInitialRetryDelay(Duration.ofMillis({@retryParamsDef.initialRetryDelay.toMillis}L))
           .setRetryDelayMultiplier({@retryParamsDef.retryDelayMultiplier})
-          .setMaxRetryDelay(Duration.ofMillis({@retryParamsDef.maxRetryDelay.getMillis}L))
-          .setInitialRpcTimeout(Duration.ofMillis({@retryParamsDef.initialRpcTimeout.getMillis}L))
+          .setMaxRetryDelay(Duration.ofMillis({@retryParamsDef.maxRetryDelay.toMillis}L))
+          .setInitialRpcTimeout(Duration.ofMillis({@retryParamsDef.initialRpcTimeout.toMillis}L))
           .setRpcTimeoutMultiplier({@retryParamsDef.rpcTimeoutMultiplier})
-          .setMaxRpcTimeout(Duration.ofMillis({@retryParamsDef.maxRpcTimeout.getMillis}L))
-          .setTotalTimeout(Duration.ofMillis({@retryParamsDef.totalTimeout.getMillis}L))
+          .setMaxRpcTimeout(Duration.ofMillis({@retryParamsDef.maxRpcTimeout.toMillis}L))
+          .setTotalTimeout(Duration.ofMillis({@retryParamsDef.totalTimeout.toMillis}L))
           .build();
       definitions.put("{@retryParamsDef.key}", settings);
     @end
