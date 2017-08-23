@@ -35,6 +35,7 @@ public class RubyCodeGeneratorTest {
         String snippetName) {
       super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
       getTestDataLocator().addTestDataSource(getClass(), "ruby");
+      getTestDataLocator().addTestDataSource(getClass(), "testdata/ruby");
     }
 
     /**
@@ -69,6 +70,7 @@ public class RubyCodeGeneratorTest {
         String snippetName) {
       super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
       getTestDataLocator().addTestDataSource(getClass(), "ruby");
+      getTestDataLocator().addTestDataSource(getClass(), "testdata/ruby");
     }
 
     /**
@@ -103,6 +105,7 @@ public class RubyCodeGeneratorTest {
         String snippetName) {
       super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
       getTestDataLocator().addTestDataSource(getClass(), "ruby");
+      getTestDataLocator().addTestDataSource(getClass(), "testdata/ruby");
     }
 
     /**
@@ -137,6 +140,7 @@ public class RubyCodeGeneratorTest {
         String snippetName) {
       super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
       getTestDataLocator().addTestDataSource(getClass(), "ruby");
+      getTestDataLocator().addTestDataSource(getClass(), "testdata/ruby");
     }
 
     /**

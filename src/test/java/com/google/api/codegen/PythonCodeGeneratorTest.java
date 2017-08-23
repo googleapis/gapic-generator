@@ -35,6 +35,7 @@ public class PythonCodeGeneratorTest {
         String snippetName) {
       super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
       getTestDataLocator().addTestDataSource(getClass(), "py");
+      getTestDataLocator().addTestDataSource(getClass(), "testdata/py");
     }
 
     /**
@@ -69,6 +70,7 @@ public class PythonCodeGeneratorTest {
         String snippetName) {
       super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
       getTestDataLocator().addTestDataSource(getClass(), "py");
+      getTestDataLocator().addTestDataSource(getClass(), "testdata/py");
     }
 
     /**
@@ -103,6 +105,7 @@ public class PythonCodeGeneratorTest {
         String snippetName) {
       super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
       getTestDataLocator().addTestDataSource(getClass(), "py");
+      getTestDataLocator().addTestDataSource(getClass(), "testdata/py");
     }
 
     /**
