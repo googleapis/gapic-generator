@@ -2,22 +2,22 @@
 @extends "py/method_sample.snip"
 
 @snippet generate(metadata)
-  {@generateReadme(metadata.readmeMetadata)}
+    {@generateReadme(metadata.readmeMetadata)}
 @end
 
 @private generateReadme(metadata)
-  {@readme(metadata, exampleMethods(metadata.exampleMethods), installationLines(metadata))}
+    {@readme(metadata, exampleMethods(metadata.exampleMethods), installationLines(metadata))}
 @end
 
 @private exampleMethods(methods)
-  @join method : methods on BREAK
-    {@method.apiClassName}
-    ^^^^^^^^^^^^^^^^^^^^^^
+    @join method : methods on BREAK
+        {@method.apiClassName}
+        {@util.subSubSectionHeaderLine(method.apiClassName)}
 
-    .. code:: py
+        .. code:: py
 
-      {@sampleCode_(method)}
-  @end
+            {@sampleCode_(method)}
+    @end
 @end
 
 @private installationLines(metadata)
