@@ -394,9 +394,7 @@ public class MainGapicProviderFactory
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new PythonRenderingUtil()))
-                .setModelToViewTransformer(
-                    new PythonPackageMetadataTransformer(
-                        packageConfig, ImmutableList.copyOf(providers)))
+                .setModelToViewTransformer(new PythonPackageMetadataTransformer(packageConfig))
                 .build();
         providers.add(metadataProvider);
       }
