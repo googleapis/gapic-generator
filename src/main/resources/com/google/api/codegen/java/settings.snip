@@ -39,8 +39,13 @@
      * <p>The default instance has everything set to sensible defaults:
      *
      * <ul>
-     * <li>The default service address ({@doc.serviceAddress}) and default port ({@doc.servicePort})
-     * are used.
+     @switch doc.transportProtocol
+     @case "GRPC"
+       * <li>The default service address ({@doc.serviceAddress}) and default port ({@doc.servicePort})
+       * are used.
+     @case "HTTP"
+       * <li>The default service address ({@doc.serviceAddress}) is used.
+     @end
      * <li>Credentials are acquired automatically through Application Default Credentials.
      * <li>Retries are configured for idempotent methods but not for non-idempotent methods.
      * </ul>
@@ -85,12 +90,12 @@
   {@""}
 @end
 
-@private members(xsettingsClass, transportProtocol)
+@private members(xsettingsClass, transportProtocolName)
   {@methodMembers(xsettingsClass)}
   {@methodGetters(xsettingsClass)}
 
   public {@xsettingsClass.stubInterfaceName} createStub() throws IOException {
-    if (getTransportProvider().getTransportName().equals({@transportProtocol}Transport.get{@transportProtocol}TransportName())) {
+    if (getTransportProvider().getTransportName().equals({@transportProtocolName}Transport.get{@transportProtocolName}TransportName())) {
       return {@xsettingsClass.rpcStubClassName}.create(this);
     } else {
       throw new UnsupportedOperationException(
@@ -110,7 +115,12 @@
      * Returns the default service endpoint.
      */
     public static String getDefaultEndpoint() {
-      return "{@xsettingsClass.serviceAddress}:{@xsettingsClass.servicePort}";
+      @switch xsettingsClass.transportProtocol
+      @case "GRPC"
+        return "{@xsettingsClass.serviceAddress}:{@xsettingsClass.servicePort}";
+      @case "HTTP"
+        return "{@xsettingsClass.serviceAddress}";
+      @end
     }
 
   @end
@@ -139,10 +149,10 @@
   /** Returns a builder for the default ChannelProvider for this service. */
   @switch xsettingsClass.transportProtocol
   @case "GRPC"
-    public static InstantiatingChannelProvider.Builder default{@transportProtocol}ChannelProviderBuilder() {
+    public static InstantiatingChannelProvider.Builder default{@transportProtocolName}ChannelProviderBuilder() {
       return InstantiatingChannelProvider.newBuilder()
   @case "HTTP"
-    public static InstantiatingHttpJsonChannelProvider.Builder default{@transportProtocol}ChannelProviderBuilder() {
+    public static InstantiatingHttpJsonChannelProvider.Builder default{@transportProtocolName}ChannelProviderBuilder() {
       return InstantiatingHttpJsonChannelProvider.newBuilder()
   @end
         @if xsettingsClass.hasDefaultServiceAddress
@@ -153,13 +163,13 @@
 
   @if xsettingsClass.hasDefaultServiceAddress
     /** Returns a builder for the default ChannelProvider for this service. */
-    public static {@transportProtocol}TransportProvider.Builder default{@transportProtocol}TransportProviderBuilder() {
-      return {@transportProtocol}TransportProvider.newBuilder()
-          .setChannelProvider(default{@transportProtocol}ChannelProviderBuilder().build());
+    public static {@transportProtocolName}TransportProvider.Builder default{@transportProtocolName}TransportProviderBuilder() {
+      return {@transportProtocolName}TransportProvider.newBuilder()
+          .setChannelProvider(default{@transportProtocolName}ChannelProviderBuilder().build());
     }
 
     public static TransportProvider defaultTransportProvider() {
-      return default{@transportProtocol}TransportProviderBuilder().build();
+      return default{@transportProtocolName}TransportProviderBuilder().build();
     }
   @end
 

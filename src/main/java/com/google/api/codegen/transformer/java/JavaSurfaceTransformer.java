@@ -387,12 +387,13 @@ public class JavaSurfaceTransformer {
         context
             .getNamer()
             .getReleaseAnnotation(packageMetadataConfig.releaseLevel(TargetLanguage.JAVA)));
-    xsettingsClass.doc(generateSettingsDoc(context, exampleApiMethod));
+    xsettingsClass.doc(generateSettingsDoc(context, exampleApiMethod, productConfig));
     String name = namer.getApiSettingsClassName(context.getInterfaceConfig());
     xsettingsClass.name(name);
     xsettingsClass.serviceAddress(model.getServiceAddress());
     xsettingsClass.servicePort(model.getServicePort());
     xsettingsClass.authScopes(model.getAuthScopes());
+    xsettingsClass.transportProtocol(productConfig.getTransportProtocol());
 
     List<ApiCallSettingsView> apiCallSettings =
         apiCallableTransformer.generateCallSettings(context);
@@ -778,12 +779,15 @@ public class JavaSurfaceTransformer {
   }
 
   private SettingsDocView generateSettingsDoc(
-      InterfaceContext context, StaticLangApiMethodView exampleApiMethod) {
+      InterfaceContext context,
+      StaticLangApiMethodView exampleApiMethod,
+      GapicProductConfig productConfig) {
     SurfaceNamer namer = context.getNamer();
     SettingsDocView.Builder settingsDoc = SettingsDocView.newBuilder();
     ApiModel model = context.getApiModel();
     settingsDoc.serviceAddress(model.getServiceAddress());
     settingsDoc.servicePort(model.getServicePort());
+    settingsDoc.transportProtocol(productConfig.getTransportProtocol());
     settingsDoc.exampleApiMethodName(exampleApiMethod.name());
     settingsDoc.exampleApiMethodSettingsGetter(exampleApiMethod.settingsGetterName());
     settingsDoc.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
