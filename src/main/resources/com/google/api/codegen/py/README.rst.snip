@@ -1,5 +1,5 @@
 @extends "readme_rst.snip"
-@extends "py/method_sample.snip"
+@extends "py/readme_common.snip"
 
 @snippet generate(metadata)
     {@generateReadme(metadata.readmeMetadata)}
@@ -7,49 +7,4 @@
 
 @private generateReadme(metadata)
     {@readme(metadata, exampleMethods(metadata.exampleMethods), installationLines(metadata))}
-@end
-
-@private exampleMethods(methods)
-    @join method : methods on BREAK
-        {@method.apiClassName}
-        {@util.subSubSectionHeaderLine(method.apiClassName)}
-
-        .. code:: py
-
-            {@sampleCode_(method)}
-    @end
-@end
-
-@private installationLines(metadata)
-    Install this library in a `virtualenv`_ using pip. `virtualenv`_ is a tool to
-    create isolated Python environments. The basic problem it addresses is one of
-    dependencies and versions, and indirectly permissions.
-
-    With `virtualenv`_, it's possible to install this library without needing system
-    install permissions, and without clashing with the installed system
-    dependencies.
-
-    .. _`virtualenv`: https://virtualenv.pypa.io/en/latest/
-
-
-    Mac/Linux
-    ^^^^^^^^^
-
-    .. code-block:: console
-
-        pip install virtualenv
-        virtualenv <your-env>
-        source <your-env>/bin/activate
-        <your-env>/bin/pip install {@metadata.gapicPackageName}
-
-
-    Windows
-    ^^^^^^^
-
-    .. code-block:: console
-
-        pip install virtualenv
-        virtualenv <your-env>
-        <your-env>\Scripts\activate
-        <your-env>\Scripts\pip.exe install {@metadata.gapicPackageName}
 @end
