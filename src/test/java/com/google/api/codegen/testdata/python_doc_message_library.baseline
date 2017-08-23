@@ -512,7 +512,7 @@ class Struct(object):
     The JSON representation for ``Struct`` is JSON object.
 
     Attributes:
-      fields (dict[str -> Union[dict|~.struct_pb2.Value]]): Unordered map of dynamically typed values.
+      fields (dict[str -> Union[dict, ~.struct_pb2.Value]]): Unordered map of dynamically typed values.
 
     """
     pass
@@ -532,8 +532,8 @@ class Value(object):
       number_value (float): Represents a double value.
       string_value (str): Represents a string value.
       bool_value (bool): Represents a boolean value.
-      struct_value (Union[dict|~.struct_pb2.Struct]): Represents a structured value.
-      list_value (Union[dict|~.struct_pb2.ListValue]): Represents a repeated ``Value``.
+      struct_value (Union[dict, ~.struct_pb2.Struct]): Represents a structured value.
+      list_value (Union[dict, ~.struct_pb2.ListValue]): Represents a repeated ``Value``.
 
     """
     pass
@@ -546,7 +546,7 @@ class ListValue(object):
     The JSON representation for ``ListValue`` is JSON array.
 
     Attributes:
-      values (list[Union[dict|~.struct_pb2.Value]]): Repeated field of dynamically typed values.
+      values (list[Union[dict, ~.struct_pb2.Value]]): Repeated field of dynamically typed values.
 
     """
     pass
@@ -864,7 +864,7 @@ class Status(object):
       message (str): A developer-facing error message, which should be in English. Any
         user-facing error message should be localized and sent in the
         ``google.rpc.Status.details`` field, or localized by the client.
-      details (list[Union[dict|~.any_pb2.Any]]): A list of messages that carry the error details.  There will be a
+      details (list[Union[dict, ~.any_pb2.Any]]): A list of messages that carry the error details.  There will be a
         common set of message types for APIs to use.
 
     """
@@ -908,23 +908,23 @@ class Book(object):
       title (str): The title of the book.
       read (bool): Value indicating whether the book has been read.
       rating (~.enums.Book.Rating): For testing enums.
-      any_value (Union[dict|~.any_pb2.Any]): For testing all well-known types.
-      struct_value (Union[dict|~.struct_pb2.Struct])
-      value_value (Union[dict|~.struct_pb2.Value])
-      list_value_value (Union[dict|~.struct_pb2.ListValue])
-      map_list_value_value (dict[str -> Union[dict|~.struct_pb2.ListValue]])
-      time_value (Union[dict|~.timestamp_pb2.Timestamp])
-      duration_value (Union[dict|~.duration_pb2.Duration])
-      field_mask_value (Union[dict|~.protobuf_field_mask_pb2.FieldMask])
-      int32_value (Union[dict|~.wrappers_pb2.Int32Value])
-      uint32_value (Union[dict|~.wrappers_pb2.UInt32Value])
-      int64_value (Union[dict|~.wrappers_pb2.Int64Value])
-      uint64_value (Union[dict|~.wrappers_pb2.UInt64Value])
-      float_value (Union[dict|~.wrappers_pb2.FloatValue])
-      double_value (Union[dict|~.wrappers_pb2.DoubleValue])
-      string_value (Union[dict|~.wrappers_pb2.StringValue])
-      bool_value (Union[dict|~.wrappers_pb2.BoolValue])
-      bytes_value (Union[dict|~.wrappers_pb2.BytesValue])
+      any_value (Union[dict, ~.any_pb2.Any]): For testing all well-known types.
+      struct_value (Union[dict, ~.struct_pb2.Struct])
+      value_value (Union[dict, ~.struct_pb2.Value])
+      list_value_value (Union[dict, ~.struct_pb2.ListValue])
+      map_list_value_value (dict[str -> Union[dict, ~.struct_pb2.ListValue]])
+      time_value (Union[dict, ~.timestamp_pb2.Timestamp])
+      duration_value (Union[dict, ~.duration_pb2.Duration])
+      field_mask_value (Union[dict, ~.protobuf_field_mask_pb2.FieldMask])
+      int32_value (Union[dict, ~.wrappers_pb2.Int32Value])
+      uint32_value (Union[dict, ~.wrappers_pb2.UInt32Value])
+      int64_value (Union[dict, ~.wrappers_pb2.Int64Value])
+      uint64_value (Union[dict, ~.wrappers_pb2.UInt64Value])
+      float_value (Union[dict, ~.wrappers_pb2.FloatValue])
+      double_value (Union[dict, ~.wrappers_pb2.DoubleValue])
+      string_value (Union[dict, ~.wrappers_pb2.StringValue])
+      bool_value (Union[dict, ~.wrappers_pb2.BoolValue])
+      bytes_value (Union[dict, ~.wrappers_pb2.BytesValue])
       map_string_value (dict[int -> str]): Test doc generation of lists:
 
         +   Here is a sentence about the first element of the list that continues
@@ -939,8 +939,8 @@ class Book(object):
 
             The second paragraph of the list
         that doesn't have a hanging indent.
-      map_message_value (dict[str -> Union[dict|~.library_pb2.SomeMessage]])
-      resource (Union[dict|~.shared_type_pb2.Used]): Tests Python doc generation: should generate a dummy file for shared_type
+      map_message_value (dict[str -> Union[dict, ~.library_pb2.SomeMessage]])
+      resource (Union[dict, ~.shared_type_pb2.Used]): Tests Python doc generation: should generate a dummy file for shared_type
         resource, but *not* its import, other_shared_type
 
     """
@@ -967,7 +967,7 @@ class SomeMessage(object):
 
     Attributes:
       field (int)
-      field2 (Union[dict|~.library_pb2.SomeMessage2])
+      field2 (Union[dict, ~.library_pb2.SomeMessage2])
       alignment (~.enums.SomeMessage.Alignment)
 
     """
@@ -1004,7 +1004,7 @@ class CreateShelfRequest(object):
     Request message for LibraryService.CreateShelf.
 
     Attributes:
-      shelf (Union[dict|~.library_pb2.Shelf]): The shelf to create.
+      shelf (Union[dict, ~.library_pb2.Shelf]): The shelf to create.
 
     """
     pass
@@ -1016,8 +1016,8 @@ class GetShelfRequest(object):
 
     Attributes:
       name (str): The name of the shelf to retrieve.
-      message (Union[dict|~.library_pb2.SomeMessage]): Field to verify that message-type query parameter gets flattened.
-      string_builder (Union[dict|~.library_pb2.StringBuilder])
+      message (Union[dict, ~.library_pb2.SomeMessage]): Field to verify that message-type query parameter gets flattened.
+      string_builder (Union[dict, ~.library_pb2.StringBuilder])
       options (str): To test 'options' parameter name conflict.
 
     """
@@ -1054,7 +1054,7 @@ class ListShelvesResponse(object):
     Response message for LibraryService.ListShelves.
 
     Attributes:
-      shelves (list[Union[dict|~.library_pb2.Shelf]]): The list of shelves.
+      shelves (list[Union[dict, ~.library_pb2.Shelf]]): The list of shelves.
       next_page_token (str): A token to retrieve next page of results.
         Pass this value in the
         ``ListShelvesRequest.page_token``
@@ -1080,7 +1080,7 @@ class StreamShelvesResponse(object):
     Response message for LibraryService.StreamShelves.
 
     Attributes:
-      shelves (list[Union[dict|~.library_pb2.Shelf]]): The list of shelves.
+      shelves (list[Union[dict, ~.library_pb2.Shelf]]): The list of shelves.
 
     """
     pass
@@ -1116,7 +1116,7 @@ class CreateBookRequest(object):
 
     Attributes:
       name (str): The name of the shelf in which the book is created.
-      book (Union[dict|~.library_pb2.Book]): The book to create.
+      book (Union[dict, ~.library_pb2.Book]): The book to create.
 
     """
     pass
@@ -1127,11 +1127,11 @@ class PublishSeriesRequest(object):
     Request message for LibraryService.PublishSeries.
 
     Attributes:
-      shelf (Union[dict|~.library_pb2.Shelf]): The shelf in which the series is created.
-      books (list[Union[dict|~.library_pb2.Book]]): The books to publish in the series.
+      shelf (Union[dict, ~.library_pb2.Shelf]): The shelf in which the series is created.
+      books (list[Union[dict, ~.library_pb2.Book]]): The books to publish in the series.
       edition (int): The edition of the series
       review_copy (bool): If the book is in a pre-publish state
-      series_uuid (Union[dict|~.library_pb2.SeriesUuid]): Uniquely identifies the series to the publishing house.
+      series_uuid (Union[dict, ~.library_pb2.SeriesUuid]): Uniquely identifies the series to the publishing house.
 
     """
     pass
@@ -1193,7 +1193,7 @@ class ListBooksResponse(object):
     Response message for LibraryService.ListBooks.
 
     Attributes:
-      books (list[Union[dict|~.library_pb2.Book]]): The list of books.
+      books (list[Union[dict, ~.library_pb2.Book]]): The list of books.
       next_page_token (str): A token to retrieve next page of results.
         Pass this value in the
         ``ListBooksRequest.page_token``
@@ -1221,9 +1221,9 @@ class UpdateBookRequest(object):
 
     Attributes:
       name (str): The name of the book to update.
-      book (Union[dict|~.library_pb2.Book]): The book to update with.
-      update_mask (Union[dict|~.protobuf_field_mask_pb2.FieldMask]): A field mask to apply, rendered as an HTTP parameter.
-      physical_mask (Union[dict|~.v1_field_mask_pb2.FieldMask]): To test Python import clash resolution.
+      book (Union[dict, ~.library_pb2.Book]): The book to update with.
+      update_mask (Union[dict, ~.protobuf_field_mask_pb2.FieldMask]): A field mask to apply, rendered as an HTTP parameter.
+      physical_mask (Union[dict, ~.v1_field_mask_pb2.FieldMask]): To test Python import clash resolution.
 
     """
     pass
@@ -1281,7 +1281,7 @@ class AddCommentsRequest(object):
 
     Attributes:
       name (str)
-      comments (list[Union[dict|~.library_pb2.Comment]])
+      comments (list[Union[dict, ~.library_pb2.Comment]])
 
     """
     pass
@@ -1355,7 +1355,7 @@ class DiscussBookRequest(object):
       name (str): The name of the book to be discussed. If this is in the middle
         of the stream and this is not specified, the name in the previous
         message will be reused.
-      comment (Union[dict|~.library_pb2.Comment]): The new comment.
+      comment (Union[dict, ~.library_pb2.Comment]): The new comment.
 
     """
     pass
@@ -1410,7 +1410,7 @@ class TestOptionalRequiredFlatteningParamsRequest(object):
       required_singular_enum (~.enums.TestOptionalRequiredFlatteningParamsRequest.InnerEnum)
       required_singular_string (str)
       required_singular_bytes (bytes)
-      required_singular_message (Union[dict|~.library_pb2.TestOptionalRequiredFlatteningParamsRequest.InnerMessage])
+      required_singular_message (Union[dict, ~.library_pb2.TestOptionalRequiredFlatteningParamsRequest.InnerMessage])
       required_singular_resource_name (str)
       required_singular_resource_name_oneof (str)
       required_singular_fixed32 (int)
@@ -1423,7 +1423,7 @@ class TestOptionalRequiredFlatteningParamsRequest(object):
       required_repeated_enum (list[~.enums.TestOptionalRequiredFlatteningParamsRequest.InnerEnum])
       required_repeated_string (list[str])
       required_repeated_bytes (list[bytes])
-      required_repeated_message (list[Union[dict|~.library_pb2.TestOptionalRequiredFlatteningParamsRequest.InnerMessage]])
+      required_repeated_message (list[Union[dict, ~.library_pb2.TestOptionalRequiredFlatteningParamsRequest.InnerMessage]])
       required_repeated_resource_name (list[str])
       required_repeated_resource_name_oneof (list[str])
       required_repeated_fixed32 (list[int])
@@ -1437,7 +1437,7 @@ class TestOptionalRequiredFlatteningParamsRequest(object):
       optional_singular_enum (~.enums.TestOptionalRequiredFlatteningParamsRequest.InnerEnum)
       optional_singular_string (str)
       optional_singular_bytes (bytes)
-      optional_singular_message (Union[dict|~.library_pb2.TestOptionalRequiredFlatteningParamsRequest.InnerMessage])
+      optional_singular_message (Union[dict, ~.library_pb2.TestOptionalRequiredFlatteningParamsRequest.InnerMessage])
       optional_singular_resource_name (str)
       optional_singular_resource_name_oneof (str)
       optional_singular_fixed32 (int)
@@ -1450,7 +1450,7 @@ class TestOptionalRequiredFlatteningParamsRequest(object):
       optional_repeated_enum (list[~.enums.TestOptionalRequiredFlatteningParamsRequest.InnerEnum])
       optional_repeated_string (list[str])
       optional_repeated_bytes (list[bytes])
-      optional_repeated_message (list[Union[dict|~.library_pb2.TestOptionalRequiredFlatteningParamsRequest.InnerMessage]])
+      optional_repeated_message (list[Union[dict, ~.library_pb2.TestOptionalRequiredFlatteningParamsRequest.InnerMessage]])
       optional_repeated_resource_name (list[str])
       optional_repeated_resource_name_oneof (list[str])
       optional_repeated_fixed32 (list[int])
@@ -1503,7 +1503,7 @@ class Unused(object):
     other_shared_type.proto.
 
     Attributes:
-      other (Union[dict|~.other_shared_type_pb2.OtherType])
+      other (Union[dict, ~.other_shared_type_pb2.OtherType])
 
     """
     pass

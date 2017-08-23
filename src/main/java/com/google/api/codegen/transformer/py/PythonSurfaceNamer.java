@@ -185,7 +185,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
     }
 
     if (type.isMessage()) {
-      return "Union[dict|" + typeName + "]";
+      return "Union[dict, " + typeName + "]";
     }
 
     if (type.isEnum()) {
@@ -276,7 +276,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
     if (methodConfig.isPageStreaming()) {
       TypeRef resourceType = methodConfig.getPageStreaming().getResourcesField().getType();
       return ImmutableList.of(
-          "A ~.google.gax.PageIterator instance. By default, this",
+          "A ~google.gax.PageIterator instance. By default, this",
           "is an iterable of "
               + getResponseTypeNameForElementType(context.getModelTypeTable(), resourceType)
               + " instances.",

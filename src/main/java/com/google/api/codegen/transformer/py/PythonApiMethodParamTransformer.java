@@ -161,7 +161,7 @@ public class PythonApiMethodParamTransformer implements ApiMethodParamTransforme
   private ParamDocView generateOptionsParamDoc() {
     SimpleParamDocView.Builder paramDoc = SimpleParamDocView.newBuilder();
     paramDoc.paramName("options");
-    paramDoc.typeName("~.google.gax.CallOptions");
+    paramDoc.typeName("~google.gax.CallOptions");
     paramDoc.lines(
         ImmutableList.of(
             "Overrides the default", "settings for this call, e.g, timeout, retries etc."));

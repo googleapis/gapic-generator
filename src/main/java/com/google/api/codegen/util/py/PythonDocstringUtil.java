@@ -19,7 +19,13 @@ import com.google.api.codegen.transformer.ModelTypeTable;
 public class PythonDocstringUtil {
   public static String napoleonType(String fullName, ModelTypeTable typeTable) {
     if (fullName.contains(".")) {
-      return "~." + typeTable.getAndSaveNicknameFor(fullName);
+      String shortName = typeTable.getAndSaveNicknameFor(fullName);
+      StringBuilder type = new StringBuilder();
+      type.append("~");
+      if (!shortName.equals(fullName)) {
+        type.append(".");
+      }
+      return type.append(shortName).toString();
     }
     return ":class:`" + fullName + "`";
   }
