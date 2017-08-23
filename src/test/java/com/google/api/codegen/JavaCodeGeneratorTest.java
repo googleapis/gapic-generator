@@ -33,6 +33,7 @@ public class JavaCodeGeneratorTest extends GapicTestBase {
       String snippetName) {
     super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
     getTestDataLocator().addTestDataSource(getClass(), "java");
+    getTestDataLocator().addTestDataSource(getClass(), "testdata/java");
   }
 
   /**

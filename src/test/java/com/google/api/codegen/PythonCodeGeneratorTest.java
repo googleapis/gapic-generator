@@ -35,6 +35,7 @@ public class PythonCodeGeneratorTest {
         String snippetName) {
       super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
       getTestDataLocator().addTestDataSource(getClass(), "py");
+      getTestDataLocator().addTestDataSource(getClass(), "testdata/py");
     }
 
     /**
@@ -59,40 +60,6 @@ public class PythonCodeGeneratorTest {
   }
 
   @RunWith(Parameterized.class)
-  public static class PythonLibraryDocBaseline extends GapicTestBase {
-
-    public PythonLibraryDocBaseline(
-        String name,
-        String idForFactory,
-        String[] gapicConfigFileNames,
-        String packageConfigFileName,
-        String snippetName) {
-      super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
-      getTestDataLocator().addTestDataSource(getClass(), "py");
-    }
-
-    /**
-     * Declares test parameters, each one an array of values passed to the constructor, with the
-     * first element a name, the second a config of this name.
-     */
-    @Parameters(name = "{0}")
-    public static List<Object[]> testedConfigs() {
-      return GapicTestBase.createTestedConfigs(
-          MainGapicProviderFactory.PYTHON_DOC,
-          new String[] {"python_gapic.yaml", "library_gapic.yaml"},
-          "library_pkg.yaml");
-    }
-
-    // Tests
-    // =====
-
-    @Test
-    public void library() throws Exception {
-      test("library");
-    }
-  }
-
-  @RunWith(Parameterized.class)
   public static class PythonNoPathTemplatesBaseline extends GapicTestBase {
 
     public PythonNoPathTemplatesBaseline(
@@ -103,6 +70,7 @@ public class PythonCodeGeneratorTest {
         String snippetName) {
       super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
       getTestDataLocator().addTestDataSource(getClass(), "py");
+      getTestDataLocator().addTestDataSource(getClass(), "testdata/py");
     }
 
     /**

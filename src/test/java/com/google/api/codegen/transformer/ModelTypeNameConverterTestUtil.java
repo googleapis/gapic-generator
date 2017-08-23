@@ -33,6 +33,7 @@ public class ModelTypeNameConverterTestUtil {
   public static TypeRef getTestType(TemporaryFolder tempDir, String... path) {
     String fileName = "library.proto";
     TestDataLocator locator = TestDataLocator.create(CodegenTestUtil.class);
+    locator.addTestDataSource(CodegenTestUtil.class, "testsrc");
     Model model =
         CodegenTestUtil.readModel(
             locator, tempDir, new String[] {fileName}, new String[] {"library.yaml"});
