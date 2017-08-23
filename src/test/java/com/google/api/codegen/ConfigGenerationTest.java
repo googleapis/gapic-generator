@@ -22,6 +22,7 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import org.junit.Before;
 import org.junit.Test;
 
 public class ConfigGenerationTest extends ConfigBaselineTestCase {
@@ -52,6 +53,11 @@ public class ConfigGenerationTest extends ConfigBaselineTestCase {
         new String(Files.readAllBytes(Paths.get(outFile)), StandardCharsets.UTF_8);
 
     return outputContent;
+  }
+
+  @Before
+  public void setup() {
+    getTestDataLocator().addTestDataSource(getClass(), "testsrc");
   }
 
   @Test

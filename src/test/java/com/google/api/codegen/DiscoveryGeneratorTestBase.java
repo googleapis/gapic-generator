@@ -58,6 +58,8 @@ public abstract class DiscoveryGeneratorTestBase extends ConfigBaselineTestCase 
     this.discoveryDocFileName = discoveryDocFileName;
     this.gapicConfigFileNames = gapicConfigFileNames;
 
+    getTestDataLocator().addTestDataSource(getClass(), "testsrc");
+
     // Look for a overrides json based on the filename of the discovery doc.
     // For example, for "logging.v1.json" we look for "logging.v1.json.overrides"
     JsonNode tree = null;
