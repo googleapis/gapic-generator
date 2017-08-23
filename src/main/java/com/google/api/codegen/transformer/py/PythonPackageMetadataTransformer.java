@@ -14,14 +14,12 @@
  */
 package com.google.api.codegen.transformer.py;
 
-import com.google.api.codegen.GapicContext;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.gapic.GapicProvider;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
@@ -44,17 +42,14 @@ import com.google.api.codegen.viewmodel.metadata.ReadmeMetadataView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
-import com.google.api.tools.framework.snippet.Doc;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import com.google.common.io.Files;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Responsible for producing package metadata related views for Python
@@ -65,8 +60,6 @@ import java.util.Map;
  * from the corresponding transformers/view models without actually rendering the templates.
  */
 public class PythonPackageMetadataTransformer implements ModelToViewTransformer {
-  private static final String TEST_PREFIX = "tests.";
-
   private static final String GITHUB_DOC_HOST =
       "https://googlecloudplatform.github.io/google-cloud-python/stable";
   private static final String GITHUB_REPO_HOST =
@@ -75,60 +68,82 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
   private static final String LIB_DOC_PATH = "/%s-usage";
   private static final String MAIN_README_PATH = "/blob/master/README.rst";
 
+  private static final List<String> TOP_LEVEL_TEMPLATE_FILES =
+      ImmutableList.of(
+          "LICENSE.snip",
+          "py/MANIFEST.in.snip",
+          "py/PUBLISHING.rst.snip",
+          "py/setup.py.snip",
+          "py/requirements.txt.snip",
+          "py/README.rst.snip",
+          "py/tox.ini.snip",
+          "py/docs/conf.py.snip",
+          "py/docs/index.rst.snip");
+  private static final String INIT_TEMPLATE_FILE = "py/__init__.py.snip";
+  private static final String NAMESPACE_INIT_TEMPLATE_FILE = "py/namespace__init__.py.snip";
+  private static final String API_DOC_TEMPLATE_FILE = "py/docs/api.rst.snip";
+  private static final String TYPES_DOC_TEMPLATE_FILE = "py/docs/types.rst.snip";
+
   private final PackageMetadataConfig packageConfig;
   private final PackageMetadataTransformer metadataTransformer = new PackageMetadataTransformer();
   private final ValueProducer valueProducer = new PythonValueProducer();
   private final TestCaseTransformer testCaseTransformer = new TestCaseTransformer(valueProducer);
-  private final List<GapicProvider<? extends Object>> gapicProviders;
-  private final PythonSurfaceNamer surfaceNamer;
-  private List<String> apiModules = null;
-  private List<String> typeModules = null;
 
-  public PythonPackageMetadataTransformer(
-      PackageMetadataConfig packageConfig, List<GapicProvider<? extends Object>> gapicProviders) {
+  public PythonPackageMetadataTransformer(PackageMetadataConfig packageConfig) {
     this.packageConfig = packageConfig;
-    this.gapicProviders = gapicProviders;
-    this.surfaceNamer = new PythonSurfaceNamer(packageConfig.packageName(TargetLanguage.PYTHON));
   }
 
   @Override
   public List<ViewModel> transform(final Model model, final GapicProductConfig productConfig) {
     SurfaceNamer surfaceNamer = new PythonSurfaceNamer(productConfig.getPackageName());
-    List<ViewModel> metadata =
-        computeInitFiles(computePackages(productConfig.getPackageName()), surfaceNamer);
+    return ImmutableList.<ViewModel>builder()
+        .addAll(computeInitFiles(computePackages(productConfig.getPackageName()), surfaceNamer))
+        .addAll(generateTopLevelFiles(model, productConfig))
+        .addAll(generateDocFiles(model, productConfig))
+        .build();
+  }
+
+  private List<ViewModel> generateDocFiles(Model model, GapicProductConfig productConfig) {
     PackageMetadataNamer namer = new PackageMetadataNamer();
-    for (String templateFileName : getTopLevelTemplateFileNames()) {
+    SurfaceNamer surfaceNamer = new PythonSurfaceNamer(productConfig.getPackageName());
+    String docsGapicPath = docsGapicPath(packageConfig.apiVersion());
+    String typesOutputPath = String.format("docs/%s/types.rst", docsGapicPath);
+    String apiOutputPath = String.format("docs/%s/api.rst", docsGapicPath);
+    return ImmutableList.<ViewModel>builder()
+        .add(
+            generateMetadataView(
+                model,
+                productConfig,
+                TYPES_DOC_TEMPLATE_FILE,
+                namer,
+                surfaceNamer,
+                typesOutputPath))
+        .add(
+            generateMetadataView(
+                model, productConfig, API_DOC_TEMPLATE_FILE, namer, surfaceNamer, apiOutputPath))
+        .build();
+  }
+
+  private List<ViewModel> generateTopLevelFiles(Model model, GapicProductConfig productConfig) {
+    PackageMetadataNamer namer = new PackageMetadataNamer();
+    SurfaceNamer surfaceNamer = new PythonSurfaceNamer(productConfig.getPackageName());
+    ImmutableList.Builder<ViewModel> metadata = ImmutableList.builder();
+    for (String templateFileName : TOP_LEVEL_TEMPLATE_FILES) {
       metadata.add(
           generateMetadataView(model, productConfig, templateFileName, namer, surfaceNamer));
     }
-    return metadata;
+    return metadata.build();
   }
 
   @Override
   public List<String> getTemplateFileNames() {
     List<String> templates = new ArrayList<>();
-    templates.addAll(getTopLevelTemplateFileNames());
-    templates.addAll(getInitTemplateFileNames());
+    templates.addAll(TOP_LEVEL_TEMPLATE_FILES);
+    templates.add(INIT_TEMPLATE_FILE);
+    templates.add(NAMESPACE_INIT_TEMPLATE_FILE);
+    templates.add(API_DOC_TEMPLATE_FILE);
+    templates.add(TYPES_DOC_TEMPLATE_FILE);
     return templates;
-  }
-
-  public List<String> getTopLevelTemplateFileNames() {
-    return Lists.newArrayList(
-        "LICENSE.snip",
-        "py/MANIFEST.in.snip",
-        "py/PUBLISHING.rst.snip",
-        "py/setup.py.snip",
-        "py/requirements.txt.snip",
-        "py/README.rst.snip",
-        "py/tox.ini.snip",
-        "py/docs/apis.rst.snip",
-        "py/docs/conf.py.snip",
-        "py/docs/index.rst.snip",
-        "py/docs/starting.rst.snip");
-  }
-
-  public List<String> getInitTemplateFileNames() {
-    return Lists.newArrayList("py/__init__.py.snip", "py/namespace__init__.py.snip");
   }
 
   private ViewModel generateMetadataView(
@@ -137,18 +152,29 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
       String template,
       PackageMetadataNamer metadataNamer,
       SurfaceNamer surfaceNamer) {
-    List<ApiMethodView> exampleMethods = generateExampleMethods(model, productConfig);
     String noLeadingPyDir = template.startsWith("py/") ? template.substring(3) : template;
     int extensionIndex = noLeadingPyDir.lastIndexOf(".");
     String outputPath = noLeadingPyDir.substring(0, extensionIndex);
-    computeModules(gapicProviders);
+    return generateMetadataView(
+        model, productConfig, template, metadataNamer, surfaceNamer, outputPath);
+  }
+
+  private ViewModel generateMetadataView(
+      Model model,
+      GapicProductConfig productConfig,
+      String template,
+      PackageMetadataNamer metadataNamer,
+      SurfaceNamer surfaceNamer,
+      String outputPath) {
+    List<ApiMethodView> exampleMethods = generateExampleMethods(model, productConfig);
     return metadataTransformer
         .generateMetadataView(packageConfig, model, template, outputPath, TargetLanguage.PYTHON)
         .namespacePackages(computeNamespacePackages(productConfig.getPackageName(), surfaceNamer))
         .developmentStatus(
             surfaceNamer.getReleaseAnnotation(packageConfig.releaseLevel(TargetLanguage.PYTHON)))
-        .apiModules(apiModules)
-        .typeModules(typeModules)
+        .clientModules(clientModules(surfaceNamer))
+        .apiModules(apiModules(packageConfig.apiVersion()))
+        .typeModules(typesModules(surfaceNamer))
         .readmeMetadata(
             ReadmeMetadataView.newBuilder()
                 .moduleName("")
@@ -170,6 +196,25 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
                 .exampleMethods(exampleMethods)
                 .build())
         .build();
+  }
+
+  private List<String> clientModules(SurfaceNamer surfaceNamer) {
+    return ImmutableList.of(surfaceNamer.getVersionedDirectoryNamespace());
+  }
+
+  private List<String> typesModules(SurfaceNamer surfaceNamer) {
+    return ImmutableList.of(
+        String.format("%s.types", surfaceNamer.getVersionedDirectoryNamespace()));
+  }
+
+  private List<String> apiModules(String apiVersion) {
+    String docsGapicPath = docsGapicPath(apiVersion);
+    return ImmutableList.of(
+        String.format("%s/api", docsGapicPath), String.format("%s/types", docsGapicPath));
+  }
+
+  private String docsGapicPath(String apiVersion) {
+    return String.format("gapic/%s", apiVersion.toLowerCase());
   }
 
   // Generates methods used as examples for the README.md file.
@@ -200,36 +245,6 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
             new InitCodeTransformer(new PythonImportSectionTransformer()));
 
     return apiMethodTransformer.generateMethod(context);
-  }
-
-  /** Determines the Python files generated in the main phase of generation. */
-  private void computeModules(List<GapicProvider<? extends Object>> gapicProviders) {
-    // Only run generation once.
-    if (apiModules != null && typeModules != null) {
-      return;
-    }
-    apiModules = new ArrayList<>();
-    typeModules = new ArrayList<>();
-
-    for (GapicProvider<? extends Object> provider : gapicProviders) {
-      Map<String, Doc> result = provider.generate();
-      for (String fileName : result.keySet()) {
-        if (!Files.getFileExtension(fileName).equals("py")) {
-          continue;
-        }
-        String moduleName =
-            fileName.substring(0, fileName.length() - ".py".length()).replace("/", ".");
-        if (moduleName.startsWith(TEST_PREFIX)) {
-          continue;
-        }
-
-        if (moduleName.endsWith(GapicContext.API_WRAPPER_SUFFIX.toLowerCase())) {
-          apiModules.add(moduleName);
-        } else {
-          typeModules.add(moduleName);
-        }
-      }
-    }
   }
 
   /**
@@ -271,11 +286,11 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
     for (String packageName : packages) {
       final String template;
       if (isNamespacePackage(namer, packageName)) {
-        template = "py/namespace__init__.py.snip";
+        template = NAMESPACE_INIT_TEMPLATE_FILE;
       } else if (isVersionedDirectoryPackage(namer, packageName)) {
         continue;
       } else {
-        template = "py/__init__.py.snip";
+        template = INIT_TEMPLATE_FILE;
       }
       String outputPath =
           Paths.get(packageName.replace(".", File.separator)).resolve("__init__.py").toString();

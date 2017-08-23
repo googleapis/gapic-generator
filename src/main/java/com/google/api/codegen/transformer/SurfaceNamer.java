@@ -179,6 +179,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return qualifiedName(namePath.withoutHead());
   }
 
+  public String getGapicImplNamespace() {
+    return getNotImplementedString("SurfaceNamer.getGapicImplNamespace");
+  }
+
   /** The qualified namespace of an API. */
   public String getTopLevelNamespace() {
     return getNotImplementedString("SurfaceNamer.getTopLevelNamespace");

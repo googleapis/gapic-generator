@@ -155,6 +155,9 @@ public abstract class PackageMetadataView implements ViewModel {
   public abstract List<String> typeModules();
 
   @Nullable
+  public abstract List<String> clientModules();
+
+  @Nullable
   public abstract ReadmeMetadataView readmeMetadata();
 
   @Nullable
@@ -263,6 +266,9 @@ public abstract class PackageMetadataView implements ViewModel {
 
     /** The names of the GAPIC modules defining service types. */
     public abstract Builder typeModules(List<String> val);
+
+    /** The names of the GAPIC modules defining clients. */
+    public abstract Builder clientModules(List<String> vals);
 
     /** Whether a smoketest was generated for the package. */
     public abstract Builder hasSmokeTests(boolean val);
