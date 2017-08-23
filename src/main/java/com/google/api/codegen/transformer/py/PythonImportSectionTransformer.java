@@ -360,11 +360,11 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
       Model model, GapicProductConfig productConfig, SurfaceNamer namer, boolean packageHasEnums) {
     return ImportSectionView.newBuilder()
         .appImports(generateVersionedInitAppImports(model, productConfig, namer, packageHasEnums))
-        .standardImports(generateVersionedInitStandardImports())
+        .standardImports(generateAbsoluteImportImportSection())
         .build();
   }
 
-  private List<ImportFileView> generateVersionedInitStandardImports() {
+  private List<ImportFileView> generateAbsoluteImportImportSection() {
     return ImmutableList.of(createImport("__future__", "absolute_import"));
   }
 
@@ -379,6 +379,31 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
     }
     if (packageHasEnums) {
       imports.add(createImport(productConfig.getPackageName(), "enums"));
+    }
+    imports.add(createImport(namer.getVersionedDirectoryNamespace(), "types"));
+    return ImmutableList.<ImportFileView>builder().addAll(imports).build();
+  }
+
+  public ImportSectionView generateTopLeveEntryPointImportSection(
+      Model model, GapicProductConfig productConfig, SurfaceNamer namer, boolean packageHasEnums) {
+    return ImportSectionView.newBuilder()
+        .appImports(
+            generateTopLevelEntryPointAppImports(model, productConfig, namer, packageHasEnums))
+        .standardImports(generateAbsoluteImportImportSection())
+        .build();
+  }
+
+  private List<ImportFileView> generateTopLevelEntryPointAppImports(
+      Model model, GapicProductConfig productConfig, SurfaceNamer namer, boolean packageHasEnums) {
+    Set<ImportFileView> imports = new TreeSet<>(importFileViewComparator());
+    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+      imports.add(
+          createImport(
+              namer.getVersionedDirectoryNamespace(),
+              namer.getApiWrapperClassName(productConfig.getInterfaceConfig(apiInterface))));
+    }
+    if (packageHasEnums) {
+      imports.add(createImport(namer.getVersionedDirectoryNamespace(), "enums"));
     }
     imports.add(createImport(namer.getVersionedDirectoryNamespace(), "types"));
     return ImmutableList.<ImportFileView>builder().addAll(imports).build();
