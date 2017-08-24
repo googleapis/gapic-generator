@@ -706,7 +706,6 @@ public class JavaSurfaceTransformer {
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonTransportProvider");
         typeTable.saveNicknameFor(
             "com.google.api.gax.httpjson.InstantiatingHttpJsonChannelProvider");
-
         break;
     }
   }
@@ -733,12 +732,17 @@ public class JavaSurfaceTransformer {
       typeTable.saveNicknameFor("com.google.longrunning.Operation");
       typeTable.saveNicknameFor("com.google.longrunning.stub.GrpcOperationsStub");
     }
-    switch (context.getApiModel().getApiSource()) {
-      case PROTO:
+    switch (((GapicProductConfig) context.getProductConfig()).getTransportProtocol()) {
+      case GRPC:
         typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcCallableFactory");
         break;
-      case DISCOVERY:
+      case HTTP:
+        typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMethodDescriptor");
+        typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpMethod");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonCallableFactory");
+        typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMessageHttpRequestBuilder");
+        typeTable.saveNicknameFor("java.util.HashSet");
+        typeTable.saveNicknameFor("java.util.Arrays");
         break;
     }
   }

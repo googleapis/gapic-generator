@@ -48,7 +48,10 @@ public abstract class Method implements Comparable<Method>, Node {
     }
 
     DiscoveryNode parametersNode = root.getObject("parameters");
-    HashMap<String, Schema> parameters = new HashMap<>();
+    Map<String, Schema> parameters = new HashMap<>();
+    Map<String, Schema> queryParams = new HashMap<>();
+    Map<String, Schema> pathParams = new HashMap<>();
+
     for (String name : root.getObject("parameters").getFieldNames()) {
       Schema schema = Schema.from(parametersNode.getObject(name), name, null);
       // TODO: Remove these checks once we're sure that parameters can't be objects/arrays.
@@ -57,6 +60,11 @@ public abstract class Method implements Comparable<Method>, Node {
       Preconditions.checkState(schema.type() != Schema.Type.ARRAY);
       Preconditions.checkState(schema.type() != Schema.Type.OBJECT);
       parameters.put(name, schema);
+      if (schema.location().toLowerCase().equals("path")) {
+        pathParams.put(name, schema);
+      } else if (schema.location().toLowerCase().equals("query")) {
+        queryParams.put(name, schema);
+      }
     }
 
     Schema request = Schema.from(root.getObject("request"), "request", null);
@@ -83,6 +91,8 @@ public abstract class Method implements Comparable<Method>, Node {
             parameterOrder,
             parameters,
             path,
+            pathParams,
+            queryParams,
             request,
             response,
             scopes,
@@ -140,6 +150,12 @@ public abstract class Method implements Comparable<Method>, Node {
 
   /** @return the URI path of this REST method. */
   public abstract String path();
+
+  /** @return the list of path parameters. */
+  public abstract Map<String, Schema> pathParams();
+
+  /** @return the list of path parameters. */
+  public abstract Map<String, Schema> queryParams();
 
   /** @return the request schema, or null if none. */
   @Nullable

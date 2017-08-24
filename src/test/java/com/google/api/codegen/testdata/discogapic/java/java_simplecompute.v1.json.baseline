@@ -5620,7 +5620,10 @@ package com.google.cloud.simplecompute.v1.stub;
 import com.google.api.core.BetaApi;
 import com.google.api.gax.core.BackgroundResource;
 import com.google.api.gax.core.BackgroundResourceAggregation;
+import com.google.api.gax.httpjson.ApiMessageHttpRequestBuilder;
+import com.google.api.gax.httpjson.ApiMethodDescriptor;
 import com.google.api.gax.httpjson.HttpJsonCallableFactory;
+import com.google.api.gax.httpjson.HttpMethod;
 import com.google.api.gax.rpc.ClientContext;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.cloud.simplecompute.v1.Address;
@@ -5636,6 +5639,8 @@ import static com.google.cloud.simplecompute.v1.PagedResponseWrappers.ListAddres
 import com.google.cloud.simplecompute.v1.RegionName;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Generated;
@@ -5652,32 +5657,71 @@ public class HttpAddressAdminStub extends AddressAdminStub {
 
   private static final UnaryCallable<InsertAddressHttpRequest, Operation> directInsertAddressCallable =
       HttpJsonCallableFactory.createDirectCallable(
-          io.grpc.MethodDescriptor.create(
-              io.grpc.MethodDescriptor.MethodType.UNARY,
-              "google.simplecompute.v1.Addresses/insertAddress",
-              io.grpc.protobuf.ProtoUtils.marshaller(InsertAddressHttpRequest.getDefaultInstance()),
-              io.grpc.protobuf.ProtoUtils.marshaller(Operation.getDefaultInstance())));
+          ApiMethodDescriptor.create(
+              "compute.addresses.insert",
+              InsertAddressHttpRequest.getDefaultInstance(),
+              Operation.getDefaultInstance(),
+              "{project}/regions/{region}/addresses",
+              new HashSet<String>(
+                  Arrays.asList(
+                      "region",         "project"
+                      )
+                  ),
+              new HashSet<String>(
+                  ),
+              new ApiMessageHttpRequestBuilder(),
+              HttpMethod.POST));
   private static final UnaryCallable<ListAddressesHttpRequest, AddressList> directListAddressesCallable =
       HttpJsonCallableFactory.createDirectCallable(
-          io.grpc.MethodDescriptor.create(
-              io.grpc.MethodDescriptor.MethodType.UNARY,
-              "google.simplecompute.v1.Addresses/listAddresses",
-              io.grpc.protobuf.ProtoUtils.marshaller(ListAddressesHttpRequest.getDefaultInstance()),
-              io.grpc.protobuf.ProtoUtils.marshaller(AddressList.getDefaultInstance())));
+          ApiMethodDescriptor.create(
+              "compute.addresses.list",
+              ListAddressesHttpRequest.getDefaultInstance(),
+              AddressList.getDefaultInstance(),
+              "{project}/regions/{region}/addresses",
+              new HashSet<String>(
+                  Arrays.asList(
+                      "region",         "project"
+                      )
+                  ),
+              new HashSet<String>(
+                  Arrays.asList(
+                      "orderBy",         "pageToken",         "maxResults",         "filter"
+                      )
+                  ),
+              new ApiMessageHttpRequestBuilder(),
+              HttpMethod.GET));
   private static final UnaryCallable<GetAddressHttpRequest, Address> directGetAddressCallable =
       HttpJsonCallableFactory.createDirectCallable(
-          io.grpc.MethodDescriptor.create(
-              io.grpc.MethodDescriptor.MethodType.UNARY,
-              "google.simplecompute.v1.Addresses/getAddress",
-              io.grpc.protobuf.ProtoUtils.marshaller(GetAddressHttpRequest.getDefaultInstance()),
-              io.grpc.protobuf.ProtoUtils.marshaller(Address.getDefaultInstance())));
+          ApiMethodDescriptor.create(
+              "compute.addresses.get",
+              GetAddressHttpRequest.getDefaultInstance(),
+              Address.getDefaultInstance(),
+              "{project}/regions/{region}/addresses/{address}",
+              new HashSet<String>(
+                  Arrays.asList(
+                      "region",         "project",         "address"
+                      )
+                  ),
+              new HashSet<String>(
+                  ),
+              new ApiMessageHttpRequestBuilder(),
+              HttpMethod.GET));
   private static final UnaryCallable<DeleteAddressHttpRequest, Operation> directDeleteAddressCallable =
       HttpJsonCallableFactory.createDirectCallable(
-          io.grpc.MethodDescriptor.create(
-              io.grpc.MethodDescriptor.MethodType.UNARY,
-              "google.simplecompute.v1.Addresses/deleteAddress",
-              io.grpc.protobuf.ProtoUtils.marshaller(DeleteAddressHttpRequest.getDefaultInstance()),
-              io.grpc.protobuf.ProtoUtils.marshaller(Operation.getDefaultInstance())));
+          ApiMethodDescriptor.create(
+              "compute.addresses.delete",
+              DeleteAddressHttpRequest.getDefaultInstance(),
+              Operation.getDefaultInstance(),
+              "{project}/regions/{region}/addresses/{address}",
+              new HashSet<String>(
+                  Arrays.asList(
+                      "region",         "project",         "address"
+                      )
+                  ),
+              new HashSet<String>(
+                  ),
+              new ApiMessageHttpRequestBuilder(),
+              HttpMethod.DELETE));
 
   private final BackgroundResource backgroundResources;
 

@@ -46,19 +46,35 @@
   private static final String BASE_URL = "{@stubClass.baseUrl}";
 
   @join callable : stubClass.directCallables
-    {@grpcMethodCallable(callable)}
+    {@httpMethodCallable(callable)}
   @end
   {@""}
 @end
 
-@private grpcMethodCallable(callable)
+@private httpMethodCallable(callable)
   private static final {@callable.interfaceTypeName}<{@callable.requestTypeName}, {@callable.responseTypeName}> {@callable.name} =
       HttpJsonCallableFactory.{@callable.createCallableFunctionName}(
-          io.grpc.MethodDescriptor.create(
-              {@streamingTypeEnum(callable.grpcStreamingType)},
-              "{@callable.fullServiceName}/{@callable.protoMethodName}",
-              io.grpc.protobuf.ProtoUtils.marshaller({@callable.requestTypeName}.getDefaultInstance()),
-              io.grpc.protobuf.ProtoUtils.marshaller({@callable.responseTypeName}.getDefaultInstance())));
+          ApiMethodDescriptor.create(
+              "{@callable.httpMethod.fullMethodName}",
+              {@callable.requestTypeName}.getDefaultInstance(),
+              {@callable.responseTypeName}.getDefaultInstance(),
+              "{@callable.httpMethod.pathTemplate}",
+              {@paramsInMethodDescriptor(callable.httpMethod.pathParams)},
+              {@paramsInMethodDescriptor(callable.httpMethod.queryParams)},
+              new ApiMessageHttpRequestBuilder(),
+              HttpMethod.{@callable.httpMethod.httpMethod}));
+@end
+
+@private paramsInMethodDescriptor(params)
+  new HashSet<String>(
+      @if params
+        Arrays.asList(
+            @join param : params on ", "
+              "{@param}"
+            @end
+            )
+      @end
+      )
 @end
 
 @private streamingTypeEnum(streamingType)
