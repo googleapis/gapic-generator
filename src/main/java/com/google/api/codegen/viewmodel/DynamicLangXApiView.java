@@ -18,7 +18,6 @@ import com.google.api.codegen.SnippetSetRunner;
 import com.google.auto.value.AutoValue;
 import java.util.List;
 import javax.annotation.Nullable;
-import javax.validation.constraints.Null;
 
 @AutoValue
 public abstract class DynamicLangXApiView implements ViewModel {
