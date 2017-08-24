@@ -239,7 +239,7 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
     if (hasLongrunningMethods(model, productConfig)) {
       dependencies.add(
           PackageDependencyView.create(
-              "google-cloud-core", VersionBound.create("0.27.0", "1.0dev")));
+              "google-cloud-core", VersionBound.create("0.27.0", "0.28dev")));
     }
     return dependencies.build();
   }
