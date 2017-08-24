@@ -741,6 +741,7 @@ public class JavaSurfaceTransformer {
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpMethod");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonCallableFactory");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMessageHttpRequestBuilder");
+        typeTable.saveNicknameFor("com.google.common.collect.Sets");
         typeTable.saveNicknameFor("java.util.HashSet");
         typeTable.saveNicknameFor("java.util.Arrays");
         break;
