@@ -38,6 +38,7 @@ from google.gax.utils import oneof
 import google.gax
 
 from google.cloud.example.library_v1.gapic import enums
+from google.cloud.example.library_v1.gapic import library_service_client_config
 from google.cloud.proto.example.library.v1 import field_mask_pb2 as v1_field_mask_pb2
 from google.cloud.proto.example.library.v1 import library_pb2
 from google.cloud.proto.tagger.v1 import tagger_pb2
@@ -287,11 +288,9 @@ class LibraryServiceClient(object):
         ).version
 
         # Load the configuration defaults.
-        default_client_config = json.loads(pkg_resources.resource_string(
-            __name__, 'library_service_client_config.json').decode())
         defaults = api_callable.construct_settings(
             'google.example.library.v1.LibraryService',
-            default_client_config,
+            library_service_client_config.config,
             client_config,
             config.STATUS_CODE_NAMES,
             metrics_headers=metrics_headers,

@@ -18,6 +18,7 @@ import com.google.api.codegen.SnippetSetRunner;
 import com.google.auto.value.AutoValue;
 import java.util.List;
 import javax.annotation.Nullable;
+import javax.validation.constraints.Null;
 
 @AutoValue
 public abstract class DynamicLangXApiView implements ViewModel {
@@ -63,6 +64,9 @@ public abstract class DynamicLangXApiView implements ViewModel {
   public abstract List<String> methodKeys();
 
   public abstract String clientConfigPath();
+
+  @Nullable
+  public abstract String clientConfigName();
 
   public abstract String interfaceKey();
 
@@ -181,6 +185,8 @@ public abstract class DynamicLangXApiView implements ViewModel {
     public abstract Builder methodKeys(List<String> val);
 
     public abstract Builder clientConfigPath(String val);
+
+    public abstract Builder clientConfigName(String var);
 
     public abstract Builder interfaceKey(String val);
 
