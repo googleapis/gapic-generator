@@ -1,46 +1,24 @@
-@snippet generate(metadata)
-  .. {@metadata.gapicPackageName} sphinx documentation master file
-  
-  
-  GAPIC library for the {@metadata.fullName}
-  =============================================================================================================
-  
-  This is the API documentation for ``{@metadata.gapicPackageName}``.
-  
-  {@metadata.gapicPackageName} uses google-gax_ (Google API extensions) to provide an
-  easy-to-use client library for the `{@metadata.fullName}`_ ({@metadata.majorVersion}) defined in the googleapis_ git repository
-  
-  
-  .. _`google-gax`: https://github.com/googleapis/gax-python
-  .. _`googleapis`: https://github.com/googleapis/googleapis/tree/master/{@metadata.protoPath}
-  .. _`{@metadata.fullName}`: https://developers.google.com/apis-explorer/?hl=en_US#p/{@metadata.discoveryApiName}/{@metadata.majorVersion}/
-  
-  
-  APIs
-  ----
-  
-  .. autosummary::
-  
-     @join module : metadata.apiModules
-       {@module}
-     @end
-  
-  
-  Contents
-  --------
-  
-  .. toctree::
-  
-     self
-     starting
-     apis
-  
-  
-  Indices and tables
-  ------------------
-  
-  * :ref:`genindex`
-  * :ref:`modindex`
-  * :ref:`search`
+@extends "common.snip"
+@extends "readme_rst.snip"
+@extends "py/readme_common.snip"
 
+@snippet generate(metadata)
+    {@generateIndex(metadata.readmeMetadata, metadata)}
+@end
+
+@private generateIndex(readmeMetadata, metadata)
+    {@readme(readmeMetadata, exampleMethods(readmeMetadata.exampleMethods), installationLines(readmeMetadata))}
+
+    {@apiReferences(metadata)}
+@end
+
+@private apiReferences(metadata)
+    Api Reference
+    -------------
+    .. toctree::
+        :maxdepth: 2
+
+        @join module : metadata.apiModules
+            {@module}
+        @end
 @end

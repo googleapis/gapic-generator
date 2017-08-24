@@ -40,7 +40,6 @@ import com.google.api.codegen.transformer.nodejs.NodeJSPackageMetadataTransforme
 import com.google.api.codegen.transformer.php.PhpGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.php.PhpGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.php.PhpPackageMetadataTransformer;
-import com.google.api.codegen.transformer.py.PythonGapicSurfaceDocTransformer;
 import com.google.api.codegen.transformer.py.PythonGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.py.PythonGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.py.PythonPackageMetadataTransformer;
@@ -361,17 +360,6 @@ public class MainGapicProviderFactory
         providers.add(mainProvider);
         providers.add(clientConfigProvider);
 
-        if (id.equals(PYTHON_DOC)) {
-          GapicProvider<? extends Object> messageProvider =
-              ViewModelGapicProvider.newBuilder()
-                  .setModel(model)
-                  .setProductConfig(productConfig)
-                  .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
-                  .setModelToViewTransformer(new PythonGapicSurfaceDocTransformer())
-                  .build();
-          providers.add(messageProvider);
-        }
-
         if (id.equals(PYTHON)) {
           GapicCodePathMapper pythonTestPathMapper =
               CommonGapicCodePathMapper.newBuilder()
@@ -393,10 +381,8 @@ public class MainGapicProviderFactory
             ViewModelGapicProvider.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
-                .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
-                .setModelToViewTransformer(
-                    new PythonPackageMetadataTransformer(
-                        packageConfig, ImmutableList.copyOf(providers)))
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new PythonRenderingUtil()))
+                .setModelToViewTransformer(new PythonPackageMetadataTransformer(packageConfig))
                 .build();
         providers.add(metadataProvider);
       }
