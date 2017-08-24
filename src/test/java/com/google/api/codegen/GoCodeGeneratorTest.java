@@ -33,6 +33,7 @@ public class GoCodeGeneratorTest extends GapicTestBase {
       String snippetName) {
     super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
     getTestDataLocator().addTestDataSource(getClass(), "go");
+    getTestDataLocator().addTestDataSource(getClass(), "testdata/go");
   }
 
   /**

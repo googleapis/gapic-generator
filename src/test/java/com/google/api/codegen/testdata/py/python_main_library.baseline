@@ -421,8 +421,11 @@ class LibraryServiceClient(object):
 
         Example:
           >>> from google.cloud.example import library_v1
+          >>>
           >>> client = library_v1.LibraryServiceClient()
+          >>>
           >>> shelf = {}
+          >>>
           >>> response = client.create_shelf(shelf)
 
         Args:
@@ -455,9 +458,12 @@ class LibraryServiceClient(object):
 
         Example:
           >>> from google.cloud.example import library_v1
+          >>>
           >>> client = library_v1.LibraryServiceClient()
+          >>>
           >>> name = client.shelf_path('[SHELF_ID]')
           >>> options_ = ''
+          >>>
           >>> response = client.get_shelf(name, options_)
 
         Args:
@@ -494,7 +500,9 @@ class LibraryServiceClient(object):
         Example:
           >>> from google.cloud.example import library_v1
           >>> from google.gax import CallOptions, INITIAL_PAGE
+          >>>
           >>> client = library_v1.LibraryServiceClient()
+          >>>
           >>>
           >>> # Iterate over all results
           >>> for element in client.list_shelves():
@@ -532,8 +540,11 @@ class LibraryServiceClient(object):
 
         Example:
           >>> from google.cloud.example import library_v1
+          >>>
           >>> client = library_v1.LibraryServiceClient()
+          >>>
           >>> name = client.shelf_path('[SHELF_ID]')
+          >>>
           >>> client.delete_shelf(name)
 
         Args:
@@ -561,9 +572,12 @@ class LibraryServiceClient(object):
 
         Example:
           >>> from google.cloud.example import library_v1
+          >>>
           >>> client = library_v1.LibraryServiceClient()
+          >>>
           >>> name = client.shelf_path('[SHELF_ID]')
           >>> other_shelf_name = client.shelf_path('[SHELF_ID]')
+          >>>
           >>> response = client.merge_shelves(name, other_shelf_name)
 
         Args:
@@ -594,9 +608,12 @@ class LibraryServiceClient(object):
 
         Example:
           >>> from google.cloud.example import library_v1
+          >>>
           >>> client = library_v1.LibraryServiceClient()
+          >>>
           >>> name = client.shelf_path('[SHELF_ID]')
           >>> book = {}
+          >>>
           >>> response = client.create_book(name, book)
 
         Args:
@@ -632,11 +649,14 @@ class LibraryServiceClient(object):
 
         Example:
           >>> from google.cloud.example import library_v1
+          >>>
           >>> client = library_v1.LibraryServiceClient()
+          >>>
           >>> shelf = {}
           >>> books = []
           >>> series_string = 'foobar'
           >>> series_uuid = {'series_string': series_string}
+          >>>
           >>> response = client.publish_series(shelf, books, series_uuid)
 
         Args:
@@ -685,8 +705,11 @@ class LibraryServiceClient(object):
 
         Example:
           >>> from google.cloud.example import library_v1
+          >>>
           >>> client = library_v1.LibraryServiceClient()
+          >>>
           >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+          >>>
           >>> response = client.get_book(name)
 
         Args:
@@ -717,8 +740,11 @@ class LibraryServiceClient(object):
         Example:
           >>> from google.cloud.example import library_v1
           >>> from google.gax import CallOptions, INITIAL_PAGE
+          >>>
           >>> client = library_v1.LibraryServiceClient()
+          >>>
           >>> name = client.shelf_path('[SHELF_ID]')
+          >>>
           >>>
           >>> # Iterate over all results
           >>> for element in client.list_books(name):
@@ -767,8 +793,11 @@ class LibraryServiceClient(object):
 
         Example:
           >>> from google.cloud.example import library_v1
+          >>>
           >>> client = library_v1.LibraryServiceClient()
+          >>>
           >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+          >>>
           >>> client.delete_book(name)
 
         Args:
@@ -796,9 +825,12 @@ class LibraryServiceClient(object):
 
         Example:
           >>> from google.cloud.example import library_v1
+          >>>
           >>> client = library_v1.LibraryServiceClient()
+          >>>
           >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
           >>> book = {}
+          >>>
           >>> response = client.update_book(name, book)
 
         Args:
@@ -839,9 +871,12 @@ class LibraryServiceClient(object):
 
         Example:
           >>> from google.cloud.example import library_v1
+          >>>
           >>> client = library_v1.LibraryServiceClient()
+          >>>
           >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
           >>> other_shelf_name = client.shelf_path('[SHELF_ID]')
+          >>>
           >>> response = client.move_book(name, other_shelf_name)
 
         Args:
@@ -873,7 +908,9 @@ class LibraryServiceClient(object):
         Example:
           >>> from google.cloud.example import library_v1
           >>> from google.gax import CallOptions, INITIAL_PAGE
+          >>>
           >>> client = library_v1.LibraryServiceClient()
+          >>>
           >>>
           >>> # Iterate over all results
           >>> for element in client.list_strings():
@@ -922,13 +959,16 @@ class LibraryServiceClient(object):
         Example:
           >>> from google.cloud.example import library_v1
           >>> from google.cloud.example.library_v1 import enums
+          >>>
           >>> client = library_v1.LibraryServiceClient()
+          >>>
           >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
           >>> comment = b''
           >>> stage = enums.Comment.Stage.UNSET
           >>> alignment = enums.SomeMessage2.SomeMessage3.Alignment.CHAR
           >>> comments_element = {'comment': comment, 'stage': stage, 'alignment': alignment}
           >>> comments = [comments_element]
+          >>>
           >>> client.add_comments(name, comments)
 
         Args:
@@ -956,8 +996,11 @@ class LibraryServiceClient(object):
 
         Example:
           >>> from google.cloud.example import library_v1
+          >>>
           >>> client = library_v1.LibraryServiceClient()
+          >>>
           >>> name = client.archived_book_path('[ARCHIVE_PATH]', '[BOOK_ID]')
+          >>>
           >>> response = client.get_book_from_archive(name)
 
         Args:
@@ -986,9 +1029,12 @@ class LibraryServiceClient(object):
 
         Example:
           >>> from google.cloud.example import library_v1
+          >>>
           >>> client = library_v1.LibraryServiceClient()
+          >>>
           >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
           >>> alt_book_name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+          >>>
           >>> response = client.get_book_from_anywhere(name, alt_book_name)
 
         Args:
@@ -1019,8 +1065,11 @@ class LibraryServiceClient(object):
 
         Example:
           >>> from google.cloud.example import library_v1
+          >>>
           >>> client = library_v1.LibraryServiceClient()
+          >>>
           >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+          >>>
           >>> response = client.get_book_from_absolutely_anywhere(name)
 
         Args:
@@ -1050,11 +1099,14 @@ class LibraryServiceClient(object):
 
         Example:
           >>> from google.cloud.example import library_v1
+          >>>
           >>> client = library_v1.LibraryServiceClient()
+          >>>
           >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
           >>> index_name = 'default index'
           >>> index_map_item = ''
           >>> index_map = {'default_key': index_map_item}
+          >>>
           >>> client.update_book_index(name, index_name, index_map)
 
         Args:
@@ -1083,7 +1135,9 @@ class LibraryServiceClient(object):
 
         Example:
           >>> from google.cloud.example import library_v1
+          >>>
           >>> client = library_v1.LibraryServiceClient()
+          >>>
           >>> for element in client.stream_shelves():
           >>>     # process element
           >>>     pass
@@ -1111,8 +1165,11 @@ class LibraryServiceClient(object):
 
         Example:
           >>> from google.cloud.example import library_v1
+          >>>
           >>> client = library_v1.LibraryServiceClient()
+          >>>
           >>> name = ''
+          >>>
           >>> for element in client.stream_books(name):
           >>>     # process element
           >>>     pass
@@ -1145,9 +1202,12 @@ class LibraryServiceClient(object):
 
         Example:
           >>> from google.cloud.example import library_v1
+          >>>
           >>> client = library_v1.LibraryServiceClient()
+          >>>
           >>> name = ''
           >>> request = {'name': name}
+          >>>
           >>> requests = [request]
           >>> for element in client.discuss_book(requests):
           >>>     # process element
@@ -1179,9 +1239,12 @@ class LibraryServiceClient(object):
 
         Example:
           >>> from google.cloud.example import library_v1
+          >>>
           >>> client = library_v1.LibraryServiceClient()
+          >>>
           >>> name = ''
           >>> request = {'name': name}
+          >>>
           >>> requests = [request]
           >>> response = client.monolog_about_book(requests)
 
@@ -1210,10 +1273,13 @@ class LibraryServiceClient(object):
         Example:
           >>> from google.cloud.example import library_v1
           >>> from google.gax import CallOptions, INITIAL_PAGE
+          >>>
           >>> client = library_v1.LibraryServiceClient()
+          >>>
           >>> names_element = ''
           >>> names = [names_element]
           >>> shelves = []
+          >>>
           >>>
           >>> # Iterate over all results
           >>> for element in client.find_related_books(names, shelves):
@@ -1263,9 +1329,12 @@ class LibraryServiceClient(object):
 
         Example:
           >>> from google.cloud.example import library_v1
+          >>>
           >>> client = library_v1.LibraryServiceClient()
+          >>>
           >>> resource = client.book_path('[SHELF_ID]', '[BOOK_ID]')
           >>> tag = ''
+          >>>
           >>> response = client.add_tag(resource, tag)
 
         Args:
@@ -1298,9 +1367,12 @@ class LibraryServiceClient(object):
 
         Example:
           >>> from google.cloud.example import library_v1
+          >>>
           >>> client = library_v1.LibraryServiceClient()
+          >>>
           >>> resource = client.book_path('[SHELF_ID]', '[BOOK_ID]')
           >>> label = ''
+          >>>
           >>> response = client.add_label(resource, label)
 
         Args:
@@ -1332,8 +1404,11 @@ class LibraryServiceClient(object):
 
         Example:
           >>> from google.cloud.example import library_v1
+          >>>
           >>> client = library_v1.LibraryServiceClient()
+          >>>
           >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+          >>>
           >>> response = client.get_big_book(name)
           >>>
           >>> def callback(operation_future):
@@ -1375,8 +1450,11 @@ class LibraryServiceClient(object):
 
         Example:
           >>> from google.cloud.example import library_v1
+          >>>
           >>> client = library_v1.LibraryServiceClient()
+          >>>
           >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+          >>>
           >>> response = client.get_big_nothing(name)
           >>>
           >>> def callback(operation_future):
@@ -1472,7 +1550,9 @@ class LibraryServiceClient(object):
         Example:
           >>> from google.cloud.example import library_v1
           >>> from google.cloud.example.library_v1 import enums
+          >>>
           >>> client = library_v1.LibraryServiceClient()
+          >>>
           >>> required_singular_int32 = 0
           >>> required_singular_int64 = 0
           >>> required_singular_float = 0.0
@@ -1500,6 +1580,7 @@ class LibraryServiceClient(object):
           >>> required_repeated_fixed32 = []
           >>> required_repeated_fixed64 = []
           >>> required_map = {}
+          >>>
           >>> response = client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, required_repeated_resource_name, required_repeated_resource_name_oneof, required_repeated_fixed32, required_repeated_fixed64, required_map)
 
         Args:
