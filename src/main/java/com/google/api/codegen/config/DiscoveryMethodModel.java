@@ -31,6 +31,7 @@ import com.google.common.collect.ImmutableList;
 public final class DiscoveryMethodModel implements MethodModel {
   private final Method method;
   private Iterable<FieldModel> inputFields;
+  private Iterable<FieldModel> resourceNameInputFields;
   private final DiscoGapicNamer discoGapicNamer;
 
   /* Create a DiscoveryMethodModel from a non-null Discovery Method object. */
@@ -194,6 +195,22 @@ public final class DiscoveryMethodModel implements MethodModel {
   @Override
   public boolean hasReturnValue() {
     return method.response() != null;
+  }
+
+  @Override
+  public Iterable<FieldModel> getResourceNameInputFields() {
+    if (resourceNameInputFields != null) {
+      return resourceNameInputFields;
+    }
+
+    ImmutableList.Builder<FieldModel> params = ImmutableList.builder();
+    for (FieldModel field : inputFields) {
+      if (field.getDiscoveryField().isPathParam()) {
+        params.add(field);
+      }
+    }
+    resourceNameInputFields = params.build();
+    return resourceNameInputFields;
   }
 
   @Override

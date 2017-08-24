@@ -28,6 +28,7 @@ import com.google.api.tools.framework.model.FieldSelector;
 import com.google.api.tools.framework.model.Method;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import java.util.ArrayList;
 
 /** A wrapper around the model of a protobuf-defined Method. */
 public final class ProtoMethodModel implements MethodModel {
@@ -180,6 +181,11 @@ public final class ProtoMethodModel implements MethodModel {
     }
     inputFields = fieldsBuilder.build();
     return inputFields;
+  }
+
+  @Override
+  public Iterable<FieldModel> getResourceNameInputFields() {
+    return new ArrayList<>();
   }
 
   @Override
