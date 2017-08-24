@@ -17,6 +17,7 @@ package com.google.api.codegen.discogapic.transformer.java;
 import static com.google.api.codegen.util.java.JavaTypeTable.JavaLangResolution.IGNORE_JAVA_LANG_CLASH;
 
 import com.google.api.codegen.config.DiscoApiModel;
+import com.google.api.codegen.config.DiscoveryField;
 import com.google.api.codegen.config.DiscoveryMethodModel;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
@@ -30,6 +31,7 @@ import com.google.api.codegen.discogapic.SchemaTransformationContext;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.discovery.Document;
+import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.DiscoGapicInterfaceContext;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
@@ -49,6 +51,7 @@ import com.google.api.codegen.viewmodel.RequestObjectParamView;
 import com.google.api.codegen.viewmodel.StaticLangApiMessageFileView;
 import com.google.api.codegen.viewmodel.StaticLangApiMessageView;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import java.io.File;
 import java.util.ArrayList;
@@ -239,12 +242,11 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     }
 
     for (FieldModel entry : method.getInputFields()) {
-      properties.add(schemaToParamView(context, entry, symbolTable));
+      properties.add(schemaToParamView(context, entry, entry.getSimpleName(), symbolTable, true));
       if (entry.isRequired()) {
         hasRequiredProperties = true;
       }
     }
-
     Collections.sort(properties);
 
     requestView.canRepeat(false);
@@ -252,16 +254,17 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     requestView.properties(properties);
     requestView.hasRequiredProperties(hasRequiredProperties);
     requestView.isRequestMessage(true);
-
     requestView.resourceNames(resourceNames);
 
-    return requestView.build();
-  }
+    Schema requestBodyDef = ((DiscoveryMethodModel) method).getDiscoMethod().request();
+    if (requestBodyDef != null && !Strings.isNullOrEmpty(requestBodyDef.reference())) {
+      FieldModel requestBody =
+          new DiscoveryField(requestBodyDef.dereference(), context.getDiscoGapicNamer());
+      requestView.requestBodyType(
+          schemaToParamView(context, requestBody, requestBody.getSimpleName(), symbolTable, false));
+    }
 
-  // Transforms a request/response Schema object into a StaticLangApiMessageView.
-  private StaticLangApiMessageView schemaToParamView(
-      SchemaTransformationContext context, FieldModel schema, SymbolTable symbolTable) {
-    return schemaToParamView(context, schema, schema.getSimpleName(), symbolTable);
+    return requestView.build();
   }
 
   // Transforms a request/response Schema object into a StaticLangApiMessageView.
@@ -269,12 +272,14 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
       SchemaTransformationContext context,
       FieldModel schema,
       String preferredName,
-      SymbolTable symbolTable) {
+      SymbolTable symbolTable,
+      boolean escapeName) {
     StaticLangApiMessageView.Builder paramView = StaticLangApiMessageView.newBuilder();
     String typeName = context.getSchemaTypeTable().getAndSaveNicknameFor(schema);
     paramView.description(schema.getScopedDocumentation());
     String name = context.getNamer().privateFieldName(Name.anyCamel(preferredName));
-    paramView.name(symbolTable.getNewSymbol(name));
+    String fieldName = escapeName ? symbolTable.getNewSymbol(name) : name;
+    paramView.name(fieldName);
     paramView.typeName(typeName);
     paramView.innerTypeName(typeName);
     paramView.isRequired(schema.isRequired());
@@ -299,6 +304,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     typeTable.getAndSaveNicknameFor("java.util.Objects");
     typeTable.getAndSaveNicknameFor("java.util.Set");
     typeTable.getAndSaveNicknameFor("javax.annotation.Generated");
+    typeTable.getAndSaveNicknameFor("javax.annotation.Nullable");
   }
 
   private SchemaTypeTable createTypeTable(String implicitPackageName) {

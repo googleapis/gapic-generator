@@ -17,6 +17,8 @@
 
     {@populateMapMethod(schema)}
 
+    {@getRequestBodyMethod(schema)}
+
     {@getters(schema)}
 
     {@newBuilder(schema)}
@@ -37,7 +39,7 @@
   public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
     Map<String, List<String>> fieldMap = new HashMap<>();
     @join param : schema.properties
-      if (fieldNames.contains("{@param.name}")) {
+      if (fieldNames.contains("{@param.name}") && {@param.name} != null) {
         @if param.canRepeat
           fieldMap.put("{@param.name}", {@param.name});
         @else
@@ -47,6 +49,20 @@
     @end
     return fieldMap;
   }
+@end
+
+@private getRequestBodyMethod(schema)
+  @@Nullable
+  @@Override
+  @if schema.hasRequestBody()
+    public {@schema.requestBodyType.innerTypeName} getRequestBody() {
+      return {@schema.requestBodyType.name};
+    }
+  @else
+    public ApiMessage getRequestBody() {
+      return null;
+    }
+  @end
 @end
 
 @private members(schema)
