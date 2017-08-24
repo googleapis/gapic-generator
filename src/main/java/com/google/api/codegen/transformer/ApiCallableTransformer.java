@@ -33,6 +33,7 @@ import com.google.api.codegen.viewmodel.RetryParamsDefinitionView;
 import com.google.api.codegen.viewmodel.ServiceMethodType;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -205,8 +206,12 @@ public class ApiCallableTransformer {
       HttpMethodView.Builder httpMethodView = HttpMethodView.newBuilder();
       httpMethodView.fullMethodName(method.id());
       httpMethodView.httpMethod(method.httpMethod());
-      httpMethodView.pathParams(new ArrayList<>(method.pathParams().keySet()));
-      httpMethodView.queryParams(new ArrayList<>(method.queryParams().keySet()));
+      List<String> pathParams = new ArrayList<>(method.pathParams().keySet());
+      List<String> queryParams = new ArrayList<>(method.queryParams().keySet());
+      Collections.sort(pathParams);
+      Collections.sort(queryParams);
+      httpMethodView.pathParams(pathParams);
+      httpMethodView.queryParams(queryParams);
       httpMethodView.pathTemplate(method.path());
       return httpMethodView.build();
     } else {
