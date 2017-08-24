@@ -17,7 +17,6 @@ package com.google.api.codegen.discovery;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.api.Service;
 import com.google.api.codegen.ApiaryConfig;
-import java.io.File;
 import java.util.List;
 
 /** A factory for DiscoveryProviders which perform code generation. */
@@ -26,6 +25,6 @@ public interface DiscoveryProviderFactory {
       Service service,
       ApiaryConfig apiaryConfig,
       List<JsonNode> sampleConfigOverrides,
-      File rubyNamesFile,
+      String rubyNamesFile,
       String id);
 }
