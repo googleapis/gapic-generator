@@ -238,15 +238,6 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
     return dependencies.build();
   }
 
-  private boolean hasLongrunningMethods(Model model, GapicProductConfig productConfig) {
-    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
-      if (productConfig.getInterfaceConfig(apiInterface).hasLongRunningOperations()) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   private List<String> clientModules(SurfaceNamer surfaceNamer) {
     return ImmutableList.of(surfaceNamer.getVersionedDirectoryNamespace());
   }
