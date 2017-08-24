@@ -167,6 +167,8 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
       SurfaceNamer surfaceNamer,
       String outputPath) {
     List<ApiMethodView> exampleMethods = generateExampleMethods(model, productConfig);
+    String gapicPackageName =
+        surfaceNamer.getGapicPackageName(packageConfig.packageName(TargetLanguage.PYTHON));
     return metadataTransformer
         .generateMetadataView(packageConfig, model, template, outputPath, TargetLanguage.PYTHON)
         .namespacePackages(computeNamespacePackages(productConfig.getPackageName(), surfaceNamer))
@@ -175,6 +177,7 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
         .clientModules(clientModules(surfaceNamer))
         .apiModules(apiModules(packageConfig.apiVersion()))
         .typeModules(typesModules(surfaceNamer))
+        .gapicPackageName(gapicPackageName)
         .readmeMetadata(
             ReadmeMetadataView.newBuilder()
                 .moduleName("")
@@ -182,7 +185,7 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
                 .fullName(model.getServiceConfig().getTitle())
                 .apiSummary(model.getServiceConfig().getDocumentation().getSummary())
                 .hasMultipleServices(false)
-                .gapicPackageName("gapic-" + packageConfig.packageName(TargetLanguage.PYTHON))
+                .gapicPackageName(gapicPackageName)
                 .majorVersion(packageConfig.apiVersion())
                 .developmentStatusTitle(
                     metadataNamer.getReleaseAnnotation(
