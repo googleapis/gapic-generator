@@ -131,6 +131,9 @@ public abstract class DynamicLangXApiView implements ViewModel {
   @Nullable
   public abstract String gapicPackageName();
 
+  @Nullable
+  public abstract List<String> operationTypes();
+
   @Override
   public String resourceRoot() {
     return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
@@ -222,6 +225,8 @@ public abstract class DynamicLangXApiView implements ViewModel {
     public abstract Builder servicePhraseName(String val);
 
     public abstract Builder gapicPackageName(String val);
+
+    public abstract Builder operationTypes(List<String> val);
 
     public abstract DynamicLangXApiView build();
   }

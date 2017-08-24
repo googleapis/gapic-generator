@@ -35,6 +35,7 @@ from google.gax import api_callable
 from google.gax import config
 from google.gax import path_template
 from google.gax.utils import oneof
+import google.api.core.operation
 import google.gax
 
 from google.cloud.example.library_v1.gapic import enums
@@ -1434,12 +1435,11 @@ class LibraryServiceClient(object):
         """
         request = library_pb2.GetBookRequest(
             name=name)
-        return google.gax._OperationFuture(
+        return google.api.core.operation.from_grpc(
             self._get_big_book(request, options),
-            self.operations_client,
+            self.operations_client.operations_stub,
             library_pb2.Book,
-            library_pb2.GetBigBookMetadata,
-            options)
+            metadata_type=library_pb2.GetBigBookMetadata)
 
     def get_big_nothing(
             self,
@@ -1480,12 +1480,11 @@ class LibraryServiceClient(object):
         """
         request = library_pb2.GetBookRequest(
             name=name)
-        return google.gax._OperationFuture(
+        return google.api.core.operation.from_grpc(
             self._get_big_nothing(request, options),
-            self.operations_client,
+            self.operations_client.operations_stub,
             empty_pb2.Empty,
-            library_pb2.GetBigBookMetadata,
-            options)
+            metadata_type=library_pb2.GetBigBookMetadata)
 
     def test_optional_required_flattening_params(
             self,

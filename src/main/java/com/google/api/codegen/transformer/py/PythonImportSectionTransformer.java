@@ -102,6 +102,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
     imports.add(createImport("google.gax", "path_template"));
 
     if (context.getInterfaceConfig().hasLongRunningOperations()) {
+      imports.add(createImport("google.api.core.operation"));
       imports.add(createImport("google.gapic.longrunning", "operations_client"));
     }
 

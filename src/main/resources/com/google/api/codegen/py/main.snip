@@ -313,12 +313,11 @@
 
 @private callLine(apiMethod)
     @if apiMethod.isLongRunningOperation
-        return google.gax._OperationFuture(
+        return google.api.core.operation.from_grpc(
             self._{@apiMethod.name}({@apiMethod.requestVariableName}, options),
-            self.operations_client,
+            self.operations_client.operations_stub,
             {@apiMethod.longRunningView.operationPayloadTypeName},
-            {@apiMethod.longRunningView.metadataTypeName},
-            options)
+            metadata_type={@apiMethod.longRunningView.metadataTypeName})
     @else
         @if apiMethod.hasReturnValue
             return self._{@apiMethod.name}({@apiMethod.requestVariableName}, options)

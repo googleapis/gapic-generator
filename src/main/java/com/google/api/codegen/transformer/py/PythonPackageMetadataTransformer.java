@@ -179,7 +179,7 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
         .apiModules(apiModules(packageConfig.apiVersion()))
         .typeModules(typesModules(surfaceNamer))
         .protoPackageDependencies(generateProtoPackageDependencies())
-        .additionalDependencies(generateAdditionalDependencies())
+        .additionalDependencies(generateAdditionalDependencies(model, productConfig))
         .readmeMetadata(
             ReadmeMetadataView.newBuilder()
                 .moduleName("")
@@ -225,7 +225,8 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
     return protoPackageDependencies;
   }
 
-  private List<PackageDependencyView> generateAdditionalDependencies() {
+  private List<PackageDependencyView> generateAdditionalDependencies(
+      Model model, GapicProductConfig productConfig) {
     ImmutableList.Builder<PackageDependencyView> dependencies = ImmutableList.builder();
     dependencies.add(
         PackageDependencyView.create(
@@ -235,7 +236,21 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
             "google-auth", packageConfig.authVersionBound(TargetLanguage.PYTHON)));
     dependencies.add(
         PackageDependencyView.create("requests", VersionBound.create("2.18.4", "3.0dev")));
+    if (hasLongrunningMethods(model, productConfig)) {
+      dependencies.add(
+          PackageDependencyView.create(
+              "google-cloud-core", VersionBound.create("0.27.0", "1.0dev")));
+    }
     return dependencies.build();
+  }
+
+  private boolean hasLongrunningMethods(Model model, GapicProductConfig productConfig) {
+    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+      if (productConfig.getInterfaceConfig(apiInterface).hasLongRunningOperations()) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private List<String> clientModules(SurfaceNamer surfaceNamer) {
