@@ -172,6 +172,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
       }
     }
 
+    Collections.sort(params);
     return params;
   }
 

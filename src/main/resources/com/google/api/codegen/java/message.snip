@@ -214,9 +214,17 @@
 
       public final Builder {@resourceName.setCallName}({@resourceName.typeName} value) {
         if (value == null) {
-          return {@resourceName.addCallName}("");
+          return
+              @join field : resourceName.fieldCopyMethods on "."
+                {@field.fieldSetFunction}("")
+              @end
+              ;
         }
-        return {@resourceName.addCallName}(value.toString());
+        return
+            @join field : resourceName.fieldCopyMethods on "."
+              {@field.fieldSetFunction}(value.{@field.fieldGetFunction}())
+            @end
+            ;
       }
 
       public final {@resourceName.typeName} {@resourceName.nameAsMethodName}() {
