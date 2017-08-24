@@ -20,6 +20,7 @@ import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.VersionBound;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
@@ -38,6 +39,7 @@ import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.SimpleViewModel;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.api.codegen.viewmodel.metadata.PackageDependencyView;
 import com.google.api.codegen.viewmodel.metadata.ReadmeMetadataView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
@@ -49,7 +51,9 @@ import com.google.common.collect.Lists;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Responsible for producing package metadata related views for Python
@@ -74,7 +78,6 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
           "py/MANIFEST.in.snip",
           "py/PUBLISHING.rst.snip",
           "py/setup.py.snip",
-          "py/requirements.txt.snip",
           "py/README.rst.snip",
           "py/tox.ini.snip",
           "py/docs/conf.py.snip",
@@ -178,6 +181,8 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
         .apiModules(apiModules(packageConfig.apiVersion()))
         .typeModules(typesModules(surfaceNamer))
         .gapicPackageName(gapicPackageName)
+        .protoPackageDependencies(generateProtoPackageDependencies())
+        .additionalDependencies(generateAdditionalDependencies())
         .readmeMetadata(
             ReadmeMetadataView.newBuilder()
                 .moduleName("")
@@ -199,6 +204,41 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
                 .exampleMethods(exampleMethods)
                 .build())
         .build();
+  }
+
+  private List<PackageDependencyView> generateProtoPackageDependencies() {
+    Map<String, VersionBound> dependencies =
+        packageConfig.protoPackageDependencies(TargetLanguage.PYTHON);
+    if (dependencies == null) {
+      return ImmutableList.of();
+    }
+    List<PackageDependencyView> protoPackageDependencies = new ArrayList<>();
+    for (Map.Entry<String, VersionBound> entry : dependencies.entrySet()) {
+      if (entry.getValue() == null || entry.getKey().startsWith("proto-google-cloud-")) {
+        break;
+      }
+      String dependencyName = entry.getKey();
+      if ("googleapis-common-protos".equals(dependencyName)) {
+        dependencyName = String.format("%s[grpc]", dependencyName);
+      }
+      protoPackageDependencies.add(PackageDependencyView.create(dependencyName, entry.getValue()));
+    }
+    // Ensures deterministic test results.
+    Collections.sort(protoPackageDependencies);
+    return protoPackageDependencies;
+  }
+
+  private List<PackageDependencyView> generateAdditionalDependencies() {
+    ImmutableList.Builder<PackageDependencyView> dependencies = ImmutableList.builder();
+    dependencies.add(
+        PackageDependencyView.create(
+            "google-gax", packageConfig.gaxVersionBound(TargetLanguage.PYTHON)));
+    dependencies.add(
+        PackageDependencyView.create(
+            "google-auth", packageConfig.authVersionBound(TargetLanguage.PYTHON)));
+    dependencies.add(
+        PackageDependencyView.create("requests", VersionBound.create("2.18.4", "3.0dev")));
+    return dependencies.build();
   }
 
   private List<String> clientModules(SurfaceNamer surfaceNamer) {
@@ -270,6 +310,8 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
         namespacePackages.add(subPackage);
       }
     }
+    namespacePackages.add("google.cloud.proto");
+    namespacePackages.add(String.format("google.cloud.proto.%s", packageConfig.shortName()));
     return namespacePackages;
   }
 

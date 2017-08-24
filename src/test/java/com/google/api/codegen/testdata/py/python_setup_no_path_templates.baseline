@@ -10,11 +10,11 @@ from setuptools import setup, find_packages
 import sys
 
 install_requires = [
+    'google-auth>=1.0.2, <2.0dev',
     'google-gax>=0.15.0, <0.16.0',
-    'oauth2client>=2.0.0, <4.0dev',
-    'proto-google-cloud-library-v1[grpc]>=0.15.0, <0.16dev',
     'googleapis-common-protos[grpc]>=1.5.0, <2.0dev',
     'python-other-package>=12.1.0, <13.5.1',
+    'requests>=2.18.4, <3.0dev',
 ]
 
 setup(
@@ -33,6 +33,7 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: Implementation :: CPython',
     ],
     description='GAPIC library for the Google Fake API',
@@ -41,7 +42,7 @@ setup(
     install_requires=install_requires,
     license='Apache-2.0',
     packages=find_packages(),
-    namespace_packages=[],
+    namespace_packages=['google.cloud.proto', 'google.cloud.proto.library'],
     url='https://github.com/googleapis/googleapis'
 )
 

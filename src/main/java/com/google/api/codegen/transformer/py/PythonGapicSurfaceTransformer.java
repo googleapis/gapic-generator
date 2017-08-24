@@ -61,6 +61,7 @@ import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoContainerElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.List;
@@ -71,6 +72,7 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
   private static final String TYPES_TEMPLEATE_FILENAME = "py/types.snip";
   private static final String VERSIONED_INIT_TEMPLATE_FILENAME =
       "py/versioned_directory__init__.py.snip";
+  private static final String TOP_LEVEL_ENTRY_POINT_FILENAME = "py/top_level_entry_point.snip";
 
   private final PythonImportSectionTransformer importSectionTransformer =
       new PythonImportSectionTransformer();
@@ -99,7 +101,8 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
         XAPI_TEMPLATE_FILENAME,
         ENUM_TEMPLATE_FILENAME,
         TYPES_TEMPLEATE_FILENAME,
-        VERSIONED_INIT_TEMPLATE_FILENAME);
+        VERSIONED_INIT_TEMPLATE_FILENAME,
+        TOP_LEVEL_ENTRY_POINT_FILENAME);
   }
 
   @Override
@@ -107,6 +110,7 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
     ImmutableList.Builder<ViewModel> views = ImmutableList.builder();
     views.addAll(generateServiceSurfaces(model, productConfig));
     views.addAll(generateVersionedDirectoryViews(model, productConfig));
+    views.addAll(generateTopLevelViews(model, productConfig));
     return views.build();
   }
 
@@ -332,7 +336,6 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
       Model model, GapicProductConfig productConfig, SurfaceNamer namer) {
     ImmutableList.Builder<VersionIndexRequireView> views = ImmutableList.builder();
     Iterable<Interface> apiInterfaces = new InterfaceView().getElementIterable(model);
-    ModelTypeTable typeTable = emptyTypeTable(productConfig);
     for (Interface apiInterface : apiInterfaces) {
       views.add(
           VersionIndexRequireView.newBuilder()
@@ -363,5 +366,52 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
   private String versionedDirectoryPath(SurfaceNamer namer) {
     String namespace = namer.getVersionedDirectoryNamespace();
     return namespace.replace(".", File.separator);
+  }
+
+  private Iterable<ViewModel> generateTopLevelViews(Model model, GapicProductConfig productConfig) {
+    return ImmutableList.of(generateTopLevelEntryPoint(model, productConfig));
+  }
+
+  private ViewModel generateTopLevelEntryPoint(Model model, GapicProductConfig productConfig) {
+    SurfaceNamer namer = new PythonSurfaceNamer(productConfig.getPackageName());
+    boolean packageHasEnums = packageHasEnums(model);
+    ImportSectionView imports =
+        importSectionTransformer.generateTopLeveEntryPointImportSection(
+            model, productConfig, namer, packageHasEnums);
+    return VersionIndexView.newBuilder()
+        .templateFileName(TOP_LEVEL_ENTRY_POINT_FILENAME)
+        .outputPath(topLevelEntryPointFileName(namer))
+        .requireViews(topLevelRequireViews(model, productConfig, namer))
+        .apiVersion(namer.getApiWrapperModuleVersion())
+        .namespace(namer.getVersionedDirectoryNamespace())
+        .packageVersion(packageConfig.generatedPackageVersionBound(TargetLanguage.PYTHON).lower())
+        .fileHeader(fileHeaderTransformer.generateFileHeader(productConfig, imports, namer))
+        .packageHasEnums(packageHasEnums)
+        .build();
+  }
+
+  private String topLevelEntryPointFileName(SurfaceNamer namer) {
+    String topLevelPath = namer.getTopLevelNamespace().replace(".", File.separator);
+    if (!Strings.isNullOrEmpty(topLevelPath)) {
+      topLevelPath += File.separator;
+    }
+    return String.format("%s%s.py", topLevelPath, packageConfig.shortName().toLowerCase());
+  }
+
+  private List<VersionIndexRequireView> topLevelRequireViews(
+      Model model, GapicProductConfig productConfig, SurfaceNamer namer) {
+    ImmutableList.Builder<VersionIndexRequireView> views = ImmutableList.builder();
+    Iterable<Interface> apiInterfaces = new InterfaceView().getElementIterable(model);
+    for (Interface apiInterface : apiInterfaces) {
+      views.add(
+          VersionIndexRequireView.newBuilder()
+              .clientName(
+                  namer.getApiWrapperClassName(productConfig.getInterfaceConfig(apiInterface)))
+              .localName(
+                  namer.getApiWrapperVariableName(productConfig.getInterfaceConfig(apiInterface)))
+              .fileName(namer.getNotImplementedString("VersionIndexRequireView.fileName"))
+              .build());
+    }
+    return views.build();
   }
 }
