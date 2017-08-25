@@ -18,12 +18,7 @@
 @private renderClass(classView)
   public class {@classView.name} extends ClientSettings {
     {@constants(classView)}
-    @switch classView.transportProtocol
-      @case "GRPC"
-        {@members(classView, "Grpc")}
-      @case "HTTP"
-        {@members(classView, "HttpJson")}
-    @end
+    {@members(classView)}
     {@constructors(classView)}
     {@descriptors(classView)}
     {@innerBuilderClass(classView)}
@@ -39,11 +34,10 @@
      * <p>The default instance has everything set to sensible defaults:
      *
      * <ul>
-     @switch doc.transportProtocol
-     @case "GRPC"
+     @if doc.hasServicePort
        * <li>The default service address ({@doc.serviceAddress}) and default port ({@doc.servicePort})
        * are used.
-     @case "HTTP"
+     @else
        * <li>The default service address ({@doc.serviceAddress}) is used.
      @end
      * <li>Credentials are acquired automatically through Application Default Credentials.
@@ -90,12 +84,12 @@
   {@""}
 @end
 
-@private members(xsettingsClass, transportProtocolName)
+@private members(xsettingsClass)
   {@methodMembers(xsettingsClass)}
   {@methodGetters(xsettingsClass)}
 
   public {@xsettingsClass.stubInterfaceName} createStub() throws IOException {
-    if (getTransportProvider().getTransportName().equals({@transportProtocolName}Transport.get{@transportProtocolName}TransportName())) {
+    if (getTransportProvider().getTransportName().equals({@xsettingsClass.rpcTransportName}.{@xsettingsClass.transportNameGetter}())) {
       return {@xsettingsClass.rpcStubClassName}.create(this);
     } else {
       throw new UnsupportedOperationException(
@@ -115,10 +109,9 @@
      * Returns the default service endpoint.
      */
     public static String getDefaultEndpoint() {
-      @switch xsettingsClass.transportProtocol
-      @case "GRPC"
+      @if xsettingsClass.hasServicePort
         return "{@xsettingsClass.serviceAddress}:{@xsettingsClass.servicePort}";
-      @case "HTTP"
+      @else
         return "{@xsettingsClass.serviceAddress}";
       @end
     }
@@ -147,14 +140,8 @@
   }
 
   /** Returns a builder for the default ChannelProvider for this service. */
-  @switch xsettingsClass.transportProtocol
-  @case "GRPC"
-    public static InstantiatingChannelProvider.Builder default{@transportProtocolName}ChannelProviderBuilder() {
-      return InstantiatingChannelProvider.newBuilder()
-  @case "HTTP"
-    public static InstantiatingHttpJsonChannelProvider.Builder default{@transportProtocolName}ChannelProviderBuilder() {
-      return InstantiatingHttpJsonChannelProvider.newBuilder()
-  @end
+  public static {@xsettingsClass.instantiatingChannelProvider}.Builder {@xsettingsClass.defaultChannelProviderBuilder}() {
+    return {@xsettingsClass.instantiatingChannelProvider}.newBuilder()
         @if xsettingsClass.hasDefaultServiceAddress
             .setEndpoint(getDefaultEndpoint())
         @end
@@ -163,13 +150,13 @@
 
   @if xsettingsClass.hasDefaultServiceAddress
     /** Returns a builder for the default ChannelProvider for this service. */
-    public static {@transportProtocolName}TransportProvider.Builder default{@transportProtocolName}TransportProviderBuilder() {
-      return {@transportProtocolName}TransportProvider.newBuilder()
-          .setChannelProvider(default{@transportProtocolName}ChannelProviderBuilder().build());
+    public static {@xsettingsClass.transportProvider}.Builder {@xsettingsClass.defaultTransportProviderBuilder}() {
+      return {@xsettingsClass.transportProvider}.newBuilder()
+          .setChannelProvider({@xsettingsClass.defaultChannelProviderBuilder}().build());
     }
 
     public static TransportProvider defaultTransportProvider() {
-      return default{@transportProtocolName}TransportProviderBuilder().build();
+      return {@xsettingsClass.defaultTransportProviderBuilder}().build();
     }
   @end
 

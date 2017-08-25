@@ -89,10 +89,10 @@ public class DiscoApiModel implements ApiModel {
     return document.baseUrl();
   }
 
-  /** Return the service port. TODO(cbao): Read the port from config. */
+  /** Return the service port. */
   @Override
   public Integer getServicePort() {
-    return 443;
+    return null;
   }
 
   @Override

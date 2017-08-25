@@ -16,11 +16,13 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.api.codegen.config.TransportProtocol;
 import com.google.auto.value.AutoValue;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class SettingsDocView {
   public abstract String serviceAddress();
 
+  @Nullable
   public abstract Integer servicePort();
 
   public abstract String exampleApiMethodName();
@@ -38,6 +40,10 @@ public abstract class SettingsDocView {
   public abstract boolean hasDefaultInstance();
 
   public abstract TransportProtocol transportProtocol();
+
+  public boolean hasServicePort() {
+    return servicePort() != null;
+  }
 
   public static Builder newBuilder() {
     return new AutoValue_SettingsDocView.Builder().transportProtocol(TransportProtocol.GRPC);

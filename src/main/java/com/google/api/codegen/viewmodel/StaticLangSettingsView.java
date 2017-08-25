@@ -32,6 +32,7 @@ public abstract class StaticLangSettingsView {
 
   public abstract String serviceAddress();
 
+  @Nullable
   public abstract Integer servicePort();
 
   @Nullable
@@ -83,7 +84,30 @@ public abstract class StaticLangSettingsView {
   @Nullable // Used in Java
   public abstract String rpcStubClassName();
 
+  @Nullable // Used in Java
+  public abstract String rpcTransportName();
+
+  @Nullable // Used in Java
+  public abstract String transportNameGetter();
+
+  @Nullable // Used in Java
+  public abstract String defaultChannelProviderBuilder();
+
+  @Nullable // Used in Java
+  public abstract String defaultTransportProviderBuilder();
+
+  @Nullable // Used in Java
+  public abstract String transportProvider();
+
+  @Nullable // Used in Java
+  public abstract String instantiatingChannelProvider();
+
+  @Nullable // Used in Java
   public abstract TransportProtocol transportProtocol();
+
+  public boolean hasServicePort() {
+    return servicePort() != null;
+  }
 
   public static Builder newBuilder() {
     return new AutoValue_StaticLangSettingsView.Builder().transportProtocol(TransportProtocol.GRPC);
@@ -125,9 +149,21 @@ public abstract class StaticLangSettingsView {
 
     public abstract Builder hasDefaultInstance(boolean hasDefaultInstance);
 
-    public abstract Builder stubInterfaceName(String apiStubInterfaceName);
+    public abstract Builder stubInterfaceName(String val);
 
-    public abstract Builder rpcStubClassName(String apiRpcStubClassName);
+    public abstract Builder rpcStubClassName(String val);
+
+    public abstract Builder rpcTransportName(String val);
+
+    public abstract Builder transportNameGetter(String val);
+
+    public abstract Builder defaultChannelProviderBuilder(String val);
+
+    public abstract Builder defaultTransportProviderBuilder(String val);
+
+    public abstract Builder transportProvider(String val);
+
+    public abstract Builder instantiatingChannelProvider(String val);
 
     public abstract Builder transportProtocol(TransportProtocol transportProtocol);
 

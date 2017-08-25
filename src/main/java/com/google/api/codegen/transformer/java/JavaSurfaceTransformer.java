@@ -394,6 +394,17 @@ public class JavaSurfaceTransformer {
     xsettingsClass.servicePort(model.getServicePort());
     xsettingsClass.authScopes(model.getAuthScopes());
     xsettingsClass.transportProtocol(productConfig.getTransportProtocol());
+    xsettingsClass.rpcTransportName(namer.getTransportName(productConfig.getTransportProtocol()));
+    xsettingsClass.transportNameGetter(
+        namer.getTransporNameGetMethod(productConfig.getTransportProtocol()));
+    xsettingsClass.defaultChannelProviderBuilder(
+        namer.getDefaultChannelProviderBuilder(productConfig.getTransportProtocol()));
+    xsettingsClass.defaultTransportProviderBuilder(
+        namer.getDefaultTransportProviderBuilder(productConfig.getTransportProtocol()));
+    xsettingsClass.transportProvider(
+        namer.getTransportProvider(productConfig.getTransportProtocol()));
+    xsettingsClass.instantiatingChannelProvider(
+        namer.getInstantiatingChannelProvider(productConfig.getTransportProtocol()));
 
     List<ApiCallSettingsView> apiCallSettings =
         apiCallableTransformer.generateCallSettings(context);
@@ -740,7 +751,7 @@ public class JavaSurfaceTransformer {
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMethodDescriptor");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpMethod");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonCallableFactory");
-        typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMessageHttpRequestBuilder");
+        typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMessageHttpRequestFormatter");
         typeTable.saveNicknameFor("com.google.common.collect.Sets");
         typeTable.saveNicknameFor("java.util.HashSet");
         typeTable.saveNicknameFor("java.util.Arrays");

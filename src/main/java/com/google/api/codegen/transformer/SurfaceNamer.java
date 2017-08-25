@@ -1500,6 +1500,53 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getExampleFileName");
   }
 
+  /////////////////////////////////// Transport Protocol /////////////////////////////////////////
+
+  public Name getTransportProtocolName(TransportProtocol protocol) {
+    switch (protocol) {
+      case HTTP:
+        return Name.from("http", "json");
+      case GRPC:
+      default:
+        return Name.from("grpc");
+    }
+  }
+
+  public String getInstantiatingChannelProvider(TransportProtocol protocol) {
+    Name name = Name.from("instantiating");
+    if (protocol.equals(TransportProtocol.HTTP)) {
+      name = name.join("http").join("json");
+    }
+    return publicClassName(name.join(Name.from("channel", "provider")));
+  }
+
+  public String getTransportProvider(TransportProtocol protocol) {
+    Name protocolName = getTransportProtocolName(protocol);
+    return publicClassName(protocolName.join("transport").join("provider"));
+  }
+
+  public String getDefaultTransportProviderBuilder(TransportProtocol protocol) {
+    Name protocolName = getTransportProtocolName(protocol);
+    return privateMethodName(
+        Name.from("default").join(protocolName).join("transport").join("provider").join("builder"));
+  }
+
+  public String getDefaultChannelProviderBuilder(TransportProtocol protocol) {
+    Name protocolName = getTransportProtocolName(protocol);
+    return privateMethodName(
+        Name.from("default").join(protocolName).join("channel").join("provider").join("builder"));
+  }
+
+  public String getTransporNameGetMethod(TransportProtocol protocol) {
+    Name protocolName = getTransportProtocolName(protocol);
+    return privateMethodName(Name.from("get").join(protocolName).join("transport").join("name"));
+  }
+
+  public String getTransportName(TransportProtocol protocol) {
+    Name protocolName = getTransportProtocolName(protocol);
+    return publicClassName(protocolName.join("transport"));
+  }
+
   ////////////////////////////////////////// Utility /////////////////////////////////////////////
 
   /** Indicates whether the specified method supports retry settings. */
