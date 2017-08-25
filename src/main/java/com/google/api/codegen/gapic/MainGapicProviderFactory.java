@@ -354,7 +354,7 @@ public class MainGapicProviderFactory
                 .setSnippetSetRunner(
                     new ClientConfigSnippetSetRunner<Interface>(
                         SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
-                .setSnippetFileNames(Arrays.asList("clientconfig/json.snip"))
+                .setSnippetFileNames(Arrays.asList("clientconfig/python_clientconfig.snip"))
                 .setCodePathMapper(pythonPathMapper)
                 .build();
         providers.add(mainProvider);
