@@ -164,10 +164,9 @@ public class PythonSurfaceNamer extends SurfaceNamer {
     if (type.isMap()) {
       TypeName mapTypeName = new TypeName("dict");
       TypeName keyTypeName =
-          new TypeName(getParamTypeNameForElementType(typeTable, type.getMapKeyField().getType()));
+          new TypeName(getParamTypeNameForElementType(type.getMapKeyField().getType()));
       TypeName valueTypeName =
-          new TypeName(
-              getParamTypeNameForElementType(typeTable, type.getMapValueField().getType()));
+          new TypeName(getParamTypeNameForElementType(type.getMapValueField().getType()));
       return new TypeName(
               mapTypeName.getFullName(),
               mapTypeName.getNickname(),
@@ -179,13 +178,13 @@ public class PythonSurfaceNamer extends SurfaceNamer {
 
     if (type.isRepeated()) {
       TypeName listTypeName = new TypeName("list");
-      TypeName elementTypeName = new TypeName(getParamTypeNameForElementType(typeTable, type));
+      TypeName elementTypeName = new TypeName(getParamTypeNameForElementType(type));
       return new TypeName(
               listTypeName.getFullName(), listTypeName.getNickname(), "%s[%i]", elementTypeName)
           .getFullName();
     }
 
-    return getParamTypeNameForElementType(typeTable, type);
+    return getParamTypeNameForElementType(type);
   }
 
   @Override
@@ -194,11 +193,11 @@ public class PythonSurfaceNamer extends SurfaceNamer {
     return typeTable.getAndSaveNicknameFor(method.getOutputType());
   }
 
-  private String getParamTypeNameForElementType(ModelTypeTable typeTable, TypeRef type) {
+  private String getParamTypeNameForElementType(TypeRef type) {
     String typeName = getModelTypeFormatter().getFullNameForElementType(type);
 
     if (type.isMessage() || type.isEnum()) {
-      typeName = PythonDocstringUtil.napoleonType(typeName, typeTable);
+      typeName = PythonDocstringUtil.napoleonType(typeName, getVersionedDirectoryNamespace());
     }
 
     if (type.isMessage()) {
@@ -211,13 +210,13 @@ public class PythonSurfaceNamer extends SurfaceNamer {
     return typeName;
   }
 
-  private String getResponseTypeNameForElementType(ModelTypeTable typeTable, TypeRef type) {
+  private String getResponseTypeNameForElementType(TypeRef type) {
     if (type.isMessage()) {
       String typeName = getModelTypeFormatter().getFullNameForElementType(type);
-      return PythonDocstringUtil.napoleonType(typeName, typeTable);
+      return PythonDocstringUtil.napoleonType(typeName, getVersionedDirectoryNamespace());
     }
 
-    return getParamTypeNameForElementType(typeTable, type);
+    return getParamTypeNameForElementType(type);
   }
 
   @Override
@@ -284,7 +283,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
             ? "google.gax._OperationFuture"
             : getModelTypeFormatter().getFullNameFor(outputType);
     String classInfo =
-        PythonDocstringUtil.napoleonType(returnTypeName, context.getModelTypeTable());
+        PythonDocstringUtil.napoleonType(returnTypeName, getVersionedDirectoryNamespace());
 
     if (methodConfig.getMethod().getResponseStreaming()) {
       return ImmutableList.of("Iterable[" + classInfo + "].");
@@ -293,15 +292,22 @@ public class PythonSurfaceNamer extends SurfaceNamer {
     if (methodConfig.isPageStreaming()) {
       TypeRef resourceType = methodConfig.getPageStreaming().getResourcesField().getType();
       return ImmutableList.of(
-          "A ~google.gax.PageIterator instance. By default, this",
+          "A :class:`~google.gax.PageIterator` instance. By default, this",
           "is an iterable of "
-              + getResponseTypeNameForElementType(context.getModelTypeTable(), resourceType)
+              + annotateWithClass(getResponseTypeNameForElementType(resourceType))
               + " instances.",
           "This object can also be configured to iterate over the pages",
           "of the response through the `options` parameter.");
     }
 
-    return ImmutableList.of("A " + classInfo + " instance.");
+    return ImmutableList.of(String.format("A %s instance.", annotateWithClass(classInfo)));
+  }
+
+  private String annotateWithClass(String maybeClassWrappedType) {
+    if (maybeClassWrappedType.startsWith(":class:")) {
+      return maybeClassWrappedType;
+    }
+    return String.format(":class:`%s`", maybeClassWrappedType);
   }
 
   @Override

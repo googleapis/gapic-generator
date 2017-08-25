@@ -91,8 +91,9 @@ public class PythonApiMethodParamTransformer implements ApiMethodParamTransforme
         ImmutableList.of(
             "The input objects. If a dict is provided, it must be of the",
             String.format(
-                "same form as the protobuf message %s",
-                PythonDocstringUtil.napoleonType(requestTypeName, context.getTypeTable()))));
+                "same form as the protobuf message :class:`%s`",
+                PythonDocstringUtil.napoleonType(
+                    requestTypeName, context.getNamer().getVersionedDirectoryNamespace()))));
 
     paramDoc.typeName("iterator[dict|" + requestTypeName + "]");
     return paramDoc.build();
@@ -137,8 +138,9 @@ public class PythonApiMethodParamTransformer implements ApiMethodParamTransforme
           docLines.add(
               "If a dict is provided, it must be of the same form as the protobuf",
               String.format(
-                  "message %s",
-                  PythonDocstringUtil.napoleonType(messageType, context.getTypeTable())));
+                  "message :class:`%s`",
+                  PythonDocstringUtil.napoleonType(
+                      messageType, namer.getVersionedDirectoryNamespace())));
         }
       }
       paramDoc.lines(docLines.build());

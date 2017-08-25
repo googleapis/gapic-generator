@@ -14,18 +14,11 @@
  */
 package com.google.api.codegen.util.py;
 
-import com.google.api.codegen.transformer.ModelTypeTable;
-
 public class PythonDocstringUtil {
-  public static String napoleonType(String fullName, ModelTypeTable typeTable) {
+  public static String napoleonType(String fullName, String typesFileNamespace) {
     if (fullName.contains(".")) {
-      String shortName = typeTable.getAndSaveNicknameFor(fullName);
-      StringBuilder type = new StringBuilder();
-      type.append("~");
-      if (!shortName.equals(fullName)) {
-        type.append(".");
-      }
-      return type.append(shortName).toString();
+      String typeName = fullName.substring(fullName.lastIndexOf('.') + 1);
+      return String.format("~%s.types.%s", typesFileNamespace, typeName);
     }
     return ":class:`" + fullName + "`";
   }
