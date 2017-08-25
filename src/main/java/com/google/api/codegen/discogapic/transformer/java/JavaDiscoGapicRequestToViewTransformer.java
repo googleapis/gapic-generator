@@ -243,7 +243,9 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     }
 
     for (FieldModel entry : method.getInputFields()) {
-      properties.add(schemaToParamView(context, entry, entry.getSimpleName(), symbolTable, true));
+      properties.add(
+          schemaToParamView(
+              context, entry, entry.getSimpleName(), symbolTable, EscapeName.ESCAPE_NAME));
       if (entry.isRequired()) {
         hasRequiredProperties = true;
       }
@@ -262,7 +264,12 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
       FieldModel requestBody =
           new DiscoveryField(requestBodyDef.dereference(), context.getDiscoGapicNamer());
       requestView.requestBodyType(
-          schemaToParamView(context, requestBody, requestBody.getSimpleName(), symbolTable, false));
+          schemaToParamView(
+              context,
+              requestBody,
+              requestBody.getSimpleName(),
+              symbolTable,
+              EscapeName.NO_ESCAPE_NAME));
     }
 
     return requestView.build();
@@ -274,12 +281,15 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
       FieldModel schema,
       String preferredName,
       SymbolTable symbolTable,
-      boolean escapeName) {
+      EscapeName escapeName) {
     StaticLangApiMessageView.Builder paramView = StaticLangApiMessageView.newBuilder();
     String typeName = context.getSchemaTypeTable().getAndSaveNicknameFor(schema);
     paramView.description(schema.getScopedDocumentation());
     String name = context.getNamer().privateFieldName(Name.anyCamel(preferredName));
-    String fieldName = escapeName ? symbolTable.getNewSymbol(name) : name;
+    String fieldName = name;
+    if (escapeName.equals(EscapeName.ESCAPE_NAME)) {
+      fieldName = symbolTable.getNewSymbol(name);
+    }
     paramView.name(fieldName);
     paramView.typeName(typeName);
     paramView.innerTypeName(typeName);
@@ -312,5 +322,10 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     return new SchemaTypeTable(
         new JavaTypeTable(implicitPackageName, IGNORE_JAVA_LANG_CLASH),
         new JavaSchemaTypeNameConverter(implicitPackageName, nameFormatter));
+  }
+
+  public enum EscapeName {
+    ESCAPE_NAME,
+    NO_ESCAPE_NAME
   }
 }
