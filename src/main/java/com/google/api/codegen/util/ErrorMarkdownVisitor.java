@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.util.go;
+package com.google.api.codegen.util;
 
 import org.commonmark.node.BlockQuote;
 import org.commonmark.node.BulletList;

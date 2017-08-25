@@ -46,8 +46,10 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /** The SurfaceNamer for Python. */
 public class PythonSurfaceNamer extends SurfaceNamer {
@@ -60,6 +62,12 @@ public class PythonSurfaceNamer extends SurfaceNamer {
         packageName,
         packageName);
   }
+
+  private static final Pattern VERSION_PATTERN =
+      Pattern.compile(
+          "^([vV]\\d+)" // Major version eg: v1
+              + "([pP]\\d+)?" // Point release eg: p2
+              + "(([aA]lpha|[bB]eta)\\d*)?"); //  Release level eg: alpha3
 
   @Override
   public SurfaceNamer cloneWithPackageName(String packageName) {
@@ -95,6 +103,15 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   public String getVersionedDirectoryNamespace() {
     String namespace = getPackageName();
     return namespace.substring(0, namespace.lastIndexOf('.'));
+  }
+
+  @Override
+  public String getGapicPackageName(String configPackageName) {
+    List<String> parts = Arrays.asList(configPackageName.split("-"));
+    if (VERSION_PATTERN.matcher(parts.get(parts.size() - 1)).matches()) {
+      return Joiner.on("-").join(parts.subList(0, parts.size() - 1));
+    }
+    return configPackageName;
   }
 
   @Override

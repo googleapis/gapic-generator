@@ -136,7 +136,7 @@ public class DiscoveryFragmentGeneratorApi {
     ApiaryConfig apiaryConfig = discovery.getConfig();
     apiaryConfig.setAuthInstructionsUrl(parseAuthInstructionsUrl(authInstructions, id));
 
-    File rubyNamesFile = new File(options.get(RUBY_NAMES_FILE));
+    String rubyNamesFile = options.get(RUBY_NAMES_FILE);
 
     DiscoveryProviderFactory providerFactory = createProviderFactory(factory);
     DiscoveryProvider provider =
