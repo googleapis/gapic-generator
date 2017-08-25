@@ -419,4 +419,24 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
     imports.add(createImport(namer.getVersionedDirectoryNamespace(), "types"));
     return ImmutableList.<ImportFileView>builder().addAll(imports).build();
   }
+
+  public ImportSectionView generateNoxImportSection() {
+    return ImportSectionView.newBuilder()
+        .appImports(ImmutableList.<ImportFileView>of())
+        .externalImports(generateNoxExternalImports())
+        .standardImports(generateNoxStandardImports())
+        .build();
+  }
+
+  private List<ImportFileView> generateNoxExternalImports() {
+    return ImmutableList.of(createImport("nox"));
+  }
+
+  private List<ImportFileView> generateNoxStandardImports() {
+    List<ImportFileView> imports = new ArrayList<>();
+    imports.addAll(generateAbsoluteImportImportSection());
+    imports.add(createImport("os"));
+    Collections.sort(imports, importFileViewComparator());
+    return imports;
+  }
 }
