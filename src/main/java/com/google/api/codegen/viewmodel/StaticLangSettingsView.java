@@ -32,8 +32,10 @@ public abstract class StaticLangSettingsView {
 
   public abstract String serviceAddress();
 
-  @Nullable
   public abstract Integer servicePort();
+
+  /* Whether to use the default service port with the default endpoint. Default true. */
+  public abstract boolean useDefaultServicePort();
 
   @Nullable
   public abstract String packagePath();
@@ -105,12 +107,10 @@ public abstract class StaticLangSettingsView {
   @Nullable // Used in Java
   public abstract TransportProtocol transportProtocol();
 
-  public boolean hasServicePort() {
-    return servicePort() != null;
-  }
-
   public static Builder newBuilder() {
-    return new AutoValue_StaticLangSettingsView.Builder().transportProtocol(TransportProtocol.GRPC);
+    return new AutoValue_StaticLangSettingsView.Builder()
+        .transportProtocol(TransportProtocol.GRPC)
+        .useDefaultServicePort(true);
   }
 
   @AutoValue.Builder
@@ -125,6 +125,8 @@ public abstract class StaticLangSettingsView {
     public abstract Builder serviceAddress(String val);
 
     public abstract Builder servicePort(Integer val);
+
+    public abstract Builder useDefaultServicePort(boolean val);
 
     public abstract Builder packagePath(String val);
 

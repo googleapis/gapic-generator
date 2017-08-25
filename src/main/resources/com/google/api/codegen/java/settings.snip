@@ -34,12 +34,8 @@
      * <p>The default instance has everything set to sensible defaults:
      *
      * <ul>
-     @if doc.hasServicePort
-       * <li>The default service address ({@doc.serviceAddress}) and default port ({@doc.servicePort})
-       * are used.
-     @else
-       * <li>The default service address ({@doc.serviceAddress}) is used.
-     @end
+     * <li>The default service address ({@doc.serviceAddress}) and default port ({@doc.servicePort})
+     * are used.
      * <li>Credentials are acquired automatically through Application Default Credentials.
      * <li>Retries are configured for idempotent methods but not for non-idempotent methods.
      * </ul>
@@ -108,13 +104,22 @@
     /**
      * Returns the default service endpoint.
      */
-    public static String getDefaultEndpoint() {
-      @if xsettingsClass.hasServicePort
+    @if xsettingsClass.useDefaultServicePort
+      public static String getDefaultEndpoint() {
         return "{@xsettingsClass.serviceAddress}:{@xsettingsClass.servicePort}";
-      @else
+      }
+    @else
+      public static String getDefaultEndpoint() {
         return "{@xsettingsClass.serviceAddress}";
-      @end
-    }
+      }
+
+      /**
+       * Returns the default service port.
+       */
+      public static int getDefaultServicePort() {
+        return {@xsettingsClass.servicePort};
+      }
+    @end
 
   @end
 

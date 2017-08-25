@@ -392,6 +392,9 @@ public class JavaSurfaceTransformer {
     xsettingsClass.name(name);
     xsettingsClass.serviceAddress(model.getServiceAddress());
     xsettingsClass.servicePort(model.getServicePort());
+    if (productConfig.getTransportProtocol().equals(TransportProtocol.HTTP)) {
+      xsettingsClass.useDefaultServicePort(false);
+    }
     xsettingsClass.authScopes(model.getAuthScopes());
     xsettingsClass.transportProtocol(productConfig.getTransportProtocol());
     xsettingsClass.rpcTransportName(namer.getTransportName(productConfig.getTransportProtocol()));

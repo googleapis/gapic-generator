@@ -92,7 +92,7 @@ public class DiscoApiModel implements ApiModel {
   /** Return the service port. */
   @Override
   public Integer getServicePort() {
-    return null;
+    return 443;
   }
 
   @Override
