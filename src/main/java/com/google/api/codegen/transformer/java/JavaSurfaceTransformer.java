@@ -751,8 +751,8 @@ public class JavaSurfaceTransformer {
         typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcCallableFactory");
         break;
       case HTTP:
+        typeTable.saveNicknameFor("com.google.api.client.http.HttpMethods");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMethodDescriptor");
-        typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpMethod");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonCallableFactory");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMessageHttpRequestFormatter");
         typeTable.saveNicknameFor("com.google.common.collect.Sets");

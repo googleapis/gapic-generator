@@ -53,15 +53,16 @@
 @private httpMethodCallable(callable)
   private static final {@callable.interfaceTypeName}<{@callable.requestTypeName}, {@callable.responseTypeName}> {@callable.name} =
       HttpJsonCallableFactory.{@callable.createCallableFunctionName}(
-          ApiMethodDescriptor.create(
-              "{@callable.httpMethod.fullMethodName}",
-              {@callable.requestTypeName}.getDefaultInstance(),
-              {@callable.responseTypeName}.getDefaultInstance(),
-              "{@callable.httpMethod.pathTemplate}",
-              {@paramsInMethodDescriptor(callable.httpMethod.pathParams)},
-              {@paramsInMethodDescriptor(callable.httpMethod.queryParams)},
-              new ApiMessageHttpRequestFormatter(),
-              HttpMethod.{@callable.httpMethod.httpMethod}));
+          ApiMethodDescriptor.<{@callable.requestTypeName}, {@callable.responseTypeName}>newBuilder()
+              .setMethodName("{@callable.httpMethod.fullMethodName}")
+              .setRequestInstance({@callable.requestTypeName}.getDefaultInstance())
+              .setResponseInstance({@callable.responseTypeName}.getDefaultInstance())
+              .setEndpointPathTemplate("{@callable.httpMethod.pathTemplate}")
+              .setPathParams({@paramsInMethodDescriptor(callable.httpMethod.pathParams)})
+              .setQueryParams({@paramsInMethodDescriptor(callable.httpMethod.queryParams)})
+              .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter())
+              .setHttpMethod(HttpMethods.{@callable.httpMethod.httpMethod})
+              .build());
 @end
 
 @private paramsInMethodDescriptor(params)
