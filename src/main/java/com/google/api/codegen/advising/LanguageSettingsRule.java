@@ -42,20 +42,22 @@ public class LanguageSettingsRule implements AdviserRule {
         String formattedPackageName = entry.getValue().getFormattedPackageName(packageName);
         messages.add(
             String.format(
-                "Missing language_settings for key %s.%n%n"
-                    + "language_settings:%n"
-                    + "  # ...%n"
-                    + "  %s:%n"
-                    + "    package_name: %s%n%n",
+                "Missing language_settings for key %s.%n"
+                    + "Did you mean:%n"
+                    + "  language_settings:%n"
+                    + "    # ...%n"
+                    + "    %s:%n"
+                    + "      package_name: %s%n%n",
                 language, language, formattedPackageName));
       } else if (languageSettingsProto.getPackageName().isEmpty()) {
         String formattedPackageName = entry.getValue().getFormattedPackageName(packageName);
         messages.add(
             String.format(
-                "Missing package_name in language_settings of key %s.%n%n"
-                    + "%s:%n"
-                    + "  # ...%n"
-                    + "  package_name: %s%n%n",
+                "Missing package_name in language_settings of key %s.%n"
+                    + "Did you mean:%n"
+                    + "  %s:%n"
+                    + "    # ...%n"
+                    + "    package_name: %s%n%n",
                 language, language, formattedPackageName));
       }
     }

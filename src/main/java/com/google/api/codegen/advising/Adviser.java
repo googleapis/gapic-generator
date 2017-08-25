@@ -16,6 +16,7 @@ package com.google.api.codegen.advising;
 
 import com.google.api.codegen.ConfigProto;
 import com.google.api.tools.framework.model.Diag;
+import com.google.api.tools.framework.model.Location;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.common.collect.ImmutableList;
@@ -25,6 +26,8 @@ import java.util.List;
 public class Adviser {
   private static final ImmutableList<AdviserRule> DEFAULT_RULES =
       ImmutableList.<AdviserRule>of(new LanguageSettingsRule());
+
+  private static final Location GAPIC_CONFIG_LOCATION = new SimpleLocation("gapic config");
 
   private final List<AdviserRule> rules;
 
@@ -48,7 +51,7 @@ public class Adviser {
       for (String message : rule.collectAdvice(model, configProto)) {
         model
             .getDiagCollector()
-            .addDiag(Diag.warning(SimpleLocation.TOPLEVEL, "(%s) %s", rule.getName(), message));
+            .addDiag(Diag.warning(GAPIC_CONFIG_LOCATION, "(%s) %s", rule.getName(), message));
       }
     }
   }
