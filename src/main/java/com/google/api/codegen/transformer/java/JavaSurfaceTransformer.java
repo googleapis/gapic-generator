@@ -26,9 +26,11 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
 import com.google.api.codegen.transformer.BatchingTransformer;
+import com.google.api.codegen.transformer.DiscoGapicInterfaceContext;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.InterfaceContext;
@@ -385,12 +387,27 @@ public class JavaSurfaceTransformer {
         context
             .getNamer()
             .getReleaseAnnotation(packageMetadataConfig.releaseLevel(TargetLanguage.JAVA)));
-    xsettingsClass.doc(generateSettingsDoc(context, exampleApiMethod));
+    xsettingsClass.doc(generateSettingsDoc(context, exampleApiMethod, productConfig));
     String name = namer.getApiSettingsClassName(context.getInterfaceConfig());
     xsettingsClass.name(name);
     xsettingsClass.serviceAddress(model.getServiceAddress());
     xsettingsClass.servicePort(model.getServicePort());
+    if (productConfig.getTransportProtocol().equals(TransportProtocol.HTTP)) {
+      xsettingsClass.useDefaultServicePortInEndpoint(false);
+    }
     xsettingsClass.authScopes(model.getAuthScopes());
+    xsettingsClass.transportProtocol(productConfig.getTransportProtocol());
+    xsettingsClass.rpcTransportName(namer.getTransportName(productConfig.getTransportProtocol()));
+    xsettingsClass.transportNameGetter(
+        namer.getTransporNameGetMethod(productConfig.getTransportProtocol()));
+    xsettingsClass.defaultChannelProviderBuilder(
+        namer.getDefaultChannelProviderBuilder(productConfig.getTransportProtocol()));
+    xsettingsClass.defaultTransportProviderBuilder(
+        namer.getDefaultTransportProviderBuilder(productConfig.getTransportProtocol()));
+    xsettingsClass.transportProvider(
+        namer.getTransportProvider(productConfig.getTransportProtocol()));
+    xsettingsClass.instantiatingChannelProvider(
+        namer.getInstantiatingChannelProvider(productConfig.getTransportProtocol()));
 
     List<ApiCallSettingsView> apiCallSettings =
         apiCallableTransformer.generateCallSettings(context);
@@ -534,6 +551,11 @@ public class JavaSurfaceTransformer {
       context.getImportTypeTable().getAndSaveNicknameFor(alias);
     }
 
+    // TODO(andrealin): Move the baseUrl to gapic.yaml and pull value from GapicProductConfig.
+    if (productConfig.getTransportProtocol().equals(TransportProtocol.HTTP)) {
+      stubClass.baseUrl(((DiscoGapicInterfaceContext) context).getDocument().baseUrl());
+    }
+
     return stubClass.build();
   }
 
@@ -631,10 +653,6 @@ public class JavaSurfaceTransformer {
     typeTable.saveNicknameFor("com.google.api.gax.core.GoogleCredentialsProvider");
     typeTable.saveNicknameFor("com.google.api.gax.core.InstantiatingExecutorProvider");
     typeTable.saveNicknameFor("com.google.api.gax.core.PropertiesProvider");
-
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcTransport");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcTransportProvider");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.InstantiatingChannelProvider");
     typeTable.saveNicknameFor("com.google.api.gax.retrying.RetrySettings");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.ClientContext");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.ClientSettings");
@@ -689,12 +707,19 @@ public class JavaSurfaceTransformer {
       case PROTO:
         typeTable.saveNicknameFor("com.google.api.gax.grpc.ChannelProvider");
         typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcStatusCode");
+        typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcTransport");
+        typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcTransportProvider");
+        typeTable.saveNicknameFor("com.google.api.gax.grpc.InstantiatingChannelProvider");
         typeTable.saveNicknameFor("io.grpc.ManagedChannel");
         typeTable.saveNicknameFor("io.grpc.Status");
         break;
       case DISCOVERY:
         typeTable.saveNicknameFor("com.google.api.client.http.HttpStatusCodes");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonStatusCode");
+        typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonTransport");
+        typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonTransportProvider");
+        typeTable.saveNicknameFor(
+            "com.google.api.gax.httpjson.InstantiatingHttpJsonChannelProvider");
         break;
     }
   }
@@ -721,12 +746,18 @@ public class JavaSurfaceTransformer {
       typeTable.saveNicknameFor("com.google.longrunning.Operation");
       typeTable.saveNicknameFor("com.google.longrunning.stub.GrpcOperationsStub");
     }
-    switch (context.getApiModel().getApiSource()) {
-      case PROTO:
+    switch (((GapicProductConfig) context.getProductConfig()).getTransportProtocol()) {
+      case GRPC:
         typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcCallableFactory");
         break;
-      case DISCOVERY:
+      case HTTP:
+        typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMethodDescriptor");
+        typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpMethod");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonCallableFactory");
+        typeTable.saveNicknameFor("com.google.api.gax.httpjson.ApiMessageHttpRequestFormatter");
+        typeTable.saveNicknameFor("com.google.common.collect.Sets");
+        typeTable.saveNicknameFor("java.util.HashSet");
+        typeTable.saveNicknameFor("java.util.Arrays");
         break;
     }
   }
@@ -767,12 +798,15 @@ public class JavaSurfaceTransformer {
   }
 
   private SettingsDocView generateSettingsDoc(
-      InterfaceContext context, StaticLangApiMethodView exampleApiMethod) {
+      InterfaceContext context,
+      StaticLangApiMethodView exampleApiMethod,
+      GapicProductConfig productConfig) {
     SurfaceNamer namer = context.getNamer();
     SettingsDocView.Builder settingsDoc = SettingsDocView.newBuilder();
     ApiModel model = context.getApiModel();
     settingsDoc.serviceAddress(model.getServiceAddress());
     settingsDoc.servicePort(model.getServicePort());
+    settingsDoc.transportProtocol(productConfig.getTransportProtocol());
     settingsDoc.exampleApiMethodName(exampleApiMethod.name());
     settingsDoc.exampleApiMethodSettingsGetter(exampleApiMethod.settingsGetterName());
     settingsDoc.apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()));

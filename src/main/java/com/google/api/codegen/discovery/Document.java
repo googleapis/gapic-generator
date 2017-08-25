@@ -17,6 +17,7 @@ package com.google.api.codegen.discovery;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import java.util.ArrayList;
@@ -78,11 +79,17 @@ public abstract class Document implements Node {
     String version = root.getString("version");
     boolean versionModule = root.getBoolean("version_module");
 
+    String baseUrl =
+        root.has("baseUrl")
+            ? root.getString("baseUrl")
+            : (rootUrl + Strings.nullToEmpty(root.getString("basePath")));
+
     Document thisDocument =
         new AutoValue_Document(
             "", // authInstructionsUrl (only intended to be overridden).
             authScopes.build(),
             authType,
+            baseUrl,
             canonicalName,
             description,
             "", // discoveryDocUrl (only intended to be overridden).
@@ -134,6 +141,7 @@ public abstract class Document implements Node {
   /** @return the parent Node that contains this node. */
   @JsonIgnore @Nullable private Node parent;
 
+  @Override
   public Node parent() {
     return parent;
   }
@@ -153,6 +161,10 @@ public abstract class Document implements Node {
   /** @return the auth type. */
   @JsonProperty("authType")
   public abstract AuthType authType();
+
+  /** @return the base URL. */
+  @JsonProperty("baseUrl")
+  public abstract String baseUrl();
 
   /** @return the canonical name. */
   @JsonProperty("canonicalName")

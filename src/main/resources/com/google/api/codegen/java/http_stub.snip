@@ -27,7 +27,6 @@
     {@constants(classView)}
     {@members(classView)}
     {@constructors(classView)}
-    {@memberMethods(classView)}
     {@callableMethods(classView)}
     {@cleanupSection()}
   }
@@ -43,20 +42,34 @@
 @end
 
 @private constants(stubClass)
+  private static final String BASE_URL = "{@stubClass.baseUrl}";
+
   @join callable : stubClass.directCallables
-    {@grpcMethodCallable(callable)}
+    {@httpMethodCallable(callable)}
   @end
   {@""}
 @end
 
-@private grpcMethodCallable(callable)
+@private httpMethodCallable(callable)
   private static final {@callable.interfaceTypeName}<{@callable.requestTypeName}, {@callable.responseTypeName}> {@callable.name} =
       HttpJsonCallableFactory.{@callable.createCallableFunctionName}(
-          io.grpc.MethodDescriptor.create(
-              {@streamingTypeEnum(callable.grpcStreamingType)},
-              "{@callable.fullServiceName}/{@callable.protoMethodName}",
-              io.grpc.protobuf.ProtoUtils.marshaller({@callable.requestTypeName}.getDefaultInstance()),
-              io.grpc.protobuf.ProtoUtils.marshaller({@callable.responseTypeName}.getDefaultInstance())));
+          ApiMethodDescriptor.create(
+              "{@callable.httpMethod.fullMethodName}",
+              {@callable.requestTypeName}.getDefaultInstance(),
+              {@callable.responseTypeName}.getDefaultInstance(),
+              "{@callable.httpMethod.pathTemplate}",
+              {@paramsInMethodDescriptor(callable.httpMethod.pathParams)},
+              {@paramsInMethodDescriptor(callable.httpMethod.queryParams)},
+              new ApiMessageHttpRequestFormatter(),
+              HttpMethod.{@callable.httpMethod.httpMethod}));
+@end
+
+@private paramsInMethodDescriptor(params)
+   Sets.<String>newHashSet(
+      @join param : params on ", "
+        "{@param}"
+      @end
+      )
 @end
 
 @private streamingTypeEnum(streamingType)
@@ -75,7 +88,6 @@
 @end
 
 @private members(stubClass)
-
   private final BackgroundResource backgroundResources;
   @if stubClass.hasLongRunningOperations
     private final GrpcOperationsStub operationsStub;
@@ -150,15 +162,6 @@
 
     backgroundResources = new BackgroundResourceAggregation(clientContext.getBackgroundResources());
   }
-  {@""}
-@end
-
-@private memberMethods(xapiClass)
-  @if xapiClass.hasLongRunningOperations
-    public GrpcOperationsStub getOperationsStub() {
-      return operationsStub;
-    }
-  @end
   {@""}
 @end
 

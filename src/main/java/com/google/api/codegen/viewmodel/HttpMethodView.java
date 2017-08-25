@@ -15,29 +15,37 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
+import java.util.List;
 
 @AutoValue
-public abstract class FieldCopyView implements Comparable<FieldCopyView> {
+public abstract class HttpMethodView {
+  public abstract List<String> pathParams();
 
-  public abstract String fieldSetFunction();
+  public abstract List<String> queryParams();
 
-  public abstract String fieldGetFunction();
+  // Return the HTTP method, e.g. GET, POST
+  public abstract String httpMethod();
+
+  public abstract String fullMethodName();
+
+  public abstract String pathTemplate();
 
   public static Builder newBuilder() {
-    return new AutoValue_FieldCopyView.Builder();
+    return new AutoValue_HttpMethodView.Builder();
   }
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder fieldSetFunction(String val);
+    public abstract Builder pathParams(List<String> type);
 
-    public abstract Builder fieldGetFunction(String val);
+    public abstract Builder queryParams(List<String> val);
 
-    public abstract FieldCopyView build();
-  }
+    public abstract Builder httpMethod(String name);
 
-  @Override
-  public int compareTo(FieldCopyView o) {
-    return this.fieldSetFunction().compareTo(o.fieldSetFunction());
+    public abstract Builder fullMethodName(String name);
+
+    public abstract Builder pathTemplate(String name);
+
+    public abstract HttpMethodView build();
   }
 }

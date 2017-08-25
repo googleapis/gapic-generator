@@ -14,21 +14,26 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.config.DiscoveryMethodModel;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PageStreamingConfig;
+import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.config.VisibilityConfig;
+import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.viewmodel.ApiCallSettingsView;
 import com.google.api.codegen.viewmodel.ApiCallableImplType;
 import com.google.api.codegen.viewmodel.ApiCallableView;
 import com.google.api.codegen.viewmodel.DirectCallableView;
+import com.google.api.codegen.viewmodel.HttpMethodView;
 import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
 import com.google.api.codegen.viewmodel.RetryCodesDefinitionView;
 import com.google.api.codegen.viewmodel.RetryParamsDefinitionView;
 import com.google.api.codegen.viewmodel.ServiceMethodType;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -191,6 +196,27 @@ public class ApiCallableTransformer {
     apiCallableBuilder.settingsFunctionName(namer.getSettingsFunctionName(method));
     apiCallableBuilder.grpcClientVarName(namer.getReroutedGrpcClientVarName(methodConfig));
     apiCallableBuilder.grpcDirectCallableName(namer.getDirectCallableName(method));
+
+    apiCallableBuilder.httpMethod(generateHttpFields(context));
+  }
+
+  private HttpMethodView generateHttpFields(MethodContext context) {
+    if (context.getProductConfig().getTransportProtocol().equals(TransportProtocol.HTTP)) {
+      Method method = ((DiscoveryMethodModel) context.getMethodModel()).getDiscoMethod();
+      HttpMethodView.Builder httpMethodView = HttpMethodView.newBuilder();
+      httpMethodView.fullMethodName(method.id());
+      httpMethodView.httpMethod(method.httpMethod());
+      List<String> pathParams = new ArrayList<>(method.pathParams().keySet());
+      List<String> queryParams = new ArrayList<>(method.queryParams().keySet());
+      Collections.sort(pathParams);
+      Collections.sort(queryParams);
+      httpMethodView.pathParams(pathParams);
+      httpMethodView.queryParams(queryParams);
+      httpMethodView.pathTemplate(method.path());
+      return httpMethodView.build();
+    } else {
+      return null;
+    }
   }
 
   public List<ApiCallSettingsView> generateApiCallableSettings(MethodContext context) {
@@ -311,6 +337,8 @@ public class ApiCallableTransformer {
     callableBuilder.name(namer.getDirectCallableName(method));
     callableBuilder.protoMethodName(method.getSimpleName());
     callableBuilder.fullServiceName(context.getTargetInterface().getFullName());
+
+    callableBuilder.httpMethod(generateHttpFields(context));
 
     return callableBuilder.build();
   }

@@ -83,4 +83,6 @@ public interface MethodModel {
   String getProtoMethodName();
 
   Iterable<FieldModel> getInputFields();
+
+  Iterable<FieldModel> getResourceNameInputFields();
 }

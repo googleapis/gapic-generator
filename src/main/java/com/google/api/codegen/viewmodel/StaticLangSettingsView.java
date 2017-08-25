@@ -34,6 +34,9 @@ public abstract class StaticLangSettingsView {
 
   public abstract Integer servicePort();
 
+  /* Whether to use the default service port with the default endpoint. Default true. */
+  public abstract boolean useDefaultServicePortInEndpoint();
+
   @Nullable
   public abstract String packagePath();
 
@@ -83,10 +86,31 @@ public abstract class StaticLangSettingsView {
   @Nullable // Used in Java
   public abstract String rpcStubClassName();
 
+  @Nullable // Used in Java
+  public abstract String rpcTransportName();
+
+  @Nullable // Used in Java
+  public abstract String transportNameGetter();
+
+  @Nullable // Used in Java
+  public abstract String defaultChannelProviderBuilder();
+
+  @Nullable // Used in Java
+  public abstract String defaultTransportProviderBuilder();
+
+  @Nullable // Used in Java
+  public abstract String transportProvider();
+
+  @Nullable // Used in Java
+  public abstract String instantiatingChannelProvider();
+
+  @Nullable // Used in Java
   public abstract TransportProtocol transportProtocol();
 
   public static Builder newBuilder() {
-    return new AutoValue_StaticLangSettingsView.Builder().transportProtocol(TransportProtocol.GRPC);
+    return new AutoValue_StaticLangSettingsView.Builder()
+        .transportProtocol(TransportProtocol.GRPC)
+        .useDefaultServicePortInEndpoint(true);
   }
 
   @AutoValue.Builder
@@ -101,6 +125,8 @@ public abstract class StaticLangSettingsView {
     public abstract Builder serviceAddress(String val);
 
     public abstract Builder servicePort(Integer val);
+
+    public abstract Builder useDefaultServicePortInEndpoint(boolean val);
 
     public abstract Builder packagePath(String val);
 
@@ -125,9 +151,21 @@ public abstract class StaticLangSettingsView {
 
     public abstract Builder hasDefaultInstance(boolean hasDefaultInstance);
 
-    public abstract Builder stubInterfaceName(String apiStubInterfaceName);
+    public abstract Builder stubInterfaceName(String val);
 
-    public abstract Builder rpcStubClassName(String apiRpcStubClassName);
+    public abstract Builder rpcStubClassName(String val);
+
+    public abstract Builder rpcTransportName(String val);
+
+    public abstract Builder transportNameGetter(String val);
+
+    public abstract Builder defaultChannelProviderBuilder(String val);
+
+    public abstract Builder defaultTransportProviderBuilder(String val);
+
+    public abstract Builder transportProvider(String val);
+
+    public abstract Builder instantiatingChannelProvider(String val);
 
     public abstract Builder transportProtocol(TransportProtocol transportProtocol);
 
