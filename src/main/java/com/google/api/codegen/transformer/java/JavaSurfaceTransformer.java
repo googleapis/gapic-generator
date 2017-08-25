@@ -393,7 +393,7 @@ public class JavaSurfaceTransformer {
     xsettingsClass.serviceAddress(model.getServiceAddress());
     xsettingsClass.servicePort(model.getServicePort());
     if (productConfig.getTransportProtocol().equals(TransportProtocol.HTTP)) {
-      xsettingsClass.useDefaultServicePort(false);
+      xsettingsClass.useDefaultServicePortInEndpoint(false);
     }
     xsettingsClass.authScopes(model.getAuthScopes());
     xsettingsClass.transportProtocol(productConfig.getTransportProtocol());
