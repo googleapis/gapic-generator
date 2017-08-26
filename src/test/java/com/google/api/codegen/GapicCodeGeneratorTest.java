@@ -15,7 +15,7 @@
 package com.google.api.codegen;
 
 import com.google.api.codegen.gapic.MainGapicProviderFactory;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,11 +24,11 @@ import org.junit.runners.Parameterized.Parameters;
 
 /** Go code generator baseline tests. */
 @RunWith(Parameterized.class)
-public class GoCodeGeneratorTest extends GapicTestBase2 {
+public class GapicCodeGeneratorTest extends GapicTestBase2 {
 
   private final String apiName;
 
-  public GoCodeGeneratorTest(
+  public GapicCodeGeneratorTest(
       String idForFactory,
       String[] gapicConfigFileNames,
       String packageConfigFileName,
@@ -41,18 +41,29 @@ public class GoCodeGeneratorTest extends GapicTestBase2 {
     getTestDataLocator().addTestDataSource(getClass(), "testdata/" + idForFactory);
   }
 
-  /**
-   * Declares test parameters, each one an array of values passed to the constructor, with the first
-   * element a name, the second a config of this name.
-   */
   @Parameters(name = "{0}")
   public static List<Object[]> testedConfigs() {
-    return Collections.singletonList(
+    return Arrays.asList(
         GapicTestBase2.createTestConfig(
             MainGapicProviderFactory.GO,
             new String[] {"go_gapic.yaml", "library_gapic.yaml"},
             null,
-            "library"));
+            "library"),
+        GapicTestBase2.createTestConfig(
+            MainGapicProviderFactory.PHP,
+            new String[] {"php_gapic.yaml", "library_gapic.yaml"},
+            "library_pkg.yaml",
+            "library"),
+        GapicTestBase2.createTestConfig(
+            MainGapicProviderFactory.JAVA,
+            new String[] {"java_gapic.yaml", "library_gapic.yaml"},
+            "library_pkg.yaml",
+            "library"),
+        GapicTestBase2.createTestConfig(
+            MainGapicProviderFactory.JAVA,
+            new String[] {"java_gapic.yaml", "no_path_templates_gapic.yaml"},
+            "no_path_templates_pkg.yaml",
+            "no_path_templates"));
   }
 
   // Tests
