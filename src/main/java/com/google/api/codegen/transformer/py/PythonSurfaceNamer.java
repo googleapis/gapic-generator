@@ -244,8 +244,12 @@ public class PythonSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getClientConfigPath(Interface apiInterface) {
-    return classFileNameBase(Name.upperCamel(apiInterface.getSimpleName()).join("client_config"))
-        + ".json";
+    return String.format("%s.%s", getPackageName(), getClientConfigName(apiInterface));
+  }
+
+  @Override
+  public String getClientConfigName(Interface apiInterface) {
+    return classFileNameBase(Name.upperCamel(apiInterface.getSimpleName()).join("client_config"));
   }
 
   @Override
