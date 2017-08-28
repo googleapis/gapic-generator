@@ -118,8 +118,6 @@ module Google
           scopes: ALL_SCOPES,
           client_config: {},
           timeout: DEFAULT_TIMEOUT,
-          app_name: nil,
-          app_version: nil,
           lib_name: nil,
           lib_version: ""
         # These require statements are intentionally placed here to initialize
@@ -134,9 +132,6 @@ module Google
           credentials ||= channel
           credentials ||= chan_creds
           credentials ||= updater_proc
-        end
-        if app_name || app_version
-          warn "`app_name` and `app_version` are no longer being used in the request headers."
         end
         if service_path || port
           warn "`service_path` and `port` parameters are deprecated and will be removed"
