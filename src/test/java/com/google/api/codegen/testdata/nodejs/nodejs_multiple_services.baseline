@@ -1,0 +1,758 @@
+============== file: README.md ==============
+# Node.js Clients for Google Example API ([Alpha](https://github.com/GoogleCloudPlatform/google-cloud-node#versioning))
+
+[Google Example API][Product Documentation]:
+This description tests descriptions that span multiple lines. This is a service
+that increments and decrements a counter.
+- [Client Library Documentation][]
+- [Product Documentation][]
+
+## Quick Start
+In order to use this library, you first need to go through the following
+steps:
+
+1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
+2. [Enable the Google Example API.](https://console.cloud.google.com/apis/api/multiple_services)
+3. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-node/#/docs/google-cloud/master/guides/authentication)
+
+### Installation
+```
+$ npm install --save @google-cloud/multiple-services
+```
+
+### Next Steps
+- Read the [Client Library Documentation][] for Google Example API
+  to see other available methods on the client.
+- Read the [Google Example API Product documentation][Product Documentation]
+  to learn more about the product and see How-to Guides.
+- View this [repository's main README](https://github.com/GoogleCloudPlatform/google-cloud-node/blob/master/README.md)
+  to see the full list of Cloud APIs that we cover.
+
+[Client Library Documentation]: https://googlecloudplatform.github.io/google-cloud-node/#/docs/multiple_services
+[Product Documentation]: https://cloud.google.com/multiple_services
+============== file: package.json ==============
+{
+  "repository": "GoogleCloudPlatform/google-cloud-node",
+  "name": "@google-cloud/multiple-services",
+  "version": "0.7.1",
+  "author": "Google, Inc.",
+  "description": "Google Example API client for Node.js",
+  "main": "src/index.js",
+  "files": [
+    "src",
+    "AUTHORS",
+    "COPYING"
+  ],
+  "keywords": [
+    "google apis client",
+    "google api client",
+    "google apis",
+    "google api",
+    "google",
+    "google cloud platform",
+    "google cloud",
+    "cloud",
+    "google multiple_services",
+    "multiple_services",
+    "Google Example API"
+  ],
+  "dependencies": {
+    "extend": "^3.0",
+    "google-gax": "^0.7.0",
+    "google-proto-files": "^0.8.2",
+    "google-some-other-package-v1": "^0.2.1",
+    "lodash.union": "^4.6.0"
+  },
+  "devDependencies": {
+    "mocha": "^3.2.0",
+    "through2": "^2.0.3"
+  },
+  "scripts": {
+    "publish-module": "node ../../scripts/publish.js multiple_services",
+    "smoke-test": "mocha smoke-test/*.js --timeout 5000",
+    "test": "mocha test/*.js"
+  },
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=4.0.0"
+  }
+}
+
+============== file: src/index.js ==============
+/*
+ * Copyright 2017, Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+'use strict';
+
+var extend = require('extend');
+var gapic = {
+  v1: require('./v1')
+};
+var gaxGrpc = require('google-gax').grpc();
+
+const VERSION = require('../package.json').version;
+
+/**
+ * Create an incrementerServiceClient with additional helpers for common
+ * tasks.
+ *
+
+ *
+ * @param {object=} options - [Configuration object](#/docs).
+ * @param {object=} options.credentials - Credentials object.
+ * @param {string=} options.credentials.client_email
+ * @param {string=} options.credentials.private_key
+ * @param {string=} options.email - Account email address. Required when using a
+ *     .pem or .p12 keyFilename.
+ * @param {string=} options.keyFilename - Full path to the a .json, .pem, or
+ *     .p12 key downloaded from the Google Developers Console. If you provide
+ *     a path to a JSON file, the projectId option above is not necessary.
+ *     NOTE: .pem and .p12 require you to specify options.email as well.
+ * @param {number=} options.port - The port on which to connect to
+ *     the remote host.
+ * @param {string=} options.projectId - The project ID from the Google
+ *     Developer's Console, e.g. 'grape-spaceship-123'. We will also check
+ *     the environment variable GCLOUD_PROJECT for your project ID. If your
+ *     app is running in an environment which supports
+ *     {@link https://developers.google.com/identity/protocols/application-default-credentials Application Default Credentials},
+ *     your project ID will be detected automatically.
+ * @param {function=} options.promise - Custom promise module to use instead
+ *     of native Promises.
+ * @param {string=} options.servicePath - The domain name of the
+ *     API remote host.
+ */
+function incrementerV1(options) {
+  // Define the header options.
+  options = extend({}, options, {
+    libName: 'gccl',
+    libVersion: VERSION
+  });
+
+  // Create the client with the provided options.
+  var client = gapic.v1(options).incrementerServiceClient(options);
+  return client;
+}
+
+/**
+ * Create an decrementerServiceClient with additional helpers for common
+ * tasks.
+ *
+
+ *
+ * @param {object=} options - [Configuration object](#/docs).
+ * @param {object=} options.credentials - Credentials object.
+ * @param {string=} options.credentials.client_email
+ * @param {string=} options.credentials.private_key
+ * @param {string=} options.email - Account email address. Required when using a
+ *     .pem or .p12 keyFilename.
+ * @param {string=} options.keyFilename - Full path to the a .json, .pem, or
+ *     .p12 key downloaded from the Google Developers Console. If you provide
+ *     a path to a JSON file, the projectId option above is not necessary.
+ *     NOTE: .pem and .p12 require you to specify options.email as well.
+ * @param {number=} options.port - The port on which to connect to
+ *     the remote host.
+ * @param {string=} options.projectId - The project ID from the Google
+ *     Developer's Console, e.g. 'grape-spaceship-123'. We will also check
+ *     the environment variable GCLOUD_PROJECT for your project ID. If your
+ *     app is running in an environment which supports
+ *     {@link https://developers.google.com/identity/protocols/application-default-credentials Application Default Credentials},
+ *     your project ID will be detected automatically.
+ * @param {function=} options.promise - Custom promise module to use instead
+ *     of native Promises.
+ * @param {string=} options.servicePath - The domain name of the
+ *     API remote host.
+ */
+function decrementerV1(options) {
+  // Define the header options.
+  options = extend({}, options, {
+    libName: 'gccl',
+    libVersion: VERSION
+  });
+
+  // Create the client with the provided options.
+  var client = gapic.v1(options).decrementerServiceClient(options);
+  return client;
+}
+
+var v1Protos = {};
+
+extend(v1Protos, gaxGrpc.load([{
+  root: require('google-proto-files')('..'),
+  file: 'multiple_services.proto'
+}]).google.cloud.example.v1);
+
+extend(v1Protos, gaxGrpc.load([{
+  root: require('google-proto-files')('..'),
+  file: 'multiple_services.proto'
+}]).google.cloud.example.v1);
+
+module.exports.incrementer = incrementerV1;
+module.exports.decrementer = decrementerV1;
+module.exports.types = v1Protos;
+
+module.exports.v1 = {};
+module.exports.v1.incrementer = incrementerV1;
+module.exports.v1.decrementer = decrementerV1;
+module.exports.v1.types = v1Protos;
+============== file: src/v1/decrementer_service_client.js ==============
+/*
+ * Copyright 2017, Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * EDITING INSTRUCTIONS
+ * This file was generated from the file
+ * https://github.com/googleapis/googleapis/blob/master/multiple_services.proto,
+ * and updates to that file get reflected here through a refresh process.
+ * For the short term, the refresh process will only be runnable by Google
+ * engineers.
+ *
+ * The only allowed edits are to method and file documentation. A 3-way
+ * merge preserves those additions if the generated source changes.
+ */
+/* TODO: introduce line-wrapping so that it never exceeds the limit. */
+/* jscs: disable maximumLineLength */
+'use strict';
+
+var configData = require('./decrementer_service_client_config');
+var extend = require('extend');
+var gax = require('google-gax');
+
+var SERVICE_ADDRESS = 'no-path-templates.googleapis.com';
+
+var DEFAULT_SERVICE_PORT = 443;
+
+var CODE_GEN_NAME_VERSION = 'gapic/0.0.5';
+
+/**
+ * The scopes needed to make gRPC calls to all of the methods defined in
+ * this service.
+ */
+var ALL_SCOPES = [
+];
+
+/**
+ *
+ * @class
+ */
+function DecrementerServiceClient(gaxGrpc, grpcClients, opts) {
+  opts = extend({
+    servicePath: SERVICE_ADDRESS,
+    port: DEFAULT_SERVICE_PORT,
+    clientConfig: {}
+  }, opts);
+
+  var googleApiClient = [
+    'gl-node/' + process.versions.node
+  ];
+  if (opts.libName && opts.libVersion) {
+    googleApiClient.push(opts.libName + '/' + opts.libVersion);
+  }
+  googleApiClient.push(
+    CODE_GEN_NAME_VERSION,
+    'gax/' + gax.version,
+    'grpc/' + gaxGrpc.grpcVersion
+  );
+
+  var defaults = gaxGrpc.constructSettings(
+      'google.cloud.example.v1.DecrementerService',
+      configData,
+      opts.clientConfig,
+      {'x-goog-api-client': googleApiClient.join(' ')});
+
+  var self = this;
+
+  this.auth = gaxGrpc.auth;
+  var decrementerServiceStub = gaxGrpc.createStub(
+      grpcClients.google.cloud.example.v1.DecrementerService,
+      opts);
+  var decrementerServiceStubMethods = [
+    'decrement'
+  ];
+  decrementerServiceStubMethods.forEach(function(methodName) {
+    self['_' + methodName] = gax.createApiCall(
+      decrementerServiceStub.then(function(decrementerServiceStub) {
+        return function() {
+          var args = Array.prototype.slice.call(arguments, 0);
+          return decrementerServiceStub[methodName].apply(decrementerServiceStub, args);
+        };
+      }),
+      defaults[methodName],
+      null);
+  });
+}
+
+
+/**
+ * Get the project ID used by this class.
+ * @param {function(Error, string)} callback - the callback to be called with
+ *   the current project Id.
+ */
+DecrementerServiceClient.prototype.getProjectId = function(callback) {
+  return this.auth.getProjectId(callback);
+};
+
+// Service calls
+
+/**
+ * Decrement.
+ *
+ * @param {Object=} request
+ *   The request object that will be sent.
+ * @param {Object=} options
+ *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+ *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+ * @param {function(?Error)=} callback
+ *   The function which will be called with the result of the API call.
+ * @return {Promise} - The promise which resolves when API call finishes.
+ *   The promise has a method named "cancel" which cancels the ongoing API call.
+ *
+ * @example
+ *
+ * var multipleServices = require('@google-cloud/multiple-services');
+ *
+ * var client = multipleServices.v1.decrementer({
+ *   // optional auth parameters.
+ * });
+ *
+ *
+ * client.decrement({}).catch(function(err) {
+ *     console.error(err);
+ * });
+ */
+DecrementerServiceClient.prototype.decrement = function(request, options, callback) {
+  if (options instanceof Function && callback === undefined) {
+    callback = options;
+    options = {};
+  }
+  if (options === undefined) {
+    options = {};
+  }
+  if (request === undefined) {
+    request = {};
+  }
+  return this._decrement(request, options, callback);
+};
+
+function DecrementerServiceClientBuilder(gaxGrpc) {
+  if (!(this instanceof DecrementerServiceClientBuilder)) {
+    return new DecrementerServiceClientBuilder(gaxGrpc);
+  }
+
+  var decrementerServiceClient = gaxGrpc.load([{
+    root: require('google-proto-files')('..'),
+    file: 'multiple_services.proto'
+  }]);
+  extend(this, decrementerServiceClient.google.cloud.example.v1);
+
+
+  /**
+   * Build a new instance of {@link DecrementerServiceClient}.
+   *
+   * @param {Object=} opts - The optional parameters.
+   * @param {String=} opts.servicePath
+   *   The domain name of the API remote host.
+   * @param {number=} opts.port
+   *   The port on which to connect to the remote host.
+   * @param {grpc.ClientCredentials=} opts.sslCreds
+   *   A ClientCredentials for use with an SSL-enabled channel.
+   * @param {Object=} opts.clientConfig
+   *   The customized config to build the call settings. See
+   *   {@link gax.constructSettings} for the format.
+   */
+  this.decrementerServiceClient = function(opts) {
+    return new DecrementerServiceClient(gaxGrpc, decrementerServiceClient, opts);
+  };
+  extend(this.decrementerServiceClient, DecrementerServiceClient);
+}
+module.exports = DecrementerServiceClientBuilder;
+module.exports.SERVICE_ADDRESS = SERVICE_ADDRESS;
+module.exports.ALL_SCOPES = ALL_SCOPES;
+============== file: src/v1/decrementer_service_client_config.json ==============
+{
+  "interfaces": {
+    "google.cloud.example.v1.DecrementerService": {
+      "retry_codes": {},
+      "retry_params": {},
+      "methods": {
+        "Decrement": {
+          "timeout_millis": 10000
+        }
+      }
+    }
+  }
+}
+
+============== file: src/v1/incrementer_service_client.js ==============
+/*
+ * Copyright 2017, Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * EDITING INSTRUCTIONS
+ * This file was generated from the file
+ * https://github.com/googleapis/googleapis/blob/master/multiple_services.proto,
+ * and updates to that file get reflected here through a refresh process.
+ * For the short term, the refresh process will only be runnable by Google
+ * engineers.
+ *
+ * The only allowed edits are to method and file documentation. A 3-way
+ * merge preserves those additions if the generated source changes.
+ */
+/* TODO: introduce line-wrapping so that it never exceeds the limit. */
+/* jscs: disable maximumLineLength */
+'use strict';
+
+var configData = require('./incrementer_service_client_config');
+var extend = require('extend');
+var gax = require('google-gax');
+
+var SERVICE_ADDRESS = 'no-path-templates.googleapis.com';
+
+var DEFAULT_SERVICE_PORT = 443;
+
+var CODE_GEN_NAME_VERSION = 'gapic/0.0.5';
+
+/**
+ * The scopes needed to make gRPC calls to all of the methods defined in
+ * this service.
+ */
+var ALL_SCOPES = [
+];
+
+/**
+ *
+ * @class
+ */
+function IncrementerServiceClient(gaxGrpc, grpcClients, opts) {
+  opts = extend({
+    servicePath: SERVICE_ADDRESS,
+    port: DEFAULT_SERVICE_PORT,
+    clientConfig: {}
+  }, opts);
+
+  var googleApiClient = [
+    'gl-node/' + process.versions.node
+  ];
+  if (opts.libName && opts.libVersion) {
+    googleApiClient.push(opts.libName + '/' + opts.libVersion);
+  }
+  googleApiClient.push(
+    CODE_GEN_NAME_VERSION,
+    'gax/' + gax.version,
+    'grpc/' + gaxGrpc.grpcVersion
+  );
+
+  var defaults = gaxGrpc.constructSettings(
+      'google.cloud.example.v1.IncrementerService',
+      configData,
+      opts.clientConfig,
+      {'x-goog-api-client': googleApiClient.join(' ')});
+
+  var self = this;
+
+  this.auth = gaxGrpc.auth;
+  var incrementerServiceStub = gaxGrpc.createStub(
+      grpcClients.google.cloud.example.v1.IncrementerService,
+      opts);
+  var incrementerServiceStubMethods = [
+    'increment'
+  ];
+  incrementerServiceStubMethods.forEach(function(methodName) {
+    self['_' + methodName] = gax.createApiCall(
+      incrementerServiceStub.then(function(incrementerServiceStub) {
+        return function() {
+          var args = Array.prototype.slice.call(arguments, 0);
+          return incrementerServiceStub[methodName].apply(incrementerServiceStub, args);
+        };
+      }),
+      defaults[methodName],
+      null);
+  });
+}
+
+
+/**
+ * Get the project ID used by this class.
+ * @param {function(Error, string)} callback - the callback to be called with
+ *   the current project Id.
+ */
+IncrementerServiceClient.prototype.getProjectId = function(callback) {
+  return this.auth.getProjectId(callback);
+};
+
+// Service calls
+
+/**
+ * Increment.
+ *
+ * @param {Object=} request
+ *   The request object that will be sent.
+ * @param {Object=} options
+ *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+ *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
+ * @param {function(?Error)=} callback
+ *   The function which will be called with the result of the API call.
+ * @return {Promise} - The promise which resolves when API call finishes.
+ *   The promise has a method named "cancel" which cancels the ongoing API call.
+ *
+ * @example
+ *
+ * var multipleServices = require('@google-cloud/multiple-services');
+ *
+ * var client = multipleServices.v1.incrementer({
+ *   // optional auth parameters.
+ * });
+ *
+ *
+ * client.increment({}).catch(function(err) {
+ *     console.error(err);
+ * });
+ */
+IncrementerServiceClient.prototype.increment = function(request, options, callback) {
+  if (options instanceof Function && callback === undefined) {
+    callback = options;
+    options = {};
+  }
+  if (options === undefined) {
+    options = {};
+  }
+  if (request === undefined) {
+    request = {};
+  }
+  return this._increment(request, options, callback);
+};
+
+function IncrementerServiceClientBuilder(gaxGrpc) {
+  if (!(this instanceof IncrementerServiceClientBuilder)) {
+    return new IncrementerServiceClientBuilder(gaxGrpc);
+  }
+
+  var incrementerServiceClient = gaxGrpc.load([{
+    root: require('google-proto-files')('..'),
+    file: 'multiple_services.proto'
+  }]);
+  extend(this, incrementerServiceClient.google.cloud.example.v1);
+
+
+  /**
+   * Build a new instance of {@link IncrementerServiceClient}.
+   *
+   * @param {Object=} opts - The optional parameters.
+   * @param {String=} opts.servicePath
+   *   The domain name of the API remote host.
+   * @param {number=} opts.port
+   *   The port on which to connect to the remote host.
+   * @param {grpc.ClientCredentials=} opts.sslCreds
+   *   A ClientCredentials for use with an SSL-enabled channel.
+   * @param {Object=} opts.clientConfig
+   *   The customized config to build the call settings. See
+   *   {@link gax.constructSettings} for the format.
+   */
+  this.incrementerServiceClient = function(opts) {
+    return new IncrementerServiceClient(gaxGrpc, incrementerServiceClient, opts);
+  };
+  extend(this.incrementerServiceClient, IncrementerServiceClient);
+}
+module.exports = IncrementerServiceClientBuilder;
+module.exports.SERVICE_ADDRESS = SERVICE_ADDRESS;
+module.exports.ALL_SCOPES = ALL_SCOPES;
+============== file: src/v1/incrementer_service_client_config.json ==============
+{
+  "interfaces": {
+    "google.cloud.example.v1.IncrementerService": {
+      "retry_codes": {},
+      "retry_params": {},
+      "methods": {
+        "Increment": {
+          "timeout_millis": 10000
+        }
+      }
+    }
+  }
+}
+
+============== file: src/v1/index.js ==============
+/*
+ * Copyright 2017, Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+'use strict';
+
+var incrementerServiceClient = require('./incrementer_service_client');
+var decrementerServiceClient = require('./decrementer_service_client');
+var gax = require('google-gax');
+var extend = require('extend');
+var union = require('lodash.union');
+
+function v1(options) {
+  options = extend({
+    scopes: v1.ALL_SCOPES
+  }, options);
+  var gaxGrpc = gax.grpc(options);
+  var result = {};
+  extend(result, incrementerServiceClient(gaxGrpc));
+  extend(result, decrementerServiceClient(gaxGrpc));
+  return result;
+}
+
+v1.GAPIC_VERSION = '0.0.5';
+v1.SERVICE_ADDRESS = incrementerServiceClient.SERVICE_ADDRESS;
+v1.ALL_SCOPES = union(
+  incrementerServiceClient.ALL_SCOPES,
+  decrementerServiceClient.ALL_SCOPES
+);
+
+module.exports = v1;
+============== file: test/gapic-v1.js ==============
+/*
+ * Copyright 2017, Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+'use strict';
+
+var assert = require('assert');
+var multipleServices = require('../src');
+
+var FAKE_STATUS_CODE = 1;
+var error = new Error();
+error.code = FAKE_STATUS_CODE;
+
+describe('IncrementerServiceClient', function() {
+  describe('increment', function() {
+    it('invokes increment without error', function(done) {
+      var client = multipleServices.v1.incrementer();
+
+      // Mock request
+      var request = {};
+
+      // Mock Grpc layer
+      client._increment = mockSimpleGrpcMethod(request);
+
+      client.increment(request, function(err) {
+        assert.ifError(err);
+        done();
+      });
+    });
+
+    it('invokes increment with error', function(done) {
+      var client = multipleServices.v1.incrementer();
+
+      // Mock request
+      var request = {};
+
+      // Mock Grpc layer
+      client._increment = mockSimpleGrpcMethod(request, null, error);
+
+      client.increment(request, function(err) {
+        assert(err instanceof Error);
+        assert.equal(err.code, FAKE_STATUS_CODE);
+        done();
+      });
+    });
+  });
+
+});
+describe('DecrementerServiceClient', function() {
+  describe('decrement', function() {
+    it('invokes decrement without error', function(done) {
+      var client = multipleServices.v1.decrementer();
+
+      // Mock request
+      var request = {};
+
+      // Mock Grpc layer
+      client._decrement = mockSimpleGrpcMethod(request);
+
+      client.decrement(request, function(err) {
+        assert.ifError(err);
+        done();
+      });
+    });
+
+    it('invokes decrement with error', function(done) {
+      var client = multipleServices.v1.decrementer();
+
+      // Mock request
+      var request = {};
+
+      // Mock Grpc layer
+      client._decrement = mockSimpleGrpcMethod(request, null, error);
+
+      client.decrement(request, function(err) {
+        assert(err instanceof Error);
+        assert.equal(err.code, FAKE_STATUS_CODE);
+        done();
+      });
+    });
+  });
+
+});
+
+function mockSimpleGrpcMethod(expectedRequest, response, error) {
+  return function(actualRequest, options, callback) {
+    assert.deepStrictEqual(actualRequest, expectedRequest);
+    if (error) {
+      callback(error);
+    } else if (response) {
+      callback(null, response);
+    } else {
+      callback(null);
+    }
+  };
+}
+
