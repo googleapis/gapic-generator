@@ -136,6 +136,8 @@
 @private initMethodSection(xapiClass)
   {@initMethodComments()}
   def initialize @\
+      service_path: SERVICE_ADDRESS,
+      port: DEFAULT_SERVICE_PORT,
       channel: nil,
       chan_creds: nil,
       updater_proc: nil,
@@ -163,6 +165,9 @@
     end
     if app_name || app_version
       warn "`app_name` and `app_version` are no longer being used in the request headers."
+    end
+    if service_path || port
+      warn "`service_path` and `port` parameters will be removed"
     end
 
     credentials ||= {@xapiClass.fullyQualifiedCredentialsClassName}.default
@@ -206,8 +211,8 @@
     {@constructDefaults(xapiClass)}
     @join stub : xapiClass.stubs
       @@{@stub.name} = Google::Gax::Grpc.create_stub(
-        SERVICE_ADDRESS,
-        DEFAULT_SERVICE_PORT,
+        service_path,
+        port,
         chan_creds: chan_creds,
         channel: channel,
         updater_proc: updater_proc,
