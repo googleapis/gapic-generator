@@ -162,10 +162,6 @@ module Library
         )
       end
 
-      # @param service_path [String]
-      #   The domain name of the API remote host.
-      # @param port [Integer]
-      #   The port on which to connect to the remote host.
       # @param credentials
       #   [Google::Gax::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
       #   Provides the means for authenticating requests made by the client. This parameter can
@@ -192,8 +188,6 @@ module Library
       # @param timeout [Numeric]
       #   The default timeout, in seconds, for calls made through this client.
       def initialize \
-          service_path: SERVICE_ADDRESS,
-          port: DEFAULT_SERVICE_PORT,
           channel: nil,
           chan_creds: nil,
           updater_proc: nil,
@@ -226,8 +220,6 @@ module Library
         credentials ||= Library::Credentials.default
 
         @operations_client = Google::Longrunning::OperationsClient.new(
-          service_path: service_path,
-          port: port,
           credentials: credentials,
           scopes: scopes,
           client_config: client_config,
@@ -278,8 +270,8 @@ module Library
           )
         end
         @library_service_stub = Google::Gax::Grpc.create_stub(
-          service_path,
-          port,
+          SERVICE_ADDRESS,
+          DEFAULT_SERVICE_PORT,
           chan_creds: chan_creds,
           channel: channel,
           updater_proc: updater_proc,
@@ -287,8 +279,8 @@ module Library
           &Google::Example::Library::V1::LibraryService::Stub.method(:new)
         )
         @labeler_stub = Google::Gax::Grpc.create_stub(
-          service_path,
-          port,
+          SERVICE_ADDRESS,
+          DEFAULT_SERVICE_PORT,
           chan_creds: chan_creds,
           channel: channel,
           updater_proc: updater_proc,
@@ -1630,4 +1622,3 @@ module Library
     end
   end
 end
-

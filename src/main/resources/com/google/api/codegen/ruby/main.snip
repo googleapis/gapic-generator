@@ -136,8 +136,6 @@
 @private initMethodSection(xapiClass)
   {@initMethodComments()}
   def initialize @\
-      service_path: SERVICE_ADDRESS,
-      port: DEFAULT_SERVICE_PORT,
       channel: nil,
       chan_creds: nil,
       updater_proc: nil,
@@ -171,8 +169,6 @@
 
     @if xapiClass.hasLongRunningOperations
       @@operations_client = Google::Longrunning::OperationsClient.new(
-        service_path: service_path,
-        port: port,
         credentials: credentials,
         scopes: scopes,
         client_config: client_config,
@@ -210,8 +206,8 @@
     {@constructDefaults(xapiClass)}
     @join stub : xapiClass.stubs
       @@{@stub.name} = Google::Gax::Grpc.create_stub(
-        service_path,
-        port,
+        SERVICE_ADDRESS,
+        DEFAULT_SERVICE_PORT,
         chan_creds: chan_creds,
         channel: channel,
         updater_proc: updater_proc,
