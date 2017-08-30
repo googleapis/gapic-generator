@@ -65,37 +65,36 @@ class NoTemplatesAPIServiceClient(object):
         """Constructor.
 
         Args:
-          channel (:class:`grpc.Channel`): A ``Channel`` instance through
-            which to make calls.
-          credentials (object): The authorization credentials to attach to
-            requests. These credentials identify this application to the
-            service.
-          ssl_credentials (:class:`grpc.ChannelCredentials`): A
-            ``ChannelCredentials`` instance for use with an SSL-enabled
-            channel.
-          scopes (list[string]): A list of OAuth2 scopes to attach to requests.
-          client_config (dict):
-            A dictionary for call options for each method. See
-            :func:`google.gax.construct_settings` for the structure of
-            this data. Falls back to the default config if not specified
-            or the specified config is missing data points.
-          app_name (string): The name of the application calling
-            the service. Recommended for analytics purposes.
-          app_version (string): The version of the application calling
-            the service. Recommended for analytics purposes.
-          lib_name (string): The API library software used for calling
-            the service. (Unless you are writing an API client itself,
-            leave this as default.)
-          lib_version (string): The API library software version used
-            for calling the service. (Unless you are writing an API client
-            itself, leave this as default.)
-          metrics_headers (dict): A dictionary of values for tracking
-            client library metrics. Ultimately serializes to a string
-            (e.g. 'foo/1.2.3 bar/3.14.1'). This argument should be
-            considered private.
+            channel (~grpc.Channel): A ``Channel`` instance through
+                which to make calls.
+            credentials (~google.auth.credentials.Credentials): The authorization
+                credentials to attach to requests. These credentials identify this
+                 application to the service.
+            ssl_credentials (~grpc.ChannelCredentials): A
+                ``ChannelCredentials`` instance for use with an SSL-enabled
+                channel.
+            scopes (Sequence[str]): A list of OAuth2 scopes to attach to requests.
+            client_config (dict):
+                A dictionary for call options for each method. See
+                :func:`google.gax.construct_settings` for the structure of
+                this data. Falls back to the default config if not specified
+                or the specified config is missing data points.
+            app_name (str): The name of the application calling
+                the service. Recommended for analytics purposes.
+            app_version (str): The version of the application calling
+                the service. Recommended for analytics purposes.
+            lib_name (str): The API library software used for calling
+                the service. (Unless you are writing an API client itself,
+                leave this as default.)
+            lib_version (str): The API library software version used
+                for calling the service. (Unless you are writing an API client
+                itself, leave this as default.)
+            metrics_headers (dict): A dictionary of values for tracking
+                client library metrics. Ultimately serializes to a string
+                (e.g. 'foo/1.2.3 bar/3.14.1'). This argument should be
+                considered private.
 
-        Returns:
-          A NoTemplatesAPIServiceClient object.
+        Returns: NoTemplatesAPIServiceClient
         """
         # Unless the calling application specifically requested
         # OAuth scopes, request everything.
@@ -156,18 +155,18 @@ class NoTemplatesAPIServiceClient(object):
         whitespace.
 
         Example:
-          >>> import example
-          >>>
-          >>> client = example.NoTemplatesAPIServiceClient()
-          >>>
-          >>> client.increment()
+            >>> import example
+            >>>
+            >>> client = example.NoTemplatesAPIServiceClient()
+            >>>
+            >>> client.increment()
 
         Args:
-          options (:class:`google.gax.CallOptions`): Overrides the default
-            settings for this call, e.g, timeout, retries etc.
+            options (~google.gax.CallOptions): Overrides the default
+                settings for this call, e.g, timeout, retries etc.
 
         Raises:
-          :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
         """
         request = no_path_templates_pb2.IncrementRequest()
         self._increment(request, options)
