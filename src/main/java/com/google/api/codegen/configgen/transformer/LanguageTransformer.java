@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /** Generates language setting view objects using a package name. */
 public class LanguageTransformer {
@@ -37,14 +38,12 @@ public class LanguageTransformer {
         Arrays.asList(
             new RewriteRule("^google(\\.cloud)?", "com.google.cloud"),
             new RewriteRule("(.v[^.]+)$", ".spi$1"));
-    List<RewriteRule> pythonRewriteRules =
-        Arrays.asList(new RewriteRule("^google(?!\\.cloud)", "google.cloud.gapic"));
     List<RewriteRule> commonRewriteRules =
         Arrays.asList(new RewriteRule("^google(?!\\.cloud)", "google.cloud"));
     LANGUAGE_FORMATTERS =
         ImmutableMap.<String, LanguageFormatter>builder()
             .put("java", new SimpleLanguageFormatter(".", javaRewriteRules, false))
-            .put("python", new SimpleLanguageFormatter(".", pythonRewriteRules, false))
+            .put("python", new PythonLanguageFormatter())
             .put("go", new GoLanguageFormatter())
             .put("csharp", new SimpleLanguageFormatter(".", null, true))
             .put("ruby", new SimpleLanguageFormatter("::", commonRewriteRules, true))
@@ -159,6 +158,29 @@ public class LanguageTransformer {
         return input;
       }
       return input.replaceAll(pattern, replacement);
+    }
+  }
+
+  private static class PythonLanguageFormatter implements LanguageFormatter {
+    private static final Pattern VERSION_PATTERN =
+        Pattern.compile(
+            "^([vV]\\d+)" // Major version eg: v1
+                + "([pP]\\d+)?" // Point release eg: p2
+                + "(([aA]lpha|[bB]eta)\\d*)?"); //  Release level eg: alpha3
+
+    private static final RewriteRule PYTHON_REWRITE_RULE =
+        new RewriteRule("^google(?!\\.cloud)", "google.cloud");
+
+    @Override
+    public String getFormattedPackageName(String packageName) {
+      packageName = PYTHON_REWRITE_RULE.rewrite(packageName);
+      List<String> names = Arrays.asList(packageName.split("\\."));
+      if (!VERSION_PATTERN.matcher(names.get(names.size() - 1)).matches()) {
+        return String.format("%s.gapic", packageName);
+      }
+      String version = names.get(names.size() - 1);
+      String unversionedPackageName = Joiner.on('.').join(names.subList(0, names.size() - 1));
+      return String.format("%s_%s.gapic", unversionedPackageName, version);
     }
   }
 }
