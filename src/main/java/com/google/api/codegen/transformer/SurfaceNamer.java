@@ -741,6 +741,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getGrpcServerTypeName");
   }
 
+  /** The imported name of the default client config. */
+  public String getClientConfigName(Interface apiInterface) {
+    return getNotImplementedString("SurfaceNamer.getClientConfigName");
+  }
+
   /**
    * The type name of the Grpc client class. This needs to match what Grpc generates for the
    * particular language.

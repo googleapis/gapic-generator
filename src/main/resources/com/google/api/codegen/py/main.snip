@@ -91,11 +91,9 @@
 @end
 
 @private constructDefaults(xapiClass)
-    default_client_config = json.loads(pkg_resources.resource_string(
-        __name__, '{@xapiClass.clientConfigPath}').decode())
     defaults = api_callable.construct_settings(
         '{@xapiClass.interfaceKey}',
-        default_client_config,
+        {@xapiClass.clientConfigName}.config,
         client_config,
         config.STATUS_CODE_NAMES,
         metrics_headers=metrics_headers,

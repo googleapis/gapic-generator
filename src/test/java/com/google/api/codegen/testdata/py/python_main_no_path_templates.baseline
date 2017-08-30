@@ -35,6 +35,7 @@ from google.gax import config
 from google.gax import path_template
 import google.gax
 
+from example.gapic import no_templates_api_service_client_config
 from google.cloud.proto.example.v1 import no_path_templates_pb2
 
 
@@ -125,11 +126,9 @@ class NoTemplatesAPIServiceClient(object):
         ).version
 
         # Load the configuration defaults.
-        default_client_config = json.loads(pkg_resources.resource_string(
-            __name__, 'no_templates_api_service_client_config.json').decode())
         defaults = api_callable.construct_settings(
             'google.cloud.example.v1.NoTemplatesAPIService',
-            default_client_config,
+            no_templates_api_service_client_config.config,
             client_config,
             config.STATUS_CODE_NAMES,
             metrics_headers=metrics_headers,
