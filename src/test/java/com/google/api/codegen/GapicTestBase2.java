@@ -36,6 +36,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -187,13 +188,24 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
       testOutput().printf("%s generation is not enabled for this test case.\n", gen);
     }
 
+    // Don't run any providers we're not testing.
+    ArrayList<GapicProvider<? extends Object>> testedProviders = new ArrayList<>();
+    for (GapicProvider<? extends Object> provider : providers) {
+      if (!Collections.disjoint(provider.getSnippetFileNames(), snippetNames)) {
+        testedProviders.add(provider);
+      }
+    }
+
     boolean reportDiag = false;
     Map<String, Doc> output = new TreeMap<>();
-    for (GapicProvider<? extends Object> provider : providers) {
+    for (GapicProvider<? extends Object> provider : testedProviders) {
       Map<String, Doc> out = provider.generate();
       if (output == null) {
         reportDiag = true;
       } else {
+        if (!Collections.disjoint(out.keySet(), output.keySet())) {
+          throw new IllegalStateException("file conflict");
+        }
         output.putAll(out);
       }
     }
