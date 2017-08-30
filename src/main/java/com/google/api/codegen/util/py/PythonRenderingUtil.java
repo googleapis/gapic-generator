@@ -15,6 +15,7 @@
 package com.google.api.codegen.util.py;
 
 import com.google.api.codegen.util.CommonRenderingUtil;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 
@@ -52,5 +53,12 @@ public class PythonRenderingUtil {
 
   private String headerLine(String title, char c) {
     return title.replaceAll(".", String.valueOf(c));
+  }
+
+  public String exampleLine(String str) {
+    if (!Strings.isNullOrEmpty(str) && Character.isWhitespace(str.charAt(0))) {
+      return "... " + str;
+    }
+    return ">>> " + str;
   }
 }
