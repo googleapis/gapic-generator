@@ -213,8 +213,6 @@ class LibraryServiceClient(object):
         return cls._RETURN_PATH_TEMPLATE.match(return_name).get('return')
 
     def __init__(self,
-            service_path=SERVICE_ADDRESS,
-            port=DEFAULT_SERVICE_PORT,
             channel=None,
             credentials=None,
             ssl_credentials=None,
@@ -228,8 +226,6 @@ class LibraryServiceClient(object):
         """Constructor.
 
         Args:
-            service_path (str): The domain name of the API remote host.
-            port (int): The port on which to connect to the remote host.
             channel (~grpc.Channel): A ``Channel`` instance through
                 which to make calls.
             credentials (~google.auth.credentials.Credentials): The authorization
@@ -298,23 +294,21 @@ class LibraryServiceClient(object):
         self.library_service_stub = config.create_stub(
             library_pb2.LibraryServiceStub,
             channel=channel,
-            service_path=service_path,
-            service_port=port,
+            service_path=self.SERVICE_ADDRESS,
+            service_port=self.DEFAULT_SERVICE_PORT,
             credentials=credentials,
             scopes=scopes,
             ssl_credentials=ssl_credentials)
         self.labeler_stub = config.create_stub(
             tagger_pb2.LabelerStub,
             channel=channel,
-            service_path=service_path,
-            service_port=port,
+            service_path=self.SERVICE_ADDRESS,
+            service_port=self.DEFAULT_SERVICE_PORT,
             credentials=credentials,
             scopes=scopes,
             ssl_credentials=ssl_credentials)
 
         self.operations_client = operations_client.OperationsClient(
-            service_path=service_path,
-            port=port,
             channel=channel,
             credentials=credentials,
             ssl_credentials=ssl_credentials,
@@ -1708,4 +1702,3 @@ class LibraryServiceClient(object):
             optional_repeated_fixed64=optional_repeated_fixed64,
             optional_map=optional_map)
         return self._test_optional_required_flattening_params(request, options)
-

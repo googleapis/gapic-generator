@@ -105,8 +105,6 @@
 
 @private initMethodSection(xapiClass)
     def __init__(self,
-            service_path=SERVICE_ADDRESS,
-            port=DEFAULT_SERVICE_PORT,
             channel=None,
             credentials=None,
             ssl_credentials=None,
@@ -120,8 +118,6 @@
         """Constructor.
 
         Args:
-            service_path (str): The domain name of the API remote host.
-            port (int): The port on which to connect to the remote host.
             channel (~grpc.Channel): A ``Channel`` instance through
                 which to make calls.
             credentials (~google.auth.credentials.Credentials): The authorization
@@ -184,8 +180,8 @@
             self.{@stub.name} = config.create_stub(
                 {@stub.grpcClientTypeName},
                 channel=channel,
-                service_path=service_path,
-                service_port=port,
+                service_path=self.SERVICE_ADDRESS,
+                service_port=self.DEFAULT_SERVICE_PORT,
                 credentials=credentials,
                 scopes=scopes,
                 ssl_credentials=ssl_credentials)
@@ -193,8 +189,6 @@
         @if xapiClass.hasLongRunningOperations
 
             self.operations_client = operations_client.OperationsClient(
-                service_path=service_path,
-                port=port,
                 channel=channel,
                 credentials=credentials,
                 ssl_credentials=ssl_credentials,

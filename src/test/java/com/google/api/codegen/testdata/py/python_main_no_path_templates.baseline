@@ -52,8 +52,6 @@ class NoTemplatesAPIServiceClient(object):
     )
 
     def __init__(self,
-            service_path=SERVICE_ADDRESS,
-            port=DEFAULT_SERVICE_PORT,
             channel=None,
             credentials=None,
             ssl_credentials=None,
@@ -67,8 +65,6 @@ class NoTemplatesAPIServiceClient(object):
         """Constructor.
 
         Args:
-            service_path (str): The domain name of the API remote host.
-            port (int): The port on which to connect to the remote host.
             channel (~grpc.Channel): A ``Channel`` instance through
                 which to make calls.
             credentials (~google.auth.credentials.Credentials): The authorization
@@ -136,8 +132,8 @@ class NoTemplatesAPIServiceClient(object):
         self.no_templates_api_service_stub = config.create_stub(
             no_path_templates_pb2.NoTemplatesAPIServiceStub,
             channel=channel,
-            service_path=service_path,
-            service_port=port,
+            service_path=self.SERVICE_ADDRESS,
+            service_port=self.DEFAULT_SERVICE_PORT,
             credentials=credentials,
             scopes=scopes,
             ssl_credentials=ssl_credentials)
@@ -174,4 +170,3 @@ class NoTemplatesAPIServiceClient(object):
         """
         request = no_path_templates_pb2.IncrementRequest()
         self._increment(request, options)
-
