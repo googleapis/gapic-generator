@@ -228,12 +228,18 @@ interfaces:
     # TODO: Configure the default timeout for a non-retrying call.
     timeout_millis: 60000
   - name: PublishSeries
+    # TODO: Configure which groups of fields should be flattened into method
+    # params.
+    flattening:
+      groups:
+      - parameters:
+        - shelf
+        - books
+        - series_uuid
     # TODO: Configure which fields are required.
     required_fields:
     - shelf
     - books
-    - edition
-    - review_copy
     - series_uuid
     request_object_method: true
     # TODO: Configure the retryable codes for this method.
