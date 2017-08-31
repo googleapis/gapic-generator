@@ -20,13 +20,13 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /** Generates language setting view objects using a package name. */
 public class LanguageTransformer {
@@ -44,7 +44,7 @@ public class LanguageTransformer {
     LANGUAGE_FORMATTERS =
         ImmutableMap.<String, LanguageFormatter>builder()
             .put("java", new SimpleLanguageFormatter(".", javaRewriteRules, false))
-            .put("python", new PythonLanguageFormatter())
+            .put("python", new PythonLanguageFormatter(commonRewriteRules))
             .put("go", new GoLanguageFormatter())
             .put("csharp", new SimpleLanguageFormatter(".", null, true))
             .put("ruby", new SimpleLanguageFormatter("::", commonRewriteRules, true))
@@ -163,14 +163,20 @@ public class LanguageTransformer {
   }
 
   private static class PythonLanguageFormatter implements LanguageFormatter {
-    private static final RewriteRule PYTHON_REWRITE_RULE =
-        new RewriteRule("^google(?!\\.cloud)", "google.cloud");
+    private List<RewriteRule> rewriteRules;
+
+    public PythonLanguageFormatter(List<RewriteRule> rewriteRules) {
+      this.rewriteRules = rewriteRules;
+    }
 
     @Override
     public String getFormattedPackageName(String packageName) {
-      packageName = PYTHON_REWRITE_RULE.rewrite(packageName);
-      List<String> names = Arrays.asList(packageName.split("\\."));
-      if (VersionMatcher.isVersion(names.get(names.size() - 1))) {
+      for (RewriteRule rule : rewriteRules) {
+        packageName = rule.rewrite(packageName);
+      }
+      List<String> names = Splitter.on(DEFAULT_PACKAGE_SEPARATOR).splitToList(packageName);
+      String lastName = Iterables.getLast(names);
+      if (!VersionMatcher.isVersion(lastName)) {
         return String.format("%s.gapic", packageName);
       }
       String version = names.get(names.size() - 1);

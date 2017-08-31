@@ -17,8 +17,6 @@ package com.google.api.codegen.ruby;
 import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.VersionMatcher;
 
-import java.util.regex.Pattern;
-
 public class RubyUtil {
   private static final String LONGRUNNING_PACKAGE_NAME = "Google::Longrunning";
 
