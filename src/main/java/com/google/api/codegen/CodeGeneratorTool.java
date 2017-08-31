@@ -16,6 +16,7 @@ package com.google.api.codegen;
 
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.common.collect.Lists;
+import java.util.Arrays;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -31,6 +32,8 @@ import org.apache.commons.cli.Options;
 //        --output=$BASE
 public class CodeGeneratorTool {
   public static void main(String[] args) throws Exception {
+    System.out.println("Toolkit args:" + Arrays.toString(args));
+
     Options options = new Options();
     options.addOption("h", "help", false, "show usage");
     options.addOption(
