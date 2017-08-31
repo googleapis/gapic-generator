@@ -12,21 +12,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.ruby;
-
-import com.google.api.codegen.util.NamePath;
-import com.google.api.codegen.util.VersionMatcher;
+package com.google.api.codegen.util;
 
 import java.util.regex.Pattern;
 
-public class RubyUtil {
-  private static final String LONGRUNNING_PACKAGE_NAME = "Google::Longrunning";
+public class VersionMatcher {
+  private static final Pattern VERSION_PATTERN =
+      Pattern.compile(
+          "^([vV]\\d+)" // Major version eg: v1
+              + "([pP_]\\d+)?" // Point release eg: p2
+              + "(([aA]lpha|[bB]eta)\\d*)?"); //  Release level eg: alpha3
 
-  public static boolean isLongrunning(String packageName) {
-    return packageName.equals(LONGRUNNING_PACKAGE_NAME);
-  }
-
-  public static boolean hasMajorVersion(String packageName) {
-    return VersionMatcher.isVersion(NamePath.doubleColoned(packageName).getHead());
+  public static boolean isVersion(String str) {
+    return VERSION_PATTERN.matcher(str).matches();
   }
 }

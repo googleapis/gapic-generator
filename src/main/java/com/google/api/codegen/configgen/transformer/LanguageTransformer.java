@@ -15,6 +15,7 @@
 package com.google.api.codegen.configgen.transformer;
 
 import com.google.api.codegen.configgen.viewmodel.LanguageSettingView;
+import com.google.api.codegen.util.VersionMatcher;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
@@ -162,12 +163,6 @@ public class LanguageTransformer {
   }
 
   private static class PythonLanguageFormatter implements LanguageFormatter {
-    private static final Pattern VERSION_PATTERN =
-        Pattern.compile(
-            "^([vV]\\d+)" // Major version eg: v1
-                + "([pP]\\d+)?" // Point release eg: p2
-                + "(([aA]lpha|[bB]eta)\\d*)?"); //  Release level eg: alpha3
-
     private static final RewriteRule PYTHON_REWRITE_RULE =
         new RewriteRule("^google(?!\\.cloud)", "google.cloud");
 
@@ -175,7 +170,7 @@ public class LanguageTransformer {
     public String getFormattedPackageName(String packageName) {
       packageName = PYTHON_REWRITE_RULE.rewrite(packageName);
       List<String> names = Arrays.asList(packageName.split("\\."));
-      if (!VERSION_PATTERN.matcher(names.get(names.size() - 1)).matches()) {
+      if (VersionMatcher.isVersion(names.get(names.size() - 1))) {
         return String.format("%s.gapic", packageName);
       }
       String version = names.get(names.size() - 1);
