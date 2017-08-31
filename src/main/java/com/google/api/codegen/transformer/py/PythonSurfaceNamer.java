@@ -66,7 +66,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   private static final Pattern VERSION_PATTERN =
       Pattern.compile(
           "^([vV]\\d+)" // Major version eg: v1
-              + "([pP]\\d+)?" // Point release eg: p2
+              + "([pP_]\\d+)?" // Point release eg: p2
               + "(([aA]lpha|[bB]eta)\\d*)?"); //  Release level eg: alpha3
 
   @Override
