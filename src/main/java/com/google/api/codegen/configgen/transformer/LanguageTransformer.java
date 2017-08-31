@@ -179,9 +179,8 @@ public class LanguageTransformer {
       if (!VersionMatcher.isVersion(lastName)) {
         return String.format("%s.gapic", packageName);
       }
-      String version = names.get(names.size() - 1);
       String unversionedPackageName = Joiner.on('.').join(names.subList(0, names.size() - 1));
-      return String.format("%s_%s.gapic", unversionedPackageName, version);
+      return String.format("%s_%s.gapic", unversionedPackageName, lastName);
     }
   }
 }
