@@ -15,6 +15,7 @@
 package com.google.api.codegen.util.go;
 
 import com.google.api.codegen.util.CommentReformatter;
+import com.google.api.codegen.util.ErrorMarkdownVisitor;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.commonmark.node.BulletList;

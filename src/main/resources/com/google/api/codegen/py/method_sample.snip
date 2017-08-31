@@ -3,16 +3,19 @@
 # Generate code samples for method-level documentation.
 @snippet sampleCode(apiMethod)
   Example:
-  @join line : util.getDocLines(sampleCode_(apiMethod))
-    {@""}  >>> {@line}
-  @end
+      @join line : util.getDocLines(sampleCode_(apiMethod))
+          {@util.exampleLine(line)}
+      @end
 @end
 
 @snippet sampleCode_(apiMethod)
   {@importList(apiMethod.initCode.importSection.appImports)}
+
   client = {@apiMethod.apiModuleName}.{@apiMethod.apiClassName}()
+
   @if apiMethod.initCode.lines
     {@initCode(apiMethod.initCode)}
+
   @end
   @switch apiMethod.type.toString
   @case "OptionalArrayMethod"

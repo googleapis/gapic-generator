@@ -179,6 +179,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return qualifiedName(namePath.withoutHead());
   }
 
+  public String getGapicImplNamespace() {
+    return getNotImplementedString("SurfaceNamer.getGapicImplNamespace");
+  }
+
   /** The qualified namespace of an API. */
   public String getTopLevelNamespace() {
     return getNotImplementedString("SurfaceNamer.getTopLevelNamespace");
@@ -735,6 +739,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
    */
   public String getGrpcServerTypeName(Interface apiInterface) {
     return getNotImplementedString("SurfaceNamer.getGrpcServerTypeName");
+  }
+
+  /** The imported name of the default client config. */
+  public String getClientConfigName(Interface apiInterface) {
+    return getNotImplementedString("SurfaceNamer.getClientConfigName");
   }
 
   /**

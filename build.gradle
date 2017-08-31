@@ -62,7 +62,7 @@ ext {
     // Guava 23.0 is for Java 8, Java 7 needs to use 23.0-android.
     guava: 'com.google.guava:guava:23.0-android',
     jsr305: 'com.google.code.findbugs:jsr305:3.0.0',
-    autovalue: 'com.google.auto.value:auto-value:1.5',
+    autovalue: 'com.google.auto.value:auto-value:1.4',
     commonsLang: 'org.apache.commons:commons-lang3:3.6',
     commonsCli: 'commons-cli:commons-cli:1.4',
     snakeyaml: 'org.yaml:snakeyaml:1.18',
@@ -196,9 +196,10 @@ javadoc.options {
 sourceSets {
   test {
     resources {
-      // Include all resources from testdata folders.
+      // Include all resources from testdata and testsrc folders.
       srcDir 'src/test/java'
       include '**/testdata/**'
+      include '**/testsrc/**'
     }
     resources {
       // Include protos of core platform and toolkit,
@@ -378,6 +379,7 @@ task createProperties(dependsOn: processResources) {
     p['version'] = project.version.toString()
     p.store(new PrintWriter("$buildDir/resources/main/com/google/api/codegen/codegen.properties", 'UTF-8'), null)
   }
+  outputs.file("$buildDir/resources/main/com/google/api/codegen/codegen.properties")
 }
 
 classes {
