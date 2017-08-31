@@ -324,6 +324,14 @@ public abstract class GapicMethodConfig {
                 fieldName,
                 method.getFullName()));
         return null;
+      } else if (requiredField.getOneof() != null) {
+        diagCollector.addDiag(
+            Diag.error(
+                SimpleLocation.TOPLEVEL,
+                "oneof field %s cannot be required (in method %s)",
+                fieldName,
+                method.getFullName()));
+        return null;
       }
       fieldsBuilder.add(requiredField);
     }
