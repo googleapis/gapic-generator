@@ -50,7 +50,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
     return ImportSectionView.newBuilder()
         .standardImports(generateFileHeaderStandardImports())
         .externalImports(generateFileHeaderExternalImports(context))
-        .appImports(generateFileHeaderAppImports(context.getModelTypeTable().getImports()))
+        .appImports(generateMainAppImports(context))
         .build();
   }
 
@@ -113,6 +113,17 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
         break;
       }
     }
+
+    Collections.sort(imports, importFileViewComparator());
+    return imports;
+  }
+
+  private List<ImportFileView> generateMainAppImports(GapicInterfaceContext context) {
+    List<ImportFileView> imports =
+        generateFileHeaderAppImports(context.getModelTypeTable().getImports());
+    SurfaceNamer namer = context.getNamer();
+    imports.add(
+        createImport(namer.getPackageName(), namer.getClientConfigName(context.getInterface())));
 
     Collections.sort(imports, importFileViewComparator());
     return imports;

@@ -162,10 +162,6 @@ module Library
         )
       end
 
-      # @param service_path [String]
-      #   The domain name of the API remote host.
-      # @param port [Integer]
-      #   The port on which to connect to the remote host.
       # @param credentials
       #   [Google::Gax::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
       #   Provides the means for authenticating requests made by the client. This parameter can
@@ -201,8 +197,6 @@ module Library
           scopes: ALL_SCOPES,
           client_config: {},
           timeout: DEFAULT_TIMEOUT,
-          app_name: nil,
-          app_version: nil,
           lib_name: nil,
           lib_version: ""
         # These require statements are intentionally placed here to initialize
@@ -219,21 +213,17 @@ module Library
           credentials ||= chan_creds
           credentials ||= updater_proc
         end
-        if app_name || app_version
-          warn "`app_name` and `app_version` are no longer being used in the request headers."
+        if service_path || port
+          warn "`service_path` and `port` parameters are deprecated and will be removed"
         end
 
         credentials ||= Library::Credentials.default
 
         @operations_client = Google::Longrunning::OperationsClient.new(
-          service_path: service_path,
-          port: port,
           credentials: credentials,
           scopes: scopes,
           client_config: client_config,
           timeout: timeout,
-          app_name: app_name,
-          app_version: app_version,
           lib_name: lib_name,
           lib_version: lib_version,
         )
@@ -1630,4 +1620,3 @@ module Library
     end
   end
 end
-

@@ -68,7 +68,7 @@ public class MethodTransformer {
     MessageType message = method.getInputMessage();
     for (Field field : message.getFields()) {
       String fieldName = field.getSimpleName();
-      if (!IGNORED_FIELDS.contains(fieldName)) {
+      if (field.getOneof() == null && !IGNORED_FIELDS.contains(fieldName)) {
         parameterList.add(fieldName);
       }
     }
