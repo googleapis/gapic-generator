@@ -128,11 +128,8 @@ task discoJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) 
   exclude 'META-INF/*.RSA'
 }
 
-task gapicJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+task fatJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
   archiveName = "gapic.jar"
-  manifest {
-    attributes 'Main-Class': 'com.google.api.codegen.CodeGeneratorTool'
-  }
   from sourceSets.main.output
   configurations = [ project.configurations.runtime ]
   exclude 'META-INF/*.SF'
