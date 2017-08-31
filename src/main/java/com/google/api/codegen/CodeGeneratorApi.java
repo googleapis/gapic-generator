@@ -21,6 +21,7 @@ import com.google.api.codegen.gapic.GapicGeneratorConfig;
 import com.google.api.codegen.gapic.GapicProvider;
 import com.google.api.codegen.gapic.GapicProviderFactory;
 import com.google.api.codegen.util.ClassInstantiator;
+import com.google.api.tools.framework.model.ConfigSource;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.SimpleLocation;
@@ -102,7 +103,12 @@ public class CodeGeneratorApi extends ToolDriverBase {
       return;
     }
 
-    ConfigProto configProto = loadConfigFromFiles(configFileNames);
+    ConfigSource configSource = loadConfigFromFiles(configFileNames);
+    if (configSource == null) {
+      return;
+    }
+
+    ConfigProto configProto = (ConfigProto) configSource.getConfig();
     if (configProto == null) {
       return;
     }
@@ -189,7 +195,7 @@ public class CodeGeneratorApi extends ToolDriverBase {
     return provider;
   }
 
-  private ConfigProto loadConfigFromFiles(List<String> configFileNames) {
+  private ConfigSource loadConfigFromFiles(List<String> configFileNames) {
     List<File> configFiles = pathsToFiles(configFileNames);
     if (model.getDiagCollector().getErrorCount() > 0) {
       return null;
@@ -197,10 +203,7 @@ public class CodeGeneratorApi extends ToolDriverBase {
     ImmutableMap<String, Message> supportedConfigTypes =
         ImmutableMap.<String, Message>of(
             ConfigProto.getDescriptor().getFullName(), ConfigProto.getDefaultInstance());
-    ConfigProto configProto =
-        (ConfigProto)
-            MultiYamlReader.read(model.getDiagCollector(), configFiles, supportedConfigTypes);
-    return configProto;
+    return MultiYamlReader.read(model.getDiagCollector(), configFiles, supportedConfigTypes);
   }
 
   private List<File> pathsToFiles(List<String> configFileNames) {
