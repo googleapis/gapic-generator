@@ -5099,7 +5099,6 @@ public class AddressAdminClient implements BackgroundResource {
  */
 package com.google.cloud.simplecompute.v1;
 
-import com.google.api.client.http.HttpStatusCodes;
 import com.google.api.core.ApiFunction;
 import com.google.api.core.ApiFuture;
 import com.google.api.core.BetaApi;
@@ -5138,6 +5137,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 import javax.annotation.Generated;
+import org.apache.http.HttpStatus;
 import org.threeten.bp.Duration;
 
 // AUTO-GENERATED DOCUMENTATION AND CLASS
@@ -5413,7 +5413,10 @@ public class AddressAdminSettings extends ClientSettings {
       ImmutableMap.Builder<String, ImmutableSet<StatusCode>> definitions = ImmutableMap.builder();
       definitions.put(
           "idempotent",
-          ImmutableSet.copyOf(Lists.<StatusCode>newArrayList(HttpJsonStatusCode.of(HttpStatusCodes.STATUS_CODE_SERVER_ERROR), HttpJsonStatusCode.of(HttpStatusCodes.STATUS_CODE_SERVICE_UNAVAILABLE))));
+          ImmutableSet.copyOf(Lists.<StatusCode>newArrayList(HttpJsonStatusCode.of(HttpStatus.SC_GATEWAY_TIMEOUT), HttpJsonStatusCode.of(HttpStatus.SC_SERVICE_UNAVAILABLE))));
+      definitions.put(
+          "non_idempotent",
+          ImmutableSet.copyOf(Lists.<StatusCode>newArrayList()));
       RETRYABLE_CODE_DEFINITIONS = definitions.build();
     }
 
@@ -5426,9 +5429,9 @@ public class AddressAdminSettings extends ClientSettings {
           .setInitialRetryDelay(Duration.ofMillis(100L))
           .setRetryDelayMultiplier(1.3)
           .setMaxRetryDelay(Duration.ofMillis(60000L))
-          .setInitialRpcTimeout(Duration.ofMillis(60000L))
+          .setInitialRpcTimeout(Duration.ofMillis(20000L))
           .setRpcTimeoutMultiplier(1.0)
-          .setMaxRpcTimeout(Duration.ofMillis(60000L))
+          .setMaxRpcTimeout(Duration.ofMillis(20000L))
           .setTotalTimeout(Duration.ofMillis(600000L))
           .build();
       definitions.put("default", settings);
