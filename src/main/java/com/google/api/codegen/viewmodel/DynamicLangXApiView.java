@@ -64,6 +64,9 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
   public abstract String clientConfigPath();
 
+  @Nullable
+  public abstract String clientConfigName();
+
   public abstract String interfaceKey();
 
   public abstract String grpcClientTypeName();
@@ -181,6 +184,8 @@ public abstract class DynamicLangXApiView implements ViewModel {
     public abstract Builder methodKeys(List<String> val);
 
     public abstract Builder clientConfigPath(String val);
+
+    public abstract Builder clientConfigName(String var);
 
     public abstract Builder interfaceKey(String val);
 

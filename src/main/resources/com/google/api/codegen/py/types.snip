@@ -1,0 +1,37 @@
+@extends "py/common.snip"
+
+@snippet generate(view)
+  {@header(view.fileHeader)}
+
+  {@body(view)}
+@end
+
+@private header(fileHeader)
+    {@licenseSection(fileHeader)}
+
+    {@renderImportSection(fileHeader.importSection)}
+@end
+
+@private body(view)
+  names = []
+  for module in ({@importedModules(view.fileHeader.importSection.appImports)}):
+      for name, message in get_messages(module).items():
+          message.__module__ = '{@view.namespace}.types'
+          setattr(sys.modules[__name__], name, message)
+          names.append(name)
+
+
+  __all__ = tuple(sorted(names))
+@end
+
+@private importedModules(imports)
+  @join import : imports on BREAK
+    @join type : import.types
+      @if type.nickname
+        {@type.nickname},
+      @else
+        {@type.fullName},
+      @end
+    @end
+  @end
+@end

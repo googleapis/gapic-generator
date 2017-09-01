@@ -96,7 +96,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getClientConfigPath(InterfaceModel apiInterface) {
-    return "resources/"
+    return "../resources/"
         + Name.upperCamel(apiInterface.getSimpleName()).join("client_config").toLowerUnderscore()
         + ".json";
   }
@@ -148,6 +148,11 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getApiWrapperClassImplName(InterfaceConfig interfaceConfig) {
+    return publicClassName(Name.upperCamel(getInterfaceName(interfaceConfig), "GapicClient"));
+  }
+
+  @Override
   public String getGrpcClientTypeName(Interface apiInterface) {
     return getGrpcClientTypeName(new ProtoInterfaceModel(apiInterface));
   }
@@ -178,6 +183,11 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   @Override
   public String getGrpcStubCallString(InterfaceModel apiInterface, MethodModel method) {
     return '/' + apiInterface.getFullName() + '/' + getGrpcMethodName(method);
+  }
+
+  @Override
+  public String getGapicImplNamespace() {
+    return PhpPackageUtil.buildPackageName(getPackageName(), "Gapic");
   }
 
   @Override

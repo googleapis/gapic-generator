@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.gax.core.RetrySettings;
+import com.google.api.gax.retrying.RetrySettings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -56,6 +56,8 @@ public interface InterfaceConfig {
   boolean hasBatchingMethods();
 
   boolean hasGrpcStreamingMethods();
+
+  boolean hasGrpcStreamingMethods(GrpcStreamingConfig.GrpcStreamingType streamingType);
 
   boolean hasDefaultInstance();
 

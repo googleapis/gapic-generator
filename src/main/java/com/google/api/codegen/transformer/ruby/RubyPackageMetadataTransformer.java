@@ -129,7 +129,9 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
 
   public TocContentView generateTocContent(
       ApiModel model, RubyPackageMetadataNamer namer, String version, String clientName) {
-    return generateTocContent(model.getDocumentationSummary(), namer, version, clientName);
+    String description = model.getDocumentationSummary();
+    description = description.replace("\n", " ").trim();
+    return generateTocContent(description, namer, version, clientName);
   }
 
   public TocContentView generateDataTypeTocContent(

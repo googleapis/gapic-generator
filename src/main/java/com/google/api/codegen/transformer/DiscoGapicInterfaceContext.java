@@ -180,7 +180,7 @@ public abstract class DiscoGapicInterfaceContext implements InterfaceContext {
     return createWithInterface(
         getDocument(),
         getInterfaceName(),
-        getProductConfig(),
+        getProductConfig().withPackageName(packageName),
         getSchemaTypeTable().cloneEmpty(packageName),
         getDiscoGapicNamer().cloneWithPackageName(packageName),
         getFeatureConfig());

@@ -75,6 +75,8 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
     this.gapicConfigFileNames = gapicConfigFileNames;
     this.packageConfigFileName = packageConfigFileName;
     this.snippetName = snippetName;
+
+    getTestDataLocator().addTestDataSource(getClass(), "testsrc");
   }
 
   @Override

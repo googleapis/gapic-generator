@@ -229,8 +229,12 @@ public class JavaSurfaceNamer extends SurfaceNamer {
     switch (serviceMethodType) {
       case UnaryMethod:
         return "UnaryCallable";
-      case GrpcStreamingMethod:
-        return "StreamingCallable";
+      case GrpcBidiStreamingMethod:
+        return "BidiStreamingCallable";
+      case GrpcServerStreamingMethod:
+        return "ServerStreamingCallable";
+      case GrpcClientStreamingMethod:
+        return "ClientStreamingCallable";
       case LongRunningMethod:
         return "OperationCallable";
       default:
@@ -243,8 +247,12 @@ public class JavaSurfaceNamer extends SurfaceNamer {
     switch (serviceMethodType) {
       case UnaryMethod:
         return "UnaryCallable";
-      case GrpcStreamingMethod:
-        return "StreamingCallable";
+      case GrpcBidiStreamingMethod:
+        return "BidiStreamingCallable";
+      case GrpcServerStreamingMethod:
+        return "ServerStreamingCallable";
+      case GrpcClientStreamingMethod:
+        return "ClientStreamingCallable";
       default:
         return getNotImplementedString("getDirectCallableTypeName() for " + serviceMethodType);
     }
@@ -255,8 +263,12 @@ public class JavaSurfaceNamer extends SurfaceNamer {
     switch (serviceMethodType) {
       case UnaryMethod:
         return "createDirectCallable";
-      case GrpcStreamingMethod:
-        return "createDirectStreamingCallable";
+      case GrpcBidiStreamingMethod:
+        return "createDirectBidiStreamingCallable";
+      case GrpcServerStreamingMethod:
+        return "createDirectServerStreamingCallable";
+      case GrpcClientStreamingMethod:
+        return "createDirectClientStreamingCallable";
       default:
         return getNotImplementedString("getDirectCallableTypeName() for " + serviceMethodType);
     }

@@ -21,5 +21,6 @@ import com.google.api.codegen.config.ProductConfig;
  * constructing a path to the GAPIC output.
  */
 public interface GapicCodePathMapper {
+  // TODO(andrealin): make this use InterfaceModel instead of String as first arg
   String getOutputPath(String elementFullName, ProductConfig config);
 }

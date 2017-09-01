@@ -41,12 +41,11 @@ import java.util.TreeMap;
 public class ViewModelProvider implements DiscoveryProvider {
 
   private final List<Method> methods;
-  private final ApiaryConfig apiaryConfig;
   private final CommonSnippetSetRunner snippetSetRunner;
   private final SampleMethodToViewTransformer methodToViewTransformer;
   private final List<JsonNode> sampleConfigOverrides;
-  private final TypeNameGenerator typeNameGenerator;
   private final String outputRoot;
+  private final SampleConfig sampleConfig;
 
   private ViewModelProvider(
       List<Method> methods,
@@ -57,16 +56,11 @@ public class ViewModelProvider implements DiscoveryProvider {
       TypeNameGenerator typeNameGenerator,
       String outputRoot) {
     this.methods = methods;
-    this.apiaryConfig = apiaryConfig;
     this.snippetSetRunner = snippetSetRunner;
     this.methodToViewTransformer = methodToViewTransformer;
     this.sampleConfigOverrides = sampleConfigOverrides;
-    this.typeNameGenerator = typeNameGenerator;
     this.outputRoot = outputRoot;
-  }
 
-  @Override
-  public Map<String, Doc> generate(Method method) {
     // Before the transformer step, we generate the SampleConfig and apply overrides if available.
     // TODO(saicheems): Once all MVVM refactoring is done, change
     // DiscoveryProvider to generate a single SampleConfig and provide one
@@ -74,6 +68,11 @@ public class ViewModelProvider implements DiscoveryProvider {
     SampleConfig sampleConfig =
         new ApiaryConfigToSampleConfigConverter(methods, apiaryConfig, typeNameGenerator).convert();
     sampleConfig = override(sampleConfig, sampleConfigOverrides);
+    this.sampleConfig = sampleConfig;
+  }
+
+  @Override
+  public Map<String, Doc> generate(Method method) {
     ViewModel surfaceDoc = methodToViewTransformer.transform(method, sampleConfig);
     Doc doc = snippetSetRunner.generate(surfaceDoc);
     Map<String, Doc> docs = new TreeMap<>();

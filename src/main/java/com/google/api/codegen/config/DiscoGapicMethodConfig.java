@@ -36,7 +36,7 @@ import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
-import org.joda.time.Duration;
+import org.threeten.bp.Duration;
 
 /**
  * GapicMethodConfig represents the code-gen config for a Discovery doc method, and includes the
@@ -139,8 +139,8 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
       error = true;
     }
 
-    Duration timeout = Duration.millis(methodConfigProto.getTimeoutMillis());
-    if (timeout.getMillis() <= 0) {
+    Duration timeout = Duration.ofMillis(methodConfigProto.getTimeoutMillis());
+    if (timeout.toMillis() <= 0) {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,

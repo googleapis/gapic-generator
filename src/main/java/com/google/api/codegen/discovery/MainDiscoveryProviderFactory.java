@@ -48,7 +48,6 @@ import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -88,7 +87,7 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
       Service service,
       ApiaryConfig apiaryConfig,
       List<JsonNode> sampleConfigOverrides,
-      File rubyNamesFile,
+      String rubyNamesFile,
       String id) {
     // Use nodes corresponding to language pattern fields matching current language.
     List<JsonNode> overrides = new ArrayList<JsonNode>();
@@ -141,7 +140,7 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
       Service service,
       ApiaryConfig apiaryConfig,
       List<JsonNode> sampleConfigOverrides,
-      File rubyNamesFile,
+      String rubyNamesFile,
       String id) {
     return defaultCreate(service, apiaryConfig, sampleConfigOverrides, rubyNamesFile, id);
   }

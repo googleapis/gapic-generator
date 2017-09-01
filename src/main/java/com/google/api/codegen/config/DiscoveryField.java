@@ -27,11 +27,13 @@ import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
+import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
+import javax.annotation.Nullable;
 
 /** Created by andrealin on 7/31/17. */
 public class DiscoveryField implements FieldModel {
@@ -208,5 +210,11 @@ public class DiscoveryField implements FieldModel {
 
   public DiscoGapicNamer getDiscoGapicNamer() {
     return discoGapicNamer;
+  }
+
+  @Nullable
+  @Override
+  public Oneof getOneof() {
+    return null;
   }
 }

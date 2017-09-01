@@ -19,6 +19,9 @@ import com.google.api.codegen.ruby.RubyApiaryNameMap;
 import com.google.api.codegen.util.Name;
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
@@ -27,33 +30,48 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import org.yaml.snakeyaml.Yaml;
 
 public class RubyTypeNameGenerator extends TypeNameGenerator {
 
+  private static final LoadingCache<String, ImmutableMap<String, String>> NAME_MAP_CACHE =
+      CacheBuilder.newBuilder()
+          .expireAfterWrite(15, TimeUnit.SECONDS)
+          .maximumSize(10)
+          .build(
+              new CacheLoader<String, ImmutableMap<String, String>>() {
+                @Override
+                @SuppressWarnings("unchecked")
+                public ImmutableMap<String, String> load(String key) throws IOException {
+                  String data = null;
+                  if (!key.isEmpty()) {
+                    File namesFile = new File(key);
+                    if (namesFile.exists() && !namesFile.isDirectory()) {
+                      data = Files.toString(namesFile, Charsets.UTF_8);
+                    }
+                  }
+                  if (data == null) {
+                    data =
+                        Resources.toString(
+                            Resources.getResource(RubyApiaryNameMap.class, "apiary_names.yaml"),
+                            Charsets.UTF_8);
+                  }
+                  // Unchecked cast here.
+                  return ImmutableMap.copyOf((Map<String, String>) (new Yaml().load(data)));
+                }
+              });
+
   private String apiName;
-  private final ImmutableMap<String, String> NAME_MAP;
+  private final ImmutableMap<String, String> nameMap;
 
-  public RubyTypeNameGenerator(File rubyNamesFile) {
-    try {
-      NAME_MAP = getMethodNameMap(rubyNamesFile);
-    } catch (IOException e) {
-      throw new IllegalStateException(e);
+  public RubyTypeNameGenerator(String rubyNamesFile) {
+    // Caches don't like nulls. So turn nulls into empty strings.
+    // Both are sentinels for using the default.
+    if (rubyNamesFile == null) {
+      rubyNamesFile = "";
     }
-  }
-
-  @SuppressWarnings("unchecked")
-  private ImmutableMap<String, String> getMethodNameMap(File rubyNamesFile) throws IOException {
-    String data;
-    if (rubyNamesFile != null && rubyNamesFile.exists() && !rubyNamesFile.isDirectory()) {
-      data = Files.toString(rubyNamesFile, Charsets.UTF_8);
-    } else {
-      data =
-          Resources.toString(
-              Resources.getResource(RubyApiaryNameMap.class, "apiary_names.yaml"), Charsets.UTF_8);
-    }
-    // Unchecked cast here.
-    return ImmutableMap.copyOf((Map<String, String>) (new Yaml().load(data)));
+    nameMap = NAME_MAP_CACHE.getUnchecked(rubyNamesFile);
   }
 
   @Override
@@ -72,10 +90,10 @@ public class RubyTypeNameGenerator extends TypeNameGenerator {
     // Generate the key by joining apiName, apiVersion and nameComponents on '.'
     // Ex: "/admin:directory_v1/admin.channels.stop"
     String key = "/" + apiName + ":" + apiVersion + "/" + Joiner.on('.').join(nameComponents);
-    if (!NAME_MAP.containsKey(key)) {
+    if (!nameMap.containsKey(key)) {
       throw new IllegalArgumentException("\"" + key + "\"" + " not in method name map");
     }
-    return ImmutableList.of(NAME_MAP.get(key));
+    return ImmutableList.of(nameMap.get(key));
   }
 
   @Override
@@ -101,9 +119,9 @@ public class RubyTypeNameGenerator extends TypeNameGenerator {
     // Generate the key by joining apiName, apiVersion and messageTypeName.
     // Ex: "/bigquery:v2/DatasetList"
     String key = "/" + apiName + ":" + apiVersion + "/" + messageTypeName;
-    if (!NAME_MAP.containsKey(key)) {
+    if (!nameMap.containsKey(key)) {
       throw new IllegalArgumentException("\"" + key + "\"" + " not in method name map");
     }
-    return Name.from(NAME_MAP.get(key)).toUpperCamel();
+    return Name.from(nameMap.get(key)).toUpperCamel();
   }
 }

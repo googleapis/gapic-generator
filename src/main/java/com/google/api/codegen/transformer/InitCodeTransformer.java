@@ -184,8 +184,8 @@ public class InitCodeTransformer {
       }
 
       String messageTypeName = null;
-      if (fieldType.isMessage() && !fieldType.isRepeated()) {
-        messageTypeName = methodContext.getTypeTable().getFullNameFor(fieldType);
+      if (fieldType.isMessage()) {
+        messageTypeName = methodContext.getTypeTable().getFullNameFor(fieldType.getMessageType());
       }
 
       assertViews.add(

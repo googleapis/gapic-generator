@@ -21,6 +21,7 @@ import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.GrpcStreamingConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
@@ -392,10 +393,11 @@ public class JavaSurfaceTransformer {
     xsettingsClass.name(name);
     xsettingsClass.serviceAddress(model.getServiceAddress());
     xsettingsClass.servicePort(model.getServicePort());
+    xsettingsClass.authScopes(model.getAuthScopes());
     if (productConfig.getTransportProtocol().equals(TransportProtocol.HTTP)) {
       xsettingsClass.useDefaultServicePortInEndpoint(false);
     }
-    xsettingsClass.authScopes(model.getAuthScopes());
+
     xsettingsClass.transportProtocol(productConfig.getTransportProtocol());
     xsettingsClass.rpcTransportName(namer.getTransportName(productConfig.getTransportProtocol()));
     xsettingsClass.transportNameGetter(
@@ -449,8 +451,7 @@ public class JavaSurfaceTransformer {
         pathMapper.getOutputPath(
             context.getInterfaceModel().getFullName(), context.getProductConfig());
     String className = context.getNamer().getApiStubInterfaceName(context.getInterfaceConfig());
-    fileView.outputPath(
-        outputPath + File.separator + "stub" + File.separator + className + ".java");
+    fileView.outputPath(outputPath + File.separator + className + ".java");
 
     // must be done as the last step to catch all imports
     fileView.fileHeader(fileHeaderTransformer.generateFileHeader(context));
@@ -504,8 +505,7 @@ public class JavaSurfaceTransformer {
             .getNamer()
             .getApiRpcStubClassName(
                 context.getInterfaceConfig(), productConfig.getTransportProtocol());
-    fileView.outputPath(
-        outputPath + File.separator + "stub" + File.separator + className + ".java");
+    fileView.outputPath(outputPath + File.separator + className + ".java");
 
     // must be done as the last step to catch all imports
     fileView.fileHeader(fileHeaderTransformer.generateFileHeader(context));
@@ -625,9 +625,9 @@ public class JavaSurfaceTransformer {
     typeTable.saveNicknameFor("com.google.api.gax.core.BackgroundResource");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.UnaryCallable");
     typeTable.saveNicknameFor("com.google.api.pathtemplate.PathTemplate");
-    typeTable.saveNicknameFor("java.util.concurrent.TimeUnit");
     typeTable.saveNicknameFor("java.io.Closeable");
     typeTable.saveNicknameFor("java.io.IOException");
+    typeTable.saveNicknameFor("java.util.concurrent.TimeUnit");
     typeTable.saveNicknameFor("javax.annotation.Generated");
 
     if (context.getInterfaceConfig().hasLongRunningOperations()) {
@@ -739,8 +739,17 @@ public class JavaSurfaceTransformer {
     typeTable.saveNicknameFor("javax.annotation.Generated");
 
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
-    if (interfaceConfig.hasGrpcStreamingMethods()) {
-      typeTable.saveNicknameFor("com.google.api.gax.rpc.StreamingCallable");
+    if (interfaceConfig.hasGrpcStreamingMethods(
+        GrpcStreamingConfig.GrpcStreamingType.BidiStreaming)) {
+      typeTable.saveNicknameFor("com.google.api.gax.rpc.BidiStreamingCallable");
+    }
+    if (interfaceConfig.hasGrpcStreamingMethods(
+        GrpcStreamingConfig.GrpcStreamingType.ServerStreaming)) {
+      typeTable.saveNicknameFor("com.google.api.gax.rpc.ServerStreamingCallable");
+    }
+    if (interfaceConfig.hasGrpcStreamingMethods(
+        GrpcStreamingConfig.GrpcStreamingType.ClientStreaming)) {
+      typeTable.saveNicknameFor("com.google.api.gax.rpc.ClientStreamingCallable");
     }
     if (interfaceConfig.hasLongRunningOperations()) {
       typeTable.saveNicknameFor("com.google.longrunning.Operation");
@@ -839,7 +848,21 @@ public class JavaSurfaceTransformer {
         apiMethods.add(
             apiMethodTransformer.generateUnpagedListCallableMethod(requestMethodContext));
       } else if (methodConfig.isGrpcStreaming()) {
-        context.getImportTypeTable().saveNicknameFor("com.google.api.gax.rpc.StreamingCallable");
+        ImportTypeTable typeTable = context.getImportTypeTable();
+        switch (methodConfig.getGrpcStreamingType()) {
+          case BidiStreaming:
+            typeTable.saveNicknameFor("com.google.api.gax.rpc.BidiStreamingCallable");
+            break;
+          case ClientStreaming:
+            typeTable.saveNicknameFor("com.google.api.gax.rpc.ClientStreamingCallable");
+            break;
+          case ServerStreaming:
+            typeTable.saveNicknameFor("com.google.api.gax.rpc.ServerStreamingCallable");
+            break;
+          default:
+            throw new IllegalArgumentException(
+                "Invalid streaming type: " + methodConfig.getGrpcStreamingType());
+        }
         apiMethods.add(apiMethodTransformer.generateCallableMethod(requestMethodContext));
       } else if (methodConfig.isLongRunningOperation()) {
         context.getImportTypeTable().saveNicknameFor("com.google.api.gax.rpc.OperationCallable");

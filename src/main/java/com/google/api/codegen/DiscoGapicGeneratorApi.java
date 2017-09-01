@@ -30,6 +30,7 @@ import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.java.JavaSurfaceNamer;
 import com.google.api.codegen.util.ClassInstantiator;
 import com.google.api.codegen.util.java.JavaNameFormatter;
+import com.google.api.tools.framework.model.ConfigSource;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleDiagCollector;
 import com.google.api.tools.framework.snippet.Doc;
@@ -119,9 +120,14 @@ public class DiscoGapicGeneratorApi {
       throw new IOException(String.format("--%s must be provided", GENERATOR_CONFIG_FILES.name()));
     }
 
-    ConfigProto configProto = loadConfigFromFiles(configFileNames);
+    ConfigSource configSource = loadConfigFromFiles(configFileNames);
+    if (configSource == null) {
+      throw new IOException("Failed to load config source.");
+    }
+
+    ConfigProto configProto = (ConfigProto) configSource.getConfig();
     if (configProto == null) {
-      throw new IOException("Failed to load config proto.");
+      throw new IOException("Failed to cast config proto.");
     }
 
     PackageMetadataConfig packageConfig = null;
@@ -205,14 +211,12 @@ public class DiscoGapicGeneratorApi {
     return files;
   }
 
-  private static ConfigProto loadConfigFromFiles(List<String> configFileNames) {
+  private static ConfigSource loadConfigFromFiles(List<String> configFileNames) {
     List<File> configFiles = pathsToFiles(configFileNames);
     DiagCollector diagCollector = new SimpleDiagCollector();
     ImmutableMap<String, Message> supportedConfigTypes =
         ImmutableMap.<String, Message>of(
             ConfigProto.getDescriptor().getFullName(), ConfigProto.getDefaultInstance());
-    ConfigProto configProto =
-        (ConfigProto) MultiYamlReader.read(diagCollector, configFiles, supportedConfigTypes);
-    return configProto;
+    return MultiYamlReader.read(diagCollector, configFiles, supportedConfigTypes);
   }
 }

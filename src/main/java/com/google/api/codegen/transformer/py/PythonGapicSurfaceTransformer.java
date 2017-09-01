@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer.py;
 
 import com.google.api.codegen.GeneratorVersionProvider;
+import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FieldModel;
@@ -33,7 +34,6 @@ import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.GrpcElementDocTransformer;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
-import com.google.api.codegen.transformer.ImportSectionTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -55,11 +55,15 @@ import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
 import com.google.api.codegen.viewmodel.ParamDocView;
 import com.google.api.codegen.viewmodel.PathTemplateGetterFunctionView;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.api.codegen.viewmodel.metadata.VersionIndexRequireView;
+import com.google.api.codegen.viewmodel.metadata.VersionIndexView;
+import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoContainerElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.List;
@@ -67,8 +71,12 @@ import java.util.List;
 public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
   private static final String XAPI_TEMPLATE_FILENAME = "py/main.snip";
   private static final String ENUM_TEMPLATE_FILENAME = "py/enum.snip";
+  private static final String TYPES_TEMPLEATE_FILENAME = "py/types.snip";
+  private static final String VERSIONED_INIT_TEMPLATE_FILENAME =
+      "py/versioned_directory__init__.py.snip";
+  private static final String TOP_LEVEL_ENTRY_POINT_FILENAME = "py/top_level_entry_point.snip";
 
-  private final ImportSectionTransformer importSectionTransformer =
+  private final PythonImportSectionTransformer importSectionTransformer =
       new PythonImportSectionTransformer();
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(importSectionTransformer);
@@ -91,11 +99,25 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
 
   @Override
   public List<String> getTemplateFileNames() {
-    return ImmutableList.of(XAPI_TEMPLATE_FILENAME, ENUM_TEMPLATE_FILENAME);
+    return ImmutableList.of(
+        XAPI_TEMPLATE_FILENAME,
+        ENUM_TEMPLATE_FILENAME,
+        TYPES_TEMPLEATE_FILENAME,
+        VERSIONED_INIT_TEMPLATE_FILENAME,
+        TOP_LEVEL_ENTRY_POINT_FILENAME);
   }
 
   @Override
   public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
+    ImmutableList.Builder<ViewModel> views = ImmutableList.builder();
+    views.addAll(generateServiceSurfaces(model, productConfig));
+    views.addAll(generateVersionedDirectoryViews(model, productConfig));
+    views.addAll(generateTopLevelViews(model, productConfig));
+    return views.build();
+  }
+
+  private Iterable<ViewModel> generateServiceSurfaces(
+      Model model, GapicProductConfig productConfig) {
     ModelTypeTable modelTypeTable =
         new ModelTypeTable(
             new PythonTypeTable(productConfig.getPackageName()),
@@ -196,6 +218,7 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.methodKeys(ImmutableList.<String>of());
     xapiClass.interfaceKey(context.getInterface().getFullName());
     xapiClass.clientConfigPath(namer.getClientConfigPath(context.getInterfaceModel()));
+    xapiClass.clientConfigName(namer.getClientConfigName(context.getInterfaceModel()));
     xapiClass.grpcClientTypeName(
         namer.getAndSaveNicknameForGrpcClientTypeName(
             context.getImportTypeTable(), context.getInterfaceModel()));
@@ -262,5 +285,138 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
       }
     }
     return elements.build();
+  }
+
+  private Iterable<ViewModel> generateVersionedDirectoryViews(
+      Model model, GapicProductConfig productConfig) {
+    ImmutableList.Builder<ViewModel> views = ImmutableList.builder();
+    views.add(generateTypesView(model, productConfig));
+    views.add(generateVersionedInitView(model, productConfig));
+    return views.build();
+  }
+
+  private ViewModel generateTypesView(Model model, GapicProductConfig productConfig) {
+    SurfaceNamer namer = new PythonSurfaceNamer(productConfig.getPackageName());
+    ImportSectionView imports =
+        importSectionTransformer.generateTypesImportSection(model, productConfig);
+    return VersionIndexView.newBuilder()
+        .templateFileName(TYPES_TEMPLEATE_FILENAME)
+        .outputPath(typesOutputFile(namer))
+        .requireViews(ImmutableList.<VersionIndexRequireView>of())
+        .apiVersion(namer.getApiWrapperModuleVersion())
+        .namespace(namer.getVersionedDirectoryNamespace())
+        .packageVersion(packageConfig.generatedPackageVersionBound(TargetLanguage.PYTHON).lower())
+        .fileHeader(fileHeaderTransformer.generateFileHeader(productConfig, imports, namer))
+        .build();
+  }
+
+  private ViewModel generateVersionedInitView(Model model, GapicProductConfig productConfig) {
+    SurfaceNamer namer = new PythonSurfaceNamer(productConfig.getPackageName());
+    boolean packageHasEnums = packageHasEnums(model);
+    ImportSectionView imports =
+        importSectionTransformer.generateVersionedInitImportSection(
+            model, productConfig, namer, packageHasEnums);
+    return VersionIndexView.newBuilder()
+        .templateFileName(VERSIONED_INIT_TEMPLATE_FILENAME)
+        .outputPath(versionedInitOutputFile(namer))
+        .requireViews(versionedInitRequireViews(model, productConfig, namer))
+        .apiVersion(namer.getApiWrapperModuleVersion())
+        .namespace(namer.getVersionedDirectoryNamespace())
+        .packageVersion(packageConfig.generatedPackageVersionBound(TargetLanguage.PYTHON).lower())
+        .fileHeader(fileHeaderTransformer.generateFileHeader(productConfig, imports, namer))
+        .packageHasEnums(packageHasEnums)
+        .build();
+  }
+
+  private boolean packageHasEnums(Model model) {
+    for (TypeRef type : model.getSymbolTable().getDeclaredTypes()) {
+      if (type.isEnum() && type.getEnumType().isReachable()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private List<VersionIndexRequireView> versionedInitRequireViews(
+      Model model, GapicProductConfig productConfig, SurfaceNamer namer) {
+    ImmutableList.Builder<VersionIndexRequireView> views = ImmutableList.builder();
+    Iterable<Interface> apiInterfaces = new InterfaceView().getElementIterable(model);
+    for (Interface apiInterface : apiInterfaces) {
+      views.add(
+          VersionIndexRequireView.newBuilder()
+              .clientName(
+                  namer.getApiWrapperClassName(productConfig.getInterfaceConfig(apiInterface)))
+              .localName(
+                  namer.getApiWrapperVariableName(productConfig.getInterfaceConfig(apiInterface)))
+              .fileName(namer.getNotImplementedString("VersionIndexRequireView.fileName"))
+              .build());
+    }
+    return views.build();
+  }
+
+  private ModelTypeTable emptyTypeTable(GapicProductConfig productConfig) {
+    return new ModelTypeTable(
+        new PythonTypeTable(productConfig.getPackageName()),
+        new PythonModelTypeNameConverter(productConfig.getPackageName()));
+  }
+
+  private String typesOutputFile(SurfaceNamer namer) {
+    return versionedDirectoryPath(namer) + File.separator + "types.py";
+  }
+
+  private String versionedInitOutputFile(SurfaceNamer namer) {
+    return versionedDirectoryPath(namer) + File.separator + "__init__.py";
+  }
+
+  private String versionedDirectoryPath(SurfaceNamer namer) {
+    String namespace = namer.getVersionedDirectoryNamespace();
+    return namespace.replace(".", File.separator);
+  }
+
+  private Iterable<ViewModel> generateTopLevelViews(Model model, GapicProductConfig productConfig) {
+    return ImmutableList.of(generateTopLevelEntryPoint(model, productConfig));
+  }
+
+  private ViewModel generateTopLevelEntryPoint(Model model, GapicProductConfig productConfig) {
+    SurfaceNamer namer = new PythonSurfaceNamer(productConfig.getPackageName());
+    boolean packageHasEnums = packageHasEnums(model);
+    ImportSectionView imports =
+        importSectionTransformer.generateTopLeveEntryPointImportSection(
+            model, productConfig, namer, packageHasEnums);
+    return VersionIndexView.newBuilder()
+        .templateFileName(TOP_LEVEL_ENTRY_POINT_FILENAME)
+        .outputPath(topLevelEntryPointFileName(namer))
+        .requireViews(topLevelRequireViews(model, productConfig, namer))
+        .apiVersion(namer.getApiWrapperModuleVersion())
+        .namespace(namer.getVersionedDirectoryNamespace())
+        .packageVersion(packageConfig.generatedPackageVersionBound(TargetLanguage.PYTHON).lower())
+        .fileHeader(fileHeaderTransformer.generateFileHeader(productConfig, imports, namer))
+        .packageHasEnums(packageHasEnums)
+        .build();
+  }
+
+  private String topLevelEntryPointFileName(SurfaceNamer namer) {
+    String topLevelPath = namer.getTopLevelNamespace().replace(".", File.separator);
+    if (!Strings.isNullOrEmpty(topLevelPath)) {
+      topLevelPath += File.separator;
+    }
+    return String.format("%s%s.py", topLevelPath, packageConfig.shortName().toLowerCase());
+  }
+
+  private List<VersionIndexRequireView> topLevelRequireViews(
+      Model model, GapicProductConfig productConfig, SurfaceNamer namer) {
+    ImmutableList.Builder<VersionIndexRequireView> views = ImmutableList.builder();
+    Iterable<Interface> apiInterfaces = new InterfaceView().getElementIterable(model);
+    for (Interface apiInterface : apiInterfaces) {
+      views.add(
+          VersionIndexRequireView.newBuilder()
+              .clientName(
+                  namer.getApiWrapperClassName(productConfig.getInterfaceConfig(apiInterface)))
+              .localName(
+                  namer.getApiWrapperVariableName(productConfig.getInterfaceConfig(apiInterface)))
+              .fileName(namer.getNotImplementedString("VersionIndexRequireView.fileName"))
+              .build());
+    }
+    return views.build();
   }
 }

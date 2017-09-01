@@ -118,8 +118,7 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
                       "PythonGapicSurfaceTestTransformer.createUnitTestViews - apiSettingsClassName"))
               .apiClassName(
                   surfacePackageNamer.getApiWrapperClassName(context.getInterfaceConfig()))
-              .apiVariableName(
-                  surfacePackageNamer.getApiWrapperVariableName(context.getInterfaceConfig()))
+              .apiVariableName(surfacePackageNamer.getApiWrapperModuleName())
               .name(testClassName)
               .apiName(
                   surfacePackageNamer.publicClassName(
@@ -155,37 +154,46 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
 
   private List<TestCaseView> createTestCaseViews(GapicInterfaceContext context) {
     ImmutableList.Builder<TestCaseView> testCaseViews = ImmutableList.builder();
-    SymbolTable testNameTable = new SymbolTable();
-    for (MethodModel method : context.getSupportedMethods()) {
-      GapicMethodContext methodContext = context.asRequestMethodContext(method);
-      ClientMethodType clientMethodType = ClientMethodType.OptionalArrayMethod;
-      if (methodContext.getMethodConfig().isLongRunningOperation()) {
-        clientMethodType = ClientMethodType.OperationOptionalArrayMethod;
-      } else if (methodContext.getMethodConfig().isPageStreaming()) {
-        clientMethodType = ClientMethodType.PagedOptionalArrayMethod;
+
+    // There are situations where a type name has a collision with another type name found in
+    // a later seen test case. When this occurs the first seen type name will become invalid.
+    // Run twice in order to fully disambiguate these types.
+    // TODO(landrito): figure out a way to guarantee that python typenames are not bound to a
+    // certain string until all of the types have been disambiguated.
+    for (int i = 0; i < 2; ++i) {
+      testCaseViews = ImmutableList.builder();
+      SymbolTable testNameTable = new SymbolTable();
+      for (MethodModel method : context.getSupportedMethods()) {
+        GapicMethodContext methodContext = context.asRequestMethodContext(method);
+        ClientMethodType clientMethodType = ClientMethodType.OptionalArrayMethod;
+        if (methodContext.getMethodConfig().isLongRunningOperation()) {
+          clientMethodType = ClientMethodType.OperationOptionalArrayMethod;
+        } else if (methodContext.getMethodConfig().isPageStreaming()) {
+          clientMethodType = ClientMethodType.PagedOptionalArrayMethod;
+        }
+
+        Iterable<FieldConfig> fieldConfigs =
+            methodContext.getMethodConfig().getRequiredFieldConfigs();
+        InitCodeOutputType initCodeOutputType =
+            method.getRequestStreaming()
+                ? InitCodeOutputType.SingleObject
+                : InitCodeOutputType.FieldList;
+        InitCodeContext initCodeContext =
+            InitCodeContext.newBuilder()
+                .initObjectType(methodContext.getMethod().getInputType())
+                .suggestedName(Name.from("request"))
+                .initFieldConfigStrings(methodContext.getMethodConfig().getSampleCodeInitFields())
+                .initValueConfigMap(InitCodeTransformer.createCollectionMap(methodContext))
+                .initFields(FieldConfig.toFieldTypeIterable(fieldConfigs))
+                .outputType(initCodeOutputType)
+                .fieldConfigMap(FieldConfig.toFieldConfigMap(fieldConfigs))
+                .valueGenerator(valueGenerator)
+                .build();
+
+        testCaseViews.add(
+            testCaseTransformer.createTestCaseView(
+                methodContext, testNameTable, initCodeContext, clientMethodType));
       }
-
-      Iterable<FieldConfig> fieldConfigs =
-          methodContext.getMethodConfig().getRequiredFieldConfigs();
-      InitCodeOutputType initCodeOutputType =
-          method.getRequestStreaming()
-              ? InitCodeOutputType.SingleObject
-              : InitCodeOutputType.FieldList;
-      InitCodeContext initCodeContext =
-          InitCodeContext.newBuilder()
-              .initObjectType(methodContext.getMethod().getInputType())
-              .suggestedName(Name.from("request"))
-              .initFieldConfigStrings(methodContext.getMethodConfig().getSampleCodeInitFields())
-              .initValueConfigMap(InitCodeTransformer.createCollectionMap(methodContext))
-              .initFields(FieldConfig.toFieldTypeIterable(fieldConfigs))
-              .outputType(initCodeOutputType)
-              .fieldConfigMap(FieldConfig.toFieldConfigMap(fieldConfigs))
-              .valueGenerator(valueGenerator)
-              .build();
-
-      testCaseViews.add(
-          testCaseTransformer.createTestCaseView(
-              methodContext, testNameTable, initCodeContext, clientMethodType));
     }
     return testCaseViews.build();
   }
@@ -240,7 +248,7 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
     return SmokeTestClassView.newBuilder()
         .apiSettingsClassName(namer.getApiSettingsClassName(context.getInterfaceConfig()))
         .apiClassName(namer.getApiWrapperClassName(context.getInterfaceConfig()))
-        .apiVariableName(namer.getApiWrapperVariableName(context.getInterfaceConfig()))
+        .apiVariableName(namer.getApiWrapperModuleName())
         .name(name)
         .outputPath(outputPath)
         .templateFileName(SMOKE_TEST_TEMPLATE_FILE)

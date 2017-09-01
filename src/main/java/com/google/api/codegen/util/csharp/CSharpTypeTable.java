@@ -39,7 +39,6 @@ public class CSharpTypeTable implements TypeTable {
 
   @Override
   public TypeName getTypeName(String fullName) {
-    fullName = resolveInner(fullName);
     int firstGenericOpenIndex = fullName.indexOf('<');
     if (firstGenericOpenIndex >= 0) {
       int lastGenericCloseIndex = fullName.lastIndexOf('>');

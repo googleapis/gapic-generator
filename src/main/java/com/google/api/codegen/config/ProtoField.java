@@ -32,6 +32,7 @@ import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import javax.annotation.Nullable;
 
 /** Created by andrealin on 7/31/17. */
 public class ProtoField implements FieldModel {
@@ -212,5 +213,11 @@ public class ProtoField implements FieldModel {
   @Override
   public String getKind() {
     return protoField.getType().toString();
+  }
+
+  @Nullable
+  @Override
+  public Oneof getOneof() {
+    return protoField.getOneof();
   }
 }

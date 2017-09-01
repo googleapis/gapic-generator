@@ -19,7 +19,7 @@ import com.google.api.codegen.IamResourceProto;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
-import com.google.api.gax.core.RetrySettings;
+import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
@@ -359,6 +359,16 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   public boolean hasGrpcStreamingMethods() {
     for (MethodConfig methodConfig : getMethodConfigs()) {
       if (methodConfig.isGrpcStreaming()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  @Override
+  public boolean hasGrpcStreamingMethods(GrpcStreamingConfig.GrpcStreamingType streamingType) {
+    for (GapicMethodConfig methodConfig : getMethodConfigs()) {
+      if (methodConfig.isGrpcStreaming() && methodConfig.getGrpcStreamingType() == streamingType) {
         return true;
       }
     }

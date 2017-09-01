@@ -19,8 +19,10 @@ import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
+import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
+import javax.annotation.Nullable;
 
 /**
  * Wrapper class around the protobuf Field class and the Discovery-doc Schema class.
@@ -99,4 +101,7 @@ public interface FieldModel {
 
   /* @return the type of this object, formatted as a String. */
   String getKind();
+
+  @Nullable
+  Oneof getOneof();
 }

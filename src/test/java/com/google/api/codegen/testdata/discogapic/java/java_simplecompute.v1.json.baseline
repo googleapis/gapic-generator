@@ -4694,6 +4694,8 @@ import javax.annotation.Generated;
  * <p>This class can be customized by passing in a custom instance of AddressAdminSettings to
  * create(). For example:
  *
+ * To customize credentials:
+ *
  * <pre>
  * <code>
  * AddressAdminSettings addressAdminSettings =
@@ -4704,8 +4706,26 @@ import javax.annotation.Generated;
  *     AddressAdminClient.create(addressAdminSettings);
  * </code>
  * </pre>
+ *
+ * To customize the endpoint:
+ *
+ * <pre>
+ * <code>
+ * AddressAdminSettings addressAdminSettings =
+ *     AddressAdminSettings.defaultBuilder()
+ *         .setTransportProvider(AddressAdminSettings.defaultGrpcTransportProviderBuilder()
+ *             .setChannelProvider(AddressAdminSettings.defaultGrpcChannelProviderBuilder()
+ *                 .setEndpoint(myEndpoint)
+ *                 .build())
+ *             .build())
+ *         .build();
+ * AddressAdminClient addressAdminClient =
+ *     AddressAdminClient.create(addressAdminSettings);
+ * </code>
+ * </pre>
  */
 @Generated("by GAPIC v0.0.5")
+@BetaApi
 public class AddressAdminClient implements BackgroundResource {
   private final AddressAdminSettings settings;
   private final AddressAdminStub stub;
@@ -5148,6 +5168,7 @@ import org.threeten.bp.Duration;
  * </pre>
  */
 @Generated("by GAPIC v0.0.5")
+@BetaApi
 public class AddressAdminSettings extends ClientSettings {
   /**
    * The default scopes of the service.
@@ -5586,6 +5607,7 @@ import javax.annotation.Generated;
  * <p>This class is for advanced usage and reflects the underlying API directly.
  */
 @Generated("by GAPIC v0.0.5")
+@BetaApi
 public abstract class AddressAdminStub implements BackgroundResource {
 
 
@@ -5669,6 +5691,7 @@ import javax.annotation.Generated;
  * <p>This class is for advanced usage and reflects the underlying API directly.
  */
 @Generated("by GAPIC v0.0.5")
+@BetaApi
 public class HttpAddressAdminStub extends AddressAdminStub {
   private static final String BASE_URL = "https://www.googleapis.com/compute/v1/projects/";
 
@@ -5866,6 +5889,7 @@ import javax.annotation.Generated;
  * one of an API method that implements the page streaming pattern.
  */
 @Generated("by GAPIC")
+@BetaApi
 public class PagedResponseWrappers {
 
   public static class ListAddressesPagedResponse extends AbstractPagedListResponse<

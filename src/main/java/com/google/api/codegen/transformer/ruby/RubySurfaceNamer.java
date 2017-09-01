@@ -24,6 +24,7 @@ import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
+import com.google.api.codegen.ruby.RubyUtil;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.MethodContext;
@@ -233,12 +234,16 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public List<String> getThrowsDocLines(MethodConfig methodConfig) {
-    return ImmutableList.of("@raise [Google::Gax::GaxError] if the RPC is aborted.");
+  public String getFullyQualifiedCredentialsClassName() {
+    if (RubyUtil.isLongrunning(getPackageName())) {
+      return "Google::Gax::Credentials";
+    }
+    return getTopLevelNamespace() + "::Credentials";
   }
 
-  public String getFullyQualifiedCredentialsClassName() {
-    return getTopLevelNamespace() + "::Credentials";
+  @Override
+  public List<String> getThrowsDocLines(MethodConfig methodConfig) {
+    return ImmutableList.of("@raise [Google::Gax::GaxError] if the RPC is aborted.");
   }
 
   @Override
@@ -292,6 +297,9 @@ public class RubySurfaceNamer extends SurfaceNamer {
   @Override
   public String getTopLevelAliasedApiClassName(
       InterfaceConfig interfaceConfig, boolean packageHasMultipleServices) {
+    if (!RubyUtil.hasMajorVersion(getPackageName())) {
+      return getVersionAliasedApiClassName(interfaceConfig, packageHasMultipleServices);
+    }
     return packageHasMultipleServices
         ? getTopLevelNamespace() + "::" + getPackageServiceName(interfaceConfig.getInterfaceModel())
         : getTopLevelNamespace();

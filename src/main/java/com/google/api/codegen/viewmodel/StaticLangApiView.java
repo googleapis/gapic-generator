@@ -39,7 +39,10 @@ public abstract class StaticLangApiView {
   public abstract String grpcServiceName();
 
   @Nullable // Used in C#
-  public abstract String grpcTypeName();
+  public abstract String grpcTypeNameOuter();
+
+  @Nullable // Used in C#
+  public abstract String grpcTypeNameInner();
 
   @Nullable // Used in C#
   public abstract List<ReroutedGrpcView> reroutedGrpcClients();
@@ -86,7 +89,9 @@ public abstract class StaticLangApiView {
 
     public abstract Builder grpcServiceName(String val);
 
-    public abstract Builder grpcTypeName(String val);
+    public abstract Builder grpcTypeNameInner(String val);
+
+    public abstract Builder grpcTypeNameOuter(String val);
 
     public abstract Builder reroutedGrpcClients(List<ReroutedGrpcView> val);
 

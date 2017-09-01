@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer.ruby;
 
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.metacode.InitCodeNode;
+import com.google.api.codegen.ruby.RubyUtil;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.ImportSectionTransformer;
 import com.google.api.codegen.transformer.MethodContext;
@@ -83,7 +84,9 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
     for (String filename : filenames) {
       imports.add(createImport(context.getNamer().getProtoFileImportName(filename)));
     }
-    imports.add(createImport(context.getNamer().getCredentialsClassImportName()));
+    if (!RubyUtil.isLongrunning(context.getProductConfig().getPackageName())) {
+      imports.add(createImport(context.getNamer().getCredentialsClassImportName()));
+    }
     return imports.build();
   }
 
@@ -119,7 +122,11 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
   private List<ImportFileView> generateTestAppImports(GapicInterfaceContext context) {
     ImmutableList.Builder<ImportFileView> imports = ImmutableList.builder();
     SurfaceNamer namer = context.getNamer();
-    imports.add(createImport(namer.getTopLevelIndexFileImportName()));
+    if (RubyUtil.hasMajorVersion(context.getProductConfig().getPackageName())) {
+      imports.add(createImport(namer.getTopLevelIndexFileImportName()));
+    } else {
+      imports.add(createImport(namer.getVersionIndexFileImportName()));
+    }
     // Import the client class directly so the client class is in scope for the static class methods
     // used in the in the init code such as the path methods. This is not necessary for method
     // samples since the client is initialized before the init code, and the initialization

@@ -79,6 +79,7 @@ public class DynamicLangApiMethodTransformer {
             (context.getInterfaceConfig()), packageHasMultipleServices));
     apiMethod.apiVariableName(namer.getApiWrapperVariableName(context.getInterfaceConfig()));
     apiMethod.apiModuleName(namer.getApiWrapperModuleName());
+    apiMethod.localPackageName(namer.getLocalPackageName());
     InitCodeOutputType initCodeOutputType =
         context.getMethodModel().getRequestStreaming()
             ? InitCodeOutputType.SingleObject

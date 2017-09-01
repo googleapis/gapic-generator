@@ -24,7 +24,7 @@ import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.auto.value.AutoValue;
 import javax.annotation.Nullable;
-import org.joda.time.Duration;
+import org.threeten.bp.Duration;
 
 /** LongRunningConfig represents the long-running operation configuration for a method. */
 @AutoValue
@@ -100,8 +100,9 @@ public abstract class LongRunningConfig {
       error = true;
     }
 
-    Duration initialPollDelay = Duration.millis(longRunningConfigProto.getInitialPollDelayMillis());
-    if (initialPollDelay.isShorterThan(Duration.ZERO)) {
+    Duration initialPollDelay =
+        Duration.ofMillis(longRunningConfigProto.getInitialPollDelayMillis());
+    if (initialPollDelay.compareTo(Duration.ZERO) < 0) {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
@@ -120,8 +121,8 @@ public abstract class LongRunningConfig {
       error = true;
     }
 
-    Duration maxPollDelay = Duration.millis(longRunningConfigProto.getMaxPollDelayMillis());
-    if (maxPollDelay.isShorterThan(initialPollDelay)) {
+    Duration maxPollDelay = Duration.ofMillis(longRunningConfigProto.getMaxPollDelayMillis());
+    if (maxPollDelay.compareTo(initialPollDelay) < 0) {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
@@ -130,8 +131,9 @@ public abstract class LongRunningConfig {
       error = true;
     }
 
-    Duration totalPollTimeout = Duration.millis(longRunningConfigProto.getTotalPollTimeoutMillis());
-    if (totalPollTimeout.isShorterThan(maxPollDelay)) {
+    Duration totalPollTimeout =
+        Duration.ofMillis(longRunningConfigProto.getTotalPollTimeoutMillis());
+    if (totalPollTimeout.compareTo(maxPollDelay) < 0) {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,

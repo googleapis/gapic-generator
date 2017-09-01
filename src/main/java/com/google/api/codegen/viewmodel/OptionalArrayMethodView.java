@@ -75,6 +75,8 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
   public abstract String packageName();
 
+  public abstract String localPackageName();
+
   public abstract boolean packageHasMultipleServices();
 
   /** The name of the service exported by the package. */
@@ -97,9 +99,7 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
     return new AutoValue_OptionalArrayMethodView.Builder();
   }
 
-  public Builder toBuilder() {
-    return new AutoValue_OptionalArrayMethodView.Builder(this);
-  }
+  public abstract Builder toBuilder();
 
   public boolean hasRequestStreaming() {
     return !isSingularRequestMethod();
@@ -168,6 +168,8 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
     public abstract Builder versionAliasedApiClassName(String val);
 
     public abstract Builder oneofParams(Iterable<Iterable<String>> val);
+
+    public abstract Builder localPackageName(String val);
 
     public abstract OptionalArrayMethodView build();
   }

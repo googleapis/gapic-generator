@@ -17,7 +17,6 @@ package com.google.api.codegen.transformer.csharp;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
-import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
@@ -177,9 +176,12 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     apiClass.doc(serviceTransformer.generateServiceDoc(context, null));
 
     apiClass.name(namer.getApiWrapperClassName(context.getInterfaceConfig()));
-    apiClass.implName(namer.getApiWrapperClassImplName(context.getInterfaceModel()));
+    apiClass.implName(namer.getApiWrapperClassImplName(context.getInterfaceConfig()));
     apiClass.grpcServiceName(namer.getGrpcContainerTypeName(context.getInterfaceModel()));
-    apiClass.grpcTypeName(namer.getGrpcServiceClassName(context.getInterfaceModel()));
+    String grpcTypeName = namer.getGrpcServiceClassName(context.getInterfaceModel());
+    int dotIndex = grpcTypeName.indexOf('.');
+    apiClass.grpcTypeNameOuter(grpcTypeName.substring(0, dotIndex));
+    apiClass.grpcTypeNameInner(grpcTypeName.substring(dotIndex + 1, grpcTypeName.length()));
     apiClass.settingsClassName(
         context.getNamer().getApiSettingsClassName(context.getInterfaceConfig()));
     List<ApiCallableView> callables = new ArrayList<>();
@@ -187,9 +189,8 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
       if (call.type() == ApiCallableImplType.SimpleApiCallable
           || call.type() == ApiCallableImplType.BatchingApiCallable
           || call.type() == ApiCallableImplType.InitialOperationApiCallable
-          || (call.type() == ApiCallableImplType.StreamingApiCallable
-              && (call.grpcStreamingType() == GrpcStreamingType.BidiStreaming
-                  || call.grpcStreamingType() == GrpcStreamingType.ServerStreaming))) {
+          || call.type() == ApiCallableImplType.BidiStreamingApiCallable
+          || call.type() == ApiCallableImplType.ServerStreamingApiCallable) {
         callables.add(call);
       }
     }
@@ -278,7 +279,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
         ReroutedGrpcView rerouted =
             ReroutedGrpcView.newBuilder()
                 .grpcClientVarName(namer.getReroutedGrpcClientVarName(methodConfig))
-                .typeName("var") // TODO: Add explicit type.
+                .typeName(namer.getReroutedGrpcTypeName(context.getModelTypeTable(), methodConfig))
                 .getMethodName(namer.getReroutedGrpcMethodName(methodConfig))
                 .build();
         reroutedViews.add(rerouted);
