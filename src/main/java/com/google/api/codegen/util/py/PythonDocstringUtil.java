@@ -12,19 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.ruby;
+package com.google.api.codegen.util.py;
 
-import com.google.api.codegen.util.NamePath;
-import com.google.api.codegen.util.VersionMatcher;
-
-public class RubyUtil {
-  private static final String LONGRUNNING_PACKAGE_NAME = "Google::Longrunning";
-
-  public static boolean isLongrunning(String packageName) {
-    return packageName.equals(LONGRUNNING_PACKAGE_NAME);
-  }
-
-  public static boolean hasMajorVersion(String packageName) {
-    return VersionMatcher.isVersion(NamePath.doubleColoned(packageName).getHead());
+public class PythonDocstringUtil {
+  public static String napoleonType(String fullName, String typesFileNamespace) {
+    if (fullName.contains(".")) {
+      String typeName = fullName.substring(fullName.lastIndexOf('.') + 1);
+      return String.format("~%s.types.%s", typesFileNamespace, typeName);
+    }
+    return ":class:`" + fullName + "`";
   }
 }

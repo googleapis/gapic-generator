@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.codegen.discovery.DiscoveryProvider;
 import com.google.api.codegen.discovery.DiscoveryProviderFactory;
 import com.google.api.codegen.util.ClassInstantiator;
+import com.google.api.tools.framework.model.ConfigSource;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleDiagCollector;
 import com.google.api.tools.framework.snippet.Doc;
@@ -200,13 +201,13 @@ public class DiscoveryFragmentGeneratorApi {
             ConfigProto.getDescriptor().getFullName(), ConfigProto.getDefaultInstance());
     // Use DiagCollector to collect errors from config read since user errors may arise here
     DiagCollector diagCollector = new SimpleDiagCollector();
-    ConfigProto configProto =
-        (ConfigProto) MultiYamlReader.read(diagCollector, configFiles, supportedConfigTypes);
+    ConfigSource configSource =
+        MultiYamlReader.read(diagCollector, configFiles, supportedConfigTypes);
     if (diagCollector.getErrorCount() > 0) {
       System.err.println(diagCollector.toString());
       return null;
     } else {
-      return configProto;
+      return configSource == null ? null : (ConfigProto) configSource.getConfig();
     }
   }
 
