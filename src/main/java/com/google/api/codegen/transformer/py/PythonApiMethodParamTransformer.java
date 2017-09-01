@@ -84,9 +84,7 @@ public class PythonApiMethodParamTransformer implements ApiMethodParamTransforme
     SimpleParamDocView.Builder paramDoc = SimpleParamDocView.newBuilder();
     paramDoc.paramName(context.getNamer().localVarName(Name.from("requests")));
     String requestTypeName =
-        context
-            .getMethodModel()
-            .getAndSaveRequestTypeName(context.getTypeTable().cloneEmpty(), context.getNamer());
+        context.getMethodModel().getInputTypeName(context.getTypeTable()).getFullName();
     paramDoc.lines(
         ImmutableList.of(
             "The input objects. If a dict is provided, it must be of the",
