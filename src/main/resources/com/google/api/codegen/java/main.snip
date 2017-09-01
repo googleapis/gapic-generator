@@ -107,11 +107,30 @@
    * <p>This class can be customized by passing in a custom instance of {@xapiClassDoc.settingsClassName} to
    * create(). For example:
    *
+   * To customize credentials:
+   *
    * <pre>
    * <code>
    * {@xapiClassDoc.settingsClassName} {@xapiClassDoc.settingsVarName} =
    *     {@xapiClassDoc.settingsClassName}.defaultBuilder()
    *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
+   *         .build();
+   * {@xapiClassDoc.apiClassName} {@xapiClassDoc.apiVarName} =
+   *     {@xapiClassDoc.apiClassName}.create({@xapiClassDoc.settingsVarName});
+   * </code>
+   * </pre>
+   *
+   * To customize the endpoint:
+   *
+   * <pre>
+   * <code>
+   * {@xapiClassDoc.settingsClassName} {@xapiClassDoc.settingsVarName} =
+   *     {@xapiClassDoc.settingsClassName}.defaultBuilder()
+   *         .setTransportProvider({@xapiClassDoc.settingsClassName}.defaultGrpcTransportProviderBuilder()
+   *             .setChannelProvider({@xapiClassDoc.settingsClassName}.defaultGrpcChannelProviderBuilder()
+   *                 .setEndpoint(myEndpoint)
+   *                 .build())
+   *             .build())
    *         .build();
    * {@xapiClassDoc.apiClassName} {@xapiClassDoc.apiVarName} =
    *     {@xapiClassDoc.apiClassName}.create({@xapiClassDoc.settingsVarName});
@@ -272,7 +291,6 @@
     @case "RequestObjectMethod"
       {@requestObjectMethod(apiMethod)}
     @case "CallableMethod"
-    # TODO create a GrpcStreaming ApiMethodType
       @if apiMethod.isStreaming
         {@streamingCallableMethod(apiMethod)}
       @else
@@ -436,7 +454,8 @@
     {@apiMethod.releaseLevelAnnotation}
 
   @end
-  {@apiMethod.visibility} final StreamingCallable<{@apiMethod.serviceRequestTypeName}, \
+  {@apiMethod.visibility} final {@apiMethod.callableMethod.interfaceTypeName}\
+      <{@apiMethod.serviceRequestTypeName}, \
       {@apiMethod.responseTypeName}> {@apiMethod.name}() {
     return stub.{@apiMethod.callableMethod.callableName}();
   }

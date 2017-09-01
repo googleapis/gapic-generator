@@ -88,6 +88,18 @@ public abstract class GapicProductConfig implements ProductConfig {
    */
   public abstract ImmutableMap<String, FieldConfig> getDefaultResourceNameFieldConfigMap();
 
+  public GapicProductConfig withPackageName(String packageName) {
+    return new AutoValue_GapicProductConfig(
+        getInterfaceConfigMap(),
+        packageName,
+        getDomainLayerLocation(),
+        getResourceNameMessageConfigs(),
+        getCopyrightLines(),
+        getLicenseLines(),
+        getResourceNameConfigs(),
+        getDefaultResourceNameFieldConfigMap());
+  }
+
   /**
    * Creates an instance of GapicProductConfig based on ConfigProto, linking up API interface
    * configurations with specified interfaces in interfaceConfigMap. On errors, null will be

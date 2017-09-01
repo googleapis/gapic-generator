@@ -35,6 +35,7 @@ public class CSharpCodeGeneratorTest extends GapicTestBase {
     super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
     getTestDataLocator()
         .addTestDataSource(com.google.api.codegen.csharp.CSharpContextCommon.class, "");
+    getTestDataLocator().addTestDataSource(getClass(), "testdata/csharp");
   }
 
   /**

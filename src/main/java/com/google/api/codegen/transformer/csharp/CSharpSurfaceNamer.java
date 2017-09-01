@@ -37,9 +37,11 @@ import com.google.api.codegen.util.csharp.CSharpCommentReformatter;
 import com.google.api.codegen.util.csharp.CSharpNameFormatter;
 import com.google.api.codegen.util.csharp.CSharpTypeTable;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CSharpSurfaceNamer extends SurfaceNamer {
@@ -374,6 +376,29 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getReroutedGrpcTypeName(ImportTypeTable typeTable, MethodConfig methodConfig) {
+    List<String> reroutes = Splitter.on('.').splitToList(methodConfig.getRerouteToGrpcInterface());
+    if (reroutes.size() > 2
+        && reroutes.get(0).equals("google")
+        && !reroutes.get(1).equals("cloud")) {
+      reroutes = new ArrayList<String>(reroutes);
+      reroutes.add(1, "cloud");
+    }
+    String rerouteLast = reroutes.get(reroutes.size() - 1);
+    String name =
+        Name.anyCamel(rerouteLast).toUpperCamel()
+            + "+"
+            + Name.anyCamel(rerouteLast, "client").toUpperCamel();
+    List<String> names = new ArrayList<>();
+    for (String reroute : reroutes) {
+      names.add(Name.anyCamel(reroute).toUpperCamel());
+    }
+    String prefix = Joiner.on(".").join(names.subList(0, names.size() - 1));
+    String fullName = prefix + "." + name;
+    return typeTable.getAndSaveNicknameFor(fullName);
+  }
+
+  @Override
   public String getGrpcServiceClassName(InterfaceModel apiInterface) {
     return publicClassName(Name.upperCamel(apiInterface.getSimpleName()))
         + "."
@@ -381,8 +406,8 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getApiWrapperClassImplName(InterfaceModel apiInterface) {
-    return publicClassName(Name.upperCamel(apiInterface.getSimpleName(), "ClientImpl"));
+  public String getApiWrapperClassImplName(InterfaceConfig interfaceConfig) {
+    return publicClassName(Name.upperCamel(interfaceConfig.getInterfaceModel().getSimpleName(), "ClientImpl"));
   }
 
   @Override

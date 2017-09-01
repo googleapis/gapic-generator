@@ -101,8 +101,8 @@
       client.{@test.clientMethodName}(\
           {@sampleMethodCallArgList(test.initCode.fieldSettings)});
       Assert.fail("No exception raised");
-    } catch (GrpcApiException e) {
-      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), e.getStatusCode().getCode());
+    } catch (InvalidArgumentException e) {
+      // Expected exception
     }
   }
 @end
@@ -172,9 +172,9 @@
           {@sampleMethodCallArgList(test.initCode.fieldSettings)}).get();
       Assert.fail("No exception raised");
     } catch (ExecutionException e) {
-      Assert.assertEquals(GrpcApiException.class, e.getCause().getClass());
-      GrpcApiException apiException = (GrpcApiException) e.getCause();
-      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), apiException.getStatusCode().getCode());
+      Assert.assertEquals(InvalidArgumentException.class, e.getCause().getClass());
+      InvalidArgumentException apiException = (InvalidArgumentException) e.getCause();
+      Assert.assertEquals(Status.INVALID_ARGUMENT.getCode(), ((GrpcStatusCode) apiException.getStatusCode()).getCode());
     }
   }
 
@@ -206,7 +206,7 @@
 @private bidiStreamingCall(test)
   MockStreamObserver<{@test.responseTypeName}> responseObserver = new MockStreamObserver<>();
 
-  StreamingCallable<{@test.requestTypeName}, {@test.responseTypeName}> callable =
+  BidiStreamingCallable<{@test.requestTypeName}, {@test.responseTypeName}> callable =
       client.{@test.clientMethodName}();
   ApiStreamObserver<{@test.requestTypeName}> requestObserver =
       callable.bidiStreamingCall(responseObserver);
@@ -217,7 +217,7 @@
 @private serverStreamingCall(test)
   MockStreamObserver<{@test.responseTypeName}> responseObserver = new MockStreamObserver<>();
 
-  StreamingCallable<{@test.requestTypeName}, {@test.responseTypeName}> callable =
+  ServerStreamingCallable<{@test.requestTypeName}, {@test.responseTypeName}> callable =
       client.{@test.clientMethodName}();
   callable.serverStreamingCall(request, responseObserver);
 @end

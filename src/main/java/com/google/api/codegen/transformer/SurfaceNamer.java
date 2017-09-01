@@ -219,9 +219,18 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return qualifiedName(namePath.withoutHead());
   }
 
+  public String getGapicImplNamespace() {
+    return getNotImplementedString("SurfaceNamer.getGapicImplNamespace");
+  }
+
   /** The qualified namespace of an API. */
   public String getTopLevelNamespace() {
     return getNotImplementedString("SurfaceNamer.getTopLevelNamespace");
+  }
+
+  /** The versioned namespace of an api. Example: google.cloud.vision_v1 */
+  public String getVersionedDirectoryNamespace() {
+    return getNotImplementedString("SurfaceNamer.getVersionedDirectoryNamespace");
   }
 
   /** The modules of the package. */
@@ -414,6 +423,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The method name to create a rerouted gRPC client. Used in C# */
   public String getReroutedGrpcMethodName(MethodConfig methodConfig) {
     return getNotImplementedString("SurfaceNamer.getReroutedGrpcMethodName");
+  }
+
+  /** The type name of a rerouted gRPC type. Used in C# */
+  public String getReroutedGrpcTypeName(ImportTypeTable typeTable, MethodConfig methodConfig) {
+    return getNotImplementedString("SurfaceNamer.getReroutedGrpcTypeName");
   }
 
   /** The name of the surface method which can call the given API method. */
@@ -702,7 +716,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The name of the implementation class that implements a particular proto interface. */
-  public String getApiWrapperClassImplName(InterfaceModel apiInterface) {
+  public String getApiWrapperClassImplName(InterfaceConfig interfaceConfig) {
     return getNotImplementedString("SurfaceNamer.getApiWrapperClassImplName");
   }
 
@@ -823,6 +837,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
    */
   public String getGrpcServerTypeName(InterfaceModel apiInterface) {
     return getNotImplementedString("SurfaceNamer.getGrpcServerTypeName");
+  }
+
+  /** The imported name of the default client config. */
+  public String getClientConfigName(InterfaceModel apiInterface) {
+    return getNotImplementedString("SurfaceNamer.getClientConfigName");
   }
 
   /**

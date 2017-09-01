@@ -56,7 +56,7 @@ public class PythonModelTypeNameConverter extends ModelTypeNameConverter {
           .put(Type.TYPE_SFIXED32, "int")
           .put(Type.TYPE_SFIXED64, "long")
           .put(Type.TYPE_BOOL, "bool")
-          .put(Type.TYPE_STRING, "string")
+          .put(Type.TYPE_STRING, "str")
           .put(Type.TYPE_BYTES, "bytes")
           .build();
 
@@ -171,7 +171,7 @@ public class PythonModelTypeNameConverter extends ModelTypeNameConverter {
       return TypedValue.create(getTypeName(type), PRIMITIVE_ZERO_VALUE.get(type.getKind()));
     }
     if (type.isMessage()) {
-      return TypedValue.create(getTypeName(type), "%s()");
+      return TypedValue.create(getTypeName(type), "{}");
     }
     if (type.isEnum()) {
       return getEnumValue(type, type.getEnumType().getValues().get(0));

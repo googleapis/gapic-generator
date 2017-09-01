@@ -36,7 +36,7 @@ public class CSharpDiscoveryFragmentGeneratorTest extends DiscoveryGeneratorTest
     File dir =
         new File(
             System.getProperty("user.dir"),
-            "src/test/java/com/google/api/codegen/testdata/discoveries");
+            "src/test/java/com/google/api/codegen/testsrc/discoveries");
     ImmutableList.Builder<Object[]> builder = ImmutableList.<Object[]>builder();
     for (File file : dir.listFiles(new DiscoveryFile())) {
       String fileName = file.getName();

@@ -37,6 +37,7 @@ public class RubyCodeGeneratorTest {
         String snippetName) {
       super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
       getTestDataLocator().addTestDataSource(getClass(), "ruby");
+      getTestDataLocator().addTestDataSource(getClass(), "testdata/ruby");
     }
 
     /**
@@ -69,6 +70,7 @@ public class RubyCodeGeneratorTest {
         String snippetName) {
       super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
       getTestDataLocator().addTestDataSource(getClass(), "ruby");
+      getTestDataLocator().addTestDataSource(getClass(), "testdata/ruby");
     }
 
     /**
@@ -103,6 +105,7 @@ public class RubyCodeGeneratorTest {
         String snippetName) {
       super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
       getTestDataLocator().addTestDataSource(getClass(), "ruby");
+      getTestDataLocator().addTestDataSource(getClass(), "testdata/ruby");
     }
 
     /**
@@ -123,6 +126,41 @@ public class RubyCodeGeneratorTest {
     @Test
     public void multiple_services() throws Exception {
       test("multiple_services");
+    }
+  }
+
+  @RunWith(Parameterized.class)
+  public static class RubyLongrunningBaseline extends GapicTestBase {
+
+    public RubyLongrunningBaseline(
+        String name,
+        String idForFactory,
+        String[] gapicConfigFileNames,
+        String packageConfigFileName,
+        String snippetName) {
+      super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
+      getTestDataLocator().addTestDataSource(getClass(), "ruby");
+      getTestDataLocator().addTestDataSource(getClass(), "testdata/ruby");
+    }
+
+    /**
+     * Declares test parameters, each one an array of values passed to the constructor, with the
+     * first element a name, the second a config of this name.
+     */
+    @Parameters(name = "{0}")
+    public static List<Object[]> testedConfigs() {
+      return GapicTestBase.createTestedConfigs(
+          MainGapicProviderFactory.RUBY,
+          new String[] {"ruby_gapic.yaml", "longrunning_gapic.yaml"},
+          "longrunning_pkg.yaml");
+    }
+
+    // Tests
+    // =====
+
+    @Test
+    public void longrunning() throws Exception {
+      test("longrunning");
     }
   }
 }

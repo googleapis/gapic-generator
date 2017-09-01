@@ -27,7 +27,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.util.List;
 import javax.annotation.Nullable;
-import org.joda.time.Duration;
+import org.threeten.bp.Duration;
 
 /**
  * MethodConfig represents the code-gen config for a method, and includes the specification of
@@ -150,6 +150,14 @@ public abstract class MethodConfig {
             Diag.error(
                 SimpleLocation.TOPLEVEL,
                 "Required field '%s' not found (in method %s)",
+                fieldName,
+                method.getFullName()));
+        return null;
+      } else if (requiredField.getOneof() != null) {
+        diagCollector.addDiag(
+            Diag.error(
+                SimpleLocation.TOPLEVEL,
+                "oneof field %s cannot be required (in method %s)",
                 fieldName,
                 method.getFullName()));
         return null;

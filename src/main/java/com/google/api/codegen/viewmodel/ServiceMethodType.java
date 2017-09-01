@@ -17,6 +17,8 @@ package com.google.api.codegen.viewmodel;
 /** The type of the underlying method in the service API. */
 public enum ServiceMethodType {
   UnaryMethod,
-  GrpcStreamingMethod,
+  GrpcBidiStreamingMethod,
+  GrpcClientStreamingMethod,
+  GrpcServerStreamingMethod,
   LongRunningMethod
 }

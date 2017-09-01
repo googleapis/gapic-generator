@@ -15,36 +15,35 @@
 package com.google.api.codegen.transformer.nodejs;
 
 import com.google.api.codegen.transformer.PackageMetadataNamer;
-import com.google.api.codegen.util.Name;
 import com.google.common.base.Splitter;
 import java.util.List;
 
 /** A NodeJSPackageMetadataNamer provides nodejs specific names for metadata views. */
 public class NodeJSPackageMetadataNamer extends PackageMetadataNamer {
-  private Name serviceName;
+  private String serviceName;
   private String domainLayerLocation;
 
   public NodeJSPackageMetadataNamer(String packageName, String domainLayerLocation) {
     // Get the service name from the package name by removing the version suffix (if any).
     List<String> names = Splitter.on(".").splitToList(packageName);
     if (names.size() < 2) {
-      this.serviceName = Name.from(packageName);
+      this.serviceName = packageName;
     }
-    this.serviceName = Name.from(names.get(0));
+    this.serviceName = names.get(0);
     this.domainLayerLocation = domainLayerLocation;
   }
 
   @Override
   public String getMetadataName() {
-    return serviceName.toUpperCamel();
+    return getNotImplementedString("NodeJSPackageMetadataNamer.getMetadataName");
   }
 
   @Override
   public String getMetadataIdentifier() {
     if (domainLayerLocation != null && !domainLayerLocation.isEmpty()) {
-      return "@" + domainLayerLocation + "/" + serviceName.toLowerCamel();
+      return "@" + domainLayerLocation + "/" + serviceName;
     } else {
-      return serviceName.toLowerCamel();
+      return serviceName;
     }
   }
 }

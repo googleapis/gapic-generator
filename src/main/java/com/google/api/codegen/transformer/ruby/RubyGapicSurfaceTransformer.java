@@ -25,6 +25,7 @@ import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
+import com.google.api.codegen.ruby.RubyUtil;
 import com.google.api.codegen.transformer.BatchingTransformer;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.FeatureConfig;
@@ -107,9 +108,13 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
     ProtoApiModel apiModel = new ProtoApiModel(model);
     ImmutableList.Builder<ViewModel> views = ImmutableList.builder();
     views.add(generateVersionIndexView(apiModel, productConfig));
-    views.add(generateTopLevelIndexView(apiModel, productConfig));
+    if (RubyUtil.hasMajorVersion(productConfig.getPackageName())) {
+      views.add(generateTopLevelIndexView(apiModel, productConfig));
+    }
     views.addAll(generateApiClasses(apiModel, productConfig));
-    views.add(generateCredentialsView(apiModel, productConfig));
+    if (!RubyUtil.isLongrunning(productConfig.getPackageName())) {
+      views.add(generateCredentialsView(apiModel, productConfig));
+    }
     return views.build();
   }
 

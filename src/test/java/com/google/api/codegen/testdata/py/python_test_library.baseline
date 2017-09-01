@@ -1,0 +1,1479 @@
+============== file: tests/unit/gapic/v1/test_library_service_client_v1.py ==============
+# Copyright 2017, Google Inc. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+"""Unit tests."""
+
+import mock
+import unittest
+
+from google.gax import errors
+from google.rpc import status_pb2
+
+from google.cloud.example import library_v1
+from google.cloud.example.library_v1 import enums
+from google.cloud.proto.example.library.v1 import book_from_anywhere_pb2
+from google.cloud.proto.example.library.v1 import library_pb2
+from google.cloud.proto.tagger.v1 import tagger_pb2
+from google.longrunning import operations_pb2
+from google.protobuf import empty_pb2
+
+
+class CustomException(Exception):
+    pass
+
+
+class TestLibraryServiceClient(unittest.TestCase):
+
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_create_shelf(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        shelf = {}
+
+        # Mock response
+        name = 'name3373707'
+        theme = 'theme110327241'
+        internal_theme = 'internalTheme792518087'
+        expected_response = {'name': name, 'theme': theme, 'internal_theme': internal_theme}
+        expected_response = library_pb2.Shelf(**expected_response)
+        grpc_stub.CreateShelf.return_value = expected_response
+
+        response = client.create_shelf(shelf)
+        self.assertEqual(expected_response, response)
+
+        grpc_stub.CreateShelf.assert_called_once()
+        args, kwargs = grpc_stub.CreateShelf.call_args
+        self.assertEqual(len(args), 2)
+        self.assertEqual(len(kwargs), 1)
+        self.assertIn('metadata', kwargs)
+        actual_request = args[0]
+
+        expected_request = library_pb2.CreateShelfRequest(shelf=shelf)
+        self.assertEqual(expected_request, actual_request)
+
+    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_create_shelf_exception(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        shelf = {}
+
+        # Mock exception response
+        grpc_stub.CreateShelf.side_effect = CustomException()
+
+        self.assertRaises(errors.GaxError, client.create_shelf, shelf)
+
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_get_shelf(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        name = client.shelf_path('[SHELF_ID]')
+        options_ = 'options-1249474914'
+
+        # Mock response
+        name_2 = 'name2-1052831874'
+        theme = 'theme110327241'
+        internal_theme = 'internalTheme792518087'
+        expected_response = {'name': name_2, 'theme': theme, 'internal_theme': internal_theme}
+        expected_response = library_pb2.Shelf(**expected_response)
+        grpc_stub.GetShelf.return_value = expected_response
+
+        response = client.get_shelf(name, options_)
+        self.assertEqual(expected_response, response)
+
+        grpc_stub.GetShelf.assert_called_once()
+        args, kwargs = grpc_stub.GetShelf.call_args
+        self.assertEqual(len(args), 2)
+        self.assertEqual(len(kwargs), 1)
+        self.assertIn('metadata', kwargs)
+        actual_request = args[0]
+
+        expected_request = library_pb2.GetShelfRequest(name=name, options=options_)
+        self.assertEqual(expected_request, actual_request)
+
+    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_get_shelf_exception(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        name = client.shelf_path('[SHELF_ID]')
+        options_ = 'options-1249474914'
+
+        # Mock exception response
+        grpc_stub.GetShelf.side_effect = CustomException()
+
+        self.assertRaises(errors.GaxError, client.get_shelf, name, options_)
+
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_list_shelves(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock response
+        next_page_token = ''
+        shelves_element = {}
+        shelves = [shelves_element]
+        expected_response = {'next_page_token': next_page_token, 'shelves': shelves}
+        expected_response = library_pb2.ListShelvesResponse(**expected_response)
+        grpc_stub.ListShelves.return_value = expected_response
+
+        paged_list_response = client.list_shelves()
+        resources = list(paged_list_response)
+        self.assertEqual(1, len(resources))
+        self.assertEqual(expected_response.shelves[0], resources[0])
+
+        grpc_stub.ListShelves.assert_called_once()
+        args, kwargs = grpc_stub.ListShelves.call_args
+        self.assertEqual(len(args), 2)
+        self.assertEqual(len(kwargs), 1)
+        self.assertIn('metadata', kwargs)
+        actual_request = args[0]
+
+        expected_request = library_pb2.ListShelvesRequest()
+        self.assertEqual(expected_request, actual_request)
+
+    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_list_shelves_exception(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock exception response
+        grpc_stub.ListShelves.side_effect = CustomException()
+
+        paged_list_response = client.list_shelves()
+        self.assertRaises(errors.GaxError, list, paged_list_response)
+
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_delete_shelf(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        name = client.shelf_path('[SHELF_ID]')
+
+        client.delete_shelf(name)
+
+        grpc_stub.DeleteShelf.assert_called_once()
+        args, kwargs = grpc_stub.DeleteShelf.call_args
+        self.assertEqual(len(args), 2)
+        self.assertEqual(len(kwargs), 1)
+        self.assertIn('metadata', kwargs)
+        actual_request = args[0]
+
+        expected_request = library_pb2.DeleteShelfRequest(name=name)
+        self.assertEqual(expected_request, actual_request)
+
+    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_delete_shelf_exception(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        name = client.shelf_path('[SHELF_ID]')
+
+        # Mock exception response
+        grpc_stub.DeleteShelf.side_effect = CustomException()
+
+        self.assertRaises(errors.GaxError, client.delete_shelf, name)
+
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_merge_shelves(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        name = client.shelf_path('[SHELF_ID]')
+        other_shelf_name = client.shelf_path('[SHELF_ID]')
+
+        # Mock response
+        name_2 = 'name2-1052831874'
+        theme = 'theme110327241'
+        internal_theme = 'internalTheme792518087'
+        expected_response = {'name': name_2, 'theme': theme, 'internal_theme': internal_theme}
+        expected_response = library_pb2.Shelf(**expected_response)
+        grpc_stub.MergeShelves.return_value = expected_response
+
+        response = client.merge_shelves(name, other_shelf_name)
+        self.assertEqual(expected_response, response)
+
+        grpc_stub.MergeShelves.assert_called_once()
+        args, kwargs = grpc_stub.MergeShelves.call_args
+        self.assertEqual(len(args), 2)
+        self.assertEqual(len(kwargs), 1)
+        self.assertIn('metadata', kwargs)
+        actual_request = args[0]
+
+        expected_request = library_pb2.MergeShelvesRequest(name=name, other_shelf_name=other_shelf_name)
+        self.assertEqual(expected_request, actual_request)
+
+    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_merge_shelves_exception(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        name = client.shelf_path('[SHELF_ID]')
+        other_shelf_name = client.shelf_path('[SHELF_ID]')
+
+        # Mock exception response
+        grpc_stub.MergeShelves.side_effect = CustomException()
+
+        self.assertRaises(errors.GaxError, client.merge_shelves, name, other_shelf_name)
+
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_create_book(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        name = client.shelf_path('[SHELF_ID]')
+        book = {}
+
+        # Mock response
+        name_2 = 'name2-1052831874'
+        author = 'author-1406328437'
+        title = 'title110371416'
+        read = True
+        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read}
+        expected_response = library_pb2.Book(**expected_response)
+        grpc_stub.CreateBook.return_value = expected_response
+
+        response = client.create_book(name, book)
+        self.assertEqual(expected_response, response)
+
+        grpc_stub.CreateBook.assert_called_once()
+        args, kwargs = grpc_stub.CreateBook.call_args
+        self.assertEqual(len(args), 2)
+        self.assertEqual(len(kwargs), 1)
+        self.assertIn('metadata', kwargs)
+        actual_request = args[0]
+
+        expected_request = library_pb2.CreateBookRequest(name=name, book=book)
+        self.assertEqual(expected_request, actual_request)
+
+    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_create_book_exception(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        name = client.shelf_path('[SHELF_ID]')
+        book = {}
+
+        # Mock exception response
+        grpc_stub.CreateBook.side_effect = CustomException()
+
+        self.assertRaises(errors.GaxError, client.create_book, name, book)
+
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_publish_series(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        shelf = {}
+        books = []
+        series_string = 'foobar'
+        series_uuid = {'series_string': series_string}
+
+        # Mock response
+        book_names_element = 'bookNamesElement1491670575'
+        book_names = [book_names_element]
+        expected_response = {'book_names': book_names}
+        expected_response = library_pb2.PublishSeriesResponse(**expected_response)
+        grpc_stub.PublishSeries.return_value = expected_response
+
+        response = client.publish_series(shelf, books, series_uuid)
+        self.assertEqual(expected_response, response)
+
+        grpc_stub.PublishSeries.assert_called_once()
+        args, kwargs = grpc_stub.PublishSeries.call_args
+        self.assertEqual(len(args), 2)
+        self.assertEqual(len(kwargs), 1)
+        self.assertIn('metadata', kwargs)
+        actual_request = args[0]
+
+        expected_request = library_pb2.PublishSeriesRequest(shelf=shelf, books=books, series_uuid=series_uuid)
+        self.assertEqual(expected_request, actual_request)
+
+    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_publish_series_exception(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        shelf = {}
+        books = []
+        series_string = 'foobar'
+        series_uuid = {'series_string': series_string}
+
+        # Mock exception response
+        grpc_stub.PublishSeries.side_effect = CustomException()
+
+        self.assertRaises(errors.GaxError, client.publish_series, shelf, books, series_uuid)
+
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_get_book(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+
+        # Mock response
+        name_2 = 'name2-1052831874'
+        author = 'author-1406328437'
+        title = 'title110371416'
+        read = True
+        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read}
+        expected_response = library_pb2.Book(**expected_response)
+        grpc_stub.GetBook.return_value = expected_response
+
+        response = client.get_book(name)
+        self.assertEqual(expected_response, response)
+
+        grpc_stub.GetBook.assert_called_once()
+        args, kwargs = grpc_stub.GetBook.call_args
+        self.assertEqual(len(args), 2)
+        self.assertEqual(len(kwargs), 1)
+        self.assertIn('metadata', kwargs)
+        actual_request = args[0]
+
+        expected_request = library_pb2.GetBookRequest(name=name)
+        self.assertEqual(expected_request, actual_request)
+
+    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_get_book_exception(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+
+        # Mock exception response
+        grpc_stub.GetBook.side_effect = CustomException()
+
+        self.assertRaises(errors.GaxError, client.get_book, name)
+
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_list_books(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        name = client.shelf_path('[SHELF_ID]')
+
+        # Mock response
+        next_page_token = ''
+        books_element = {}
+        books = [books_element]
+        expected_response = {'next_page_token': next_page_token, 'books': books}
+        expected_response = library_pb2.ListBooksResponse(**expected_response)
+        grpc_stub.ListBooks.return_value = expected_response
+
+        paged_list_response = client.list_books(name)
+        resources = list(paged_list_response)
+        self.assertEqual(1, len(resources))
+        self.assertEqual(expected_response.books[0], resources[0])
+
+        grpc_stub.ListBooks.assert_called_once()
+        args, kwargs = grpc_stub.ListBooks.call_args
+        self.assertEqual(len(args), 2)
+        self.assertEqual(len(kwargs), 1)
+        self.assertIn('metadata', kwargs)
+        actual_request = args[0]
+
+        expected_request = library_pb2.ListBooksRequest(name=name)
+        self.assertEqual(expected_request, actual_request)
+
+    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_list_books_exception(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        name = client.shelf_path('[SHELF_ID]')
+
+        # Mock exception response
+        grpc_stub.ListBooks.side_effect = CustomException()
+
+        paged_list_response = client.list_books(name)
+        self.assertRaises(errors.GaxError, list, paged_list_response)
+
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_delete_book(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+
+        client.delete_book(name)
+
+        grpc_stub.DeleteBook.assert_called_once()
+        args, kwargs = grpc_stub.DeleteBook.call_args
+        self.assertEqual(len(args), 2)
+        self.assertEqual(len(kwargs), 1)
+        self.assertIn('metadata', kwargs)
+        actual_request = args[0]
+
+        expected_request = library_pb2.DeleteBookRequest(name=name)
+        self.assertEqual(expected_request, actual_request)
+
+    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_delete_book_exception(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+
+        # Mock exception response
+        grpc_stub.DeleteBook.side_effect = CustomException()
+
+        self.assertRaises(errors.GaxError, client.delete_book, name)
+
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_update_book(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        book = {}
+
+        # Mock response
+        name_2 = 'name2-1052831874'
+        author = 'author-1406328437'
+        title = 'title110371416'
+        read = True
+        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read}
+        expected_response = library_pb2.Book(**expected_response)
+        grpc_stub.UpdateBook.return_value = expected_response
+
+        response = client.update_book(name, book)
+        self.assertEqual(expected_response, response)
+
+        grpc_stub.UpdateBook.assert_called_once()
+        args, kwargs = grpc_stub.UpdateBook.call_args
+        self.assertEqual(len(args), 2)
+        self.assertEqual(len(kwargs), 1)
+        self.assertIn('metadata', kwargs)
+        actual_request = args[0]
+
+        expected_request = library_pb2.UpdateBookRequest(name=name, book=book)
+        self.assertEqual(expected_request, actual_request)
+
+    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_update_book_exception(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        book = {}
+
+        # Mock exception response
+        grpc_stub.UpdateBook.side_effect = CustomException()
+
+        self.assertRaises(errors.GaxError, client.update_book, name, book)
+
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_move_book(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        other_shelf_name = client.shelf_path('[SHELF_ID]')
+
+        # Mock response
+        name_2 = 'name2-1052831874'
+        author = 'author-1406328437'
+        title = 'title110371416'
+        read = True
+        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read}
+        expected_response = library_pb2.Book(**expected_response)
+        grpc_stub.MoveBook.return_value = expected_response
+
+        response = client.move_book(name, other_shelf_name)
+        self.assertEqual(expected_response, response)
+
+        grpc_stub.MoveBook.assert_called_once()
+        args, kwargs = grpc_stub.MoveBook.call_args
+        self.assertEqual(len(args), 2)
+        self.assertEqual(len(kwargs), 1)
+        self.assertIn('metadata', kwargs)
+        actual_request = args[0]
+
+        expected_request = library_pb2.MoveBookRequest(name=name, other_shelf_name=other_shelf_name)
+        self.assertEqual(expected_request, actual_request)
+
+    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_move_book_exception(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        other_shelf_name = client.shelf_path('[SHELF_ID]')
+
+        # Mock exception response
+        grpc_stub.MoveBook.side_effect = CustomException()
+
+        self.assertRaises(errors.GaxError, client.move_book, name, other_shelf_name)
+
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_list_strings(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock response
+        next_page_token = ''
+        strings_element = 'stringsElement474465855'
+        strings = [strings_element]
+        expected_response = {'next_page_token': next_page_token, 'strings': strings}
+        expected_response = library_pb2.ListStringsResponse(**expected_response)
+        grpc_stub.ListStrings.return_value = expected_response
+
+        paged_list_response = client.list_strings()
+        resources = list(paged_list_response)
+        self.assertEqual(1, len(resources))
+        self.assertEqual(expected_response.strings[0], resources[0])
+
+        grpc_stub.ListStrings.assert_called_once()
+        args, kwargs = grpc_stub.ListStrings.call_args
+        self.assertEqual(len(args), 2)
+        self.assertEqual(len(kwargs), 1)
+        self.assertIn('metadata', kwargs)
+        actual_request = args[0]
+
+        expected_request = library_pb2.ListStringsRequest()
+        self.assertEqual(expected_request, actual_request)
+
+    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_list_strings_exception(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock exception response
+        grpc_stub.ListStrings.side_effect = CustomException()
+
+        paged_list_response = client.list_strings()
+        self.assertRaises(errors.GaxError, list, paged_list_response)
+
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_add_comments(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        comment = b'95'
+        stage = enums.Comment.Stage.UNSET
+        alignment = enums.SomeMessage2.SomeMessage3.Alignment.CHAR
+        comments_element = {'comment': comment, 'stage': stage, 'alignment': alignment}
+        comments = [comments_element]
+
+        client.add_comments(name, comments)
+
+        grpc_stub.AddComments.assert_called_once()
+        args, kwargs = grpc_stub.AddComments.call_args
+        self.assertEqual(len(args), 2)
+        self.assertEqual(len(kwargs), 1)
+        self.assertIn('metadata', kwargs)
+        actual_request = args[0]
+
+        expected_request = library_pb2.AddCommentsRequest(name=name, comments=comments)
+        self.assertEqual(expected_request, actual_request)
+
+    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_add_comments_exception(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        comment = b'95'
+        stage = enums.Comment.Stage.UNSET
+        alignment = enums.SomeMessage2.SomeMessage3.Alignment.CHAR
+        comments_element = {'comment': comment, 'stage': stage, 'alignment': alignment}
+        comments = [comments_element]
+
+        # Mock exception response
+        grpc_stub.AddComments.side_effect = CustomException()
+
+        self.assertRaises(errors.GaxError, client.add_comments, name, comments)
+
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_get_book_from_archive(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        name = client.archived_book_path('[ARCHIVE_PATH]', '[BOOK_ID]')
+
+        # Mock response
+        name_2 = 'name2-1052831874'
+        author = 'author-1406328437'
+        title = 'title110371416'
+        read = True
+        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read}
+        expected_response = library_pb2.BookFromArchive(**expected_response)
+        grpc_stub.GetBookFromArchive.return_value = expected_response
+
+        response = client.get_book_from_archive(name)
+        self.assertEqual(expected_response, response)
+
+        grpc_stub.GetBookFromArchive.assert_called_once()
+        args, kwargs = grpc_stub.GetBookFromArchive.call_args
+        self.assertEqual(len(args), 2)
+        self.assertEqual(len(kwargs), 1)
+        self.assertIn('metadata', kwargs)
+        actual_request = args[0]
+
+        expected_request = library_pb2.GetBookFromArchiveRequest(name=name)
+        self.assertEqual(expected_request, actual_request)
+
+    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_get_book_from_archive_exception(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        name = client.archived_book_path('[ARCHIVE_PATH]', '[BOOK_ID]')
+
+        # Mock exception response
+        grpc_stub.GetBookFromArchive.side_effect = CustomException()
+
+        self.assertRaises(errors.GaxError, client.get_book_from_archive, name)
+
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_get_book_from_anywhere(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        alt_book_name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+
+        # Mock response
+        name_2 = 'name2-1052831874'
+        author = 'author-1406328437'
+        title = 'title110371416'
+        read = True
+        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read}
+        expected_response = book_from_anywhere_pb2.BookFromAnywhere(**expected_response)
+        grpc_stub.GetBookFromAnywhere.return_value = expected_response
+
+        response = client.get_book_from_anywhere(name, alt_book_name)
+        self.assertEqual(expected_response, response)
+
+        grpc_stub.GetBookFromAnywhere.assert_called_once()
+        args, kwargs = grpc_stub.GetBookFromAnywhere.call_args
+        self.assertEqual(len(args), 2)
+        self.assertEqual(len(kwargs), 1)
+        self.assertIn('metadata', kwargs)
+        actual_request = args[0]
+
+        expected_request = library_pb2.GetBookFromAnywhereRequest(name=name, alt_book_name=alt_book_name)
+        self.assertEqual(expected_request, actual_request)
+
+    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_get_book_from_anywhere_exception(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        alt_book_name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+
+        # Mock exception response
+        grpc_stub.GetBookFromAnywhere.side_effect = CustomException()
+
+        self.assertRaises(errors.GaxError, client.get_book_from_anywhere, name, alt_book_name)
+
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_get_book_from_absolutely_anywhere(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+
+        # Mock response
+        name_2 = 'name2-1052831874'
+        author = 'author-1406328437'
+        title = 'title110371416'
+        read = True
+        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read}
+        expected_response = book_from_anywhere_pb2.BookFromAnywhere(**expected_response)
+        grpc_stub.GetBookFromAbsolutelyAnywhere.return_value = expected_response
+
+        response = client.get_book_from_absolutely_anywhere(name)
+        self.assertEqual(expected_response, response)
+
+        grpc_stub.GetBookFromAbsolutelyAnywhere.assert_called_once()
+        args, kwargs = grpc_stub.GetBookFromAbsolutelyAnywhere.call_args
+        self.assertEqual(len(args), 2)
+        self.assertEqual(len(kwargs), 1)
+        self.assertIn('metadata', kwargs)
+        actual_request = args[0]
+
+        expected_request = library_pb2.GetBookFromAbsolutelyAnywhereRequest(name=name)
+        self.assertEqual(expected_request, actual_request)
+
+    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_get_book_from_absolutely_anywhere_exception(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+
+        # Mock exception response
+        grpc_stub.GetBookFromAbsolutelyAnywhere.side_effect = CustomException()
+
+        self.assertRaises(errors.GaxError, client.get_book_from_absolutely_anywhere, name)
+
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_update_book_index(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        index_name = 'default index'
+        index_map_item = 'indexMapItem1918721251'
+        index_map = {'default_key': index_map_item}
+
+        client.update_book_index(name, index_name, index_map)
+
+        grpc_stub.UpdateBookIndex.assert_called_once()
+        args, kwargs = grpc_stub.UpdateBookIndex.call_args
+        self.assertEqual(len(args), 2)
+        self.assertEqual(len(kwargs), 1)
+        self.assertIn('metadata', kwargs)
+        actual_request = args[0]
+
+        expected_request = library_pb2.UpdateBookIndexRequest(name=name, index_name=index_name, index_map=index_map)
+        self.assertEqual(expected_request, actual_request)
+
+    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_update_book_index_exception(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        index_name = 'default index'
+        index_map_item = 'indexMapItem1918721251'
+        index_map = {'default_key': index_map_item}
+
+        # Mock exception response
+        grpc_stub.UpdateBookIndex.side_effect = CustomException()
+
+        self.assertRaises(errors.GaxError, client.update_book_index, name, index_name, index_map)
+
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_stream_shelves(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock response
+        shelves_element = {}
+        shelves = [shelves_element]
+        expected_response = {'shelves': shelves}
+        expected_response = library_pb2.StreamShelvesResponse(**expected_response)
+        grpc_stub.StreamShelves.return_value = iter([expected_response])
+
+        response = client.stream_shelves()
+        resources = list(response)
+        self.assertEqual(1, len(resources))
+        self.assertEqual(expected_response, resources[0])
+
+        grpc_stub.StreamShelves.assert_called_once()
+        args, kwargs = grpc_stub.StreamShelves.call_args
+        self.assertEqual(len(args), 2)
+        self.assertEqual(len(kwargs), 1)
+        self.assertIn('metadata', kwargs)
+        actual_request = args[0]
+
+        expected_request = library_pb2.StreamShelvesRequest()
+        self.assertEqual(expected_request, actual_request)
+
+    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_stream_shelves_exception(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock exception response
+        grpc_stub.StreamShelves.side_effect = CustomException()
+
+        self.assertRaises(errors.GaxError, client.stream_shelves)
+
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_stream_books(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        name = 'name3373707'
+
+        # Mock response
+        name_2 = 'name2-1052831874'
+        author = 'author-1406328437'
+        title = 'title110371416'
+        read = True
+        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read}
+        expected_response = library_pb2.Book(**expected_response)
+        grpc_stub.StreamBooks.return_value = iter([expected_response])
+
+        response = client.stream_books(name)
+        resources = list(response)
+        self.assertEqual(1, len(resources))
+        self.assertEqual(expected_response, resources[0])
+
+        grpc_stub.StreamBooks.assert_called_once()
+        args, kwargs = grpc_stub.StreamBooks.call_args
+        self.assertEqual(len(args), 2)
+        self.assertEqual(len(kwargs), 1)
+        self.assertIn('metadata', kwargs)
+        actual_request = args[0]
+
+        expected_request = library_pb2.StreamBooksRequest(name=name)
+        self.assertEqual(expected_request, actual_request)
+
+    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_stream_books_exception(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        name = 'name3373707'
+
+        # Mock exception response
+        grpc_stub.StreamBooks.side_effect = CustomException()
+
+        self.assertRaises(errors.GaxError, client.stream_books, name)
+
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_discuss_book(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        name = 'name3373707'
+        request = {'name': name}
+        requests = [request]
+
+        # Mock response
+        user_name = 'userName339340927'
+        comment = b'95'
+        expected_response = {'user_name': user_name, 'comment': comment}
+        expected_response = library_pb2.Comment(**expected_response)
+        grpc_stub.DiscussBook.return_value = iter([expected_response])
+
+        response = client.discuss_book(requests)
+        resources = list(response)
+        self.assertEqual(1, len(resources))
+        self.assertEqual(expected_response, resources[0])
+
+        grpc_stub.DiscussBook.assert_called_once()
+        args, kwargs = grpc_stub.DiscussBook.call_args
+        self.assertEqual(len(args), 2)
+        self.assertEqual(len(kwargs), 1)
+        self.assertIn('metadata', kwargs)
+        actual_requests = args[0]
+        self.assertEqual(1, len(actual_requests))
+        actual_request = list(actual_requests)[0]
+        self.assertEqual(request, actual_request)
+
+    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_discuss_book_exception(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        name = 'name3373707'
+        request = {'name': name}
+        requests = [request]
+
+        # Mock exception response
+        grpc_stub.DiscussBook.side_effect = CustomException()
+
+        self.assertRaises(errors.GaxError, client.discuss_book, requests)
+
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_monolog_about_book(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        name = 'name3373707'
+        request = {'name': name}
+        requests = [request]
+
+        # Mock response
+        user_name = 'userName339340927'
+        comment = b'95'
+        expected_response = {'user_name': user_name, 'comment': comment}
+        expected_response = library_pb2.Comment(**expected_response)
+        grpc_stub.MonologAboutBook.return_value = expected_response
+
+        response = client.monolog_about_book(requests)
+        self.assertEqual(expected_response, response)
+
+        grpc_stub.MonologAboutBook.assert_called_once()
+        args, kwargs = grpc_stub.MonologAboutBook.call_args
+        self.assertEqual(len(args), 2)
+        self.assertEqual(len(kwargs), 1)
+        self.assertIn('metadata', kwargs)
+        actual_requests = args[0]
+        self.assertEqual(1, len(actual_requests))
+        actual_request = list(actual_requests)[0]
+        self.assertEqual(request, actual_request)
+
+    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_monolog_about_book_exception(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        name = 'name3373707'
+        request = {'name': name}
+        requests = [request]
+
+        # Mock exception response
+        grpc_stub.MonologAboutBook.side_effect = CustomException()
+
+        self.assertRaises(errors.GaxError, client.monolog_about_book, requests)
+
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_find_related_books(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        names_element = 'namesElement-249113339'
+        names = [names_element]
+        shelves = []
+
+        # Mock response
+        next_page_token = ''
+        names_element_2 = 'namesElement21120252792'
+        names_2 = [names_element_2]
+        expected_response = {'next_page_token': next_page_token, 'names': names_2}
+        expected_response = library_pb2.FindRelatedBooksResponse(**expected_response)
+        grpc_stub.FindRelatedBooks.return_value = expected_response
+
+        paged_list_response = client.find_related_books(names, shelves)
+        resources = list(paged_list_response)
+        self.assertEqual(1, len(resources))
+        self.assertEqual(expected_response.names[0], resources[0])
+
+        grpc_stub.FindRelatedBooks.assert_called_once()
+        args, kwargs = grpc_stub.FindRelatedBooks.call_args
+        self.assertEqual(len(args), 2)
+        self.assertEqual(len(kwargs), 1)
+        self.assertIn('metadata', kwargs)
+        actual_request = args[0]
+
+        expected_request = library_pb2.FindRelatedBooksRequest(names=names, shelves=shelves)
+        self.assertEqual(expected_request, actual_request)
+
+    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_find_related_books_exception(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        names_element = 'namesElement-249113339'
+        names = [names_element]
+        shelves = []
+
+        # Mock exception response
+        grpc_stub.FindRelatedBooks.side_effect = CustomException()
+
+        paged_list_response = client.find_related_books(names, shelves)
+        self.assertRaises(errors.GaxError, list, paged_list_response)
+
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_add_tag(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        resource = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        tag = 'tag114586'
+
+        # Mock response
+        expected_response = {}
+        expected_response = tagger_pb2.AddTagResponse(**expected_response)
+        grpc_stub.AddTag.return_value = expected_response
+
+        response = client.add_tag(resource, tag)
+        self.assertEqual(expected_response, response)
+
+        grpc_stub.AddTag.assert_called_once()
+        args, kwargs = grpc_stub.AddTag.call_args
+        self.assertEqual(len(args), 2)
+        self.assertEqual(len(kwargs), 1)
+        self.assertIn('metadata', kwargs)
+        actual_request = args[0]
+
+        expected_request = tagger_pb2.AddTagRequest(resource=resource, tag=tag)
+        self.assertEqual(expected_request, actual_request)
+
+    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_add_tag_exception(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        resource = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        tag = 'tag114586'
+
+        # Mock exception response
+        grpc_stub.AddTag.side_effect = CustomException()
+
+        self.assertRaises(errors.GaxError, client.add_tag, resource, tag)
+
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_add_label(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        resource = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        label = 'label102727412'
+
+        # Mock response
+        expected_response = {}
+        expected_response = tagger_pb2.AddLabelResponse(**expected_response)
+        grpc_stub.AddLabel.return_value = expected_response
+
+        response = client.add_label(resource, label)
+        self.assertEqual(expected_response, response)
+
+        grpc_stub.AddLabel.assert_called_once()
+        args, kwargs = grpc_stub.AddLabel.call_args
+        self.assertEqual(len(args), 2)
+        self.assertEqual(len(kwargs), 1)
+        self.assertIn('metadata', kwargs)
+        actual_request = args[0]
+
+        expected_request = tagger_pb2.AddLabelRequest(resource=resource, label=label)
+        self.assertEqual(expected_request, actual_request)
+
+    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_add_label_exception(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        resource = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+        label = 'label102727412'
+
+        # Mock exception response
+        grpc_stub.AddLabel.side_effect = CustomException()
+
+        self.assertRaises(errors.GaxError, client.add_label, resource, label)
+
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_get_big_book(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+
+        # Mock response
+        name_2 = 'name2-1052831874'
+        author = 'author-1406328437'
+        title = 'title110371416'
+        read = True
+        expected_response = {'name': name_2, 'author': author, 'title': title, 'read': read}
+        expected_response = library_pb2.Book(**expected_response)
+        operation = operations_pb2.Operation(name='operations/test_get_big_book', done=True)
+        operation.response.Pack(expected_response)
+        grpc_stub.GetBigBook.return_value = operation
+
+        response = client.get_big_book(name)
+        self.assertEqual(expected_response, response.result())
+
+        grpc_stub.GetBigBook.assert_called_once()
+        args, kwargs = grpc_stub.GetBigBook.call_args
+        self.assertEqual(len(args), 2)
+        self.assertEqual(len(kwargs), 1)
+        self.assertIn('metadata', kwargs)
+        actual_request = args[0]
+
+        expected_request = library_pb2.GetBookRequest(name=name)
+        self.assertEqual(expected_request, actual_request)
+
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_get_big_book_exception(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+
+        # Mock exception response
+        error = status_pb2.Status()
+        operation = operations_pb2.Operation(name='operations/test_get_big_book_exception', done=True)
+        operation.error.CopyFrom(error)
+        grpc_stub.GetBigBook.return_value = operation
+
+        response = client.get_big_book(name)
+        self.assertEqual(error, response.exception())
+
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_get_big_nothing(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+
+        # Mock response
+        expected_response = {}
+        expected_response = empty_pb2.Empty(**expected_response)
+        operation = operations_pb2.Operation(name='operations/test_get_big_nothing', done=True)
+        operation.response.Pack(expected_response)
+        grpc_stub.GetBigNothing.return_value = operation
+
+        response = client.get_big_nothing(name)
+        self.assertEqual(expected_response, response.result())
+
+        grpc_stub.GetBigNothing.assert_called_once()
+        args, kwargs = grpc_stub.GetBigNothing.call_args
+        self.assertEqual(len(args), 2)
+        self.assertEqual(len(kwargs), 1)
+        self.assertIn('metadata', kwargs)
+        actual_request = args[0]
+
+        expected_request = library_pb2.GetBookRequest(name=name)
+        self.assertEqual(expected_request, actual_request)
+
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_get_big_nothing_exception(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+
+        # Mock exception response
+        error = status_pb2.Status()
+        operation = operations_pb2.Operation(name='operations/test_get_big_nothing_exception', done=True)
+        operation.error.CopyFrom(error)
+        grpc_stub.GetBigNothing.return_value = operation
+
+        response = client.get_big_nothing(name)
+        self.assertEqual(error, response.exception())
+
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_test_optional_required_flattening_params(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        required_singular_int32 = -72313594
+        required_singular_int64 = -72313499
+        required_singular_float = -7514705.0
+        required_singular_double = 1.9111005E8
+        required_singular_bool = True
+        required_singular_enum = enums.TestOptionalRequiredFlatteningParamsRequest.InnerEnum.ZERO
+        required_singular_string = 'requiredSingularString-1949894503'
+        required_singular_bytes = b'-29'
+        required_singular_message = {}
+        required_singular_resource_name = 'requiredSingularResourceName-1701575020'
+        required_singular_resource_name_oneof = 'requiredSingularResourceNameOneof-25303726'
+        required_singular_fixed32 = 720656715
+        required_singular_fixed64 = 720656810
+        required_repeated_int32 = []
+        required_repeated_int64 = []
+        required_repeated_float = []
+        required_repeated_double = []
+        required_repeated_bool = []
+        required_repeated_enum = []
+        required_repeated_string = []
+        required_repeated_bytes = []
+        required_repeated_message = []
+        required_repeated_resource_name = []
+        required_repeated_resource_name_oneof = []
+        required_repeated_fixed32 = []
+        required_repeated_fixed64 = []
+        required_map = {}
+
+        # Mock response
+        expected_response = {}
+        expected_response = library_pb2.TestOptionalRequiredFlatteningParamsResponse(**expected_response)
+        grpc_stub.TestOptionalRequiredFlatteningParams.return_value = expected_response
+
+        response = client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, required_repeated_resource_name, required_repeated_resource_name_oneof, required_repeated_fixed32, required_repeated_fixed64, required_map)
+        self.assertEqual(expected_response, response)
+
+        grpc_stub.TestOptionalRequiredFlatteningParams.assert_called_once()
+        args, kwargs = grpc_stub.TestOptionalRequiredFlatteningParams.call_args
+        self.assertEqual(len(args), 2)
+        self.assertEqual(len(kwargs), 1)
+        self.assertIn('metadata', kwargs)
+        actual_request = args[0]
+
+        expected_request = library_pb2.TestOptionalRequiredFlatteningParamsRequest(required_singular_int32=required_singular_int32, required_singular_int64=required_singular_int64, required_singular_float=required_singular_float, required_singular_double=required_singular_double, required_singular_bool=required_singular_bool, required_singular_enum=required_singular_enum, required_singular_string=required_singular_string, required_singular_bytes=required_singular_bytes, required_singular_message=required_singular_message, required_singular_resource_name=required_singular_resource_name, required_singular_resource_name_oneof=required_singular_resource_name_oneof, required_singular_fixed32=required_singular_fixed32, required_singular_fixed64=required_singular_fixed64, required_repeated_int32=required_repeated_int32, required_repeated_int64=required_repeated_int64, required_repeated_float=required_repeated_float, required_repeated_double=required_repeated_double, required_repeated_bool=required_repeated_bool, required_repeated_enum=required_repeated_enum, required_repeated_string=required_repeated_string, required_repeated_bytes=required_repeated_bytes, required_repeated_message=required_repeated_message, required_repeated_resource_name=required_repeated_resource_name, required_repeated_resource_name_oneof=required_repeated_resource_name_oneof, required_repeated_fixed32=required_repeated_fixed32, required_repeated_fixed64=required_repeated_fixed64, required_map=required_map)
+        self.assertEqual(expected_request, actual_request)
+
+    @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
+    @mock.patch('google.gax.config.create_stub', spec=True)
+    def test_test_optional_required_flattening_params_exception(self, mock_create_stub):
+        # Mock gRPC layer
+        grpc_stub = mock.Mock()
+        mock_create_stub.return_value = grpc_stub
+
+        client = library_v1.LibraryServiceClient()
+
+        # Mock request
+        required_singular_int32 = -72313594
+        required_singular_int64 = -72313499
+        required_singular_float = -7514705.0
+        required_singular_double = 1.9111005E8
+        required_singular_bool = True
+        required_singular_enum = enums.TestOptionalRequiredFlatteningParamsRequest.InnerEnum.ZERO
+        required_singular_string = 'requiredSingularString-1949894503'
+        required_singular_bytes = b'-29'
+        required_singular_message = {}
+        required_singular_resource_name = 'requiredSingularResourceName-1701575020'
+        required_singular_resource_name_oneof = 'requiredSingularResourceNameOneof-25303726'
+        required_singular_fixed32 = 720656715
+        required_singular_fixed64 = 720656810
+        required_repeated_int32 = []
+        required_repeated_int64 = []
+        required_repeated_float = []
+        required_repeated_double = []
+        required_repeated_bool = []
+        required_repeated_enum = []
+        required_repeated_string = []
+        required_repeated_bytes = []
+        required_repeated_message = []
+        required_repeated_resource_name = []
+        required_repeated_resource_name_oneof = []
+        required_repeated_fixed32 = []
+        required_repeated_fixed64 = []
+        required_map = {}
+
+        # Mock exception response
+        grpc_stub.TestOptionalRequiredFlatteningParams.side_effect = CustomException()
+
+        self.assertRaises(errors.GaxError, client.test_optional_required_flattening_params, required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, required_repeated_resource_name, required_repeated_resource_name_oneof, required_repeated_fixed32, required_repeated_fixed64, required_map)
+

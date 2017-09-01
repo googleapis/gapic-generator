@@ -13,6 +13,7 @@
         {@implClient(common.api, common.settings)}
 
         {@partialPageStreaming(common.api, common.settings)}
+        {@partialGrpc(common.api, common.settings)}
     }
 
 @end
@@ -53,9 +54,10 @@
                 @default
                     *** ERROR: Cannot handle grpc streaming type '{@call.grpcStreamingType.toString}' ***
                 @end
-            @end
-            @if api.hasLongRunningOperations
-                LongRunningOperationsSettings = existing.LongRunningOperationsSettings?.Clone();
+
+                @if call.type.toString == "OperationApiCallable"
+                    {@call.methodName}OperationsSettings = existing.{@call.methodName}OperationsSettings?.Clone();
+                @end
             @end
             OnCopy(existing);
         }
@@ -93,14 +95,14 @@
             /// <remarks>
             /// The "{@retry.name}" retry backoff for <see cref="{@api.name}"/> RPC methods is defined as:
             /// <list type="bullet">
-            /// <item><description>Initial delay: {@retry.initialRetryDelay.getMillis} milliseconds</description></item>
-            /// <item><description>Maximum delay: {@retry.maxRetryDelay.getMillis} milliseconds</description></item>
+            /// <item><description>Initial delay: {@retry.initialRetryDelay.toMillis} milliseconds</description></item>
+            /// <item><description>Maximum delay: {@retry.maxRetryDelay.toMillis} milliseconds</description></item>
             /// <item><description>Delay multiplier: {@retry.retryDelayMultiplier}</description></item>
             /// </list>
             /// </remarks>
             public static BackoffSettings {@retry.retryBackoffMethodName}() => new BackoffSettings(
-                delay: TimeSpan.FromMilliseconds({@retry.initialRetryDelay.getMillis}),
-                maxDelay: TimeSpan.FromMilliseconds({@retry.maxRetryDelay.getMillis}),
+                delay: TimeSpan.FromMilliseconds({@retry.initialRetryDelay.toMillis}),
+                maxDelay: TimeSpan.FromMilliseconds({@retry.maxRetryDelay.toMillis}),
                 delayMultiplier: {@retry.retryDelayMultiplier}
             );
             
@@ -113,14 +115,14 @@
             /// <remarks>
             /// The "{@retry.name}" timeout backoff for <see cref="{@api.name}"/> RPC methods is defined as:
             /// <list type="bullet">
-            /// <item><description>Initial timeout: {@retry.initialRpcTimeout.getMillis} milliseconds</description></item>
+            /// <item><description>Initial timeout: {@retry.initialRpcTimeout.toMillis} milliseconds</description></item>
             /// <item><description>Timeout multiplier: {@retry.rpcTimeoutMultiplier}</description></item>
-            /// <item><description>Maximum timeout: {@retry.maxRpcTimeout.getMillis} milliseconds</description></item>
+            /// <item><description>Maximum timeout: {@retry.maxRpcTimeout.toMillis} milliseconds</description></item>
             /// </list>
             /// </remarks>
             public static BackoffSettings {@retry.timeoutBackoffMethodName}() => new BackoffSettings(
-                delay: TimeSpan.FromMilliseconds({@retry.initialRpcTimeout.getMillis}),
-                maxDelay: TimeSpan.FromMilliseconds({@retry.maxRpcTimeout.getMillis}),
+                delay: TimeSpan.FromMilliseconds({@retry.initialRpcTimeout.toMillis}),
+                maxDelay: TimeSpan.FromMilliseconds({@retry.maxRpcTimeout.toMillis}),
                 delayMultiplier: {@retry.rpcTimeoutMultiplier}
             );
 
@@ -137,12 +139,12 @@
                 /// The default <c>{@api.name}.{@call.methodName}</c> and
                 /// <c>{@api.name}.{@call.asyncMethodName}</c> <see cref="RetrySettings"/> are:
                 /// <list type="bullet">
-                /// <item><description>Initial retry delay: {@call.retryParamsView.initialRetryDelay.getMillis} milliseconds</description></item>
+                /// <item><description>Initial retry delay: {@call.retryParamsView.initialRetryDelay.toMillis} milliseconds</description></item>
                 /// <item><description>Retry delay multiplier: {@call.retryParamsView.retryDelayMultiplier}</description></item>
-                /// <item><description>Retry maximum delay: {@call.retryParamsView.maxRetryDelay.getMillis} milliseconds</description></item>
-                /// <item><description>Initial timeout: {@call.retryParamsView.initialRpcTimeout.getMillis} milliseconds</description></item>
+                /// <item><description>Retry maximum delay: {@call.retryParamsView.maxRetryDelay.toMillis} milliseconds</description></item>
+                /// <item><description>Initial timeout: {@call.retryParamsView.initialRpcTimeout.toMillis} milliseconds</description></item>
                 /// <item><description>Timeout multiplier: {@call.retryParamsView.rpcTimeoutMultiplier}</description></item>
-                /// <item><description>Timeout maximum delay: {@call.retryParamsView.maxRpcTimeout.getMillis} milliseconds</description></item>
+                /// <item><description>Timeout maximum delay: {@call.retryParamsView.maxRpcTimeout.toMillis} milliseconds</description></item>
                 /// </list>
                 /// Retry will be attempted on the following response status codes:
                 /// <list>
@@ -154,13 +156,13 @@
                     /// <item><description>No status codes</description></item>
                 @end
                 /// </list>
-                /// Default RPC expiration is {@call.retryParamsView.totalTimeout.getMillis} milliseconds.
+                /// Default RPC expiration is {@call.retryParamsView.totalTimeout.toMillis} milliseconds.
                 /// </remarks>
                 public CallSettings {@call.memberName} { get; set; } = CallSettings.FromCallTiming(
                     CallTiming.FromRetry(new RetrySettings(
                         retryBackoff: {@call.retryParamsView.retryBackoffMethodName}(),
                         timeoutBackoff: {@call.retryParamsView.timeoutBackoffMethodName}(),
-                        totalExpiration: Expiration.FromTimeout(TimeSpan.FromMilliseconds({@call.retryParamsView.totalTimeout.getMillis})),
+                        totalExpiration: Expiration.FromTimeout(TimeSpan.FromMilliseconds({@call.retryParamsView.totalTimeout.toMillis})),
                         retryFilter: {@call.retryCodesView.retryFilterMethodName}
                     )));
             @case "ServerStreaming"
@@ -168,19 +170,19 @@
                 /// <see cref="CallSettings"/> for calls to <c>{@api.name}.{@call.methodName}</c>.
                 /// </summary>
                 /// <remarks>
-                /// Default RPC expiration is {@call.retryParamsView.totalTimeout.getMillis} milliseconds.
+                /// Default RPC expiration is {@call.retryParamsView.totalTimeout.toMillis} milliseconds.
                 /// </remarks>
                 public CallSettings {@call.memberName} { get; set; } = CallSettings.FromCallTiming(
-                    CallTiming.FromTimeout(TimeSpan.FromMilliseconds({@call.retryParamsView.totalTimeout.getMillis})));
+                    CallTiming.FromTimeout(TimeSpan.FromMilliseconds({@call.retryParamsView.totalTimeout.toMillis})));
             @case "BidiStreaming"
                 /// <summary>
                 /// <see cref="CallSettings"/> for calls to <c>{@api.name}.{@call.methodName}</c>.
                 /// </summary>
                 /// <remarks>
-                /// Default RPC expiration is {@call.retryParamsView.totalTimeout.getMillis} milliseconds.
+                /// Default RPC expiration is {@call.retryParamsView.totalTimeout.toMillis} milliseconds.
                 /// </remarks>
                 public CallSettings {@call.memberName} { get; set; } = CallSettings.FromCallTiming(
-                    CallTiming.FromTimeout(TimeSpan.FromMilliseconds({@call.retryParamsView.totalTimeout.getMillis})));
+                    CallTiming.FromTimeout(TimeSpan.FromMilliseconds({@call.retryParamsView.totalTimeout.toMillis})));
 
                 /// <summary>
                 /// <see cref="BidirectionalStreamingSettings"/> for calls to
@@ -196,13 +198,29 @@
             @end
 
 
-        @end
-        @if api.hasLongRunningOperations
-            /// <summary>
-            /// Settings used for long running operations.
-            /// </summary>
-            public OperationsSettings LongRunningOperationsSettings { get; set; }
+            @if call.type.toString == "OperationApiCallable"
+                /// <summary>
+                /// Long Running Operation settings for calls to <c>{@api.name}.{@call.methodName}</c>.
+                /// </summary>
+                /// <remarks>
+                /// Uses default <see cref="PollSettings"/> of:
+                /// <list type="bullet">
+                /// <item><description>Initial delay: {@call.operationMethod.initialPollDelay} milliseconds</description></item>
+                /// <item><description>Delay multiplier: {@call.operationMethod.pollDelayMultiplier}</description></item>
+                /// <item><description>Maximum delay: {@call.operationMethod.maxPollDelay} milliseconds</description></item>
+                /// <item><description>Total timeout: {@call.operationMethod.totalPollTimeout} milliseconds</description></item>
+                /// </list>
+                /// </remarks>
+                public OperationsSettings {@call.methodName}OperationsSettings { get; set; } = new OperationsSettings
+                {
+                    DefaultPollSettings = new PollSettings(
+                        Expiration.FromTimeout(TimeSpan.FromMilliseconds({@call.operationMethod.totalPollTimeout}L)),
+                        TimeSpan.FromMilliseconds({@call.operationMethod.initialPollDelay}L),
+                        {@call.operationMethod.pollDelayMultiplier},
+                        TimeSpan.FromMilliseconds({@call.operationMethod.maxPollDelay}L))
+                };
 
+            @end
         @end
         /// <summary>
         /// Creates a deep clone of this object, with all the same property values.
@@ -287,7 +305,7 @@
         public static {@api.name} Create(Channel channel, {@settings.name} settings = null)
         {
             GaxPreconditions.CheckNotNull(channel, nameof(channel));
-            {@api.grpcTypeName} grpcClient = new {@api.grpcTypeName}(channel);
+            {@api.grpcTypeNameOuter}.{@api.grpcTypeNameInner} grpcClient = new {@api.grpcTypeNameOuter}.{@api.grpcTypeNameInner}(channel);
             return new {@api.implName}(grpcClient, settings);
         }
 
@@ -305,21 +323,11 @@
         /// <summary>
         /// The underlying gRPC {@api.grpcServiceName} client.
         /// </summary>
-        public virtual {@api.grpcTypeName} GrpcClient
+        public virtual {@api.grpcTypeNameOuter}.{@api.grpcTypeNameInner} GrpcClient
         {
             get { throw new NotImplementedException(); }
         }
 
-        @if api.hasLongRunningOperations
-            /// <summary>
-            /// The client for long-running operations.
-            /// </summary>
-            public virtual OperationsClient LongRunningOperationsClient
-            {
-                get { throw new NotImplementedException(); }
-            }
-
-        @end
         # method: StaticLangApiMethodView
         @join method : api.apiMethods
             {@xmlDoc(method.doc)}
@@ -337,6 +345,7 @@
     public sealed partial class {@api.implName} : {@api.name}
     {
         @join call : api.apiCallableMembers
+            # call: ApiCallableView
             @switch call.grpcStreamingType.toString
             @case "NonStreaming"
                 private readonly ApiCall<{@call.requestTypeName}, {@call.responseTypeName}> {@call.name};
@@ -354,19 +363,22 @@
         /// </summary>
         /// <param name="grpcClient">The underlying gRPC client.</param>
         /// <param name="settings">The base <see cref="{@settings.name}"/> used within this client </param>
-        public {@api.implName}({@api.grpcTypeName} grpcClient, {@settings.name} settings)
+        public {@api.implName}({@api.grpcTypeNameOuter}.{@api.grpcTypeNameInner} grpcClient, {@settings.name} settings)
         {
             GrpcClient = grpcClient;
             {@settings.name} effectiveSettings = settings ?? {@settings.name}.GetDefault();
-            @if api.hasLongRunningOperations
-                LongRunningOperationsClient = new OperationsClientImpl(
-                    grpcClient.CreateOperationsClient(), effectiveSettings.LongRunningOperationsSettings);
-            @end
             ClientHelper clientHelper = new ClientHelper(effectiveSettings);
             @join rerouted : api.reroutedGrpcClients
+                # rerouted: ReroutedGrpcView
                 {@rerouted.typeName} {@rerouted.grpcClientVarName} = grpcClient.{@rerouted.getMethodName}();
             @end
+            @join call : settings.callSettings if call.type.toString == "OperationApiCallable"
+                # call: ApiCallSettingsView
+                {@call.methodName}OperationsClient = new OperationsClientImpl(
+                    grpcClient.CreateOperationsClient(), effectiveSettings.{@call.methodName}OperationsSettings);
+            @end
             @join call : api.apiCallableMembers
+                # call: ApiCallableView
                 @switch call.grpcStreamingType.toString
                 @case "NonStreaming"
                     {@call.name} = clientHelper.BuildApiCall<{@call.requestTypeName}, {@call.responseTypeName}>(
@@ -384,20 +396,13 @@
             OnConstruction(grpcClient, effectiveSettings, clientHelper);
         }
 
-        partial void OnConstruction({@api.grpcTypeName} grpcClient, {@settings.name} effectiveSettings, ClientHelper clientHelper);
+        partial void OnConstruction({@api.grpcTypeNameOuter}.{@api.grpcTypeNameInner} grpcClient, {@settings.name} effectiveSettings, ClientHelper clientHelper);
 
         /// <summary>
         /// The underlying gRPC {@api.grpcServiceName} client.
         /// </summary>
-        public override {@api.grpcTypeName} GrpcClient { get; }
+        public override {@api.grpcTypeNameOuter}.{@api.grpcTypeNameInner} GrpcClient { get; }
 
-        @if api.hasLongRunningOperations
-            /// <summary>
-            /// The client for long-running operations.
-            /// </summary>
-            public override OperationsClient LongRunningOperationsClient { get; }
-
-        @end
         // Partial modifier methods contain '_' to ensure no name conflicts with RPC methods.
         # method: ModifyMethodView
         @join method : api.modifyMethods
@@ -451,7 +456,20 @@
     @case "OperationRequestObjectMethod"
         {@operationRequestObjectMethodSync(method, isImpl)}
         @if isImpl
+
+            /// <summary>
+            /// The long-running operations client for <c>{@method.name}</c>.
+            /// </summary>
+            public override OperationsClient {@method.name}OperationsClient { get; }
         @else
+
+            /// <summary>
+            /// The long-running operations client for <c>{@method.name}</c>.
+            /// </summary>
+            public virtual OperationsClient {@method.name}OperationsClient
+            {
+                get { throw new NotImplementedException(); }
+            }
 
             {@operationRequestObjectPollOnceMethodSync(method)}
         @end
@@ -772,7 +790,7 @@
         {
             {@method.modifyMethodName}(ref request, ref callSettings);
             return new {@method.operationMethod.clientReturnTypeName}(
-                {@method.callableName}.Sync(request, callSettings), LongRunningOperationsClient);
+                {@method.callableName}.Sync(request, callSettings), {@method.name}OperationsClient);
         }
     @else
         public virtual {@method.operationMethod.clientReturnTypeName} {@method.name}(
@@ -796,7 +814,7 @@
         string operationName,
         CallSettings callSettings = null) => {@method.operationMethod.clientReturnTypeName}.PollOnceFromName(
             GaxPreconditions.CheckNotNullOrEmpty(operationName, nameof(operationName)),
-            LongRunningOperationsClient,
+            {@method.name}OperationsClient,
             callSettings);
 @end
 
@@ -809,7 +827,7 @@
         {
             {@method.modifyMethodName}(ref request, ref callSettings);
             return new {@method.operationMethod.clientReturnTypeName}(
-                await {@method.callableName}.Async(request, callSettings).ConfigureAwait(false), LongRunningOperationsClient);
+                await {@method.callableName}.Async(request, callSettings).ConfigureAwait(false), {@syncName(method)}OperationsClient);
         }
     @else
         public virtual Task<{@method.operationMethod.clientReturnTypeName}> {@method.name}(
@@ -833,8 +851,13 @@
         string operationName,
         CallSettings callSettings = null) => {@method.operationMethod.clientReturnTypeName}.PollOnceFromNameAsync(
             GaxPreconditions.CheckNotNullOrEmpty(operationName, nameof(operationName)),
-            LongRunningOperationsClient,
+            {@syncName(method)}OperationsClient,
             callSettings);
+@end
+
+# method: StaticLangApiMethodView
+@private syncName(method)
+    {@method.callableName.subSequence(5,method.name.length())}
 @end
 
 # method: StaticLangApiMethodView, isImpl: boolean
@@ -964,6 +987,42 @@
             /// <inheritdoc/>
             IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         }
+
+    @end
+@end
+
+# api: StaticLangApiView, settings: StaticLangSettingsView
+@private partialGrpc(api, settings)
+    @if api.hasLongRunningOperations
+        // Partial Grpc class to enable LRO client creation
+        public static partial class {@api.grpcTypeNameOuter}
+        {
+            public partial class {@api.grpcTypeNameInner}
+            {
+                /// <summary>
+                /// Creates a new instance of <see cref="Operations.OperationsClient"/> using the same call invoker as this client.
+                /// </summary>
+                /// <returns>A new Operations client for the same target as this client.</returns>
+                public virtual Operations.OperationsClient CreateOperationsClient() => new Operations.OperationsClient(CallInvoker);
+            }
+        }
+
+
+    @end
+    @join rerouted : api.reroutedGrpcClients
+        // Partial Grpc class to enable {@rerouted.typeName} client creation
+        public static partial class {@api.grpcTypeNameOuter}
+        {
+            public partial class {@api.grpcTypeNameInner}
+            {
+                /// <summary>
+                /// Creates a new instance of <see cref="{@rerouted.typeName}"/> using the same call invoker as this client.
+                /// </summary>
+                /// <returns>A new {@rerouted.typeName} for the same target as this client.</returns>
+                public virtual {@rerouted.typeName} {@rerouted.getMethodName}() => new {@rerouted.typeName}(CallInvoker);
+            }
+        }
+
 
     @end
 @end

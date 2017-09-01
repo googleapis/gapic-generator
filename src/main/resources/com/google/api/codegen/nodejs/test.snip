@@ -26,7 +26,7 @@
 
 @private header(apiTest)
   var assert = require('assert');
-  var {@apiTest.apiWrapperModuleName} = require('../src');
+  var {@apiTest.localPackageName} = require('../src');
   @if apiTest.hasGrpcStreaming
     var through2 = require('through2');
   @end
@@ -334,9 +334,9 @@
 
 @private clientInit(testClass, apiTest)
   @if apiTest.fileHeader.hasVersion
-    var client = {@apiTest.apiWrapperModuleName}.{@apiTest.fileHeader.version}{@clientBuilderCall(testClass, apiTest)};
+    var client = {@apiTest.localPackageName}.{@apiTest.fileHeader.version}{@clientBuilderCall(testClass, apiTest)};
   @else
-    var client = {@apiTest.apiWrapperModuleName}{@clientBuilderCall(testClass, apiTest)};
+    var client = {@apiTest.localPackageName}{@clientBuilderCall(testClass, apiTest)};
   @end
 @end
 
