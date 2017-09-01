@@ -32,7 +32,7 @@ import java.util.Map;
 public class LanguageTransformer {
   private static final String DEFAULT_PACKAGE_SEPARATOR = ".";
 
-  private static final Map<String, LanguageFormatter> LANGUAGE_FORMATTERS;
+  public static final Map<String, LanguageFormatter> LANGUAGE_FORMATTERS;
 
   static {
     List<RewriteRule> javaRewriteRules =
@@ -66,7 +66,7 @@ public class LanguageTransformer {
     return languageSettings.build();
   }
 
-  private interface LanguageFormatter {
+  public interface LanguageFormatter {
     String getFormattedPackageName(String packageName);
   }
 
