@@ -57,11 +57,12 @@ import java.util.List;
 import java.util.Map;
 
 public class DiscoGapicGeneratorApi {
+  public static final String DISCOVERY_DOC_OPTION_NAME = "discovery_doc";
 
   public static final Option<String> DISCOVERY_DOC =
       ToolOptions.createOption(
           String.class,
-          "discovery_doc",
+          DISCOVERY_DOC_OPTION_NAME,
           "The Discovery doc representing the service description.",
           "");
 
