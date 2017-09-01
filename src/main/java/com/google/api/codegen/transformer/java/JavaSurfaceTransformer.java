@@ -714,12 +714,12 @@ public class JavaSurfaceTransformer {
         typeTable.saveNicknameFor("io.grpc.Status");
         break;
       case DISCOVERY:
-        typeTable.saveNicknameFor("com.google.api.client.http.HttpStatusCodes");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonStatusCode");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonTransport");
         typeTable.saveNicknameFor("com.google.api.gax.httpjson.HttpJsonTransportProvider");
         typeTable.saveNicknameFor(
             "com.google.api.gax.httpjson.InstantiatingHttpJsonChannelProvider");
+        typeTable.saveNicknameFor("org.apache.http.HttpStatus");
         break;
     }
   }
