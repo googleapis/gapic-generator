@@ -31,6 +31,7 @@ import com.google.api.codegen.transformer.Synchronicity;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.TypeName;
+import com.google.api.codegen.util.VersionMatcher;
 import com.google.api.codegen.util.py.PythonCommentReformatter;
 import com.google.api.codegen.util.py.PythonDocstringUtil;
 import com.google.api.codegen.util.py.PythonNameFormatter;
@@ -49,7 +50,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /** The SurfaceNamer for Python. */
 public class PythonSurfaceNamer extends SurfaceNamer {
@@ -62,12 +62,6 @@ public class PythonSurfaceNamer extends SurfaceNamer {
         packageName,
         packageName);
   }
-
-  private static final Pattern VERSION_PATTERN =
-      Pattern.compile(
-          "^([vV]\\d+)" // Major version eg: v1
-              + "([pP]\\d+)?" // Point release eg: p2
-              + "(([aA]lpha|[bB]eta)\\d*)?"); //  Release level eg: alpha3
 
   @Override
   public SurfaceNamer cloneWithPackageName(String packageName) {
@@ -108,7 +102,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   @Override
   public String getGapicPackageName(String configPackageName) {
     List<String> parts = Arrays.asList(configPackageName.split("-"));
-    if (VERSION_PATTERN.matcher(parts.get(parts.size() - 1)).matches()) {
+    if (VersionMatcher.isVersion(parts.get(parts.size() - 1))) {
       return Joiner.on("-").join(parts.subList(0, parts.size() - 1));
     }
     return configPackageName;

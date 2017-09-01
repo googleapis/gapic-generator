@@ -21,9 +21,12 @@ import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Method;
+import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableMap;
+import java.util.HashSet;
+import java.util.Set;
 import javax.annotation.Nullable;
 
 /** FlatteningConfig represents a specific flattening configuration for a method. */
@@ -48,6 +51,7 @@ public abstract class FlatteningConfig {
 
     boolean missing = false;
     ImmutableMap.Builder<String, FieldConfig> flattenedFieldConfigBuilder = ImmutableMap.builder();
+    Set<String> oneofNames = new HashSet<>();
     for (String parameter : flatteningGroup.getParametersList()) {
 
       Field parameterField = method.getInputMessage().lookupField(parameter);
@@ -60,6 +64,23 @@ public abstract class FlatteningConfig {
                 method.getInputMessage().getFullName(),
                 parameter));
         return null;
+      }
+
+      Oneof oneof = parameterField.getOneof();
+      if (oneof != null) {
+        String oneofName = oneof.getName();
+        if (oneofNames.contains(oneofName)) {
+          diagCollector.addDiag(
+              Diag.error(
+                  SimpleLocation.TOPLEVEL,
+                  "Value from oneof already specifed for flattening:%n"
+                      + "method = %s, message type = %s, oneof = %s",
+                  method.getFullName(),
+                  method.getInputMessage().getFullName(),
+                  oneofName));
+          return null;
+        }
+        oneofNames.add(oneofName);
       }
 
       ResourceNameTreatment defaultResourceNameTreatment =
