@@ -1126,11 +1126,11 @@ class LibraryServiceClient(object):
         """Parses the shelf_id from a shelf resource.
 
         Args:
-          shelf_name (string): A fully-qualified path representing a shelf
-            resource.
+            shelf_name (str): A fully-qualified path representing a shelf
+                resource.
 
         Returns:
-          A string representing the shelf_id.
+            A string representing the shelf_id.
         """
         return cls._SHELF_PATH_TEMPLATE.match(shelf_name).get('shelf_id')
 
@@ -1139,11 +1139,11 @@ class LibraryServiceClient(object):
         """Parses the shelf_id from a book resource.
 
         Args:
-          book_name (string): A fully-qualified path representing a book
-            resource.
+            book_name (str): A fully-qualified path representing a book
+                resource.
 
         Returns:
-          A string representing the shelf_id.
+            A string representing the shelf_id.
         """
         return cls._BOOK_PATH_TEMPLATE.match(book_name).get('shelf_id')
 
@@ -1152,11 +1152,11 @@ class LibraryServiceClient(object):
         """Parses the book_id from a book resource.
 
         Args:
-          book_name (string): A fully-qualified path representing a book
-            resource.
+            book_name (str): A fully-qualified path representing a book
+                resource.
 
         Returns:
-          A string representing the book_id.
+            A string representing the book_id.
         """
         return cls._BOOK_PATH_TEMPLATE.match(book_name).get('book_id')
 
@@ -1165,11 +1165,11 @@ class LibraryServiceClient(object):
         """Parses the shelf from a return resource.
 
         Args:
-          return_name (string): A fully-qualified path representing a return
-            resource.
+            return_name (str): A fully-qualified path representing a return
+                resource.
 
         Returns:
-          A string representing the shelf.
+            A string representing the shelf.
         """
         return cls._RETURN_PATH_TEMPLATE.match(return_name).get('shelf')
 
@@ -1178,11 +1178,11 @@ class LibraryServiceClient(object):
         """Parses the book from a return resource.
 
         Args:
-          return_name (string): A fully-qualified path representing a return
-            resource.
+            return_name (str): A fully-qualified path representing a return
+                resource.
 
         Returns:
-          A string representing the book.
+            A string representing the book.
         """
         return cls._RETURN_PATH_TEMPLATE.match(return_name).get('book')
 
@@ -1191,17 +1191,15 @@ class LibraryServiceClient(object):
         """Parses the return from a return resource.
 
         Args:
-          return_name (string): A fully-qualified path representing a return
-            resource.
+            return_name (str): A fully-qualified path representing a return
+                resource.
 
         Returns:
-          A string representing the return.
+            A string representing the return.
         """
         return cls._RETURN_PATH_TEMPLATE.match(return_name).get('return')
 
     def __init__(self,
-            service_path=SERVICE_ADDRESS,
-            port=DEFAULT_SERVICE_PORT,
             channel=None,
             credentials=None,
             ssl_credentials=None,
@@ -1215,39 +1213,36 @@ class LibraryServiceClient(object):
         """Constructor.
 
         Args:
-          service_path (string): The domain name of the API remote host.
-          port (int): The port on which to connect to the remote host.
-          channel (:class:`grpc.Channel`): A ``Channel`` instance through
-            which to make calls.
-          credentials (object): The authorization credentials to attach to
-            requests. These credentials identify this application to the
-            service.
-          ssl_credentials (:class:`grpc.ChannelCredentials`): A
-            ``ChannelCredentials`` instance for use with an SSL-enabled
-            channel.
-          scopes (list[string]): A list of OAuth2 scopes to attach to requests.
-          client_config (dict):
-            A dictionary for call options for each method. See
-            :func:`google.gax.construct_settings` for the structure of
-            this data. Falls back to the default config if not specified
-            or the specified config is missing data points.
-          app_name (string): The name of the application calling
-            the service. Recommended for analytics purposes.
-          app_version (string): The version of the application calling
-            the service. Recommended for analytics purposes.
-          lib_name (string): The API library software used for calling
-            the service. (Unless you are writing an API client itself,
-            leave this as default.)
-          lib_version (string): The API library software version used
-            for calling the service. (Unless you are writing an API client
-            itself, leave this as default.)
-          metrics_headers (dict): A dictionary of values for tracking
-            client library metrics. Ultimately serializes to a string
-            (e.g. 'foo/1.2.3 bar/3.14.1'). This argument should be
-            considered private.
+            channel (~grpc.Channel): A ``Channel`` instance through
+                which to make calls.
+            credentials (~google.auth.credentials.Credentials): The authorization
+                credentials to attach to requests. These credentials identify this
+                 application to the service.
+            ssl_credentials (~grpc.ChannelCredentials): A
+                ``ChannelCredentials`` instance for use with an SSL-enabled
+                channel.
+            scopes (Sequence[str]): A list of OAuth2 scopes to attach to requests.
+            client_config (dict):
+                A dictionary for call options for each method. See
+                :func:`google.gax.construct_settings` for the structure of
+                this data. Falls back to the default config if not specified
+                or the specified config is missing data points.
+            app_name (str): The name of the application calling
+                the service. Recommended for analytics purposes.
+            app_version (str): The version of the application calling
+                the service. Recommended for analytics purposes.
+            lib_name (str): The API library software used for calling
+                the service. (Unless you are writing an API client itself,
+                leave this as default.)
+            lib_version (str): The API library software version used
+                for calling the service. (Unless you are writing an API client
+                itself, leave this as default.)
+            metrics_headers (dict): A dictionary of values for tracking
+                client library metrics. Ultimately serializes to a string
+                (e.g. 'foo/1.2.3 bar/3.14.1'). This argument should be
+                considered private.
 
-        Returns:
-          A LibraryServiceClient object.
+        Returns: LibraryServiceClient
         """
         # Unless the calling application specifically requested
         # OAuth scopes, request everything.
@@ -1286,23 +1281,21 @@ class LibraryServiceClient(object):
         self.library_service_stub = config.create_stub(
             library_pb2.LibraryServiceStub,
             channel=channel,
-            service_path=service_path,
-            service_port=port,
+            service_path=self.SERVICE_ADDRESS,
+            service_port=self.DEFAULT_SERVICE_PORT,
             credentials=credentials,
             scopes=scopes,
             ssl_credentials=ssl_credentials)
         self.labeler_stub = config.create_stub(
             tagger_pb2.LabelerStub,
             channel=channel,
-            service_path=service_path,
-            service_port=port,
+            service_path=self.SERVICE_ADDRESS,
+            service_port=self.DEFAULT_SERVICE_PORT,
             credentials=credentials,
             scopes=scopes,
             ssl_credentials=ssl_credentials)
 
         self.operations_client = operations_client.OperationsClient(
-            service_path=service_path,
-            port=port,
             channel=channel,
             credentials=credentials,
             ssl_credentials=ssl_credentials,
@@ -1406,27 +1399,27 @@ class LibraryServiceClient(object):
         RPC method comment may include special characters: <>&\"``'@.
 
         Example:
-          >>> from google.cloud.example import library_v1
-          >>>
-          >>> client = library_v1.LibraryServiceClient()
-          >>>
-          >>> shelf = {}
-          >>>
-          >>> response = client.create_shelf(shelf)
+            >>> from google.cloud.example import library_v1
+            >>>
+            >>> client = library_v1.LibraryServiceClient()
+            >>>
+            >>> shelf = {}
+            >>>
+            >>> response = client.create_shelf(shelf)
 
         Args:
-          shelf (Union[dict|:class:`google.cloud.proto.example.library.v1.library_pb2.Shelf`]): The shelf to create.
-            If a dict is provided, it must be of the same form as the protobuf
-            message :class:`google.cloud.proto.example.library.v1.library_pb2.Shelf`
-          options (:class:`google.gax.CallOptions`): Overrides the default
-            settings for this call, e.g, timeout, retries etc.
+            shelf (Union[dict, ~google.cloud.example.library_v1.types.Shelf]): The shelf to create.
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Shelf`
+            options (~google.gax.CallOptions): Overrides the default
+                settings for this call, e.g, timeout, retries etc.
 
         Returns:
-          A :class:`google.cloud.proto.example.library.v1.library_pb2.Shelf` instance.
+            A :class:`~google.cloud.example.library_v1.types.Shelf` instance.
 
         Raises:
-          :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-          :exc:`ValueError` if the parameters are invalid.
+            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+            :exc:`ValueError` if the parameters are invalid.
         """
         request = library_pb2.CreateShelfRequest(
             shelf=shelf)
@@ -1443,32 +1436,32 @@ class LibraryServiceClient(object):
         Gets a shelf.
 
         Example:
-          >>> from google.cloud.example import library_v1
-          >>>
-          >>> client = library_v1.LibraryServiceClient()
-          >>>
-          >>> name = client.shelf_path('[SHELF_ID]')
-          >>> options_ = ''
-          >>>
-          >>> response = client.get_shelf(name, options_)
+            >>> from google.cloud.example import library_v1
+            >>>
+            >>> client = library_v1.LibraryServiceClient()
+            >>>
+            >>> name = client.shelf_path('[SHELF_ID]')
+            >>> options_ = ''
+            >>>
+            >>> response = client.get_shelf(name, options_)
 
         Args:
-          name (str): The name of the shelf to retrieve.
-          options_ (str): To test 'options' parameter name conflict.
-          message (Union[dict|:class:`google.cloud.proto.example.library.v1.library_pb2.SomeMessage`]): Field to verify that message-type query parameter gets flattened.
-            If a dict is provided, it must be of the same form as the protobuf
-            message :class:`google.cloud.proto.example.library.v1.library_pb2.SomeMessage`
-          string_builder (Union[dict|:class:`google.cloud.proto.example.library.v1.library_pb2.StringBuilder`]): If a dict is provided, it must be of the same form as the protobuf
-            message :class:`google.cloud.proto.example.library.v1.library_pb2.StringBuilder`
-          options (:class:`google.gax.CallOptions`): Overrides the default
-            settings for this call, e.g, timeout, retries etc.
+            name (str): The name of the shelf to retrieve.
+            options_ (str): To test 'options' parameter name conflict.
+            message (Union[dict, ~google.cloud.example.library_v1.types.SomeMessage]): Field to verify that message-type query parameter gets flattened.
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.SomeMessage`
+            string_builder (Union[dict, ~google.cloud.example.library_v1.types.StringBuilder]): If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.StringBuilder`
+            options (~google.gax.CallOptions): Overrides the default
+                settings for this call, e.g, timeout, retries etc.
 
         Returns:
-          A :class:`google.cloud.proto.example.library.v1.library_pb2.Shelf` instance.
+            A :class:`~google.cloud.example.library_v1.types.Shelf` instance.
 
         Raises:
-          :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-          :exc:`ValueError` if the parameters are invalid.
+            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+            :exc:`ValueError` if the parameters are invalid.
         """
         request = library_pb2.GetShelfRequest(
             name=name,
@@ -1484,35 +1477,35 @@ class LibraryServiceClient(object):
         Lists shelves.
 
         Example:
-          >>> from google.cloud.example import library_v1
-          >>> from google.gax import CallOptions, INITIAL_PAGE
-          >>>
-          >>> client = library_v1.LibraryServiceClient()
-          >>>
-          >>>
-          >>> # Iterate over all results
-          >>> for element in client.list_shelves():
-          >>>     # process element
-          >>>     pass
-          >>>
-          >>> # Or iterate over results one page at a time
-          >>> for page in client.list_shelves(options=CallOptions(page_token=INITIAL_PAGE)):
-          >>>     for element in page:
-          >>>         # process element
-          >>>         pass
+            >>> from google.cloud.example import library_v1
+            >>> from google.gax import CallOptions, INITIAL_PAGE
+            >>>
+            >>> client = library_v1.LibraryServiceClient()
+            >>>
+            >>>
+            >>> # Iterate over all results
+            >>> for element in client.list_shelves():
+            ...     # process element
+            ...     pass
+            >>>
+            >>> # Or iterate over results one page at a time
+            >>> for page in client.list_shelves(options=CallOptions(page_token=INITIAL_PAGE)):
+            ...     for element in page:
+            ...         # process element
+            ...         pass
 
         Args:
-          options (:class:`google.gax.CallOptions`): Overrides the default
-            settings for this call, e.g, timeout, retries etc.
+            options (~google.gax.CallOptions): Overrides the default
+                settings for this call, e.g, timeout, retries etc.
 
         Returns:
-          A :class:`google.gax.PageIterator` instance. By default, this
-          is an iterable of :class:`google.cloud.proto.example.library.v1.library_pb2.Shelf` instances.
-          This object can also be configured to iterate over the pages
-          of the response through the `CallOptions` parameter.
+            A :class:`~google.gax.PageIterator` instance. By default, this
+            is an iterable of :class:`~google.cloud.example.library_v1.types.Shelf` instances.
+            This object can also be configured to iterate over the pages
+            of the response through the `options` parameter.
 
         Raises:
-          :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
         """
         request = library_pb2.ListShelvesRequest()
         return self._list_shelves(request, options)
@@ -1525,22 +1518,22 @@ class LibraryServiceClient(object):
         Deletes a shelf.
 
         Example:
-          >>> from google.cloud.example import library_v1
-          >>>
-          >>> client = library_v1.LibraryServiceClient()
-          >>>
-          >>> name = client.shelf_path('[SHELF_ID]')
-          >>>
-          >>> client.delete_shelf(name)
+            >>> from google.cloud.example import library_v1
+            >>>
+            >>> client = library_v1.LibraryServiceClient()
+            >>>
+            >>> name = client.shelf_path('[SHELF_ID]')
+            >>>
+            >>> client.delete_shelf(name)
 
         Args:
-          name (str): The name of the shelf to delete.
-          options (:class:`google.gax.CallOptions`): Overrides the default
-            settings for this call, e.g, timeout, retries etc.
+            name (str): The name of the shelf to delete.
+            options (~google.gax.CallOptions): Overrides the default
+                settings for this call, e.g, timeout, retries etc.
 
         Raises:
-          :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-          :exc:`ValueError` if the parameters are invalid.
+            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+            :exc:`ValueError` if the parameters are invalid.
         """
         request = library_pb2.DeleteShelfRequest(
             name=name)
@@ -1557,27 +1550,27 @@ class LibraryServiceClient(object):
         ``other_shelf_name``. Returns the updated shelf.
 
         Example:
-          >>> from google.cloud.example import library_v1
-          >>>
-          >>> client = library_v1.LibraryServiceClient()
-          >>>
-          >>> name = client.shelf_path('[SHELF_ID]')
-          >>> other_shelf_name = client.shelf_path('[SHELF_ID]')
-          >>>
-          >>> response = client.merge_shelves(name, other_shelf_name)
+            >>> from google.cloud.example import library_v1
+            >>>
+            >>> client = library_v1.LibraryServiceClient()
+            >>>
+            >>> name = client.shelf_path('[SHELF_ID]')
+            >>> other_shelf_name = client.shelf_path('[SHELF_ID]')
+            >>>
+            >>> response = client.merge_shelves(name, other_shelf_name)
 
         Args:
-          name (str): The name of the shelf we're adding books to.
-          other_shelf_name (str): The name of the shelf we're removing books from and deleting.
-          options (:class:`google.gax.CallOptions`): Overrides the default
-            settings for this call, e.g, timeout, retries etc.
+            name (str): The name of the shelf we're adding books to.
+            other_shelf_name (str): The name of the shelf we're removing books from and deleting.
+            options (~google.gax.CallOptions): Overrides the default
+                settings for this call, e.g, timeout, retries etc.
 
         Returns:
-          A :class:`google.cloud.proto.example.library.v1.library_pb2.Shelf` instance.
+            A :class:`~google.cloud.example.library_v1.types.Shelf` instance.
 
         Raises:
-          :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-          :exc:`ValueError` if the parameters are invalid.
+            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+            :exc:`ValueError` if the parameters are invalid.
         """
         request = library_pb2.MergeShelvesRequest(
             name=name,
@@ -1593,29 +1586,29 @@ class LibraryServiceClient(object):
         Creates a book.
 
         Example:
-          >>> from google.cloud.example import library_v1
-          >>>
-          >>> client = library_v1.LibraryServiceClient()
-          >>>
-          >>> name = client.shelf_path('[SHELF_ID]')
-          >>> book = {}
-          >>>
-          >>> response = client.create_book(name, book)
+            >>> from google.cloud.example import library_v1
+            >>>
+            >>> client = library_v1.LibraryServiceClient()
+            >>>
+            >>> name = client.shelf_path('[SHELF_ID]')
+            >>> book = {}
+            >>>
+            >>> response = client.create_book(name, book)
 
         Args:
-          name (str): The name of the shelf in which the book is created.
-          book (Union[dict|:class:`google.cloud.proto.example.library.v1.library_pb2.Book`]): The book to create.
-            If a dict is provided, it must be of the same form as the protobuf
-            message :class:`google.cloud.proto.example.library.v1.library_pb2.Book`
-          options (:class:`google.gax.CallOptions`): Overrides the default
-            settings for this call, e.g, timeout, retries etc.
+            name (str): The name of the shelf in which the book is created.
+            book (Union[dict, ~google.cloud.example.library_v1.types.Book]): The book to create.
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Book`
+            options (~google.gax.CallOptions): Overrides the default
+                settings for this call, e.g, timeout, retries etc.
 
         Returns:
-          A :class:`google.cloud.proto.example.library.v1.library_pb2.Book` instance.
+            A :class:`~google.cloud.example.library_v1.types.Book` instance.
 
         Raises:
-          :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-          :exc:`ValueError` if the parameters are invalid.
+            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+            :exc:`ValueError` if the parameters are invalid.
         """
         request = library_pb2.CreateBookRequest(
             name=name,
@@ -1634,38 +1627,38 @@ class LibraryServiceClient(object):
         Creates a series of books.
 
         Example:
-          >>> from google.cloud.example import library_v1
-          >>>
-          >>> client = library_v1.LibraryServiceClient()
-          >>>
-          >>> shelf = {}
-          >>> books = []
-          >>> series_string = 'foobar'
-          >>> series_uuid = {'series_string': series_string}
-          >>>
-          >>> response = client.publish_series(shelf, books, series_uuid)
+            >>> from google.cloud.example import library_v1
+            >>>
+            >>> client = library_v1.LibraryServiceClient()
+            >>>
+            >>> shelf = {}
+            >>> books = []
+            >>> series_string = 'foobar'
+            >>> series_uuid = {'series_string': series_string}
+            >>>
+            >>> response = client.publish_series(shelf, books, series_uuid)
 
         Args:
-          shelf (Union[dict|:class:`google.cloud.proto.example.library.v1.library_pb2.Shelf`]): The shelf in which the series is created.
-            If a dict is provided, it must be of the same form as the protobuf
-            message :class:`google.cloud.proto.example.library.v1.library_pb2.Shelf`
-          books (list[Union[dict|:class:`google.cloud.proto.example.library.v1.library_pb2.Book`]]): The books to publish in the series.
-            If a dict is provided, it must be of the same form as the protobuf
-            message :class:`google.cloud.proto.example.library.v1.library_pb2.Book`
-          series_uuid (Union[dict|:class:`google.cloud.proto.example.library.v1.library_pb2.SeriesUuid`]): Uniquely identifies the series to the publishing house.
-            If a dict is provided, it must be of the same form as the protobuf
-            message :class:`google.cloud.proto.example.library.v1.library_pb2.SeriesUuid`
-          edition (int): The edition of the series
-          review_copy (bool): If the book is in a pre-publish state
-          options (:class:`google.gax.CallOptions`): Overrides the default
-            settings for this call, e.g, timeout, retries etc.
+            shelf (Union[dict, ~google.cloud.example.library_v1.types.Shelf]): The shelf in which the series is created.
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Shelf`
+            books (list[Union[dict, ~google.cloud.example.library_v1.types.Book]]): The books to publish in the series.
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Book`
+            series_uuid (Union[dict, ~google.cloud.example.library_v1.types.SeriesUuid]): Uniquely identifies the series to the publishing house.
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.SeriesUuid`
+            edition (int): The edition of the series
+            review_copy (bool): If the book is in a pre-publish state
+            options (~google.gax.CallOptions): Overrides the default
+                settings for this call, e.g, timeout, retries etc.
 
         Returns:
-          A :class:`google.cloud.proto.example.library.v1.library_pb2.PublishSeriesResponse` instance.
+            A :class:`~google.cloud.example.library_v1.types.PublishSeriesResponse` instance.
 
         Raises:
-          :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-          :exc:`ValueError` if the parameters are invalid.
+            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+            :exc:`ValueError` if the parameters are invalid.
         """
         # Sanity check: We have some fields which are mutually exclusive;
         # raise ValueError if more than one is sent.
@@ -1690,25 +1683,25 @@ class LibraryServiceClient(object):
         Gets a book.
 
         Example:
-          >>> from google.cloud.example import library_v1
-          >>>
-          >>> client = library_v1.LibraryServiceClient()
-          >>>
-          >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
-          >>>
-          >>> response = client.get_book(name)
+            >>> from google.cloud.example import library_v1
+            >>>
+            >>> client = library_v1.LibraryServiceClient()
+            >>>
+            >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+            >>>
+            >>> response = client.get_book(name)
 
         Args:
-          name (str): The name of the book to retrieve.
-          options (:class:`google.gax.CallOptions`): Overrides the default
-            settings for this call, e.g, timeout, retries etc.
+            name (str): The name of the book to retrieve.
+            options (~google.gax.CallOptions): Overrides the default
+                settings for this call, e.g, timeout, retries etc.
 
         Returns:
-          A :class:`google.cloud.proto.example.library.v1.library_pb2.Book` instance.
+            A :class:`~google.cloud.example.library_v1.types.Book` instance.
 
         Raises:
-          :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-          :exc:`ValueError` if the parameters are invalid.
+            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+            :exc:`ValueError` if the parameters are invalid.
         """
         request = library_pb2.GetBookRequest(
             name=name)
@@ -1724,45 +1717,45 @@ class LibraryServiceClient(object):
         Lists books in a shelf.
 
         Example:
-          >>> from google.cloud.example import library_v1
-          >>> from google.gax import CallOptions, INITIAL_PAGE
-          >>>
-          >>> client = library_v1.LibraryServiceClient()
-          >>>
-          >>> name = client.shelf_path('[SHELF_ID]')
-          >>>
-          >>>
-          >>> # Iterate over all results
-          >>> for element in client.list_books(name):
-          >>>     # process element
-          >>>     pass
-          >>>
-          >>> # Or iterate over results one page at a time
-          >>> for page in client.list_books(name, options=CallOptions(page_token=INITIAL_PAGE)):
-          >>>     for element in page:
-          >>>         # process element
-          >>>         pass
+            >>> from google.cloud.example import library_v1
+            >>> from google.gax import CallOptions, INITIAL_PAGE
+            >>>
+            >>> client = library_v1.LibraryServiceClient()
+            >>>
+            >>> name = client.shelf_path('[SHELF_ID]')
+            >>>
+            >>>
+            >>> # Iterate over all results
+            >>> for element in client.list_books(name):
+            ...     # process element
+            ...     pass
+            >>>
+            >>> # Or iterate over results one page at a time
+            >>> for page in client.list_books(name, options=CallOptions(page_token=INITIAL_PAGE)):
+            ...     for element in page:
+            ...         # process element
+            ...         pass
 
         Args:
-          name (str): The name of the shelf whose books we'd like to list.
-          page_size (int): The maximum number of resources contained in the
-            underlying API response. If page streaming is performed per-
-            resource, this parameter does not affect the return value. If page
-            streaming is performed per-page, this determines the maximum number
-            of resources in a page.
-          filter_ (str): To test python built-in wrapping.
-          options (:class:`google.gax.CallOptions`): Overrides the default
-            settings for this call, e.g, timeout, retries etc.
+            name (str): The name of the shelf whose books we'd like to list.
+            page_size (int): The maximum number of resources contained in the
+                underlying API response. If page streaming is performed per-
+                resource, this parameter does not affect the return value. If page
+                streaming is performed per-page, this determines the maximum number
+                of resources in a page.
+            filter_ (str): To test python built-in wrapping.
+            options (~google.gax.CallOptions): Overrides the default
+                settings for this call, e.g, timeout, retries etc.
 
         Returns:
-          A :class:`google.gax.PageIterator` instance. By default, this
-          is an iterable of :class:`google.cloud.proto.example.library.v1.library_pb2.Book` instances.
-          This object can also be configured to iterate over the pages
-          of the response through the `CallOptions` parameter.
+            A :class:`~google.gax.PageIterator` instance. By default, this
+            is an iterable of :class:`~google.cloud.example.library_v1.types.Book` instances.
+            This object can also be configured to iterate over the pages
+            of the response through the `options` parameter.
 
         Raises:
-          :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-          :exc:`ValueError` if the parameters are invalid.
+            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+            :exc:`ValueError` if the parameters are invalid.
         """
         request = library_pb2.ListBooksRequest(
             name=name,
@@ -1778,22 +1771,22 @@ class LibraryServiceClient(object):
         Deletes a book.
 
         Example:
-          >>> from google.cloud.example import library_v1
-          >>>
-          >>> client = library_v1.LibraryServiceClient()
-          >>>
-          >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
-          >>>
-          >>> client.delete_book(name)
+            >>> from google.cloud.example import library_v1
+            >>>
+            >>> client = library_v1.LibraryServiceClient()
+            >>>
+            >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+            >>>
+            >>> client.delete_book(name)
 
         Args:
-          name (str): The name of the book to delete.
-          options (:class:`google.gax.CallOptions`): Overrides the default
-            settings for this call, e.g, timeout, retries etc.
+            name (str): The name of the book to delete.
+            options (~google.gax.CallOptions): Overrides the default
+                settings for this call, e.g, timeout, retries etc.
 
         Raises:
-          :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-          :exc:`ValueError` if the parameters are invalid.
+            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+            :exc:`ValueError` if the parameters are invalid.
         """
         request = library_pb2.DeleteBookRequest(
             name=name)
@@ -1810,35 +1803,35 @@ class LibraryServiceClient(object):
         Updates a book.
 
         Example:
-          >>> from google.cloud.example import library_v1
-          >>>
-          >>> client = library_v1.LibraryServiceClient()
-          >>>
-          >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
-          >>> book = {}
-          >>>
-          >>> response = client.update_book(name, book)
+            >>> from google.cloud.example import library_v1
+            >>>
+            >>> client = library_v1.LibraryServiceClient()
+            >>>
+            >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+            >>> book = {}
+            >>>
+            >>> response = client.update_book(name, book)
 
         Args:
-          name (str): The name of the book to update.
-          book (Union[dict|:class:`google.cloud.proto.example.library.v1.library_pb2.Book`]): The book to update with.
-            If a dict is provided, it must be of the same form as the protobuf
-            message :class:`google.cloud.proto.example.library.v1.library_pb2.Book`
-          update_mask (Union[dict|:class:`google.protobuf.field_mask_pb2.FieldMask`]): A field mask to apply, rendered as an HTTP parameter.
-            If a dict is provided, it must be of the same form as the protobuf
-            message :class:`google.protobuf.field_mask_pb2.FieldMask`
-          physical_mask (Union[dict|:class:`google.cloud.proto.example.library.v1.field_mask_pb2.FieldMask`]): To test Python import clash resolution.
-            If a dict is provided, it must be of the same form as the protobuf
-            message :class:`google.cloud.proto.example.library.v1.field_mask_pb2.FieldMask`
-          options (:class:`google.gax.CallOptions`): Overrides the default
-            settings for this call, e.g, timeout, retries etc.
+            name (str): The name of the book to update.
+            book (Union[dict, ~google.cloud.example.library_v1.types.Book]): The book to update with.
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Book`
+            update_mask (Union[dict, ~google.cloud.example.library_v1.types.FieldMask]): A field mask to apply, rendered as an HTTP parameter.
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.FieldMask`
+            physical_mask (Union[dict, ~google.cloud.example.library_v1.types.FieldMask]): To test Python import clash resolution.
+                If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.FieldMask`
+            options (~google.gax.CallOptions): Overrides the default
+                settings for this call, e.g, timeout, retries etc.
 
         Returns:
-          A :class:`google.cloud.proto.example.library.v1.library_pb2.Book` instance.
+            A :class:`~google.cloud.example.library_v1.types.Book` instance.
 
         Raises:
-          :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-          :exc:`ValueError` if the parameters are invalid.
+            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+            :exc:`ValueError` if the parameters are invalid.
         """
         request = library_pb2.UpdateBookRequest(
             name=name,
@@ -1856,27 +1849,27 @@ class LibraryServiceClient(object):
         Moves a book to another shelf, and returns the new book.
 
         Example:
-          >>> from google.cloud.example import library_v1
-          >>>
-          >>> client = library_v1.LibraryServiceClient()
-          >>>
-          >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
-          >>> other_shelf_name = client.shelf_path('[SHELF_ID]')
-          >>>
-          >>> response = client.move_book(name, other_shelf_name)
+            >>> from google.cloud.example import library_v1
+            >>>
+            >>> client = library_v1.LibraryServiceClient()
+            >>>
+            >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+            >>> other_shelf_name = client.shelf_path('[SHELF_ID]')
+            >>>
+            >>> response = client.move_book(name, other_shelf_name)
 
         Args:
-          name (str): The name of the book to move.
-          other_shelf_name (str): The name of the destination shelf.
-          options (:class:`google.gax.CallOptions`): Overrides the default
-            settings for this call, e.g, timeout, retries etc.
+            name (str): The name of the book to move.
+            other_shelf_name (str): The name of the destination shelf.
+            options (~google.gax.CallOptions): Overrides the default
+                settings for this call, e.g, timeout, retries etc.
 
         Returns:
-          A :class:`google.cloud.proto.example.library.v1.library_pb2.Book` instance.
+            A :class:`~google.cloud.example.library_v1.types.Book` instance.
 
         Raises:
-          :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-          :exc:`ValueError` if the parameters are invalid.
+            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+            :exc:`ValueError` if the parameters are invalid.
         """
         request = library_pb2.MoveBookRequest(
             name=name,
@@ -1892,42 +1885,42 @@ class LibraryServiceClient(object):
         Lists a primitive resource. To test go page streaming.
 
         Example:
-          >>> from google.cloud.example import library_v1
-          >>> from google.gax import CallOptions, INITIAL_PAGE
-          >>>
-          >>> client = library_v1.LibraryServiceClient()
-          >>>
-          >>>
-          >>> # Iterate over all results
-          >>> for element in client.list_strings():
-          >>>     # process element
-          >>>     pass
-          >>>
-          >>> # Or iterate over results one page at a time
-          >>> for page in client.list_strings(options=CallOptions(page_token=INITIAL_PAGE)):
-          >>>     for element in page:
-          >>>         # process element
-          >>>         pass
+            >>> from google.cloud.example import library_v1
+            >>> from google.gax import CallOptions, INITIAL_PAGE
+            >>>
+            >>> client = library_v1.LibraryServiceClient()
+            >>>
+            >>>
+            >>> # Iterate over all results
+            >>> for element in client.list_strings():
+            ...     # process element
+            ...     pass
+            >>>
+            >>> # Or iterate over results one page at a time
+            >>> for page in client.list_strings(options=CallOptions(page_token=INITIAL_PAGE)):
+            ...     for element in page:
+            ...         # process element
+            ...         pass
 
         Args:
-          name (str)
-          page_size (int): The maximum number of resources contained in the
-            underlying API response. If page streaming is performed per-
-            resource, this parameter does not affect the return value. If page
-            streaming is performed per-page, this determines the maximum number
-            of resources in a page.
-          options (:class:`google.gax.CallOptions`): Overrides the default
-            settings for this call, e.g, timeout, retries etc.
+            name (str)
+            page_size (int): The maximum number of resources contained in the
+                underlying API response. If page streaming is performed per-
+                resource, this parameter does not affect the return value. If page
+                streaming is performed per-page, this determines the maximum number
+                of resources in a page.
+            options (~google.gax.CallOptions): Overrides the default
+                settings for this call, e.g, timeout, retries etc.
 
         Returns:
-          A :class:`google.gax.PageIterator` instance. By default, this
-          is an iterable of str instances.
-          This object can also be configured to iterate over the pages
-          of the response through the `CallOptions` parameter.
+            A :class:`~google.gax.PageIterator` instance. By default, this
+            is an iterable of :class:`str` instances.
+            This object can also be configured to iterate over the pages
+            of the response through the `options` parameter.
 
         Raises:
-          :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-          :exc:`ValueError` if the parameters are invalid.
+            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+            :exc:`ValueError` if the parameters are invalid.
         """
         request = library_pb2.ListStringsRequest(
             name=name,
@@ -1943,30 +1936,30 @@ class LibraryServiceClient(object):
         Adds comments to a book
 
         Example:
-          >>> from google.cloud.example import library_v1
-          >>> from google.cloud.example.library_v1 import enums
-          >>>
-          >>> client = library_v1.LibraryServiceClient()
-          >>>
-          >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
-          >>> comment = b''
-          >>> stage = enums.Comment.Stage.UNSET
-          >>> alignment = enums.SomeMessage2.SomeMessage3.Alignment.CHAR
-          >>> comments_element = {'comment': comment, 'stage': stage, 'alignment': alignment}
-          >>> comments = [comments_element]
-          >>>
-          >>> client.add_comments(name, comments)
+            >>> from google.cloud.example import library_v1
+            >>> from google.cloud.example.library_v1 import enums
+            >>>
+            >>> client = library_v1.LibraryServiceClient()
+            >>>
+            >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+            >>> comment = b''
+            >>> stage = enums.Comment.Stage.UNSET
+            >>> alignment = enums.SomeMessage2.SomeMessage3.Alignment.CHAR
+            >>> comments_element = {'comment': comment, 'stage': stage, 'alignment': alignment}
+            >>> comments = [comments_element]
+            >>>
+            >>> client.add_comments(name, comments)
 
         Args:
-          name (str)
-          comments (list[Union[dict|:class:`google.cloud.proto.example.library.v1.library_pb2.Comment`]]): If a dict is provided, it must be of the same form as the protobuf
-            message :class:`google.cloud.proto.example.library.v1.library_pb2.Comment`
-          options (:class:`google.gax.CallOptions`): Overrides the default
-            settings for this call, e.g, timeout, retries etc.
+            name (str)
+            comments (list[Union[dict, ~google.cloud.example.library_v1.types.Comment]]): If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.Comment`
+            options (~google.gax.CallOptions): Overrides the default
+                settings for this call, e.g, timeout, retries etc.
 
         Raises:
-          :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-          :exc:`ValueError` if the parameters are invalid.
+            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+            :exc:`ValueError` if the parameters are invalid.
         """
         request = library_pb2.AddCommentsRequest(
             name=name,
@@ -1981,25 +1974,25 @@ class LibraryServiceClient(object):
         Gets a book from an archive.
 
         Example:
-          >>> from google.cloud.example import library_v1
-          >>>
-          >>> client = library_v1.LibraryServiceClient()
-          >>>
-          >>> name = client.archived_book_path('[ARCHIVE_PATH]', '[BOOK_ID]')
-          >>>
-          >>> response = client.get_book_from_archive(name)
+            >>> from google.cloud.example import library_v1
+            >>>
+            >>> client = library_v1.LibraryServiceClient()
+            >>>
+            >>> name = client.archived_book_path('[ARCHIVE_PATH]', '[BOOK_ID]')
+            >>>
+            >>> response = client.get_book_from_archive(name)
 
         Args:
-          name (str): The name of the book to retrieve.
-          options (:class:`google.gax.CallOptions`): Overrides the default
-            settings for this call, e.g, timeout, retries etc.
+            name (str): The name of the book to retrieve.
+            options (~google.gax.CallOptions): Overrides the default
+                settings for this call, e.g, timeout, retries etc.
 
         Returns:
-          A :class:`google.cloud.proto.example.library.v1.library_pb2.BookFromArchive` instance.
+            A :class:`~google.cloud.example.library_v1.types.BookFromArchive` instance.
 
         Raises:
-          :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-          :exc:`ValueError` if the parameters are invalid.
+            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+            :exc:`ValueError` if the parameters are invalid.
         """
         request = library_pb2.GetBookFromArchiveRequest(
             name=name)
@@ -2014,28 +2007,28 @@ class LibraryServiceClient(object):
         Gets a book from a shelf or archive.
 
         Example:
-          >>> from google.cloud.example import library_v1
-          >>>
-          >>> client = library_v1.LibraryServiceClient()
-          >>>
-          >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
-          >>> alt_book_name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
-          >>>
-          >>> response = client.get_book_from_anywhere(name, alt_book_name)
+            >>> from google.cloud.example import library_v1
+            >>>
+            >>> client = library_v1.LibraryServiceClient()
+            >>>
+            >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+            >>> alt_book_name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+            >>>
+            >>> response = client.get_book_from_anywhere(name, alt_book_name)
 
         Args:
-          name (str): The name of the book to retrieve.
-          alt_book_name (str): An alternate book name, used to test restricting flattened field to a
-            single resource name type in a oneof.
-          options (:class:`google.gax.CallOptions`): Overrides the default
-            settings for this call, e.g, timeout, retries etc.
+            name (str): The name of the book to retrieve.
+            alt_book_name (str): An alternate book name, used to test restricting flattened field to a
+                single resource name type in a oneof.
+            options (~google.gax.CallOptions): Overrides the default
+                settings for this call, e.g, timeout, retries etc.
 
         Returns:
-          A :class:`google.cloud.proto.example.library.v1.book_from_anywhere_pb2.BookFromAnywhere` instance.
+            A :class:`~google.cloud.example.library_v1.types.BookFromAnywhere` instance.
 
         Raises:
-          :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-          :exc:`ValueError` if the parameters are invalid.
+            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+            :exc:`ValueError` if the parameters are invalid.
         """
         request = library_pb2.GetBookFromAnywhereRequest(
             name=name,
@@ -2050,25 +2043,25 @@ class LibraryServiceClient(object):
         Test proper OneOf-Any resource name mapping
 
         Example:
-          >>> from google.cloud.example import library_v1
-          >>>
-          >>> client = library_v1.LibraryServiceClient()
-          >>>
-          >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
-          >>>
-          >>> response = client.get_book_from_absolutely_anywhere(name)
+            >>> from google.cloud.example import library_v1
+            >>>
+            >>> client = library_v1.LibraryServiceClient()
+            >>>
+            >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+            >>>
+            >>> response = client.get_book_from_absolutely_anywhere(name)
 
         Args:
-          name (str): The name of the book to retrieve.
-          options (:class:`google.gax.CallOptions`): Overrides the default
-            settings for this call, e.g, timeout, retries etc.
+            name (str): The name of the book to retrieve.
+            options (~google.gax.CallOptions): Overrides the default
+                settings for this call, e.g, timeout, retries etc.
 
         Returns:
-          A :class:`google.cloud.proto.example.library.v1.book_from_anywhere_pb2.BookFromAnywhere` instance.
+            A :class:`~google.cloud.example.library_v1.types.BookFromAnywhere` instance.
 
         Raises:
-          :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-          :exc:`ValueError` if the parameters are invalid.
+            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+            :exc:`ValueError` if the parameters are invalid.
         """
         request = library_pb2.GetBookFromAbsolutelyAnywhereRequest(
             name=name)
@@ -2084,27 +2077,27 @@ class LibraryServiceClient(object):
         Updates the index of a book.
 
         Example:
-          >>> from google.cloud.example import library_v1
-          >>>
-          >>> client = library_v1.LibraryServiceClient()
-          >>>
-          >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
-          >>> index_name = 'default index'
-          >>> index_map_item = ''
-          >>> index_map = {'default_key': index_map_item}
-          >>>
-          >>> client.update_book_index(name, index_name, index_map)
+            >>> from google.cloud.example import library_v1
+            >>>
+            >>> client = library_v1.LibraryServiceClient()
+            >>>
+            >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+            >>> index_name = 'default index'
+            >>> index_map_item = ''
+            >>> index_map = {'default_key': index_map_item}
+            >>>
+            >>> client.update_book_index(name, index_name, index_map)
 
         Args:
-          name (str): The name of the book to update.
-          index_name (str): The name of the index for the book
-          index_map (dict[str -> str]): The index to update the book with
-          options (:class:`google.gax.CallOptions`): Overrides the default
-            settings for this call, e.g, timeout, retries etc.
+            name (str): The name of the book to update.
+            index_name (str): The name of the index for the book
+            index_map (dict[str -> str]): The index to update the book with
+            options (~google.gax.CallOptions): Overrides the default
+                settings for this call, e.g, timeout, retries etc.
 
         Raises:
-          :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-          :exc:`ValueError` if the parameters are invalid.
+            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+            :exc:`ValueError` if the parameters are invalid.
         """
         request = library_pb2.UpdateBookIndexRequest(
             name=name,
@@ -2120,23 +2113,23 @@ class LibraryServiceClient(object):
         gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
 
         Example:
-          >>> from google.cloud.example import library_v1
-          >>>
-          >>> client = library_v1.LibraryServiceClient()
-          >>>
-          >>> for element in client.stream_shelves():
-          >>>     # process element
-          >>>     pass
+            >>> from google.cloud.example import library_v1
+            >>>
+            >>> client = library_v1.LibraryServiceClient()
+            >>>
+            >>> for element in client.stream_shelves():
+            ...     # process element
+            ...     pass
 
         Args:
-          options (:class:`google.gax.CallOptions`): Overrides the default
-            settings for this call, e.g, timeout, retries etc.
+            options (~google.gax.CallOptions): Overrides the default
+                settings for this call, e.g, timeout, retries etc.
 
         Returns:
-          Iterable[:class:`google.cloud.proto.example.library.v1.library_pb2.StreamShelvesResponse`].
+            Iterable[~google.cloud.example.library_v1.types.StreamShelvesResponse].
 
         Raises:
-          :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
         """
         request = library_pb2.StreamShelvesRequest()
         return self._stream_shelves(request, options)
@@ -2150,27 +2143,27 @@ class LibraryServiceClient(object):
         gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
 
         Example:
-          >>> from google.cloud.example import library_v1
-          >>>
-          >>> client = library_v1.LibraryServiceClient()
-          >>>
-          >>> name = ''
-          >>>
-          >>> for element in client.stream_books(name):
-          >>>     # process element
-          >>>     pass
+            >>> from google.cloud.example import library_v1
+            >>>
+            >>> client = library_v1.LibraryServiceClient()
+            >>>
+            >>> name = ''
+            >>>
+            >>> for element in client.stream_books(name):
+            ...     # process element
+            ...     pass
 
         Args:
-          name (str): The name of the shelf whose books we'd like to list.
-          options (:class:`google.gax.CallOptions`): Overrides the default
-            settings for this call, e.g, timeout, retries etc.
+            name (str): The name of the shelf whose books we'd like to list.
+            options (~google.gax.CallOptions): Overrides the default
+                settings for this call, e.g, timeout, retries etc.
 
         Returns:
-          Iterable[:class:`google.cloud.proto.example.library.v1.library_pb2.Book`].
+            Iterable[~google.cloud.example.library_v1.types.Book].
 
         Raises:
-          :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-          :exc:`ValueError` if the parameters are invalid.
+            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+            :exc:`ValueError` if the parameters are invalid.
         """
         request = library_pb2.StreamBooksRequest(
             name=name)
@@ -2187,29 +2180,30 @@ class LibraryServiceClient(object):
         EXPERIMENTAL: This method interface might change in the future.
 
         Example:
-          >>> from google.cloud.example import library_v1
-          >>>
-          >>> client = library_v1.LibraryServiceClient()
-          >>>
-          >>> name = ''
-          >>> request = {'name': name}
-          >>>
-          >>> requests = [request]
-          >>> for element in client.discuss_book(requests):
-          >>>     # process element
-          >>>     pass
+            >>> from google.cloud.example import library_v1
+            >>>
+            >>> client = library_v1.LibraryServiceClient()
+            >>>
+            >>> name = ''
+            >>> request = {'name': name}
+            >>>
+            >>> requests = [request]
+            >>> for element in client.discuss_book(requests):
+            ...     # process element
+            ...     pass
 
         Args:
-          requests (iterator[:class:`google.cloud.proto.example.library.v1.library_pb2.DiscussBookRequest`]): The input objects.
-          options (:class:`google.gax.CallOptions`): Overrides the default
-            settings for this call, e.g, timeout, retries etc.
+            requests (iterator[dict|google.cloud.proto.example.library.v1.library_pb2.DiscussBookRequest]): The input objects. If a dict is provided, it must be of the
+                same form as the protobuf message :class:`~google.cloud.example.library_v1.types.DiscussBookRequest`
+            options (~google.gax.CallOptions): Overrides the default
+                settings for this call, e.g, timeout, retries etc.
 
         Returns:
-          Iterable[:class:`google.cloud.proto.example.library.v1.library_pb2.Comment`].
+            Iterable[~google.cloud.example.library_v1.types.Comment].
 
         Raises:
-          :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-          :exc:`ValueError` if the parameters are invalid.
+            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+            :exc:`ValueError` if the parameters are invalid.
         """
         return self._discuss_book(requests, options)
 
@@ -2224,27 +2218,28 @@ class LibraryServiceClient(object):
         EXPERIMENTAL: This method interface might change in the future.
 
         Example:
-          >>> from google.cloud.example import library_v1
-          >>>
-          >>> client = library_v1.LibraryServiceClient()
-          >>>
-          >>> name = ''
-          >>> request = {'name': name}
-          >>>
-          >>> requests = [request]
-          >>> response = client.monolog_about_book(requests)
+            >>> from google.cloud.example import library_v1
+            >>>
+            >>> client = library_v1.LibraryServiceClient()
+            >>>
+            >>> name = ''
+            >>> request = {'name': name}
+            >>>
+            >>> requests = [request]
+            >>> response = client.monolog_about_book(requests)
 
         Args:
-          requests (iterator[:class:`google.cloud.proto.example.library.v1.library_pb2.DiscussBookRequest`]): The input objects.
-          options (:class:`google.gax.CallOptions`): Overrides the default
-            settings for this call, e.g, timeout, retries etc.
+            requests (iterator[dict|google.cloud.proto.example.library.v1.library_pb2.DiscussBookRequest]): The input objects. If a dict is provided, it must be of the
+                same form as the protobuf message :class:`~google.cloud.example.library_v1.types.DiscussBookRequest`
+            options (~google.gax.CallOptions): Overrides the default
+                settings for this call, e.g, timeout, retries etc.
 
         Returns:
-          A :class:`google.cloud.proto.example.library.v1.library_pb2.Comment` instance.
+            A :class:`~google.cloud.example.library_v1.types.Comment` instance.
 
         Raises:
-          :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-          :exc:`ValueError` if the parameters are invalid.
+            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+            :exc:`ValueError` if the parameters are invalid.
         """
         return self._monolog_about_book(requests, options)
 
@@ -2257,47 +2252,47 @@ class LibraryServiceClient(object):
         """
 
         Example:
-          >>> from google.cloud.example import library_v1
-          >>> from google.gax import CallOptions, INITIAL_PAGE
-          >>>
-          >>> client = library_v1.LibraryServiceClient()
-          >>>
-          >>> names_element = ''
-          >>> names = [names_element]
-          >>> shelves = []
-          >>>
-          >>>
-          >>> # Iterate over all results
-          >>> for element in client.find_related_books(names, shelves):
-          >>>     # process element
-          >>>     pass
-          >>>
-          >>> # Or iterate over results one page at a time
-          >>> for page in client.find_related_books(names, shelves, options=CallOptions(page_token=INITIAL_PAGE)):
-          >>>     for element in page:
-          >>>         # process element
-          >>>         pass
+            >>> from google.cloud.example import library_v1
+            >>> from google.gax import CallOptions, INITIAL_PAGE
+            >>>
+            >>> client = library_v1.LibraryServiceClient()
+            >>>
+            >>> names_element = ''
+            >>> names = [names_element]
+            >>> shelves = []
+            >>>
+            >>>
+            >>> # Iterate over all results
+            >>> for element in client.find_related_books(names, shelves):
+            ...     # process element
+            ...     pass
+            >>>
+            >>> # Or iterate over results one page at a time
+            >>> for page in client.find_related_books(names, shelves, options=CallOptions(page_token=INITIAL_PAGE)):
+            ...     for element in page:
+            ...         # process element
+            ...         pass
 
         Args:
-          names (list[str])
-          shelves (list[str])
-          page_size (int): The maximum number of resources contained in the
-            underlying API response. If page streaming is performed per-
-            resource, this parameter does not affect the return value. If page
-            streaming is performed per-page, this determines the maximum number
-            of resources in a page.
-          options (:class:`google.gax.CallOptions`): Overrides the default
-            settings for this call, e.g, timeout, retries etc.
+            names (list[str])
+            shelves (list[str])
+            page_size (int): The maximum number of resources contained in the
+                underlying API response. If page streaming is performed per-
+                resource, this parameter does not affect the return value. If page
+                streaming is performed per-page, this determines the maximum number
+                of resources in a page.
+            options (~google.gax.CallOptions): Overrides the default
+                settings for this call, e.g, timeout, retries etc.
 
         Returns:
-          A :class:`google.gax.PageIterator` instance. By default, this
-          is an iterable of str instances.
-          This object can also be configured to iterate over the pages
-          of the response through the `CallOptions` parameter.
+            A :class:`~google.gax.PageIterator` instance. By default, this
+            is an iterable of :class:`str` instances.
+            This object can also be configured to iterate over the pages
+            of the response through the `options` parameter.
 
         Raises:
-          :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-          :exc:`ValueError` if the parameters are invalid.
+            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+            :exc:`ValueError` if the parameters are invalid.
         """
         request = library_pb2.FindRelatedBooksRequest(
             names=names,
@@ -2314,29 +2309,29 @@ class LibraryServiceClient(object):
         Adds a tag to the book. This RPC is a mixin.
 
         Example:
-          >>> from google.cloud.example import library_v1
-          >>>
-          >>> client = library_v1.LibraryServiceClient()
-          >>>
-          >>> resource = client.book_path('[SHELF_ID]', '[BOOK_ID]')
-          >>> tag = ''
-          >>>
-          >>> response = client.add_tag(resource, tag)
+            >>> from google.cloud.example import library_v1
+            >>>
+            >>> client = library_v1.LibraryServiceClient()
+            >>>
+            >>> resource = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+            >>> tag = ''
+            >>>
+            >>> response = client.add_tag(resource, tag)
 
         Args:
-          resource (str): REQUIRED: The resource which the tag is being added to.
-            Resource is usually specified as a path, such as,
-            projects/{project}/zones/{zone}/disks/{disk}.
-          tag (str): REQUIRED: The tag to add.
-          options (:class:`google.gax.CallOptions`): Overrides the default
-            settings for this call, e.g, timeout, retries etc.
+            resource (str): REQUIRED: The resource which the tag is being added to.
+                Resource is usually specified as a path, such as,
+                projects/{project}/zones/{zone}/disks/{disk}.
+            tag (str): REQUIRED: The tag to add.
+            options (~google.gax.CallOptions): Overrides the default
+                settings for this call, e.g, timeout, retries etc.
 
         Returns:
-          A :class:`google.cloud.proto.tagger.v1.tagger_pb2.AddTagResponse` instance.
+            A :class:`~google.cloud.example.library_v1.types.AddTagResponse` instance.
 
         Raises:
-          :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-          :exc:`ValueError` if the parameters are invalid.
+            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+            :exc:`ValueError` if the parameters are invalid.
         """
         request = tagger_pb2.AddTagRequest(
             resource=resource,
@@ -2352,29 +2347,29 @@ class LibraryServiceClient(object):
         Adds a label to the entity.
 
         Example:
-          >>> from google.cloud.example import library_v1
-          >>>
-          >>> client = library_v1.LibraryServiceClient()
-          >>>
-          >>> resource = client.book_path('[SHELF_ID]', '[BOOK_ID]')
-          >>> label = ''
-          >>>
-          >>> response = client.add_label(resource, label)
+            >>> from google.cloud.example import library_v1
+            >>>
+            >>> client = library_v1.LibraryServiceClient()
+            >>>
+            >>> resource = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+            >>> label = ''
+            >>>
+            >>> response = client.add_label(resource, label)
 
         Args:
-          resource (str): REQUIRED: The resource which the label is being added to.
-            Resource is usually specified as a path, such as,
-            projects/{project}/zones/{zone}/disks/{disk}.
-          label (str): REQUIRED: The label to add.
-          options (:class:`google.gax.CallOptions`): Overrides the default
-            settings for this call, e.g, timeout, retries etc.
+            resource (str): REQUIRED: The resource which the label is being added to.
+                Resource is usually specified as a path, such as,
+                projects/{project}/zones/{zone}/disks/{disk}.
+            label (str): REQUIRED: The label to add.
+            options (~google.gax.CallOptions): Overrides the default
+                settings for this call, e.g, timeout, retries etc.
 
         Returns:
-          A :class:`google.cloud.proto.tagger.v1.tagger_pb2.AddLabelResponse` instance.
+            A :class:`~google.cloud.example.library_v1.types.AddLabelResponse` instance.
 
         Raises:
-          :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-          :exc:`ValueError` if the parameters are invalid.
+            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+            :exc:`ValueError` if the parameters are invalid.
         """
         request = tagger_pb2.AddLabelRequest(
             resource=resource,
@@ -2389,34 +2384,34 @@ class LibraryServiceClient(object):
         Test long-running operations
 
         Example:
-          >>> from google.cloud.example import library_v1
-          >>>
-          >>> client = library_v1.LibraryServiceClient()
-          >>>
-          >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
-          >>>
-          >>> response = client.get_big_book(name)
-          >>>
-          >>> def callback(operation_future):
-          >>>     # Handle result.
-          >>>     result = operation_future.result()
-          >>>
-          >>> response.add_done_callback(callback)
-          >>>
-          >>> # Handle metadata.
-          >>> metadata = response.metadata()
+            >>> from google.cloud.example import library_v1
+            >>>
+            >>> client = library_v1.LibraryServiceClient()
+            >>>
+            >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+            >>>
+            >>> response = client.get_big_book(name)
+            >>>
+            >>> def callback(operation_future):
+            ...     # Handle result.
+            ...     result = operation_future.result()
+            >>>
+            >>> response.add_done_callback(callback)
+            >>>
+            >>> # Handle metadata.
+            >>> metadata = response.metadata()
 
         Args:
-          name (str): The name of the book to retrieve.
-          options (:class:`google.gax.CallOptions`): Overrides the default
-            settings for this call, e.g, timeout, retries etc.
+            name (str): The name of the book to retrieve.
+            options (~google.gax.CallOptions): Overrides the default
+                settings for this call, e.g, timeout, retries etc.
 
         Returns:
-          A :class:`google.gax._OperationFuture` instance.
+            A :class:`~google.cloud.example.library_v1.types._OperationFuture` instance.
 
         Raises:
-          :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-          :exc:`ValueError` if the parameters are invalid.
+            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+            :exc:`ValueError` if the parameters are invalid.
         """
         request = library_pb2.GetBookRequest(
             name=name)
@@ -2435,34 +2430,34 @@ class LibraryServiceClient(object):
         Test long-running operations with empty return type.
 
         Example:
-          >>> from google.cloud.example import library_v1
-          >>>
-          >>> client = library_v1.LibraryServiceClient()
-          >>>
-          >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
-          >>>
-          >>> response = client.get_big_nothing(name)
-          >>>
-          >>> def callback(operation_future):
-          >>>     # Handle result.
-          >>>     result = operation_future.result()
-          >>>
-          >>> response.add_done_callback(callback)
-          >>>
-          >>> # Handle metadata.
-          >>> metadata = response.metadata()
+            >>> from google.cloud.example import library_v1
+            >>>
+            >>> client = library_v1.LibraryServiceClient()
+            >>>
+            >>> name = client.book_path('[SHELF_ID]', '[BOOK_ID]')
+            >>>
+            >>> response = client.get_big_nothing(name)
+            >>>
+            >>> def callback(operation_future):
+            ...     # Handle result.
+            ...     result = operation_future.result()
+            >>>
+            >>> response.add_done_callback(callback)
+            >>>
+            >>> # Handle metadata.
+            >>> metadata = response.metadata()
 
         Args:
-          name (str): The name of the book to retrieve.
-          options (:class:`google.gax.CallOptions`): Overrides the default
-            settings for this call, e.g, timeout, retries etc.
+            name (str): The name of the book to retrieve.
+            options (~google.gax.CallOptions): Overrides the default
+                settings for this call, e.g, timeout, retries etc.
 
         Returns:
-          A :class:`google.gax._OperationFuture` instance.
+            A :class:`~google.cloud.example.library_v1.types._OperationFuture` instance.
 
         Raises:
-          :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-          :exc:`ValueError` if the parameters are invalid.
+            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+            :exc:`ValueError` if the parameters are invalid.
         """
         request = library_pb2.GetBookRequest(
             name=name)
@@ -2534,109 +2529,109 @@ class LibraryServiceClient(object):
         Test optional flattening parameters of all types
 
         Example:
-          >>> from google.cloud.example import library_v1
-          >>> from google.cloud.example.library_v1 import enums
-          >>>
-          >>> client = library_v1.LibraryServiceClient()
-          >>>
-          >>> required_singular_int32 = 0
-          >>> required_singular_int64 = 0
-          >>> required_singular_float = 0.0
-          >>> required_singular_double = 0.0
-          >>> required_singular_bool = False
-          >>> required_singular_enum = enums.TestOptionalRequiredFlatteningParamsRequest.InnerEnum.ZERO
-          >>> required_singular_string = ''
-          >>> required_singular_bytes = b''
-          >>> required_singular_message = {}
-          >>> required_singular_resource_name = ''
-          >>> required_singular_resource_name_oneof = ''
-          >>> required_singular_fixed32 = 0
-          >>> required_singular_fixed64 = 0
-          >>> required_repeated_int32 = []
-          >>> required_repeated_int64 = []
-          >>> required_repeated_float = []
-          >>> required_repeated_double = []
-          >>> required_repeated_bool = []
-          >>> required_repeated_enum = []
-          >>> required_repeated_string = []
-          >>> required_repeated_bytes = []
-          >>> required_repeated_message = []
-          >>> required_repeated_resource_name = []
-          >>> required_repeated_resource_name_oneof = []
-          >>> required_repeated_fixed32 = []
-          >>> required_repeated_fixed64 = []
-          >>> required_map = {}
-          >>>
-          >>> response = client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, required_repeated_resource_name, required_repeated_resource_name_oneof, required_repeated_fixed32, required_repeated_fixed64, required_map)
+            >>> from google.cloud.example import library_v1
+            >>> from google.cloud.example.library_v1 import enums
+            >>>
+            >>> client = library_v1.LibraryServiceClient()
+            >>>
+            >>> required_singular_int32 = 0
+            >>> required_singular_int64 = 0
+            >>> required_singular_float = 0.0
+            >>> required_singular_double = 0.0
+            >>> required_singular_bool = False
+            >>> required_singular_enum = enums.TestOptionalRequiredFlatteningParamsRequest.InnerEnum.ZERO
+            >>> required_singular_string = ''
+            >>> required_singular_bytes = b''
+            >>> required_singular_message = {}
+            >>> required_singular_resource_name = ''
+            >>> required_singular_resource_name_oneof = ''
+            >>> required_singular_fixed32 = 0
+            >>> required_singular_fixed64 = 0
+            >>> required_repeated_int32 = []
+            >>> required_repeated_int64 = []
+            >>> required_repeated_float = []
+            >>> required_repeated_double = []
+            >>> required_repeated_bool = []
+            >>> required_repeated_enum = []
+            >>> required_repeated_string = []
+            >>> required_repeated_bytes = []
+            >>> required_repeated_message = []
+            >>> required_repeated_resource_name = []
+            >>> required_repeated_resource_name_oneof = []
+            >>> required_repeated_fixed32 = []
+            >>> required_repeated_fixed64 = []
+            >>> required_map = {}
+            >>>
+            >>> response = client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, required_repeated_resource_name, required_repeated_resource_name_oneof, required_repeated_fixed32, required_repeated_fixed64, required_map)
 
         Args:
-          required_singular_int32 (int)
-          required_singular_int64 (long)
-          required_singular_float (float)
-          required_singular_double (float)
-          required_singular_bool (bool)
-          required_singular_enum (~.enums.TestOptionalRequiredFlatteningParamsRequest.InnerEnum)
-          required_singular_string (str)
-          required_singular_bytes (bytes)
-          required_singular_message (Union[dict|:class:`google.cloud.proto.example.library.v1.library_pb2.TestOptionalRequiredFlatteningParamsRequest.InnerMessage`]): If a dict is provided, it must be of the same form as the protobuf
-            message :class:`google.cloud.proto.example.library.v1.library_pb2.TestOptionalRequiredFlatteningParamsRequest.InnerMessage`
-          required_singular_resource_name (str)
-          required_singular_resource_name_oneof (str)
-          required_singular_fixed32 (int)
-          required_singular_fixed64 (long)
-          required_repeated_int32 (list[int])
-          required_repeated_int64 (list[long])
-          required_repeated_float (list[float])
-          required_repeated_double (list[float])
-          required_repeated_bool (list[bool])
-          required_repeated_enum (list[~.enums.TestOptionalRequiredFlatteningParamsRequest.InnerEnum])
-          required_repeated_string (list[str])
-          required_repeated_bytes (list[bytes])
-          required_repeated_message (list[Union[dict|:class:`google.cloud.proto.example.library.v1.library_pb2.TestOptionalRequiredFlatteningParamsRequest.InnerMessage`]]): If a dict is provided, it must be of the same form as the protobuf
-            message :class:`google.cloud.proto.example.library.v1.library_pb2.TestOptionalRequiredFlatteningParamsRequest.InnerMessage`
-          required_repeated_resource_name (list[str])
-          required_repeated_resource_name_oneof (list[str])
-          required_repeated_fixed32 (list[int])
-          required_repeated_fixed64 (list[long])
-          required_map (dict[int -> str])
-          optional_singular_int32 (int)
-          optional_singular_int64 (long)
-          optional_singular_float (float)
-          optional_singular_double (float)
-          optional_singular_bool (bool)
-          optional_singular_enum (~.enums.TestOptionalRequiredFlatteningParamsRequest.InnerEnum)
-          optional_singular_string (str)
-          optional_singular_bytes (bytes)
-          optional_singular_message (Union[dict|:class:`google.cloud.proto.example.library.v1.library_pb2.TestOptionalRequiredFlatteningParamsRequest.InnerMessage`]): If a dict is provided, it must be of the same form as the protobuf
-            message :class:`google.cloud.proto.example.library.v1.library_pb2.TestOptionalRequiredFlatteningParamsRequest.InnerMessage`
-          optional_singular_resource_name (str)
-          optional_singular_resource_name_oneof (str)
-          optional_singular_fixed32 (int)
-          optional_singular_fixed64 (long)
-          optional_repeated_int32 (list[int])
-          optional_repeated_int64 (list[long])
-          optional_repeated_float (list[float])
-          optional_repeated_double (list[float])
-          optional_repeated_bool (list[bool])
-          optional_repeated_enum (list[~.enums.TestOptionalRequiredFlatteningParamsRequest.InnerEnum])
-          optional_repeated_string (list[str])
-          optional_repeated_bytes (list[bytes])
-          optional_repeated_message (list[Union[dict|:class:`google.cloud.proto.example.library.v1.library_pb2.TestOptionalRequiredFlatteningParamsRequest.InnerMessage`]]): If a dict is provided, it must be of the same form as the protobuf
-            message :class:`google.cloud.proto.example.library.v1.library_pb2.TestOptionalRequiredFlatteningParamsRequest.InnerMessage`
-          optional_repeated_resource_name (list[str])
-          optional_repeated_resource_name_oneof (list[str])
-          optional_repeated_fixed32 (list[int])
-          optional_repeated_fixed64 (list[long])
-          optional_map (dict[int -> str])
-          options (:class:`google.gax.CallOptions`): Overrides the default
-            settings for this call, e.g, timeout, retries etc.
+            required_singular_int32 (int)
+            required_singular_int64 (long)
+            required_singular_float (float)
+            required_singular_double (float)
+            required_singular_bool (bool)
+            required_singular_enum (~google.cloud.example.library_v1.types.InnerEnum)
+            required_singular_string (str)
+            required_singular_bytes (bytes)
+            required_singular_message (Union[dict, ~google.cloud.example.library_v1.types.InnerMessage]): If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.InnerMessage`
+            required_singular_resource_name (str)
+            required_singular_resource_name_oneof (str)
+            required_singular_fixed32 (int)
+            required_singular_fixed64 (long)
+            required_repeated_int32 (list[int])
+            required_repeated_int64 (list[long])
+            required_repeated_float (list[float])
+            required_repeated_double (list[float])
+            required_repeated_bool (list[bool])
+            required_repeated_enum (list[~google.cloud.example.library_v1.types.InnerEnum])
+            required_repeated_string (list[str])
+            required_repeated_bytes (list[bytes])
+            required_repeated_message (list[Union[dict, ~google.cloud.example.library_v1.types.InnerMessage]]): If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.InnerMessage`
+            required_repeated_resource_name (list[str])
+            required_repeated_resource_name_oneof (list[str])
+            required_repeated_fixed32 (list[int])
+            required_repeated_fixed64 (list[long])
+            required_map (dict[int -> str])
+            optional_singular_int32 (int)
+            optional_singular_int64 (long)
+            optional_singular_float (float)
+            optional_singular_double (float)
+            optional_singular_bool (bool)
+            optional_singular_enum (~google.cloud.example.library_v1.types.InnerEnum)
+            optional_singular_string (str)
+            optional_singular_bytes (bytes)
+            optional_singular_message (Union[dict, ~google.cloud.example.library_v1.types.InnerMessage]): If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.InnerMessage`
+            optional_singular_resource_name (str)
+            optional_singular_resource_name_oneof (str)
+            optional_singular_fixed32 (int)
+            optional_singular_fixed64 (long)
+            optional_repeated_int32 (list[int])
+            optional_repeated_int64 (list[long])
+            optional_repeated_float (list[float])
+            optional_repeated_double (list[float])
+            optional_repeated_bool (list[bool])
+            optional_repeated_enum (list[~google.cloud.example.library_v1.types.InnerEnum])
+            optional_repeated_string (list[str])
+            optional_repeated_bytes (list[bytes])
+            optional_repeated_message (list[Union[dict, ~google.cloud.example.library_v1.types.InnerMessage]]): If a dict is provided, it must be of the same form as the protobuf
+                message :class:`~google.cloud.example.library_v1.types.InnerMessage`
+            optional_repeated_resource_name (list[str])
+            optional_repeated_resource_name_oneof (list[str])
+            optional_repeated_fixed32 (list[int])
+            optional_repeated_fixed64 (list[long])
+            optional_map (dict[int -> str])
+            options (~google.gax.CallOptions): Overrides the default
+                settings for this call, e.g, timeout, retries etc.
 
         Returns:
-          A :class:`google.cloud.proto.example.library.v1.library_pb2.TestOptionalRequiredFlatteningParamsResponse` instance.
+            A :class:`~google.cloud.example.library_v1.types.TestOptionalRequiredFlatteningParamsResponse` instance.
 
         Raises:
-          :exc:`google.gax.errors.GaxError` if the RPC is aborted.
-          :exc:`ValueError` if the parameters are invalid.
+            :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+            :exc:`ValueError` if the parameters are invalid.
         """
         request = library_pb2.TestOptionalRequiredFlatteningParamsRequest(
             required_singular_int32=required_singular_int32,

@@ -568,10 +568,6 @@ module Google
       # @param version [Symbol, String]
       #   The major version of the service to be used. By default :v1
       #   is used.
-      # @param service_path [String]
-      #   The domain name of the API remote host.
-      # @param port [Integer]
-      #   The port on which to connect to the remote host.
       # @param credentials
       #   [Google::Gax::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
       #   Provides the means for authenticating requests made by the client. This parameter can
@@ -617,10 +613,6 @@ module Google
       # @param version [Symbol, String]
       #   The major version of the service to be used. By default :v1
       #   is used.
-      # @param service_path [String]
-      #   The domain name of the API remote host.
-      # @param port [Integer]
-      #   The port on which to connect to the remote host.
       # @param credentials
       #   [Google::Gax::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
       #   Provides the means for authenticating requests made by the client. This parameter can
@@ -759,10 +751,6 @@ module Google
 
       module Incrementer
         ##
-        # @param service_path [String]
-        #   The domain name of the API remote host.
-        # @param port [Integer]
-        #   The port on which to connect to the remote host.
         # @param credentials
         #   [Google::Gax::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
         #   Provides the means for authenticating requests made by the client. This parameter can
@@ -795,10 +783,6 @@ module Google
 
       module Decrementer
         ##
-        # @param service_path [String]
-        #   The domain name of the API remote host.
-        # @param port [Integer]
-        #   The port on which to connect to the remote host.
         # @param credentials
         #   [Google::Gax::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
         #   Provides the means for authenticating requests made by the client. This parameter can
@@ -885,10 +869,6 @@ module Google
         ALL_SCOPES = [
         ].freeze
 
-        # @param service_path [String]
-        #   The domain name of the API remote host.
-        # @param port [Integer]
-        #   The port on which to connect to the remote host.
         # @param credentials
         #   [Google::Gax::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
         #   Provides the means for authenticating requests made by the client. This parameter can
@@ -924,8 +904,6 @@ module Google
             scopes: ALL_SCOPES,
             client_config: {},
             timeout: DEFAULT_TIMEOUT,
-            app_name: nil,
-            app_version: nil,
             lib_name: nil,
             lib_version: ""
           # These require statements are intentionally placed here to initialize
@@ -941,8 +919,8 @@ module Google
             credentials ||= chan_creds
             credentials ||= updater_proc
           end
-          if app_name || app_version
-            warn "`app_name` and `app_version` are no longer being used in the request headers."
+          if service_path || port
+            warn "`service_path` and `port` parameters are deprecated and will be removed"
           end
 
           credentials ||= Google::Example::Credentials.default
@@ -1093,10 +1071,6 @@ module Google
         ALL_SCOPES = [
         ].freeze
 
-        # @param service_path [String]
-        #   The domain name of the API remote host.
-        # @param port [Integer]
-        #   The port on which to connect to the remote host.
         # @param credentials
         #   [Google::Gax::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
         #   Provides the means for authenticating requests made by the client. This parameter can
@@ -1132,8 +1106,6 @@ module Google
             scopes: ALL_SCOPES,
             client_config: {},
             timeout: DEFAULT_TIMEOUT,
-            app_name: nil,
-            app_version: nil,
             lib_name: nil,
             lib_version: ""
           # These require statements are intentionally placed here to initialize
@@ -1149,8 +1121,8 @@ module Google
             credentials ||= chan_creds
             credentials ||= updater_proc
           end
-          if app_name || app_version
-            warn "`app_name` and `app_version` are no longer being used in the request headers."
+          if service_path || port
+            warn "`service_path` and `port` parameters are deprecated and will be removed"
           end
 
           credentials ||= Google::Example::Credentials.default

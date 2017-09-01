@@ -33,7 +33,7 @@ import javax.annotation.Nullable;
 public class MultiYamlReader {
 
   @Nullable
-  public static Message read(
+  public static ConfigSource read(
       DiagCollector collector,
       List<String> inputNames,
       List<String> inputs,
@@ -43,33 +43,32 @@ public class MultiYamlReader {
         "size() of inputNames and inputs not equal: %d != %d",
         inputNames.size(),
         inputs.size());
-    Message.Builder messageBuilder = null;
+    ConfigSource.Builder sourceBuilder = null;
     for (int i = 0; i < inputs.size(); i++) {
       String inputName = inputNames.get(i);
       String input = inputs.get(i);
 
       ConfigSource source =
           YamlReader.readConfig(collector, inputName, input, supportedConfigTypes);
-      Message message = source != null ? source.getConfig() : null;
 
-      if (message != null) {
-        if (messageBuilder == null) {
-          messageBuilder = message.toBuilder();
+      if (source != null) {
+        if (sourceBuilder == null) {
+          sourceBuilder = source.toBuilder();
         } else {
-          messageBuilder.mergeFrom(message);
+          sourceBuilder.mergeFrom(source);
         }
       }
     }
 
-    if (messageBuilder == null) {
+    if (sourceBuilder == null) {
       return null;
     } else {
-      return messageBuilder.build();
+      return sourceBuilder.build();
     }
   }
 
   @Nullable
-  public static Message read(
+  public static ConfigSource read(
       DiagCollector collector, List<File> files, Map<String, Message> supportedConfigTypes) {
     List<String> inputNames = new ArrayList<>();
     List<String> inputs = new ArrayList<>();
