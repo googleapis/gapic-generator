@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer.py;
 
-import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
@@ -25,7 +24,6 @@ import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.ProtoMethodModel;
-import com.google.api.codegen.gapic.GapicProvider;
 import com.google.api.codegen.config.VersionBound;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
@@ -49,7 +47,6 @@ import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.metadata.PackageDependencyView;
 import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
 import com.google.api.codegen.viewmodel.metadata.ReadmeMetadataView;
-import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
@@ -141,7 +138,7 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
     return ImmutableList.<ViewModel>builder()
         .add(
             generateMetadataView(
-                model,
+                    model,
                     productConfig,
                     TYPES_DOC_TEMPLATE_FILE,
                     namer,
@@ -150,7 +147,7 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
                 .build())
         .add(
             generateMetadataView(
-                model, productConfig, API_DOC_TEMPLATE_FILE, namer, surfaceNamer, apiOutputPath)
+                    model, productConfig, API_DOC_TEMPLATE_FILE, namer, surfaceNamer, apiOutputPath)
                 .build())
         .build();
   }

@@ -19,8 +19,6 @@ import com.google.api.codegen.IamResourceProto;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
-import com.google.api.codegen.RetryCodesDefinitionProto;
-import com.google.api.codegen.RetryParamsDefinitionProto;
 import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
@@ -38,7 +36,6 @@ import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
-import org.threeten.bp.Duration;
 
 /**
  * GapicInterfaceConfig represents the client code-gen config for an API interface, and includes the

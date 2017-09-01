@@ -16,7 +16,6 @@ package com.google.api.codegen;
 
 import static com.google.api.codegen.config.LanguageStrings.PYTHON;
 
-import com.google.api.codegen.gapic.MainGapicProviderFactory;
 import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;

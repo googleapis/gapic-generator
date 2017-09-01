@@ -106,9 +106,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
   public List<String> getDocLines(MethodModel method, MethodConfig methodConfig) {
     return super.getDocLines(
         putDocMethodName(
-            method.getSimpleName(),
-            method.getDescription(),
-            methodConfig.getVisibility()));
+            method.getSimpleName(), method.getDescription(), methodConfig.getVisibility()));
   }
 
   /**

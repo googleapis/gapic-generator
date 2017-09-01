@@ -16,13 +16,12 @@ package com.google.api.codegen.transformer.php;
 
 import com.google.api.codegen.GeneratorVersionProvider;
 import com.google.api.codegen.ServiceMessages;
-import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.LongRunningConfig;
-import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProductServiceConfig;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
@@ -103,12 +102,6 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   public List<ViewModel> transform(GapicInterfaceContext context) {
-//<<<<<<< HEAD
-//    String outputPath =
-//        pathMapper.getOutputPath(
-//            context.getInterfaceModel().getFullName(), context.getProductConfig());
-//    SurfaceNamer namer = context.getNamer();
-//=======
     GapicInterfaceContext gapicImplContext =
         context.withNewTypeTable(context.getNamer().getGapicImplNamespace());
 
@@ -161,7 +154,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
         namer.getAndSaveNicknameForGrpcClientTypeName(
             context.getModelTypeTable(), context.getInterfaceModel());
     apiImplClass.grpcClientTypeName(grpcClientTypeName);
-//>>>>>>> master
+    //>>>>>>> master
 
     apiImplClass.apiMethods(methods);
 
@@ -176,7 +169,8 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     apiImplClass.fileHeader(fileHeaderTransformer.generateFileHeader(context));
 
     String outputPath =
-        pathMapper.getOutputPath(context.getInterfaceModel().getFullName(), context.getProductConfig());
+        pathMapper.getOutputPath(
+            context.getInterfaceModel().getFullName(), context.getProductConfig());
     apiImplClass.outputPath(outputPath + "/" + implName + ".php");
 
     return apiImplClass.build();
@@ -188,7 +182,8 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
 
     addApiImports(context);
 
-    context.getImportTypeTable()
+    context
+        .getImportTypeTable()
         .getAndSaveNicknameFor(
             PhpPackageUtil.getFullyQualifiedName(
                 namer.getGapicImplNamespace(),

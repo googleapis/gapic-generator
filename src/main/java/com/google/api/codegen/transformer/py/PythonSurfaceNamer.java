@@ -16,8 +16,8 @@ package com.google.api.codegen.transformer.py;
 
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ServiceMessages;
-import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
@@ -195,7 +195,9 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   @Override
   public String getAndSavePagedResponseTypeName(
       MethodContext methodContext, FieldConfig resourcesFieldConfig) {
-    return methodContext.getMethodModel().getAndSaveResponseTypeName(methodContext.getTypeTable(), methodContext.getNamer());
+    return methodContext
+        .getMethodModel()
+        .getAndSaveResponseTypeName(methodContext.getTypeTable(), methodContext.getNamer());
   }
 
   private String getParamTypeNameForElementType(TypeRef type) {

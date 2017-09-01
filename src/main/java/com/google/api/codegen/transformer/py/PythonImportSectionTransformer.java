@@ -14,10 +14,9 @@
  */
 package com.google.api.codegen.transformer.py;
 
-import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.InterfaceView;
-import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
@@ -25,8 +24,8 @@ import com.google.api.codegen.transformer.ImportSectionTransformer;
 import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelTypeTable;
-import com.google.api.codegen.transformer.TransformationContext;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.transformer.TransformationContext;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.py.PythonTypeTable;
 import com.google.api.codegen.viewmodel.ImportFileView;
@@ -128,7 +127,8 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
         generateFileHeaderAppImports(context.getImportTypeTable().getImports());
     SurfaceNamer namer = context.getNamer();
     imports.add(
-        createImport(namer.getPackageName(), namer.getClientConfigName(context.getInterfaceModel())));
+        createImport(
+            namer.getPackageName(), namer.getClientConfigName(context.getInterfaceModel())));
 
     Collections.sort(imports, importFileViewComparator());
     return imports;
