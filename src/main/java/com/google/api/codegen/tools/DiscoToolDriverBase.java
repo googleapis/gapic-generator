@@ -67,21 +67,21 @@ public abstract class DiscoToolDriverBase extends GenericToolDriverBase {
     String discoveryDocPath = options.get(DiscoGapicGeneratorApi.DISCOVERY_DOC);
 
     if (!new File(discoveryDocPath).exists()) {
-      getDiagCollector().addDiag(
-          Diag.error(SimpleLocation.TOPLEVEL,"File not found: " + discoveryDocPath));
+      getDiagCollector()
+          .addDiag(Diag.error(SimpleLocation.TOPLEVEL, "File not found: " + discoveryDocPath));
       return null;
     }
 
-    try (Reader reader = new InputStreamReader(new FileInputStream(new File(discoveryDocPath)))){
+    try (Reader reader = new InputStreamReader(new FileInputStream(new File(discoveryDocPath)))) {
       ObjectMapper mapper = new ObjectMapper();
       JsonNode root = mapper.readTree(reader);
       return Document.from(new DiscoveryNode(root));
 
     } catch (IOException e) {
-      getDiagCollector().addDiag(
-          Diag.error(
-              SimpleLocation.TOPLEVEL,
-              "Failed to read Discovery Doc: " + discoveryDocPath));
+      getDiagCollector()
+          .addDiag(
+              Diag.error(
+                  SimpleLocation.TOPLEVEL, "Failed to read Discovery Doc: " + discoveryDocPath));
       return null;
     }
   }

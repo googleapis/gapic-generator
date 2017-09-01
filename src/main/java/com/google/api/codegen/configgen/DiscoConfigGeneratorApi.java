@@ -16,25 +16,16 @@ package com.google.api.codegen.configgen;
 
 import static com.google.api.codegen.DiscoGapicGeneratorApi.DISCOVERY_DOC_OPTION_NAME;
 
-import com.google.api.codegen.configgen.transformer.ConfigTransformer;
 import com.google.api.codegen.configgen.transformer.DiscoConfigTransformer;
-import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.tools.DiscoToolDriverBase;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.api.tools.framework.model.Diag;
-import com.google.api.tools.framework.model.stages.Merged;
 import com.google.api.tools.framework.snippet.Doc;
-import com.google.api.tools.framework.tools.GenericToolDriverBase;
-import com.google.api.tools.framework.tools.ToolDriverBase;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.api.tools.framework.tools.ToolOptions.Option;
 import com.google.api.tools.framework.tools.ToolUtil;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.inject.TypeLiteral;
-import java.util.List;
 import java.util.Map;
 
 /** Main class for the config generator. */

@@ -17,7 +17,6 @@ package com.google.api.codegen.configgen;
 import static com.google.api.codegen.DiscoGapicGeneratorApi.DISCOVERY_DOC_OPTION_NAME;
 
 import com.google.api.tools.framework.tools.ToolOptions;
-import com.google.common.collect.Lists;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -52,9 +51,7 @@ public class DiscoConfigGeneratorTool {
       formater.printHelp("ConfigGeneratorTool", options);
     }
 
-    generate(
-        cl.getOptionValue(DISCOVERY_DOC_OPTION_NAME),
-        cl.getOptionValue("output"));
+    generate(cl.getOptionValue(DISCOVERY_DOC_OPTION_NAME), cl.getOptionValue("output"));
   }
 
   private static void generate(String discoveryFilepath, String outputFile) {

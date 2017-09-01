@@ -25,9 +25,12 @@ import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -62,11 +65,9 @@ public class DiscoConfigTransformer {
   }
 
   private String getPackageName(Document model) {
-    //    // TODO(andrealin): what about non-java?
-    //    return String.format("com.google.cloud.%s.%s", model.name(), model.version());
-    //    Api api = model.getServiceConfig().getApis(0);
-    //    Interface apiInterface = model.getSymbolTable().lookupInterface(api.getName());
-    return model.name();
+    String reverseDomain =
+        Joiner.on(".").join(Lists.reverse(Arrays.asList(model.ownerDomain().split("\\."))));
+    return String.format("%s.%s.%s", reverseDomain, model.name(), model.version());
   }
 
   private LicenseView generateLicense() {
