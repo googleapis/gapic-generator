@@ -54,10 +54,7 @@ public class PythonApiMethodParamTransformer implements ApiMethodParamTransforme
         DynamicLangDefaultableParamView.Builder param =
             DynamicLangDefaultableParamView.newBuilder();
         param.name(context.getNamer().getVariableName(field));
-        if (field.isRepeated()
-            || field.isMessage()
-            || field.isEnum()
-            || field.getOneofFieldsNames(context.getNamer()) != null) {
+        if (field.isRepeated() || field.isMessage() || field.isEnum() || field.getOneof() != null) {
           param.defaultValue("None");
         } else {
           param.defaultValue(context.getTypeTable().getSnippetZeroValueAndSaveNicknameFor(field));
@@ -89,7 +86,7 @@ public class PythonApiMethodParamTransformer implements ApiMethodParamTransforme
     String requestTypeName =
         context
             .getMethodModel()
-            .getAndSaveRequestTypeName(context.getTypeTable(), context.getNamer());
+            .getAndSaveRequestTypeName(context.getTypeTable().cloneEmpty(), context.getNamer());
     paramDoc.lines(
         ImmutableList.of(
             "The input objects. If a dict is provided, it must be of the",
