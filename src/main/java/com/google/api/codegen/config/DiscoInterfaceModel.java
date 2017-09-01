@@ -16,6 +16,9 @@ package com.google.api.codegen.config;
 
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Document;
+import com.google.api.codegen.discovery.Method;
+import com.google.common.collect.ImmutableList;
+import java.util.List;
 
 /** Discovery-based InterfaceModel. */
 public class DiscoInterfaceModel implements InterfaceModel {
@@ -66,6 +69,19 @@ public class DiscoInterfaceModel implements InterfaceModel {
   @Override
   public DiscoApiModel getApiModel() {
     return apiModel;
+  }
+
+  /** Returns a list of language-agnostic methods. Some member functions may fail on the methods. */
+  @Override
+  public List<MethodModel> getMethods() {
+    ImmutableList.Builder<MethodModel> methods = ImmutableList.builder();
+    if (!apiModel.getDocument().resources().containsKey(interfaceName)) {
+      return ImmutableList.of();
+    }
+    for (Method method : apiModel.getDocument().resources().get(interfaceName)) {
+      methods.add(new DiscoveryMethodModel(method, null));
+    }
+    return methods.build();
   }
 
   @Override

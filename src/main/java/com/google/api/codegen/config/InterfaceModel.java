@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.config;
 
+import java.util.List;
+
 /** API-source-agnostic wrapper classes for Interfaces. */
 public interface InterfaceModel {
   /* @return the type of source that this FieldModel is based on. */
@@ -31,6 +33,8 @@ public interface InterfaceModel {
   String getFileSimpleName();
 
   String getFileFullName();
+
+  List<MethodModel> getMethods();
 
   /* @return true if the element is reachable with the current scoper. */
   boolean isReachable();

@@ -26,11 +26,18 @@ import com.google.api.codegen.util.TypeName;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /** A wrapper around the model of a Discovery Method. */
 public final class DiscoveryMethodModel implements MethodModel {
   private final Method method;
   private Iterable<FieldModel> inputFields;
+  private Iterable<FieldModel> outputFields;
   private Iterable<FieldModel> resourceNameInputFields;
   private final DiscoGapicNamer discoGapicNamer;
 
@@ -228,5 +235,38 @@ public final class DiscoveryMethodModel implements MethodModel {
     }
     inputFields = fieldsBuilder.build();
     return inputFields;
+  }
+
+  @Override
+  public Iterable<FieldModel> getOutputFields() {
+    if (outputFields != null) {
+      return outputFields;
+    }
+
+    List<FieldModel> outputField;
+    if (method.response() != null && !Strings.isNullOrEmpty(method.response().reference())) {
+      FieldModel fieldModel = new DiscoveryField(method.response().dereference(), null);
+      outputField = Lists.newArrayList(fieldModel);
+    } else {
+      outputField = new ArrayList<>();
+    }
+    outputFields = ImmutableList.copyOf(outputField);
+    return outputFields;
+  }
+
+  @Override
+  /**
+   * Return if this method, as an HTTP method, is idempotent. Based off {@link
+   * com.google.api.tools.framework.aspects.http.model.MethodKind}.
+   */
+  public boolean isIdempotent() {
+    Set<String> idempotentHttpMethods = Sets.newHashSet("GET", "PUT", "DELETE");
+    String httpMethod = method.httpMethod().toUpperCase();
+    return idempotentHttpMethods.contains(httpMethod);
+  }
+
+  @Override
+  public Map<String, String> getResourcePatternNameMap(Map<String, String> nameMap) {
+    return nameMap;
   }
 }

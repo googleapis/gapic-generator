@@ -14,7 +14,9 @@
  */
 package com.google.api.codegen.configgen.transformer;
 
-import com.google.api.codegen.configgen.CollectionPattern;
+import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.configgen.viewmodel.FieldNamePatternView;
 import com.google.api.codegen.configgen.viewmodel.FlatteningGroupView;
 import com.google.api.codegen.configgen.viewmodel.FlatteningView;
@@ -22,13 +24,8 @@ import com.google.api.codegen.configgen.viewmodel.MethodView;
 import com.google.api.codegen.configgen.viewmodel.PageStreamingRequestView;
 import com.google.api.codegen.configgen.viewmodel.PageStreamingResponseView;
 import com.google.api.codegen.configgen.viewmodel.PageStreamingView;
-import com.google.api.tools.framework.aspects.http.model.HttpAttribute;
-import com.google.api.tools.framework.aspects.http.model.MethodKind;
-import com.google.api.tools.framework.model.Field;
-import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.MessageType;
-import com.google.api.tools.framework.model.Method;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterators;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -48,9 +45,9 @@ public class MethodTransformer {
   private static final int REQUEST_OBJECT_METHOD_THRESHOLD = 1;
 
   public List<MethodView> generateMethods(
-      Interface apiInterface, Map<String, String> collectionNameMap) {
+      InterfaceModel apiInterface, Map<String, String> collectionNameMap) {
     ImmutableList.Builder<MethodView> methods = ImmutableList.builder();
-    for (Method method : apiInterface.getMethods()) {
+    for (MethodModel method : apiInterface.getMethods()) {
       MethodView.Builder methodView = MethodView.newBuilder();
       methodView.name(method.getSimpleName());
       generateField(method, methodView);
@@ -63,10 +60,10 @@ public class MethodTransformer {
     return methods.build();
   }
 
-  private void generateField(Method method, MethodView.Builder methodView) {
+  private void generateField(MethodModel method, MethodView.Builder methodView) {
     List<String> parameterList = new ArrayList<>();
-    MessageType message = method.getInputMessage();
-    for (Field field : message.getFields()) {
+    Iterable<FieldModel> inputFields = method.getInputFields();
+    for (FieldModel field : inputFields) {
       String fieldName = field.getSimpleName();
       if (field.getOneof() == null && !IGNORED_FIELDS.contains(fieldName)) {
         parameterList.add(fieldName);
@@ -81,8 +78,8 @@ public class MethodTransformer {
     // use all fields for the following check; if there are ignored fields for flattening
     // purposes, the caller still needs a way to set them (by using the request object method).
     methodView.requestObjectMethod(
-        (message.getFields().size() > REQUEST_OBJECT_METHOD_THRESHOLD
-                || message.getFields().size() != parameterList.size())
+        (Iterators.size(inputFields.iterator()) > REQUEST_OBJECT_METHOD_THRESHOLD
+                || Iterators.size(inputFields.iterator()) != parameterList.size())
             && !method.getRequestStreaming());
   }
 
@@ -93,7 +90,7 @@ public class MethodTransformer {
         .build();
   }
 
-  private void generatePageStreaming(Method method, MethodView.Builder methodView) {
+  private void generatePageStreaming(MethodModel method, MethodView.Builder methodView) {
     PageStreamingRequestView request = generatePageStreamingRequest(method);
     if (request == null) {
       return;
@@ -108,10 +105,10 @@ public class MethodTransformer {
         PageStreamingView.newBuilder().request(request).response(response).build());
   }
 
-  private PageStreamingRequestView generatePageStreamingRequest(Method method) {
+  private PageStreamingRequestView generatePageStreamingRequest(MethodModel method) {
     PageStreamingRequestView.Builder requestBuilder = PageStreamingRequestView.newBuilder();
 
-    for (Field field : method.getInputMessage().getFields()) {
+    for (FieldModel field : method.getInputFields()) {
       String fieldName = field.getSimpleName();
       if (fieldName.equals(PARAMETER_PAGE_TOKEN)) {
         requestBuilder.tokenField(fieldName);
@@ -124,14 +121,14 @@ public class MethodTransformer {
     return request.tokenField() == null && request.pageSizeField() == null ? null : request;
   }
 
-  private PageStreamingResponseView generatePageStreamingResponse(Method method) {
+  private PageStreamingResponseView generatePageStreamingResponse(MethodModel method) {
     boolean hasTokenField = false;
     String resourcesField = null;
-    for (Field field : method.getOutputMessage().getFields()) {
+    for (FieldModel field : method.getOutputFields()) {
       String fieldName = field.getSimpleName();
       if (fieldName.equals(PARAMETER_NEXT_PAGE_TOKEN)) {
         hasTokenField = true;
-      } else if (field.getType().isRepeated()) {
+      } else if (field.isRepeated()) {
         if (resourcesField == null) {
           resourcesField = fieldName;
         } else {
@@ -155,36 +152,23 @@ public class MethodTransformer {
         .build();
   }
 
-  private void generateRetry(Method method, MethodView.Builder methodView) {
+  private void generateRetry(MethodModel method, MethodView.Builder methodView) {
     methodView.retryCodesName(
-        isIdempotent(method)
+        method.isIdempotent()
             ? RetryTransformer.RETRY_CODES_IDEMPOTENT_NAME
             : RetryTransformer.RETRY_CODES_NON_IDEMPOTENT_NAME);
     methodView.retryParamsName(RetryTransformer.RETRY_PARAMS_DEFAULT_NAME);
   }
 
-  /**
-   * Returns true if the method is idempotent according to the http method kind (GET, PUT, DELETE).
-   */
-  private boolean isIdempotent(Method method) {
-    HttpAttribute httpAttr = method.getAttribute(HttpAttribute.KEY);
-    if (httpAttr == null) {
-      return false;
-    }
-    MethodKind methodKind = httpAttr.getMethodKind();
-    return methodKind.isIdempotent();
-  }
-
   private void generateFieldNamePatterns(
-      Method method, MethodView.Builder methodView, Map<String, String> nameMap) {
+      MethodModel method, MethodView.Builder methodView, Map<String, String> nameMap) {
     ImmutableList.Builder<FieldNamePatternView> fieldNamePatterns = ImmutableList.builder();
-    for (CollectionPattern collectionPattern :
-        CollectionPattern.getCollectionPatternsFromMethod(method)) {
-      String resourceNameString = collectionPattern.getTemplatizedResourcePath();
+    Map<String, String> resourcePatternNameMap = method.getResourcePatternNameMap(nameMap);
+    for (String resourcePattern : resourcePatternNameMap.keySet()) {
       fieldNamePatterns.add(
           FieldNamePatternView.newBuilder()
-              .pathTemplate(collectionPattern.getFieldPath())
-              .entityName(nameMap.get(resourceNameString))
+              .pathTemplate(resourcePattern)
+              .entityName(resourcePatternNameMap.get(resourcePattern))
               .build());
     }
 

@@ -20,6 +20,7 @@ import com.google.auto.value.AutoValue;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
+import com.google.gson.internal.LinkedTreeMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -68,10 +69,12 @@ public abstract class Document implements Node {
     Map<String, Schema> schemas = parseSchemas(root);
     List<Method> methods = parseMethods(root);
     Collections.sort(methods); // Ensure methods are ordered alphabetically by their ID.
+    String ownerDomain = root.getString("ownerDomain");
     String name = root.getString("name");
     if (canonicalName.isEmpty()) {
       canonicalName = name;
     }
+    Map<String, List<Method>> resources = parseResources(root);
     String revision = root.getString("revision");
     String rootUrl = root.getString("rootUrl");
     String servicePath = root.getString("servicePath");
@@ -96,6 +99,8 @@ public abstract class Document implements Node {
             id,
             methods,
             name,
+            ownerDomain,
+            resources,
             revision,
             rootUrl,
             schemas,
@@ -112,6 +117,22 @@ public abstract class Document implements Node {
     }
 
     return thisDocument;
+  }
+
+  private static Map<String, List<Method>> parseResources(DiscoveryNode root) {
+    List<Method> methods = new ArrayList<>();
+    DiscoveryNode methodsNode = root.getObject("methods");
+    List<String> resourceNames = methodsNode.getFieldNames();
+    for (String name : resourceNames) {
+      methods.add(Method.from(methodsNode.getObject(name), null));
+    }
+    Map<String, List<Method>> resources = new LinkedTreeMap<>();
+    DiscoveryNode resourcesNode = root.getObject("resources");
+    resourceNames = resourcesNode.getFieldNames();
+    for (String name : resourceNames) {
+      resources.put(name, parseMethods(resourcesNode.getObject(name)));
+    }
+    return resources;
   }
 
   private static List<Method> parseMethods(DiscoveryNode root) {
@@ -190,6 +211,14 @@ public abstract class Document implements Node {
   /** @return the name. */
   @JsonProperty("name")
   public abstract String name();
+
+  /** @return the name. */
+  @JsonProperty("name")
+  public abstract String ownerDomain();
+
+  /** @return the revision. */
+  @JsonProperty("revision")
+  public abstract Map<String, List<Method>> resources();
 
   /** @return the revision. */
   @JsonProperty("revision")
