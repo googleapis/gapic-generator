@@ -78,7 +78,7 @@ public class CodeGeneratorApi extends ToolDriverBase {
   public static final Option<List<String>> ADVICE_SUPPRESSORS =
       ToolOptions.createOption(
           new TypeLiteral<List<String>>() {},
-          "supress_warning",
+          "suppress_warning",
           "Names of adviser rules to suppress warnings for.",
           ImmutableList.<String>of());
 
@@ -116,8 +116,10 @@ public class CodeGeneratorApi extends ToolDriverBase {
     model.establishStage(Merged.KEY);
 
     List<String> adviceSuppressors = options.get(ADVICE_SUPPRESSORS);
-    Adviser adviser = new Adviser(adviceSuppressors);
-    adviser.advise(model, configProto);
+    if (!adviceSuppressors.contains("all")) {
+      Adviser adviser = new Adviser(adviceSuppressors);
+      adviser.advise(model, configProto);
+    }
 
     if (model.getDiagCollector().getErrorCount() > 0) {
       for (Diag diag : model.getDiagCollector().getDiags()) {
