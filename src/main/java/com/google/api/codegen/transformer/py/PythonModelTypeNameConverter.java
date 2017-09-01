@@ -38,8 +38,6 @@ public class PythonModelTypeNameConverter implements ModelTypeNameConverter {
 
   private static final String GOOGLE_CLOUD_PREFIX = GOOGLE_PREFIX + ".cloud";
 
-  private static final String GOOGLE_CLOUD_PROTO_PREFIX = GOOGLE_CLOUD_PREFIX + ".proto";
-
   /** A map from primitive type to its corresponding Python types */
   private static final Map<Type, String> PRIMITIVE_TYPE_MAP =
       ImmutableMap.<Type, String>builder()
@@ -92,9 +90,15 @@ public class PythonModelTypeNameConverter implements ModelTypeNameConverter {
           "google.logging.type");
 
   private final TypeNameConverter typeNameConverter;
+  private String protoNamespace;
 
   public PythonModelTypeNameConverter(String implicitPackageName) {
     typeNameConverter = new PythonTypeTable(implicitPackageName);
+    if (implicitPackageName.endsWith(".gapic")) {
+      protoNamespace = implicitPackageName.replace(".gapic", ".proto");
+    } else {
+      protoNamespace = String.format("%s.proto", implicitPackageName);
+    }
   }
 
   @Override
@@ -235,7 +239,7 @@ public class PythonModelTypeNameConverter implements ModelTypeNameConverter {
 
     String prefix =
         protoPackage.startsWith(GOOGLE_CLOUD_PREFIX) ? GOOGLE_CLOUD_PREFIX : GOOGLE_PREFIX;
-    return GOOGLE_CLOUD_PROTO_PREFIX + protoPackage.substring(prefix.length());
+    return String.format("%s%s", protoNamespace, protoPackage.substring(prefix.length()));
   }
 
   private String getPbFileName(String filename) {

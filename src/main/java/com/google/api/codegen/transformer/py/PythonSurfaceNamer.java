@@ -348,7 +348,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getTestPackageName() {
-    return "tests." + getPackageName();
+    return getPackageName();
   }
 
   @Override
