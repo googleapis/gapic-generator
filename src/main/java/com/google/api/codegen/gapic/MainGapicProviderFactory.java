@@ -72,8 +72,8 @@ public class MainGapicProviderFactory
   public static final String NODEJS = "nodejs";
   public static final String NODEJS_DOC = "nodejs_doc";
   public static final String PHP = "php";
-  public static final String PYTHON = "python";
-  public static final String PYTHON_DOC = "python_doc";
+  public static final String PYTHON = "py";
+  public static final String PYTHON_DOC = "py_doc";
   public static final String RUBY = "ruby";
   public static final String RUBY_DOC = "ruby_doc";
 

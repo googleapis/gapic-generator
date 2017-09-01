@@ -34,7 +34,7 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
           .put(MainGapicProviderFactory.JAVA, MainGapicProviderFactory.JAVA)
           .put(MainGapicProviderFactory.RUBY, MainGapicProviderFactory.RUBY)
           .put(MainGapicProviderFactory.RUBY_DOC, MainGapicProviderFactory.RUBY)
-          .put(MainGapicProviderFactory.PYTHON, "py")
+          .put(MainGapicProviderFactory.PYTHON, MainGapicProviderFactory.PYTHON)
           .put(MainGapicProviderFactory.NODEJS, MainGapicProviderFactory.NODEJS)
           .put(MainGapicProviderFactory.NODEJS_DOC, MainGapicProviderFactory.NODEJS)
           .put(MainGapicProviderFactory.CSHARP, MainGapicProviderFactory.CSHARP)
