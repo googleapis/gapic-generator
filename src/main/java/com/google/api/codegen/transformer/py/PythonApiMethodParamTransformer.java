@@ -86,8 +86,10 @@ public class PythonApiMethodParamTransformer implements ApiMethodParamTransforme
   private ParamDocView generateRequestStreamingParamDoc(GapicMethodContext context) {
     SimpleParamDocView.Builder paramDoc = SimpleParamDocView.newBuilder();
     paramDoc.paramName(context.getNamer().localVarName(Name.from("requests")));
-    TypeRef inputType = context.getMethod().getInputType();
-    String requestTypeName = context.getTypeTable().getFullNameFor(inputType);
+    String requestTypeName =
+        context
+            .getMethodModel()
+            .getAndSaveRequestTypeName(context.getTypeTable(), context.getNamer());
     paramDoc.lines(
         ImmutableList.of(
             "The input objects. If a dict is provided, it must be of the",
@@ -123,18 +125,15 @@ public class PythonApiMethodParamTransformer implements ApiMethodParamTransforme
             "of resources in a page.");
       } else {
         docLines.addAll(namer.getDocLines(field));
-        boolean isMessageField = field.getType().isMessage() && !field.getType().isMap();
-        boolean isMapContainingMessage =
-            field.getType().isMap() && field.getType().getMapValueField().getType().isMessage();
+        boolean isMessageField = field.isMessage() && !field.isMap();
+        boolean isMapContainingMessage = field.isMap() && field.getMapValueField().isMessage();
         if (isMessageField || isMapContainingMessage) {
           String messageType;
           if (isMapContainingMessage) {
             messageType =
-                context
-                    .getTypeTable()
-                    .getFullNameForElementType(field.getType().getMapValueField().getType());
+                context.getTypeTable().getFullNameForElementType(field.getMapValueField());
           } else {
-            messageType = context.getTypeTable().getFullNameForElementType(field.getType());
+            messageType = context.getTypeTable().getFullNameForElementType(field);
           }
           docLines.add(
               "If a dict is provided, it must be of the same form as the protobuf",

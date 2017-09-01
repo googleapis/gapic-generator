@@ -15,8 +15,8 @@
 package com.google.api.codegen;
 
 import com.google.api.Service;
-import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.gapic.GapicGeneratorConfig;
 import com.google.api.codegen.gapic.GapicProvider;
@@ -220,7 +220,7 @@ public abstract class GapicTestBase2 extends ConfigBaselineTestCase {
   }
 
   private static boolean hasSmokeTestConfig(GapicProductConfig productConfig) {
-    for (GapicInterfaceConfig config : productConfig.getInterfaceConfigMap().values()) {
+    for (InterfaceConfig config : productConfig.getInterfaceConfigMap().values()) {
       if (config.getSmokeTestConfig() != null) {
         return true;
       }

@@ -744,7 +744,7 @@ public class StaticLangApiMethodTransformer {
     String genericAwareResponseType =
         context.getTypeTable().getAndSaveNicknameFor(genericAwareResponseTypeFullName);
 
-    GapicMethodConfig methodConfig = context.getMethodConfig();
+    MethodConfig methodConfig = context.getMethodConfig();
     ApiCallableImplType callableImplType = ApiCallableImplType.SimpleApiCallable;
     if (methodConfig.isGrpcStreaming()) {
       callableImplType = ApiCallableImplType.of(methodConfig.getGrpcStreamingType());

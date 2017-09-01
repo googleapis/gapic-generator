@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen;
 
-import com.google.api.codegen.gapic.MainGapicProviderFactory;
+import com.google.api.codegen.config.LanguageStrings;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.Test;
@@ -45,22 +45,22 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
   public static List<Object[]> testedConfigs() {
     return Arrays.asList(
         GapicTestBase2.createTestConfig(
-            MainGapicProviderFactory.GO,
+            LanguageStrings.GO,
             new String[] {"go_gapic.yaml", "library_gapic.yaml"},
             null,
             "library"),
         GapicTestBase2.createTestConfig(
-            MainGapicProviderFactory.PHP,
+            LanguageStrings.PHP,
             new String[] {"php_gapic.yaml", "library_gapic.yaml"},
             "library_pkg.yaml",
             "library"),
         GapicTestBase2.createTestConfig(
-            MainGapicProviderFactory.JAVA,
+            LanguageStrings.JAVA,
             new String[] {"java_gapic.yaml", "library_gapic.yaml"},
             "library_pkg.yaml",
             "library"),
         GapicTestBase2.createTestConfig(
-            MainGapicProviderFactory.JAVA,
+            LanguageStrings.JAVA,
             new String[] {"java_gapic.yaml", "no_path_templates_gapic.yaml"},
             "no_path_templates_pkg.yaml",
             "no_path_templates"));

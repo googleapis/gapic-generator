@@ -16,6 +16,7 @@ package com.google.api.codegen;
 
 import static com.google.api.codegen.config.LanguageStrings.RUBY;
 
+import com.google.api.codegen.config.LanguageStrings;
 import com.google.api.codegen.gapic.MainGapicProviderFactory;
 import java.util.List;
 import org.junit.Test;
@@ -150,7 +151,7 @@ public class RubyCodeGeneratorTest {
     @Parameters(name = "{0}")
     public static List<Object[]> testedConfigs() {
       return GapicTestBase.createTestedConfigs(
-          MainGapicProviderFactory.RUBY,
+          LanguageStrings.RUBY,
           new String[] {"ruby_gapic.yaml", "longrunning_gapic.yaml"},
           "longrunning_pkg.yaml");
     }

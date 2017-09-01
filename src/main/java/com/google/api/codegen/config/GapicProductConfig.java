@@ -97,6 +97,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         getCopyrightLines(),
         getLicenseLines(),
         getResourceNameConfigs(),
+        getTransportProtocol(),
         getDefaultResourceNameFieldConfigMap());
   }
 
