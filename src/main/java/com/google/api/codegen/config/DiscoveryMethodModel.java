@@ -91,6 +91,11 @@ public final class DiscoveryMethodModel implements MethodModel {
   }
 
   @Override
+  public String getRawName() {
+    return method.id();
+  }
+
+  @Override
   public String getInputFullName() {
     // TODO(andrealin): this could be wrong; it might require the discogapic namer
     return method.request().getIdentifier();

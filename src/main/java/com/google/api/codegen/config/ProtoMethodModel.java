@@ -156,6 +156,11 @@ public final class ProtoMethodModel implements MethodModel {
   }
 
   @Override
+  public String getRawName() {
+    return method.getSimpleName();
+  }
+
+  @Override
   public String getAndSaveRequestTypeName(ImportTypeTable typeTable, SurfaceNamer surfaceNamer) {
     return ((ModelTypeTable) typeTable).getAndSaveNicknameFor(method.getInputType());
   }

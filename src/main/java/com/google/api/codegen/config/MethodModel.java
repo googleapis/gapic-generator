@@ -45,6 +45,9 @@ public interface MethodModel {
   /* @return a short name for this method. */
   String getSimpleName();
 
+  /* @return a short name for this method. */
+  String getRawName();
+
   /* @return a short name for the parent. */
   String getParentSimpleName();
 

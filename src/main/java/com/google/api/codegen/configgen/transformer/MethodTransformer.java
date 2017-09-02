@@ -49,7 +49,7 @@ public class MethodTransformer {
     ImmutableList.Builder<MethodView> methods = ImmutableList.builder();
     for (MethodModel method : apiInterface.getMethods()) {
       MethodView.Builder methodView = MethodView.newBuilder();
-      methodView.name(method.getSimpleName());
+      methodView.name(method.getRawName());
       generateField(method, methodView);
       generatePageStreaming(method, methodView);
       generateRetry(method, methodView);
