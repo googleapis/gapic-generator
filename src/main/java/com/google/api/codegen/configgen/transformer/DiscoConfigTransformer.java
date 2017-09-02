@@ -105,8 +105,11 @@ public class DiscoConfigTransformer {
   private Map<String, String> getResourceToEntityNameMap(List<Method> methods) {
     Map<String, String> resourceNameMap = new TreeMap<>();
     for (Method method : methods) {
+      String namePattern = method.flatPath();
+      // Escape the first character of the pattern if necessary.
+      namePattern = namePattern.charAt(0) == '{' ? "\\".concat(namePattern) : namePattern;
       resourceNameMap.put(
-          method.flatPath(), DiscoGapicNamer.getResourceIdentifier(method).toLowerCamel());
+          namePattern, DiscoGapicNamer.getResourceIdentifier(method).toLowerCamel());
     }
     return ImmutableMap.copyOf(resourceNameMap);
   }
