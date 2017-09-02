@@ -86,7 +86,8 @@ public class DiscoConfigTransformer {
 
       String ownerName = model.ownerDomain().split("\\.")[0];
       String resourceName = Name.from(resource.getKey()).toUpperCamel();
-      interfaceView.name(String.format("%s.%s.%s.%s", ownerName, model.name(), model.version(), resourceName));
+      interfaceView.name(
+          String.format("%s.%s.%s.%s", ownerName, model.name(), model.version(), resourceName));
 
       retryTransformer.generateRetryDefinitions(interfaceView, TransportProtocol.HTTP);
       interfaceView.collections(collectionTransformer.generateCollections(collectionNameMap));

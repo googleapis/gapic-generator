@@ -62,25 +62,40 @@ public class MethodTransformer {
 
   private void generateField(MethodModel method, MethodView.Builder methodView) {
     List<String> parameterList = new ArrayList<>();
+    List<FieldModel> fieldList = new ArrayList<>();
     Iterable<FieldModel> inputFields = method.getInputFields();
     for (FieldModel field : inputFields) {
       String fieldName = field.getSimpleName();
       if (field.getOneof() == null && !IGNORED_FIELDS.contains(fieldName)) {
         parameterList.add(fieldName);
+        fieldList.add(field);
       }
     }
 
-    if (parameterList.size() > 0 && parameterList.size() <= FLATTENING_THRESHOLD) {
-      methodView.flattening(generateFlattening(parameterList));
+    List<String> parameters = filteredInputFields(method, fieldList);
+
+    if (parameters.size() > 0 && parameters.size() <= FLATTENING_THRESHOLD) {
+      methodView.flattening(generateFlattening(parameters));
     }
 
-    methodView.requiredFields(parameterList);
+    methodView.requiredFields(parameters);
     // use all fields for the following check; if there are ignored fields for flattening
     // purposes, the caller still needs a way to set them (by using the request object method).
     methodView.requestObjectMethod(
         (Iterators.size(inputFields.iterator()) > REQUEST_OBJECT_METHOD_THRESHOLD
                 || Iterators.size(inputFields.iterator()) != parameterList.size())
             && !method.getRequestStreaming());
+  }
+
+  private List<String> filteredInputFields(MethodModel method, List<FieldModel> candidates) {
+    List<String> parameterNames = new ArrayList<>();
+    List<FieldModel> parametersForResourceNameMethod = method.getInputFieldsForResourceNameMethod();
+    for (FieldModel field : candidates) {
+      if (parametersForResourceNameMethod.contains(field)) {
+        parameterNames.add(field.getSimpleName());
+      }
+    }
+    return parameterNames;
   }
 
   private FlatteningView generateFlattening(List<String> parameterList) {

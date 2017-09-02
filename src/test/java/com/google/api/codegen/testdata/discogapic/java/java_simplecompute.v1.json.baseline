@@ -4662,7 +4662,7 @@ import javax.annotation.Generated;
  * <code>
  * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
  *
- *   Operation response = addressAdminClient.insertAddress();
+ *   Operation response = addressAdminClient.deleteAddress();
  * }
  * </code>
  * </pre>
@@ -4779,6 +4779,138 @@ public class AddressAdminClient implements BackgroundResource {
     return stub;
   }
 
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Deletes the specified address resource.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
+   *
+   *   Operation response = addressAdminClient.deleteAddress();
+   * }
+   * </code></pre>
+   *
+   * @param address Name of the address resource to delete.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  public final Operation deleteAddress(AddressName address) {
+
+    DeleteAddressHttpRequest request =
+        DeleteAddressHttpRequest.newBuilder()
+        .setAddressWithAddressName(address)
+        .build();
+    return deleteAddress(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Deletes the specified address resource.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
+   *
+   *   Operation response = addressAdminClient.deleteAddress();
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  private final Operation deleteAddress(DeleteAddressHttpRequest request) {
+    return deleteAddressCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Deletes the specified address resource.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
+   *
+   *   ApiFuture&lt;Operation&gt; future = addressAdminClient.deleteAddressCallable().futureCall();
+   *   // Do something
+   *   Operation response = future.get();
+   * }
+   * </code></pre>
+   */
+  @BetaApi
+  public final UnaryCallable<DeleteAddressHttpRequest, Operation> deleteAddressCallable() {
+    return stub.deleteAddressCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Returns the specified address resource.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
+   *
+   *   Address response = addressAdminClient.getAddress();
+   * }
+   * </code></pre>
+   *
+   * @param project Project ID for this request.
+   * @param region Name of the region for this request.
+   * @param address Name of the address resource to return.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  public final Address getAddress(String project, String region, String address) {
+
+    GetAddressHttpRequest request =
+        GetAddressHttpRequest.newBuilder()
+        .setProject(project)
+        .setRegion(region)
+        .setAddress(address)
+        .build();
+    return getAddress(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Returns the specified address resource.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
+   *
+   *   Address response = addressAdminClient.getAddress();
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  private final Address getAddress(GetAddressHttpRequest request) {
+    return getAddressCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Returns the specified address resource.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
+   *
+   *   ApiFuture&lt;Address&gt; future = addressAdminClient.getAddressCallable().futureCall();
+   *   // Do something
+   *   Address response = future.get();
+   * }
+   * </code></pre>
+   */
+  @BetaApi
+  public final UnaryCallable<GetAddressHttpRequest, Address> getAddressCallable() {
+    return stub.getAddressCallable();
+  }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
@@ -4918,138 +5050,6 @@ public class AddressAdminClient implements BackgroundResource {
     return stub.listAddressesCallable();
   }
 
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-  /**
-   * Returns the specified address resource.
-   *
-   * Sample code:
-   * <pre><code>
-   * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
-   *
-   *   Address response = addressAdminClient.getAddress();
-   * }
-   * </code></pre>
-   *
-   * @param project Project ID for this request.
-   * @param region Name of the region for this request.
-   * @param address Name of the address resource to return.
-   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
-   */
-  @BetaApi
-  public final Address getAddress(String project, String region, String address) {
-
-    GetAddressHttpRequest request =
-        GetAddressHttpRequest.newBuilder()
-        .setProject(project)
-        .setRegion(region)
-        .setAddress(address)
-        .build();
-    return getAddress(request);
-  }
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-  /**
-   * Returns the specified address resource.
-   *
-   * Sample code:
-   * <pre><code>
-   * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
-   *
-   *   Address response = addressAdminClient.getAddress();
-   * }
-   * </code></pre>
-   *
-   * @param request The request object containing all of the parameters for the API call.
-   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
-   */
-  @BetaApi
-  private final Address getAddress(GetAddressHttpRequest request) {
-    return getAddressCallable().call(request);
-  }
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-  /**
-   * Returns the specified address resource.
-   *
-   * Sample code:
-   * <pre><code>
-   * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
-   *
-   *   ApiFuture&lt;Address&gt; future = addressAdminClient.getAddressCallable().futureCall();
-   *   // Do something
-   *   Address response = future.get();
-   * }
-   * </code></pre>
-   */
-  @BetaApi
-  public final UnaryCallable<GetAddressHttpRequest, Address> getAddressCallable() {
-    return stub.getAddressCallable();
-  }
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-  /**
-   * Deletes the specified address resource.
-   *
-   * Sample code:
-   * <pre><code>
-   * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
-   *
-   *   Operation response = addressAdminClient.deleteAddress();
-   * }
-   * </code></pre>
-   *
-   * @param address Name of the address resource to delete.
-   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
-   */
-  @BetaApi
-  public final Operation deleteAddress(AddressName address) {
-
-    DeleteAddressHttpRequest request =
-        DeleteAddressHttpRequest.newBuilder()
-        .setAddressWithAddressName(address)
-        .build();
-    return deleteAddress(request);
-  }
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-  /**
-   * Deletes the specified address resource.
-   *
-   * Sample code:
-   * <pre><code>
-   * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
-   *
-   *   Operation response = addressAdminClient.deleteAddress();
-   * }
-   * </code></pre>
-   *
-   * @param request The request object containing all of the parameters for the API call.
-   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
-   */
-  @BetaApi
-  private final Operation deleteAddress(DeleteAddressHttpRequest request) {
-    return deleteAddressCallable().call(request);
-  }
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-  /**
-   * Deletes the specified address resource.
-   *
-   * Sample code:
-   * <pre><code>
-   * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
-   *
-   *   ApiFuture&lt;Operation&gt; future = addressAdminClient.deleteAddressCallable().futureCall();
-   *   // Do something
-   *   Operation response = future.get();
-   * }
-   * </code></pre>
-   */
-  @BetaApi
-  public final UnaryCallable<DeleteAddressHttpRequest, Operation> deleteAddressCallable() {
-    return stub.deleteAddressCallable();
-  }
-
   @Override
   public final void close() throws Exception {
     stub.close();
@@ -5155,13 +5155,13 @@ import org.threeten.bp.Duration;
  *
  * <p>The builder of this class is recursive, so contained classes are themselves builders.
  * When build() is called, the tree of builders is called to create the complete settings
- * object. For example, to set the total timeout of insertAddress to 30 seconds:
+ * object. For example, to set the total timeout of deleteAddress to 30 seconds:
  *
  * <pre>
  * <code>
  * AddressAdminSettings.Builder addressAdminSettingsBuilder =
  *     AddressAdminSettings.defaultBuilder();
- * addressAdminSettingsBuilder.insertAddressSettings().getRetrySettingsBuilder()
+ * addressAdminSettingsBuilder.deleteAddressSettings().getRetrySettingsBuilder()
  *     .setTotalTimeout(Duration.ofSeconds(30));
  * AddressAdminSettings addressAdminSettings = addressAdminSettingsBuilder.build();
  * </code>
@@ -5190,10 +5190,24 @@ public class AddressAdminSettings extends ClientSettings {
 
   private static String gapicVersion;
 
+  private final SimpleCallSettings<DeleteAddressHttpRequest, Operation> deleteAddressSettings;
+  private final SimpleCallSettings<GetAddressHttpRequest, Address> getAddressSettings;
   private final SimpleCallSettings<InsertAddressHttpRequest, Operation> insertAddressSettings;
   private final PagedCallSettings<ListAddressesHttpRequest, AddressList, ListAddressesPagedResponse> listAddressesSettings;
-  private final SimpleCallSettings<GetAddressHttpRequest, Address> getAddressSettings;
-  private final SimpleCallSettings<DeleteAddressHttpRequest, Operation> deleteAddressSettings;
+
+  /**
+   * Returns the object with the settings used for calls to deleteAddress.
+   */
+  public SimpleCallSettings<DeleteAddressHttpRequest, Operation> deleteAddressSettings() {
+    return deleteAddressSettings;
+  }
+
+  /**
+   * Returns the object with the settings used for calls to getAddress.
+   */
+  public SimpleCallSettings<GetAddressHttpRequest, Address> getAddressSettings() {
+    return getAddressSettings;
+  }
 
   /**
    * Returns the object with the settings used for calls to insertAddress.
@@ -5207,20 +5221,6 @@ public class AddressAdminSettings extends ClientSettings {
    */
   public PagedCallSettings<ListAddressesHttpRequest, AddressList, ListAddressesPagedResponse> listAddressesSettings() {
     return listAddressesSettings;
-  }
-
-  /**
-   * Returns the object with the settings used for calls to getAddress.
-   */
-  public SimpleCallSettings<GetAddressHttpRequest, Address> getAddressSettings() {
-    return getAddressSettings;
-  }
-
-  /**
-   * Returns the object with the settings used for calls to deleteAddress.
-   */
-  public SimpleCallSettings<DeleteAddressHttpRequest, Operation> deleteAddressSettings() {
-    return deleteAddressSettings;
   }
 
 
@@ -5341,10 +5341,10 @@ public class AddressAdminSettings extends ClientSettings {
         settingsBuilder.getCredentialsProvider(),
         settingsBuilder.getClock());
 
+    deleteAddressSettings = settingsBuilder.deleteAddressSettings().build();
+    getAddressSettings = settingsBuilder.getAddressSettings().build();
     insertAddressSettings = settingsBuilder.insertAddressSettings().build();
     listAddressesSettings = settingsBuilder.listAddressesSettings().build();
-    getAddressSettings = settingsBuilder.getAddressSettings().build();
-    deleteAddressSettings = settingsBuilder.deleteAddressSettings().build();
   }
 
   private static final PagedListDescriptor<ListAddressesHttpRequest, AddressList, Address> LIST_ADDRESSES_PAGE_STR_DESC =
@@ -5402,10 +5402,10 @@ public class AddressAdminSettings extends ClientSettings {
   public static class Builder extends ClientSettings.Builder {
     private final ImmutableList<UnaryCallSettings.Builder> unaryMethodSettingsBuilders;
 
+    private final SimpleCallSettings.Builder<DeleteAddressHttpRequest, Operation> deleteAddressSettings;
+    private final SimpleCallSettings.Builder<GetAddressHttpRequest, Address> getAddressSettings;
     private final SimpleCallSettings.Builder<InsertAddressHttpRequest, Operation> insertAddressSettings;
     private final PagedCallSettings.Builder<ListAddressesHttpRequest, AddressList, ListAddressesPagedResponse> listAddressesSettings;
-    private final SimpleCallSettings.Builder<GetAddressHttpRequest, Address> getAddressSettings;
-    private final SimpleCallSettings.Builder<DeleteAddressHttpRequest, Operation> deleteAddressSettings;
 
     private static final ImmutableMap<String, ImmutableSet<StatusCode>> RETRYABLE_CODE_DEFINITIONS;
 
@@ -5445,20 +5445,20 @@ public class AddressAdminSettings extends ClientSettings {
     private Builder(ClientContext clientContext) {
       super(clientContext);
 
+      deleteAddressSettings = SimpleCallSettings.newBuilder();
+
+      getAddressSettings = SimpleCallSettings.newBuilder();
+
       insertAddressSettings = SimpleCallSettings.newBuilder();
 
       listAddressesSettings = PagedCallSettings.newBuilder(
           LIST_ADDRESSES_PAGE_STR_FACT);
 
-      getAddressSettings = SimpleCallSettings.newBuilder();
-
-      deleteAddressSettings = SimpleCallSettings.newBuilder();
-
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder>of(
-          insertAddressSettings,
-          listAddressesSettings,
+          deleteAddressSettings,
           getAddressSettings,
-          deleteAddressSettings
+          insertAddressSettings,
+          listAddressesSettings
       );
 
       initDefaults(this);
@@ -5473,11 +5473,7 @@ public class AddressAdminSettings extends ClientSettings {
 
     private static Builder initDefaults(Builder builder) {
 
-      builder.insertAddressSettings()
-          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
-          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
-
-      builder.listAddressesSettings()
+      builder.deleteAddressSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
@@ -5485,7 +5481,11 @@ public class AddressAdminSettings extends ClientSettings {
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
-      builder.deleteAddressSettings()
+      builder.insertAddressSettings()
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
+          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
+
+      builder.listAddressesSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"));
 
@@ -5495,16 +5495,16 @@ public class AddressAdminSettings extends ClientSettings {
     private Builder(AddressAdminSettings settings) {
       super(settings);
 
+      deleteAddressSettings = settings.deleteAddressSettings.toBuilder();
+      getAddressSettings = settings.getAddressSettings.toBuilder();
       insertAddressSettings = settings.insertAddressSettings.toBuilder();
       listAddressesSettings = settings.listAddressesSettings.toBuilder();
-      getAddressSettings = settings.getAddressSettings.toBuilder();
-      deleteAddressSettings = settings.deleteAddressSettings.toBuilder();
 
       unaryMethodSettingsBuilders = ImmutableList.<UnaryCallSettings.Builder>of(
-          insertAddressSettings,
-          listAddressesSettings,
+          deleteAddressSettings,
           getAddressSettings,
-          deleteAddressSettings
+          insertAddressSettings,
+          listAddressesSettings
       );
     }
 
@@ -5537,6 +5537,20 @@ public class AddressAdminSettings extends ClientSettings {
     }
 
     /**
+     * Returns the builder for the settings used for calls to deleteAddress.
+     */
+    public SimpleCallSettings.Builder<DeleteAddressHttpRequest, Operation> deleteAddressSettings() {
+      return deleteAddressSettings;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to getAddress.
+     */
+    public SimpleCallSettings.Builder<GetAddressHttpRequest, Address> getAddressSettings() {
+      return getAddressSettings;
+    }
+
+    /**
      * Returns the builder for the settings used for calls to insertAddress.
      */
     public SimpleCallSettings.Builder<InsertAddressHttpRequest, Operation> insertAddressSettings() {
@@ -5548,20 +5562,6 @@ public class AddressAdminSettings extends ClientSettings {
      */
     public PagedCallSettings.Builder<ListAddressesHttpRequest, AddressList, ListAddressesPagedResponse> listAddressesSettings() {
       return listAddressesSettings;
-    }
-
-    /**
-     * Returns the builder for the settings used for calls to getAddress.
-     */
-    public SimpleCallSettings.Builder<GetAddressHttpRequest, Address> getAddressSettings() {
-      return getAddressSettings;
-    }
-
-    /**
-     * Returns the builder for the settings used for calls to deleteAddress.
-     */
-    public SimpleCallSettings.Builder<DeleteAddressHttpRequest, Operation> deleteAddressSettings() {
-      return deleteAddressSettings;
     }
 
     @Override
@@ -5615,6 +5615,16 @@ public abstract class AddressAdminStub implements BackgroundResource {
 
 
   @BetaApi
+  public UnaryCallable<DeleteAddressHttpRequest, Operation> deleteAddressCallable() {
+    throw new UnsupportedOperationException("Not implemented: deleteAddressCallable()");
+  }
+
+  @BetaApi
+  public UnaryCallable<GetAddressHttpRequest, Address> getAddressCallable() {
+    throw new UnsupportedOperationException("Not implemented: getAddressCallable()");
+  }
+
+  @BetaApi
   public UnaryCallable<InsertAddressHttpRequest, Operation> insertAddressCallable() {
     throw new UnsupportedOperationException("Not implemented: insertAddressCallable()");
   }
@@ -5627,16 +5637,6 @@ public abstract class AddressAdminStub implements BackgroundResource {
   @BetaApi
   public UnaryCallable<ListAddressesHttpRequest, AddressList> listAddressesCallable() {
     throw new UnsupportedOperationException("Not implemented: listAddressesCallable()");
-  }
-
-  @BetaApi
-  public UnaryCallable<GetAddressHttpRequest, Address> getAddressCallable() {
-    throw new UnsupportedOperationException("Not implemented: getAddressCallable()");
-  }
-
-  @BetaApi
-  public UnaryCallable<DeleteAddressHttpRequest, Operation> deleteAddressCallable() {
-    throw new UnsupportedOperationException("Not implemented: deleteAddressCallable()");
   }
 
 }
@@ -5698,6 +5698,36 @@ import javax.annotation.Generated;
 public class HttpAddressAdminStub extends AddressAdminStub {
   private static final String BASE_URL = "https://www.googleapis.com/compute/v1/projects/";
 
+  private static final UnaryCallable<DeleteAddressHttpRequest, Operation> directDeleteAddressCallable =
+      HttpJsonCallableFactory.createDirectCallable(
+          ApiMethodDescriptor.<DeleteAddressHttpRequest, Operation>newBuilder()
+              .setMethodName("compute.addresses.delete")
+              .setRequestInstance(DeleteAddressHttpRequest.getDefaultInstance())
+              .setResponseInstance(Operation.getDefaultInstance())
+              .setEndpointPathTemplate("{project}/regions/{region}/addresses/{address}")
+              .setPathParams(Sets.<String>newHashSet(
+                                "address",    "project",    "region"
+                                ))
+              .setQueryParams(Sets.<String>newHashSet(
+                                 ))
+              .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter())
+              .setHttpMethod(HttpMethods.DELETE)
+              .build());
+  private static final UnaryCallable<GetAddressHttpRequest, Address> directGetAddressCallable =
+      HttpJsonCallableFactory.createDirectCallable(
+          ApiMethodDescriptor.<GetAddressHttpRequest, Address>newBuilder()
+              .setMethodName("compute.addresses.get")
+              .setRequestInstance(GetAddressHttpRequest.getDefaultInstance())
+              .setResponseInstance(Address.getDefaultInstance())
+              .setEndpointPathTemplate("{project}/regions/{region}/addresses/{address}")
+              .setPathParams(Sets.<String>newHashSet(
+                                "address",    "project",    "region"
+                                ))
+              .setQueryParams(Sets.<String>newHashSet(
+                                 ))
+              .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter())
+              .setHttpMethod(HttpMethods.GET)
+              .build());
   private static final UnaryCallable<InsertAddressHttpRequest, Operation> directInsertAddressCallable =
       HttpJsonCallableFactory.createDirectCallable(
           ApiMethodDescriptor.<InsertAddressHttpRequest, Operation>newBuilder()
@@ -5729,44 +5759,14 @@ public class HttpAddressAdminStub extends AddressAdminStub {
               .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter())
               .setHttpMethod(HttpMethods.GET)
               .build());
-  private static final UnaryCallable<GetAddressHttpRequest, Address> directGetAddressCallable =
-      HttpJsonCallableFactory.createDirectCallable(
-          ApiMethodDescriptor.<GetAddressHttpRequest, Address>newBuilder()
-              .setMethodName("compute.addresses.get")
-              .setRequestInstance(GetAddressHttpRequest.getDefaultInstance())
-              .setResponseInstance(Address.getDefaultInstance())
-              .setEndpointPathTemplate("{project}/regions/{region}/addresses/{address}")
-              .setPathParams(Sets.<String>newHashSet(
-                                "address",    "project",    "region"
-                                ))
-              .setQueryParams(Sets.<String>newHashSet(
-                                 ))
-              .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter())
-              .setHttpMethod(HttpMethods.GET)
-              .build());
-  private static final UnaryCallable<DeleteAddressHttpRequest, Operation> directDeleteAddressCallable =
-      HttpJsonCallableFactory.createDirectCallable(
-          ApiMethodDescriptor.<DeleteAddressHttpRequest, Operation>newBuilder()
-              .setMethodName("compute.addresses.delete")
-              .setRequestInstance(DeleteAddressHttpRequest.getDefaultInstance())
-              .setResponseInstance(Operation.getDefaultInstance())
-              .setEndpointPathTemplate("{project}/regions/{region}/addresses/{address}")
-              .setPathParams(Sets.<String>newHashSet(
-                                "address",    "project",    "region"
-                                ))
-              .setQueryParams(Sets.<String>newHashSet(
-                                 ))
-              .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter())
-              .setHttpMethod(HttpMethods.DELETE)
-              .build());
 
   private final BackgroundResource backgroundResources;
 
+  private final UnaryCallable<DeleteAddressHttpRequest, Operation> deleteAddressCallable;
+  private final UnaryCallable<GetAddressHttpRequest, Address> getAddressCallable;
   private final UnaryCallable<InsertAddressHttpRequest, Operation> insertAddressCallable;
   private final UnaryCallable<ListAddressesHttpRequest, AddressList> listAddressesCallable;
   private final UnaryCallable<ListAddressesHttpRequest, ListAddressesPagedResponse> listAddressesPagedCallable;
-  private final UnaryCallable<GetAddressHttpRequest, Address> getAddressCallable;
-  private final UnaryCallable<DeleteAddressHttpRequest, Operation> deleteAddressCallable;
 
   public static final HttpAddressAdminStub create(AddressAdminSettings settings) throws IOException {
     return new HttpAddressAdminStub(settings, ClientContext.create(settings));
@@ -5783,14 +5783,24 @@ public class HttpAddressAdminStub extends AddressAdminStub {
    */
   protected HttpAddressAdminStub(AddressAdminSettings settings, ClientContext clientContext) throws IOException {
 
+    this.deleteAddressCallable = HttpJsonCallableFactory.create(directDeleteAddressCallable,settings.deleteAddressSettings(), clientContext);
+    this.getAddressCallable = HttpJsonCallableFactory.create(directGetAddressCallable,settings.getAddressSettings(), clientContext);
     this.insertAddressCallable = HttpJsonCallableFactory.create(directInsertAddressCallable,settings.insertAddressSettings(), clientContext);
     this.listAddressesCallable = HttpJsonCallableFactory.create(directListAddressesCallable,settings.listAddressesSettings(), clientContext);
     this.listAddressesPagedCallable =
         HttpJsonCallableFactory.createPagedVariant(directListAddressesCallable,settings.listAddressesSettings(), clientContext);
-    this.getAddressCallable = HttpJsonCallableFactory.create(directGetAddressCallable,settings.getAddressSettings(), clientContext);
-    this.deleteAddressCallable = HttpJsonCallableFactory.create(directDeleteAddressCallable,settings.deleteAddressSettings(), clientContext);
 
     backgroundResources = new BackgroundResourceAggregation(clientContext.getBackgroundResources());
+  }
+
+  @BetaApi
+  public UnaryCallable<DeleteAddressHttpRequest, Operation> deleteAddressCallable() {
+    return deleteAddressCallable;
+  }
+
+  @BetaApi
+  public UnaryCallable<GetAddressHttpRequest, Address> getAddressCallable() {
+    return getAddressCallable;
   }
 
   @BetaApi
@@ -5806,16 +5816,6 @@ public class HttpAddressAdminStub extends AddressAdminStub {
   @BetaApi
   public UnaryCallable<ListAddressesHttpRequest, AddressList> listAddressesCallable() {
     return listAddressesCallable;
-  }
-
-  @BetaApi
-  public UnaryCallable<GetAddressHttpRequest, Address> getAddressCallable() {
-    return getAddressCallable;
-  }
-
-  @BetaApi
-  public UnaryCallable<DeleteAddressHttpRequest, Operation> deleteAddressCallable() {
-    return deleteAddressCallable;
   }
 
   @Override
@@ -6017,7 +6017,7 @@ public class PagedResponseWrappers {
  * <code>
  * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
  *
- *   Operation response = addressAdminClient.insertAddress();
+ *   Operation response = addressAdminClient.deleteAddress();
  * }
  * </code>
  * </pre>

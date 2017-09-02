@@ -29,6 +29,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -38,7 +39,7 @@ public final class DiscoveryMethodModel implements MethodModel {
   private final Method method;
   private Iterable<FieldModel> inputFields;
   private Iterable<FieldModel> outputFields;
-  private Iterable<FieldModel> resourceNameInputFields;
+  private List<FieldModel> resourceNameInputFields;
   private final DiscoGapicNamer discoGapicNamer;
 
   /* Create a DiscoveryMethodModel from a non-null Discovery Method object. */
@@ -195,11 +196,6 @@ public final class DiscoveryMethodModel implements MethodModel {
   }
 
   @Override
-  public String getProtoMethodName() {
-    return getSimpleName();
-  }
-
-  @Override
   public String getScopedDescription() {
     return method.description();
   }
@@ -210,7 +206,7 @@ public final class DiscoveryMethodModel implements MethodModel {
   }
 
   @Override
-  public Iterable<FieldModel> getResourceNameInputFields() {
+  public List<FieldModel> getResourceNameInputFields() {
     if (resourceNameInputFields != null) {
       return resourceNameInputFields;
     }
@@ -223,6 +219,27 @@ public final class DiscoveryMethodModel implements MethodModel {
     }
     resourceNameInputFields = params.build();
     return resourceNameInputFields;
+  }
+
+  @Override
+  public List<FieldModel> getInputFieldsForResourceNameMethod() {
+    List<FieldModel> fields = new LinkedList<>();
+    for (FieldModel field : getInputFields()) {
+      if (!getResourceNameInputFields().contains(field)) {
+        // Only add fields that aren't part of the ResourceName.
+        fields.add(field);
+      }
+    }
+
+    // Add the field that represents the ResourceName.
+    String resourceName = DiscoGapicNamer.getResourceIdentifier(method).toLowerCamel();
+    for (FieldModel field : getInputFields()) {
+      if (field.asName().toLowerCamel().equals(resourceName)) {
+        fields.add(field);
+        break;
+      }
+    }
+    return fields;
   }
 
   @Override

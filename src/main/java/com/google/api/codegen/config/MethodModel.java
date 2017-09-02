@@ -19,6 +19,7 @@ import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.TypeNameConverter;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
+import java.util.List;
 import java.util.Map;
 
 /** Input-agnostic model of a method. */
@@ -84,9 +85,9 @@ public interface MethodModel {
 
   boolean hasReturnValue();
 
-  String getProtoMethodName();
-
   Iterable<FieldModel> getInputFields();
+
+  List<FieldModel> getInputFieldsForResourceNameMethod();
 
   Iterable<FieldModel> getOutputFields();
 

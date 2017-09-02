@@ -20,7 +20,7 @@ import javax.annotation.Nullable;
 
 /** Represents the method configuration. */
 @AutoValue
-public abstract class MethodView {
+public abstract class MethodView implements Comparable<MethodView> {
   /** The simple name of the method. */
   public abstract String name();
 
@@ -88,5 +88,10 @@ public abstract class MethodView {
     public abstract Builder timeoutMillis(String val);
 
     public abstract MethodView build();
+  }
+
+  @Override
+  public int compareTo(MethodView other) {
+    return this.name().compareTo(other.name());
   }
 }

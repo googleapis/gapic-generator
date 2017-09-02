@@ -33,12 +33,13 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /** A wrapper around the model of a protobuf-defined Method. */
 public final class ProtoMethodModel implements MethodModel {
   private final Method method;
-  private Iterable<FieldModel> inputFields;
+  private List<FieldModel> inputFields;
   private Iterable<FieldModel> outputFields;
 
   /* Create a MethodModel object from a non-null Method object. */
@@ -171,17 +172,12 @@ public final class ProtoMethodModel implements MethodModel {
   }
 
   @Override
-  public String getProtoMethodName() {
-    return method.getSimpleName();
-  }
-
-  @Override
   public String getScopedDescription() {
     return DocumentationUtil.getScopedDescription(method);
   }
 
   @Override
-  public Iterable<FieldModel> getInputFields() {
+  public List<FieldModel> getInputFields() {
     if (inputFields != null) {
       return inputFields;
     }
@@ -192,6 +188,11 @@ public final class ProtoMethodModel implements MethodModel {
     }
     inputFields = fieldsBuilder.build();
     return inputFields;
+  }
+
+  @Override
+  public List<FieldModel> getInputFieldsForResourceNameMethod() {
+    return getInputFields();
   }
 
   @Override
