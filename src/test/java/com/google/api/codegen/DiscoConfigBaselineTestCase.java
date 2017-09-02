@@ -46,9 +46,6 @@ import org.junit.rules.TemporaryFolder;
  */
 public abstract class DiscoConfigBaselineTestCase extends BaselineTestCase {
 
-  private static final ImmutableList<String> EXPERIMENTS_ENABLED_FOR_TESTS =
-      ImmutableList.of("use-new-visibility-derived-data");
-
   @Rule public TemporaryFolder tempDir = new TemporaryFolder();
 
   protected boolean suppressDiagnosis() {
