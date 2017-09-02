@@ -24,6 +24,7 @@ import com.google.api.codegen.configgen.viewmodel.LicenseView;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Method;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
@@ -83,8 +84,9 @@ public class DiscoConfigTransformer {
       Map<String, String> collectionNameMap = getResourceToEntityNameMap(resource.getValue());
       InterfaceView.Builder interfaceView = InterfaceView.newBuilder();
 
-      String ownerName = model.ownerDomain().split("\\.", 1)[0];
-      interfaceView.name(String.format("%s.%s.%s", ownerName, resource.getKey(), model.version()));
+      String ownerName = model.ownerDomain().split("\\.")[0];
+      String resourceName = Name.from(resource.getKey()).toUpperCamel();
+      interfaceView.name(String.format("%s.%s.%s.%s", ownerName, model.name(), model.version(), resourceName));
 
       retryTransformer.generateRetryDefinitions(interfaceView, TransportProtocol.HTTP);
       interfaceView.collections(collectionTransformer.generateCollections(collectionNameMap));
