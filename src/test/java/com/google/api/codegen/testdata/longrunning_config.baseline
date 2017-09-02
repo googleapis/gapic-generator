@@ -7,19 +7,19 @@ type: com.google.api.codegen.ConfigProto
 # The settings of generated code in a specific language.
 language_settings:
   java:
-    package_name: com.google.cloud.example.spi.v1
+    package_name: com.google.cloud.longrunning
   python:
-    package_name: google.cloud.example_v1.gapic
+    package_name: google.cloud.longrunning.gapic
   go:
-    package_name: cloud.google.com/go/cloud/example/apiv1
+    package_name: google.golang.org/google/longrunning
   csharp:
-    package_name: Google.Cloud.Example.V1
+    package_name: Google.Longrunning
   ruby:
-    package_name: Google::Cloud::Example::V1
+    package_name: Google::Cloud::Longrunning
   php:
-    package_name: Google\Cloud\Example\V1
+    package_name: Google\Cloud\Longrunning
   nodejs:
-    package_name: example.v1
+    package_name: google.longrunning
 # The configuration for the license header to put on generated files.
 license_header:
   # The file containing the copyright line(s).
@@ -29,7 +29,7 @@ license_header:
 # A list of API interface configurations.
 interfaces:
   # The fully qualified name of the API interface.
-- name: google.cloud.example.v1.NoTemplatesAPIService
+- name: google.longrunning.Operations
   # A list of resource collection configurations.
   # Consists of a name_pattern and an entity_name.
   # The name_pattern is a pattern to describe the names of the resources of this
@@ -40,7 +40,9 @@ interfaces:
   # methods. If empty, no name methods are generated.
   # The entity_name is the name to be used as a basis for generated methods and
   # classes.
-  collections: []
+  collections:
+  - name_pattern: operations/{operation_path=**}
+    entity_name: operation_path
   # Definition for retryable codes.
   retry_codes_def:
   - name: idempotent
@@ -102,11 +104,86 @@ interfaces:
   #   timeout_millis - Specifies the default timeout for a non-retrying call. If
   #       the call is retrying, refer to retry_params_name instead.
   methods:
-  - name: Increment
+  - name: ListOperations
+    # TODO: Configure which groups of fields should be flattened into method
+    # params.
+    flattening:
+      groups:
+      - parameters:
+        - name
+        - filter
+    # TODO: Configure which fields are required.
+    required_fields:
+    - name
+    - filter
+    request_object_method: true
+    page_streaming:
+      request:
+        page_size_field: page_size
+        token_field: page_token
+      response:
+        token_field: next_page_token
+        resources_field: operations
+    # TODO: Configure the retryable codes for this method.
+    retry_codes_name: idempotent
+    # TODO: Configure the retryable params for this method.
+    retry_params_name: default
+    # TODO: Configure the default timeout for a non-retrying call.
+    timeout_millis: 60000
+  - name: GetOperation
+    # TODO: Configure which groups of fields should be flattened into method
+    # params.
+    flattening:
+      groups:
+      - parameters:
+        - name
+    # TODO: Configure which fields are required.
+    required_fields:
+    - name
+    request_object_method: false
+    # TODO: Configure the retryable codes for this method.
+    retry_codes_name: idempotent
+    # TODO: Configure the retryable params for this method.
+    retry_params_name: default
+    field_name_patterns:
+      name: operation_path
+    # TODO: Configure the default timeout for a non-retrying call.
+    timeout_millis: 60000
+  - name: DeleteOperation
+    # TODO: Configure which groups of fields should be flattened into method
+    # params.
+    flattening:
+      groups:
+      - parameters:
+        - name
+    # TODO: Configure which fields are required.
+    required_fields:
+    - name
+    request_object_method: false
+    # TODO: Configure the retryable codes for this method.
+    retry_codes_name: idempotent
+    # TODO: Configure the retryable params for this method.
+    retry_params_name: default
+    field_name_patterns:
+      name: operation_path
+    # TODO: Configure the default timeout for a non-retrying call.
+    timeout_millis: 60000
+  - name: CancelOperation
+    # TODO: Configure which groups of fields should be flattened into method
+    # params.
+    flattening:
+      groups:
+      - parameters:
+        - name
+    # TODO: Configure which fields are required.
+    required_fields:
+    - name
     request_object_method: false
     # TODO: Configure the retryable codes for this method.
     retry_codes_name: non_idempotent
     # TODO: Configure the retryable params for this method.
     retry_params_name: default
+    field_name_patterns:
+      name: operation_path
     # TODO: Configure the default timeout for a non-retrying call.
     timeout_millis: 60000

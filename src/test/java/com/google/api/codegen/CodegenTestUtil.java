@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen;
 
+import com.google.api.tools.framework.model.ConfigSource;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.stages.Merged;
@@ -56,13 +57,13 @@ public class CodegenTestUtil {
     ImmutableMap<String, Message> supportedConfigTypes =
         ImmutableMap.<String, Message>of(
             ConfigProto.getDescriptor().getFullName(), ConfigProto.getDefaultInstance());
-    ConfigProto configProto =
-        (ConfigProto) MultiYamlReader.read(diagCollector, inputNames, inputs, supportedConfigTypes);
+    ConfigSource configSource =
+        MultiYamlReader.read(diagCollector, inputNames, inputs, supportedConfigTypes);
     if (diagCollector.getErrorCount() > 0) {
       System.err.println(diagCollector.toString());
       return null;
     }
 
-    return configProto;
+    return configSource == null ? null : (ConfigProto) configSource.getConfig();
   }
 }
