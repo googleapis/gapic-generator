@@ -12,67 +12,54 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.tools;
+package com.google.api.codegen;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.api.codegen.DiscoGapicGeneratorApi;
 import com.google.api.codegen.discovery.DiscoveryNode;
 import com.google.api.codegen.discovery.Document;
-import com.google.api.codegen.DocumentGenerator;
 import com.google.api.tools.framework.model.Diag;
+import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleLocation;
-import com.google.api.tools.framework.tools.GenericToolDriverBase;
-import com.google.api.tools.framework.tools.ToolOptions;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Nullable;
 
 /**
- * Abstract base class for drivers running tools based on the framework.
- *
- * <p>Uses {@link ToolOptions} to pass arguments to the driver.
+ * Created by andrealin on 9/1/17.
  */
-public abstract class DiscoToolDriverBase extends GenericToolDriverBase {
+public class DocumentGenerator {
+  public static Document createDocument(String discoveryDocPath) throws IOException {
+    if (!new File(discoveryDocPath).exists()) {
+      throw new FileNotFoundException();
+    }
 
-  protected Document document;
-
-  protected DiscoToolDriverBase(ToolOptions options) {
-    super(options);
+    Reader reader = new InputStreamReader(new FileInputStream(new File(discoveryDocPath)));
+    ObjectMapper mapper = new ObjectMapper();
+    JsonNode root = mapper.readTree(reader);
+    return Document.from(new DiscoveryNode(root));
   }
 
-  /** Returns the document. */
-  @Nullable
-  public Document getDocument() {
-    return document;
-  }
-
-  /** Runs the tool. Returns a non-zero exit code on errors. */
-  @Override
-  public int run() {
-    this.document = setupDocument();
-    return super.run();
-  }
-
-  /** Initializes the Discovery document document. */
-  private Document setupDocument() {
+  public static Document createDocumentAndLog(String discoveryDocPath, DiagCollector diagCollector) throws IOException {
     // Prevent INFO messages from polluting the log.
     Logger.getLogger("").setLevel(Level.WARNING);
-    String discoveryDocPath = options.get(DiscoGapicGeneratorApi.DISCOVERY_DOC);
 
     Document document = null;
     try {
       document = DocumentGenerator.createDocument(discoveryDocPath);
     } catch (FileNotFoundException e) {
-      getDiagCollector()
-          .addDiag(Diag.error(SimpleLocation.TOPLEVEL, "File not found: " + discoveryDocPath));
+      diagCollector
+          .addDiag(Diag.error(
+              SimpleLocation.TOPLEVEL, "File not found: " + discoveryDocPath));
     } catch (IOException e) {
-      getDiagCollector()
-          .addDiag(
-              Diag.error(
-                  SimpleLocation.TOPLEVEL, "Failed to read Discovery Doc: " + discoveryDocPath));
+      diagCollector.addDiag(
+          Diag.error(
+              SimpleLocation.TOPLEVEL, "Failed to read Discovery Doc: " + discoveryDocPath));
     }
     return document;
   }
