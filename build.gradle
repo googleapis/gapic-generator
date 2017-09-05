@@ -128,6 +128,15 @@ task discoJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) 
   exclude 'META-INF/*.RSA'
 }
 
+task fatJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+  archiveName = "gapic.jar"
+  from sourceSets.main.output
+  configurations = [ project.configurations.runtime ]
+  exclude 'META-INF/*.SF'
+  exclude 'META-INF/*.DSA'
+  exclude 'META-INF/*.RSA'
+}
+
 jacocoTestReport {
   reports {
     xml.enabled true
