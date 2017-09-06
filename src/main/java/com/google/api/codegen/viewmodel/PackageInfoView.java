@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.viewmodel;
 
+import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.auto.value.AutoValue;
 import java.util.List;
@@ -36,6 +37,8 @@ public abstract class PackageInfoView implements ViewModel {
   public abstract List<String> authScopes();
 
   public abstract String domainLayerLocation();
+
+  public abstract ReleaseLevel releaseLevel();
 
   @Nullable
   public abstract String importPath();
@@ -67,6 +70,8 @@ public abstract class PackageInfoView implements ViewModel {
     public abstract Builder authScopes(List<String> val);
 
     public abstract Builder domainLayerLocation(String val);
+
+    public abstract Builder releaseLevel(ReleaseLevel val);
 
     public abstract Builder importPath(String val);
 
