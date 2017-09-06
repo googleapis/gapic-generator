@@ -58,6 +58,6 @@ Benchmark for PHP is located at `clients/php/local.php`.
 To install dependencies:
 `composer install`
 To run:
-`php local.go -cert <cert_file> -client <client>`
+`php local.php -cert <cert_file> -client <client>`
 
 PHP does not support async calls.
