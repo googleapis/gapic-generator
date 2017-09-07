@@ -47,7 +47,7 @@ public abstract class VersionIndexView implements ViewModel {
   public abstract String toolkitVersion();
 
   @Nullable
-  public abstract List<VersionIndexModuleView> modules();
+  public abstract List<ModuleView> modules();
 
   public abstract List<VersionIndexRequireView> requireViews();
 
@@ -95,7 +95,7 @@ public abstract class VersionIndexView implements ViewModel {
 
     public abstract Builder toolkitVersion(String val);
 
-    public abstract Builder modules(List<VersionIndexModuleView> val);
+    public abstract Builder modules(List<ModuleView> val);
 
     public abstract Builder requireViews(List<VersionIndexRequireView> val);
 

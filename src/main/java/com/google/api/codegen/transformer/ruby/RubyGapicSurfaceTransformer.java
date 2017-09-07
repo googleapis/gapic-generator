@@ -48,10 +48,8 @@ import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
 import com.google.api.codegen.viewmodel.PathTemplateGetterFunctionView;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.api.codegen.viewmodel.metadata.ModuleView;
 import com.google.api.codegen.viewmodel.metadata.SimpleModuleView;
-import com.google.api.codegen.viewmodel.metadata.TocContentView;
-import com.google.api.codegen.viewmodel.metadata.TocModuleView;
-import com.google.api.codegen.viewmodel.metadata.VersionIndexModuleView;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexRequireView;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexType;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexView;
@@ -338,7 +336,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
         .build();
   }
 
-  private List<VersionIndexModuleView> generateModuleViews(
+  private List<ModuleView> generateModuleViews(
       Model model, GapicProductConfig productConfig, boolean includeVersionModule) {
     SurfaceNamer namer = new RubySurfaceNamer(productConfig.getPackageName());
     RubyPackageMetadataTransformer metadataTransformer =
@@ -348,52 +346,20 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
 
     List<String> apiModules = namer.getApiModules();
     int moduleCount = apiModules.size();
-    ImmutableList.Builder<VersionIndexModuleView> moduleViews = ImmutableList.builder();
+    ImmutableList.Builder<ModuleView> moduleViews = ImmutableList.builder();
 
     for (int i = 0; i < moduleCount; ++i) {
-      if (i == moduleCount - VERSION_MODULE_RINDEX) {
-        if (includeVersionModule) {
-          moduleViews.add(generateTocModuleView(model, productConfig, apiModules.get(i)));
-        }
-      } else if (i == moduleCount - SERVICE_MODULE_RINDEX) {
+      if (i == moduleCount - SERVICE_MODULE_RINDEX) {
         moduleViews.add(
             metadataTransformer
                 .generateReadmeMetadataView(model, productConfig, packageNamer)
                 .moduleName(apiModules.get(i))
                 .build());
-      } else {
+      } else if (i != moduleCount - VERSION_MODULE_RINDEX || includeVersionModule) {
         moduleViews.add(SimpleModuleView.newBuilder().moduleName(apiModules.get(i)).build());
       }
     }
     return moduleViews.build();
-  }
-
-  private TocModuleView generateTocModuleView(
-      Model model, GapicProductConfig productConfig, String moduleName) {
-    SurfaceNamer namer = new RubySurfaceNamer(productConfig.getPackageName());
-    RubyPackageMetadataTransformer metadataTransformer =
-        new RubyPackageMetadataTransformer(packageConfig);
-    RubyPackageMetadataNamer packageNamer =
-        new RubyPackageMetadataNamer(productConfig.getPackageName());
-    String version = packageConfig.apiVersion();
-    Iterable<Interface> interfaces = new InterfaceView().getElementIterable(model);
-    ImmutableList.Builder<TocContentView> tocContents = ImmutableList.builder();
-    for (Interface apiInterface : interfaces) {
-      GapicInterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
-      tocContents.add(
-          metadataTransformer.generateTocContent(
-              model, packageNamer, version, namer.getApiWrapperClassName(interfaceConfig)));
-    }
-
-    tocContents.add(
-        metadataTransformer.generateDataTypeTocContent(
-            productConfig.getPackageName(), packageNamer, version));
-
-    return TocModuleView.newBuilder()
-        .moduleName(moduleName)
-        .fullName(model.getServiceConfig().getTitle())
-        .contents(tocContents.build())
-        .build();
   }
 
   private String versionPackagePath(SurfaceNamer namer) {
