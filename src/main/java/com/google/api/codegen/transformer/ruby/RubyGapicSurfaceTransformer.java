@@ -73,8 +73,6 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
       ImmutableList.of("GOOGLE_CLOUD_KEYFILE", "GCLOUD_KEYFILE");
   private static final List<String> DEFAULT_JSON_ENV_VARS =
       ImmutableList.of("GOOGLE_CLOUD_KEYFILE_JSON", "GCLOUD_KEYFILE_JSON");
-  private static final int VERSION_MODULE_RINDEX = 1;
-  private static final int SERVICE_MODULE_RINDEX = 2;
 
   private final GapicCodePathMapper pathMapper;
   private final PackageMetadataConfig packageConfig;
@@ -344,19 +342,17 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
     RubyPackageMetadataNamer packageNamer =
         new RubyPackageMetadataNamer(productConfig.getPackageName());
 
-    List<String> apiModules = namer.getApiModules();
-    int moduleCount = apiModules.size();
     ImmutableList.Builder<ModuleView> moduleViews = ImmutableList.builder();
 
-    for (int i = 0; i < moduleCount; ++i) {
-      if (i == moduleCount - SERVICE_MODULE_RINDEX) {
+    for (String moduleName : namer.getApiModules()) {
+      if (moduleName.equals(namer.getModuleServiceName())) {
         moduleViews.add(
             metadataTransformer
                 .generateReadmeMetadataView(model, productConfig, packageNamer)
-                .moduleName(apiModules.get(i))
+                .moduleName(moduleName)
                 .build());
-      } else if (i != moduleCount - VERSION_MODULE_RINDEX || includeVersionModule) {
-        moduleViews.add(SimpleModuleView.newBuilder().moduleName(apiModules.get(i)).build());
+      } else if (includeVersionModule || !moduleName.equals(namer.getModuleVersionName())) {
+        moduleViews.add(SimpleModuleView.newBuilder().moduleName(moduleName).build());
       }
     }
     return moduleViews.build();

@@ -40,7 +40,6 @@ import com.google.common.collect.ImmutableList;
 import java.util.List;
 
 public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer {
-  private static final int VERSION_MODULE_RINDEX = 1;
   private static final String DOC_TEMPLATE_FILENAME = "ruby/message.snip";
 
   private final GapicCodePathMapper pathMapper;
@@ -63,12 +62,12 @@ public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer {
   public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ViewModel> surfaceDocs = ImmutableList.builder();
     for (ProtoFile file : new ProtoFileView().getElementIterable(model)) {
-      surfaceDocs.add(generateDoc(model, file, productConfig));
+      surfaceDocs.add(generateDoc(file, productConfig));
     }
     return surfaceDocs.build();
   }
 
-  private ViewModel generateDoc(Model model, ProtoFile file, GapicProductConfig productConfig) {
+  private ViewModel generateDoc(ProtoFile file, GapicProductConfig productConfig) {
     ModelTypeTable typeTable =
         new ModelTypeTable(
             new RubyTypeTable(productConfig.getPackageName()),
@@ -84,18 +83,15 @@ public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer {
         fileHeaderTransformer.generateFileHeader(
             productConfig, ImportSectionView.newBuilder().build(), namer));
     doc.elementDocs(elementDocTransformer.generateElementDocs(typeTable, namer, file));
-    doc.modules(generateModuleViews(model, productConfig, namer, file.isSource()));
+    doc.modules(generateModuleViews(file.getModel(), productConfig, namer, file.isSource()));
     return doc.build();
   }
 
   private List<ModuleView> generateModuleViews(
       Model model, GapicProductConfig productConfig, SurfaceNamer namer, boolean hasToc) {
-    List<String> apiModules = namer.getApiModules();
-    int moduleCount = apiModules.size();
     ImmutableList.Builder<ModuleView> moduleViews = ImmutableList.builder();
-    for (int i = 0; i < moduleCount; ++i) {
-      String moduleName = apiModules.get(i);
-      if (hasToc && i == moduleCount - VERSION_MODULE_RINDEX) {
+    for (String moduleName : namer.getApiModules()) {
+      if (hasToc && moduleName.equals(namer.getModuleVersionName())) {
         moduleViews.add(generateTocModuleView(model, productConfig, namer, moduleName));
       } else {
         moduleViews.add(SimpleModuleView.newBuilder().moduleName(moduleName).build());
