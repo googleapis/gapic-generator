@@ -19,15 +19,15 @@ import sys
 
 from google.gax.utils.messages import get_messages
 
+from example.proto.example.v1 import no_path_templates_pb2
 from google.api import http_pb2
-from google.cloud.proto.example.v1 import no_path_templates_pb2
 from google.protobuf import descriptor_pb2
 from google.protobuf import empty_pb2
 
 
 names = []
-for module in (http_pb2,
-               no_path_templates_pb2,
+for module in (no_path_templates_pb2,
+               http_pb2,
                descriptor_pb2,
                empty_pb2,):
     for name, message in get_messages(module).items():
