@@ -244,6 +244,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     packageInfo.fileHeader(
         fileHeaderTransformer.generateFileHeader(
             productConfig, ImportSectionView.newBuilder().build(), namer));
+    packageInfo.releaseLevel(productConfig.getReleaseLevel());
 
     return packageInfo.build();
   }
