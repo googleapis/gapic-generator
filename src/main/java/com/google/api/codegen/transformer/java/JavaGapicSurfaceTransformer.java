@@ -577,6 +577,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     Interface firstInterface = new InterfaceView().getElementIterable(model).iterator().next();
     String outputPath = pathMapper.getOutputPath(firstInterface, productConfig);
     packageInfo.outputPath(outputPath + File.separator + "package-info.java");
+    packageInfo.releaseLevel(productConfig.getReleaseLevel());
 
     return packageInfo.build();
   }
