@@ -1,0 +1,1622 @@
+============== file: lib/library/v1/library_service_client.rb ==============
+# Copyright 2017, Google Inc. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# EDITING INSTRUCTIONS
+# This file was generated from the file
+# https://github.com/googleapis/googleapis/blob/master/library.proto,
+# and updates to that file get reflected here through a refresh process.
+# For the short term, the refresh process will only be runnable by Google
+# engineers.
+#
+# The only allowed edits are to method and file documentation. A 3-way
+# merge preserves those additions if the generated source changes.
+
+require "json"
+require "pathname"
+
+require "google/gax"
+require "google/gax/operation"
+require "google/longrunning/operations_client"
+
+require "library_pb"
+require "tagger_pb"
+require "library/credentials"
+
+module Library
+  module V1
+    # This API represents a simple digital library.  It lets you manage Shelf
+    # resources and Book resources in the library. It defines the following
+    # resource model:
+    #
+    # * The API has a collection of {Google::Example::Library::V1::Shelf Shelf}
+    #   resources, named +bookShelves/*+
+    #
+    # * Each Shelf has a collection of {Google::Example::Library::V1::Book Book}
+    #   resources, named +bookShelves/*/books/*+
+    #
+    # Check out [cloud docs!](https://cloud.google.com/library/example/link).
+    # This is [not a cloud link](http://www.google.com).
+    #
+    # Service comment may include special characters: <>&"+'@.
+    #
+    # @!attribute [r] library_service_stub
+    #   @return [Google::Example::Library::V1::LibraryService::Stub]
+    # @!attribute [r] labeler_stub
+    #   @return [Google::Tagger::V1::Labeler::Stub]
+    class LibraryServiceClient
+      attr_reader :library_service_stub, :labeler_stub
+
+      # The default address of the service.
+      SERVICE_ADDRESS = "library-example.googleapis.com".freeze
+
+      # The default port of the service.
+      DEFAULT_SERVICE_PORT = 443
+
+      DEFAULT_TIMEOUT = 30
+
+      PAGE_DESCRIPTORS = {
+        "list_shelves" => Google::Gax::PageDescriptor.new(
+          "page_token",
+          "next_page_token",
+          "shelves"),
+        "list_books" => Google::Gax::PageDescriptor.new(
+          "page_token",
+          "next_page_token",
+          "books"),
+        "list_strings" => Google::Gax::PageDescriptor.new(
+          "page_token",
+          "next_page_token",
+          "strings"),
+        "find_related_books" => Google::Gax::PageDescriptor.new(
+          "page_token",
+          "next_page_token",
+          "names")
+      }.freeze
+
+      private_constant :PAGE_DESCRIPTORS
+
+      BUNDLE_DESCRIPTORS = {
+        "publish_series" => Google::Gax::BundleDescriptor.new(
+          "books",
+          [
+            "edition",
+            "shelf.name"
+          ],
+          subresponse_field: "book_names"),
+        "add_comments" => Google::Gax::BundleDescriptor.new(
+          "comments",
+          [
+            "name"
+          ])
+      }.freeze
+
+      private_constant :BUNDLE_DESCRIPTORS
+
+      # The scopes needed to make gRPC calls to all of the methods defined in
+      # this service.
+      ALL_SCOPES = [
+        "https://www.googleapis.com/auth/cloud-platform",
+        "https://www.googleapis.com/auth/library"
+      ].freeze
+
+      SHELF_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
+        "shelves/{shelf_id}"
+      )
+
+      private_constant :SHELF_PATH_TEMPLATE
+
+      BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
+        "shelves/{shelf_id}/books/{book_id}"
+      )
+
+      private_constant :BOOK_PATH_TEMPLATE
+
+      RETURN_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
+        "shelves/{shelf}/books/{book}/returns/{return}"
+      )
+
+      private_constant :RETURN_PATH_TEMPLATE
+
+      # Returns a fully-qualified shelf resource name string.
+      # @param shelf_id [String]
+      # @return [String]
+      def self.shelf_path shelf_id
+        SHELF_PATH_TEMPLATE.render(
+          :"shelf_id" => shelf_id
+        )
+      end
+
+      # Returns a fully-qualified book resource name string.
+      # @param shelf_id [String]
+      # @param book_id [String]
+      # @return [String]
+      def self.book_path shelf_id, book_id
+        BOOK_PATH_TEMPLATE.render(
+          :"shelf_id" => shelf_id,
+          :"book_id" => book_id
+        )
+      end
+
+      # Returns a fully-qualified return resource name string.
+      # @param shelf [String]
+      # @param book [String]
+      # @param return_ [String]
+      # @return [String]
+      def self.return_path shelf, book, return_
+        RETURN_PATH_TEMPLATE.render(
+          :"shelf" => shelf,
+          :"book" => book,
+          :"return" => return_
+        )
+      end
+
+      # @param credentials
+      #   [Google::Gax::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
+      #   Provides the means for authenticating requests made by the client. This parameter can
+      #   be many types.
+      #   A `Google::Gax::Credentials` uses a the properties of its represented keyfile for
+      #   authenticating requests made by this client.
+      #   A `String` will be treated as the path to the keyfile to be used for the construction of
+      #   credentials for this client.
+      #   A `Hash` will be treated as the contents of a keyfile to be used for the construction of
+      #   credentials for this client.
+      #   A `GRPC::Core::Channel` will be used to make calls through.
+      #   A `GRPC::Core::ChannelCredentials` for the setting up the RPC client. The channel credentials
+      #   should already be composed with a `GRPC::Core::CallCredentials` object.
+      #   A `Proc` will be used as an updater_proc for the Grpc channel. The proc transforms the
+      #   metadata for requests, generally, to give OAuth credentials.
+      # @param scopes [Array<String>]
+      #   The OAuth scopes for this service. This parameter is ignored if
+      #   an updater_proc is supplied.
+      # @param client_config[Hash]
+      #   A Hash for call options for each method. See
+      #   Google::Gax#construct_settings for the structure of
+      #   this data. Falls back to the default config if not specified
+      #   or the specified config is missing data points.
+      # @param timeout [Numeric]
+      #   The default timeout, in seconds, for calls made through this client.
+      def initialize \
+          service_path: SERVICE_ADDRESS,
+          port: DEFAULT_SERVICE_PORT,
+          channel: nil,
+          chan_creds: nil,
+          updater_proc: nil,
+          credentials: nil,
+          scopes: ALL_SCOPES,
+          client_config: {},
+          timeout: DEFAULT_TIMEOUT,
+          lib_name: nil,
+          lib_version: ""
+        # These require statements are intentionally placed here to initialize
+        # the gRPC module only when it's required.
+        # See https://github.com/googleapis/toolkit/issues/446
+        require "google/gax/grpc"
+        require "library_services_pb"
+        require "tagger_services_pb"
+
+        if channel || chan_creds || updater_proc
+          warn "The `channel`, `chan_creds`, and `updater_proc` parameters will be removed " \
+            "on 2017/09/08"
+          credentials ||= channel
+          credentials ||= chan_creds
+          credentials ||= updater_proc
+        end
+        if service_path != SERVICE_ADDRESS || port != DEFAULT_SERVICE_PORT
+          warn "`service_path` and `port` parameters are deprecated and will be removed"
+        end
+
+        credentials ||= Library::Credentials.default
+
+        @operations_client = Google::Longrunning::OperationsClient.new(
+          credentials: credentials,
+          scopes: scopes,
+          client_config: client_config,
+          timeout: timeout,
+          lib_name: lib_name,
+          lib_version: lib_version,
+        )
+
+        if credentials.is_a?(String) || credentials.is_a?(Hash)
+          updater_proc = Library::Credentials.new(credentials).updater_proc
+        end
+        if credentials.is_a?(GRPC::Core::Channel)
+          channel = credentials
+        end
+        if credentials.is_a?(GRPC::Core::ChannelCredentials)
+          chan_creds = credentials
+        end
+        if credentials.is_a?(Proc)
+          updater_proc = credentials
+        end
+        if credentials.is_a?(Google::Gax::Credentials)
+          updater_proc = credentials.updater_proc
+        end
+
+        google_api_client = "gl-ruby/#{RUBY_VERSION}"
+        google_api_client << " #{lib_name}/#{lib_version}" if lib_name
+        google_api_client << " gapic/0.6.8 gax/#{Google::Gax::VERSION}"
+        google_api_client << " grpc/#{GRPC::VERSION}"
+        google_api_client.freeze
+
+        headers = { :"x-goog-api-client" => google_api_client }
+        client_config_file = Pathname.new(__dir__).join(
+          "library_service_client_config.json"
+        )
+        defaults = client_config_file.open do |f|
+          Google::Gax.construct_settings(
+            "google.example.library.v1.LibraryService",
+            JSON.parse(f.read),
+            client_config,
+            Google::Gax::Grpc::STATUS_CODE_NAMES,
+            timeout,
+            bundle_descriptors: BUNDLE_DESCRIPTORS,
+            page_descriptors: PAGE_DESCRIPTORS,
+            errors: Google::Gax::Grpc::API_ERRORS,
+            kwargs: headers
+          )
+        end
+        @library_service_stub = Google::Gax::Grpc.create_stub(
+          service_path,
+          port,
+          chan_creds: chan_creds,
+          channel: channel,
+          updater_proc: updater_proc,
+          scopes: scopes,
+          &Google::Example::Library::V1::LibraryService::Stub.method(:new)
+        )
+        @labeler_stub = Google::Gax::Grpc.create_stub(
+          service_path,
+          port,
+          chan_creds: chan_creds,
+          channel: channel,
+          updater_proc: updater_proc,
+          scopes: scopes,
+          &Google::Tagger::V1::Labeler::Stub.method(:new)
+        )
+
+        @create_shelf = Google::Gax.create_api_call(
+          @library_service_stub.method(:create_shelf),
+          defaults["create_shelf"]
+        )
+        @get_shelf = Google::Gax.create_api_call(
+          @library_service_stub.method(:get_shelf),
+          defaults["get_shelf"]
+        )
+        @list_shelves = Google::Gax.create_api_call(
+          @library_service_stub.method(:list_shelves),
+          defaults["list_shelves"]
+        )
+        @delete_shelf = Google::Gax.create_api_call(
+          @library_service_stub.method(:delete_shelf),
+          defaults["delete_shelf"]
+        )
+        @merge_shelves = Google::Gax.create_api_call(
+          @library_service_stub.method(:merge_shelves),
+          defaults["merge_shelves"]
+        )
+        @create_book = Google::Gax.create_api_call(
+          @library_service_stub.method(:create_book),
+          defaults["create_book"]
+        )
+        @publish_series = Google::Gax.create_api_call(
+          @library_service_stub.method(:publish_series),
+          defaults["publish_series"]
+        )
+        @get_book = Google::Gax.create_api_call(
+          @library_service_stub.method(:get_book),
+          defaults["get_book"]
+        )
+        @list_books = Google::Gax.create_api_call(
+          @library_service_stub.method(:list_books),
+          defaults["list_books"]
+        )
+        @delete_book = Google::Gax.create_api_call(
+          @library_service_stub.method(:delete_book),
+          defaults["delete_book"]
+        )
+        @update_book = Google::Gax.create_api_call(
+          @library_service_stub.method(:update_book),
+          defaults["update_book"]
+        )
+        @move_book = Google::Gax.create_api_call(
+          @library_service_stub.method(:move_book),
+          defaults["move_book"]
+        )
+        @list_strings = Google::Gax.create_api_call(
+          @library_service_stub.method(:list_strings),
+          defaults["list_strings"]
+        )
+        @add_comments = Google::Gax.create_api_call(
+          @library_service_stub.method(:add_comments),
+          defaults["add_comments"]
+        )
+        @get_book_from_archive = Google::Gax.create_api_call(
+          @library_service_stub.method(:get_book_from_archive),
+          defaults["get_book_from_archive"]
+        )
+        @get_book_from_anywhere = Google::Gax.create_api_call(
+          @library_service_stub.method(:get_book_from_anywhere),
+          defaults["get_book_from_anywhere"]
+        )
+        @get_book_from_absolutely_anywhere = Google::Gax.create_api_call(
+          @library_service_stub.method(:get_book_from_absolutely_anywhere),
+          defaults["get_book_from_absolutely_anywhere"]
+        )
+        @update_book_index = Google::Gax.create_api_call(
+          @library_service_stub.method(:update_book_index),
+          defaults["update_book_index"]
+        )
+        @stream_shelves = Google::Gax.create_api_call(
+          @library_service_stub.method(:stream_shelves),
+          defaults["stream_shelves"]
+        )
+        @stream_books = Google::Gax.create_api_call(
+          @library_service_stub.method(:stream_books),
+          defaults["stream_books"]
+        )
+        @discuss_book = Google::Gax.create_api_call(
+          @library_service_stub.method(:discuss_book),
+          defaults["discuss_book"]
+        )
+        @monolog_about_book = Google::Gax.create_api_call(
+          @library_service_stub.method(:monolog_about_book),
+          defaults["monolog_about_book"]
+        )
+        @find_related_books = Google::Gax.create_api_call(
+          @library_service_stub.method(:find_related_books),
+          defaults["find_related_books"]
+        )
+        @add_tag = Google::Gax.create_api_call(
+          @library_service_stub.method(:add_tag),
+          defaults["add_tag"]
+        )
+        @get_big_book = Google::Gax.create_api_call(
+          @library_service_stub.method(:get_big_book),
+          defaults["get_big_book"]
+        )
+        @get_big_nothing = Google::Gax.create_api_call(
+          @library_service_stub.method(:get_big_nothing),
+          defaults["get_big_nothing"]
+        )
+        @test_optional_required_flattening_params = Google::Gax.create_api_call(
+          @library_service_stub.method(:test_optional_required_flattening_params),
+          defaults["test_optional_required_flattening_params"]
+        )
+        @add_label = Google::Gax.create_api_call(
+          @labeler_stub.method(:add_label),
+          defaults["add_label"]
+        )
+      end
+
+      # Service calls
+
+      # Creates a shelf, and returns the new Shelf.
+      # RPC method comment may include special characters: <>&"+'@.
+      #
+      # @param shelf [Google::Example::Library::V1::Shelf | Hash]
+      #   The shelf to create.
+      #   A hash of the same form as `Google::Example::Library::V1::Shelf`
+      #   can also be provided.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @return [Google::Example::Library::V1::Shelf]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library/v1"
+      #
+      #   library_service_client = Library::V1.new
+      #   shelf = {}
+      #   response = library_service_client.create_shelf(shelf)
+
+      def create_shelf \
+          shelf,
+          options: nil
+        req = {
+          shelf: shelf
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Example::Library::V1::CreateShelfRequest)
+        @create_shelf.call(req, options)
+      end
+
+      # Gets a shelf.
+      #
+      # @param name [String]
+      #   The name of the shelf to retrieve.
+      # @param options_ [String]
+      #   To test 'options' parameter name conflict.
+      # @param message [Google::Example::Library::V1::SomeMessage | Hash]
+      #   Field to verify that message-type query parameter gets flattened.
+      #   A hash of the same form as `Google::Example::Library::V1::SomeMessage`
+      #   can also be provided.
+      # @param string_builder [Google::Example::Library::V1::StringBuilder | Hash]
+      #   A hash of the same form as `Google::Example::Library::V1::StringBuilder`
+      #   can also be provided.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @return [Google::Example::Library::V1::Shelf]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library/v1"
+      #
+      #   library_service_client = Library::V1.new
+      #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
+      #   options_ = ''
+      #   response = library_service_client.get_shelf(formatted_name, options_)
+
+      def get_shelf \
+          name,
+          options_,
+          message: nil,
+          string_builder: nil,
+          options: nil
+        req = {
+          name: name,
+          options: options_,
+          message: message,
+          string_builder: string_builder
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Example::Library::V1::GetShelfRequest)
+        @get_shelf.call(req, options)
+      end
+
+      # Lists shelves.
+      #
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @return [Google::Gax::PagedEnumerable<Google::Example::Library::V1::Shelf>]
+      #   An enumerable of Google::Example::Library::V1::Shelf instances.
+      #   See Google::Gax::PagedEnumerable documentation for other
+      #   operations such as per-page iteration or access to the response
+      #   object.
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library/v1"
+      #
+      #   library_service_client = Library::V1.new
+      #
+      #   # Iterate over all results.
+      #   library_service_client.list_shelves.each do |element|
+      #     # Process element.
+      #   end
+      #
+      #   # Or iterate over results one page at a time.
+      #   library_service_client.list_shelves.each_page do |page|
+      #     # Process each page at a time.
+      #     page.each do |element|
+      #       # Process element.
+      #     end
+      #   end
+
+      def list_shelves options: nil
+        req = Google::Example::Library::V1::ListShelvesRequest.new
+        @list_shelves.call(req, options)
+      end
+
+      # Deletes a shelf.
+      #
+      # @param name [String]
+      #   The name of the shelf to delete.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library/v1"
+      #
+      #   library_service_client = Library::V1.new
+      #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
+      #   library_service_client.delete_shelf(formatted_name)
+
+      def delete_shelf \
+          name,
+          options: nil
+        req = {
+          name: name
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Example::Library::V1::DeleteShelfRequest)
+        @delete_shelf.call(req, options)
+        nil
+      end
+
+      # Merges two shelves by adding all books from the shelf named
+      # +other_shelf_name+ to shelf +name+, and deletes
+      # +other_shelf_name+. Returns the updated shelf.
+      #
+      # @param name [String]
+      #   The name of the shelf we're adding books to.
+      # @param other_shelf_name [String]
+      #   The name of the shelf we're removing books from and deleting.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @return [Google::Example::Library::V1::Shelf]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library/v1"
+      #
+      #   library_service_client = Library::V1.new
+      #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
+      #   formatted_other_shelf_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
+      #   response = library_service_client.merge_shelves(formatted_name, formatted_other_shelf_name)
+
+      def merge_shelves \
+          name,
+          other_shelf_name,
+          options: nil
+        req = {
+          name: name,
+          other_shelf_name: other_shelf_name
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Example::Library::V1::MergeShelvesRequest)
+        @merge_shelves.call(req, options)
+      end
+
+      # Creates a book.
+      #
+      # @param name [String]
+      #   The name of the shelf in which the book is created.
+      # @param book [Google::Example::Library::V1::Book | Hash]
+      #   The book to create.
+      #   A hash of the same form as `Google::Example::Library::V1::Book`
+      #   can also be provided.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @return [Google::Example::Library::V1::Book]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library/v1"
+      #
+      #   library_service_client = Library::V1.new
+      #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
+      #   book = {}
+      #   response = library_service_client.create_book(formatted_name, book)
+
+      def create_book \
+          name,
+          book,
+          options: nil
+        req = {
+          name: name,
+          book: book
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Example::Library::V1::CreateBookRequest)
+        @create_book.call(req, options)
+      end
+
+      # Creates a series of books.
+      #
+      # @param shelf [Google::Example::Library::V1::Shelf | Hash]
+      #   The shelf in which the series is created.
+      #   A hash of the same form as `Google::Example::Library::V1::Shelf`
+      #   can also be provided.
+      # @param books [Array<Google::Example::Library::V1::Book | Hash>]
+      #   The books to publish in the series.
+      #   A hash of the same form as `Google::Example::Library::V1::Book`
+      #   can also be provided.
+      # @param series_uuid [Google::Example::Library::V1::SeriesUuid | Hash]
+      #   Uniquely identifies the series to the publishing house.
+      #   A hash of the same form as `Google::Example::Library::V1::SeriesUuid`
+      #   can also be provided.
+      # @param edition [Integer]
+      #   The edition of the series
+      # @param review_copy [true, false]
+      #   If the book is in a pre-publish state
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @return [Google::Example::Library::V1::PublishSeriesResponse]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library/v1"
+      #
+      #   library_service_client = Library::V1.new
+      #   shelf = {}
+      #   books = []
+      #   series_string = "foobar"
+      #   series_uuid = { series_string: series_string }
+      #   response = library_service_client.publish_series(shelf, books, series_uuid)
+
+      def publish_series \
+          shelf,
+          books,
+          series_uuid,
+          edition: nil,
+          review_copy: nil,
+          options: nil
+        req = {
+          shelf: shelf,
+          books: books,
+          series_uuid: series_uuid,
+          edition: edition,
+          review_copy: review_copy
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Example::Library::V1::PublishSeriesRequest)
+        @publish_series.call(req, options)
+      end
+
+      # Gets a book.
+      #
+      # @param name [String]
+      #   The name of the book to retrieve.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @return [Google::Example::Library::V1::Book]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library/v1"
+      #
+      #   library_service_client = Library::V1.new
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #   response = library_service_client.get_book(formatted_name)
+
+      def get_book \
+          name,
+          options: nil
+        req = {
+          name: name
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Example::Library::V1::GetBookRequest)
+        @get_book.call(req, options)
+      end
+
+      # Lists books in a shelf.
+      #
+      # @param name [String]
+      #   The name of the shelf whose books we'd like to list.
+      # @param page_size [Integer]
+      #   The maximum number of resources contained in the underlying API
+      #   response. If page streaming is performed per-resource, this
+      #   parameter does not affect the return value. If page streaming is
+      #   performed per-page, this determines the maximum number of
+      #   resources in a page.
+      # @param filter [String]
+      #   To test python built-in wrapping.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @return [Google::Gax::PagedEnumerable<Google::Example::Library::V1::Book>]
+      #   An enumerable of Google::Example::Library::V1::Book instances.
+      #   See Google::Gax::PagedEnumerable documentation for other
+      #   operations such as per-page iteration or access to the response
+      #   object.
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library/v1"
+      #
+      #   library_service_client = Library::V1.new
+      #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
+      #
+      #   # Iterate over all results.
+      #   library_service_client.list_books(formatted_name).each do |element|
+      #     # Process element.
+      #   end
+      #
+      #   # Or iterate over results one page at a time.
+      #   library_service_client.list_books(formatted_name).each_page do |page|
+      #     # Process each page at a time.
+      #     page.each do |element|
+      #       # Process element.
+      #     end
+      #   end
+
+      def list_books \
+          name,
+          page_size: nil,
+          filter: nil,
+          options: nil
+        req = {
+          name: name,
+          page_size: page_size,
+          filter: filter
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Example::Library::V1::ListBooksRequest)
+        @list_books.call(req, options)
+      end
+
+      # Deletes a book.
+      #
+      # @param name [String]
+      #   The name of the book to delete.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library/v1"
+      #
+      #   library_service_client = Library::V1.new
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #   library_service_client.delete_book(formatted_name)
+
+      def delete_book \
+          name,
+          options: nil
+        req = {
+          name: name
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Example::Library::V1::DeleteBookRequest)
+        @delete_book.call(req, options)
+        nil
+      end
+
+      # Updates a book.
+      #
+      # @param name [String]
+      #   The name of the book to update.
+      # @param book [Google::Example::Library::V1::Book | Hash]
+      #   The book to update with.
+      #   A hash of the same form as `Google::Example::Library::V1::Book`
+      #   can also be provided.
+      # @param update_mask [Google::Protobuf::FieldMask | Hash]
+      #   A field mask to apply, rendered as an HTTP parameter.
+      #   A hash of the same form as `Google::Protobuf::FieldMask`
+      #   can also be provided.
+      # @param physical_mask [Google::Example::Library::V1::FieldMask | Hash]
+      #   To test Python import clash resolution.
+      #   A hash of the same form as `Google::Example::Library::V1::FieldMask`
+      #   can also be provided.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @return [Google::Example::Library::V1::Book]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library/v1"
+      #
+      #   library_service_client = Library::V1.new
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #   book = {}
+      #   response = library_service_client.update_book(formatted_name, book)
+
+      def update_book \
+          name,
+          book,
+          update_mask: nil,
+          physical_mask: nil,
+          options: nil
+        req = {
+          name: name,
+          book: book,
+          update_mask: update_mask,
+          physical_mask: physical_mask
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Example::Library::V1::UpdateBookRequest)
+        @update_book.call(req, options)
+      end
+
+      # Moves a book to another shelf, and returns the new book.
+      #
+      # @param name [String]
+      #   The name of the book to move.
+      # @param other_shelf_name [String]
+      #   The name of the destination shelf.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @return [Google::Example::Library::V1::Book]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library/v1"
+      #
+      #   library_service_client = Library::V1.new
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #   formatted_other_shelf_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
+      #   response = library_service_client.move_book(formatted_name, formatted_other_shelf_name)
+
+      def move_book \
+          name,
+          other_shelf_name,
+          options: nil
+        req = {
+          name: name,
+          other_shelf_name: other_shelf_name
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Example::Library::V1::MoveBookRequest)
+        @move_book.call(req, options)
+      end
+
+      # Lists a primitive resource. To test go page streaming.
+      #
+      # @param name [String]
+      # @param page_size [Integer]
+      #   The maximum number of resources contained in the underlying API
+      #   response. If page streaming is performed per-resource, this
+      #   parameter does not affect the return value. If page streaming is
+      #   performed per-page, this determines the maximum number of
+      #   resources in a page.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @return [Google::Gax::PagedEnumerable<String>]
+      #   An enumerable of String instances.
+      #   See Google::Gax::PagedEnumerable documentation for other
+      #   operations such as per-page iteration or access to the response
+      #   object.
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library/v1"
+      #
+      #   library_service_client = Library::V1.new
+      #
+      #   # Iterate over all results.
+      #   library_service_client.list_strings.each do |element|
+      #     # Process element.
+      #   end
+      #
+      #   # Or iterate over results one page at a time.
+      #   library_service_client.list_strings.each_page do |page|
+      #     # Process each page at a time.
+      #     page.each do |element|
+      #       # Process element.
+      #     end
+      #   end
+
+      def list_strings \
+          name: nil,
+          page_size: nil,
+          options: nil
+        req = {
+          name: name,
+          page_size: page_size
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Example::Library::V1::ListStringsRequest)
+        @list_strings.call(req, options)
+      end
+
+      # Adds comments to a book
+      #
+      # @param name [String]
+      # @param comments [Array<Google::Example::Library::V1::Comment | Hash>]
+      #   A hash of the same form as `Google::Example::Library::V1::Comment`
+      #   can also be provided.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library/v1"
+      #
+      #   library_service_client = Library::V1.new
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #   comment = ''
+      #   stage = :UNSET
+      #   alignment = :CHAR
+      #   comments_element = {
+      #     comment: comment,
+      #     stage: stage,
+      #     alignment: alignment
+      #   }
+      #   comments = [comments_element]
+      #   library_service_client.add_comments(formatted_name, comments)
+
+      def add_comments \
+          name,
+          comments,
+          options: nil
+        req = {
+          name: name,
+          comments: comments
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Example::Library::V1::AddCommentsRequest)
+        @add_comments.call(req, options)
+        nil
+      end
+
+      # Gets a book from an archive.
+      #
+      # @param name [String]
+      #   The name of the book to retrieve.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @return [Google::Example::Library::V1::BookFromArchive]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library/v1"
+      #
+      #   library_service_client = Library::V1.new
+      #   formatted_name = Library::V1::LibraryServiceClient.archived_book_path("[ARCHIVE_PATH]", "[BOOK_ID]")
+      #   response = library_service_client.get_book_from_archive(formatted_name)
+
+      def get_book_from_archive \
+          name,
+          options: nil
+        req = {
+          name: name
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Example::Library::V1::GetBookFromArchiveRequest)
+        @get_book_from_archive.call(req, options)
+      end
+
+      # Gets a book from a shelf or archive.
+      #
+      # @param name [String]
+      #   The name of the book to retrieve.
+      # @param alt_book_name [String]
+      #   An alternate book name, used to test restricting flattened field to a
+      #   single resource name type in a oneof.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @return [Google::Example::Library::V1::BookFromAnywhere]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library/v1"
+      #
+      #   library_service_client = Library::V1.new
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #   formatted_alt_book_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #   response = library_service_client.get_book_from_anywhere(formatted_name, formatted_alt_book_name)
+
+      def get_book_from_anywhere \
+          name,
+          alt_book_name,
+          options: nil
+        req = {
+          name: name,
+          alt_book_name: alt_book_name
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Example::Library::V1::GetBookFromAnywhereRequest)
+        @get_book_from_anywhere.call(req, options)
+      end
+
+      # Test proper OneOf-Any resource name mapping
+      #
+      # @param name [String]
+      #   The name of the book to retrieve.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @return [Google::Example::Library::V1::BookFromAnywhere]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library/v1"
+      #
+      #   library_service_client = Library::V1.new
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #   response = library_service_client.get_book_from_absolutely_anywhere(formatted_name)
+
+      def get_book_from_absolutely_anywhere \
+          name,
+          options: nil
+        req = {
+          name: name
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Example::Library::V1::GetBookFromAbsolutelyAnywhereRequest)
+        @get_book_from_absolutely_anywhere.call(req, options)
+      end
+
+      # Updates the index of a book.
+      #
+      # @param name [String]
+      #   The name of the book to update.
+      # @param index_name [String]
+      #   The name of the index for the book
+      # @param index_map [Hash{String => String}]
+      #   The index to update the book with
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library/v1"
+      #
+      #   library_service_client = Library::V1.new
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #   index_name = "default index"
+      #   index_map_item = ''
+      #   index_map = { "default_key" => index_map_item }
+      #   library_service_client.update_book_index(formatted_name, index_name, index_map)
+
+      def update_book_index \
+          name,
+          index_name,
+          index_map,
+          options: nil
+        req = {
+          name: name,
+          index_name: index_name,
+          index_map: index_map
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Example::Library::V1::UpdateBookIndexRequest)
+        @update_book_index.call(req, options)
+        nil
+      end
+
+      # Test server streaming
+      # gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+      #
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @return [Enumerable<Google::Example::Library::V1::StreamShelvesResponse>]
+      #   An enumerable of Google::Example::Library::V1::StreamShelvesResponse instances.
+      #
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library/v1"
+      #
+      #   library_service_client = Library::V1.new
+      #   library_service_client.stream_shelves.each do |element|
+      #     # Process element.
+      #   end
+
+      def stream_shelves options: nil
+        req = Google::Example::Library::V1::StreamShelvesRequest.new
+        @stream_shelves.call(req, options)
+      end
+
+      # Test server streaming, non-paged responses.
+      # gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+      #
+      # @param name [String]
+      #   The name of the shelf whose books we'd like to list.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @return [Enumerable<Google::Example::Library::V1::Book>]
+      #   An enumerable of Google::Example::Library::V1::Book instances.
+      #
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library/v1"
+      #
+      #   library_service_client = Library::V1.new
+      #   name = ''
+      #   library_service_client.stream_books(name).each do |element|
+      #     # Process element.
+      #   end
+
+      def stream_books \
+          name,
+          options: nil
+        req = {
+          name: name
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Example::Library::V1::StreamBooksRequest)
+        @stream_books.call(req, options)
+      end
+
+      # Test bidi-streaming.
+      # gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+      #
+      # @param reqs [Enumerable<Google::Example::Library::V1::DiscussBookRequest>]
+      #   The input requests.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @return [Enumerable<Google::Example::Library::V1::Comment>]
+      #   An enumerable of Google::Example::Library::V1::Comment instances.
+      #
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      #
+      # @note
+      #   EXPERIMENTAL:
+      #     Streaming requests are still undergoing review.
+      #     This method interface might change in the future.
+      #
+      # @example
+      #   require "library/v1"
+      #
+      #   library_service_client = Library::V1.new
+      #   name = ''
+      #   request = { name: name }
+      #   requests = [request]
+      #   library_service_client.discuss_book(requests).each do |element|
+      #     # Process element.
+      #   end
+
+      def discuss_book reqs, options: nil
+        request_protos = reqs.lazy.map do |req|
+          Google::Gax::to_proto(req, Google::Example::Library::V1::DiscussBookRequest)
+        end
+        @discuss_book.call(request_protos, options)
+      end
+
+      # Test client streaming.
+      # gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
+      #
+      # @param reqs [Enumerable<Google::Example::Library::V1::DiscussBookRequest>]
+      #   The input requests.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @return [Google::Example::Library::V1::Comment]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      #
+      # @note
+      #   EXPERIMENTAL:
+      #     Streaming requests are still undergoing review.
+      #     This method interface might change in the future.
+      #
+      # @example
+      #   require "library/v1"
+      #
+      #   library_service_client = Library::V1.new
+      #   name = ''
+      #   request = { name: name }
+      #   requests = [request]
+      #   response = library_service_client.monolog_about_book(requests)
+
+      def monolog_about_book reqs, options: nil
+        request_protos = reqs.lazy.map do |req|
+          Google::Gax::to_proto(req, Google::Example::Library::V1::DiscussBookRequest)
+        end
+        @monolog_about_book.call(request_protos, options)
+      end
+
+      # @param names [Array<String>]
+      # @param shelves [Array<String>]
+      # @param page_size [Integer]
+      #   The maximum number of resources contained in the underlying API
+      #   response. If page streaming is performed per-resource, this
+      #   parameter does not affect the return value. If page streaming is
+      #   performed per-page, this determines the maximum number of
+      #   resources in a page.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @return [Google::Gax::PagedEnumerable<String>]
+      #   An enumerable of String instances.
+      #   See Google::Gax::PagedEnumerable documentation for other
+      #   operations such as per-page iteration or access to the response
+      #   object.
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library/v1"
+      #
+      #   library_service_client = Library::V1.new
+      #   names_element = ''
+      #   names = [names_element]
+      #   shelves = []
+      #
+      #   # Iterate over all results.
+      #   library_service_client.find_related_books(names, shelves).each do |element|
+      #     # Process element.
+      #   end
+      #
+      #   # Or iterate over results one page at a time.
+      #   library_service_client.find_related_books(names, shelves).each_page do |page|
+      #     # Process each page at a time.
+      #     page.each do |element|
+      #       # Process element.
+      #     end
+      #   end
+
+      def find_related_books \
+          names,
+          shelves,
+          page_size: nil,
+          options: nil
+        req = {
+          names: names,
+          shelves: shelves,
+          page_size: page_size
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Example::Library::V1::FindRelatedBooksRequest)
+        @find_related_books.call(req, options)
+      end
+
+      # Adds a tag to the book. This RPC is a mixin.
+      #
+      # @param resource [String]
+      #   REQUIRED: The resource which the tag is being added to.
+      #   Resource is usually specified as a path, such as,
+      #   projects/{project}/zones/{zone}/disks/{disk}.
+      # @param tag [String]
+      #   REQUIRED: The tag to add.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @return [Google::Tagger::V1::AddTagResponse]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library/v1"
+      #
+      #   library_service_client = Library::V1.new
+      #   formatted_resource = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #   tag = ''
+      #   response = library_service_client.add_tag(formatted_resource, tag)
+
+      def add_tag \
+          resource,
+          tag,
+          options: nil
+        req = {
+          resource: resource,
+          tag: tag
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Tagger::V1::AddTagRequest)
+        @add_tag.call(req, options)
+      end
+
+      # Adds a label to the entity.
+      #
+      # @param resource [String]
+      #   REQUIRED: The resource which the label is being added to.
+      #   Resource is usually specified as a path, such as,
+      #   projects/{project}/zones/{zone}/disks/{disk}.
+      # @param label [String]
+      #   REQUIRED: The label to add.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @return [Google::Tagger::V1::AddLabelResponse]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library/v1"
+      #
+      #   library_service_client = Library::V1.new
+      #   formatted_resource = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #   label = ''
+      #   response = library_service_client.add_label(formatted_resource, label)
+
+      def add_label \
+          resource,
+          label,
+          options: nil
+        req = {
+          resource: resource,
+          label: label
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Tagger::V1::AddLabelRequest)
+        @add_label.call(req, options)
+      end
+
+      # Test long-running operations
+      #
+      # @param name [String]
+      #   The name of the book to retrieve.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @return [Google::Gax::Operation]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library/v1"
+      #
+      #   library_service_client = Library::V1.new
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #
+      #   # Register a callback during the method call.
+      #   operation = library_service_client.get_big_book(formatted_name) do |op|
+      #     raise op.results.message if op.error?
+      #     op_results = op.results
+      #     # Process the results.
+      #
+      #     metadata = op.metadata
+      #     # Process the metadata.
+      #   end
+      #
+      #   # Or use the return value to register a callback.
+      #   operation.on_done do |op|
+      #     raise op.results.message if op.error?
+      #     op_results = op.results
+      #     # Process the results.
+      #
+      #     metadata = op.metadata
+      #     # Process the metadata.
+      #   end
+      #
+      #   # Manually reload the operation.
+      #   operation.reload!
+      #
+      #   # Or block until the operation completes, triggering callbacks on
+      #   # completion.
+      #   operation.wait_until_done!
+
+      def get_big_book \
+          name,
+          options: nil
+        req = {
+          name: name
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Example::Library::V1::GetBookRequest)
+        operation = Google::Gax::Operation.new(
+          @get_big_book.call(req, options),
+          @operations_client,
+          Google::Example::Library::V1::Book,
+          Google::Example::Library::V1::GetBigBookMetadata,
+          call_options: options
+        )
+        operation.on_done { |operation| yield(operation) } if block_given?
+        operation
+      end
+
+      # Test long-running operations with empty return type.
+      #
+      # @param name [String]
+      #   The name of the book to retrieve.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @return [Google::Gax::Operation]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library/v1"
+      #
+      #   library_service_client = Library::V1.new
+      #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
+      #
+      #   # Register a callback during the method call.
+      #   operation = library_service_client.get_big_nothing(formatted_name) do |op|
+      #     raise op.results.message if op.error?
+      #     op_results = op.results
+      #     # Process the results.
+      #
+      #     metadata = op.metadata
+      #     # Process the metadata.
+      #   end
+      #
+      #   # Or use the return value to register a callback.
+      #   operation.on_done do |op|
+      #     raise op.results.message if op.error?
+      #     op_results = op.results
+      #     # Process the results.
+      #
+      #     metadata = op.metadata
+      #     # Process the metadata.
+      #   end
+      #
+      #   # Manually reload the operation.
+      #   operation.reload!
+      #
+      #   # Or block until the operation completes, triggering callbacks on
+      #   # completion.
+      #   operation.wait_until_done!
+
+      def get_big_nothing \
+          name,
+          options: nil
+        req = {
+          name: name
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Example::Library::V1::GetBookRequest)
+        operation = Google::Gax::Operation.new(
+          @get_big_nothing.call(req, options),
+          @operations_client,
+          Google::Protobuf::Empty,
+          Google::Example::Library::V1::GetBigBookMetadata,
+          call_options: options
+        )
+        operation.on_done { |operation| yield(operation) } if block_given?
+        operation
+      end
+
+      # Test optional flattening parameters of all types
+      #
+      # @param required_singular_int32 [Integer]
+      # @param required_singular_int64 [Integer]
+      # @param required_singular_float [Float]
+      # @param required_singular_double [Float]
+      # @param required_singular_bool [true, false]
+      # @param required_singular_enum [Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerEnum]
+      # @param required_singular_string [String]
+      # @param required_singular_bytes [String]
+      # @param required_singular_message [Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerMessage | Hash]
+      #   A hash of the same form as `Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerMessage`
+      #   can also be provided.
+      # @param required_singular_resource_name [String]
+      # @param required_singular_resource_name_oneof [String]
+      # @param required_singular_fixed32 [Integer]
+      # @param required_singular_fixed64 [Integer]
+      # @param required_repeated_int32 [Array<Integer>]
+      # @param required_repeated_int64 [Array<Integer>]
+      # @param required_repeated_float [Array<Float>]
+      # @param required_repeated_double [Array<Float>]
+      # @param required_repeated_bool [Array<true, false>]
+      # @param required_repeated_enum [Array<Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerEnum>]
+      # @param required_repeated_string [Array<String>]
+      # @param required_repeated_bytes [Array<String>]
+      # @param required_repeated_message [Array<Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerMessage | Hash>]
+      #   A hash of the same form as `Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerMessage`
+      #   can also be provided.
+      # @param required_repeated_resource_name [Array<String>]
+      # @param required_repeated_resource_name_oneof [Array<String>]
+      # @param required_repeated_fixed32 [Array<Integer>]
+      # @param required_repeated_fixed64 [Array<Integer>]
+      # @param required_map [Hash{Integer => String}]
+      # @param optional_singular_int32 [Integer]
+      # @param optional_singular_int64 [Integer]
+      # @param optional_singular_float [Float]
+      # @param optional_singular_double [Float]
+      # @param optional_singular_bool [true, false]
+      # @param optional_singular_enum [Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerEnum]
+      # @param optional_singular_string [String]
+      # @param optional_singular_bytes [String]
+      # @param optional_singular_message [Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerMessage | Hash]
+      #   A hash of the same form as `Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerMessage`
+      #   can also be provided.
+      # @param optional_singular_resource_name [String]
+      # @param optional_singular_resource_name_oneof [String]
+      # @param optional_singular_fixed32 [Integer]
+      # @param optional_singular_fixed64 [Integer]
+      # @param optional_repeated_int32 [Array<Integer>]
+      # @param optional_repeated_int64 [Array<Integer>]
+      # @param optional_repeated_float [Array<Float>]
+      # @param optional_repeated_double [Array<Float>]
+      # @param optional_repeated_bool [Array<true, false>]
+      # @param optional_repeated_enum [Array<Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerEnum>]
+      # @param optional_repeated_string [Array<String>]
+      # @param optional_repeated_bytes [Array<String>]
+      # @param optional_repeated_message [Array<Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerMessage | Hash>]
+      #   A hash of the same form as `Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest::InnerMessage`
+      #   can also be provided.
+      # @param optional_repeated_resource_name [Array<String>]
+      # @param optional_repeated_resource_name_oneof [Array<String>]
+      # @param optional_repeated_fixed32 [Array<Integer>]
+      # @param optional_repeated_fixed64 [Array<Integer>]
+      # @param optional_map [Hash{Integer => String}]
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @return [Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsResponse]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "library/v1"
+      #
+      #   library_service_client = Library::V1.new
+      #   required_singular_int32 = 0
+      #   required_singular_int64 = 0
+      #   required_singular_float = 0.0
+      #   required_singular_double = 0.0
+      #   required_singular_bool = false
+      #   required_singular_enum = :ZERO
+      #   required_singular_string = ''
+      #   required_singular_bytes = ''
+      #   required_singular_message = {}
+      #   required_singular_resource_name = ''
+      #   required_singular_resource_name_oneof = ''
+      #   required_singular_fixed32 = 0
+      #   required_singular_fixed64 = 0
+      #   required_repeated_int32 = []
+      #   required_repeated_int64 = []
+      #   required_repeated_float = []
+      #   required_repeated_double = []
+      #   required_repeated_bool = []
+      #   required_repeated_enum = []
+      #   required_repeated_string = []
+      #   required_repeated_bytes = []
+      #   required_repeated_message = []
+      #   formatted_required_repeated_resource_name = []
+      #   formatted_required_repeated_resource_name_oneof = []
+      #   required_repeated_fixed32 = []
+      #   required_repeated_fixed64 = []
+      #   required_map = {}
+      #   response = library_service_client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, formatted_required_repeated_resource_name, formatted_required_repeated_resource_name_oneof, required_repeated_fixed32, required_repeated_fixed64, required_map)
+
+      def test_optional_required_flattening_params \
+          required_singular_int32,
+          required_singular_int64,
+          required_singular_float,
+          required_singular_double,
+          required_singular_bool,
+          required_singular_enum,
+          required_singular_string,
+          required_singular_bytes,
+          required_singular_message,
+          required_singular_resource_name,
+          required_singular_resource_name_oneof,
+          required_singular_fixed32,
+          required_singular_fixed64,
+          required_repeated_int32,
+          required_repeated_int64,
+          required_repeated_float,
+          required_repeated_double,
+          required_repeated_bool,
+          required_repeated_enum,
+          required_repeated_string,
+          required_repeated_bytes,
+          required_repeated_message,
+          required_repeated_resource_name,
+          required_repeated_resource_name_oneof,
+          required_repeated_fixed32,
+          required_repeated_fixed64,
+          required_map,
+          optional_singular_int32: nil,
+          optional_singular_int64: nil,
+          optional_singular_float: nil,
+          optional_singular_double: nil,
+          optional_singular_bool: nil,
+          optional_singular_enum: nil,
+          optional_singular_string: nil,
+          optional_singular_bytes: nil,
+          optional_singular_message: nil,
+          optional_singular_resource_name: nil,
+          optional_singular_resource_name_oneof: nil,
+          optional_singular_fixed32: nil,
+          optional_singular_fixed64: nil,
+          optional_repeated_int32: nil,
+          optional_repeated_int64: nil,
+          optional_repeated_float: nil,
+          optional_repeated_double: nil,
+          optional_repeated_bool: nil,
+          optional_repeated_enum: nil,
+          optional_repeated_string: nil,
+          optional_repeated_bytes: nil,
+          optional_repeated_message: nil,
+          optional_repeated_resource_name: nil,
+          optional_repeated_resource_name_oneof: nil,
+          optional_repeated_fixed32: nil,
+          optional_repeated_fixed64: nil,
+          optional_map: nil,
+          options: nil
+        req = {
+          required_singular_int32: required_singular_int32,
+          required_singular_int64: required_singular_int64,
+          required_singular_float: required_singular_float,
+          required_singular_double: required_singular_double,
+          required_singular_bool: required_singular_bool,
+          required_singular_enum: required_singular_enum,
+          required_singular_string: required_singular_string,
+          required_singular_bytes: required_singular_bytes,
+          required_singular_message: required_singular_message,
+          required_singular_resource_name: required_singular_resource_name,
+          required_singular_resource_name_oneof: required_singular_resource_name_oneof,
+          required_singular_fixed32: required_singular_fixed32,
+          required_singular_fixed64: required_singular_fixed64,
+          required_repeated_int32: required_repeated_int32,
+          required_repeated_int64: required_repeated_int64,
+          required_repeated_float: required_repeated_float,
+          required_repeated_double: required_repeated_double,
+          required_repeated_bool: required_repeated_bool,
+          required_repeated_enum: required_repeated_enum,
+          required_repeated_string: required_repeated_string,
+          required_repeated_bytes: required_repeated_bytes,
+          required_repeated_message: required_repeated_message,
+          required_repeated_resource_name: required_repeated_resource_name,
+          required_repeated_resource_name_oneof: required_repeated_resource_name_oneof,
+          required_repeated_fixed32: required_repeated_fixed32,
+          required_repeated_fixed64: required_repeated_fixed64,
+          required_map: required_map,
+          optional_singular_int32: optional_singular_int32,
+          optional_singular_int64: optional_singular_int64,
+          optional_singular_float: optional_singular_float,
+          optional_singular_double: optional_singular_double,
+          optional_singular_bool: optional_singular_bool,
+          optional_singular_enum: optional_singular_enum,
+          optional_singular_string: optional_singular_string,
+          optional_singular_bytes: optional_singular_bytes,
+          optional_singular_message: optional_singular_message,
+          optional_singular_resource_name: optional_singular_resource_name,
+          optional_singular_resource_name_oneof: optional_singular_resource_name_oneof,
+          optional_singular_fixed32: optional_singular_fixed32,
+          optional_singular_fixed64: optional_singular_fixed64,
+          optional_repeated_int32: optional_repeated_int32,
+          optional_repeated_int64: optional_repeated_int64,
+          optional_repeated_float: optional_repeated_float,
+          optional_repeated_double: optional_repeated_double,
+          optional_repeated_bool: optional_repeated_bool,
+          optional_repeated_enum: optional_repeated_enum,
+          optional_repeated_string: optional_repeated_string,
+          optional_repeated_bytes: optional_repeated_bytes,
+          optional_repeated_message: optional_repeated_message,
+          optional_repeated_resource_name: optional_repeated_resource_name,
+          optional_repeated_resource_name_oneof: optional_repeated_resource_name_oneof,
+          optional_repeated_fixed32: optional_repeated_fixed32,
+          optional_repeated_fixed64: optional_repeated_fixed64,
+          optional_map: optional_map
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Example::Library::V1::TestOptionalRequiredFlatteningParamsRequest)
+        @test_optional_required_flattening_params.call(req, options)
+      end
+    end
+  end
+end

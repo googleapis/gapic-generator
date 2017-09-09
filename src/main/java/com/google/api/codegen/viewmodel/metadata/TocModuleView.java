@@ -19,7 +19,7 @@ import com.google.auto.value.AutoValue;
 import java.util.List;
 
 @AutoValue
-public abstract class TocModuleView implements VersionIndexModuleView {
+public abstract class TocModuleView implements ModuleView {
   public abstract String moduleName();
 
   public abstract String fullName();

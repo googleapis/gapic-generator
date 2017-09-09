@@ -31,7 +31,9 @@ import com.google.api.codegen.transformer.Synchronicity;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.TypeName;
+import com.google.api.codegen.util.VersionMatcher;
 import com.google.api.codegen.util.py.PythonCommentReformatter;
+import com.google.api.codegen.util.py.PythonDocstringUtil;
 import com.google.api.codegen.util.py.PythonNameFormatter;
 import com.google.api.codegen.util.py.PythonTypeTable;
 import com.google.api.tools.framework.model.EnumType;
@@ -45,6 +47,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 
@@ -97,6 +100,15 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getGapicPackageName(String configPackageName) {
+    List<String> parts = Arrays.asList(configPackageName.split("-"));
+    if (VersionMatcher.isVersion(parts.get(parts.size() - 1))) {
+      return Joiner.on("-").join(parts.subList(0, parts.size() - 1));
+    }
+    return configPackageName;
+  }
+
+  @Override
   public String getFormattedVariableName(Name identifier) {
     return localVarName(identifier);
   }
@@ -146,10 +158,9 @@ public class PythonSurfaceNamer extends SurfaceNamer {
     if (type.isMap()) {
       TypeName mapTypeName = new TypeName("dict");
       TypeName keyTypeName =
-          new TypeName(getParamTypeNameForElementType(typeTable, type.getMapKeyField().getType()));
+          new TypeName(getParamTypeNameForElementType(type.getMapKeyField().getType()));
       TypeName valueTypeName =
-          new TypeName(
-              getParamTypeNameForElementType(typeTable, type.getMapValueField().getType()));
+          new TypeName(getParamTypeNameForElementType(type.getMapValueField().getType()));
       return new TypeName(
               mapTypeName.getFullName(),
               mapTypeName.getNickname(),
@@ -161,13 +172,13 @@ public class PythonSurfaceNamer extends SurfaceNamer {
 
     if (type.isRepeated()) {
       TypeName listTypeName = new TypeName("list");
-      TypeName elementTypeName = new TypeName(getParamTypeNameForElementType(typeTable, type));
+      TypeName elementTypeName = new TypeName(getParamTypeNameForElementType(type));
       return new TypeName(
               listTypeName.getFullName(), listTypeName.getNickname(), "%s[%i]", elementTypeName)
           .getFullName();
     }
 
-    return getParamTypeNameForElementType(typeTable, type);
+    return getParamTypeNameForElementType(type);
   }
 
   @Override
@@ -176,28 +187,30 @@ public class PythonSurfaceNamer extends SurfaceNamer {
     return typeTable.getAndSaveNicknameFor(method.getOutputType());
   }
 
-  private String getParamTypeNameForElementType(ModelTypeTable typeTable, TypeRef type) {
+  private String getParamTypeNameForElementType(TypeRef type) {
     String typeName = getModelTypeFormatter().getFullNameForElementType(type);
 
+    if (type.isMessage() || type.isEnum()) {
+      typeName = PythonDocstringUtil.napoleonType(typeName, getVersionedDirectoryNamespace());
+    }
+
     if (type.isMessage()) {
-      return "Union[dict|:class:`" + typeName + "`]";
+      return "Union[dict, " + typeName + "]";
     }
 
     if (type.isEnum()) {
-      String nickname = typeTable.cloneEmpty().getAndSaveNicknameFor(typeName);
-      return "~." + nickname;
+      return typeName;
     }
-
     return typeName;
   }
 
-  private String getResponseTypeNameForElementType(ModelTypeTable typeTable, TypeRef type) {
+  private String getResponseTypeNameForElementType(TypeRef type) {
     if (type.isMessage()) {
       String typeName = getModelTypeFormatter().getFullNameForElementType(type);
-      return ":class:`" + typeName + "`";
+      return PythonDocstringUtil.napoleonType(typeName, getVersionedDirectoryNamespace());
     }
 
-    return getParamTypeNameForElementType(typeTable, type);
+    return getParamTypeNameForElementType(type);
   }
 
   @Override
@@ -227,8 +240,12 @@ public class PythonSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getClientConfigPath(Interface apiInterface) {
-    return classFileNameBase(Name.upperCamel(apiInterface.getSimpleName()).join("client_config"))
-        + ".json";
+    return String.format("%s.%s", getPackageName(), getClientConfigName(apiInterface));
+  }
+
+  @Override
+  public String getClientConfigName(Interface apiInterface) {
+    return classFileNameBase(Name.upperCamel(apiInterface.getSimpleName()).join("client_config"));
   }
 
   @Override
@@ -263,7 +280,8 @@ public class PythonSurfaceNamer extends SurfaceNamer {
         methodConfig.isLongRunningOperation()
             ? "google.gax._OperationFuture"
             : getModelTypeFormatter().getFullNameFor(outputType);
-    String classInfo = ":class:`" + returnTypeName + "`";
+    String classInfo =
+        PythonDocstringUtil.napoleonType(returnTypeName, getVersionedDirectoryNamespace());
 
     if (methodConfig.getMethod().getResponseStreaming()) {
       return ImmutableList.of("Iterable[" + classInfo + "].");
@@ -272,15 +290,22 @@ public class PythonSurfaceNamer extends SurfaceNamer {
     if (methodConfig.isPageStreaming()) {
       TypeRef resourceType = methodConfig.getPageStreaming().getResourcesField().getType();
       return ImmutableList.of(
-          "A :class:`google.gax.PageIterator` instance. By default, this",
+          "A :class:`~google.gax.PageIterator` instance. By default, this",
           "is an iterable of "
-              + getResponseTypeNameForElementType(context.getModelTypeTable(), resourceType)
+              + annotateWithClass(getResponseTypeNameForElementType(resourceType))
               + " instances.",
           "This object can also be configured to iterate over the pages",
-          "of the response through the `CallOptions` parameter.");
+          "of the response through the `options` parameter.");
     }
 
-    return ImmutableList.of("A " + classInfo + " instance.");
+    return ImmutableList.of(String.format("A %s instance.", annotateWithClass(classInfo)));
+  }
+
+  private String annotateWithClass(String maybeClassWrappedType) {
+    if (maybeClassWrappedType.startsWith(":class:")) {
+      return maybeClassWrappedType;
+    }
+    return String.format(":class:`%s`", maybeClassWrappedType);
   }
 
   @Override
@@ -323,7 +348,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getTestPackageName() {
-    return "tests." + getPackageName();
+    return getPackageName();
   }
 
   @Override

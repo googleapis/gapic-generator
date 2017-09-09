@@ -158,7 +158,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /**
    * The name of a variable that holds an instance of the module that contains the implementation of
-   * a particular proto interface. So far it is used by just NodeJS.
+   * a particular proto interface.
    */
   public String getApiWrapperModuleName() {
     return getNotImplementedString("SurfaceNamer.getApiWrapperModuleName");
@@ -177,6 +177,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
     NamePath namePath =
         typeNameConverter.getNamePath(modelTypeFormatter.getFullNameFor(apiInterface));
     return qualifiedName(namePath.withoutHead());
+  }
+
+  public String getGapicImplNamespace() {
+    return getNotImplementedString("SurfaceNamer.getGapicImplNamespace");
   }
 
   /** The qualified namespace of an API. */
@@ -202,6 +206,16 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The name of the gapic package. */
   public String getGapicPackageName(String configPackageName) {
     return "gapic-" + configPackageName;
+  }
+
+  /** The name of the module for the version of an API. */
+  public String getModuleVersionName() {
+    return getNotImplementedString("SurfaceNamer.getModuleVersionName");
+  }
+
+  /** The name of the module for the service of an API. */
+  public String getModuleServiceName() {
+    return getNotImplementedString("SurfaceNamer.getModuleServiceName");
   }
 
   /////////////////////////////////// Protos methods /////////////////////////////////////////////
@@ -735,6 +749,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
    */
   public String getGrpcServerTypeName(Interface apiInterface) {
     return getNotImplementedString("SurfaceNamer.getGrpcServerTypeName");
+  }
+
+  /** The imported name of the default client config. */
+  public String getClientConfigName(Interface apiInterface) {
+    return getNotImplementedString("SurfaceNamer.getClientConfigName");
   }
 
   /**

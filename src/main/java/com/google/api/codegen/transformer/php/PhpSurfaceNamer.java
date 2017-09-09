@@ -82,7 +82,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getClientConfigPath(Interface apiInterface) {
-    return "resources/"
+    return "../resources/"
         + Name.upperCamel(apiInterface.getSimpleName()).join("client_config").toLowerUnderscore()
         + ".json";
   }
@@ -162,6 +162,11 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   @Override
   public String getGrpcStubCallString(Interface apiInterface, Method method) {
     return '/' + apiInterface.getFullName() + '/' + getGrpcMethodName(method);
+  }
+
+  @Override
+  public String getGapicImplNamespace() {
+    return PhpPackageUtil.buildPackageName(getPackageName(), "Gapic");
   }
 
   @Override

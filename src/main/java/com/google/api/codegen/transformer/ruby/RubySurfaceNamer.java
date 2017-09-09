@@ -304,6 +304,18 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getModuleVersionName() {
+    List<String> apiModules = getApiModules();
+    return apiModules.get(apiModules.size() - 1);
+  }
+
+  @Override
+  public String getModuleServiceName() {
+    List<String> apiModules = getTopLevelApiModules();
+    return apiModules.get(apiModules.size() - 1);
+  }
+
+  @Override
   public String getServiceFileImportName(String filename) {
     return filename.replace(".proto", "_services_pb");
   }
