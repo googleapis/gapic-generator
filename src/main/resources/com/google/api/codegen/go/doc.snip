@@ -3,7 +3,7 @@
 @snippet generate(view)
     {@headerComment(view.fileHeader)}
 
-    // Package {@view.fileHeader.localPackageName} is an experimental, auto-generated package for the
+    // Package {@view.fileHeader.localPackageName} is an {@releaseLevel(view)}auto-generated package for the
     // {@view.serviceTitle}.
     //
     @join line : view.packageDoc
@@ -27,8 +27,7 @@
         return metadata.NewOutgoingContext(ctx, md)
     }
 
-    // DefaultAuthScopes reports the authentication scopes required
-    // by this package.
+    // DefaultAuthScopes reports the default set of authentication scopes to use with this package.
     func DefaultAuthScopes() []string {
       return []string{
         @join scope : view.authScopes
@@ -36,4 +35,10 @@
         @end
       }
     }
+@end
+
+@private releaseLevel(view)
+    @if view.releaseLevel != "GA"
+      experimental, {@""}
+    @end
 @end

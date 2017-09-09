@@ -206,7 +206,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
           // Issue: https://github.com/googleapis/toolkit/issues/946
           continue;
         }
-        addGrpcStreamingTestImports(context);
+        addGrpcStreamingTestImports(context, methodConfig.getGrpcStreamingType());
         GapicMethodContext methodContext = context.asRequestMethodContext(method);
         InitCodeContext initCodeContext =
             initCodeTransformer.createRequestInitCodeContext(
@@ -329,8 +329,9 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private void addUnitTestImports(GapicInterfaceContext context) {
     ModelTypeTable typeTable = context.getModelTypeTable();
     typeTable.saveNicknameFor("com.google.api.gax.core.NoCredentialsProvider");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcApiException");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.InvalidArgumentException");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcTransportProvider");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcStatusCode");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.testing.MockGrpcService");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.testing.MockServiceHelper");
     typeTable.saveNicknameFor("com.google.common.collect.Lists");
@@ -394,10 +395,23 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("io.grpc.ServerServiceDefinition");
   }
 
-  private void addGrpcStreamingTestImports(GapicInterfaceContext context) {
+  private void addGrpcStreamingTestImports(
+      GapicInterfaceContext context, GrpcStreamingType streamingType) {
     ModelTypeTable typeTable = context.getModelTypeTable();
     typeTable.saveNicknameFor("com.google.api.gax.grpc.testing.MockStreamObserver");
     typeTable.saveNicknameFor("com.google.api.gax.rpc.ApiStreamObserver");
-    typeTable.saveNicknameFor("com.google.api.gax.rpc.StreamingCallable");
+    switch (streamingType) {
+      case BidiStreaming:
+        typeTable.saveNicknameFor("com.google.api.gax.rpc.BidiStreamingCallable");
+        break;
+      case ClientStreaming:
+        typeTable.saveNicknameFor("com.google.api.gax.rpc.ClientStreamingCallable");
+        break;
+      case ServerStreaming:
+        typeTable.saveNicknameFor("com.google.api.gax.rpc.ServerStreamingCallable");
+        break;
+      default:
+        throw new IllegalArgumentException("Invalid streaming type: " + streamingType);
+    }
   }
 }

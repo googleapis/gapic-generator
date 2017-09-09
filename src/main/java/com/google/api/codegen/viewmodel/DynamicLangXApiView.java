@@ -64,6 +64,9 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
   public abstract String clientConfigPath();
 
+  @Nullable
+  public abstract String clientConfigName();
+
   public abstract String interfaceKey();
 
   public abstract String grpcClientTypeName();
@@ -125,6 +128,12 @@ public abstract class DynamicLangXApiView implements ViewModel {
   @Nullable
   public abstract String fullyQualifiedCredentialsClassName();
 
+  @Nullable
+  public abstract String servicePhraseName();
+
+  @Nullable
+  public abstract String gapicPackageName();
+
   @Override
   public String resourceRoot() {
     return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
@@ -176,6 +185,8 @@ public abstract class DynamicLangXApiView implements ViewModel {
 
     public abstract Builder clientConfigPath(String val);
 
+    public abstract Builder clientConfigName(String var);
+
     public abstract Builder interfaceKey(String val);
 
     public abstract Builder grpcClientTypeName(String val);
@@ -212,6 +223,10 @@ public abstract class DynamicLangXApiView implements ViewModel {
     public abstract Builder isGcloud(boolean val);
 
     public abstract Builder fullyQualifiedCredentialsClassName(String val);
+
+    public abstract Builder servicePhraseName(String val);
+
+    public abstract Builder gapicPackageName(String val);
 
     public abstract DynamicLangXApiView build();
   }

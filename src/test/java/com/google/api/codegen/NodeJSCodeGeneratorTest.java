@@ -35,6 +35,7 @@ public class NodeJSCodeGeneratorTest {
         String snippetName) {
       super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
       getTestDataLocator().addTestDataSource(getClass(), "nodejs");
+      getTestDataLocator().addTestDataSource(getClass(), "testdata/nodejs");
     }
 
     /**
@@ -69,6 +70,7 @@ public class NodeJSCodeGeneratorTest {
         String snippetName) {
       super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
       getTestDataLocator().addTestDataSource(getClass(), "nodejs");
+      getTestDataLocator().addTestDataSource(getClass(), "testdata/nodejs");
     }
 
     /**
@@ -103,6 +105,7 @@ public class NodeJSCodeGeneratorTest {
         String snippetName) {
       super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
       getTestDataLocator().addTestDataSource(getClass(), "nodejs");
+      getTestDataLocator().addTestDataSource(getClass(), "testdata/nodejs");
     }
 
     /**
@@ -137,6 +140,7 @@ public class NodeJSCodeGeneratorTest {
         String snippetName) {
       super(name, idForFactory, gapicConfigFileNames, packageConfigFileName, snippetName);
       getTestDataLocator().addTestDataSource(getClass(), "nodejs");
+      getTestDataLocator().addTestDataSource(getClass(), "testdata/nodejs");
     }
 
     /**
@@ -148,7 +152,7 @@ public class NodeJSCodeGeneratorTest {
       return GapicTestBase.createTestedConfigs(
           MainGapicProviderFactory.NODEJS,
           new String[] {"nodejs_gapic.yaml", "multiple_services_gapic.yaml"},
-          "library_pkg.yaml");
+          "multiple_services_pkg.yaml");
     }
 
     // Tests

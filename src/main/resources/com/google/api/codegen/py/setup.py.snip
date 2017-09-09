@@ -12,15 +12,8 @@
   import sys
 
   install_requires = [
-      'google-gax>={@metadata.gaxVersionBound.lower}, <{@metadata.gaxVersionBound.upper}',
-      'oauth2client>={@metadata.authVersionBound.lower}, <{@metadata.authVersionBound.upper}',
-      '{@metadata.protoPackageName}[grpc]>={@metadata.packageVersionBound.lower}, <{@metadata.packageVersionBound.upper}',
-      @join packageDep : metadata.protoPackageDependencies
-        @if or(packageDep.name == "googleapis-common-protos", packageDep.name.startsWith("proto-"))
-          '{@packageDep.name}[grpc]>={@packageDep.versionBound.lower}, <{@packageDep.versionBound.upper}',
-        @else
+      @join packageDep : metadata.dependencies
           '{@packageDep.name}>={@packageDep.versionBound.lower}, <{@packageDep.versionBound.upper}',
-        @end
       @end
   ]
 
@@ -40,6 +33,7 @@
           'Programming Language :: Python :: 3',
           'Programming Language :: Python :: 3.4',
           'Programming Language :: Python :: 3.5',
+          'Programming Language :: Python :: 3.6',
           'Programming Language :: Python :: Implementation :: CPython',
       ],
       description='GAPIC library for the {@metadata.fullName}',

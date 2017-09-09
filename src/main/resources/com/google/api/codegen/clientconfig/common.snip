@@ -1,0 +1,105 @@
+@snippet clientConfig(service)
+    "interfaces": {
+      {@interfaceSection(service)}
+    }
+@end
+
+@private interfaceSection(service)
+    @let retryCodes = retryCodesSection(service), \
+            retryParams = retryParamsSection(service), \
+            methods = methodsSection(service)
+      "{@service.getFullName}": {
+        @if retryCodes
+            "retry_codes": {
+              {@retryCodes}
+            },
+        @else
+            "retry_codes": {},
+        @end
+        @if retryParams
+            "retry_params": {
+              {@retryParams}
+            },
+        @else
+            "retry_params": {},
+        @end
+        @if methods
+            "methods": {
+              {@methods}
+            }
+        @else
+            "methods": {}
+        @end
+      }
+    @end
+@end
+
+@private retryCodesSection(service)
+    @let gapicInterfaceConfig = context.getApiConfig.getInterfaceConfig(service), \
+            codes = context.entrySet(gapicInterfaceConfig.getRetryCodesDefinition)
+        @if codes
+            @join retryDef : codes on ",".add(BREAK)
+                @if retryDef.getValue
+                    "{@retryDef.getKey}": [
+                      @join code : retryDef.getValue on ",".add(BREAK)
+                          "{@code}"
+                      @end
+                    ]
+                @else
+                    "{@retryDef.getKey}": []
+                @end
+            @end
+        @else
+        @end
+    @end
+@end
+
+@private retryParamsSection(service)
+    @let gapicInterfaceConfig = context.getApiConfig.getInterfaceConfig(service)
+        @join retryDef : context.entrySet(gapicInterfaceConfig.getRetrySettingsDefinition) on ",".add(BREAK)
+            "{@retryDef.getKey}": {
+              "initial_retry_delay_millis": {@retryDef.getValue.getInitialRetryDelay.toMillis()},
+              "retry_delay_multiplier": {@retryDef.getValue.getRetryDelayMultiplier},
+              "max_retry_delay_millis": {@retryDef.getValue.getMaxRetryDelay.toMillis()},
+              "initial_rpc_timeout_millis": {@retryDef.getValue.getInitialRpcTimeout.toMillis()},
+              "rpc_timeout_multiplier": {@retryDef.getValue.getRpcTimeoutMultiplier},
+              "max_rpc_timeout_millis": {@retryDef.getValue.getMaxRpcTimeout.toMillis()},
+              "total_timeout_millis": {@retryDef.getValue.getTotalTimeout.toMillis()}
+            }
+        @end
+    @end
+@end
+
+@private methodsSection(service)
+    @join method : context.getSupportedMethods(service) on ",".add(BREAK)
+        @let methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
+                methodName = context.upperCamelToLowerUnderscore(method.getSimpleName), \
+                isBatching = methodConfig.isBatching, \
+                timeout = methodConfig.getTimeout.toMillis, \
+                retryCodesName = methodConfig.getRetryCodesConfigName, \
+                retryParamsName = methodConfig.getRetrySettingsConfigName
+            "{@method.getSimpleName}": {
+              @if or(and(and(retryCodesName, retryParamsName), context.isRetryingSupported(method)), isBatching)
+                "timeout_millis": {@timeout},
+              @else
+                "timeout_millis": {@timeout}
+              @end
+              @if and(and(retryCodesName, retryParamsName), context.isRetryingSupported(method))
+                  "retry_codes_name": "{@retryCodesName}",
+                  @if isBatching
+                      "retry_params_name": "{@retryParamsName}",
+                  @else
+                      "retry_params_name": "{@retryParamsName}"
+                  @end
+              @end
+              @if isBatching
+                  "bundling": {
+                    @join param : context.entrySet(context.batchingParams(methodConfig.getBatching)) on ",".add(BREAK)
+                        "{@param.getKey}": {@param.getValue}
+                    @end
+                  }
+              @end
+            }
+        @end
+    @end
+@end

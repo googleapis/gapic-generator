@@ -34,8 +34,10 @@ import com.google.api.codegen.transformer.PageStreamingTransformer;
 import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.ServiceTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.util.php.PhpPackageUtil;
 import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodView;
+import com.google.api.codegen.viewmodel.DynamicLangXApiSubclassView;
 import com.google.api.codegen.viewmodel.DynamicLangXApiView;
 import com.google.api.codegen.viewmodel.GrpcStreamingDetailView;
 import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
@@ -59,7 +61,8 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new PhpImportSectionTransformer());
 
-  private static final String XAPI_TEMPLATE_FILENAME = "php/main.snip";
+  private static final String API_TEMPLATE_FILENAME = "php/partial_veneer_client.snip";
+  private static final String API_IMPL_TEMPLATE_FILENAME = "php/client_impl.snip";
 
   public PhpGapicSurfaceTransformer(
       GapicProductConfig productConfig, GapicCodePathMapper pathMapper) {
@@ -74,7 +77,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
 
   @Override
   public List<String> getTemplateFileNames() {
-    return Arrays.asList(XAPI_TEMPLATE_FILENAME);
+    return Arrays.asList(API_TEMPLATE_FILENAME, API_IMPL_TEMPLATE_FILENAME);
   }
 
   @Override
@@ -98,70 +101,102 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   public List<ViewModel> transform(GapicInterfaceContext context) {
-    String outputPath =
-        pathMapper.getOutputPath(context.getInterface(), context.getProductConfig());
-    SurfaceNamer namer = context.getNamer();
+    GapicInterfaceContext gapicImplContext =
+        context.withNewTypeTable(context.getNamer().getGapicImplNamespace());
 
     List<ViewModel> surfaceData = new ArrayList<>();
+    surfaceData.add(buildGapicClientViewModel(gapicImplContext));
+    surfaceData.add(buildClientViewModel(context));
+    return surfaceData;
+  }
+
+  private ViewModel buildGapicClientViewModel(GapicInterfaceContext context) {
+    SurfaceNamer namer = context.getNamer();
 
     addApiImports(context);
 
     List<ApiMethodView> methods = generateApiMethods(context);
 
-    DynamicLangXApiView.Builder xapiClass = DynamicLangXApiView.newBuilder();
+    DynamicLangXApiView.Builder apiImplClass = DynamicLangXApiView.newBuilder();
 
-    xapiClass.doc(serviceTransformer.generateServiceDoc(context, methods.get(0)));
+    apiImplClass.doc(serviceTransformer.generateServiceDoc(context, methods.get(0)));
 
-    xapiClass.templateFileName(XAPI_TEMPLATE_FILENAME);
-    xapiClass.protoFilename(context.getInterface().getFile().getSimpleName());
-    String name = namer.getApiWrapperClassName(context.getInterfaceConfig());
-    xapiClass.name(name);
+    apiImplClass.templateFileName(API_IMPL_TEMPLATE_FILENAME);
+    apiImplClass.protoFilename(context.getInterface().getFile().getSimpleName());
+    String implName = namer.getApiWrapperClassImplName(context.getInterfaceConfig());
+    apiImplClass.name(implName);
     ProductServiceConfig productServiceConfig = new ProductServiceConfig();
-    xapiClass.serviceAddress(
+    apiImplClass.serviceAddress(
         productServiceConfig.getServiceAddress(context.getInterface().getModel()));
-    xapiClass.servicePort(productServiceConfig.getServicePort());
-    xapiClass.serviceTitle(productServiceConfig.getTitle(context.getInterface().getModel()));
-    xapiClass.authScopes(productServiceConfig.getAuthScopes(context.getInterface().getModel()));
+    apiImplClass.servicePort(productServiceConfig.getServicePort());
+    apiImplClass.serviceTitle(productServiceConfig.getTitle(context.getInterface().getModel()));
+    apiImplClass.authScopes(productServiceConfig.getAuthScopes(context.getInterface().getModel()));
 
-    xapiClass.pathTemplates(pathTemplateTransformer.generatePathTemplates(context));
-    xapiClass.formatResourceFunctions(
+    apiImplClass.pathTemplates(pathTemplateTransformer.generatePathTemplates(context));
+    apiImplClass.formatResourceFunctions(
         pathTemplateTransformer.generateFormatResourceFunctions(context));
-    xapiClass.parseResourceFunctions(
+    apiImplClass.parseResourceFunctions(
         pathTemplateTransformer.generateParseResourceFunctions(context));
-    xapiClass.pathTemplateGetterFunctions(
+    apiImplClass.pathTemplateGetterFunctions(
         pathTemplateTransformer.generatePathTemplateGetterFunctions(context));
-    xapiClass.pageStreamingDescriptors(pageStreamingTransformer.generateDescriptors(context));
-    xapiClass.hasPageStreamingMethods(context.getInterfaceConfig().hasPageStreamingMethods());
-    xapiClass.hasBatchingMethods(context.getInterfaceConfig().hasBatchingMethods());
-    xapiClass.longRunningDescriptors(createLongRunningDescriptors(context));
-    xapiClass.hasLongRunningOperations(context.getInterfaceConfig().hasLongRunningOperations());
-    xapiClass.grpcStreamingDescriptors(createGrpcStreamingDescriptors(context));
+    apiImplClass.pageStreamingDescriptors(pageStreamingTransformer.generateDescriptors(context));
+    apiImplClass.hasPageStreamingMethods(context.getInterfaceConfig().hasPageStreamingMethods());
+    apiImplClass.hasBatchingMethods(context.getInterfaceConfig().hasBatchingMethods());
+    apiImplClass.longRunningDescriptors(createLongRunningDescriptors(context));
+    apiImplClass.hasLongRunningOperations(context.getInterfaceConfig().hasLongRunningOperations());
+    apiImplClass.grpcStreamingDescriptors(createGrpcStreamingDescriptors(context));
 
-    xapiClass.methodKeys(generateMethodKeys(context));
-    xapiClass.clientConfigPath(namer.getClientConfigPath(context.getInterface()));
-    xapiClass.interfaceKey(context.getInterface().getFullName());
+    apiImplClass.methodKeys(generateMethodKeys(context));
+    apiImplClass.clientConfigPath(namer.getClientConfigPath(context.getInterface()));
+    apiImplClass.interfaceKey(context.getInterface().getFullName());
     String grpcClientTypeName =
         namer.getAndSaveNicknameForGrpcClientTypeName(
             context.getModelTypeTable(), context.getInterface());
-    xapiClass.grpcClientTypeName(grpcClientTypeName);
+    apiImplClass.grpcClientTypeName(grpcClientTypeName);
 
-    xapiClass.apiMethods(methods);
+    apiImplClass.apiMethods(methods);
 
-    xapiClass.stubs(grpcStubTransformer.generateGrpcStubs(context));
+    apiImplClass.stubs(grpcStubTransformer.generateGrpcStubs(context));
 
-    xapiClass.hasDefaultServiceAddress(context.getInterfaceConfig().hasDefaultServiceAddress());
-    xapiClass.hasDefaultServiceScopes(context.getInterfaceConfig().hasDefaultServiceScopes());
+    apiImplClass.hasDefaultServiceAddress(context.getInterfaceConfig().hasDefaultServiceAddress());
+    apiImplClass.hasDefaultServiceScopes(context.getInterfaceConfig().hasDefaultServiceScopes());
 
-    xapiClass.toolkitVersion(GeneratorVersionProvider.getGeneratorVersion());
+    apiImplClass.toolkitVersion(GeneratorVersionProvider.getGeneratorVersion());
 
     // must be done as the last step to catch all imports
-    xapiClass.fileHeader(fileHeaderTransformer.generateFileHeader(context));
+    apiImplClass.fileHeader(fileHeaderTransformer.generateFileHeader(context));
 
-    xapiClass.outputPath(outputPath + "/" + name + ".php");
+    String outputPath =
+        pathMapper.getOutputPath(context.getInterface(), context.getProductConfig());
+    apiImplClass.outputPath(outputPath + "/" + implName + ".php");
 
-    surfaceData.add(xapiClass.build());
+    return apiImplClass.build();
+  }
 
-    return surfaceData;
+  private ViewModel buildClientViewModel(GapicInterfaceContext context) {
+    SurfaceNamer namer = context.getNamer();
+    String name = namer.getApiWrapperClassName(context.getInterfaceConfig());
+
+    addApiImports(context);
+
+    context
+        .getTypeTable()
+        .getAndSaveNicknameFor(
+            PhpPackageUtil.getFullyQualifiedName(
+                namer.getGapicImplNamespace(),
+                namer.getApiWrapperClassImplName(context.getInterfaceConfig())));
+
+    DynamicLangXApiSubclassView.Builder apiClass = DynamicLangXApiSubclassView.newBuilder();
+    apiClass.templateFileName(API_TEMPLATE_FILENAME);
+    apiClass.protoFilename(context.getInterface().getFile().getSimpleName());
+    apiClass.name(name);
+    apiClass.parentName(namer.getApiWrapperClassImplName(context.getInterfaceConfig()));
+    apiClass.fileHeader(fileHeaderTransformer.generateFileHeader(context));
+    String outputPath =
+        pathMapper.getOutputPath(context.getInterface(), context.getProductConfig());
+    apiClass.outputPath(outputPath + "/" + name + ".php");
+
+    return apiClass.build();
   }
 
   private List<LongRunningOperationDetailView> createLongRunningDescriptors(
@@ -183,10 +218,10 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
               .metadataTypeName(context.getModelTypeTable().getFullNameFor(metadataType))
               .implementsCancel(true)
               .implementsDelete(true)
-              .initialPollDelay(lroConfig.getInitialPollDelay().getMillis())
+              .initialPollDelay(lroConfig.getInitialPollDelay().toMillis())
               .pollDelayMultiplier(lroConfig.getPollDelayMultiplier())
-              .maxPollDelay(lroConfig.getMaxPollDelay().getMillis())
-              .totalPollTimeout(lroConfig.getTotalPollTimeout().getMillis())
+              .maxPollDelay(lroConfig.getMaxPollDelay().toMillis())
+              .totalPollTimeout(lroConfig.getTotalPollTimeout().toMillis())
               .build());
     }
 

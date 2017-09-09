@@ -21,7 +21,6 @@ import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
-import org.apache.commons.lang3.NotImplementedException;
 
 public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
 
@@ -38,7 +37,7 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
       GapicMethodContext context, TypeRef typeRef) {
     switch (context.getMethodConfig().getGrpcStreamingType()) {
       case NonStreaming:
-        SimpleParamDocView doc =
+        SimpleParamDocView nonStreamingDoc =
             SimpleParamDocView.newBuilder()
                 .paramName("request")
                 .typeName(context.getTypeTable().getAndSaveNicknameFor(typeRef))
@@ -46,24 +45,40 @@ public class CSharpApiMethodTransformer extends StaticLangApiMethodTransformer {
                     ImmutableList.of(
                         "The request object containing all of the parameters for the API call."))
                 .build();
-        return ImmutableList.of(doc);
-      case BidiStreaming:
-        SimpleParamDocView callSettingsDoc =
+        return ImmutableList.of(nonStreamingDoc);
+      case ServerStreaming:
+        SimpleParamDocView serverStreamingDoc =
+            SimpleParamDocView.newBuilder()
+                .paramName("request")
+                .typeName(context.getTypeTable().getAndSaveNicknameFor(typeRef))
+                .lines(
+                    ImmutableList.of(
+                        "The request object containing all of the parameters for the API call."))
+                .build();
+        SimpleParamDocView serverStreamingCallSettingsDoc =
             SimpleParamDocView.newBuilder()
                 .paramName("callSettings")
                 .typeName("CallSettings")
                 .lines(ImmutableList.of("If not null, applies overrides to this RPC call."))
                 .build();
-        SimpleParamDocView streamingSettingsDoc =
+        return ImmutableList.of(serverStreamingDoc, serverStreamingCallSettingsDoc);
+      case BidiStreaming:
+        SimpleParamDocView bidiStreamingCallSettingsDoc =
+            SimpleParamDocView.newBuilder()
+                .paramName("callSettings")
+                .typeName("CallSettings")
+                .lines(ImmutableList.of("If not null, applies overrides to this RPC call."))
+                .build();
+        SimpleParamDocView bidiStreamingSettingsDoc =
             SimpleParamDocView.newBuilder()
                 .paramName("streamingSettings")
                 .typeName("BidirectionalStreamingSettings")
                 .lines(
                     ImmutableList.of("If not null, applies streaming overrides to this RPC call."))
                 .build();
-        return ImmutableList.of(callSettingsDoc, streamingSettingsDoc);
+        return ImmutableList.of(bidiStreamingCallSettingsDoc, bidiStreamingSettingsDoc);
       default:
-        throw new NotImplementedException(
+        throw new UnsupportedOperationException(
             "Cannot handle streaming type: " + context.getMethodConfig().getGrpcStreamingType());
     }
   }

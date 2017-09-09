@@ -18,6 +18,7 @@ import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicMethodConfig;
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.config.SingleResourceNameConfig;
@@ -37,9 +38,11 @@ import com.google.api.codegen.util.csharp.CSharpTypeTable;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CSharpSurfaceNamer extends SurfaceNamer {
@@ -346,6 +349,29 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getReroutedGrpcTypeName(ModelTypeTable typeTable, GapicMethodConfig methodConfig) {
+    List<String> reroutes = Splitter.on('.').splitToList(methodConfig.getRerouteToGrpcInterface());
+    if (reroutes.size() > 2
+        && reroutes.get(0).equals("google")
+        && !reroutes.get(1).equals("cloud")) {
+      reroutes = new ArrayList<String>(reroutes);
+      reroutes.add(1, "cloud");
+    }
+    String rerouteLast = reroutes.get(reroutes.size() - 1);
+    String name =
+        Name.anyCamel(rerouteLast).toUpperCamel()
+            + "+"
+            + Name.anyCamel(rerouteLast, "client").toUpperCamel();
+    List<String> names = new ArrayList<>();
+    for (String reroute : reroutes) {
+      names.add(Name.anyCamel(reroute).toUpperCamel());
+    }
+    String prefix = Joiner.on(".").join(names.subList(0, names.size() - 1));
+    String fullName = prefix + "." + name;
+    return typeTable.getAndSaveNicknameFor(fullName);
+  }
+
+  @Override
   public String getGrpcServiceClassName(Interface apiInterface) {
     return publicClassName(Name.upperCamel(apiInterface.getSimpleName()))
         + "."
@@ -353,8 +379,8 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getApiWrapperClassImplName(Interface apiInterface) {
-    return publicClassName(Name.upperCamel(apiInterface.getSimpleName(), "ClientImpl"));
+  public String getApiWrapperClassImplName(InterfaceConfig interfaceConfig) {
+    return publicClassName(Name.upperCamel(getInterfaceName(interfaceConfig), "ClientImpl"));
   }
 
   @Override
@@ -449,7 +475,15 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
                   + "\"/> resources.");
       }
     } else if (methodConfig.isGrpcStreaming()) {
-      return ImmutableList.of("The client-server stream.");
+      switch (methodConfig.getGrpcStreamingType()) {
+        case ServerStreaming:
+          return ImmutableList.of("The server stream.");
+        case BidiStreaming:
+          return ImmutableList.of("The client-server stream.");
+        default:
+          throw new IllegalStateException(
+              "Invalid streaming: " + methodConfig.getGrpcStreamingType());
+      }
     } else {
       switch (synchronicity) {
         case Sync:

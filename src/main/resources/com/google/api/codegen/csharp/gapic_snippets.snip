@@ -218,11 +218,37 @@
 # snippetMethod: StaticLangApiMethodSnippetView
 @private streamingRequestObjectMethod(snippetMethod)
     @switch snippetMethod.method.grpcStreamingType
+    @case "ServerStreaming"
+        {@streamingRequestObjectMethodServer(snippetMethod)}
     @case "BidiStreaming"
         {@streamingRequestObjectMethodBidirectional(snippetMethod)}
     @default
         *** ERROR: Cannot handle streaming type '{@snippetMethod.method.grpcStreamingType.toString}' ***
     @end
+@end
+
+# snippetMethod: StaticLangApiMethodSnippetView
+@private streamingRequestObjectMethodServer(snippetMethod)
+    public async Task {@snippetMethod.snippetMethodName}()
+    {
+        // Snippet: {@snippetMethod.method.name}({@snippetMethod.method.serviceRequestTypeName},CallSettings)
+        // Create client
+        {@snippetMethod.apiClassName} {@snippetMethod.apiVariableName} = {@snippetMethod.apiClassName}.Create();
+        // Initialize request argument
+        {@topLevelInitCode(snippetMethod.method.initCode)}
+        // Make the request, returning a streaming response
+        {@snippetMethod.apiClassName}.{@snippetMethod.callerResponseTypeName} streamingResponse = {@sampleMethodCall(snippetMethod)};
+
+        // Read streaming responses from server until complete
+        IAsyncEnumerator<{@snippetMethod.method.serviceResponseTypeName}> responseStream = streamingResponse.ResponseStream;
+        while (await responseStream.MoveNext())
+        {
+            {@snippetMethod.method.serviceResponseTypeName} response = responseStream.Current;
+            // Do something with streamed response
+        }
+        // The response stream has completed
+        // End snippet
+    }
 @end
 
 # snippetMethod: StaticLangApiMethodSnippetView
@@ -234,12 +260,12 @@
         {@snippetMethod.apiClassName} {@snippetMethod.apiVariableName} = {@snippetMethod.apiClassName}.Create();
         // Initialize streaming call, retrieving the stream object
         {@snippetMethod.apiClassName}.{@snippetMethod.callerResponseTypeName} duplexStream = {@snippetMethod.method.apiVariableName}.{@snippetMethod.method.name}();
-        
+
         // Sending requests and retrieving responses can be arbitrarily interleaved.
         // Exact sequence will depend on client/server behavior.
         
         // Create task to do something with responses from server
-        Task.Run(async () =>
+        Task responseHandlerTask = Task.Run(async () =>
         {
             IAsyncEnumerator<{@snippetMethod.method.serviceResponseTypeName}> responseStream = duplexStream.ResponseStream;
             while (await responseStream.MoveNext())
@@ -263,6 +289,9 @@
         }
         // Complete writing requests to the stream
         await duplexStream.WriteCompleteAsync();
+        // Await the response handler.
+        // This will complete once all server responses have been processed.
+        await responseHandlerTask;
         // End snippet
     }
 @end

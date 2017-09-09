@@ -158,7 +158,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /**
    * The name of a variable that holds an instance of the module that contains the implementation of
-   * a particular proto interface. So far it is used by just NodeJS.
+   * a particular proto interface.
    */
   public String getApiWrapperModuleName() {
     return getNotImplementedString("SurfaceNamer.getApiWrapperModuleName");
@@ -179,6 +179,20 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return qualifiedName(namePath.withoutHead());
   }
 
+  public String getGapicImplNamespace() {
+    return getNotImplementedString("SurfaceNamer.getGapicImplNamespace");
+  }
+
+  /** The qualified namespace of an API. */
+  public String getTopLevelNamespace() {
+    return getNotImplementedString("SurfaceNamer.getTopLevelNamespace");
+  }
+
+  /** The versioned namespace of an api. Example: google.cloud.vision_v1 */
+  public String getVersionedDirectoryNamespace() {
+    return getNotImplementedString("SurfaceNamer.getVersionedDirectoryNamespace");
+  }
+
   /** The modules of the package. */
   public ImmutableList<String> getApiModules() {
     return ImmutableList.<String>of();
@@ -187,6 +201,21 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The top level modules of the package. */
   public List<String> getTopLevelApiModules() {
     return ImmutableList.of();
+  }
+
+  /** The name of the gapic package. */
+  public String getGapicPackageName(String configPackageName) {
+    return "gapic-" + configPackageName;
+  }
+
+  /** The name of the module for the version of an API. */
+  public String getModuleVersionName() {
+    return getNotImplementedString("SurfaceNamer.getModuleVersionName");
+  }
+
+  /** The name of the module for the service of an API. */
+  public String getModuleServiceName() {
+    return getNotImplementedString("SurfaceNamer.getModuleServiceName");
   }
 
   /////////////////////////////////// Protos methods /////////////////////////////////////////////
@@ -321,6 +350,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The method name to create a rerouted gRPC client. Used in C# */
   public String getReroutedGrpcMethodName(GapicMethodConfig methodConfig) {
     return getNotImplementedString("SurfaceNamer.getReroutedGrpcMethodName");
+  }
+
+  /** The type name of a rerouted gRPC type. Used in C# */
+  public String getReroutedGrpcTypeName(ModelTypeTable typeTable, GapicMethodConfig methodConfig) {
+    return getNotImplementedString("SurfaceNamer.getReroutedGrpcTypeName");
   }
 
   /** The name of the surface method which can call the given API method. */
@@ -609,7 +643,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The name of the implementation class that implements a particular proto interface. */
-  public String getApiWrapperClassImplName(Interface apiInterface) {
+  public String getApiWrapperClassImplName(InterfaceConfig interfaceConfig) {
     return getNotImplementedString("SurfaceNamer.getApiWrapperClassImplName");
   }
 
@@ -715,6 +749,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
    */
   public String getGrpcServerTypeName(Interface apiInterface) {
     return getNotImplementedString("SurfaceNamer.getGrpcServerTypeName");
+  }
+
+  /** The imported name of the default client config. */
+  public String getClientConfigName(Interface apiInterface) {
+    return getNotImplementedString("SurfaceNamer.getClientConfigName");
   }
 
   /**
@@ -956,6 +995,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   public String getStreamTypeName(GrpcStreamingConfig.GrpcStreamingType type) {
     return getNotImplementedString("SurfaceNamer.getStreamTypeName");
+  }
+
+  public String getFullyQualifiedCredentialsClassName() {
+    return getNotImplementedString("SurfaceNamer.getFullyQualifiedCredentialsClassName");
   }
 
   /////////////////////////////////////// Resource names //////////////////////////////////////////

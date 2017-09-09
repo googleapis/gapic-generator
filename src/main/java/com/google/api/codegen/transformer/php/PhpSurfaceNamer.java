@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer.php;
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicMethodConfig;
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
@@ -74,7 +75,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getClientConfigPath(Interface apiInterface) {
-    return "resources/"
+    return "../resources/"
         + Name.upperCamel(apiInterface.getSimpleName()).join("client_config").toLowerUnderscore()
         + ".json";
   }
@@ -124,6 +125,11 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getApiWrapperClassImplName(InterfaceConfig interfaceConfig) {
+    return publicClassName(Name.upperCamel(getInterfaceName(interfaceConfig), "GapicClient"));
+  }
+
+  @Override
   public String getGrpcClientTypeName(Interface apiInterface) {
     return qualifiedName(getGrpcClientTypeName(apiInterface, "GrpcClient"));
   }
@@ -149,6 +155,11 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   @Override
   public String getGrpcStubCallString(Interface apiInterface, Method method) {
     return '/' + apiInterface.getFullName() + '/' + getGrpcMethodName(method);
+  }
+
+  @Override
+  public String getGapicImplNamespace() {
+    return PhpPackageUtil.buildPackageName(getPackageName(), "Gapic");
   }
 
   @Override

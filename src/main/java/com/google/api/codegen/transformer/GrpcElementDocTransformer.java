@@ -72,10 +72,13 @@ public class GrpcElementDocTransformer {
     return propertyDocs.build();
   }
 
-  private List<GrpcElementDocView> generateEnumDocs(
+  public List<GrpcElementDocView> generateEnumDocs(
       ModelTypeTable typeTable, SurfaceNamer namer, ProtoContainerElement containerElement) {
     ImmutableList.Builder<GrpcElementDocView> enumDocs = ImmutableList.builder();
     for (EnumType enumElement : containerElement.getEnums()) {
+      if (!enumElement.isReachable()) {
+        continue;
+      }
       GrpcEnumDocView.Builder doc = GrpcEnumDocView.newBuilder();
       doc.name(namer.getEnumTypeName(typeTable, enumElement));
       doc.lines(namer.getDocLines(enumElement));

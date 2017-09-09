@@ -21,6 +21,7 @@ import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
+import com.google.api.codegen.ruby.RubyUtil;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
@@ -209,6 +210,14 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getFullyQualifiedCredentialsClassName() {
+    if (RubyUtil.isLongrunning(getPackageName())) {
+      return "Google::Gax::Credentials";
+    }
+    return getTopLevelNamespace() + "::Credentials";
+  }
+
+  @Override
   public List<String> getThrowsDocLines(GapicMethodConfig methodConfig) {
     return ImmutableList.of("@raise [Google::Gax::GaxError] if the RPC is aborted.");
   }
@@ -262,6 +271,9 @@ public class RubySurfaceNamer extends SurfaceNamer {
   @Override
   public String getTopLevelAliasedApiClassName(
       GapicInterfaceConfig interfaceConfig, boolean packageHasMultipleServices) {
+    if (!RubyUtil.hasMajorVersion(getPackageName())) {
+      return getVersionAliasedApiClassName(interfaceConfig, packageHasMultipleServices);
+    }
     return packageHasMultipleServices
         ? getTopLevelNamespace() + "::" + getPackageServiceName(interfaceConfig.getInterface())
         : getTopLevelNamespace();
@@ -275,7 +287,8 @@ public class RubySurfaceNamer extends SurfaceNamer {
         : getPackageName();
   }
 
-  private String getTopLevelNamespace() {
+  @Override
+  public String getTopLevelNamespace() {
     return Joiner.on("::").join(getTopLevelApiModules());
   }
 
@@ -288,6 +301,18 @@ public class RubySurfaceNamer extends SurfaceNamer {
   public List<String> getTopLevelApiModules() {
     List<String> apiModules = getApiModules();
     return apiModules.subList(0, apiModules.size() - 1);
+  }
+
+  @Override
+  public String getModuleVersionName() {
+    List<String> apiModules = getApiModules();
+    return apiModules.get(apiModules.size() - 1);
+  }
+
+  @Override
+  public String getModuleServiceName() {
+    List<String> apiModules = getTopLevelApiModules();
+    return apiModules.get(apiModules.size() - 1);
   }
 
   @Override

@@ -14,6 +14,7 @@
 
   @case "TopLevelIndex"
     require "google/gax"
+    require "pathname"
 
   @default
   @end
@@ -27,8 +28,6 @@
     @switch module.type
     @case "ReadmeMetadataView"
       {@readmeModule(indexType, module, iterator, content)}
-    @case "TocModuleView"
-      {@tocModule(indexType, module, iterator, content)}
     @case "SimpleModuleView"
       {@simpleModule(indexType, module, iterator, content)}
     @end
@@ -41,23 +40,6 @@
   @##
   {@toComments(util.getDocLines(generateReadme(indexType, module)))}
   @#
-  @#
-  {@simpleModule(indexType, module, iterator, content)}
-@end
-
-@private tocModule(indexType, module, iterator, content)
-  @##
-  @# # {@module.fullName} Contents
-  @#
-  @# | Class | Description |
-  @# | ----- | ----------- |
-  @join class : module.contents
-    @# | [{@class.name}][] | {@class.description} |
-  @end
-  @#
-  @join class : module.contents
-    @# [{@class.name}]: {@class.link}
-  @end
   @#
   {@simpleModule(indexType, module, iterator, content)}
 @end
