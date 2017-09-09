@@ -37,6 +37,7 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.common.collect.ImmutableList;
+import com.google.protobuf.Api;
 import java.util.List;
 
 public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer {
@@ -83,8 +84,20 @@ public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer {
         fileHeaderTransformer.generateFileHeader(
             productConfig, ImportSectionView.newBuilder().build(), namer));
     doc.elementDocs(elementDocTransformer.generateElementDocs(typeTable, namer, file));
-    doc.modules(generateModuleViews(file.getModel(), productConfig, namer, file.isSource()));
+    doc.modules(generateModuleViews(file.getModel(), productConfig, namer, isSourceFile(file)));
     return doc.build();
+  }
+
+  private boolean isSourceFile(ProtoFile file) {
+    List<Api> apis = file.getModel().getServiceConfig().getApisList();
+    for (Interface apiInterface : file.getReachableInterfaces()) {
+      for (Api api : apis) {
+        if (api.getName().equals(apiInterface.getFullName())) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   private List<ModuleView> generateModuleViews(
