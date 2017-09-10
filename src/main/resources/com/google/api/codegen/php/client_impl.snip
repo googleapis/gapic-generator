@@ -365,14 +365,12 @@
          *     @@type array $scopes Required. A string array of scopes to use when acquiring credentials.
      @end
      *     @@type array $retryingOverride
-     *           An associative array of string => RetryOptions, where the keys
-     *           are method names (e.g. 'createFoo'), that overrides default retrying
-     *           settings. A value of null indicates that the method in question should
-     *           not retry.
-     *     @@type int $timeoutMillis The timeout in milliseconds to use for calls
-     *                              that don't use retries. For calls that use retries,
-     *                              set the timeout in RetryOptions.
-     *                              Default: 30000 (30 seconds)
+     *           An associative array in which the keys are method names (e.g. 'createFoo'), and
+     *           the values are retry settings to use for that method. The retry settings for each
+     *           method can be a {@@see Google\GAX\RetrySettings} object, or an associative array
+     *           of retry settings parameters. See the documentation on {@@see Google\GAX\RetrySettings}
+     *           for example usage. Passing a value of null is equivalent to a value of
+     *           ['retriesEnabled' => false].
      * }
      @if xapiClass.hasMissingDefaultOptions
          * @@throws ValidationException Throws a ValidationException if required arguments are missing

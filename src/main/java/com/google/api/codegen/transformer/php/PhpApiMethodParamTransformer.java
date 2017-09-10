@@ -24,6 +24,7 @@ import com.google.api.codegen.viewmodel.ParamDocView;
 import com.google.api.codegen.viewmodel.SimpleParamDocView;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 import java.util.List;
@@ -153,13 +154,22 @@ public class PhpApiMethodParamTransformer implements ApiMethodParamTransformer {
     if (context.getNamer().methodHasRetrySettings(context.getMethodConfig())) {
       SimpleParamDocView.Builder retrySettingsDoc = SimpleParamDocView.newBuilder();
       retrySettingsDoc.paramName(context.getNamer().localVarName(retrySettingsName));
-      retrySettingsDoc.typeName(context.getNamer().getRetrySettingsTypeName());
+      String retryDocType =
+          Joiner.on("|").join(context.getNamer().getRetrySettingsTypeName(), "array");
+      retrySettingsDoc.typeName(retryDocType);
       // TODO figure out a reliable way to line-wrap comments across all languages
       // instead of encoding it in the transformer
       String retrySettingsDocText =
-          String.format(
-              "Retry settings to use for this call. If present, then\n%s is ignored.",
-              context.getNamer().varReference(timeoutMillisName));
+          "Retry settings to use for this call. Can be a\n"
+              + "{@see Google\\GAX\\RetrySettings} object, or an associative array\n"
+              + "of retry settings parameters. See the documentation on"
+              + "{@see Google\\GAX\\RetrySettings} for example usage.";
+      if (context.getNamer().methodHasTimeoutSettings(context.getMethodConfig())) {
+        retrySettingsDocText +=
+            String.format(
+                "\nIf specified, then %s is ignored.",
+                context.getNamer().varReference(timeoutMillisName));
+      }
       List<String> retrySettingsDocLines = context.getNamer().getDocLines(retrySettingsDocText);
       retrySettingsDoc.lines(retrySettingsDocLines);
       arrayKeyDocs.add(retrySettingsDoc.build());

@@ -195,4 +195,9 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   public boolean methodHasRetrySettings(GapicMethodConfig methodConfig) {
     return !methodConfig.isGrpcStreaming();
   }
+
+  @Override
+  public boolean methodHasTimeoutSettings(GapicMethodConfig methodConfig) {
+    return methodConfig.isGrpcStreaming();
+  }
 }
