@@ -336,7 +336,7 @@ import javax.annotation.Generated;
  * <pre>
  * <code>
  * LibrarySettings librarySettings =
- *     LibrarySettings.defaultBuilder()
+ *     LibrarySettings.newBuilder()
  *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
  *         .build();
  * LibraryClient libraryClient =
@@ -349,7 +349,7 @@ import javax.annotation.Generated;
  * <pre>
  * <code>
  * LibrarySettings librarySettings =
- *     LibrarySettings.defaultBuilder()
+ *     LibrarySettings.newBuilder()
  *         .setTransportProvider(LibrarySettings.defaultGrpcTransportProviderBuilder()
  *             .setChannelProvider(LibrarySettings.defaultGrpcChannelProviderBuilder()
  *                 .setEndpoint(myEndpoint)
@@ -373,7 +373,7 @@ public class LibraryClient implements BackgroundResource {
    * Constructs an instance of LibraryClient with default settings.
    */
   public static final LibraryClient create() throws IOException {
-    return create(LibrarySettings.defaultBuilder().build());
+    return create(LibrarySettings.newBuilder().build());
   }
 
   /**
@@ -3090,7 +3090,7 @@ import org.threeten.bp.Duration;
  * <pre>
  * <code>
  * LibrarySettings.Builder librarySettingsBuilder =
- *     LibrarySettings.defaultBuilder();
+ *     LibrarySettings.newBuilder();
  * librarySettingsBuilder.createShelfSettings().getRetrySettingsBuilder()
  *     .setTotalTimeout(Duration.ofSeconds(30));
  * LibrarySettings librarySettings = librarySettingsBuilder.build();
@@ -3411,6 +3411,7 @@ public class LibrarySettings extends ClientSettings {
   /**
    * Returns a builder for this class with recommended defaults.
    */
+  @Deprecated
   public static Builder defaultBuilder() {
     return Builder.createDefault();
   }
@@ -3419,6 +3420,7 @@ public class LibrarySettings extends ClientSettings {
    * Returns a builder for this class with recommended defaults for API methods, and the given
    * ClientContext used for executor/transport/credentials.
    */
+  @Deprecated
   public static Builder defaultBuilder(ClientContext clientContext) {
     return new Builder(clientContext);
   }
@@ -3427,7 +3429,7 @@ public class LibrarySettings extends ClientSettings {
    * Returns a new builder for this class.
    */
   public static Builder newBuilder() {
-    return new Builder();
+    return Builder.createDefault();
   }
 
   /**
@@ -5355,7 +5357,7 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
   }
 
   public static final GrpcLibraryServiceStub create(ClientContext clientContext) throws IOException {
-    return new GrpcLibraryServiceStub(LibrarySettings.defaultBuilder().build(), clientContext);
+    return new GrpcLibraryServiceStub(LibrarySettings.newBuilder().build(), clientContext);
   }
 
   /**
@@ -5950,7 +5952,7 @@ public class LibraryClientTest {
   @Before
   public void setUp() throws IOException {
     serviceHelper.reset();
-    LibrarySettings settings = LibrarySettings.defaultBuilder()
+    LibrarySettings settings = LibrarySettings.newBuilder()
         .setTransportProvider(
               GrpcTransportProvider.newBuilder()
                   .setChannelProvider(serviceHelper.createChannelProvider())
