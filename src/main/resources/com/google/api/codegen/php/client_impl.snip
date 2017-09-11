@@ -500,6 +500,15 @@
                 @end
 
             @end
+            @if apiMethod.isGrpcStreamingMethod
+                if (array_key_exists('timeoutMillis', $optionalArgs)) {
+                    $optionalArgs['retrySettings'] = [
+                        'retriesEnabled' => false,
+                        'noRetriesRpcTimeoutMillis' => $optionalArgs['timeoutMillis']
+                    ];
+                }
+
+            @end
             $mergedSettings = $this->defaultCallSettings['{@apiMethod.key}']->merge(
                 new CallSettings($optionalArgs));
             $callable = ApiCallable::createApiCall(

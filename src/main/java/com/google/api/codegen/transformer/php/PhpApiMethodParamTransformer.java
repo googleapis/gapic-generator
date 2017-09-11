@@ -162,7 +162,7 @@ public class PhpApiMethodParamTransformer implements ApiMethodParamTransformer {
       String retrySettingsDocText =
           "Retry settings to use for this call. Can be a\n"
               + "{@see Google\\GAX\\RetrySettings} object, or an associative array\n"
-              + "of retry settings parameters. See the documentation on"
+              + "of retry settings parameters. See the documentation on\n"
               + "{@see Google\\GAX\\RetrySettings} for example usage.";
       if (context.getNamer().methodHasTimeoutSettings(context.getMethodConfig())) {
         retrySettingsDocText +=
