@@ -498,6 +498,11 @@ class LibraryServiceGapicClient
      *           A CredentialsLoader object created using the Google\Auth library.
      *     @type array $scopes A string array of scopes to use when acquiring credentials.
      *                          Defaults to the scopes for the Google Example Library API.
+     *     @type string $clientConfigPath
+     *           Path to a JSON file containing client method configuration, including retry settings.
+     *           Specify this setting to specify the retry behavior of all methods on the client.
+     *           By default this settings points to the default client config file, which is provided
+     *           in the resources folder.
      *     @type array $retryingOverride
      *           An associative array in which the keys are method names (e.g. 'createFoo'), and
      *           the values are retry settings to use for that method. The retry settings for each
@@ -521,6 +526,7 @@ class LibraryServiceGapicClient
             'timeoutMillis' => self::DEFAULT_TIMEOUT_MILLIS,
             'libName' => null,
             'libVersion' => null,
+            'clientConfigPath' => __DIR__ . '/../resources/library_service_client_config.json',
         ];
         $options = array_merge($defaultOptions, $options);
 
@@ -585,14 +591,13 @@ class LibraryServiceGapicClient
             $this->descriptors[$method]['grpcStreamingDescriptor'] = $grpcStreamingDescriptor;
         }
 
-        $clientConfigJsonString = file_get_contents(__DIR__ . '/../resources/library_service_client_config.json');
+        $clientConfigJsonString = file_get_contents($options['clientConfigPath']);
         $clientConfig = json_decode($clientConfigJsonString, true);
         $this->defaultCallSettings =
                 CallSettings::load('google.example.library.v1.LibraryService',
                                    $clientConfig,
                                    $options['retryingOverride'],
-                                   GrpcConstants::getStatusCodeNames(),
-                                   $options['timeoutMillis']);
+                                   GrpcConstants::getStatusCodeNames());
 
         $this->scopes = $options['scopes'];
 

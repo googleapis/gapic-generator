@@ -364,6 +364,11 @@
      @else
          *     @@type array $scopes Required. A string array of scopes to use when acquiring credentials.
      @end
+     *     @@type string $clientConfigPath
+     *           Path to a JSON file containing client method configuration, including retry settings.
+     *           Specify this setting to specify the retry behavior of all methods on the client.
+     *           By default this settings points to the default client config file, which is provided
+     *           in the resources folder.
      *     @@type array $retryingOverride
      *           An associative array in which the keys are method names (e.g. 'createFoo'), and
      *           the values are retry settings to use for that method. The retry settings for each
@@ -406,6 +411,7 @@
             'timeoutMillis' => self::DEFAULT_TIMEOUT_MILLIS,
             'libName' => null,
             'libVersion' => null,
+            'clientConfigPath' => __DIR__ . '/{@xapiClass.clientConfigPath}',
         ];
         $options = array_merge($defaultOptions, $options);
 
@@ -453,14 +459,13 @@
             }
         @end
 
-        $clientConfigJsonString = file_get_contents(__DIR__ . '/{@xapiClass.clientConfigPath}');
+        $clientConfigJsonString = file_get_contents($options['clientConfigPath']);
         $clientConfig = json_decode($clientConfigJsonString, true);
         $this->defaultCallSettings =
                 CallSettings::load('{@xapiClass.interfaceKey}',
                                    $clientConfig,
                                    $options['retryingOverride'],
-                                   GrpcConstants::getStatusCodeNames(),
-                                   $options['timeoutMillis']);
+                                   GrpcConstants::getStatusCodeNames());
 
         $this->scopes = $options['scopes'];
 
