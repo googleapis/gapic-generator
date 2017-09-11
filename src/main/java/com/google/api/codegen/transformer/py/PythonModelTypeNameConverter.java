@@ -237,9 +237,7 @@ public class PythonModelTypeNameConverter implements ModelTypeNameConverter {
       }
     }
 
-    String prefix =
-        protoPackage.startsWith(GOOGLE_CLOUD_PREFIX) ? GOOGLE_CLOUD_PREFIX : GOOGLE_PREFIX;
-    return String.format("%s%s", protoNamespace, protoPackage.substring(prefix.length()));
+    return protoNamespace;
   }
 
   private String getPbFileName(String filename) {
