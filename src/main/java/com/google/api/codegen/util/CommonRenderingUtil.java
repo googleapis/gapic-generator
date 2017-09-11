@@ -15,6 +15,7 @@
 package com.google.api.codegen.util;
 
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
@@ -90,5 +91,15 @@ public class CommonRenderingUtil {
    */
   private static boolean isLineWrapChar(char c) {
     return Character.isWhitespace(c) || "([".indexOf(c) >= 0;
+  }
+
+  /** Creates a whitespace string of the specified width. */
+  public static String padding(int width) {
+    return Strings.repeat(" ", width);
+  }
+
+  /** Helper function for referencing integers from templates. */
+  public static int toInt(String value) {
+    return Integer.valueOf(value);
   }
 }
