@@ -4,9 +4,47 @@
   @let body = documentChildren(doc)
     {@license(doc.fileHeader)}
 
-    {@module(doc.fileHeader.modules.iterator, body) }
+    {@modules(doc.modules.iterator, body) }
   @end
 
+@end
+
+@private modules(iterator, content)
+  @let module = iterator.next
+    @switch module.type
+    @case "TocModuleView"
+      {@tocModule(module, iterator, content)}
+    @case "SimpleModuleView"
+      {@simpleModule(module, iterator, content)}
+    @end
+  @end
+@end
+
+@private tocModule(module, iterator, content)
+  @##
+  @# # {@module.fullName} Contents
+  @#
+  @# | Class | Description |
+  @# | ----- | ----------- |
+  @join class : module.contents
+    @# | [{@class.name}][] | {@class.description} |
+  @end
+  @#
+  @join class : module.contents
+    @# [{@class.name}]: {@class.link}
+  @end
+  @#
+  {@simpleModule(module, iterator, content)}
+@end
+
+@private simpleModule(module, iterator, content)
+  module {@module.moduleName}
+    @if iterator.hasNext
+      {@modules(iterator, content)}
+    @else
+      {@content}
+    @end
+  end
 @end
 
 @private documentMessage(doc)

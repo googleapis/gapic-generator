@@ -21,6 +21,7 @@
   @if index.modules
     {@modules(index.modules.iterator, index.type, body(index))}
   @end
+
 @end
 
 @private modules(iterator, indexType, content)
@@ -28,8 +29,6 @@
     @switch module.type
     @case "ReadmeMetadataView"
       {@readmeModule(indexType, module, iterator, content)}
-    @case "TocModuleView"
-      {@tocModule(indexType, module, iterator, content)}
     @case "SimpleModuleView"
       {@simpleModule(indexType, module, iterator, content)}
     @end
@@ -42,23 +41,6 @@
   @##
   {@toComments(util.getDocLines(generateReadme(indexType, module)))}
   @#
-  @#
-  {@simpleModule(indexType, module, iterator, content)}
-@end
-
-@private tocModule(indexType, module, iterator, content)
-  @##
-  @# # {@module.fullName} Contents
-  @#
-  @# | Class | Description |
-  @# | ----- | ----------- |
-  @join class : module.contents
-    @# | [{@class.name}][] | {@class.description} |
-  @end
-  @#
-  @join class : module.contents
-    @# [{@class.name}]: {@class.link}
-  @end
   @#
   {@simpleModule(indexType, module, iterator, content)}
 @end
@@ -120,10 +102,10 @@
     FILE_DIR = File.realdirpath(Pathname.new(__FILE__).join("..").join("{@index.versionFileBasePath}"))
 
     AVAILABLE_VERSIONS = Dir["#{FILE_DIR}/*"]
-      .select {|file| File.directory?(file)}
-      .select {|dir| Google::Gax::VERSION_MATCHER.match(File.basename(dir))}
-      .select {|dir| File.exist?(dir + ".rb")}
-      .map {|dir| File.basename(dir)}
+      .select { |file| File.directory?(file) }
+      .select { |dir| Google::Gax::VERSION_MATCHER.match(File.basename(dir)) }
+      .select { |dir| File.exist?(dir + ".rb") }
+      .map { |dir| File.basename(dir) }
 
   @default
   @end
@@ -145,9 +127,26 @@
     {@toComments(@requireView.doc.lines)}
   @#
   @end
-  {@initMethodComments()}
-  def self.new(*args, **kwargs)
-    {@requireView.clientName}.new(*args, **kwargs)
+  {@toComments(util.getDocLines(initMethodComments()))}
+  def self.new
+      service_path: nil,
+      port: nil,
+      channel: nil,
+      chan_creds: nil,
+      updater_proc: nil,
+      credentials: nil,
+      scopes: nil,
+      client_config: nil,
+      timeout: nil,
+      lib_name: nil,
+      lib_version: nil
+    kwargs = Hash[
+      *method(__method__).parameters
+        .select { |_, param| binding.local_variable_get(param) != nil }
+        .map { |_, param| [param, binding.local_variable_get(param)] }
+        .flatten(1)
+      ]
+    {@requireView.clientName}.new(**kwargs)
   end
 @end
 
@@ -160,7 +159,8 @@
   @# @@param version [Symbol, String]
   @#   The major version of the service to be used. By default :{@index.apiVersion}
   @#   is used.
-  {@initMethodComments()}
+  @# @@overload
+  {@toComments(util.getDocLines(initMethodComments()), util.toInt(3))}
   def self.new(*args, version: :{@index.apiVersion}, **kwargs)
     # Check if the version provided is available.
     unless AVAILABLE_VERSIONS.include?(version.to_s.downcase)

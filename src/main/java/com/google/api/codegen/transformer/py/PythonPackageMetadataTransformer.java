@@ -332,15 +332,14 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
         namespacePackages.add(subPackage);
       }
     }
-    namespacePackages.add("google.cloud.proto");
-    namespacePackages.add(String.format("google.cloud.proto.%s", packageConfig.shortName()));
     return namespacePackages;
   }
 
   /** Set all packages to be namespace packages except for the version package (if present) */
   private boolean isNamespacePackage(SurfaceNamer namer, String packageName) {
     return !namer.getPackageName().equals(packageName)
-        && !namer.getVersionedDirectoryNamespace().equals(packageName);
+        && !namer.getVersionedDirectoryNamespace().equals(packageName)
+        && !namer.getTopLevelNamespace().equals(packageName);
   }
 
   /**

@@ -3,7 +3,7 @@
 @snippet generate(view)
     {@headerComment(view.fileHeader)}
 
-    // Package {@view.fileHeader.localPackageName} is an experimental, auto-generated package for the
+    // Package {@view.fileHeader.localPackageName} is an {@releaseLevel(view)}auto-generated package for the
     // {@view.serviceTitle}.
     //
     @join line : view.packageDoc
@@ -35,4 +35,10 @@
         @end
       }
     }
+@end
+
+@private releaseLevel(view)
+    @if view.releaseLevel != "GA"
+      experimental, {@""}
+    @end
 @end
