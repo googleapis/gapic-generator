@@ -12,19 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.ruby;
+package com.google.api.codegen.advising;
 
-import com.google.api.codegen.util.NamePath;
-import com.google.api.codegen.util.VersionMatcher;
+import com.google.api.codegen.ConfigProto;
+import com.google.api.tools.framework.model.Model;
+import java.util.List;
 
-public class RubyUtil {
-  private static final String LONGRUNNING_PACKAGE_NAME = "Google::Longrunning";
+public interface AdviserRule {
+  String getName();
 
-  public static boolean isLongrunning(String packageName) {
-    return packageName.equals(LONGRUNNING_PACKAGE_NAME);
-  }
-
-  public static boolean hasMajorVersion(String packageName) {
-    return VersionMatcher.isVersion(NamePath.doubleColoned(packageName).getHead());
-  }
+  List<String> collectAdvice(Model model, ConfigProto configProto);
 }
