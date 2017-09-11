@@ -71,7 +71,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   @Override
   public String getFormatFunctionName(
       Interface apiInterface, SingleResourceNameConfig resourceNameConfig) {
-    return publicMethodName(Name.from(resourceNameConfig.getEntityName(), "path"));
+    return publicMethodName(Name.from(resourceNameConfig.getEntityName(), "name"));
   }
 
   @Override

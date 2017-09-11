@@ -65,8 +65,8 @@
     @if hasFormatOrParseResourceFunctions
         {@""} * Many parameters require resource names to be formatted in a particular way. To assist
          * with these names, this class includes a format method for each type of name, and additionally
-         * a parse method to extract the individual identifiers contained within names that are
-         * returned.
+         * a parseName method to extract the individual identifiers contained within formatted names
+         * that are returned by the API.
     @end
      * @@experimental
      */
@@ -108,6 +108,9 @@
         private static ${@pathTemplate.name};
     @end
     {@""}
+    @if xapiClass.hasFormatOrParseResourceFunctions
+        private static $pathTemplateList = null;
+    @end
     private static $gapicVersion = null;
     private static $gapicVersionLoaded = false;
     {@""}
@@ -131,6 +134,7 @@
     @join function : xapiClass.pathTemplateGetterFunctions
         {@pathTemplateGetterFunction(function)}
     @end
+    {@pathTemplateListFunction(xapiClass)}
     {@pageStreamingDescriptorFunction(xapiClass)}
     {@longRunningDescriptorFunction(xapiClass)}
     {@grpcStreamingDescriptorFunction(xapiClass)}
@@ -164,6 +168,32 @@
     @end
 @end
 
+@private parseNameFunction(xapiClass)
+    /**
+     * Parses a formatted name string and returns an associative array of the components in the name.
+     * The following name formats are supported:
+    @join function : xapiClass.pathTemplateGetterFunctions
+        {@""} * - {@function.pattern}
+    @end
+     *
+     * @@param string $formattedName The formatted name string
+     * @@return array An associative array from name component IDs to component values.
+     * @@experimental
+     */
+    public function parseName($formattedName)
+    {
+        foreach (self::getPathTemplateList() as $pathTemplate) {
+            try {
+                return $pathTemplate->match($formattedName);
+            } catch (ValidationException $ex) {
+                // Swallow the exception to continue trying other path templates
+            }
+        }
+        throw new ValidationException("Input did not match any known format. Input: $formattedName");
+    }
+    {@""}
+@end
+
 @private pathTemplateArgs(resourceIdParams)
     @join param : resourceIdParams on ",".add(BREAK)
         '{@param.templateKey}' => ${@param.name}
@@ -180,6 +210,22 @@
         return self::${@function.pathTemplateName};
     }
     {@""}
+@end
+
+@private pathTemplateListFunction(xapiClass)
+    @if xapiClass.hasFormatOrParseResourceFunctions
+        private static function getPathTemplateList()
+        {
+            if (self::$pathTemplateList == null) {
+                self::$pathTemplateList = [
+                    @join function : xapiClass.pathTemplateGetterFunctions
+                        self::{@function.name}(),
+                    @end
+                ];
+            }
+            return self::$pathTemplateList;
+        }
+    @end
 @end
 
 @private pageStreamingDescriptorFunction(xapiClass)
@@ -267,6 +313,9 @@
 @private functions(xapiClass)
     @join function : xapiClass.formatResourceFunctions
         {@formatResourceFunction(function)}
+    @end
+    @if xapiClass.hasFormatOrParseResourceFunctions
+        {@parseNameFunction(xapiClass)}
     @end
     {@""}
     @if xapiClass.hasLongRunningOperations

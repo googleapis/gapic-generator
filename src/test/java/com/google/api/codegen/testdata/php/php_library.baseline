@@ -147,8 +147,8 @@ use Google\Tagger\CustomNamespace\V1\LabelerGrpcClient;
  *
  * Many parameters require resource names to be formatted in a particular way. To assist
  * with these names, this class includes a format method for each type of name, and additionally
- * a parse method to extract the individual identifiers contained within names that are
- * returned.
+ * a parseName method to extract the individual identifiers contained within formatted names
+ * that are returned by the API.
  * @experimental
  */
 class LibraryServiceGapicClient
@@ -181,6 +181,7 @@ class LibraryServiceGapicClient
     private static $shelfNameTemplate;
     private static $bookNameTemplate;
     private static $returnNameTemplate;
+    private static $pathTemplateList = null;
     private static $gapicVersion = null;
     private static $gapicVersionLoaded = false;
 
@@ -217,6 +218,17 @@ class LibraryServiceGapicClient
         }
 
         return self::$returnNameTemplate;
+    }
+    private static function getPathTemplateList()
+    {
+        if (self::$pathTemplateList == null) {
+            self::$pathTemplateList = [
+                self::getShelfNameTemplate(),
+                self::getBookNameTemplate(),
+                self::getReturnNameTemplate(),
+            ];
+        }
+        return self::$pathTemplateList;
     }
     private static function getPageStreamingDescriptors()
     {
@@ -319,7 +331,7 @@ class LibraryServiceGapicClient
      * @return string The formatted shelf resource.
      * @experimental
      */
-    public function shelfPath($shelfId)
+    public function shelfName($shelfId)
     {
         return self::getShelfNameTemplate()->render([
             'shelf_id' => $shelfId,
@@ -335,7 +347,7 @@ class LibraryServiceGapicClient
      * @return string The formatted book resource.
      * @experimental
      */
-    public function bookPath($shelfId, $bookId)
+    public function bookName($shelfId, $bookId)
     {
         return self::getBookNameTemplate()->render([
             'shelf_id' => $shelfId,
@@ -353,13 +365,35 @@ class LibraryServiceGapicClient
      * @return string The formatted return resource.
      * @experimental
      */
-    public function returnPath($shelf, $book, $return)
+    public function returnName($shelf, $book, $return)
     {
         return self::getReturnNameTemplate()->render([
             'shelf' => $shelf,
             'book' => $book,
             'return' => $return,
         ]);
+    }
+    /**
+     * Parses a formatted name string and returns an associative array of the components in the name.
+     * The following name formats are supported:
+     * - shelves/{shelf_id}
+     * - shelves/{shelf_id}/books/{book_id}
+     * - shelves/{shelf}/books/{book}/returns/{return}
+     *
+     * @param string $formattedName The formatted name string
+     * @return array An associative array from name component IDs to component values.
+     * @experimental
+     */
+    public function parseName($formattedName)
+    {
+        foreach (self::getPathTemplateList() as $pathTemplate) {
+            try {
+                return $pathTemplate->match($formattedName);
+            } catch (ValidationException $ex) {
+                // Swallow the exception to continue trying other path templates
+            }
+        }
+        throw new ValidationException("Input did not match any known format. Input: $formattedName");
     }
 
     /**
@@ -599,7 +633,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = $this->shelfPath("[SHELF_ID]");
+     *     $formattedName = $this->shelfName("[SHELF_ID]");
      *     $options = "";
      *     $response = $libraryServiceClient->getShelf($formattedName, $options);
      * } finally {
@@ -721,7 +755,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = $this->shelfPath("[SHELF_ID]");
+     *     $formattedName = $this->shelfName("[SHELF_ID]");
      *     $libraryServiceClient->deleteShelf($formattedName);
      * } finally {
      *     $libraryServiceClient->close();
@@ -767,8 +801,8 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = $this->shelfPath("[SHELF_ID]");
-     *     $formattedOtherShelfName = $this->shelfPath("[SHELF_ID]");
+     *     $formattedName = $this->shelfName("[SHELF_ID]");
+     *     $formattedOtherShelfName = $this->shelfName("[SHELF_ID]");
      *     $response = $libraryServiceClient->mergeShelves($formattedName, $formattedOtherShelfName);
      * } finally {
      *     $libraryServiceClient->close();
@@ -816,7 +850,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = $this->shelfPath("[SHELF_ID]");
+     *     $formattedName = $this->shelfName("[SHELF_ID]");
      *     $book = new Book();
      *     $response = $libraryServiceClient->createBook($formattedName, $book);
      * } finally {
@@ -929,7 +963,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedName = $this->bookName("[SHELF_ID]", "[BOOK_ID]");
      *     $response = $libraryServiceClient->getBook($formattedName);
      * } finally {
      *     $libraryServiceClient->close();
@@ -975,7 +1009,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = $this->shelfPath("[SHELF_ID]");
+     *     $formattedName = $this->shelfName("[SHELF_ID]");
      *     // Iterate through all elements
      *     $pagedResponse = $libraryServiceClient->listBooks($formattedName);
      *     foreach ($pagedResponse->iterateAllElements() as $element) {
@@ -1053,7 +1087,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedName = $this->bookName("[SHELF_ID]", "[BOOK_ID]");
      *     $libraryServiceClient->deleteBook($formattedName);
      * } finally {
      *     $libraryServiceClient->close();
@@ -1097,7 +1131,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedName = $this->bookName("[SHELF_ID]", "[BOOK_ID]");
      *     $book = new Book();
      *     $response = $libraryServiceClient->updateBook($formattedName, $book);
      * } finally {
@@ -1156,8 +1190,8 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
-     *     $formattedOtherShelfName = $this->shelfPath("[SHELF_ID]");
+     *     $formattedName = $this->bookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedOtherShelfName = $this->shelfName("[SHELF_ID]");
      *     $response = $libraryServiceClient->moveBook($formattedName, $formattedOtherShelfName);
      * } finally {
      *     $libraryServiceClient->close();
@@ -1280,7 +1314,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedName = $this->bookName("[SHELF_ID]", "[BOOK_ID]");
      *     $comment = "";
      *     $stage = Stage::UNSET;
      *     $alignment = Alignment::CHAR;
@@ -1334,7 +1368,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = $this->archivedBookPath("[ARCHIVE_PATH]", "[BOOK_ID]");
+     *     $formattedName = $this->archivedBookName("[ARCHIVE_PATH]", "[BOOK_ID]");
      *     $response = $libraryServiceClient->getBookFromArchive($formattedName);
      * } finally {
      *     $libraryServiceClient->close();
@@ -1380,8 +1414,8 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
-     *     $formattedAltBookName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedName = $this->bookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedAltBookName = $this->bookName("[SHELF_ID]", "[BOOK_ID]");
      *     $response = $libraryServiceClient->getBookFromAnywhere($formattedName, $formattedAltBookName);
      * } finally {
      *     $libraryServiceClient->close();
@@ -1430,7 +1464,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedName = $this->bookName("[SHELF_ID]", "[BOOK_ID]");
      *     $response = $libraryServiceClient->getBookFromAbsolutelyAnywhere($formattedName);
      * } finally {
      *     $libraryServiceClient->close();
@@ -1476,7 +1510,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedName = $this->bookName("[SHELF_ID]", "[BOOK_ID]");
      *     $indexName = "default index";
      *     $indexMapItem = "";
      *     $indexMap = ["default_key" => $indexMapItem,];
@@ -1816,7 +1850,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedResource = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedResource = $this->bookName("[SHELF_ID]", "[BOOK_ID]");
      *     $tag = "";
      *     $response = $libraryServiceClient->addTag($formattedResource, $tag);
      * } finally {
@@ -1867,7 +1901,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedResource = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedResource = $this->bookName("[SHELF_ID]", "[BOOK_ID]");
      *     $label = "";
      *     $response = $libraryServiceClient->addLabel($formattedResource, $label);
      * } finally {
@@ -1918,7 +1952,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedName = $this->bookName("[SHELF_ID]", "[BOOK_ID]");
      *     $operationResponse = $libraryServiceClient->getBigBook($formattedName);
      *     $operationResponse->pollUntilComplete();
      *     if ($operationResponse->operationSucceeded()) {
@@ -1989,7 +2023,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedName = $this->bookName("[SHELF_ID]", "[BOOK_ID]");
      *     $operationResponse = $libraryServiceClient->getBigNothing($formattedName);
      *     $operationResponse->pollUntilComplete();
      *     if ($operationResponse->operationSucceeded()) {
@@ -2751,7 +2785,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $this->shelfPath("[SHELF_ID]");
+        $formattedName = $this->shelfName("[SHELF_ID]");
         $options = "options-1249474914";
 
         $response = $client->getShelf($formattedName, $options);
@@ -2791,7 +2825,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $this->shelfPath("[SHELF_ID]");
+        $formattedName = $this->shelfName("[SHELF_ID]");
         $options = "options-1249474914";
 
         try {
@@ -2893,7 +2927,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $this->shelfPath("[SHELF_ID]");
+        $formattedName = $this->shelfName("[SHELF_ID]");
 
         $client->deleteShelf($formattedName);
         $actualRequests = $grpcStub->popReceivedCalls();
@@ -2930,7 +2964,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $this->shelfPath("[SHELF_ID]");
+        $formattedName = $this->shelfName("[SHELF_ID]");
 
         try {
             $client->deleteShelf($formattedName);
@@ -2967,8 +3001,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $this->shelfPath("[SHELF_ID]");
-        $formattedOtherShelfName = $this->shelfPath("[SHELF_ID]");
+        $formattedName = $this->shelfName("[SHELF_ID]");
+        $formattedOtherShelfName = $this->shelfName("[SHELF_ID]");
 
         $response = $client->mergeShelves($formattedName, $formattedOtherShelfName);
         $this->assertEquals($expectedResponse, $response);
@@ -3007,8 +3041,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $this->shelfPath("[SHELF_ID]");
-        $formattedOtherShelfName = $this->shelfPath("[SHELF_ID]");
+        $formattedName = $this->shelfName("[SHELF_ID]");
+        $formattedOtherShelfName = $this->shelfName("[SHELF_ID]");
 
         try {
             $client->mergeShelves($formattedName, $formattedOtherShelfName);
@@ -3047,7 +3081,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $this->shelfPath("[SHELF_ID]");
+        $formattedName = $this->shelfName("[SHELF_ID]");
         $book = new Book();
 
         $response = $client->createBook($formattedName, $book);
@@ -3087,7 +3121,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $this->shelfPath("[SHELF_ID]");
+        $formattedName = $this->shelfName("[SHELF_ID]");
         $book = new Book();
 
         try {
@@ -3209,7 +3243,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $this->bookName("[SHELF_ID]", "[BOOK_ID]");
 
         $response = $client->getBook($formattedName);
         $this->assertEquals($expectedResponse, $response);
@@ -3247,7 +3281,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $this->bookName("[SHELF_ID]", "[BOOK_ID]");
 
         try {
             $client->getBook($formattedName);
@@ -3283,7 +3317,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $this->shelfPath("[SHELF_ID]");
+        $formattedName = $this->shelfName("[SHELF_ID]");
 
         $response = $client->listBooks($formattedName);
         $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
@@ -3324,7 +3358,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $this->shelfPath("[SHELF_ID]");
+        $formattedName = $this->shelfName("[SHELF_ID]");
 
         try {
             $client->listBooks($formattedName);
@@ -3355,7 +3389,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $this->bookName("[SHELF_ID]", "[BOOK_ID]");
 
         $client->deleteBook($formattedName);
         $actualRequests = $grpcStub->popReceivedCalls();
@@ -3392,7 +3426,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $this->bookName("[SHELF_ID]", "[BOOK_ID]");
 
         try {
             $client->deleteBook($formattedName);
@@ -3431,7 +3465,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $this->bookName("[SHELF_ID]", "[BOOK_ID]");
         $book = new Book();
 
         $response = $client->updateBook($formattedName, $book);
@@ -3471,7 +3505,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $this->bookName("[SHELF_ID]", "[BOOK_ID]");
         $book = new Book();
 
         try {
@@ -3511,8 +3545,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
-        $formattedOtherShelfName = $this->shelfPath("[SHELF_ID]");
+        $formattedName = $this->bookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedOtherShelfName = $this->shelfName("[SHELF_ID]");
 
         $response = $client->moveBook($formattedName, $formattedOtherShelfName);
         $this->assertEquals($expectedResponse, $response);
@@ -3551,8 +3585,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
-        $formattedOtherShelfName = $this->shelfPath("[SHELF_ID]");
+        $formattedName = $this->bookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedOtherShelfName = $this->shelfName("[SHELF_ID]");
 
         try {
             $client->moveBook($formattedName, $formattedOtherShelfName);
@@ -3653,7 +3687,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $this->bookName("[SHELF_ID]", "[BOOK_ID]");
         $comment = "95";
         $stage = Stage::UNSET;
         $alignment = Alignment::CHAR;
@@ -3699,7 +3733,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $this->bookName("[SHELF_ID]", "[BOOK_ID]");
         $comment = "95";
         $stage = Stage::UNSET;
         $alignment = Alignment::CHAR;
@@ -3746,7 +3780,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $this->archivedBookPath("[ARCHIVE_PATH]", "[BOOK_ID]");
+        $formattedName = $this->archivedBookName("[ARCHIVE_PATH]", "[BOOK_ID]");
 
         $response = $client->getBookFromArchive($formattedName);
         $this->assertEquals($expectedResponse, $response);
@@ -3784,7 +3818,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $this->archivedBookPath("[ARCHIVE_PATH]", "[BOOK_ID]");
+        $formattedName = $this->archivedBookName("[ARCHIVE_PATH]", "[BOOK_ID]");
 
         try {
             $client->getBookFromArchive($formattedName);
@@ -3823,8 +3857,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
-        $formattedAltBookName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $this->bookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedAltBookName = $this->bookName("[SHELF_ID]", "[BOOK_ID]");
 
         $response = $client->getBookFromAnywhere($formattedName, $formattedAltBookName);
         $this->assertEquals($expectedResponse, $response);
@@ -3863,8 +3897,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
-        $formattedAltBookName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $this->bookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedAltBookName = $this->bookName("[SHELF_ID]", "[BOOK_ID]");
 
         try {
             $client->getBookFromAnywhere($formattedName, $formattedAltBookName);
@@ -3903,7 +3937,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $this->bookName("[SHELF_ID]", "[BOOK_ID]");
 
         $response = $client->getBookFromAbsolutelyAnywhere($formattedName);
         $this->assertEquals($expectedResponse, $response);
@@ -3941,7 +3975,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $this->bookName("[SHELF_ID]", "[BOOK_ID]");
 
         try {
             $client->getBookFromAbsolutelyAnywhere($formattedName);
@@ -3972,7 +4006,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $this->bookName("[SHELF_ID]", "[BOOK_ID]");
         $indexName = "default index";
         $indexMapItem = "indexMapItem1918721251";
         $indexMap = ["default_key" => $indexMapItem,];
@@ -4014,7 +4048,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $this->bookName("[SHELF_ID]", "[BOOK_ID]");
         $indexName = "default index";
         $indexMapItem = "indexMapItem1918721251";
         $indexMap = ["default_key" => $indexMapItem,];
@@ -4454,7 +4488,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedResource = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
+        $formattedResource = $this->bookName("[SHELF_ID]", "[BOOK_ID]");
         $tag = "tag114586";
 
         $response = $client->addTag($formattedResource, $tag);
@@ -4494,7 +4528,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedResource = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
+        $formattedResource = $this->bookName("[SHELF_ID]", "[BOOK_ID]");
         $tag = "tag114586";
 
         try {
@@ -4526,7 +4560,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedResource = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
+        $formattedResource = $this->bookName("[SHELF_ID]", "[BOOK_ID]");
         $label = "label102727412";
 
         $response = $client->addLabel($formattedResource, $label);
@@ -4566,7 +4600,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedResource = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
+        $formattedResource = $this->bookName("[SHELF_ID]", "[BOOK_ID]");
         $label = "label102727412";
 
         try {
@@ -4627,7 +4661,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $operationsStub->addResponse($completeOperation);
 
         // Mock request
-        $formattedName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $this->bookName("[SHELF_ID]", "[BOOK_ID]");
 
         $response = $client->getBigBook($formattedName);
         $this->assertFalse($response->isDone());
@@ -4702,7 +4736,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $operationsStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $this->bookName("[SHELF_ID]", "[BOOK_ID]");
 
         $response = $client->getBigBook($formattedName);
         $this->assertFalse($response->isDone());
@@ -4763,7 +4797,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $operationsStub->addResponse($completeOperation);
 
         // Mock request
-        $formattedName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $this->bookName("[SHELF_ID]", "[BOOK_ID]");
 
         $response = $client->getBigNothing($formattedName);
         $this->assertFalse($response->isDone());
@@ -4838,7 +4872,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $operationsStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = $this->bookPath("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $this->bookName("[SHELF_ID]", "[BOOK_ID]");
 
         $response = $client->getBigNothing($formattedName);
         $this->assertFalse($response->isDone());
