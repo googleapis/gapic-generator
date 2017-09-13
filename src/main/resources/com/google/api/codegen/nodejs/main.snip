@@ -76,28 +76,24 @@
     }
 
     @join stub : xapi.stubs on BREAK.add(BREAK)
-      var {@stub.grpcClientVariableName} = gaxGrpc.load([{
-        @if xapi.isGcloud
-          root: require('google-proto-files')('..'),
-        @else
+      var {@stub.name}Protos = gaxGrpc.loadObject(
+        googleProtoFiles.loadSync(
           @if xapi.fileHeader.hasVersion
-            root: require('path').join(__dirname, '..', '..', 'proto'),
+            path.join(__dirname, '..', '..', 'proto', '{@stub.protoFileName}'))
           @else
-            root: require('path').join(__dirname, '..', 'proto'),
+            path.join(__dirname, '..', 'proto', '{@stub.protoFileName}'))
           @end
-        @end
-        file: '{@stub.protoFileName}'
-      }]);
-      extend(this, {@stub.grpcClientVariableName}.{@stub.namespace});
+      );
+      extend(this, {@stub.name}Protos.{@stub.namespace});
     @end
 
     @switch xapi.stubs.size.toString
     @case "1"
     @default
-      var grpcClients = merge(
+      var protos = merge(
         {},
         @join stub : xapi.stubs on ", ".add(BREAK)
-          {@stub.grpcClientVariableName}
+          {@stub.name}Protos
         @end
       );
     @end
@@ -129,9 +125,9 @@
 @private clientsParamName(stubs)
   @switch stubs.size.toString
     @case "1"
-      {@stubs.iterator.next.grpcClientVariableName}
+      {@stubs.iterator.next.name}Protos
     @default
-      grpcClients
+      protos
     @end
 @end
 
@@ -181,7 +177,7 @@
    *
    * @@class
    */
-  function {@xapi.name}(gaxGrpc, grpcClients, opts) {
+  function {@xapi.name}(gaxGrpc, loadedProtos, opts) {
     opts = extend({
       servicePath: SERVICE_ADDRESS,
       port: DEFAULT_SERVICE_PORT,
@@ -215,7 +211,7 @@
     this.auth = gaxGrpc.auth;
     @join stub : xapi.stubs on BREAK.add(BREAK)
       var {@stub.name} = gaxGrpc.createStub(
-          grpcClients.{@stub.fullyQualifiedType},
+          loadedProtos.{@stub.fullyQualifiedType},
           opts);
       var {@stub.stubMethodsArrayName} = [
         @join method : {@stub.methodNames} on {@","}.add(BREAK)
@@ -267,8 +263,8 @@
     @join descriptor : descriptors on {@", "}.add(BREAK)
       {@descriptor.methodName}: new gax.LongrunningDescriptor(
         this.operationsClient,
-        grpcClients.{@descriptor.operationPayloadTypeName}.decode,
-        grpcClients.{@descriptor.metadataTypeName}.decode)
+        loadedProtos.{@descriptor.operationPayloadTypeName}.decode,
+        loadedProtos.{@descriptor.metadataTypeName}.decode)
     @end
   };
 @end
