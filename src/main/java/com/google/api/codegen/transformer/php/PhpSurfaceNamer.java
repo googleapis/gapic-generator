@@ -103,6 +103,9 @@ public class PhpSurfaceNamer extends SurfaceNamer {
     if (methodConfig.isPageStreaming()) {
       return "\\Google\\GAX\\PagedListResponse";
     }
+    if (methodConfig.isLongRunningOperation()) {
+      return "\\Google\\GAX\\OperationResponse";
+    }
     switch (methodConfig.getGrpcStreamingType()) {
       case NonStreaming:
         return getModelTypeFormatter().getFullNameFor(method.getOutputType());
