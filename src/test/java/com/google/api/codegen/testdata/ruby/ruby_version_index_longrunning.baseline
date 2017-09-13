@@ -75,8 +75,7 @@ module Google
     # returns long-running operations should implement the +Operations+ interface
     # so developers can have a consistent client experience.
     #
-    # @param credentials
-    #   [Google::Gax::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
+    # @param credentials [Google::Gax::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
     #   Provides the means for authenticating requests made by the client. This parameter can
     #   be many types.
     #   A `Google::Gax::Credentials` uses a the properties of its represented keyfile for
@@ -93,15 +92,32 @@ module Google
     # @param scopes [Array<String>]
     #   The OAuth scopes for this service. This parameter is ignored if
     #   an updater_proc is supplied.
-    # @param client_config[Hash]
+    # @param client_config [Hash]
     #   A Hash for call options for each method. See
     #   Google::Gax#construct_settings for the structure of
     #   this data. Falls back to the default config if not specified
     #   or the specified config is missing data points.
     # @param timeout [Numeric]
     #   The default timeout, in seconds, for calls made through this client.
-    def self.new(*args, **kwargs)
-      Google::Longrunning::OperationsClient.new(*args, **kwargs)
+    def self.new \
+        service_path: nil,
+        port: nil,
+        channel: nil,
+        chan_creds: nil,
+        updater_proc: nil,
+        credentials: nil,
+        scopes: nil,
+        client_config: nil,
+        timeout: nil,
+        lib_name: nil,
+        lib_version: nil
+      kwargs = Hash[
+        *method(__method__).parameters
+          .select { |_, param| binding.local_variable_get(param) != nil }
+          .map { |_, param| [param, binding.local_variable_get(param)] }
+          .flatten(1)
+        ]
+      Google::Longrunning::OperationsClient.new(**kwargs)
     end
   end
 end
