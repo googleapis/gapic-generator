@@ -584,10 +584,10 @@ module Library
   FILE_DIR = File.realdirpath(Pathname.new(__FILE__).join("..").join("library"))
 
   AVAILABLE_VERSIONS = Dir["#{FILE_DIR}/*"]
-    .select {|file| File.directory?(file)}
-    .select {|dir| Google::Gax::VERSION_MATCHER.match(File.basename(dir))}
-    .select {|dir| File.exist?(dir + ".rb")}
-    .map {|dir| File.basename(dir)}
+    .select { |file| File.directory?(file) }
+    .select { |dir| Google::Gax::VERSION_MATCHER.match(File.basename(dir)) }
+    .select { |dir| File.exist?(dir + ".rb") }
+    .map { |dir| File.basename(dir) }
 
   ##
   # This API represents a simple digital library.  It lets you manage Shelf
@@ -608,31 +608,31 @@ module Library
   # @param version [Symbol, String]
   #   The major version of the service to be used. By default :v1
   #   is used.
-  # @param credentials
-  #   [Google::Gax::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
-  #   Provides the means for authenticating requests made by the client. This parameter can
-  #   be many types.
-  #   A `Google::Gax::Credentials` uses a the properties of its represented keyfile for
-  #   authenticating requests made by this client.
-  #   A `String` will be treated as the path to the keyfile to be used for the construction of
-  #   credentials for this client.
-  #   A `Hash` will be treated as the contents of a keyfile to be used for the construction of
-  #   credentials for this client.
-  #   A `GRPC::Core::Channel` will be used to make calls through.
-  #   A `GRPC::Core::ChannelCredentials` for the setting up the RPC client. The channel credentials
-  #   should already be composed with a `GRPC::Core::CallCredentials` object.
-  #   A `Proc` will be used as an updater_proc for the Grpc channel. The proc transforms the
-  #   metadata for requests, generally, to give OAuth credentials.
-  # @param scopes [Array<String>]
-  #   The OAuth scopes for this service. This parameter is ignored if
-  #   an updater_proc is supplied.
-  # @param client_config[Hash]
-  #   A Hash for call options for each method. See
-  #   Google::Gax#construct_settings for the structure of
-  #   this data. Falls back to the default config if not specified
-  #   or the specified config is missing data points.
-  # @param timeout [Numeric]
-  #   The default timeout, in seconds, for calls made through this client.
+  # @overload
+  #   @param credentials [Google::Gax::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
+  #     Provides the means for authenticating requests made by the client. This parameter can
+  #     be many types.
+  #     A `Google::Gax::Credentials` uses a the properties of its represented keyfile for
+  #     authenticating requests made by this client.
+  #     A `String` will be treated as the path to the keyfile to be used for the construction of
+  #     credentials for this client.
+  #     A `Hash` will be treated as the contents of a keyfile to be used for the construction of
+  #     credentials for this client.
+  #     A `GRPC::Core::Channel` will be used to make calls through.
+  #     A `GRPC::Core::ChannelCredentials` for the setting up the RPC client. The channel credentials
+  #     should already be composed with a `GRPC::Core::CallCredentials` object.
+  #     A `Proc` will be used as an updater_proc for the Grpc channel. The proc transforms the
+  #     metadata for requests, generally, to give OAuth credentials.
+  #   @param scopes [Array<String>]
+  #     The OAuth scopes for this service. This parameter is ignored if
+  #     an updater_proc is supplied.
+  #   @param client_config [Hash]
+  #     A Hash for call options for each method. See
+  #     Google::Gax#construct_settings for the structure of
+  #     this data. Falls back to the default config if not specified
+  #     or the specified config is missing data points.
+  #   @param timeout [Numeric]
+  #     The default timeout, in seconds, for calls made through this client.
   def self.new(*args, version: :v1, **kwargs)
     unless AVAILABLE_VERSIONS.include?(version.to_s.downcase)
       raise "The version: #{version} is not available. The available versions " \
@@ -647,6 +647,7 @@ module Library
     Library.const_get(version_module).new(*args, **kwargs)
   end
 end
+
 ============== file: lib/library/credentials.rb ==============
 # Copyright 2017, Google Inc. All rights reserved.
 #
@@ -735,17 +736,6 @@ require "library/v1/library_service_client"
 #
 #
 module Library
-  ##
-  # # Google Example Library API Contents
-  #
-  # | Class | Description |
-  # | ----- | ----------- |
-  # | [LibraryServiceClient][] | A simple Google Example Library API. |
-  # | [Data Types][] | Data types for Library::V1 |
-  #
-  # [LibraryServiceClient]: https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/library/latest/google/library/v1/libraryserviceclient
-  # [Data Types]: https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/library/latest/google/library/v1/datatypes
-  #
   module V1
     # rubocop:enable LineLength
 
@@ -765,8 +755,7 @@ module Library
     #
     # Service comment may include special characters: <>&"+'@.
     #
-    # @param credentials
-    #   [Google::Gax::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
+    # @param credentials [Google::Gax::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
     #   Provides the means for authenticating requests made by the client. This parameter can
     #   be many types.
     #   A `Google::Gax::Credentials` uses a the properties of its represented keyfile for
@@ -783,18 +772,43 @@ module Library
     # @param scopes [Array<String>]
     #   The OAuth scopes for this service. This parameter is ignored if
     #   an updater_proc is supplied.
-    # @param client_config[Hash]
+    # @param client_config [Hash]
     #   A Hash for call options for each method. See
     #   Google::Gax#construct_settings for the structure of
     #   this data. Falls back to the default config if not specified
     #   or the specified config is missing data points.
     # @param timeout [Numeric]
     #   The default timeout, in seconds, for calls made through this client.
-    def self.new(*args, **kwargs)
-      Library::V1::LibraryServiceClient.new(*args, **kwargs)
+    def self.new \
+        service_path: nil,
+        port: nil,
+        channel: nil,
+        chan_creds: nil,
+        updater_proc: nil,
+        credentials: nil,
+        scopes: nil,
+        client_config: nil,
+        timeout: nil,
+        lib_name: nil,
+        lib_version: nil
+      kwargs = {
+        service_path: service_path,
+        port: port,
+        channel: channel,
+        chan_creds: chan_creds,
+        updater_proc: updater_proc,
+        credentials: credentials,
+        scopes: scopes,
+        client_config: client_config,
+        timeout: timeout,
+        lib_name: lib_name,
+        lib_version: lib_version
+      }.select { |_, v| v != nil }
+      Library::V1::LibraryServiceClient.new(**kwargs)
     end
   end
 end
+
 ============== file: lib/library/v1/doc/field_mask.rb ==============
 # Copyright 2017, Google Inc. All rights reserved.
 #
@@ -885,6 +899,16 @@ module Google
     #       any.Unpack(foo)
     #       ...
     #
+    #  Example 4: Pack and unpack a message in Go
+    #
+    #      foo := &pb.Foo{...}
+    #      any, err := ptypes.MarshalAny(foo)
+    #      ...
+    #      foo := &pb.Foo{}
+    #      if err := ptypes.UnmarshalAny(any, foo); err != nil {
+    #        ...
+    #      }
+    #
     # The pack methods provided by protobuf library will by default use
     # 'type.googleapis.com/full.type.name' as the type URL and the unpack
     # methods only use the fully qualified type name after the last '/'
@@ -972,6 +996,8 @@ module Google
     # two Timestamp values is a Duration and it can be added or subtracted
     # from a Timestamp. Range is approximately +-10,000 years.
     #
+    # = Examples
+    #
     # Example 1: Compute Duration from two Timestamps in pseudo code.
     #
     #     Timestamp start = ...;
@@ -1011,10 +1037,21 @@ module Google
     #     td = datetime.timedelta(days=3, minutes=10)
     #     duration = Duration()
     #     duration.FromTimedelta(td)
+    #
+    # = JSON Mapping
+    #
+    # In JSON format, the Duration type is encoded as a string rather than an
+    # object, where the string ends in the suffix "s" (indicating seconds) and
+    # is preceded by the number of seconds, with nanoseconds expressed as
+    # fractional seconds. For example, 3 seconds with 0 nanoseconds should be
+    # encoded in JSON format as "3s", while 3 seconds and 1 nanosecond should
+    # be expressed in JSON format as "3.000000001s", and 3 seconds and 1
+    # microsecond should be expressed in JSON format as "3.000001s".
     # @!attribute [rw] seconds
     #   @return [Integer]
     #     Signed seconds of the span of time. Must be from -315,576,000,000
-    #     to +315,576,000,000 inclusive.
+    #     to +315,576,000,000 inclusive. Note: these bounds are computed from:
+    #     60 sec/min * 60 min/hr * 24 hr/day * 365.25 days/year * 10000 years
     # @!attribute [rw] nanos
     #   @return [Integer]
     #     Signed fractions of a second at nanosecond resolution of the span
@@ -1353,6 +1390,8 @@ module Google
     # and from  RFC 3339 date strings.
     # See [https://www.ietf.org/rfc/rfc3339.txt](https://www.ietf.org/rfc/rfc3339.txt).
     #
+    # = Examples
+    #
     # Example 1: Compute Timestamp from POSIX +time()+.
     #
     #     Timestamp timestamp;
@@ -1392,6 +1431,29 @@ module Google
     #
     #     timestamp = Timestamp()
     #     timestamp.GetCurrentTime()
+    #
+    # = JSON Mapping
+    #
+    # In JSON format, the Timestamp type is encoded as a string in the
+    # [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format. That is, the
+    # format is "{year}-{month}-{day}T{hour}:{min}:{sec}[.{frac_sec}]Z"
+    # where {year} is always expressed using four digits while {month}, {day},
+    # {hour}, {min}, and {sec} are zero-padded to two digits each. The fractional
+    # seconds, which can go up to 9 digits (i.e. up to 1 nanosecond resolution),
+    # are optional. The "Z" suffix indicates the timezone ("UTC"); the timezone
+    # is required, though only UTC (as indicated by "Z") is presently supported.
+    #
+    # For example, "2017-01-15T01:30:15.01Z" encodes 15.01 seconds past
+    # 01:30 UTC on January 15, 2017.
+    #
+    # In JavaScript, one can convert a Date object to this format using the
+    # standard [toISOString()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString]
+    # method. In Python, a standard +datetime.datetime+ object can be converted
+    # to this format using [+strftime+](https://docs.python.org/2/library/time.html#time.strftime)
+    # with the time format spec '%Y-%m-%dT%H:%M:%S.%fZ'. Likewise, in Java, one
+    # can use the Joda Time's [+ISODateTimeFormat.dateTime()+](
+    # http://joda-time.sourceforge.net/apidocs/org/joda/time/format/ISODateTimeFormat.html#dateTime())
+    # to obtain a formatter capable of generating timestamps in this format.
     # @!attribute [rw] seconds
     #   @return [Integer]
     #     Represents seconds of UTC time since Unix epoch
@@ -1598,6 +1660,17 @@ end
 module Google
   module Example
     module Library
+      ##
+      # # Google Example Library API Contents
+      #
+      # | Class | Description |
+      # | ----- | ----------- |
+      # | [LibraryServiceClient][] | A simple Google Example Library API. |
+      # | [Data Types][] | Data types for Library::V1 |
+      #
+      # [LibraryServiceClient]: https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/library/latest/google/library/v1/libraryserviceclient
+      # [Data Types]: https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/library/latest/google/library/v1/datatypes
+      #
       module V1
         # A single book in the library.
         # Message comment may include special characters: <>&"+'@.
@@ -2378,8 +2451,7 @@ module Library
         )
       end
 
-      # @param credentials
-      #   [Google::Gax::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
+      # @param credentials [Google::Gax::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
       #   Provides the means for authenticating requests made by the client. This parameter can
       #   be many types.
       #   A `Google::Gax::Credentials` uses a the properties of its represented keyfile for
@@ -2396,7 +2468,7 @@ module Library
       # @param scopes [Array<String>]
       #   The OAuth scopes for this service. This parameter is ignored if
       #   an updater_proc is supplied.
-      # @param client_config[Hash]
+      # @param client_config [Hash]
       #   A Hash for call options for each method. See
       #   Google::Gax#construct_settings for the structure of
       #   this data. Falls back to the default config if not specified
@@ -2429,7 +2501,7 @@ module Library
           credentials ||= chan_creds
           credentials ||= updater_proc
         end
-        if service_path || port
+        if service_path != SERVICE_ADDRESS || port != DEFAULT_SERVICE_PORT
           warn "`service_path` and `port` parameters are deprecated and will be removed"
         end
 

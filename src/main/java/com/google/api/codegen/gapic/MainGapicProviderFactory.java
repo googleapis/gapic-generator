@@ -431,7 +431,8 @@ public class MainGapicProviderFactory
                   .setModel(model)
                   .setProductConfig(productConfig)
                   .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
-                  .setModelToViewTransformer(new RubyGapicSurfaceDocTransformer(rubyPathMapper))
+                  .setModelToViewTransformer(
+                      new RubyGapicSurfaceDocTransformer(rubyPathMapper, packageConfig))
                   .build();
           providers.add(messageProvider);
         }

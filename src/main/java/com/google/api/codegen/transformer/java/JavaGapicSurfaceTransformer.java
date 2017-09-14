@@ -506,8 +506,8 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     stubClass.doc(serviceTransformer.generateServiceDoc(context, null));
 
     String name = namer.getApiGrpcStubClassName(interfaceConfig);
-    stubClass.releaseLevelAnnotation(
-        namer.getReleaseAnnotation(packageMetadataConfig.releaseLevel(TargetLanguage.JAVA)));
+    // TODO: Remove hardcoded BETA release level after gRPC stub class is GA.
+    stubClass.releaseLevelAnnotation(namer.getReleaseAnnotation(ReleaseLevel.BETA));
     stubClass.name(name);
     stubClass.parentName(namer.getApiStubInterfaceName(interfaceConfig));
     stubClass.settingsClassName(
@@ -577,6 +577,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     Interface firstInterface = new InterfaceView().getElementIterable(model).iterator().next();
     String outputPath = pathMapper.getOutputPath(firstInterface, productConfig);
     packageInfo.outputPath(outputPath + File.separator + "package-info.java");
+    packageInfo.releaseLevel(productConfig.getReleaseLevel());
 
     return packageInfo.build();
   }

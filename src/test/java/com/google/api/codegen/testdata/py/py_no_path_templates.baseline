@@ -203,11 +203,9 @@
 
 ============== file: MANIFEST.in ==============
 include README.rst LICENSE
-global-include *.json
-graft google
+recursive-include google *.json *.proto
 global-exclude *.py[co]
 global-exclude __pycache__
-prune .tox
 
 ============== file: PUBLISHING.rst ==============
 PUBLISHING
@@ -816,7 +814,7 @@ from google.gax import path_template
 import google.gax
 
 from example.gapic import no_templates_api_service_client_config
-from google.cloud.proto.example.v1 import no_path_templates_pb2
+from example.proto import no_path_templates_pb2
 
 
 class NoTemplatesAPIServiceClient(object):
@@ -837,8 +835,6 @@ class NoTemplatesAPIServiceClient(object):
             ssl_credentials=None,
             scopes=None,
             client_config=None,
-            app_name=None,
-            app_version='',
             lib_name=None,
             lib_version='',
             metrics_headers=()):
@@ -859,10 +855,6 @@ class NoTemplatesAPIServiceClient(object):
                 :func:`google.gax.construct_settings` for the structure of
                 this data. Falls back to the default config if not specified
                 or the specified config is missing data points.
-            app_name (str): The name of the application calling
-                the service. Recommended for analytics purposes.
-            app_version (str): The version of the application calling
-                the service. Recommended for analytics purposes.
             lib_name (str): The API library software used for calling
                 the service. (Unless you are writing an API client itself,
                 leave this as default.)
@@ -987,15 +979,15 @@ import sys
 
 from google.gax.utils.messages import get_messages
 
+from example.proto import no_path_templates_pb2
 from google.api import http_pb2
-from google.cloud.proto.example.v1 import no_path_templates_pb2
 from google.protobuf import descriptor_pb2
 from google.protobuf import empty_pb2
 
 
 names = []
-for module in (http_pb2,
-               no_path_templates_pb2,
+for module in (no_path_templates_pb2,
+               http_pb2,
                descriptor_pb2,
                empty_pb2,):
     for name, message in get_messages(module).items():
@@ -1075,6 +1067,10 @@ def lint_setup_py(session):
     session.install('docutils', 'pygments')
     session.run(
         'python', 'setup.py', 'check', '--restructuredtext', '--strict')
+============== file: setup.cfg ==============
+[bdist_wheel]
+universal = 1
+
 ============== file: setup.py ==============
 """A setup module for the GAPIC Google Fake API library.
 
@@ -1084,6 +1080,7 @@ https://github.com/pypa/sampleproject
 """
 
 from setuptools import setup, find_packages
+import io
 import sys
 
 install_requires = [
@@ -1093,6 +1090,9 @@ install_requires = [
     'python-other-package>=12.1.0, <13.5.1',
     'requests>=2.18.4, <3.0dev',
 ]
+
+with io.open('README.rst', 'r', encoding='utf-8') as readme_file:
+    long_description = readme_file.read()
 
 setup(
     name='google-cloud-library',
@@ -1115,11 +1115,11 @@ setup(
     ],
     description='GAPIC library for the Google Fake API',
     include_package_data=True,
-    long_description=open('README.rst').read(),
+    long_description=long_description,
     install_requires=install_requires,
-    license='Apache-2.0',
+    license='Apache 2.0',
     packages=find_packages(),
-    namespace_packages=['google.cloud.proto', 'google.cloud.proto.library'],
+    namespace_packages=[],
     url='https://github.com/googleapis/googleapis'
 )
 
@@ -1145,7 +1145,7 @@ import unittest
 
 from google.gax import errors
 
-from google.cloud.proto.example.v1 import no_path_templates_pb2
+from example.proto import no_path_templates_pb2
 from google.protobuf import empty_pb2
 import example
 
