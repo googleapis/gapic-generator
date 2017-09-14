@@ -179,7 +179,6 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.templateFileName(XAPI_TEMPLATE_FILENAME);
     xapiClass.outputPath(namer.getSourceFilePath(subPath, name));
 
-    xapiClass.fileHeader(fileHeaderTransformer.generateFileHeader(context));
     xapiClass.protoFilename(context.getInterface().getFile().getSimpleName());
     xapiClass.servicePhraseName(namer.getServicePhraseName(context.getInterface()));
 
@@ -224,6 +223,7 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.toolkitVersion(GeneratorVersionProvider.getGeneratorVersion());
     xapiClass.gapicPackageName(
         namer.getGapicPackageName(packageConfig.packageName(TargetLanguage.PYTHON)));
+    xapiClass.fileHeader(fileHeaderTransformer.generateFileHeader(context));
 
     return xapiClass.build();
   }

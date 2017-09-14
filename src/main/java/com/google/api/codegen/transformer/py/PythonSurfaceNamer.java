@@ -235,7 +235,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   @Override
   public String getGrpcClientTypeName(Interface apiInterface) {
     String fullName = getModelTypeFormatter().getFullNameFor(apiInterface) + "Stub";
-    return getTypeNameConverter().getTypeName(fullName).getNickname();
+    return getTypeNameConverter().getTypeName(fullName).getFullName();
   }
 
   @Override
