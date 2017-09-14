@@ -77,7 +77,7 @@ import javax.annotation.Generated;
  * <pre>
  * <code>
  * NoTemplatesApiServiceSettings noTemplatesApiServiceSettings =
- *     NoTemplatesApiServiceSettings.defaultBuilder()
+ *     NoTemplatesApiServiceSettings.newBuilder()
  *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
  *         .build();
  * NoTemplatesApiServiceClient noTemplatesApiServiceClient =
@@ -90,7 +90,7 @@ import javax.annotation.Generated;
  * <pre>
  * <code>
  * NoTemplatesApiServiceSettings noTemplatesApiServiceSettings =
- *     NoTemplatesApiServiceSettings.defaultBuilder()
+ *     NoTemplatesApiServiceSettings.newBuilder()
  *         .setTransportProvider(NoTemplatesApiServiceSettings.defaultGrpcTransportProviderBuilder()
  *             .setChannelProvider(NoTemplatesApiServiceSettings.defaultGrpcChannelProviderBuilder()
  *                 .setEndpoint(myEndpoint)
@@ -147,6 +147,7 @@ public class NoTemplatesApiServiceClient implements BackgroundResource {
     return settings;
   }
 
+  @BetaApi
   public NoTemplatesApiServiceStub getStub() {
     return stub;
   }
@@ -357,6 +358,7 @@ public class NoTemplatesApiServiceSettings extends ClientSettings {
   /**
    * Returns a builder for this class with recommended defaults.
    */
+  @Deprecated
   public static Builder defaultBuilder() {
     return Builder.createDefault();
   }
@@ -365,6 +367,7 @@ public class NoTemplatesApiServiceSettings extends ClientSettings {
    * Returns a builder for this class with recommended defaults for API methods, and the given
    * ClientContext used for executor/transport/credentials.
    */
+  @Deprecated
   public static Builder defaultBuilder(ClientContext clientContext) {
     return new Builder(clientContext);
   }
@@ -373,7 +376,7 @@ public class NoTemplatesApiServiceSettings extends ClientSettings {
    * Returns a new builder for this class.
    */
   public static Builder newBuilder() {
-    return new Builder();
+    return Builder.createDefault();
   }
 
   /**
@@ -596,7 +599,7 @@ public class GrpcNoTemplatesApiServiceStub extends NoTemplatesApiServiceStub {
   }
 
   public static final GrpcNoTemplatesApiServiceStub create(ClientContext clientContext) throws IOException {
-    return new GrpcNoTemplatesApiServiceStub(NoTemplatesApiServiceSettings.defaultBuilder().build(), clientContext);
+    return new GrpcNoTemplatesApiServiceStub(NoTemplatesApiServiceSettings.newBuilder().build(), clientContext);
   }
 
   /**
@@ -882,7 +885,7 @@ public class NoTemplatesApiServiceClientTest {
   @Before
   public void setUp() throws IOException {
     serviceHelper.reset();
-    NoTemplatesApiServiceSettings settings = NoTemplatesApiServiceSettings.defaultBuilder()
+    NoTemplatesApiServiceSettings settings = NoTemplatesApiServiceSettings.newBuilder()
         .setTransportProvider(
               GrpcTransportProvider.newBuilder()
                   .setChannelProvider(serviceHelper.createChannelProvider())
