@@ -2337,16 +2337,12 @@ function LibraryServiceClientBuilder(gaxGrpc) {
     return new LibraryServiceClientBuilder(gaxGrpc);
   }
 
-  var libraryServiceStubProtos = gaxGrpc.loadObject(
-    googleProtoFiles.loadSync(
-      path.join(__dirname, '..', '..', 'proto', 'library.proto'))
-  );
+  var libraryServiceStubProtos = gaxGrpc.loadProto(
+    path.join(__dirname, '..', '..', 'proto', 'library.proto'));
   extend(this, libraryServiceStubProtos.google.example.library.v1);
 
-  var labelerStubProtos = gaxGrpc.loadObject(
-    googleProtoFiles.loadSync(
-      path.join(__dirname, '..', '..', 'proto', 'tagger.proto'))
-  );
+  var labelerStubProtos = gaxGrpc.loadProto(
+    path.join(__dirname, '..', '..', 'proto', 'tagger.proto'));
   extend(this, labelerStubProtos.google.tagger.v1);
 
   var protos = merge(

@@ -76,14 +76,12 @@
     }
 
     @join stub : xapi.stubs on BREAK.add(BREAK)
-      var {@stub.name}Protos = gaxGrpc.loadObject(
-        googleProtoFiles.loadSync(
-          @if xapi.fileHeader.hasVersion
-            path.join(__dirname, '..', '..', 'proto', '{@stub.protoFileName}'))
-          @else
-            path.join(__dirname, '..', 'proto', '{@stub.protoFileName}'))
-          @end
-      );
+      var {@stub.name}Protos = gaxGrpc.loadProto(
+        @if xapi.fileHeader.hasVersion
+          path.join(__dirname, '..', '..', 'proto', '{@stub.protoFileName}'));
+        @else
+          path.join(__dirname, '..', 'proto', '{@stub.protoFileName}'));
+        @end
       extend(this, {@stub.name}Protos.{@stub.namespace});
     @end
 

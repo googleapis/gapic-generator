@@ -160,10 +160,8 @@ function NoTemplatesApiServiceClientBuilder(gaxGrpc) {
     return new NoTemplatesApiServiceClientBuilder(gaxGrpc);
   }
 
-  var noTemplatesApiServiceStubProtos = gaxGrpc.loadObject(
-    googleProtoFiles.loadSync(
-      path.join(__dirname, '..', 'proto', 'no_path_templates.proto'))
-  );
+  var noTemplatesApiServiceStubProtos = gaxGrpc.loadProto(
+    path.join(__dirname, '..', 'proto', 'no_path_templates.proto'));
   extend(this, noTemplatesApiServiceStubProtos.google.cloud.example.v1);
 
 

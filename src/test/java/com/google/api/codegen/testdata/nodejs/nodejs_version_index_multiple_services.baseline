@@ -110,14 +110,12 @@ function decrementerV1(options) {
 
 var v1Protos = {};
 
-extend(v1Protos, gaxGrpc.loadObject(
-  googleProtoFiles.loadSync(
-    path.join(__dirname, '..', 'proto', 'multiple_services.proto'))
+extend(v1Protos, gaxGrpc.loadProto(
+  path.join(__dirname, '..', 'proto', 'multiple_services.proto')
 ).google.cloud.example.v1);
 
-extend(v1Protos, gaxGrpc.loadObject(
-  googleProtoFiles.loadSync(
-    path.join(__dirname, '..', 'proto', 'multiple_services.proto'))
+extend(v1Protos, gaxGrpc.loadProto(
+  path.join(__dirname, '..', 'proto', 'multiple_services.proto')
 ).google.cloud.example.v1);
 
 module.exports.incrementer = incrementerV1;

@@ -82,14 +82,12 @@ function libraryV1(options) {
 
 var v1Protos = {};
 
-extend(v1Protos, gaxGrpc.loadObject(
-  googleProtoFiles.loadSync(
-    path.join(__dirname, '..', 'proto', 'library.proto'))
+extend(v1Protos, gaxGrpc.loadProto(
+  path.join(__dirname, '..', 'proto', 'library.proto')
 ).google.example.library.v1);
 
-extend(v1Protos, gaxGrpc.loadObject(
-  googleProtoFiles.loadSync(
-    path.join(__dirname, '..', 'proto', 'tagger.proto'))
+extend(v1Protos, gaxGrpc.loadProto(
+  path.join(__dirname, '..', 'proto', 'tagger.proto')
 ).google.tagger.v1);
 
 module.exports = libraryV1;
