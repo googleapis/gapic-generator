@@ -82,7 +82,7 @@
 
 @private responseInitCodeStreaming(responseInitCodeList)
     @join initCodeItem : responseInitCodeList
-        {@initCode(initCodeItem)}
+        {@initCode(initCodeItem, "client")}
         @join line : initCodeItem.topLevelLines
             $grpcStub->addResponse(${@line.identifier});
         @end
@@ -125,7 +125,7 @@
 
         // Mock request
         @join initCodeItem : test.grpcStreamingView.requestInitCodeList
-            {@initCode(initCodeItem)}
+            {@initCode(initCodeItem, "client")}
         @end
 
         $bidi = $client->{@test.clientMethodName}();
@@ -212,7 +212,7 @@
         {@responseInitCodeStreaming(test.grpcStreamingView.responseInitCodeList)}
 
         // Mock request
-        {@initCode(test.initCode)}
+        {@initCode(test.initCode, "client")}
 
         $serverStream = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
         $this->assertInstanceOf(ServerStream::class, $serverStream);
@@ -241,7 +241,7 @@
         $this->assertTrue($grpcStub->isExhausted());
 
         // Mock request
-        {@initCode(test.initCode)}
+        {@initCode(test.initCode, "client")}
 
         $serverStream = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
         $results = $serverStream->readAll();
@@ -346,7 +346,7 @@
 
         @if test.hasRequestParameters
           // Mock request
-          {@initCode(test.initCode)}
+          {@initCode(test.initCode, "client")}
 
         @end
         try {
@@ -392,7 +392,7 @@
         $incompleteOperation->setDone(false);
         $grpcStub->addResponse($incompleteOperation);
         @if test.hasReturnValue
-            {@initCode(test.mockResponse.initCode)}
+            {@initCode(test.mockResponse.initCode, "client")}
         @else
             $expectedResponse = new GPBEmpty();
         @end
@@ -406,7 +406,7 @@
 
         @if test.hasRequestParameters
           // Mock request
-          {@initCode(test.initCode)}
+          {@initCode(test.initCode, "client")}
 
         @end
         $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
@@ -469,7 +469,7 @@
 
         @if test.hasRequestParameters
           // Mock request
-          {@initCode(test.initCode)}
+          {@initCode(test.initCode, "client")}
 
         @end
         $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
@@ -508,7 +508,7 @@
 
     // Mock response
     @if test.hasReturnValue
-        {@initCode(test.mockResponse.initCode)}
+        {@initCode(test.mockResponse.initCode, "client")}
     @else
         $expectedResponse = new GPBEmpty();
     @end
@@ -516,7 +516,7 @@
 
     @if test.hasRequestParameters
       // Mock request
-      {@initCode(test.initCode)}
+      {@initCode(test.initCode, "client")}
 
     @end
 @end

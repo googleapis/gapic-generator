@@ -15,7 +15,7 @@
         @else
             ${@apiMethod.apiVariableName} = new {@apiMethod.apiClassName}();
         @end
-        {@initCode(apiMethod.initCode)}
+        {@initCode(apiMethod.initCode, apiMethod.apiVariableName)}
         {@coreSampleCode}
     } finally {
         @if xapiClass.hasMissingDefaultOptions
@@ -194,8 +194,8 @@
     @end
 @end
 
-@snippet initCode(initCodeSpec)
-    @join line : initCodeSpec.lines
+@snippet initCode(initCode, apiVariableName)
+    @join line : initCode.lines
         @switch line.lineType
         @case "StructureInitLine"
             {@initLineStructure(line)}
@@ -204,7 +204,7 @@
         @case "MapInitLine"
             {@initLineMap(line)}
         @case "SimpleInitLine"
-            {@initLineSimple(line)}
+            {@initLineSimple(line, apiVariableName)}
         @default
             $unhandledCase: {@line.lineType}$
         @end
@@ -238,16 +238,16 @@
     @end
 @end
 
-@private initLineSimple(line)
-    ${@line.identifier} = {@renderInitValue(line.initValue)};
+@private initLineSimple(line, apiVariableName)
+    ${@line.identifier} = {@renderInitValue(line.initValue, apiVariableName)};
 @end
 
-@private renderInitValue(initValue)
+@private renderInitValue(initValue, apiVariableName)
     @switch initValue.type
     @case "SimpleInitValueView"
         {@initValue.initialValue}
     @case "FormattedInitValueView"
-        $this->{@initValue.formatFunctionName}({@argList(initValue.formatArgs)})
+        ${@apiVariableName}->{@initValue.formatFunctionName}({@argList(initValue.formatArgs)})
     @default
         $unhandledCase: {@initValue.type}$
     @end

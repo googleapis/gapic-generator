@@ -139,6 +139,13 @@
     {@longRunningDescriptorFunction(xapiClass)}
     {@grpcStreamingDescriptorFunction(xapiClass)}
     {@gapicVersionFunction()}
+    @join function : xapiClass.formatResourceFunctions
+        {@formatResourceFunction(function)}
+    @end
+    @if xapiClass.hasFormatOrParseResourceFunctions
+        {@parseNameFunction(xapiClass)}
+    @end
+    {@""}
 @end
 
 @private formatResourceFunction(function)
@@ -152,7 +159,7 @@
      * @@return string The formatted {@function.entityName} resource.
      * @@experimental
      */
-    public function {@function.name}(\
+    public static function {@function.name}(\
             {@formatResourceFunctionParams(function.resourceIdParams)})
     {
         return self::{@function.pathTemplateGetterName}()->render([
@@ -180,7 +187,7 @@
      * @@return array An associative array from name component IDs to component values.
      * @@experimental
      */
-    public function parseName($formattedName)
+    public static function parseName($formattedName)
     {
         foreach (self::getPathTemplateList() as $pathTemplate) {
             try {
@@ -311,13 +318,6 @@
 @end
 
 @private functions(xapiClass)
-    @join function : xapiClass.formatResourceFunctions
-        {@formatResourceFunction(function)}
-    @end
-    @if xapiClass.hasFormatOrParseResourceFunctions
-        {@parseNameFunction(xapiClass)}
-    @end
-    {@""}
     @if xapiClass.hasLongRunningOperations
         /**
          * Return an OperationsClient object with the same endpoint as $this.
