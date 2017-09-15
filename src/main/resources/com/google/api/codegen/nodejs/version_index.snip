@@ -94,14 +94,10 @@
 
 @private messages(isGcloud, version, stub)
     extend({@version}Protos, gaxGrpc.load([{
-      @if isGcloud
-        root: require('google-proto-files')('..'),
-      @else
-        # This does not follow the import in main.snip since version index is not generated
-        # for unversioned Apis. This will be changed when top level indexes are supported
-        # for unversioned Apis.
-        root: require('path').join(__dirname, '..', '..', 'proto'),
-      @end
+      # This does not follow the import in main.snip since version index is not generated
+      # for unversioned Apis. This will be changed when top level indexes are supported
+      # for unversioned Apis.
+      root: require('path').join(__dirname, '..', '..', 'proto'),
       file: '{@stub.protoFileName}'
     }]).{@stub.namespace});
 @end

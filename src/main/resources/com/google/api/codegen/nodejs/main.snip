@@ -77,14 +77,10 @@
 
     @join stub : xapi.stubs on BREAK.add(BREAK)
       var {@stub.grpcClientVariableName} = gaxGrpc.load([{
-        @if xapi.isGcloud
-          root: require('google-proto-files')('..'),
+        @if xapi.fileHeader.hasVersion
+          root: require('path').join(__dirname, '..', '..', 'proto'),
         @else
-          @if xapi.fileHeader.hasVersion
-            root: require('path').join(__dirname, '..', '..', 'proto'),
-          @else
-            root: require('path').join(__dirname, '..', 'proto'),
-          @end
+          root: require('path').join(__dirname, '..', 'proto'),
         @end
         file: '{@stub.protoFileName}'
       }]);
