@@ -120,18 +120,17 @@ public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer {
         new RubyPackageMetadataTransformer(packageConfig);
     RubyPackageMetadataNamer packageNamer =
         new RubyPackageMetadataNamer(productConfig.getPackageName());
-    String version = packageConfig.apiVersion();
     ImmutableList.Builder<TocContentView> tocContents = ImmutableList.builder();
     for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
       GapicInterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
       tocContents.add(
           metadataTransformer.generateTocContent(
-              model, packageNamer, version, namer.getApiWrapperClassName(interfaceConfig)));
+              model, packageNamer, namer.getApiWrapperClassName(interfaceConfig)));
     }
 
     tocContents.add(
         metadataTransformer.generateDataTypeTocContent(
-            productConfig.getPackageName(), packageNamer, version));
+            productConfig.getPackageName(), packageNamer));
 
     return TocModuleView.newBuilder()
         .moduleName(moduleName)
