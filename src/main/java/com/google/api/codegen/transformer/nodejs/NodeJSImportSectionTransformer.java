@@ -49,9 +49,11 @@ public class NodeJSImportSectionTransformer implements ImportSectionTransformer 
     imports.add(createImport("configData", "./" + configModule));
     imports.add(createImport("extend", "extend"));
     imports.add(createImport("gax", "google-gax"));
+    imports.add(createImport("googleProtoFiles", "google-proto-files"));
     if (new GrpcStubTransformer().generateGrpcStubs(context).size() > 1) {
       imports.add(createImport("merge", "lodash.merge"));
     }
+    imports.add(createImport("path", "path"));
     return imports.build();
   }
 

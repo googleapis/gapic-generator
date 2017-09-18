@@ -21,6 +21,8 @@ var gapic = {
   v1: require('./v1')
 };
 var gaxGrpc = require('google-gax').grpc();
+var googleProtoFiles = require('google-proto-files');
+var path = require('path');
 
 const VERSION = require('../package.json').version;
 
@@ -108,15 +110,13 @@ function decrementerV1(options) {
 
 var v1Protos = {};
 
-extend(v1Protos, gaxGrpc.load([{
-  root: require('google-proto-files')('..'),
-  file: 'multiple_services.proto'
-}]).google.cloud.example.v1);
+extend(v1Protos, gaxGrpc.loadProto(
+  path.join(__dirname, '..', 'proto', 'multiple_services.proto')
+).google.cloud.example.v1);
 
-extend(v1Protos, gaxGrpc.load([{
-  root: require('google-proto-files')('..'),
-  file: 'multiple_services.proto'
-}]).google.cloud.example.v1);
+extend(v1Protos, gaxGrpc.loadProto(
+  path.join(__dirname, '..', 'proto', 'multiple_services.proto')
+).google.cloud.example.v1);
 
 module.exports.incrementer = incrementerV1;
 module.exports.decrementer = decrementerV1;

@@ -31,6 +31,8 @@
 var configData = require('./no_templates_api_service_client_config');
 var extend = require('extend');
 var gax = require('google-gax');
+var googleProtoFiles = require('google-proto-files');
+var path = require('path');
 
 var SERVICE_ADDRESS = 'no-path-templates.googleapis.com';
 
@@ -49,7 +51,7 @@ var ALL_SCOPES = [
  *
  * @class
  */
-function NoTemplatesApiServiceClient(gaxGrpc, grpcClients, opts) {
+function NoTemplatesApiServiceClient(gaxGrpc, loadedProtos, opts) {
   opts = extend({
     servicePath: SERVICE_ADDRESS,
     port: DEFAULT_SERVICE_PORT,
@@ -78,7 +80,7 @@ function NoTemplatesApiServiceClient(gaxGrpc, grpcClients, opts) {
 
   this.auth = gaxGrpc.auth;
   var noTemplatesApiServiceStub = gaxGrpc.createStub(
-      grpcClients.google.cloud.example.v1.NoTemplatesAPIService,
+      loadedProtos.google.cloud.example.v1.NoTemplatesAPIService,
       opts);
   var noTemplatesApiServiceStubMethods = [
     'increment'
@@ -158,11 +160,9 @@ function NoTemplatesApiServiceClientBuilder(gaxGrpc) {
     return new NoTemplatesApiServiceClientBuilder(gaxGrpc);
   }
 
-  var noTemplatesApiServiceClient = gaxGrpc.load([{
-    root: require('path').join(__dirname, '..', 'proto'),
-    file: 'no_path_templates.proto'
-  }]);
-  extend(this, noTemplatesApiServiceClient.google.cloud.example.v1);
+  var noTemplatesApiServiceStubProtos = gaxGrpc.loadProto(
+    path.join(__dirname, '..', 'proto', 'no_path_templates.proto'));
+  extend(this, noTemplatesApiServiceStubProtos.google.cloud.example.v1);
 
 
   /**
@@ -180,7 +180,7 @@ function NoTemplatesApiServiceClientBuilder(gaxGrpc) {
    *   {@link gax.constructSettings} for the format.
    */
   this.noTemplatesApiServiceClient = function(opts) {
-    return new NoTemplatesApiServiceClient(gaxGrpc, noTemplatesApiServiceClient, opts);
+    return new NoTemplatesApiServiceClient(gaxGrpc, noTemplatesApiServiceStubProtos, opts);
   };
   extend(this.noTemplatesApiServiceClient, NoTemplatesApiServiceClient);
 }
