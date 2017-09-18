@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.configgen.transformer;
 
+import com.google.api.codegen.ResourceNameTreatment;
+import com.google.api.codegen.config.ApiSource;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
@@ -85,6 +87,10 @@ public class MethodTransformer {
         (Iterators.size(inputFields.iterator()) > REQUEST_OBJECT_METHOD_THRESHOLD
                 || Iterators.size(inputFields.iterator()) != parameterList.size())
             && !method.getRequestStreaming());
+    // TODO(andrealin): Set resource type name config for all input sources.
+    if (method.getApiSource().equals(ApiSource.DISCOVERY)) {
+      methodView.resourceNameTreatment(ResourceNameTreatment.STATIC_TYPES);
+    }
   }
 
   private List<String> filteredInputFields(MethodModel method, List<FieldModel> candidates) {

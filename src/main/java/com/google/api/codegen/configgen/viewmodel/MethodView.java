@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.configgen.viewmodel;
 
+import com.google.api.codegen.ResourceNameTreatment;
 import com.google.auto.value.AutoValue;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -38,6 +39,10 @@ public abstract class MethodView implements Comparable<MethodView> {
 
   /** Turns on or off generation of a method whose sole parameter is a request object. */
   public abstract boolean requestObjectMethod();
+
+  /** The resource name treatment. */
+  @Nullable
+  public abstract ResourceNameTreatment resourceNameTreatment();
 
   /** The configuration for paging. */
   @Nullable
@@ -76,6 +81,8 @@ public abstract class MethodView implements Comparable<MethodView> {
     public abstract Builder requiredFields(List<String> val);
 
     public abstract Builder requestObjectMethod(boolean val);
+
+    public abstract Builder resourceNameTreatment(ResourceNameTreatment val);
 
     public abstract Builder pageStreaming(PageStreamingView val);
 
