@@ -65,8 +65,8 @@
     @if hasFormatOrParseResourceFunctions
         {@""} * Many parameters require resource names to be formatted in a particular way. To assist
          * with these names, this class includes a format method for each type of name, and additionally
-         * a parse method to extract the individual identifiers contained within names that are
-         * returned.
+         * a parseName method to extract the individual identifiers contained within formatted names
+         * that are returned by the API.
     @end
      * @@experimental
      */
@@ -107,7 +107,13 @@
     @join pathTemplate : xapiClass.pathTemplates
         private static ${@pathTemplate.name};
     @end
-    {@BREAK}
+    {@""}
+    @if xapiClass.hasFormatOrParseResourceFunctions
+        private static $pathTemplateList = null;
+    @end
+    private static $gapicVersion = null;
+    private static $gapicVersionLoaded = false;
+    {@""}
 @end
 
 @private members(xapiClass)
@@ -125,21 +131,21 @@
 @end
 
 @private staticFunctions(xapiClass)
-    @join function : xapiClass.formatResourceFunctions
-        {@formatResourceFunction(function)}
-    @end
-    {@""}
-    @join function : xapiClass.parseResourceFunctions
-        {@parseResourceFunction(function)}
-    @end
-    {@""}
     @join function : xapiClass.pathTemplateGetterFunctions
         {@pathTemplateGetterFunction(function)}
     @end
+    {@pathTemplateListFunction(xapiClass)}
     {@pageStreamingDescriptorFunction(xapiClass)}
     {@longRunningDescriptorFunction(xapiClass)}
     {@grpcStreamingDescriptorFunction(xapiClass)}
     {@gapicVersionFunction()}
+    @join function : xapiClass.formatResourceFunctions
+        {@formatResourceFunction(function)}
+    @end
+    @if xapiClass.hasFormatOrParseResourceFunctions
+        {@parseNameFunction(xapiClass)}
+    @end
+    {@""}
 @end
 
 @private formatResourceFunction(function)
@@ -169,27 +175,36 @@
     @end
 @end
 
+@private parseNameFunction(xapiClass)
+    /**
+     * Parses a formatted name string and returns an associative array of the components in the name.
+     * The following name formats are supported:
+    @join function : xapiClass.pathTemplateGetterFunctions
+        {@""} * - {@function.pattern}
+    @end
+     *
+     * @@param string $formattedName The formatted name string
+     * @@return array An associative array from name component IDs to component values.
+     * @@experimental
+     */
+    public static function parseName($formattedName)
+    {
+        foreach (self::getPathTemplateList() as $pathTemplate) {
+            try {
+                return $pathTemplate->match($formattedName);
+            } catch (ValidationException $ex) {
+                // Swallow the exception to continue trying other path templates
+            }
+        }
+        throw new ValidationException("Input did not match any known format. Input: $formattedName");
+    }
+    {@""}
+@end
+
 @private pathTemplateArgs(resourceIdParams)
     @join param : resourceIdParams on ",".add(BREAK)
         '{@param.templateKey}' => ${@param.name}
     @end
-@end
-
-@private parseResourceFunction(function)
-    /**
-     * Parses the {@function.outputResourceId} from the given fully-qualified path which
-     * represents a {@function.entityName} resource.
-     *
-     * @@param string ${@function.entityNameParamName} The fully-qualified {@function.entityName} resource.
-     * @@return string The extracted {@function.outputResourceId} value.
-     * @@experimental
-     */
-    public static function {@function.name}(${@function.entityNameParamName})
-    {
-        return self::{@function.pathTemplateGetterName}()\
-            ->match(${@function.entityNameParamName})['{@function.outputResourceId}'];
-    }
-    {@""}
 @end
 
 @private pathTemplateGetterFunction(function)
@@ -202,6 +217,22 @@
         return self::${@function.pathTemplateName};
     }
     {@""}
+@end
+
+@private pathTemplateListFunction(xapiClass)
+    @if xapiClass.hasFormatOrParseResourceFunctions
+        private static function getPathTemplateList()
+        {
+            if (self::$pathTemplateList == null) {
+                self::$pathTemplateList = [
+                    @join function : xapiClass.pathTemplateGetterFunctions
+                        self::{@function.name}(),
+                    @end
+                ];
+            }
+            return self::$pathTemplateList;
+        }
+    @end
 @end
 
 @private pageStreamingDescriptorFunction(xapiClass)
@@ -273,13 +304,15 @@
 @private gapicVersionFunction()
     private static function getGapicVersion()
     {
-        if (file_exists(__DIR__ . "/../VERSION")) {
-          return trim(file_get_contents(__DIR__ . "/../VERSION"));
-        } elseif (class_exists('\Google\Cloud\ServiceBuilder')) {
-          return \Google\Cloud\ServiceBuilder::VERSION;
-        } else {
-          return;
+        if (!self::$gapicVersionLoaded) {
+            if (file_exists(__DIR__ . "/../VERSION")) {
+              self::$gapicVersion = trim(file_get_contents(__DIR__ . "/../VERSION"));
+            } elseif (class_exists('\Google\Cloud\ServiceBuilder')) {
+              self::$gapicVersion = \Google\Cloud\ServiceBuilder::VERSION;
+            }
+            self::$gapicVersionLoaded = true;
         }
+        return self::$gapicVersion;
     }
     {@""}
 @end
