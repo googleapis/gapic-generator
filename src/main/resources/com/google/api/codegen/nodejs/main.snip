@@ -78,9 +78,9 @@
     @join stub : xapi.stubs on BREAK.add(BREAK)
       var {@stub.name}Protos = gaxGrpc.loadProto(
         @if xapi.fileHeader.hasVersion
-          path.join(__dirname, '..', '..', 'proto', '{@stub.protoFileName}'));
+          path.join(__dirname, '..', '..', 'protos', '{@stub.protoFileName}'));
         @else
-          path.join(__dirname, '..', 'proto', '{@stub.protoFileName}'));
+          path.join(__dirname, '..', 'protos', '{@stub.protoFileName}'));
         @end
       extend(this, {@stub.name}Protos.{@stub.namespace});
     @end
