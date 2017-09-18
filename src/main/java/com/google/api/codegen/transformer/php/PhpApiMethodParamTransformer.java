@@ -159,18 +159,20 @@ public class PhpApiMethodParamTransformer implements ApiMethodParamTransformer {
       retrySettingsDoc.typeName(retryDocType);
       // TODO figure out a reliable way to line-wrap comments across all languages
       // instead of encoding it in the transformer
-      String retrySettingsDocText =
-          "Retry settings to use for this call. Can be a\n"
-              + "{@see Google\\GAX\\RetrySettings} object, or an associative array\n"
-              + "of retry settings parameters. See the documentation on\n"
-              + "{@see Google\\GAX\\RetrySettings} for example usage.";
+      StringBuilder retrySettingsDocTextBuilder =
+          new StringBuilder(
+              "Retry settings to use for this call. Can be a\n"
+                  + "{@see Google\\GAX\\RetrySettings} object, or an associative array\n"
+                  + "of retry settings parameters. See the documentation on\n"
+                  + "{@see Google\\GAX\\RetrySettings} for example usage.");
       if (context.getNamer().methodHasTimeoutSettings(context.getMethodConfig())) {
-        retrySettingsDocText +=
+        retrySettingsDocTextBuilder.append(
             String.format(
                 "\nIf specified, then %s is ignored.",
-                context.getNamer().varReference(timeoutMillisName));
+                context.getNamer().varReference(timeoutMillisName)));
       }
-      List<String> retrySettingsDocLines = context.getNamer().getDocLines(retrySettingsDocText);
+      List<String> retrySettingsDocLines =
+          context.getNamer().getDocLines(retrySettingsDocTextBuilder.toString());
       retrySettingsDoc.lines(retrySettingsDocLines);
       arrayKeyDocs.add(retrySettingsDoc.build());
     }
@@ -182,14 +184,16 @@ public class PhpApiMethodParamTransformer implements ApiMethodParamTransformer {
       timeoutDoc.paramName(context.getNamer().localVarName(timeoutMillisName));
       // TODO figure out a reliable way to line-wrap comments across all languages
       // instead of encoding it in the transformer
-      String timeoutMillisDocText = "Timeout to use for this call.";
+      StringBuilder timeoutMillisDocTextBuilder =
+          new StringBuilder("Timeout to use for this call.");
       if (context.getNamer().methodHasRetrySettings(context.getMethodConfig())) {
-        timeoutMillisDocText +=
+        timeoutMillisDocTextBuilder.append(
             String.format(
                 " Only used if %s\nis not set.",
-                context.getNamer().varReference(retrySettingsName));
+                context.getNamer().varReference(retrySettingsName)));
       }
-      List<String> timeoutMillisDocLines = context.getNamer().getDocLines(timeoutMillisDocText);
+      List<String> timeoutMillisDocLines =
+          context.getNamer().getDocLines(timeoutMillisDocTextBuilder.toString());
       timeoutDoc.lines(timeoutMillisDocLines);
       arrayKeyDocs.add(timeoutDoc.build());
     }

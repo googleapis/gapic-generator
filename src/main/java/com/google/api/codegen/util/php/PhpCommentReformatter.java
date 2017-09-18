@@ -27,7 +27,13 @@ public class PhpCommentReformatter implements CommentReformatter {
   public static final List<String> VALID_COMMENT_TAGS =
       ImmutableList.<String>builder().add("see").build();
   public static final Pattern AT_SYMBOL_PATTERN =
-      Pattern.compile(String.format("@(?!%s)", Joiner.on("\\s|").join(VALID_COMMENT_TAGS) + "\\s"));
+      Pattern.compile(
+          (new StringBuilder())
+              .append("@(?!")
+              .append(Joiner.on("\\s|").join(VALID_COMMENT_TAGS))
+              .append("\\s")
+              .append(")")
+              .toString());
 
   private CommentTransformer transformer =
       CommentTransformer.newBuilder()
