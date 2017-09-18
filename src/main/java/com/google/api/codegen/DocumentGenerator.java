@@ -30,11 +30,9 @@ import java.io.Reader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Created by andrealin on 9/1/17.
- */
+/** Generates an in-memory Document model object from a Discovery document filepath. */
 public class DocumentGenerator {
-  public static Document createDocument(String discoveryDocPath) throws IOException {
+  private static Document createDocument(String discoveryDocPath) throws IOException {
     if (!new File(discoveryDocPath).exists()) {
       throw new FileNotFoundException();
     }
@@ -45,7 +43,8 @@ public class DocumentGenerator {
     return Document.from(new DiscoveryNode(root));
   }
 
-  public static Document createDocumentAndLog(String discoveryDocPath, DiagCollector diagCollector) throws IOException {
+  public static Document createDocumentAndLog(String discoveryDocPath, DiagCollector diagCollector)
+      throws IOException {
     // Prevent INFO messages from polluting the log.
     Logger.getLogger("").setLevel(Level.WARNING);
 
@@ -53,13 +52,11 @@ public class DocumentGenerator {
     try {
       document = DocumentGenerator.createDocument(discoveryDocPath);
     } catch (FileNotFoundException e) {
-      diagCollector
-          .addDiag(Diag.error(
-              SimpleLocation.TOPLEVEL, "File not found: " + discoveryDocPath));
+      diagCollector.addDiag(
+          Diag.error(SimpleLocation.TOPLEVEL, "File not found: " + discoveryDocPath));
     } catch (IOException e) {
       diagCollector.addDiag(
-          Diag.error(
-              SimpleLocation.TOPLEVEL, "Failed to read Discovery Doc: " + discoveryDocPath));
+          Diag.error(SimpleLocation.TOPLEVEL, "Failed to read Discovery Doc: " + discoveryDocPath));
     }
     return document;
   }

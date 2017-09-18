@@ -14,26 +14,19 @@
  * limitations under the License.
  */
 
-package com.google.api.tools.framework.model.testing;
+package com.google.api.codegen;
 
-import com.google.api.Service;
-import com.google.api.codegen.DocumentGenerator;
-import com.google.api.codegen.discovery.Document;
 import com.google.api.tools.framework.model.BoundedDiagCollector;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
-import com.google.api.tools.framework.model.Model;
-import com.google.api.tools.framework.model.testing.TestModelGenerator.ModelTestInfo;
-import com.google.api.tools.framework.setup.StandardSetup;
+import com.google.api.tools.framework.model.testing.BaselineTestCase;
+import com.google.api.tools.framework.model.testing.DiagUtils;
 import com.google.api.tools.framework.snippet.Doc;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
-import com.google.protobuf.MessageOrBuilder;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
@@ -62,7 +55,7 @@ public abstract class DiscoConfigBaselineTestCase extends BaselineTestCase {
   protected List<String> suppressionDirectives = Lists.newArrayList("versioning-config");
 
   /** The model on which the test runs. */
-  protected Document model;
+  protected String discoveryFileName;
 
   /**
    * Run test specific logic. The returned object will be printed to the baseline if not null. The
@@ -77,10 +70,8 @@ public abstract class DiscoConfigBaselineTestCase extends BaselineTestCase {
    * base name (i.e. baseName.proto or baseName.yaml), constructs model, and calls {@link #run()}.
    * Post that, prints diags and the result of the run to the baseline.
    */
-  protected void test(Iterable<String> baseNames) throws Exception {
-    String firstBaseName = baseNames.iterator().next();
+  protected void test() throws Exception {
     DiagCollector diagCollector = new BoundedDiagCollector();
-    this.model = DocumentGenerator.createDocumentAndLog(firstBaseName, diagCollector);
 
     // Run test specific logic.
     Object result = run();
@@ -100,18 +91,15 @@ public abstract class DiscoConfigBaselineTestCase extends BaselineTestCase {
     }
   }
 
-  /**
-   * Prints diag to the testOutput.
-   *
-   */
+  /** Prints diag to the testOutput. */
   protected void printDiag(final Diag diag) {
     String message = DiagUtils.getDiagMessage(diag);
     if (showDiagLocation) {
       testOutput()
           .printf(
               String.format(
-                  "%s: %s: %s",
-                  diag.getKind().toString(), getLocationWithoutFullPath(diag), message)
+                      "%s: %s: %s",
+                      diag.getKind().toString(), getLocationWithoutFullPath(diag), message)
                   + "%n");
     } else {
       testOutput().printf("%s: %s%n", diag.getKind(), message);

@@ -14,12 +14,9 @@
  */
 package com.google.api.codegen.tools;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.codegen.DiscoGapicGeneratorApi;
-import com.google.api.codegen.discovery.DiscoveryNode;
-import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.DocumentGenerator;
+import com.google.api.codegen.discovery.Document;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.tools.GenericToolDriverBase;
@@ -64,7 +61,7 @@ public abstract class DiscoToolDriverBase extends GenericToolDriverBase {
 
     Document document = null;
     try {
-      document = DocumentGenerator.createDocument(discoveryDocPath);
+      document = DocumentGenerator.createDocumentAndLog(discoveryDocPath, getDiagCollector());
     } catch (FileNotFoundException e) {
       getDiagCollector()
           .addDiag(Diag.error(SimpleLocation.TOPLEVEL, "File not found: " + discoveryDocPath));

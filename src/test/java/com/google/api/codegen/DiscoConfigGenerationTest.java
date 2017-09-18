@@ -15,16 +15,11 @@
 package com.google.api.codegen;
 
 import com.google.api.codegen.configgen.DiscoConfigGeneratorApi;
-import com.google.api.tools.framework.model.testing.DiscoConfigBaselineTestCase;
 import com.google.api.tools.framework.tools.ToolOptions;
-import com.google.common.collect.Lists;
 import java.io.File;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -43,7 +38,7 @@ public class DiscoConfigGenerationTest extends DiscoConfigBaselineTestCase {
   @Override
   public String run() throws Exception {
     String outFile = tempDir.getRoot().getPath() + File.separator + baselineFileName();
-    String discoveryFile = tempDir.getRoot().getPath() + File.separator + baselineFileName();
+    String discoveryFile = getTestDataLocator().findTestData(discoveryFileName).getFile();
     ToolOptions options = ToolOptions.create();
     options.set(DiscoConfigGeneratorApi.OUTPUT_FILE, outFile);
     options.set(DiscoConfigGeneratorApi.DISCOVERY_DOC, discoveryFile);
@@ -54,11 +49,12 @@ public class DiscoConfigGenerationTest extends DiscoConfigBaselineTestCase {
 
   @Before
   public void setup() {
-    getTestDataLocator().addTestDataSource(getClass(), "testsrc");
+    getTestDataLocator().addTestDataSource(getClass(), "testdata/discogapic");
   }
 
   @Test
-  public void simpleCompute() throws Exception {
-    test(Lists.<String>newArrayList("simplecompute"));
+  public void simplecompute() throws Exception {
+    discoveryFileName = "simplecompute.v1.json";
+    test();
   }
 }
