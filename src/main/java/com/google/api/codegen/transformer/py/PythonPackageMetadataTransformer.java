@@ -49,6 +49,7 @@ import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import java.io.File;
 import java.nio.file.Paths;
@@ -57,14 +58,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Responsible for producing package metadata related views for Python
- *
- * <p>TODO(geigerj): Once Python is on MVVM it will not be necessary to store copies of the other
- * GAPIC providers in this class. The only information that is needed from these providers is the
- * names of the output files they produce. With MVVM should be possible to derive this information
- * from the corresponding transformers/view models without actually rendering the templates.
- */
+/** Responsible for producing package metadata related views for Python */
 public class PythonPackageMetadataTransformer implements ModelToViewTransformer {
   private static final String GITHUB_DOC_HOST =
       "https://googlecloudplatform.github.io/google-cloud-python/stable";
@@ -74,15 +68,16 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
   private static final String LIB_DOC_PATH = "/%s-usage";
   private static final String MAIN_README_PATH = "/blob/master/README.rst";
 
-  private static final List<String> TOP_LEVEL_TEMPLATE_FILES =
-      ImmutableList.of(
-          "LICENSE.snip",
-          "py/MANIFEST.in.snip",
-          "py/PUBLISHING.rst.snip",
-          "py/setup.py.snip",
-          "py/README.rst.snip",
-          "py/docs/conf.py.snip",
-          "py/docs/index.rst.snip");
+  private static final Map<String, String> TOP_LEVEL_TEMPLATE_FILES =
+      ImmutableMap.<String, String>builder()
+          .put("LICENSE.snip", "LICENSE")
+          .put("py/MANIFEST.in.snip", "MANIFEST.in")
+          .put("py/setup.py.snip", "setup.py")
+          .put("py/setup_cfg.snip", "setup.cfg")
+          .put("py/README.rst.snip", "README.rst")
+          .put("py/docs/conf.py.snip", "docs/conf.py")
+          .put("py/docs/index.rst.snip", "docs/index.rst")
+          .build();
   private static final String INIT_TEMPLATE_FILE = "py/__init__.py.snip";
   private static final String NAMESPACE_INIT_TEMPLATE_FILE = "py/namespace__init__.py.snip";
   private static final String API_DOC_TEMPLATE_FILE = "py/docs/api.rst.snip";
@@ -117,7 +112,7 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
   @Override
   public List<String> getTemplateFileNames() {
     List<String> templates = new ArrayList<>();
-    templates.addAll(TOP_LEVEL_TEMPLATE_FILES);
+    templates.addAll(TOP_LEVEL_TEMPLATE_FILES.keySet());
     templates.add(INIT_TEMPLATE_FILE);
     templates.add(NAMESPACE_INIT_TEMPLATE_FILE);
     templates.add(API_DOC_TEMPLATE_FILE);
@@ -167,25 +162,13 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
     PackageMetadataNamer namer = new PackageMetadataNamer();
     SurfaceNamer surfaceNamer = new PythonSurfaceNamer(productConfig.getPackageName());
     ImmutableList.Builder<ViewModel> metadata = ImmutableList.builder();
-    for (String templateFileName : TOP_LEVEL_TEMPLATE_FILES) {
+    for (Map.Entry<String, String> entry : TOP_LEVEL_TEMPLATE_FILES.entrySet()) {
       metadata.add(
-          generateMetadataView(model, productConfig, templateFileName, namer, surfaceNamer));
+          generateMetadataView(
+                  model, productConfig, entry.getKey(), namer, surfaceNamer, entry.getValue())
+              .build());
     }
     return metadata.build();
-  }
-
-  private ViewModel generateMetadataView(
-      Model model,
-      GapicProductConfig productConfig,
-      String template,
-      PackageMetadataNamer metadataNamer,
-      SurfaceNamer surfaceNamer) {
-    String noLeadingPyDir = template.startsWith("py/") ? template.substring(3) : template;
-    int extensionIndex = noLeadingPyDir.lastIndexOf(".");
-    String outputPath = noLeadingPyDir.substring(0, extensionIndex);
-    return generateMetadataView(
-            model, productConfig, template, metadataNamer, surfaceNamer, outputPath)
-        .build();
   }
 
   private PackageMetadataView.Builder generateMetadataView(
@@ -210,6 +193,7 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
         .protoPackageDependencies(generateProtoPackageDependencies())
         .additionalDependencies(generateAdditionalDependencies())
         .hasSmokeTests(hasSmokeTests(model, productConfig))
+        .licenseName(packageConfig.licenseName().replace("-", " "))
         .readmeMetadata(
             ReadmeMetadataView.newBuilder()
                 .moduleName("")

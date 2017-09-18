@@ -24,11 +24,14 @@
 @end
 
 @private imports(index)
+  # TODO(landrito): move this to an import section transformer.
   var extend = require('extend');
   var gapic = {
     {@index.apiVersion}: require('./{@index.apiVersion}')
   };
   var gaxGrpc = require('google-gax').grpc();
+  var googleProtoFiles = require('google-proto-files');
+  var path = require('path');
 @end
 
 @private constants()
@@ -93,17 +96,12 @@
 @end
 
 @private messages(isGcloud, version, stub)
-    extend({@version}Protos, gaxGrpc.load([{
-      @if isGcloud
-        root: require('google-proto-files')('..'),
-      @else
-        # This does not follow the import in main.snip since version index is not generated
-        # for unversioned Apis. This will be changed when top level indexes are supported
-        # for unversioned Apis.
-        root: require('path').join(__dirname, '..', '..', 'proto'),
-      @end
-      file: '{@stub.protoFileName}'
-    }]).{@stub.namespace});
+    extend({@version}Protos, gaxGrpc.loadProto(
+      # This does not follow the import in main.snip since version index is not generated
+      # for unversioned Apis. This will be changed when top level indexes are supported
+      # for unversioned Apis.
+      path.join(__dirname, '..', 'proto', '{@stub.protoFileName}')
+    ).{@stub.namespace});
 @end
 
 @private exports(index)

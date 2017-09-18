@@ -20,7 +20,7 @@ import unittest
 
 from google.gax import errors
 
-from example.proto.example.v1 import no_path_templates_pb2
+from example.proto import no_path_templates_messages_pb2
 from google.protobuf import empty_pb2
 import example
 
@@ -48,7 +48,7 @@ class TestNoTemplatesAPIServiceClient(unittest.TestCase):
         self.assertIn('metadata', kwargs)
         actual_request = args[0]
 
-        expected_request = no_path_templates_pb2.IncrementRequest()
+        expected_request = no_path_templates_messages_pb2.IncrementRequest()
         self.assertEqual(expected_request, actual_request)
 
     @mock.patch('google.gax.config.API_ERRORS', (CustomException,))
