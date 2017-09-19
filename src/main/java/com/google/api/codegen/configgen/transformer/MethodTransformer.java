@@ -27,6 +27,7 @@ import com.google.api.codegen.configgen.viewmodel.MethodView;
 import com.google.api.codegen.configgen.viewmodel.PageStreamingRequestView;
 import com.google.api.codegen.configgen.viewmodel.PageStreamingResponseView;
 import com.google.api.codegen.configgen.viewmodel.PageStreamingView;
+import com.google.api.codegen.util.Name;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
 import java.util.ArrayList;
@@ -161,6 +162,9 @@ public class MethodTransformer {
               method.getSimpleName());
           break;
         }
+      } else if (field.getApiSource().equals(ApiSource.DISCOVERY)) {
+        hasTokenField = true;
+        resourcesField = Name.anyCamel(fieldName).toUpperCamel();
       }
     }
 
