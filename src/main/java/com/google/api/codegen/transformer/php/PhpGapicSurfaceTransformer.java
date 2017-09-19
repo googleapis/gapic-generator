@@ -253,6 +253,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private void addApiImports(GapicInterfaceContext context) {
     ModelTypeTable typeTable = context.getModelTypeTable();
+    typeTable.saveNicknameFor("\\Google\\Cloud\\Version");
     typeTable.saveNicknameFor("\\Google\\GAX\\AgentHeaderDescriptor");
     typeTable.saveNicknameFor("\\Google\\GAX\\ApiCallable");
     typeTable.saveNicknameFor("\\Google\\GAX\\CallSettings");
