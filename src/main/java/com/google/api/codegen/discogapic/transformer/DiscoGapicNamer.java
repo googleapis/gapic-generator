@@ -95,6 +95,15 @@ public class DiscoGapicNamer {
     return function.join(resource);
   }
 
+  public static Name idToName(String identifier) {
+    String[] pieces = identifier.split("_");
+    Name name = Name.anyCamel(pieces[0]);
+    for (int i = 1; i < pieces.length; i++) {
+      name = name.join(Name.anyCamel(pieces[i]));
+    }
+    return name;
+  }
+
   /** Return the name of the resource from a given method's path. */
   public static Name getResourceIdentifier(Method method) {
     // Assumes the resource is the last curly-bracketed String in the path.

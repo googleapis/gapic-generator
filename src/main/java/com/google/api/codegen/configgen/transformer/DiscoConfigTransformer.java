@@ -91,7 +91,7 @@ public class DiscoConfigTransformer {
       InterfaceView.Builder interfaceView = InterfaceView.newBuilder();
 
       String ownerName = model.ownerDomain().split("\\.")[0];
-      String resourceName = Name.from(resource.getKey()).toUpperCamel();
+      String resourceName = Name.anyCamel(resource.getKey()).toUpperCamel();
       interfaceView.name(
           String.format("%s.%s.%s.%s", ownerName, model.name(), model.version(), resourceName));
 

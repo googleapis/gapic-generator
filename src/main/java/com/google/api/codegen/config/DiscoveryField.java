@@ -63,7 +63,7 @@ public class DiscoveryField implements FieldModel {
   public String getSimpleName() {
     String name =
         Strings.isNullOrEmpty(schema.reference()) ? schema.getIdentifier() : schema.reference();
-    return Name.anyCamel(name).toLowerCamel();
+    return DiscoGapicNamer.idToName(name).toLowerCamel();
   }
 
   @Override
