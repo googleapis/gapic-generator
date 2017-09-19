@@ -40,7 +40,7 @@ interfaces:
   # classes.
   collections:
   - name_pattern: \{project}/regions/{region}/addresses
-    entity_name: region
+    entity_name: addressesRegion
   - name_pattern: \{project}/regions/{region}/addresses/{address}
     entity_name: address
   # Definition for retryable codes.
@@ -124,8 +124,7 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     field_name_patterns:
-      \{project}/regions/{region}/addresses: region
-      \{project}/regions/{region}/addresses/{address}: address
+      address: address
     timeout_millis: 60000
   - name: compute.addresses.get
     flattening:
@@ -139,8 +138,7 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     field_name_patterns:
-      \{project}/regions/{region}/addresses: region
-      \{project}/regions/{region}/addresses/{address}: address
+      address: address
     timeout_millis: 60000
   - name: compute.addresses.insert
     flattening:
@@ -156,8 +154,7 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:
-      \{project}/regions/{region}/addresses: region
-      \{project}/regions/{region}/addresses/{address}: address
+      region: addressesRegion
     timeout_millis: 60000
   - name: compute.addresses.list
     flattening:
@@ -178,8 +175,8 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     field_name_patterns:
-      \{project}/regions/{region}/addresses: region
-      \{project}/regions/{region}/addresses/{address}: address
+      region: addressesRegion
+      address: address
     timeout_millis: 60000
 resource_name_generation:
 - message_name: DeleteAddressHttpRequest
@@ -190,7 +187,7 @@ resource_name_generation:
     address: address
 - message_name: InsertAddressHttpRequest
   field_entity_map:
-    region: region
+    region: addressesRegion
 - message_name: ListAddressesHttpRequest
   field_entity_map:
-    region: region
+    region: addressesRegion

@@ -244,6 +244,9 @@ public abstract class FieldConfig {
       case NONE:
         break;
       case STATIC_TYPES:
+        if (field.getApiSource().equals(ApiSource.DISCOVERY)) {
+          break;
+        }
         if (messageConfigs == null || !messageConfigs.fieldHasResourceName(field)) {
           throw new IllegalArgumentException(
               "Field must have a resource type specified to support "

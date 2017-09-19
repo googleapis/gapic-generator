@@ -95,21 +95,30 @@ public class DiscoGapicNamer {
     return function.join(resource);
   }
 
-  public static Name idToName(String identifier) {
-    String[] pieces = identifier.split("_");
-    Name name = Name.anyCamel(pieces[0]);
-    for (int i = 1; i < pieces.length; i++) {
-      name = name.join(Name.anyCamel(pieces[i]));
-    }
-    return name;
-  }
-
   /** Return the name of the resource from a given method's path. */
   public static Name getResourceIdentifier(Method method) {
     // Assumes the resource is the last curly-bracketed String in the path.
     String path = method.flatPath();
-    String resourceName = path.substring(path.lastIndexOf('{') + 1, path.lastIndexOf('}'));
-    return Name.anyCamel(resourceName);
+    String baseResource = path.substring(path.lastIndexOf('{') + 1, path.lastIndexOf('}'));
+    Name baseResourceName = Name.anyCamel(baseResource);
+
+    String resourceGroup = getResourceGroup(method).toLowerCamel();
+
+    if (resourceGroup != null && !Inflector.singularize(resourceGroup).equals(baseResource)) {
+      baseResourceName = Name.anyCamel(resourceGroup).join(baseResourceName);
+    }
+
+    return baseResourceName;
+  }
+
+  public static Name getResourceGroup(Method method) {
+    String[] pieces = method.flatPath().split("/");
+    for (int i = pieces.length - 1; i >= 0; i--) {
+      if (!pieces[i].contains("{")) {
+        return Name.anyCamel(pieces[i]);
+      }
+    }
+    return null;
   }
 
   public static String getSimpleInterfaceName(String interfaceName) {

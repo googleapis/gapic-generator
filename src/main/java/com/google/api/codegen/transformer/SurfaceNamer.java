@@ -804,14 +804,14 @@ public class SurfaceNamer extends NameFormatterDelegator {
       case ANY:
         return getAnyResourceTypeName();
       case FIXED:
-        return Name.from(entityName).join("name_fixed");
+        return Name.fromUnderScoreOrCamel(entityName).join("name_fixed");
       case ONEOF:
         // Remove suffix "_oneof". This allows the collection oneof config to "share" an entity name
         // with a collection config.
         entityName = removeSuffix(entityName, "_oneof");
-        return Name.from(entityName).join("name_oneof");
+        return Name.fromUnderScoreOrCamel(entityName).join("name_oneof");
       case SINGLE:
-        return Name.from(entityName).join("name");
+        return Name.fromUnderScoreOrCamel(entityName).join("name");
       case NONE:
       default:
         throw new UnsupportedOperationException("unexpected entity name type");
