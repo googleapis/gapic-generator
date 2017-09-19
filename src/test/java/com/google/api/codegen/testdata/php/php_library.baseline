@@ -147,8 +147,8 @@ use Google\Tagger\CustomNamespace\V1\LabelerGrpcClient;
  *
  * Many parameters require resource names to be formatted in a particular way. To assist
  * with these names, this class includes a format method for each type of name, and additionally
- * a parse method to extract the individual identifiers contained within names that are
- * returned.
+ * a parseName method to extract the individual identifiers contained within formatted names
+ * that are returned by the API.
  * @experimental
  */
 class LibraryServiceGapicClient
@@ -181,6 +181,9 @@ class LibraryServiceGapicClient
     private static $shelfNameTemplate;
     private static $bookNameTemplate;
     private static $returnNameTemplate;
+    private static $pathTemplateList = null;
+    private static $gapicVersion = null;
+    private static $gapicVersionLoaded = false;
 
     protected $grpcCredentialsHelper;
     protected $libraryServiceStub;
@@ -189,136 +192,6 @@ class LibraryServiceGapicClient
     private $defaultCallSettings;
     private $descriptors;
     private $operationsClient;
-
-    /**
-     * Formats a string containing the fully-qualified path to represent
-     * a shelf resource.
-     *
-     * @param string $shelfId
-     * @return string The formatted shelf resource.
-     * @experimental
-     */
-    public static function formatShelfName($shelfId)
-    {
-        return self::getShelfNameTemplate()->render([
-            'shelf_id' => $shelfId,
-        ]);
-    }
-
-    /**
-     * Formats a string containing the fully-qualified path to represent
-     * a book resource.
-     *
-     * @param string $shelfId
-     * @param string $bookId
-     * @return string The formatted book resource.
-     * @experimental
-     */
-    public static function formatBookName($shelfId, $bookId)
-    {
-        return self::getBookNameTemplate()->render([
-            'shelf_id' => $shelfId,
-            'book_id' => $bookId,
-        ]);
-    }
-
-    /**
-     * Formats a string containing the fully-qualified path to represent
-     * a return resource.
-     *
-     * @param string $shelf
-     * @param string $book
-     * @param string $return
-     * @return string The formatted return resource.
-     * @experimental
-     */
-    public static function formatReturnName($shelf, $book, $return)
-    {
-        return self::getReturnNameTemplate()->render([
-            'shelf' => $shelf,
-            'book' => $book,
-            'return' => $return,
-        ]);
-    }
-
-    /**
-     * Parses the shelf_id from the given fully-qualified path which
-     * represents a shelf resource.
-     *
-     * @param string $shelfName The fully-qualified shelf resource.
-     * @return string The extracted shelf_id value.
-     * @experimental
-     */
-    public static function parseShelfIdFromShelfName($shelfName)
-    {
-        return self::getShelfNameTemplate()->match($shelfName)['shelf_id'];
-    }
-
-    /**
-     * Parses the shelf_id from the given fully-qualified path which
-     * represents a book resource.
-     *
-     * @param string $bookName The fully-qualified book resource.
-     * @return string The extracted shelf_id value.
-     * @experimental
-     */
-    public static function parseShelfIdFromBookName($bookName)
-    {
-        return self::getBookNameTemplate()->match($bookName)['shelf_id'];
-    }
-
-    /**
-     * Parses the book_id from the given fully-qualified path which
-     * represents a book resource.
-     *
-     * @param string $bookName The fully-qualified book resource.
-     * @return string The extracted book_id value.
-     * @experimental
-     */
-    public static function parseBookIdFromBookName($bookName)
-    {
-        return self::getBookNameTemplate()->match($bookName)['book_id'];
-    }
-
-    /**
-     * Parses the shelf from the given fully-qualified path which
-     * represents a return resource.
-     *
-     * @param string $returnName The fully-qualified return resource.
-     * @return string The extracted shelf value.
-     * @experimental
-     */
-    public static function parseShelfFromReturnName($returnName)
-    {
-        return self::getReturnNameTemplate()->match($returnName)['shelf'];
-    }
-
-    /**
-     * Parses the book from the given fully-qualified path which
-     * represents a return resource.
-     *
-     * @param string $returnName The fully-qualified return resource.
-     * @return string The extracted book value.
-     * @experimental
-     */
-    public static function parseBookFromReturnName($returnName)
-    {
-        return self::getReturnNameTemplate()->match($returnName)['book'];
-    }
-
-    /**
-     * Parses the return from the given fully-qualified path which
-     * represents a return resource.
-     *
-     * @param string $returnName The fully-qualified return resource.
-     * @return string The extracted return value.
-     * @experimental
-     */
-    public static function parseReturnFromReturnName($returnName)
-    {
-        return self::getReturnNameTemplate()->match($returnName)['return'];
-    }
-
 
     private static function getShelfNameTemplate()
     {
@@ -346,7 +219,17 @@ class LibraryServiceGapicClient
 
         return self::$returnNameTemplate;
     }
-
+    private static function getPathTemplateList()
+    {
+        if (self::$pathTemplateList == null) {
+            self::$pathTemplateList = [
+                self::getShelfNameTemplate(),
+                self::getBookNameTemplate(),
+                self::getReturnNameTemplate(),
+            ];
+        }
+        return self::$pathTemplateList;
+    }
     private static function getPageStreamingDescriptors()
     {
         $listShelvesPageStreamingDescriptor =
@@ -429,14 +312,91 @@ class LibraryServiceGapicClient
 
     private static function getGapicVersion()
     {
-        if (file_exists(__DIR__ . "/../VERSION")) {
-          return trim(file_get_contents(__DIR__ . "/../VERSION"));
-        } elseif (class_exists('\Google\Cloud\ServiceBuilder')) {
-          return \Google\Cloud\ServiceBuilder::VERSION;
-        } else {
-          return;
+        if (!self::$gapicVersionLoaded) {
+            if (file_exists(__DIR__ . "/../VERSION")) {
+              self::$gapicVersion = trim(file_get_contents(__DIR__ . "/../VERSION"));
+            } elseif (class_exists('\Google\Cloud\ServiceBuilder')) {
+              self::$gapicVersion = \Google\Cloud\ServiceBuilder::VERSION;
+            }
+            self::$gapicVersionLoaded = true;
         }
+        return self::$gapicVersion;
     }
+
+    /**
+     * Formats a string containing the fully-qualified path to represent
+     * a shelf resource.
+     *
+     * @param string $shelfId
+     * @return string The formatted shelf resource.
+     * @experimental
+     */
+    public static function shelfName($shelfId)
+    {
+        return self::getShelfNameTemplate()->render([
+            'shelf_id' => $shelfId,
+        ]);
+    }
+
+    /**
+     * Formats a string containing the fully-qualified path to represent
+     * a book resource.
+     *
+     * @param string $shelfId
+     * @param string $bookId
+     * @return string The formatted book resource.
+     * @experimental
+     */
+    public static function bookName($shelfId, $bookId)
+    {
+        return self::getBookNameTemplate()->render([
+            'shelf_id' => $shelfId,
+            'book_id' => $bookId,
+        ]);
+    }
+
+    /**
+     * Formats a string containing the fully-qualified path to represent
+     * a return resource.
+     *
+     * @param string $shelf
+     * @param string $book
+     * @param string $return
+     * @return string The formatted return resource.
+     * @experimental
+     */
+    public static function returnName($shelf, $book, $return)
+    {
+        return self::getReturnNameTemplate()->render([
+            'shelf' => $shelf,
+            'book' => $book,
+            'return' => $return,
+        ]);
+    }
+
+    /**
+     * Parses a formatted name string and returns an associative array of the components in the name.
+     * The following name formats are supported:
+     * - shelves/{shelf_id}
+     * - shelves/{shelf_id}/books/{book_id}
+     * - shelves/{shelf}/books/{book}/returns/{return}
+     *
+     * @param string $formattedName The formatted name string
+     * @return array An associative array from name component IDs to component values.
+     * @experimental
+     */
+    public static function parseName($formattedName)
+    {
+        foreach (self::getPathTemplateList() as $pathTemplate) {
+            try {
+                return $pathTemplate->match($formattedName);
+            } catch (ValidationException $ex) {
+                // Swallow the exception to continue trying other path templates
+            }
+        }
+        throw new ValidationException("Input did not match any known format. Input: $formattedName");
+    }
+
 
     /**
      * Return an OperationsClient object with the same endpoint as $this.
@@ -498,15 +458,18 @@ class LibraryServiceGapicClient
      *           A CredentialsLoader object created using the Google\Auth library.
      *     @type array $scopes A string array of scopes to use when acquiring credentials.
      *                          Defaults to the scopes for the Google Example Library API.
+     *     @type string $clientConfigPath
+     *           Path to a JSON file containing client method configuration, including retry settings.
+     *           Specify this setting to specify the retry behavior of all methods on the client.
+     *           By default this settings points to the default client config file, which is provided
+     *           in the resources folder.
      *     @type array $retryingOverride
-     *           An associative array of string => RetryOptions, where the keys
-     *           are method names (e.g. 'createFoo'), that overrides default retrying
-     *           settings. A value of null indicates that the method in question should
-     *           not retry.
-     *     @type int $timeoutMillis The timeout in milliseconds to use for calls
-     *                              that don't use retries. For calls that use retries,
-     *                              set the timeout in RetryOptions.
-     *                              Default: 30000 (30 seconds)
+     *           An associative array in which the keys are method names (e.g. 'createFoo'), and
+     *           the values are retry settings to use for that method. The retry settings for each
+     *           method can be a {@see Google\GAX\RetrySettings} object, or an associative array
+     *           of retry settings parameters. See the documentation on {@see Google\GAX\RetrySettings}
+     *           for example usage. Passing a value of null is equivalent to a value of
+     *           ['retriesEnabled' => false].
      * }
      * @experimental
      */
@@ -523,6 +486,7 @@ class LibraryServiceGapicClient
             'timeoutMillis' => self::DEFAULT_TIMEOUT_MILLIS,
             'libName' => null,
             'libVersion' => null,
+            'clientConfigPath' => __DIR__ . '/../resources/library_service_client_config.json',
         ];
         $options = array_merge($defaultOptions, $options);
 
@@ -532,6 +496,7 @@ class LibraryServiceGapicClient
             $operationsClientOptions = $options;
             unset($operationsClientOptions['timeoutMillis']);
             unset($operationsClientOptions['retryingOverride']);
+            unset($operationsClientOptions['clientConfigPath']);
             $this->operationsClient = new OperationsClient($operationsClientOptions);
         }
 
@@ -587,14 +552,12 @@ class LibraryServiceGapicClient
             $this->descriptors[$method]['grpcStreamingDescriptor'] = $grpcStreamingDescriptor;
         }
 
-        $clientConfigJsonString = file_get_contents(__DIR__ . '/../resources/library_service_client_config.json');
+        $clientConfigJsonString = file_get_contents($options['clientConfigPath']);
         $clientConfig = json_decode($clientConfigJsonString, true);
         $this->defaultCallSettings =
                 CallSettings::load('google.example.library.v1.LibraryService',
                                    $clientConfig,
-                                   $options['retryingOverride'],
-                                   GrpcConstants::getStatusCodeNames(),
-                                   $options['timeoutMillis']);
+                                   $options['retryingOverride']);
 
         $this->scopes = $options['scopes'];
 
@@ -638,12 +601,11 @@ class LibraryServiceGapicClient
      * @param Shelf $shelf The shelf to create.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings $retrySettings
-     *          Retry settings to use for this call. If present, then
-     *          $timeoutMillis is ignored.
-     *     @type int $timeoutMillis
-     *          Timeout to use for this call. Only used if $retrySettings
-     *          is not set.
+     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *          Retry settings to use for this call. Can be a
+     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          of retry settings parameters. See the documentation on
+     *          {@see Google\GAX\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Example\Library\V1\Shelf
@@ -674,7 +636,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+     *     $formattedName = $libraryServiceClient->shelfName("[SHELF_ID]");
      *     $options = "";
      *     $response = $libraryServiceClient->getShelf($formattedName, $options);
      * } finally {
@@ -689,12 +651,11 @@ class LibraryServiceGapicClient
      *     @type SomeMessage $message
      *          Field to verify that message-type query parameter gets flattened.
      *     @type StringBuilder $stringBuilder
-     *     @type \Google\GAX\RetrySettings $retrySettings
-     *          Retry settings to use for this call. If present, then
-     *          $timeoutMillis is ignored.
-     *     @type int $timeoutMillis
-     *          Timeout to use for this call. Only used if $retrySettings
-     *          is not set.
+     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *          Retry settings to use for this call. Can be a
+     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          of retry settings parameters. See the documentation on
+     *          {@see Google\GAX\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Example\Library\V1\Shelf
@@ -758,12 +719,11 @@ class LibraryServiceGapicClient
      *          If no page token is specified (the default), the first page
      *          of values will be returned. Any page token used here must have
      *          been generated by a previous call to the API.
-     *     @type \Google\GAX\RetrySettings $retrySettings
-     *          Retry settings to use for this call. If present, then
-     *          $timeoutMillis is ignored.
-     *     @type int $timeoutMillis
-     *          Timeout to use for this call. Only used if $retrySettings
-     *          is not set.
+     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *          Retry settings to use for this call. Can be a
+     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          of retry settings parameters. See the documentation on
+     *          {@see Google\GAX\RetrySettings} for example usage.
      * }
      *
      * @return \Google\GAX\PagedListResponse
@@ -796,7 +756,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+     *     $formattedName = $libraryServiceClient->shelfName("[SHELF_ID]");
      *     $libraryServiceClient->deleteShelf($formattedName);
      * } finally {
      *     $libraryServiceClient->close();
@@ -806,12 +766,11 @@ class LibraryServiceGapicClient
      * @param string $name The name of the shelf to delete.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings $retrySettings
-     *          Retry settings to use for this call. If present, then
-     *          $timeoutMillis is ignored.
-     *     @type int $timeoutMillis
-     *          Timeout to use for this call. Only used if $retrySettings
-     *          is not set.
+     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *          Retry settings to use for this call. Can be a
+     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          of retry settings parameters. See the documentation on
+     *          {@see Google\GAX\RetrySettings} for example usage.
      * }
      *
      * @throws \Google\GAX\ApiException if the remote call fails
@@ -842,8 +801,8 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
-     *     $formattedOtherShelfName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+     *     $formattedName = $libraryServiceClient->shelfName("[SHELF_ID]");
+     *     $formattedOtherShelfName = $libraryServiceClient->shelfName("[SHELF_ID]");
      *     $response = $libraryServiceClient->mergeShelves($formattedName, $formattedOtherShelfName);
      * } finally {
      *     $libraryServiceClient->close();
@@ -854,12 +813,11 @@ class LibraryServiceGapicClient
      * @param string $otherShelfName The name of the shelf we're removing books from and deleting.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings $retrySettings
-     *          Retry settings to use for this call. If present, then
-     *          $timeoutMillis is ignored.
-     *     @type int $timeoutMillis
-     *          Timeout to use for this call. Only used if $retrySettings
-     *          is not set.
+     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *          Retry settings to use for this call. Can be a
+     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          of retry settings parameters. See the documentation on
+     *          {@see Google\GAX\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Example\Library\V1\Shelf
@@ -891,7 +849,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+     *     $formattedName = $libraryServiceClient->shelfName("[SHELF_ID]");
      *     $book = new Book();
      *     $response = $libraryServiceClient->createBook($formattedName, $book);
      * } finally {
@@ -903,12 +861,11 @@ class LibraryServiceGapicClient
      * @param Book $book The book to create.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings $retrySettings
-     *          Retry settings to use for this call. If present, then
-     *          $timeoutMillis is ignored.
-     *     @type int $timeoutMillis
-     *          Timeout to use for this call. Only used if $retrySettings
-     *          is not set.
+     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *          Retry settings to use for this call. Can be a
+     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          of retry settings parameters. See the documentation on
+     *          {@see Google\GAX\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Example\Library\V1\Book
@@ -960,12 +917,11 @@ class LibraryServiceGapicClient
      *          The edition of the series
      *     @type bool $reviewCopy
      *          If the book is in a pre-publish state
-     *     @type \Google\GAX\RetrySettings $retrySettings
-     *          Retry settings to use for this call. If present, then
-     *          $timeoutMillis is ignored.
-     *     @type int $timeoutMillis
-     *          Timeout to use for this call. Only used if $retrySettings
-     *          is not set.
+     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *          Retry settings to use for this call. Can be a
+     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          of retry settings parameters. See the documentation on
+     *          {@see Google\GAX\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Example\Library\V1\PublishSeriesResponse
@@ -1004,7 +960,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedName = $libraryServiceClient->bookName("[SHELF_ID]", "[BOOK_ID]");
      *     $response = $libraryServiceClient->getBook($formattedName);
      * } finally {
      *     $libraryServiceClient->close();
@@ -1014,12 +970,11 @@ class LibraryServiceGapicClient
      * @param string $name The name of the book to retrieve.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings $retrySettings
-     *          Retry settings to use for this call. If present, then
-     *          $timeoutMillis is ignored.
-     *     @type int $timeoutMillis
-     *          Timeout to use for this call. Only used if $retrySettings
-     *          is not set.
+     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *          Retry settings to use for this call. Can be a
+     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          of retry settings parameters. See the documentation on
+     *          {@see Google\GAX\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Example\Library\V1\Book
@@ -1050,7 +1005,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+     *     $formattedName = $libraryServiceClient->shelfName("[SHELF_ID]");
      *     // Iterate through all elements
      *     $pagedResponse = $libraryServiceClient->listBooks($formattedName);
      *     foreach ($pagedResponse->iterateAllElements() as $element) {
@@ -1083,12 +1038,11 @@ class LibraryServiceGapicClient
      *          been generated by a previous call to the API.
      *     @type string $filter
      *          To test python built-in wrapping.
-     *     @type \Google\GAX\RetrySettings $retrySettings
-     *          Retry settings to use for this call. If present, then
-     *          $timeoutMillis is ignored.
-     *     @type int $timeoutMillis
-     *          Timeout to use for this call. Only used if $retrySettings
-     *          is not set.
+     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *          Retry settings to use for this call. Can be a
+     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          of retry settings parameters. See the documentation on
+     *          {@see Google\GAX\RetrySettings} for example usage.
      * }
      *
      * @return \Google\GAX\PagedListResponse
@@ -1128,7 +1082,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedName = $libraryServiceClient->bookName("[SHELF_ID]", "[BOOK_ID]");
      *     $libraryServiceClient->deleteBook($formattedName);
      * } finally {
      *     $libraryServiceClient->close();
@@ -1138,12 +1092,11 @@ class LibraryServiceGapicClient
      * @param string $name The name of the book to delete.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings $retrySettings
-     *          Retry settings to use for this call. If present, then
-     *          $timeoutMillis is ignored.
-     *     @type int $timeoutMillis
-     *          Timeout to use for this call. Only used if $retrySettings
-     *          is not set.
+     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *          Retry settings to use for this call. Can be a
+     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          of retry settings parameters. See the documentation on
+     *          {@see Google\GAX\RetrySettings} for example usage.
      * }
      *
      * @throws \Google\GAX\ApiException if the remote call fails
@@ -1172,7 +1125,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedName = $libraryServiceClient->bookName("[SHELF_ID]", "[BOOK_ID]");
      *     $book = new Book();
      *     $response = $libraryServiceClient->updateBook($formattedName, $book);
      * } finally {
@@ -1188,12 +1141,11 @@ class LibraryServiceGapicClient
      *          A field mask to apply, rendered as an HTTP parameter.
      *     @type \Google\Example\Library\V1\FieldMask $physicalMask
      *          To test Python import clash resolution.
-     *     @type \Google\GAX\RetrySettings $retrySettings
-     *          Retry settings to use for this call. If present, then
-     *          $timeoutMillis is ignored.
-     *     @type int $timeoutMillis
-     *          Timeout to use for this call. Only used if $retrySettings
-     *          is not set.
+     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *          Retry settings to use for this call. Can be a
+     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          of retry settings parameters. See the documentation on
+     *          {@see Google\GAX\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Example\Library\V1\Book
@@ -1231,8 +1183,8 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
-     *     $formattedOtherShelfName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+     *     $formattedName = $libraryServiceClient->bookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedOtherShelfName = $libraryServiceClient->shelfName("[SHELF_ID]");
      *     $response = $libraryServiceClient->moveBook($formattedName, $formattedOtherShelfName);
      * } finally {
      *     $libraryServiceClient->close();
@@ -1243,12 +1195,11 @@ class LibraryServiceGapicClient
      * @param string $otherShelfName The name of the destination shelf.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings $retrySettings
-     *          Retry settings to use for this call. If present, then
-     *          $timeoutMillis is ignored.
-     *     @type int $timeoutMillis
-     *          Timeout to use for this call. Only used if $retrySettings
-     *          is not set.
+     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *          Retry settings to use for this call. Can be a
+     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          of retry settings parameters. See the documentation on
+     *          {@see Google\GAX\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Example\Library\V1\Book
@@ -1311,12 +1262,11 @@ class LibraryServiceGapicClient
      *          If no page token is specified (the default), the first page
      *          of values will be returned. Any page token used here must have
      *          been generated by a previous call to the API.
-     *     @type \Google\GAX\RetrySettings $retrySettings
-     *          Retry settings to use for this call. If present, then
-     *          $timeoutMillis is ignored.
-     *     @type int $timeoutMillis
-     *          Timeout to use for this call. Only used if $retrySettings
-     *          is not set.
+     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *          Retry settings to use for this call. Can be a
+     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          of retry settings parameters. See the documentation on
+     *          {@see Google\GAX\RetrySettings} for example usage.
      * }
      *
      * @return \Google\GAX\PagedListResponse
@@ -1355,7 +1305,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedName = $libraryServiceClient->bookName("[SHELF_ID]", "[BOOK_ID]");
      *     $comment = "";
      *     $stage = Stage::UNSET;
      *     $alignment = Alignment::CHAR;
@@ -1374,12 +1324,11 @@ class LibraryServiceGapicClient
      * @param Comment[] $comments
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings $retrySettings
-     *          Retry settings to use for this call. If present, then
-     *          $timeoutMillis is ignored.
-     *     @type int $timeoutMillis
-     *          Timeout to use for this call. Only used if $retrySettings
-     *          is not set.
+     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *          Retry settings to use for this call. Can be a
+     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          of retry settings parameters. See the documentation on
+     *          {@see Google\GAX\RetrySettings} for example usage.
      * }
      *
      * @throws \Google\GAX\ApiException if the remote call fails
@@ -1409,7 +1358,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = LibraryServiceClient::formatArchivedBookName("[ARCHIVE_PATH]", "[BOOK_ID]");
+     *     $formattedName = $libraryServiceClient->archivedBookName("[ARCHIVE_PATH]", "[BOOK_ID]");
      *     $response = $libraryServiceClient->getBookFromArchive($formattedName);
      * } finally {
      *     $libraryServiceClient->close();
@@ -1419,12 +1368,11 @@ class LibraryServiceGapicClient
      * @param string $name The name of the book to retrieve.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings $retrySettings
-     *          Retry settings to use for this call. If present, then
-     *          $timeoutMillis is ignored.
-     *     @type int $timeoutMillis
-     *          Timeout to use for this call. Only used if $retrySettings
-     *          is not set.
+     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *          Retry settings to use for this call. Can be a
+     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          of retry settings parameters. See the documentation on
+     *          {@see Google\GAX\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Example\Library\V1\BookFromArchive
@@ -1455,8 +1403,8 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
-     *     $formattedAltBookName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedName = $libraryServiceClient->bookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedAltBookName = $libraryServiceClient->bookName("[SHELF_ID]", "[BOOK_ID]");
      *     $response = $libraryServiceClient->getBookFromAnywhere($formattedName, $formattedAltBookName);
      * } finally {
      *     $libraryServiceClient->close();
@@ -1468,12 +1416,11 @@ class LibraryServiceGapicClient
      * single resource name type in a oneof.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings $retrySettings
-     *          Retry settings to use for this call. If present, then
-     *          $timeoutMillis is ignored.
-     *     @type int $timeoutMillis
-     *          Timeout to use for this call. Only used if $retrySettings
-     *          is not set.
+     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *          Retry settings to use for this call. Can be a
+     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          of retry settings parameters. See the documentation on
+     *          {@see Google\GAX\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Example\Library\V1\BookFromAnywhere
@@ -1505,7 +1452,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedName = $libraryServiceClient->bookName("[SHELF_ID]", "[BOOK_ID]");
      *     $response = $libraryServiceClient->getBookFromAbsolutelyAnywhere($formattedName);
      * } finally {
      *     $libraryServiceClient->close();
@@ -1515,12 +1462,11 @@ class LibraryServiceGapicClient
      * @param string $name The name of the book to retrieve.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings $retrySettings
-     *          Retry settings to use for this call. If present, then
-     *          $timeoutMillis is ignored.
-     *     @type int $timeoutMillis
-     *          Timeout to use for this call. Only used if $retrySettings
-     *          is not set.
+     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *          Retry settings to use for this call. Can be a
+     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          of retry settings parameters. See the documentation on
+     *          {@see Google\GAX\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Example\Library\V1\BookFromAnywhere
@@ -1551,7 +1497,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedName = $libraryServiceClient->bookName("[SHELF_ID]", "[BOOK_ID]");
      *     $indexName = "default index";
      *     $indexMapItem = "";
      *     $indexMap = ["default_key" => $indexMapItem,];
@@ -1566,12 +1512,11 @@ class LibraryServiceGapicClient
      * @param array $indexMap The index to update the book with
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings $retrySettings
-     *          Retry settings to use for this call. If present, then
-     *          $timeoutMillis is ignored.
-     *     @type int $timeoutMillis
-     *          Timeout to use for this call. Only used if $retrySettings
-     *          is not set.
+     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *          Retry settings to use for this call. Can be a
+     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          of retry settings parameters. See the documentation on
+     *          {@see Google\GAX\RetrySettings} for example usage.
      * }
      *
      * @throws \Google\GAX\ApiException if the remote call fails
@@ -1629,6 +1574,13 @@ class LibraryServiceGapicClient
     {
         $request = new StreamShelvesRequest();
 
+        if (array_key_exists('timeoutMillis', $optionalArgs)) {
+            $optionalArgs['retrySettings'] = [
+                'retriesEnabled' => false,
+                'noRetriesRpcTimeoutMillis' => $optionalArgs['timeoutMillis']
+            ];
+        }
+
         $mergedSettings = $this->defaultCallSettings['streamShelves']->merge(
             new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
@@ -1675,6 +1627,13 @@ class LibraryServiceGapicClient
     {
         $request = new StreamBooksRequest();
         $request->setName($name);
+
+        if (array_key_exists('timeoutMillis', $optionalArgs)) {
+            $optionalArgs['retrySettings'] = [
+                'retriesEnabled' => false,
+                'noRetriesRpcTimeoutMillis' => $optionalArgs['timeoutMillis']
+            ];
+        }
 
         $mergedSettings = $this->defaultCallSettings['streamBooks']->merge(
             new CallSettings($optionalArgs));
@@ -1742,6 +1701,13 @@ class LibraryServiceGapicClient
      */
     public function discussBook($optionalArgs = [])
     {
+        if (array_key_exists('timeoutMillis', $optionalArgs)) {
+            $optionalArgs['retrySettings'] = [
+                'retriesEnabled' => false,
+                'noRetriesRpcTimeoutMillis' => $optionalArgs['timeoutMillis']
+            ];
+        }
+
         $mergedSettings = $this->defaultCallSettings['discussBook']->merge(
             new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
@@ -1796,6 +1762,13 @@ class LibraryServiceGapicClient
      */
     public function monologAboutBook($optionalArgs = [])
     {
+        if (array_key_exists('timeoutMillis', $optionalArgs)) {
+            $optionalArgs['retrySettings'] = [
+                'retriesEnabled' => false,
+                'noRetriesRpcTimeoutMillis' => $optionalArgs['timeoutMillis']
+            ];
+        }
+
         $mergedSettings = $this->defaultCallSettings['monologAboutBook']->merge(
             new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
@@ -1848,12 +1821,11 @@ class LibraryServiceGapicClient
      *          If no page token is specified (the default), the first page
      *          of values will be returned. Any page token used here must have
      *          been generated by a previous call to the API.
-     *     @type \Google\GAX\RetrySettings $retrySettings
-     *          Retry settings to use for this call. If present, then
-     *          $timeoutMillis is ignored.
-     *     @type int $timeoutMillis
-     *          Timeout to use for this call. Only used if $retrySettings
-     *          is not set.
+     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *          Retry settings to use for this call. Can be a
+     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          of retry settings parameters. See the documentation on
+     *          {@see Google\GAX\RetrySettings} for example usage.
      * }
      *
      * @return \Google\GAX\PagedListResponse
@@ -1891,7 +1863,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedResource = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedResource = $libraryServiceClient->bookName("[SHELF_ID]", "[BOOK_ID]");
      *     $tag = "";
      *     $response = $libraryServiceClient->addTag($formattedResource, $tag);
      * } finally {
@@ -1905,12 +1877,11 @@ class LibraryServiceGapicClient
      * @param string $tag REQUIRED: The tag to add.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings $retrySettings
-     *          Retry settings to use for this call. If present, then
-     *          $timeoutMillis is ignored.
-     *     @type int $timeoutMillis
-     *          Timeout to use for this call. Only used if $retrySettings
-     *          is not set.
+     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *          Retry settings to use for this call. Can be a
+     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          of retry settings parameters. See the documentation on
+     *          {@see Google\GAX\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Tagger\CustomNamespace\V1\AddTagResponse
@@ -1942,7 +1913,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedResource = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedResource = $libraryServiceClient->bookName("[SHELF_ID]", "[BOOK_ID]");
      *     $label = "";
      *     $response = $libraryServiceClient->addLabel($formattedResource, $label);
      * } finally {
@@ -1956,12 +1927,11 @@ class LibraryServiceGapicClient
      * @param string $label REQUIRED: The label to add.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings $retrySettings
-     *          Retry settings to use for this call. If present, then
-     *          $timeoutMillis is ignored.
-     *     @type int $timeoutMillis
-     *          Timeout to use for this call. Only used if $retrySettings
-     *          is not set.
+     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *          Retry settings to use for this call. Can be a
+     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          of retry settings parameters. See the documentation on
+     *          {@see Google\GAX\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Tagger\CustomNamespace\V1\AddLabelResponse
@@ -1993,7 +1963,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedName = $libraryServiceClient->bookName("[SHELF_ID]", "[BOOK_ID]");
      *     $operationResponse = $libraryServiceClient->getBigBook($formattedName);
      *     $operationResponse->pollUntilComplete();
      *     if ($operationResponse->operationSucceeded()) {
@@ -2028,12 +1998,11 @@ class LibraryServiceGapicClient
      * @param string $name The name of the book to retrieve.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings $retrySettings
-     *          Retry settings to use for this call. If present, then
-     *          $timeoutMillis is ignored.
-     *     @type int $timeoutMillis
-     *          Timeout to use for this call. Only used if $retrySettings
-     *          is not set.
+     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *          Retry settings to use for this call. Can be a
+     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          of retry settings parameters. See the documentation on
+     *          {@see Google\GAX\RetrySettings} for example usage.
      * }
      *
      * @return \Google\GAX\OperationResponse
@@ -2064,7 +2033,7 @@ class LibraryServiceGapicClient
      * ```
      * try {
      *     $libraryServiceClient = new LibraryServiceClient();
-     *     $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+     *     $formattedName = $libraryServiceClient->bookName("[SHELF_ID]", "[BOOK_ID]");
      *     $operationResponse = $libraryServiceClient->getBigNothing($formattedName);
      *     $operationResponse->pollUntilComplete();
      *     if ($operationResponse->operationSucceeded()) {
@@ -2097,12 +2066,11 @@ class LibraryServiceGapicClient
      * @param string $name The name of the book to retrieve.
      * @param array $optionalArgs {
      *     Optional.
-     *     @type \Google\GAX\RetrySettings $retrySettings
-     *          Retry settings to use for this call. If present, then
-     *          $timeoutMillis is ignored.
-     *     @type int $timeoutMillis
-     *          Timeout to use for this call. Only used if $retrySettings
-     *          is not set.
+     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *          Retry settings to use for this call. Can be a
+     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          of retry settings parameters. See the documentation on
+     *          {@see Google\GAX\RetrySettings} for example usage.
      * }
      *
      * @return \Google\GAX\OperationResponse
@@ -2224,12 +2192,11 @@ class LibraryServiceGapicClient
      *     @type int[] $optionalRepeatedFixed32
      *     @type int[] $optionalRepeatedFixed64
      *     @type array $optionalMap
-     *     @type \Google\GAX\RetrySettings $retrySettings
-     *          Retry settings to use for this call. If present, then
-     *          $timeoutMillis is ignored.
-     *     @type int $timeoutMillis
-     *          Timeout to use for this call. Only used if $retrySettings
-     *          is not set.
+     *     @type \Google\GAX\RetrySettings|array $retrySettings
+     *          Retry settings to use for this call. Can be a
+     *          {@see Google\GAX\RetrySettings} object, or an associative array
+     *          of retry settings parameters. See the documentation on
+     *          {@see Google\GAX\RetrySettings} for example usage.
      * }
      *
      * @return \Google\Example\Library\V1\TestOptionalRequiredFlatteningParamsResponse
@@ -2826,7 +2793,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+        $formattedName = $client->shelfName("[SHELF_ID]");
         $options = "options-1249474914";
 
         $response = $client->getShelf($formattedName, $options);
@@ -2866,7 +2833,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+        $formattedName = $client->shelfName("[SHELF_ID]");
         $options = "options-1249474914";
 
         try {
@@ -2968,7 +2935,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+        $formattedName = $client->shelfName("[SHELF_ID]");
 
         $client->deleteShelf($formattedName);
         $actualRequests = $grpcStub->popReceivedCalls();
@@ -3005,7 +2972,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+        $formattedName = $client->shelfName("[SHELF_ID]");
 
         try {
             $client->deleteShelf($formattedName);
@@ -3042,8 +3009,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
-        $formattedOtherShelfName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+        $formattedName = $client->shelfName("[SHELF_ID]");
+        $formattedOtherShelfName = $client->shelfName("[SHELF_ID]");
 
         $response = $client->mergeShelves($formattedName, $formattedOtherShelfName);
         $this->assertEquals($expectedResponse, $response);
@@ -3082,8 +3049,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
-        $formattedOtherShelfName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+        $formattedName = $client->shelfName("[SHELF_ID]");
+        $formattedOtherShelfName = $client->shelfName("[SHELF_ID]");
 
         try {
             $client->mergeShelves($formattedName, $formattedOtherShelfName);
@@ -3122,7 +3089,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+        $formattedName = $client->shelfName("[SHELF_ID]");
         $book = new Book();
 
         $response = $client->createBook($formattedName, $book);
@@ -3162,7 +3129,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+        $formattedName = $client->shelfName("[SHELF_ID]");
         $book = new Book();
 
         try {
@@ -3284,7 +3251,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
 
         $response = $client->getBook($formattedName);
         $this->assertEquals($expectedResponse, $response);
@@ -3322,7 +3289,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
 
         try {
             $client->getBook($formattedName);
@@ -3358,7 +3325,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+        $formattedName = $client->shelfName("[SHELF_ID]");
 
         $response = $client->listBooks($formattedName);
         $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
@@ -3399,7 +3366,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+        $formattedName = $client->shelfName("[SHELF_ID]");
 
         try {
             $client->listBooks($formattedName);
@@ -3430,7 +3397,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
 
         $client->deleteBook($formattedName);
         $actualRequests = $grpcStub->popReceivedCalls();
@@ -3467,7 +3434,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
 
         try {
             $client->deleteBook($formattedName);
@@ -3506,7 +3473,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
         $book = new Book();
 
         $response = $client->updateBook($formattedName, $book);
@@ -3546,7 +3513,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
         $book = new Book();
 
         try {
@@ -3586,8 +3553,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
-        $formattedOtherShelfName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+        $formattedName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedOtherShelfName = $client->shelfName("[SHELF_ID]");
 
         $response = $client->moveBook($formattedName, $formattedOtherShelfName);
         $this->assertEquals($expectedResponse, $response);
@@ -3626,8 +3593,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
-        $formattedOtherShelfName = LibraryServiceClient::formatShelfName("[SHELF_ID]");
+        $formattedName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedOtherShelfName = $client->shelfName("[SHELF_ID]");
 
         try {
             $client->moveBook($formattedName, $formattedOtherShelfName);
@@ -3728,7 +3695,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
         $comment = "95";
         $stage = Stage::UNSET;
         $alignment = Alignment::CHAR;
@@ -3774,7 +3741,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
         $comment = "95";
         $stage = Stage::UNSET;
         $alignment = Alignment::CHAR;
@@ -3821,7 +3788,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = LibraryServiceClient::formatArchivedBookName("[ARCHIVE_PATH]", "[BOOK_ID]");
+        $formattedName = $client->archivedBookName("[ARCHIVE_PATH]", "[BOOK_ID]");
 
         $response = $client->getBookFromArchive($formattedName);
         $this->assertEquals($expectedResponse, $response);
@@ -3859,7 +3826,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = LibraryServiceClient::formatArchivedBookName("[ARCHIVE_PATH]", "[BOOK_ID]");
+        $formattedName = $client->archivedBookName("[ARCHIVE_PATH]", "[BOOK_ID]");
 
         try {
             $client->getBookFromArchive($formattedName);
@@ -3898,8 +3865,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
-        $formattedAltBookName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedAltBookName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
 
         $response = $client->getBookFromAnywhere($formattedName, $formattedAltBookName);
         $this->assertEquals($expectedResponse, $response);
@@ -3938,8 +3905,8 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
-        $formattedAltBookName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedAltBookName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
 
         try {
             $client->getBookFromAnywhere($formattedName, $formattedAltBookName);
@@ -3978,7 +3945,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
 
         $response = $client->getBookFromAbsolutelyAnywhere($formattedName);
         $this->assertEquals($expectedResponse, $response);
@@ -4016,7 +3983,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
 
         try {
             $client->getBookFromAbsolutelyAnywhere($formattedName);
@@ -4047,7 +4014,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
         $indexName = "default index";
         $indexMapItem = "indexMapItem1918721251";
         $indexMap = ["default_key" => $indexMapItem,];
@@ -4089,7 +4056,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
         $indexName = "default index";
         $indexMapItem = "indexMapItem1918721251";
         $indexMap = ["default_key" => $indexMapItem,];
@@ -4529,7 +4496,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedResource = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedResource = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
         $tag = "tag114586";
 
         $response = $client->addTag($formattedResource, $tag);
@@ -4569,7 +4536,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedResource = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedResource = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
         $tag = "tag114586";
 
         try {
@@ -4601,7 +4568,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse($expectedResponse);
 
         // Mock request
-        $formattedResource = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedResource = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
         $label = "label102727412";
 
         $response = $client->addLabel($formattedResource, $label);
@@ -4641,7 +4608,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $grpcStub->addResponse(null, $status);
 
         // Mock request
-        $formattedResource = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedResource = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
         $label = "label102727412";
 
         try {
@@ -4702,7 +4669,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $operationsStub->addResponse($completeOperation);
 
         // Mock request
-        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
 
         $response = $client->getBigBook($formattedName);
         $this->assertFalse($response->isDone());
@@ -4777,7 +4744,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $operationsStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
 
         $response = $client->getBigBook($formattedName);
         $this->assertFalse($response->isDone());
@@ -4838,7 +4805,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $operationsStub->addResponse($completeOperation);
 
         // Mock request
-        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
 
         $response = $client->getBigNothing($formattedName);
         $this->assertFalse($response->isDone());
@@ -4913,7 +4880,7 @@ class LibraryServiceClientTest extends GeneratedTest
         $operationsStub->addResponse(null, $status);
 
         // Mock request
-        $formattedName = LibraryServiceClient::formatBookName("[SHELF_ID]", "[BOOK_ID]");
+        $formattedName = $client->bookName("[SHELF_ID]", "[BOOK_ID]");
 
         $response = $client->getBigNothing($formattedName);
         $this->assertFalse($response->isDone());
