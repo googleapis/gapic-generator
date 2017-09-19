@@ -104,7 +104,7 @@
     @end
     {@""}
     @if xapiClass.hasFormatOrParseResourceFunctions
-        private static $pathTemplateList;
+        private static $pathTemplateMap;
     @end
     private static $gapicVersion;
     private static $gapicVersionLoaded = false;
@@ -129,7 +129,7 @@
     @join function : xapiClass.pathTemplateGetterFunctions
         {@pathTemplateGetterFunction(function)}
     @end
-    {@pathTemplateListFunction(xapiClass)}
+    {@pathTemplateMapFunction(xapiClass)}
     {@pageStreamingDescriptorFunction(xapiClass)}
     {@longRunningDescriptorFunction(xapiClass)}
     {@grpcStreamingDescriptorFunction(xapiClass)}
@@ -174,17 +174,31 @@
     /**
      * Parses a formatted name string and returns an associative array of the components in the name.
      * The following name formats are supported:
+     * Template: Pattern
     @join function : xapiClass.pathTemplateGetterFunctions
-        {@""} * - {@function.pattern}
+        {@""} * - {@function.entityName}: {@function.pattern}
     @end
      *
+     * The optional $template argument can be supplied to specify a particular pattern, and must
+     * match one of the templates listed above. If no $template argument is provided, or if the
+     * $template argument does not match one of the templates listed, then parseName will check
+     * each of the supported templates, and return the first match.
+     *
      * @@param string $formattedName The formatted name string
+     * @@param string $template Optional name of template to match
      * @@return array An associative array from name component IDs to component values.
+     * @@throws ValidationException If $formattedName could not be matched.
      * @@experimental
      */
-    public static function parseName($formattedName)
+    public static function parseName($formattedName, $template = null)
     {
-        foreach (self::getPathTemplateList() as $pathTemplate) {
+        $templateMap = self::getPathTemplateMap();
+
+        if (isset($templateMap[$template])) {
+            return $templateMap[$template]->match($formattedName);
+        }
+
+        foreach ($templateMap as $templateName => $pathTemplate) {
             try {
                 return $pathTemplate->match($formattedName);
             } catch (ValidationException $ex) {
@@ -214,19 +228,19 @@
     {@""}
 @end
 
-@private pathTemplateListFunction(xapiClass)
+@private pathTemplateMapFunction(xapiClass)
     @if xapiClass.hasFormatOrParseResourceFunctions
         {@""}
-        private static function getPathTemplateList()
+        private static function getPathTemplateMap()
         {
-            if (self::$pathTemplateList == null) {
-                self::$pathTemplateList = [
+            if (self::$pathTemplateMap == null) {
+                self::$pathTemplateMap = [
                     @join function : xapiClass.pathTemplateGetterFunctions
-                        self::{@function.name}(),
+                        "{@function.entityName}" => self::{@function.name}(),
                     @end
                 ];
             }
-            return self::$pathTemplateList;
+            return self::$pathTemplateMap;
         }
     @end
 @end
