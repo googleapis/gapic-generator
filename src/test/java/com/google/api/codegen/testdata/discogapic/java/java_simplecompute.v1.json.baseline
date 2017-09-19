@@ -3112,11 +3112,9 @@ public final class DeleteAddressHttpRequest implements ApiMessage {
     }
 
     public final AddressName getAddressAsAddressName() {
-      java.lang.String str = getAddress();
-      if (str.isEmpty()) {
-        return null;
-      }
-      return AddressName.parse(str);
+      return AddressName.create(
+          getAddress(),        getProject(),        getRegion()
+          );
     }
   }
 
@@ -3562,6 +3560,23 @@ public final class GetAddressHttpRequest implements ApiMessage {
       newBuilder.setRegion(this.region);
       newBuilder.setUserIp(this.userIp);
       return newBuilder;
+    }
+
+    public final Builder setAddressWithAddressName(AddressName value) {
+      if (value == null) {
+        return
+            setAddress("").          setProject("").          setRegion("")
+            ;
+      }
+      return
+          setAddress(value.getAddress()).        setProject(value.getProject()).        setRegion(value.getRegion())
+          ;
+    }
+
+    public final AddressName getAddressAsAddressName() {
+      return AddressName.create(
+          getAddress(),        getProject(),        getRegion()
+          );
     }
   }
 
@@ -4019,11 +4034,9 @@ public final class InsertAddressHttpRequest implements ApiMessage {
     }
 
     public final RegionName getRegionAsRegionName() {
-      java.lang.String str = getRegion();
-      if (str.isEmpty()) {
-        return null;
-      }
-      return RegionName.parse(str);
+      return RegionName.create(
+          getProject(),        getRegion()
+          );
     }
   }
 
@@ -4856,19 +4869,15 @@ public class AddressAdminClient implements BackgroundResource {
    * }
    * </code></pre>
    *
-   * @param project Project ID for this request.
-   * @param region Name of the region for this request.
    * @param address Name of the address resource to return.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   @BetaApi
-  public final Address getAddress(String project, String region, String address) {
+  public final Address getAddress(AddressName address) {
 
     GetAddressHttpRequest request =
         GetAddressHttpRequest.newBuilder()
-        .setProject(project)
-        .setRegion(region)
-        .setAddress(address)
+        .setAddressWithAddressName(address)
         .build();
     return getAddress(request);
   }
@@ -4889,7 +4898,7 @@ public class AddressAdminClient implements BackgroundResource {
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
   @BetaApi
-  private final Address getAddress(GetAddressHttpRequest request) {
+  public final Address getAddress(GetAddressHttpRequest request) {
     return getAddressCallable().call(request);
   }
 

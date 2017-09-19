@@ -244,11 +244,11 @@
       }
 
       public final {@resourceName.typeName} {@resourceName.nameAsMethodName}() {
-        java.lang.String str = {@resourceName.getCallName}();
-        if (str.isEmpty()) {
-          return null;
-        }
-        return {@resourceName.typeName}.parse(str);
+        return {@resourceName.typeName}.create(
+            @join field : resourceName.fieldCopyMethods on ","
+              {@field.fieldGetFunction}()
+            @end
+            );
       }
     @end
   }

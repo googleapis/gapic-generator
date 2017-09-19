@@ -44,6 +44,11 @@ public abstract class MethodView implements Comparable<MethodView> {
   @Nullable
   public abstract ResourceNameTreatment resourceNameTreatment();
 
+  /** True of the pageStreaming property exists. */
+  public boolean hasResourceNameTreatment() {
+    return resourceNameTreatment() != null;
+  }
+
   /** The configuration for paging. */
   @Nullable
   public abstract PageStreamingView pageStreaming();
