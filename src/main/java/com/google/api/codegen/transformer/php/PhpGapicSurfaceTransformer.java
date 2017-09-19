@@ -177,8 +177,6 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     SurfaceNamer namer = context.getNamer();
     String name = namer.getApiWrapperClassName(context.getInterfaceConfig());
 
-    addApiImports(context);
-
     context
         .getTypeTable()
         .getAndSaveNicknameFor(
@@ -260,6 +258,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("\\Google\\GAX\\GrpcCredentialsHelper");
     typeTable.saveNicknameFor("\\Google\\GAX\\PathTemplate");
     typeTable.saveNicknameFor("\\Google\\GAX\\ValidationException");
+    typeTable.saveNicknameFor("\\Google\\Cloud\\Version");
 
     if (context.getInterfaceConfig().hasPageStreamingMethods()) {
       typeTable.saveNicknameFor("\\Google\\GAX\\PageStreamingDescriptor");
