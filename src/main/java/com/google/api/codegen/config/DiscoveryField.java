@@ -31,6 +31,7 @@ import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -60,6 +61,9 @@ public class DiscoveryField implements FieldModel {
 
   @Override
   public String getSimpleName() {
+    if (!Strings.isNullOrEmpty(schema.reference())) {
+      return schema.reference().toLowerCase();
+    }
     return schema.getIdentifier();
   }
 
