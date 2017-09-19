@@ -34,9 +34,7 @@ public class LanguageTransformer {
 
   static {
     List<RewriteRule> javaRewriteRules =
-        Arrays.asList(
-            new RewriteRule("^google(\\.cloud)?", "com.google.cloud"),
-            new RewriteRule("(.v[^.]+)$", ".spi$1"));
+        Arrays.asList(new RewriteRule("^google(\\.cloud)?", "com.google.cloud"));
     List<RewriteRule> pythonRewriteRules =
         Arrays.asList(new RewriteRule("^google(?!\\.cloud)", "google.cloud.gapic"));
     List<RewriteRule> commonRewriteRules =
