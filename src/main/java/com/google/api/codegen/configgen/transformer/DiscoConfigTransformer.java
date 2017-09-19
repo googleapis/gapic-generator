@@ -22,6 +22,7 @@ import com.google.api.codegen.configgen.viewmodel.ConfigView;
 import com.google.api.codegen.configgen.viewmodel.InterfaceView;
 import com.google.api.codegen.configgen.viewmodel.LanguageSettingView;
 import com.google.api.codegen.configgen.viewmodel.LicenseView;
+import com.google.api.codegen.configgen.viewmodel.ResourceNameGenerationView;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Method;
@@ -29,10 +30,12 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -58,6 +61,7 @@ public class DiscoConfigTransformer {
         .languageSettings(generateLanguageSettings(model))
         .license(generateLicense())
         .interfaces(generateInterfaces(model))
+        .resourceNameGeneration(generateResourceNameGenerations(model))
         .build();
   }
 
@@ -115,5 +119,24 @@ public class DiscoConfigTransformer {
           namePattern, DiscoGapicNamer.getResourceIdentifier(method).toLowerCamel());
     }
     return ImmutableMap.copyOf(resourceNameMap);
+  }
+
+  private List<ResourceNameGenerationView> generateResourceNameGenerations(Document model) {
+    ImmutableList.Builder<ResourceNameGenerationView> resourceNames = ImmutableList.builder();
+    for (Method method : model.methods()) {
+      if (!Strings.isNullOrEmpty(method.path())) {
+        ResourceNameGenerationView.Builder view = ResourceNameGenerationView.newBuilder();
+        view.messageName(DiscoGapicNamer.getRequestName(method).toUpperCamel());
+
+        String resourceName = DiscoGapicNamer.getResourceIdentifier(method).toLowerCamel();
+
+        Map<String, String> fieldEntityMap = new HashMap<>();
+        fieldEntityMap.put(resourceName, resourceName);
+        view.fieldEntities(fieldEntityMap);
+
+        resourceNames.add(view.build());
+      }
+    }
+    return resourceNames.build();
   }
 }

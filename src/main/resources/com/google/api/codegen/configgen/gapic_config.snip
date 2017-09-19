@@ -4,6 +4,7 @@
   {@renderLanguageSettings(config.languageSettings)}
   {@renderLicense(config.license)}
   {@renderInterfaces(config.interfaces)}
+  {@renderResourceNameGeneration(config.resourceNameGeneration)}
 @end
 
 @private renderTopLevelTodo()
@@ -191,6 +192,19 @@
     response:
       token_field: {@pageStreaming.response.tokenField}
       resources_field: {@pageStreaming.response.resourcesField}
+@end
+
+@private renderResourceNameGeneration(resourceNameGeneration)
+  @if resourceNameGeneration
+    resource_name_generation:
+    @join resourceName : resourceNameGeneration
+      - message_name: {@resourceName.messageName}
+        field_entity_map:
+          @join fieldEntity : resourceName.fieldEntities.entrySet
+            {@fieldEntity.getKey}: {@fieldEntity.getValue}
+          @end
+    @end
+  @end
 @end
 
 @private renderStringList(list)

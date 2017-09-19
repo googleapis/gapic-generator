@@ -15,8 +15,10 @@
 package com.google.api.codegen.configgen.viewmodel;
 
 import com.google.api.codegen.SnippetSetRunner;
+import com.google.api.codegen.configgen.viewmodel.InterfaceView.Builder;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
+import java.util.ArrayList;
 import java.util.List;
 
 /** Represents the GAPIC config being generated. */
@@ -40,13 +42,17 @@ public abstract class ConfigView implements ViewModel {
   /** The API interface configurations. */
   public abstract List<InterfaceView> interfaces();
 
+  /** The list of resource name generation configurations. */
+  public abstract List<ResourceNameGenerationView> resourceNameGeneration();
+
   @Override
   public String resourceRoot() {
     return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
   }
 
   public static Builder newBuilder() {
-    return new AutoValue_ConfigView.Builder();
+    return new AutoValue_ConfigView.Builder()
+        .resourceNameGeneration(new ArrayList<ResourceNameGenerationView>());
   }
 
   @AutoValue.Builder
@@ -62,6 +68,8 @@ public abstract class ConfigView implements ViewModel {
     public abstract Builder license(LicenseView val);
 
     public abstract Builder interfaces(List<InterfaceView> val);
+
+    public abstract Builder resourceNameGeneration(List<ResourceNameGenerationView> val);
 
     public abstract ConfigView build();
   }
