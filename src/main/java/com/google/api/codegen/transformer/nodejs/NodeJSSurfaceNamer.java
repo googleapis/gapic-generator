@@ -449,7 +449,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   public String getByteLengthFunctionName(TypeRef typeRef) {
     switch (typeRef.getKind()) {
       case TYPE_MESSAGE:
-        return "gax.createByteLengthFunction(grpcClients."
+        return "gax.createByteLengthFunction(loadedProtos."
             + typeRef.getMessageType().getFullName()
             + ")";
       case TYPE_STRING:
