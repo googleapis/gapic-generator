@@ -194,7 +194,10 @@
     {
         $templateMap = self::getPathTemplateMap();
 
-        if (isset($templateMap[$template])) {
+        if ($template) {
+            if (!isset($templateMap[$template])) {
+                throw new ValidationException("Template name $template does not exist");
+            }
             return $templateMap[$template]->match($formattedName);
         }
 
@@ -557,8 +560,13 @@
                 }
 
             @end
-            $mergedSettings = $this->defaultCallSettings['{@apiMethod.key}']->merge(
-                new CallSettings($optionalArgs));
+            $defaultCallSettings = $this->defaultCallSettings['{@apiMethod.key}'];
+            if (isset($optionalArgs['retrySettings']) && is_array($optionalArgs['retrySettings'])) {
+                $optionalArgs['retrySettings'] = $defaultCallSettings->getRetrySettings()->with(
+                    $optionalArgs['retrySettings']
+                );
+            }
+            $mergedSettings = $defaultCallSettings->merge(new CallSettings($optionalArgs));
             $callable = ApiCallable::createApiCall(
                 $this->{@apiMethod.stubName}, '{@apiMethod.grpcMethodName}', $mergedSettings, $this->descriptors['{@apiMethod.key}']);
 

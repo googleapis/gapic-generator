@@ -394,7 +394,10 @@ class LibraryServiceGapicClient
     {
         $templateMap = self::getPathTemplateMap();
 
-        if (isset($templateMap[$template])) {
+        if ($template) {
+            if (!isset($templateMap[$template])) {
+                throw new ValidationException("Template name $template does not exist");
+            }
             return $templateMap[$template]->match($formattedName);
         }
 
@@ -629,8 +632,13 @@ class LibraryServiceGapicClient
         $request = new CreateShelfRequest();
         $request->setShelf($shelf);
 
-        $mergedSettings = $this->defaultCallSettings['createShelf']->merge(
-            new CallSettings($optionalArgs));
+        $defaultCallSettings = $this->defaultCallSettings['createShelf'];
+        if (isset($optionalArgs['retrySettings']) && is_array($optionalArgs['retrySettings'])) {
+            $optionalArgs['retrySettings'] = $defaultCallSettings->getRetrySettings()->with(
+                $optionalArgs['retrySettings']
+            );
+        }
+        $mergedSettings = $defaultCallSettings->merge(new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
             $this->libraryServiceStub, 'CreateShelf', $mergedSettings, $this->descriptors['createShelf']);
 
@@ -686,8 +694,13 @@ class LibraryServiceGapicClient
             $request->setStringBuilder($optionalArgs['stringBuilder']);
         }
 
-        $mergedSettings = $this->defaultCallSettings['getShelf']->merge(
-            new CallSettings($optionalArgs));
+        $defaultCallSettings = $this->defaultCallSettings['getShelf'];
+        if (isset($optionalArgs['retrySettings']) && is_array($optionalArgs['retrySettings'])) {
+            $optionalArgs['retrySettings'] = $defaultCallSettings->getRetrySettings()->with(
+                $optionalArgs['retrySettings']
+            );
+        }
+        $mergedSettings = $defaultCallSettings->merge(new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
             $this->libraryServiceStub, 'GetShelf', $mergedSettings, $this->descriptors['getShelf']);
 
@@ -749,8 +762,13 @@ class LibraryServiceGapicClient
             $request->setPageToken($optionalArgs['pageToken']);
         }
 
-        $mergedSettings = $this->defaultCallSettings['listShelves']->merge(
-            new CallSettings($optionalArgs));
+        $defaultCallSettings = $this->defaultCallSettings['listShelves'];
+        if (isset($optionalArgs['retrySettings']) && is_array($optionalArgs['retrySettings'])) {
+            $optionalArgs['retrySettings'] = $defaultCallSettings->getRetrySettings()->with(
+                $optionalArgs['retrySettings']
+            );
+        }
+        $mergedSettings = $defaultCallSettings->merge(new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
             $this->libraryServiceStub, 'ListShelves', $mergedSettings, $this->descriptors['listShelves']);
 
@@ -792,8 +810,13 @@ class LibraryServiceGapicClient
         $request = new DeleteShelfRequest();
         $request->setName($name);
 
-        $mergedSettings = $this->defaultCallSettings['deleteShelf']->merge(
-            new CallSettings($optionalArgs));
+        $defaultCallSettings = $this->defaultCallSettings['deleteShelf'];
+        if (isset($optionalArgs['retrySettings']) && is_array($optionalArgs['retrySettings'])) {
+            $optionalArgs['retrySettings'] = $defaultCallSettings->getRetrySettings()->with(
+                $optionalArgs['retrySettings']
+            );
+        }
+        $mergedSettings = $defaultCallSettings->merge(new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
             $this->libraryServiceStub, 'DeleteShelf', $mergedSettings, $this->descriptors['deleteShelf']);
 
@@ -842,8 +865,13 @@ class LibraryServiceGapicClient
         $request->setName($name);
         $request->setOtherShelfName($otherShelfName);
 
-        $mergedSettings = $this->defaultCallSettings['mergeShelves']->merge(
-            new CallSettings($optionalArgs));
+        $defaultCallSettings = $this->defaultCallSettings['mergeShelves'];
+        if (isset($optionalArgs['retrySettings']) && is_array($optionalArgs['retrySettings'])) {
+            $optionalArgs['retrySettings'] = $defaultCallSettings->getRetrySettings()->with(
+                $optionalArgs['retrySettings']
+            );
+        }
+        $mergedSettings = $defaultCallSettings->merge(new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
             $this->libraryServiceStub, 'MergeShelves', $mergedSettings, $this->descriptors['mergeShelves']);
 
@@ -890,8 +918,13 @@ class LibraryServiceGapicClient
         $request->setName($name);
         $request->setBook($book);
 
-        $mergedSettings = $this->defaultCallSettings['createBook']->merge(
-            new CallSettings($optionalArgs));
+        $defaultCallSettings = $this->defaultCallSettings['createBook'];
+        if (isset($optionalArgs['retrySettings']) && is_array($optionalArgs['retrySettings'])) {
+            $optionalArgs['retrySettings'] = $defaultCallSettings->getRetrySettings()->with(
+                $optionalArgs['retrySettings']
+            );
+        }
+        $mergedSettings = $defaultCallSettings->merge(new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
             $this->libraryServiceStub, 'CreateBook', $mergedSettings, $this->descriptors['createBook']);
 
@@ -953,8 +986,13 @@ class LibraryServiceGapicClient
             $request->setReviewCopy($optionalArgs['reviewCopy']);
         }
 
-        $mergedSettings = $this->defaultCallSettings['publishSeries']->merge(
-            new CallSettings($optionalArgs));
+        $defaultCallSettings = $this->defaultCallSettings['publishSeries'];
+        if (isset($optionalArgs['retrySettings']) && is_array($optionalArgs['retrySettings'])) {
+            $optionalArgs['retrySettings'] = $defaultCallSettings->getRetrySettings()->with(
+                $optionalArgs['retrySettings']
+            );
+        }
+        $mergedSettings = $defaultCallSettings->merge(new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
             $this->libraryServiceStub, 'PublishSeries', $mergedSettings, $this->descriptors['publishSeries']);
 
@@ -998,8 +1036,13 @@ class LibraryServiceGapicClient
         $request = new GetBookRequest();
         $request->setName($name);
 
-        $mergedSettings = $this->defaultCallSettings['getBook']->merge(
-            new CallSettings($optionalArgs));
+        $defaultCallSettings = $this->defaultCallSettings['getBook'];
+        if (isset($optionalArgs['retrySettings']) && is_array($optionalArgs['retrySettings'])) {
+            $optionalArgs['retrySettings'] = $defaultCallSettings->getRetrySettings()->with(
+                $optionalArgs['retrySettings']
+            );
+        }
+        $mergedSettings = $defaultCallSettings->merge(new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
             $this->libraryServiceStub, 'GetBook', $mergedSettings, $this->descriptors['getBook']);
 
@@ -1075,8 +1118,13 @@ class LibraryServiceGapicClient
             $request->setFilter($optionalArgs['filter']);
         }
 
-        $mergedSettings = $this->defaultCallSettings['listBooks']->merge(
-            new CallSettings($optionalArgs));
+        $defaultCallSettings = $this->defaultCallSettings['listBooks'];
+        if (isset($optionalArgs['retrySettings']) && is_array($optionalArgs['retrySettings'])) {
+            $optionalArgs['retrySettings'] = $defaultCallSettings->getRetrySettings()->with(
+                $optionalArgs['retrySettings']
+            );
+        }
+        $mergedSettings = $defaultCallSettings->merge(new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
             $this->libraryServiceStub, 'ListBooks', $mergedSettings, $this->descriptors['listBooks']);
 
@@ -1118,8 +1166,13 @@ class LibraryServiceGapicClient
         $request = new DeleteBookRequest();
         $request->setName($name);
 
-        $mergedSettings = $this->defaultCallSettings['deleteBook']->merge(
-            new CallSettings($optionalArgs));
+        $defaultCallSettings = $this->defaultCallSettings['deleteBook'];
+        if (isset($optionalArgs['retrySettings']) && is_array($optionalArgs['retrySettings'])) {
+            $optionalArgs['retrySettings'] = $defaultCallSettings->getRetrySettings()->with(
+                $optionalArgs['retrySettings']
+            );
+        }
+        $mergedSettings = $defaultCallSettings->merge(new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
             $this->libraryServiceStub, 'DeleteBook', $mergedSettings, $this->descriptors['deleteBook']);
 
@@ -1176,8 +1229,13 @@ class LibraryServiceGapicClient
             $request->setPhysicalMask($optionalArgs['physicalMask']);
         }
 
-        $mergedSettings = $this->defaultCallSettings['updateBook']->merge(
-            new CallSettings($optionalArgs));
+        $defaultCallSettings = $this->defaultCallSettings['updateBook'];
+        if (isset($optionalArgs['retrySettings']) && is_array($optionalArgs['retrySettings'])) {
+            $optionalArgs['retrySettings'] = $defaultCallSettings->getRetrySettings()->with(
+                $optionalArgs['retrySettings']
+            );
+        }
+        $mergedSettings = $defaultCallSettings->merge(new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
             $this->libraryServiceStub, 'UpdateBook', $mergedSettings, $this->descriptors['updateBook']);
 
@@ -1224,8 +1282,13 @@ class LibraryServiceGapicClient
         $request->setName($name);
         $request->setOtherShelfName($otherShelfName);
 
-        $mergedSettings = $this->defaultCallSettings['moveBook']->merge(
-            new CallSettings($optionalArgs));
+        $defaultCallSettings = $this->defaultCallSettings['moveBook'];
+        if (isset($optionalArgs['retrySettings']) && is_array($optionalArgs['retrySettings'])) {
+            $optionalArgs['retrySettings'] = $defaultCallSettings->getRetrySettings()->with(
+                $optionalArgs['retrySettings']
+            );
+        }
+        $mergedSettings = $defaultCallSettings->merge(new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
             $this->libraryServiceStub, 'MoveBook', $mergedSettings, $this->descriptors['moveBook']);
 
@@ -1298,8 +1361,13 @@ class LibraryServiceGapicClient
             $request->setPageToken($optionalArgs['pageToken']);
         }
 
-        $mergedSettings = $this->defaultCallSettings['listStrings']->merge(
-            new CallSettings($optionalArgs));
+        $defaultCallSettings = $this->defaultCallSettings['listStrings'];
+        if (isset($optionalArgs['retrySettings']) && is_array($optionalArgs['retrySettings'])) {
+            $optionalArgs['retrySettings'] = $defaultCallSettings->getRetrySettings()->with(
+                $optionalArgs['retrySettings']
+            );
+        }
+        $mergedSettings = $defaultCallSettings->merge(new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
             $this->libraryServiceStub, 'ListStrings', $mergedSettings, $this->descriptors['listStrings']);
 
@@ -1351,8 +1419,13 @@ class LibraryServiceGapicClient
         $request->setName($name);
         $request->setComments($comments);
 
-        $mergedSettings = $this->defaultCallSettings['addComments']->merge(
-            new CallSettings($optionalArgs));
+        $defaultCallSettings = $this->defaultCallSettings['addComments'];
+        if (isset($optionalArgs['retrySettings']) && is_array($optionalArgs['retrySettings'])) {
+            $optionalArgs['retrySettings'] = $defaultCallSettings->getRetrySettings()->with(
+                $optionalArgs['retrySettings']
+            );
+        }
+        $mergedSettings = $defaultCallSettings->merge(new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
             $this->libraryServiceStub, 'AddComments', $mergedSettings, $this->descriptors['addComments']);
 
@@ -1396,8 +1469,13 @@ class LibraryServiceGapicClient
         $request = new GetBookFromArchiveRequest();
         $request->setName($name);
 
-        $mergedSettings = $this->defaultCallSettings['getBookFromArchive']->merge(
-            new CallSettings($optionalArgs));
+        $defaultCallSettings = $this->defaultCallSettings['getBookFromArchive'];
+        if (isset($optionalArgs['retrySettings']) && is_array($optionalArgs['retrySettings'])) {
+            $optionalArgs['retrySettings'] = $defaultCallSettings->getRetrySettings()->with(
+                $optionalArgs['retrySettings']
+            );
+        }
+        $mergedSettings = $defaultCallSettings->merge(new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
             $this->libraryServiceStub, 'GetBookFromArchive', $mergedSettings, $this->descriptors['getBookFromArchive']);
 
@@ -1445,8 +1523,13 @@ class LibraryServiceGapicClient
         $request->setName($name);
         $request->setAltBookName($altBookName);
 
-        $mergedSettings = $this->defaultCallSettings['getBookFromAnywhere']->merge(
-            new CallSettings($optionalArgs));
+        $defaultCallSettings = $this->defaultCallSettings['getBookFromAnywhere'];
+        if (isset($optionalArgs['retrySettings']) && is_array($optionalArgs['retrySettings'])) {
+            $optionalArgs['retrySettings'] = $defaultCallSettings->getRetrySettings()->with(
+                $optionalArgs['retrySettings']
+            );
+        }
+        $mergedSettings = $defaultCallSettings->merge(new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
             $this->libraryServiceStub, 'GetBookFromAnywhere', $mergedSettings, $this->descriptors['getBookFromAnywhere']);
 
@@ -1490,8 +1573,13 @@ class LibraryServiceGapicClient
         $request = new GetBookFromAbsolutelyAnywhereRequest();
         $request->setName($name);
 
-        $mergedSettings = $this->defaultCallSettings['getBookFromAbsolutelyAnywhere']->merge(
-            new CallSettings($optionalArgs));
+        $defaultCallSettings = $this->defaultCallSettings['getBookFromAbsolutelyAnywhere'];
+        if (isset($optionalArgs['retrySettings']) && is_array($optionalArgs['retrySettings'])) {
+            $optionalArgs['retrySettings'] = $defaultCallSettings->getRetrySettings()->with(
+                $optionalArgs['retrySettings']
+            );
+        }
+        $mergedSettings = $defaultCallSettings->merge(new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
             $this->libraryServiceStub, 'GetBookFromAbsolutelyAnywhere', $mergedSettings, $this->descriptors['getBookFromAbsolutelyAnywhere']);
 
@@ -1540,8 +1628,13 @@ class LibraryServiceGapicClient
         $request->setIndexName($indexName);
         $request->setIndexMap($indexMap);
 
-        $mergedSettings = $this->defaultCallSettings['updateBookIndex']->merge(
-            new CallSettings($optionalArgs));
+        $defaultCallSettings = $this->defaultCallSettings['updateBookIndex'];
+        if (isset($optionalArgs['retrySettings']) && is_array($optionalArgs['retrySettings'])) {
+            $optionalArgs['retrySettings'] = $defaultCallSettings->getRetrySettings()->with(
+                $optionalArgs['retrySettings']
+            );
+        }
+        $mergedSettings = $defaultCallSettings->merge(new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
             $this->libraryServiceStub, 'UpdateBookIndex', $mergedSettings, $this->descriptors['updateBookIndex']);
 
@@ -1592,8 +1685,13 @@ class LibraryServiceGapicClient
             ];
         }
 
-        $mergedSettings = $this->defaultCallSettings['streamShelves']->merge(
-            new CallSettings($optionalArgs));
+        $defaultCallSettings = $this->defaultCallSettings['streamShelves'];
+        if (isset($optionalArgs['retrySettings']) && is_array($optionalArgs['retrySettings'])) {
+            $optionalArgs['retrySettings'] = $defaultCallSettings->getRetrySettings()->with(
+                $optionalArgs['retrySettings']
+            );
+        }
+        $mergedSettings = $defaultCallSettings->merge(new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
             $this->libraryServiceStub, 'StreamShelves', $mergedSettings, $this->descriptors['streamShelves']);
 
@@ -1646,8 +1744,13 @@ class LibraryServiceGapicClient
             ];
         }
 
-        $mergedSettings = $this->defaultCallSettings['streamBooks']->merge(
-            new CallSettings($optionalArgs));
+        $defaultCallSettings = $this->defaultCallSettings['streamBooks'];
+        if (isset($optionalArgs['retrySettings']) && is_array($optionalArgs['retrySettings'])) {
+            $optionalArgs['retrySettings'] = $defaultCallSettings->getRetrySettings()->with(
+                $optionalArgs['retrySettings']
+            );
+        }
+        $mergedSettings = $defaultCallSettings->merge(new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
             $this->libraryServiceStub, 'StreamBooks', $mergedSettings, $this->descriptors['streamBooks']);
 
@@ -1719,8 +1822,13 @@ class LibraryServiceGapicClient
             ];
         }
 
-        $mergedSettings = $this->defaultCallSettings['discussBook']->merge(
-            new CallSettings($optionalArgs));
+        $defaultCallSettings = $this->defaultCallSettings['discussBook'];
+        if (isset($optionalArgs['retrySettings']) && is_array($optionalArgs['retrySettings'])) {
+            $optionalArgs['retrySettings'] = $defaultCallSettings->getRetrySettings()->with(
+                $optionalArgs['retrySettings']
+            );
+        }
+        $mergedSettings = $defaultCallSettings->merge(new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
             $this->libraryServiceStub, 'DiscussBook', $mergedSettings, $this->descriptors['discussBook']);
 
@@ -1780,8 +1888,13 @@ class LibraryServiceGapicClient
             ];
         }
 
-        $mergedSettings = $this->defaultCallSettings['monologAboutBook']->merge(
-            new CallSettings($optionalArgs));
+        $defaultCallSettings = $this->defaultCallSettings['monologAboutBook'];
+        if (isset($optionalArgs['retrySettings']) && is_array($optionalArgs['retrySettings'])) {
+            $optionalArgs['retrySettings'] = $defaultCallSettings->getRetrySettings()->with(
+                $optionalArgs['retrySettings']
+            );
+        }
+        $mergedSettings = $defaultCallSettings->merge(new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
             $this->libraryServiceStub, 'MonologAboutBook', $mergedSettings, $this->descriptors['monologAboutBook']);
 
@@ -1856,8 +1969,13 @@ class LibraryServiceGapicClient
             $request->setPageToken($optionalArgs['pageToken']);
         }
 
-        $mergedSettings = $this->defaultCallSettings['findRelatedBooks']->merge(
-            new CallSettings($optionalArgs));
+        $defaultCallSettings = $this->defaultCallSettings['findRelatedBooks'];
+        if (isset($optionalArgs['retrySettings']) && is_array($optionalArgs['retrySettings'])) {
+            $optionalArgs['retrySettings'] = $defaultCallSettings->getRetrySettings()->with(
+                $optionalArgs['retrySettings']
+            );
+        }
+        $mergedSettings = $defaultCallSettings->merge(new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
             $this->libraryServiceStub, 'FindRelatedBooks', $mergedSettings, $this->descriptors['findRelatedBooks']);
 
@@ -1906,8 +2024,13 @@ class LibraryServiceGapicClient
         $request->setResource($resource);
         $request->setTag($tag);
 
-        $mergedSettings = $this->defaultCallSettings['addTag']->merge(
-            new CallSettings($optionalArgs));
+        $defaultCallSettings = $this->defaultCallSettings['addTag'];
+        if (isset($optionalArgs['retrySettings']) && is_array($optionalArgs['retrySettings'])) {
+            $optionalArgs['retrySettings'] = $defaultCallSettings->getRetrySettings()->with(
+                $optionalArgs['retrySettings']
+            );
+        }
+        $mergedSettings = $defaultCallSettings->merge(new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
             $this->libraryServiceStub, 'AddTag', $mergedSettings, $this->descriptors['addTag']);
 
@@ -1956,8 +2079,13 @@ class LibraryServiceGapicClient
         $request->setResource($resource);
         $request->setLabel($label);
 
-        $mergedSettings = $this->defaultCallSettings['addLabel']->merge(
-            new CallSettings($optionalArgs));
+        $defaultCallSettings = $this->defaultCallSettings['addLabel'];
+        if (isset($optionalArgs['retrySettings']) && is_array($optionalArgs['retrySettings'])) {
+            $optionalArgs['retrySettings'] = $defaultCallSettings->getRetrySettings()->with(
+                $optionalArgs['retrySettings']
+            );
+        }
+        $mergedSettings = $defaultCallSettings->merge(new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
             $this->labelerStub, 'AddLabel', $mergedSettings, $this->descriptors['addLabel']);
 
@@ -2026,8 +2154,13 @@ class LibraryServiceGapicClient
         $request = new GetBookRequest();
         $request->setName($name);
 
-        $mergedSettings = $this->defaultCallSettings['getBigBook']->merge(
-            new CallSettings($optionalArgs));
+        $defaultCallSettings = $this->defaultCallSettings['getBigBook'];
+        if (isset($optionalArgs['retrySettings']) && is_array($optionalArgs['retrySettings'])) {
+            $optionalArgs['retrySettings'] = $defaultCallSettings->getRetrySettings()->with(
+                $optionalArgs['retrySettings']
+            );
+        }
+        $mergedSettings = $defaultCallSettings->merge(new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
             $this->libraryServiceStub, 'GetBigBook', $mergedSettings, $this->descriptors['getBigBook']);
 
@@ -2094,8 +2227,13 @@ class LibraryServiceGapicClient
         $request = new GetBookRequest();
         $request->setName($name);
 
-        $mergedSettings = $this->defaultCallSettings['getBigNothing']->merge(
-            new CallSettings($optionalArgs));
+        $defaultCallSettings = $this->defaultCallSettings['getBigNothing'];
+        if (isset($optionalArgs['retrySettings']) && is_array($optionalArgs['retrySettings'])) {
+            $optionalArgs['retrySettings'] = $defaultCallSettings->getRetrySettings()->with(
+                $optionalArgs['retrySettings']
+            );
+        }
+        $mergedSettings = $defaultCallSettings->merge(new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
             $this->libraryServiceStub, 'GetBigNothing', $mergedSettings, $this->descriptors['getBigNothing']);
 
@@ -2327,8 +2465,13 @@ class LibraryServiceGapicClient
             $request->setOptionalMap($optionalArgs['optionalMap']);
         }
 
-        $mergedSettings = $this->defaultCallSettings['testOptionalRequiredFlatteningParams']->merge(
-            new CallSettings($optionalArgs));
+        $defaultCallSettings = $this->defaultCallSettings['testOptionalRequiredFlatteningParams'];
+        if (isset($optionalArgs['retrySettings']) && is_array($optionalArgs['retrySettings'])) {
+            $optionalArgs['retrySettings'] = $defaultCallSettings->getRetrySettings()->with(
+                $optionalArgs['retrySettings']
+            );
+        }
+        $mergedSettings = $defaultCallSettings->merge(new CallSettings($optionalArgs));
         $callable = ApiCallable::createApiCall(
             $this->libraryServiceStub, 'TestOptionalRequiredFlatteningParams', $mergedSettings, $this->descriptors['testOptionalRequiredFlatteningParams']);
 
