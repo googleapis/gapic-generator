@@ -19,6 +19,7 @@ import com.google.api.codegen.config.ApiSource;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.configgen.PagingParameters;
 import com.google.api.codegen.configgen.viewmodel.FieldNamePatternView;
 import com.google.api.codegen.configgen.viewmodel.FlatteningGroupView;
 import com.google.api.codegen.configgen.viewmodel.FlatteningView;
@@ -34,17 +35,17 @@ import java.util.Map;
 
 /** Generates method view objects from an API interface and collection name map. */
 public class MethodTransformer {
-  private static final String PARAMETER_PAGE_TOKEN = "page_token";
-  private static final String PARAMETER_PAGE_SIZE = "page_size";
-  private static final String PARAMETER_NEXT_PAGE_TOKEN = "next_page_token";
-  private static final ImmutableList<String> IGNORED_FIELDS =
-      ImmutableList.of(PARAMETER_PAGE_TOKEN, PARAMETER_PAGE_SIZE);
+  private final PagingParameters pagingParameters;
 
   // Do not apply flattening if the parameter count exceeds the threshold.
   // TODO(shinfan): Investigate a more intelligent way to handle this.
   private static final int FLATTENING_THRESHOLD = 4;
 
   private static final int REQUEST_OBJECT_METHOD_THRESHOLD = 1;
+
+  public MethodTransformer(PagingParameters pagingParameters) {
+    this.pagingParameters = pagingParameters;
+  }
 
   public List<MethodView> generateMethods(
       InterfaceModel apiInterface, Map<String, String> collectionNameMap) {
@@ -68,7 +69,7 @@ public class MethodTransformer {
     Iterable<FieldModel> inputFields = method.getInputFields();
     for (FieldModel field : inputFields) {
       String fieldName = field.getSimpleName();
-      if (field.getOneof() == null && !IGNORED_FIELDS.contains(fieldName)) {
+      if (field.getOneof() == null && !pagingParameters.ignoredParameters().contains(fieldName)) {
         parameterList.add(fieldName);
         fieldList.add(field);
       }
@@ -131,9 +132,9 @@ public class MethodTransformer {
 
     for (FieldModel field : method.getInputFields()) {
       String fieldName = field.getSimpleName();
-      if (fieldName.equals(PARAMETER_PAGE_TOKEN)) {
+      if (fieldName.equals(pagingParameters.getNameForPageToken())) {
         requestBuilder.tokenField(fieldName);
-      } else if (fieldName.equals(PARAMETER_PAGE_SIZE)) {
+      } else if (fieldName.equals(pagingParameters.getNameForPageSize())) {
         requestBuilder.pageSizeField(fieldName);
       }
     }
@@ -147,7 +148,7 @@ public class MethodTransformer {
     String resourcesField = null;
     for (FieldModel field : method.getOutputFields()) {
       String fieldName = field.getSimpleName();
-      if (fieldName.equals(PARAMETER_NEXT_PAGE_TOKEN)) {
+      if (fieldName.equals(pagingParameters.getNameForNextPageToken())) {
         hasTokenField = true;
       } else if (field.isRepeated()) {
         if (resourcesField == null) {
@@ -168,7 +169,7 @@ public class MethodTransformer {
     }
 
     return PageStreamingResponseView.newBuilder()
-        .tokenField(PARAMETER_NEXT_PAGE_TOKEN)
+        .tokenField(pagingParameters.getNameForNextPageToken())
         .resourcesField(resourcesField)
         .build();
   }

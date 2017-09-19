@@ -17,6 +17,7 @@ package com.google.api.codegen.configgen.transformer;
 import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.config.DiscoInterfaceModel;
 import com.google.api.codegen.config.TransportProtocol;
+import com.google.api.codegen.configgen.HttpPagingParameters;
 import com.google.api.codegen.configgen.viewmodel.ConfigView;
 import com.google.api.codegen.configgen.viewmodel.InterfaceView;
 import com.google.api.codegen.configgen.viewmodel.LanguageSettingView;
@@ -46,7 +47,8 @@ public class DiscoConfigTransformer {
   private final LanguageTransformer languageTransformer = new LanguageTransformer();
   private final RetryTransformer retryTransformer = new RetryTransformer();
   private final CollectionTransformer collectionTransformer = new CollectionTransformer();
-  private final MethodTransformer methodTransformer = new MethodTransformer();
+  private final MethodTransformer methodTransformer =
+      new MethodTransformer(new HttpPagingParameters());
 
   public ViewModel generateConfig(Document model, String outputPath) {
     return ConfigView.newBuilder()

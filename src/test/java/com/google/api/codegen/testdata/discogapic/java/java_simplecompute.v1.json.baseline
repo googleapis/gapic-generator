@@ -4565,6 +4565,23 @@ public final class ListAddressesHttpRequest implements ApiMessage {
       newBuilder.setUserIp(this.userIp);
       return newBuilder;
     }
+
+    public final Builder setRegionWithRegionName(RegionName value) {
+      if (value == null) {
+        return
+            setProject("").          setRegion("")
+            ;
+      }
+      return
+          setProject(value.getProject()).        setRegion(value.getRegion())
+          ;
+    }
+
+    public final RegionName getRegionAsRegionName() {
+      return RegionName.create(
+          getProject(),        getRegion()
+          );
+    }
   }
 
   @Override
@@ -4985,6 +5002,32 @@ public class AddressAdminClient implements BackgroundResource {
   @BetaApi
   public final UnaryCallable<InsertAddressHttpRequest, Operation> insertAddressCallable() {
     return stub.insertAddressCallable();
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Retrieves a list of addresses contained within the specified region.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
+   *
+   *   for (Address element : addressAdminClient.listAddresses().iterateAll()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   *
+   * @param region Name of the region for this request.
+   * @throws com.google.api.gax.rpc.ApiException if the remote call fails
+   */
+  @BetaApi
+  public final ListAddressesPagedResponse listAddresses(RegionName region) {
+    ListAddressesHttpRequest request =
+        ListAddressesHttpRequest.newBuilder()
+        .setRegionWithRegionName(region)
+        .build();
+    return listAddresses(request);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD

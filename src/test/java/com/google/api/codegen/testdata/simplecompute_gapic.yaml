@@ -156,9 +156,19 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     field_name_patterns:
-      region: region
+      \{project}/regions/{region}/addresses: region
+      \{project}/regions/{region}/addresses/{address}: address
     timeout_millis: 60000
   - name: compute.addresses.list
+    # TODO: Configure which groups of fields should be flattened into method
+    # params.
+    flattening:
+      groups:
+      - parameters:
+        - region
+    # TODO: Configure which fields are required.
+    required_fields:
+    - region
     request_object_method: true
     resource_name_treatment: STATIC_TYPES
     page_streaming:
@@ -170,6 +180,9 @@ interfaces:
         resources_field: AddressList
     retry_codes_name: idempotent
     retry_params_name: default
+    field_name_patterns:
+      \{project}/regions/{region}/addresses: region
+      \{project}/regions/{region}/addresses/{address}: address
     timeout_millis: 60000
 resource_name_generation:
 - message_name: DeleteAddressHttpRequest

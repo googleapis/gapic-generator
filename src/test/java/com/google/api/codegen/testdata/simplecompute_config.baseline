@@ -180,13 +180,15 @@ interfaces:
     # TODO: Configure the default timeout for a non-retrying call.
     timeout_millis: 60000
   - name: compute.addresses.list
+    # TODO: Configure which groups of fields should be flattened into method
+    # params.
+    flattening:
+      groups:
+      - parameters:
+        - region
     # TODO: Configure which fields are required.
     required_fields:
     - region
-    - orderBy
-    - pageToken
-    - maxResults
-    - filter
     request_object_method: true
     resource_name_treatment: STATIC_TYPES
     # TODO: Configure the retryable codes for this method.
