@@ -61,10 +61,9 @@ public class DiscoveryField implements FieldModel {
 
   @Override
   public String getSimpleName() {
-    if (!Strings.isNullOrEmpty(schema.reference())) {
-      return schema.reference().toLowerCase();
-    }
-    return schema.getIdentifier();
+    String name =
+        Strings.isNullOrEmpty(schema.reference()) ? schema.getIdentifier() : schema.reference();
+    return Name.anyCamel(name).toLowerCamel();
   }
 
   @Override
@@ -114,7 +113,13 @@ public class DiscoveryField implements FieldModel {
 
   @Override
   public boolean isRepeated() {
-    return schema.type() == Type.ARRAY;
+    if (schema.type() == Type.ARRAY) {
+      return true;
+    }
+    if (!Strings.isNullOrEmpty(schema.reference()) && schema.dereference() != null) {
+      return schema.dereference().type() == Type.ARRAY;
+    }
+    return false;
   }
 
   @Override
