@@ -115,6 +115,11 @@ public abstract class Document implements Node {
     for (Method method : methods) {
       method.setParent(thisDocument);
     }
+    for (List<Method> resourceMethods : resources.values()) {
+      for (Method method : resourceMethods) {
+        method.setParent(thisDocument);
+      }
+    }
 
     return thisDocument;
   }
