@@ -282,7 +282,7 @@ public final class DiscoveryMethodModel implements MethodModel {
    * com.google.api.tools.framework.aspects.http.model.MethodKind}.
    */
   public boolean isIdempotent() {
-    Set<String> idempotentHttpMethods = Sets.newHashSet("GET", "PUT", "DELETE");
+    Set<String> idempotentHttpMethods = Sets.newHashSet("GET", "HEAD", "PUT", "DELETE");
     String httpMethod = method.httpMethod().toUpperCase();
     return idempotentHttpMethods.contains(httpMethod);
   }
