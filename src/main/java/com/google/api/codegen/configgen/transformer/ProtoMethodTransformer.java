@@ -22,7 +22,11 @@ import com.google.api.codegen.configgen.viewmodel.PageStreamingResponseView;
 import javax.annotation.Nullable;
 
 /** Protobuf-model-specific functions for transforming method models into views for configgen. */
-public class ProtoMethodTransformer implements MethodHelperTransformer {
+public class ProtoMethodTransformer extends MethodTransformer {
+
+  public ProtoMethodTransformer(PagingParameters pagingParameters) {
+    super(pagingParameters);
+  }
 
   @Nullable
   @Override

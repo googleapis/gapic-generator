@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.configgen.transformer;
 
+import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
@@ -30,11 +31,11 @@ import com.google.common.collect.Iterators;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nullable;
 
 /** Generates method view objects from an API interface and collection name map. */
-public class MethodTransformer {
+public abstract class MethodTransformer {
   private final PagingParameters pagingParameters;
-  private final MethodHelperTransformer helperTransformer;
 
   // Do not apply flattening if the parameter count exceeds the threshold.
   // TODO(shinfan): Investigate a more intelligent way to handle this.
@@ -42,11 +43,16 @@ public class MethodTransformer {
 
   private static final int REQUEST_OBJECT_METHOD_THRESHOLD = 1;
 
-  public MethodTransformer(
-      PagingParameters pagingParameters, MethodHelperTransformer helperTransformer) {
+  public MethodTransformer(PagingParameters pagingParameters) {
     this.pagingParameters = pagingParameters;
-    this.helperTransformer = helperTransformer;
   }
+
+  @Nullable
+  abstract ResourceNameTreatment getResourceNameTreatment(MethodModel methodModel);
+
+  @Nullable
+  abstract PageStreamingResponseView generatePageStreamingResponse(
+      PagingParameters pagingParameters, MethodModel method);
 
   public List<MethodView> generateMethods(
       InterfaceModel apiInterface, Map<String, String> collectionNameMap) {
@@ -89,8 +95,7 @@ public class MethodTransformer {
         (Iterators.size(inputFields.iterator()) > REQUEST_OBJECT_METHOD_THRESHOLD
                 || Iterators.size(inputFields.iterator()) != parameterList.size())
             && !method.getRequestStreaming());
-    // TODO(andrealin): Set resource type name config for all input sources.
-    methodView.resourceNameTreatment(helperTransformer.getResourceNameTreatment(method));
+    methodView.resourceNameTreatment(getResourceNameTreatment(method));
   }
 
   private List<String> filteredInputFields(MethodModel method, List<FieldModel> candidates) {
@@ -117,8 +122,7 @@ public class MethodTransformer {
       return;
     }
 
-    PageStreamingResponseView response =
-        helperTransformer.generatePageStreamingResponse(pagingParameters, method);
+    PageStreamingResponseView response = generatePageStreamingResponse(pagingParameters, method);
     if (response == null) {
       return;
     }

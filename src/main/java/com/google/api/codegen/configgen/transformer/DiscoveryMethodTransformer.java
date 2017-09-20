@@ -23,7 +23,11 @@ import com.google.api.codegen.util.Name;
 import javax.annotation.Nullable;
 
 /** Discovery-doc-specific functions for transforming method models into views for configgen. */
-public class DiscoveryMethodTransformer implements MethodHelperTransformer {
+public class DiscoveryMethodTransformer extends MethodTransformer {
+
+  public DiscoveryMethodTransformer(PagingParameters pagingParameters) {
+    super(pagingParameters);
+  }
 
   @Override
   public ResourceNameTreatment getResourceNameTreatment(MethodModel methodModel) {
