@@ -39,6 +39,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /** Generates the config view object using a model and output path. */
 public class DiscoConfigTransformer {
@@ -46,12 +48,14 @@ public class DiscoConfigTransformer {
   private static final String CONFIG_DEFAULT_COPYRIGHT_FILE = "copyright-google.txt";
   private static final String CONFIG_DEFAULT_LICENSE_FILE = "license-header-apache-2.0.txt";
   private static final String CONFIG_PROTO_TYPE = ConfigProto.getDescriptor().getFullName();
+  private static final Pattern UNBRACKETED_PATH_SEGMENTS_PATTERN =
+      Pattern.compile("\\}/((?:[a-zA-Z]+/){2,})\\{");
 
   private final LanguageTransformer languageTransformer = new LanguageTransformer();
   private final RetryTransformer retryTransformer = new RetryTransformer();
   private final CollectionTransformer collectionTransformer = new CollectionTransformer();
   private final MethodTransformer methodTransformer =
-      new MethodTransformer(new HttpPagingParameters());
+      new MethodTransformer(new HttpPagingParameters(), new DiscoveryMethodTransformer());
 
   public ViewModel generateConfig(Document model, String outputPath) {
     return ConfigView.newBuilder()
@@ -108,7 +112,9 @@ public class DiscoConfigTransformer {
 
   /**
    * Examines all of the resource paths used by the methods, and returns a map from each unique
-   * resource paths to a short name used by the collection configuration.
+   * resource paths to a short name used by the collection configuration. Each resource path is
+   * merely a string describing the fields in the entity, and the resource path may not be the same
+   * as the RPC endpoint URI.
    */
   private Map<String, String> getResourceToEntityNameMap(
       String parentResource, List<Method> methods) {
@@ -120,6 +126,19 @@ public class DiscoConfigTransformer {
       // Remove any trailing non-bracketed substring
       if (!namePattern.endsWith("}") && namePattern.contains("}")) {
         namePattern = namePattern.substring(0, namePattern.lastIndexOf('}') + 1);
+      }
+      // For each sequence of consecutive non-bracketed path segments,
+      // replace those segments with the last one in the sequence.
+      Matcher m = UNBRACKETED_PATH_SEGMENTS_PATTERN.matcher(namePattern);
+      if (m.find()) {
+        StringBuffer sb = new StringBuffer();
+        for (int i = 1; i <= m.groupCount(); i++) {
+          String multipleSegment = m.group(i);
+          String[] segmentPieces = multipleSegment.split("/");
+          Name segment = Name.anyCamel(segmentPieces[segmentPieces.length - 1]);
+          m.appendReplacement(sb, String.format("}/%s/{", segment.toLowerCamel()));
+        }
+        namePattern = m.appendTail(sb).toString();
       }
       resourceNameMap.put(
           namePattern,
