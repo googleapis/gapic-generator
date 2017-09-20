@@ -29,6 +29,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -232,7 +233,7 @@ public final class DiscoveryMethodModel implements MethodModel {
     }
 
     // Add the field that represents the ResourceName.
-    String resourceName = DiscoGapicNamer.getResourceIdentifier(method).toLowerCamel();
+    String resourceName = DiscoGapicNamer.getQualifiedResourceIdentifier(method).toLowerCamel();
     for (FieldModel field : getInputFields()) {
       if (field.asName().toLowerCamel().equals(resourceName)) {
         fields.add(field);
@@ -289,6 +290,12 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public Map<String, String> getResourcePatternNameMap(Map<String, String> nameMap) {
-    return nameMap;
+    Map<String, String> resources = new LinkedHashMap<>();
+    for (Map.Entry<String, String> entry : nameMap.entrySet()) {
+      String resourceNameString =
+          DiscoGapicNamer.getResourceIdentifier(entry.getKey()).toLowerCamel();
+      resources.put(resourceNameString, entry.getValue());
+    }
+    return resources;
   }
 }

@@ -69,12 +69,13 @@ public class DiscoGapicNamer {
 
   /** Returns the name for a ResourceName for the resource of the given method. */
   public String getResourceNameName(Method method) {
-    return languageNamer.localVarName(getResourceIdentifier(method).join("name"));
+    return languageNamer.localVarName(getQualifiedResourceIdentifier(method).join("name"));
   }
 
   /** Returns the name for a ResourceName for the resource of the given method. */
   public String getResourceNameTypeName(Method method) {
-    return languageNamer.publicClassName(getResourceIdentifier(method).join("name").join("type"));
+    return languageNamer.publicClassName(
+        getQualifiedResourceIdentifier(method).join("name").join("type"));
   }
 
   /**
@@ -95,14 +96,24 @@ public class DiscoGapicNamer {
     return function.join(resource);
   }
 
-  /** Return the name of the resource from a given method's path. */
-  public static Name getResourceIdentifier(Method method) {
-    // Assumes the resource is the last curly-bracketed String in the path.
-    String path = method.flatPath();
-    String baseResource = path.substring(path.lastIndexOf('{') + 1, path.lastIndexOf('}'));
-    Name baseResourceName = Name.anyCamel(baseResource);
+  /** Return the name of the qualified resource from a given method's path. */
+  public static Name getQualifiedResourceIdentifier(Method method) {
+    return getQualifiedResourceIdentifier(method.flatPath());
+  }
 
-    String resourceGroup = getResourceGroup(method).toLowerCamel();
+  /** Return the name of the unqualified resource from a given method's path. */
+  public static Name getResourceIdentifier(String methodPath) {
+    // Assumes the resource is the last curly-bracketed String in the path.
+    String baseResource =
+        methodPath.substring(methodPath.lastIndexOf('{') + 1, methodPath.lastIndexOf('}'));
+    return Name.anyCamel(baseResource);
+  }
+
+  /** Return the name of the qualified resource from a given method's path. */
+  public static Name getQualifiedResourceIdentifier(String methodPath) {
+    String resourceGroup = getResourceGroup(methodPath).toLowerCamel();
+    String baseResource = getResourceIdentifier(methodPath).toLowerCamel();
+    Name baseResourceName = Name.anyCamel(baseResource);
 
     if (resourceGroup != null && !Inflector.singularize(resourceGroup).equals(baseResource)) {
       baseResourceName = Name.anyCamel(resourceGroup).join(baseResourceName);
@@ -111,8 +122,8 @@ public class DiscoGapicNamer {
     return baseResourceName;
   }
 
-  public static Name getResourceGroup(Method method) {
-    String[] pieces = method.flatPath().split("/");
+  public static Name getResourceGroup(String methodPath) {
+    String[] pieces = methodPath.split("/");
     for (int i = pieces.length - 1; i >= 0; i--) {
       if (!pieces[i].contains("{")) {
         return Name.anyCamel(pieces[i]);

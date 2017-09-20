@@ -116,7 +116,7 @@ public class DiscoConfigTransformer {
       // Escape the first character of the pattern if necessary.
       namePattern = namePattern.charAt(0) == '{' ? "\\".concat(namePattern) : namePattern;
       resourceNameMap.put(
-          namePattern, DiscoGapicNamer.getResourceIdentifier(method).toLowerCamel());
+          namePattern, DiscoGapicNamer.getQualifiedResourceIdentifier(method).toLowerCamel());
     }
     return ImmutableMap.copyOf(resourceNameMap);
   }
@@ -128,10 +128,13 @@ public class DiscoConfigTransformer {
         ResourceNameGenerationView.Builder view = ResourceNameGenerationView.newBuilder();
         view.messageName(DiscoGapicNamer.getRequestName(method).toUpperCamel());
 
-        String resourceName = DiscoGapicNamer.getResourceIdentifier(method).toLowerCamel();
+        String parameterName =
+            DiscoGapicNamer.getResourceIdentifier(method.flatPath()).toLowerCamel();
+        String qualifiedResourceName =
+            DiscoGapicNamer.getQualifiedResourceIdentifier(method).toLowerCamel();
 
         Map<String, String> fieldEntityMap = new HashMap<>();
-        fieldEntityMap.put(resourceName, resourceName);
+        fieldEntityMap.put(parameterName, qualifiedResourceName);
         view.fieldEntities(fieldEntityMap);
 
         resourceNames.add(view.build());
