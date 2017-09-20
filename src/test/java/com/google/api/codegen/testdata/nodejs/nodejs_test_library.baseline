@@ -971,12 +971,16 @@ describe('LibraryServiceClient', function() {
       // Mock Grpc layer
       client._streamShelves = mockServerStreamingGrpcMethod(request, expectedResponse);
 
-      client.streamShelves(request).on('data', function(response) {
+      var stream = client.streamShelves(request);
+      stream.on('data', function(response) {
         assert.deepStrictEqual(response, expectedResponse);
         done()
-      }).on('error', function(err) {
+      });
+      stream.on('error', function(err) {
         done(err);
       });
+
+      stream.write();
     });
 
     it('invokes streamShelves with error', function(done) {
@@ -988,13 +992,17 @@ describe('LibraryServiceClient', function() {
       // Mock Grpc layer
       client._streamShelves = mockServerStreamingGrpcMethod(request, null, error);
 
-      client.streamShelves(request).on('data', function(response) {
+      var stream = client.streamShelves(request);
+      stream.on('data', function(response) {
         assert.fail();
-      }).on('error', function(err) {
+      })
+      stream.on('error', function(err) {
         assert(err instanceof Error);
         assert.equal(err.code, FAKE_STATUS_CODE);
         done();
       });
+
+      stream.write();
     });
   });
 
@@ -1023,12 +1031,16 @@ describe('LibraryServiceClient', function() {
       // Mock Grpc layer
       client._streamBooks = mockServerStreamingGrpcMethod(request, expectedResponse);
 
-      client.streamBooks(request).on('data', function(response) {
+      var stream = client.streamBooks(request);
+      stream.on('data', function(response) {
         assert.deepStrictEqual(response, expectedResponse);
         done()
-      }).on('error', function(err) {
+      });
+      stream.on('error', function(err) {
         done(err);
       });
+
+      stream.write();
     });
 
     it('invokes streamBooks with error', function(done) {
@@ -1043,13 +1055,17 @@ describe('LibraryServiceClient', function() {
       // Mock Grpc layer
       client._streamBooks = mockServerStreamingGrpcMethod(request, null, error);
 
-      client.streamBooks(request).on('data', function(response) {
+      var stream = client.streamBooks(request);
+      stream.on('data', function(response) {
         assert.fail();
-      }).on('error', function(err) {
+      })
+      stream.on('error', function(err) {
         assert(err instanceof Error);
         assert.equal(err.code, FAKE_STATUS_CODE);
         done();
       });
+
+      stream.write();
     });
   });
 
@@ -1545,7 +1561,6 @@ function mockServerStreamingGrpcMethod(expectedRequest, response, error) {
         callback(null, response);
       }
     });
-    mockStream.write();
     return mockStream;
   };
 }
