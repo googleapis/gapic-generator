@@ -20,6 +20,7 @@ import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
+import com.google.common.base.Strings;
 
 /** Provides language-specific names for variables and classes of Discovery-Document models. */
 public class DiscoGapicNamer {
@@ -111,25 +112,40 @@ public class DiscoGapicNamer {
 
   /** Return the name of the qualified resource from a given method's path. */
   public static Name getQualifiedResourceIdentifier(String methodPath) {
-    String resourceGroup = getResourceGroup(methodPath).toLowerCamel();
+    Name resourceGroup = getResourceGroup(methodPath);
     String baseResource = getResourceIdentifier(methodPath).toLowerCamel();
     Name baseResourceName = Name.anyCamel(baseResource);
 
-    if (resourceGroup != null && !Inflector.singularize(resourceGroup).equals(baseResource)) {
-      baseResourceName = Name.anyCamel(resourceGroup).join(baseResourceName);
+    if (resourceGroup != null
+        && !Inflector.singularize(resourceGroup.toLowerCamel()).equals(baseResource)) {
+      baseResourceName = resourceGroup.join(baseResourceName);
     }
 
     return baseResourceName;
   }
 
   public static Name getResourceGroup(String methodPath) {
-    String[] pieces = methodPath.split("/");
-    for (int i = pieces.length - 1; i >= 0; i--) {
-      if (!pieces[i].contains("{")) {
-        return Name.anyCamel(pieces[i]);
-      }
+    String resourceGroupPath = methodPath;
+    // From the path, get the last substring that is not contained in curly braces.
+    if (resourceGroupPath.endsWith("}")) {
+      resourceGroupPath = methodPath.substring(0, methodPath.lastIndexOf('{'));
     }
-    return null;
+    if (resourceGroupPath.contains("}")) {
+      resourceGroupPath = resourceGroupPath.substring(resourceGroupPath.lastIndexOf('}') + 1);
+    }
+    // Trim leading and trailing slashes.
+    if (resourceGroupPath.startsWith("/")) {
+      resourceGroupPath = resourceGroupPath.substring(resourceGroupPath.indexOf('/') + 1);
+    }
+    if (resourceGroupPath.endsWith("/")) {
+      resourceGroupPath = resourceGroupPath.substring(0, resourceGroupPath.lastIndexOf('/'));
+    }
+
+    if (Strings.isNullOrEmpty(resourceGroupPath)) {
+      return null;
+    }
+    String[] pieces = resourceGroupPath.split("/");
+    return Name.anyCamel(pieces);
   }
 
   public static String getSimpleInterfaceName(String interfaceName) {
