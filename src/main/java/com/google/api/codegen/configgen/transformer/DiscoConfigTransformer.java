@@ -117,6 +117,10 @@ public class DiscoConfigTransformer {
       String namePattern = method.flatPath();
       // Escape the first character of the pattern if necessary.
       namePattern = namePattern.charAt(0) == '{' ? "\\".concat(namePattern) : namePattern;
+      // Remove any trailing non-bracketed substring
+      if (!namePattern.endsWith("}") && namePattern.contains("}")) {
+        namePattern = namePattern.substring(0, namePattern.lastIndexOf('}') + 1);
+      }
       resourceNameMap.put(
           namePattern,
           DiscoGapicNamer.getQualifiedResourceIdentifier(method, parentResource).toLowerCamel());
