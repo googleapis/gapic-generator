@@ -184,6 +184,8 @@ public abstract class GapicProductConfig implements ProductConfig {
 
     DiagCollector diagCollector = new BoundedDiagCollector();
 
+    //    Map<String, String> pathMap
+
     ResourceNameMessageConfigs messageConfigs =
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
             document, diagCollector, configProto, defaultPackage, discoGapicNamer);

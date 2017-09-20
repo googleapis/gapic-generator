@@ -69,14 +69,15 @@ public class DiscoGapicNamer {
   }
 
   /** Returns the name for a ResourceName for the resource of the given method. */
-  public String getResourceNameName(Method method) {
-    return languageNamer.localVarName(getQualifiedResourceIdentifier(method).join("name"));
+  public String getResourceNameName(Method method, String parentResource) {
+    return languageNamer.localVarName(
+        getQualifiedResourceIdentifier(method, parentResource).join("name"));
   }
 
   /** Returns the name for a ResourceName for the resource of the given method. */
-  public String getResourceNameTypeName(Method method) {
+  public String getResourceNameTypeName(Method method, String parentResource) {
     return languageNamer.publicClassName(
-        getQualifiedResourceIdentifier(method).join("name").join("type"));
+        getQualifiedResourceIdentifier(method, parentResource).join("name").join("type"));
   }
 
   /**
@@ -98,8 +99,17 @@ public class DiscoGapicNamer {
   }
 
   /** Return the name of the qualified resource from a given method's path. */
-  public static Name getQualifiedResourceIdentifier(Method method) {
-    return getQualifiedResourceIdentifier(method.flatPath());
+  public static Name getQualifiedResourceIdentifier(Method method, String qualifyingResource) {
+    String methodPath = method.flatPath();
+    Name qualifier = Name.anyCamel(qualifyingResource);
+    String baseResource = getResourceIdentifier(methodPath).toLowerCamel();
+    Name baseResourceName = Name.anyCamel(baseResource);
+
+    if (!Inflector.singularize(qualifier.toLowerCamel()).equals(baseResource)) {
+      baseResourceName = qualifier.join(baseResourceName);
+    }
+
+    return baseResourceName;
   }
 
   /** Return the name of the unqualified resource from a given method's path. */
@@ -108,44 +118,6 @@ public class DiscoGapicNamer {
     String baseResource =
         methodPath.substring(methodPath.lastIndexOf('{') + 1, methodPath.lastIndexOf('}'));
     return Name.anyCamel(baseResource);
-  }
-
-  /** Return the name of the qualified resource from a given method's path. */
-  public static Name getQualifiedResourceIdentifier(String methodPath) {
-    Name resourceGroup = getResourceGroup(methodPath);
-    String baseResource = getResourceIdentifier(methodPath).toLowerCamel();
-    Name baseResourceName = Name.anyCamel(baseResource);
-
-    if (resourceGroup != null
-        && !Inflector.singularize(resourceGroup.toLowerCamel()).equals(baseResource)) {
-      baseResourceName = resourceGroup.join(baseResourceName);
-    }
-
-    return baseResourceName;
-  }
-
-  public static Name getResourceGroup(String methodPath) {
-    String resourceGroupPath = methodPath;
-    // From the path, get the last substring that is not contained in curly braces.
-    if (resourceGroupPath.endsWith("}")) {
-      resourceGroupPath = methodPath.substring(0, methodPath.lastIndexOf('{'));
-    }
-    if (resourceGroupPath.contains("}")) {
-      resourceGroupPath = resourceGroupPath.substring(resourceGroupPath.lastIndexOf('}') + 1);
-    }
-    // Trim leading and trailing slashes.
-    if (resourceGroupPath.startsWith("/")) {
-      resourceGroupPath = resourceGroupPath.substring(resourceGroupPath.indexOf('/') + 1);
-    }
-    if (resourceGroupPath.endsWith("/")) {
-      resourceGroupPath = resourceGroupPath.substring(0, resourceGroupPath.lastIndexOf('/'));
-    }
-
-    if (Strings.isNullOrEmpty(resourceGroupPath)) {
-      return null;
-    }
-    String[] pieces = resourceGroupPath.split("/");
-    return Name.anyCamel(pieces);
   }
 
   public static String getSimpleInterfaceName(String interfaceName) {

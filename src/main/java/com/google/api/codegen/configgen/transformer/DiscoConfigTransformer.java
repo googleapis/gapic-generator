@@ -87,7 +87,8 @@ public class DiscoConfigTransformer {
   private List<InterfaceView> generateInterfaces(Document model) {
     ImmutableList.Builder<InterfaceView> interfaces = ImmutableList.builder();
     for (Map.Entry<String, List<Method>> resource : model.resources().entrySet()) {
-      Map<String, String> collectionNameMap = getResourceToEntityNameMap(resource.getValue());
+      Map<String, String> collectionNameMap =
+          getResourceToEntityNameMap(resource.getKey(), resource.getValue());
       InterfaceView.Builder interfaceView = InterfaceView.newBuilder();
 
       String ownerName = model.ownerDomain().split("\\.")[0];
@@ -109,35 +110,40 @@ public class DiscoConfigTransformer {
    * Examines all of the resource paths used by the methods, and returns a map from each unique
    * resource paths to a short name used by the collection configuration.
    */
-  private Map<String, String> getResourceToEntityNameMap(List<Method> methods) {
+  private Map<String, String> getResourceToEntityNameMap(
+      String parentResource, List<Method> methods) {
     Map<String, String> resourceNameMap = new TreeMap<>();
     for (Method method : methods) {
       String namePattern = method.flatPath();
       // Escape the first character of the pattern if necessary.
       namePattern = namePattern.charAt(0) == '{' ? "\\".concat(namePattern) : namePattern;
       resourceNameMap.put(
-          namePattern, DiscoGapicNamer.getQualifiedResourceIdentifier(method).toLowerCamel());
+          namePattern,
+          DiscoGapicNamer.getQualifiedResourceIdentifier(method, parentResource).toLowerCamel());
     }
     return ImmutableMap.copyOf(resourceNameMap);
   }
 
   private List<ResourceNameGenerationView> generateResourceNameGenerations(Document model) {
     ImmutableList.Builder<ResourceNameGenerationView> resourceNames = ImmutableList.builder();
-    for (Method method : model.methods()) {
-      if (!Strings.isNullOrEmpty(method.path())) {
-        ResourceNameGenerationView.Builder view = ResourceNameGenerationView.newBuilder();
-        view.messageName(DiscoGapicNamer.getRequestName(method).toUpperCamel());
+    for (Map.Entry<String, List<Method>> resource : model.resources().entrySet()) {
+      for (Method method : resource.getValue()) {
+        if (!Strings.isNullOrEmpty(method.path())) {
+          ResourceNameGenerationView.Builder view = ResourceNameGenerationView.newBuilder();
+          view.messageName(DiscoGapicNamer.getRequestName(method).toUpperCamel());
 
-        String parameterName =
-            DiscoGapicNamer.getResourceIdentifier(method.flatPath()).toLowerCamel();
-        String qualifiedResourceName =
-            DiscoGapicNamer.getQualifiedResourceIdentifier(method).toLowerCamel();
+          String parameterName =
+              DiscoGapicNamer.getResourceIdentifier(method.flatPath()).toLowerCamel();
+          String qualifiedResourceName =
+              DiscoGapicNamer.getQualifiedResourceIdentifier(method, resource.getKey())
+                  .toLowerCamel();
 
-        Map<String, String> fieldEntityMap = new HashMap<>();
-        fieldEntityMap.put(parameterName, qualifiedResourceName);
-        view.fieldEntities(fieldEntityMap);
+          Map<String, String> fieldEntityMap = new HashMap<>();
+          fieldEntityMap.put(parameterName, qualifiedResourceName);
+          view.fieldEntities(fieldEntityMap);
 
-        resourceNames.add(view.build());
+          resourceNames.add(view.build());
+        }
       }
     }
     return resourceNames.build();
