@@ -233,7 +233,7 @@ public final class DiscoveryMethodModel implements MethodModel {
     }
 
     // Add the field that represents the ResourceName.
-    String resourceName = DiscoGapicNamer.getQualifiedResourceIdentifier(method).toLowerCamel();
+    String resourceName = DiscoGapicNamer.getResourceIdentifier(method.flatPath()).toLowerCamel();
     for (FieldModel field : getInputFields()) {
       if (field.asName().toLowerCamel().equals(resourceName)) {
         fields.add(field);
@@ -294,7 +294,12 @@ public final class DiscoveryMethodModel implements MethodModel {
     for (Map.Entry<String, String> entry : nameMap.entrySet()) {
       String resourceNameString =
           DiscoGapicNamer.getResourceIdentifier(entry.getKey()).toLowerCamel();
-      resources.put(resourceNameString, entry.getValue());
+      if (DiscoGapicNamer.getResourceIdentifier(method.flatPath())
+          .toLowerCamel()
+          .equals(resourceNameString)) {
+        resources.put(resourceNameString, entry.getValue());
+        break;
+      }
     }
     return resources;
   }
