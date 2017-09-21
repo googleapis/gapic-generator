@@ -54,6 +54,7 @@ public class NodeJSImportSectionTransformer implements ImportSectionTransformer 
       imports.add(createImport("merge", "lodash.merge"));
     }
     imports.add(createImport("path", "path"));
+    imports.add(createImport("protobuf", "protobufjs"));
     return imports.build();
   }
 

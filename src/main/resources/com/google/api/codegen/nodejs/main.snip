@@ -199,7 +199,7 @@
     @end
     @if xapi.hasLongRunningOperations
 
-      {@longrunningSetup(xapi.longRunningDescriptors)}
+      {@longrunningSetup(xapi.longRunningDescriptors, xapi.stubs, xapi.fileHeader.hasVersion)}
     @end
 
     {@constructDefaults(xapi)}
@@ -251,18 +251,34 @@
   };
 @end
 
-@private longrunningSetup(descriptors)
+@private longrunningSetup(descriptors, stubs, hasVersion)
   this.operationsClient = new gax.lro({
     auth: gaxGrpc.auth,
     grpc: gaxGrpc.grpc
   }).operationsClient(opts);
 
+  var protoFilesRoot = new gax.grpc.GoogleProtoFilesRoot();
+  @join stub : stubs
+    protoFilesRoot = protobuf.loadSync(
+      @if hasVersion
+        path.join(__dirname, '..', '..', 'protos', '{@stub.protoFileName}'),
+      @else
+        path.join(__dirname, '..', 'protos', '{@stub.protoFileName}'),
+      @end
+      protoFilesRoot);
+  @end
+
+  @join descriptor : descriptors
+    var {@descriptor.methodName}Response = protoFilesRoot.lookup('{@descriptor.operationPayloadTypeName}');
+    var {@descriptor.methodName}Metadata = protoFilesRoot.lookup('{@descriptor.metadataTypeName}');
+  @end
+
   this.longrunningDescriptors = {
     @join descriptor : descriptors on {@", "}.add(BREAK)
       {@descriptor.methodName}: new gax.LongrunningDescriptor(
         this.operationsClient,
-        loadedProtos.{@descriptor.operationPayloadTypeName}.decode,
-        loadedProtos.{@descriptor.metadataTypeName}.decode)
+        {@descriptor.methodName}Response.decode.bind({@descriptor.methodName}Response),
+        {@descriptor.methodName}Metadata.decode.bind({@descriptor.methodName}Metadata))
     @end
   };
 @end
