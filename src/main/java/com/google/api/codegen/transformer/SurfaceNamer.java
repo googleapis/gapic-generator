@@ -31,7 +31,6 @@ import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.discovery.Document;
-import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.util.CommentReformatter;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
@@ -250,7 +249,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /////////////////////////////////// Protos methods /////////////////////////////////////////////
 
-  /** The function name to set the given proto field. */
+  /** The function name to set the given field. */
   public String getFieldSetFunctionName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
     FieldModel field = fieldConfig.getField();
     if (featureConfig.useResourceNameFormatOption(fieldConfig)) {
@@ -260,7 +259,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
-  /** The function name to set the given proto field. */
+  /** The function name to set the given field. */
   public String getFieldSetFunctionName(FieldModel field) {
     if (field.isMap()) {
       return publicMethodName(Name.from("put", "all").join(field.asName()));
@@ -299,11 +298,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getFieldAddFunctionName");
   }
 
-  /** The function name to add an element to a map or repeated field. */
-  public String getFieldAddFunctionName(Schema schema) {
-    return getNotImplementedString("SurfaceNamer.getFieldAddFunctionName");
-  }
-
   /** The function name to set a field that is a resource name class. */
   public String getResourceNameFieldSetFunctionName(FieldConfig fieldConfig) {
     FieldModel type = fieldConfig.getField();
@@ -329,7 +323,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
-  /** The function name to get the given proto field. */
+  /** The function name to get the given field. */
   public String getFieldGetFunctionName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
     FieldModel field = fieldConfig.getField();
     if (featureConfig.useResourceNameFormatOption(fieldConfig)) {
