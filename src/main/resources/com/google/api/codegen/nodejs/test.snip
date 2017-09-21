@@ -61,7 +61,6 @@
             callback(null, response);
           }
         });
-        mockStream.write();
         return mockStream;
       };
     }
@@ -249,12 +248,16 @@
 
       @switch test.grpcStreamingType
       @case "ServerStreaming"
-        client.{@test.clientMethodName}(request).on('data', function(response) {
+        var stream = client.{@test.clientMethodName}(request);
+        stream.on('data', function(response) {
           assert.deepStrictEqual(response, expectedResponse);
           done()
-        }).on('error', function(err) {
+        });
+        stream.on('error', function(err) {
           done(err);
         });
+
+        stream.write();
       @case "BidiStreaming"
         var stream = client.{@test.clientMethodName}().on('data', function(response) {
           assert.deepStrictEqual(response, expectedResponse);
@@ -282,12 +285,16 @@
 
       @switch test.grpcStreamingType
       @case "ServerStreaming"
-        client.{@test.clientMethodName}(request).on('data', function(response) {
+        var stream = client.{@test.clientMethodName}(request);
+        stream.on('data', function(response) {
           assert.fail();
-        }).on('error', function(err) {
+        })
+        stream.on('error', function(err) {
           {@assertError()}
           done();
         });
+
+        stream.write();
       @case "BidiStreaming"
         var stream = client.{@test.clientMethodName}().on('data', function(response) {
           assert.fail();
