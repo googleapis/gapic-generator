@@ -34,6 +34,7 @@ var gax = require('google-gax');
 var googleProtoFiles = require('google-proto-files');
 var merge = require('lodash.merge');
 var path = require('path');
+var protobuf = require('protobufjs');
 
 var SERVICE_ADDRESS = 'library-example.googleapis.com';
 
@@ -137,15 +138,28 @@ function LibraryServiceClient(gaxGrpc, loadedProtos, opts) {
     grpc: gaxGrpc.grpc
   }).operationsClient(opts);
 
+  var protoFilesRoot = new gax.grpc.GoogleProtoFilesRoot();
+  protoFilesRoot = protobuf.loadSync(
+    path.join(__dirname, '..', '..', 'protos', 'library.proto'),
+    protoFilesRoot);
+  protoFilesRoot = protobuf.loadSync(
+    path.join(__dirname, '..', '..', 'protos', 'tagger.proto'),
+    protoFilesRoot);
+
+  var getBigBookResponse = protoFilesRoot.lookup('google.example.library.v1.Book');
+  var getBigBookMetadata = protoFilesRoot.lookup('google.example.library.v1.GetBigBookMetadata');
+  var getBigNothingResponse = protoFilesRoot.lookup('google.protobuf.Empty');
+  var getBigNothingMetadata = protoFilesRoot.lookup('google.example.library.v1.GetBigBookMetadata');
+
   this.longrunningDescriptors = {
     getBigBook: new gax.LongrunningDescriptor(
       this.operationsClient,
-      loadedProtos.google.example.library.v1.Book.decode,
-      loadedProtos.google.example.library.v1.GetBigBookMetadata.decode),
+      getBigBookResponse.decode.bind(getBigBookResponse),
+      getBigBookMetadata.decode.bind(getBigBookMetadata)),
     getBigNothing: new gax.LongrunningDescriptor(
       this.operationsClient,
-      loadedProtos.google.protobuf.Empty.decode,
-      loadedProtos.google.example.library.v1.GetBigBookMetadata.decode)
+      getBigNothingResponse.decode.bind(getBigNothingResponse),
+      getBigNothingMetadata.decode.bind(getBigNothingMetadata))
   };
 
   var defaults = gaxGrpc.constructSettings(

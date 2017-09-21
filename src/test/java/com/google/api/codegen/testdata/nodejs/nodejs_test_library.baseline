@@ -1335,6 +1335,12 @@ describe('LibraryServiceClient', function() {
         done();
       });
     });
+
+    it('has longrunning decoder functions', function() {
+      var client = library.v1();
+      assert(client.longrunningDescriptors.getBigBook.responseDecoder instanceof Function);
+      assert(client.longrunningDescriptors.getBigBook.metadataDecoder instanceof Function);
+    });
   });
 
   describe('getBigNothing', function() {
@@ -1386,6 +1392,12 @@ describe('LibraryServiceClient', function() {
         assert.equal(err.code, FAKE_STATUS_CODE);
         done();
       });
+    });
+
+    it('has longrunning decoder functions', function() {
+      var client = library.v1();
+      assert(client.longrunningDescriptors.getBigNothing.responseDecoder instanceof Function);
+      assert(client.longrunningDescriptors.getBigNothing.metadataDecoder instanceof Function);
     });
   });
 
