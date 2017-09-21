@@ -133,10 +133,11 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
               enableStringFormatFunctions);
 
       for (MethodModel method : context.getSupportedMethods()) {
+        List<RequestObjectParamView> params = getRequestObjectParams(context, method);
+
         SchemaTransformationContext requestContext =
             SchemaTransformationContext.create(
                 method.getFullName(), context.getSchemaTypeTable(), context);
-        List<RequestObjectParamView> params = getRequestObjectParams(context, method);
         StaticLangApiMessageView requestView = generateRequestClass(requestContext, method, params);
         surfaceRequests.add(generateRequestFile(requestContext, requestView));
       }
