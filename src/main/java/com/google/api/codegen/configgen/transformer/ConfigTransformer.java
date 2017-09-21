@@ -16,6 +16,8 @@ package com.google.api.codegen.configgen.transformer;
 
 import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.configgen.CollectionPattern;
+import com.google.api.codegen.configgen.viewmodel.CommentView;
+import com.google.api.codegen.configgen.viewmodel.ConfigFileView;
 import com.google.api.codegen.configgen.viewmodel.ConfigView;
 import com.google.api.codegen.configgen.viewmodel.InterfaceView;
 import com.google.api.codegen.configgen.viewmodel.LanguageSettingView;
@@ -40,6 +42,11 @@ public class ConfigTransformer {
   private static final String CONFIG_DEFAULT_COPYRIGHT_FILE = "copyright-google.txt";
   private static final String CONFIG_DEFAULT_LICENSE_FILE = "license-header-apache-2.0.txt";
   private static final String CONFIG_PROTO_TYPE = ConfigProto.getDescriptor().getFullName();
+  private static final String CONFIG_COMMENT =
+      "Address all the TODOs in this auto-generated config before using it for client generation. "
+          + "Remove this paragraph after you closed all the TODOs. The retry_codes_name, "
+          + "required_fields, flattening, and timeout properties cannot be precisely decided by "
+          + "the tooling and may require some configuration.";
 
   private final LanguageTransformer languageTransformer = new LanguageTransformer();
   private final RetryTransformer retryTransformer = new RetryTransformer();
@@ -47,13 +54,23 @@ public class ConfigTransformer {
   private final MethodTransformer methodTransformer = new MethodTransformer();
 
   public ViewModel generateConfig(Model model, String outputPath) {
-    return ConfigView.newBuilder()
+    return ConfigFileView.newBuilder()
         .templateFileName(CONFIG_TEMPLATE_FILE)
         .outputPath(outputPath)
-        .type(CONFIG_PROTO_TYPE)
-        .languageSettings(generateLanguageSettings(model))
-        .license(generateLicense())
-        .interfaces(generateInterfaces(model))
+        .config(generateConfigComment(model))
+        .build();
+  }
+
+  public CommentView<ConfigView> generateConfigComment(Model model) {
+    return CommentView.<ConfigView>newBuilder()
+        .comment(CONFIG_COMMENT)
+        .value(
+            ConfigView.newBuilder()
+                .type(CONFIG_PROTO_TYPE)
+                .languageSettings(generateLanguageSettings(model))
+                .license(generateLicense())
+                .interfaces(generateInterfaces(model))
+                .build())
         .build();
   }
 

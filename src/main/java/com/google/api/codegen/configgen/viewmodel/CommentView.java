@@ -15,22 +15,29 @@
 package com.google.api.codegen.configgen.viewmodel;
 
 import com.google.auto.value.AutoValue;
-import java.util.List;
 
-/** Represents a list of parameters to be flattened. */
+/**
+ * Viewmodel that wraps a viewmodel property (e.g. a string or another viewmodel) while adding a
+ * comment property used in console warnings.
+ */
 @AutoValue
-public abstract class FlatteningGroupView {
-  /** Fields of the request message to be flattened. */
-  public abstract List<String> parameters();
+public abstract class CommentView<T> {
+  /** A comment about the value. */
+  public abstract String comment();
 
-  public static Builder newBuilder() {
-    return new AutoValue_FlatteningGroupView.Builder();
+  /** The wrapped value. */
+  public abstract T value();
+
+  public static <T> Builder<T> newBuilder() {
+    return new AutoValue_CommentView.Builder<>();
   }
 
   @AutoValue.Builder
-  public abstract static class Builder {
-    public abstract Builder parameters(List<String> val);
+  public abstract static class Builder<T> {
+    public abstract Builder<T> comment(String val);
 
-    public abstract FlatteningGroupView build();
+    public abstract Builder<T> value(T val);
+
+    public abstract CommentView<T> build();
   }
 }

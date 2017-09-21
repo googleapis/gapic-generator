@@ -14,23 +14,39 @@
  */
 package com.google.api.codegen.configgen.viewmodel;
 
+import com.google.api.codegen.SnippetSetRunner;
+import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
-import java.util.List;
 
-/** Represents a list of parameters to be flattened. */
+/** Represents the file of the GAPIC config being generated. */
 @AutoValue
-public abstract class FlatteningGroupView {
-  /** Fields of the request message to be flattened. */
-  public abstract List<String> parameters();
+public abstract class ConfigFileView implements ViewModel {
+  @Override
+  public abstract String templateFileName();
+
+  @Override
+  public abstract String outputPath();
+
+  /** The GAPIC config being generated. */
+  public abstract CommentView<ConfigView> config();
+
+  @Override
+  public String resourceRoot() {
+    return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
+  }
 
   public static Builder newBuilder() {
-    return new AutoValue_FlatteningGroupView.Builder();
+    return new AutoValue_ConfigFileView.Builder();
   }
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder parameters(List<String> val);
+    public abstract Builder templateFileName(String val);
 
-    public abstract FlatteningGroupView build();
+    public abstract Builder outputPath(String val);
+
+    public abstract Builder config(CommentView<ConfigView> val);
+
+    public abstract ConfigFileView build();
   }
 }

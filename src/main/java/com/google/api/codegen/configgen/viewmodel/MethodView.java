@@ -26,7 +26,7 @@ public abstract class MethodView {
 
   /** The configuration for parameter flattening. */
   @Nullable
-  public abstract FlatteningView flattening();
+  public abstract CommentView<FlatteningView> flattening();
 
   /** True if the flattening property exists. */
   public boolean hasFlattening() {
@@ -34,7 +34,7 @@ public abstract class MethodView {
   }
 
   /** The fields that are always required for a request to be valid. */
-  public abstract List<String> requiredFields();
+  public abstract CommentView<List<String>> requiredFields();
 
   /** Turns on or off generation of a method whose sole parameter is a request object. */
   public abstract boolean requestObjectMethod();
@@ -49,10 +49,10 @@ public abstract class MethodView {
   }
 
   /** The configuration for retryable codes. */
-  public abstract String retryCodesName();
+  public abstract CommentView<String> retryCodesName();
 
   /** The configuration for retry/backoff parameters. */
-  public abstract String retryParamsName();
+  public abstract CommentView<String> retryParamsName();
 
   /**
    * The entires of the map from the field names of the request type to the entity names of the
@@ -61,7 +61,7 @@ public abstract class MethodView {
   public abstract List<FieldNamePatternView> fieldNamePatterns();
 
   /** The default timeout for a non-retrying call. */
-  public abstract String timeoutMillis();
+  public abstract CommentView<String> timeoutMillis();
 
   public static Builder newBuilder() {
     return new AutoValue_MethodView.Builder();
@@ -71,21 +71,21 @@ public abstract class MethodView {
   public abstract static class Builder {
     public abstract Builder name(String val);
 
-    public abstract Builder flattening(FlatteningView val);
+    public abstract Builder flattening(CommentView<FlatteningView> val);
 
-    public abstract Builder requiredFields(List<String> val);
+    public abstract Builder requiredFields(CommentView<List<String>> val);
 
     public abstract Builder requestObjectMethod(boolean val);
 
     public abstract Builder pageStreaming(PageStreamingView val);
 
-    public abstract Builder retryCodesName(String val);
+    public abstract Builder retryCodesName(CommentView<String> val);
 
-    public abstract Builder retryParamsName(String val);
+    public abstract Builder retryParamsName(CommentView<String> val);
 
     public abstract Builder fieldNamePatterns(List<FieldNamePatternView> val);
 
-    public abstract Builder timeoutMillis(String val);
+    public abstract Builder timeoutMillis(CommentView<String> val);
 
     public abstract MethodView build();
   }

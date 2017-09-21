@@ -1,17 +1,13 @@
-@snippet generate(config)
-  {@renderTopLevelTodo()}
+@snippet generate(view)
+  {@renderConfig(view.config, view.config.value)}
+@end
+
+@private renderConfig(comment, config)
+  {@renderComment(comment, 78)}
   {@renderType(config.type)}
   {@renderLanguageSettings(config.languageSettings)}
   {@renderLicense(config.license)}
   {@renderInterfaces(config.interfaces)}
-@end
-
-@private renderTopLevelTodo()
-  @# TODO: Address all the TODOs in this auto-generated config before using it
-  @# for client generation. Remove this paragraph after you closed all the
-  @# TODOs. The retry_codes_name, required_fields, flattening, and timeout
-  @# properties cannot be precisely decided by the tooling and may require some
-  @# configuration.
 @end
 
 @private renderType(type)
@@ -132,37 +128,48 @@
           @if method.hasFlattening
             {@renderFlattening(method.flattening)}
           @end
-          @if method.requiredFields
-            @# TODO: Configure which fields are required.
+          @if method.requiredFields.value
+            @if method.requiredFields.comment
+              {@renderComment(method.requiredFields, 74)}
+
+            @end
             required_fields:
-            {@renderStringList(method.requiredFields)}
+            {@renderStringList(method.requiredFields.value)}
           @end
           request_object_method: {@method.requestObjectMethod}
           @if method.hasPageStreaming
             {@renderPageStreaming(method.pageStreaming)}
           @end
-          @# TODO: Configure the retryable codes for this method.
-          retry_codes_name: {@method.retryCodesName}
-          @# TODO: Configure the retryable params for this method.
-          retry_params_name: {@method.retryParamsName}
+          @if method.retryCodesName.comment
+            {@renderComment(method.retryCodesName, 74)}
+          @end
+          retry_codes_name: {@method.retryCodesName.value}
+          @if method.retryParamsName.comment
+            {@renderComment(method.retryParamsName, 74)}
+          @end
+          retry_params_name: {@method.retryParamsName.value}
           @if method.fieldNamePatterns
             field_name_patterns:
               @join pattern : method.fieldNamePatterns
                 {@pattern.pathTemplate}: {@pattern.entityName}
               @end
           @end
-          @# TODO: Configure the default timeout for a non-retrying call.
-          timeout_millis: {@method.timeoutMillis}
+          @if method.timeoutMillis.comment
+            {@renderComment(method.timeoutMillis, 74)}
+          @end
+          timeout_millis: {@method.timeoutMillis.value}
       @end
   @end
 @end
 
 @private renderFlattening(flattening)
-  @# TODO: Configure which groups of fields should be flattened into method
-  @# params.
+  @if flattening.comment
+    {@renderComment(flattening, 74)}
+
+  @end
   flattening:
     groups:
-    @join group : flattening.groups
+    @join group : flattening.value.groups
     - parameters:
       {@renderStringList(group.parameters)}
     @end
@@ -180,6 +187,16 @@
     response:
       token_field: {@pageStreaming.response.tokenField}
       resources_field: {@pageStreaming.response.resourcesField}
+@end
+
+@private renderComment(view, width)
+  @join line : util.getDocLines(todoComment(view.comment), width)
+    @# {@line}
+  @end
+@end
+
+@private todoComment(comment)
+  TODO: {@comment}
 @end
 
 @private renderStringList(list)
