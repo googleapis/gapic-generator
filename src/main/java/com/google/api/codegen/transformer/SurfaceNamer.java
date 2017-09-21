@@ -307,7 +307,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The function name to set a field that is a resource name class. */
   public String getResourceNameFieldSetFunctionName(FieldConfig fieldConfig) {
     FieldModel type = fieldConfig.getField();
-    Name identifier = Name.from(fieldConfig.getField().getSimpleName());
+    Name identifier = fieldConfig.getField().asName();
     Name resourceName = getResourceTypeNameObject(fieldConfig.getResourceNameConfig());
     if (type.isMap()) {
       return getNotImplementedString("SurfaceNamer.getResourceNameFieldSetFunctionName:map-type");
@@ -373,7 +373,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The function name to get a field that is a resource name class. */
   public String getResourceNameFieldGetFunctionName(FieldConfig fieldConfig) {
     FieldModel type = fieldConfig.getField();
-    Name identifier = Name.from(fieldConfig.getField().getSimpleName());
+    Name identifier = fieldConfig.getField().asName();
     Name resourceName = getResourceTypeNameObject(fieldConfig.getResourceNameConfig());
     if (type.isMap()) {
       return getNotImplementedString("SurfaceNamer.getResourceNameFieldGetFunctionName:map-type");

@@ -141,8 +141,6 @@ public class DiscoGapicNamer {
    * Assuming the input is a child of a Method, returns the name of the field as a parameter. If the
    * schema is a path or query parameter, then returns the schema's id(). If the schema is the
    * request object, then returns "resource" appended to the schema's id().
-   *
-   * @return
    */
   public static Name getSchemaNameAsParameter(Schema schema) {
     Name param = Name.fromUnderScoreOrCamel(schema.getIdentifier());
