@@ -57,7 +57,10 @@ import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /** Responsible for producing GAPIC surface views for NodeJS */
 public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
@@ -327,12 +330,21 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private List<GrpcStubView> versionIndexStubs(
       Iterable<Interface> apiInterfaces, GapicProductConfig productConfig) {
-    ImmutableList.Builder<GrpcStubView> stubs = ImmutableList.builder();
+    Set<GrpcStubView> stubs = new TreeSet<>(stubViewComparator());
     for (Interface apiInterface : apiInterfaces) {
       stubs.addAll(
           grpcStubTransformer.generateGrpcStubs(createContext(apiInterface, productConfig)));
     }
-    return stubs.build();
+    return ImmutableList.copyOf(stubs);
+  }
+
+  private Comparator<GrpcStubView> stubViewComparator() {
+    return new Comparator<GrpcStubView>() {
+      @Override
+      public int compare(GrpcStubView o1, GrpcStubView o2) {
+        return o1.protoFileName().compareTo(o2.protoFileName());
+      }
+    };
   }
 
   private GapicInterfaceContext createContext(
