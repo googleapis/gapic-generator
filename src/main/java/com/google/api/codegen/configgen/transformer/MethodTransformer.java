@@ -47,12 +47,18 @@ public abstract class MethodTransformer {
     this.pagingParameters = pagingParameters;
   }
 
+  /** Get the ResourceNameTreatment for a method. */
   @Nullable
   abstract ResourceNameTreatment getResourceNameTreatment(MethodModel methodModel);
 
+  /** Make the page streaming response view for a method. */
   @Nullable
   abstract PageStreamingResponseView generatePageStreamingResponse(
       PagingParameters pagingParameters, MethodModel method);
+
+  /** Get the filtered input fields for a model, from a list of candidates. */
+  @Nullable
+  abstract List<String> filteredInputFields(MethodModel method, List<FieldModel> candidates);
 
   public List<MethodView> generateMethods(
       InterfaceModel apiInterface, Map<String, String> collectionNameMap) {
@@ -96,17 +102,6 @@ public abstract class MethodTransformer {
                 || Iterators.size(inputFields.iterator()) != parameterList.size())
             && !method.getRequestStreaming());
     methodView.resourceNameTreatment(getResourceNameTreatment(method));
-  }
-
-  private List<String> filteredInputFields(MethodModel method, List<FieldModel> candidates) {
-    List<String> parameterNames = new ArrayList<>();
-    List<FieldModel> parametersForResourceNameMethod = method.getInputFieldsForResourceNameMethod();
-    for (FieldModel field : candidates) {
-      if (parametersForResourceNameMethod.contains(field)) {
-        parameterNames.add(field.getSimpleName());
-      }
-    }
-    return parameterNames;
   }
 
   private FlatteningView generateFlattening(List<String> parameterList) {

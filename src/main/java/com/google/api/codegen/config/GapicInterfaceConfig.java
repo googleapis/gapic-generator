@@ -255,7 +255,12 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       ImmutableMap<String, T> methodConfigMap, InterfaceConfigProto interfaceConfigProto) {
     List<T> methodConfigs = new ArrayList<>();
     for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {
-      methodConfigs.add(methodConfigMap.get(methodConfigProto.getName()));
+      try {
+        methodConfigs.add(methodConfigMap.get(methodConfigProto.getName()));
+      } catch (Exception e) {
+        e.printStackTrace();
+        throw e;
+      }
     }
     return methodConfigs;
   }

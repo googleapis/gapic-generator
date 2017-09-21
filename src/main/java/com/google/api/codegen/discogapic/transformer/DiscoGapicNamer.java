@@ -16,10 +16,12 @@ package com.google.api.codegen.discogapic.transformer;
 
 import com.google.api.codegen.Inflector;
 import com.google.api.codegen.discovery.Method;
+import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
+import com.google.common.base.Strings;
 
 /** Provides language-specific names for variables and classes of Discovery-Document models. */
 public class DiscoGapicNamer {
@@ -133,6 +135,21 @@ public class DiscoGapicNamer {
       resourceName = Inflector.singularize(resourceName);
     }
     return Name.anyCamel(methodName, resourceName, "http", "request");
+  }
+
+  /**
+   * Assuming the input is a child of a Method, returns the name of the field as a parameter. If the
+   * schema is a path or query parameter, then returns the schema's id(). If the schema is the
+   * request object, then returns "resource" appended to the schema's id().
+   *
+   * @return
+   */
+  public static Name getSchemaNameAsParameter(Schema schema) {
+    Name param = Name.fromUnderScoreOrCamel(schema.getIdentifier());
+    if (Strings.isNullOrEmpty(schema.location())) {
+      param = param.join("resource");
+    }
+    return param;
   }
 
   /** Get the request type name from a method. */

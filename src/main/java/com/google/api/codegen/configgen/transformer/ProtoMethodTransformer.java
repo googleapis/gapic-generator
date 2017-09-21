@@ -19,6 +19,8 @@ import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.configgen.PagingParameters;
 import com.google.api.codegen.configgen.viewmodel.PageStreamingResponseView;
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Nullable;
 
 /** Protobuf-model-specific functions for transforming method models into views for configgen. */
@@ -30,13 +32,13 @@ public class ProtoMethodTransformer extends MethodTransformer {
 
   @Nullable
   @Override
-  public ResourceNameTreatment getResourceNameTreatment(MethodModel methodModel) {
+  ResourceNameTreatment getResourceNameTreatment(MethodModel methodModel) {
     return null;
   }
 
   @Nullable
   @Override
-  public PageStreamingResponseView generatePageStreamingResponse(
+  PageStreamingResponseView generatePageStreamingResponse(
       PagingParameters pagingParameters, MethodModel method) {
     boolean hasTokenField = false;
     String resourcesField = null;
@@ -66,5 +68,17 @@ public class ProtoMethodTransformer extends MethodTransformer {
         .tokenField(pagingParameters.getNameForNextPageToken())
         .resourcesField(resourcesField)
         .build();
+  }
+
+  @Override
+  List<String> filteredInputFields(MethodModel method, List<FieldModel> candidates) {
+    List<String> parameterNames = new ArrayList<>();
+    List<FieldModel> parametersForResourceNameMethod = method.getInputFieldsForResourceNameMethod();
+    for (FieldModel field : candidates) {
+      if (parametersForResourceNameMethod.contains(field)) {
+        parameterNames.add(field.getSimpleName());
+      }
+    }
+    return parameterNames;
   }
 }

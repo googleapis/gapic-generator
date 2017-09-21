@@ -39,6 +39,9 @@ public interface FieldModel {
 
   String getFullName();
 
+  /* Return the name of this field when it is a parameter to an RPC method. */
+  Name getNameAsParameter();
+
   Name asName();
 
   String getTypeFullName();

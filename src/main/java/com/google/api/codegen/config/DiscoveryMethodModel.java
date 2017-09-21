@@ -76,7 +76,9 @@ public final class DiscoveryMethodModel implements MethodModel {
     }
     if (method.request() != null
         && !Strings.isNullOrEmpty(method.request().reference())
-        && method.request().reference().toLowerCase().equals(fieldName.toLowerCase())) {
+        && DiscoGapicNamer.getSchemaNameAsParameter(method.request().dereference())
+            .toLowerCamel()
+            .equals(fieldName)) {
       return new DiscoveryField(method.request().dereference(), discoGapicNamer);
     }
     return null;

@@ -186,6 +186,19 @@ public abstract class PageStreamingConfig {
       if (property.type().equals(Type.ARRAY)) {
         resourcesField = property;
         break;
+      } else if (property.additionalProperties() != null
+          && !Strings.isNullOrEmpty(property.additionalProperties().reference())) {
+        Schema additionalProperties = property.additionalProperties().dereference();
+        if (additionalProperties.type().equals(Type.ARRAY)) {
+          resourcesField = additionalProperties;
+          break;
+        }
+        for (Schema subProperty : additionalProperties.properties().values()) {
+          if (subProperty.type().equals(Type.ARRAY)) {
+            resourcesField = subProperty;
+            break;
+          }
+        }
       }
     }
     FieldConfig resourcesFieldConfig;

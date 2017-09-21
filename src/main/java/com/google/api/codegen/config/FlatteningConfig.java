@@ -107,8 +107,12 @@ public abstract class FlatteningConfig {
       return null;
     }
 
-    return new AutoValue_FlatteningConfig(
-        flattenedFieldConfigBuilder.build(), flatteningGroup.getFlatteningGroupName());
+    try {
+      return new AutoValue_FlatteningConfig(
+          flattenedFieldConfigBuilder.build(), flatteningGroup.getFlatteningGroupName());
+    } catch (Exception e) {
+      throw e;
+    }
   }
 
   public Iterable<FieldModel> getFlattenedFields() {

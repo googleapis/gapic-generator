@@ -19,7 +19,10 @@ import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.configgen.PagingParameters;
 import com.google.api.codegen.configgen.viewmodel.PageStreamingResponseView;
+import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.util.Name;
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Nullable;
 
 /** Discovery-doc-specific functions for transforming method models into views for configgen. */
@@ -30,13 +33,13 @@ public class DiscoveryMethodTransformer extends MethodTransformer {
   }
 
   @Override
-  public ResourceNameTreatment getResourceNameTreatment(MethodModel methodModel) {
+  ResourceNameTreatment getResourceNameTreatment(MethodModel methodModel) {
     return ResourceNameTreatment.STATIC_TYPES;
   }
 
   @Nullable
   @Override
-  public PageStreamingResponseView generatePageStreamingResponse(
+  PageStreamingResponseView generatePageStreamingResponse(
       PagingParameters pagingParameters, MethodModel method) {
     String resourcesField = null;
     for (FieldModel field : method.getOutputFields()) {
@@ -54,5 +57,18 @@ public class DiscoveryMethodTransformer extends MethodTransformer {
         .tokenField(pagingParameters.getNameForNextPageToken())
         .resourcesField(resourcesField)
         .build();
+  }
+
+  @Override
+  List<String> filteredInputFields(MethodModel method, List<FieldModel> candidates) {
+    List<String> parameterNames = new ArrayList<>();
+    List<FieldModel> parametersForResourceNameMethod = method.getInputFieldsForResourceNameMethod();
+    for (FieldModel field : candidates) {
+      if (parametersForResourceNameMethod.contains(field)) {
+        Name parameterName = DiscoGapicNamer.getSchemaNameAsParameter(field.getDiscoveryField());
+        parameterNames.add(parameterName.toLowerCamel());
+      }
+    }
+    return parameterNames;
   }
 }

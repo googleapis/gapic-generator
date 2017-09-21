@@ -19,11 +19,11 @@ import java.util.List;
 
 /** Names of paging parameters used in HTTP. */
 public class HttpPagingParameters implements PagingParameters {
-  private static final String PARAMETER_PAGE_TOKEN = "pageToken";
-  private static final String PARAMETER_NEXT_PAGE_TOKEN = "nextPageToken";
-  private static final String PARAMETER_MAX_RESULTS = "maxResults";
-  private static final String PARAMETER_ORDER_BY = "orderBy";
-  private static final String PARAMETER_FILTER = "filter";
+  public static final String PARAMETER_PAGE_TOKEN = "pageToken";
+  public static final String PARAMETER_NEXT_PAGE_TOKEN = "nextPageToken";
+  public static final String PARAMETER_MAX_RESULTS = "maxResults";
+  public static final String PARAMETER_ORDER_BY = "orderBy";
+  public static final String PARAMETER_FILTER = "filter";
 
   private static final ImmutableList<String> IGNORED_PARAMETERS =
       ImmutableList.of(
