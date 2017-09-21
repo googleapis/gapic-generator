@@ -28,12 +28,10 @@ import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
-import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.ParamWithSimpleDoc;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.util.csharp.CSharpTypeTable;
 import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.SnippetsFileView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodSnippetView;
@@ -73,7 +71,7 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
           GapicInterfaceContext.create(
               apiInterface,
               productConfig,
-              createTypeTable(namer.getExamplePackageName()),
+              csharpCommonTransformer.createTypeTable(namer.getExamplePackageName()),
               namer,
               new CSharpFeatureConfig());
       csharpCommonTransformer.addCommonImports(context);
@@ -89,12 +87,6 @@ public class CSharpGapicSnippetsTransformer implements ModelToViewTransformer {
   @Override
   public List<String> getTemplateFileNames() {
     return Arrays.asList(SNIPPETS_TEMPLATE_FILENAME);
-  }
-
-  private ModelTypeTable createTypeTable(String implicitPackageName) {
-    return new ModelTypeTable(
-        new CSharpTypeTable(implicitPackageName),
-        new CSharpModelTypeNameConverter(implicitPackageName));
   }
 
   private SnippetsFileView generateSnippets(GapicInterfaceContext context) {

@@ -38,6 +38,8 @@ public abstract class TestCaseView {
 
   public abstract String responseTypeName();
 
+  public abstract String callerResponseTypeName();
+
   public abstract String fullyQualifiedRequestTypeName();
 
   public abstract String fullyQualifiedResponseTypeName();
@@ -107,6 +109,8 @@ public abstract class TestCaseView {
     public abstract Builder requestTypeName(String val);
 
     public abstract Builder responseTypeName(String val);
+
+    public abstract Builder callerResponseTypeName(String val);
 
     public abstract Builder fullyQualifiedRequestTypeName(String val);
 

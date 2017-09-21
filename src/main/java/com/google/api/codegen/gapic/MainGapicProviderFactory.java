@@ -27,6 +27,7 @@ import com.google.api.codegen.php.PhpGapicCodePathMapper;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.transformer.csharp.CSharpGapicClientTransformer;
 import com.google.api.codegen.transformer.csharp.CSharpGapicSnippetsTransformer;
+import com.google.api.codegen.transformer.csharp.CSharpGapicTestTransformer;
 import com.google.api.codegen.transformer.go.GoGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.go.GoGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.java.JavaGapicMetadataTransformer;
@@ -133,6 +134,22 @@ public class MainGapicProviderFactory
                 .setModelToViewTransformer(new CSharpGapicSnippetsTransformer(pathMapper))
                 .build();
         providers.add(snippetProvider);
+      }
+      if (generatorConfig.enableTestGenerator()) {
+        GapicCodePathMapper pathMapper =
+            CommonGapicCodePathMapper.newBuilder()
+                .setPrefix("")
+                .setPackageFilePathNameFormatter(new CSharpNameFormatter())
+                .build();
+        GapicProvider<? extends Object> smokeTestProvider =
+            ViewModelGapicProvider.newBuilder()
+                .setModel(model)
+                .setProductConfig(productConfig)
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new CSharpRenderingUtil()))
+                .setModelToViewTransformer(
+                    new CSharpGapicTestTransformer(pathMapper, packageConfig))
+                .build();
+        providers.add(smokeTestProvider);
       }
 
     } else if (id.equals(GO)) {
