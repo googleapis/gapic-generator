@@ -20,6 +20,7 @@ import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.configgen.PagingParameters;
 import com.google.api.codegen.configgen.viewmodel.PageStreamingResponseView;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
+import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.util.Name;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,14 +43,21 @@ public class DiscoveryMethodTransformer extends MethodTransformer {
   PageStreamingResponseView generatePageStreamingResponse(
       PagingParameters pagingParameters, MethodModel method) {
     String resourcesField = null;
+    boolean hasNextPageToken = false;
     for (FieldModel field : method.getOutputFields()) {
       String fieldName = field.getSimpleName();
       if (!fieldName.equals(pagingParameters.getNameForNextPageToken())) {
-        resourcesField = Name.anyCamel(fieldName).toUpperCamel();
+        for (Schema property : field.getDiscoveryField().properties().values()) {
+          if (property.getIdentifier().equals(pagingParameters.getNameForNextPageToken())) {
+            hasNextPageToken = true;
+            resourcesField = Name.anyCamel(fieldName).toUpperCamel();
+            break;
+          }
+        }
       }
     }
 
-    if (resourcesField == null) {
+    if (resourcesField == null || !hasNextPageToken) {
       return null;
     }
 

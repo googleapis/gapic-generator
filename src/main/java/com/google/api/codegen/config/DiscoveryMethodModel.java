@@ -262,6 +262,10 @@ public final class DiscoveryMethodModel implements MethodModel {
     return inputFields;
   }
 
+  /**
+   * Returns a list containing the response schema as the sole element; or returns an empty list if
+   * this method has no response schema.
+   */
   @Override
   public Iterable<FieldModel> getOutputFields() {
     if (outputFields != null) {
