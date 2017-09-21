@@ -21,5 +21,5 @@ import java.util.List;
 public interface AdviserRule {
   String getName();
 
-  List<String> collectAdvice(Model model, ConfigProto configProto);
+  List<String> collectAdvice(Model model, ConfigProto configProto, List<String> suppressedElements);
 }

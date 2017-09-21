@@ -99,7 +99,7 @@ public class ConfigTransformer {
    * Examines all of the resource paths used by the methods, and returns a map from each unique
    * resource paths to a short name used by the collection configuration.
    */
-  private Map<String, String> getResourceToEntityNameMap(List<Method> methods) {
+  public static Map<String, String> getResourceToEntityNameMap(List<Method> methods) {
     // Using a map with the string representation of the resource path to avoid duplication
     // of equivalent paths.
     // Using a TreeMap in particular so that the ordering is deterministic

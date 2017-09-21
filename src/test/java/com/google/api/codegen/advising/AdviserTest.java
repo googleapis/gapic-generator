@@ -89,4 +89,61 @@ public class AdviserTest extends ConfigBaselineTestCase {
   private LanguageSettingsProto buildLanguageSettings(String packageName) {
     return LanguageSettingsProto.newBuilder().setPackageName(packageName).build();
   }
+
+  @Test
+  public void missing_interface_name() throws Exception {
+    ConfigProto.Builder configProtoBuilder = ConfigProto.newBuilder();
+    configProtoBuilder.addInterfacesBuilder();
+    configProtoBuilder.addInterfacesBuilder().setName("google.example.library.v1.LibraryService");
+    configProto = configProtoBuilder.build();
+    adviser =
+        new Adviser(ImmutableList.<AdviserRule>of(new InterfaceRule()), ImmutableList.<String>of());
+    test("library");
+  }
+
+  @Test
+  public void missing_interface() throws Exception {
+    configProto = ConfigProto.getDefaultInstance();
+    adviser =
+        new Adviser(ImmutableList.<AdviserRule>of(new InterfaceRule()), ImmutableList.<String>of());
+    test("library");
+  }
+
+  @Test
+  public void extra_interface() throws Exception {
+    ConfigProto.Builder configProtoBuilder = ConfigProto.newBuilder();
+    configProtoBuilder.addInterfacesBuilder().setName("google.example.extra.v1.ExtraService");
+    configProtoBuilder.addInterfacesBuilder().setName("google.example.library.v1.LibraryService");
+    configProto = configProtoBuilder.build();
+    adviser =
+        new Adviser(ImmutableList.<AdviserRule>of(new InterfaceRule()), ImmutableList.<String>of());
+    test("library");
+  }
+
+  @Test
+  public void duplicate_interface() throws Exception {
+    ConfigProto.Builder configProtoBuilder = ConfigProto.newBuilder();
+    configProtoBuilder.addInterfacesBuilder().setName("google.example.library.v1.LibraryService");
+    configProtoBuilder.addInterfacesBuilder().setName("google.example.library.v1.LibraryService");
+    configProto = configProtoBuilder.build();
+    adviser =
+        new Adviser(ImmutableList.<AdviserRule>of(new InterfaceRule()), ImmutableList.<String>of());
+    test("library");
+  }
+
+  @Test
+  public void suppress_advice() throws Exception {
+    ConfigProto.Builder configProtoBuilder = ConfigProto.newBuilder();
+    configProtoBuilder.addInterfacesBuilder().setName("google.example.library.v1.LibraryService");
+    configProtoBuilder.addInterfacesBuilder().setName("google.example.extra.v1.ExtraService");
+    configProto = configProtoBuilder.build();
+    adviser =
+        new Adviser(
+            ImmutableList.of(new LanguageSettingsRule(), new InterfaceRule()),
+            ImmutableList.of(
+                "language-settings",
+                "interface@google.example.extra.v1.ExtraService",
+                "collection"));
+    test("library");
+  }
 }

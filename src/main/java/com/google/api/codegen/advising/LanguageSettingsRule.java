@@ -30,7 +30,8 @@ public class LanguageSettingsRule implements AdviserRule {
   }
 
   @Override
-  public List<String> collectAdvice(Model model, ConfigProto configProto) {
+  public List<String> collectAdvice(
+      Model model, ConfigProto configProto, List<String> suppressedElements) {
     String packageName = getPackageName(model);
     ImmutableList.Builder<String> messages = ImmutableList.builder();
     for (Map.Entry<String, LanguageTransformer.LanguageFormatter> entry :
