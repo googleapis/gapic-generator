@@ -38,6 +38,10 @@ public class DiscoveryMethodTransformer extends MethodTransformer {
     return ResourceNameTreatment.STATIC_TYPES;
   }
 
+  /**
+   * Returns a non-null PageStreamingResponseView iff the method has a response object that contains
+   * a nextPageToken child property.
+   */
   @Nullable
   @Override
   PageStreamingResponseView generatePageStreamingResponse(
