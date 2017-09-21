@@ -14,6 +14,10 @@
  */
 package com.google.api.codegen.config;
 
+import static com.google.api.codegen.configgen.HttpPagingParameters.PARAMETER_MAX_RESULTS;
+import static com.google.api.codegen.configgen.HttpPagingParameters.PARAMETER_NEXT_PAGE_TOKEN;
+import static com.google.api.codegen.configgen.HttpPagingParameters.PARAMETER_PAGE_TOKEN;
+
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.PageStreamingConfigProto;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
@@ -52,8 +56,8 @@ public abstract class PageStreamingConfig {
       MethodConfigProto methodConfigProto,
       MethodModel method) {
     PageStreamingConfigProto pageStreaming = methodConfigProto.getPageStreaming();
-    String requestTokenFieldName = pageStreaming.getRequest().getTokenField();
-    FieldModel requestTokenField = method.getInputField(requestTokenFieldName);
+    String PARAMETER_PAGE_TOKEN = pageStreaming.getRequest().getTokenField();
+    FieldModel requestTokenField = method.getInputField(PARAMETER_PAGE_TOKEN);
     if (requestTokenField == null) {
       diagCollector.addDiag(
           Diag.error(
@@ -61,13 +65,13 @@ public abstract class PageStreamingConfig {
               "Request field missing for page streaming: method = %s, message type = %s, field = %s",
               method.getFullName(),
               method.getInputFullName(),
-              requestTokenFieldName));
+              PARAMETER_PAGE_TOKEN));
     }
 
-    String pageSizeFieldName = pageStreaming.getRequest().getPageSizeField();
+    String PARAMETER_MAX_RESULTS = pageStreaming.getRequest().getPageSizeField();
     FieldModel pageSizeField = null;
-    if (!Strings.isNullOrEmpty(pageSizeFieldName)) {
-      pageSizeField = method.getInputField(pageSizeFieldName);
+    if (!Strings.isNullOrEmpty(PARAMETER_MAX_RESULTS)) {
+      pageSizeField = method.getInputField(PARAMETER_MAX_RESULTS);
       if (pageSizeField == null) {
         diagCollector.addDiag(
             Diag.error(
@@ -75,12 +79,12 @@ public abstract class PageStreamingConfig {
                 "Request field missing for page streaming: method = %s, message type = %s, field = %s",
                 method.getFullName(),
                 method.getInputFullName(),
-                pageSizeFieldName));
+                PARAMETER_MAX_RESULTS));
       }
     }
 
-    String responseTokenFieldName = pageStreaming.getResponse().getTokenField();
-    FieldModel responseTokenField = method.getOutputField(responseTokenFieldName);
+    String PARAMETER_NEXT_PAGE_TOKEN = pageStreaming.getResponse().getTokenField();
+    FieldModel responseTokenField = method.getOutputField(PARAMETER_NEXT_PAGE_TOKEN);
     if (responseTokenField == null) {
       diagCollector.addDiag(
           Diag.error(
@@ -88,7 +92,7 @@ public abstract class PageStreamingConfig {
               "Response field missing for page streaming: method = %s, message type = %s, field = %s",
               method.getFullName(),
               method.getOutputFullName(),
-              responseTokenFieldName));
+              PARAMETER_NEXT_PAGE_TOKEN));
     }
 
     String resourcesFieldName = pageStreaming.getResponse().getResourcesField();
@@ -133,12 +137,7 @@ public abstract class PageStreamingConfig {
       DiagCollector diagCollector,
       com.google.api.codegen.discovery.Method method,
       DiscoGapicNamer discoGapicNamer) {
-    // TODO(andrealin): Put this in yaml file somewhere instead of hardcoding.
-    String pageSizeFieldName = "maxResults";
-    String requestTokenFieldName = "pageToken";
-    String responseTokenFieldName = "nextPageToken";
-
-    Schema requestTokenField = method.parameters().get(requestTokenFieldName);
+    Schema requestTokenField = method.parameters().get(PARAMETER_PAGE_TOKEN);
     if (requestTokenField == null) {
       diagCollector.addDiag(
           Diag.error(
@@ -146,12 +145,12 @@ public abstract class PageStreamingConfig {
               "Request field missing for page streaming: method = %s, message type = %s, field = %s",
               method.id(),
               method.id(),
-              requestTokenFieldName));
+              PARAMETER_PAGE_TOKEN));
     }
 
-    Schema pageSizeField = method.parameters().get(pageSizeFieldName);
-    if (!Strings.isNullOrEmpty(pageSizeFieldName)) {
-      pageSizeField = method.parameters().get(pageSizeFieldName);
+    Schema pageSizeField = method.parameters().get(PARAMETER_MAX_RESULTS);
+    if (!Strings.isNullOrEmpty(PARAMETER_MAX_RESULTS)) {
+      pageSizeField = method.parameters().get(PARAMETER_MAX_RESULTS);
       if (pageSizeField == null) {
         diagCollector.addDiag(
             Diag.error(
@@ -159,14 +158,14 @@ public abstract class PageStreamingConfig {
                 "Request field missing for page streaming: method = %s, message type = %s, field = %s",
                 method.id(),
                 method.id(),
-                pageSizeFieldName));
+                PARAMETER_MAX_RESULTS));
       }
     }
 
     Schema responseTokenField = null;
     Schema responseSchema = method.response().dereference();
-    if (responseSchema.hasProperty(responseTokenFieldName)) {
-      responseTokenField = responseSchema.properties().get(responseTokenFieldName);
+    if (responseSchema.hasProperty(PARAMETER_NEXT_PAGE_TOKEN)) {
+      responseTokenField = responseSchema.properties().get(PARAMETER_NEXT_PAGE_TOKEN);
     }
 
     if (responseTokenField == null) {
@@ -176,7 +175,7 @@ public abstract class PageStreamingConfig {
               "Response field missing for page streaming: method = %s, message type = %s, field = %s",
               method.id(),
               method.id(),
-              responseTokenFieldName));
+              PARAMETER_NEXT_PAGE_TOKEN));
     }
 
     Schema responseField = method.response().dereference();
