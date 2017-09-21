@@ -128,6 +128,11 @@ public class DiscoveryField implements FieldModel {
   }
 
   @Override
+  public boolean mayBeInResourceName() {
+    return schema.isPathParam();
+  }
+
+  @Override
   public String getParentFullName() {
     SurfaceNamer surfaceNamer = discoGapicNamer.getLanguageNamer();
     TypeNameConverter typeNameConverter = surfaceNamer.getTypeNameConverter();

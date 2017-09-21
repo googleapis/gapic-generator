@@ -167,7 +167,8 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
         Iterable<FieldConfig> fieldConfigs =
             flattenedMethodContext.getFlatteningConfig().getFlattenedFieldConfigs().values();
         for (FieldConfig fieldConfig : fieldConfigs) {
-          if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
+          if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)
+              && fieldConfig.getField().mayBeInResourceName()) {
             params.add(
                 resourceObjectTransformer.generateRequestObjectParam(
                     flattenedMethodContext, fieldConfig));

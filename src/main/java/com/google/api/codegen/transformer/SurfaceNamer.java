@@ -699,12 +699,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return interfaceConfig.getName();
   }
 
-  /** The name of the class that implements a particular proto interface. */
+  /** The name of the class that operates on a particular Discovery Document resource type. */
   public String getApiWrapperClassName(InterfaceConfig interfaceConfig) {
     return publicClassName(Name.anyCamel(getInterfaceName(interfaceConfig), "Client"));
   }
 
-  /** The name of the class that implements a particular proto interface. */
+  /** The name of the class that operates on a particular Discovery Document resource type. */
   public String getApiWrapperClassName(Document document) {
     return publicClassName(Name.anyCamel(document.name(), "Client"));
   }

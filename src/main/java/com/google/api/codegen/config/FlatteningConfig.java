@@ -83,6 +83,9 @@ public abstract class FlatteningConfig {
 
       ResourceNameTreatment defaultResourceNameTreatment =
           methodConfigProto.getResourceNameTreatment();
+      if (!parameterField.mayBeInResourceName()) {
+        defaultResourceNameTreatment = ResourceNameTreatment.NONE;
+      }
       if (defaultResourceNameTreatment == null
           || defaultResourceNameTreatment.equals(ResourceNameTreatment.UNSET_TREATMENT)) {
         defaultResourceNameTreatment = ResourceNameTreatment.VALIDATE;
@@ -107,12 +110,8 @@ public abstract class FlatteningConfig {
       return null;
     }
 
-    try {
-      return new AutoValue_FlatteningConfig(
-          flattenedFieldConfigBuilder.build(), flatteningGroup.getFlatteningGroupName());
-    } catch (Exception e) {
-      throw e;
-    }
+    return new AutoValue_FlatteningConfig(
+        flattenedFieldConfigBuilder.build(), flatteningGroup.getFlatteningGroupName());
   }
 
   public Iterable<FieldModel> getFlattenedFields() {

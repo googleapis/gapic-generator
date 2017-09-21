@@ -157,6 +157,12 @@ public class DiscoGapicNamer {
         languageNamer.publicClassName(getRequestName(method)));
   }
 
+  public static Name getInterfaceName(String defaultInterfaceName) {
+    String[] pieces = defaultInterfaceName.split(regexDelimiter);
+    String resource = pieces[pieces.length - 1];
+    return Name.anyCamel(Inflector.singularize(resource), "admin");
+  }
+
   /** Get the response type name from a method. */
   public static Name getResponseName(Method method) {
     if (method.response() != null) {

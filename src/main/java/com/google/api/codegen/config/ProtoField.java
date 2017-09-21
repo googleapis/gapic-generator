@@ -107,6 +107,11 @@ public class ProtoField implements FieldModel {
   }
 
   @Override
+  public boolean mayBeInResourceName() {
+    return true;
+  }
+
+  @Override
   public String getParentFullName() {
     return protoField.getParent().getFullName();
   }

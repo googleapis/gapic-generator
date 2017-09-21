@@ -70,6 +70,9 @@ public interface FieldModel {
   /* @return if this field is required to be non-null in the parent object. */
   boolean isRequired();
 
+  /* @return if this parameter may be in a ResourceName. */
+  boolean mayBeInResourceName();
+
   /* @return the full name of the parent. */
   String getParentFullName();
 
