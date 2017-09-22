@@ -245,9 +245,10 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     }
 
     for (FieldModel entry : method.getInputFields()) {
+      String parameterName =
+          DiscoGapicNamer.getSchemaNameAsParameter(entry.getDiscoveryField()).toLowerCamel();
       properties.add(
-          schemaToParamView(
-              context, entry, entry.getSimpleName(), symbolTable, EscapeName.ESCAPE_NAME));
+          schemaToParamView(context, entry, parameterName, symbolTable, EscapeName.ESCAPE_NAME));
       if (entry.isRequired()) {
         hasRequiredProperties = true;
       }
