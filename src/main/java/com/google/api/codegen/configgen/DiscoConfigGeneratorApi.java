@@ -16,20 +16,29 @@ package com.google.api.codegen.configgen;
 
 import static com.google.api.codegen.DiscoGapicGeneratorApi.DISCOVERY_DOC_OPTION_NAME;
 
+import com.google.api.codegen.DiscoGapicGeneratorApi;
+import com.google.api.codegen.DocumentGenerator;
 import com.google.api.codegen.configgen.transformer.DiscoConfigTransformer;
+import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
-import com.google.api.codegen.tools.DiscoToolDriverBase;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.api.tools.framework.model.Diag;
+import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.snippet.Doc;
+import com.google.api.tools.framework.tools.GenericToolDriverBase;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.api.tools.framework.tools.ToolOptions.Option;
 import com.google.api.tools.framework.tools.ToolUtil;
 import com.google.common.collect.ImmutableMap;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /** Main class for the config generator. */
-public class DiscoConfigGeneratorApi extends DiscoToolDriverBase {
+public class DiscoConfigGeneratorApi extends GenericToolDriverBase {
 
   public static final Option<String> DISCOVERY_DOC =
       ToolOptions.createOption(
@@ -55,8 +64,30 @@ public class DiscoConfigGeneratorApi extends DiscoToolDriverBase {
   }
 
   private Map<String, Doc> generateConfig(String outputPath) {
+    Document document = setupDocument();
     ViewModel viewModel = new DiscoConfigTransformer().generateConfig(document, outputPath);
     Doc generatedConfig = new CommonSnippetSetRunner(new CommonRenderingUtil()).generate(viewModel);
     return ImmutableMap.of(outputPath, generatedConfig);
+  }
+
+  /** Initializes the Discovery document document. */
+  private Document setupDocument() {
+    // Prevent INFO messages from polluting the log.
+    Logger.getLogger("").setLevel(Level.WARNING);
+    String discoveryDocPath = options.get(DiscoGapicGeneratorApi.DISCOVERY_DOC);
+
+    Document document = null;
+    try {
+      document = DocumentGenerator.createDocumentAndLog(discoveryDocPath, getDiagCollector());
+    } catch (FileNotFoundException e) {
+      getDiagCollector()
+          .addDiag(Diag.error(SimpleLocation.TOPLEVEL, "File not found: " + discoveryDocPath));
+    } catch (IOException e) {
+      getDiagCollector()
+          .addDiag(
+              Diag.error(
+                  SimpleLocation.TOPLEVEL, "Failed to read Discovery Doc: " + discoveryDocPath));
+    }
+    return document;
   }
 }
