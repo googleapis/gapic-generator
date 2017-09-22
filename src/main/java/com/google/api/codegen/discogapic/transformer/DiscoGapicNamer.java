@@ -22,6 +22,7 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
 import com.google.common.base.Strings;
+import javax.annotation.Nullable;
 
 /** Provides language-specific names for variables and classes of Discovery-Document models. */
 public class DiscoGapicNamer {
@@ -165,7 +166,8 @@ public class DiscoGapicNamer {
     return Name.anyCamel(Inflector.singularize(resource), "admin");
   }
 
-  /** Get the response type name from a method. */
+  /** Get the response type name from a method if the method has a non-null response type. */
+  @Nullable
   public static Name getResponseName(Method method) {
     if (method.response() != null) {
       String typeName =
@@ -173,15 +175,8 @@ public class DiscoGapicNamer {
               ? method.response().reference()
               : method.response().getIdentifier();
       return Name.anyCamel(typeName);
-    } else {
-      String[] pieces = method.id().split(regexDelimiter);
-      String methodName = pieces[pieces.length - 1];
-      String resourceName = pieces[pieces.length - 2];
-      if (!method.isPluralMethod()) {
-        resourceName = Inflector.singularize(resourceName);
-      }
-      return Name.anyCamel(methodName, resourceName, "http", "response");
     }
+    return null;
   }
 
   //TODO(andrealin): Naming methods for service name.

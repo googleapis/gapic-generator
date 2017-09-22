@@ -189,12 +189,16 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public String getAndSaveResponseTypeName(ImportTypeTable typeTable, SurfaceNamer surfaceNamer) {
-    TypeName fullName =
-        typeTable
-            .getTypeTable()
-            .getTypeNameInImplicitPackage(
-                surfaceNamer.publicClassName(DiscoGapicNamer.getResponseName(method)));
-    return typeTable.getAndSaveNicknameFor(fullName.getFullName());
+    Name responseName = DiscoGapicNamer.getResponseName(method);
+    if (responseName != null) {
+      TypeName fullName =
+          typeTable
+              .getTypeTable()
+              .getTypeNameInImplicitPackage(surfaceNamer.publicClassName(responseName));
+      return typeTable.getAndSaveNicknameFor(fullName.getFullName());
+    } else {
+      return typeTable.getAndSaveNicknameFor("com.google.protobuf.Empty");
+    }
   }
 
   @Override
