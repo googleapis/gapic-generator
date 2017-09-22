@@ -77,8 +77,8 @@ public class DiscoveryField implements FieldModel {
   }
 
   @Override
-  public Name getNameAsParameter() {
-    return DiscoGapicNamer.getSchemaNameAsParameter(schema);
+  public String getNameAsParameter() {
+    return DiscoGapicNamer.getSchemaNameAsParameter(schema).toLowerCamel();
   }
 
   @Override

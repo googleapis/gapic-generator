@@ -69,16 +69,4 @@ public class ProtoMethodTransformer extends MethodTransformer {
         .resourcesField(resourcesField)
         .build();
   }
-
-  @Override
-  List<String> filteredInputFields(MethodModel method, List<FieldModel> candidates) {
-    List<String> parameterNames = new ArrayList<>();
-    List<FieldModel> parametersForResourceNameMethod = method.getInputFieldsForResourceNameMethod();
-    for (FieldModel field : candidates) {
-      if (parametersForResourceNameMethod.contains(field)) {
-        parameterNames.add(field.getSimpleName());
-      }
-    }
-    return parameterNames;
-  }
 }

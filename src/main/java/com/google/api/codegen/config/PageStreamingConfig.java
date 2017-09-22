@@ -56,8 +56,8 @@ public abstract class PageStreamingConfig {
       MethodConfigProto methodConfigProto,
       MethodModel method) {
     PageStreamingConfigProto pageStreaming = methodConfigProto.getPageStreaming();
-    String PARAMETER_PAGE_TOKEN = pageStreaming.getRequest().getTokenField();
-    FieldModel requestTokenField = method.getInputField(PARAMETER_PAGE_TOKEN);
+    String requestTokenFieldName = pageStreaming.getRequest().getTokenField();
+    FieldModel requestTokenField = method.getInputField(requestTokenFieldName);
     if (requestTokenField == null) {
       diagCollector.addDiag(
           Diag.error(
@@ -65,13 +65,13 @@ public abstract class PageStreamingConfig {
               "Request field missing for page streaming: method = %s, message type = %s, field = %s",
               method.getFullName(),
               method.getInputFullName(),
-              PARAMETER_PAGE_TOKEN));
+              requestTokenFieldName));
     }
 
-    String PARAMETER_MAX_RESULTS = pageStreaming.getRequest().getPageSizeField();
+    String pageSizeFieldName = pageStreaming.getRequest().getPageSizeField();
     FieldModel pageSizeField = null;
-    if (!Strings.isNullOrEmpty(PARAMETER_MAX_RESULTS)) {
-      pageSizeField = method.getInputField(PARAMETER_MAX_RESULTS);
+    if (!Strings.isNullOrEmpty(pageSizeFieldName)) {
+      pageSizeField = method.getInputField(pageSizeFieldName);
       if (pageSizeField == null) {
         diagCollector.addDiag(
             Diag.error(
@@ -79,12 +79,12 @@ public abstract class PageStreamingConfig {
                 "Request field missing for page streaming: method = %s, message type = %s, field = %s",
                 method.getFullName(),
                 method.getInputFullName(),
-                PARAMETER_MAX_RESULTS));
+                pageSizeFieldName));
       }
     }
 
-    String PARAMETER_NEXT_PAGE_TOKEN = pageStreaming.getResponse().getTokenField();
-    FieldModel responseTokenField = method.getOutputField(PARAMETER_NEXT_PAGE_TOKEN);
+    String responseTokenFieldName = pageStreaming.getResponse().getTokenField();
+    FieldModel responseTokenField = method.getOutputField(responseTokenFieldName);
     if (responseTokenField == null) {
       diagCollector.addDiag(
           Diag.error(
@@ -92,7 +92,7 @@ public abstract class PageStreamingConfig {
               "Response field missing for page streaming: method = %s, message type = %s, field = %s",
               method.getFullName(),
               method.getOutputFullName(),
-              PARAMETER_NEXT_PAGE_TOKEN));
+              responseTokenFieldName));
     }
 
     String resourcesFieldName = pageStreaming.getResponse().getResourcesField();
@@ -149,7 +149,7 @@ public abstract class PageStreamingConfig {
     }
 
     Schema pageSizeField = method.parameters().get(PARAMETER_MAX_RESULTS);
-    if (!Strings.isNullOrEmpty(PARAMETER_MAX_RESULTS)) {
+    if (pageSizeField != null) {
       pageSizeField = method.parameters().get(PARAMETER_MAX_RESULTS);
       if (pageSizeField == null) {
         diagCollector.addDiag(

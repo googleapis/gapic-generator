@@ -70,17 +70,4 @@ public class DiscoveryMethodTransformer extends MethodTransformer {
         .resourcesField(resourcesField)
         .build();
   }
-
-  @Override
-  List<String> filteredInputFields(MethodModel method, List<FieldModel> candidates) {
-    List<String> parameterNames = new ArrayList<>();
-    List<FieldModel> parametersForResourceNameMethod = method.getInputFieldsForResourceNameMethod();
-    for (FieldModel field : candidates) {
-      if (parametersForResourceNameMethod.contains(field)) {
-        Name parameterName = DiscoGapicNamer.getSchemaNameAsParameter(field.getDiscoveryField());
-        parameterNames.add(parameterName.toLowerCamel());
-      }
-    }
-    return parameterNames;
-  }
 }

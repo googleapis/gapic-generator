@@ -26,6 +26,8 @@ import com.google.api.codegen.configgen.viewmodel.MethodView;
 import com.google.api.codegen.configgen.viewmodel.PageStreamingRequestView;
 import com.google.api.codegen.configgen.viewmodel.PageStreamingResponseView;
 import com.google.api.codegen.configgen.viewmodel.PageStreamingView;
+import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
+import com.google.api.codegen.util.Name;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
 import java.util.ArrayList;
@@ -55,10 +57,6 @@ public abstract class MethodTransformer {
   @Nullable
   abstract PageStreamingResponseView generatePageStreamingResponse(
       PagingParameters pagingParameters, MethodModel method);
-
-  /** Get the filtered input fields for a model, from a list of candidates. */
-  @Nullable
-  abstract List<String> filteredInputFields(MethodModel method, List<FieldModel> candidates);
 
   public List<MethodView> generateMethods(
       InterfaceModel apiInterface, Map<String, String> collectionNameMap) {
@@ -103,6 +101,18 @@ public abstract class MethodTransformer {
                 || Iterators.size(inputFields.iterator()) != parameterList.size())
             && !method.getRequestStreaming());
     methodView.resourceNameTreatment(getResourceNameTreatment(method));
+  }
+
+  /** Get the filtered input fields for a model, from a list of candidates. */
+  private List<String> filteredInputFields(MethodModel method, List<FieldModel> candidates) {
+    List<String> parameterNames = new ArrayList<>();
+    List<FieldModel> parametersForResourceNameMethod = method.getInputFieldsForResourceNameMethod();
+    for (FieldModel field : candidates) {
+      if (parametersForResourceNameMethod.contains(field)) {
+        parameterNames.add(field.getNameAsParameter());
+      }
+    }
+    return parameterNames;
   }
 
   private FlatteningView generateFlattening(List<String> parameterList) {
