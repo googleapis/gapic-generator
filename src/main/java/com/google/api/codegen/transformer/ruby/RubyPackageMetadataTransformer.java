@@ -274,6 +274,7 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
             fileHeaderTransformer.generateFileHeader(
                 productConfig, ImportSectionView.newBuilder().build(), surfaceNamer))
         .hasSmokeTests(hasSmokeTests)
+        .topLevelPath(surfaceNamer.getTopLevelIndexFileImportName())
         .versionPath(surfaceNamer.getVersionIndexFileImportName())
         .versionNamespace(validVersionNamespace(interfaces, surfaceNamer))
         .build();
