@@ -26,6 +26,7 @@ import com.google.api.codegen.util.TypeName;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import java.util.ArrayList;
@@ -265,14 +266,12 @@ public final class DiscoveryMethodModel implements MethodModel {
       return outputFields;
     }
 
-    List<FieldModel> outputField;
+    ImmutableList.Builder outputField = new Builder();
     if (method.response() != null && !Strings.isNullOrEmpty(method.response().reference())) {
       FieldModel fieldModel = new DiscoveryField(method.response().dereference(), null);
-      outputField = Lists.newArrayList(fieldModel);
-    } else {
-      outputField = new ArrayList<>();
+      outputField.add(fieldModel);
     }
-    outputFields = ImmutableList.copyOf(outputField);
+    outputFields = outputField.build();
     return outputFields;
   }
 
