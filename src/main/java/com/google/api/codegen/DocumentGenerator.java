@@ -34,7 +34,7 @@ import java.util.logging.Logger;
 public class DocumentGenerator {
   private static Document createDocument(String discoveryDocPath) throws IOException {
     if (!new File(discoveryDocPath).exists()) {
-      throw new FileNotFoundException();
+      throw new FileNotFoundException("Discovery document filepath not found.");
     }
 
     Reader reader = new InputStreamReader(new FileInputStream(new File(discoveryDocPath)));
