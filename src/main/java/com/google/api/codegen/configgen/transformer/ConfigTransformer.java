@@ -16,7 +16,6 @@ package com.google.api.codegen.configgen.transformer;
 
 import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.config.ProtoInterfaceModel;
-import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.configgen.CollectionPattern;
 import com.google.api.codegen.configgen.ProtoPagingParameters;
 import com.google.api.codegen.configgen.viewmodel.ConfigView;
@@ -31,6 +30,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Api;
+import io.grpc.Status;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -91,7 +91,11 @@ public class ConfigTransformer {
       Map<String, String> collectionNameMap = getResourceToEntityNameMap(apiInterface.getMethods());
       InterfaceView.Builder interfaceView = InterfaceView.newBuilder();
       interfaceView.name(apiInterface.getFullName());
-      retryTransformer.generateRetryDefinitions(interfaceView, TransportProtocol.GRPC);
+      List<String> idempotentRetryCodes =
+          ImmutableList.of(Status.Code.UNAVAILABLE.name(), Status.Code.DEADLINE_EXCEEDED.name());
+      List<String> nonIdempotentRetryCodes = ImmutableList.of();
+      retryTransformer.generateRetryDefinitions(
+          interfaceView, idempotentRetryCodes, nonIdempotentRetryCodes);
       interfaceView.collections(collectionTransformer.generateCollections(collectionNameMap));
       interfaceView.methods(
           methodTransformer.generateMethods(
