@@ -143,7 +143,9 @@ public class DiscoGapicNamer {
    * request object, then returns "resource" appended to the schema's id().
    */
   public static Name getSchemaNameAsParameter(Schema schema) {
-    Name param = Name.fromUnderScoreOrCamel(schema.getIdentifier());
+    String paramString =
+        Strings.isNullOrEmpty(schema.reference()) ? schema.getIdentifier() : schema.reference();
+    Name param = Name.fromUnderScoreOrCamel(paramString);
     if (Strings.isNullOrEmpty(schema.location())) {
       param = param.join("resource");
     }

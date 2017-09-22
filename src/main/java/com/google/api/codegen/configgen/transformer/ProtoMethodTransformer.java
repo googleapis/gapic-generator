@@ -19,8 +19,6 @@ import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.configgen.PagingParameters;
 import com.google.api.codegen.configgen.viewmodel.PageStreamingResponseView;
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.Nullable;
 
 /** Protobuf-model-specific functions for transforming method models into views for configgen. */

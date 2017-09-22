@@ -266,7 +266,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     } else if (field.isRepeated()) {
       return publicMethodName(Name.from("add", "all").join(field.asName()));
     } else {
-      return publicMethodName(Name.from("set").join(field.asName()));
+      return publicMethodName(Name.from("set").join(field.getNameAsParameterName()));
     }
   }
 
@@ -606,7 +606,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * parameter).
    */
   public String getVariableName(FieldModel field) {
-    return localVarName(field.asName());
+    return localVarName(field.getNameAsParameterName());
   }
 
   /**

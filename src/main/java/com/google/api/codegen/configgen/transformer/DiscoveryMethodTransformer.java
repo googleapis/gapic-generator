@@ -19,11 +19,8 @@ import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.configgen.PagingParameters;
 import com.google.api.codegen.configgen.viewmodel.PageStreamingResponseView;
-import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.util.Name;
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.Nullable;
 
 /** Discovery-doc-specific functions for transforming method models into views for configgen. */

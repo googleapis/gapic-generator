@@ -167,8 +167,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
         Iterable<FieldConfig> fieldConfigs =
             flattenedMethodContext.getFlatteningConfig().getFlattenedFieldConfigs().values();
         for (FieldConfig fieldConfig : fieldConfigs) {
-          if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)
-              && fieldConfig.getField().mayBeInResourceName()) {
+          if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
             params.add(
                 resourceObjectTransformer.generateRequestObjectParam(
                     flattenedMethodContext, fieldConfig));
@@ -269,7 +268,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
           schemaToParamView(
               context,
               requestBody,
-              requestBody.getSimpleName(),
+              DiscoGapicNamer.getSchemaNameAsParameter(requestBodyDef).toLowerCamel(),
               symbolTable,
               EscapeName.NO_ESCAPE_NAME));
     }

@@ -37,6 +37,7 @@ public class StaticLangResourceObjectTransformer {
     for (FieldModel f : requiredFields) {
       if (f.getSimpleName().equals(field.getSimpleName())) {
         isRequired = true;
+        break;
       }
     }
 
