@@ -45,12 +45,9 @@ public class DocumentGenerator {
 
   public static Document createDocumentAndLog(String discoveryDocPath, DiagCollector diagCollector)
       throws IOException {
-    // Prevent INFO messages from polluting the log.
-    Logger.getLogger("").setLevel(Level.WARNING);
-
     Document document = null;
     try {
-      document = DocumentGenerator.createDocument(discoveryDocPath);
+      document = createDocument(discoveryDocPath);
     } catch (FileNotFoundException e) {
       diagCollector.addDiag(
           Diag.error(SimpleLocation.TOPLEVEL, "File not found: " + discoveryDocPath));
