@@ -29,5 +29,5 @@ public interface PagingParameters {
   String getNameForNextPageToken();
 
   /** A list of parameters that do not need to be in the RPC's method signature. */
-  List<String> ignoredParameters();
+  List<String> getIgnoredParameters();
 }

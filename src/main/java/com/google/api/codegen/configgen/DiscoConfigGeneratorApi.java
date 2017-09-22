@@ -56,7 +56,7 @@ public class DiscoConfigGeneratorApi extends DiscoToolDriverBase {
 
   private Map<String, Doc> generateConfig(String outputPath) {
     ViewModel viewModel = new DiscoConfigTransformer().generateConfig(document, outputPath);
-    return ImmutableMap.of(
-        outputPath, new CommonSnippetSetRunner(new CommonRenderingUtil()).generate(viewModel));
+    Doc generatedConfig = new CommonSnippetSetRunner(new CommonRenderingUtil()).generate(viewModel);
+    return ImmutableMap.of(outputPath, generatedConfig);
   }
 }

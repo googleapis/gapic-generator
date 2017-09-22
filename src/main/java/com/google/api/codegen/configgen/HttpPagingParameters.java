@@ -45,7 +45,7 @@ public class HttpPagingParameters implements PagingParameters {
   }
 
   @Override
-  public List<String> ignoredParameters() {
+  public List<String> getIgnoredParameters() {
     return IGNORED_PARAMETERS;
   }
 }

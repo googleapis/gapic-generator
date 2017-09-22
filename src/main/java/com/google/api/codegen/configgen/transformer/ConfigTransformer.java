@@ -18,7 +18,7 @@ import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.configgen.CollectionPattern;
-import com.google.api.codegen.configgen.GrpcPagingParameters;
+import com.google.api.codegen.configgen.ProtoPagingParameters;
 import com.google.api.codegen.configgen.viewmodel.ConfigView;
 import com.google.api.codegen.configgen.viewmodel.InterfaceView;
 import com.google.api.codegen.configgen.viewmodel.LanguageSettingView;
@@ -48,7 +48,7 @@ public class ConfigTransformer {
   private final RetryTransformer retryTransformer = new RetryTransformer();
   private final CollectionTransformer collectionTransformer = new CollectionTransformer();
   private final MethodTransformer methodTransformer =
-      new MethodTransformer(new GrpcPagingParameters());
+      new MethodTransformer(new ProtoPagingParameters());
 
   public ViewModel generateConfig(Model model, String outputPath) {
     return ConfigView.newBuilder()

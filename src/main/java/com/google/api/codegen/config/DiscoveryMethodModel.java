@@ -27,16 +27,14 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import java.util.ArrayList;
+import com.google.common.collect.ImmutableSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /** A wrapper around the model of a Discovery Method. */
 public final class DiscoveryMethodModel implements MethodModel {
+  ImmutableSet<String> IDEMPOTENT_HTTP_METHODS = ImmutableSet.of("GET", "HEAD", "PUT", "DELETE");
   private final Method method;
   private Iterable<FieldModel> inputFields;
   private Iterable<FieldModel> outputFields;
@@ -281,9 +279,8 @@ public final class DiscoveryMethodModel implements MethodModel {
    */
   @Override
   public boolean isIdempotent() {
-    Set<String> idempotentHttpMethods = Sets.newHashSet("GET", "HEAD", "PUT", "DELETE");
     String httpMethod = method.httpMethod().toUpperCase();
-    return idempotentHttpMethods.contains(httpMethod);
+    return IDEMPOTENT_HTTP_METHODS.contains(httpMethod);
   }
 
   @Override

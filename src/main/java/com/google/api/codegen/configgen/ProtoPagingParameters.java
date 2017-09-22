@@ -17,8 +17,8 @@ package com.google.api.codegen.configgen;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 
-/** Names of paging parameters used in gRPC. */
-public class GrpcPagingParameters implements PagingParameters {
+/** Names of paging parameters used by protobuf-defined APIs. */
+public class ProtoPagingParameters implements PagingParameters {
   private static final String PARAMETER_PAGE_TOKEN = "page_token";
   private static final String PARAMETER_NEXT_PAGE_TOKEN = "next_page_token";
   private static final String PARAMETER_MAX_RESULTS = "page_size";
@@ -42,7 +42,7 @@ public class GrpcPagingParameters implements PagingParameters {
   }
 
   @Override
-  public List<String> ignoredParameters() {
+  public List<String> getIgnoredParameters() {
     return IGNORED_PARAMETERS;
   }
 }
