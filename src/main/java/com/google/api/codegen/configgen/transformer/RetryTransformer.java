@@ -14,12 +14,10 @@
  */
 package com.google.api.codegen.configgen.transformer;
 
-import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.configgen.viewmodel.InterfaceView;
 import com.google.api.codegen.configgen.viewmodel.RetryCodeView;
 import com.google.api.codegen.configgen.viewmodel.RetryParamView;
 import com.google.common.collect.ImmutableList;
-import io.grpc.Status;
 import java.util.List;
 
 /** Generates view objects for the retry codes def and retry params def. */
@@ -29,49 +27,25 @@ public class RetryTransformer {
   public static final String RETRY_PARAMS_DEFAULT_NAME = "default";
 
   public void generateRetryDefinitions(
-      InterfaceView.Builder interfaceView, TransportProtocol transportProtocol) {
-    interfaceView.retryCodesDef(generateRetryCodes(transportProtocol));
+      InterfaceView.Builder interfaceView,
+      List<String> idempotentRetryCodes,
+      List<String> nonIdempotentRetryCodes) {
+    interfaceView.retryCodesDef(generateRetryCodes(idempotentRetryCodes, nonIdempotentRetryCodes));
     interfaceView.retryParamsDef(generateRetryParams());
   }
 
-  private List<RetryCodeView> generateRetryCodes(TransportProtocol transportProtocol) {
-    switch (transportProtocol) {
-      case HTTP:
-        return generateRetryCodesHttp();
-      case GRPC:
-      default:
-        return generateRetryCodesGrpc();
-    }
-  }
-
-  private List<RetryCodeView> generateRetryCodesGrpc() {
+  private List<RetryCodeView> generateRetryCodes(
+      List<String> idempotentRetryCodes, List<String> nonIdempotentRetryCodes) {
     ImmutableList.Builder<RetryCodeView> retryCodes = ImmutableList.builder();
     retryCodes.add(
         RetryCodeView.newBuilder()
             .name(RETRY_CODES_IDEMPOTENT_NAME)
-            .retryCodes(
-                ImmutableList.of(
-                    Status.Code.UNAVAILABLE.name(), Status.Code.DEADLINE_EXCEEDED.name()))
+            .retryCodes(ImmutableList.copyOf(idempotentRetryCodes))
             .build());
     retryCodes.add(
         RetryCodeView.newBuilder()
             .name(RETRY_CODES_NON_IDEMPOTENT_NAME)
-            .retryCodes(ImmutableList.<String>of())
-            .build());
-    return retryCodes.build();
-  }
-
-  private List<RetryCodeView> generateRetryCodesHttp() {
-    ImmutableList.Builder<RetryCodeView> retryCodes = ImmutableList.builder();
-    retryCodes.add(
-        RetryCodeView.newBuilder()
-            .name(RETRY_CODES_IDEMPOTENT_NAME)
-            .retryCodes(ImmutableList.of("SC_SERVICE_UNAVAILABLE", "SC_GATEWAY_TIMEOUT"))
-            .build());
-    retryCodes.add(
-        RetryCodeView.newBuilder()
-            .name(RETRY_CODES_NON_IDEMPOTENT_NAME)
-            .retryCodes(ImmutableList.<String>of())
+            .retryCodes(ImmutableList.copyOf(nonIdempotentRetryCodes))
             .build());
     return retryCodes.build();
   }

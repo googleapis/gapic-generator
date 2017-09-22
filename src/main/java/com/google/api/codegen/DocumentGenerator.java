@@ -27,14 +27,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /** Generates an in-memory Document model object from a Discovery document filepath. */
 public class DocumentGenerator {
   private static Document createDocument(String discoveryDocPath) throws IOException {
     if (!new File(discoveryDocPath).exists()) {
-      throw new FileNotFoundException();
+      throw new FileNotFoundException("Discovery document filepath not found.");
     }
 
     Reader reader = new InputStreamReader(new FileInputStream(new File(discoveryDocPath)));
@@ -45,12 +43,9 @@ public class DocumentGenerator {
 
   public static Document createDocumentAndLog(String discoveryDocPath, DiagCollector diagCollector)
       throws IOException {
-    // Prevent INFO messages from polluting the log.
-    Logger.getLogger("").setLevel(Level.WARNING);
-
     Document document = null;
     try {
-      document = DocumentGenerator.createDocument(discoveryDocPath);
+      document = createDocument(discoveryDocPath);
     } catch (FileNotFoundException e) {
       diagCollector.addDiag(
           Diag.error(SimpleLocation.TOPLEVEL, "File not found: " + discoveryDocPath));

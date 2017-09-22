@@ -16,7 +16,6 @@ package com.google.api.codegen.configgen.transformer;
 
 import com.google.api.codegen.ConfigProto;
 import com.google.api.codegen.config.DiscoInterfaceModel;
-import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.configgen.HttpPagingParameters;
 import com.google.api.codegen.configgen.viewmodel.ConfigView;
 import com.google.api.codegen.configgen.viewmodel.InterfaceView;
@@ -100,7 +99,10 @@ public class DiscoConfigTransformer {
       interfaceView.name(
           String.format("%s.%s.%s.%s", ownerName, model.name(), model.version(), resourceName));
 
-      retryTransformer.generateRetryDefinitions(interfaceView, TransportProtocol.HTTP);
+      retryTransformer.generateRetryDefinitions(
+          interfaceView,
+          ImmutableList.of("SC_SERVICE_UNAVAILABLE", "SC_GATEWAY_TIMEOUT"),
+          ImmutableList.<String>of());
       interfaceView.collections(collectionTransformer.generateCollections(collectionNameMap));
       interfaceView.methods(
           methodTransformer.generateMethods(
