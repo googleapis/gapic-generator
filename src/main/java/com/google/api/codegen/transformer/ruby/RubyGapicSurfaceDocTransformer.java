@@ -27,6 +27,7 @@ import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.codegen.viewmodel.GrpcDocView;
+import com.google.api.codegen.viewmodel.GrpcElementDocView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.metadata.ModuleView;
@@ -65,6 +66,7 @@ public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer {
     for (ProtoFile file : new ProtoFileView().getElementIterable(model)) {
       surfaceDocs.add(generateDoc(file, productConfig));
     }
+    surfaceDocs.add(generateOverview(model, productConfig));
     return surfaceDocs.build();
   }
 
@@ -74,6 +76,8 @@ public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer {
             new RubyTypeTable(productConfig.getPackageName()),
             new RubyModelTypeNameConverter(productConfig.getPackageName()));
     // Use file path for package name to get file-specific package instead of package for the API.
+    // TODO(jgeiger): switch to use productConfig.getPackageName() instead of
+    // typeTable.getFullNameFor(file)
     SurfaceNamer namer = new RubySurfaceNamer(typeTable.getFullNameFor(file));
     String subPath = pathMapper.getOutputPath(file, productConfig);
     String baseFilename = namer.getProtoFileName(file);
@@ -85,7 +89,23 @@ public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer {
             productConfig, ImportSectionView.newBuilder().build(), namer));
     doc.elementDocs(elementDocTransformer.generateElementDocs(typeTable, namer, file));
     doc.modules(
-        generateModuleViews(file.getModel(), productConfig, namer, isSourceApiInterfaceFile(file)));
+        generateModuleViews(
+            file.getModel(), productConfig, namer, isSourceApiInterfaceFile(file), false));
+    return doc.build();
+  }
+
+  private ViewModel generateOverview(Model model, GapicProductConfig productConfig) {
+    // TODO(jgeiger): switch to use productConfig.getPackageName() instead of
+    // typeTable.getFullNameFor(file)
+    SurfaceNamer namer = new RubySurfaceNamer(productConfig.getPackageName());
+    GrpcDocView.Builder doc = GrpcDocView.newBuilder();
+    doc.templateFileName(DOC_TEMPLATE_FILENAME);
+    doc.outputPath(pathMapper.getOutputPath(null, productConfig) + "/doc/overview.rb");
+    doc.fileHeader(
+        fileHeaderTransformer.generateFileHeader(
+            productConfig, ImportSectionView.newBuilder().build(), namer));
+    doc.elementDocs(ImmutableList.<GrpcElementDocView>of());
+    doc.modules(generateModuleViews(model, productConfig, namer, false, true));
     return doc.build();
   }
 
@@ -102,11 +122,17 @@ public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer {
   }
 
   private List<ModuleView> generateModuleViews(
-      Model model, GapicProductConfig productConfig, SurfaceNamer namer, boolean hasToc) {
+      Model model,
+      GapicProductConfig productConfig,
+      SurfaceNamer namer,
+      boolean hasToc,
+      boolean hasOverview) {
     ImmutableList.Builder<ModuleView> moduleViews = ImmutableList.builder();
     for (String moduleName : namer.getApiModules()) {
-      if (hasToc && moduleName.equals(namer.getModuleVersionName())) {
+      if (moduleName.equals(namer.getModuleVersionName()) && hasToc) {
         moduleViews.add(generateTocModuleView(model, productConfig, namer, moduleName));
+      } else if (moduleName.equals(namer.getModuleServiceName()) && hasOverview) {
+        moduleViews.add(generateOverviewView(model, productConfig));
       } else {
         moduleViews.add(SimpleModuleView.newBuilder().moduleName(moduleName).build());
       }
@@ -137,6 +163,18 @@ public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer {
         .moduleName(moduleName)
         .fullName(model.getServiceConfig().getTitle())
         .contents(tocContents.build())
+        .build();
+  }
+
+  private ModuleView generateOverviewView(Model model, GapicProductConfig productConfig) {
+    SurfaceNamer namer = new RubySurfaceNamer(productConfig.getPackageName());
+    RubyPackageMetadataTransformer metadataTransformer =
+        new RubyPackageMetadataTransformer(packageConfig);
+    RubyPackageMetadataNamer packageNamer =
+        new RubyPackageMetadataNamer(productConfig.getPackageName());
+    return metadataTransformer
+        .generateReadmeMetadataView(model, productConfig, packageNamer)
+        .moduleName(namer.getModuleServiceName())
         .build();
   }
 }
