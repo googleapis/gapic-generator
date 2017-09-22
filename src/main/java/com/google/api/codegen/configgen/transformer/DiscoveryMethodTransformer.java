@@ -17,6 +17,7 @@ package com.google.api.codegen.configgen.transformer;
 import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.configgen.HttpPagingParameters;
 import com.google.api.codegen.configgen.PagingParameters;
 import com.google.api.codegen.configgen.viewmodel.PageStreamingResponseView;
 import com.google.api.codegen.discovery.Schema;
@@ -25,9 +26,11 @@ import javax.annotation.Nullable;
 
 /** Discovery-doc-specific functions for transforming method models into views for configgen. */
 public class DiscoveryMethodTransformer extends MethodTransformer {
+  private final PagingParameters pagingParameters = new HttpPagingParameters();
 
-  public DiscoveryMethodTransformer(PagingParameters pagingParameters) {
-    super(pagingParameters);
+  @Override
+  PagingParameters getPagingParameters() {
+    return pagingParameters;
   }
 
   @Override
@@ -41,8 +44,7 @@ public class DiscoveryMethodTransformer extends MethodTransformer {
    */
   @Nullable
   @Override
-  PageStreamingResponseView generatePageStreamingResponse(
-      PagingParameters pagingParameters, MethodModel method) {
+  PageStreamingResponseView generatePageStreamingResponse(MethodModel method) {
     String resourcesField = null;
     boolean hasNextPageToken = false;
     for (FieldModel field : method.getOutputFields()) {

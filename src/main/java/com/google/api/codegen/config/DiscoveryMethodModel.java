@@ -35,7 +35,8 @@ import java.util.Map;
 
 /** A wrapper around the model of a Discovery Method. */
 public final class DiscoveryMethodModel implements MethodModel {
-  ImmutableSet<String> IDEMPOTENT_HTTP_METHODS = ImmutableSet.of("GET", "HEAD", "PUT", "DELETE");
+  private ImmutableSet<String> IDEMPOTENT_HTTP_METHODS =
+      ImmutableSet.of("GET", "HEAD", "PUT", "DELETE");
   private final Method method;
   private Iterable<FieldModel> inputFields;
   private Iterable<FieldModel> outputFields;
@@ -275,7 +276,7 @@ public final class DiscoveryMethodModel implements MethodModel {
       return outputFields;
     }
 
-    ImmutableList.Builder outputField = new Builder();
+    ImmutableList.Builder<FieldModel> outputField = new Builder<>();
     if (method.response() != null && !Strings.isNullOrEmpty(method.response().reference())) {
       FieldModel fieldModel = new DiscoveryField(method.response().dereference(), null);
       outputField.add(fieldModel);
