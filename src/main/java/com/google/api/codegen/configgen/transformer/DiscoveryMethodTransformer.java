@@ -25,16 +25,16 @@ import com.google.api.codegen.util.Name;
 import javax.annotation.Nullable;
 
 /** Discovery-doc-specific functions for transforming method models into views for configgen. */
-public class DiscoveryMethodTransformer extends MethodTransformer {
+public class DiscoveryMethodTransformer implements MethodHelperTransformer {
   private final PagingParameters pagingParameters = new HttpPagingParameters();
 
   @Override
-  PagingParameters getPagingParameters() {
+  public PagingParameters getPagingParameters() {
     return pagingParameters;
   }
 
   @Override
-  ResourceNameTreatment getResourceNameTreatment(MethodModel methodModel) {
+  public ResourceNameTreatment getResourceNameTreatment(MethodModel methodModel) {
     return ResourceNameTreatment.STATIC_TYPES;
   }
 
@@ -44,7 +44,7 @@ public class DiscoveryMethodTransformer extends MethodTransformer {
    */
   @Nullable
   @Override
-  PageStreamingResponseView generatePageStreamingResponse(MethodModel method) {
+  public PageStreamingResponseView generatePageStreamingResponse(MethodModel method) {
     String resourcesField = null;
     boolean hasNextPageToken = false;
     for (FieldModel field : method.getOutputFields()) {

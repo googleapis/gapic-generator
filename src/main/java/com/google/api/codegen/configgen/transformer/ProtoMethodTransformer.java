@@ -23,23 +23,23 @@ import com.google.api.codegen.configgen.viewmodel.PageStreamingResponseView;
 import javax.annotation.Nullable;
 
 /** Protobuf-model-specific functions for transforming method models into views for configgen. */
-public class ProtoMethodTransformer extends MethodTransformer {
+public class ProtoMethodTransformer implements MethodHelperTransformer {
   private final PagingParameters pagingParameters = new ProtoPagingParameters();
 
   @Override
-  PagingParameters getPagingParameters() {
+  public PagingParameters getPagingParameters() {
     return pagingParameters;
   }
 
   @Nullable
   @Override
-  ResourceNameTreatment getResourceNameTreatment(MethodModel methodModel) {
+  public ResourceNameTreatment getResourceNameTreatment(MethodModel methodModel) {
     return null;
   }
 
   @Nullable
   @Override
-  PageStreamingResponseView generatePageStreamingResponse(MethodModel method) {
+  public PageStreamingResponseView generatePageStreamingResponse(MethodModel method) {
     boolean hasTokenField = false;
     String resourcesField = null;
     for (FieldModel field : method.getOutputFields()) {
