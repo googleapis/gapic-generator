@@ -276,11 +276,11 @@ public final class DiscoveryMethodModel implements MethodModel {
     return outputFields;
   }
 
-  @Override
   /**
    * Return if this method, as an HTTP method, is idempotent. Based off {@link
    * com.google.api.tools.framework.aspects.http.model.MethodKind}.
    */
+  @Override
   public boolean isIdempotent() {
     Set<String> idempotentHttpMethods = Sets.newHashSet("GET", "HEAD", "PUT", "DELETE");
     String httpMethod = method.httpMethod().toUpperCase();
