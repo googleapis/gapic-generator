@@ -35,7 +35,6 @@ import javax.annotation.Nullable;
 
 /** Generates method view objects from an API interface and collection name map. */
 public abstract class MethodTransformer {
-  private final PagingParameters pagingParameters;
 
   // Do not apply flattening if the parameter count exceeds the threshold.
   // TODO(shinfan): Investigate a more intelligent way to handle this.
@@ -43,9 +42,7 @@ public abstract class MethodTransformer {
 
   private static final int REQUEST_OBJECT_METHOD_THRESHOLD = 1;
 
-  public MethodTransformer(PagingParameters pagingParameters) {
-    this.pagingParameters = pagingParameters;
-  }
+  abstract PagingParameters getPagingParameters();
 
   /** Get the ResourceNameTreatment for a method. */
   @Nullable
@@ -53,8 +50,7 @@ public abstract class MethodTransformer {
 
   /** Make the page streaming response view for a method. */
   @Nullable
-  abstract PageStreamingResponseView generatePageStreamingResponse(
-      PagingParameters pagingParameters, MethodModel method);
+  abstract PageStreamingResponseView generatePageStreamingResponse(MethodModel method);
 
   public List<MethodView> generateMethods(
       InterfaceModel apiInterface, Map<String, String> collectionNameMap) {
@@ -79,7 +75,7 @@ public abstract class MethodTransformer {
     for (FieldModel field : inputFields) {
       String fieldName = field.getSimpleName();
       if (field.getOneof() == null
-          && !pagingParameters.getIgnoredParameters().contains(fieldName)) {
+          && !getPagingParameters().getIgnoredParameters().contains(fieldName)) {
         parameterList.add(fieldName);
         fieldList.add(field);
       }
@@ -125,7 +121,7 @@ public abstract class MethodTransformer {
       return;
     }
 
-    PageStreamingResponseView response = generatePageStreamingResponse(pagingParameters, method);
+    PageStreamingResponseView response = generatePageStreamingResponse(method);
     if (response == null) {
       return;
     }
@@ -139,9 +135,9 @@ public abstract class MethodTransformer {
 
     for (FieldModel field : method.getInputFields()) {
       String fieldName = field.getSimpleName();
-      if (fieldName.equals(pagingParameters.getNameForPageToken())) {
+      if (fieldName.equals(getPagingParameters().getNameForPageToken())) {
         requestBuilder.tokenField(fieldName);
-      } else if (fieldName.equals(pagingParameters.getNameForPageSize())) {
+      } else if (fieldName.equals(getPagingParameters().getNameForPageSize())) {
         requestBuilder.pageSizeField(fieldName);
       }
     }
