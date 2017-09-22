@@ -29,7 +29,6 @@ import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PackageMetadataTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.TestCaseTransformer;
-import com.google.api.codegen.util.VersionMatcher;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
 import com.google.api.codegen.util.testing.StandardValueProducer;
 import com.google.api.codegen.util.testing.ValueProducer;
@@ -123,29 +122,28 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
   }
 
   public TocContentView generateTocContent(
-      Model model, RubyPackageMetadataNamer namer, String clientName) {
+      Model model, RubyPackageMetadataNamer namer, String packageFilePath, String clientName) {
     String description = model.getServiceConfig().getDocumentation().getSummary();
     description = description.replace("\n", " ").trim();
-    return generateTocContent(description, namer, clientName);
+    return generateTocContent(description, namer, packageFilePath, clientName);
   }
 
   public TocContentView generateDataTypeTocContent(
-      String apiModule, RubyPackageMetadataNamer namer) {
-    return generateTocContent("Data types for " + apiModule, namer, "Data Types");
+      String apiModule, RubyPackageMetadataNamer namer, String packageFilePath) {
+    return generateTocContent("Data types for " + apiModule, namer, packageFilePath, "Data Types");
   }
 
   private TocContentView generateTocContent(
-      String description, RubyPackageMetadataNamer namer, String clientName) {
-    String protoPath = packageConfig.protoPath();
-    if (!VersionMatcher.isVersion(protoPath.substring(protoPath.lastIndexOf('/') + 1))) {
-      protoPath += "/" + packageConfig.apiVersion();
-    }
+      String description,
+      RubyPackageMetadataNamer namer,
+      String packageFilePath,
+      String clientName) {
     return TocContentView.newBuilder()
         .name(clientName)
         .description(description)
         .link(
             GITHUB_DOC_HOST
-                + String.format(LIB_DOC_PATH, namer.getMetadataIdentifier(), protoPath)
+                + String.format(LIB_DOC_PATH, namer.getMetadataIdentifier(), packageFilePath)
                 + '/'
                 + clientName.replace(" ", "").toLowerCase())
         .build();
