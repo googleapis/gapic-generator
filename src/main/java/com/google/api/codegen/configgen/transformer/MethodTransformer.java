@@ -15,7 +15,6 @@
 package com.google.api.codegen.configgen.transformer;
 
 import com.google.api.codegen.ResourceNameTreatment;
-import com.google.api.codegen.config.ApiSource;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
@@ -27,15 +26,15 @@ import com.google.api.codegen.configgen.viewmodel.MethodView;
 import com.google.api.codegen.configgen.viewmodel.PageStreamingRequestView;
 import com.google.api.codegen.configgen.viewmodel.PageStreamingResponseView;
 import com.google.api.codegen.configgen.viewmodel.PageStreamingView;
-import com.google.api.codegen.util.Name;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nullable;
 
 /** Generates method view objects from an API interface and collection name map. */
-public class MethodTransformer {
+public abstract class MethodTransformer {
   private final PagingParameters pagingParameters;
 
   // Do not apply flattening if the parameter count exceeds the threshold.
@@ -47,6 +46,15 @@ public class MethodTransformer {
   public MethodTransformer(PagingParameters pagingParameters) {
     this.pagingParameters = pagingParameters;
   }
+
+  /** Get the ResourceNameTreatment for a method. */
+  @Nullable
+  abstract ResourceNameTreatment getResourceNameTreatment(MethodModel methodModel);
+
+  /** Make the page streaming response view for a method. */
+  @Nullable
+  abstract PageStreamingResponseView generatePageStreamingResponse(
+      PagingParameters pagingParameters, MethodModel method);
 
   public List<MethodView> generateMethods(
       InterfaceModel apiInterface, Map<String, String> collectionNameMap) {
@@ -90,10 +98,7 @@ public class MethodTransformer {
         (Iterators.size(inputFields.iterator()) > REQUEST_OBJECT_METHOD_THRESHOLD
                 || Iterators.size(inputFields.iterator()) != parameterList.size())
             && !method.getRequestStreaming());
-    // TODO(andrealin): Set resource type name config for all input sources.
-    if (method.getApiSource().equals(ApiSource.DISCOVERY)) {
-      methodView.resourceNameTreatment(ResourceNameTreatment.STATIC_TYPES);
-    }
+    methodView.resourceNameTreatment(getResourceNameTreatment(method));
   }
 
   private List<String> filteredInputFields(MethodModel method, List<FieldModel> candidates) {
@@ -120,7 +125,7 @@ public class MethodTransformer {
       return;
     }
 
-    PageStreamingResponseView response = generatePageStreamingResponse(method);
+    PageStreamingResponseView response = generatePageStreamingResponse(pagingParameters, method);
     if (response == null) {
       return;
     }
@@ -143,40 +148,6 @@ public class MethodTransformer {
 
     PageStreamingRequestView request = requestBuilder.build();
     return request.tokenField() == null && request.pageSizeField() == null ? null : request;
-  }
-
-  private PageStreamingResponseView generatePageStreamingResponse(MethodModel method) {
-    boolean hasTokenField = false;
-    String resourcesField = null;
-    for (FieldModel field : method.getOutputFields()) {
-      String fieldName = field.getSimpleName();
-      if (fieldName.equals(pagingParameters.getNameForNextPageToken())) {
-        hasTokenField = true;
-      } else if (field.isRepeated()) {
-        if (resourcesField == null) {
-          resourcesField = fieldName;
-        } else {
-          // TODO(shinfan): Add a warning system that is used when heuristic decision cannot be made.
-          System.err.printf(
-              "Warning: Page Streaming resource field could not be heuristically"
-                  + " determined for method %s\n",
-              method.getSimpleName());
-          break;
-        }
-      } else if (field.getApiSource().equals(ApiSource.DISCOVERY)) {
-        hasTokenField = true;
-        resourcesField = Name.anyCamel(fieldName).toUpperCamel();
-      }
-    }
-
-    if (!hasTokenField || resourcesField == null) {
-      return null;
-    }
-
-    return PageStreamingResponseView.newBuilder()
-        .tokenField(pagingParameters.getNameForNextPageToken())
-        .resourcesField(resourcesField)
-        .build();
   }
 
   private void generateRetry(MethodModel method, MethodView.Builder methodView) {

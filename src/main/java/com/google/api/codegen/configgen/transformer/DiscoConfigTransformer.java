@@ -51,7 +51,7 @@ public class DiscoConfigTransformer {
   private final RetryTransformer retryTransformer = new RetryTransformer();
   private final CollectionTransformer collectionTransformer = new CollectionTransformer();
   private final MethodTransformer methodTransformer =
-      new MethodTransformer(new HttpPagingParameters());
+      new DiscoveryMethodTransformer(new HttpPagingParameters());
 
   public ViewModel generateConfig(Document model, String outputPath) {
     return ConfigView.newBuilder()

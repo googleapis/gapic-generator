@@ -48,7 +48,7 @@ public class ConfigTransformer {
   private final RetryTransformer retryTransformer = new RetryTransformer();
   private final CollectionTransformer collectionTransformer = new CollectionTransformer();
   private final MethodTransformer methodTransformer =
-      new MethodTransformer(new ProtoPagingParameters());
+      new ProtoMethodTransformer(new ProtoPagingParameters());
 
   public ViewModel generateConfig(Model model, String outputPath) {
     return ConfigView.newBuilder()
