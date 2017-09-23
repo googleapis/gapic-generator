@@ -119,9 +119,6 @@ public abstract class PackageMetadataView implements ViewModel {
   public abstract String protoPath();
 
   @Nullable
-  public abstract String topLevelPath();
-
-  @Nullable
   public abstract String versionPath();
 
   @Nullable
@@ -236,9 +233,6 @@ public abstract class PackageMetadataView implements ViewModel {
 
     /** The path to the API protos in the googleapis repo. */
     public abstract Builder protoPath(String val);
-
-    /* The path to the generated top level index file. */
-    public abstract Builder topLevelPath(String val);
 
     /* The path to the generated version index file. */
     public abstract Builder versionPath(String val);
