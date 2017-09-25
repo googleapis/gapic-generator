@@ -32,9 +32,9 @@ import java.util.Map;
 
 /** Generates method view objects from an API interface and collection name map. */
 public class MethodTransformer {
-  private final MethodHelperTransformer helperTransformer;
+  private final InputSpecificMethodTransformer helperTransformer;
 
-  public MethodTransformer(MethodHelperTransformer helperTransformer) {
+  public MethodTransformer(InputSpecificMethodTransformer helperTransformer) {
     this.helperTransformer = helperTransformer;
   }
 

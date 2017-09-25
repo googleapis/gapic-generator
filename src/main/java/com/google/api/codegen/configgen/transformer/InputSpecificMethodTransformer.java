@@ -21,7 +21,7 @@ import com.google.api.codegen.configgen.viewmodel.PageStreamingResponseView;
 import javax.annotation.Nullable;
 
 /** A transformer that does implementations that vary by API source. */
-public interface MethodHelperTransformer {
+public interface InputSpecificMethodTransformer {
 
   PagingParameters getPagingParameters();
 
