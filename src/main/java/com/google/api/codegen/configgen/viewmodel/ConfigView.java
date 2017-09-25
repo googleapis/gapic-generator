@@ -14,20 +14,12 @@
  */
 package com.google.api.codegen.configgen.viewmodel;
 
-import com.google.api.codegen.SnippetSetRunner;
-import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
 import java.util.List;
 
 /** Represents the GAPIC config being generated. */
 @AutoValue
-public abstract class ConfigView implements ViewModel {
-  @Override
-  public abstract String templateFileName();
-
-  @Override
-  public abstract String outputPath();
-
+public abstract class ConfigView {
   /** The type of the config's proto. */
   public abstract String type();
 
@@ -40,21 +32,12 @@ public abstract class ConfigView implements ViewModel {
   /** The API interface configurations. */
   public abstract List<InterfaceView> interfaces();
 
-  @Override
-  public String resourceRoot() {
-    return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
-  }
-
   public static Builder newBuilder() {
     return new AutoValue_ConfigView.Builder();
   }
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder templateFileName(String val);
-
-    public abstract Builder outputPath(String val);
-
     public abstract Builder type(String val);
 
     public abstract Builder languageSettings(List<LanguageSettingView> val);

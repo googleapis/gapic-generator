@@ -15,6 +15,7 @@
 package com.google.api.codegen.configgen.transformer;
 
 import com.google.api.codegen.configgen.CollectionPattern;
+import com.google.api.codegen.configgen.viewmodel.CommentView;
 import com.google.api.codegen.configgen.viewmodel.FieldNamePatternView;
 import com.google.api.codegen.configgen.viewmodel.FlatteningGroupView;
 import com.google.api.codegen.configgen.viewmodel.FlatteningView;
@@ -57,7 +58,11 @@ public class MethodTransformer {
       generatePageStreaming(method, methodView);
       generateRetry(method, methodView);
       generateFieldNamePatterns(method, methodView, collectionNameMap);
-      methodView.timeoutMillis("60000");
+      methodView.timeoutMillis(
+          CommentView.<String>newBuilder()
+              .comment("Configure the default timeout for a non-retrying call.")
+              .value("60000")
+              .build());
       methods.add(methodView.build());
     }
     return methods.build();
@@ -77,7 +82,11 @@ public class MethodTransformer {
       methodView.flattening(generateFlattening(parameterList));
     }
 
-    methodView.requiredFields(parameterList);
+    methodView.requiredFields(
+        CommentView.<List<String>>newBuilder()
+            .comment("Configure which fields are required.")
+            .value(parameterList)
+            .build());
     // use all fields for the following check; if there are ignored fields for flattening
     // purposes, the caller still needs a way to set them (by using the request object method).
     methodView.requestObjectMethod(
@@ -86,10 +95,15 @@ public class MethodTransformer {
             && !method.getRequestStreaming());
   }
 
-  private FlatteningView generateFlattening(List<String> parameterList) {
-    return FlatteningView.newBuilder()
-        .groups(
-            ImmutableList.of(FlatteningGroupView.newBuilder().parameters(parameterList).build()))
+  private CommentView<FlatteningView> generateFlattening(List<String> parameterList) {
+    return CommentView.<FlatteningView>newBuilder()
+        .comment("Configure which groups of fields should be flattened into method params.")
+        .value(
+            FlatteningView.newBuilder()
+                .groups(
+                    ImmutableList.of(
+                        FlatteningGroupView.newBuilder().parameters(parameterList).build()))
+                .build())
         .build();
   }
 
@@ -157,10 +171,18 @@ public class MethodTransformer {
 
   private void generateRetry(Method method, MethodView.Builder methodView) {
     methodView.retryCodesName(
-        isIdempotent(method)
-            ? RetryTransformer.RETRY_CODES_IDEMPOTENT_NAME
-            : RetryTransformer.RETRY_CODES_NON_IDEMPOTENT_NAME);
-    methodView.retryParamsName(RetryTransformer.RETRY_PARAMS_DEFAULT_NAME);
+        CommentView.<String>newBuilder()
+            .comment("Configure the retryable codes for this method.")
+            .value(
+                isIdempotent(method)
+                    ? RetryTransformer.RETRY_CODES_IDEMPOTENT_NAME
+                    : RetryTransformer.RETRY_CODES_NON_IDEMPOTENT_NAME)
+            .build());
+    methodView.retryParamsName(
+        CommentView.<String>newBuilder()
+            .comment("Configure the retryable params for this method.")
+            .value(RetryTransformer.RETRY_PARAMS_DEFAULT_NAME)
+            .build());
   }
 
   /**
