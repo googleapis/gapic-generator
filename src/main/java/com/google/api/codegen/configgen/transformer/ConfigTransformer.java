@@ -46,7 +46,8 @@ public class ConfigTransformer {
   private final LanguageTransformer languageTransformer = new LanguageTransformer();
   private final RetryTransformer retryTransformer = new RetryTransformer();
   private final CollectionTransformer collectionTransformer = new CollectionTransformer();
-  private final MethodTransformer methodTransformer = new ProtoMethodTransformer();
+  private final MethodTransformer methodTransformer =
+      new MethodTransformer(new ProtoMethodTransformer());
 
   public ViewModel generateConfig(Model model, String outputPath) {
     return ConfigView.newBuilder()

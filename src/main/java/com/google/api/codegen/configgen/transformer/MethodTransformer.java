@@ -14,11 +14,9 @@
  */
 package com.google.api.codegen.configgen.transformer;
 
-import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
-import com.google.api.codegen.configgen.PagingParameters;
 import com.google.api.codegen.configgen.viewmodel.FieldNamePatternView;
 import com.google.api.codegen.configgen.viewmodel.FlatteningGroupView;
 import com.google.api.codegen.configgen.viewmodel.FlatteningView;
@@ -31,26 +29,20 @@ import com.google.common.collect.Iterators;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Nullable;
 
 /** Generates method view objects from an API interface and collection name map. */
-public abstract class MethodTransformer {
+public class MethodTransformer {
+  private final InputSpecificMethodTransformer helperTransformer;
+
+  public MethodTransformer(InputSpecificMethodTransformer helperTransformer) {
+    this.helperTransformer = helperTransformer;
+  }
 
   // Do not apply flattening if the parameter count exceeds the threshold.
   // TODO(shinfan): Investigate a more intelligent way to handle this.
   private static final int FLATTENING_THRESHOLD = 4;
 
   private static final int REQUEST_OBJECT_METHOD_THRESHOLD = 1;
-
-  abstract PagingParameters getPagingParameters();
-
-  /** Get the ResourceNameTreatment for a method. */
-  @Nullable
-  abstract ResourceNameTreatment getResourceNameTreatment(MethodModel methodModel);
-
-  /** Make the page streaming response view for a method. */
-  @Nullable
-  abstract PageStreamingResponseView generatePageStreamingResponse(MethodModel method);
 
   public List<MethodView> generateMethods(
       InterfaceModel apiInterface, Map<String, String> collectionNameMap) {
@@ -75,7 +67,7 @@ public abstract class MethodTransformer {
     for (FieldModel field : inputFields) {
       String fieldName = field.getSimpleName();
       if (field.getOneof() == null
-          && !getPagingParameters().getIgnoredParameters().contains(fieldName)) {
+          && !helperTransformer.getPagingParameters().getIgnoredParameters().contains(fieldName)) {
         parameterList.add(fieldName);
         fieldList.add(field);
       }
@@ -94,7 +86,7 @@ public abstract class MethodTransformer {
         (Iterators.size(inputFields.iterator()) > REQUEST_OBJECT_METHOD_THRESHOLD
                 || Iterators.size(inputFields.iterator()) != parameterList.size())
             && !method.getRequestStreaming());
-    methodView.resourceNameTreatment(getResourceNameTreatment(method));
+    methodView.resourceNameTreatment(helperTransformer.getResourceNameTreatment(method));
   }
 
   /** Get the filtered input fields for a model, from a list of candidates. */
@@ -122,7 +114,7 @@ public abstract class MethodTransformer {
       return;
     }
 
-    PageStreamingResponseView response = generatePageStreamingResponse(method);
+    PageStreamingResponseView response = helperTransformer.generatePageStreamingResponse(method);
     if (response == null) {
       return;
     }
@@ -136,9 +128,9 @@ public abstract class MethodTransformer {
 
     for (FieldModel field : method.getInputFields()) {
       String fieldName = field.getSimpleName();
-      if (fieldName.equals(getPagingParameters().getNameForPageToken())) {
+      if (fieldName.equals(helperTransformer.getPagingParameters().getNameForPageToken())) {
         requestBuilder.tokenField(fieldName);
-      } else if (fieldName.equals(getPagingParameters().getNameForPageSize())) {
+      } else if (fieldName.equals(helperTransformer.getPagingParameters().getNameForPageSize())) {
         requestBuilder.pageSizeField(fieldName);
       }
     }
