@@ -15,6 +15,7 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.ServiceMessages;
+import com.google.api.codegen.configgen.CollectionPattern;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -23,17 +24,23 @@ import com.google.api.codegen.transformer.TypeNameConverter;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
+import com.google.api.tools.framework.aspects.http.model.HttpAttribute;
+import com.google.api.tools.framework.aspects.http.model.MethodKind;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.FieldSelector;
 import com.google.api.tools.framework.model.Method;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /** A wrapper around the model of a protobuf-defined Method. */
 public final class ProtoMethodModel implements MethodModel {
   private final Method method;
-  private Iterable<FieldModel> inputFields;
+  private List<FieldModel> inputFields;
+  private Iterable<FieldModel> outputFields;
 
   /* Create a MethodModel object from a non-null Method object. */
   public ProtoMethodModel(Method method) {
@@ -150,6 +157,11 @@ public final class ProtoMethodModel implements MethodModel {
   }
 
   @Override
+  public String getRawName() {
+    return method.getSimpleName();
+  }
+
+  @Override
   public String getAndSaveRequestTypeName(ImportTypeTable typeTable, SurfaceNamer surfaceNamer) {
     return ((ModelTypeTable) typeTable).getAndSaveNicknameFor(method.getInputType());
   }
@@ -160,17 +172,12 @@ public final class ProtoMethodModel implements MethodModel {
   }
 
   @Override
-  public String getProtoMethodName() {
-    return method.getSimpleName();
-  }
-
-  @Override
   public String getScopedDescription() {
     return DocumentationUtil.getScopedDescription(method);
   }
 
   @Override
-  public Iterable<FieldModel> getInputFields() {
+  public List<FieldModel> getInputFields() {
     if (inputFields != null) {
       return inputFields;
     }
@@ -184,6 +191,25 @@ public final class ProtoMethodModel implements MethodModel {
   }
 
   @Override
+  public List<FieldModel> getInputFieldsForResourceNameMethod() {
+    return getInputFields();
+  }
+
+  @Override
+  public Iterable<FieldModel> getOutputFields() {
+    if (outputFields != null) {
+      return outputFields;
+    }
+
+    ImmutableList.Builder<FieldModel> fieldsBuilder = ImmutableList.builder();
+    for (Field field : method.getOutputType().getMessageType().getFields()) {
+      fieldsBuilder.add(new ProtoField(field));
+    }
+    outputFields = fieldsBuilder.build();
+    return outputFields;
+  }
+
+  @Override
   public Iterable<FieldModel> getResourceNameInputFields() {
     return new ArrayList<>();
   }
@@ -191,5 +217,26 @@ public final class ProtoMethodModel implements MethodModel {
   @Override
   public boolean hasReturnValue() {
     return !(new ServiceMessages()).isEmptyType(method.getOutputType());
+  }
+
+  @Override
+  public boolean isIdempotent() {
+    HttpAttribute httpAttr = method.getAttribute(HttpAttribute.KEY);
+    if (httpAttr == null) {
+      return false;
+    }
+    MethodKind methodKind = httpAttr.getMethodKind();
+    return methodKind.isIdempotent();
+  }
+
+  @Override
+  public Map<String, String> getResourcePatternNameMap(Map<String, String> nameMap) {
+    Map<String, String> resources = new LinkedHashMap<>();
+    for (CollectionPattern collectionPattern :
+        CollectionPattern.getCollectionPatternsFromMethod(method)) {
+      String resourceNameString = collectionPattern.getTemplatizedResourcePath();
+      resources.put(collectionPattern.getFieldPath(), nameMap.get(resourceNameString));
+    }
+    return resources;
   }
 }

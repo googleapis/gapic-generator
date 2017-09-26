@@ -26,12 +26,20 @@ import com.google.api.codegen.util.TypeName;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableList.Builder;
+import com.google.common.collect.ImmutableSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /** A wrapper around the model of a Discovery Method. */
 public final class DiscoveryMethodModel implements MethodModel {
+  private ImmutableSet<String> IDEMPOTENT_HTTP_METHODS =
+      ImmutableSet.of("GET", "HEAD", "PUT", "DELETE");
   private final Method method;
   private Iterable<FieldModel> inputFields;
-  private Iterable<FieldModel> resourceNameInputFields;
+  private Iterable<FieldModel> outputFields;
+  private List<FieldModel> resourceNameInputFields;
   private final DiscoGapicNamer discoGapicNamer;
 
   /* Create a DiscoveryMethodModel from a non-null Discovery Method object. */
@@ -80,6 +88,11 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public String getFullName() {
+    return method.id();
+  }
+
+  @Override
+  public String getRawName() {
     return method.id();
   }
 
@@ -183,11 +196,6 @@ public final class DiscoveryMethodModel implements MethodModel {
   }
 
   @Override
-  public String getProtoMethodName() {
-    return getSimpleName();
-  }
-
-  @Override
   public String getScopedDescription() {
     return method.description();
   }
@@ -198,7 +206,7 @@ public final class DiscoveryMethodModel implements MethodModel {
   }
 
   @Override
-  public Iterable<FieldModel> getResourceNameInputFields() {
+  public List<FieldModel> getResourceNameInputFields() {
     if (resourceNameInputFields != null) {
       return resourceNameInputFields;
     }
@@ -211,6 +219,27 @@ public final class DiscoveryMethodModel implements MethodModel {
     }
     resourceNameInputFields = params.build();
     return resourceNameInputFields;
+  }
+
+  @Override
+  public List<FieldModel> getInputFieldsForResourceNameMethod() {
+    List<FieldModel> fields = new LinkedList<>();
+    for (FieldModel field : getInputFields()) {
+      if (!getResourceNameInputFields().contains(field)) {
+        // Only add fields that aren't part of the ResourceName.
+        fields.add(field);
+      }
+    }
+
+    // Add the field that represents the ResourceName.
+    String resourceName = DiscoGapicNamer.getResourceIdentifier(method).toLowerCamel();
+    for (FieldModel field : getInputFields()) {
+      if (field.asName().toLowerCamel().equals(resourceName)) {
+        fields.add(field);
+        break;
+      }
+    }
+    return fields;
   }
 
   @Override
@@ -228,5 +257,35 @@ public final class DiscoveryMethodModel implements MethodModel {
     }
     inputFields = fieldsBuilder.build();
     return inputFields;
+  }
+
+  @Override
+  public Iterable<FieldModel> getOutputFields() {
+    if (outputFields != null) {
+      return outputFields;
+    }
+
+    ImmutableList.Builder<FieldModel> outputField = new Builder<>();
+    if (method.response() != null && !Strings.isNullOrEmpty(method.response().reference())) {
+      FieldModel fieldModel = new DiscoveryField(method.response().dereference(), null);
+      outputField.add(fieldModel);
+    }
+    outputFields = outputField.build();
+    return outputFields;
+  }
+
+  /**
+   * Return if this method, as an HTTP method, is idempotent. Based off {@link
+   * com.google.api.tools.framework.aspects.http.model.MethodKind}.
+   */
+  @Override
+  public boolean isIdempotent() {
+    String httpMethod = method.httpMethod().toUpperCase();
+    return IDEMPOTENT_HTTP_METHODS.contains(httpMethod);
+  }
+
+  @Override
+  public Map<String, String> getResourcePatternNameMap(Map<String, String> nameMap) {
+    return nameMap;
   }
 }

@@ -22,18 +22,9 @@ import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
-import com.google.api.codegen.transformer.ApiCallableTransformer;
-import com.google.api.codegen.transformer.BatchingTransformer;
 import com.google.api.codegen.transformer.DiscoGapicInterfaceContext;
-import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.ImportTypeTable;
-import com.google.api.codegen.transformer.PageStreamingTransformer;
-import com.google.api.codegen.transformer.PathTemplateTransformer;
-import com.google.api.codegen.transformer.RetryDefinitionsTransformer;
 import com.google.api.codegen.transformer.SchemaTypeTable;
-import com.google.api.codegen.transformer.ServiceTransformer;
-import com.google.api.codegen.transformer.StandardImportSectionTransformer;
-import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformer;
 import com.google.api.codegen.transformer.java.JavaFeatureConfig;
@@ -51,19 +42,6 @@ public class JavaDiscoGapicSurfaceTransformer
     implements DocumentToViewTransformer, SurfaceTransformer {
   private final GapicCodePathMapper pathMapper;
   private final PackageMetadataConfig packageMetadataConfig;
-  private final ServiceTransformer serviceTransformer = new ServiceTransformer();
-  private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
-  private final ApiCallableTransformer apiCallableTransformer = new ApiCallableTransformer();
-  private final StaticLangApiMethodTransformer apiMethodTransformer =
-      new StaticLangApiMethodTransformer();
-  private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
-  private final BatchingTransformer batchingTransformer = new BatchingTransformer();
-  private final StandardImportSectionTransformer importSectionTransformer =
-      new StandardImportSectionTransformer();
-  private final FileHeaderTransformer fileHeaderTransformer =
-      new FileHeaderTransformer(importSectionTransformer);
-  private final RetryDefinitionsTransformer retryDefinitionsTransformer =
-      new RetryDefinitionsTransformer();
 
   private final JavaNameFormatter nameFormatter = new JavaNameFormatter();
 

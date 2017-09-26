@@ -12,30 +12,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.config;
+package com.google.api.codegen.configgen;
 
 import java.util.List;
 
-/** API-source-agnostic wrapper classes for Interfaces. */
-public interface InterfaceModel {
-  /* @return the type of source that this FieldModel is based on. */
-  ApiSource getApiSource();
+/** Definitions of parameter names. */
+public interface PagingParameters {
 
-  /* @return the Model from which this interface came from. */
-  ApiModel getApiModel();
+  /** The name of the parameter that contains a page token. */
+  String getNameForPageToken();
 
-  String getSimpleName();
+  /** The name of the parameter that contains the desired page size. */
+  String getNameForPageSize();
 
-  String getFullName();
+  /** The name of the parameter that contains the next page token. */
+  String getNameForNextPageToken();
 
-  String getParentFullName();
-
-  String getFileSimpleName();
-
-  String getFileFullName();
-
-  List<MethodModel> getMethods();
-
-  /* @return true if the element is reachable with the current scoper. */
-  boolean isReachable();
+  /** A list of parameters that do not need to be in the RPC's method signature. */
+  List<String> getIgnoredParameters();
 }

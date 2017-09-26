@@ -96,7 +96,7 @@ public class DiscoGapicNamer {
   }
 
   /** Return the name of the resource from a given method's path. */
-  private static Name getResourceIdentifier(Method method) {
+  public static Name getResourceIdentifier(Method method) {
     // Assumes the resource is the last curly-bracketed String in the path.
     String path = method.flatPath();
     String resourceName = path.substring(path.lastIndexOf('{') + 1, path.lastIndexOf('}'));

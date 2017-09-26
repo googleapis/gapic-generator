@@ -15,29 +15,31 @@
 package com.google.api.codegen.configgen.transformer;
 
 import com.google.api.codegen.ConfigProto;
-import com.google.api.codegen.config.ProtoInterfaceModel;
-import com.google.api.codegen.configgen.CollectionPattern;
+import com.google.api.codegen.config.DiscoInterfaceModel;
 import com.google.api.codegen.configgen.viewmodel.ConfigView;
 import com.google.api.codegen.configgen.viewmodel.InterfaceView;
 import com.google.api.codegen.configgen.viewmodel.LanguageSettingView;
 import com.google.api.codegen.configgen.viewmodel.LicenseView;
+import com.google.api.codegen.configgen.viewmodel.ResourceNameGenerationView;
+import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
+import com.google.api.codegen.discovery.Document;
+import com.google.api.codegen.discovery.Method;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.ViewModel;
-import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
-import com.google.api.tools.framework.model.Model;
+import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.protobuf.Api;
-import io.grpc.Status;
-import java.util.HashSet;
+import com.google.common.collect.Lists;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 /** Generates the config view object using a model and output path. */
-public class ConfigTransformer {
+public class DiscoConfigTransformer {
   private static final String CONFIG_TEMPLATE_FILE = "configgen/gapic_config.snip";
   private static final String CONFIG_DEFAULT_COPYRIGHT_FILE = "copyright-google.txt";
   private static final String CONFIG_DEFAULT_LICENSE_FILE = "license-header-apache-2.0.txt";
@@ -47,9 +49,9 @@ public class ConfigTransformer {
   private final RetryTransformer retryTransformer = new RetryTransformer();
   private final CollectionTransformer collectionTransformer = new CollectionTransformer();
   private final MethodTransformer methodTransformer =
-      new MethodTransformer(new ProtoMethodTransformer());
+      new MethodTransformer(new DiscoveryMethodTransformer());
 
-  public ViewModel generateConfig(Model model, String outputPath) {
+  public ViewModel generateConfig(Document model, String outputPath) {
     return ConfigView.newBuilder()
         .templateFileName(CONFIG_TEMPLATE_FILE)
         .outputPath(outputPath)
@@ -57,23 +59,20 @@ public class ConfigTransformer {
         .languageSettings(generateLanguageSettings(model))
         .license(generateLicense())
         .interfaces(generateInterfaces(model))
+        .resourceNameGeneration(generateResourceNameGenerations(model))
         .build();
   }
 
-  private List<LanguageSettingView> generateLanguageSettings(Model model) {
+  private List<LanguageSettingView> generateLanguageSettings(Document model) {
     String packageName = getPackageName(model);
     Preconditions.checkNotNull(packageName, "No interface found.");
     return languageTransformer.generateLanguageSettings(packageName);
   }
 
-  private String getPackageName(Model model) {
-    if (model.getServiceConfig().getApisCount() <= 0) {
-      return null;
-    }
-
-    Api api = model.getServiceConfig().getApis(0);
-    Interface apiInterface = model.getSymbolTable().lookupInterface(api.getName());
-    return apiInterface.getFile().getFullName();
+  private String getPackageName(Document model) {
+    String reverseDomain =
+        Joiner.on(".").join(Lists.reverse(Arrays.asList(model.ownerDomain().split("\\."))));
+    return String.format("%s.%s.%s", reverseDomain, model.name(), model.version());
   }
 
   private LicenseView generateLicense() {
@@ -83,22 +82,25 @@ public class ConfigTransformer {
         .build();
   }
 
-  private List<InterfaceView> generateInterfaces(Model model) {
+  private List<InterfaceView> generateInterfaces(Document model) {
     ImmutableList.Builder<InterfaceView> interfaces = ImmutableList.builder();
-    for (Api api : model.getServiceConfig().getApisList()) {
-      Interface apiInterface = model.getSymbolTable().lookupInterface(api.getName());
-      Map<String, String> collectionNameMap = getResourceToEntityNameMap(apiInterface.getMethods());
+    for (Map.Entry<String, List<Method>> resource : model.resources().entrySet()) {
+      Map<String, String> collectionNameMap = getResourceToEntityNameMap(resource.getValue());
       InterfaceView.Builder interfaceView = InterfaceView.newBuilder();
-      interfaceView.name(apiInterface.getFullName());
-      List<String> idempotentRetryCodes =
-          ImmutableList.of(Status.Code.UNAVAILABLE.name(), Status.Code.DEADLINE_EXCEEDED.name());
-      List<String> nonIdempotentRetryCodes = ImmutableList.of();
+
+      String ownerName = model.ownerDomain().split("\\.")[0];
+      String resourceName = Name.from(resource.getKey()).toUpperCamel();
+      interfaceView.name(
+          String.format("%s.%s.%s.%s", ownerName, model.name(), model.version(), resourceName));
+
       retryTransformer.generateRetryDefinitions(
-          interfaceView, idempotentRetryCodes, nonIdempotentRetryCodes);
+          interfaceView,
+          ImmutableList.of("SC_SERVICE_UNAVAILABLE", "SC_GATEWAY_TIMEOUT"),
+          ImmutableList.<String>of());
       interfaceView.collections(collectionTransformer.generateCollections(collectionNameMap));
       interfaceView.methods(
           methodTransformer.generateMethods(
-              new ProtoInterfaceModel(apiInterface), collectionNameMap));
+              new DiscoInterfaceModel(resource.getKey(), model), collectionNameMap));
       interfaces.add(interfaceView.build());
     }
     return interfaces.build();
@@ -109,31 +111,33 @@ public class ConfigTransformer {
    * resource paths to a short name used by the collection configuration.
    */
   private Map<String, String> getResourceToEntityNameMap(List<Method> methods) {
-    // Using a map with the string representation of the resource path to avoid duplication
-    // of equivalent paths.
-    // Using a TreeMap in particular so that the ordering is deterministic
-    // (useful for testability).
-    Map<String, CollectionPattern> specs = new TreeMap<>();
+    Map<String, String> resourceNameMap = new TreeMap<>();
     for (Method method : methods) {
-      for (CollectionPattern collectionPattern :
-          CollectionPattern.getCollectionPatternsFromMethod(method)) {
-        String resourcePath = collectionPattern.getTemplatizedResourcePath();
-        // If there are multiple field segments with the same resource path, the last
-        // one will be used, making the output deterministic. Also, the first field path
-        // encountered tends to be simply "name" because it is the corresponding create
-        // API method for the type.
-        specs.put(resourcePath, collectionPattern);
+      String namePattern = method.flatPath();
+      // Escape the first character of the pattern if necessary.
+      namePattern = namePattern.charAt(0) == '{' ? "\\".concat(namePattern) : namePattern;
+      resourceNameMap.put(
+          namePattern, DiscoGapicNamer.getResourceIdentifier(method).toLowerCamel());
+    }
+    return ImmutableMap.copyOf(resourceNameMap);
+  }
+
+  private List<ResourceNameGenerationView> generateResourceNameGenerations(Document model) {
+    ImmutableList.Builder<ResourceNameGenerationView> resourceNames = ImmutableList.builder();
+    for (Method method : model.methods()) {
+      if (!Strings.isNullOrEmpty(method.path())) {
+        ResourceNameGenerationView.Builder view = ResourceNameGenerationView.newBuilder();
+        view.messageName(DiscoGapicNamer.getRequestName(method).toUpperCamel());
+
+        String resourceName = DiscoGapicNamer.getResourceIdentifier(method).toLowerCamel();
+
+        Map<String, String> fieldEntityMap = new HashMap<>();
+        fieldEntityMap.put(resourceName, resourceName);
+        view.fieldEntities(fieldEntityMap);
+
+        resourceNames.add(view.build());
       }
     }
-
-    Set<String> usedNameSet = new HashSet<>();
-    ImmutableMap.Builder<String, String> nameMapBuilder = ImmutableMap.builder();
-    for (CollectionPattern collectionPattern : specs.values()) {
-      String resourceNameString = collectionPattern.getTemplatizedResourcePath();
-      String entityNameString = collectionPattern.getUniqueName(usedNameSet);
-      usedNameSet.add(entityNameString);
-      nameMapBuilder.put(resourceNameString, entityNameString);
-    }
-    return nameMapBuilder.build();
+    return resourceNames.build();
   }
 }

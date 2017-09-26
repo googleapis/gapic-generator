@@ -181,8 +181,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
         ImmutableMap.builder();
 
     for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {
-      com.google.api.codegen.discovery.Method method =
-          lookupMethod(document, methodConfigProto.getName());
+      Method method = lookupMethod(document, methodConfigProto.getName());
       if (method == null) {
         diagCollector.addDiag(
             Diag.error(

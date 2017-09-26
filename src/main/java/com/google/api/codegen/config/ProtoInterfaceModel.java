@@ -15,6 +15,9 @@
 package com.google.api.codegen.config;
 
 import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.Method;
+import com.google.common.collect.ImmutableList;
+import java.util.List;
 
 /** Protobuf-based InterfaceModel. */
 public class ProtoInterfaceModel implements InterfaceModel {
@@ -69,6 +72,15 @@ public class ProtoInterfaceModel implements InterfaceModel {
   @Override
   public String getFileFullName() {
     return protoInterface.getFile().getFullName();
+  }
+
+  @Override
+  public List<MethodModel> getMethods() {
+    ImmutableList.Builder<MethodModel> methods = ImmutableList.builder();
+    for (Method method : protoInterface.getMethods()) {
+      methods.add(new ProtoMethodModel(method));
+    }
+    return methods.build();
   }
 
   @Override

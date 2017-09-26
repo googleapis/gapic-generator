@@ -31,6 +31,7 @@ import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -60,7 +61,9 @@ public class DiscoveryField implements FieldModel {
 
   @Override
   public String getSimpleName() {
-    return schema.getIdentifier();
+    String name =
+        Strings.isNullOrEmpty(schema.reference()) ? schema.getIdentifier() : schema.reference();
+    return Name.anyCamel(name).toLowerCamel();
   }
 
   @Override
@@ -110,7 +113,13 @@ public class DiscoveryField implements FieldModel {
 
   @Override
   public boolean isRepeated() {
-    return schema.type() == Type.ARRAY;
+    if (schema.type() == Type.ARRAY) {
+      return true;
+    }
+    if (!Strings.isNullOrEmpty(schema.reference()) && schema.dereference() != null) {
+      return schema.dereference().type() == Type.ARRAY;
+    }
+    return false;
   }
 
   @Override

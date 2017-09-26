@@ -19,6 +19,8 @@ import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.TypeNameConverter;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
+import java.util.List;
+import java.util.Map;
 
 /** Input-agnostic model of a method. */
 public interface MethodModel {
@@ -43,6 +45,9 @@ public interface MethodModel {
 
   /* @return a short name for this method. */
   String getSimpleName();
+
+  /* @return a short name for this method. */
+  String getRawName();
 
   /* @return a short name for the parent. */
   String getParentSimpleName();
@@ -80,9 +85,15 @@ public interface MethodModel {
 
   boolean hasReturnValue();
 
-  String getProtoMethodName();
-
   Iterable<FieldModel> getInputFields();
 
+  List<FieldModel> getInputFieldsForResourceNameMethod();
+
+  Iterable<FieldModel> getOutputFields();
+
   Iterable<FieldModel> getResourceNameInputFields();
+
+  boolean isIdempotent();
+
+  Map<String, String> getResourcePatternNameMap(Map<String, String> nameMap);
 }
