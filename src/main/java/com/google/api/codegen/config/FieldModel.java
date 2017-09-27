@@ -15,6 +15,7 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.discovery.Schema;
+import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
@@ -22,6 +23,7 @@ import com.google.api.codegen.util.TypeName;
 import com.google.api.tools.framework.model.Oneof;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
+import java.util.List;
 import javax.annotation.Nullable;
 
 /**
@@ -97,9 +99,6 @@ public interface FieldModel {
   /* Get the description of the element scoped to the visibility as currently set in the model. */
   String getScopedDocumentation();
 
-  /* @return the simple name of the Oneof (if it exists) associated with this model. */
-  Iterable<String> getOneofFieldsNames(SurfaceNamer surfaceNamer);
-
   // Functions that are specific to the source type.
 
   /* @return the TypeRef of the underlying protobuf Field, if it exists. */
@@ -113,4 +112,10 @@ public interface FieldModel {
 
   @Nullable
   Oneof getOneof();
+
+  /* The ordered list of method calls necessary to reach the object representing the resource array
+   * in the response of paged RPCs.
+   */
+  List<String> getPagedResponseResourceMethods(
+      FeatureConfig featureConfig, FieldConfig startingFieldConfig, SurfaceNamer namer);
 }

@@ -19,9 +19,11 @@ import static com.google.api.codegen.config.ApiSource.DISCOVERY;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Method;
+import com.google.api.codegen.discovery.Node;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.discovery.Schema.Format;
 import com.google.api.codegen.discovery.Schema.Type;
+import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
@@ -33,6 +35,8 @@ import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableList.Builder;
+import java.util.LinkedList;
 import java.util.List;
 import javax.annotation.Nullable;
 
@@ -212,11 +216,6 @@ public class DiscoveryField implements FieldModel {
   }
 
   @Override
-  public List<String> getOneofFieldsNames(SurfaceNamer surfaceNamer) {
-    return ImmutableList.of();
-  }
-
-  @Override
   public boolean isString() {
     return schema.type().equals(Type.STRING);
   }
@@ -240,5 +239,17 @@ public class DiscoveryField implements FieldModel {
   @Override
   public Oneof getOneof() {
     return null;
+  }
+
+  @Override
+  public List<String> getPagedResponseResourceMethods(
+      FeatureConfig featureConfig, FieldConfig startingFieldConfig, SurfaceNamer namer) {
+    Node currentResource = startingFieldConfig.getField().getDiscoveryField();
+    List<String> methodNames = new LinkedList<>();
+    for (FieldModel field : startingFieldConfig.getFieldPath()) {
+      methodNames.add(0,
+          namer.getFieldGetFunctionName(field));
+    }
+    return ImmutableList.copyOf(methodNames);
   }
 }

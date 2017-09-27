@@ -345,7 +345,9 @@
           }
           @@Override
           public Iterable<{@desc.resourceTypeName}> extractResources({@desc.responseTypeName} payload) {
-            return payload.{@desc.resourcesFieldGetFunction}();
+            @let resourcesGetFunction = functionChain(desc.resourcesFieldGetFunction)
+              return payload.{@resourcesGetFunction};
+            @end
           }
         };
     {@""}

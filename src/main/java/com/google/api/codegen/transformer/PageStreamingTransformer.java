@@ -107,7 +107,10 @@ public class PageStreamingTransformer {
     desc.responseTokenGetFunction(
         namer.getFieldGetFunctionName(pageStreaming.getResponseTokenField()));
     desc.resourcesFieldGetFunction(
-        namer.getFieldGetFunctionName(pageStreaming.getResourcesField()));
+        pageStreaming
+            .getResourcesField()
+            .getPagedResponseResourceMethods(
+                context.getFeatureConfig(), resourceFieldConfig, namer));
 
     return desc.build();
   }

@@ -28,7 +28,10 @@ import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import java.util.LinkedList;
+import java.util.List;
 import javax.annotation.Nullable;
 
 /** PageStreamingConfig represents the page streaming configuration for a method. */
@@ -179,27 +182,36 @@ public abstract class PageStreamingConfig {
     }
 
     Schema responseField = method.response().dereference();
-    Schema resourcesField = null;
+    DiscoveryField resourcesField = null;
+    List<FieldModel> resourcesFieldPath = new LinkedList<>();
     for (Schema property : responseField.properties().values()) {
       // Assume the List response has exactly one Array property.
       if (property.type().equals(Type.ARRAY)) {
-        resourcesField = property;
+        resourcesField = new DiscoveryField(property, discoGapicNamer);
+        resourcesFieldPath.add(resourcesField);
         break;
       } else if (property.additionalProperties() != null
           && !Strings.isNullOrEmpty(property.additionalProperties().reference())) {
         Schema additionalProperties = property.additionalProperties().dereference();
         if (additionalProperties.type().equals(Type.ARRAY)) {
-          resourcesField = additionalProperties;
+          resourcesField = new DiscoveryField(additionalProperties, discoGapicNamer);
+          resourcesFieldPath.add(resourcesField);
           break;
         }
         for (Schema subProperty : additionalProperties.properties().values()) {
           if (subProperty.type().equals(Type.ARRAY)) {
-            resourcesField = subProperty;
+            resourcesField = new DiscoveryField(subProperty, discoGapicNamer);
+            resourcesFieldPath.add(resourcesField);
+            resourcesFieldPath.add(new DiscoveryField(additionalProperties, discoGapicNamer));
             break;
           }
         }
+        if (resourcesField != null) {
+          break;
+        }
       }
     }
+
     FieldConfig resourcesFieldConfig;
     if (resourcesField == null) {
       diagCollector.addDiag(
@@ -208,11 +220,11 @@ public abstract class PageStreamingConfig {
               "Resources field missing for page streaming: method = %s, message type = %s, field = %s",
               method.id(),
               method.id(),
-              resourcesField.getIdentifier()));
+              resourcesField.getSimpleName()));
       resourcesFieldConfig = null;
     } else {
       resourcesFieldConfig =
-          FieldConfig.createFieldConfig(new DiscoveryField(resourcesField, discoGapicNamer));
+          FieldConfig.createFieldConfig(resourcesField, ImmutableList.copyOf(resourcesFieldPath));
     }
 
     if (requestTokenField == null || responseTokenField == null || resourcesFieldConfig == null) {
