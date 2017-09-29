@@ -44,7 +44,9 @@ public class CSharpCodeGeneratorTest extends GapicTestBase {
   @Parameters(name = "{0}")
   public static List<Object[]> testedConfigs() {
     return GapicTestBase.createTestedConfigs(
-        MainGapicProviderFactory.CSHARP, new String[] {"csharp_gapic.yaml", "library_gapic.yaml"});
+        MainGapicProviderFactory.CSHARP,
+        new String[] {"csharp_gapic.yaml", "library_gapic.yaml"},
+        "library_pkg.yaml");
   }
 
   // Tests

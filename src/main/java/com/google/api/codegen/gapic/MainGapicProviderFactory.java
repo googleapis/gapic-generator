@@ -121,7 +121,8 @@ public class MainGapicProviderFactory
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CSharpRenderingUtil()))
-                .setModelToViewTransformer(new CSharpGapicClientTransformer(pathMapper))
+                .setModelToViewTransformer(
+                    new CSharpGapicClientTransformer(pathMapper, packageConfig))
                 .build();
         providers.add(mainProvider);
 
