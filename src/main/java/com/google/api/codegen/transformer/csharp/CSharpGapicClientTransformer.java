@@ -15,10 +15,12 @@
 package com.google.api.codegen.transformer.csharp;
 
 import com.google.api.codegen.InterfaceView;
+import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProductServiceConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiCallableTransformer;
@@ -28,6 +30,7 @@ import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.PackageMetadataTransformer;
 import com.google.api.codegen.transformer.PageStreamingTransformer;
 import com.google.api.codegen.transformer.ParamWithSimpleDoc;
 import com.google.api.codegen.transformer.PathTemplateTransformer;
@@ -42,7 +45,9 @@ import com.google.api.codegen.viewmodel.ApiCallableImplType;
 import com.google.api.codegen.viewmodel.ApiCallableView;
 import com.google.api.codegen.viewmodel.ClientMethodType;
 import com.google.api.codegen.viewmodel.ModifyMethodView;
+import com.google.api.codegen.viewmodel.PackageInfoView;
 import com.google.api.codegen.viewmodel.ReroutedGrpcView;
+import com.google.api.codegen.viewmodel.ServiceDocView;
 import com.google.api.codegen.viewmodel.SettingsDocView;
 import com.google.api.codegen.viewmodel.StaticLangApiAndSettingsFileView;
 import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
@@ -50,10 +55,12 @@ import com.google.api.codegen.viewmodel.StaticLangApiView;
 import com.google.api.codegen.viewmodel.StaticLangResourceNamesView;
 import com.google.api.codegen.viewmodel.StaticLangSettingsView;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.ArrayList;
@@ -67,8 +74,10 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
 
   private static final String XAPI_TEMPLATE_FILENAME = "csharp/gapic_client.snip";
   private static final String RESOURCENAMES_TEMPLATE_FILENAME = "csharp/gapic_resourcenames.snip";
+  private static final String CSPROJ_TEMPLATE_FILENAME = "csharp/gapic_csproj.snip";
 
   private final GapicCodePathMapper pathMapper;
+  private final PackageMetadataConfig packageMetadataConfig;
   private final StaticLangApiMethodTransformer apiMethodTransformer =
       new CSharpApiMethodTransformer();
   private final ServiceTransformer serviceTransformer = new ServiceTransformer();
@@ -81,9 +90,12 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
   private final RetryDefinitionsTransformer retryDefinitionsTransformer =
       new RetryDefinitionsTransformer();
   private final CSharpCommonTransformer csharpCommonTransformer = new CSharpCommonTransformer();
+  private final PackageMetadataTransformer metadataTransformer = new PackageMetadataTransformer();
 
-  public CSharpGapicClientTransformer(GapicCodePathMapper pathMapper) {
+  public CSharpGapicClientTransformer(
+      GapicCodePathMapper pathMapper, PackageMetadataConfig packageMetadataConfig) {
     this.pathMapper = pathMapper;
+    this.packageMetadataConfig = packageMetadataConfig;
   }
 
   @Override
@@ -114,19 +126,73 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
             namer,
             featureConfig);
     surfaceDocs.add(generateResourceNamesView(context));
+    surfaceDocs.add(generateCsProjView(context));
 
     return surfaceDocs;
   }
 
   @Override
   public List<String> getTemplateFileNames() {
-    return Arrays.asList(XAPI_TEMPLATE_FILENAME, RESOURCENAMES_TEMPLATE_FILENAME);
+    return Arrays.asList(
+        XAPI_TEMPLATE_FILENAME, RESOURCENAMES_TEMPLATE_FILENAME, CSPROJ_TEMPLATE_FILENAME);
   }
 
   private ModelTypeTable createTypeTable(String implicitPackageName) {
     return new ModelTypeTable(
         new CSharpTypeTable(implicitPackageName),
         new CSharpModelTypeNameConverter(implicitPackageName));
+  }
+
+  private PackageInfoView generateCsProjView(GapicInterfaceContext context) {
+    Model model = context.getModel();
+    GapicProductConfig productConfig = context.getProductConfig();
+    PackageInfoView.Builder view = PackageInfoView.newBuilder();
+    view.templateFileName(CSPROJ_TEMPLATE_FILENAME);
+    String outputPath = pathMapper.getOutputPath(context.getInterface(), productConfig);
+    view.outputPath(outputPath + File.separator + productConfig.getPackageName() + ".csproj");
+    view.fileHeader(fileHeaderTransformer.generateFileHeader(context));
+    view.serviceTitle(model.getServiceConfig().getTitle());
+    view.serviceDescription(model.getServiceConfig().getDocumentation().getSummary().trim());
+    view.domainLayerLocation(productConfig.getDomainLayerLocation());
+    view.authScopes(new ArrayList<String>()); // Unused in C#
+    view.releaseLevel(productConfig.getReleaseLevel());
+    String versionSuffix;
+    switch (productConfig.getReleaseLevel()) {
+      case ALPHA:
+        versionSuffix = "-alpha01";
+        break;
+      case BETA:
+        versionSuffix = "-beta01";
+        break;
+      default:
+        versionSuffix = "";
+        break;
+    }
+    view.version("1.0.0" + versionSuffix);
+    String tags = "";
+    for (String tag : Splitter.on('.').split(productConfig.getPackageName())) {
+      if (tag.matches("[vV][\\d.]+")) {
+        break;
+      }
+      tags += ";" + tag;
+    }
+    view.tags(tags.isEmpty() ? "" : tags.substring(1));
+    view.packageMetadata(generatePackageMetadataView(context));
+    view.serviceDocs(new ArrayList<ServiceDocView>());
+    return view.build();
+  }
+
+  private PackageMetadataView generatePackageMetadataView(GapicInterfaceContext context) {
+    String outputPath =
+        pathMapper.getOutputPath(context.getInterface(), context.getProductConfig());
+    return metadataTransformer
+        .generateMetadataView(
+            packageMetadataConfig,
+            context.getModel(),
+            CSPROJ_TEMPLATE_FILENAME,
+            outputPath,
+            TargetLanguage.CSHARP)
+        .build();
   }
 
   private StaticLangResourceNamesView generateResourceNamesView(GapicInterfaceContext context) {
