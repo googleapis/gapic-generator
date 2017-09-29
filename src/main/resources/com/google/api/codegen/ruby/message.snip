@@ -1,4 +1,6 @@
+@extends "readme.snip"
 @extends "ruby/common.snip"
+@extends "ruby/method_sample.snip"
 
 @snippet generate(doc)
   @let body = documentChildren(doc)
@@ -14,6 +16,8 @@
     @switch module.type
     @case "TocModuleView"
       {@tocModule(module, iterator, content)}
+    @case "ReadmeMetadataView"
+      {@readmeModule(module, iterator, content)}
     @case "SimpleModuleView"
       {@simpleModule(module, iterator, content)}
     @end
@@ -35,6 +39,29 @@
   @end
   @#
   {@simpleModule(module, iterator, content)}
+@end
+
+@private readmeModule(module, iterator, content)
+  @# rubocop:disable LineLength
+
+  @##
+  {@toComments(util.getDocLines(generateReadme(module)))}
+  @#
+  @#
+  {@simpleModule(module, iterator, content)}
+@end
+
+@private generateReadme(metadata)
+  {@readme(metadata, exampleMethods(metadata.exampleMethods), installationLines(metadata))}
+@end
+
+@private exampleMethods(methods)
+  @join method : methods on BREAK
+    @#### {@method.apiClassName}
+    ```rb
+    {@sampleCodeWithTopLevelImport(method)}
+    ```
+  @end
 @end
 
 @private simpleModule(module, iterator, content)
