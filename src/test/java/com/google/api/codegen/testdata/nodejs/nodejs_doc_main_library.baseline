@@ -65,7 +65,7 @@ var STREAM_DESCRIPTORS = {
   monologAboutBook: new gax.StreamDescriptor(gax.StreamType.CLIENT_STREAMING)
 };
 
-/**
+/*!
  * The scopes needed to make gRPC calls to all of the methods defined in
  * this service.
  */
@@ -989,7 +989,7 @@ LibraryServiceClient.prototype.listBooks = function(request, options, callback) 
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
- * @return {Stream}
+ * @returns {Stream}
  *   An object stream which emits an object representing [Book]{@link Book} on 'data' event.
  *
  * @example
@@ -2343,6 +2343,10 @@ LibraryServiceClient.prototype.testOptionalRequiredFlatteningParams = function(r
   return this._testOptionalRequiredFlatteningParams(request, options, callback);
 };
 
+/**
+ * @class
+ * @param {*} gaxGrpc
+ */
 function LibraryServiceClientBuilder(gaxGrpc) {
   if (!(this instanceof LibraryServiceClientBuilder)) {
     return new LibraryServiceClientBuilder(gaxGrpc);
@@ -2365,6 +2369,7 @@ function LibraryServiceClientBuilder(gaxGrpc) {
   /**
    * Build a new instance of {@link LibraryServiceClient}.
    *
+   * @method LibraryServiceClientBuilder#libraryServiceClient
    * @param {Object=} opts - The optional parameters.
    * @param {String=} opts.servicePath
    *   The domain name of the API remote host.
