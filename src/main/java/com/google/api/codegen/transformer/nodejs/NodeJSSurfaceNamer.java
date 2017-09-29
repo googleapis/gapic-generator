@@ -280,17 +280,17 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     ImmutableList.Builder<String> returnMessageLines = ImmutableList.builder();
     if (method.getRequestStreaming()) {
       returnMessageLines.add(
-          "@return {Stream} - A writable stream which accepts objects representing",
+          "@returns {Stream} - A writable stream which accepts objects representing",
           "  "
               + commentReformatter.getLinkedElementName(method.getInputType().getMessageType())
               + " for write() method.");
     } else {
       if (isProtobufEmpty(method.getOutputMessage())) {
         returnMessageLines.add(
-            "@return {Promise} - The promise which resolves when API call finishes.");
+            "@returns {Promise} - The promise which resolves when API call finishes.");
       } else {
         returnMessageLines.add(
-            "@return {Promise} - The promise which resolves to an array.",
+            "@returns {Promise} - The promise which resolves to an array.",
             "  The first element of the array is " + returnTypeDoc + ".");
         if (methodConfig.isPageStreaming()) {
           returnMessageLines.add(
