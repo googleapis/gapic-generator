@@ -37,6 +37,7 @@ public class JSCommentReformatter implements CommentReformatter {
 
   public String getLinkedElementName(ProtoElement element) {
     String simpleName = element.getSimpleName();
-    return String.format("[%s]{@link %s}", simpleName, simpleName);
+    String packageName = element.getFile().getFullName();
+    return String.format("[%s]{@link %s.%s}", simpleName, packageName, simpleName);
   }
 }
