@@ -18,8 +18,6 @@ import com.google.api.codegen.util.CommentReformatter;
 import com.google.api.codegen.util.CommentTransformer;
 import com.google.api.codegen.util.LinkPattern;
 import com.google.api.tools.framework.model.ProtoElement;
-import com.google.api.tools.framework.model.ProtoFile;
-import com.google.common.collect.ImmutableSet;
 
 public class JSCommentReformatter implements CommentReformatter {
 
@@ -38,32 +36,8 @@ public class JSCommentReformatter implements CommentReformatter {
   }
 
   public String getLinkedElementName(ProtoElement element) {
-    if (isExternalFile(element.getFile())) {
-      String fullName = element.getFullName();
-      return String.format("[%s]{@link external:\"%s\"}", fullName, fullName);
-    } else {
-      String simpleName = element.getSimpleName();
-      return String.format("[%s]{@link %s}", simpleName, simpleName);
-    }
+    String simpleName = element.getSimpleName();
+    String packageName = element.getFile().getFullName();
+    return String.format("[%s]{@link %s.%s}", simpleName, packageName, simpleName);
   }
-
-  public boolean isExternalFile(ProtoFile file) {
-    String filePath = file.getSimpleName();
-    for (String commonPath : COMMON_PROTO_PATHS) {
-      if (filePath.startsWith(commonPath)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  private static final ImmutableSet<String> COMMON_PROTO_PATHS =
-      ImmutableSet.of(
-          "google/api",
-          "google/bytestream",
-          "google/logging/type",
-          "google/longrunning",
-          "google/protobuf",
-          "google/rpc",
-          "google/type");
 }

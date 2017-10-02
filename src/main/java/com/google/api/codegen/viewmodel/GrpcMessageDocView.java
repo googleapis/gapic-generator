@@ -31,6 +31,8 @@ public abstract class GrpcMessageDocView implements GrpcElementDocView {
 
   public abstract String fileUrl();
 
+  public abstract String packageName();
+
   public static Builder newBuilder() {
     return new AutoValue_GrpcMessageDocView.Builder();
   }
@@ -52,6 +54,8 @@ public abstract class GrpcMessageDocView implements GrpcElementDocView {
     public abstract Builder elementDocs(List<GrpcElementDocView> val);
 
     public abstract Builder fileUrl(String val);
+
+    public abstract Builder packageName(String val);
 
     public abstract GrpcMessageDocView build();
   }

@@ -4,11 +4,7 @@
   {@licenseSection(doc.fileHeader)}
 
   @join elementDoc : doc.elementDocs on BREAK.add(BREAK)
-    @if doc.isExternalFile
-      {@documentExternalElement(elementDoc)}
-    @else
-      {@documentElement(elementDoc, toplevelHeader(elementDoc), semicolon())}
-    @end
+    {@documentElement(elementDoc, toplevelHeader(elementDoc), semicolon())}
   @end
 @end
 
@@ -53,6 +49,7 @@
      {@properties(message)}
    @end
    * @@typedef {@message.name}
+   * @@member {@message.packageName}
    * @@see [{@message.fullName} definition in proto format]{@@link {@message.fileUrl}}
    */
   {@header}
@@ -87,20 +84,6 @@
   }{@footer}
 @end
 
-@private documentExternalMessage(message)
-  /**
-   @if message.lines
-     {@comments(message.lines)}
-     *
-   @end
-   * @@external "{@message.fullName}"
-   @if properties(message)
-     {@properties(message)}
-   @end
-   * @@see [{@message.fullName} definition in proto format]{@@link {@message.fileUrl}}
-   */
-@end
-
 @private properties(message)
   @join property : message.properties
     * @@property {{@property.typeName}} {@property.paramName}
@@ -128,12 +111,3 @@
   @end
 @end
 
-@private documentExternalElement(doc)
-  @switch doc.type
-  @case "GrpcMessageDocView"
-    {@documentExternalMessage(doc)}
-  @case "GrpcEnumDocView"
-  @default
-    {@unhandledCase()}
-  @end
-@end
