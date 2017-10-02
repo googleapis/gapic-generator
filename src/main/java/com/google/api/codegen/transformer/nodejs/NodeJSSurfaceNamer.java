@@ -365,13 +365,9 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   @Override
   public String getProtoFileName(ProtoFile file) {
     String filePath = file.getSimpleName().replace(".proto", ".js");
-    if (commentReformatter.isExternalFile(file)) {
-      filePath = filePath.replaceAll("/", "_");
-    } else {
-      int lastSlash = filePath.lastIndexOf('/');
-      if (lastSlash >= 0) {
-        filePath = filePath.substring(lastSlash + 1);
-      }
+    int lastSlash = filePath.lastIndexOf('/');
+    if (lastSlash >= 0) {
+      filePath = filePath.substring(lastSlash + 1);
     }
     return filePath;
   }

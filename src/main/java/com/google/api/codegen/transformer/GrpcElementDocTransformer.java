@@ -54,6 +54,7 @@ public class GrpcElementDocTransformer {
       doc.lines(namer.getDocLines(message));
       doc.properties(generateMessagePropertyDocs(typeTable, namer, message.getFields()));
       doc.elementDocs(generateElementDocs(typeTable, namer, message));
+      doc.packageName(message.getFile().getFullName());
       messageDocs.add(doc.build());
     }
     return messageDocs.build();
