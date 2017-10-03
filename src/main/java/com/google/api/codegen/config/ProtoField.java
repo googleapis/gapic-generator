@@ -230,7 +230,7 @@ public class ProtoField implements FieldModel {
   public List<String> getPagedResponseResourceMethods(
       FeatureConfig featureConfig, FieldConfig startingFieldConfig, SurfaceNamer namer) {
     String resourceFieldGetFunctionName =
-        namer.getFieldGetFunctionName(featureConfig, startingFieldConfig);
+        namer.getFieldGetFunctionName(startingFieldConfig.getField());
     return ImmutableList.of(resourceFieldGetFunctionName);
   }
 }
