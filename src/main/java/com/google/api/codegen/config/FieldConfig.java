@@ -65,7 +65,12 @@ public abstract class FieldConfig {
       ResourceNameTreatment resourceNameTreatment,
       ResourceNameConfig resourceNameConfig,
       ResourceNameConfig messageResourceNameConfig) {
-    return createFieldConfig(field, ImmutableList.of(field), resourceNameTreatment, resourceNameConfig, messageResourceNameConfig);
+    return createFieldConfig(
+        field,
+        ImmutableList.of(field),
+        resourceNameTreatment,
+        resourceNameConfig,
+        messageResourceNameConfig);
   }
 
   private static FieldConfig createFieldConfig(

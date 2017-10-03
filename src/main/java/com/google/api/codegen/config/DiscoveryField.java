@@ -35,7 +35,6 @@ import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableList.Builder;
 import java.util.LinkedList;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -247,8 +246,7 @@ public class DiscoveryField implements FieldModel {
     Node currentResource = startingFieldConfig.getField().getDiscoveryField();
     List<String> methodNames = new LinkedList<>();
     for (FieldModel field : startingFieldConfig.getFieldPath()) {
-      methodNames.add(0,
-          namer.getFieldGetFunctionName(field));
+      methodNames.add(0, namer.getFieldGetFunctionName(field));
     }
     return ImmutableList.copyOf(methodNames);
   }
