@@ -29,7 +29,7 @@ public abstract class ListMethodDetailView {
 
   public abstract String iterateMethodName();
 
-  public abstract List<String> resourcesFieldGetFunction();
+  public abstract List<String> resourcesFieldGetFunctions();
 
   public static Builder newBuilder() {
     return new AutoValue_ListMethodDetailView.Builder();
@@ -47,7 +47,7 @@ public abstract class ListMethodDetailView {
 
     public abstract Builder iterateMethodName(String name);
 
-    public abstract Builder resourcesFieldGetFunction(List<String> name);
+    public abstract Builder resourcesFieldGetFunctions(List<String> name);
 
     public abstract ListMethodDetailView build();
   }

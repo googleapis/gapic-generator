@@ -112,7 +112,7 @@ public class PageStreamingTransformer {
     for (FieldModel field : resourceFieldConfig.getFieldPath()) {
       resourcesFieldGetFunctionList.add(namer.getFieldGetFunctionName(field));
     }
-    desc.resourcesFieldGetFunction(resourcesFieldGetFunctionList.build());
+    desc.resourcesFieldGetFunctions(resourcesFieldGetFunctionList.build());
 
     return desc.build();
   }
