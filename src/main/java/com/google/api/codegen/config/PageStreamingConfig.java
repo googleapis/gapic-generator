@@ -182,47 +182,21 @@ public abstract class PageStreamingConfig {
     }
 
     Schema responseField = method.response().dereference();
-    DiscoveryField resourcesField = null;
-    List<FieldModel> resourcesFieldPath = new LinkedList<>();
-    for (Schema property : responseField.properties().values()) {
-      // Assume the List response has exactly one Array property.
-      if (property.type().equals(Type.ARRAY)) {
-        resourcesField = new DiscoveryField(property, discoGapicNamer);
-        resourcesFieldPath.add(resourcesField);
-        break;
-      } else if (property.additionalProperties() != null
-          && !Strings.isNullOrEmpty(property.additionalProperties().reference())) {
-        Schema additionalProperties = property.additionalProperties().dereference();
-        if (additionalProperties.type().equals(Type.ARRAY)) {
-          resourcesField = new DiscoveryField(additionalProperties, discoGapicNamer);
-          resourcesFieldPath.add(resourcesField);
-          break;
-        }
-        for (Schema subProperty : additionalProperties.properties().values()) {
-          if (subProperty.type().equals(Type.ARRAY)) {
-            resourcesField = new DiscoveryField(subProperty, discoGapicNamer);
-            resourcesFieldPath.add(new DiscoveryField(property, discoGapicNamer));
-            resourcesFieldPath.add(resourcesField);
-            break;
-          }
-        }
-        if (resourcesField != null) {
-          break;
-        }
-      }
-    }
+    ImmutableList<FieldModel> resourcesFieldPath =
+        ImmutableList.copyOf(getResourcesGetterPath(responseField, discoGapicNamer));
 
     FieldConfig resourcesFieldConfig;
-    if (resourcesField == null) {
+    if (resourcesFieldPath.isEmpty()) {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
-              "Resources field missing for page streaming: method = %s, message type = %s, field = %s",
+              "Resources field missing for page streaming: method = %s, message type = %s, response field = %s",
               method.id(),
               method.id(),
-              resourcesField.getSimpleName()));
+              method.response() == null ? "null" : method.response().toString()));
       resourcesFieldConfig = null;
     } else {
+      FieldModel resourcesField = resourcesFieldPath.get(resourcesFieldPath.size() - 1);
       resourcesFieldConfig =
           FieldConfig.createFieldConfig(resourcesField, ImmutableList.copyOf(resourcesFieldPath));
     }
@@ -235,6 +209,36 @@ public abstract class PageStreamingConfig {
         new DiscoveryField(pageSizeField, discoGapicNamer),
         new DiscoveryField(responseTokenField, discoGapicNamer),
         resourcesFieldConfig);
+  }
+
+  private static List<FieldModel> getResourcesGetterPath(
+      Schema responseField, DiscoGapicNamer namer) {
+    List<FieldModel> resourcesFieldPath = new LinkedList<>();
+    for (Schema property : responseField.properties().values()) {
+      // Assume the List response has exactly one Array property.
+      if (property.type().equals(Type.ARRAY)) {
+        resourcesFieldPath.add(new DiscoveryField(property, namer));
+        break;
+      } else if (property.additionalProperties() != null
+          && !Strings.isNullOrEmpty(property.additionalProperties().reference())) {
+        Schema additionalProperties = property.additionalProperties().dereference();
+        if (additionalProperties.type().equals(Type.ARRAY)) {
+          resourcesFieldPath.add(new DiscoveryField(additionalProperties, namer));
+          break;
+        }
+        for (Schema subProperty : additionalProperties.properties().values()) {
+          if (subProperty.type().equals(Type.ARRAY)) {
+            resourcesFieldPath.add(new DiscoveryField(property, namer));
+            resourcesFieldPath.add(new DiscoveryField(subProperty, namer));
+            break;
+          }
+        }
+        if (!resourcesFieldPath.isEmpty()) {
+          break;
+        }
+      }
+    }
+    return resourcesFieldPath;
   }
 
   /** Returns whether there is a field for page size. */
