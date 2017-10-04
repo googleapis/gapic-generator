@@ -67,6 +67,13 @@ public class PhpSurfaceNamer extends SurfaceNamer {
     return publicMethodName(Name.from("get").join(identifier));
   }
 
+  /** The function name to format the entity for the given collection. */
+  @Override
+  public String getFormatFunctionName(
+      Interface apiInterface, SingleResourceNameConfig resourceNameConfig) {
+    return publicMethodName(Name.from(resourceNameConfig.getEntityName(), "name"));
+  }
+
   @Override
   public String getPathTemplateName(
       Interface apiInterface, SingleResourceNameConfig resourceNameConfig) {
@@ -197,5 +204,10 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   @Override
   public boolean methodHasRetrySettings(GapicMethodConfig methodConfig) {
     return !methodConfig.isGrpcStreaming();
+  }
+
+  @Override
+  public boolean methodHasTimeoutSettings(GapicMethodConfig methodConfig) {
+    return methodConfig.isGrpcStreaming();
   }
 }

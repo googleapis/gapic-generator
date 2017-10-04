@@ -65,6 +65,7 @@ $ npm install --save @google-cloud/library
   "description": "Google Example Library API client for Node.js",
   "main": "src/index.js",
   "files": [
+    "protos",
     "src",
     "AUTHORS",
     "COPYING"
@@ -84,9 +85,10 @@ $ npm install --save @google-cloud/library
   ],
   "dependencies": {
     "extend": "^3.0",
-    "google-gax": "^0.7.0",
-    "google-proto-files": "^0.8.2",
-    "google-some-other-package-v1": "^0.2.1"
+    "google-gax": "^0.14.0",
+    "google-some-other-package-v1": "^0.2.1",
+    "lodash.merge": "^4.6.0",
+    "protobufjs": "^6.8.0"
   },
   "devDependencies": {
     "mocha": "^3.2.0",
@@ -174,6 +176,7 @@ var gapic = {
   v1: require('./v1')
 };
 var gaxGrpc = require('google-gax').grpc();
+var path = require('path');
 
 const VERSION = require('../package.json').version;
 
@@ -233,21 +236,19 @@ function libraryV1(options) {
 
 var v1Protos = {};
 
-extend(v1Protos, gaxGrpc.load([{
-  root: require('google-proto-files')('..'),
-  file: 'library.proto'
-}]).google.example.library.v1);
+extend(v1Protos, gaxGrpc.loadProto(
+  path.join(__dirname, '..', 'protos'), 'library.proto')
+    .google.example.library.v1);
 
-extend(v1Protos, gaxGrpc.load([{
-  root: require('google-proto-files')('..'),
-  file: 'tagger.proto'
-}]).google.tagger.v1);
+extend(v1Protos, gaxGrpc.loadProto(
+  path.join(__dirname, '..', 'protos'), 'tagger.proto')
+    .google.tagger.v1);
 
 module.exports = libraryV1;
 module.exports.types = v1Protos;
 module.exports.v1 = libraryV1;
 module.exports.v1.types = v1Protos;
-============== file: src/v1/doc/doc_field_mask.js ==============
+============== file: src/v1/doc/google/example/library/v1/doc_field_mask.js ==============
 /*
  * Copyright 2017, Google Inc. All rights reserved.
  *
@@ -271,9 +272,10 @@ module.exports.v1.types = v1Protos;
 
 /**
  * @property {number[]} materials
- *   The number should be among the values of [Material]{@link Material}
+ *   The number should be among the values of [Material]{@link google.example.library.v1.Material}
  *
- * @class
+ * @typedef FieldMask
+ * @member google.example.library.v1
  * @see [google.example.library.v1.FieldMask definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/field_mask.proto}
  */
 var FieldMask = {
@@ -290,7 +292,1010 @@ var FieldMask = {
     CARDBOARD: 4
   }
 };
-============== file: src/v1/doc/doc_google_protobuf_any.js ==============
+============== file: src/v1/doc/google/example/library/v1/doc_library.js ==============
+/*
+ * Copyright 2017, Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * Note: this file is purely for documentation. Any contents are not expected
+ * to be loaded as the JS file.
+ */
+
+/**
+ * A single book in the library.
+ * Message comment may include special characters: <>&"`'@.
+ *
+ * @property {string} name
+ *   The resource name of the book.
+ *   Book names have the form `bookShelves/{shelf_id}/books/{book_id}`.
+ *   Message field comment may include special characters: <>&"`'@.
+ *
+ * @property {string} author
+ *   The name of the book author.
+ *
+ * @property {string} title
+ *   The title of the book.
+ *
+ * @property {boolean} read
+ *   Value indicating whether the book has been read.
+ *
+ * @property {number} rating
+ *   For testing enums.
+ *
+ *   The number should be among the values of [Rating]{@link google.example.library.v1.Rating}
+ *
+ * @property {Object} anyValue
+ *   For testing all well-known types.
+ *
+ *   This object should have the same structure as [Any]{@link google.protobuf.Any}
+ *
+ * @property {Object} structValue
+ *   This object should have the same structure as [Struct]{@link google.protobuf.Struct}
+ *
+ * @property {Object} valueValue
+ *   This object should have the same structure as [Value]{@link google.protobuf.Value}
+ *
+ * @property {Object} listValueValue
+ *   This object should have the same structure as [ListValue]{@link google.protobuf.ListValue}
+ *
+ * @property {Object.<string, Object>} mapListValueValue
+ *
+ * @property {Object} timeValue
+ *   This object should have the same structure as [Timestamp]{@link google.protobuf.Timestamp}
+ *
+ * @property {Object} durationValue
+ *   This object should have the same structure as [Duration]{@link google.protobuf.Duration}
+ *
+ * @property {Object} fieldMaskValue
+ *   This object should have the same structure as [FieldMask]{@link google.protobuf.FieldMask}
+ *
+ * @property {Object} int32Value
+ *   This object should have the same structure as [Int32Value]{@link google.protobuf.Int32Value}
+ *
+ * @property {Object} uint32Value
+ *   This object should have the same structure as [UInt32Value]{@link google.protobuf.UInt32Value}
+ *
+ * @property {Object} int64Value
+ *   This object should have the same structure as [Int64Value]{@link google.protobuf.Int64Value}
+ *
+ * @property {Object} uint64Value
+ *   This object should have the same structure as [UInt64Value]{@link google.protobuf.UInt64Value}
+ *
+ * @property {Object} floatValue
+ *   This object should have the same structure as [FloatValue]{@link google.protobuf.FloatValue}
+ *
+ * @property {Object} doubleValue
+ *   This object should have the same structure as [DoubleValue]{@link google.protobuf.DoubleValue}
+ *
+ * @property {Object} stringValue
+ *   This object should have the same structure as [StringValue]{@link google.protobuf.StringValue}
+ *
+ * @property {Object} boolValue
+ *   This object should have the same structure as [BoolValue]{@link google.protobuf.BoolValue}
+ *
+ * @property {Object} bytesValue
+ *   This object should have the same structure as [BytesValue]{@link google.protobuf.BytesValue}
+ *
+ * @property {Object.<number, string>} mapStringValue
+ *   Test doc generation of lists:
+ *
+ *   +   Here is a sentence about the first element of the list that continues
+ *       into a second line.
+ *   +   The second element of the list.
+ *   +   Another element of the list where the indentation isn't consistent
+ *   after a blank space.
+ *
+ *       The second paragraph of the list
+ *   that doesn't have a hanging indent.
+ *
+ * @property {Object.<string, Object>} mapMessageValue
+ *
+ * @property {Object} resource
+ *   Tests Python doc generation: should generate a dummy file for shared_type
+ *   resource, but *not* its import, other_shared_type
+ *
+ *   This object should have the same structure as [Used]{@link google.test.shared.data.Used}
+ *
+ * @typedef Book
+ * @member google.example.library.v1
+ * @see [google.example.library.v1.Book definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var Book = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+
+  /**
+   * @enum {number}
+   */
+  Rating: {
+
+    /**
+     * GOOD enum description
+     */
+    GOOD: 0,
+
+    /**
+     * Enum description with special characters: <>&"`'@.
+     */
+    BAD: 1
+  }
+};
+
+/**
+ * A single book in the archives.
+ *
+ * @property {string} name
+ *   The resource name of the book.
+ *   Book names have the form `archives/{archive_id}/books/{book_id}`.
+ *
+ * @property {string} author
+ *   The name of the book author.
+ *
+ * @property {string} title
+ *   The title of the book.
+ *
+ * @property {boolean} read
+ *   Value indicating whether the book has been read.
+ *
+ * @typedef BookFromArchive
+ * @member google.example.library.v1
+ * @see [google.example.library.v1.BookFromArchive definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var BookFromArchive = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * @property {number} field
+ *
+ * @property {Object} field2
+ *   This object should have the same structure as [SomeMessage2]{@link google.example.library.v1.SomeMessage2}
+ *
+ * @property {number} alignment
+ *   The number should be among the values of [Alignment]{@link google.example.library.v1.Alignment}
+ *
+ * @typedef SomeMessage
+ * @member google.example.library.v1
+ * @see [google.example.library.v1.SomeMessage definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var SomeMessage = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+
+  /**
+   * Tests service with two enums of the same simple name
+   *
+   * @enum {number}
+   */
+  Alignment: {
+    GOOD: 0,
+    NEUTRAL: 1,
+    EVIL: 2
+  }
+};
+
+/**
+ * @property {number} field1
+ *
+ * @property {number} format
+ *   The number should be among the values of [Alignment]{@link google.example.library.v1.Alignment}
+ *
+ * @typedef SomeMessage2
+ * @member google.example.library.v1
+ * @see [google.example.library.v1.SomeMessage2 definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var SomeMessage2 = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+
+  /**
+   * @typedef SomeMessage3
+   * @member google.example.library.v1
+   * @see [google.example.library.v1.SomeMessage2.SomeMessage3 definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+   */
+  SomeMessage3: {
+    // This is for documentation. Actual contents will be loaded by gRPC.
+
+    /**
+     * Tests Python nested enums
+     *
+     * @enum {number}
+     */
+    Alignment: {
+
+      /**
+       * 8-bit
+       */
+      CHAR: 0,
+
+      /**
+       * 32-bit
+       */
+      INT: 1,
+
+      /**
+       * 64-bit
+       */
+      DOUBLE: 2
+    }
+  },
+
+  /**
+   * Another enum with duplicated simple name
+   *
+   * @enum {number}
+   */
+  Alignment: {
+    FLUSH_LEFT: 0,
+    FLUSH_RIGHT: 1,
+    CENTERED: 2,
+    JUSTIFIED: 3
+  }
+};
+
+/**
+ * A Shelf contains a collection of books with a theme.
+ *
+ * @property {string} name
+ *   The resource name of the shelf.
+ *   Shelf names have the form `bookShelves/{shelf_id}`.
+ *
+ * @property {string} theme
+ *   The theme of the shelf
+ *
+ * @property {string} internalTheme
+ *   Internal theme that is visible to trusted testers only.
+ *
+ * @typedef Shelf
+ * @member google.example.library.v1
+ * @see [google.example.library.v1.Shelf definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var Shelf = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * Request message for LibraryService.CreateShelf.
+ *
+ * @property {Object} shelf
+ *   The shelf to create.
+ *
+ *   This object should have the same structure as [Shelf]{@link google.example.library.v1.Shelf}
+ *
+ * @typedef CreateShelfRequest
+ * @member google.example.library.v1
+ * @see [google.example.library.v1.CreateShelfRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var CreateShelfRequest = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * Request message for LibraryService.GetShelf.
+ *
+ * @property {string} name
+ *   The name of the shelf to retrieve.
+ *
+ * @property {Object} message
+ *   Field to verify that message-type query parameter gets flattened.
+ *
+ *   This object should have the same structure as [SomeMessage]{@link google.example.library.v1.SomeMessage}
+ *
+ * @property {Object} stringBuilder
+ *   This object should have the same structure as [StringBuilder]{@link google.example.library.v1.StringBuilder}
+ *
+ * @property {string} options
+ *   To test 'options' parameter name conflict.
+ *
+ * @typedef GetShelfRequest
+ * @member google.example.library.v1
+ * @see [google.example.library.v1.GetShelfRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var GetShelfRequest = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * Creates a name conflict with java.lang type
+ *
+ * @property {string} name
+ *
+ * @typedef StringBuilder
+ * @member google.example.library.v1
+ * @see [google.example.library.v1.StringBuilder definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var StringBuilder = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * Request message for LibraryService.ListShelves.
+ *
+ * @property {string} pageToken
+ *   A token identifying a page of results the server should return.
+ *   Typically, this is the value of
+ *   {@link ListShelvesResponse.next_page_token}
+ *   returned from the previous call to `ListShelves` method.
+ *
+ * @typedef ListShelvesRequest
+ * @member google.example.library.v1
+ * @see [google.example.library.v1.ListShelvesRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var ListShelvesRequest = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * Response message for LibraryService.ListShelves.
+ *
+ * @property {Object[]} shelves
+ *   The list of shelves.
+ *
+ *   This object should have the same structure as [Shelf]{@link google.example.library.v1.Shelf}
+ *
+ * @property {string} nextPageToken
+ *   A token to retrieve next page of results.
+ *   Pass this value in the
+ *   {@link ListShelvesRequest.page_token}
+ *   field in the subsequent call to `ListShelves` method to retrieve the next
+ *   page of results.
+ *
+ * @typedef ListShelvesResponse
+ * @member google.example.library.v1
+ * @see [google.example.library.v1.ListShelvesResponse definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var ListShelvesResponse = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * Request message for LibraryService.StreamShelves.
+ * @typedef StreamShelvesRequest
+ * @member google.example.library.v1
+ * @see [google.example.library.v1.StreamShelvesRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var StreamShelvesRequest = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * Response message for LibraryService.StreamShelves.
+ *
+ * @property {Object[]} shelves
+ *   The list of shelves.
+ *
+ *   This object should have the same structure as [Shelf]{@link google.example.library.v1.Shelf}
+ *
+ * @typedef StreamShelvesResponse
+ * @member google.example.library.v1
+ * @see [google.example.library.v1.StreamShelvesResponse definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var StreamShelvesResponse = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * Request message for LibraryService.DeleteShelf.
+ *
+ * @property {string} name
+ *   The name of the shelf to delete.
+ *
+ * @typedef DeleteShelfRequest
+ * @member google.example.library.v1
+ * @see [google.example.library.v1.DeleteShelfRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var DeleteShelfRequest = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * Describes the shelf being removed (other_shelf_name) and updated
+ * (name) in this merge.
+ *
+ * @property {string} name
+ *   The name of the shelf we're adding books to.
+ *
+ * @property {string} otherShelfName
+ *   The name of the shelf we're removing books from and deleting.
+ *
+ * @typedef MergeShelvesRequest
+ * @member google.example.library.v1
+ * @see [google.example.library.v1.MergeShelvesRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var MergeShelvesRequest = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * Request message for LibraryService.CreateBook.
+ *
+ * @property {string} name
+ *   The name of the shelf in which the book is created.
+ *
+ * @property {Object} book
+ *   The book to create.
+ *
+ *   This object should have the same structure as [Book]{@link google.example.library.v1.Book}
+ *
+ * @typedef CreateBookRequest
+ * @member google.example.library.v1
+ * @see [google.example.library.v1.CreateBookRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var CreateBookRequest = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * Request message for LibraryService.PublishSeries.
+ *
+ * @property {Object} shelf
+ *   The shelf in which the series is created.
+ *
+ *   This object should have the same structure as [Shelf]{@link google.example.library.v1.Shelf}
+ *
+ * @property {Object[]} books
+ *   The books to publish in the series.
+ *
+ *   This object should have the same structure as [Book]{@link google.example.library.v1.Book}
+ *
+ * @property {number} edition
+ *   The edition of the series
+ *
+ * @property {boolean} reviewCopy
+ *   If the book is in a pre-publish state
+ *
+ * @property {Object} seriesUuid
+ *   Uniquely identifies the series to the publishing house.
+ *
+ *   This object should have the same structure as [SeriesUuid]{@link google.example.library.v1.SeriesUuid}
+ *
+ * @typedef PublishSeriesRequest
+ * @member google.example.library.v1
+ * @see [google.example.library.v1.PublishSeriesRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var PublishSeriesRequest = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * @property {string} seriesBytes
+ *
+ * @property {string} seriesString
+ *
+ * @typedef SeriesUuid
+ * @member google.example.library.v1
+ * @see [google.example.library.v1.SeriesUuid definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var SeriesUuid = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * Response message for LibraryService.PublishSeries.
+ *
+ * @property {string[]} bookNames
+ *   The names of the books in the series that were published
+ *
+ * @typedef PublishSeriesResponse
+ * @member google.example.library.v1
+ * @see [google.example.library.v1.PublishSeriesResponse definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var PublishSeriesResponse = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * Request message for LibraryService.GetBook.
+ *
+ * @property {string} name
+ *   The name of the book to retrieve.
+ *
+ * @typedef GetBookRequest
+ * @member google.example.library.v1
+ * @see [google.example.library.v1.GetBookRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var GetBookRequest = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * Request message for LibraryService.ListBooks.
+ *
+ * @property {string} name
+ *   The name of the shelf whose books we'd like to list.
+ *
+ * @property {number} pageSize
+ *   Requested page size. Server may return fewer books than requested.
+ *   If unspecified, server will pick an appropriate default.
+ *
+ * @property {string} pageToken
+ *   A token identifying a page of results the server should return.
+ *   Typically, this is the value of
+ *   {@link ListBooksResponse.next_page_token}.
+ *   returned from the previous call to `ListBooks` method.
+ *
+ * @property {string} filter
+ *   To test python built-in wrapping.
+ *
+ * @typedef ListBooksRequest
+ * @member google.example.library.v1
+ * @see [google.example.library.v1.ListBooksRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var ListBooksRequest = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * Response message for LibraryService.ListBooks.
+ *
+ * @property {Object[]} books
+ *   The list of books.
+ *
+ *   This object should have the same structure as [Book]{@link google.example.library.v1.Book}
+ *
+ * @property {string} nextPageToken
+ *   A token to retrieve next page of results.
+ *   Pass this value in the
+ *   {@link ListBooksRequest.page_token}
+ *   field in the subsequent call to `ListBooks` method to retrieve the next
+ *   page of results.
+ *
+ * @typedef ListBooksResponse
+ * @member google.example.library.v1
+ * @see [google.example.library.v1.ListBooksResponse definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var ListBooksResponse = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * Request message for LibraryService.StreamBooks.
+ *
+ * @property {string} name
+ *   The name of the shelf whose books we'd like to list.
+ *
+ * @typedef StreamBooksRequest
+ * @member google.example.library.v1
+ * @see [google.example.library.v1.StreamBooksRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var StreamBooksRequest = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * Request message for LibraryService.UpdateBook.
+ *
+ * @property {string} name
+ *   The name of the book to update.
+ *
+ * @property {Object} book
+ *   The book to update with.
+ *
+ *   This object should have the same structure as [Book]{@link google.example.library.v1.Book}
+ *
+ * @property {Object} updateMask
+ *   A field mask to apply, rendered as an HTTP parameter.
+ *
+ *   This object should have the same structure as [FieldMask]{@link google.protobuf.FieldMask}
+ *
+ * @property {Object} physicalMask
+ *   To test Python import clash resolution.
+ *
+ *   This object should have the same structure as [FieldMask]{@link google.example.library.v1.FieldMask}
+ *
+ * @typedef UpdateBookRequest
+ * @member google.example.library.v1
+ * @see [google.example.library.v1.UpdateBookRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var UpdateBookRequest = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * Request message for LibraryService.DeleteBook.
+ *
+ * @property {string} name
+ *   The name of the book to delete.
+ *
+ * @typedef DeleteBookRequest
+ * @member google.example.library.v1
+ * @see [google.example.library.v1.DeleteBookRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var DeleteBookRequest = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * Describes what book to move (name) and what shelf we're moving it
+ * to (other_shelf_name).
+ *
+ * @property {string} name
+ *   The name of the book to move.
+ *
+ * @property {string} otherShelfName
+ *   The name of the destination shelf.
+ *
+ * @typedef MoveBookRequest
+ * @member google.example.library.v1
+ * @see [google.example.library.v1.MoveBookRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var MoveBookRequest = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * @property {string} name
+ *
+ * @property {number} pageSize
+ *
+ * @property {string} pageToken
+ *
+ * @typedef ListStringsRequest
+ * @member google.example.library.v1
+ * @see [google.example.library.v1.ListStringsRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var ListStringsRequest = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * @property {string[]} strings
+ *
+ * @property {string} nextPageToken
+ *
+ * @typedef ListStringsResponse
+ * @member google.example.library.v1
+ * @see [google.example.library.v1.ListStringsResponse definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var ListStringsResponse = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * @property {string} name
+ *
+ * @property {Object[]} comments
+ *   This object should have the same structure as [Comment]{@link google.example.library.v1.Comment}
+ *
+ * @typedef AddCommentsRequest
+ * @member google.example.library.v1
+ * @see [google.example.library.v1.AddCommentsRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var AddCommentsRequest = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * @property {string} userName
+ *   won't be filled in by the sample generator
+ *
+ * @property {string} comment
+ *   should be filled in by the sample generator
+ *
+ * @property {number} stage
+ *   should be filled in by the sample generator
+ *
+ *   The number should be among the values of [Stage]{@link google.example.library.v1.Stage}
+ *
+ * @property {number} alignment
+ *   Tests Python nested enums
+ *
+ *   The number should be among the values of [Alignment]{@link google.example.library.v1.Alignment}
+ *
+ * @typedef Comment
+ * @member google.example.library.v1
+ * @see [google.example.library.v1.Comment definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var Comment = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+
+  /**
+   * @enum {number}
+   */
+  Stage: {
+    UNSET: 0,
+    DRAFT: 1,
+    PUBLISHED: 2,
+    DELETED: 3
+  }
+};
+
+/**
+ * Request message for LibraryService.GetBookFromArchive.
+ *
+ * @property {string} name
+ *   The name of the book to retrieve.
+ *
+ * @typedef GetBookFromArchiveRequest
+ * @member google.example.library.v1
+ * @see [google.example.library.v1.GetBookFromArchiveRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var GetBookFromArchiveRequest = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * Request message for LibraryService.GetBookFromAnywhere.
+ *
+ * @property {string} name
+ *   The name of the book to retrieve.
+ *
+ * @property {string} altBookName
+ *   An alternate book name, used to test restricting flattened field to a
+ *   single resource name type in a oneof.
+ *
+ * @typedef GetBookFromAnywhereRequest
+ * @member google.example.library.v1
+ * @see [google.example.library.v1.GetBookFromAnywhereRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var GetBookFromAnywhereRequest = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * Request message for LibraryService.GetBookFromAbsolutelyAnywhere.
+ *
+ * @property {string} name
+ *   The name of the book to retrieve.
+ *
+ * @typedef GetBookFromAbsolutelyAnywhereRequest
+ * @member google.example.library.v1
+ * @see [google.example.library.v1.GetBookFromAbsolutelyAnywhereRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var GetBookFromAbsolutelyAnywhereRequest = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * Request message for LibraryService.UpdateBookIndex.
+ *
+ * @property {string} name
+ *   The name of the book to update.
+ *
+ * @property {string} indexName
+ *   The name of the index for the book
+ *
+ * @property {Object.<string, string>} indexMap
+ *   The index to update the book with
+ *
+ * @typedef UpdateBookIndexRequest
+ * @member google.example.library.v1
+ * @see [google.example.library.v1.UpdateBookIndexRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var UpdateBookIndexRequest = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * @property {string} name
+ *   The name of the book to be discussed. If this is in the middle
+ *   of the stream and this is not specified, the name in the previous
+ *   message will be reused.
+ *
+ * @property {Object} comment
+ *   The new comment.
+ *
+ *   This object should have the same structure as [Comment]{@link google.example.library.v1.Comment}
+ *
+ * @typedef DiscussBookRequest
+ * @member google.example.library.v1
+ * @see [google.example.library.v1.DiscussBookRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var DiscussBookRequest = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * Test repeated field with resource name format in request
+ *
+ * @property {string[]} names
+ *
+ * @property {string[]} shelves
+ *
+ * @property {number} pageSize
+ *
+ * @property {string} pageToken
+ *
+ * @typedef FindRelatedBooksRequest
+ * @member google.example.library.v1
+ * @see [google.example.library.v1.FindRelatedBooksRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var FindRelatedBooksRequest = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * Test repeated field with resource name format in page streaming response
+ *
+ * @property {string[]} names
+ *
+ * @property {string} nextPageToken
+ *
+ * @typedef FindRelatedBooksResponse
+ * @member google.example.library.v1
+ * @see [google.example.library.v1.FindRelatedBooksResponse definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var FindRelatedBooksResponse = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * Metadata for a longrunning operation.
+ *
+ * @property {number} progressPercent
+ *   Approximate percentage of the book processed thus far.
+ *
+ * @typedef GetBigBookMetadata
+ * @member google.example.library.v1
+ * @see [google.example.library.v1.GetBigBookMetadata definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var GetBigBookMetadata = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+
+/**
+ * @property {number} requiredSingularInt32
+ *
+ * @property {number} requiredSingularInt64
+ *
+ * @property {number} requiredSingularFloat
+ *
+ * @property {number} requiredSingularDouble
+ *
+ * @property {boolean} requiredSingularBool
+ *
+ * @property {number} requiredSingularEnum
+ *   The number should be among the values of [InnerEnum]{@link google.example.library.v1.InnerEnum}
+ *
+ * @property {string} requiredSingularString
+ *
+ * @property {string} requiredSingularBytes
+ *
+ * @property {Object} requiredSingularMessage
+ *   This object should have the same structure as [InnerMessage]{@link google.example.library.v1.InnerMessage}
+ *
+ * @property {string} requiredSingularResourceName
+ *
+ * @property {string} requiredSingularResourceNameOneof
+ *
+ * @property {number} requiredSingularFixed32
+ *
+ * @property {number} requiredSingularFixed64
+ *
+ * @property {number[]} requiredRepeatedInt32
+ *
+ * @property {number[]} requiredRepeatedInt64
+ *
+ * @property {number[]} requiredRepeatedFloat
+ *
+ * @property {number[]} requiredRepeatedDouble
+ *
+ * @property {boolean[]} requiredRepeatedBool
+ *
+ * @property {number[]} requiredRepeatedEnum
+ *   The number should be among the values of [InnerEnum]{@link google.example.library.v1.InnerEnum}
+ *
+ * @property {string[]} requiredRepeatedString
+ *
+ * @property {string[]} requiredRepeatedBytes
+ *
+ * @property {Object[]} requiredRepeatedMessage
+ *   This object should have the same structure as [InnerMessage]{@link google.example.library.v1.InnerMessage}
+ *
+ * @property {string[]} requiredRepeatedResourceName
+ *
+ * @property {string[]} requiredRepeatedResourceNameOneof
+ *
+ * @property {number[]} requiredRepeatedFixed32
+ *
+ * @property {number[]} requiredRepeatedFixed64
+ *
+ * @property {Object.<number, string>} requiredMap
+ *
+ * @property {number} optionalSingularInt32
+ *
+ * @property {number} optionalSingularInt64
+ *
+ * @property {number} optionalSingularFloat
+ *
+ * @property {number} optionalSingularDouble
+ *
+ * @property {boolean} optionalSingularBool
+ *
+ * @property {number} optionalSingularEnum
+ *   The number should be among the values of [InnerEnum]{@link google.example.library.v1.InnerEnum}
+ *
+ * @property {string} optionalSingularString
+ *
+ * @property {string} optionalSingularBytes
+ *
+ * @property {Object} optionalSingularMessage
+ *   This object should have the same structure as [InnerMessage]{@link google.example.library.v1.InnerMessage}
+ *
+ * @property {string} optionalSingularResourceName
+ *
+ * @property {string} optionalSingularResourceNameOneof
+ *
+ * @property {number} optionalSingularFixed32
+ *
+ * @property {number} optionalSingularFixed64
+ *
+ * @property {number[]} optionalRepeatedInt32
+ *
+ * @property {number[]} optionalRepeatedInt64
+ *
+ * @property {number[]} optionalRepeatedFloat
+ *
+ * @property {number[]} optionalRepeatedDouble
+ *
+ * @property {boolean[]} optionalRepeatedBool
+ *
+ * @property {number[]} optionalRepeatedEnum
+ *   The number should be among the values of [InnerEnum]{@link google.example.library.v1.InnerEnum}
+ *
+ * @property {string[]} optionalRepeatedString
+ *
+ * @property {string[]} optionalRepeatedBytes
+ *
+ * @property {Object[]} optionalRepeatedMessage
+ *   This object should have the same structure as [InnerMessage]{@link google.example.library.v1.InnerMessage}
+ *
+ * @property {string[]} optionalRepeatedResourceName
+ *
+ * @property {string[]} optionalRepeatedResourceNameOneof
+ *
+ * @property {number[]} optionalRepeatedFixed32
+ *
+ * @property {number[]} optionalRepeatedFixed64
+ *
+ * @property {Object.<number, string>} optionalMap
+ *
+ * @typedef TestOptionalRequiredFlatteningParamsRequest
+ * @member google.example.library.v1
+ * @see [google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var TestOptionalRequiredFlatteningParamsRequest = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+
+  /**
+   * @typedef InnerMessage
+   * @member google.example.library.v1
+   * @see [google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest.InnerMessage definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+   */
+  InnerMessage: {
+    // This is for documentation. Actual contents will be loaded by gRPC.
+  },
+
+  /**
+   * For testing all types, plus resource-names, as required and optional.
+   *
+   * @enum {number}
+   */
+  InnerEnum: {
+    ZERO: 0,
+    ONE: 1
+  }
+};
+
+/**
+ * @typedef TestOptionalRequiredFlatteningParamsResponse
+ * @member google.example.library.v1
+ * @see [google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
+ */
+var TestOptionalRequiredFlatteningParamsResponse = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+============== file: src/v1/doc/google/protobuf/doc_any.js ==============
 /*
  * Copyright 2017, Google Inc. All rights reserved.
  *
@@ -393,7 +1398,6 @@ var FieldMask = {
  *       "value": "1.212s"
  *     }
  *
- * @external "google.protobuf.Any"
  * @property {string} typeUrl
  *   A URL/resource name whose content describes the type of the
  *   serialized protocol buffer message.
@@ -420,9 +1424,14 @@ var FieldMask = {
  * @property {string} value
  *   Must be a valid serialized protocol buffer of the above specified type.
  *
+ * @typedef Any
+ * @member google.protobuf
  * @see [google.protobuf.Any definition in proto format]{@link https://github.com/google/protobuf/blob/master/src/google/protobuf/any.proto}
  */
-============== file: src/v1/doc/doc_google_protobuf_duration.js ==============
+var Any = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+============== file: src/v1/doc/google/protobuf/doc_duration.js ==============
 /*
  * Copyright 2017, Google Inc. All rights reserved.
  *
@@ -504,7 +1513,6 @@ var FieldMask = {
  * be expressed in JSON format as "3.000000001s", and 3 seconds and 1
  * microsecond should be expressed in JSON format as "3.000001s".
  *
- * @external "google.protobuf.Duration"
  * @property {number} seconds
  *   Signed seconds of the span of time. Must be from -315,576,000,000
  *   to +315,576,000,000 inclusive. Note: these bounds are computed from:
@@ -518,9 +1526,14 @@ var FieldMask = {
  *   of the same sign as the `seconds` field. Must be from -999,999,999
  *   to +999,999,999 inclusive.
  *
+ * @typedef Duration
+ * @member google.protobuf
  * @see [google.protobuf.Duration definition in proto format]{@link https://github.com/google/protobuf/blob/master/src/google/protobuf/duration.proto}
  */
-============== file: src/v1/doc/doc_google_protobuf_field_mask.js ==============
+var Duration = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+============== file: src/v1/doc/google/protobuf/doc_field_mask.js ==============
 /*
  * Copyright 2017, Google Inc. All rights reserved.
  *
@@ -745,13 +1758,17 @@ var FieldMask = {
  * Note that oneof type names ("test_oneof" in this case) cannot be used in
  * paths.
  *
- * @external "google.protobuf.FieldMask"
  * @property {string[]} paths
  *   The set of field mask paths.
  *
+ * @typedef FieldMask
+ * @member google.protobuf
  * @see [google.protobuf.FieldMask definition in proto format]{@link https://github.com/google/protobuf/blob/master/src/google/protobuf/field_mask.proto}
  */
-============== file: src/v1/doc/doc_google_protobuf_struct.js ==============
+var FieldMask = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+============== file: src/v1/doc/google/protobuf/doc_struct.js ==============
 /*
  * Copyright 2017, Google Inc. All rights reserved.
  *
@@ -783,12 +1800,16 @@ var FieldMask = {
  *
  * The JSON representation for `Struct` is JSON object.
  *
- * @external "google.protobuf.Struct"
  * @property {Object.<string, Object>} fields
  *   Unordered map of dynamically typed values.
  *
+ * @typedef Struct
+ * @member google.protobuf
  * @see [google.protobuf.Struct definition in proto format]{@link https://github.com/google/protobuf/blob/master/src/google/protobuf/struct.proto}
  */
+var Struct = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
 
 /**
  * `Value` represents a dynamically typed value which can be either
@@ -798,11 +1819,10 @@ var FieldMask = {
  *
  * The JSON representation for `Value` is JSON value.
  *
- * @external "google.protobuf.Value"
  * @property {number} nullValue
  *   Represents a null value.
  *
- *   The number should be among the values of [google.protobuf.NullValue]{@link external:"google.protobuf.NullValue"}
+ *   The number should be among the values of [NullValue]{@link google.protobuf.NullValue}
  *
  * @property {number} numberValue
  *   Represents a double value.
@@ -816,32 +1836,55 @@ var FieldMask = {
  * @property {Object} structValue
  *   Represents a structured value.
  *
- *   This object should have the same structure as [google.protobuf.Struct]{@link external:"google.protobuf.Struct"}
+ *   This object should have the same structure as [Struct]{@link google.protobuf.Struct}
  *
  * @property {Object} listValue
  *   Represents a repeated `Value`.
  *
- *   This object should have the same structure as [google.protobuf.ListValue]{@link external:"google.protobuf.ListValue"}
+ *   This object should have the same structure as [ListValue]{@link google.protobuf.ListValue}
  *
+ * @typedef Value
+ * @member google.protobuf
  * @see [google.protobuf.Value definition in proto format]{@link https://github.com/google/protobuf/blob/master/src/google/protobuf/struct.proto}
  */
+var Value = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
 
 /**
  * `ListValue` is a wrapper around a repeated field of values.
  *
  * The JSON representation for `ListValue` is JSON array.
  *
- * @external "google.protobuf.ListValue"
  * @property {Object[]} values
  *   Repeated field of dynamically typed values.
  *
- *   This object should have the same structure as [google.protobuf.Value]{@link external:"google.protobuf.Value"}
+ *   This object should have the same structure as [Value]{@link google.protobuf.Value}
  *
+ * @typedef ListValue
+ * @member google.protobuf
  * @see [google.protobuf.ListValue definition in proto format]{@link https://github.com/google/protobuf/blob/master/src/google/protobuf/struct.proto}
  */
+var ListValue = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
 
+/**
+ * `NullValue` is a singleton enumeration to represent the null value for the
+ * `Value` type union.
+ *
+ *  The JSON representation for `NullValue` is JSON `null`.
+ *
+ * @enum {number}
+ */
+var NullValue = {
 
-============== file: src/v1/doc/doc_google_protobuf_timestamp.js ==============
+  /**
+   * Null value.
+   */
+  NULL_VALUE: 0
+};
+============== file: src/v1/doc/google/protobuf/doc_timestamp.js ==============
 /*
  * Copyright 2017, Google Inc. All rights reserved.
  *
@@ -941,7 +1984,6 @@ var FieldMask = {
  * http://joda-time.sourceforge.net/apidocs/org/joda/time/format/ISODateTimeFormat.html#dateTime())
  * to obtain a formatter capable of generating timestamps in this format.
  *
- * @external "google.protobuf.Timestamp"
  * @property {number} seconds
  *   Represents seconds of UTC time since Unix epoch
  *   1970-01-01T00:00:00Z. Must be from 0001-01-01T00:00:00Z to
@@ -953,9 +1995,14 @@ var FieldMask = {
  *   that count forward in time. Must be from 0 to 999,999,999
  *   inclusive.
  *
+ * @typedef Timestamp
+ * @member google.protobuf
  * @see [google.protobuf.Timestamp definition in proto format]{@link https://github.com/google/protobuf/blob/master/src/google/protobuf/timestamp.proto}
  */
-============== file: src/v1/doc/doc_google_protobuf_wrappers.js ==============
+var Timestamp = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+============== file: src/v1/doc/google/protobuf/doc_wrappers.js ==============
 /*
  * Copyright 2017, Google Inc. All rights reserved.
  *
@@ -982,109 +2029,145 @@ var FieldMask = {
  *
  * The JSON representation for `DoubleValue` is JSON number.
  *
- * @external "google.protobuf.DoubleValue"
  * @property {number} value
  *   The double value.
  *
+ * @typedef DoubleValue
+ * @member google.protobuf
  * @see [google.protobuf.DoubleValue definition in proto format]{@link https://github.com/google/protobuf/blob/master/src/google/protobuf/wrappers.proto}
  */
+var DoubleValue = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
 
 /**
  * Wrapper message for `float`.
  *
  * The JSON representation for `FloatValue` is JSON number.
  *
- * @external "google.protobuf.FloatValue"
  * @property {number} value
  *   The float value.
  *
+ * @typedef FloatValue
+ * @member google.protobuf
  * @see [google.protobuf.FloatValue definition in proto format]{@link https://github.com/google/protobuf/blob/master/src/google/protobuf/wrappers.proto}
  */
+var FloatValue = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
 
 /**
  * Wrapper message for `int64`.
  *
  * The JSON representation for `Int64Value` is JSON string.
  *
- * @external "google.protobuf.Int64Value"
  * @property {number} value
  *   The int64 value.
  *
+ * @typedef Int64Value
+ * @member google.protobuf
  * @see [google.protobuf.Int64Value definition in proto format]{@link https://github.com/google/protobuf/blob/master/src/google/protobuf/wrappers.proto}
  */
+var Int64Value = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
 
 /**
  * Wrapper message for `uint64`.
  *
  * The JSON representation for `UInt64Value` is JSON string.
  *
- * @external "google.protobuf.UInt64Value"
  * @property {number} value
  *   The uint64 value.
  *
+ * @typedef UInt64Value
+ * @member google.protobuf
  * @see [google.protobuf.UInt64Value definition in proto format]{@link https://github.com/google/protobuf/blob/master/src/google/protobuf/wrappers.proto}
  */
+var UInt64Value = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
 
 /**
  * Wrapper message for `int32`.
  *
  * The JSON representation for `Int32Value` is JSON number.
  *
- * @external "google.protobuf.Int32Value"
  * @property {number} value
  *   The int32 value.
  *
+ * @typedef Int32Value
+ * @member google.protobuf
  * @see [google.protobuf.Int32Value definition in proto format]{@link https://github.com/google/protobuf/blob/master/src/google/protobuf/wrappers.proto}
  */
+var Int32Value = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
 
 /**
  * Wrapper message for `uint32`.
  *
  * The JSON representation for `UInt32Value` is JSON number.
  *
- * @external "google.protobuf.UInt32Value"
  * @property {number} value
  *   The uint32 value.
  *
+ * @typedef UInt32Value
+ * @member google.protobuf
  * @see [google.protobuf.UInt32Value definition in proto format]{@link https://github.com/google/protobuf/blob/master/src/google/protobuf/wrappers.proto}
  */
+var UInt32Value = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
 
 /**
  * Wrapper message for `bool`.
  *
  * The JSON representation for `BoolValue` is JSON `true` and `false`.
  *
- * @external "google.protobuf.BoolValue"
  * @property {boolean} value
  *   The bool value.
  *
+ * @typedef BoolValue
+ * @member google.protobuf
  * @see [google.protobuf.BoolValue definition in proto format]{@link https://github.com/google/protobuf/blob/master/src/google/protobuf/wrappers.proto}
  */
+var BoolValue = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
 
 /**
  * Wrapper message for `string`.
  *
  * The JSON representation for `StringValue` is JSON string.
  *
- * @external "google.protobuf.StringValue"
  * @property {string} value
  *   The string value.
  *
+ * @typedef StringValue
+ * @member google.protobuf
  * @see [google.protobuf.StringValue definition in proto format]{@link https://github.com/google/protobuf/blob/master/src/google/protobuf/wrappers.proto}
  */
+var StringValue = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
 
 /**
  * Wrapper message for `bytes`.
  *
  * The JSON representation for `BytesValue` is JSON string.
  *
- * @external "google.protobuf.BytesValue"
  * @property {string} value
  *   The bytes value.
  *
+ * @typedef BytesValue
+ * @member google.protobuf
  * @see [google.protobuf.BytesValue definition in proto format]{@link https://github.com/google/protobuf/blob/master/src/google/protobuf/wrappers.proto}
  */
-============== file: src/v1/doc/doc_google_rpc_status.js ==============
+var BytesValue = {
+  // This is for documentation. Actual contents will be loaded by gRPC.
+};
+============== file: src/v1/doc/google/rpc/doc_status.js ==============
 /*
  * Copyright 2017, Google Inc. All rights reserved.
  *
@@ -1160,7 +2243,6 @@ var FieldMask = {
  * - Logging. If some API errors are stored in logs, the message `Status` could
  *     be used directly after any stripping needed for security/privacy reasons.
  *
- * @external "google.rpc.Status"
  * @property {number} code
  *   The status code, which should be an enum value of {@link google.rpc.Code}.
  *
@@ -1173,973 +2255,16 @@ var FieldMask = {
  *   A list of messages that carry the error details.  There will be a
  *   common set of message types for APIs to use.
  *
- *   This object should have the same structure as [google.protobuf.Any]{@link external:"google.protobuf.Any"}
+ *   This object should have the same structure as [Any]{@link google.protobuf.Any}
  *
+ * @typedef Status
+ * @member google.rpc
  * @see [google.rpc.Status definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/google/rpc/status.proto}
  */
-============== file: src/v1/doc/doc_library.js ==============
-/*
- * Copyright 2017, Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-/*
- * Note: this file is purely for documentation. Any contents are not expected
- * to be loaded as the JS file.
- */
-
-/**
- * A single book in the library.
- * Message comment may include special characters: <>&"`'@.
- *
- * @property {string} name
- *   The resource name of the book.
- *   Book names have the form `bookShelves/{shelf_id}/books/{book_id}`.
- *   Message field comment may include special characters: <>&"`'@.
- *
- * @property {string} author
- *   The name of the book author.
- *
- * @property {string} title
- *   The title of the book.
- *
- * @property {boolean} read
- *   Value indicating whether the book has been read.
- *
- * @property {number} rating
- *   For testing enums.
- *
- *   The number should be among the values of [Rating]{@link Rating}
- *
- * @property {Object} anyValue
- *   For testing all well-known types.
- *
- *   This object should have the same structure as [google.protobuf.Any]{@link external:"google.protobuf.Any"}
- *
- * @property {Object} structValue
- *   This object should have the same structure as [google.protobuf.Struct]{@link external:"google.protobuf.Struct"}
- *
- * @property {Object} valueValue
- *   This object should have the same structure as [google.protobuf.Value]{@link external:"google.protobuf.Value"}
- *
- * @property {Object} listValueValue
- *   This object should have the same structure as [google.protobuf.ListValue]{@link external:"google.protobuf.ListValue"}
- *
- * @property {Object.<string, Object>} mapListValueValue
- *
- * @property {Object} timeValue
- *   This object should have the same structure as [google.protobuf.Timestamp]{@link external:"google.protobuf.Timestamp"}
- *
- * @property {Object} durationValue
- *   This object should have the same structure as [google.protobuf.Duration]{@link external:"google.protobuf.Duration"}
- *
- * @property {Object} fieldMaskValue
- *   This object should have the same structure as [google.protobuf.FieldMask]{@link external:"google.protobuf.FieldMask"}
- *
- * @property {Object} int32Value
- *   This object should have the same structure as [google.protobuf.Int32Value]{@link external:"google.protobuf.Int32Value"}
- *
- * @property {Object} uint32Value
- *   This object should have the same structure as [google.protobuf.UInt32Value]{@link external:"google.protobuf.UInt32Value"}
- *
- * @property {Object} int64Value
- *   This object should have the same structure as [google.protobuf.Int64Value]{@link external:"google.protobuf.Int64Value"}
- *
- * @property {Object} uint64Value
- *   This object should have the same structure as [google.protobuf.UInt64Value]{@link external:"google.protobuf.UInt64Value"}
- *
- * @property {Object} floatValue
- *   This object should have the same structure as [google.protobuf.FloatValue]{@link external:"google.protobuf.FloatValue"}
- *
- * @property {Object} doubleValue
- *   This object should have the same structure as [google.protobuf.DoubleValue]{@link external:"google.protobuf.DoubleValue"}
- *
- * @property {Object} stringValue
- *   This object should have the same structure as [google.protobuf.StringValue]{@link external:"google.protobuf.StringValue"}
- *
- * @property {Object} boolValue
- *   This object should have the same structure as [google.protobuf.BoolValue]{@link external:"google.protobuf.BoolValue"}
- *
- * @property {Object} bytesValue
- *   This object should have the same structure as [google.protobuf.BytesValue]{@link external:"google.protobuf.BytesValue"}
- *
- * @property {Object.<number, string>} mapStringValue
- *   Test doc generation of lists:
- *
- *   +   Here is a sentence about the first element of the list that continues
- *       into a second line.
- *   +   The second element of the list.
- *   +   Another element of the list where the indentation isn't consistent
- *   after a blank space.
- *
- *       The second paragraph of the list
- *   that doesn't have a hanging indent.
- *
- * @property {Object.<string, Object>} mapMessageValue
- *
- * @property {Object} resource
- *   Tests Python doc generation: should generate a dummy file for shared_type
- *   resource, but *not* its import, other_shared_type
- *
- *   This object should have the same structure as [Used]{@link Used}
- *
- * @class
- * @see [google.example.library.v1.Book definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
- */
-var Book = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-
-  /**
-   * @enum {number}
-   */
-  Rating: {
-
-    /**
-     * GOOD enum description
-     */
-    GOOD: 0,
-
-    /**
-     * Enum description with special characters: <>&"`'@.
-     */
-    BAD: 1
-  }
-};
-
-/**
- * A single book in the archives.
- *
- * @property {string} name
- *   The resource name of the book.
- *   Book names have the form `archives/{archive_id}/books/{book_id}`.
- *
- * @property {string} author
- *   The name of the book author.
- *
- * @property {string} title
- *   The title of the book.
- *
- * @property {boolean} read
- *   Value indicating whether the book has been read.
- *
- * @class
- * @see [google.example.library.v1.BookFromArchive definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
- */
-var BookFromArchive = {
+var Status = {
   // This is for documentation. Actual contents will be loaded by gRPC.
 };
-
-/**
- * @property {number} field
- *
- * @property {Object} field2
- *   This object should have the same structure as [SomeMessage2]{@link SomeMessage2}
- *
- * @property {number} alignment
- *   The number should be among the values of [Alignment]{@link Alignment}
- *
- * @class
- * @see [google.example.library.v1.SomeMessage definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
- */
-var SomeMessage = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-
-  /**
-   * Tests service with two enums of the same simple name
-   *
-   * @enum {number}
-   */
-  Alignment: {
-    GOOD: 0,
-    NEUTRAL: 1,
-    EVIL: 2
-  }
-};
-
-/**
- * @property {number} field1
- *
- * @property {number} format
- *   The number should be among the values of [Alignment]{@link Alignment}
- *
- * @class
- * @see [google.example.library.v1.SomeMessage2 definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
- */
-var SomeMessage2 = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-
-  /**
-   * @class
-   * @see [google.example.library.v1.SomeMessage2.SomeMessage3 definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
-   */
-  SomeMessage3: {
-    // This is for documentation. Actual contents will be loaded by gRPC.
-
-    /**
-     * Tests Python nested enums
-     *
-     * @enum {number}
-     */
-    Alignment: {
-
-      /**
-       * 8-bit
-       */
-      CHAR: 0,
-
-      /**
-       * 32-bit
-       */
-      INT: 1,
-
-      /**
-       * 64-bit
-       */
-      DOUBLE: 2
-    }
-  },
-
-  /**
-   * Another enum with duplicated simple name
-   *
-   * @enum {number}
-   */
-  Alignment: {
-    FLUSH_LEFT: 0,
-    FLUSH_RIGHT: 1,
-    CENTERED: 2,
-    JUSTIFIED: 3
-  }
-};
-
-/**
- * A Shelf contains a collection of books with a theme.
- *
- * @property {string} name
- *   The resource name of the shelf.
- *   Shelf names have the form `bookShelves/{shelf_id}`.
- *
- * @property {string} theme
- *   The theme of the shelf
- *
- * @property {string} internalTheme
- *   Internal theme that is visible to trusted testers only.
- *
- * @class
- * @see [google.example.library.v1.Shelf definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
- */
-var Shelf = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
-
-/**
- * Request message for LibraryService.CreateShelf.
- *
- * @property {Object} shelf
- *   The shelf to create.
- *
- *   This object should have the same structure as [Shelf]{@link Shelf}
- *
- * @class
- * @see [google.example.library.v1.CreateShelfRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
- */
-var CreateShelfRequest = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
-
-/**
- * Request message for LibraryService.GetShelf.
- *
- * @property {string} name
- *   The name of the shelf to retrieve.
- *
- * @property {Object} message
- *   Field to verify that message-type query parameter gets flattened.
- *
- *   This object should have the same structure as [SomeMessage]{@link SomeMessage}
- *
- * @property {Object} stringBuilder
- *   This object should have the same structure as [StringBuilder]{@link StringBuilder}
- *
- * @property {string} options
- *   To test 'options' parameter name conflict.
- *
- * @class
- * @see [google.example.library.v1.GetShelfRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
- */
-var GetShelfRequest = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
-
-/**
- * Creates a name conflict with java.lang type
- *
- * @property {string} name
- *
- * @class
- * @see [google.example.library.v1.StringBuilder definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
- */
-var StringBuilder = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
-
-/**
- * Request message for LibraryService.ListShelves.
- *
- * @property {string} pageToken
- *   A token identifying a page of results the server should return.
- *   Typically, this is the value of
- *   {@link ListShelvesResponse.next_page_token}
- *   returned from the previous call to `ListShelves` method.
- *
- * @class
- * @see [google.example.library.v1.ListShelvesRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
- */
-var ListShelvesRequest = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
-
-/**
- * Response message for LibraryService.ListShelves.
- *
- * @property {Object[]} shelves
- *   The list of shelves.
- *
- *   This object should have the same structure as [Shelf]{@link Shelf}
- *
- * @property {string} nextPageToken
- *   A token to retrieve next page of results.
- *   Pass this value in the
- *   {@link ListShelvesRequest.page_token}
- *   field in the subsequent call to `ListShelves` method to retrieve the next
- *   page of results.
- *
- * @class
- * @see [google.example.library.v1.ListShelvesResponse definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
- */
-var ListShelvesResponse = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
-
-/**
- * Request message for LibraryService.StreamShelves.
- * @class
- * @see [google.example.library.v1.StreamShelvesRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
- */
-var StreamShelvesRequest = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
-
-/**
- * Response message for LibraryService.StreamShelves.
- *
- * @property {Object[]} shelves
- *   The list of shelves.
- *
- *   This object should have the same structure as [Shelf]{@link Shelf}
- *
- * @class
- * @see [google.example.library.v1.StreamShelvesResponse definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
- */
-var StreamShelvesResponse = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
-
-/**
- * Request message for LibraryService.DeleteShelf.
- *
- * @property {string} name
- *   The name of the shelf to delete.
- *
- * @class
- * @see [google.example.library.v1.DeleteShelfRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
- */
-var DeleteShelfRequest = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
-
-/**
- * Describes the shelf being removed (other_shelf_name) and updated
- * (name) in this merge.
- *
- * @property {string} name
- *   The name of the shelf we're adding books to.
- *
- * @property {string} otherShelfName
- *   The name of the shelf we're removing books from and deleting.
- *
- * @class
- * @see [google.example.library.v1.MergeShelvesRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
- */
-var MergeShelvesRequest = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
-
-/**
- * Request message for LibraryService.CreateBook.
- *
- * @property {string} name
- *   The name of the shelf in which the book is created.
- *
- * @property {Object} book
- *   The book to create.
- *
- *   This object should have the same structure as [Book]{@link Book}
- *
- * @class
- * @see [google.example.library.v1.CreateBookRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
- */
-var CreateBookRequest = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
-
-/**
- * Request message for LibraryService.PublishSeries.
- *
- * @property {Object} shelf
- *   The shelf in which the series is created.
- *
- *   This object should have the same structure as [Shelf]{@link Shelf}
- *
- * @property {Object[]} books
- *   The books to publish in the series.
- *
- *   This object should have the same structure as [Book]{@link Book}
- *
- * @property {number} edition
- *   The edition of the series
- *
- * @property {boolean} reviewCopy
- *   If the book is in a pre-publish state
- *
- * @property {Object} seriesUuid
- *   Uniquely identifies the series to the publishing house.
- *
- *   This object should have the same structure as [SeriesUuid]{@link SeriesUuid}
- *
- * @class
- * @see [google.example.library.v1.PublishSeriesRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
- */
-var PublishSeriesRequest = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
-
-/**
- * @property {string} seriesBytes
- *
- * @property {string} seriesString
- *
- * @class
- * @see [google.example.library.v1.SeriesUuid definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
- */
-var SeriesUuid = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
-
-/**
- * Response message for LibraryService.PublishSeries.
- *
- * @property {string[]} bookNames
- *   The names of the books in the series that were published
- *
- * @class
- * @see [google.example.library.v1.PublishSeriesResponse definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
- */
-var PublishSeriesResponse = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
-
-/**
- * Request message for LibraryService.GetBook.
- *
- * @property {string} name
- *   The name of the book to retrieve.
- *
- * @class
- * @see [google.example.library.v1.GetBookRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
- */
-var GetBookRequest = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
-
-/**
- * Request message for LibraryService.ListBooks.
- *
- * @property {string} name
- *   The name of the shelf whose books we'd like to list.
- *
- * @property {number} pageSize
- *   Requested page size. Server may return fewer books than requested.
- *   If unspecified, server will pick an appropriate default.
- *
- * @property {string} pageToken
- *   A token identifying a page of results the server should return.
- *   Typically, this is the value of
- *   {@link ListBooksResponse.next_page_token}.
- *   returned from the previous call to `ListBooks` method.
- *
- * @property {string} filter
- *   To test python built-in wrapping.
- *
- * @class
- * @see [google.example.library.v1.ListBooksRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
- */
-var ListBooksRequest = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
-
-/**
- * Response message for LibraryService.ListBooks.
- *
- * @property {Object[]} books
- *   The list of books.
- *
- *   This object should have the same structure as [Book]{@link Book}
- *
- * @property {string} nextPageToken
- *   A token to retrieve next page of results.
- *   Pass this value in the
- *   {@link ListBooksRequest.page_token}
- *   field in the subsequent call to `ListBooks` method to retrieve the next
- *   page of results.
- *
- * @class
- * @see [google.example.library.v1.ListBooksResponse definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
- */
-var ListBooksResponse = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
-
-/**
- * Request message for LibraryService.StreamBooks.
- *
- * @property {string} name
- *   The name of the shelf whose books we'd like to list.
- *
- * @class
- * @see [google.example.library.v1.StreamBooksRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
- */
-var StreamBooksRequest = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
-
-/**
- * Request message for LibraryService.UpdateBook.
- *
- * @property {string} name
- *   The name of the book to update.
- *
- * @property {Object} book
- *   The book to update with.
- *
- *   This object should have the same structure as [Book]{@link Book}
- *
- * @property {Object} updateMask
- *   A field mask to apply, rendered as an HTTP parameter.
- *
- *   This object should have the same structure as [google.protobuf.FieldMask]{@link external:"google.protobuf.FieldMask"}
- *
- * @property {Object} physicalMask
- *   To test Python import clash resolution.
- *
- *   This object should have the same structure as [FieldMask]{@link FieldMask}
- *
- * @class
- * @see [google.example.library.v1.UpdateBookRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
- */
-var UpdateBookRequest = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
-
-/**
- * Request message for LibraryService.DeleteBook.
- *
- * @property {string} name
- *   The name of the book to delete.
- *
- * @class
- * @see [google.example.library.v1.DeleteBookRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
- */
-var DeleteBookRequest = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
-
-/**
- * Describes what book to move (name) and what shelf we're moving it
- * to (other_shelf_name).
- *
- * @property {string} name
- *   The name of the book to move.
- *
- * @property {string} otherShelfName
- *   The name of the destination shelf.
- *
- * @class
- * @see [google.example.library.v1.MoveBookRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
- */
-var MoveBookRequest = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
-
-/**
- * @property {string} name
- *
- * @property {number} pageSize
- *
- * @property {string} pageToken
- *
- * @class
- * @see [google.example.library.v1.ListStringsRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
- */
-var ListStringsRequest = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
-
-/**
- * @property {string[]} strings
- *
- * @property {string} nextPageToken
- *
- * @class
- * @see [google.example.library.v1.ListStringsResponse definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
- */
-var ListStringsResponse = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
-
-/**
- * @property {string} name
- *
- * @property {Object[]} comments
- *   This object should have the same structure as [Comment]{@link Comment}
- *
- * @class
- * @see [google.example.library.v1.AddCommentsRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
- */
-var AddCommentsRequest = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
-
-/**
- * @property {string} userName
- *   won't be filled in by the sample generator
- *
- * @property {string} comment
- *   should be filled in by the sample generator
- *
- * @property {number} stage
- *   should be filled in by the sample generator
- *
- *   The number should be among the values of [Stage]{@link Stage}
- *
- * @property {number} alignment
- *   Tests Python nested enums
- *
- *   The number should be among the values of [Alignment]{@link Alignment}
- *
- * @class
- * @see [google.example.library.v1.Comment definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
- */
-var Comment = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-
-  /**
-   * @enum {number}
-   */
-  Stage: {
-    UNSET: 0,
-    DRAFT: 1,
-    PUBLISHED: 2,
-    DELETED: 3
-  }
-};
-
-/**
- * Request message for LibraryService.GetBookFromArchive.
- *
- * @property {string} name
- *   The name of the book to retrieve.
- *
- * @class
- * @see [google.example.library.v1.GetBookFromArchiveRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
- */
-var GetBookFromArchiveRequest = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
-
-/**
- * Request message for LibraryService.GetBookFromAnywhere.
- *
- * @property {string} name
- *   The name of the book to retrieve.
- *
- * @property {string} altBookName
- *   An alternate book name, used to test restricting flattened field to a
- *   single resource name type in a oneof.
- *
- * @class
- * @see [google.example.library.v1.GetBookFromAnywhereRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
- */
-var GetBookFromAnywhereRequest = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
-
-/**
- * Request message for LibraryService.GetBookFromAbsolutelyAnywhere.
- *
- * @property {string} name
- *   The name of the book to retrieve.
- *
- * @class
- * @see [google.example.library.v1.GetBookFromAbsolutelyAnywhereRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
- */
-var GetBookFromAbsolutelyAnywhereRequest = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
-
-/**
- * Request message for LibraryService.UpdateBookIndex.
- *
- * @property {string} name
- *   The name of the book to update.
- *
- * @property {string} indexName
- *   The name of the index for the book
- *
- * @property {Object.<string, string>} indexMap
- *   The index to update the book with
- *
- * @class
- * @see [google.example.library.v1.UpdateBookIndexRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
- */
-var UpdateBookIndexRequest = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
-
-/**
- * @property {string} name
- *   The name of the book to be discussed. If this is in the middle
- *   of the stream and this is not specified, the name in the previous
- *   message will be reused.
- *
- * @property {Object} comment
- *   The new comment.
- *
- *   This object should have the same structure as [Comment]{@link Comment}
- *
- * @class
- * @see [google.example.library.v1.DiscussBookRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
- */
-var DiscussBookRequest = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
-
-/**
- * Test repeated field with resource name format in request
- *
- * @property {string[]} names
- *
- * @property {string[]} shelves
- *
- * @property {number} pageSize
- *
- * @property {string} pageToken
- *
- * @class
- * @see [google.example.library.v1.FindRelatedBooksRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
- */
-var FindRelatedBooksRequest = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
-
-/**
- * Test repeated field with resource name format in page streaming response
- *
- * @property {string[]} names
- *
- * @property {string} nextPageToken
- *
- * @class
- * @see [google.example.library.v1.FindRelatedBooksResponse definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
- */
-var FindRelatedBooksResponse = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
-
-/**
- * Metadata for a longrunning operation.
- *
- * @property {number} progressPercent
- *   Approximate percentage of the book processed thus far.
- *
- * @class
- * @see [google.example.library.v1.GetBigBookMetadata definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
- */
-var GetBigBookMetadata = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
-
-/**
- * @property {number} requiredSingularInt32
- *
- * @property {number} requiredSingularInt64
- *
- * @property {number} requiredSingularFloat
- *
- * @property {number} requiredSingularDouble
- *
- * @property {boolean} requiredSingularBool
- *
- * @property {number} requiredSingularEnum
- *   The number should be among the values of [InnerEnum]{@link InnerEnum}
- *
- * @property {string} requiredSingularString
- *
- * @property {string} requiredSingularBytes
- *
- * @property {Object} requiredSingularMessage
- *   This object should have the same structure as [InnerMessage]{@link InnerMessage}
- *
- * @property {string} requiredSingularResourceName
- *
- * @property {string} requiredSingularResourceNameOneof
- *
- * @property {number} requiredSingularFixed32
- *
- * @property {number} requiredSingularFixed64
- *
- * @property {number[]} requiredRepeatedInt32
- *
- * @property {number[]} requiredRepeatedInt64
- *
- * @property {number[]} requiredRepeatedFloat
- *
- * @property {number[]} requiredRepeatedDouble
- *
- * @property {boolean[]} requiredRepeatedBool
- *
- * @property {number[]} requiredRepeatedEnum
- *   The number should be among the values of [InnerEnum]{@link InnerEnum}
- *
- * @property {string[]} requiredRepeatedString
- *
- * @property {string[]} requiredRepeatedBytes
- *
- * @property {Object[]} requiredRepeatedMessage
- *   This object should have the same structure as [InnerMessage]{@link InnerMessage}
- *
- * @property {string[]} requiredRepeatedResourceName
- *
- * @property {string[]} requiredRepeatedResourceNameOneof
- *
- * @property {number[]} requiredRepeatedFixed32
- *
- * @property {number[]} requiredRepeatedFixed64
- *
- * @property {Object.<number, string>} requiredMap
- *
- * @property {number} optionalSingularInt32
- *
- * @property {number} optionalSingularInt64
- *
- * @property {number} optionalSingularFloat
- *
- * @property {number} optionalSingularDouble
- *
- * @property {boolean} optionalSingularBool
- *
- * @property {number} optionalSingularEnum
- *   The number should be among the values of [InnerEnum]{@link InnerEnum}
- *
- * @property {string} optionalSingularString
- *
- * @property {string} optionalSingularBytes
- *
- * @property {Object} optionalSingularMessage
- *   This object should have the same structure as [InnerMessage]{@link InnerMessage}
- *
- * @property {string} optionalSingularResourceName
- *
- * @property {string} optionalSingularResourceNameOneof
- *
- * @property {number} optionalSingularFixed32
- *
- * @property {number} optionalSingularFixed64
- *
- * @property {number[]} optionalRepeatedInt32
- *
- * @property {number[]} optionalRepeatedInt64
- *
- * @property {number[]} optionalRepeatedFloat
- *
- * @property {number[]} optionalRepeatedDouble
- *
- * @property {boolean[]} optionalRepeatedBool
- *
- * @property {number[]} optionalRepeatedEnum
- *   The number should be among the values of [InnerEnum]{@link InnerEnum}
- *
- * @property {string[]} optionalRepeatedString
- *
- * @property {string[]} optionalRepeatedBytes
- *
- * @property {Object[]} optionalRepeatedMessage
- *   This object should have the same structure as [InnerMessage]{@link InnerMessage}
- *
- * @property {string[]} optionalRepeatedResourceName
- *
- * @property {string[]} optionalRepeatedResourceNameOneof
- *
- * @property {number[]} optionalRepeatedFixed32
- *
- * @property {number[]} optionalRepeatedFixed64
- *
- * @property {Object.<number, string>} optionalMap
- *
- * @class
- * @see [google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
- */
-var TestOptionalRequiredFlatteningParamsRequest = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-
-  /**
-   * @class
-   * @see [google.example.library.v1.TestOptionalRequiredFlatteningParamsRequest.InnerMessage definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
-   */
-  InnerMessage: {
-    // This is for documentation. Actual contents will be loaded by gRPC.
-  },
-
-  /**
-   * For testing all types, plus resource-names, as required and optional.
-   *
-   * @enum {number}
-   */
-  InnerEnum: {
-    ZERO: 0,
-    ONE: 1
-  }
-};
-
-/**
- * @class
- * @see [google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/library.proto}
- */
-var TestOptionalRequiredFlatteningParamsResponse = {
-  // This is for documentation. Actual contents will be loaded by gRPC.
-};
-============== file: src/v1/doc/doc_shared_type.js ==============
+============== file: src/v1/doc/google/test/shared/data/doc_shared_type.js ==============
 /*
  * Copyright 2017, Google Inc. All rights reserved.
  *
@@ -2167,7 +2292,8 @@ var TestOptionalRequiredFlatteningParamsResponse = {
  *
  * @property {number} timesUsed
  *
- * @class
+ * @typedef Used
+ * @member google.test.shared.data
  * @see [google.test.shared.data.Used definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/shared_type.proto}
  */
 var Used = {
@@ -2179,9 +2305,10 @@ var Used = {
  * other_shared_type.proto.
  *
  * @property {Object} other
- *   This object should have the same structure as [OtherType]{@link OtherType}
+ *   This object should have the same structure as [OtherType]{@link google.test.shared.data.OtherType}
  *
- * @class
+ * @typedef Unused
+ * @member google.test.shared.data
  * @see [google.test.shared.data.Unused definition in proto format]{@link https://github.com/googleapis/googleapis/blob/master/shared_type.proto}
  */
 var Unused = {
@@ -2217,7 +2344,6 @@ function v1(options) {
   return libraryServiceClient(gaxGrpc);
 }
 
-v1.GAPIC_VERSION = '0.0.5';
 v1.SERVICE_ADDRESS = libraryServiceClient.SERVICE_ADDRESS;
 v1.ALL_SCOPES = libraryServiceClient.ALL_SCOPES;
 
@@ -2248,14 +2374,14 @@ module.exports = v1;
  * The only allowed edits are to method and file documentation. A 3-way
  * merge preserves those additions if the generated source changes.
  */
-/* TODO: introduce line-wrapping so that it never exceeds the limit. */
-/* jscs: disable maximumLineLength */
 'use strict';
 
 var configData = require('./library_service_client_config');
 var extend = require('extend');
 var gax = require('google-gax');
 var merge = require('lodash.merge');
+var path = require('path');
+var protobuf = require('protobufjs');
 
 var SERVICE_ADDRESS = 'library-example.googleapis.com';
 
@@ -2289,7 +2415,7 @@ var STREAM_DESCRIPTORS = {
   monologAboutBook: new gax.StreamDescriptor(gax.StreamType.CLIENT_STREAMING)
 };
 
-/**
+/*!
  * The scopes needed to make gRPC calls to all of the methods defined in
  * this service.
  */
@@ -2317,7 +2443,7 @@ var ALL_SCOPES = [
  *
  * @class
  */
-function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
+function LibraryServiceClient(gaxGrpc, loadedProtos, opts) {
   opts = extend({
     servicePath: SERVICE_ADDRESS,
     port: DEFAULT_SERVICE_PORT,
@@ -2344,14 +2470,14 @@ function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
         'shelf.name'
       ],
       'bookNames',
-      gax.createByteLengthFunction(grpcClients.google.example.library.v1.Book)),
+      gax.createByteLengthFunction(loadedProtos.google.example.library.v1.Book)),
     addComments: new gax.BundleDescriptor(
       'comments',
       [
         'name'
       ],
       null,
-      gax.createByteLengthFunction(grpcClients.google.example.library.v1.Comment))
+      gax.createByteLengthFunction(loadedProtos.google.example.library.v1.Comment))
   };
 
   this.operationsClient = new gax.lro({
@@ -2359,15 +2485,28 @@ function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
     grpc: gaxGrpc.grpc
   }).operationsClient(opts);
 
+  var protoFilesRoot = new gax.grpc.GoogleProtoFilesRoot();
+  protoFilesRoot = protobuf.loadSync(
+    path.join(__dirname, '..', '..', 'protos', 'library.proto'),
+    protoFilesRoot);
+  protoFilesRoot = protobuf.loadSync(
+    path.join(__dirname, '..', '..', 'protos', 'tagger.proto'),
+    protoFilesRoot);
+
+  var getBigBookResponse = protoFilesRoot.lookup('google.example.library.v1.Book');
+  var getBigBookMetadata = protoFilesRoot.lookup('google.example.library.v1.GetBigBookMetadata');
+  var getBigNothingResponse = protoFilesRoot.lookup('google.protobuf.Empty');
+  var getBigNothingMetadata = protoFilesRoot.lookup('google.example.library.v1.GetBigBookMetadata');
+
   this.longrunningDescriptors = {
     getBigBook: new gax.LongrunningDescriptor(
       this.operationsClient,
-      grpcClients.google.example.library.v1.Book.decode,
-      grpcClients.google.example.library.v1.GetBigBookMetadata.decode),
+      getBigBookResponse.decode.bind(getBigBookResponse),
+      getBigBookMetadata.decode.bind(getBigBookMetadata)),
     getBigNothing: new gax.LongrunningDescriptor(
       this.operationsClient,
-      grpcClients.google.protobuf.Empty.decode,
-      grpcClients.google.example.library.v1.GetBigBookMetadata.decode)
+      getBigNothingResponse.decode.bind(getBigNothingResponse),
+      getBigNothingMetadata.decode.bind(getBigNothingMetadata))
   };
 
   var defaults = gaxGrpc.constructSettings(
@@ -2380,7 +2519,7 @@ function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
 
   this.auth = gaxGrpc.auth;
   var libraryServiceStub = gaxGrpc.createStub(
-      grpcClients.google.example.library.v1.LibraryService,
+      loadedProtos.google.example.library.v1.LibraryService,
       opts);
   var libraryServiceStubMethods = [
     'createShelf',
@@ -2424,7 +2563,7 @@ function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
   });
 
   var labelerStub = gaxGrpc.createStub(
-      grpcClients.google.tagger.v1.Labeler,
+      loadedProtos.google.tagger.v1.Labeler,
       opts);
   var labelerStubMethods = [
     'addLabel'
@@ -2572,16 +2711,16 @@ LibraryServiceClient.prototype.getProjectId = function(callback) {
  * @param {Object} request.shelf
  *   The shelf to create.
  *
- *   This object should have the same structure as [Shelf]{@link Shelf}
+ *   This object should have the same structure as [Shelf]{@link google.example.library.v1.Shelf}
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [Shelf]{@link Shelf}.
- * @return {Promise} - The promise which resolves to an array.
- *   The first element of the array is an object representing [Shelf]{@link Shelf}.
+ *   The second parameter to the callback is an object representing [Shelf]{@link google.example.library.v1.Shelf}.
+ * @returns {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [Shelf]{@link google.example.library.v1.Shelf}.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -2625,18 +2764,18 @@ LibraryServiceClient.prototype.createShelf = function(request, options, callback
  * @param {Object=} request.message
  *   Field to verify that message-type query parameter gets flattened.
  *
- *   This object should have the same structure as [SomeMessage]{@link SomeMessage}
+ *   This object should have the same structure as [SomeMessage]{@link google.example.library.v1.SomeMessage}
  * @param {Object=} request.stringBuilder
- *   This object should have the same structure as [StringBuilder]{@link StringBuilder}
+ *   This object should have the same structure as [StringBuilder]{@link google.example.library.v1.StringBuilder}
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [Shelf]{@link Shelf}.
- * @return {Promise} - The promise which resolves to an array.
- *   The first element of the array is an object representing [Shelf]{@link Shelf}.
+ *   The second parameter to the callback is an object representing [Shelf]{@link google.example.library.v1.Shelf}.
+ * @returns {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [Shelf]{@link google.example.library.v1.Shelf}.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -2684,20 +2823,20 @@ LibraryServiceClient.prototype.getShelf = function(request, options, callback) {
  * @param {function(?Error, ?Array, ?Object, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is Array of [Shelf]{@link Shelf}.
+ *   The second parameter to the callback is Array of [Shelf]{@link google.example.library.v1.Shelf}.
  *
  *   When autoPaginate: false is specified through options, it contains the result
  *   in a single response. If the response indicates the next page exists, the third
  *   parameter is set to be used for the next request object. The fourth parameter keeps
- *   the raw response object of an object representing [ListShelvesResponse]{@link ListShelvesResponse}.
- * @return {Promise} - The promise which resolves to an array.
- *   The first element of the array is Array of [Shelf]{@link Shelf}.
+ *   the raw response object of an object representing [ListShelvesResponse]{@link google.example.library.v1.ListShelvesResponse}.
+ * @returns {Promise} - The promise which resolves to an array.
+ *   The first element of the array is Array of [Shelf]{@link google.example.library.v1.Shelf}.
  *
  *   When autoPaginate: false is specified through options, the array has three elements.
- *   The first element is Array of [Shelf]{@link Shelf} in a single response.
+ *   The first element is Array of [Shelf]{@link google.example.library.v1.Shelf} in a single response.
  *   The second element is the next request object if the response
  *   indicates the next page exists, or null. The third element is
- *   an object representing [ListShelvesResponse]{@link ListShelvesResponse}.
+ *   an object representing [ListShelvesResponse]{@link google.example.library.v1.ListShelvesResponse}.
  *
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
@@ -2776,8 +2915,8 @@ LibraryServiceClient.prototype.listShelves = function(request, options, callback
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
- * @return {Stream}
- *   An object stream which emits an object representing [Shelf]{@link Shelf} on 'data' event.
+ * @returns {Stream}
+ *   An object stream which emits an object representing [Shelf]{@link google.example.library.v1.Shelf} on 'data' event.
  *
  * @example
  *
@@ -2817,7 +2956,7 @@ LibraryServiceClient.prototype.listShelvesStream = function(request, options) {
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @param {function(?Error)=} callback
  *   The function which will be called with the result of the API call.
- * @return {Promise} - The promise which resolves when API call finishes.
+ * @returns {Promise} - The promise which resolves when API call finishes.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -2862,9 +3001,9 @@ LibraryServiceClient.prototype.deleteShelf = function(request, options, callback
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [Shelf]{@link Shelf}.
- * @return {Promise} - The promise which resolves to an array.
- *   The first element of the array is an object representing [Shelf]{@link Shelf}.
+ *   The second parameter to the callback is an object representing [Shelf]{@link google.example.library.v1.Shelf}.
+ * @returns {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [Shelf]{@link google.example.library.v1.Shelf}.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -2911,16 +3050,16 @@ LibraryServiceClient.prototype.mergeShelves = function(request, options, callbac
  * @param {Object} request.book
  *   The book to create.
  *
- *   This object should have the same structure as [Book]{@link Book}
+ *   This object should have the same structure as [Book]{@link google.example.library.v1.Book}
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [Book]{@link Book}.
- * @return {Promise} - The promise which resolves to an array.
- *   The first element of the array is an object representing [Book]{@link Book}.
+ *   The second parameter to the callback is an object representing [Book]{@link google.example.library.v1.Book}.
+ * @returns {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [Book]{@link google.example.library.v1.Book}.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -2965,15 +3104,15 @@ LibraryServiceClient.prototype.createBook = function(request, options, callback)
  * @param {Object} request.shelf
  *   The shelf in which the series is created.
  *
- *   This object should have the same structure as [Shelf]{@link Shelf}
+ *   This object should have the same structure as [Shelf]{@link google.example.library.v1.Shelf}
  * @param {Object[]} request.books
  *   The books to publish in the series.
  *
- *   This object should have the same structure as [Book]{@link Book}
+ *   This object should have the same structure as [Book]{@link google.example.library.v1.Book}
  * @param {Object} request.seriesUuid
  *   Uniquely identifies the series to the publishing house.
  *
- *   This object should have the same structure as [SeriesUuid]{@link SeriesUuid}
+ *   This object should have the same structure as [SeriesUuid]{@link google.example.library.v1.SeriesUuid}
  * @param {number=} request.edition
  *   The edition of the series
  * @param {boolean=} request.reviewCopy
@@ -2984,9 +3123,9 @@ LibraryServiceClient.prototype.createBook = function(request, options, callback)
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [PublishSeriesResponse]{@link PublishSeriesResponse}.
- * @return {Promise} - The promise which resolves to an array.
- *   The first element of the array is an object representing [PublishSeriesResponse]{@link PublishSeriesResponse}.
+ *   The second parameter to the callback is an object representing [PublishSeriesResponse]{@link google.example.library.v1.PublishSeriesResponse}.
+ * @returns {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [PublishSeriesResponse]{@link google.example.library.v1.PublishSeriesResponse}.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -3041,9 +3180,9 @@ LibraryServiceClient.prototype.publishSeries = function(request, options, callba
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [Book]{@link Book}.
- * @return {Promise} - The promise which resolves to an array.
- *   The first element of the array is an object representing [Book]{@link Book}.
+ *   The second parameter to the callback is an object representing [Book]{@link google.example.library.v1.Book}.
+ * @returns {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [Book]{@link google.example.library.v1.Book}.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -3096,20 +3235,20 @@ LibraryServiceClient.prototype.getBook = function(request, options, callback) {
  * @param {function(?Error, ?Array, ?Object, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is Array of [Book]{@link Book}.
+ *   The second parameter to the callback is Array of [Book]{@link google.example.library.v1.Book}.
  *
  *   When autoPaginate: false is specified through options, it contains the result
  *   in a single response. If the response indicates the next page exists, the third
  *   parameter is set to be used for the next request object. The fourth parameter keeps
- *   the raw response object of an object representing [ListBooksResponse]{@link ListBooksResponse}.
- * @return {Promise} - The promise which resolves to an array.
- *   The first element of the array is Array of [Book]{@link Book}.
+ *   the raw response object of an object representing [ListBooksResponse]{@link google.example.library.v1.ListBooksResponse}.
+ * @returns {Promise} - The promise which resolves to an array.
+ *   The first element of the array is Array of [Book]{@link google.example.library.v1.Book}.
  *
  *   When autoPaginate: false is specified through options, the array has three elements.
- *   The first element is Array of [Book]{@link Book} in a single response.
+ *   The first element is Array of [Book]{@link google.example.library.v1.Book} in a single response.
  *   The second element is the next request object if the response
  *   indicates the next page exists, or null. The third element is
- *   an object representing [ListBooksResponse]{@link ListBooksResponse}.
+ *   an object representing [ListBooksResponse]{@link google.example.library.v1.ListBooksResponse}.
  *
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
@@ -3200,8 +3339,8 @@ LibraryServiceClient.prototype.listBooks = function(request, options, callback) 
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
- * @return {Stream}
- *   An object stream which emits an object representing [Book]{@link Book} on 'data' event.
+ * @returns {Stream}
+ *   An object stream which emits an object representing [Book]{@link google.example.library.v1.Book} on 'data' event.
  *
  * @example
  *
@@ -3239,7 +3378,7 @@ LibraryServiceClient.prototype.listBooksStream = function(request, options) {
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @param {function(?Error)=} callback
  *   The function which will be called with the result of the API call.
- * @return {Promise} - The promise which resolves when API call finishes.
+ * @returns {Promise} - The promise which resolves when API call finishes.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -3277,24 +3416,24 @@ LibraryServiceClient.prototype.deleteBook = function(request, options, callback)
  * @param {Object} request.book
  *   The book to update with.
  *
- *   This object should have the same structure as [Book]{@link Book}
+ *   This object should have the same structure as [Book]{@link google.example.library.v1.Book}
  * @param {Object=} request.updateMask
  *   A field mask to apply, rendered as an HTTP parameter.
  *
- *   This object should have the same structure as [google.protobuf.FieldMask]{@link external:"google.protobuf.FieldMask"}
+ *   This object should have the same structure as [FieldMask]{@link google.protobuf.FieldMask}
  * @param {Object=} request.physicalMask
  *   To test Python import clash resolution.
  *
- *   This object should have the same structure as [FieldMask]{@link FieldMask}
+ *   This object should have the same structure as [FieldMask]{@link google.example.library.v1.FieldMask}
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [Book]{@link Book}.
- * @return {Promise} - The promise which resolves to an array.
- *   The first element of the array is an object representing [Book]{@link Book}.
+ *   The second parameter to the callback is an object representing [Book]{@link google.example.library.v1.Book}.
+ * @returns {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [Book]{@link google.example.library.v1.Book}.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -3346,9 +3485,9 @@ LibraryServiceClient.prototype.updateBook = function(request, options, callback)
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [Book]{@link Book}.
- * @return {Promise} - The promise which resolves to an array.
- *   The first element of the array is an object representing [Book]{@link Book}.
+ *   The second parameter to the callback is an object representing [Book]{@link google.example.library.v1.Book}.
+ * @returns {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [Book]{@link google.example.library.v1.Book}.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -3408,15 +3547,15 @@ LibraryServiceClient.prototype.moveBook = function(request, options, callback) {
  *   When autoPaginate: false is specified through options, it contains the result
  *   in a single response. If the response indicates the next page exists, the third
  *   parameter is set to be used for the next request object. The fourth parameter keeps
- *   the raw response object of an object representing [ListStringsResponse]{@link ListStringsResponse}.
- * @return {Promise} - The promise which resolves to an array.
+ *   the raw response object of an object representing [ListStringsResponse]{@link google.example.library.v1.ListStringsResponse}.
+ * @returns {Promise} - The promise which resolves to an array.
  *   The first element of the array is Array of string.
  *
  *   When autoPaginate: false is specified through options, the array has three elements.
  *   The first element is Array of string in a single response.
  *   The second element is the next request object if the response
  *   indicates the next page exists, or null. The third element is
- *   an object representing [ListStringsResponse]{@link ListStringsResponse}.
+ *   an object representing [ListStringsResponse]{@link google.example.library.v1.ListStringsResponse}.
  *
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
@@ -3500,7 +3639,7 @@ LibraryServiceClient.prototype.listStrings = function(request, options, callback
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
- * @return {Stream}
+ * @returns {Stream}
  *   An object stream which emits a string on 'data' event.
  *
  * @example
@@ -3534,13 +3673,13 @@ LibraryServiceClient.prototype.listStringsStream = function(request, options) {
  *   The request object that will be sent.
  * @param {string} request.name
  * @param {Object[]} request.comments
- *   This object should have the same structure as [Comment]{@link Comment}
+ *   This object should have the same structure as [Comment]{@link google.example.library.v1.Comment}
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @param {function(?Error)=} callback
  *   The function which will be called with the result of the API call.
- * @return {Promise} - The promise which resolves when API call finishes.
+ * @returns {Promise} - The promise which resolves when API call finishes.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -3594,9 +3733,9 @@ LibraryServiceClient.prototype.addComments = function(request, options, callback
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [BookFromArchive]{@link BookFromArchive}.
- * @return {Promise} - The promise which resolves to an array.
- *   The first element of the array is an object representing [BookFromArchive]{@link BookFromArchive}.
+ *   The second parameter to the callback is an object representing [BookFromArchive]{@link google.example.library.v1.BookFromArchive}.
+ * @returns {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [BookFromArchive]{@link google.example.library.v1.BookFromArchive}.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -3644,9 +3783,9 @@ LibraryServiceClient.prototype.getBookFromArchive = function(request, options, c
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [BookFromAnywhere]{@link BookFromAnywhere}.
- * @return {Promise} - The promise which resolves to an array.
- *   The first element of the array is an object representing [BookFromAnywhere]{@link BookFromAnywhere}.
+ *   The second parameter to the callback is an object representing [BookFromAnywhere]{@link google.example.library.v1.BookFromAnywhere}.
+ * @returns {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [BookFromAnywhere]{@link google.example.library.v1.BookFromAnywhere}.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -3696,9 +3835,9 @@ LibraryServiceClient.prototype.getBookFromAnywhere = function(request, options, 
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [BookFromAnywhere]{@link BookFromAnywhere}.
- * @return {Promise} - The promise which resolves to an array.
- *   The first element of the array is an object representing [BookFromAnywhere]{@link BookFromAnywhere}.
+ *   The second parameter to the callback is an object representing [BookFromAnywhere]{@link google.example.library.v1.BookFromAnywhere}.
+ * @returns {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [BookFromAnywhere]{@link google.example.library.v1.BookFromAnywhere}.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -3746,7 +3885,7 @@ LibraryServiceClient.prototype.getBookFromAbsolutelyAnywhere = function(request,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @param {function(?Error)=} callback
  *   The function which will be called with the result of the API call.
- * @return {Promise} - The promise which resolves when API call finishes.
+ * @returns {Promise} - The promise which resolves when API call finishes.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -3792,7 +3931,7 @@ LibraryServiceClient.prototype.updateBookIndex = function(request, options, call
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @returns {Stream}
- *   An object stream which emits [StreamShelvesResponse]{@link StreamShelvesResponse} on 'data' event.
+ *   An object stream which emits [StreamShelvesResponse]{@link google.example.library.v1.StreamShelvesResponse} on 'data' event.
  *
  * @example
  *
@@ -3829,7 +3968,7 @@ LibraryServiceClient.prototype.streamShelves = function(request, options) {
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @returns {Stream}
- *   An object stream which emits [Book]{@link Book} on 'data' event.
+ *   An object stream which emits [Book]{@link google.example.library.v1.Book} on 'data' event.
  *
  * @example
  *
@@ -3861,8 +4000,8 @@ LibraryServiceClient.prototype.streamBooks = function(request, options) {
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @returns {Stream}
  *   An object stream which is both readable and writable. It accepts objects
- *   representing [DiscussBookRequest]{@link DiscussBookRequest} for write() method, and
- *   will emit objects representing [Comment]{@link Comment} on 'data' event asynchronously.
+ *   representing [DiscussBookRequest]{@link google.example.library.v1.DiscussBookRequest} for write() method, and
+ *   will emit objects representing [Comment]{@link google.example.library.v1.Comment} on 'data' event asynchronously.
  *
  * @example
  *
@@ -3900,9 +4039,9 @@ LibraryServiceClient.prototype.discussBook = function(options) {
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [Comment]{@link Comment}.
- * @return {Stream} - A writable stream which accepts objects representing
- *   [DiscussBookRequest]{@link DiscussBookRequest} for write() method.
+ *   The second parameter to the callback is an object representing [Comment]{@link google.example.library.v1.Comment}.
+ * @returns {Stream} - A writable stream which accepts objects representing
+ *   [DiscussBookRequest]{@link google.example.library.v1.DiscussBookRequest} for write() method.
  *
  * @example
  *
@@ -3960,15 +4099,15 @@ LibraryServiceClient.prototype.monologAboutBook = function(options, callback) {
  *   When autoPaginate: false is specified through options, it contains the result
  *   in a single response. If the response indicates the next page exists, the third
  *   parameter is set to be used for the next request object. The fourth parameter keeps
- *   the raw response object of an object representing [FindRelatedBooksResponse]{@link FindRelatedBooksResponse}.
- * @return {Promise} - The promise which resolves to an array.
+ *   the raw response object of an object representing [FindRelatedBooksResponse]{@link google.example.library.v1.FindRelatedBooksResponse}.
+ * @returns {Promise} - The promise which resolves to an array.
  *   The first element of the array is Array of string.
  *
  *   When autoPaginate: false is specified through options, the array has three elements.
  *   The first element is Array of string in a single response.
  *   The second element is the next request object if the response
  *   indicates the next page exists, or null. The third element is
- *   an object representing [FindRelatedBooksResponse]{@link FindRelatedBooksResponse}.
+ *   an object representing [FindRelatedBooksResponse]{@link google.example.library.v1.FindRelatedBooksResponse}.
  *
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
@@ -4069,7 +4208,7 @@ LibraryServiceClient.prototype.findRelatedBooks = function(request, options, cal
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
- * @return {Stream}
+ * @returns {Stream}
  *   An object stream which emits a string on 'data' event.
  *
  * @example
@@ -4119,9 +4258,9 @@ LibraryServiceClient.prototype.findRelatedBooksStream = function(request, option
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [AddTagResponse]{@link AddTagResponse}.
- * @return {Promise} - The promise which resolves to an array.
- *   The first element of the array is an object representing [AddTagResponse]{@link AddTagResponse}.
+ *   The second parameter to the callback is an object representing [AddTagResponse]{@link google.tagger.v1.AddTagResponse}.
+ * @returns {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [AddTagResponse]{@link google.tagger.v1.AddTagResponse}.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -4175,9 +4314,9 @@ LibraryServiceClient.prototype.addTag = function(request, options, callback) {
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [AddLabelResponse]{@link AddLabelResponse}.
- * @return {Promise} - The promise which resolves to an array.
- *   The first element of the array is an object representing [AddLabelResponse]{@link AddLabelResponse}.
+ *   The second parameter to the callback is an object representing [AddLabelResponse]{@link google.tagger.v1.AddLabelResponse}.
+ * @returns {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [AddLabelResponse]{@link google.tagger.v1.AddLabelResponse}.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -4228,7 +4367,7 @@ LibraryServiceClient.prototype.addLabel = function(request, options, callback) {
  *   The function which will be called with the result of the API call.
  *
  *   The second parameter to the callback is a [gax.Operation]{@link https://googleapis.github.io/gax-nodejs/Operation} object.
- * @return {Promise} - The promise which resolves to an array.
+ * @returns {Promise} - The promise which resolves to an array.
  *   The first element of the array is a [gax.Operation]{@link https://googleapis.github.io/gax-nodejs/Operation} object.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
@@ -4317,7 +4456,7 @@ LibraryServiceClient.prototype.getBigBook = function(request, options, callback)
  *   The function which will be called with the result of the API call.
  *
  *   The second parameter to the callback is a [gax.Operation]{@link https://googleapis.github.io/gax-nodejs/Operation} object.
- * @return {Promise} - The promise which resolves to an array.
+ * @returns {Promise} - The promise which resolves to an array.
  *   The first element of the array is a [gax.Operation]{@link https://googleapis.github.io/gax-nodejs/Operation} object.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
@@ -4403,11 +4542,11 @@ LibraryServiceClient.prototype.getBigNothing = function(request, options, callba
  * @param {number} request.requiredSingularDouble
  * @param {boolean} request.requiredSingularBool
  * @param {number} request.requiredSingularEnum
- *   The number should be among the values of [InnerEnum]{@link InnerEnum}
+ *   The number should be among the values of [InnerEnum]{@link google.example.library.v1.InnerEnum}
  * @param {string} request.requiredSingularString
  * @param {string} request.requiredSingularBytes
  * @param {Object} request.requiredSingularMessage
- *   This object should have the same structure as [InnerMessage]{@link InnerMessage}
+ *   This object should have the same structure as [InnerMessage]{@link google.example.library.v1.InnerMessage}
  * @param {string} request.requiredSingularResourceName
  * @param {string} request.requiredSingularResourceNameOneof
  * @param {number} request.requiredSingularFixed32
@@ -4418,11 +4557,11 @@ LibraryServiceClient.prototype.getBigNothing = function(request, options, callba
  * @param {number[]} request.requiredRepeatedDouble
  * @param {boolean[]} request.requiredRepeatedBool
  * @param {number[]} request.requiredRepeatedEnum
- *   The number should be among the values of [InnerEnum]{@link InnerEnum}
+ *   The number should be among the values of [InnerEnum]{@link google.example.library.v1.InnerEnum}
  * @param {string[]} request.requiredRepeatedString
  * @param {string[]} request.requiredRepeatedBytes
  * @param {Object[]} request.requiredRepeatedMessage
- *   This object should have the same structure as [InnerMessage]{@link InnerMessage}
+ *   This object should have the same structure as [InnerMessage]{@link google.example.library.v1.InnerMessage}
  * @param {string[]} request.requiredRepeatedResourceName
  * @param {string[]} request.requiredRepeatedResourceNameOneof
  * @param {number[]} request.requiredRepeatedFixed32
@@ -4434,11 +4573,11 @@ LibraryServiceClient.prototype.getBigNothing = function(request, options, callba
  * @param {number=} request.optionalSingularDouble
  * @param {boolean=} request.optionalSingularBool
  * @param {number=} request.optionalSingularEnum
- *   The number should be among the values of [InnerEnum]{@link InnerEnum}
+ *   The number should be among the values of [InnerEnum]{@link google.example.library.v1.InnerEnum}
  * @param {string=} request.optionalSingularString
  * @param {string=} request.optionalSingularBytes
  * @param {Object=} request.optionalSingularMessage
- *   This object should have the same structure as [InnerMessage]{@link InnerMessage}
+ *   This object should have the same structure as [InnerMessage]{@link google.example.library.v1.InnerMessage}
  * @param {string=} request.optionalSingularResourceName
  * @param {string=} request.optionalSingularResourceNameOneof
  * @param {number=} request.optionalSingularFixed32
@@ -4449,11 +4588,11 @@ LibraryServiceClient.prototype.getBigNothing = function(request, options, callba
  * @param {number[]=} request.optionalRepeatedDouble
  * @param {boolean[]=} request.optionalRepeatedBool
  * @param {number[]=} request.optionalRepeatedEnum
- *   The number should be among the values of [InnerEnum]{@link InnerEnum}
+ *   The number should be among the values of [InnerEnum]{@link google.example.library.v1.InnerEnum}
  * @param {string[]=} request.optionalRepeatedString
  * @param {string[]=} request.optionalRepeatedBytes
  * @param {Object[]=} request.optionalRepeatedMessage
- *   This object should have the same structure as [InnerMessage]{@link InnerMessage}
+ *   This object should have the same structure as [InnerMessage]{@link google.example.library.v1.InnerMessage}
  * @param {string[]=} request.optionalRepeatedResourceName
  * @param {string[]=} request.optionalRepeatedResourceNameOneof
  * @param {number[]=} request.optionalRepeatedFixed32
@@ -4465,9 +4604,9 @@ LibraryServiceClient.prototype.getBigNothing = function(request, options, callba
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [TestOptionalRequiredFlatteningParamsResponse]{@link TestOptionalRequiredFlatteningParamsResponse}.
- * @return {Promise} - The promise which resolves to an array.
- *   The first element of the array is an object representing [TestOptionalRequiredFlatteningParamsResponse]{@link TestOptionalRequiredFlatteningParamsResponse}.
+ *   The second parameter to the callback is an object representing [TestOptionalRequiredFlatteningParamsResponse]{@link google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse}.
+ * @returns {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [TestOptionalRequiredFlatteningParamsResponse]{@link google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse}.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -4554,32 +4693,33 @@ LibraryServiceClient.prototype.testOptionalRequiredFlatteningParams = function(r
   return this._testOptionalRequiredFlatteningParams(request, options, callback);
 };
 
+/**
+ * @class
+ * @param {*} gaxGrpc
+ */
 function LibraryServiceClientBuilder(gaxGrpc) {
   if (!(this instanceof LibraryServiceClientBuilder)) {
     return new LibraryServiceClientBuilder(gaxGrpc);
   }
 
-  var libraryServiceClient = gaxGrpc.load([{
-    root: require('google-proto-files')('..'),
-    file: 'library.proto'
-  }]);
-  extend(this, libraryServiceClient.google.example.library.v1);
+  var libraryServiceStubProtos = gaxGrpc.loadProto(
+    path.join(__dirname, '..', '..', 'protos'), 'library.proto');
+  extend(this, libraryServiceStubProtos.google.example.library.v1);
 
-  var labelerClient = gaxGrpc.load([{
-    root: require('google-proto-files')('..'),
-    file: 'tagger.proto'
-  }]);
-  extend(this, labelerClient.google.tagger.v1);
+  var labelerStubProtos = gaxGrpc.loadProto(
+    path.join(__dirname, '..', '..', 'protos'), 'tagger.proto');
+  extend(this, labelerStubProtos.google.tagger.v1);
 
-  var grpcClients = merge(
+  var protos = merge(
     {},
-    libraryServiceClient,
-    labelerClient
+    libraryServiceStubProtos,
+    labelerStubProtos
   );
 
   /**
    * Build a new instance of {@link LibraryServiceClient}.
    *
+   * @method LibraryServiceClientBuilder#libraryServiceClient
    * @param {Object=} opts - The optional parameters.
    * @param {String=} opts.servicePath
    *   The domain name of the API remote host.
@@ -4592,7 +4732,7 @@ function LibraryServiceClientBuilder(gaxGrpc) {
    *   {@link gax.constructSettings} for the format.
    */
   this.libraryServiceClient = function(opts) {
-    return new LibraryServiceClient(gaxGrpc, grpcClients, opts);
+    return new LibraryServiceClient(gaxGrpc, protos, opts);
   };
   extend(this.libraryServiceClient, LibraryServiceClient);
 }
@@ -5752,12 +5892,16 @@ describe('LibraryServiceClient', function() {
       // Mock Grpc layer
       client._streamShelves = mockServerStreamingGrpcMethod(request, expectedResponse);
 
-      client.streamShelves(request).on('data', function(response) {
+      var stream = client.streamShelves(request);
+      stream.on('data', function(response) {
         assert.deepStrictEqual(response, expectedResponse);
         done()
-      }).on('error', function(err) {
+      });
+      stream.on('error', function(err) {
         done(err);
       });
+
+      stream.write();
     });
 
     it('invokes streamShelves with error', function(done) {
@@ -5769,13 +5913,17 @@ describe('LibraryServiceClient', function() {
       // Mock Grpc layer
       client._streamShelves = mockServerStreamingGrpcMethod(request, null, error);
 
-      client.streamShelves(request).on('data', function(response) {
+      var stream = client.streamShelves(request);
+      stream.on('data', function(response) {
         assert.fail();
-      }).on('error', function(err) {
+      })
+      stream.on('error', function(err) {
         assert(err instanceof Error);
         assert.equal(err.code, FAKE_STATUS_CODE);
         done();
       });
+
+      stream.write();
     });
   });
 
@@ -5804,12 +5952,16 @@ describe('LibraryServiceClient', function() {
       // Mock Grpc layer
       client._streamBooks = mockServerStreamingGrpcMethod(request, expectedResponse);
 
-      client.streamBooks(request).on('data', function(response) {
+      var stream = client.streamBooks(request);
+      stream.on('data', function(response) {
         assert.deepStrictEqual(response, expectedResponse);
         done()
-      }).on('error', function(err) {
+      });
+      stream.on('error', function(err) {
         done(err);
       });
+
+      stream.write();
     });
 
     it('invokes streamBooks with error', function(done) {
@@ -5824,13 +5976,17 @@ describe('LibraryServiceClient', function() {
       // Mock Grpc layer
       client._streamBooks = mockServerStreamingGrpcMethod(request, null, error);
 
-      client.streamBooks(request).on('data', function(response) {
+      var stream = client.streamBooks(request);
+      stream.on('data', function(response) {
         assert.fail();
-      }).on('error', function(err) {
+      })
+      stream.on('error', function(err) {
         assert(err instanceof Error);
         assert.equal(err.code, FAKE_STATUS_CODE);
         done();
       });
+
+      stream.write();
     });
   });
 
@@ -6100,6 +6256,12 @@ describe('LibraryServiceClient', function() {
         done();
       });
     });
+
+    it('has longrunning decoder functions', function() {
+      var client = library.v1();
+      assert(client.longrunningDescriptors.getBigBook.responseDecoder instanceof Function);
+      assert(client.longrunningDescriptors.getBigBook.metadataDecoder instanceof Function);
+    });
   });
 
   describe('getBigNothing', function() {
@@ -6151,6 +6313,12 @@ describe('LibraryServiceClient', function() {
         assert.equal(err.code, FAKE_STATUS_CODE);
         done();
       });
+    });
+
+    it('has longrunning decoder functions', function() {
+      var client = library.v1();
+      assert(client.longrunningDescriptors.getBigNothing.responseDecoder instanceof Function);
+      assert(client.longrunningDescriptors.getBigNothing.metadataDecoder instanceof Function);
     });
   });
 
@@ -6326,7 +6494,6 @@ function mockServerStreamingGrpcMethod(expectedRequest, response, error) {
         callback(null, response);
       }
     });
-    mockStream.write();
     return mockStream;
   };
 }

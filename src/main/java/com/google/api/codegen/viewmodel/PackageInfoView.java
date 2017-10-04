@@ -16,6 +16,7 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.SnippetSetRunner;
+import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
 import com.google.auto.value.AutoValue;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -31,6 +32,18 @@ public abstract class PackageInfoView implements ViewModel {
   public abstract FileHeaderView fileHeader();
 
   public abstract String serviceTitle();
+
+  @Nullable // Used in C#
+  public abstract String serviceDescription();
+
+  @Nullable // Used in C#
+  public abstract String version();
+
+  @Nullable // Used in C#
+  public abstract String tags();
+
+  @Nullable // User in C#
+  public abstract PackageMetadataView packageMetadata();
 
   public abstract List<ServiceDocView> serviceDocs();
 
@@ -64,6 +77,14 @@ public abstract class PackageInfoView implements ViewModel {
     public abstract Builder fileHeader(FileHeaderView val);
 
     public abstract Builder serviceTitle(String val);
+
+    public abstract Builder serviceDescription(String val);
+
+    public abstract Builder version(String val);
+
+    public abstract Builder tags(String val);
+
+    public abstract Builder packageMetadata(PackageMetadataView val);
 
     public abstract Builder serviceDocs(List<ServiceDocView> val);
 

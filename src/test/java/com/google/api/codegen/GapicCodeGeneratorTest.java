@@ -133,7 +133,7 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
         GapicTestBase2.createTestConfig(
             MainGapicProviderFactory.CSHARP,
             new String[] {"csharp_gapic.yaml", "library_gapic.yaml"},
-            null,
+            "library_pkg.yaml",
             "library"));
   }
 

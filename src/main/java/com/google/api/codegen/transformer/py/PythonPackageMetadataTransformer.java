@@ -72,7 +72,6 @@ public class PythonPackageMetadataTransformer implements ModelToViewTransformer 
       ImmutableMap.<String, String>builder()
           .put("LICENSE.snip", "LICENSE")
           .put("py/MANIFEST.in.snip", "MANIFEST.in")
-          .put("py/PUBLISHING.rst.snip", "PUBLISHING.rst")
           .put("py/setup.py.snip", "setup.py")
           .put("py/setup_cfg.snip", "setup.cfg")
           .put("py/README.rst.snip", "README.rst")

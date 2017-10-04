@@ -65,6 +65,7 @@ $ npm install --save @google-cloud/library
   "description": "Google Example Library API client for Node.js",
   "main": "src/index.js",
   "files": [
+    "protos",
     "src",
     "AUTHORS",
     "COPYING"
@@ -84,9 +85,10 @@ $ npm install --save @google-cloud/library
   ],
   "dependencies": {
     "extend": "^3.0",
-    "google-gax": "^0.7.0",
-    "google-proto-files": "^0.8.2",
-    "google-some-other-package-v1": "^0.2.1"
+    "google-gax": "^0.14.0",
+    "google-some-other-package-v1": "^0.2.1",
+    "lodash.merge": "^4.6.0",
+    "protobufjs": "^6.8.0"
   },
   "devDependencies": {
     "mocha": "^3.2.0",
@@ -174,6 +176,7 @@ var gapic = {
   v1: require('./v1')
 };
 var gaxGrpc = require('google-gax').grpc();
+var path = require('path');
 
 const VERSION = require('../package.json').version;
 
@@ -233,15 +236,13 @@ function libraryV1(options) {
 
 var v1Protos = {};
 
-extend(v1Protos, gaxGrpc.load([{
-  root: require('google-proto-files')('..'),
-  file: 'library.proto'
-}]).google.example.library.v1);
+extend(v1Protos, gaxGrpc.loadProto(
+  path.join(__dirname, '..', 'protos'), 'library.proto')
+    .google.example.library.v1);
 
-extend(v1Protos, gaxGrpc.load([{
-  root: require('google-proto-files')('..'),
-  file: 'tagger.proto'
-}]).google.tagger.v1);
+extend(v1Protos, gaxGrpc.loadProto(
+  path.join(__dirname, '..', 'protos'), 'tagger.proto')
+    .google.tagger.v1);
 
 module.exports = libraryV1;
 module.exports.types = v1Protos;
@@ -277,7 +278,6 @@ function v1(options) {
   return libraryServiceClient(gaxGrpc);
 }
 
-v1.GAPIC_VERSION = '0.0.5';
 v1.SERVICE_ADDRESS = libraryServiceClient.SERVICE_ADDRESS;
 v1.ALL_SCOPES = libraryServiceClient.ALL_SCOPES;
 
@@ -308,14 +308,14 @@ module.exports = v1;
  * The only allowed edits are to method and file documentation. A 3-way
  * merge preserves those additions if the generated source changes.
  */
-/* TODO: introduce line-wrapping so that it never exceeds the limit. */
-/* jscs: disable maximumLineLength */
 'use strict';
 
 var configData = require('./library_service_client_config');
 var extend = require('extend');
 var gax = require('google-gax');
 var merge = require('lodash.merge');
+var path = require('path');
+var protobuf = require('protobufjs');
 
 var SERVICE_ADDRESS = 'library-example.googleapis.com';
 
@@ -349,7 +349,7 @@ var STREAM_DESCRIPTORS = {
   monologAboutBook: new gax.StreamDescriptor(gax.StreamType.CLIENT_STREAMING)
 };
 
-/**
+/*!
  * The scopes needed to make gRPC calls to all of the methods defined in
  * this service.
  */
@@ -377,7 +377,7 @@ var ALL_SCOPES = [
  *
  * @class
  */
-function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
+function LibraryServiceClient(gaxGrpc, loadedProtos, opts) {
   opts = extend({
     servicePath: SERVICE_ADDRESS,
     port: DEFAULT_SERVICE_PORT,
@@ -404,14 +404,14 @@ function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
         'shelf.name'
       ],
       'bookNames',
-      gax.createByteLengthFunction(grpcClients.google.example.library.v1.Book)),
+      gax.createByteLengthFunction(loadedProtos.google.example.library.v1.Book)),
     addComments: new gax.BundleDescriptor(
       'comments',
       [
         'name'
       ],
       null,
-      gax.createByteLengthFunction(grpcClients.google.example.library.v1.Comment))
+      gax.createByteLengthFunction(loadedProtos.google.example.library.v1.Comment))
   };
 
   this.operationsClient = new gax.lro({
@@ -419,15 +419,28 @@ function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
     grpc: gaxGrpc.grpc
   }).operationsClient(opts);
 
+  var protoFilesRoot = new gax.grpc.GoogleProtoFilesRoot();
+  protoFilesRoot = protobuf.loadSync(
+    path.join(__dirname, '..', '..', 'protos', 'library.proto'),
+    protoFilesRoot);
+  protoFilesRoot = protobuf.loadSync(
+    path.join(__dirname, '..', '..', 'protos', 'tagger.proto'),
+    protoFilesRoot);
+
+  var getBigBookResponse = protoFilesRoot.lookup('google.example.library.v1.Book');
+  var getBigBookMetadata = protoFilesRoot.lookup('google.example.library.v1.GetBigBookMetadata');
+  var getBigNothingResponse = protoFilesRoot.lookup('google.protobuf.Empty');
+  var getBigNothingMetadata = protoFilesRoot.lookup('google.example.library.v1.GetBigBookMetadata');
+
   this.longrunningDescriptors = {
     getBigBook: new gax.LongrunningDescriptor(
       this.operationsClient,
-      grpcClients.google.example.library.v1.Book.decode,
-      grpcClients.google.example.library.v1.GetBigBookMetadata.decode),
+      getBigBookResponse.decode.bind(getBigBookResponse),
+      getBigBookMetadata.decode.bind(getBigBookMetadata)),
     getBigNothing: new gax.LongrunningDescriptor(
       this.operationsClient,
-      grpcClients.google.protobuf.Empty.decode,
-      grpcClients.google.example.library.v1.GetBigBookMetadata.decode)
+      getBigNothingResponse.decode.bind(getBigNothingResponse),
+      getBigNothingMetadata.decode.bind(getBigNothingMetadata))
   };
 
   var defaults = gaxGrpc.constructSettings(
@@ -440,7 +453,7 @@ function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
 
   this.auth = gaxGrpc.auth;
   var libraryServiceStub = gaxGrpc.createStub(
-      grpcClients.google.example.library.v1.LibraryService,
+      loadedProtos.google.example.library.v1.LibraryService,
       opts);
   var libraryServiceStubMethods = [
     'createShelf',
@@ -484,7 +497,7 @@ function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
   });
 
   var labelerStub = gaxGrpc.createStub(
-      grpcClients.google.tagger.v1.Labeler,
+      loadedProtos.google.tagger.v1.Labeler,
       opts);
   var labelerStubMethods = [
     'addLabel'
@@ -632,16 +645,16 @@ LibraryServiceClient.prototype.getProjectId = function(callback) {
  * @param {Object} request.shelf
  *   The shelf to create.
  *
- *   This object should have the same structure as [Shelf]{@link Shelf}
+ *   This object should have the same structure as [Shelf]{@link google.example.library.v1.Shelf}
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [Shelf]{@link Shelf}.
- * @return {Promise} - The promise which resolves to an array.
- *   The first element of the array is an object representing [Shelf]{@link Shelf}.
+ *   The second parameter to the callback is an object representing [Shelf]{@link google.example.library.v1.Shelf}.
+ * @returns {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [Shelf]{@link google.example.library.v1.Shelf}.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -685,18 +698,18 @@ LibraryServiceClient.prototype.createShelf = function(request, options, callback
  * @param {Object=} request.message
  *   Field to verify that message-type query parameter gets flattened.
  *
- *   This object should have the same structure as [SomeMessage]{@link SomeMessage}
+ *   This object should have the same structure as [SomeMessage]{@link google.example.library.v1.SomeMessage}
  * @param {Object=} request.stringBuilder
- *   This object should have the same structure as [StringBuilder]{@link StringBuilder}
+ *   This object should have the same structure as [StringBuilder]{@link google.example.library.v1.StringBuilder}
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [Shelf]{@link Shelf}.
- * @return {Promise} - The promise which resolves to an array.
- *   The first element of the array is an object representing [Shelf]{@link Shelf}.
+ *   The second parameter to the callback is an object representing [Shelf]{@link google.example.library.v1.Shelf}.
+ * @returns {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [Shelf]{@link google.example.library.v1.Shelf}.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -744,20 +757,20 @@ LibraryServiceClient.prototype.getShelf = function(request, options, callback) {
  * @param {function(?Error, ?Array, ?Object, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is Array of [Shelf]{@link Shelf}.
+ *   The second parameter to the callback is Array of [Shelf]{@link google.example.library.v1.Shelf}.
  *
  *   When autoPaginate: false is specified through options, it contains the result
  *   in a single response. If the response indicates the next page exists, the third
  *   parameter is set to be used for the next request object. The fourth parameter keeps
- *   the raw response object of an object representing [ListShelvesResponse]{@link ListShelvesResponse}.
- * @return {Promise} - The promise which resolves to an array.
- *   The first element of the array is Array of [Shelf]{@link Shelf}.
+ *   the raw response object of an object representing [ListShelvesResponse]{@link google.example.library.v1.ListShelvesResponse}.
+ * @returns {Promise} - The promise which resolves to an array.
+ *   The first element of the array is Array of [Shelf]{@link google.example.library.v1.Shelf}.
  *
  *   When autoPaginate: false is specified through options, the array has three elements.
- *   The first element is Array of [Shelf]{@link Shelf} in a single response.
+ *   The first element is Array of [Shelf]{@link google.example.library.v1.Shelf} in a single response.
  *   The second element is the next request object if the response
  *   indicates the next page exists, or null. The third element is
- *   an object representing [ListShelvesResponse]{@link ListShelvesResponse}.
+ *   an object representing [ListShelvesResponse]{@link google.example.library.v1.ListShelvesResponse}.
  *
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
@@ -836,8 +849,8 @@ LibraryServiceClient.prototype.listShelves = function(request, options, callback
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
- * @return {Stream}
- *   An object stream which emits an object representing [Shelf]{@link Shelf} on 'data' event.
+ * @returns {Stream}
+ *   An object stream which emits an object representing [Shelf]{@link google.example.library.v1.Shelf} on 'data' event.
  *
  * @example
  *
@@ -877,7 +890,7 @@ LibraryServiceClient.prototype.listShelvesStream = function(request, options) {
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @param {function(?Error)=} callback
  *   The function which will be called with the result of the API call.
- * @return {Promise} - The promise which resolves when API call finishes.
+ * @returns {Promise} - The promise which resolves when API call finishes.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -922,9 +935,9 @@ LibraryServiceClient.prototype.deleteShelf = function(request, options, callback
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [Shelf]{@link Shelf}.
- * @return {Promise} - The promise which resolves to an array.
- *   The first element of the array is an object representing [Shelf]{@link Shelf}.
+ *   The second parameter to the callback is an object representing [Shelf]{@link google.example.library.v1.Shelf}.
+ * @returns {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [Shelf]{@link google.example.library.v1.Shelf}.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -971,16 +984,16 @@ LibraryServiceClient.prototype.mergeShelves = function(request, options, callbac
  * @param {Object} request.book
  *   The book to create.
  *
- *   This object should have the same structure as [Book]{@link Book}
+ *   This object should have the same structure as [Book]{@link google.example.library.v1.Book}
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [Book]{@link Book}.
- * @return {Promise} - The promise which resolves to an array.
- *   The first element of the array is an object representing [Book]{@link Book}.
+ *   The second parameter to the callback is an object representing [Book]{@link google.example.library.v1.Book}.
+ * @returns {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [Book]{@link google.example.library.v1.Book}.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -1025,15 +1038,15 @@ LibraryServiceClient.prototype.createBook = function(request, options, callback)
  * @param {Object} request.shelf
  *   The shelf in which the series is created.
  *
- *   This object should have the same structure as [Shelf]{@link Shelf}
+ *   This object should have the same structure as [Shelf]{@link google.example.library.v1.Shelf}
  * @param {Object[]} request.books
  *   The books to publish in the series.
  *
- *   This object should have the same structure as [Book]{@link Book}
+ *   This object should have the same structure as [Book]{@link google.example.library.v1.Book}
  * @param {Object} request.seriesUuid
  *   Uniquely identifies the series to the publishing house.
  *
- *   This object should have the same structure as [SeriesUuid]{@link SeriesUuid}
+ *   This object should have the same structure as [SeriesUuid]{@link google.example.library.v1.SeriesUuid}
  * @param {number=} request.edition
  *   The edition of the series
  * @param {boolean=} request.reviewCopy
@@ -1044,9 +1057,9 @@ LibraryServiceClient.prototype.createBook = function(request, options, callback)
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [PublishSeriesResponse]{@link PublishSeriesResponse}.
- * @return {Promise} - The promise which resolves to an array.
- *   The first element of the array is an object representing [PublishSeriesResponse]{@link PublishSeriesResponse}.
+ *   The second parameter to the callback is an object representing [PublishSeriesResponse]{@link google.example.library.v1.PublishSeriesResponse}.
+ * @returns {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [PublishSeriesResponse]{@link google.example.library.v1.PublishSeriesResponse}.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -1101,9 +1114,9 @@ LibraryServiceClient.prototype.publishSeries = function(request, options, callba
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [Book]{@link Book}.
- * @return {Promise} - The promise which resolves to an array.
- *   The first element of the array is an object representing [Book]{@link Book}.
+ *   The second parameter to the callback is an object representing [Book]{@link google.example.library.v1.Book}.
+ * @returns {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [Book]{@link google.example.library.v1.Book}.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -1156,20 +1169,20 @@ LibraryServiceClient.prototype.getBook = function(request, options, callback) {
  * @param {function(?Error, ?Array, ?Object, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is Array of [Book]{@link Book}.
+ *   The second parameter to the callback is Array of [Book]{@link google.example.library.v1.Book}.
  *
  *   When autoPaginate: false is specified through options, it contains the result
  *   in a single response. If the response indicates the next page exists, the third
  *   parameter is set to be used for the next request object. The fourth parameter keeps
- *   the raw response object of an object representing [ListBooksResponse]{@link ListBooksResponse}.
- * @return {Promise} - The promise which resolves to an array.
- *   The first element of the array is Array of [Book]{@link Book}.
+ *   the raw response object of an object representing [ListBooksResponse]{@link google.example.library.v1.ListBooksResponse}.
+ * @returns {Promise} - The promise which resolves to an array.
+ *   The first element of the array is Array of [Book]{@link google.example.library.v1.Book}.
  *
  *   When autoPaginate: false is specified through options, the array has three elements.
- *   The first element is Array of [Book]{@link Book} in a single response.
+ *   The first element is Array of [Book]{@link google.example.library.v1.Book} in a single response.
  *   The second element is the next request object if the response
  *   indicates the next page exists, or null. The third element is
- *   an object representing [ListBooksResponse]{@link ListBooksResponse}.
+ *   an object representing [ListBooksResponse]{@link google.example.library.v1.ListBooksResponse}.
  *
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
@@ -1260,8 +1273,8 @@ LibraryServiceClient.prototype.listBooks = function(request, options, callback) 
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
- * @return {Stream}
- *   An object stream which emits an object representing [Book]{@link Book} on 'data' event.
+ * @returns {Stream}
+ *   An object stream which emits an object representing [Book]{@link google.example.library.v1.Book} on 'data' event.
  *
  * @example
  *
@@ -1299,7 +1312,7 @@ LibraryServiceClient.prototype.listBooksStream = function(request, options) {
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @param {function(?Error)=} callback
  *   The function which will be called with the result of the API call.
- * @return {Promise} - The promise which resolves when API call finishes.
+ * @returns {Promise} - The promise which resolves when API call finishes.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -1337,24 +1350,24 @@ LibraryServiceClient.prototype.deleteBook = function(request, options, callback)
  * @param {Object} request.book
  *   The book to update with.
  *
- *   This object should have the same structure as [Book]{@link Book}
+ *   This object should have the same structure as [Book]{@link google.example.library.v1.Book}
  * @param {Object=} request.updateMask
  *   A field mask to apply, rendered as an HTTP parameter.
  *
- *   This object should have the same structure as [google.protobuf.FieldMask]{@link external:"google.protobuf.FieldMask"}
+ *   This object should have the same structure as [FieldMask]{@link google.protobuf.FieldMask}
  * @param {Object=} request.physicalMask
  *   To test Python import clash resolution.
  *
- *   This object should have the same structure as [FieldMask]{@link FieldMask}
+ *   This object should have the same structure as [FieldMask]{@link google.example.library.v1.FieldMask}
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [Book]{@link Book}.
- * @return {Promise} - The promise which resolves to an array.
- *   The first element of the array is an object representing [Book]{@link Book}.
+ *   The second parameter to the callback is an object representing [Book]{@link google.example.library.v1.Book}.
+ * @returns {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [Book]{@link google.example.library.v1.Book}.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -1406,9 +1419,9 @@ LibraryServiceClient.prototype.updateBook = function(request, options, callback)
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [Book]{@link Book}.
- * @return {Promise} - The promise which resolves to an array.
- *   The first element of the array is an object representing [Book]{@link Book}.
+ *   The second parameter to the callback is an object representing [Book]{@link google.example.library.v1.Book}.
+ * @returns {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [Book]{@link google.example.library.v1.Book}.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -1468,15 +1481,15 @@ LibraryServiceClient.prototype.moveBook = function(request, options, callback) {
  *   When autoPaginate: false is specified through options, it contains the result
  *   in a single response. If the response indicates the next page exists, the third
  *   parameter is set to be used for the next request object. The fourth parameter keeps
- *   the raw response object of an object representing [ListStringsResponse]{@link ListStringsResponse}.
- * @return {Promise} - The promise which resolves to an array.
+ *   the raw response object of an object representing [ListStringsResponse]{@link google.example.library.v1.ListStringsResponse}.
+ * @returns {Promise} - The promise which resolves to an array.
  *   The first element of the array is Array of string.
  *
  *   When autoPaginate: false is specified through options, the array has three elements.
  *   The first element is Array of string in a single response.
  *   The second element is the next request object if the response
  *   indicates the next page exists, or null. The third element is
- *   an object representing [ListStringsResponse]{@link ListStringsResponse}.
+ *   an object representing [ListStringsResponse]{@link google.example.library.v1.ListStringsResponse}.
  *
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
@@ -1560,7 +1573,7 @@ LibraryServiceClient.prototype.listStrings = function(request, options, callback
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
- * @return {Stream}
+ * @returns {Stream}
  *   An object stream which emits a string on 'data' event.
  *
  * @example
@@ -1594,13 +1607,13 @@ LibraryServiceClient.prototype.listStringsStream = function(request, options) {
  *   The request object that will be sent.
  * @param {string} request.name
  * @param {Object[]} request.comments
- *   This object should have the same structure as [Comment]{@link Comment}
+ *   This object should have the same structure as [Comment]{@link google.example.library.v1.Comment}
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @param {function(?Error)=} callback
  *   The function which will be called with the result of the API call.
- * @return {Promise} - The promise which resolves when API call finishes.
+ * @returns {Promise} - The promise which resolves when API call finishes.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -1654,9 +1667,9 @@ LibraryServiceClient.prototype.addComments = function(request, options, callback
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [BookFromArchive]{@link BookFromArchive}.
- * @return {Promise} - The promise which resolves to an array.
- *   The first element of the array is an object representing [BookFromArchive]{@link BookFromArchive}.
+ *   The second parameter to the callback is an object representing [BookFromArchive]{@link google.example.library.v1.BookFromArchive}.
+ * @returns {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [BookFromArchive]{@link google.example.library.v1.BookFromArchive}.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -1704,9 +1717,9 @@ LibraryServiceClient.prototype.getBookFromArchive = function(request, options, c
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [BookFromAnywhere]{@link BookFromAnywhere}.
- * @return {Promise} - The promise which resolves to an array.
- *   The first element of the array is an object representing [BookFromAnywhere]{@link BookFromAnywhere}.
+ *   The second parameter to the callback is an object representing [BookFromAnywhere]{@link google.example.library.v1.BookFromAnywhere}.
+ * @returns {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [BookFromAnywhere]{@link google.example.library.v1.BookFromAnywhere}.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -1756,9 +1769,9 @@ LibraryServiceClient.prototype.getBookFromAnywhere = function(request, options, 
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [BookFromAnywhere]{@link BookFromAnywhere}.
- * @return {Promise} - The promise which resolves to an array.
- *   The first element of the array is an object representing [BookFromAnywhere]{@link BookFromAnywhere}.
+ *   The second parameter to the callback is an object representing [BookFromAnywhere]{@link google.example.library.v1.BookFromAnywhere}.
+ * @returns {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [BookFromAnywhere]{@link google.example.library.v1.BookFromAnywhere}.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -1806,7 +1819,7 @@ LibraryServiceClient.prototype.getBookFromAbsolutelyAnywhere = function(request,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @param {function(?Error)=} callback
  *   The function which will be called with the result of the API call.
- * @return {Promise} - The promise which resolves when API call finishes.
+ * @returns {Promise} - The promise which resolves when API call finishes.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -1852,7 +1865,7 @@ LibraryServiceClient.prototype.updateBookIndex = function(request, options, call
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @returns {Stream}
- *   An object stream which emits [StreamShelvesResponse]{@link StreamShelvesResponse} on 'data' event.
+ *   An object stream which emits [StreamShelvesResponse]{@link google.example.library.v1.StreamShelvesResponse} on 'data' event.
  *
  * @example
  *
@@ -1889,7 +1902,7 @@ LibraryServiceClient.prototype.streamShelves = function(request, options) {
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @returns {Stream}
- *   An object stream which emits [Book]{@link Book} on 'data' event.
+ *   An object stream which emits [Book]{@link google.example.library.v1.Book} on 'data' event.
  *
  * @example
  *
@@ -1921,8 +1934,8 @@ LibraryServiceClient.prototype.streamBooks = function(request, options) {
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
  * @returns {Stream}
  *   An object stream which is both readable and writable. It accepts objects
- *   representing [DiscussBookRequest]{@link DiscussBookRequest} for write() method, and
- *   will emit objects representing [Comment]{@link Comment} on 'data' event asynchronously.
+ *   representing [DiscussBookRequest]{@link google.example.library.v1.DiscussBookRequest} for write() method, and
+ *   will emit objects representing [Comment]{@link google.example.library.v1.Comment} on 'data' event asynchronously.
  *
  * @example
  *
@@ -1960,9 +1973,9 @@ LibraryServiceClient.prototype.discussBook = function(options) {
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [Comment]{@link Comment}.
- * @return {Stream} - A writable stream which accepts objects representing
- *   [DiscussBookRequest]{@link DiscussBookRequest} for write() method.
+ *   The second parameter to the callback is an object representing [Comment]{@link google.example.library.v1.Comment}.
+ * @returns {Stream} - A writable stream which accepts objects representing
+ *   [DiscussBookRequest]{@link google.example.library.v1.DiscussBookRequest} for write() method.
  *
  * @example
  *
@@ -2020,15 +2033,15 @@ LibraryServiceClient.prototype.monologAboutBook = function(options, callback) {
  *   When autoPaginate: false is specified through options, it contains the result
  *   in a single response. If the response indicates the next page exists, the third
  *   parameter is set to be used for the next request object. The fourth parameter keeps
- *   the raw response object of an object representing [FindRelatedBooksResponse]{@link FindRelatedBooksResponse}.
- * @return {Promise} - The promise which resolves to an array.
+ *   the raw response object of an object representing [FindRelatedBooksResponse]{@link google.example.library.v1.FindRelatedBooksResponse}.
+ * @returns {Promise} - The promise which resolves to an array.
  *   The first element of the array is Array of string.
  *
  *   When autoPaginate: false is specified through options, the array has three elements.
  *   The first element is Array of string in a single response.
  *   The second element is the next request object if the response
  *   indicates the next page exists, or null. The third element is
- *   an object representing [FindRelatedBooksResponse]{@link FindRelatedBooksResponse}.
+ *   an object representing [FindRelatedBooksResponse]{@link google.example.library.v1.FindRelatedBooksResponse}.
  *
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
@@ -2129,7 +2142,7 @@ LibraryServiceClient.prototype.findRelatedBooks = function(request, options, cal
  * @param {Object=} options
  *   Optional parameters. You can override the default settings for this call, e.g, timeout,
  *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
- * @return {Stream}
+ * @returns {Stream}
  *   An object stream which emits a string on 'data' event.
  *
  * @example
@@ -2179,9 +2192,9 @@ LibraryServiceClient.prototype.findRelatedBooksStream = function(request, option
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [AddTagResponse]{@link AddTagResponse}.
- * @return {Promise} - The promise which resolves to an array.
- *   The first element of the array is an object representing [AddTagResponse]{@link AddTagResponse}.
+ *   The second parameter to the callback is an object representing [AddTagResponse]{@link google.tagger.v1.AddTagResponse}.
+ * @returns {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [AddTagResponse]{@link google.tagger.v1.AddTagResponse}.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -2235,9 +2248,9 @@ LibraryServiceClient.prototype.addTag = function(request, options, callback) {
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [AddLabelResponse]{@link AddLabelResponse}.
- * @return {Promise} - The promise which resolves to an array.
- *   The first element of the array is an object representing [AddLabelResponse]{@link AddLabelResponse}.
+ *   The second parameter to the callback is an object representing [AddLabelResponse]{@link google.tagger.v1.AddLabelResponse}.
+ * @returns {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [AddLabelResponse]{@link google.tagger.v1.AddLabelResponse}.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -2288,7 +2301,7 @@ LibraryServiceClient.prototype.addLabel = function(request, options, callback) {
  *   The function which will be called with the result of the API call.
  *
  *   The second parameter to the callback is a [gax.Operation]{@link https://googleapis.github.io/gax-nodejs/Operation} object.
- * @return {Promise} - The promise which resolves to an array.
+ * @returns {Promise} - The promise which resolves to an array.
  *   The first element of the array is a [gax.Operation]{@link https://googleapis.github.io/gax-nodejs/Operation} object.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
@@ -2377,7 +2390,7 @@ LibraryServiceClient.prototype.getBigBook = function(request, options, callback)
  *   The function which will be called with the result of the API call.
  *
  *   The second parameter to the callback is a [gax.Operation]{@link https://googleapis.github.io/gax-nodejs/Operation} object.
- * @return {Promise} - The promise which resolves to an array.
+ * @returns {Promise} - The promise which resolves to an array.
  *   The first element of the array is a [gax.Operation]{@link https://googleapis.github.io/gax-nodejs/Operation} object.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
@@ -2463,11 +2476,11 @@ LibraryServiceClient.prototype.getBigNothing = function(request, options, callba
  * @param {number} request.requiredSingularDouble
  * @param {boolean} request.requiredSingularBool
  * @param {number} request.requiredSingularEnum
- *   The number should be among the values of [InnerEnum]{@link InnerEnum}
+ *   The number should be among the values of [InnerEnum]{@link google.example.library.v1.InnerEnum}
  * @param {string} request.requiredSingularString
  * @param {string} request.requiredSingularBytes
  * @param {Object} request.requiredSingularMessage
- *   This object should have the same structure as [InnerMessage]{@link InnerMessage}
+ *   This object should have the same structure as [InnerMessage]{@link google.example.library.v1.InnerMessage}
  * @param {string} request.requiredSingularResourceName
  * @param {string} request.requiredSingularResourceNameOneof
  * @param {number} request.requiredSingularFixed32
@@ -2478,11 +2491,11 @@ LibraryServiceClient.prototype.getBigNothing = function(request, options, callba
  * @param {number[]} request.requiredRepeatedDouble
  * @param {boolean[]} request.requiredRepeatedBool
  * @param {number[]} request.requiredRepeatedEnum
- *   The number should be among the values of [InnerEnum]{@link InnerEnum}
+ *   The number should be among the values of [InnerEnum]{@link google.example.library.v1.InnerEnum}
  * @param {string[]} request.requiredRepeatedString
  * @param {string[]} request.requiredRepeatedBytes
  * @param {Object[]} request.requiredRepeatedMessage
- *   This object should have the same structure as [InnerMessage]{@link InnerMessage}
+ *   This object should have the same structure as [InnerMessage]{@link google.example.library.v1.InnerMessage}
  * @param {string[]} request.requiredRepeatedResourceName
  * @param {string[]} request.requiredRepeatedResourceNameOneof
  * @param {number[]} request.requiredRepeatedFixed32
@@ -2494,11 +2507,11 @@ LibraryServiceClient.prototype.getBigNothing = function(request, options, callba
  * @param {number=} request.optionalSingularDouble
  * @param {boolean=} request.optionalSingularBool
  * @param {number=} request.optionalSingularEnum
- *   The number should be among the values of [InnerEnum]{@link InnerEnum}
+ *   The number should be among the values of [InnerEnum]{@link google.example.library.v1.InnerEnum}
  * @param {string=} request.optionalSingularString
  * @param {string=} request.optionalSingularBytes
  * @param {Object=} request.optionalSingularMessage
- *   This object should have the same structure as [InnerMessage]{@link InnerMessage}
+ *   This object should have the same structure as [InnerMessage]{@link google.example.library.v1.InnerMessage}
  * @param {string=} request.optionalSingularResourceName
  * @param {string=} request.optionalSingularResourceNameOneof
  * @param {number=} request.optionalSingularFixed32
@@ -2509,11 +2522,11 @@ LibraryServiceClient.prototype.getBigNothing = function(request, options, callba
  * @param {number[]=} request.optionalRepeatedDouble
  * @param {boolean[]=} request.optionalRepeatedBool
  * @param {number[]=} request.optionalRepeatedEnum
- *   The number should be among the values of [InnerEnum]{@link InnerEnum}
+ *   The number should be among the values of [InnerEnum]{@link google.example.library.v1.InnerEnum}
  * @param {string[]=} request.optionalRepeatedString
  * @param {string[]=} request.optionalRepeatedBytes
  * @param {Object[]=} request.optionalRepeatedMessage
- *   This object should have the same structure as [InnerMessage]{@link InnerMessage}
+ *   This object should have the same structure as [InnerMessage]{@link google.example.library.v1.InnerMessage}
  * @param {string[]=} request.optionalRepeatedResourceName
  * @param {string[]=} request.optionalRepeatedResourceNameOneof
  * @param {number[]=} request.optionalRepeatedFixed32
@@ -2525,9 +2538,9 @@ LibraryServiceClient.prototype.getBigNothing = function(request, options, callba
  * @param {function(?Error, ?Object)=} callback
  *   The function which will be called with the result of the API call.
  *
- *   The second parameter to the callback is an object representing [TestOptionalRequiredFlatteningParamsResponse]{@link TestOptionalRequiredFlatteningParamsResponse}.
- * @return {Promise} - The promise which resolves to an array.
- *   The first element of the array is an object representing [TestOptionalRequiredFlatteningParamsResponse]{@link TestOptionalRequiredFlatteningParamsResponse}.
+ *   The second parameter to the callback is an object representing [TestOptionalRequiredFlatteningParamsResponse]{@link google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse}.
+ * @returns {Promise} - The promise which resolves to an array.
+ *   The first element of the array is an object representing [TestOptionalRequiredFlatteningParamsResponse]{@link google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse}.
  *   The promise has a method named "cancel" which cancels the ongoing API call.
  *
  * @example
@@ -2614,32 +2627,33 @@ LibraryServiceClient.prototype.testOptionalRequiredFlatteningParams = function(r
   return this._testOptionalRequiredFlatteningParams(request, options, callback);
 };
 
+/**
+ * @class
+ * @param {*} gaxGrpc
+ */
 function LibraryServiceClientBuilder(gaxGrpc) {
   if (!(this instanceof LibraryServiceClientBuilder)) {
     return new LibraryServiceClientBuilder(gaxGrpc);
   }
 
-  var libraryServiceClient = gaxGrpc.load([{
-    root: require('google-proto-files')('..'),
-    file: 'library.proto'
-  }]);
-  extend(this, libraryServiceClient.google.example.library.v1);
+  var libraryServiceStubProtos = gaxGrpc.loadProto(
+    path.join(__dirname, '..', '..', 'protos'), 'library.proto');
+  extend(this, libraryServiceStubProtos.google.example.library.v1);
 
-  var labelerClient = gaxGrpc.load([{
-    root: require('google-proto-files')('..'),
-    file: 'tagger.proto'
-  }]);
-  extend(this, labelerClient.google.tagger.v1);
+  var labelerStubProtos = gaxGrpc.loadProto(
+    path.join(__dirname, '..', '..', 'protos'), 'tagger.proto');
+  extend(this, labelerStubProtos.google.tagger.v1);
 
-  var grpcClients = merge(
+  var protos = merge(
     {},
-    libraryServiceClient,
-    labelerClient
+    libraryServiceStubProtos,
+    labelerStubProtos
   );
 
   /**
    * Build a new instance of {@link LibraryServiceClient}.
    *
+   * @method LibraryServiceClientBuilder#libraryServiceClient
    * @param {Object=} opts - The optional parameters.
    * @param {String=} opts.servicePath
    *   The domain name of the API remote host.
@@ -2652,7 +2666,7 @@ function LibraryServiceClientBuilder(gaxGrpc) {
    *   {@link gax.constructSettings} for the format.
    */
   this.libraryServiceClient = function(opts) {
-    return new LibraryServiceClient(gaxGrpc, grpcClients, opts);
+    return new LibraryServiceClient(gaxGrpc, protos, opts);
   };
   extend(this.libraryServiceClient, LibraryServiceClient);
 }
@@ -3812,12 +3826,16 @@ describe('LibraryServiceClient', function() {
       // Mock Grpc layer
       client._streamShelves = mockServerStreamingGrpcMethod(request, expectedResponse);
 
-      client.streamShelves(request).on('data', function(response) {
+      var stream = client.streamShelves(request);
+      stream.on('data', function(response) {
         assert.deepStrictEqual(response, expectedResponse);
         done()
-      }).on('error', function(err) {
+      });
+      stream.on('error', function(err) {
         done(err);
       });
+
+      stream.write();
     });
 
     it('invokes streamShelves with error', function(done) {
@@ -3829,13 +3847,17 @@ describe('LibraryServiceClient', function() {
       // Mock Grpc layer
       client._streamShelves = mockServerStreamingGrpcMethod(request, null, error);
 
-      client.streamShelves(request).on('data', function(response) {
+      var stream = client.streamShelves(request);
+      stream.on('data', function(response) {
         assert.fail();
-      }).on('error', function(err) {
+      })
+      stream.on('error', function(err) {
         assert(err instanceof Error);
         assert.equal(err.code, FAKE_STATUS_CODE);
         done();
       });
+
+      stream.write();
     });
   });
 
@@ -3864,12 +3886,16 @@ describe('LibraryServiceClient', function() {
       // Mock Grpc layer
       client._streamBooks = mockServerStreamingGrpcMethod(request, expectedResponse);
 
-      client.streamBooks(request).on('data', function(response) {
+      var stream = client.streamBooks(request);
+      stream.on('data', function(response) {
         assert.deepStrictEqual(response, expectedResponse);
         done()
-      }).on('error', function(err) {
+      });
+      stream.on('error', function(err) {
         done(err);
       });
+
+      stream.write();
     });
 
     it('invokes streamBooks with error', function(done) {
@@ -3884,13 +3910,17 @@ describe('LibraryServiceClient', function() {
       // Mock Grpc layer
       client._streamBooks = mockServerStreamingGrpcMethod(request, null, error);
 
-      client.streamBooks(request).on('data', function(response) {
+      var stream = client.streamBooks(request);
+      stream.on('data', function(response) {
         assert.fail();
-      }).on('error', function(err) {
+      })
+      stream.on('error', function(err) {
         assert(err instanceof Error);
         assert.equal(err.code, FAKE_STATUS_CODE);
         done();
       });
+
+      stream.write();
     });
   });
 
@@ -4160,6 +4190,12 @@ describe('LibraryServiceClient', function() {
         done();
       });
     });
+
+    it('has longrunning decoder functions', function() {
+      var client = library.v1();
+      assert(client.longrunningDescriptors.getBigBook.responseDecoder instanceof Function);
+      assert(client.longrunningDescriptors.getBigBook.metadataDecoder instanceof Function);
+    });
   });
 
   describe('getBigNothing', function() {
@@ -4211,6 +4247,12 @@ describe('LibraryServiceClient', function() {
         assert.equal(err.code, FAKE_STATUS_CODE);
         done();
       });
+    });
+
+    it('has longrunning decoder functions', function() {
+      var client = library.v1();
+      assert(client.longrunningDescriptors.getBigNothing.responseDecoder instanceof Function);
+      assert(client.longrunningDescriptors.getBigNothing.metadataDecoder instanceof Function);
     });
   });
 
@@ -4386,7 +4428,6 @@ function mockServerStreamingGrpcMethod(expectedRequest, response, error) {
         callback(null, response);
       }
     });
-    mockStream.write();
     return mockStream;
   };
 }

@@ -32,6 +32,7 @@ import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.TypeName;
+import com.google.api.codegen.util.VersionMatcher;
 import com.google.api.codegen.util.ruby.RubyCommentReformatter;
 import com.google.api.codegen.util.ruby.RubyNameFormatter;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
@@ -300,7 +301,13 @@ public class RubySurfaceNamer extends SurfaceNamer {
   @Override
   public List<String> getTopLevelApiModules() {
     List<String> apiModules = getApiModules();
-    return apiModules.subList(0, apiModules.size() - 1);
+    return hasVersionModule(apiModules) ? apiModules.subList(0, apiModules.size() - 1) : apiModules;
+  }
+
+  private static boolean hasVersionModule(List<String> apiModules) {
+    String versionModule = apiModules.get(apiModules.size() - 1);
+    String version = Name.upperCamel(versionModule).toLowerUnderscore();
+    return VersionMatcher.isVersion(version);
   }
 
   @Override

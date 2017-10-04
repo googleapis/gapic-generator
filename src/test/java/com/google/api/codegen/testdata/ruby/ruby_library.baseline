@@ -69,7 +69,7 @@ Style/FileName:
 ============== file: .yardopts ==============
 --no-private
 --title=Google Example Library API
---exclude lib/library/v1
+--exclude _pb\.rb$
 --markup markdown
 
 ./lib/**/*.rb
@@ -552,11 +552,6 @@ require "pathname"
 # 2. [Enable the Google Example Library API.](https://console.cloud.google.com/apis/api/library)
 # 3. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
 #
-# ### Installation
-# ```
-# $ gem install library
-# ```
-#
 # ### Preview
 # #### LibraryServiceClient
 # ```rb
@@ -708,11 +703,6 @@ require "library/v1/library_service_client"
 # 1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
 # 2. [Enable the Google Example Library API.](https://console.cloud.google.com/apis/api/library)
 # 3. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
-#
-# ### Installation
-# ```
-# $ gem install library
-# ```
 #
 # ### Preview
 # #### LibraryServiceClient
@@ -1030,6 +1020,7 @@ module Library
         credentials ||= Library::Credentials.default
 
         @operations_client = Google::Longrunning::OperationsClient.new(
+          service_path: service_path,
           credentials: credentials,
           scopes: scopes,
           client_config: client_config,

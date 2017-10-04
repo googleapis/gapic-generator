@@ -52,6 +52,10 @@ public class NodeJSImportSectionTransformer implements ImportSectionTransformer 
     if (new GrpcStubTransformer().generateGrpcStubs(context).size() > 1) {
       imports.add(createImport("merge", "lodash.merge"));
     }
+    imports.add(createImport("path", "path"));
+    if (context.getInterfaceConfig().hasLongRunningOperations()) {
+      imports.add(createImport("protobuf", "protobufjs"));
+    }
     return imports.build();
   }
 
