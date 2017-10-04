@@ -744,8 +744,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getApiRpcStubClassName(
       InterfaceConfig interfaceConfig, TransportProtocol transportProtocol) {
     return publicClassName(
-        Name.anyCamel(
-            transportProtocol.toString().toLowerCase(), interfaceConfig.getRawName(), "Stub"));
+        getTransportProtocolName(transportProtocol)
+            .join(Name.anyCamel(interfaceConfig.getRawName(), "Stub")));
   }
 
   /** The name of the class that contains paged list response wrappers. */

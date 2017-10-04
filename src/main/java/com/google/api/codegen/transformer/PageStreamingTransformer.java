@@ -109,8 +109,7 @@ public class PageStreamingTransformer {
     desc.resourcesFieldGetFunction(
         pageStreaming
             .getResourcesField()
-            .getPagedResponseResourceMethods(
-                context.getFeatureConfig(), resourceFieldConfig, namer));
+            .getPagedResponseResourceMethods(resourceFieldConfig, namer));
 
     return desc.build();
   }

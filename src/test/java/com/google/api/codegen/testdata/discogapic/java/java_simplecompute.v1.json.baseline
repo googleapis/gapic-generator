@@ -5185,7 +5185,7 @@ import com.google.api.gax.rpc.UnaryCallable;
 import com.google.auth.Credentials;
 import static com.google.cloud.simplecompute.v1.PagedResponseWrappers.ListAddressesPagedResponse;
 import com.google.cloud.simplecompute.v1.stub.AddressAdminStub;
-import com.google.cloud.simplecompute.v1.stub.HttpAddressAdminStub;
+import com.google.cloud.simplecompute.v1.stub.HttpJsonAddressAdminStub;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -5284,7 +5284,7 @@ public class AddressAdminSettings extends ClientSettings {
 
   public AddressAdminStub createStub() throws IOException {
     if (getTransportProvider().getTransportName().equals(HttpJsonTransport.getHttpJsonTransportName())) {
-      return HttpAddressAdminStub.create(this);
+      return HttpJsonAddressAdminStub.create(this);
     } else {
       throw new UnsupportedOperationException(
           "Transport not supported: " + getTransportProvider().getTransportName());
@@ -5698,7 +5698,7 @@ public abstract class AddressAdminStub implements BackgroundResource {
   }
 
 }
-============== file: src/main/java/com/google/cloud/simplecompute/v1/stub/HttpAddressAdminStub.java ==============
+============== file: src/main/java/com/google/cloud/simplecompute/v1/stub/HttpJsonAddressAdminStub.java ==============
 /*
  * Copyright 2017, Google Inc. All rights reserved.
  *
@@ -5753,7 +5753,7 @@ import javax.annotation.Generated;
  */
 @Generated("by GAPIC v0.0.5")
 @BetaApi
-public class HttpAddressAdminStub extends AddressAdminStub {
+public class HttpJsonAddressAdminStub extends AddressAdminStub {
   private static final String BASE_URL = "https://www.googleapis.com/compute/v1/projects/";
 
   private static final UnaryCallable<DeleteAddressHttpRequest, Operation> directDeleteAddressCallable =
@@ -5826,20 +5826,20 @@ public class HttpAddressAdminStub extends AddressAdminStub {
   private final UnaryCallable<ListAddressesHttpRequest, AddressList> listAddressesCallable;
   private final UnaryCallable<ListAddressesHttpRequest, ListAddressesPagedResponse> listAddressesPagedCallable;
 
-  public static final HttpAddressAdminStub create(AddressAdminSettings settings) throws IOException {
-    return new HttpAddressAdminStub(settings, ClientContext.create(settings));
+  public static final HttpJsonAddressAdminStub create(AddressAdminSettings settings) throws IOException {
+    return new HttpJsonAddressAdminStub(settings, ClientContext.create(settings));
   }
 
-  public static final HttpAddressAdminStub create(ClientContext clientContext) throws IOException {
-    return new HttpAddressAdminStub(AddressAdminSettings.defaultBuilder().build(), clientContext);
+  public static final HttpJsonAddressAdminStub create(ClientContext clientContext) throws IOException {
+    return new HttpJsonAddressAdminStub(AddressAdminSettings.defaultBuilder().build(), clientContext);
   }
 
   /**
-   * Constructs an instance of HttpAddressAdminStub, using the given settings.
+   * Constructs an instance of HttpJsonAddressAdminStub, using the given settings.
    * This is protected so that it is easy to make a subclass, but otherwise, the static
    * factory methods should be preferred.
    */
-  protected HttpAddressAdminStub(AddressAdminSettings settings, ClientContext clientContext) throws IOException {
+  protected HttpJsonAddressAdminStub(AddressAdminSettings settings, ClientContext clientContext) throws IOException {
 
     this.deleteAddressCallable = HttpJsonCallableFactory.create(directDeleteAddressCallable,settings.deleteAddressSettings(), clientContext);
     this.getAddressCallable = HttpJsonCallableFactory.create(directGetAddressCallable,settings.getAddressSettings(), clientContext);

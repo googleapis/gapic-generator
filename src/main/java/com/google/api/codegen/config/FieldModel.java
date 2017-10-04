@@ -118,4 +118,9 @@ public interface FieldModel {
    */
   List<String> getPagedResponseResourceMethods(
       FeatureConfig featureConfig, FieldConfig startingFieldConfig, SurfaceNamer namer);
+
+  /* The ordered list of method calls necessary to reach the object representing the resource array
+   * in the response of paged RPCs.
+   */
+  List<String> getPagedResponseResourceMethods(FieldConfig startingFieldConfig, SurfaceNamer namer);
 }

@@ -202,7 +202,7 @@ public abstract class PageStreamingConfig {
           if (subProperty.type().equals(Type.ARRAY)) {
             resourcesField = new DiscoveryField(subProperty, discoGapicNamer);
             resourcesFieldPath.add(resourcesField);
-            resourcesFieldPath.add(new DiscoveryField(additionalProperties, discoGapicNamer));
+            resourcesFieldPath.add(new DiscoveryField(property, discoGapicNamer));
             break;
           }
         }
