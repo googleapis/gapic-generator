@@ -136,6 +136,7 @@ public class DiscoveryField implements FieldModel {
 
   @Override
   public boolean mayBeInResourceName() {
+    // A ResourceName will only contain path parameters.
     return schema.isPathParam();
   }
 
