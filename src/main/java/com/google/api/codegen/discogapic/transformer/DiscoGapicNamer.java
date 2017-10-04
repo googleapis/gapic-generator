@@ -104,10 +104,10 @@ public class DiscoGapicNamer {
   public static Name getQualifiedResourceIdentifier(Method method, String qualifyingResource) {
     String methodPath = method.flatPath();
     Name qualifier = Name.anyCamel(qualifyingResource);
-    String baseResource = getResourceIdentifier(methodPath).toLowerCamel();
-    Name baseResourceName = Name.anyCamel(baseResource);
+    Name baseResourceName = Name.anyCamel(getResourceIdentifier(methodPath).toLowerCamel());
 
-    if (!Inflector.singularize(qualifier.toLowerCamel()).equals(baseResource)) {
+    // If the qualifying resource is the same as the base resource, just use return the base resource name.
+    if (!Inflector.singularize(qualifier.toLowerCamel()).equals(baseResourceName.toLowerCamel())) {
       baseResourceName = qualifier.join(baseResourceName);
     }
 

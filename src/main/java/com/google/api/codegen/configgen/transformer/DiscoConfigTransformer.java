@@ -114,8 +114,8 @@ public class DiscoConfigTransformer {
   /**
    * Examines all of the resource paths used by the methods, and returns a map from each unique
    * resource paths to a short name used by the collection configuration. Each resource path is
-   * merely a string describing the fields in the entity, and the resource path may not be the same
-   * as the RPC endpoint URI.
+   * merely a string describing the fields in the entity, and the resource path might not be the
+   * same as the RPC endpoint URI.
    */
   private Map<String, String> getResourceToEntityNameMap(
       String parentResource, List<Method> methods) {
