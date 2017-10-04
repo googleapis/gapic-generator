@@ -22,6 +22,7 @@ import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.viewmodel.PageStreamingDescriptorClassView;
 import com.google.api.codegen.viewmodel.PageStreamingDescriptorView;
 import com.google.api.codegen.viewmodel.PagedListResponseFactoryClassView;
+import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -106,10 +107,12 @@ public class PageStreamingTransformer {
     }
     desc.responseTokenGetFunction(
         namer.getFieldGetFunctionName(pageStreaming.getResponseTokenField()));
-    desc.resourcesFieldGetFunction(
-        pageStreaming
-            .getResourcesField()
-            .getPagedResponseResourceMethods(resourceFieldConfig, namer));
+
+    ImmutableList.Builder<String> resourcesFieldGetFunctionList = new ImmutableList.Builder<>();
+    for (FieldModel field : resourceFieldConfig.getFieldPath()) {
+      resourcesFieldGetFunctionList.add(namer.getFieldGetFunctionName(field));
+    }
+    desc.resourcesFieldGetFunction(resourcesFieldGetFunctionList.build());
 
     return desc.build();
   }

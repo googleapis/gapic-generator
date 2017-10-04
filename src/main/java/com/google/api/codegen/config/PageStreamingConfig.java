@@ -201,8 +201,8 @@ public abstract class PageStreamingConfig {
         for (Schema subProperty : additionalProperties.properties().values()) {
           if (subProperty.type().equals(Type.ARRAY)) {
             resourcesField = new DiscoveryField(subProperty, discoGapicNamer);
-            resourcesFieldPath.add(resourcesField);
             resourcesFieldPath.add(new DiscoveryField(property, discoGapicNamer));
+            resourcesFieldPath.add(resourcesField);
             break;
           }
         }

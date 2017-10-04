@@ -248,14 +248,4 @@ public class DiscoveryField implements FieldModel {
     }
     return ImmutableList.copyOf(methodNames);
   }
-
-  @Override
-  public List<String> getPagedResponseResourceMethods(
-      FieldConfig startingFieldConfig, SurfaceNamer namer) {
-    List<String> methodNames = new LinkedList<>();
-    for (FieldModel field : startingFieldConfig.getFieldPath()) {
-      methodNames.add(0, namer.getFieldGetFunctionName(field));
-    }
-    return ImmutableList.copyOf(methodNames);
-  }
 }
