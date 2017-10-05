@@ -179,6 +179,11 @@ public class DiscoGapicNamer {
     return null;
   }
 
+  /**
+   * Get the canonical path for a method, in the form "\\(\{%s\}/%s)+" e.g. for a method path
+   * "{project}/project/{region}/region/addresses", this returns
+   * "{project}/project/{region}/region".
+   */
   public static String getCanonicalPath(Method method) {
     String namePattern = method.flatPath();
     // Escape the first character of the pattern if necessary.

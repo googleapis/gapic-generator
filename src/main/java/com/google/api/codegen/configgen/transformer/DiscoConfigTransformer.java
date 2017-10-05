@@ -57,6 +57,8 @@ public class DiscoConfigTransformer {
       resourceToNamePatternMapBuilder.put(simpleResourceName, namePattern);
       methodToNamePatternMapBuilder.put(method, namePattern);
     }
+
+    // Map of base resource identifiers to all canonical name patterns that use that identifier.
     ImmutableSetMultimap<String, String> resourceToNamePatternMap =
         resourceToNamePatternMapBuilder.build();
     ImmutableMap<Method, String> methodToNamePatternMap = methodToNamePatternMapBuilder.build();
