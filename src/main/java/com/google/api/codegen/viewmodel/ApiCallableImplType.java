@@ -14,12 +14,16 @@
  */
 package com.google.api.codegen.viewmodel;
 
+import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
+
 /** The concrete callable class type */
 public enum ApiCallableImplType {
   SimpleApiCallable(ServiceMethodType.UnaryMethod),
   PagedApiCallable(ServiceMethodType.UnaryMethod),
   BatchingApiCallable(ServiceMethodType.UnaryMethod),
-  StreamingApiCallable(ServiceMethodType.GrpcStreamingMethod),
+  BidiStreamingApiCallable(ServiceMethodType.GrpcBidiStreamingMethod),
+  ServerStreamingApiCallable(ServiceMethodType.GrpcServerStreamingMethod),
+  ClientStreamingApiCallable(ServiceMethodType.GrpcClientStreamingMethod),
   InitialOperationApiCallable(ServiceMethodType.UnaryMethod),
   OperationApiCallable(ServiceMethodType.LongRunningMethod);
 
@@ -31,5 +35,18 @@ public enum ApiCallableImplType {
 
   public ServiceMethodType serviceMethodType() {
     return serviceMethodType;
+  }
+
+  public static ApiCallableImplType of(GrpcStreamingType streamingType) {
+    switch (streamingType) {
+      case BidiStreaming:
+        return BidiStreamingApiCallable;
+      case ServerStreaming:
+        return ServerStreamingApiCallable;
+      case ClientStreaming:
+        return ClientStreamingApiCallable;
+      default:
+        throw new IllegalArgumentException("Invalid gRPC streaming type: " + streamingType);
+    }
   }
 }

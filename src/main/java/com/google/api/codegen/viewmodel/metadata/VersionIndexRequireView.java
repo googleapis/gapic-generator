@@ -34,6 +34,9 @@ public abstract class VersionIndexRequireView {
 
   public abstract String fileName();
 
+  @Nullable
+  public abstract String topLevelNamespace();
+
   public static Builder newBuilder() {
     return new AutoValue_VersionIndexRequireView.Builder();
   }
@@ -49,6 +52,8 @@ public abstract class VersionIndexRequireView {
     public abstract Builder doc(ServiceDocView val);
 
     public abstract Builder fileName(String val);
+
+    public abstract Builder topLevelNamespace(String val);
 
     public abstract VersionIndexRequireView build();
   }

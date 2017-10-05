@@ -21,6 +21,7 @@ import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
+import com.google.api.codegen.ruby.RubyUtil;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
@@ -31,6 +32,7 @@ import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.TypeName;
+import com.google.api.codegen.util.VersionMatcher;
 import com.google.api.codegen.util.ruby.RubyCommentReformatter;
 import com.google.api.codegen.util.ruby.RubyNameFormatter;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
@@ -53,7 +55,13 @@ public class RubySurfaceNamer extends SurfaceNamer {
         new ModelTypeFormatterImpl(new RubyModelTypeNameConverter(packageName)),
         new RubyTypeTable(packageName),
         new RubyCommentReformatter(),
+        packageName,
         packageName);
+  }
+
+  @Override
+  public SurfaceNamer cloneWithPackageName(String packageName) {
+    return new RubySurfaceNamer(packageName);
   }
 
   /** The name of the class that implements snippets for a particular proto interface. */
@@ -203,6 +211,14 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getFullyQualifiedCredentialsClassName() {
+    if (RubyUtil.isLongrunning(getPackageName())) {
+      return "Google::Gax::Credentials";
+    }
+    return getTopLevelNamespace() + "::Credentials";
+  }
+
+  @Override
   public List<String> getThrowsDocLines(GapicMethodConfig methodConfig) {
     return ImmutableList.of("@raise [Google::Gax::GaxError] if the RPC is aborted.");
   }
@@ -254,8 +270,56 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getTopLevelAliasedApiClassName(
+      GapicInterfaceConfig interfaceConfig, boolean packageHasMultipleServices) {
+    if (!RubyUtil.hasMajorVersion(getPackageName())) {
+      return getVersionAliasedApiClassName(interfaceConfig, packageHasMultipleServices);
+    }
+    return packageHasMultipleServices
+        ? getTopLevelNamespace() + "::" + getPackageServiceName(interfaceConfig.getInterface())
+        : getTopLevelNamespace();
+  }
+
+  @Override
+  public String getVersionAliasedApiClassName(
+      GapicInterfaceConfig interfaceConfig, boolean packageHasMultipleServices) {
+    return packageHasMultipleServices
+        ? getPackageName() + "::" + getPackageServiceName(interfaceConfig.getInterface())
+        : getPackageName();
+  }
+
+  @Override
+  public String getTopLevelNamespace() {
+    return Joiner.on("::").join(getTopLevelApiModules());
+  }
+
+  @Override
   public ImmutableList<String> getApiModules() {
     return ImmutableList.copyOf(Splitter.on("::").split(getPackageName()));
+  }
+
+  @Override
+  public List<String> getTopLevelApiModules() {
+    List<String> apiModules = getApiModules();
+    return hasVersionModule(apiModules) ? apiModules.subList(0, apiModules.size() - 1) : apiModules;
+  }
+
+  private static boolean hasVersionModule(List<String> apiModules) {
+    String versionModule = apiModules.get(apiModules.size() - 1);
+    String version = Name.upperCamel(versionModule).toLowerUnderscore();
+    return VersionMatcher.isVersion(version);
+  }
+
+  @Override
+  public String getModuleVersionName() {
+    List<String> apiModules = getApiModules();
+    return apiModules.get(apiModules.size() - 1);
+  }
+
+  @Override
+  public String getModuleServiceName() {
+    List<String> apiModules = getTopLevelApiModules();
+    return apiModules.get(apiModules.size() - 1);
   }
 
   @Override
@@ -294,6 +358,26 @@ public class RubySurfaceNamer extends SurfaceNamer {
     return getPackageFilePath();
   }
 
+  @Override
+  public String getTopLevelIndexFileImportName() {
+    List<String> newNames = new ArrayList<>();
+    for (String name : getTopLevelNamespace().split("::")) {
+      newNames.add(packageFilePathPiece(Name.upperCamel(name)));
+    }
+    return Joiner.on(File.separator).join(newNames.toArray());
+  }
+
+  @Override
+  public String getCredentialsClassImportName() {
+    // Place credentials in top-level namespace.
+    List<String> paths = new ArrayList<>();
+    for (String part : getTopLevelApiModules()) {
+      paths.add(packageFilePathPiece(Name.upperCamel(part)));
+    }
+    paths.add("credentials");
+    return Joiner.on(File.separator).join(paths);
+  }
+
   private String getPackageFilePath() {
     List<String> newNames = new ArrayList<>();
     for (String name : getPackageName().split("::")) {
@@ -320,5 +404,10 @@ public class RubySurfaceNamer extends SurfaceNamer {
   @Override
   public String getLroApiMethodName(Method method, VisibilityConfig visibility) {
     return getMethodKey(method);
+  }
+
+  @Override
+  public String getPackageServiceName(Interface apiInterface) {
+    return publicClassName(getReducedServiceName(apiInterface.getSimpleName()));
   }
 }

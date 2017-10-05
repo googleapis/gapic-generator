@@ -18,6 +18,7 @@ import com.google.api.codegen.GeneratorVersionProvider;
 import com.google.api.codegen.config.ProductConfig;
 import com.google.api.codegen.viewmodel.FileHeaderView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
+import com.google.common.collect.ImmutableList;
 
 public class FileHeaderTransformer {
 
@@ -27,7 +28,7 @@ public class FileHeaderTransformer {
     this.importSectionTransformer = importSectionTransformer;
   }
 
-  public FileHeaderView generateFileHeader(InterfaceContext context) {
+  public FileHeaderView generateFileHeader(GapicInterfaceContext context) {
     return generateFileHeader(
         context.getProductConfig(),
         importSectionTransformer.generateImportSection(context),
@@ -35,7 +36,15 @@ public class FileHeaderTransformer {
   }
 
   public FileHeaderView generateFileHeader(
-      ProductConfig productConfig, ImportSectionView importSection, SurfaceNamer namer) {
+      ProductConfig productConfig, ImportSectionView importSectionView, SurfaceNamer namer) {
+    return generateFileHeader(productConfig, importSectionView, namer, namer.getApiModules());
+  }
+
+  public FileHeaderView generateFileHeader(
+      ProductConfig productConfig,
+      ImportSectionView importSection,
+      SurfaceNamer namer,
+      ImmutableList<String> apiModules) {
     FileHeaderView.Builder fileHeader = FileHeaderView.newBuilder();
 
     fileHeader.copyrightLines(productConfig.getCopyrightLines());
@@ -47,7 +56,7 @@ public class FileHeaderTransformer {
     fileHeader.importSection(importSection);
     fileHeader.version(namer.getApiWrapperModuleVersion());
     fileHeader.generatorVersion(GeneratorVersionProvider.getGeneratorVersion());
-    fileHeader.modules(namer.getApiModules());
+    fileHeader.modules(apiModules);
 
     return fileHeader.build();
   }

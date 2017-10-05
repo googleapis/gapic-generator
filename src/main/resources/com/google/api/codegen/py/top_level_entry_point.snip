@@ -1,0 +1,29 @@
+@extends "py/common.snip"
+
+@snippet generate(view)
+    {@header(view.fileHeader)}
+
+    {@body(view.packageHasEnums,view.requireViews)}
+@end
+
+@private header(fileHeader)
+    {@licenseSection(fileHeader)}
+
+    {@renderImportSection(fileHeader.importSection)}
+@end
+
+@private body(hasEnums, requireViews)
+    {@exports(hasEnums,requireViews)}
+@end
+
+@private exports(hasEnums, requireViews)
+    __all__ = (
+        @if hasEnums
+            'enums',
+        @end
+        'types',
+        @join view : requireViews on BREAK
+            '{@view.clientName}',
+        @end
+    )
+@end

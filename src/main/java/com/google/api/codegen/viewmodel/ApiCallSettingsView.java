@@ -24,10 +24,6 @@ public abstract class ApiCallSettingsView {
 
   public abstract String methodName();
 
-  public abstract String protoMethodName();
-
-  public abstract String fullServiceName();
-
   public abstract String asyncMethodName();
 
   public abstract String requestTypeName();
@@ -86,10 +82,6 @@ public abstract class ApiCallSettingsView {
     public abstract Builder type(ApiCallableImplType type);
 
     public abstract Builder methodName(String apiMethodName);
-
-    public abstract Builder protoMethodName(String val);
-
-    public abstract Builder fullServiceName(String val);
 
     public abstract Builder asyncMethodName(String apiAsyncMethodName);
 

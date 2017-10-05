@@ -1,0 +1,258 @@
+@extends "java/common.snip"
+
+@snippet renderStubFileHeader(fileHeader)
+  {@license(fileHeader)}
+  package {@fileHeader.packageName};
+
+  {@importList(fileHeader.importSection.appImports)}
+@end
+
+@snippet generate(classFile)
+  {@renderStubFileHeader(classFile.fileHeader)}
+
+  {@classDoc(classFile.classView.doc)}
+  @if classFile.fileHeader.hasGeneratorVersion
+    @@Generated("by GAPIC v{@classFile.fileHeader.generatorVersion}")
+  @else
+    @@Generated("by GAPIC")
+  @end
+  @if classFile.classView.releaseLevelAnnotation
+    {@classFile.classView.releaseLevelAnnotation}
+  @end
+  {@renderClass(classFile.classView)}
+@end
+
+@private renderClass(classView)
+  public class {@classView.name} extends {@classView.parentName} {
+    {@constants(classView)}
+    {@members(classView)}
+    {@constructors(classView)}
+    {@memberMethods(classView)}
+    {@callableMethods(classView)}
+    {@cleanupSection()}
+  }
+@end
+
+@private classDoc(doc)
+  // AUTO-GENERATED DOCUMENTATION AND CLASS
+  /**
+   * gRPC stub implementation for {@doc.serviceTitle}.
+   *
+   * <p>This class is for advanced usage and reflects the underlying API directly.
+   */
+@end
+
+@private constants(stubClass)
+  @join callable : stubClass.directCallables
+    {@grpcMethodCallable(callable)}
+  @end
+  {@""}
+@end
+
+@private grpcMethodCallable(callable)
+  private static final {@callable.interfaceTypeName}<{@callable.requestTypeName}, {@callable.responseTypeName}> {@callable.name} =
+      GrpcCallableFactory.{@callable.createCallableFunctionName}(
+          io.grpc.MethodDescriptor.create(
+              {@streamingTypeEnum(callable.grpcStreamingType)},
+              "{@callable.fullServiceName}/{@callable.protoMethodName}",
+              io.grpc.protobuf.ProtoUtils.marshaller({@callable.requestTypeName}.getDefaultInstance()),
+              io.grpc.protobuf.ProtoUtils.marshaller({@callable.responseTypeName}.getDefaultInstance())));
+@end
+
+@private streamingTypeEnum(streamingType)
+  @switch streamingType
+  @case "NonStreaming"
+    io.grpc.MethodDescriptor.MethodType.UNARY
+  @case "ServerStreaming"
+    io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING
+  @case "ClientStreaming"
+    io.grpc.MethodDescriptor.MethodType.CLIENT_STREAMING
+  @case "BidiStreaming"
+    io.grpc.MethodDescriptor.MethodType.BIDI_STREAMING
+  @default
+    $unhandledCase: {@streamingType}$
+  @end
+@end
+
+@private members(stubClass)
+
+  private final BackgroundResource backgroundResources;
+  @if stubClass.hasLongRunningOperations
+    private final GrpcOperationsStub operationsStub;
+  @end
+
+  @join apiCallable : stubClass.apiCallables
+    {@apiCallableMember(apiCallable)}
+  @end
+  {@""}
+@end
+
+@private apiCallableMember(callable)
+  @if callable.isStreaming
+    private final {@callable.interfaceTypeName}<{@callable.requestTypeName}, \
+        {@callable.responseTypeName}> {@callable.name};
+  @else
+    @switch callable.type.serviceMethodType
+    @case "UnaryMethod"
+      private final {@callable.interfaceTypeName}<{@callable.requestTypeName}, \
+        {@callable.responseTypeName}> {@callable.name};
+    @case "LongRunningMethod"
+      private final {@callable.interfaceTypeName}<{@callable.requestTypeName}, \
+        {@callable.responseTypeName}, {@callable.metadataTypeName}, Operation> {@callable.name};
+    @default
+      $unhandledCase: {@callable.type.serviceMethodType}$
+    @end
+  @end
+@end
+
+@private constructors(stubClass)
+  public static final {@stubClass.name} create({@stubClass.settingsClassName} settings) throws IOException {
+    return new {@stubClass.name}(settings, ClientContext.create(settings));
+  }
+
+  public static final {@stubClass.name} create(ClientContext clientContext) throws IOException {
+    return new {@stubClass.name}({@stubClass.settingsClassName}.newBuilder().build(), clientContext);
+  }
+
+  /**
+   * Constructs an instance of {@stubClass.name}, using the given settings.
+   * This is protected so that it is easy to make a subclass, but otherwise, the static
+   * factory methods should be preferred.
+   */
+  protected {@stubClass.name}({@stubClass.settingsClassName} settings, ClientContext clientContext) throws IOException {
+    @if stubClass.hasLongRunningOperations
+      this.operationsStub = GrpcOperationsStub.create(clientContext);
+    @end
+
+    @join callable : stubClass.apiCallables
+      @if callable.isStreaming
+        this.{@callable.name} = GrpcCallableFactory.create({@callable.grpcDirectCallableName},\
+                settings.{@callable.settingsFunctionName}(), clientContext);
+      @else
+        @switch callable.type
+        @case "SimpleApiCallable"
+          this.{@callable.name} = GrpcCallableFactory.create({@callable.grpcDirectCallableName},\
+              settings.{@callable.settingsFunctionName}(), clientContext);
+        @case "PagedApiCallable"
+          this.{@callable.name} =
+              GrpcCallableFactory.createPagedVariant({@callable.grpcDirectCallableName},\
+              settings.{@callable.settingsFunctionName}(), clientContext);
+        @case "BatchingApiCallable"
+          this.{@callable.name} = GrpcCallableFactory.create({@callable.grpcDirectCallableName},\
+              settings.{@callable.settingsFunctionName}(), clientContext);
+        @case "InitialOperationApiCallable"
+          this.{@callable.name} = GrpcCallableFactory.create({@callable.grpcDirectCallableName},\
+              settings.{@callable.settingsFunctionName}().getInitialCallSettings(), clientContext);
+        @case "OperationApiCallable"
+          this.{@callable.name} = GrpcCallableFactory.create({@callable.grpcDirectCallableName},\
+              settings.{@callable.settingsFunctionName}(), clientContext, this.operationsStub);
+        @default
+          $unhandledCase: {@callable.type}$
+        @end
+      @end
+    @end
+
+    backgroundResources = new BackgroundResourceAggregation(clientContext.getBackgroundResources());
+  }
+  {@""}
+@end
+
+@private memberMethods(xapiClass)
+  @if xapiClass.hasLongRunningOperations
+    public GrpcOperationsStub getOperationsStub() {
+      return operationsStub;
+    }
+  @end
+  {@""}
+@end
+
+@private callableMethods(classView)
+  @join apiMethod : classView.callableMethods
+    @switch apiMethod.type
+    @case "PagedCallableMethod"
+      {@callableMethod(apiMethod)}
+    @case "UnpagedListCallableMethod"
+      {@callableMethod(apiMethod)}
+    @case "CallableMethod"
+    # TODO create a GrpcStreaming ApiMethodType
+      @if apiMethod.isStreaming
+        {@streamingCallableMethod(apiMethod)}
+      @else
+        {@callableMethod(apiMethod)}
+      @end
+    @case "OperationCallableMethod"
+      {@operationCallableMethod(apiMethod)}
+    @default
+      $unhandledCase: {@apiMethod.type}$
+    @end
+    {@BREAK}
+  @end
+  {@""}
+@end
+
+@private callableMethod(apiMethod)
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
+  @end
+  public UnaryCallable<{@apiMethod.serviceRequestTypeName}, \
+      {@apiMethod.responseTypeName}> {@apiMethod.name}() {
+    return {@apiMethod.callableMethod.callableName};
+  }
+@end
+
+@private streamingCallableMethod(apiMethod)
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
+  @end
+  public {@apiMethod.callableMethod.interfaceTypeName}<{@apiMethod.serviceRequestTypeName}, \
+      {@apiMethod.responseTypeName}> {@apiMethod.name}() {
+    return {@apiMethod.callableMethod.callableName};
+  }
+@end
+
+@private operationCallableMethod(apiMethod)
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
+  @end
+  public OperationCallable<{@apiMethod.serviceRequestTypeName}, \
+      {@apiMethod.responseTypeName}, {@apiMethod.operationMethod.metadataTypeName}, Operation> \
+      {@apiMethod.name}() {
+    return {@apiMethod.callableMethod.callableName};
+  }
+@end
+
+@private cleanupSection()
+  @@Override
+  public final void close() throws Exception {
+    shutdown();
+  }
+
+  @@Override
+  public void shutdown() {
+    backgroundResources.shutdown();
+  }
+
+  @@Override
+  public boolean isShutdown() {
+    return backgroundResources.isShutdown();
+  }
+
+  @@Override
+  public boolean isTerminated() {
+    return backgroundResources.isTerminated();
+  }
+
+  @@Override
+  public void shutdownNow() {
+    backgroundResources.shutdownNow();
+  }
+
+  @@Override
+  public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
+    return backgroundResources.awaitTermination(duration, unit);
+  }
+
+@end

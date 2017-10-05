@@ -50,9 +50,8 @@ public class CSharpCommonTransformer {
         continue;
       }
       GapicMethodConfig methodConfig = context.getMethodConfig(method);
-      if (methodConfig.getGrpcStreamingType() != GrpcStreamingType.NonStreaming
-          && methodConfig.getGrpcStreamingType() != GrpcStreamingType.BidiStreaming) {
-        // Only support non-streaming and duplex-streaming for now
+      if (methodConfig.getGrpcStreamingType() == GrpcStreamingType.ClientStreaming) {
+        // Client-streaming not yet supported
         continue;
       }
       result.add(method);

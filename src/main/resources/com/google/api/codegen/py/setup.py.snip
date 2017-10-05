@@ -9,20 +9,17 @@
   """
 
   from setuptools import setup, find_packages
+  import io
   import sys
 
   install_requires = [
-      'google-gax>={@metadata.gaxVersionBound.lower}, <{@metadata.gaxVersionBound.upper}',
-      'oauth2client>={@metadata.authVersionBound.lower}, <{@metadata.authVersionBound.upper}',
-      '{@metadata.protoPackageName}[grpc]>={@metadata.packageVersionBound.lower}, <{@metadata.packageVersionBound.upper}',
-      @join packageDep : metadata.protoPackageDependencies
-        @if or(packageDep.name == "googleapis-common-protos", packageDep.name.startsWith("proto-"))
-          '{@packageDep.name}[grpc]>={@packageDep.versionBound.lower}, <{@packageDep.versionBound.upper}',
-        @else
+      @join packageDep : metadata.dependencies
           '{@packageDep.name}>={@packageDep.versionBound.lower}, <{@packageDep.versionBound.upper}',
-        @end
       @end
   ]
+
+  with io.open('README.rst', 'r', encoding='utf-8') as readme_file:
+      long_description = readme_file.read()
 
   setup(
       name='{@metadata.gapicPackageName}',
@@ -40,11 +37,12 @@
           'Programming Language :: Python :: 3',
           'Programming Language :: Python :: 3.4',
           'Programming Language :: Python :: 3.5',
+          'Programming Language :: Python :: 3.6',
           'Programming Language :: Python :: Implementation :: CPython',
       ],
       description='GAPIC library for the {@metadata.fullName}',
       include_package_data=True,
-      long_description=open('README.rst').read(),
+      long_description=long_description,
       install_requires=install_requires,
       license='{@metadata.licenseName}',
       packages=find_packages(),

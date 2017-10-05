@@ -34,7 +34,10 @@ public abstract class StaticLangApiView {
   public abstract String grpcServiceName();
 
   @Nullable // Used in C#
-  public abstract String grpcTypeName();
+  public abstract String grpcTypeNameOuter();
+
+  @Nullable // Used in C#
+  public abstract String grpcTypeNameInner();
 
   @Nullable // Used in C#
   public abstract List<ReroutedGrpcView> reroutedGrpcClients();
@@ -61,6 +64,9 @@ public abstract class StaticLangApiView {
 
   public abstract boolean hasLongRunningOperations();
 
+  @Nullable // Used in Java
+  public abstract String stubInterfaceName();
+
   public static Builder newBuilder() {
     return new AutoValue_StaticLangApiView.Builder();
   }
@@ -78,7 +84,9 @@ public abstract class StaticLangApiView {
 
     public abstract Builder grpcServiceName(String val);
 
-    public abstract Builder grpcTypeName(String val);
+    public abstract Builder grpcTypeNameInner(String val);
+
+    public abstract Builder grpcTypeNameOuter(String val);
 
     public abstract Builder reroutedGrpcClients(List<ReroutedGrpcView> val);
 
@@ -101,6 +109,8 @@ public abstract class StaticLangApiView {
     public abstract Builder hasDefaultInstance(boolean val);
 
     public abstract Builder hasLongRunningOperations(boolean val);
+
+    public abstract Builder stubInterfaceName(String apiStubInterfaceName);
 
     public abstract StaticLangApiView build();
   }

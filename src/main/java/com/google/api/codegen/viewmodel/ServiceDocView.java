@@ -35,6 +35,8 @@ public abstract class ServiceDocView {
 
   public abstract boolean hasDefaultInstance();
 
+  public abstract String serviceTitle();
+
   public static Builder newBuilder() {
     return new AutoValue_ServiceDocView.Builder();
   }
@@ -62,6 +64,8 @@ public abstract class ServiceDocView {
     public abstract Builder settingsClassName(String val);
 
     public abstract Builder hasDefaultInstance(boolean hasDefaultInstance);
+
+    public abstract Builder serviceTitle(String val);
 
     public abstract ServiceDocView build();
   }

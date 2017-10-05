@@ -20,4 +20,6 @@ package com.google.api.codegen.config;
  */
 public interface InterfaceConfig {
   String getName();
+
+  String getRawName();
 }

@@ -54,6 +54,7 @@ public class GrpcElementDocTransformer {
       doc.lines(namer.getDocLines(message));
       doc.properties(generateMessagePropertyDocs(typeTable, namer, message.getFields()));
       doc.elementDocs(generateElementDocs(typeTable, namer, message));
+      doc.packageName(message.getFile().getFullName());
       messageDocs.add(doc.build());
     }
     return messageDocs.build();
@@ -72,10 +73,13 @@ public class GrpcElementDocTransformer {
     return propertyDocs.build();
   }
 
-  private List<GrpcElementDocView> generateEnumDocs(
+  public List<GrpcElementDocView> generateEnumDocs(
       ModelTypeTable typeTable, SurfaceNamer namer, ProtoContainerElement containerElement) {
     ImmutableList.Builder<GrpcElementDocView> enumDocs = ImmutableList.builder();
     for (EnumType enumElement : containerElement.getEnums()) {
+      if (!enumElement.isReachable()) {
+        continue;
+      }
       GrpcEnumDocView.Builder doc = GrpcEnumDocView.newBuilder();
       doc.name(namer.getEnumTypeName(typeTable, enumElement));
       doc.lines(namer.getDocLines(enumElement));

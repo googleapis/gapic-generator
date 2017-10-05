@@ -131,9 +131,11 @@ public abstract class FieldConfig {
     if (messageFieldResourceNameConfig != null
         && !messageFieldResourceNameConfig.equals(flattenedFieldResourceNameConfig)) {
       // We support the case of the flattenedField using a specific resource name type when the
-      // messageField uses a oneof containing that type
-      boolean ok = false;
-      if (messageFieldResourceNameConfig.getResourceNameType() == ResourceNameType.ONEOF) {
+      // messageField uses a oneof containing that type, or when the messageField accepts any
+      // resource name.
+      ResourceNameType resourceTypeName = messageFieldResourceNameConfig.getResourceNameType();
+      boolean ok = resourceTypeName == ResourceNameType.ANY;
+      if (resourceTypeName == ResourceNameType.ONEOF) {
         ResourceNameOneofConfig oneofConfig =
             (ResourceNameOneofConfig) messageFieldResourceNameConfig;
         ok = oneofConfig.getResourceNameConfigs().contains(flattenedFieldResourceNameConfig);
@@ -207,10 +209,15 @@ public abstract class FieldConfig {
         getField(), getResourceNameTreatment(), resourceNameConfig, getMessageResourceNameConfig());
   }
 
-  public boolean hasDifferentMessageResourceNameConfig() {
+  public boolean requiresParamTransformation() {
     return getResourceNameConfig() != null
         && getMessageResourceNameConfig() != null
         && !getResourceNameConfig().equals(getMessageResourceNameConfig());
+  }
+
+  public boolean requiresParamTransformationFromAny() {
+    return getMessageResourceNameConfig() != null
+        && getMessageResourceNameConfig().getResourceNameType() == ResourceNameType.ANY;
   }
 
   public FieldConfig getMessageFieldConfig() {

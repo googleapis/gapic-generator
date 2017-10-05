@@ -206,7 +206,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
           // Issue: https://github.com/googleapis/toolkit/issues/946
           continue;
         }
-        addGrpcStreamingTestImport(context);
+        addGrpcStreamingTestImports(context, methodConfig.getGrpcStreamingType());
         GapicMethodContext methodContext = context.asRequestMethodContext(method);
         InitCodeContext initCodeContext =
             initCodeTransformer.createRequestInitCodeContext(
@@ -318,7 +318,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         apiInterface,
         productConfig,
         typeTable,
-        new JavaSurfaceNamer(productConfig.getPackageName()),
+        new JavaSurfaceNamer(productConfig.getPackageName(), productConfig.getPackageName()),
         JavaFeatureConfig.newBuilder()
             .enableStringFormatFunctions(productConfig.getResourceNameMessageConfigs().isEmpty())
             .build());
@@ -329,7 +329,9 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private void addUnitTestImports(GapicInterfaceContext context) {
     ModelTypeTable typeTable = context.getModelTypeTable();
     typeTable.saveNicknameFor("com.google.api.gax.core.NoCredentialsProvider");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.ApiException");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.InvalidArgumentException");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcTransportProvider");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.GrpcStatusCode");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.testing.MockGrpcService");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.testing.MockServiceHelper");
     typeTable.saveNicknameFor("com.google.common.collect.Lists");
@@ -341,6 +343,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("java.util.Arrays");
     typeTable.saveNicknameFor("java.util.concurrent.ExecutionException");
     typeTable.saveNicknameFor("java.util.List");
+    typeTable.saveNicknameFor("java.util.Objects");
     typeTable.saveNicknameFor("org.junit.After");
     typeTable.saveNicknameFor("org.junit.AfterClass");
     typeTable.saveNicknameFor("org.junit.Assert");
@@ -392,10 +395,23 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("io.grpc.ServerServiceDefinition");
   }
 
-  private void addGrpcStreamingTestImport(GapicInterfaceContext context) {
+  private void addGrpcStreamingTestImports(
+      GapicInterfaceContext context, GrpcStreamingType streamingType) {
     ModelTypeTable typeTable = context.getModelTypeTable();
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.ApiStreamObserver");
-    typeTable.saveNicknameFor("com.google.api.gax.grpc.StreamingCallable");
     typeTable.saveNicknameFor("com.google.api.gax.grpc.testing.MockStreamObserver");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.ApiStreamObserver");
+    switch (streamingType) {
+      case BidiStreaming:
+        typeTable.saveNicknameFor("com.google.api.gax.rpc.BidiStreamingCallable");
+        break;
+      case ClientStreaming:
+        typeTable.saveNicknameFor("com.google.api.gax.rpc.ClientStreamingCallable");
+        break;
+      case ServerStreaming:
+        typeTable.saveNicknameFor("com.google.api.gax.rpc.ServerStreamingCallable");
+        break;
+      default:
+        throw new IllegalArgumentException("Invalid streaming type: " + streamingType);
+    }
   }
 }

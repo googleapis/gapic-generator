@@ -46,6 +46,15 @@ public abstract class ClientTestClassView {
 
   public abstract boolean missingDefaultServiceScopes();
 
+  @Nullable
+  public abstract String apiVersion();
+
+  @Nullable
+  public abstract String fullyQualifiedCredentialsClassName();
+
+  @Nullable
+  public abstract List<ClientInitParamView> clientInitOptionalParams();
+
   public static Builder newBuilder() {
     return new AutoValue_ClientTestClassView.Builder();
   }
@@ -75,6 +84,12 @@ public abstract class ClientTestClassView {
     public abstract Builder missingDefaultServiceAddress(boolean val);
 
     public abstract Builder missingDefaultServiceScopes(boolean val);
+
+    public abstract Builder apiVersion(String val);
+
+    public abstract Builder fullyQualifiedCredentialsClassName(String val);
+
+    public abstract Builder clientInitOptionalParams(List<ClientInitParamView> val);
 
     public abstract ClientTestClassView build();
   }

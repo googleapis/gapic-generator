@@ -2,23 +2,39 @@
 
 @snippet sampleCode(apiMethod)
   @@example
-  @let lines = util.getDocLines(sampleCode_(apiMethod))
+  @let lines = util.getDocLines(sampleCodeWithVersionImport(apiMethod))
     @join line : lines
       {@""}  {@line}
     @end
   @end
 @end
 
-@snippet sampleCode_(apiMethod)
+@snippet sampleCodeWithVersionImport(apiMethod)
   require "{@apiMethod.initCode.versionIndexFileImportName}"
 
+  {@versionedClientSampleCode(apiMethod)}
+@end
+
+@snippet sampleCodeWithTopLevelImport(apiMethod)
+  require "{@apiMethod.initCode.topLevelIndexFileImportName}"
+
+  {@topLevelClientSampleCode(apiMethod)}
+@end
+
+@snippet versionedClientSampleCode(apiMethod)
+  {@apiMethod.apiVariableName} = {@apiMethod.versionAliasedApiClassName}.new
+  {@sampleCodeCore(apiMethod)}
+@end
+
+@snippet topLevelClientSampleCode(apiMethod)
+  {@apiMethod.apiVariableName} = {@apiMethod.topLevelAliasedApiClassName}.new
   {@sampleCodeCore(apiMethod)}
 @end
 
 @snippet sampleCodeCore(apiMethod)
-  {@apiMethod.apiVariableName} = {@apiMethod.fullyQualifiedApiClassName}.new
   @if apiMethod.initCode.lines
     {@initCode(apiMethod.initCode)}
+
   @end
   @if apiMethod.isLongRunningOperation
     {@longRunningMethodSampleCode(apiMethod)}

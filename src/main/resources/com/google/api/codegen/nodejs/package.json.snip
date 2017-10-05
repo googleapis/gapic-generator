@@ -7,6 +7,7 @@
     "description": "{@metadata.fullName} client for Node.js",
     "main": "src/index.js",
     "files": [
+      "protos",
       "src",
       "AUTHORS",
       "COPYING"
@@ -25,14 +26,9 @@
       "{@metadata.fullName}"
     ],
     "dependencies": {
-      @join packageDep : metadata.protoPackageDependencies
-        "{@packageDep.name}": "^{@packageDep.versionBound.lower}",
+      @join packageDep : metadata.dependencies on ",".add(BREAK)
+        "{@packageDep.name}": "^{@packageDep.versionBound.lower}"
       @end
-      "google-gax": "^{@metadata.gaxVersionBound.lower}",
-      @if metadata.hasMultipleServices
-        "lodash.union": "^4.6.0",
-      @end
-      "extend": "^3.0.0"
     },
     "devDependencies": {
       "mocha": "^3.2.0",

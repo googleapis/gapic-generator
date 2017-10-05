@@ -39,7 +39,6 @@ public class CSharpTypeTable implements TypeTable {
 
   @Override
   public TypeName getTypeName(String fullName) {
-    fullName = resolveInner(fullName);
     int firstGenericOpenIndex = fullName.indexOf('<');
     if (firstGenericOpenIndex >= 0) {
       int lastGenericCloseIndex = fullName.lastIndexOf('>');
@@ -89,6 +88,11 @@ public class CSharpTypeTable implements TypeTable {
   @Override
   public TypeTable cloneEmpty() {
     return new CSharpTypeTable(implicitPackageName);
+  }
+
+  @Override
+  public TypeTable cloneEmpty(String packageName) {
+    return new CSharpTypeTable(packageName);
   }
 
   private String resolveInner(String name) {

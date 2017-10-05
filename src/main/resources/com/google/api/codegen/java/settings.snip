@@ -1,27 +1,31 @@
 @extends "java/common.snip"
 
-@snippet generate(settingsFile)
-  {@renderFileHeader(settingsFile.fileHeader)}
+@snippet generate(classFile)
+  {@renderFileHeader(classFile.fileHeader)}
 
-  {@settingsDoc(settingsFile.settings.doc)}
-  @if settingsFile.fileHeader.hasGeneratorVersion
-    @@Generated("by GAPIC v{@settingsFile.fileHeader.generatorVersion}")
+  {@classDoc(classFile.classView.doc)}
+  @if classFile.fileHeader.hasGeneratorVersion
+    @@Generated("by GAPIC v{@classFile.fileHeader.generatorVersion}")
   @else
     @@Generated("by GAPIC")
   @end
-  @if settingsFile.settings.releaseLevelAnnotation
-    {@settingsFile.settings.releaseLevelAnnotation}
+  @if classFile.classView.releaseLevelAnnotation
+    {@classFile.classView.releaseLevelAnnotation}
   @end
-  public class {@settingsFile.settings.name} extends ClientSettings {
-    {@constants(settingsFile.settings)}
-    {@members(settingsFile.settings)}
-    {@constructors(settingsFile.settings)}
-    {@descriptors(settingsFile.settings)}
-    {@innerBuilderClass(settingsFile.settings)}
+  {@renderClass(classFile.classView)}
+@end
+
+@private renderClass(classView)
+  public class {@classView.name} extends ClientSettings {
+    {@constants(classView)}
+    {@members(classView)}
+    {@constructors(classView)}
+    {@descriptors(classView)}
+    {@innerBuilderClass(classView)}
   }
 @end
 
-@private settingsDoc(doc)
+@private classDoc(doc)
   // AUTO-GENERATED DOCUMENTATION AND CLASS
   /**
    * Settings class to configure an instance of {@@link {@doc.apiClassName}}.
@@ -43,7 +47,7 @@
      * <pre>
      * <code>
      * {@doc.settingsClassName}.Builder {@doc.settingsBuilderVarName} =
-     *     {@doc.settingsClassName}.defaultBuilder();
+     *     {@doc.settingsClassName}.newBuilder();
      * {@doc.settingsBuilderVarName}.{@doc.exampleApiMethodSettingsGetter}().getRetrySettingsBuilder()
      *     .setTotalTimeout(Duration.ofSeconds(30));
      * {@doc.settingsClassName} {@doc.settingsVarName} = {@doc.settingsBuilderVarName}.build();
@@ -73,40 +77,21 @@
   private static final String META_VERSION_KEY = "artifact.version";
 
   private static String gapicVersion;
-
-  @join settings : xsettingsClass.callSettings
-    {@grpcMethodStub(settings)}
-  @end
   {@""}
-@end
-
-@private grpcMethodStub(settings)
-  private static final io.grpc.MethodDescriptor<{@settings.requestTypeName}, {@settings.responseTypeName}> {@settings.grpcMethodConstant} =
-        io.grpc.MethodDescriptor.create(
-            {@streamingTypeEnum(settings.grpcStreamingType)},
-            "{@settings.fullServiceName}/{@settings.protoMethodName}",
-            io.grpc.protobuf.ProtoUtils.marshaller({@settings.requestTypeName}.getDefaultInstance()),
-            io.grpc.protobuf.ProtoUtils.marshaller({@settings.responseTypeName}.getDefaultInstance()));
-@end
-
-@private streamingTypeEnum(streamingType)
-  @switch streamingType
-  @case "NonStreaming"
-    io.grpc.MethodDescriptor.MethodType.UNARY
-  @case "ServerStreaming"
-    io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING
-  @case "ClientStreaming"
-    io.grpc.MethodDescriptor.MethodType.CLIENT_STREAMING
-  @case "BidiStreaming"
-    io.grpc.MethodDescriptor.MethodType.BIDI_STREAMING
-  @default
-    $unhandledCase: {@streamingType}$
-  @end
 @end
 
 @private members(xsettingsClass)
   {@methodMembers(xsettingsClass)}
   {@methodGetters(xsettingsClass)}
+
+  public {@xsettingsClass.stubInterfaceName} createStub() throws IOException {
+    if (getTransportProvider().getTransportName().equals(GrpcTransport.getGrpcTransportName())) {
+      return {@xsettingsClass.grpcStubClassName}.create(this);
+    } else {
+      throw new UnsupportedOperationException(
+          "Transport not supported: " + getTransportProvider().getTransportName());
+    }
+  }
 
   /**
    * Returns a builder for the default ExecutorProvider for this service.
@@ -147,13 +132,25 @@
   }
 
   /** Returns a builder for the default ChannelProvider for this service. */
-  public static InstantiatingChannelProvider.Builder defaultChannelProviderBuilder() {
+  public static InstantiatingChannelProvider.Builder defaultGrpcChannelProviderBuilder() {
     return InstantiatingChannelProvider.newBuilder()
         @if xsettingsClass.hasDefaultServiceAddress
             .setEndpoint(getDefaultEndpoint())
         @end
         .setGeneratorHeader(DEFAULT_GAPIC_NAME, getGapicVersion());
   }
+
+  @if xsettingsClass.hasDefaultServiceAddress
+    /** Returns a builder for the default ChannelProvider for this service. */
+    public static GrpcTransportProvider.Builder defaultGrpcTransportProviderBuilder() {
+      return GrpcTransportProvider.newBuilder()
+          .setChannelProvider(defaultGrpcChannelProviderBuilder().build());
+    }
+
+    public static TransportProvider defaultTransportProvider() {
+      return defaultGrpcTransportProviderBuilder().build();
+    }
+  @end
 
   private static String getGapicVersion() {
     if (gapicVersion == null) {
@@ -167,15 +164,32 @@
   /**
    * Returns a builder for this class with recommended defaults.
    */
+  @@Deprecated
   public static Builder defaultBuilder() {
     return Builder.createDefault();
+  }
+
+  /**
+   * Returns a builder for this class with recommended defaults for API methods, and the given
+   * ClientContext used for executor/transport/credentials.
+   */
+  @@Deprecated
+  public static Builder defaultBuilder(ClientContext clientContext) {
+    return new Builder(clientContext);
   }
 
   /**
    * Returns a new builder for this class.
    */
   public static Builder newBuilder() {
-    return new Builder();
+    return Builder.createDefault();
+  }
+
+  /**
+   * Returns a new builder for this class.
+   */
+  public static Builder newBuilder(ClientContext clientContext) {
+    return new Builder(clientContext);
   }
 
   /**
@@ -189,26 +203,28 @@
 
 @private methodMembers(xsettingsClass)
   @join settings : xsettingsClass.callSettings
-    @switch settings.type
-    @case "SimpleApiCallable"
-      private final SimpleCallSettings<{@settings.requestTypeName}, \
-          {@settings.responseTypeName}> {@settings.memberName};
-    @case "PagedApiCallable"
-      private final PagedCallSettings<{@settings.requestTypeName}, \
-          {@settings.responseTypeName}, \
-          {@settings.pagedListResponseTypeName}> {@settings.memberName};
-    @case "BatchingApiCallable"
-      private final BatchingCallSettings<{@settings.requestTypeName}, \
-          {@settings.responseTypeName}> {@settings.memberName};
-    @case "StreamingApiCallable"
+    @if settings.isStreaming
       private final StreamingCallSettings<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.memberName};
-    @case "OperationApiCallable"
-      private final OperationCallSettings<{@settings.requestTypeName}, \
-          {@settings.operationMethod.operationPayloadTypeName}, \
-          {@settings.operationMethod.metadataTypeName}> {@settings.memberName};
-    @default
-      $unhandledCase: {@settings.type}$
+    @else
+      @switch settings.type
+      @case "SimpleApiCallable"
+        private final SimpleCallSettings<{@settings.requestTypeName}, \
+            {@settings.responseTypeName}> {@settings.memberName};
+      @case "PagedApiCallable"
+        private final PagedCallSettings<{@settings.requestTypeName}, \
+            {@settings.responseTypeName}, \
+            {@settings.pagedListResponseTypeName}> {@settings.memberName};
+      @case "BatchingApiCallable"
+        private final BatchingCallSettings<{@settings.requestTypeName}, \
+            {@settings.responseTypeName}> {@settings.memberName};
+      @case "OperationApiCallable"
+        private final OperationCallSettings<{@settings.requestTypeName}, \
+            {@settings.operationMethod.operationPayloadTypeName}, \
+            {@settings.operationMethod.metadataTypeName}, Operation> {@settings.memberName};
+      @default
+        $unhandledCase: {@settings.type}$
+      @end
     @end
   @end
   {@BREAK}
@@ -219,37 +235,39 @@
     /**
      * Returns the object with the settings used for calls to {@settings.methodName}.
      */
-    @switch settings.type
-    @case "SimpleApiCallable"
-        public SimpleCallSettings<{@settings.requestTypeName}, \
-            {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
-          return {@settings.memberName};
-       }
-    @case "PagedApiCallable"
-      public PagedCallSettings<{@settings.requestTypeName}, \
-          {@settings.responseTypeName}, \
-          {@settings.pagedListResponseTypeName}> {@settings.settingsGetFunction}() {
-        return {@settings.memberName};
-      }
-    @case "BatchingApiCallable"
-      public BatchingCallSettings<{@settings.requestTypeName}, \
-          {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
-        return {@settings.memberName};
-      }
-    @case "StreamingApiCallable"
+    @if settings.isStreaming
       public StreamingCallSettings<{@settings.requestTypeName}, \
             {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
         return {@settings.memberName};
       }
-    @case "OperationApiCallable"
-      public OperationCallSettings<{@settings.requestTypeName}, \
-            {@settings.operationMethod.operationPayloadTypeName}, \
-            {@settings.operationMethod.metadataTypeName}> \
-            {@settings.settingsGetFunction}() {
-        return {@settings.memberName};
-      }
-    @default
-      $unhandledCase: {@settings.type}$
+    @else
+      @switch settings.type
+      @case "SimpleApiCallable"
+          public SimpleCallSettings<{@settings.requestTypeName}, \
+              {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
+            return {@settings.memberName};
+         }
+      @case "PagedApiCallable"
+        public PagedCallSettings<{@settings.requestTypeName}, \
+            {@settings.responseTypeName}, \
+            {@settings.pagedListResponseTypeName}> {@settings.settingsGetFunction}() {
+          return {@settings.memberName};
+        }
+      @case "BatchingApiCallable"
+        public BatchingCallSettings<{@settings.requestTypeName}, \
+            {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
+          return {@settings.memberName};
+        }
+      @case "OperationApiCallable"
+        public OperationCallSettings<{@settings.requestTypeName}, \
+              {@settings.operationMethod.operationPayloadTypeName}, \
+              {@settings.operationMethod.metadataTypeName}, Operation> \
+              {@settings.settingsGetFunction}() {
+          return {@settings.memberName};
+        }
+      @default
+        $unhandledCase: {@settings.type}$
+      @end
     @end
     {@""}
   @end
@@ -257,9 +275,11 @@
 
 @private constructors(xsettingsClass)
   private {@xsettingsClass.name}(Builder settingsBuilder) throws IOException {
-    super(settingsBuilder.getExecutorProvider(),
-          settingsBuilder.getChannelProvider(),
-          settingsBuilder.getCredentialsProvider());
+    super(
+        settingsBuilder.getExecutorProvider(),
+        settingsBuilder.getTransportProvider(),
+        settingsBuilder.getCredentialsProvider(),
+        settingsBuilder.getClock());
 
     @join settings : xsettingsClass.callSettings
       {@settings.memberName} = settingsBuilder.{@settings.settingsGetFunction}().build();
@@ -329,7 +349,7 @@
           public ApiFuture<{@factory.pagedListResponseTypeName}> getFuturePagedResponse(
               UnaryCallable<{@factory.requestTypeName}, {@factory.responseTypeName}> callable,
               {@factory.requestTypeName} request,
-              CallContext context,
+              ApiCallContext context,
               ApiFuture<{@factory.responseTypeName}> futureResponse) {
             PageContext<{@factory.requestTypeName}, {@factory.responseTypeName}, {@factory.resourceTypeName}> pageContext =
                 PageContext.create(callable, {@factory.pageStreamingDescriptorName}, request, context);
@@ -445,58 +465,61 @@
 
 @private builderMembers(xsettingsClass)
   @join settings : xsettingsClass.callSettings
-    @switch settings.type.toString
-    @case "SimpleApiCallable"
-      private final SimpleCallSettings.Builder<{@settings.requestTypeName}, \
-          {@settings.responseTypeName}> {@settings.memberName};
-    @case "PagedApiCallable"
-      private final PagedCallSettings.Builder<{@settings.requestTypeName}, \
-          {@settings.responseTypeName}, \
-          {@settings.pagedListResponseTypeName}> {@settings.memberName};
-    @case "BatchingApiCallable"
-      private final BatchingCallSettings.Builder<{@settings.requestTypeName}, \
-          {@settings.responseTypeName}> {@settings.memberName};
-    @case "StreamingApiCallable"
+    @if settings.isStreaming
       private final StreamingCallSettings.Builder<{@settings.requestTypeName}, \
-          {@settings.responseTypeName}> {@settings.memberName};
-    @case "OperationApiCallable"
-          private final OperationCallSettings.Builder<{@settings.requestTypeName}, \
-              {@settings.operationMethod.operationPayloadTypeName}, \
-              {@settings.operationMethod.metadataTypeName}> {@settings.memberName};
-    @default
-      $unhandledCase: {@settings.type.toString}$
+            {@settings.responseTypeName}> {@settings.memberName};
+    @else
+      @switch settings.type.toString
+      @case "SimpleApiCallable"
+        private final SimpleCallSettings.Builder<{@settings.requestTypeName}, \
+            {@settings.responseTypeName}> {@settings.memberName};
+      @case "PagedApiCallable"
+        private final PagedCallSettings.Builder<{@settings.requestTypeName}, \
+            {@settings.responseTypeName}, \
+            {@settings.pagedListResponseTypeName}> {@settings.memberName};
+      @case "BatchingApiCallable"
+        private final BatchingCallSettings.Builder<{@settings.requestTypeName}, \
+            {@settings.responseTypeName}> {@settings.memberName};
+      @case "OperationApiCallable"
+            private final OperationCallSettings.Builder<{@settings.requestTypeName}, \
+                {@settings.operationMethod.operationPayloadTypeName}, \
+                {@settings.operationMethod.metadataTypeName}, Operation> {@settings.memberName};
+      @default
+        $unhandledCase: {@settings.type.toString}$
+      @end
     @end
   @end
 @end
 
 @private builderConstants(xsettingsClass)
-  private static final ImmutableMap<String, ImmutableSet<Status.Code>> RETRYABLE_CODE_DEFINITIONS;
+  private static final ImmutableMap<String, ImmutableSet<StatusCode>> RETRYABLE_CODE_DEFINITIONS;
 
   static {
-    ImmutableMap.Builder<String, ImmutableSet<Status.Code>> definitions = ImmutableMap.builder();
+    ImmutableMap.Builder<String, ImmutableSet<StatusCode>> definitions = ImmutableMap.builder();
     @join retryCodesDef : xsettingsClass.retryCodesDefinitions
       definitions.put(
           "{@retryCodesDef.key}",
-          Sets.immutableEnumSet(Lists.<Status.Code>newArrayList({@statusCodes(retryCodesDef.codes)})));
+          ImmutableSet.copyOf(Lists.<StatusCode>newArrayList({@statusCodes(retryCodesDef.codes)})));
     @end
     RETRYABLE_CODE_DEFINITIONS = definitions.build();
   }
 
-  private static final ImmutableMap<String, RetrySettings.Builder> RETRY_PARAM_DEFINITIONS;
+  private static final ImmutableMap<String, RetrySettings> RETRY_PARAM_DEFINITIONS;
 
   static {
-    ImmutableMap.Builder<String, RetrySettings.Builder> definitions = ImmutableMap.builder();
-    RetrySettings.Builder settingsBuilder = null;
+    ImmutableMap.Builder<String, RetrySettings> definitions = ImmutableMap.builder();
+    RetrySettings settings = null;
     @join retryParamsDef : xsettingsClass.retryParamsDefinitions
-      settingsBuilder = RetrySettings.newBuilder()
-          .setInitialRetryDelay(Duration.ofMillis({@retryParamsDef.initialRetryDelay.getMillis}L))
+      settings = RetrySettings.newBuilder()
+          .setInitialRetryDelay(Duration.ofMillis({@retryParamsDef.initialRetryDelay.toMillis}L))
           .setRetryDelayMultiplier({@retryParamsDef.retryDelayMultiplier})
-          .setMaxRetryDelay(Duration.ofMillis({@retryParamsDef.maxRetryDelay.getMillis}L))
-          .setInitialRpcTimeout(Duration.ofMillis({@retryParamsDef.initialRpcTimeout.getMillis}L))
+          .setMaxRetryDelay(Duration.ofMillis({@retryParamsDef.maxRetryDelay.toMillis}L))
+          .setInitialRpcTimeout(Duration.ofMillis({@retryParamsDef.initialRpcTimeout.toMillis}L))
           .setRpcTimeoutMultiplier({@retryParamsDef.rpcTimeoutMultiplier})
-          .setMaxRpcTimeout(Duration.ofMillis({@retryParamsDef.maxRpcTimeout.getMillis}L))
-          .setTotalTimeout(Duration.ofMillis({@retryParamsDef.totalTimeout.getMillis}L));
-      definitions.put("{@retryParamsDef.key}", settingsBuilder);
+          .setMaxRpcTimeout(Duration.ofMillis({@retryParamsDef.maxRpcTimeout.toMillis}L))
+          .setTotalTimeout(Duration.ofMillis({@retryParamsDef.totalTimeout.toMillis}L))
+          .build();
+      definitions.put("{@retryParamsDef.key}", settings);
     @end
     RETRY_PARAM_DEFINITIONS = definitions.build();
   }
@@ -504,38 +527,37 @@
 
 @private statusCodes(codes)
   @join code : codes on ", "
-    Status.Code.{@code}
+    GrpcStatusCode.of(Status.Code.{@code})
   @end
 @end
 
 @private builderConstructors(xsettingsClass)
   private Builder() {
-    @if xsettingsClass.hasDefaultInstance
-      super(defaultChannelProviderBuilder().build());
-      setCredentialsProvider(defaultCredentialsProviderBuilder().build());
-    @else
-      super((InstantiatingChannelProvider) null);
-    @end
+    this((ClientContext) null);
+  }
+
+  private Builder(ClientContext clientContext) {
+    super(clientContext);
 
     @join settings : xsettingsClass.callSettings
-      @switch settings.type.toString
-      @case "SimpleApiCallable"
-        {@settings.memberName} = SimpleCallSettings.newBuilder({@settings.grpcMethodConstant});
-      @case "PagedApiCallable"
-        {@settings.memberName} = PagedCallSettings.newBuilder(
-            {@settings.grpcMethodConstant},
-            {@settings.pagedListResponseFactoryName});
-      @case "BatchingApiCallable"
-        {@settings.memberName} = BatchingCallSettings.newBuilder(
-            {@settings.grpcMethodConstant},
-            {@settings.batchingDescriptorName})
-                .setBatchingSettingsBuilder(BatchingSettings.newBuilder());
-      @case "StreamingApiCallable"
-        {@settings.memberName} = StreamingCallSettings.newBuilder({@settings.grpcMethodConstant});
-      @case "OperationApiCallable"
-        {@settings.memberName} = OperationCallSettings.newBuilder();
-      @default
-        $unhandledCase: {@settings.type.toString}$
+      @if settings.isStreaming
+        {@settings.memberName} = StreamingCallSettings.newBuilder();
+      @else
+        @switch settings.type.toString
+        @case "SimpleApiCallable"
+          {@settings.memberName} = SimpleCallSettings.newBuilder();
+        @case "PagedApiCallable"
+          {@settings.memberName} = PagedCallSettings.newBuilder(
+              {@settings.pagedListResponseFactoryName});
+        @case "BatchingApiCallable"
+          {@settings.memberName} = BatchingCallSettings.newBuilder(
+              {@settings.batchingDescriptorName})
+                  .setBatchingSettings(BatchingSettings.newBuilder().build());         
+        @case "OperationApiCallable"
+          {@settings.memberName} = OperationCallSettings.newBuilder();
+        @default
+          $unhandledCase: {@settings.type.toString}$
+        @end
       @end
       {@BREAK}
     @end
@@ -544,16 +566,27 @@
           {@settings.memberName}
         @end
     );
+
+    initDefaults(this);
   }
 
   private static Builder createDefault() {
-    Builder builder = new Builder();
+    Builder builder = new Builder((ClientContext) null);
+    @if xsettingsClass.hasDefaultInstance
+      builder.setTransportProvider(defaultTransportProvider());
+      builder.setCredentialsProvider(defaultCredentialsProviderBuilder().build());
+    @end
+    return initDefaults(builder);
+  }
+
+  private static Builder initDefaults(Builder builder) {
     @join settings : xsettingsClass.unaryCallSettings
       {@""}
       # batching settings
       @switch settings.type
       @case "BatchingApiCallable"
-        builder.{@settings.settingsGetFunction}().getBatchingSettingsBuilder()
+        builder.{@settings.settingsGetFunction}().setBatchingSettings(
+            BatchingSettings.newBuilder()
             .setElementCountThreshold({@settings.batchingConfig.elementCountThreshold}L)
             .setRequestByteThreshold({@settings.batchingConfig.requestByteThreshold}L)
             .setDelayThreshold(Duration.ofMillis({@settings.batchingConfig.delayThresholdMillis}))
@@ -566,21 +599,22 @@
                   .setMaxOutstandingRequestBytes({@settings.batchingConfig.flowControlByteLimit})
                 @end
                 .setLimitExceededBehavior(LimitExceededBehavior.{@settings.batchingConfig.flowControlLimitExceededBehavior})
-                .build());
+                .build())
+            .build());
       @default
       @end
       # retry settings
       builder.{@settings.settingsGetFunction}()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("{@settings.retryCodesName}"))
-          .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("{@settings.retryParamsName}"));
+          .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("{@settings.retryParamsName}"));
     @end
     @join settings : xsettingsClass.longRunningCallSettings
       builder
           .{@settings.settingsGetFunction}()
           .setInitialCallSettings(
-              SimpleCallSettings.newBuilder({@settings.grpcMethodConstant})
+              SimpleCallSettings.<{@settings.requestTypeName}, {@settings.responseTypeName}> newBuilder()
                   .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
-                  .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"))
+                  .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"))
                   .build())
           .setResponseClass({@settings.operationMethod.operationPayloadTypeName}.class)
           .setMetadataClass({@settings.operationMethod.metadataTypeName}.class)
@@ -623,8 +657,8 @@
   }
 
   @@Override
-  public Builder setChannelProvider(ChannelProvider channelProvider) {
-    super.setChannelProvider(channelProvider);
+  public Builder setTransportProvider(TransportProvider transportProvider) {
+    super.setTransportProvider(transportProvider);
     return this;
   }
 
@@ -635,14 +669,12 @@
   }
 
   /**
-   * Applies the given settings to all of the unary API methods in this service. Only
-   * values that are non-null will be applied, so this method is not capable
-   * of un-setting any values.
+   * Applies the given settings updater function to all of the unary API methods in this service.
    *
    * Note: This method does not support applying settings to streaming methods.
    */
-  public Builder applyToAllUnaryMethods(UnaryCallSettings.Builder unaryCallSettings) throws Exception {
-    super.applyToAllUnaryMethods(unaryMethodSettingsBuilders, unaryCallSettings);
+  public Builder applyToAllUnaryMethods(ApiFunction<UnaryCallSettings.Builder, Void> settingsUpdater) throws Exception {
+    super.applyToAllUnaryMethods(unaryMethodSettingsBuilders, settingsUpdater);
     return this;
   }
 
@@ -650,36 +682,38 @@
     /**
      * Returns the builder for the settings used for calls to {@settings.methodName}.
      */
-    @switch settings.type
-    @case "SimpleApiCallable"
-      public SimpleCallSettings.Builder<{@settings.requestTypeName}, \
-          {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
-        return {@settings.memberName};
-      }
-    @case "PagedApiCallable"
-      public PagedCallSettings.Builder<{@settings.requestTypeName}, \
-          {@settings.responseTypeName}, {@settings.pagedListResponseTypeName}> {@settings.settingsGetFunction}() {
-        return {@settings.memberName};
-      }
-    @case "BatchingApiCallable"
-      public BatchingCallSettings.Builder<{@settings.requestTypeName}, \
-          {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
-        return {@settings.memberName};
-      }
-    @case "StreamingApiCallable"
+    @if settings.isStreaming
       public StreamingCallSettings.Builder<{@settings.requestTypeName}, \
           {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
         return {@settings.memberName};
       }
-    @case "OperationApiCallable"
-      public OperationCallSettings.Builder<{@settings.requestTypeName}, \
-          {@settings.operationMethod.operationPayloadTypeName}, \
-          {@settings.operationMethod.metadataTypeName}> \
-          {@settings.settingsGetFunction}() {
-        return {@settings.memberName};
-      }
-    @default
-      $unhandledCase: {@settings.type}$
+    @else
+      @switch settings.type
+      @case "SimpleApiCallable"
+        public SimpleCallSettings.Builder<{@settings.requestTypeName}, \
+            {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
+          return {@settings.memberName};
+        }
+      @case "PagedApiCallable"
+        public PagedCallSettings.Builder<{@settings.requestTypeName}, \
+            {@settings.responseTypeName}, {@settings.pagedListResponseTypeName}> {@settings.settingsGetFunction}() {
+          return {@settings.memberName};
+        }
+      @case "BatchingApiCallable"
+        public BatchingCallSettings.Builder<{@settings.requestTypeName}, \
+            {@settings.responseTypeName}> {@settings.settingsGetFunction}() {
+          return {@settings.memberName};
+        }
+      @case "OperationApiCallable"
+        public OperationCallSettings.Builder<{@settings.requestTypeName}, \
+            {@settings.operationMethod.operationPayloadTypeName}, \
+            {@settings.operationMethod.metadataTypeName}, Operation> \
+            {@settings.settingsGetFunction}() {
+          return {@settings.memberName};
+        }
+      @default
+        $unhandledCase: {@settings.type}$
+      @end
     @end
     {@""}
   @end

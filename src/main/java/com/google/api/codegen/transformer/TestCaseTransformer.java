@@ -45,9 +45,15 @@ import java.util.List;
 public class TestCaseTransformer {
   private final InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
   private final TestValueGenerator valueGenerator;
+  private boolean packageHasMultipleServices;
 
   public TestCaseTransformer(ValueProducer valueProducer) {
+    this(valueProducer, false);
+  }
+
+  public TestCaseTransformer(ValueProducer valueProducer, boolean packageHasMultipleServices) {
     this.valueGenerator = new TestValueGenerator(valueProducer);
+    this.packageHasMultipleServices = packageHasMultipleServices;
   }
 
   public TestCaseView createTestCaseView(
@@ -149,6 +155,9 @@ public class TestCaseTransformer {
             namer.getApiWrapperClassConstructorName(methodContext.getInterface()))
         .fullyQualifiedServiceClassName(
             namer.getFullyQualifiedApiWrapperClassName(methodContext.getInterfaceConfig()))
+        .fullyQualifiedAliasedServiceClassName(
+            namer.getTopLevelAliasedApiClassName(
+                methodContext.getInterfaceConfig(), packageHasMultipleServices))
         .clientMethodName(clientMethodName)
         .mockGrpcStubTypeName(namer.getMockGrpcServiceImplName(methodContext.getTargetInterface()))
         .createStubFunctionName(namer.getCreateStubFunctionName(methodContext.getTargetInterface()))

@@ -20,7 +20,7 @@ import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.RetryCodesDefinitionProto;
 import com.google.api.codegen.RetryParamsDefinitionProto;
-import com.google.api.gax.core.RetrySettings;
+import com.google.api.gax.retrying.RetrySettings;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
@@ -40,7 +40,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import javax.annotation.Nullable;
-import org.joda.time.Duration;
+import org.threeten.bp.Duration;
 
 /**
  * GapicInterfaceConfig represents the client code-gen config for an API interface, and includes the
@@ -84,6 +84,11 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   @Override
   public String getName() {
     return hasInterfaceNameOverride() ? getInterfaceNameOverride() : getInterface().getSimpleName();
+  }
+
+  @Override
+  public String getRawName() {
+    return getInterface().getSimpleName();
   }
 
   public boolean hasInterfaceNameOverride() {
@@ -226,13 +231,13 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       try {
         RetrySettings settings =
             RetrySettings.newBuilder()
-                .setInitialRetryDelay(Duration.millis(retryDef.getInitialRetryDelayMillis()))
+                .setInitialRetryDelay(Duration.ofMillis(retryDef.getInitialRetryDelayMillis()))
                 .setRetryDelayMultiplier(retryDef.getRetryDelayMultiplier())
-                .setMaxRetryDelay(Duration.millis(retryDef.getMaxRetryDelayMillis()))
-                .setInitialRpcTimeout(Duration.millis(retryDef.getInitialRpcTimeoutMillis()))
+                .setMaxRetryDelay(Duration.ofMillis(retryDef.getMaxRetryDelayMillis()))
+                .setInitialRpcTimeout(Duration.ofMillis(retryDef.getInitialRpcTimeoutMillis()))
                 .setRpcTimeoutMultiplier(retryDef.getRpcTimeoutMultiplier())
-                .setMaxRpcTimeout(Duration.millis(retryDef.getMaxRpcTimeoutMillis()))
-                .setTotalTimeout(Duration.millis(retryDef.getTotalTimeoutMillis()))
+                .setMaxRpcTimeout(Duration.ofMillis(retryDef.getMaxRpcTimeoutMillis()))
+                .setTotalTimeout(Duration.ofMillis(retryDef.getTotalTimeoutMillis()))
                 .build();
         builder.put(retryDef.getName(), settings);
       } catch (IllegalStateException | NullPointerException e) {
@@ -388,6 +393,15 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   public boolean hasGrpcStreamingMethods() {
     for (GapicMethodConfig methodConfig : getMethodConfigs()) {
       if (methodConfig.isGrpcStreaming()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public boolean hasGrpcStreamingMethods(GrpcStreamingConfig.GrpcStreamingType streamingType) {
+    for (GapicMethodConfig methodConfig : getMethodConfigs()) {
+      if (methodConfig.isGrpcStreaming() && methodConfig.getGrpcStreamingType() == streamingType) {
         return true;
       }
     }

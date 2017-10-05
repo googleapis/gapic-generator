@@ -19,7 +19,6 @@ import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.ImportSectionTransformer;
-import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
@@ -31,10 +30,9 @@ import java.util.List;
 
 public class NodeJSImportSectionTransformer implements ImportSectionTransformer {
   @Override
-  public ImportSectionView generateImportSection(InterfaceContext context) {
+  public ImportSectionView generateImportSection(GapicInterfaceContext context) {
     ImportSectionView.Builder importSection = ImportSectionView.newBuilder();
-    // TODO support non-Gapic inputs
-    importSection.externalImports(generateExternalImports((GapicInterfaceContext) context));
+    importSection.externalImports(generateExternalImports(context));
     return importSection.build();
   }
 
@@ -53,6 +51,10 @@ public class NodeJSImportSectionTransformer implements ImportSectionTransformer 
     imports.add(createImport("gax", "google-gax"));
     if (new GrpcStubTransformer().generateGrpcStubs(context).size() > 1) {
       imports.add(createImport("merge", "lodash.merge"));
+    }
+    imports.add(createImport("path", "path"));
+    if (context.getInterfaceConfig().hasLongRunningOperations()) {
+      imports.add(createImport("protobuf", "protobufjs"));
     }
     return imports.build();
   }

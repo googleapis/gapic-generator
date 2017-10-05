@@ -38,6 +38,11 @@ public class PhpTypeTable implements TypeTable {
   }
 
   @Override
+  public TypeTable cloneEmpty(String packageName) {
+    return new PhpTypeTable(packageName);
+  }
+
+  @Override
   public TypeName getTypeName(String fullName) {
     return dynamicTypeTable.getTypeName(fullName);
   }

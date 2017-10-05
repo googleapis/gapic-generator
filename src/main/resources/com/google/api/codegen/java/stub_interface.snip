@@ -1,0 +1,103 @@
+@extends "java/common.snip"
+
+@snippet renderStubFileHeader(fileHeader)
+  {@license(fileHeader)}
+  package {@fileHeader.packageName};
+
+  {@importList(fileHeader.importSection.appImports)}
+@end
+
+@snippet generate(classFile)
+  {@renderStubFileHeader(classFile.fileHeader)}
+
+  {@classDoc(classFile.classView.doc)}
+  @if classFile.fileHeader.hasGeneratorVersion
+    @@Generated("by GAPIC v{@classFile.fileHeader.generatorVersion}")
+  @else
+    @@Generated("by GAPIC")
+  @end
+  @if classFile.classView.releaseLevelAnnotation
+    {@classFile.classView.releaseLevelAnnotation}
+  @end
+  {@renderClass(classFile.classView)}
+@end
+
+@private classDoc(doc)
+  // AUTO-GENERATED DOCUMENTATION AND CLASS
+  /**
+   * Base stub class for {@doc.serviceTitle}.
+   *
+   * <p>This class is for advanced usage and reflects the underlying API directly.
+   */
+@end
+
+@private renderClass(classView)
+  public abstract class {@classView.name} implements BackgroundResource {
+
+    @if classView.hasLongRunningOperations
+      public OperationsStub getOperationsStub() {
+        throw new UnsupportedOperationException("Not implemented: getOperationsStub()");
+      }
+    @end
+
+    {@callableMethods(classView)}
+  }
+@end
+
+@snippet callableMethods(stubInterface)
+  @join apiMethod : stubInterface.callableMethods
+    @switch apiMethod.type
+    @case "PagedCallableMethod"
+      {@callableMethod(apiMethod)}
+    @case "UnpagedListCallableMethod"
+      {@callableMethod(apiMethod)}
+    @case "CallableMethod"
+    # TODO create a GrpcStreaming ApiMethodType
+      @if apiMethod.isStreaming
+        {@streamingCallableMethod(apiMethod)}
+      @else
+        {@callableMethod(apiMethod)}
+      @end
+    @case "OperationCallableMethod"
+      {@operationCallableMethod(apiMethod)}
+    @default
+      $unhandledCase: {@apiMethod.getClass.getSimpleName}$
+    @end
+    {@BREAK}
+  @end
+@end
+
+@private callableMethod(apiMethod)
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
+  @end
+  public UnaryCallable<{@apiMethod.serviceRequestTypeName}, \
+      {@apiMethod.responseTypeName}> {@apiMethod.name}() {
+    throw new UnsupportedOperationException("Not implemented: {@apiMethod.name}()");
+  }
+@end
+
+@private streamingCallableMethod(apiMethod)
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
+  @end
+  public {@apiMethod.callableMethod.interfaceTypeName}<{@apiMethod.serviceRequestTypeName}, \
+      {@apiMethod.responseTypeName}> {@apiMethod.name}() {
+    throw new UnsupportedOperationException("Not implemented: {@apiMethod.name}()");
+  }
+@end
+
+@private operationCallableMethod(apiMethod)
+  @if apiMethod.releaseLevelAnnotation
+    {@apiMethod.releaseLevelAnnotation}
+
+  @end
+
+  public OperationCallable<{@apiMethod.serviceRequestTypeName}, \
+      {@apiMethod.responseTypeName}, {@apiMethod.operationMethod.metadataTypeName}, Operation> \
+      {@apiMethod.name}() {
+    throw new UnsupportedOperationException("Not implemented: {@apiMethod.name}()");
+  }
+@end

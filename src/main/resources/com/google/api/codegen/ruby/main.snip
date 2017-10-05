@@ -134,38 +134,17 @@
 @end
 
 @private initMethodSection(xapiClass)
-  @# @@param service_path [String]
-  @#   The domain name of the API remote host.
-  @# @@param port [Integer]
-  @#   The port on which to connect to the remote host.
-  @# @@param channel [Channel]
-  @#   A Channel object through which to make calls.
-  @# @@param chan_creds [Grpc::ChannelCredentials]
-  @#   A ChannelCredentials for the setting up the RPC client.
-  @# @@param updater_proc [Proc]
-  @#   A function that transforms the metadata for requests, e.g., to give
-  @#   OAuth credentials.
-  @# @@param scopes [Array<String>]
-  @#   The OAuth scopes for this service. This parameter is ignored if
-  @#   an updater_proc is supplied.
-  @# @@param client_config[Hash]
-  @#   A Hash for call options for each method. See
-  @#   Google::Gax#construct_settings for the structure of
-  @#   this data. Falls back to the default config if not specified
-  @#   or the specified config is missing data points.
-  @# @@param timeout [Numeric]
-  @#   The default timeout, in seconds, for calls made through this client.
+  {@toComments(util.getDocLines(initMethodComments()))}
   def initialize @\
       service_path: SERVICE_ADDRESS,
       port: DEFAULT_SERVICE_PORT,
       channel: nil,
       chan_creds: nil,
       updater_proc: nil,
+      credentials: nil,
       scopes: ALL_SCOPES,
       client_config: {},
       timeout: DEFAULT_TIMEOUT,
-      app_name: nil,
-      app_version: nil,
       lib_name: nil,
       lib_version: ""
     @# These require statements are intentionally placed here to initialize
@@ -175,25 +154,45 @@
       require "{@import.moduleName}"
     @end
 
+    if channel || chan_creds || updater_proc
+      warn "The `channel`, `chan_creds`, and `updater_proc` parameters will be removed " @\
+        "on 2017/09/08"
+      credentials ||= channel
+      credentials ||= chan_creds
+      credentials ||= updater_proc
+    end
+    if service_path != SERVICE_ADDRESS || port != DEFAULT_SERVICE_PORT
+      warn "`service_path` and `port` parameters are deprecated and will be removed"
+    end
+
+    credentials ||= {@xapiClass.fullyQualifiedCredentialsClassName}.default
+
     @if xapiClass.hasLongRunningOperations
       @@operations_client = Google::Longrunning::OperationsClient.new(
         service_path: service_path,
-        port: port,
-        channel: channel,
-        chan_creds: chan_creds,
-        updater_proc: updater_proc,
+        credentials: credentials,
         scopes: scopes,
         client_config: client_config,
         timeout: timeout,
-        app_name: app_name,
-        app_version: app_version,
         lib_name: lib_name,
         lib_version: lib_version,
       )
-    @end
 
-    if app_name || app_version
-      warn "`app_name` and `app_version` are no longer being used in the request headers."
+    @end
+    if credentials.is_a?(String) || credentials.is_a?(Hash)
+      updater_proc = {@xapiClass.fullyQualifiedCredentialsClassName}.new(credentials).updater_proc
+    end
+    if credentials.is_a?(GRPC::Core::Channel)
+      channel = credentials
+    end
+    if credentials.is_a?(GRPC::Core::ChannelCredentials)
+      chan_creds = credentials
+    end
+    if credentials.is_a?(Proc)
+      updater_proc = credentials
+    end
+    if credentials.is_a?(Google::Gax::Credentials)
+      updater_proc = credentials.updater_proc
     end
 
     google_api_client = "gl-ruby/#{RUBY_VERSION}"
@@ -304,7 +303,14 @@
 
   @if apiMethod.hasRequestStreaming
     def {@apiMethod.name} {@inlineParamList(apiMethod.methodParams)}
-      {@makeApiCall(apiMethod)}
+      request_protos = reqs.lazy.map do |req|
+        Google::Gax::to_proto(req, {@apiMethod.requestTypeName})
+      end
+      @@{@apiMethod.name}.call(request_protos, options)
+      @if apiMethod.hasReturnValue
+      @else
+        nil
+      @end
     end
   @else
     @if apiMethod.hasRequestParameters

@@ -15,6 +15,7 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableList;
 import java.util.List;
 
 @AutoValue
@@ -26,11 +27,11 @@ public abstract class SimpleParamDocView implements ParamDocView {
   public abstract List<String> lines();
 
   public String firstLine() {
-    return lines().get(0);
+    return lines().isEmpty() ? "" : lines().get(0);
   }
 
   public List<String> remainingLines() {
-    return lines().subList(1, lines().size());
+    return lines().isEmpty() ? ImmutableList.<String>of() : lines().subList(1, lines().size());
   }
 
   public String type() {

@@ -55,6 +55,11 @@ public class DynamicLangTypeTable implements TypeTable {
   }
 
   @Override
+  public TypeTable cloneEmpty(String packageName) {
+    return new DynamicLangTypeTable(packageName, separator);
+  }
+
+  @Override
   public TypeName getTypeName(String fullName) {
     int lastSeparatorIndex = fullName.lastIndexOf(getSeparator());
     if (lastSeparatorIndex < 0) {

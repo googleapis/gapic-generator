@@ -64,9 +64,15 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
         new ModelTypeFormatterImpl(new NodeJSModelTypeNameConverter(packageName)),
         new JSTypeTable(packageName),
         new JSCommentReformatter(),
+        packageName,
         packageName);
     this.packageName = packageName;
     this.isGcloud = isGcloud;
+  }
+
+  @Override
+  public SurfaceNamer cloneWithPackageName(String packageName) {
+    return new NodeJSSurfaceNamer(packageName, isGcloud);
   }
 
   /**
@@ -274,17 +280,17 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     ImmutableList.Builder<String> returnMessageLines = ImmutableList.builder();
     if (method.getRequestStreaming()) {
       returnMessageLines.add(
-          "@return {Stream} - A writable stream which accepts objects representing",
+          "@returns {Stream} - A writable stream which accepts objects representing",
           "  "
               + commentReformatter.getLinkedElementName(method.getInputType().getMessageType())
               + " for write() method.");
     } else {
       if (isProtobufEmpty(method.getOutputMessage())) {
         returnMessageLines.add(
-            "@return {Promise} - The promise which resolves when API call finishes.");
+            "@returns {Promise} - The promise which resolves when API call finishes.");
       } else {
         returnMessageLines.add(
-            "@return {Promise} - The promise which resolves to an array.",
+            "@returns {Promise} - The promise which resolves to an array.",
             "  The first element of the array is " + returnTypeDoc + ".");
         if (methodConfig.isPageStreaming()) {
           returnMessageLines.add(
@@ -359,13 +365,9 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   @Override
   public String getProtoFileName(ProtoFile file) {
     String filePath = file.getSimpleName().replace(".proto", ".js");
-    if (commentReformatter.isExternalFile(file)) {
-      filePath = filePath.replaceAll("/", "_");
-    } else {
-      int lastSlash = filePath.lastIndexOf('/');
-      if (lastSlash >= 0) {
-        filePath = filePath.substring(lastSlash + 1);
-      }
+    int lastSlash = filePath.lastIndexOf('/');
+    if (lastSlash >= 0) {
+      filePath = filePath.substring(lastSlash + 1);
     }
     return filePath;
   }
@@ -443,7 +445,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   public String getByteLengthFunctionName(TypeRef typeRef) {
     switch (typeRef.getKind()) {
       case TYPE_MESSAGE:
-        return "gax.createByteLengthFunction(grpcClients."
+        return "gax.createByteLengthFunction(loadedProtos."
             + typeRef.getMessageType().getFullName()
             + ")";
       case TYPE_STRING:
@@ -459,7 +461,8 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getLocalPackageName() {
-    return getApiWrapperModuleName();
+    // NodeJS module names can be hyphen separated.
+    return Name.from(getApiWrapperModuleName().split("[^a-zA-Z0-9']+")).toLowerCamel();
   }
 
   @Override

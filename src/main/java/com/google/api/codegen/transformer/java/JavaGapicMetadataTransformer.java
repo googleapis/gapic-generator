@@ -62,7 +62,8 @@ public class JavaGapicMetadataTransformer extends JavaPackageMetadataTransformer
 
   @Override
   public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
-    JavaSurfaceNamer namer = new JavaSurfaceNamer(packageConfig.packageName(TargetLanguage.JAVA));
+    String packageName = packageConfig.packageName(TargetLanguage.JAVA);
+    JavaSurfaceNamer namer = new JavaSurfaceNamer(packageName, packageName);
 
     List<ViewModel> viewModels = Lists.newArrayList();
     for (PackageMetadataView.Builder builder :

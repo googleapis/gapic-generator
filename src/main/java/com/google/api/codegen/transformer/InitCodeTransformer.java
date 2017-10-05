@@ -15,7 +15,9 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameOneofConfig;
+import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
@@ -121,10 +123,15 @@ public class InitCodeTransformer {
 
       String expectedValueIdentifier = getVariableName(methodContext, fieldItemTree);
       String expectedTransformFunction = null;
-      if (methodContext.getFeatureConfig().useResourceNameFormatOption(fieldConfig)
-          && fieldConfig.hasDifferentMessageResourceNameConfig()) {
-        expectedTransformFunction =
-            namer.getResourceOneofCreateMethod(methodContext.getTypeTable(), fieldConfig);
+      String actualTransformFunction = null;
+      if (methodContext.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
+        if (fieldConfig.requiresParamTransformationFromAny()) {
+          expectedTransformFunction = namer.getToStringMethod();
+          actualTransformFunction = namer.getToStringMethod();
+        } else if (fieldConfig.requiresParamTransformation()) {
+          expectedTransformFunction =
+              namer.getResourceOneofCreateMethod(methodContext.getTypeTable(), fieldConfig);
+        }
       }
 
       boolean isArray =
@@ -138,14 +145,15 @@ public class InitCodeTransformer {
       }
 
       String messageTypeName = null;
-      if (fieldType.isMessage() && !fieldType.isRepeated()) {
-        messageTypeName = methodContext.getTypeTable().getFullNameFor(fieldType);
+      if (fieldType.isMessage()) {
+        messageTypeName = methodContext.getTypeTable().getFullNameFor(fieldType.getMessageType());
       }
 
       assertViews.add(
           createAssertView(
               expectedValueIdentifier,
               expectedTransformFunction,
+              actualTransformFunction,
               isArray,
               getterMethod,
               enumTypeName,
@@ -177,6 +185,7 @@ public class InitCodeTransformer {
   private ClientTestAssertView createAssertView(
       String expected,
       String expectedTransformFunction,
+      String actualTransformFunction,
       boolean isArray,
       String actual,
       String enumTypeName,
@@ -185,6 +194,7 @@ public class InitCodeTransformer {
         .expectedValueIdentifier(expected)
         .isArray(isArray)
         .expectedValueTransformFunction(expectedTransformFunction)
+        .actualValueTransformFunction(actualTransformFunction)
         .actualValueGetter(actual)
         .enumTypeName(enumTypeName)
         .messageTypeName(messageTypeName)
@@ -224,6 +234,7 @@ public class InitCodeTransformer {
         .fieldSettings(getFieldSettings(context, argItems))
         .importSection(importSectionTransformer.generateImportSection(context, orderedItems))
         .versionIndexFileImportName(namer.getVersionIndexFileImportName())
+        .topLevelIndexFileImportName(namer.getTopLevelIndexFileImportName())
         .apiFileName(namer.getServiceFileName(context.getInterfaceConfig()))
         .build();
   }
@@ -367,9 +378,14 @@ public class InitCodeTransformer {
 
     if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
       if (!context.isFlattenedMethodContext()) {
-        // In a non-flattened context, we always use the resource name type set on the message
-        // instead of set on the flattened method
-        fieldConfig = fieldConfig.getMessageFieldConfig();
+        ResourceNameConfig messageResNameConfig = fieldConfig.getMessageResourceNameConfig();
+        if (messageResNameConfig == null
+            || messageResNameConfig.getResourceNameType() != ResourceNameType.ANY) {
+          // In a non-flattened context, we always use the resource name type set on the message
+          // instead of set on the flattened method, unless the resource name type on message
+          // is ANY.
+          fieldConfig = fieldConfig.getMessageFieldConfig();
+        }
       }
       if (item.getType().isRepeated()) {
         return RepeatedResourceNameInitValueView.newBuilder()
@@ -515,7 +531,8 @@ public class InitCodeTransformer {
       FieldConfig fieldConfig = item.getFieldConfig();
 
       if (context.getFeatureConfig().useResourceNameFormatOption(fieldConfig)) {
-        fieldSetting.fieldSetFunction(namer.getResourceNameFieldSetFunctionName(fieldConfig));
+        fieldSetting.fieldSetFunction(
+            namer.getResourceNameFieldSetFunctionName(fieldConfig.getMessageFieldConfig()));
       } else {
         fieldSetting.fieldSetFunction(
             namer.getFieldSetFunctionName(item.getType(), Name.from(item.getKey())));

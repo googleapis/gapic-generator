@@ -1,5 +1,6 @@
 sudo: false
 language: java
+dist: precise
 env:
   global:
     - GRADLE_OPTS="-Xmx512m"
@@ -11,3 +12,8 @@ script:
   ./gradlew check --info
 after_success:
   - bash <(curl -s https://codecov.io/bash)
+# Workaround for Travis CI issue 5227 causing buffer overflow in OpenJDK7.
+addons:
+  hosts:
+    - workaround
+  hostname: workaround

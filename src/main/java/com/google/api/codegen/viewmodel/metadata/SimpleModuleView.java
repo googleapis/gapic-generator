@@ -18,7 +18,7 @@ package com.google.api.codegen.viewmodel.metadata;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class SimpleModuleView implements VersionIndexModuleView {
+public abstract class SimpleModuleView implements ModuleView {
   public abstract String moduleName();
 
   public static Builder newBuilder() {

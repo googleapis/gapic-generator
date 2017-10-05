@@ -38,8 +38,6 @@ public class PythonModelTypeNameConverter implements ModelTypeNameConverter {
 
   private static final String GOOGLE_CLOUD_PREFIX = GOOGLE_PREFIX + ".cloud";
 
-  private static final String GOOGLE_CLOUD_PROTO_PREFIX = GOOGLE_CLOUD_PREFIX + ".proto";
-
   /** A map from primitive type to its corresponding Python types */
   private static final Map<Type, String> PRIMITIVE_TYPE_MAP =
       ImmutableMap.<Type, String>builder()
@@ -56,7 +54,7 @@ public class PythonModelTypeNameConverter implements ModelTypeNameConverter {
           .put(Type.TYPE_SFIXED32, "int")
           .put(Type.TYPE_SFIXED64, "long")
           .put(Type.TYPE_BOOL, "bool")
-          .put(Type.TYPE_STRING, "string")
+          .put(Type.TYPE_STRING, "str")
           .put(Type.TYPE_BYTES, "bytes")
           .build();
 
@@ -92,9 +90,15 @@ public class PythonModelTypeNameConverter implements ModelTypeNameConverter {
           "google.logging.type");
 
   private final TypeNameConverter typeNameConverter;
+  private String protoNamespace;
 
   public PythonModelTypeNameConverter(String implicitPackageName) {
     typeNameConverter = new PythonTypeTable(implicitPackageName);
+    if (implicitPackageName.endsWith(".gapic")) {
+      protoNamespace = implicitPackageName.replace(".gapic", ".proto");
+    } else {
+      protoNamespace = String.format("%s.proto", implicitPackageName);
+    }
   }
 
   @Override
@@ -147,8 +151,7 @@ public class PythonModelTypeNameConverter implements ModelTypeNameConverter {
 
   private List<String> getClassNamePath(ProtoElement elem) {
     List<String> path = new LinkedList<>();
-    path.add(elem.getSimpleName());
-    for (ProtoElement elt = elem.getParent(); elt.getParent() != null; elt = elt.getParent()) {
+    for (ProtoElement elt = elem; elt.getParent() != null; elt = elt.getParent()) {
       path.add(0, elt.getSimpleName());
     }
     return path;
@@ -172,7 +175,7 @@ public class PythonModelTypeNameConverter implements ModelTypeNameConverter {
       return TypedValue.create(getTypeName(type), PRIMITIVE_ZERO_VALUE.get(type.getKind()));
     }
     if (type.isMessage()) {
-      return TypedValue.create(getTypeName(type), "%s()");
+      return TypedValue.create(getTypeName(type), "{}");
     }
     if (type.isEnum()) {
       return getEnumValue(type, type.getEnumType().getValues().get(0));
@@ -234,9 +237,7 @@ public class PythonModelTypeNameConverter implements ModelTypeNameConverter {
       }
     }
 
-    String prefix =
-        protoPackage.startsWith(GOOGLE_CLOUD_PREFIX) ? GOOGLE_CLOUD_PREFIX : GOOGLE_PREFIX;
-    return GOOGLE_CLOUD_PROTO_PREFIX + protoPackage.substring(prefix.length());
+    return protoNamespace;
   }
 
   private String getPbFileName(String filename) {

@@ -55,6 +55,12 @@ public abstract class TestCaseView {
 
   public abstract String fullyQualifiedServiceClassName();
 
+  /**
+   * In Ruby, the initializer of the service class is aliased. This name is the aliased method used
+   * to initialize a service class.
+   */
+  public abstract String fullyQualifiedAliasedServiceClassName();
+
   public abstract String mockServiceVarName();
 
   public abstract boolean hasRequestParameters();
@@ -85,6 +91,8 @@ public abstract class TestCaseView {
     public abstract Builder serviceConstructorName(String val);
 
     public abstract Builder fullyQualifiedServiceClassName(String val);
+
+    public abstract Builder fullyQualifiedAliasedServiceClassName(String val);
 
     public abstract Builder mockServiceVarName(String val);
 

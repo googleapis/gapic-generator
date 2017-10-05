@@ -19,11 +19,13 @@ import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.VersionBound;
 import com.google.api.codegen.nodejs.NodeJSUtils;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
+import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -37,6 +39,7 @@ import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.api.codegen.viewmodel.metadata.PackageDependencyView;
 import com.google.api.codegen.viewmodel.metadata.ReadmeMetadataView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
@@ -85,7 +88,7 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
     NodeJSPackageMetadataNamer namer =
         new NodeJSPackageMetadataNamer(
             productConfig.getPackageName(), productConfig.getDomainLayerLocation());
-    models.addAll(generateMetadataViews(model, namer));
+    models.addAll(generateMetadataViews(model, productConfig, namer));
     models.add(generateReadmeView(model, productConfig, namer));
     return models;
   }
@@ -170,16 +173,20 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
     return apiMethodView.build();
   }
 
-  private List<ViewModel> generateMetadataViews(Model model, NodeJSPackageMetadataNamer namer) {
+  private List<ViewModel> generateMetadataViews(
+      Model model, GapicProductConfig productConfig, NodeJSPackageMetadataNamer namer) {
     ImmutableList.Builder<ViewModel> views = ImmutableList.builder();
     for (String template : TOP_LEVEL_FILES) {
-      views.add(generateMetadataView(model, template, namer));
+      views.add(generateMetadataView(model, productConfig, template, namer));
     }
     return views.build();
   }
 
   private ViewModel generateMetadataView(
-      Model model, String template, NodeJSPackageMetadataNamer namer) {
+      Model model,
+      GapicProductConfig productConfig,
+      String template,
+      NodeJSPackageMetadataNamer namer) {
     String noLeadingNodeDir =
         template.startsWith(NODE_PREFIX) ? template.substring(NODE_PREFIX.length()) : template;
     int extensionIndex = noLeadingNodeDir.lastIndexOf(".");
@@ -192,7 +199,51 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
         .generateMetadataView(packageConfig, model, template, outputPath, TargetLanguage.NODEJS)
         .identifier(namer.getMetadataIdentifier())
         .hasMultipleServices(hasMultipleServices)
+        .additionalDependencies(generateAdditionalDependencies(model, productConfig))
         .build();
+  }
+
+  private List<PackageDependencyView> generateAdditionalDependencies(
+      Model model, GapicProductConfig productConfig) {
+    ImmutableList.Builder<PackageDependencyView> dependencies = ImmutableList.builder();
+    dependencies.add(
+        PackageDependencyView.create(
+            "google-gax", packageConfig.gaxVersionBound(TargetLanguage.NODEJS)));
+    dependencies.add(PackageDependencyView.create("extend", VersionBound.create("3.0", "")));
+    if (new InterfaceView().hasMultipleServices(model)) {
+      dependencies.add(
+          PackageDependencyView.create("lodash.union", VersionBound.create("4.6.0", "")));
+    }
+    if (hasMixinApis(model, productConfig)) {
+      dependencies.add(
+          PackageDependencyView.create("lodash.merge", VersionBound.create("4.6.0", "")));
+    }
+    if (hasLongrunning(model, productConfig)) {
+      dependencies.add(
+          PackageDependencyView.create("protobufjs", VersionBound.create("6.8.0", "")));
+    }
+    return dependencies.build();
+  }
+
+  private boolean hasLongrunning(Model model, GapicProductConfig productConfig) {
+    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+      if (productConfig.getInterfaceConfig(apiInterface).hasLongRunningOperations()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private boolean hasMixinApis(Model model, GapicProductConfig productConfig) {
+    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+      if (new GrpcStubTransformer()
+              .generateGrpcStubs(createContext(apiInterface, productConfig))
+              .size()
+          > 1) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private GapicInterfaceContext createContext(

@@ -33,8 +33,11 @@ public abstract class InitCodeView {
    */
   public abstract String apiFileName();
 
-  /** The file name of the index file. */
+  /** The file name of the version index file. */
   public abstract String versionIndexFileImportName();
+
+  /** The file name of the top level index file. */
+  public abstract String topLevelIndexFileImportName();
 
   public static Builder newBuilder() {
     return new AutoValue_InitCodeView.Builder();
@@ -53,6 +56,8 @@ public abstract class InitCodeView {
     public abstract Builder apiFileName(String apiFileName);
 
     public abstract Builder versionIndexFileImportName(String indexFileImportName);
+
+    public abstract Builder topLevelIndexFileImportName(String val);
 
     public abstract InitCodeView build();
   }
