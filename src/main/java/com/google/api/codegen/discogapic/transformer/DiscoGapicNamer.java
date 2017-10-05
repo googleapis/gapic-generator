@@ -15,6 +15,7 @@
 package com.google.api.codegen.discogapic.transformer;
 
 import com.google.api.codegen.Inflector;
+import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -22,12 +23,16 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
 import com.google.common.base.Strings;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 
 /** Provides language-specific names for variables and classes of Discovery-Document models. */
 public class DiscoGapicNamer {
   private final SurfaceNamer languageNamer;
-  private static final String regexDelimiter = "\\.";
+  private static final String REGEX_DELIMITER = "\\.";
+  private static final Pattern UNBRACKETED_PATH_SEGMENTS_PATTERN =
+      Pattern.compile("\\}/((?:[a-zA-Z]+/){2,})\\{");
 
   /* Create a JavaSurfaceNamer for a Discovery-based API. */
   public DiscoGapicNamer(SurfaceNamer parentNamer) {
@@ -41,11 +46,6 @@ public class DiscoGapicNamer {
   /* @return the underlying language surface namer. */
   public SurfaceNamer getLanguageNamer() {
     return languageNamer;
-  }
-
-  /** Returns the variable name for a field. */
-  public String getFieldVarName(String fieldName) {
-    return languageNamer.privateFieldName(Name.anyCamel(fieldName));
   }
 
   /** Returns the resource getter method name for a resource field. */
@@ -71,15 +71,15 @@ public class DiscoGapicNamer {
   }
 
   /** Returns the name for a ResourceName for the resource of the given method. */
-  public String getResourceNameName(Method method, String parentResource) {
+  public String getResourceNameName(ResourceNameConfig resourceNameConfig) {
     return languageNamer.localVarName(
-        getQualifiedResourceIdentifier(method, parentResource).join("name"));
+        Name.anyCamel(resourceNameConfig.getEntityName()).join("name"));
   }
 
   /** Returns the name for a ResourceName for the resource of the given method. */
-  public String getResourceNameTypeName(Method method, String parentResource) {
+  public String getResourceNameTypeName(ResourceNameConfig resourceNameConfig) {
     return languageNamer.publicClassName(
-        getQualifiedResourceIdentifier(method, parentResource).join("name").join("type"));
+        Name.anyCamel(resourceNameConfig.getEntityName()).join("name").join("type"));
   }
 
   /**
@@ -87,7 +87,7 @@ public class DiscoGapicNamer {
    * "[api].[resource].[function]".
    */
   public static Name methodAsName(Method method) {
-    String[] pieces = method.id().split(regexDelimiter);
+    String[] pieces = method.id().split(REGEX_DELIMITER);
     String resourceLastName = pieces[pieces.length - 2];
     if (!method.isPluralMethod()) {
       resourceLastName = Inflector.singularize(resourceLastName);
@@ -123,13 +123,13 @@ public class DiscoGapicNamer {
   }
 
   public static String getSimpleInterfaceName(String interfaceName) {
-    String[] pieces = interfaceName.split(regexDelimiter);
+    String[] pieces = interfaceName.split(REGEX_DELIMITER);
     return pieces[pieces.length - 1];
   }
 
   /** Get the request type name from a method. */
   public static Name getRequestName(Method method) {
-    String[] pieces = method.id().split(regexDelimiter);
+    String[] pieces = method.id().split(REGEX_DELIMITER);
     String methodName = pieces[pieces.length - 1];
     String resourceName = pieces[pieces.length - 2];
     if (!method.isPluralMethod()) {
@@ -161,7 +161,7 @@ public class DiscoGapicNamer {
   }
 
   public static Name getInterfaceName(String defaultInterfaceName) {
-    String[] pieces = defaultInterfaceName.split(regexDelimiter);
+    String[] pieces = defaultInterfaceName.split(REGEX_DELIMITER);
     String resource = pieces[pieces.length - 1];
     return Name.anyCamel(Inflector.singularize(resource), "admin");
   }
@@ -177,6 +177,30 @@ public class DiscoGapicNamer {
       return Name.anyCamel(typeName);
     }
     return null;
+  }
+
+  public static String getCanonicalPath(Method method) {
+    String namePattern = method.flatPath();
+    // Escape the first character of the pattern if necessary.
+    namePattern = namePattern.charAt(0) == '{' ? "\\".concat(namePattern) : namePattern;
+    // Remove any trailing non-bracketed substring
+    if (!namePattern.endsWith("}") && namePattern.contains("}")) {
+      namePattern = namePattern.substring(0, namePattern.lastIndexOf('}') + 1);
+    }
+    // For each sequence of consecutive non-bracketed path segments,
+    // replace those segments with the last one in the sequence.
+    Matcher m = UNBRACKETED_PATH_SEGMENTS_PATTERN.matcher(namePattern);
+    if (m.find()) {
+      StringBuffer sb = new StringBuffer();
+      for (int i = 1; i <= m.groupCount(); i++) {
+        String multipleSegment = m.group(i);
+        String[] segmentPieces = multipleSegment.split("/");
+        Name segment = Name.anyCamel(segmentPieces[segmentPieces.length - 1]);
+        m.appendReplacement(sb, String.format("}/%s/{", segment.toLowerCamel()));
+      }
+      namePattern = m.appendTail(sb).toString();
+    }
+    return namePattern;
   }
 
   //TODO(andrealin): Naming methods for service name.
