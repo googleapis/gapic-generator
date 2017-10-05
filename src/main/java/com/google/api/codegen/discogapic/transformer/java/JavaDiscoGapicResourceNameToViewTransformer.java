@@ -180,10 +180,7 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
     resourceNameView.name(resourceName);
     resourceNameView.typeName(nameFormatter.publicClassName(Name.anyCamel(resourceName)));
     resourceNameView.nameTypeName(context.getDiscoGapicNamer().getResourceNameTypeName(nameConfig));
-    String escapedNamePattern = nameConfig.getNamePattern();
-    String namePattern =
-        escapedNamePattern.charAt(0) == '\\' ? escapedNamePattern.substring(1) : escapedNamePattern;
-    resourceNameView.pathTemplate(namePattern);
+    resourceNameView.pathTemplate(nameConfig.getNamePattern());
 
     List<StaticMemberView> properties = new LinkedList<>();
     for (Map.Entry<String, Schema> entry : method.parameters().entrySet()) {

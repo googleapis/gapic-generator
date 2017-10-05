@@ -180,14 +180,16 @@ public class DiscoGapicNamer {
   }
 
   /**
-   * Get the canonical path for a method, in the form "\\(\{%s\}/%s)+" e.g. for a method path
-   * "{project}/project/{region}/region/addresses", this returns
-   * "{project}/project/{region}/region".
+   * Get the canonical path for a method, in the form "(%s/\{%s\})+" e.g. for a method path
+   * "{project}/region/{region}/addresses", this returns "project/{project}/region/{region}".
    */
   public static String getCanonicalPath(Method method) {
     String namePattern = method.flatPath();
     // Escape the first character of the pattern if necessary.
-    namePattern = namePattern.charAt(0) == '{' ? "\\".concat(namePattern) : namePattern;
+    if (namePattern.charAt(0) == '{') {
+      String firstResource = namePattern.substring(1, namePattern.indexOf("}"));
+      namePattern = String.format("%s/%s", firstResource, namePattern);
+    }
     // Remove any trailing non-bracketed substring
     if (!namePattern.endsWith("}") && namePattern.contains("}")) {
       namePattern = namePattern.substring(0, namePattern.lastIndexOf('}') + 1);
