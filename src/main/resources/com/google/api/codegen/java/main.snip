@@ -107,11 +107,30 @@
    * <p>This class can be customized by passing in a custom instance of {@xapiClassDoc.settingsClassName} to
    * create(). For example:
    *
+   * To customize credentials:
+   *
    * <pre>
    * <code>
    * {@xapiClassDoc.settingsClassName} {@xapiClassDoc.settingsVarName} =
-   *     {@xapiClassDoc.settingsClassName}.defaultBuilder()
+   *     {@xapiClassDoc.settingsClassName}.newBuilder()
    *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
+   *         .build();
+   * {@xapiClassDoc.apiClassName} {@xapiClassDoc.apiVarName} =
+   *     {@xapiClassDoc.apiClassName}.create({@xapiClassDoc.settingsVarName});
+   * </code>
+   * </pre>
+   *
+   * To customize the endpoint:
+   *
+   * <pre>
+   * <code>
+   * {@xapiClassDoc.settingsClassName} {@xapiClassDoc.settingsVarName} =
+   *     {@xapiClassDoc.settingsClassName}.newBuilder()
+   *         .setTransportProvider({@xapiClassDoc.settingsClassName}.defaultGrpcTransportProviderBuilder()
+   *             .setChannelProvider({@xapiClassDoc.settingsClassName}.defaultGrpcChannelProviderBuilder()
+   *                 .setEndpoint(myEndpoint)
+   *                 .build())
+   *             .build())
    *         .build();
    * {@xapiClassDoc.apiClassName} {@xapiClassDoc.apiVarName} =
    *     {@xapiClassDoc.apiClassName}.create({@xapiClassDoc.settingsVarName});
@@ -190,7 +209,7 @@
      * Constructs an instance of {@xapiClass.name} with default settings.
      */
     public static final {@xapiClass.name} create() throws IOException {
-      return create({@xapiClass.settingsClassName}.defaultBuilder().build());
+      return create({@xapiClass.settingsClassName}.newBuilder().build());
     }
     {@""}
   @end
@@ -240,6 +259,7 @@
     return settings;
   }
 
+  @@BetaApi
   public {@xapiClass.stubInterfaceName} getStub() {
     return stub;
   }
@@ -272,7 +292,6 @@
     @case "RequestObjectMethod"
       {@requestObjectMethod(apiMethod)}
     @case "CallableMethod"
-    # TODO create a GrpcStreaming ApiMethodType
       @if apiMethod.isStreaming
         {@streamingCallableMethod(apiMethod)}
       @else
@@ -436,7 +455,8 @@
     {@apiMethod.releaseLevelAnnotation}
 
   @end
-  {@apiMethod.visibility} final StreamingCallable<{@apiMethod.serviceRequestTypeName}, \
+  {@apiMethod.visibility} final {@apiMethod.callableMethod.interfaceTypeName}\
+      <{@apiMethod.serviceRequestTypeName}, \
       {@apiMethod.responseTypeName}> {@apiMethod.name}() {
     return stub.{@apiMethod.callableMethod.callableName}();
   }

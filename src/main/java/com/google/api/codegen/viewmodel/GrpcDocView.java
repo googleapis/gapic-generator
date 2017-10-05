@@ -15,8 +15,10 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.api.codegen.SnippetSetRunner;
+import com.google.api.codegen.viewmodel.metadata.ModuleView;
 import com.google.auto.value.AutoValue;
 import java.util.List;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class GrpcDocView implements ViewModel {
@@ -28,10 +30,11 @@ public abstract class GrpcDocView implements ViewModel {
 
   public abstract List<GrpcElementDocView> elementDocs();
 
-  public abstract boolean isExternalFile();
+  @Nullable
+  public abstract List<ModuleView> modules();
 
   public static Builder newBuilder() {
-    return new AutoValue_GrpcDocView.Builder().isExternalFile(false);
+    return new AutoValue_GrpcDocView.Builder();
   }
 
   @Override
@@ -49,7 +52,7 @@ public abstract class GrpcDocView implements ViewModel {
 
     public abstract Builder elementDocs(List<GrpcElementDocView> val);
 
-    public abstract Builder isExternalFile(boolean externalFile);
+    public abstract Builder modules(List<ModuleView> val);
 
     public abstract GrpcDocView build();
   }

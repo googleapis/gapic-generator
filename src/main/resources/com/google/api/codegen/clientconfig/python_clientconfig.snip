@@ -1,0 +1,13 @@
+@extends "common.snip"
+@extends "clientconfig/common.snip"
+
+@snippet generateFilename(service)
+    {@context.upperCamelToLowerUnderscore(service.getSimpleName)}_client_config.py
+@end
+
+@snippet generateBody(service)
+    config = {
+      {@clientConfig(service)}
+    }
+
+@end

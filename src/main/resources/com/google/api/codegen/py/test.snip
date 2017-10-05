@@ -186,7 +186,7 @@
     def {@test.name}(self, mock_create_stub):
         {@unaryTestSetup(test, moduleName)}
         @# Mock response
-        {@initCode(test.mockResponse.initCode)}
+        {@responseInitCode(test)}
         operation = operations_pb2.Operation(name='operations/{@test.name}', done=True)
         operation.response.Pack(expected_response)
         grpc_stub.{@test.grpcStubCallString}.return_value = operation
@@ -239,16 +239,21 @@
 
 @private unaryTestResponse(test)
     @# Mock response
-    {@initCode(test.mockResponse.initCode)}
+    {@responseInitCode(test)}
     grpc_stub.{@test.grpcStubCallString}.return_value = expected_response
 
 @end
 
 @private responseStreamingTestResponse(test)
     @# Mock response
-    {@initCode(test.mockResponse.initCode)}
+    {@responseInitCode(test)}
     grpc_stub.{@test.grpcStubCallString}.return_value = iter([expected_response])
 
+@end
+
+@private responseInitCode(test)
+    {@initCode(test.mockResponse.initCode)}
+    expected_response = {@test.responseTypeName}(**expected_response)
 @end
 
 @private unaryTestMethodCall(test)

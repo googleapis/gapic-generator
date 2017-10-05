@@ -26,7 +26,7 @@
 
 @private header(apiTest)
   var assert = require('assert');
-  var {@apiTest.apiWrapperModuleName} = require('../src');
+  var {@apiTest.localPackageName} = require('../src');
   @if apiTest.hasGrpcStreaming
     var through2 = require('through2');
   @end
@@ -61,7 +61,6 @@
             callback(null, response);
           }
         });
-        mockStream.write();
         return mockStream;
       };
     }
@@ -199,6 +198,12 @@
         done();
       });
     });
+
+    it('has longrunning decoder functions', function() {
+      {@clientInit(testClass, apiTest)}
+      assert(client.longrunningDescriptors.{@test.clientMethodName}.responseDecoder instanceof Function);
+      assert(client.longrunningDescriptors.{@test.clientMethodName}.metadataDecoder instanceof Function);
+    });
   });
 @end
 
@@ -249,12 +254,16 @@
 
       @switch test.grpcStreamingType
       @case "ServerStreaming"
-        client.{@test.clientMethodName}(request).on('data', function(response) {
+        var stream = client.{@test.clientMethodName}(request);
+        stream.on('data', function(response) {
           assert.deepStrictEqual(response, expectedResponse);
           done()
-        }).on('error', function(err) {
+        });
+        stream.on('error', function(err) {
           done(err);
         });
+
+        stream.write();
       @case "BidiStreaming"
         var stream = client.{@test.clientMethodName}().on('data', function(response) {
           assert.deepStrictEqual(response, expectedResponse);
@@ -282,12 +291,16 @@
 
       @switch test.grpcStreamingType
       @case "ServerStreaming"
-        client.{@test.clientMethodName}(request).on('data', function(response) {
+        var stream = client.{@test.clientMethodName}(request);
+        stream.on('data', function(response) {
           assert.fail();
-        }).on('error', function(err) {
+        })
+        stream.on('error', function(err) {
           {@assertError()}
           done();
         });
+
+        stream.write();
       @case "BidiStreaming"
         var stream = client.{@test.clientMethodName}().on('data', function(response) {
           assert.fail();
@@ -334,9 +347,9 @@
 
 @private clientInit(testClass, apiTest)
   @if apiTest.fileHeader.hasVersion
-    var client = {@apiTest.apiWrapperModuleName}.{@apiTest.fileHeader.version}{@clientBuilderCall(testClass, apiTest)};
+    var client = {@apiTest.localPackageName}.{@apiTest.fileHeader.version}{@clientBuilderCall(testClass, apiTest)};
   @else
-    var client = {@apiTest.apiWrapperModuleName}{@clientBuilderCall(testClass, apiTest)};
+    var client = {@apiTest.localPackageName}{@clientBuilderCall(testClass, apiTest)};
   @end
 @end
 

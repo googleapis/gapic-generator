@@ -21,7 +21,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 @AutoValue
-public abstract class ReadmeMetadataView implements VersionIndexModuleView {
+public abstract class ReadmeMetadataView implements ModuleView {
   public abstract String moduleName();
 
   @Nullable

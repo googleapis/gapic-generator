@@ -67,6 +67,13 @@ public class PhpSurfaceNamer extends SurfaceNamer {
     return publicMethodName(Name.from("get").join(identifier));
   }
 
+  /** The function name to format the entity for the given collection. */
+  @Override
+  public String getFormatFunctionName(
+      Interface apiInterface, SingleResourceNameConfig resourceNameConfig) {
+    return publicMethodName(Name.from(resourceNameConfig.getEntityName(), "name"));
+  }
+
   @Override
   public String getPathTemplateName(
       Interface apiInterface, SingleResourceNameConfig resourceNameConfig) {
@@ -75,7 +82,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getClientConfigPath(Interface apiInterface) {
-    return "resources/"
+    return "../resources/"
         + Name.upperCamel(apiInterface.getSimpleName()).join("client_config").toLowerUnderscore()
         + ".json";
   }
@@ -102,6 +109,9 @@ public class PhpSurfaceNamer extends SurfaceNamer {
     }
     if (methodConfig.isPageStreaming()) {
       return "\\Google\\GAX\\PagedListResponse";
+    }
+    if (methodConfig.isLongRunningOperation()) {
+      return "\\Google\\GAX\\OperationResponse";
     }
     switch (methodConfig.getGrpcStreamingType()) {
       case NonStreaming:
@@ -158,6 +168,11 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String getGapicImplNamespace() {
+    return PhpPackageUtil.buildPackageName(getPackageName(), "Gapic");
+  }
+
+  @Override
   public String getTestPackageName() {
     return getTestPackageName(getPackageName());
   }
@@ -189,5 +204,10 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   @Override
   public boolean methodHasRetrySettings(GapicMethodConfig methodConfig) {
     return !methodConfig.isGrpcStreaming();
+  }
+
+  @Override
+  public boolean methodHasTimeoutSettings(GapicMethodConfig methodConfig) {
+    return methodConfig.isGrpcStreaming();
   }
 }

@@ -88,18 +88,20 @@
 @end
 
 @private apiCallableMember(callable)
-  @switch callable.type.serviceMethodType
-  @case "UnaryMethod"
+  @if callable.isStreaming
     private final {@callable.interfaceTypeName}<{@callable.requestTypeName}, \
-      {@callable.responseTypeName}> {@callable.name};
-  @case "GrpcStreamingMethod"
-    private final {@callable.interfaceTypeName}<{@callable.requestTypeName}, \
-      {@callable.responseTypeName}> {@callable.name};
-  @case "LongRunningMethod"
-    private final {@callable.interfaceTypeName}<{@callable.requestTypeName}, \
-      {@callable.responseTypeName}, {@callable.metadataTypeName}, Operation> {@callable.name};
-  @default
-    $unhandledCase: {@callable.type.serviceMethodType}$
+        {@callable.responseTypeName}> {@callable.name};
+  @else
+    @switch callable.type.serviceMethodType
+    @case "UnaryMethod"
+      private final {@callable.interfaceTypeName}<{@callable.requestTypeName}, \
+        {@callable.responseTypeName}> {@callable.name};
+    @case "LongRunningMethod"
+      private final {@callable.interfaceTypeName}<{@callable.requestTypeName}, \
+        {@callable.responseTypeName}, {@callable.metadataTypeName}, Operation> {@callable.name};
+    @default
+      $unhandledCase: {@callable.type.serviceMethodType}$
+    @end
   @end
 @end
 
@@ -109,7 +111,7 @@
   }
 
   public static final {@stubClass.name} create(ClientContext clientContext) throws IOException {
-    return new {@stubClass.name}({@stubClass.settingsClassName}.defaultBuilder().build(), clientContext);
+    return new {@stubClass.name}({@stubClass.settingsClassName}.newBuilder().build(), clientContext);
   }
 
   /**
@@ -123,28 +125,30 @@
     @end
 
     @join callable : stubClass.apiCallables
-      @switch callable.type
-      @case "SimpleApiCallable"
+      @if callable.isStreaming
         this.{@callable.name} = GrpcCallableFactory.create({@callable.grpcDirectCallableName},\
-            settings.{@callable.settingsFunctionName}(), clientContext);
-      @case "PagedApiCallable"
-        this.{@callable.name} =
-            GrpcCallableFactory.createPagedVariant({@callable.grpcDirectCallableName},\
-            settings.{@callable.settingsFunctionName}(), clientContext);
-      @case "BatchingApiCallable"
-        this.{@callable.name} = GrpcCallableFactory.create({@callable.grpcDirectCallableName},\
-            settings.{@callable.settingsFunctionName}(), clientContext);
-      @case "StreamingApiCallable"
-        this.{@callable.name} = GrpcCallableFactory.create({@callable.grpcDirectCallableName},\
-            settings.{@callable.settingsFunctionName}(), clientContext);
-      @case "InitialOperationApiCallable"
-        this.{@callable.name} = GrpcCallableFactory.create({@callable.grpcDirectCallableName},\
-            settings.{@callable.settingsFunctionName}().getInitialCallSettings(), clientContext);
-      @case "OperationApiCallable"
-        this.{@callable.name} = GrpcCallableFactory.create({@callable.grpcDirectCallableName},\
-            settings.{@callable.settingsFunctionName}(), clientContext, this.operationsStub);
-      @default
-        $unhandledCase: {@callable.type}$
+                settings.{@callable.settingsFunctionName}(), clientContext);
+      @else
+        @switch callable.type
+        @case "SimpleApiCallable"
+          this.{@callable.name} = GrpcCallableFactory.create({@callable.grpcDirectCallableName},\
+              settings.{@callable.settingsFunctionName}(), clientContext);
+        @case "PagedApiCallable"
+          this.{@callable.name} =
+              GrpcCallableFactory.createPagedVariant({@callable.grpcDirectCallableName},\
+              settings.{@callable.settingsFunctionName}(), clientContext);
+        @case "BatchingApiCallable"
+          this.{@callable.name} = GrpcCallableFactory.create({@callable.grpcDirectCallableName},\
+              settings.{@callable.settingsFunctionName}(), clientContext);
+        @case "InitialOperationApiCallable"
+          this.{@callable.name} = GrpcCallableFactory.create({@callable.grpcDirectCallableName},\
+              settings.{@callable.settingsFunctionName}().getInitialCallSettings(), clientContext);
+        @case "OperationApiCallable"
+          this.{@callable.name} = GrpcCallableFactory.create({@callable.grpcDirectCallableName},\
+              settings.{@callable.settingsFunctionName}(), clientContext, this.operationsStub);
+        @default
+          $unhandledCase: {@callable.type}$
+        @end
       @end
     @end
 
@@ -202,7 +206,7 @@
     {@apiMethod.releaseLevelAnnotation}
 
   @end
-  public StreamingCallable<{@apiMethod.serviceRequestTypeName}, \
+  public {@apiMethod.callableMethod.interfaceTypeName}<{@apiMethod.serviceRequestTypeName}, \
       {@apiMethod.responseTypeName}> {@apiMethod.name}() {
     return {@apiMethod.callableMethod.callableName};
   }

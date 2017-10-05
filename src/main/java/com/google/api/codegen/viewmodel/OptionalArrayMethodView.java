@@ -48,6 +48,12 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
   public abstract GrpcStreamingType grpcStreamingType();
 
+  public boolean isGrpcStreamingMethod() {
+    return grpcStreamingType() == GrpcStreamingType.BidiStreaming
+        || grpcStreamingType() == GrpcStreamingType.ClientStreaming
+        || grpcStreamingType() == GrpcStreamingType.ServerStreaming;
+  }
+
   public abstract List<DynamicLangDefaultableParamView> methodParams();
 
   public abstract List<RequestObjectParamView> requiredRequestObjectParams();
@@ -75,6 +81,8 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
   public abstract String packageName();
 
+  public abstract String localPackageName();
+
   public abstract boolean packageHasMultipleServices();
 
   /** The name of the service exported by the package. */
@@ -97,9 +105,7 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
     return new AutoValue_OptionalArrayMethodView.Builder();
   }
 
-  public Builder toBuilder() {
-    return new AutoValue_OptionalArrayMethodView.Builder(this);
-  }
+  public abstract Builder toBuilder();
 
   public boolean hasRequestStreaming() {
     return !isSingularRequestMethod();
@@ -168,6 +174,8 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
     public abstract Builder versionAliasedApiClassName(String val);
 
     public abstract Builder oneofParams(List<List<String>> val);
+
+    public abstract Builder localPackageName(String val);
 
     public abstract OptionalArrayMethodView build();
   }

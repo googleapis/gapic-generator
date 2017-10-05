@@ -34,6 +34,7 @@ import com.google.api.codegen.transformer.PageStreamingTransformer;
 import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.ServiceTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.util.php.PhpPackageUtil;
 import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.DynamicLangXApiSubclassView;
@@ -100,11 +101,17 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   public List<ViewModel> transform(GapicInterfaceContext context) {
-    String outputPath =
-        pathMapper.getOutputPath(context.getInterface(), context.getProductConfig());
-    SurfaceNamer namer = context.getNamer();
+    GapicInterfaceContext gapicImplContext =
+        context.withNewTypeTable(context.getNamer().getGapicImplNamespace());
 
     List<ViewModel> surfaceData = new ArrayList<>();
+    surfaceData.add(buildGapicClientViewModel(gapicImplContext));
+    surfaceData.add(buildClientViewModel(context));
+    return surfaceData;
+  }
+
+  private ViewModel buildGapicClientViewModel(GapicInterfaceContext context) {
+    SurfaceNamer namer = context.getNamer();
 
     addApiImports(context);
 
@@ -159,22 +166,35 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     // must be done as the last step to catch all imports
     apiImplClass.fileHeader(fileHeaderTransformer.generateFileHeader(context));
 
+    String outputPath =
+        pathMapper.getOutputPath(context.getInterface(), context.getProductConfig());
     apiImplClass.outputPath(outputPath + "/" + implName + ".php");
 
-    surfaceData.add(apiImplClass.build());
+    return apiImplClass.build();
+  }
 
+  private ViewModel buildClientViewModel(GapicInterfaceContext context) {
+    SurfaceNamer namer = context.getNamer();
     String name = namer.getApiWrapperClassName(context.getInterfaceConfig());
+
+    context
+        .getTypeTable()
+        .getAndSaveNicknameFor(
+            PhpPackageUtil.getFullyQualifiedName(
+                namer.getGapicImplNamespace(),
+                namer.getApiWrapperClassImplName(context.getInterfaceConfig())));
 
     DynamicLangXApiSubclassView.Builder apiClass = DynamicLangXApiSubclassView.newBuilder();
     apiClass.templateFileName(API_TEMPLATE_FILENAME);
     apiClass.protoFilename(context.getInterface().getFile().getSimpleName());
     apiClass.name(name);
-    apiClass.parentName(implName);
+    apiClass.parentName(namer.getApiWrapperClassImplName(context.getInterfaceConfig()));
     apiClass.fileHeader(fileHeaderTransformer.generateFileHeader(context));
+    String outputPath =
+        pathMapper.getOutputPath(context.getInterface(), context.getProductConfig());
     apiClass.outputPath(outputPath + "/" + name + ".php");
-    surfaceData.add(apiClass.build());
 
-    return surfaceData;
+    return apiClass.build();
   }
 
   private List<LongRunningOperationDetailView> createLongRunningDescriptors(
@@ -196,10 +216,10 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
               .metadataTypeName(context.getModelTypeTable().getFullNameFor(metadataType))
               .implementsCancel(true)
               .implementsDelete(true)
-              .initialPollDelay(lroConfig.getInitialPollDelay().getMillis())
+              .initialPollDelay(lroConfig.getInitialPollDelay().toMillis())
               .pollDelayMultiplier(lroConfig.getPollDelayMultiplier())
-              .maxPollDelay(lroConfig.getMaxPollDelay().getMillis())
-              .totalPollTimeout(lroConfig.getTotalPollTimeout().getMillis())
+              .maxPollDelay(lroConfig.getMaxPollDelay().toMillis())
+              .totalPollTimeout(lroConfig.getTotalPollTimeout().toMillis())
               .build());
     }
 
@@ -238,6 +258,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("\\Google\\GAX\\GrpcCredentialsHelper");
     typeTable.saveNicknameFor("\\Google\\GAX\\PathTemplate");
     typeTable.saveNicknameFor("\\Google\\GAX\\ValidationException");
+    typeTable.saveNicknameFor("\\Google\\Cloud\\Version");
 
     if (context.getInterfaceConfig().hasPageStreamingMethods()) {
       typeTable.saveNicknameFor("\\Google\\GAX\\PageStreamingDescriptor");

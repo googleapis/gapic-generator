@@ -21,6 +21,7 @@ import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
+import com.google.api.codegen.ruby.RubyUtil;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
@@ -31,6 +32,7 @@ import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.TypeName;
+import com.google.api.codegen.util.VersionMatcher;
 import com.google.api.codegen.util.ruby.RubyCommentReformatter;
 import com.google.api.codegen.util.ruby.RubyNameFormatter;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
@@ -210,6 +212,9 @@ public class RubySurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getFullyQualifiedCredentialsClassName() {
+    if (RubyUtil.isLongrunning(getPackageName())) {
+      return "Google::Gax::Credentials";
+    }
     return getTopLevelNamespace() + "::Credentials";
   }
 
@@ -267,6 +272,9 @@ public class RubySurfaceNamer extends SurfaceNamer {
   @Override
   public String getTopLevelAliasedApiClassName(
       GapicInterfaceConfig interfaceConfig, boolean packageHasMultipleServices) {
+    if (!RubyUtil.hasMajorVersion(getPackageName())) {
+      return getVersionAliasedApiClassName(interfaceConfig, packageHasMultipleServices);
+    }
     return packageHasMultipleServices
         ? getTopLevelNamespace() + "::" + getPackageServiceName(interfaceConfig.getInterface())
         : getTopLevelNamespace();
@@ -293,7 +301,25 @@ public class RubySurfaceNamer extends SurfaceNamer {
   @Override
   public List<String> getTopLevelApiModules() {
     List<String> apiModules = getApiModules();
-    return apiModules.subList(0, apiModules.size() - 1);
+    return hasVersionModule(apiModules) ? apiModules.subList(0, apiModules.size() - 1) : apiModules;
+  }
+
+  private static boolean hasVersionModule(List<String> apiModules) {
+    String versionModule = apiModules.get(apiModules.size() - 1);
+    String version = Name.upperCamel(versionModule).toLowerUnderscore();
+    return VersionMatcher.isVersion(version);
+  }
+
+  @Override
+  public String getModuleVersionName() {
+    List<String> apiModules = getApiModules();
+    return apiModules.get(apiModules.size() - 1);
+  }
+
+  @Override
+  public String getModuleServiceName() {
+    List<String> apiModules = getTopLevelApiModules();
+    return apiModules.get(apiModules.size() - 1);
   }
 
   @Override

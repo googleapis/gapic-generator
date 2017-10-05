@@ -38,9 +38,11 @@ import com.google.api.codegen.util.csharp.CSharpTypeTable;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CSharpSurfaceNamer extends SurfaceNamer {
@@ -344,6 +346,29 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   public String getReroutedGrpcMethodName(GapicMethodConfig methodConfig) {
     List<String> reroutes = Splitter.on('.').splitToList(methodConfig.getRerouteToGrpcInterface());
     return Name.anyCamel("create", reroutes.get(reroutes.size() - 1), "client").toUpperCamel();
+  }
+
+  @Override
+  public String getReroutedGrpcTypeName(ModelTypeTable typeTable, GapicMethodConfig methodConfig) {
+    List<String> reroutes = Splitter.on('.').splitToList(methodConfig.getRerouteToGrpcInterface());
+    if (reroutes.size() > 2
+        && reroutes.get(0).equals("google")
+        && !reroutes.get(1).equals("cloud")) {
+      reroutes = new ArrayList<String>(reroutes);
+      reroutes.add(1, "cloud");
+    }
+    String rerouteLast = reroutes.get(reroutes.size() - 1);
+    String name =
+        Name.anyCamel(rerouteLast).toUpperCamel()
+            + "+"
+            + Name.anyCamel(rerouteLast, "client").toUpperCamel();
+    List<String> names = new ArrayList<>();
+    for (String reroute : reroutes) {
+      names.add(Name.anyCamel(reroute).toUpperCamel());
+    }
+    String prefix = Joiner.on(".").join(names.subList(0, names.size() - 1));
+    String fullName = prefix + "." + name;
+    return typeTable.getAndSaveNicknameFor(fullName);
   }
 
   @Override

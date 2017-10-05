@@ -3,8 +3,9 @@
 @snippet generate(view)
     {@headerComment(view.fileHeader)}
 
-    // Package {@view.fileHeader.localPackageName} is an experimental, auto-generated package for the
+    // Package {@view.fileHeader.localPackageName} is an auto-generated package for the
     // {@view.serviceTitle}.
+    {@releaseLevel(view)}
     //
     @join line : view.packageDoc
         // {@line}
@@ -35,4 +36,22 @@
         @end
       }
     }
+@end
+
+@private releaseLevel(view)
+    @switch view.releaseLevel
+    @case "GA"
+    @case "UNSET_RELEASE_LEVEL"
+        //
+        //   NOTE: This package is in alpha. It is not stable, and is likely to be subject to changes.
+    @case "ALPHA"
+        //
+        //   NOTE: This package is in alpha. It is not stable, and is likely to be subject to changes.
+    @case "BETA"
+        //
+        //   NOTE: This package is in beta. It is not stable, and may be subject to changes.
+    @case "DEPRECATED"
+        //
+        //   NOTE: This package is deprecated.
+    @end
 @end
