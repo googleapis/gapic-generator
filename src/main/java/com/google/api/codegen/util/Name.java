@@ -42,17 +42,17 @@ public class Name {
 
   /**
    * Creates a Name from a String that is either a sequence of underscore strings or a sequence of
-   * camel strings.
+   * camel strings. The first letter of the String must be lowercase.
    *
    * @throws IllegalArgumentException if any of the strings do not follow the camel format or
    *     contain characters that are not underscores.
    */
-  public static Name fromUnderScoreOrCamel(String... pieces) {
+  public static Name anyLower(String... pieces) {
     Name name;
     try {
       name = Name.from(pieces);
     } catch (IllegalArgumentException e) {
-      name = Name.anyCamel(pieces);
+      name = Name.lowerCamel(pieces);
     }
     return name;
   }

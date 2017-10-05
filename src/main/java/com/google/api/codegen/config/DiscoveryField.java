@@ -65,7 +65,8 @@ public class DiscoveryField implements FieldModel {
   public String getSimpleName() {
     String name =
         Strings.isNullOrEmpty(schema.reference()) ? schema.getIdentifier() : schema.reference();
-    return Name.fromUnderScoreOrCamel(name).toLowerCamel();
+    String[] pieces = name.split("_");
+    return Name.anyCamel(pieces).toLowerCamel();
   }
 
   @Override

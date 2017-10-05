@@ -146,7 +146,8 @@ public class DiscoGapicNamer {
   public static Name getSchemaNameAsParameter(Schema schema) {
     String paramString =
         Strings.isNullOrEmpty(schema.reference()) ? schema.getIdentifier() : schema.reference();
-    Name param = Name.fromUnderScoreOrCamel(paramString);
+    String[] pieces = paramString.split("_");
+    Name param = Name.anyCamel(pieces);
     if (Strings.isNullOrEmpty(schema.location())) {
       param = param.join("resource");
     }
