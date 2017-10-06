@@ -120,7 +120,8 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
 
     DynamicLangXApiView.Builder apiImplClass = DynamicLangXApiView.newBuilder();
 
-    apiImplClass.doc(serviceTransformer.generateServiceDoc(context, methods.get(0)));
+    apiImplClass.doc(
+        serviceTransformer.generateServiceDoc(context, methods.get(0), context.getProductConfig()));
 
     apiImplClass.templateFileName(API_IMPL_TEMPLATE_FILENAME);
     apiImplClass.protoFilename(context.getInterface().getFile().getSimpleName());

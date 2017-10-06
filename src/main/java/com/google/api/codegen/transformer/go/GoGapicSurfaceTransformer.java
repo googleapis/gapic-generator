@@ -135,7 +135,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     GapicProductConfig productConfig = context.getProductConfig();
 
     view.templateFileName(API_TEMPLATE_FILENAME);
-    view.serviceDoc(serviceTransformer.generateServiceDoc(context, null));
+    view.serviceDoc(serviceTransformer.generateServiceDoc(context, null, productConfig));
     view.domainLayerLocation(productConfig.getDomainLayerLocation());
     view.clientTypeName(namer.getApiWrapperClassName(context.getInterfaceConfig()));
     view.clientConstructorName(namer.getApiWrapperClassConstructorName(apiInterface));

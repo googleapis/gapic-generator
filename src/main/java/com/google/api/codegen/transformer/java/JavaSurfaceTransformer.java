@@ -118,7 +118,7 @@ public class JavaSurfaceTransformer {
       InterfaceContext context =
           surfaceTransformer.createInterfaceContext(
               apiInterface, productConfig, namer, typeTable, enableStringFormatFunctions);
-      StaticLangFileView<StaticLangApiView> apiFile = generateApiFile(context);
+      StaticLangFileView<StaticLangApiView> apiFile = generateApiFile(context, productConfig);
       surfaceDocs.add(apiFile);
 
       serviceDocs.add(apiFile.classView().doc());
@@ -132,7 +132,7 @@ public class JavaSurfaceTransformer {
 
       context = context.withNewTypeTable(namer.getStubPackageName());
       StaticLangFileView<StaticLangStubInterfaceView> stubInterfaceFile =
-          generateStubInterfaceFile(context);
+          generateStubInterfaceFile(context, productConfig);
       surfaceDocs.add(stubInterfaceFile);
 
       context = context.withNewTypeTable(namer.getStubPackageName());
@@ -154,13 +154,14 @@ public class JavaSurfaceTransformer {
     return surfaceDocs;
   }
 
-  private StaticLangFileView<StaticLangApiView> generateApiFile(InterfaceContext context) {
+  private StaticLangFileView<StaticLangApiView> generateApiFile(
+      InterfaceContext context, GapicProductConfig productConfig) {
     StaticLangFileView.Builder<StaticLangApiView> apiFile =
         StaticLangFileView.<StaticLangApiView>newBuilder();
 
     apiFile.templateFileName(API_TEMPLATE_FILENAME);
 
-    apiFile.classView(generateApiClass(context));
+    apiFile.classView(generateApiClass(context, productConfig));
 
     String outputPath =
         pathMapper.getOutputPath(
@@ -174,7 +175,8 @@ public class JavaSurfaceTransformer {
     return apiFile.build();
   }
 
-  private StaticLangApiView generateApiClass(InterfaceContext context) {
+  private StaticLangApiView generateApiClass(
+      InterfaceContext context, GapicProductConfig productConfig) {
     SurfaceNamer namer = context.getNamer();
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
 
@@ -185,7 +187,7 @@ public class JavaSurfaceTransformer {
     StaticLangApiView.Builder xapiClass = StaticLangApiView.newBuilder();
 
     ApiMethodView exampleApiMethod = getExampleApiMethod(methods);
-    xapiClass.doc(serviceTransformer.generateServiceDoc(context, exampleApiMethod));
+    xapiClass.doc(serviceTransformer.generateServiceDoc(context, exampleApiMethod, productConfig));
 
     String name = context.getNamer().getApiWrapperClassName(context.getInterfaceConfig());
     xapiClass.releaseLevelAnnotation(
@@ -440,11 +442,11 @@ public class JavaSurfaceTransformer {
   }
 
   private StaticLangFileView<StaticLangStubInterfaceView> generateStubInterfaceFile(
-      InterfaceContext context) {
+      InterfaceContext context, GapicProductConfig productConfig) {
     StaticLangFileView.Builder<StaticLangStubInterfaceView> fileView =
         StaticLangFileView.<StaticLangStubInterfaceView>newBuilder();
 
-    fileView.classView(generateStubInterface(context));
+    fileView.classView(generateStubInterface(context, productConfig));
     fileView.templateFileName(STUB_INTERFACE_TEMPLATE_FILENAME);
 
     String outputPath =
@@ -459,7 +461,8 @@ public class JavaSurfaceTransformer {
     return fileView.build();
   }
 
-  private StaticLangStubInterfaceView generateStubInterface(InterfaceContext context) {
+  private StaticLangStubInterfaceView generateStubInterface(
+      InterfaceContext context, GapicProductConfig productConfig) {
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
 
     addStubInterfaceImports(context);
@@ -475,7 +478,7 @@ public class JavaSurfaceTransformer {
 
     StaticLangStubInterfaceView.Builder stubInterface = StaticLangStubInterfaceView.newBuilder();
 
-    stubInterface.doc(serviceTransformer.generateServiceDoc(context, null));
+    stubInterface.doc(serviceTransformer.generateServiceDoc(context, null, productConfig));
 
     String name = context.getNamer().getApiStubInterfaceName(context.getInterfaceConfig());
     stubInterface.releaseLevelAnnotation(
@@ -527,7 +530,7 @@ public class JavaSurfaceTransformer {
 
     StaticLangRpcStubView.Builder stubClass = StaticLangRpcStubView.newBuilder();
 
-    stubClass.doc(serviceTransformer.generateServiceDoc(context, null));
+    stubClass.doc(serviceTransformer.generateServiceDoc(context, null, productConfig));
 
     String name =
         namer.getApiRpcStubClassName(interfaceConfig, productConfig.getTransportProtocol());

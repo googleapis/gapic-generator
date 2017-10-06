@@ -173,7 +173,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     StaticLangApiView.Builder apiClass = StaticLangApiView.newBuilder();
     List<StaticLangApiMethodView> methods = generateApiMethods(context);
 
-    apiClass.doc(serviceTransformer.generateServiceDoc(context, null));
+    apiClass.doc(serviceTransformer.generateServiceDoc(context, null, context.getProductConfig()));
 
     apiClass.name(namer.getApiWrapperClassName(context.getInterfaceConfig()));
     apiClass.implName(namer.getApiWrapperClassImplName(context.getInterfaceConfig()));

@@ -125,7 +125,8 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.protoFilename(context.getInterface().getFile().getSimpleName());
 
     xapiClass.name(namer.getApiWrapperClassName(context.getInterfaceConfig()));
-    xapiClass.doc(serviceTransformer.generateServiceDoc(context, methods.get(0)));
+    xapiClass.doc(
+        serviceTransformer.generateServiceDoc(context, methods.get(0), context.getProductConfig()));
     xapiClass.stubs(grpcStubTransformer.generateGrpcStubs(context));
 
     ApiModel model = context.getApiModel();
@@ -281,7 +282,9 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
               .localName(localName)
               .doc(
                   serviceTransformer.generateServiceDoc(
-                      context, generateApiMethods(context, packageHasMultipleServices).get(0)))
+                      context,
+                      generateApiMethods(context, packageHasMultipleServices).get(0),
+                      productConfig))
               .fileName(namer.getClientFileName(context.getInterfaceModel()))
               .build();
       requireViews.add(require);
