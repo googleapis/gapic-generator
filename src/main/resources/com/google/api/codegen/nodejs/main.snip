@@ -169,7 +169,20 @@
         {'x-goog-api-client': clientHeader.join(' ')},
       );
 
-      // Save a dictionary of "inner API calls"; the core implementation
+      // Load the applicable protos.
+      var protos = merge({},
+        @join stub : xapi.stubs on BREAK.add(BREAK)
+          gaxGrpc.loadProto(
+            @if xapi.fileHeader.hasVersion
+              path.join(__dirname, '..', '..', 'protos'), '{@stub.protoFileName}')
+            @else
+              path.join(__dirname, '..', 'protos'), '{@stub.protoFileName}')
+            @end
+          ),
+        @end
+      );
+
+      // Set up a dictionary of "inner API calls"; the core implementation
       // of calling the API is handled in `google-gax`, with this code
       // merely providing the destination and request information.
       this._innerApiCalls = {};
@@ -178,7 +191,7 @@
         // Put together the "service stub" for
         // {@stub.fullyQualifiedType}.
         var {@stub.name} = gaxGrpc.createStub(
-          loadedProtos.{@stub.fullyQualifiedType},
+          protos.{@stub.fullyQualifiedType},
           opts
         );
 
