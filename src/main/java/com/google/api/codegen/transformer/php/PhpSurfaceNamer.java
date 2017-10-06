@@ -33,6 +33,7 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
+import java.io.File;
 import java.util.ArrayList;
 
 /** The SurfaceNamer for PHP. */
@@ -209,5 +210,10 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   @Override
   public boolean methodHasTimeoutSettings(GapicMethodConfig methodConfig) {
     return methodConfig.isGrpcStreaming();
+  }
+
+  @Override
+  public String getSourceFilePath(String path, String className) {
+    return path + File.separator + className + ".php";
   }
 }
