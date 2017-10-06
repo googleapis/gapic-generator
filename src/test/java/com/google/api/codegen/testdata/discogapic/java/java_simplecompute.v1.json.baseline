@@ -4661,7 +4661,7 @@ public final class ListAddressesHttpRequest implements ApiMessage {
   }
 }
 
-============== file: src/main/java/com/google/cloud/simplecompute/v1/AddressAdminClient.java ==============
+============== file: src/main/java/com/google/cloud/simplecompute/v1/AddressClient.java ==============
 /*
  * Copyright 2017, Google Inc. All rights reserved.
  *
@@ -4684,7 +4684,7 @@ import com.google.api.gax.core.BackgroundResource;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.api.pathtemplate.PathTemplate;
 import static com.google.cloud.simplecompute.v1.PagedResponseWrappers.ListAddressesPagedResponse;
-import com.google.cloud.simplecompute.v1.stub.AddressAdminStub;
+import com.google.cloud.simplecompute.v1.stub.AddressStub;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -4702,14 +4702,14 @@ import javax.annotation.Generated;
  *
  * <pre>
  * <code>
- * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
+ * try (AddressClient addressClient = AddressClient.create()) {
  *
- *   Operation response = addressAdminClient.deleteAddress();
+ *   Operation response = addressClient.deleteAddress();
  * }
  * </code>
  * </pre>
  *
- * <p>Note: close() needs to be called on the addressAdminClient object to clean up resources such
+ * <p>Note: close() needs to be called on the addressClient object to clean up resources such
  * as threads. In the example above, try-with-resources is used, which automatically calls
  * close().
  *
@@ -4733,19 +4733,19 @@ import javax.annotation.Generated;
  * a parse method to extract the individual identifiers contained within names that are
  * returned.
  *
- * <p>This class can be customized by passing in a custom instance of AddressAdminSettings to
+ * <p>This class can be customized by passing in a custom instance of AddressSettings to
  * create(). For example:
  *
  * To customize credentials:
  *
  * <pre>
  * <code>
- * AddressAdminSettings addressAdminSettings =
- *     AddressAdminSettings.defaultBuilder()
+ * AddressSettings addressSettings =
+ *     AddressSettings.defaultBuilder()
  *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
  *         .build();
- * AddressAdminClient addressAdminClient =
- *     AddressAdminClient.create(addressAdminSettings);
+ * AddressClient addressClient =
+ *     AddressClient.create(addressSettings);
  * </code>
  * </pre>
  *
@@ -4753,71 +4753,71 @@ import javax.annotation.Generated;
  *
  * <pre>
  * <code>
- * AddressAdminSettings addressAdminSettings =
- *     AddressAdminSettings.defaultBuilder()
- *         .setTransportProvider(AddressAdminSettings.defaultGrpcTransportProviderBuilder()
- *             .setChannelProvider(AddressAdminSettings.defaultGrpcChannelProviderBuilder()
+ * AddressSettings addressSettings =
+ *     AddressSettings.defaultBuilder()
+ *         .setTransportProvider(AddressSettings.defaultGrpcTransportProviderBuilder()
+ *             .setChannelProvider(AddressSettings.defaultGrpcChannelProviderBuilder()
  *                 .setEndpoint(myEndpoint)
  *                 .build())
  *             .build())
  *         .build();
- * AddressAdminClient addressAdminClient =
- *     AddressAdminClient.create(addressAdminSettings);
+ * AddressClient addressClient =
+ *     AddressClient.create(addressSettings);
  * </code>
  * </pre>
  */
 @Generated("by GAPIC v0.0.5")
 @BetaApi
-public class AddressAdminClient implements BackgroundResource {
-  private final AddressAdminSettings settings;
-  private final AddressAdminStub stub;
+public class AddressClient implements BackgroundResource {
+  private final AddressSettings settings;
+  private final AddressStub stub;
 
 
 
   /**
-   * Constructs an instance of AddressAdminClient with default settings.
+   * Constructs an instance of AddressClient with default settings.
    */
-  public static final AddressAdminClient create() throws IOException {
-    return create(AddressAdminSettings.defaultBuilder().build());
+  public static final AddressClient create() throws IOException {
+    return create(AddressSettings.defaultBuilder().build());
   }
 
   /**
-   * Constructs an instance of AddressAdminClient, using the given settings.
+   * Constructs an instance of AddressClient, using the given settings.
    * The channels are created based on the settings passed in, or defaults for any
    * settings that are not set.
    */
-  public static final AddressAdminClient create(AddressAdminSettings settings) throws IOException {
-    return new AddressAdminClient(settings);
+  public static final AddressClient create(AddressSettings settings) throws IOException {
+    return new AddressClient(settings);
   }
 
   /**
-   * Constructs an instance of AddressAdminClient, using the given stub for making calls. This is for
-   * advanced usage - prefer to use AddressAdminSettings}.
+   * Constructs an instance of AddressClient, using the given stub for making calls. This is for
+   * advanced usage - prefer to use AddressSettings}.
    */
-  public static final AddressAdminClient create(AddressAdminStub stub) {
-    return new AddressAdminClient(stub);
+  public static final AddressClient create(AddressStub stub) {
+    return new AddressClient(stub);
   }
 
   /**
-   * Constructs an instance of AddressAdminClient, using the given settings.
+   * Constructs an instance of AddressClient, using the given settings.
    * This is protected so that it is easy to make a subclass, but otherwise, the static
    * factory methods should be preferred.
    */
-  protected AddressAdminClient(AddressAdminSettings settings) throws IOException {
+  protected AddressClient(AddressSettings settings) throws IOException {
     this.settings = settings;
     this.stub = settings.createStub();
   }
 
-  protected AddressAdminClient(AddressAdminStub stub) {
+  protected AddressClient(AddressStub stub) {
     this.settings = null;
     this.stub = stub;
   }
 
-  public final AddressAdminSettings getSettings() {
+  public final AddressSettings getSettings() {
     return settings;
   }
 
-  public AddressAdminStub getStub() {
+  public AddressStub getStub() {
     return stub;
   }
 
@@ -4828,9 +4828,9 @@ public class AddressAdminClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
+   * try (AddressClient addressClient = AddressClient.create()) {
    *
-   *   Operation response = addressAdminClient.deleteAddress();
+   *   Operation response = addressClient.deleteAddress();
    * }
    * </code></pre>
    *
@@ -4853,9 +4853,9 @@ public class AddressAdminClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
+   * try (AddressClient addressClient = AddressClient.create()) {
    *
-   *   Operation response = addressAdminClient.deleteAddress();
+   *   Operation response = addressClient.deleteAddress();
    * }
    * </code></pre>
    *
@@ -4873,9 +4873,9 @@ public class AddressAdminClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
+   * try (AddressClient addressClient = AddressClient.create()) {
    *
-   *   ApiFuture&lt;Operation&gt; future = addressAdminClient.deleteAddressCallable().futureCall();
+   *   ApiFuture&lt;Operation&gt; future = addressClient.deleteAddressCallable().futureCall();
    *   // Do something
    *   Operation response = future.get();
    * }
@@ -4892,9 +4892,9 @@ public class AddressAdminClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
+   * try (AddressClient addressClient = AddressClient.create()) {
    *
-   *   Address response = addressAdminClient.getAddress();
+   *   Address response = addressClient.getAddress();
    * }
    * </code></pre>
    *
@@ -4917,9 +4917,9 @@ public class AddressAdminClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
+   * try (AddressClient addressClient = AddressClient.create()) {
    *
-   *   Address response = addressAdminClient.getAddress();
+   *   Address response = addressClient.getAddress();
    * }
    * </code></pre>
    *
@@ -4937,9 +4937,9 @@ public class AddressAdminClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
+   * try (AddressClient addressClient = AddressClient.create()) {
    *
-   *   ApiFuture&lt;Address&gt; future = addressAdminClient.getAddressCallable().futureCall();
+   *   ApiFuture&lt;Address&gt; future = addressClient.getAddressCallable().futureCall();
    *   // Do something
    *   Address response = future.get();
    * }
@@ -4956,9 +4956,9 @@ public class AddressAdminClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
+   * try (AddressClient addressClient = AddressClient.create()) {
    *
-   *   Operation response = addressAdminClient.insertAddress();
+   *   Operation response = addressClient.insertAddress();
    * }
    * </code></pre>
    *
@@ -4983,9 +4983,9 @@ public class AddressAdminClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
+   * try (AddressClient addressClient = AddressClient.create()) {
    *
-   *   Operation response = addressAdminClient.insertAddress();
+   *   Operation response = addressClient.insertAddress();
    * }
    * </code></pre>
    *
@@ -5003,9 +5003,9 @@ public class AddressAdminClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
+   * try (AddressClient addressClient = AddressClient.create()) {
    *
-   *   ApiFuture&lt;Operation&gt; future = addressAdminClient.insertAddressCallable().futureCall();
+   *   ApiFuture&lt;Operation&gt; future = addressClient.insertAddressCallable().futureCall();
    *   // Do something
    *   Operation response = future.get();
    * }
@@ -5022,9 +5022,9 @@ public class AddressAdminClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
+   * try (AddressClient addressClient = AddressClient.create()) {
    *
-   *   for (Address element : addressAdminClient.listAddresses().iterateAll()) {
+   *   for (Address element : addressClient.listAddresses().iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -5048,9 +5048,9 @@ public class AddressAdminClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
+   * try (AddressClient addressClient = AddressClient.create()) {
    *
-   *   for (Address element : addressAdminClient.listAddresses().iterateAll()) {
+   *   for (Address element : addressClient.listAddresses().iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -5071,9 +5071,9 @@ public class AddressAdminClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
+   * try (AddressClient addressClient = AddressClient.create()) {
    *
-   *   ApiFuture&lt;ListAddressesPagedResponse&gt; future = addressAdminClient.listAddressesPagedCallable().futureCall();
+   *   ApiFuture&lt;ListAddressesPagedResponse&gt; future = addressClient.listAddressesPagedCallable().futureCall();
    *   // Do something
    *   for (Address element : future.get().iterateAll()) {
    *     // doThingsWith(element);
@@ -5092,10 +5092,10 @@ public class AddressAdminClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
+   * try (AddressClient addressClient = AddressClient.create()) {
    *
    *   while (true) {
-   *     AddressList response = addressAdminClient.listAddressesCallable().call();
+   *     AddressList response = addressClient.listAddressesCallable().call();
    *     for (Address element : response.getItems()) {
    *       // doThingsWith(element);
    *     }
@@ -5145,7 +5145,7 @@ public class AddressAdminClient implements BackgroundResource {
   }
 
 }
-============== file: src/main/java/com/google/cloud/simplecompute/v1/AddressAdminSettings.java ==============
+============== file: src/main/java/com/google/cloud/simplecompute/v1/AddressSettings.java ==============
 /*
  * Copyright 2017, Google Inc. All rights reserved.
  *
@@ -5190,8 +5190,8 @@ import com.google.api.gax.rpc.UnaryCallSettings;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.auth.Credentials;
 import static com.google.cloud.simplecompute.v1.PagedResponseWrappers.ListAddressesPagedResponse;
-import com.google.cloud.simplecompute.v1.stub.AddressAdminStub;
-import com.google.cloud.simplecompute.v1.stub.HttpJsonAddressAdminStub;
+import com.google.cloud.simplecompute.v1.stub.AddressStub;
+import com.google.cloud.simplecompute.v1.stub.HttpJsonAddressStub;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -5206,7 +5206,7 @@ import org.threeten.bp.Duration;
 
 // AUTO-GENERATED DOCUMENTATION AND CLASS
 /**
- * Settings class to configure an instance of {@link AddressAdminClient}.
+ * Settings class to configure an instance of {@link AddressClient}.
  *
  * <p>The default instance has everything set to sensible defaults:
  *
@@ -5223,17 +5223,17 @@ import org.threeten.bp.Duration;
  *
  * <pre>
  * <code>
- * AddressAdminSettings.Builder addressAdminSettingsBuilder =
- *     AddressAdminSettings.defaultBuilder();
- * addressAdminSettingsBuilder.deleteAddressSettings().getRetrySettingsBuilder()
+ * AddressSettings.Builder addressSettingsBuilder =
+ *     AddressSettings.defaultBuilder();
+ * addressSettingsBuilder.deleteAddressSettings().getRetrySettingsBuilder()
  *     .setTotalTimeout(Duration.ofSeconds(30));
- * AddressAdminSettings addressAdminSettings = addressAdminSettingsBuilder.build();
+ * AddressSettings addressSettings = addressSettingsBuilder.build();
  * </code>
  * </pre>
  */
 @Generated("by GAPIC v0.0.5")
 @BetaApi
-public class AddressAdminSettings extends ClientSettings {
+public class AddressSettings extends ClientSettings {
   /**
    * The default scopes of the service.
    */
@@ -5288,9 +5288,9 @@ public class AddressAdminSettings extends ClientSettings {
   }
 
 
-  public AddressAdminStub createStub() throws IOException {
+  public AddressStub createStub() throws IOException {
     if (getTransportProvider().getTransportName().equals(HttpJsonTransport.getHttpJsonTransportName())) {
-      return HttpJsonAddressAdminStub.create(this);
+      return HttpJsonAddressStub.create(this);
     } else {
       throw new UnsupportedOperationException(
           "Transport not supported: " + getTransportProvider().getTransportName());
@@ -5356,7 +5356,7 @@ public class AddressAdminSettings extends ClientSettings {
   private static String getGapicVersion() {
     if (gapicVersion == null) {
       gapicVersion = PropertiesProvider.loadProperty(
-          AddressAdminSettings.class, PROPERTIES_FILE, META_VERSION_KEY);
+          AddressSettings.class, PROPERTIES_FILE, META_VERSION_KEY);
       gapicVersion = gapicVersion == null ? DEFAULT_GAPIC_VERSION : gapicVersion;
     }
     return gapicVersion;
@@ -5398,7 +5398,7 @@ public class AddressAdminSettings extends ClientSettings {
     return new Builder(this);
   }
 
-  private AddressAdminSettings(Builder settingsBuilder) throws IOException {
+  private AddressSettings(Builder settingsBuilder) throws IOException {
     super(
         settingsBuilder.getExecutorProvider(),
         settingsBuilder.getTransportProvider(),
@@ -5461,7 +5461,7 @@ public class AddressAdminSettings extends ClientSettings {
 
 
   /**
-   * Builder for AddressAdminSettings.
+   * Builder for AddressSettings.
    */
   public static class Builder extends ClientSettings.Builder {
     private final ImmutableList<UnaryCallSettings.Builder> unaryMethodSettingsBuilders;
@@ -5556,7 +5556,7 @@ public class AddressAdminSettings extends ClientSettings {
       return builder;
     }
 
-    private Builder(AddressAdminSettings settings) {
+    private Builder(AddressSettings settings) {
       super(settings);
 
       deleteAddressSettings = settings.deleteAddressSettings.toBuilder();
@@ -5629,12 +5629,12 @@ public class AddressAdminSettings extends ClientSettings {
     }
 
     @Override
-    public AddressAdminSettings build() throws IOException {
-      return new AddressAdminSettings(this);
+    public AddressSettings build() throws IOException {
+      return new AddressSettings(this);
     }
   }
 }
-============== file: src/main/java/com/google/cloud/simplecompute/v1/stub/AddressAdminStub.java ==============
+============== file: src/main/java/com/google/cloud/simplecompute/v1/stub/AddressStub.java ==============
 /*
  * Copyright 2017, Google Inc. All rights reserved.
  *
@@ -5675,7 +5675,7 @@ import javax.annotation.Generated;
  */
 @Generated("by GAPIC v0.0.5")
 @BetaApi
-public abstract class AddressAdminStub implements BackgroundResource {
+public abstract class AddressStub implements BackgroundResource {
 
 
   @BetaApi
@@ -5704,7 +5704,7 @@ public abstract class AddressAdminStub implements BackgroundResource {
   }
 
 }
-============== file: src/main/java/com/google/cloud/simplecompute/v1/stub/HttpJsonAddressAdminStub.java ==============
+============== file: src/main/java/com/google/cloud/simplecompute/v1/stub/HttpJsonAddressStub.java ==============
 /*
  * Copyright 2017, Google Inc. All rights reserved.
  *
@@ -5732,9 +5732,9 @@ import com.google.api.gax.httpjson.HttpJsonCallableFactory;
 import com.google.api.gax.rpc.ClientContext;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.cloud.simplecompute.v1.Address;
-import com.google.cloud.simplecompute.v1.AddressAdminSettings;
 import com.google.cloud.simplecompute.v1.AddressList;
 import com.google.cloud.simplecompute.v1.AddressName;
+import com.google.cloud.simplecompute.v1.AddressSettings;
 import com.google.cloud.simplecompute.v1.DeleteAddressHttpRequest;
 import com.google.cloud.simplecompute.v1.GetAddressHttpRequest;
 import com.google.cloud.simplecompute.v1.InsertAddressHttpRequest;
@@ -5759,7 +5759,7 @@ import javax.annotation.Generated;
  */
 @Generated("by GAPIC v0.0.5")
 @BetaApi
-public class HttpJsonAddressAdminStub extends AddressAdminStub {
+public class HttpJsonAddressStub extends AddressStub {
   private static final String BASE_URL = "https://www.googleapis.com/compute/v1/projects/";
 
   private static final UnaryCallable<DeleteAddressHttpRequest, Operation> directDeleteAddressCallable =
@@ -5832,20 +5832,20 @@ public class HttpJsonAddressAdminStub extends AddressAdminStub {
   private final UnaryCallable<ListAddressesHttpRequest, AddressList> listAddressesCallable;
   private final UnaryCallable<ListAddressesHttpRequest, ListAddressesPagedResponse> listAddressesPagedCallable;
 
-  public static final HttpJsonAddressAdminStub create(AddressAdminSettings settings) throws IOException {
-    return new HttpJsonAddressAdminStub(settings, ClientContext.create(settings));
+  public static final HttpJsonAddressStub create(AddressSettings settings) throws IOException {
+    return new HttpJsonAddressStub(settings, ClientContext.create(settings));
   }
 
-  public static final HttpJsonAddressAdminStub create(ClientContext clientContext) throws IOException {
-    return new HttpJsonAddressAdminStub(AddressAdminSettings.defaultBuilder().build(), clientContext);
+  public static final HttpJsonAddressStub create(ClientContext clientContext) throws IOException {
+    return new HttpJsonAddressStub(AddressSettings.defaultBuilder().build(), clientContext);
   }
 
   /**
-   * Constructs an instance of HttpJsonAddressAdminStub, using the given settings.
+   * Constructs an instance of HttpJsonAddressStub, using the given settings.
    * This is protected so that it is easy to make a subclass, but otherwise, the static
    * factory methods should be preferred.
    */
-  protected HttpJsonAddressAdminStub(AddressAdminSettings settings, ClientContext clientContext) throws IOException {
+  protected HttpJsonAddressStub(AddressSettings settings, ClientContext clientContext) throws IOException {
 
     this.deleteAddressCallable = HttpJsonCallableFactory.create(directDeleteAddressCallable,settings.deleteAddressSettings(), clientContext);
     this.getAddressCallable = HttpJsonCallableFactory.create(directGetAddressCallable,settings.getAddressSettings(), clientContext);
@@ -6070,18 +6070,18 @@ public class PagedResponseWrappers {
  *
  * The interfaces provided are listed below, along with usage samples.
  *
- * ==================
- * AddressAdminClient
- * ==================
+ * =============
+ * AddressClient
+ * =============
  *
  * Service Description: Creates and runs virtual machines on Google Cloud Platform.
  *
- * Sample for AddressAdminClient:
+ * Sample for AddressClient:
  * <pre>
  * <code>
- * try (AddressAdminClient addressAdminClient = AddressAdminClient.create()) {
+ * try (AddressClient addressClient = AddressClient.create()) {
  *
- *   Operation response = addressAdminClient.deleteAddress();
+ *   Operation response = addressClient.deleteAddress();
  * }
  * </code>
  * </pre>

@@ -164,7 +164,7 @@ public class DiscoGapicNamer {
   public static Name getInterfaceName(String defaultInterfaceName) {
     String[] pieces = defaultInterfaceName.split(REGEX_DELIMITER);
     String resource = pieces[pieces.length - 1];
-    return Name.anyCamel(Inflector.singularize(resource), "admin");
+    return Name.anyCamel(Inflector.singularize(resource));
   }
 
   /** Get the response type name from a method if the method has a non-null response type. */
