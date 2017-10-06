@@ -56,7 +56,9 @@
           ApiMethodDescriptor.<{@callable.requestTypeName}, {@callable.responseTypeName}>newBuilder()
               .setMethodName("{@callable.httpMethod.fullMethodName}")
               .setRequestInstance({@callable.requestTypeName}.getDefaultInstance())
-              .setResponseInstance({@callable.responseTypeName}.getDefaultInstance())
+              @if callable.hasResponse
+                .setResponseInstance({@callable.responseTypeName}.getDefaultInstance())
+              @end
               .setEndpointPathTemplate("{@callable.httpMethod.pathTemplate}")
               .setPathParams({@paramsInMethodDescriptor(callable.httpMethod.pathParams)})
               .setQueryParams({@paramsInMethodDescriptor(callable.httpMethod.queryParams)})
