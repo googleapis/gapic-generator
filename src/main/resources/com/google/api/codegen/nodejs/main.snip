@@ -171,12 +171,14 @@
 
       // Load the applicable protos.
       var protos = merge({},
-        @join stub : xapi.stubs on BREAK.add(BREAK)
+        @join stub : xapi.stubs on @{","}.add(BREAK)
           gaxGrpc.loadProto(
             @if xapi.fileHeader.hasVersion
-              path.join(__dirname, '..', '..', 'protos'), '{@stub.protoFileName}')
+              path.join(__dirname, '..', '..', 'protos'),
+              '{@stub.protoFileName}')
             @else
-              path.join(__dirname, '..', 'protos'), '{@stub.protoFileName}')
+              path.join(__dirname, '..', 'protos'),
+              '{@stub.protoFileName}'
             @end
           ),
         @end
@@ -198,7 +200,7 @@
         // Iterate over each of the methods that the service provides
         // and create an API call method for each.
         var {@stub.stubMethodsArrayName} = [
-          @join method : {@stub.methodNames} on BREAK.add(BREAK)
+          @join method : {@stub.methodNames} on BREAK
               '{@method}',
           @end
         ];
