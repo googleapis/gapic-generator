@@ -182,13 +182,14 @@ public class DiscoGapicNamer {
 
   /**
    * Get the canonical path for a method, in the form "(%s/\{%s\})+" e.g. for a method path
-   * "{project}/region/{region}/addresses", this returns "projects/{project}/regions/{region}".
+   * "{project}/regions/{region}/addresses", this returns "projects/{project}/regions/{region}".
    */
   public static String getCanonicalPath(Method method) {
     String namePattern = method.flatPath();
-    // Escape the first character of the pattern if necessary.
+    // Ensure the first path segment is a string literal representing a resource type.
     if (namePattern.charAt(0) == '{') {
-      String firstResource = namePattern.substring(1, namePattern.indexOf("}"));
+      String firstResource =
+          Inflector.pluralize(namePattern.substring(1, namePattern.indexOf("}")));
       namePattern = String.format("%s/%s", firstResource, namePattern);
     }
     // Remove any trailing non-bracketed substring
