@@ -347,7 +347,7 @@
 
 @private flattenedMethod(method)
   {@methodComments(method)}
-  {@method.apiClassName}.prototype.{@method.name} = function({@methodRequestParameters(method)}options{@callbackParams(method)}) {
+  {@method.name}({@methodRequestParameters(method)}options{@callbackParams(method)}) {
     @switch method.grpcStreamingType.toString
     @case "ClientStreaming"
       {@handleCallback()}
@@ -355,11 +355,9 @@
       {@handleCallback()}
     @default
     @end
-    if (options === undefined) {
-      options = {};
-    }
+    options = options || {};
     {@maybeHandleRequest(method)}
-    return this._{@method.name}({@requestObject(method)}options{@callbackParams(method)});
+    return this._innerApiCalls.{@method.name}({@requestObject(method)}options{@callbackParams(method)});
   };
   @switch method.type.toString
   @case "PagedOptionalArrayMethod"
@@ -427,12 +425,14 @@
    *
    {@comments(util.getDocLines(decorateSampleCode(method, sampleCodePageStreaming(method))))}
    */
-  {@method.apiClassName}.prototype.{@method.name}Stream = function({@methodRequestParameters(method)}options) {
-    if (options === undefined) {
-      options = {};
-    }
+  {@method.name}Stream({@methodRequestParameters(method)}options) {
+    options = options || {};
     {@maybeHandleRequest(method)}
-    return PAGE_DESCRIPTORS.{@method.name}.createStream(this._{@method.name}, {@requestObject(method)}options);
+    return this._pageDescriptors.{@method.name}.createStream(
+      this._innerApiCalls.{@method.name},
+      {@requestObject(method)}
+      options
+    );
   };
 @end
 
