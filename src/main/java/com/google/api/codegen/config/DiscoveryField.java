@@ -22,6 +22,7 @@ import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.discovery.Schema.Format;
 import com.google.api.codegen.discovery.Schema.Type;
+import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
@@ -33,6 +34,7 @@ import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import java.util.LinkedList;
 import java.util.List;
 import javax.annotation.Nullable;
 
@@ -63,7 +65,8 @@ public class DiscoveryField implements FieldModel {
   public String getSimpleName() {
     String name =
         Strings.isNullOrEmpty(schema.reference()) ? schema.getIdentifier() : schema.reference();
-    return Name.anyCamel(name).toLowerCamel();
+    String[] pieces = name.split("_");
+    return Name.anyCamel(pieces).toLowerCamel();
   }
 
   @Override
@@ -74,6 +77,16 @@ public class DiscoveryField implements FieldModel {
         .getTypeNameInImplicitPackage(
             surfaceNamer.publicClassName(Name.anyCamel(schema.getIdentifier())))
         .getFullName();
+  }
+
+  @Override
+  public String getNameAsParameter() {
+    return getNameAsParameterName().toLowerCamel();
+  }
+
+  @Override
+  public Name getNameAsParameterName() {
+    return DiscoGapicNamer.getSchemaNameAsParameter(schema);
   }
 
   @Override
@@ -120,6 +133,12 @@ public class DiscoveryField implements FieldModel {
       return schema.dereference().type() == Type.ARRAY;
     }
     return false;
+  }
+
+  @Override
+  public boolean mayBeInResourceName() {
+    // A ResourceName will only contain path parameters.
+    return schema.isPathParam();
   }
 
   @Override
@@ -197,11 +216,6 @@ public class DiscoveryField implements FieldModel {
   }
 
   @Override
-  public List<String> getOneofFieldsNames(SurfaceNamer surfaceNamer) {
-    return ImmutableList.of();
-  }
-
-  @Override
   public boolean isString() {
     return schema.type().equals(Type.STRING);
   }
@@ -225,5 +239,15 @@ public class DiscoveryField implements FieldModel {
   @Override
   public Oneof getOneof() {
     return null;
+  }
+
+  @Override
+  public List<String> getPagedResponseResourceMethods(
+      FeatureConfig featureConfig, FieldConfig startingFieldConfig, SurfaceNamer namer) {
+    List<String> methodNames = new LinkedList<>();
+    for (FieldModel field : startingFieldConfig.getFieldPath()) {
+      methodNames.add(0, namer.getFieldGetFunctionName(field));
+    }
+    return ImmutableList.copyOf(methodNames);
   }
 }

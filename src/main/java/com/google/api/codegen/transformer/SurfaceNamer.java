@@ -31,7 +31,6 @@ import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.discovery.Document;
-import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.util.CommentReformatter;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
@@ -250,7 +249,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /////////////////////////////////// Protos methods /////////////////////////////////////////////
 
-  /** The function name to set the given proto field. */
+  /** The function name to set the given field. */
   public String getFieldSetFunctionName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
     FieldModel field = fieldConfig.getField();
     if (featureConfig.useResourceNameFormatOption(fieldConfig)) {
@@ -260,14 +259,14 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
-  /** The function name to set the given proto field. */
+  /** The function name to set the given field. */
   public String getFieldSetFunctionName(FieldModel field) {
     if (field.isMap()) {
       return publicMethodName(Name.from("put", "all").join(field.asName()));
     } else if (field.isRepeated()) {
       return publicMethodName(Name.from("add", "all").join(field.asName()));
     } else {
-      return publicMethodName(Name.from("set").join(field.asName()));
+      return publicMethodName(Name.from("set").join(field.getNameAsParameterName()));
     }
   }
 
@@ -299,15 +298,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getFieldAddFunctionName");
   }
 
-  /** The function name to add an element to a map or repeated field. */
-  public String getFieldAddFunctionName(Schema schema) {
-    return getNotImplementedString("SurfaceNamer.getFieldAddFunctionName");
-  }
-
   /** The function name to set a field that is a resource name class. */
   public String getResourceNameFieldSetFunctionName(FieldConfig fieldConfig) {
     FieldModel type = fieldConfig.getField();
-    Name identifier = Name.from(fieldConfig.getField().getSimpleName());
+    Name identifier = fieldConfig.getField().asName();
     Name resourceName = getResourceTypeNameObject(fieldConfig.getResourceNameConfig());
     if (type.isMap()) {
       return getNotImplementedString("SurfaceNamer.getResourceNameFieldSetFunctionName:map-type");
@@ -329,7 +323,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
-  /** The function name to get the given proto field. */
+  /** The function name to get the given field. */
   public String getFieldGetFunctionName(FeatureConfig featureConfig, FieldConfig fieldConfig) {
     FieldModel field = fieldConfig.getField();
     if (featureConfig.useResourceNameFormatOption(fieldConfig)) {
@@ -373,7 +367,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The function name to get a field that is a resource name class. */
   public String getResourceNameFieldGetFunctionName(FieldConfig fieldConfig) {
     FieldModel type = fieldConfig.getField();
-    Name identifier = Name.from(fieldConfig.getField().getSimpleName());
+    Name identifier = fieldConfig.getField().asName();
     Name resourceName = getResourceTypeNameObject(fieldConfig.getResourceNameConfig());
     if (type.isMap()) {
       return getNotImplementedString("SurfaceNamer.getResourceNameFieldGetFunctionName:map-type");
@@ -612,7 +606,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * parameter).
    */
   public String getVariableName(FieldModel field) {
-    return localVarName(field.asName());
+    return localVarName(field.getNameAsParameterName());
   }
 
   /**
@@ -705,12 +699,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return interfaceConfig.getName();
   }
 
-  /** The name of the class that implements a particular proto interface. */
+  /** The name of the class that operates on a particular Discovery Document resource type. */
   public String getApiWrapperClassName(InterfaceConfig interfaceConfig) {
     return publicClassName(Name.anyCamel(getInterfaceName(interfaceConfig), "Client"));
   }
 
-  /** The name of the class that implements a particular proto interface. */
+  /** The name of the class that operates on a particular Discovery Document resource type. */
   public String getApiWrapperClassName(Document document) {
     return publicClassName(Name.anyCamel(document.name(), "Client"));
   }
@@ -750,8 +744,8 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getApiRpcStubClassName(
       InterfaceConfig interfaceConfig, TransportProtocol transportProtocol) {
     return publicClassName(
-        Name.anyCamel(
-            transportProtocol.toString().toLowerCase(), interfaceConfig.getRawName(), "Stub"));
+        getTransportProtocolName(transportProtocol)
+            .join(Name.anyCamel(interfaceConfig.getRawName(), "Stub")));
   }
 
   /** The name of the class that contains paged list response wrappers. */
@@ -804,14 +798,14 @@ public class SurfaceNamer extends NameFormatterDelegator {
       case ANY:
         return getAnyResourceTypeName();
       case FIXED:
-        return Name.from(entityName).join("name_fixed");
+        return Name.anyLower(entityName).join("name_fixed");
       case ONEOF:
         // Remove suffix "_oneof". This allows the collection oneof config to "share" an entity name
         // with a collection config.
         entityName = removeSuffix(entityName, "_oneof");
-        return Name.from(entityName).join("name_oneof");
+        return Name.anyLower(entityName).join("name_oneof");
       case SINGLE:
-        return Name.from(entityName).join("name");
+        return Name.anyLower(entityName).join("name");
       case NONE:
       default:
         throw new UnsupportedOperationException("unexpected entity name type");

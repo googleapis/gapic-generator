@@ -174,13 +174,10 @@ public abstract class GapicProductConfig implements ProductConfig {
     }
   }
 
-  @Nullable
   public static GapicProductConfig create(
       Document document, ConfigProto configProto, DiscoGapicNamer discoGapicNamer) {
     String defaultPackage =
         configProto.getLanguageSettingsMap().get(configProto.getLanguage()).getPackageName();
-
-    TransportProtocol transportProtocol = TransportProtocol.HTTP;
 
     DiagCollector diagCollector = new BoundedDiagCollector();
 
@@ -188,10 +185,10 @@ public abstract class GapicProductConfig implements ProductConfig {
         ResourceNameMessageConfigs.createMessageResourceTypesConfig(
             document, diagCollector, configProto, defaultPackage, discoGapicNamer);
 
-    // TODO (andrealin): load resourceNameConfigs
-
     ImmutableMap<String, ResourceNameConfig> resourceNameConfigs =
         createResourceNameConfigs(diagCollector, configProto, null);
+
+    TransportProtocol transportProtocol = TransportProtocol.HTTP;
 
     LanguageSettingsProto settings =
         configProto.getLanguageSettingsMap().get(configProto.getLanguage());
@@ -202,7 +199,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
         createDiscoGapicInterfaceConfigMap(
             document,
-            new BoundedDiagCollector(),
+            diagCollector,
             configProto,
             settings,
             messageConfigs,

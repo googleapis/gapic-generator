@@ -31,7 +31,9 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSetMultimap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.SetMultimap;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -52,14 +54,31 @@ public class DiscoConfigTransformer {
       new MethodTransformer(new DiscoveryMethodTransformer());
 
   public ViewModel generateConfig(Document model, String outputPath) {
+    ImmutableSetMultimap.Builder<String, String> resourceToNamePatternMapBuilder =
+        ImmutableSetMultimap.builder();
+    ImmutableMap.Builder<Method, String> methodToNamePatternMapBuilder = ImmutableMap.builder();
+
+    for (Method method : model.methods()) {
+      String namePattern = DiscoGapicNamer.getCanonicalPath(method);
+      String simpleResourceName =
+          DiscoGapicNamer.getResourceIdentifier(method.flatPath()).toLowerCamel();
+      resourceToNamePatternMapBuilder.put(simpleResourceName, namePattern);
+      methodToNamePatternMapBuilder.put(method, namePattern);
+    }
+
+    // Map of base resource identifiers to all canonical name patterns that use that identifier.
+    ImmutableSetMultimap<String, String> resourceToNamePatternMap =
+        resourceToNamePatternMapBuilder.build();
+    ImmutableMap<Method, String> methodToNamePatternMap = methodToNamePatternMapBuilder.build();
+
     return ConfigView.newBuilder()
         .templateFileName(CONFIG_TEMPLATE_FILE)
         .outputPath(outputPath)
         .type(CONFIG_PROTO_TYPE)
         .languageSettings(generateLanguageSettings(model))
         .license(generateLicense())
-        .interfaces(generateInterfaces(model))
-        .resourceNameGeneration(generateResourceNameGenerations(model))
+        .interfaces(generateInterfaces(model, resourceToNamePatternMap, methodToNamePatternMap))
+        .resourceNameGeneration(generateResourceNameGenerations(model, resourceToNamePatternMap))
         .build();
   }
 
@@ -82,14 +101,21 @@ public class DiscoConfigTransformer {
         .build();
   }
 
-  private List<InterfaceView> generateInterfaces(Document model) {
+  private List<InterfaceView> generateInterfaces(
+      Document model,
+      ImmutableSetMultimap<String, String> resourceToNamePatternMap,
+      ImmutableMap<Method, String> methodToNamePatternMap) {
     ImmutableList.Builder<InterfaceView> interfaces = ImmutableList.builder();
-    for (Map.Entry<String, List<Method>> resource : model.resources().entrySet()) {
-      Map<String, String> collectionNameMap = getResourceToEntityNameMap(resource.getValue());
+    for (String resource : model.resources().keySet()) {
+      List<Method> interfaceMethods = model.resources().get(resource);
+
+      Map<String, String> collectionNameMap =
+          getResourceToEntityNameMap(
+              resource, interfaceMethods, resourceToNamePatternMap, methodToNamePatternMap);
       InterfaceView.Builder interfaceView = InterfaceView.newBuilder();
 
       String ownerName = model.ownerDomain().split("\\.")[0];
-      String resourceName = Name.from(resource.getKey()).toUpperCamel();
+      String resourceName = Name.anyCamel(resource).toUpperCamel();
       interfaceView.name(
           String.format("%s.%s.%s.%s", ownerName, model.name(), model.version(), resourceName));
 
@@ -100,42 +126,69 @@ public class DiscoConfigTransformer {
       interfaceView.collections(collectionTransformer.generateCollections(collectionNameMap));
       interfaceView.methods(
           methodTransformer.generateMethods(
-              new DiscoInterfaceModel(resource.getKey(), model), collectionNameMap));
+              new DiscoInterfaceModel(resource, model), collectionNameMap));
       interfaces.add(interfaceView.build());
     }
     return interfaces.build();
   }
 
   /**
-   * Examines all of the resource paths used by the methods, and returns a map from each unique
-   * resource paths to a short name used by the collection configuration.
+   * Get the resource name for a method. Qualifies the resource name if it clashes with another
+   * resource with the same name but different canonical path.
    */
-  private Map<String, String> getResourceToEntityNameMap(List<Method> methods) {
+  private String getResourceIdentifier(
+      Method method, String parentName, SetMultimap<String, String> resourceToNamePatternMap) {
+    String resourceName = DiscoGapicNamer.getResourceIdentifier(method.flatPath()).toLowerCamel();
+    if (resourceToNamePatternMap.get(resourceName).size() == 1) {
+      return resourceName;
+    } else {
+      // Qualify resource name to avoid naming clashes with other methods with same name pattern.
+      return DiscoGapicNamer.getQualifiedResourceIdentifier(method, parentName).toLowerCamel();
+    }
+  }
+
+  /**
+   * Examines all of the resource paths used by the methods, and returns a map from each unique
+   * canonical resource path to a resource identifier (a short name used by the collection
+   * configuration). Each resource path is merely a string describing the fields in the entity, and
+   * the resource path might not be the same as the RPC endpoint URI. The resource identifier is
+   * globally unique within each API. Many methods may use the same resource collection. The
+   * resource identifier will be qualified (with the name of a parent resource) iff there are two or
+   * more resource identifiers with different canonical resource paths.
+   */
+  private Map<String, String> getResourceToEntityNameMap(
+      String parentResource,
+      List<Method> interfaceMethods,
+      SetMultimap<String, String> resourceToNamePatternMap,
+      Map<Method, String> methodToNamePatternMap) {
     Map<String, String> resourceNameMap = new TreeMap<>();
-    for (Method method : methods) {
-      String namePattern = method.flatPath();
-      // Escape the first character of the pattern if necessary.
-      namePattern = namePattern.charAt(0) == '{' ? "\\".concat(namePattern) : namePattern;
+
+    for (Method method : interfaceMethods) {
       resourceNameMap.put(
-          namePattern, DiscoGapicNamer.getResourceIdentifier(method).toLowerCamel());
+          methodToNamePatternMap.get(method),
+          getResourceIdentifier(method, parentResource, resourceToNamePatternMap));
     }
     return ImmutableMap.copyOf(resourceNameMap);
   }
 
-  private List<ResourceNameGenerationView> generateResourceNameGenerations(Document model) {
+  private List<ResourceNameGenerationView> generateResourceNameGenerations(
+      Document model, SetMultimap<String, String> resourceToNamePatternMap) {
     ImmutableList.Builder<ResourceNameGenerationView> resourceNames = ImmutableList.builder();
-    for (Method method : model.methods()) {
-      if (!Strings.isNullOrEmpty(method.path())) {
-        ResourceNameGenerationView.Builder view = ResourceNameGenerationView.newBuilder();
-        view.messageName(DiscoGapicNamer.getRequestName(method).toUpperCamel());
+    for (Map.Entry<String, List<Method>> resource : model.resources().entrySet()) {
+      for (Method method : resource.getValue()) {
+        if (!Strings.isNullOrEmpty(method.path())) {
+          ResourceNameGenerationView.Builder view = ResourceNameGenerationView.newBuilder();
+          view.messageName(DiscoGapicNamer.getRequestName(method).toUpperCamel());
+          String parameterName =
+              DiscoGapicNamer.getResourceIdentifier(method.flatPath()).toLowerCamel();
+          String resourceName =
+              getResourceIdentifier(method, resource.getKey(), resourceToNamePatternMap);
+          Map<String, String> fieldEntityMap = new HashMap<>();
+          fieldEntityMap.put(parameterName, resourceName);
+          view.fieldEntities(fieldEntityMap);
 
-        String resourceName = DiscoGapicNamer.getResourceIdentifier(method).toLowerCamel();
-
-        Map<String, String> fieldEntityMap = new HashMap<>();
-        fieldEntityMap.put(resourceName, resourceName);
-        view.fieldEntities(fieldEntityMap);
-
-        resourceNames.add(view.build());
+          resourceNames.add(view.build());
+        }
       }
     }
     return resourceNames.build();

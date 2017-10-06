@@ -3,8 +3,6 @@ type: com.google.api.codegen.ConfigProto
 language_settings:
   java:
     package_name: com.google.cloud.simplecompute.v1
-    interface_names:
-      google.simplecompute.v1.Addresses: AddressAdmin
   python:
     package_name: google.cloud.gapic.simplecompute.v1
   go:
@@ -39,9 +37,9 @@ interfaces:
   # The entity_name is the name to be used as a basis for generated methods and
   # classes.
   collections:
-  - name_pattern: \{project}/regions/{region}/addresses
+  - name_pattern: projects/{project}/regions/{region}
     entity_name: region
-  - name_pattern: \{project}/regions/{region}/addresses/{address}
+  - name_pattern: projects/{project}/regions/{region}/addresses/{address}
     entity_name: address
   # Definition for retryable codes.
   retry_codes_def:
@@ -124,8 +122,7 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     field_name_patterns:
-      \{project}/regions/{region}/addresses: region
-      \{project}/regions/{region}/addresses/{address}: address
+      address: address
     timeout_millis: 60000
   - name: compute.addresses.get
     flattening:
@@ -139,25 +136,23 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     field_name_patterns:
-      \{project}/regions/{region}/addresses: region
-      \{project}/regions/{region}/addresses/{address}: address
+      address: address
     timeout_millis: 60000
   - name: compute.addresses.insert
     flattening:
       groups:
       - parameters:
         - region
-        - address
+        - addressResource
     required_fields:
     - region
-    - address
+    - addressResource
     request_object_method: true
     resource_name_treatment: STATIC_TYPES
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:
-      \{project}/regions/{region}/addresses: region
-      \{project}/regions/{region}/addresses/{address}: address
+      region: region
     timeout_millis: 60000
   - name: compute.addresses.list
     flattening:
@@ -178,8 +173,7 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     field_name_patterns:
-      \{project}/regions/{region}/addresses: region
-      \{project}/regions/{region}/addresses/{address}: address
+      region: region
     timeout_millis: 60000
 resource_name_generation:
 - message_name: DeleteAddressHttpRequest

@@ -19,6 +19,7 @@ import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYP
 import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_STRING;
 
 import com.google.api.codegen.discovery.Schema;
+import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -32,6 +33,7 @@ import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import java.util.List;
 import javax.annotation.Nullable;
 
 /** Created by andrealin on 7/31/17. */
@@ -58,6 +60,16 @@ public class ProtoField implements FieldModel {
   @Override
   public String getFullName() {
     return protoField.getFullName();
+  }
+
+  @Override
+  public Name getNameAsParameterName() {
+    return Name.from(getSimpleName());
+  }
+
+  @Override
+  public String getNameAsParameter() {
+    return getNameAsParameterName().toLowerUnderscore();
   }
 
   @Override
@@ -99,6 +111,11 @@ public class ProtoField implements FieldModel {
   @Override
   public boolean isRepeated() {
     return protoField.isRepeated();
+  }
+
+  @Override
+  public boolean mayBeInResourceName() {
+    return true;
   }
 
   @Override
@@ -189,18 +206,6 @@ public class ProtoField implements FieldModel {
   }
 
   @Override
-  public Iterable<String> getOneofFieldsNames(SurfaceNamer surfaceNamer) {
-    if (protoField.getOneof() != null) {
-      ImmutableList.Builder<String> fieldNames = ImmutableList.builder();
-      for (Field field : protoField.getOneof().getFields()) {
-        fieldNames.add(surfaceNamer.getVariableName(new ProtoField(field)));
-      }
-      return fieldNames.build();
-    }
-    return null;
-  }
-
-  @Override
   public boolean isString() {
     return protoField.getType().equals(TYPE_STRING);
   }
@@ -219,5 +224,13 @@ public class ProtoField implements FieldModel {
   @Override
   public Oneof getOneof() {
     return protoField.getOneof();
+  }
+
+  @Override
+  public List<String> getPagedResponseResourceMethods(
+      FeatureConfig featureConfig, FieldConfig startingFieldConfig, SurfaceNamer namer) {
+    String resourceFieldGetFunctionName =
+        namer.getFieldGetFunctionName(featureConfig, startingFieldConfig);
+    return ImmutableList.of(resourceFieldGetFunctionName);
   }
 }

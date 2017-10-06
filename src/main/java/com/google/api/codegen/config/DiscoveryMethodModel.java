@@ -28,6 +28,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.ImmutableSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -75,7 +76,9 @@ public final class DiscoveryMethodModel implements MethodModel {
     }
     if (method.request() != null
         && !Strings.isNullOrEmpty(method.request().reference())
-        && method.request().reference().toLowerCase().equals(fieldName.toLowerCase())) {
+        && DiscoGapicNamer.getSchemaNameAsParameter(method.request().dereference())
+            .toLowerCamel()
+            .equals(fieldName)) {
       return new DiscoveryField(method.request().dereference(), discoGapicNamer);
     }
     return null;
@@ -187,12 +190,16 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public String getAndSaveResponseTypeName(ImportTypeTable typeTable, SurfaceNamer surfaceNamer) {
-    TypeName fullName =
-        typeTable
-            .getTypeTable()
-            .getTypeNameInImplicitPackage(
-                surfaceNamer.publicClassName(DiscoGapicNamer.getResponseName(method)));
-    return typeTable.getAndSaveNicknameFor(fullName.getFullName());
+    Name responseName = DiscoGapicNamer.getResponseName(method);
+    if (responseName != null) {
+      TypeName fullName =
+          typeTable
+              .getTypeTable()
+              .getTypeNameInImplicitPackage(surfaceNamer.publicClassName(responseName));
+      return typeTable.getAndSaveNicknameFor(fullName.getFullName());
+    } else {
+      return typeTable.getAndSaveNicknameFor("java.lang.Void");
+    }
   }
 
   @Override
@@ -232,7 +239,7 @@ public final class DiscoveryMethodModel implements MethodModel {
     }
 
     // Add the field that represents the ResourceName.
-    String resourceName = DiscoGapicNamer.getResourceIdentifier(method).toLowerCamel();
+    String resourceName = DiscoGapicNamer.getResourceIdentifier(method.flatPath()).toLowerCamel();
     for (FieldModel field : getInputFields()) {
       if (field.asName().toLowerCamel().equals(resourceName)) {
         fields.add(field);
@@ -259,6 +266,10 @@ public final class DiscoveryMethodModel implements MethodModel {
     return inputFields;
   }
 
+  /**
+   * Returns a list containing the response schema as the sole element; or returns an empty list if
+   * this method has no response schema.
+   */
   @Override
   public Iterable<FieldModel> getOutputFields() {
     if (outputFields != null) {
@@ -286,6 +297,17 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public Map<String, String> getResourcePatternNameMap(Map<String, String> nameMap) {
-    return nameMap;
+    Map<String, String> resources = new LinkedHashMap<>();
+    for (Map.Entry<String, String> entry : nameMap.entrySet()) {
+      String resourceNameString =
+          DiscoGapicNamer.getResourceIdentifier(entry.getKey()).toLowerCamel();
+      if (DiscoGapicNamer.getResourceIdentifier(method.flatPath())
+          .toLowerCamel()
+          .equals(resourceNameString)) {
+        resources.put(resourceNameString, entry.getValue());
+        break;
+      }
+    }
+    return resources;
   }
 }

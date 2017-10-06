@@ -53,8 +53,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
 
   @Override
   public String getRawName() {
-    // TODO(andrealin): Return actual simple name.
-    return getName();
+    return getInterfaceModel().getSimpleName();
   }
 
   @Nullable
@@ -141,6 +140,11 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
     }
     ImmutableList<SingleResourceNameConfig> singleResourceNames = resourcesBuilder.build();
 
+    String interfaceName =
+        interfaceNameOverride != null
+            ? interfaceNameOverride
+            : DiscoGapicNamer.getInterfaceName(interfaceConfigProto.getName()).toUpperCamel();
+
     if (diagCollector.hasErrors()) {
       return null;
     } else {
@@ -150,7 +154,7 @@ public abstract class DiscoGapicInterfaceConfig implements InterfaceConfig {
           retrySettingsDefinition,
           requiredConstructorParams,
           manualDoc,
-          new DiscoInterfaceModel(interfaceNameOverride, document),
+          new DiscoInterfaceModel(interfaceName, document),
           interfaceNameOverride,
           smokeTestConfig,
           methodConfigMap,

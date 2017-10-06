@@ -133,10 +133,11 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
               enableStringFormatFunctions);
 
       for (MethodModel method : context.getSupportedMethods()) {
+        List<RequestObjectParamView> params = getRequestObjectParams(context, method);
+
         SchemaTransformationContext requestContext =
             SchemaTransformationContext.create(
                 method.getFullName(), context.getSchemaTypeTable(), context);
-        List<RequestObjectParamView> params = getRequestObjectParams(context, method);
         StaticLangApiMessageView requestView = generateRequestClass(requestContext, method, params);
         surfaceRequests.add(generateRequestFile(requestContext, requestView));
       }
@@ -243,9 +244,9 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     }
 
     for (FieldModel entry : method.getInputFields()) {
+      String parameterName = entry.getNameAsParameter();
       properties.add(
-          schemaToParamView(
-              context, entry, entry.getSimpleName(), symbolTable, EscapeName.ESCAPE_NAME));
+          schemaToParamView(context, entry, parameterName, symbolTable, EscapeName.ESCAPE_NAME));
       if (entry.isRequired()) {
         hasRequiredProperties = true;
       }
@@ -267,7 +268,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
           schemaToParamView(
               context,
               requestBody,
-              requestBody.getSimpleName(),
+              DiscoGapicNamer.getSchemaNameAsParameter(requestBodyDef).toLowerCamel(),
               symbolTable,
               EscapeName.NO_ESCAPE_NAME));
     }

@@ -562,8 +562,9 @@ public class StaticLangApiMethodTransformer {
             .getPagedResponseIterateMethod(context.getFeatureConfig(), resourceFieldConfig);
 
     String resourceFieldName = context.getNamer().getFieldName(resourceField);
-    String resourceFieldGetFunctionName =
-        namer.getFieldGetFunctionName(context.getFeatureConfig(), resourceFieldConfig);
+    List<String> resourceFieldGetFunctionNames =
+        resourceField.getPagedResponseResourceMethods(
+            context.getFeatureConfig(), resourceFieldConfig, context.getNamer());
 
     methodViewBuilder.listMethod(
         ListMethodDetailView.newBuilder()
@@ -572,7 +573,7 @@ public class StaticLangApiMethodTransformer {
             .resourceTypeName(resourceTypeName)
             .iterateMethodName(iterateMethodName)
             .resourceFieldName(resourceFieldName)
-            .resourcesFieldGetFunction(resourceFieldGetFunctionName)
+            .resourcesFieldGetFunctions(resourceFieldGetFunctionNames)
             .build());
 
     switch (synchronicity) {

@@ -16,8 +16,11 @@ package com.google.api.codegen.discogapic.transformer.java;
 
 import static com.google.api.codegen.util.java.JavaTypeTable.JavaLangResolution.IGNORE_JAVA_LANG_CLASH;
 
+import com.google.api.codegen.config.DiscoveryMethodModel;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.discogapic.SchemaTransformationContext;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
@@ -48,6 +51,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -100,15 +104,36 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
             discoGapicNamer,
             JavaFeatureConfig.newBuilder().enableStringFormatFunctions(false).build());
 
-    for (Method method : context.getDocument().methods()) {
-      SchemaTransformationContext requestContext =
-          SchemaTransformationContext.create(method.id(), context.getSchemaTypeTable(), context);
-      StaticLangApiResourceNameView requestView = generateResourceNameClass(requestContext, method);
-      surfaceRequests.add(generateResourceNameFile(requestContext, requestView));
+    // Keep track of which name patterns have been generated to avoid duplicate classes.
+    Set<String> namePatterns = new HashSet<>();
 
-      SchemaTransformationContext nameTypeContext = requestContext.withNewTypeTable();
-      addNameTypeClassImports(nameTypeContext.getImportTypeTable());
-      surfaceRequests.add(generateNameTypeFile(nameTypeContext, method));
+    for (String interfaceName : productConfig.getInterfaceConfigMap().keySet()) {
+      SchemaTransformationContext requestContext =
+          SchemaTransformationContext.create(interfaceName, context.getSchemaTypeTable(), context);
+      // Maps a canonical resource name pattern to any method that uses that pattern.
+      Map<String, Method> namePatternsToMethod = new HashMap<>();
+
+      for (MethodConfig methodConfig :
+          productConfig.getInterfaceConfigMap().get(interfaceName).getMethodConfigs()) {
+        Method method = ((DiscoveryMethodModel) methodConfig.getMethodModel()).getDiscoMethod();
+        namePatternsToMethod.put(DiscoGapicNamer.getCanonicalPath(method), method);
+      }
+      for (SingleResourceNameConfig nameConfig :
+          productConfig.getInterfaceConfigMap().get(interfaceName).getSingleResourceNameConfigs()) {
+        String namePattern = nameConfig.getNamePattern();
+        if (namePatterns.contains(namePattern)) {
+          continue;
+        }
+        Method method = namePatternsToMethod.get(namePattern);
+        StaticLangApiResourceNameView requestView =
+            generateResourceNameClass(requestContext, method, nameConfig);
+        surfaceRequests.add(generateResourceNameFile(requestContext, requestView));
+
+        SchemaTransformationContext nameTypeContext = requestContext.withNewTypeTable();
+        addNameTypeClassImports(nameTypeContext.getImportTypeTable());
+        surfaceRequests.add(generateNameTypeFile(nameTypeContext, nameConfig));
+        namePatterns.add(nameConfig.getNamePattern());
+      }
     }
 
     Collections.sort(
@@ -141,9 +166,9 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
 
   /* Given a ResourceNameType view, creates a top-level ResourceNameType file view. */
   private StaticLangApiNameTypeFileView generateNameTypeFile(
-      SchemaTransformationContext context, Method method) {
+      SchemaTransformationContext context, SingleResourceNameConfig nameConfig) {
     StaticLangApiNameTypeFileView.Builder apiFile = StaticLangApiNameTypeFileView.newBuilder();
-    String className = context.getDiscoGapicNamer().getResourceNameTypeName(method);
+    String className = context.getDiscoGapicNamer().getResourceNameTypeName(nameConfig);
     apiFile.name(className);
 
     apiFile.templateFileName(NAME_TYPE_TEMPLATE_FILENAME);
@@ -158,18 +183,17 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
   }
 
   private StaticLangApiResourceNameView generateResourceNameClass(
-      SchemaTransformationContext context, Method method) {
+      SchemaTransformationContext context, Method method, SingleResourceNameConfig nameConfig) {
     StaticLangApiResourceNameView.Builder resourceNameView =
         StaticLangApiResourceNameView.newBuilder();
 
     SymbolTable symbolTable = SymbolTable.fromSeed(reservedKeywords);
 
-    String resourceName =
-        symbolTable.getNewSymbol(context.getDiscoGapicNamer().getResourceNameName(method));
+    String resourceName = context.getDiscoGapicNamer().getResourceNameName(nameConfig);
     resourceNameView.name(resourceName);
     resourceNameView.typeName(nameFormatter.publicClassName(Name.anyCamel(resourceName)));
-    resourceNameView.nameTypeName(context.getDiscoGapicNamer().getResourceNameTypeName(method));
-    resourceNameView.pathTemplate(method.flatPath());
+    resourceNameView.nameTypeName(context.getDiscoGapicNamer().getResourceNameTypeName(nameConfig));
+    resourceNameView.pathTemplate(nameConfig.getNamePattern());
 
     List<StaticMemberView> properties = new LinkedList<>();
     for (Map.Entry<String, Schema> entry : method.parameters().entrySet()) {

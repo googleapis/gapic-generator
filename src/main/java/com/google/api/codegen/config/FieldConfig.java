@@ -21,9 +21,11 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Function;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 
@@ -31,6 +33,9 @@ import javax.annotation.Nullable;
 @AutoValue
 public abstract class FieldConfig {
   public abstract FieldModel getField();
+
+  /** The list of fields that must be traversed to reach the field in getField(). */
+  public abstract List<FieldModel> getFieldPath();
 
   @Nullable
   public abstract ResourceNameTreatment getResourceNameTreatment();
@@ -60,6 +65,20 @@ public abstract class FieldConfig {
       ResourceNameTreatment resourceNameTreatment,
       ResourceNameConfig resourceNameConfig,
       ResourceNameConfig messageResourceNameConfig) {
+    return createFieldConfig(
+        field,
+        ImmutableList.of(field),
+        resourceNameTreatment,
+        resourceNameConfig,
+        messageResourceNameConfig);
+  }
+
+  private static FieldConfig createFieldConfig(
+      FieldModel field,
+      List<FieldModel> fieldPath,
+      ResourceNameTreatment resourceNameTreatment,
+      ResourceNameConfig resourceNameConfig,
+      ResourceNameConfig messageResourceNameConfig) {
     if (resourceNameTreatment != ResourceNameTreatment.NONE && resourceNameConfig == null) {
       throw new IllegalArgumentException(
           "resourceName may only be null if resourceNameTreatment is NONE");
@@ -70,11 +89,15 @@ public abstract class FieldConfig {
           "FieldConfig may not contain a ResourceNameConfig of type " + ResourceNameType.FIXED);
     }
     return new AutoValue_FieldConfig(
-        field, resourceNameTreatment, resourceNameConfig, messageResourceNameConfig);
+        field, fieldPath, resourceNameTreatment, resourceNameConfig, messageResourceNameConfig);
   }
 
   static FieldConfig createFieldConfig(FieldModel field) {
     return FieldConfig.createFieldConfig(field, ResourceNameTreatment.NONE, null, null);
+  }
+
+  static FieldConfig createFieldConfig(FieldModel field, List<FieldModel> fieldPath) {
+    return FieldConfig.createFieldConfig(field, fieldPath, ResourceNameTreatment.NONE, null, null);
   }
 
   /** Creates a FieldConfig for the given Field with ResourceNameTreatment set to None. */

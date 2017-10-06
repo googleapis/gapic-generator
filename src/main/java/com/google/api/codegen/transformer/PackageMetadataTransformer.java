@@ -20,7 +20,12 @@ import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.VersionBound;
 import com.google.api.codegen.viewmodel.metadata.PackageDependencyView;
 import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /** Constructs a partial ViewModel for producing package metadata related views */
 public class PackageMetadataTransformer {

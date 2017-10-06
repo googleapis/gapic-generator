@@ -41,6 +41,23 @@ public class Name {
   }
 
   /**
+   * Creates a Name from a String that is either a sequence of underscore strings or a sequence of
+   * camel strings. The first letter of the String must be lowercase.
+   *
+   * @throws IllegalArgumentException if any of the strings do not follow the camel format or
+   *     contain characters that are not underscores.
+   */
+  public static Name anyLower(String... pieces) {
+    Name name;
+    try {
+      name = Name.from(pieces);
+    } catch (IllegalArgumentException e) {
+      name = Name.lowerCamel(pieces);
+    }
+    return name;
+  }
+
+  /**
    * Creates a Name from a sequence of upper-underscore strings.
    *
    * @throws IllegalArgumentException if any of the strings contain any characters that are not

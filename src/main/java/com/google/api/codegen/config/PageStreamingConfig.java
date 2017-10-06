@@ -14,6 +14,10 @@
  */
 package com.google.api.codegen.config;
 
+import static com.google.api.codegen.configgen.HttpPagingParameters.PARAMETER_MAX_RESULTS;
+import static com.google.api.codegen.configgen.HttpPagingParameters.PARAMETER_NEXT_PAGE_TOKEN;
+import static com.google.api.codegen.configgen.HttpPagingParameters.PARAMETER_PAGE_TOKEN;
+
 import com.google.api.codegen.MethodConfigProto;
 import com.google.api.codegen.PageStreamingConfigProto;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
@@ -24,7 +28,10 @@ import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import java.util.LinkedList;
+import java.util.List;
 import javax.annotation.Nullable;
 
 /** PageStreamingConfig represents the page streaming configuration for a method. */
@@ -133,12 +140,7 @@ public abstract class PageStreamingConfig {
       DiagCollector diagCollector,
       com.google.api.codegen.discovery.Method method,
       DiscoGapicNamer discoGapicNamer) {
-    // TODO(andrealin): Put this in yaml file somewhere instead of hardcoding.
-    String pageSizeFieldName = "maxResults";
-    String requestTokenFieldName = "pageToken";
-    String responseTokenFieldName = "nextPageToken";
-
-    Schema requestTokenField = method.parameters().get(requestTokenFieldName);
+    Schema requestTokenField = method.parameters().get(PARAMETER_PAGE_TOKEN);
     if (requestTokenField == null) {
       diagCollector.addDiag(
           Diag.error(
@@ -146,12 +148,12 @@ public abstract class PageStreamingConfig {
               "Request field missing for page streaming: method = %s, message type = %s, field = %s",
               method.id(),
               method.id(),
-              requestTokenFieldName));
+              PARAMETER_PAGE_TOKEN));
     }
 
-    Schema pageSizeField = method.parameters().get(pageSizeFieldName);
-    if (!Strings.isNullOrEmpty(pageSizeFieldName)) {
-      pageSizeField = method.parameters().get(pageSizeFieldName);
+    Schema pageSizeField = method.parameters().get(PARAMETER_MAX_RESULTS);
+    if (pageSizeField != null) {
+      pageSizeField = method.parameters().get(PARAMETER_MAX_RESULTS);
       if (pageSizeField == null) {
         diagCollector.addDiag(
             Diag.error(
@@ -159,14 +161,14 @@ public abstract class PageStreamingConfig {
                 "Request field missing for page streaming: method = %s, message type = %s, field = %s",
                 method.id(),
                 method.id(),
-                pageSizeFieldName));
+                PARAMETER_MAX_RESULTS));
       }
     }
 
     Schema responseTokenField = null;
     Schema responseSchema = method.response().dereference();
-    if (responseSchema.hasProperty(responseTokenFieldName)) {
-      responseTokenField = responseSchema.properties().get(responseTokenFieldName);
+    if (responseSchema.hasProperty(PARAMETER_NEXT_PAGE_TOKEN)) {
+      responseTokenField = responseSchema.properties().get(PARAMETER_NEXT_PAGE_TOKEN);
     }
 
     if (responseTokenField == null) {
@@ -176,31 +178,27 @@ public abstract class PageStreamingConfig {
               "Response field missing for page streaming: method = %s, message type = %s, field = %s",
               method.id(),
               method.id(),
-              responseTokenFieldName));
+              PARAMETER_NEXT_PAGE_TOKEN));
     }
 
     Schema responseField = method.response().dereference();
-    Schema resourcesField = null;
-    for (Schema property : responseField.properties().values()) {
-      // Assume the List response has exactly one Array property.
-      if (property.type().equals(Type.ARRAY)) {
-        resourcesField = property;
-        break;
-      }
-    }
+    ImmutableList<FieldModel> resourcesFieldPath =
+        ImmutableList.copyOf(getResourcesGetterPath(responseField, discoGapicNamer));
+
     FieldConfig resourcesFieldConfig;
-    if (resourcesField == null) {
+    if (resourcesFieldPath.isEmpty()) {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
-              "Resources field missing for page streaming: method = %s, message type = %s, field = %s",
+              "Resources field missing for page streaming: method = %s, message type = %s, response field = %s",
               method.id(),
               method.id(),
-              resourcesField.getIdentifier()));
+              method.response() == null ? "null" : method.response().toString()));
       resourcesFieldConfig = null;
     } else {
+      FieldModel resourcesField = resourcesFieldPath.get(resourcesFieldPath.size() - 1);
       resourcesFieldConfig =
-          FieldConfig.createFieldConfig(new DiscoveryField(resourcesField, discoGapicNamer));
+          FieldConfig.createFieldConfig(resourcesField, ImmutableList.copyOf(resourcesFieldPath));
     }
 
     if (requestTokenField == null || responseTokenField == null || resourcesFieldConfig == null) {
@@ -211,6 +209,36 @@ public abstract class PageStreamingConfig {
         new DiscoveryField(pageSizeField, discoGapicNamer),
         new DiscoveryField(responseTokenField, discoGapicNamer),
         resourcesFieldConfig);
+  }
+
+  private static List<FieldModel> getResourcesGetterPath(
+      Schema responseField, DiscoGapicNamer namer) {
+    List<FieldModel> resourcesFieldPath = new LinkedList<>();
+    for (Schema property : responseField.properties().values()) {
+      // Assume the List response has exactly one Array property.
+      if (property.type().equals(Type.ARRAY)) {
+        resourcesFieldPath.add(new DiscoveryField(property, namer));
+        break;
+      } else if (property.additionalProperties() != null
+          && !Strings.isNullOrEmpty(property.additionalProperties().reference())) {
+        Schema additionalProperties = property.additionalProperties().dereference();
+        if (additionalProperties.type().equals(Type.ARRAY)) {
+          resourcesFieldPath.add(new DiscoveryField(additionalProperties, namer));
+          break;
+        }
+        for (Schema subProperty : additionalProperties.properties().values()) {
+          if (subProperty.type().equals(Type.ARRAY)) {
+            resourcesFieldPath.add(new DiscoveryField(property, namer));
+            resourcesFieldPath.add(new DiscoveryField(subProperty, namer));
+            break;
+          }
+        }
+        if (!resourcesFieldPath.isEmpty()) {
+          break;
+        }
+      }
+    }
+    return resourcesFieldPath;
   }
 
   /** Returns whether there is a field for page size. */
