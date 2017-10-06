@@ -198,7 +198,7 @@ public final class DiscoveryMethodModel implements MethodModel {
               .getTypeNameInImplicitPackage(surfaceNamer.publicClassName(responseName));
       return typeTable.getAndSaveNicknameFor(fullName.getFullName());
     } else {
-      return typeTable.getAndSaveNicknameFor("com.google.protobuf.Empty");
+      return typeTable.getAndSaveNicknameFor("java.lang.Void");
     }
   }
 
