@@ -16,7 +16,11 @@ package com.google.api.codegen.discogapic.transformer.java;
 
 import static com.google.api.codegen.util.java.JavaTypeTable.JavaLangResolution.IGNORE_JAVA_LANG_CLASH;
 
-import com.google.api.codegen.config.*;
+import com.google.api.codegen.config.DiscoveryMethodModel;
+import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.discogapic.SchemaTransformationContext;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
@@ -43,7 +47,16 @@ import com.google.api.codegen.viewmodel.StaticLangApiResourceNameView;
 import com.google.api.codegen.viewmodel.StaticMemberView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /* Creates the ViewModel for Discovery-Doc-based ResourceName and ResourceTypeName Java classes. */
 public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToViewTransformer {
