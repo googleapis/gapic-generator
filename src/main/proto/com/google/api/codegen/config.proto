@@ -64,6 +64,8 @@ option java_package = "com.google.api.codegen";
 //         request_object_method: true
 //         field_name_patterns:
 //           name: book
+//         header_request_params:
+//           - name
 //       - name: GetBook
 //       ...
 //     ...
@@ -270,6 +272,11 @@ message MethodConfigProto {
   // IAM methods to IamPolicy for Pub/Sub.
   string reroute_to_grpc_interface = 12;
 
+  // Specifies the list of the method's input message fields (including nested
+  // ones, using the dot notation), which should be url-encoded in
+  // "x-goog-request-params" header
+  repeated string header_request_params = 14;
+
   repeated SurfaceTreatmentProto surface_treatments = 20;
 
   // Set the resource name treatment for fields
@@ -277,6 +284,7 @@ message MethodConfigProto {
 
   // Long-running settings.
   LongRunningConfigProto long_running = 30;
+
 }
 
 // `FlatteningConfigProto` describes the parameter groups for which a

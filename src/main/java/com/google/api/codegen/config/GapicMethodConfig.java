@@ -91,6 +91,8 @@ public abstract class GapicMethodConfig {
   @Nullable
   public abstract LongRunningConfig getLongRunningConfig();
 
+  public abstract Iterable<String> getHeaderRequestParams();
+
   /**
    * Creates an instance of GapicMethodConfig based on MethodConfigProto, linking it up with the
    * provided method. On errors, null will be returned, and diagnostics are reported to the diag
@@ -255,6 +257,9 @@ public abstract class GapicMethodConfig {
       }
     }
 
+    List<String> headerRequestParams =
+        ImmutableList.copyOf(methodConfigProto.getHeaderRequestParamsList());
+
     if (error) {
       return null;
     } else {
@@ -276,7 +281,8 @@ public abstract class GapicMethodConfig {
           rerouteToGrpcInterface,
           visibility,
           releaseLevel,
-          longRunningConfig);
+          longRunningConfig,
+          headerRequestParams);
     }
   }
 

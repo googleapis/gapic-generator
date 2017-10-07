@@ -563,13 +563,17 @@ import com.google.api.gax.core.BackgroundResource;
 import com.google.api.gax.core.BackgroundResourceAggregation;
 import com.google.api.gax.grpc.GrpcCallableFactory;
 import com.google.api.gax.rpc.ClientContext;
+import com.google.api.gax.rpc.EmptyRequestParamsExtractor;
+import com.google.api.gax.rpc.RequestParamsExtractor;
 import com.google.api.gax.rpc.UnaryCallable;
+import com.google.common.collect.ImmutableMap;
 import com.google.example.noPathTemplates.v1.IncrementRequest;
 import com.google.gcloud.example.NoTemplatesApiServiceSettings;
 import com.google.protobuf.Empty;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Generated;
 
@@ -588,7 +592,8 @@ public class GrpcNoTemplatesApiServiceStub extends NoTemplatesApiServiceStub {
               io.grpc.MethodDescriptor.MethodType.UNARY,
               "google.cloud.example.v1.NoTemplatesAPIService/Increment",
               io.grpc.protobuf.ProtoUtils.marshaller(IncrementRequest.getDefaultInstance()),
-              io.grpc.protobuf.ProtoUtils.marshaller(Empty.getDefaultInstance())));
+              io.grpc.protobuf.ProtoUtils.marshaller(Empty.getDefaultInstance())),
+          EmptyRequestParamsExtractor.<IncrementRequest>of());
 
   private final BackgroundResource backgroundResources;
 

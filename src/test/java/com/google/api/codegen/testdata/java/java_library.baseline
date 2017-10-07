@@ -5041,10 +5041,13 @@ import com.google.api.gax.grpc.OperationFuture;
 import com.google.api.gax.rpc.BidiStreamingCallable;
 import com.google.api.gax.rpc.ClientContext;
 import com.google.api.gax.rpc.ClientStreamingCallable;
+import com.google.api.gax.rpc.EmptyRequestParamsExtractor;
 import com.google.api.gax.rpc.OperationCallable;
+import com.google.api.gax.rpc.RequestParamsExtractor;
 import com.google.api.gax.rpc.ServerStreamingCallable;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.api.resourcenames.ResourceName;
+import com.google.common.collect.ImmutableMap;
 import com.google.example.library.v1.AddCommentsRequest;
 import com.google.example.library.v1.ArchivedBookName;
 import com.google.example.library.v1.Book;
@@ -5125,196 +5128,232 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
               io.grpc.MethodDescriptor.MethodType.UNARY,
               "google.example.library.v1.LibraryService/CreateShelf",
               io.grpc.protobuf.ProtoUtils.marshaller(CreateShelfRequest.getDefaultInstance()),
-              io.grpc.protobuf.ProtoUtils.marshaller(Shelf.getDefaultInstance())));
+              io.grpc.protobuf.ProtoUtils.marshaller(Shelf.getDefaultInstance())),
+          EmptyRequestParamsExtractor.<CreateShelfRequest>of());
   private static final UnaryCallable<GetShelfRequest, Shelf> directGetShelfCallable =
       GrpcCallableFactory.createDirectCallable(
           io.grpc.MethodDescriptor.create(
               io.grpc.MethodDescriptor.MethodType.UNARY,
               "google.example.library.v1.LibraryService/GetShelf",
               io.grpc.protobuf.ProtoUtils.marshaller(GetShelfRequest.getDefaultInstance()),
-              io.grpc.protobuf.ProtoUtils.marshaller(Shelf.getDefaultInstance())));
+              io.grpc.protobuf.ProtoUtils.marshaller(Shelf.getDefaultInstance())),
+          EmptyRequestParamsExtractor.<GetShelfRequest>of());
   private static final UnaryCallable<ListShelvesRequest, ListShelvesResponse> directListShelvesCallable =
       GrpcCallableFactory.createDirectCallable(
           io.grpc.MethodDescriptor.create(
               io.grpc.MethodDescriptor.MethodType.UNARY,
               "google.example.library.v1.LibraryService/ListShelves",
               io.grpc.protobuf.ProtoUtils.marshaller(ListShelvesRequest.getDefaultInstance()),
-              io.grpc.protobuf.ProtoUtils.marshaller(ListShelvesResponse.getDefaultInstance())));
+              io.grpc.protobuf.ProtoUtils.marshaller(ListShelvesResponse.getDefaultInstance())),
+          EmptyRequestParamsExtractor.<ListShelvesRequest>of());
   private static final UnaryCallable<DeleteShelfRequest, Empty> directDeleteShelfCallable =
       GrpcCallableFactory.createDirectCallable(
           io.grpc.MethodDescriptor.create(
               io.grpc.MethodDescriptor.MethodType.UNARY,
               "google.example.library.v1.LibraryService/DeleteShelf",
               io.grpc.protobuf.ProtoUtils.marshaller(DeleteShelfRequest.getDefaultInstance()),
-              io.grpc.protobuf.ProtoUtils.marshaller(Empty.getDefaultInstance())));
+              io.grpc.protobuf.ProtoUtils.marshaller(Empty.getDefaultInstance())),
+          EmptyRequestParamsExtractor.<DeleteShelfRequest>of());
   private static final UnaryCallable<MergeShelvesRequest, Shelf> directMergeShelvesCallable =
       GrpcCallableFactory.createDirectCallable(
           io.grpc.MethodDescriptor.create(
               io.grpc.MethodDescriptor.MethodType.UNARY,
               "google.example.library.v1.LibraryService/MergeShelves",
               io.grpc.protobuf.ProtoUtils.marshaller(MergeShelvesRequest.getDefaultInstance()),
-              io.grpc.protobuf.ProtoUtils.marshaller(Shelf.getDefaultInstance())));
+              io.grpc.protobuf.ProtoUtils.marshaller(Shelf.getDefaultInstance())),
+          EmptyRequestParamsExtractor.<MergeShelvesRequest>of());
   private static final UnaryCallable<CreateBookRequest, Book> directCreateBookCallable =
       GrpcCallableFactory.createDirectCallable(
           io.grpc.MethodDescriptor.create(
               io.grpc.MethodDescriptor.MethodType.UNARY,
               "google.example.library.v1.LibraryService/CreateBook",
               io.grpc.protobuf.ProtoUtils.marshaller(CreateBookRequest.getDefaultInstance()),
-              io.grpc.protobuf.ProtoUtils.marshaller(Book.getDefaultInstance())));
+              io.grpc.protobuf.ProtoUtils.marshaller(Book.getDefaultInstance())),
+          new RequestParamsExtractor<CreateBookRequest>() {
+            @Override
+            public Map<String, String> extract(CreateBookRequest request) {
+              ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+              params.put("name", String.valueOf(request.getName()));
+              params.put("book.read", String.valueOf(request.getBook().getRead()));
+              return params.build();
+            }
+          });
   private static final UnaryCallable<PublishSeriesRequest, PublishSeriesResponse> directPublishSeriesCallable =
       GrpcCallableFactory.createDirectCallable(
           io.grpc.MethodDescriptor.create(
               io.grpc.MethodDescriptor.MethodType.UNARY,
               "google.example.library.v1.LibraryService/PublishSeries",
               io.grpc.protobuf.ProtoUtils.marshaller(PublishSeriesRequest.getDefaultInstance()),
-              io.grpc.protobuf.ProtoUtils.marshaller(PublishSeriesResponse.getDefaultInstance())));
+              io.grpc.protobuf.ProtoUtils.marshaller(PublishSeriesResponse.getDefaultInstance())),
+          EmptyRequestParamsExtractor.<PublishSeriesRequest>of());
   private static final UnaryCallable<GetBookRequest, Book> directGetBookCallable =
       GrpcCallableFactory.createDirectCallable(
           io.grpc.MethodDescriptor.create(
               io.grpc.MethodDescriptor.MethodType.UNARY,
               "google.example.library.v1.LibraryService/GetBook",
               io.grpc.protobuf.ProtoUtils.marshaller(GetBookRequest.getDefaultInstance()),
-              io.grpc.protobuf.ProtoUtils.marshaller(Book.getDefaultInstance())));
+              io.grpc.protobuf.ProtoUtils.marshaller(Book.getDefaultInstance())),
+          EmptyRequestParamsExtractor.<GetBookRequest>of());
   private static final UnaryCallable<ListBooksRequest, ListBooksResponse> directListBooksCallable =
       GrpcCallableFactory.createDirectCallable(
           io.grpc.MethodDescriptor.create(
               io.grpc.MethodDescriptor.MethodType.UNARY,
               "google.example.library.v1.LibraryService/ListBooks",
               io.grpc.protobuf.ProtoUtils.marshaller(ListBooksRequest.getDefaultInstance()),
-              io.grpc.protobuf.ProtoUtils.marshaller(ListBooksResponse.getDefaultInstance())));
+              io.grpc.protobuf.ProtoUtils.marshaller(ListBooksResponse.getDefaultInstance())),
+          EmptyRequestParamsExtractor.<ListBooksRequest>of());
   private static final UnaryCallable<DeleteBookRequest, Empty> directDeleteBookCallable =
       GrpcCallableFactory.createDirectCallable(
           io.grpc.MethodDescriptor.create(
               io.grpc.MethodDescriptor.MethodType.UNARY,
               "google.example.library.v1.LibraryService/DeleteBook",
               io.grpc.protobuf.ProtoUtils.marshaller(DeleteBookRequest.getDefaultInstance()),
-              io.grpc.protobuf.ProtoUtils.marshaller(Empty.getDefaultInstance())));
+              io.grpc.protobuf.ProtoUtils.marshaller(Empty.getDefaultInstance())),
+          EmptyRequestParamsExtractor.<DeleteBookRequest>of());
   private static final UnaryCallable<UpdateBookRequest, Book> directUpdateBookCallable =
       GrpcCallableFactory.createDirectCallable(
           io.grpc.MethodDescriptor.create(
               io.grpc.MethodDescriptor.MethodType.UNARY,
               "google.example.library.v1.LibraryService/UpdateBook",
               io.grpc.protobuf.ProtoUtils.marshaller(UpdateBookRequest.getDefaultInstance()),
-              io.grpc.protobuf.ProtoUtils.marshaller(Book.getDefaultInstance())));
+              io.grpc.protobuf.ProtoUtils.marshaller(Book.getDefaultInstance())),
+          EmptyRequestParamsExtractor.<UpdateBookRequest>of());
   private static final UnaryCallable<MoveBookRequest, Book> directMoveBookCallable =
       GrpcCallableFactory.createDirectCallable(
           io.grpc.MethodDescriptor.create(
               io.grpc.MethodDescriptor.MethodType.UNARY,
               "google.example.library.v1.LibraryService/MoveBook",
               io.grpc.protobuf.ProtoUtils.marshaller(MoveBookRequest.getDefaultInstance()),
-              io.grpc.protobuf.ProtoUtils.marshaller(Book.getDefaultInstance())));
+              io.grpc.protobuf.ProtoUtils.marshaller(Book.getDefaultInstance())),
+          EmptyRequestParamsExtractor.<MoveBookRequest>of());
   private static final UnaryCallable<ListStringsRequest, ListStringsResponse> directListStringsCallable =
       GrpcCallableFactory.createDirectCallable(
           io.grpc.MethodDescriptor.create(
               io.grpc.MethodDescriptor.MethodType.UNARY,
               "google.example.library.v1.LibraryService/ListStrings",
               io.grpc.protobuf.ProtoUtils.marshaller(ListStringsRequest.getDefaultInstance()),
-              io.grpc.protobuf.ProtoUtils.marshaller(ListStringsResponse.getDefaultInstance())));
+              io.grpc.protobuf.ProtoUtils.marshaller(ListStringsResponse.getDefaultInstance())),
+          EmptyRequestParamsExtractor.<ListStringsRequest>of());
   private static final UnaryCallable<AddCommentsRequest, Empty> directAddCommentsCallable =
       GrpcCallableFactory.createDirectCallable(
           io.grpc.MethodDescriptor.create(
               io.grpc.MethodDescriptor.MethodType.UNARY,
               "google.example.library.v1.LibraryService/AddComments",
               io.grpc.protobuf.ProtoUtils.marshaller(AddCommentsRequest.getDefaultInstance()),
-              io.grpc.protobuf.ProtoUtils.marshaller(Empty.getDefaultInstance())));
+              io.grpc.protobuf.ProtoUtils.marshaller(Empty.getDefaultInstance())),
+          EmptyRequestParamsExtractor.<AddCommentsRequest>of());
   private static final UnaryCallable<GetBookFromArchiveRequest, BookFromArchive> directGetBookFromArchiveCallable =
       GrpcCallableFactory.createDirectCallable(
           io.grpc.MethodDescriptor.create(
               io.grpc.MethodDescriptor.MethodType.UNARY,
               "google.example.library.v1.LibraryService/GetBookFromArchive",
               io.grpc.protobuf.ProtoUtils.marshaller(GetBookFromArchiveRequest.getDefaultInstance()),
-              io.grpc.protobuf.ProtoUtils.marshaller(BookFromArchive.getDefaultInstance())));
+              io.grpc.protobuf.ProtoUtils.marshaller(BookFromArchive.getDefaultInstance())),
+          EmptyRequestParamsExtractor.<GetBookFromArchiveRequest>of());
   private static final UnaryCallable<GetBookFromAnywhereRequest, BookFromAnywhere> directGetBookFromAnywhereCallable =
       GrpcCallableFactory.createDirectCallable(
           io.grpc.MethodDescriptor.create(
               io.grpc.MethodDescriptor.MethodType.UNARY,
               "google.example.library.v1.LibraryService/GetBookFromAnywhere",
               io.grpc.protobuf.ProtoUtils.marshaller(GetBookFromAnywhereRequest.getDefaultInstance()),
-              io.grpc.protobuf.ProtoUtils.marshaller(BookFromAnywhere.getDefaultInstance())));
+              io.grpc.protobuf.ProtoUtils.marshaller(BookFromAnywhere.getDefaultInstance())),
+          EmptyRequestParamsExtractor.<GetBookFromAnywhereRequest>of());
   private static final UnaryCallable<GetBookFromAbsolutelyAnywhereRequest, BookFromAnywhere> directGetBookFromAbsolutelyAnywhereCallable =
       GrpcCallableFactory.createDirectCallable(
           io.grpc.MethodDescriptor.create(
               io.grpc.MethodDescriptor.MethodType.UNARY,
               "google.example.library.v1.LibraryService/GetBookFromAbsolutelyAnywhere",
               io.grpc.protobuf.ProtoUtils.marshaller(GetBookFromAbsolutelyAnywhereRequest.getDefaultInstance()),
-              io.grpc.protobuf.ProtoUtils.marshaller(BookFromAnywhere.getDefaultInstance())));
+              io.grpc.protobuf.ProtoUtils.marshaller(BookFromAnywhere.getDefaultInstance())),
+          EmptyRequestParamsExtractor.<GetBookFromAbsolutelyAnywhereRequest>of());
   private static final UnaryCallable<UpdateBookIndexRequest, Empty> directUpdateBookIndexCallable =
       GrpcCallableFactory.createDirectCallable(
           io.grpc.MethodDescriptor.create(
               io.grpc.MethodDescriptor.MethodType.UNARY,
               "google.example.library.v1.LibraryService/UpdateBookIndex",
               io.grpc.protobuf.ProtoUtils.marshaller(UpdateBookIndexRequest.getDefaultInstance()),
-              io.grpc.protobuf.ProtoUtils.marshaller(Empty.getDefaultInstance())));
+              io.grpc.protobuf.ProtoUtils.marshaller(Empty.getDefaultInstance())),
+          EmptyRequestParamsExtractor.<UpdateBookIndexRequest>of());
   private static final ServerStreamingCallable<StreamShelvesRequest, StreamShelvesResponse> directStreamShelvesCallable =
       GrpcCallableFactory.createDirectServerStreamingCallable(
           io.grpc.MethodDescriptor.create(
               io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING,
               "google.example.library.v1.LibraryService/StreamShelves",
               io.grpc.protobuf.ProtoUtils.marshaller(StreamShelvesRequest.getDefaultInstance()),
-              io.grpc.protobuf.ProtoUtils.marshaller(StreamShelvesResponse.getDefaultInstance())));
+              io.grpc.protobuf.ProtoUtils.marshaller(StreamShelvesResponse.getDefaultInstance())),
+          EmptyRequestParamsExtractor.<StreamShelvesRequest>of());
   private static final ServerStreamingCallable<StreamBooksRequest, Book> directStreamBooksCallable =
       GrpcCallableFactory.createDirectServerStreamingCallable(
           io.grpc.MethodDescriptor.create(
               io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING,
               "google.example.library.v1.LibraryService/StreamBooks",
               io.grpc.protobuf.ProtoUtils.marshaller(StreamBooksRequest.getDefaultInstance()),
-              io.grpc.protobuf.ProtoUtils.marshaller(Book.getDefaultInstance())));
+              io.grpc.protobuf.ProtoUtils.marshaller(Book.getDefaultInstance())),
+          EmptyRequestParamsExtractor.<StreamBooksRequest>of());
   private static final BidiStreamingCallable<DiscussBookRequest, Comment> directDiscussBookCallable =
       GrpcCallableFactory.createDirectBidiStreamingCallable(
           io.grpc.MethodDescriptor.create(
               io.grpc.MethodDescriptor.MethodType.BIDI_STREAMING,
               "google.example.library.v1.LibraryService/DiscussBook",
               io.grpc.protobuf.ProtoUtils.marshaller(DiscussBookRequest.getDefaultInstance()),
-              io.grpc.protobuf.ProtoUtils.marshaller(Comment.getDefaultInstance())));
+              io.grpc.protobuf.ProtoUtils.marshaller(Comment.getDefaultInstance())),
+          EmptyRequestParamsExtractor.<DiscussBookRequest>of());
   private static final ClientStreamingCallable<DiscussBookRequest, Comment> directMonologAboutBookCallable =
       GrpcCallableFactory.createDirectClientStreamingCallable(
           io.grpc.MethodDescriptor.create(
               io.grpc.MethodDescriptor.MethodType.CLIENT_STREAMING,
               "google.example.library.v1.LibraryService/MonologAboutBook",
               io.grpc.protobuf.ProtoUtils.marshaller(DiscussBookRequest.getDefaultInstance()),
-              io.grpc.protobuf.ProtoUtils.marshaller(Comment.getDefaultInstance())));
+              io.grpc.protobuf.ProtoUtils.marshaller(Comment.getDefaultInstance())),
+          EmptyRequestParamsExtractor.<DiscussBookRequest>of());
   private static final UnaryCallable<FindRelatedBooksRequest, FindRelatedBooksResponse> directFindRelatedBooksCallable =
       GrpcCallableFactory.createDirectCallable(
           io.grpc.MethodDescriptor.create(
               io.grpc.MethodDescriptor.MethodType.UNARY,
               "google.example.library.v1.LibraryService/FindRelatedBooks",
               io.grpc.protobuf.ProtoUtils.marshaller(FindRelatedBooksRequest.getDefaultInstance()),
-              io.grpc.protobuf.ProtoUtils.marshaller(FindRelatedBooksResponse.getDefaultInstance())));
+              io.grpc.protobuf.ProtoUtils.marshaller(FindRelatedBooksResponse.getDefaultInstance())),
+          EmptyRequestParamsExtractor.<FindRelatedBooksRequest>of());
   private static final UnaryCallable<AddTagRequest, AddTagResponse> directAddTagCallable =
       GrpcCallableFactory.createDirectCallable(
           io.grpc.MethodDescriptor.create(
               io.grpc.MethodDescriptor.MethodType.UNARY,
               "google.example.library.v1.LibraryService/AddTag",
               io.grpc.protobuf.ProtoUtils.marshaller(AddTagRequest.getDefaultInstance()),
-              io.grpc.protobuf.ProtoUtils.marshaller(AddTagResponse.getDefaultInstance())));
+              io.grpc.protobuf.ProtoUtils.marshaller(AddTagResponse.getDefaultInstance())),
+          EmptyRequestParamsExtractor.<AddTagRequest>of());
   private static final UnaryCallable<AddLabelRequest, AddLabelResponse> directAddLabelCallable =
       GrpcCallableFactory.createDirectCallable(
           io.grpc.MethodDescriptor.create(
               io.grpc.MethodDescriptor.MethodType.UNARY,
               "google.tagger.v1.Labeler/AddLabel",
               io.grpc.protobuf.ProtoUtils.marshaller(AddLabelRequest.getDefaultInstance()),
-              io.grpc.protobuf.ProtoUtils.marshaller(AddLabelResponse.getDefaultInstance())));
+              io.grpc.protobuf.ProtoUtils.marshaller(AddLabelResponse.getDefaultInstance())),
+          EmptyRequestParamsExtractor.<AddLabelRequest>of());
   private static final UnaryCallable<GetBookRequest, Operation> directGetBigBookCallable =
       GrpcCallableFactory.createDirectCallable(
           io.grpc.MethodDescriptor.create(
               io.grpc.MethodDescriptor.MethodType.UNARY,
               "google.example.library.v1.LibraryService/GetBigBook",
               io.grpc.protobuf.ProtoUtils.marshaller(GetBookRequest.getDefaultInstance()),
-              io.grpc.protobuf.ProtoUtils.marshaller(Operation.getDefaultInstance())));
+              io.grpc.protobuf.ProtoUtils.marshaller(Operation.getDefaultInstance())),
+          EmptyRequestParamsExtractor.<GetBookRequest>of());
   private static final UnaryCallable<GetBookRequest, Operation> directGetBigNothingCallable =
       GrpcCallableFactory.createDirectCallable(
           io.grpc.MethodDescriptor.create(
               io.grpc.MethodDescriptor.MethodType.UNARY,
               "google.example.library.v1.LibraryService/GetBigNothing",
               io.grpc.protobuf.ProtoUtils.marshaller(GetBookRequest.getDefaultInstance()),
-              io.grpc.protobuf.ProtoUtils.marshaller(Operation.getDefaultInstance())));
+              io.grpc.protobuf.ProtoUtils.marshaller(Operation.getDefaultInstance())),
+          EmptyRequestParamsExtractor.<GetBookRequest>of());
   private static final UnaryCallable<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> directTestOptionalRequiredFlatteningParamsCallable =
       GrpcCallableFactory.createDirectCallable(
           io.grpc.MethodDescriptor.create(
               io.grpc.MethodDescriptor.MethodType.UNARY,
               "google.example.library.v1.LibraryService/TestOptionalRequiredFlatteningParams",
               io.grpc.protobuf.ProtoUtils.marshaller(TestOptionalRequiredFlatteningParamsRequest.getDefaultInstance()),
-              io.grpc.protobuf.ProtoUtils.marshaller(TestOptionalRequiredFlatteningParamsResponse.getDefaultInstance())));
+              io.grpc.protobuf.ProtoUtils.marshaller(TestOptionalRequiredFlatteningParamsResponse.getDefaultInstance())),
+          EmptyRequestParamsExtractor.<TestOptionalRequiredFlatteningParamsRequest>of());
 
   private final BackgroundResource backgroundResources;
   private final GrpcOperationsStub operationsStub;

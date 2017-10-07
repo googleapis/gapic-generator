@@ -21,13 +21,16 @@ import com.google.api.codegen.viewmodel.ApiCallSettingsView;
 import com.google.api.codegen.viewmodel.ApiCallableImplType;
 import com.google.api.codegen.viewmodel.ApiCallableView;
 import com.google.api.codegen.viewmodel.DirectCallableView;
+import com.google.api.codegen.viewmodel.HeaderRequestParamView;
 import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
 import com.google.api.codegen.viewmodel.RetryCodesDefinitionView;
 import com.google.api.codegen.viewmodel.RetryParamsDefinitionView;
 import com.google.api.codegen.viewmodel.ServiceMethodType;
 import com.google.api.tools.framework.model.Field;
+import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -303,6 +306,56 @@ public class ApiCallableTransformer {
     callableBuilder.protoMethodName(method.getSimpleName());
     callableBuilder.fullServiceName(context.getTargetInterface().getFullName());
 
+    callableBuilder.headerRequestParams(getHeaderRequestParams(context));
+
     return callableBuilder.build();
+  }
+
+  private List<HeaderRequestParamView> getHeaderRequestParams(GapicMethodContext context) {
+    GapicMethodConfig methodConfig = context.getMethodConfig();
+    Method method = methodConfig.getMethod();
+    SurfaceNamer namer = context.getNamer();
+    if (method.getInputType() == null || !method.getInputType().isMessage()) {
+      return ImmutableList.of();
+    }
+    ImmutableList.Builder<HeaderRequestParamView> headerRequestParams = ImmutableList.builder();
+    MessageType inputMessageType = method.getInputType().getMessageType();
+    for (String headerRequestParam : methodConfig.getHeaderRequestParams()) {
+      headerRequestParams.add(getHeaderRequestParam(headerRequestParam, inputMessageType, namer));
+    }
+
+    return headerRequestParams.build();
+  }
+
+  private HeaderRequestParamView getHeaderRequestParam(
+      String headerRequestParam, MessageType inputMessageType, SurfaceNamer namer) {
+    String[] fieldNameTokens = headerRequestParam.split("\\.");
+    ImmutableList.Builder<String> gettersChain = ImmutableList.builder();
+
+    MessageType subMessageType = inputMessageType;
+    for (String fieldNameToken : fieldNameTokens) {
+      Field matchingField = subMessageType.lookupField(fieldNameToken);
+      if (matchingField == null) {
+        throw new IllegalArgumentException(
+            "Unknown field name token '"
+                + fieldNameToken
+                + "' in header request param '"
+                + headerRequestParam
+                + "'");
+      }
+
+      String matchingFieldGetter = namer.getFieldGetFunctionName(matchingField);
+      gettersChain.add(matchingFieldGetter);
+      if (matchingField.getType() != null && matchingField.getType().isMessage()) {
+        subMessageType = matchingField.getType().getMessageType();
+      }
+    }
+
+    HeaderRequestParamView.Builder headerParam =
+        HeaderRequestParamView.newBuilder()
+            .fullyQualifiedName(headerRequestParam)
+            .gettersChain(gettersChain.build());
+
+    return headerParam.build();
   }
 }

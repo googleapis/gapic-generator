@@ -56,7 +56,35 @@
               {@streamingTypeEnum(callable.grpcStreamingType)},
               "{@callable.fullServiceName}/{@callable.protoMethodName}",
               io.grpc.protobuf.ProtoUtils.marshaller({@callable.requestTypeName}.getDefaultInstance()),
-              io.grpc.protobuf.ProtoUtils.marshaller({@callable.responseTypeName}.getDefaultInstance())));
+              io.grpc.protobuf.ProtoUtils.marshaller({@callable.responseTypeName}.getDefaultInstance())),
+          {@requestParamsExtractor(callable)});
+@end
+
+@private requestParamsExtractor(callable)
+  @if callable.hasHeaderRequestParams
+    new RequestParamsExtractor<{@callable.requestTypeName}>() {
+      @@Override
+      public Map<String, String> extract({@callable.requestTypeName} request) {
+        ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+        {@requestParamExtractor(callable.headerRequestParams)}
+        return params.build();
+      }
+    }
+  @else
+    EmptyRequestParamsExtractor.<{@callable.requestTypeName}>of()
+  @end
+@end
+
+@private requestParamExtractor(headerRequestParams)
+  @join headerRequestParam : @headerRequestParams
+    params.put("{@headerRequestParam.fullyQualifiedName}", String.valueOf(request.{@requestParamGetter(headerRequestParam.gettersChain)}));
+  @end
+@end
+
+@private requestParamGetter(gettersChain)
+  @join getter : gettersChain on "."
+    {@getter}()
+  @end
 @end
 
 @private streamingTypeEnum(streamingType)
