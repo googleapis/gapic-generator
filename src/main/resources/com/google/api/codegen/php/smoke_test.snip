@@ -3,4 +3,21 @@
 
 @snippet generate(smokeTest)
     {@renderFileHeader(smokeTest.fileHeader, simpleGeneratedCodeWarning())}
+
+    class {@smokeTest.name} extends GeneratedTest
+    {
+        /**
+         * @@test
+         */
+        public function {@smokeTest.method.name}()
+        {
+            @if smokeTest.requireProjectId
+                $projectId = $_ENV["PROJECT_ID"];
+            @end
+
+            ${@smokeTest.apiMethod.apiVariableName} = new {@smokeTest.apiMethod.apiClassName}();
+            {@initCode(smokeTest.apiMethod.initCode, smokeTest.apiMethod.apiVariableName)}
+            {@methodCallSampleCode(smokeTest.apiMethod)}; @# Just call the method.
+        }
+    }
 @end

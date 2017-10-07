@@ -16,29 +16,20 @@ package com.google.api.codegen.transformer.php;
 
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
-import com.google.api.codegen.transformer.FileHeaderTransformer;
-import com.google.api.codegen.transformer.GapicInterfaceContext;
-import com.google.api.codegen.transformer.GapicMethodContext;
-import com.google.api.codegen.transformer.InitCodeTransformer;
-import com.google.api.codegen.transformer.MockServiceTransformer;
-import com.google.api.codegen.transformer.ModelToViewTransformer;
-import com.google.api.codegen.transformer.ModelTypeTable;
-import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.transformer.TestCaseTransformer;
+import com.google.api.codegen.transformer.*;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.codegen.util.testing.StandardValueProducer;
 import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.codegen.util.testing.ValueProducer;
-import com.google.api.codegen.viewmodel.ClientMethodType;
-import com.google.api.codegen.viewmodel.FileHeaderView;
-import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.api.codegen.viewmodel.*;
 import com.google.api.codegen.viewmodel.testing.*;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
@@ -83,10 +74,10 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
     for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
       views.add(createUnitTestFileView(context));
-      //if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
-      //  context = createContext(apiInterface, productConfig);
-      //  views.add(createSmokeTestClassView(context));
-      //}
+      if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
+        context = createContext(apiInterface, productConfig);
+        views.add(createSmokeTestClassView(context));
+      }
     }
     for (Interface apiInterface :
         mockServiceTransformer.getGrpcInterfacesToMock(model, productConfig)) {
@@ -126,6 +117,14 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
             .toLowerUnderscore());
     testClass.testCases(createTestCaseViews(context));
     testClass.apiHasLongRunningMethods(context.getInterfaceConfig().hasLongRunningOperations());
+    // Add gRPC client imports.
+    for (Interface grpcInterface :
+        mockServiceTransformer
+            .getGrpcInterfacesForService(
+                context.getModel(), context.getProductConfig(), context.getInterface())
+            .values()) {
+      context.getModelTypeTable().getAndSaveNicknameFor(namer.getGrpcClientTypeName(grpcInterface));
+    }
     testClass.mockServices(
         mockServiceTransformer.createMockServices(
             context.getNamer(), context.getModel(), context.getProductConfig()));
@@ -138,7 +137,12 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
     testFile.outputPath(namer.getSourceFilePath(outputPath, name));
     testFile.templateFileName(UNIT_TEST_TEMPLATE_FILE);
 
-    FileHeaderView fileHeader = fileHeaderTransformer.generateFileHeader(context);
+    ImportSectionView importSection =
+        importSectionTransformer.generateImportSection(context.getModelTypeTable().getImports());
+    PhpSurfaceNamer testPackageNamer = new PhpSurfaceNamer(namer.getTestPackageName());
+    FileHeaderView fileHeader =
+        fileHeaderTransformer.generateFileHeader(
+            context.getProductConfig(), importSection, testPackageNamer);
     testFile.fileHeader(fileHeader);
 
     return testFile.build();
@@ -192,7 +196,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
   }
 
   private MockServiceImplFileView createMockServiceImplView(GapicInterfaceContext context) {
-    //addMockServiceImplImports(context);
+    addUnitTestImports(context.getModelTypeTable());
 
     Interface apiInterface = context.getInterface();
     SurfaceNamer namer = context.getNamer();
@@ -201,7 +205,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
     String grpcClassName =
         context
             .getModelTypeTable()
-            .getAndSaveNicknameFor(namer.getGrpcServiceClassName(apiInterface));
+            .getAndSaveNicknameFor(namer.getGrpcClientTypeName(apiInterface));
 
     MockServiceImplFileView.Builder mockServiceImplFile = MockServiceImplFileView.newBuilder();
 
@@ -215,11 +219,83 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
     mockServiceImplFile.outputPath(namer.getSourceFilePath(outputPath, name));
     mockServiceImplFile.templateFileName(MOCK_SERVICE_IMPL_TEMPLATE_FILE);
 
-    // Imports must be done as the last step to catch all imports.
-    FileHeaderView fileHeader = fileHeaderTransformer.generateFileHeader(context);
+    ImportSectionView importSection =
+        importSectionTransformer.generateImportSection(context.getModelTypeTable().getImports());
+    PhpSurfaceNamer testPackageNamer = new PhpSurfaceNamer(namer.getTestPackageName());
+    FileHeaderView fileHeader =
+        fileHeaderTransformer.generateFileHeader(
+            context.getProductConfig(), importSection, testPackageNamer);
     mockServiceImplFile.fileHeader(fileHeader);
 
     return mockServiceImplFile.build();
+  }
+
+  private SmokeTestClassView createSmokeTestClassView(GapicInterfaceContext context) {
+    String outputPath =
+        pathMapper.getOutputPath(context.getInterface(), context.getProductConfig());
+    SurfaceNamer namer = context.getNamer();
+    String name = namer.getSmokeTestClassName(context.getInterfaceConfig());
+
+    SmokeTestClassView.Builder testClass = createSmokeTestClassViewBuilder(context);
+    testClass.name(name);
+    testClass.outputPath(namer.getSourceFilePath(outputPath, name));
+    return testClass.build();
+  }
+
+  private SmokeTestClassView.Builder createSmokeTestClassViewBuilder(
+      GapicInterfaceContext context) {
+    addSmokeTestImports(context.getModelTypeTable());
+
+    Method method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
+    FlatteningConfig flatteningGroup =
+        testCaseTransformer.getSmokeTestFlatteningGroup(
+            context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
+    GapicMethodContext flattenedMethodContext =
+        context.asFlattenedMethodContext(method, flatteningGroup);
+
+    SmokeTestClassView.Builder testClass = SmokeTestClassView.newBuilder();
+    // TODO: we need to remove testCase after we switch to use apiMethod for smoke test
+    TestCaseView testCase = testCaseTransformer.createSmokeTestCaseView(flattenedMethodContext);
+    // TODO: old; OptionalArrayMethodView apiMethod = createSmokeTestCaseApiMethodView(methodContext);
+    // apiMethod is created with a new context so types used only by method documentation (ex: an optional FieldMask)
+    // aren't included in the TypeTable by default.
+    //GapicInterfaceContext subContext = createContext(context.getInterface(), context.getProductConfig());
+    OptionalArrayMethodView apiMethod = createSmokeTestCaseApiMethodView(flattenedMethodContext);
+
+    testClass.apiSettingsClassName(
+        context.getNamer().getApiSettingsClassName(context.getInterfaceConfig()));
+    testClass.apiClassName(context.getNamer().getApiWrapperClassName(context.getInterfaceConfig()));
+    testClass.templateFileName(SMOKE_TEST_TEMPLATE_FILE);
+    testClass.apiMethod(apiMethod);
+    testClass.method(testCase);
+    testClass.requireProjectId(
+        testCaseTransformer.requireProjectIdInSmokeTest(testCase.initCode(), context.getNamer()));
+
+    ImportSectionView importSection =
+        importSectionTransformer.generateImportSection(context.getModelTypeTable().getImports());
+    PhpSurfaceNamer testPackageNamer = new PhpSurfaceNamer(context.getNamer().getTestPackageName());
+    FileHeaderView fileHeader =
+        fileHeaderTransformer.generateFileHeader(
+            context.getProductConfig(), importSection, testPackageNamer);
+    testClass.fileHeader(fileHeader);
+
+    return testClass;
+  }
+
+  private OptionalArrayMethodView createSmokeTestCaseApiMethodView(GapicMethodContext context) {
+    OptionalArrayMethodView initialApiMethodView =
+        new DynamicLangApiMethodTransformer(new PhpApiMethodParamTransformer())
+            .generateMethod(context);
+
+    OptionalArrayMethodView.Builder apiMethodView = initialApiMethodView.toBuilder();
+
+    InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
+    InitCodeView initCodeView =
+        initCodeTransformer.generateInitCode(
+            context, testCaseTransformer.createSmokeTestInitContext(context));
+    apiMethodView.initCode(initCodeView);
+
+    return apiMethodView.build();
   }
 
   private void addUnitTestImports(ModelTypeTable typeTable) {
@@ -237,5 +313,9 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("\\Google\\Longrunning\\GetOperationRequest");
     typeTable.saveNicknameFor("\\Grpc");
     typeTable.saveNicknameFor("\\stdClass");
+  }
+
+  private void addSmokeTestImports(ModelTypeTable typeTable) {
+    typeTable.saveNicknameFor("\\Google\\GAX\\Testing\\GeneratedTest");
   }
 }
