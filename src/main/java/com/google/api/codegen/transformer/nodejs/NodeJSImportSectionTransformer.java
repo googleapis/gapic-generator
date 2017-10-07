@@ -47,7 +47,6 @@ public class NodeJSImportSectionTransformer implements ImportSectionTransformer 
     Interface apiInterface = context.getInterface();
     String configModule = context.getNamer().getClientConfigPath(apiInterface);
     imports.add(createImport("configData", "./" + configModule));
-    imports.add(createImport("extend", "extend"));
     imports.add(createImport("gax", "google-gax"));
     if (new GrpcStubTransformer().generateGrpcStubs(context).size() > 1) {
       imports.add(createImport("merge", "lodash.merge"));

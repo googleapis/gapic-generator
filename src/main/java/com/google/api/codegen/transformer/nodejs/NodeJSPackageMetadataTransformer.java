@@ -209,7 +209,6 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
     dependencies.add(
         PackageDependencyView.create(
             "google-gax", packageConfig.gaxVersionBound(TargetLanguage.NODEJS)));
-    dependencies.add(PackageDependencyView.create("extend", VersionBound.create("3.0", "")));
     if (new InterfaceView().hasMultipleServices(model)) {
       dependencies.add(
           PackageDependencyView.create("lodash.union", VersionBound.create("4.6.0", "")));
