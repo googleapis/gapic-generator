@@ -250,7 +250,7 @@
      */
     static get scopes() {
       return [
-        @join auth_scope : xapi.authScopes on BREAK.add(BREAK)
+        @join auth_scope : xapi.authScopes on BREAK
           '{@auth_scope}',
         @end
       ];
@@ -264,12 +264,12 @@
     getProjectId(callback) {
       return this.auth.getProjectId(callback);
     }
+
+    {@serviceMethodsSection(xapi)}
     @if xapi.pathTemplates
 
       {@pathTemplateSection(xapi)}
     @end
-
-    {@serviceMethodsSection(xapi)}
   }
 
 
@@ -304,7 +304,6 @@
 
     {@createResourceFunction(function, xapi.name)}
   @end
-
   @join function : xapi.parseResourceFunctions
 
     {@createMatchFunction(function, xapi.name)}
