@@ -24,7 +24,9 @@ public class IamResourceTransformer {
   public List<IamResourceView> generateIamResources(InterfaceContext context) {
     List<IamResourceView> resources = new ArrayList<>();
     for (FieldModel field :
-        (context.getProductConfig().getInterfaceConfig(context.getInterfaceModel()))
+        context
+            .getProductConfig()
+            .getInterfaceConfig(context.getInterfaceModel())
             .getIamResources()) {
       String resourceTypeName =
           context

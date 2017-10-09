@@ -117,10 +117,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return (ModelTypeFormatter) typeFormatter;
   }
 
-  public SchemaTypeFormatter getSchemaTypeFormatter() {
-    return (SchemaTypeFormatter) typeFormatter;
-  }
-
   public TypeFormatter getTypeFormatter() {
     return typeFormatter;
   }
@@ -733,13 +729,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
    */
   public String getApiSettingsClassName(InterfaceConfig interfaceConfig) {
     return publicClassName(Name.anyCamel(getInterfaceName(interfaceConfig), "Settings"));
-  }
-
-  /**
-   * The name of the settings class for a particular proto interface; not used in most languages.
-   */
-  public String getApiSettingsClassName(Document document) {
-    return publicClassName(Name.anyCamel(document.name(), "Settings"));
   }
 
   /**

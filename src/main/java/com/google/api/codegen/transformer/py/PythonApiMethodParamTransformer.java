@@ -122,7 +122,6 @@ public class PythonApiMethodParamTransformer implements ApiMethodParamTransforme
         docLines.addAll(namer.getDocLines(field));
         boolean isMessageField = field.isMessage() && !field.isMap();
         boolean isMapContainingMessage = field.isMap() && field.getMapValueField().isMessage();
-
         if (isMessageField || isMapContainingMessage) {
           String messageType;
           if (isMapContainingMessage) {

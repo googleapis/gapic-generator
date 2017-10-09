@@ -346,7 +346,7 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
         ReroutedGrpcView rerouted =
             ReroutedGrpcView.newBuilder()
                 .grpcClientVarName(namer.getReroutedGrpcClientVarName(methodConfig))
-                .typeName(namer.getReroutedGrpcTypeName(context.getModelTypeTable(), methodConfig))
+                .typeName(namer.getReroutedGrpcTypeName(context.getImportTypeTable(), methodConfig))
                 .getMethodName(namer.getReroutedGrpcMethodName(methodConfig))
                 .build();
         reroutedViews.add(rerouted);

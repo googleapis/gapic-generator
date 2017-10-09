@@ -59,7 +59,6 @@ public abstract class ResourceNameMessageConfigs {
     ImmutableMap<String, ResourceNameMessageConfig> messageResourceTypeConfigMap = builder.build();
 
     ListMultimap<String, FieldModel> fieldsByMessage = ArrayListMultimap.create();
-
     Set<String> seenProtoFiles = new HashSet<>();
     for (ProtoFile protoFile : model.getFiles()) {
       if (!seenProtoFiles.contains(protoFile.getSimpleName())) {
