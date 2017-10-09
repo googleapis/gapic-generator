@@ -37,10 +37,12 @@ $ npm install --save @google-cloud/library
    name: formattedName,
    book: book,
  };
- client.updateBook(request).then(responses => {
-   var response = responses[0];
-   // doThingsWith(response)
- }).catch(err => {
+ client.updateBook(request)
+   .then(responses => {
+     var response = responses[0];
+     // doThingsWith(response)
+   })
+   .catch(err => {
      console.error(err);
    });
 ```
@@ -143,10 +145,12 @@ describe('LibraryServiceSmokeTest', function() {
       name: formattedName,
       book: book,
     };
-    client.updateBook(request).then(responses => {
-      var response = responses[0];
-      console.log(response);
-    }).then(done)
+    client.updateBook(request)
+      .then(responses => {
+        var response = responses[0];
+        console.log(response);
+      })
+      .then(done)
       .catch(done);
   });
 });
@@ -2623,10 +2627,12 @@ class LibraryServiceClient {
    * });
    *
    * var shelf = {};
-   * client.createShelf({shelf: shelf}).then(responses => {
-   *   var response = responses[0];
-   *   // doThingsWith(response)
-   * }).catch(err => {
+   * client.createShelf({shelf: shelf})
+   *   .then(responses => {
+   *     var response = responses[0];
+   *     // doThingsWith(response)
+   *   })
+   *   .catch(err => {
    *     console.error(err);
    *   });
    */
@@ -2680,10 +2686,12 @@ class LibraryServiceClient {
    *   name: formattedName,
    *   options: options,
    * };
-   * client.getShelf(request).then(responses => {
-   *   var response = responses[0];
-   *   // doThingsWith(response)
-   * }).catch(err => {
+   * client.getShelf(request)
+   *   .then(responses => {
+   *     var response = responses[0];
+   *     // doThingsWith(response)
+   *   })
+   *   .catch(err => {
    *     console.error(err);
    *   });
    */
@@ -2734,12 +2742,14 @@ class LibraryServiceClient {
    * });
    *
    * // Iterate over all elements.
-   * client.listShelves({}).then(responses => {
-   *   var resources = responses[0];
-   *   for (let i = 0; i < resources.length; i += 1) {
-   *     // doThingsWith(resources[i])
-   *   }
-   * }).catch(err => {
+   * client.listShelves({})
+   *   .then(responses => {
+   *     var resources = responses[0];
+   *     for (let i = 0; i < resources.length; i += 1) {
+   *       // doThingsWith(resources[i])
+   *     }
+   *   })
+   *   .catch(err => {
    *     console.error(err);
    *   });
    *
@@ -2902,10 +2912,12 @@ class LibraryServiceClient {
    *   name: formattedName,
    *   otherShelfName: formattedOtherShelfName,
    * };
-   * client.mergeShelves(request).then(responses => {
-   *   var response = responses[0];
-   *   // doThingsWith(response)
-   * }).catch(err => {
+   * client.mergeShelves(request)
+   *   .then(responses => {
+   *     var response = responses[0];
+   *     // doThingsWith(response)
+   *   })
+   *   .catch(err => {
    *     console.error(err);
    *   });
    */
@@ -2955,10 +2967,12 @@ class LibraryServiceClient {
    *   name: formattedName,
    *   book: book,
    * };
-   * client.createBook(request).then(responses => {
-   *   var response = responses[0];
-   *   // doThingsWith(response)
-   * }).catch(err => {
+   * client.createBook(request)
+   *   .then(responses => {
+   *     var response = responses[0];
+   *     // doThingsWith(response)
+   *   })
+   *   .catch(err => {
    *     console.error(err);
    *   });
    */
@@ -3023,10 +3037,12 @@ class LibraryServiceClient {
    *   books: books,
    *   seriesUuid: seriesUuid,
    * };
-   * client.publishSeries(request).then(responses => {
-   *   var response = responses[0];
-   *   // doThingsWith(response)
-   * }).catch(err => {
+   * client.publishSeries(request)
+   *   .then(responses => {
+   *     var response = responses[0];
+   *     // doThingsWith(response)
+   *   })
+   *   .catch(err => {
    *     console.error(err);
    *   });
    */
@@ -3067,10 +3083,12 @@ class LibraryServiceClient {
    * });
    *
    * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
-   * client.getBook({name: formattedName}).then(responses => {
-   *   var response = responses[0];
-   *   // doThingsWith(response)
-   * }).catch(err => {
+   * client.getBook({name: formattedName})
+   *   .then(responses => {
+   *     var response = responses[0];
+   *     // doThingsWith(response)
+   *   })
+   *   .catch(err => {
    *     console.error(err);
    *   });
    */
@@ -3133,12 +3151,14 @@ class LibraryServiceClient {
    * // Iterate over all elements.
    * var formattedName = client.shelfPath("[SHELF_ID]");
    *
-   * client.listBooks({name: formattedName}).then(responses => {
-   *   var resources = responses[0];
-   *   for (let i = 0; i < resources.length; i += 1) {
-   *     // doThingsWith(resources[i])
-   *   }
-   * }).catch(err => {
+   * client.listBooks({name: formattedName})
+   *   .then(responses => {
+   *     var resources = responses[0];
+   *     for (let i = 0; i < resources.length; i += 1) {
+   *       // doThingsWith(resources[i])
+   *     }
+   *   })
+   *   .catch(err => {
    *     console.error(err);
    *   });
    *
@@ -3317,10 +3337,12 @@ class LibraryServiceClient {
    *   name: formattedName,
    *   book: book,
    * };
-   * client.updateBook(request).then(responses => {
-   *   var response = responses[0];
-   *   // doThingsWith(response)
-   * }).catch(err => {
+   * client.updateBook(request)
+   *   .then(responses => {
+   *     var response = responses[0];
+   *     // doThingsWith(response)
+   *   })
+   *   .catch(err => {
    *     console.error(err);
    *   });
    */
@@ -3368,10 +3390,12 @@ class LibraryServiceClient {
    *   name: formattedName,
    *   otherShelfName: formattedOtherShelfName,
    * };
-   * client.moveBook(request).then(responses => {
-   *   var response = responses[0];
-   *   // doThingsWith(response)
-   * }).catch(err => {
+   * client.moveBook(request)
+   *   .then(responses => {
+   *     var response = responses[0];
+   *     // doThingsWith(response)
+   *   })
+   *   .catch(err => {
    *     console.error(err);
    *   });
    */
@@ -3429,12 +3453,14 @@ class LibraryServiceClient {
    * });
    *
    * // Iterate over all elements.
-   * client.listStrings({}).then(responses => {
-   *   var resources = responses[0];
-   *   for (let i = 0; i < resources.length; i += 1) {
-   *     // doThingsWith(resources[i])
-   *   }
-   * }).catch(err => {
+   * client.listStrings({})
+   *   .then(responses => {
+   *     var resources = responses[0];
+   *     for (let i = 0; i < resources.length; i += 1) {
+   *       // doThingsWith(resources[i])
+   *     }
+   *   })
+   *   .catch(err => {
    *     console.error(err);
    *   });
    *
@@ -3605,10 +3631,12 @@ class LibraryServiceClient {
    * });
    *
    * var formattedName = client.archivedBookPath("[ARCHIVE_PATH]", "[BOOK_ID]");
-   * client.getBookFromArchive({name: formattedName}).then(responses => {
-   *   var response = responses[0];
-   *   // doThingsWith(response)
-   * }).catch(err => {
+   * client.getBookFromArchive({name: formattedName})
+   *   .then(responses => {
+   *     var response = responses[0];
+   *     // doThingsWith(response)
+   *   })
+   *   .catch(err => {
    *     console.error(err);
    *   });
    */
@@ -3657,10 +3685,12 @@ class LibraryServiceClient {
    *   name: formattedName,
    *   altBookName: formattedAltBookName,
    * };
-   * client.getBookFromAnywhere(request).then(responses => {
-   *   var response = responses[0];
-   *   // doThingsWith(response)
-   * }).catch(err => {
+   * client.getBookFromAnywhere(request)
+   *   .then(responses => {
+   *     var response = responses[0];
+   *     // doThingsWith(response)
+   *   })
+   *   .catch(err => {
    *     console.error(err);
    *   });
    */
@@ -3701,10 +3731,12 @@ class LibraryServiceClient {
    * });
    *
    * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
-   * client.getBookFromAbsolutelyAnywhere({name: formattedName}).then(responses => {
-   *   var response = responses[0];
-   *   // doThingsWith(response)
-   * }).catch(err => {
+   * client.getBookFromAbsolutelyAnywhere({name: formattedName})
+   *   .then(responses => {
+   *     var response = responses[0];
+   *     // doThingsWith(response)
+   *   })
+   *   .catch(err => {
    *     console.error(err);
    *   });
    */
@@ -3967,12 +3999,14 @@ class LibraryServiceClient {
    *   shelves: shelves,
    * };
    *
-   * client.findRelatedBooks(request).then(responses => {
-   *   var resources = responses[0];
-   *   for (let i = 0; i < resources.length; i += 1) {
-   *     // doThingsWith(resources[i])
-   *   }
-   * }).catch(err => {
+   * client.findRelatedBooks(request)
+   *   .then(responses => {
+   *     var resources = responses[0];
+   *     for (let i = 0; i < resources.length; i += 1) {
+   *       // doThingsWith(resources[i])
+   *     }
+   *   })
+   *   .catch(err => {
    *     console.error(err);
    *   });
    *
@@ -4115,10 +4149,12 @@ class LibraryServiceClient {
    *   resource: formattedResource,
    *   tag: tag,
    * };
-   * client.addTag(request).then(responses => {
-   *   var response = responses[0];
-   *   // doThingsWith(response)
-   * }).catch(err => {
+   * client.addTag(request)
+   *   .then(responses => {
+   *     var response = responses[0];
+   *     // doThingsWith(response)
+   *   })
+   *   .catch(err => {
    *     console.error(err);
    *   });
    */
@@ -4168,10 +4204,12 @@ class LibraryServiceClient {
    *   resource: formattedResource,
    *   label: label,
    * };
-   * client.addLabel(request).then(responses => {
-   *   var response = responses[0];
-   *   // doThingsWith(response)
-   * }).catch(err => {
+   * client.addLabel(request)
+   *   .then(responses => {
+   *     var response = responses[0];
+   *     // doThingsWith(response)
+   *   })
+   *   .catch(err => {
    *     console.error(err);
    *   });
    */
@@ -4214,49 +4252,54 @@ class LibraryServiceClient {
    * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
    *
    * // Handle the operation using the promise pattern.
-   * client.getBigBook({name: formattedName}).then(responses => {
-   *   var operation = responses[0];
-   *   var initialApiResponse = responses[1];
+   * client.getBigBook({name: formattedName})
+   *   .then(responses => {
+   *     var operation = responses[0];
+   *     var initialApiResponse = responses[1];
    *
-   *   // Operation#promise starts polling for the completion of the LRO.
-   *   return operation.promise();
-   * }).then(responses => {
-   *   // The final result of the operation.
-   *   var result = responses[0];
+   *     // Operation#promise starts polling for the completion of the LRO.
+   *     return operation.promise();
+   *   })
+   *   .then(responses => {
+   *     // The final result of the operation.
+   *     var result = responses[0];
    *
-   *   // The metadata value of the completed operation.
-   *   var metadata = responses[1];
+   *     // The metadata value of the completed operation.
+   *     var metadata = responses[1];
    *
-   *   // The response of the api call returning the complete operation.
-   *   var finalApiResponse = responses[2];
-   * }).catch(err => {
+   *     // The response of the api call returning the complete operation.
+   *     var finalApiResponse = responses[2];
+   *   })
+   *   .catch(err => {
    *     console.error(err);
    *   });
    *
    * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
    *
    * // Handle the operation using the event emitter pattern.
-   * client.getBigBook({name: formattedName}).then(responses => {
-   *   var operation = responses[0];
-   *   var initialApiResponse = responses[1];
+   * client.getBigBook({name: formattedName})
+   *   .then(responses => {
+   *     var operation = responses[0];
+   *     var initialApiResponse = responses[1];
    *
-   *   // Adding a listener for the "complete" event starts polling for the
-   *   // completion of the operation.
-   *   operation.on('complete', (result, metadata, finalApiResponse) => {
-   *     // doSomethingWith(result);
-   *   });
+   *     // Adding a listener for the "complete" event starts polling for the
+   *     // completion of the operation.
+   *     operation.on('complete', (result, metadata, finalApiResponse) => {
+   *       // doSomethingWith(result);
+   *     });
    *
-   *   // Adding a listener for the "progress" event causes the callback to be
-   *   // called on any change in metadata when the operation is polled.
-   *   operation.on('progress', (metadata, apiResponse) => {
-   *     // doSomethingWith(metadata)
+   *     // Adding a listener for the "progress" event causes the callback to be
+   *     // called on any change in metadata when the operation is polled.
+   *     operation.on('progress', (metadata, apiResponse) => {
+   *       // doSomethingWith(metadata)
+   *     })
+   *
+   *     // Adding a listener for the "error" event handles any errors found during polling.
+   *     operation.on('error', err => {
+   *       // throw(err);
+   *     })
    *   })
-   *
-   *   // Adding a listener for the "error" event handles any errors found during polling.
-   *   operation.on('error', err => {
-   *     // throw(err);
-   *   })
-   * }).catch(err => {
+   *   .catch(err => {
    *     console.error(err);
    *   });
    */
@@ -4299,49 +4342,54 @@ class LibraryServiceClient {
    * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
    *
    * // Handle the operation using the promise pattern.
-   * client.getBigNothing({name: formattedName}).then(responses => {
-   *   var operation = responses[0];
-   *   var initialApiResponse = responses[1];
+   * client.getBigNothing({name: formattedName})
+   *   .then(responses => {
+   *     var operation = responses[0];
+   *     var initialApiResponse = responses[1];
    *
-   *   // Operation#promise starts polling for the completion of the LRO.
-   *   return operation.promise();
-   * }).then(responses => {
-   *   // The final result of the operation.
-   *   var result = responses[0];
+   *     // Operation#promise starts polling for the completion of the LRO.
+   *     return operation.promise();
+   *   })
+   *   .then(responses => {
+   *     // The final result of the operation.
+   *     var result = responses[0];
    *
-   *   // The metadata value of the completed operation.
-   *   var metadata = responses[1];
+   *     // The metadata value of the completed operation.
+   *     var metadata = responses[1];
    *
-   *   // The response of the api call returning the complete operation.
-   *   var finalApiResponse = responses[2];
-   * }).catch(err => {
+   *     // The response of the api call returning the complete operation.
+   *     var finalApiResponse = responses[2];
+   *   })
+   *   .catch(err => {
    *     console.error(err);
    *   });
    *
    * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
    *
    * // Handle the operation using the event emitter pattern.
-   * client.getBigNothing({name: formattedName}).then(responses => {
-   *   var operation = responses[0];
-   *   var initialApiResponse = responses[1];
+   * client.getBigNothing({name: formattedName})
+   *   .then(responses => {
+   *     var operation = responses[0];
+   *     var initialApiResponse = responses[1];
    *
-   *   // Adding a listener for the "complete" event starts polling for the
-   *   // completion of the operation.
-   *   operation.on('complete', (result, metadata, finalApiResponse) => {
-   *     // doSomethingWith(result);
-   *   });
+   *     // Adding a listener for the "complete" event starts polling for the
+   *     // completion of the operation.
+   *     operation.on('complete', (result, metadata, finalApiResponse) => {
+   *       // doSomethingWith(result);
+   *     });
    *
-   *   // Adding a listener for the "progress" event causes the callback to be
-   *   // called on any change in metadata when the operation is polled.
-   *   operation.on('progress', (metadata, apiResponse) => {
-   *     // doSomethingWith(metadata)
+   *     // Adding a listener for the "progress" event causes the callback to be
+   *     // called on any change in metadata when the operation is polled.
+   *     operation.on('progress', (metadata, apiResponse) => {
+   *       // doSomethingWith(metadata)
+   *     })
+   *
+   *     // Adding a listener for the "error" event handles any errors found during polling.
+   *     operation.on('error', err => {
+   *       // throw(err);
+   *     })
    *   })
-   *
-   *   // Adding a listener for the "error" event handles any errors found during polling.
-   *   operation.on('error', err => {
-   *     // throw(err);
-   *   })
-   * }).catch(err => {
+   *   .catch(err => {
    *     console.error(err);
    *   });
    */
@@ -4497,10 +4545,12 @@ class LibraryServiceClient {
    *   requiredRepeatedFixed64: requiredRepeatedFixed64,
    *   requiredMap: requiredMap,
    * };
-   * client.testOptionalRequiredFlatteningParams(request).then(responses => {
-   *   var response = responses[0];
-   *   // doThingsWith(response)
-   * }).catch(err => {
+   * client.testOptionalRequiredFlatteningParams(request)
+   *   .then(responses => {
+   *     var response = responses[0];
+   *     // doThingsWith(response)
+   *   })
+   *   .catch(err => {
    *     console.error(err);
    *   });
    */
