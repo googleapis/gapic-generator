@@ -113,10 +113,10 @@
    * <code>
    * {@xapiClassDoc.settingsClassName} {@xapiClassDoc.settingsVarName} =
    *     {@xapiClassDoc.settingsClassName}.newBuilder()
-   *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
+   *         .setCredentialsProvider(FixedCredentialsProvider.of(myCredentials))
    *         .build();
    * {@xapiClassDoc.apiClassName} {@xapiClassDoc.apiVarName} =
-   *     {@xapiClassDoc.apiClassName}.create({@xapiClassDoc.settingsVarName});
+   *     {@xapiClassDoc.apiClassName}.of({@xapiClassDoc.settingsVarName});
    * </code>
    * </pre>
    *
@@ -126,14 +126,12 @@
    * <code>
    * {@xapiClassDoc.settingsClassName} {@xapiClassDoc.settingsVarName} =
    *     {@xapiClassDoc.settingsClassName}.newBuilder()
-   *         .setTransportProvider({@xapiClassDoc.settingsClassName}.{@xapiClassDoc.defaultTransportProviderBuilder}()
-   *             .setChannelProvider({@xapiClassDoc.settingsClassName}.{@xapiClassDoc.defaultChannelProviderBuilder}()
-   *                 .setEndpoint(myEndpoint)
-   *                 .build())
+   *         .setTransportChannelProvider({@xapiClassDoc.settingsClassName}.{@xapiClassDoc.defaultTransportProviderBuilder}()
+   *             .setEndpoint(myEndpoint)
    *             .build())
    *         .build();
    * {@xapiClassDoc.apiClassName} {@xapiClassDoc.apiVarName} =
-   *     {@xapiClassDoc.apiClassName}.create({@xapiClassDoc.settingsVarName});
+   *     {@xapiClassDoc.apiClassName}.of({@xapiClassDoc.settingsVarName});
    * </code>
    * </pre>
    */
@@ -207,8 +205,22 @@
   @if xapiClass.hasDefaultInstance
     /**
      * Constructs an instance of {@xapiClass.name} with default settings.
+     *
+     * @@deprecated Use of() instead.
      */
+    @@Deprecated
     public static final {@xapiClass.name} create() throws IOException {
+      return of();
+    }
+    {@""}
+
+    /**
+     * Constructs an instance of {@xapiClass.name} with default settings.
+     *
+     * @@deprecated Use of() instead.
+     */
+    @@Deprecated
+    public static final {@xapiClass.name} of() throws IOException {
       return create({@xapiClass.settingsClassName}.newBuilder().build());
     }
     {@""}
@@ -218,8 +230,30 @@
    * Constructs an instance of {@xapiClass.name}, using the given settings.
    * The channels are created based on the settings passed in, or defaults for any
    * settings that are not set.
+   *
+   * @@deprecated Use of({@xapiClass.settingsClassName}) instead.
    */
+  @@Deprecated
   public static final {@xapiClass.name} create({@xapiClass.settingsClassName} settings) throws IOException {
+    return of(settings);
+  }
+
+  /**
+   * Constructs an instance of {@xapiClass.name}, using the given stub for making calls. This is for
+   * advanced usage - prefer to use {@xapiClass.settingsClassName}}.
+   * @@deprecated Use of({@xapiClass.stubInterfaceName}) instead.
+   */
+  @@Deprecated
+  public static final {@xapiClass.name} create({@xapiClass.stubInterfaceName} stub) {
+    return of(stub);
+  }
+
+  /**
+   * Constructs an instance of {@xapiClass.name}, using the given settings.
+   * The channels are created based on the settings passed in, or defaults for any
+   * settings that are not set.
+   */
+  public static final {@xapiClass.name} of({@xapiClass.settingsClassName} settings) throws IOException {
     return new {@xapiClass.name}(settings);
   }
 
@@ -227,7 +261,8 @@
    * Constructs an instance of {@xapiClass.name}, using the given stub for making calls. This is for
    * advanced usage - prefer to use {@xapiClass.settingsClassName}}.
    */
-  public static final {@xapiClass.name} create({@xapiClass.stubInterfaceName} stub) {
+  @@BetaApi
+  public static final {@xapiClass.name} of({@xapiClass.stubInterfaceName} stub) {
     return new {@xapiClass.name}(stub);
   }
 
@@ -240,7 +275,7 @@
     this.settings = settings;
     this.stub = settings.createStub();
     @if xapiClass.hasLongRunningOperations
-      this.operationsClient = OperationsClient.create(this.stub.getOperationsStub());
+      this.operationsClient = OperationsClient.of(this.stub.getOperationsStub());
     @end
   }
 
@@ -248,7 +283,7 @@
     this.settings = null;
     this.stub = stub;
     @if xapiClass.hasLongRunningOperations
-      this.operationsClient = OperationsClient.create(this.stub.getOperationsStub());
+      this.operationsClient = OperationsClient.of(this.stub.getOperationsStub());
     @end
   }
   {@""}
@@ -471,7 +506,7 @@
 
   @end
   {@apiMethod.visibility} final OperationFuture<{@apiMethod.responseTypeName}, \
-      {@apiMethod.operationMethod.metadataTypeName}, Operation> {@apiMethod.name}(\
+      {@apiMethod.operationMethod.metadataTypeName}> {@apiMethod.name}(\
       {@paramList(apiMethod.methodParams)}) {
     {@flattenedRequestBuildingCode(apiMethod)}
     return {@apiMethod.name}(request);
@@ -487,7 +522,7 @@
 
   @end
   {@apiMethod.requestObjectMethod.accessModifier} final OperationFuture<\
-      {@apiMethod.responseTypeName}, {@apiMethod.operationMethod.metadataTypeName}, Operation> \
+      {@apiMethod.responseTypeName}, {@apiMethod.operationMethod.metadataTypeName}> \
       {@apiMethod.name}({@apiMethod.serviceRequestTypeName} request) {
     return {@apiMethod.requestObjectMethod.callableMethodName}().futureCall(request);
   }
@@ -502,7 +537,7 @@
 
   @end
   {@apiMethod.visibility} final OperationCallable<{@apiMethod.serviceRequestTypeName}, \
-      {@apiMethod.responseTypeName}, {@apiMethod.operationMethod.metadataTypeName}, Operation> \
+      {@apiMethod.responseTypeName}, {@apiMethod.operationMethod.metadataTypeName}> \
       {@apiMethod.name}() {
     return stub.{@apiMethod.callableMethod.callableName}();
   }

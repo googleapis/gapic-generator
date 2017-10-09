@@ -93,9 +93,6 @@ public abstract class StaticLangSettingsView {
   public abstract String transportNameGetter();
 
   @Nullable // Used in Java
-  public abstract String defaultChannelProviderBuilder();
-
-  @Nullable // Used in Java
   public abstract String defaultTransportProviderBuilder();
 
   @Nullable // Used in Java
@@ -158,8 +155,6 @@ public abstract class StaticLangSettingsView {
     public abstract Builder rpcTransportName(String val);
 
     public abstract Builder transportNameGetter(String val);
-
-    public abstract Builder defaultChannelProviderBuilder(String val);
 
     public abstract Builder defaultTransportProviderBuilder(String val);
 

@@ -690,8 +690,6 @@ public class StaticLangApiMethodTransformer {
       callableImplType = ApiCallableImplType.of(methodConfig.getGrpcStreamingType());
     } else if (methodConfig.isBatching()) {
       callableImplType = ApiCallableImplType.BatchingApiCallable;
-    } else if (methodConfig.isLongRunningOperation()) {
-      callableImplType = ApiCallableImplType.InitialOperationApiCallable;
     }
 
     methodViewBuilder.callableMethod(

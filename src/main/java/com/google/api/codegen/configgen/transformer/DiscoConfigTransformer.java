@@ -121,7 +121,7 @@ public class DiscoConfigTransformer {
 
       retryTransformer.generateRetryDefinitions(
           interfaceView,
-          ImmutableList.of("SC_SERVICE_UNAVAILABLE", "SC_GATEWAY_TIMEOUT"),
+          ImmutableList.of("UNAVAILABLE", "DEADLINE_EXCEEDED"),
           ImmutableList.<String>of());
       interfaceView.collections(collectionTransformer.generateCollections(collectionNameMap));
       interfaceView.methods(

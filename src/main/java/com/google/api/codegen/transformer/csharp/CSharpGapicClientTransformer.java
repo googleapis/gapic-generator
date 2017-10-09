@@ -255,7 +255,6 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     for (ApiCallableView call : apiCallableTransformer.generateStaticLangApiCallables(context)) {
       if (call.type() == ApiCallableImplType.SimpleApiCallable
           || call.type() == ApiCallableImplType.BatchingApiCallable
-          || call.type() == ApiCallableImplType.InitialOperationApiCallable
           || call.type() == ApiCallableImplType.BidiStreamingApiCallable
           || call.type() == ApiCallableImplType.ServerStreamingApiCallable) {
         callables.add(call);

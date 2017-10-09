@@ -24,7 +24,6 @@ public enum ApiCallableImplType {
   BidiStreamingApiCallable(ServiceMethodType.GrpcBidiStreamingMethod),
   ServerStreamingApiCallable(ServiceMethodType.GrpcServerStreamingMethod),
   ClientStreamingApiCallable(ServiceMethodType.GrpcClientStreamingMethod),
-  InitialOperationApiCallable(ServiceMethodType.UnaryMethod),
   OperationApiCallable(ServiceMethodType.LongRunningMethod);
 
   private ServiceMethodType serviceMethodType;

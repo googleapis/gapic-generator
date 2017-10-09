@@ -243,22 +243,6 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getDirectCallableTypeName(ServiceMethodType serviceMethodType) {
-    switch (serviceMethodType) {
-      case UnaryMethod:
-        return "UnaryCallable";
-      case GrpcBidiStreamingMethod:
-        return "BidiStreamingCallable";
-      case GrpcServerStreamingMethod:
-        return "ServerStreamingCallable";
-      case GrpcClientStreamingMethod:
-        return "ClientStreamingCallable";
-      default:
-        return getNotImplementedString("getDirectCallableTypeName() for " + serviceMethodType);
-    }
-  }
-
-  @Override
   public String getCreateCallableFunctionName(ServiceMethodType serviceMethodType) {
     switch (serviceMethodType) {
       case UnaryMethod:
@@ -292,6 +276,12 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   @Override
   public String getBatchingDescriptorConstName(MethodModel method) {
     return inittedConstantName(Name.upperCamel(method.getSimpleName()).join("batching_desc"));
+  }
+
+  @Override
+  /** The name of the settings member name for the given method. */
+  public String getOperationSettingsMemberName(MethodModel method) {
+    return publicMethodName(Name.upperCamel(method.getSimpleName(), "OperationSettings"));
   }
 
   @Override

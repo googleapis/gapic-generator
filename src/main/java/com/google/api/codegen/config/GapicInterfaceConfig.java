@@ -274,11 +274,7 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
   }
 
   public GapicMethodConfig getMethodConfig(String methodSimpleName, String fullName) {
-    GapicMethodConfig methodConfig = getMethodConfigMap().get(methodSimpleName);
-    if (methodConfig == null) {
-      throw new IllegalArgumentException("no method config for method '" + fullName + "'");
-    }
-    return methodConfig;
+    return getMethodConfigMap().get(methodSimpleName);
   }
 
   @Override

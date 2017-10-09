@@ -44,27 +44,26 @@
 @private constants(stubClass)
   private static final String BASE_URL = "{@stubClass.baseUrl}";
 
-  @join callable : stubClass.directCallables
-    {@httpMethodCallable(callable)}
+  @join methodDescriptor : stubClass.methodDescriptors
+    {@httpMethodCallable(methodDescriptor)}
   @end
   {@""}
 @end
 
-@private httpMethodCallable(callable)
-  private static final {@callable.interfaceTypeName}<{@callable.requestTypeName}, {@callable.responseTypeName}> {@callable.name} =
-      HttpJsonCallableFactory.{@callable.createCallableFunctionName}(
-          ApiMethodDescriptor.<{@callable.requestTypeName}, {@callable.responseTypeName}>newBuilder()
-              .setMethodName("{@callable.httpMethod.fullMethodName}")
-              .setRequestInstance({@callable.requestTypeName}.getDefaultInstance())
-              @if callable.hasResponse
-                .setResponseInstance({@callable.responseTypeName}.getDefaultInstance())
-              @end
-              .setEndpointPathTemplate("{@callable.httpMethod.pathTemplate}")
-              .setPathParams({@paramsInMethodDescriptor(callable.httpMethod.pathParams)})
-              .setQueryParams({@paramsInMethodDescriptor(callable.httpMethod.queryParams)})
-              .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter())
-              .setHttpMethod(HttpMethods.{@callable.httpMethod.httpMethod})
-              .build());
+@private httpMethodCallable(methodDescriptor)
+  private static final ApiMethodDescriptor<{@methodDescriptor.requestTypeName}, {@methodDescriptor.responseTypeName}> {@methodDescriptor.name} =
+      ApiMethodDescriptor.<{@methodDescriptor.requestTypeName}, {@methodDescriptor.responseTypeName}>newBuilder()
+          .setMethodName("{@methodDescriptor.httpMethod.fullMethodName}")
+          .setRequestInstance({@methodDescriptor.requestTypeName}.getDefaultInstance())
+          @if methodDescriptor.hasResponse
+            .setResponseInstance({@methodDescriptor.responseTypeName}.getDefaultInstance())
+          @end
+          .setEndpointPathTemplate("{@methodDescriptor.httpMethod.pathTemplate}")
+          .setPathParams({@paramsInMethodDescriptor(methodDescriptor.httpMethod.pathParams)})
+          .setQueryParams({@paramsInMethodDescriptor(methodDescriptor.httpMethod.queryParams)})
+          .setHttpRequestFormatter(new ApiMessageHttpRequestFormatter())
+          .setHttpMethod(HttpMethods.{@methodDescriptor.httpMethod.httpMethod})
+          .build());
 @end
 
 @private paramsInMethodDescriptor(params)
@@ -118,6 +117,21 @@
   @end
 @end
 
+@private createCallableMethodName(callable)
+  @switch callable.type
+  @case "SimpleApiCallable"
+    createUnaryCallable
+  @case "PagedApiCallable"
+    createPagedCallable
+  @case "UnpagedApiCallable"
+    createUnpagedCallable
+  @case "BatchingApiCallable"
+    createBatchingCallable
+  @default
+    $unhandledCase: {@callable.type}$
+  @end
+@end
+
 @private constructors(stubClass)
   public static final {@stubClass.name} create({@stubClass.settingsClassName} settings) throws IOException {
     return new {@stubClass.name}(settings, ClientContext.create(settings));
@@ -137,30 +151,16 @@
       this.operationsStub = GrpcOperationsStub.create(clientContext);
     @end
 
+    @join methodDescriptor : stubClass.methodDescriptors
+      HttpJsonCallSettings<{@methodDescriptor.requestTypeName}, {@methodDescriptor.responseTypeName}> {@methodDescriptor.transportSettingsVar} =
+          HttpJsonCallSettings.<{@methodDescriptor.requestTypeName}, {@methodDescriptor.responseTypeName}>newBuilder()
+              .setMethodDescriptor({@methodDescriptor.name})
+              .build();
+    @end
+
     @join callable : stubClass.apiCallables
-      @switch callable.type
-      @case "SimpleApiCallable"
-        this.{@callable.name} = HttpJsonCallableFactory.create({@callable.grpcDirectCallableName},\
-            settings.{@callable.settingsFunctionName}(), clientContext);
-      @case "PagedApiCallable"
-        this.{@callable.name} =
-            HttpJsonCallableFactory.createPagedVariant({@callable.grpcDirectCallableName},\
-            settings.{@callable.settingsFunctionName}(), clientContext);
-      @case "BatchingApiCallable"
-        this.{@callable.name} = HttpJsonCallableFactory.create({@callable.grpcDirectCallableName},\
-            settings.{@callable.settingsFunctionName}(), clientContext);
-      @case "StreamingApiCallable"
-        this.{@callable.name} = HttpJsonCallableFactory.create({@callable.grpcDirectCallableName},\
-            settings.{@callable.settingsFunctionName}(), clientContext);
-      @case "InitialOperationApiCallable"
-        this.{@callable.name} = HttpJsonCallableFactory.create({@callable.grpcDirectCallableName},\
-            settings.{@callable.settingsFunctionName}().getInitialCallSettings(), clientContext);
-      @case "OperationApiCallable"
-        this.{@callable.name} = HttpJsonCallableFactory.create({@callable.grpcDirectCallableName},\
-            settings.{@callable.settingsFunctionName}(), clientContext, this.operationsStub);
-      @default
-        $unhandledCase: {@callable.type}$
-      @end
+      this.{@callable.name} = HttpJsonCallableFactory.{@createCallableMethodName(callable)}({@callable.transportSettingsVar},\
+          settings.{@callable.settingsFunctionName}(), clientContext);
     @end
 
     backgroundResources = new BackgroundResourceAggregation(clientContext.getBackgroundResources());

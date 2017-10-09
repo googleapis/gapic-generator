@@ -41,6 +41,10 @@ public abstract class ApiCallableView {
     return grpcStreamingType() != GrpcStreamingType.NonStreaming;
   }
 
+  public boolean isLongRunning() {
+    return type() == ApiCallableImplType.OperationApiCallable;
+  }
+
   public abstract String name();
 
   public abstract String methodName();
@@ -54,7 +58,9 @@ public abstract class ApiCallableView {
   // Used in C#
   public abstract String grpcClientVarName();
 
-  public abstract String grpcDirectCallableName();
+  public abstract String methodDescriptorName();
+
+  public abstract String transportSettingsVar();
 
   @Nullable
   public abstract HttpMethodView httpMethod();
@@ -90,7 +96,9 @@ public abstract class ApiCallableView {
 
     public abstract Builder grpcClientVarName(String name);
 
-    public abstract Builder grpcDirectCallableName(String name);
+    public abstract Builder methodDescriptorName(String name);
+
+    public abstract Builder transportSettingsVar(String val);
 
     public abstract Builder httpMethod(HttpMethodView val);
 

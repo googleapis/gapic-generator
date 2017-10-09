@@ -42,7 +42,7 @@ public class MockServiceTransformer {
       interfaces.putAll(getGrpcInterfacesForService(model, productConfig, apiInterface));
     }
 
-    return new ArrayList(interfaces.values());
+    return new ArrayList<>(interfaces.values());
   }
 
   public Map<String, InterfaceModel> getGrpcInterfacesForService(
@@ -64,6 +64,9 @@ public class MockServiceTransformer {
     List<MethodModel> methods = context.getInterfaceMethods();
     ArrayList<MockGrpcMethodView> mocks = new ArrayList<>(methods.size());
     for (MethodModel method : methods) {
+      if (context.getMethodConfig(method) == null) {
+        continue;
+      }
       MethodContext methodContext = context.asRequestMethodContext(method);
       String requestTypeName =
           method.getAndSaveRequestTypeName(methodContext.getTypeTable(), methodContext.getNamer());
