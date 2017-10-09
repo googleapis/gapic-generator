@@ -48,9 +48,7 @@ public class NodeJSImportSectionTransformer implements ImportSectionTransformer 
     String configModule = context.getNamer().getClientConfigPath(apiInterface);
     imports.add(createImport("gapicConfig", "./" + configModule));
     imports.add(createImport("gax", "google-gax"));
-    if (new GrpcStubTransformer().generateGrpcStubs(context).size() > 1) {
-      imports.add(createImport("merge", "lodash.merge"));
-    }
+    imports.add(createImport("merge", "lodash.merge"));
     imports.add(createImport("path", "path"));
     if (context.getInterfaceConfig().hasLongRunningOperations()) {
       imports.add(createImport("protobuf", "protobufjs"));
