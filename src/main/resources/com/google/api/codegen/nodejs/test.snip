@@ -353,17 +353,9 @@
 
 @private clientInit(testClass, apiTest)
   @if apiTest.fileHeader.hasVersion
-    var client = new {@apiTest.localPackageName}Module.{@apiTest.fileHeader.version}.{@testClass.apiClassName}{@clientBuilderCall(testClass, apiTest)};
+    var client = new {@apiTest.localPackageName}Module.{@apiTest.fileHeader.version}.{@testClass.apiClassName}();
   @else
-    var client = new {@apiTest.localPackageName}Module.{@testClass.apiClassName}{@clientBuilderCall(testClass, apiTest)};
-  @end
-@end
-
-@private clientBuilderCall(testClass, apiTest)
-  @if apiTest.packageHasMultipleServices
-    .{@testClass.packageServiceName}()
-  @else
-    ()
+    var client = new {@apiTest.localPackageName}Module.{@testClass.apiClassName}();
   @end
 @end
 
