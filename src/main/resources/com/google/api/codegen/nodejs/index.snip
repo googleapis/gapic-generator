@@ -8,41 +8,12 @@
    */
   'use strict';
 
-  @join require : index.requireViews
-    var {@require.clientName} = require('./{@require.fileName}');
-  @end
-  var gax = require('google-gax');
-  var extend = require('extend');
-  @if index.hasMultipleServices
-    var union = require('lodash.union');
+  @join client : index.requireViews
+    const {@client.clientName} = require('./{@client.fileName}');
   @end
 
-  function {@index.apiVersion}(options) {
-    options = extend({
-      scopes: {@index.apiVersion}.ALL_SCOPES
-    }, options);
-    var gaxGrpc = gax.grpc(options);
-    @if index.hasMultipleServices
-      var result = {};
-      @join require : index.requireViews
-        extend(result, {@require.clientName}(gaxGrpc));
-      @end
-      return result;
-    @else
-      return {@index.primaryService.clientName}(gaxGrpc);
-    @end
-  }
-
-  {@index.apiVersion}.SERVICE_ADDRESS = {@index.primaryService.clientName}.SERVICE_ADDRESS;
-  @if index.hasMultipleServices
-    {@index.apiVersion}.ALL_SCOPES = union(
-      @join require : index.requireViews on ", ".add(BREAK)
-        {@require.clientName}.ALL_SCOPES
-      @end
-    );
-  @else
-    {@index.apiVersion}.ALL_SCOPES = {@index.primaryService.clientName}.ALL_SCOPES;
+  @join client : index.requireViews
+    module.exports.{@client.clientName} = {@client.clientName};
   @end
 
-  module.exports = {@index.apiVersion};
 @end

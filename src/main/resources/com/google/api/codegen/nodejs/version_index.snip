@@ -1,133 +1,23 @@
 @extends "nodejs/common.snip"
 
 @snippet generate(index)
-  {@header(index.fileHeader)}
-
-  {@imports(index)}
-
-  {@constants()}
-
-  {@clients(index)}
-
-  {@protos(index)}
-
-  {@exports(index)}
-@end
-
-@private header(fileHeader)
-  /*
-   {@comments(fileHeader.copyrightLines)}
+  /**
+   {@comments(index.fileHeader.copyrightLines)}
    *
-   {@comments(fileHeader.licenseLines)}
+   {@comments(index.fileHeader.licenseLines)}
    */
+
   'use strict';
-@end
 
-@private imports(index)
-  # TODO(landrito): move this to an import section transformer.
-  var extend = require('extend');
+  const VERSION = require('../package.json').version;
+
+  // Import the clients for each version supported by this package.
   var gapic = {
-    {@index.apiVersion}: require('./{@index.apiVersion}')
+    {@index.apiVersion}: require('./{@index.apiVersion}'),
   };
-  var gaxGrpc = require('google-gax').grpc();
-  var path = require('path');
-@end
 
-@private constants()
-   const VERSION = require('../package.json').version;
- @end
+  module.exports = gapic.{@index.apiVersion};
+  module.exports.{@index.apiVersion} = gapic.{@index.apiVersion};
+  module.exports.default = Object.assign({}, module.exports);
 
-@private clients(index)
-  @join service : index.requireViews on BREAK.add(BREAK)
-    {@client(service, index.apiVersion)}
-  @end
-@end
-
-@private client(service, version)
-   /**
-    * Create an {@service.clientName} with additional helpers for common
-    * tasks.
-    *
-    {@comments(@service.doc.lines)}
-    *
-    * @@param {object=} options - [Configuration object](#/docs).
-    * @@param {object=} options.credentials - Credentials object.
-    * @@param {string=} options.credentials.client_email
-    * @@param {string=} options.credentials.private_key
-    * @@param {string=} options.email - Account email address. Required when using a
-    *     .pem or .p12 keyFilename.
-    * @@param {string=} options.keyFilename - Full path to the a .json, .pem, or
-    *     .p12 key downloaded from the Google Developers Console. If you provide
-    *     a path to a JSON file, the projectId option above is not necessary.
-    *     NOTE: .pem and .p12 require you to specify options.email as well.
-    * @@param {number=} options.port - The port on which to connect to
-    *     the remote host.
-    * @@param {string=} options.projectId - The project ID from the Google
-    *     Developer's Console, e.g. 'grape-spaceship-123'. We will also check
-    *     the environment variable GCLOUD_PROJECT for your project ID. If your
-    *     app is running in an environment which supports
-    *     {@@link https://developers.google.com/identity/protocols/application-default-credentials Application Default Credentials},
-    *     your project ID will be detected automatically.
-    * @@param {function=} options.promise - Custom promise module to use instead
-    *     of native Promises.
-    * @@param {string=} options.servicePath - The domain name of the
-    *     API remote host.
-    */
-   function {@service.localName}(options) {
-     // Define the header options.
-     options = extend({}, options, {
-       libName: 'gccl',
-       libVersion: VERSION
-     });
-
-     // Create the client with the provided options.
-     var client = gapic.{@version}(options).{@service.clientName}(options);
-     return client;
-   }
-@end
-
-@private protos(index)
-  var {@index.apiVersion}Protos = {};
-
-  @join stub : index.stubs on BREAK.add(BREAK)
-    {@messages(index.isGcloud, index.apiVersion, stub)}
-  @end
-@end
-
-@private messages(isGcloud, version, stub)
-    extend({@version}Protos, gaxGrpc.loadProto(
-      # This does not follow the import in main.snip since version index is not generated
-      # for unversioned Apis. This will be changed when top level indexes are supported
-      # for unversioned Apis.
-      path.join(__dirname, '..', 'protos'), '{@stub.protoFileName}')
-        .{@stub.namespace});
-@end
-
-@private exports(index)
-  @if index.hasMultipleServices
-    {@multipleServicesExports(index.requireViews, index.apiVersion)}
-  @else
-    {@singleServiceExport(index.primaryService, index.apiVersion)}
-  @end
-@end
-
-@private multipleServicesExports(services, version)
-  @join service : services
-    module.exports.{@service.serviceName} = {@service.localName};
-  @end
-
-  module.exports.types = {@version}Protos;
-
-  module.exports.{@version} = {};
-  @join service : services
-    module.exports.{@version}.{@service.serviceName} = {@service.localName};
-  @end
-  module.exports.{@version}.types = {@version}Protos;
-@end
-
-@private singleServiceExport(service, version)
-  module.exports = {@service.localName};
-  module.exports.types = {@version}Protos;
-  module.exports.{@version} = {@service.localName};
-  module.exports.{@version}.types = {@version}Protos;
 @end
