@@ -60,6 +60,7 @@ $ npm install --save @google-cloud/multiple-services
   "dependencies": {
     "google-gax": "^0.14.0",
     "google-some-other-package-v1": "^0.2.1",
+    "lodash.merge": "^4.6.0",
     "lodash.union": "^4.6.0"
   },
   "devDependencies": {
@@ -128,6 +129,7 @@ module.exports.default = Object.assign({}, module.exports);
 
 const gapicConfig = require('./decrementer_service_client_config');
 const gax = require('google-gax');
+const merge = require('lodash.merge');
 const path = require('path');
 
 /**
@@ -231,8 +233,6 @@ class DecrementerServiceClient {
     ];
   }
 
-
-
   /**
    * Return the project ID used by this class.
    * @param {function(Error, string)} callback - the callback to
@@ -242,7 +242,9 @@ class DecrementerServiceClient {
     return this.auth.getProjectId(callback);
   }
 
-  // Service calls
+  // -------------------
+  // -- Service calls --
+  // -------------------
 
   /**
    * Decrement.
@@ -322,6 +324,7 @@ module.exports = DecrementerServiceClient;
 
 const gapicConfig = require('./incrementer_service_client_config');
 const gax = require('google-gax');
+const merge = require('lodash.merge');
 const path = require('path');
 
 /**
@@ -425,8 +428,6 @@ class IncrementerServiceClient {
     ];
   }
 
-
-
   /**
    * Return the project ID used by this class.
    * @param {function(Error, string)} callback - the callback to
@@ -436,7 +437,9 @@ class IncrementerServiceClient {
     return this.auth.getProjectId(callback);
   }
 
-  // Service calls
+  // -------------------
+  // -- Service calls --
+  // -------------------
 
   /**
    * Increment.
