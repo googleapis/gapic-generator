@@ -540,40 +540,41 @@ module.exports.DecrementerServiceClient = DecrementerServiceClient;
  */
 'use strict';
 
-var assert = require('assert');
-var multipleServices = require('../src');
+const assert = require('assert');
+
+const multipleServicesModule = require('../src');
 
 var FAKE_STATUS_CODE = 1;
 var error = new Error();
 error.code = FAKE_STATUS_CODE;
 
-describe('IncrementerServiceClient', function() {
-  describe('increment', function() {
-    it('invokes increment without error', function(done) {
-      var client = multipleServices.v1.incrementer();
+describe('IncrementerServiceClient', () => {
+  describe('increment', () => {
+    it('invokes increment without error', done => {
+      var client = new multipleServicesModule.v1.IncrementerServiceClient.incrementer();
 
       // Mock request
       var request = {};
 
       // Mock Grpc layer
-      client._increment = mockSimpleGrpcMethod(request);
+      client._innerApiCalls.increment = mockSimpleGrpcMethod(request);
 
-      client.increment(request, function(err) {
+      client.increment(request, err => {
         assert.ifError(err);
         done();
       });
     });
 
-    it('invokes increment with error', function(done) {
-      var client = multipleServices.v1.incrementer();
+    it('invokes increment with error', done => {
+      var client = new multipleServicesModule.v1.IncrementerServiceClient.incrementer();
 
       // Mock request
       var request = {};
 
       // Mock Grpc layer
-      client._increment = mockSimpleGrpcMethod(request, null, error);
+      client._innerApiCalls.increment = mockSimpleGrpcMethod(request, null, error);
 
-      client.increment(request, function(err) {
+      client.increment(request, err => {
         assert(err instanceof Error);
         assert.equal(err.code, FAKE_STATUS_CODE);
         done();
@@ -582,33 +583,33 @@ describe('IncrementerServiceClient', function() {
   });
 
 });
-describe('DecrementerServiceClient', function() {
-  describe('decrement', function() {
-    it('invokes decrement without error', function(done) {
-      var client = multipleServices.v1.decrementer();
+describe('DecrementerServiceClient', () => {
+  describe('decrement', () => {
+    it('invokes decrement without error', done => {
+      var client = new multipleServicesModule.v1.DecrementerServiceClient.decrementer();
 
       // Mock request
       var request = {};
 
       // Mock Grpc layer
-      client._decrement = mockSimpleGrpcMethod(request);
+      client._innerApiCalls.decrement = mockSimpleGrpcMethod(request);
 
-      client.decrement(request, function(err) {
+      client.decrement(request, err => {
         assert.ifError(err);
         done();
       });
     });
 
-    it('invokes decrement with error', function(done) {
-      var client = multipleServices.v1.decrementer();
+    it('invokes decrement with error', done => {
+      var client = new multipleServicesModule.v1.DecrementerServiceClient.decrementer();
 
       // Mock request
       var request = {};
 
       // Mock Grpc layer
-      client._decrement = mockSimpleGrpcMethod(request, null, error);
+      client._innerApiCalls.decrement = mockSimpleGrpcMethod(request, null, error);
 
-      client.decrement(request, function(err) {
+      client.decrement(request, err => {
         assert(err instanceof Error);
         assert.equal(err.code, FAKE_STATUS_CODE);
         done();
@@ -623,9 +624,11 @@ function mockSimpleGrpcMethod(expectedRequest, response, error) {
     assert.deepStrictEqual(actualRequest, expectedRequest);
     if (error) {
       callback(error);
-    } else if (response) {
+    }
+    else if (response) {
       callback(null, response);
-    } else {
+    }
+    else {
       callback(null);
     }
   };
