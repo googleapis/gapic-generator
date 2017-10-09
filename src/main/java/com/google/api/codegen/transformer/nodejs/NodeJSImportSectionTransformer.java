@@ -46,7 +46,7 @@ public class NodeJSImportSectionTransformer implements ImportSectionTransformer 
     ImmutableList.Builder<ImportFileView> imports = ImmutableList.builder();
     Interface apiInterface = context.getInterface();
     String configModule = context.getNamer().getClientConfigPath(apiInterface);
-    imports.add(createImport("configData", "./" + configModule));
+    imports.add(createImport("gapicConfig", "./" + configModule));
     imports.add(createImport("gax", "google-gax"));
     if (new GrpcStubTransformer().generateGrpcStubs(context).size() > 1) {
       imports.add(createImport("merge", "lodash.merge"));
