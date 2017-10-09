@@ -15,7 +15,6 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
-import com.google.api.codegen.viewmodel.ApiCallableView.Builder;
 import com.google.auto.value.AutoValue;
 import javax.annotation.Nullable;
 

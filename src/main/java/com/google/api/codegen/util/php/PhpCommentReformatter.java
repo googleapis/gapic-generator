@@ -17,16 +17,28 @@ package com.google.api.codegen.util.php;
 import com.google.api.codegen.util.CommentReformatter;
 import com.google.api.codegen.util.CommentTransformer;
 import com.google.api.codegen.util.LinkPattern;
+import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class PhpCommentReformatter implements CommentReformatter {
   public static final Pattern CLOSE_COMMENT_PATTERN = Pattern.compile("\\*/");
-  public static final Pattern AMPERSAND_PATTERN = Pattern.compile("@");
+  public static final List<String> VALID_COMMENT_TAGS =
+      ImmutableList.<String>builder().add("see").build();
+  public static final Pattern AT_SYMBOL_PATTERN =
+      Pattern.compile(
+          (new StringBuilder())
+              .append("@(?!")
+              .append(Joiner.on("\\s|").join(VALID_COMMENT_TAGS))
+              .append("\\s")
+              .append(")")
+              .toString());
 
   private CommentTransformer transformer =
       CommentTransformer.newBuilder()
           .replace(CLOSE_COMMENT_PATTERN, "&#42;/")
-          .replace(AMPERSAND_PATTERN, "&#64;")
+          .replace(AT_SYMBOL_PATTERN, "&#64;")
           .transform(
               LinkPattern.RELATIVE
                   .withUrlPrefix(CommentTransformer.CLOUD_URL_PREFIX)

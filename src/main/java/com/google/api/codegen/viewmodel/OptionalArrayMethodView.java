@@ -48,6 +48,12 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
   public abstract GrpcStreamingType grpcStreamingType();
 
+  public boolean isGrpcStreamingMethod() {
+    return grpcStreamingType() == GrpcStreamingType.BidiStreaming
+        || grpcStreamingType() == GrpcStreamingType.ClientStreaming
+        || grpcStreamingType() == GrpcStreamingType.ServerStreaming;
+  }
+
   public abstract List<DynamicLangDefaultableParamView> methodParams();
 
   public abstract List<RequestObjectParamView> requiredRequestObjectParams();

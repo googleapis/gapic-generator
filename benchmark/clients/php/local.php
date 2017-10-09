@@ -2,8 +2,8 @@
 require 'vendor/autoload.php';
 
 use Google\Cloud\PubSub\V1\PublisherClient;
-use google\pubsub\v1\GetTopicRequest;
-use google\pubsub\v1\PublisherGrpcClient;
+use Google\Pubsub\V1\GetTopicRequest;
+use Google\Pubsub\V1\PublisherGrpcClient;
 
 function read_cert($certfile)
 {
@@ -28,7 +28,7 @@ function grpc_get($host, $port, $creds)
   };
 }
 
-function vkit_get($host, $port, $creds)
+function gapic_get($host, $port, $creds)
 {
   $client = new PublisherClient([
     'serviceAddress' => $host,
@@ -46,10 +46,10 @@ $port = intval(isset($options['port']) ? $options['port'] : '8080');
 $creds = Grpc\ChannelCredentials::createSsl(read_cert($options['cert']));
 
 $client = isset($options['client']) ? $options['client'] : '';
-if ($client == 'g') {
+if ($client == 'grpc') {
   $getfn = 'grpc_get';
-} elseif ($client == 'v') {
-  $getfn = 'vkit_get';
+} elseif ($client == 'gapic') {
+  $getfn = 'gapic_get';
 } else {
   die("unknown client: $client");
 }
@@ -73,7 +73,7 @@ $reqnum = 0;
 $errnum = 0;
 while (microtime(true) < $runend) {
   $resp = $fn(TOPIC);
-  if ($resp['name'] != TOPIC) {
+  if ($resp->getName() != TOPIC) {
     $errnum++;
   }
   $reqnum++;

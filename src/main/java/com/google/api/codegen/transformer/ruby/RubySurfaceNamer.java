@@ -20,7 +20,6 @@ import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
-import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
@@ -37,10 +36,10 @@ import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.TypeName;
+import com.google.api.codegen.util.VersionMatcher;
 import com.google.api.codegen.util.ruby.RubyCommentReformatter;
 import com.google.api.codegen.util.ruby.RubyNameFormatter;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
-import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
@@ -107,15 +106,6 @@ public class RubySurfaceNamer extends SurfaceNamer {
   @Override
   public String getRequestVariableName(MethodModel method) {
     return method.getRequestStreaming() ? "reqs" : "req";
-  }
-
-  /**
-   * The type name of the Grpc client class. This needs to match what Grpc generates for the
-   * particular language.
-   */
-  @Override
-  public String getGrpcClientTypeName(Interface apiInterface) {
-    return getGrpcClientTypeName(new ProtoInterfaceModel(apiInterface));
   }
 
   /**
@@ -326,7 +316,25 @@ public class RubySurfaceNamer extends SurfaceNamer {
   @Override
   public List<String> getTopLevelApiModules() {
     List<String> apiModules = getApiModules();
-    return apiModules.subList(0, apiModules.size() - 1);
+    return hasVersionModule(apiModules) ? apiModules.subList(0, apiModules.size() - 1) : apiModules;
+  }
+
+  private static boolean hasVersionModule(List<String> apiModules) {
+    String versionModule = apiModules.get(apiModules.size() - 1);
+    String version = Name.upperCamel(versionModule).toLowerUnderscore();
+    return VersionMatcher.isVersion(version);
+  }
+
+  @Override
+  public String getModuleVersionName() {
+    List<String> apiModules = getApiModules();
+    return apiModules.get(apiModules.size() - 1);
+  }
+
+  @Override
+  public String getModuleServiceName() {
+    List<String> apiModules = getTopLevelApiModules();
+    return apiModules.get(apiModules.size() - 1);
   }
 
   @Override

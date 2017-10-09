@@ -29,6 +29,7 @@ import javax.annotation.Nullable;
  */
 @AutoValue
 public abstract class Schema implements Node {
+
   /**
    * Returns the schema this schema references, or this if this schema references no other.
    *

@@ -15,7 +15,6 @@
 package com.google.api.codegen.configgen.viewmodel;
 
 import com.google.api.codegen.SnippetSetRunner;
-import com.google.api.codegen.configgen.viewmodel.InterfaceView.Builder;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.auto.value.AutoValue;
 import java.util.ArrayList;

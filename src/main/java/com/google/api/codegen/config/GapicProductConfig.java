@@ -21,6 +21,7 @@ import com.google.api.codegen.FixedResourceNameValueProto;
 import com.google.api.codegen.InterfaceConfigProto;
 import com.google.api.codegen.LanguageSettingsProto;
 import com.google.api.codegen.LicenseHeaderProto;
+import com.google.api.codegen.ReleaseLevel;
 import com.google.api.codegen.ResourceNameTreatment;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Document;
@@ -63,6 +64,9 @@ public abstract class GapicProductConfig implements ProductConfig {
   /** Returns the location of the domain layer, if any. */
   public abstract String getDomainLayerLocation();
 
+  /** Returns the release level, if any. */
+  public abstract ReleaseLevel getReleaseLevel();
+
   /** Returns the resource name messages configuration. If none was specified, returns null. */
   @Nullable
   public abstract ResourceNameMessageConfigs getResourceNameMessageConfigs();
@@ -93,6 +97,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         getInterfaceConfigMap(),
         packageName,
         getDomainLayerLocation(),
+        getReleaseLevel(),
         getResourceNameMessageConfigs(),
         getCopyrightLines(),
         getLicenseLines(),
@@ -160,18 +165,18 @@ public abstract class GapicProductConfig implements ProductConfig {
 
     if (interfaceConfigMap == null || copyrightLines == null || licenseLines == null) {
       return null;
-    } else {
-      return new AutoValue_GapicProductConfig(
-          interfaceConfigMap,
-          settings.getPackageName(),
-          settings.getDomainLayerLocation(),
-          messageConfigs,
-          copyrightLines,
-          licenseLines,
-          resourceNameConfigs,
-          transportProtocol,
-          createResponseFieldConfigMap(messageConfigs, resourceNameConfigs));
     }
+    return new AutoValue_GapicProductConfig(
+        interfaceConfigMap,
+        settings.getPackageName(),
+        settings.getDomainLayerLocation(),
+        settings.getReleaseLevel(),
+        messageConfigs,
+        copyrightLines,
+        licenseLines,
+        resourceNameConfigs,
+        transportProtocol,
+        createResponseFieldConfigMap(messageConfigs, resourceNameConfigs));
   }
 
   public static GapicProductConfig create(
@@ -227,6 +232,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         interfaceConfigMap,
         settings.getPackageName(),
         settings.getDomainLayerLocation(),
+        settings.getReleaseLevel(),
         messageConfigs,
         copyrightLines,
         licenseLines,
@@ -252,6 +258,7 @@ public abstract class GapicProductConfig implements ProductConfig {
         interfaceConfigMap,
         packageName,
         domainLayerLocation,
+        ReleaseLevel.UNSET_RELEASE_LEVEL,
         messageConfigs,
         ImmutableList.<String>of(),
         ImmutableList.<String>of(),

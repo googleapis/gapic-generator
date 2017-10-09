@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen;
 
-import static com.google.api.codegen.config.LanguageStrings.JAVA;
+import static com.google.api.codegen.discogapic.MainDiscoGapicProviderFactory.JAVA;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

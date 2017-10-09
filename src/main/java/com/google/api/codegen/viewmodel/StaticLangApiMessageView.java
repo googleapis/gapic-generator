@@ -38,11 +38,6 @@ public abstract class StaticLangApiMessageView implements Comparable<StaticLangA
   // TODO(andrealin) Populate and render this field.
   public abstract String defaultValue();
 
-  @Nullable
-  // Assume all Discovery doc enums are Strings.
-  // TODO(andrealin) Populate and render this field.
-  public abstract List<String> enumValues();
-
   // The possibly-transformed ID of the schema from the Discovery Doc
   public abstract String name();
 
@@ -96,8 +91,6 @@ public abstract class StaticLangApiMessageView implements Comparable<StaticLangA
     public abstract Builder description(String val);
 
     public abstract Builder defaultValue(String val);
-
-    public abstract Builder enumValues(List<String> val);
 
     public abstract Builder innerTypeName(String val);
 

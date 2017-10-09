@@ -14,8 +14,6 @@
    {@comments(fileHeader.licenseLines)}
    {@editingInstructions(protoFilename)}
    */
-  /* TODO: introduce line-wrapping so that it never exceeds the limit. */
-  /* jscs: disable maximumLineLength */
   'use strict';
 
   {@importSection(fileHeader.importSection)}
@@ -70,34 +68,32 @@
 
   {@serviceMethodsSection(xapi)}
 
+  /**
+   * @@class
+   * @@param {*} gaxGrpc
+   */
   function {@xapi.name}Builder(gaxGrpc) {
     if (!(this instanceof {@xapi.name }Builder)) {
       return new {@xapi.name}Builder(gaxGrpc);
     }
 
     @join stub : xapi.stubs on BREAK.add(BREAK)
-      var {@stub.grpcClientVariableName} = gaxGrpc.load([{
-        @if xapi.isGcloud
-          root: require('google-proto-files')('..'),
+      var {@stub.name}Protos = gaxGrpc.loadProto(
+        @if xapi.fileHeader.hasVersion
+          path.join(__dirname, '..', '..', 'protos'), '{@stub.protoFileName}');
         @else
-          @if xapi.fileHeader.hasVersion
-            root: require('path').join(__dirname, '..', '..', 'proto'),
-          @else
-            root: require('path').join(__dirname, '..', 'proto'),
-          @end
+          path.join(__dirname, '..', 'protos'), '{@stub.protoFileName}');
         @end
-        file: '{@stub.protoFileName}'
-      }]);
-      extend(this, {@stub.grpcClientVariableName}.{@stub.namespace});
+      extend(this, {@stub.name}Protos.{@stub.namespace});
     @end
 
     @switch xapi.stubs.size.toString
     @case "1"
     @default
-      var grpcClients = merge(
+      var protos = merge(
         {},
         @join stub : xapi.stubs on ", ".add(BREAK)
-          {@stub.grpcClientVariableName}
+          {@stub.name}Protos
         @end
       );
     @end
@@ -105,6 +101,7 @@
     /**
      * Build a new instance of {@@link {@xapi.name}}.
      *
+     * @@method {@xapi.name}Builder#{@xapi.constructorName}
      * @@param {Object=} opts - The optional parameters.
      * @@param {String=} opts.servicePath
      *   The domain name of the API remote host.
@@ -129,9 +126,9 @@
 @private clientsParamName(stubs)
   @switch stubs.size.toString
     @case "1"
-      {@stubs.iterator.next.grpcClientVariableName}
+      {@stubs.iterator.next.name}Protos
     @default
-      grpcClients
+      protos
     @end
 @end
 
@@ -161,7 +158,7 @@
     };
   @end
 
-  /**
+  /*!
    * The scopes needed to make gRPC calls to all of the methods defined in
    * this service.
    */
@@ -181,7 +178,7 @@
    *
    * @@class
    */
-  function {@xapi.name}(gaxGrpc, grpcClients, opts) {
+  function {@xapi.name}(gaxGrpc, loadedProtos, opts) {
     opts = extend({
       servicePath: SERVICE_ADDRESS,
       port: DEFAULT_SERVICE_PORT,
@@ -205,7 +202,7 @@
     @end
     @if xapi.hasLongRunningOperations
 
-      {@longrunningSetup(xapi.longRunningDescriptors)}
+      {@longrunningSetup(xapi.longRunningDescriptors, xapi.stubs, xapi.fileHeader.hasVersion)}
     @end
 
     {@constructDefaults(xapi)}
@@ -215,7 +212,7 @@
     this.auth = gaxGrpc.auth;
     @join stub : xapi.stubs on BREAK.add(BREAK)
       var {@stub.name} = gaxGrpc.createStub(
-          grpcClients.{@stub.fullyQualifiedType},
+          loadedProtos.{@stub.fullyQualifiedType},
           opts);
       var {@stub.stubMethodsArrayName} = [
         @join method : {@stub.methodNames} on {@","}.add(BREAK)
@@ -257,18 +254,34 @@
   };
 @end
 
-@private longrunningSetup(descriptors)
+@private longrunningSetup(descriptors, stubs, hasVersion)
   this.operationsClient = new gax.lro({
     auth: gaxGrpc.auth,
     grpc: gaxGrpc.grpc
   }).operationsClient(opts);
 
+  var protoFilesRoot = new gax.grpc.GoogleProtoFilesRoot();
+  @join stub : stubs
+    protoFilesRoot = protobuf.loadSync(
+      @if hasVersion
+        path.join(__dirname, '..', '..', 'protos', '{@stub.protoFileName}'),
+      @else
+        path.join(__dirname, '..', 'protos', '{@stub.protoFileName}'),
+      @end
+      protoFilesRoot);
+  @end
+
+  @join descriptor : descriptors
+    var {@descriptor.methodName}Response = protoFilesRoot.lookup('{@descriptor.operationPayloadTypeName}');
+    var {@descriptor.methodName}Metadata = protoFilesRoot.lookup('{@descriptor.metadataTypeName}');
+  @end
+
   this.longrunningDescriptors = {
     @join descriptor : descriptors on {@", "}.add(BREAK)
       {@descriptor.methodName}: new gax.LongrunningDescriptor(
         this.operationsClient,
-        grpcClients.{@descriptor.operationPayloadTypeName}.decode,
-        grpcClients.{@descriptor.metadataTypeName}.decode)
+        {@descriptor.methodName}Response.decode.bind({@descriptor.methodName}Response),
+        {@descriptor.methodName}Metadata.decode.bind({@descriptor.methodName}Metadata))
     @end
   };
 @end
@@ -440,7 +453,7 @@
    * @@see {@@link https://nodejs.org/api/stream.html}
    *
    {@createParamTypesComment(method.doc.paramDocs)}
-   * @@return {Stream}
+   * @@returns {Stream}
    *   An object stream which emits {@method.doc.pageStreamingResourceTypeName} on 'data' event.
    *
    * @@example

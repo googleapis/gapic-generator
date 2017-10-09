@@ -21,7 +21,6 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.OneofConfig;
-import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
@@ -35,7 +34,6 @@ import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.go.GoCommentReformatter;
 import com.google.api.codegen.util.go.GoNameFormatter;
 import com.google.api.codegen.util.go.GoTypeTable;
-import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.annotations.VisibleForTesting;
 import java.util.List;
@@ -179,11 +177,6 @@ public class GoSurfaceNamer extends SurfaceNamer {
   @Override
   public String getGrpcServerTypeName(InterfaceModel apiInterface) {
     return converter.getTypeName(apiInterface).getNickname() + "Server";
-  }
-
-  @Override
-  public String getGrpcClientTypeName(Interface apiInterface) {
-    return getGrpcClientTypeName(new ProtoInterfaceModel(apiInterface));
   }
 
   @Override

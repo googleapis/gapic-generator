@@ -16,15 +16,7 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
 
-/**
- * This ViewModel defines the view model structure of a generic message.
- *
- * <p>For example, this can be used to represent a Discovery Document's "schemas", "properties",
- * "additionalProperties", and "items".
- *
- * <p>This contains a subset of properties in the JSON Schema
- * https://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.7.
- */
+/** This ViewModel defines the view model structure of field. */
 @AutoValue
 public abstract class StaticMemberView implements Comparable<StaticMemberView> {
   // The possibly-transformed ID of the schema from the Discovery Doc

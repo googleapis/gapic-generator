@@ -4741,7 +4741,7 @@ import javax.annotation.Generated;
  * <pre>
  * <code>
  * AddressSettings addressSettings =
- *     AddressSettings.defaultBuilder()
+ *     AddressSettings.newBuilder()
  *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
  *         .build();
  * AddressClient addressClient =
@@ -4754,7 +4754,7 @@ import javax.annotation.Generated;
  * <pre>
  * <code>
  * AddressSettings addressSettings =
- *     AddressSettings.defaultBuilder()
+ *     AddressSettings.newBuilder()
  *         .setTransportProvider(AddressSettings.defaultHttpJsonTransportProviderBuilder()
  *             .setChannelProvider(AddressSettings.defaultHttpJsonChannelProviderBuilder()
  *                 .setEndpoint(myEndpoint)
@@ -4778,7 +4778,7 @@ public class AddressClient implements BackgroundResource {
    * Constructs an instance of AddressClient with default settings.
    */
   public static final AddressClient create() throws IOException {
-    return create(AddressSettings.defaultBuilder().build());
+    return create(AddressSettings.newBuilder().build());
   }
 
   /**
@@ -4817,6 +4817,7 @@ public class AddressClient implements BackgroundResource {
     return settings;
   }
 
+  @BetaApi
   public AddressStub getStub() {
     return stub;
   }
@@ -5224,7 +5225,7 @@ import org.threeten.bp.Duration;
  * <pre>
  * <code>
  * AddressSettings.Builder addressSettingsBuilder =
- *     AddressSettings.defaultBuilder();
+ *     AddressSettings.newBuilder();
  * addressSettingsBuilder.deleteAddressSettings().getRetrySettingsBuilder()
  *     .setTotalTimeout(Duration.ofSeconds(30));
  * AddressSettings addressSettings = addressSettingsBuilder.build();
@@ -5365,6 +5366,7 @@ public class AddressSettings extends ClientSettings {
   /**
    * Returns a builder for this class with recommended defaults.
    */
+  @Deprecated
   public static Builder defaultBuilder() {
     return Builder.createDefault();
   }
@@ -5373,6 +5375,7 @@ public class AddressSettings extends ClientSettings {
    * Returns a builder for this class with recommended defaults for API methods, and the given
    * ClientContext used for executor/transport/credentials.
    */
+  @Deprecated
   public static Builder defaultBuilder(ClientContext clientContext) {
     return new Builder(clientContext);
   }
@@ -5381,7 +5384,7 @@ public class AddressSettings extends ClientSettings {
    * Returns a new builder for this class.
    */
   public static Builder newBuilder() {
-    return new Builder();
+    return Builder.createDefault();
   }
 
   /**
@@ -5837,7 +5840,7 @@ public class HttpJsonAddressStub extends AddressStub {
   }
 
   public static final HttpJsonAddressStub create(ClientContext clientContext) throws IOException {
-    return new HttpJsonAddressStub(AddressSettings.defaultBuilder().build(), clientContext);
+    return new HttpJsonAddressStub(AddressSettings.newBuilder().build(), clientContext);
   }
 
   /**

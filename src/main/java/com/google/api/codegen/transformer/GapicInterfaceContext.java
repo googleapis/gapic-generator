@@ -116,10 +116,6 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
   @Override
   public abstract GapicProductConfig getProductConfig();
 
-  public ModelTypeTable getModelTypeTable() {
-    return (ModelTypeTable) getImportTypeTable();
-  }
-
   @Override
   public abstract ModelTypeTable getImportTypeTable();
 
@@ -138,14 +134,9 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
     return create(
         getInterface(),
         getProductConfig(),
-        getModelTypeTable().cloneEmpty(),
+        getImportTypeTable().cloneEmpty(),
         getNamer(),
         getFeatureConfig());
-  }
-
-  @Override
-  public GapicInterfaceConfig getInterfaceConfig() {
-    return getProductConfig().getInterfaceConfig(getInterface());
   }
 
   @Override
@@ -153,9 +144,14 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
     return create(
         getInterface(),
         getProductConfig().withPackageName(packageName),
-        getModelTypeTable().cloneEmpty(packageName),
+        getImportTypeTable().cloneEmpty(packageName),
         getNamer().cloneWithPackageName(packageName),
         getFeatureConfig());
+  }
+
+  @Override
+  public GapicInterfaceConfig getInterfaceConfig() {
+    return getProductConfig().getInterfaceConfig(getInterface());
   }
 
   /**
@@ -186,7 +182,7 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
         this,
         getInterface(),
         getProductConfig(),
-        getModelTypeTable(),
+        getImportTypeTable(),
         getNamer(),
         (ProtoMethodModel) method,
         getMethodConfig(method),
@@ -201,7 +197,7 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
         this,
         getInterface(),
         getProductConfig(),
-        getModelTypeTable(),
+        getImportTypeTable(),
         getNamer(),
         (ProtoMethodModel) method,
         getMethodConfig(method),
@@ -216,7 +212,7 @@ public abstract class GapicInterfaceContext implements InterfaceContext {
         this,
         getInterface(),
         getProductConfig(),
-        getModelTypeTable(),
+        getImportTypeTable(),
         getNamer(),
         (ProtoMethodModel) method,
         getMethodConfig(method),
