@@ -16,7 +16,7 @@
 @end
 
 @private smokeTest(smokeTest)
-  describe('{@smokeTest.name}', function() {
+  describe('{@smokeTest.name}', () => {
     @if smokeTest.requireProjectId
       if (!process.env.SMOKE_TEST_PROJECT) {
         throw new Error("Usage: SMOKE_TEST_PROJECT=<project_id> node #{$0}");
@@ -60,7 +60,7 @@
 @end
 
 @private smokeTestBody(smokeTest, description, sampleCode)
- it('{@description}', function({@mochaCompletedCallback()}) {
+ it('{@description}', {@mochaCompletedCallback()} => {
    {@decorateSampleCode(smokeTest.apiMethod, {@sampleCode})}
  });
 @end
