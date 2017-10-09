@@ -25,25 +25,26 @@ $ npm install --save @google-cloud/library
  var library = require('@google-cloud/library');
 
  var client = library({
-    // optional auth parameters.
+   // optional auth parameters.
  });
 
  var formattedName = client.bookPath("testShelf-" + Date.now().toString(), projectId);
  var rating = library.v1.types.Book.Rating.GOOD;
  var book = {
-     rating : rating
+   rating: rating,
  };
  var request = {
-     name: formattedName,
-     book: book
+   name: formattedName,
+   book: book,
  };
- client.updateBook(request).then(function(responses) {
+ client.updateBook(request)
+   .then(responses => {
      var response = responses[0];
      // doThingsWith(response)
- })
- .catch(function(err) {
+   })
+   .catch(err => {
      console.error(err);
- });
+   });
 ```
 
 ### Next Steps
@@ -138,18 +139,19 @@ describe('LibraryServiceSmokeTest', function() {
     var formattedName = client.bookPath("testShelf-" + Date.now().toString(), projectId);
     var rating = library.v1.types.Book.Rating.GOOD;
     var book = {
-        rating : rating
+      rating: rating,
     };
     var request = {
-        name: formattedName,
-        book: book
+      name: formattedName,
+      book: book,
     };
-    client.updateBook(request).then(function(responses) {
+    client.updateBook(request)
+      .then(responses => {
         var response = responses[0];
         console.log(response);
-    })
-    .then(done)
-    .catch(done);
+      })
+      .then(done)
+      .catch(done);
   });
 });
 ============== file: src/index.js ==============
@@ -2578,7 +2580,6 @@ class LibraryServiceClient {
   static get scopes() {
     return [
       'https://www.googleapis.com/auth/cloud-platform',
-
       'https://www.googleapis.com/auth/library',
     ];
   }
@@ -2590,119 +2591,6 @@ class LibraryServiceClient {
    */
   getProjectId(callback) {
     return this.auth.getProjectId(callback);
-  }
-
-  // --------------------
-  // -- Path templates --
-  // --------------------
-
-  /**
-   * Return a fully-qualified shelf resource name string.
-   *
-   * @param {String} shelfId
-   * @returns {String}
-   */
-  shelfPath(shelfId) {
-    return this._pathTemplates.shelfPathTemplate.render({
-      shelf_id: shelfId,
-    });
-  }
-
-  /**
-   * Return a fully-qualified book resource name string.
-   *
-   * @param {String} shelfId
-   * @param {String} bookId
-   * @returns {String}
-   */
-  bookPath(shelfId, bookId) {
-    return this._pathTemplates.bookPathTemplate.render({
-      shelf_id: shelfId,
-      book_id: bookId,
-    });
-  }
-
-  /**
-   * Return a fully-qualified return resource name string.
-   *
-   * @param {String} shelf
-   * @param {String} book
-   * @param {String} return_
-   * @returns {String}
-   */
-  returnPath(shelf, book, return_) {
-    return this._pathTemplates.returnPathTemplate.render({
-      shelf: shelf,
-      book: book,
-      return: return_,
-    });
-  }
-
-
-  /**
-   * Parse the shelfName from a shelf resource.
-   *
-   * @param {String} shelfName
-   *   A fully-qualified path representing a shelf resources.
-   * @returns {String} - A string representing the shelf_id.
-   */
-  matchShelfIdFromShelfName(shelfName) {
-    return shelfPathTemplate.match(shelfName).shelf_id;
-  }
-
-  /**
-   * Parse the bookName from a book resource.
-   *
-   * @param {String} bookName
-   *   A fully-qualified path representing a book resources.
-   * @returns {String} - A string representing the shelf_id.
-   */
-  matchShelfIdFromBookName(bookName) {
-    return bookPathTemplate.match(bookName).shelf_id;
-  }
-
-  /**
-   * Parse the bookName from a book resource.
-   *
-   * @param {String} bookName
-   *   A fully-qualified path representing a book resources.
-   * @returns {String} - A string representing the book_id.
-   */
-  matchBookIdFromBookName(bookName) {
-    return bookPathTemplate.match(bookName).book_id;
-  }
-
-  /**
-   * Parse the returnName from a return resource.
-   *
-   * @param {String} returnName
-   *   A fully-qualified path representing a return resources.
-   * @returns {String} - A string representing the shelf.
-   */
-  matchShelfFromReturnName(returnName) {
-    return returnPathTemplate.match(returnName).shelf;
-  }
-
-  /**
-   * Parse the returnName from a return resource.
-   *
-   * @param {String} returnName
-   *   A fully-qualified path representing a return resources.
-   * @returns {String} - A string representing the book.
-   */
-  matchBookFromReturnName(returnName) {
-    return returnPathTemplate.match(returnName).book;
-  }
-
-  /**
-   * Parse the returnName from a return resource.
-   *
-   * @param {String} returnName
-   *   A fully-qualified path representing a return resources.
-   * @returns {String} - A string representing the return.
-   */
-  matchReturnFromReturnName(returnName) {
-    return returnPathTemplate.match(returnName).return;
   }
 
   // -------------------
@@ -2739,13 +2627,14 @@ class LibraryServiceClient {
    * });
    *
    * var shelf = {};
-   * client.createShelf({shelf: shelf}).then(function(responses) {
+   * client.createShelf({shelf: shelf})
+   *   .then(responses => {
    *     var response = responses[0];
    *     // doThingsWith(response)
-   * })
-   * .catch(function(err) {
+   *   })
+   *   .catch(err => {
    *     console.error(err);
-   * });
+   *   });
    */
   createShelf(request, options, callback) {
     if (options instanceof Function && callback === undefined) {
@@ -2794,16 +2683,17 @@ class LibraryServiceClient {
    * var formattedName = client.shelfPath("[SHELF_ID]");
    * var options = '';
    * var request = {
-   *     name: formattedName,
-   *     options: options
+   *   name: formattedName,
+   *   options: options,
    * };
-   * client.getShelf(request).then(function(responses) {
+   * client.getShelf(request)
+   *   .then(responses => {
    *     var response = responses[0];
    *     // doThingsWith(response)
-   * })
-   * .catch(function(err) {
+   *   })
+   *   .catch(err => {
    *     console.error(err);
-   * });
+   *   });
    */
   getShelf(request, options, callback) {
     if (options instanceof Function && callback === undefined) {
@@ -2852,39 +2742,40 @@ class LibraryServiceClient {
    * });
    *
    * // Iterate over all elements.
-   * client.listShelves({}).then(function(responses) {
+   * client.listShelves({})
+   *   .then(responses => {
    *     var resources = responses[0];
-   *     for (var i = 0; i < resources.length; ++i) {
-   *         // doThingsWith(resources[i])
+   *     for (let i = 0; i < resources.length; i += 1) {
+   *       // doThingsWith(resources[i])
    *     }
-   * })
-   * .catch(function(err) {
+   *   })
+   *   .catch(err => {
    *     console.error(err);
-   * });
+   *   });
    *
    * // Or obtain the paged response.
    *
    * var options = {autoPaginate: false};
-   * function callback(responses) {
-   *     // The actual resources in a response.
-   *     var resources = responses[0];
-   *     // The next request if the response shows there's more responses.
-   *     var nextRequest = responses[1];
-   *     // The actual response object, if necessary.
-   *     // var rawResponse = responses[2];
-   *     for (var i = 0; i < resources.length; ++i) {
-   *         // doThingsWith(resources[i]);
-   *     }
-   *     if (nextRequest) {
-   *         // Fetch the next page.
-   *         return client.listShelves(nextRequest, options).then(callback);
-   *     }
+   * var callbacl = responses => {
+   *   // The actual resources in a response.
+   *   var resources = responses[0];
+   *   // The next request if the response shows that there are more responses.
+   *   var nextRequest = responses[1];
+   *   // The actual response object, if necessary.
+   *   // var rawResponse = responses[2];
+   *   for (let i = 0; i < resources.length; i += 1) {
+   *     // doThingsWith(resources[i]);
+   *   }
+   *   if (nextRequest) {
+   *     // Fetch the next page.
+   *     return client.listShelves(nextRequest, options).then(callback);
+   *   }
    * }
    * client.listShelves({}, options)
-   *     .then(callback)
-   *     .catch(function(err) {
-   *         console.error(err);
-   *     });
+   *   .then(callback)
+   *   .catch(err => {
+   *     console.error(err);
+   *   });
    */
   listShelves(request, options, callback) {
     if (options instanceof Function && callback === undefined) {
@@ -2929,11 +2820,11 @@ class LibraryServiceClient {
    *
    *
    * client.listShelvesStream({})
-   * .on('data', function(element) {
+   *   .on('data', element => {
    *     // doThingsWith(element)
-   * }).on('error', function(err) {
+   *   }).on('error', err => {
    *     console.log(err);
-   * });
+   *   });
    */
   listShelvesStream(request, options) {
     options = options || {};
@@ -2971,8 +2862,8 @@ class LibraryServiceClient {
    * });
    *
    * var formattedName = client.shelfPath("[SHELF_ID]");
-   * client.deleteShelf({name: formattedName}).catch(function(err) {
-   *     console.error(err);
+   * client.deleteShelf({name: formattedName}).catch(err => {
+   *   console.error(err);
    * });
    */
   deleteShelf(request, options, callback) {
@@ -3018,16 +2909,17 @@ class LibraryServiceClient {
    * var formattedName = client.shelfPath("[SHELF_ID]");
    * var formattedOtherShelfName = client.shelfPath("[SHELF_ID]");
    * var request = {
-   *     name: formattedName,
-   *     otherShelfName: formattedOtherShelfName
+   *   name: formattedName,
+   *   otherShelfName: formattedOtherShelfName,
    * };
-   * client.mergeShelves(request).then(function(responses) {
+   * client.mergeShelves(request)
+   *   .then(responses => {
    *     var response = responses[0];
    *     // doThingsWith(response)
-   * })
-   * .catch(function(err) {
+   *   })
+   *   .catch(err => {
    *     console.error(err);
-   * });
+   *   });
    */
   mergeShelves(request, options, callback) {
     if (options instanceof Function && callback === undefined) {
@@ -3072,16 +2964,17 @@ class LibraryServiceClient {
    * var formattedName = client.shelfPath("[SHELF_ID]");
    * var book = {};
    * var request = {
-   *     name: formattedName,
-   *     book: book
+   *   name: formattedName,
+   *   book: book,
    * };
-   * client.createBook(request).then(function(responses) {
+   * client.createBook(request)
+   *   .then(responses => {
    *     var response = responses[0];
    *     // doThingsWith(response)
-   * })
-   * .catch(function(err) {
+   *   })
+   *   .catch(err => {
    *     console.error(err);
-   * });
+   *   });
    */
   createBook(request, options, callback) {
     if (options instanceof Function && callback === undefined) {
@@ -3137,20 +3030,21 @@ class LibraryServiceClient {
    * var books = [];
    * var seriesString = 'foobar';
    * var seriesUuid = {
-   *     seriesString : seriesString
+   *   seriesString: seriesString,
    * };
    * var request = {
-   *     shelf: shelf,
-   *     books: books,
-   *     seriesUuid: seriesUuid
+   *   shelf: shelf,
+   *   books: books,
+   *   seriesUuid: seriesUuid,
    * };
-   * client.publishSeries(request).then(function(responses) {
+   * client.publishSeries(request)
+   *   .then(responses => {
    *     var response = responses[0];
    *     // doThingsWith(response)
-   * })
-   * .catch(function(err) {
+   *   })
+   *   .catch(err => {
    *     console.error(err);
-   * });
+   *   });
    */
   publishSeries(request, options, callback) {
     if (options instanceof Function && callback === undefined) {
@@ -3189,13 +3083,14 @@ class LibraryServiceClient {
    * });
    *
    * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
-   * client.getBook({name: formattedName}).then(function(responses) {
+   * client.getBook({name: formattedName})
+   *   .then(responses => {
    *     var response = responses[0];
    *     // doThingsWith(response)
-   * })
-   * .catch(function(err) {
+   *   })
+   *   .catch(err => {
    *     console.error(err);
-   * });
+   *   });
    */
   getBook(request, options, callback) {
     if (options instanceof Function && callback === undefined) {
@@ -3256,41 +3151,42 @@ class LibraryServiceClient {
    * // Iterate over all elements.
    * var formattedName = client.shelfPath("[SHELF_ID]");
    *
-   * client.listBooks({name: formattedName}).then(function(responses) {
+   * client.listBooks({name: formattedName})
+   *   .then(responses => {
    *     var resources = responses[0];
-   *     for (var i = 0; i < resources.length; ++i) {
-   *         // doThingsWith(resources[i])
+   *     for (let i = 0; i < resources.length; i += 1) {
+   *       // doThingsWith(resources[i])
    *     }
-   * })
-   * .catch(function(err) {
+   *   })
+   *   .catch(err => {
    *     console.error(err);
-   * });
+   *   });
    *
    * // Or obtain the paged response.
    * var formattedName = client.shelfPath("[SHELF_ID]");
    *
    *
    * var options = {autoPaginate: false};
-   * function callback(responses) {
-   *     // The actual resources in a response.
-   *     var resources = responses[0];
-   *     // The next request if the response shows there's more responses.
-   *     var nextRequest = responses[1];
-   *     // The actual response object, if necessary.
-   *     // var rawResponse = responses[2];
-   *     for (var i = 0; i < resources.length; ++i) {
-   *         // doThingsWith(resources[i]);
-   *     }
-   *     if (nextRequest) {
-   *         // Fetch the next page.
-   *         return client.listBooks(nextRequest, options).then(callback);
-   *     }
+   * var callbacl = responses => {
+   *   // The actual resources in a response.
+   *   var resources = responses[0];
+   *   // The next request if the response shows that there are more responses.
+   *   var nextRequest = responses[1];
+   *   // The actual response object, if necessary.
+   *   // var rawResponse = responses[2];
+   *   for (let i = 0; i < resources.length; i += 1) {
+   *     // doThingsWith(resources[i]);
+   *   }
+   *   if (nextRequest) {
+   *     // Fetch the next page.
+   *     return client.listBooks(nextRequest, options).then(callback);
+   *   }
    * }
    * client.listBooks({name: formattedName}, options)
-   *     .then(callback)
-   *     .catch(function(err) {
-   *         console.error(err);
-   *     });
+   *   .then(callback)
+   *   .catch(err => {
+   *     console.error(err);
+   *   });
    */
   listBooks(request, options, callback) {
     if (options instanceof Function && callback === undefined) {
@@ -3343,11 +3239,11 @@ class LibraryServiceClient {
    *
    * var formattedName = client.shelfPath("[SHELF_ID]");
    * client.listBooksStream({name: formattedName})
-   * .on('data', function(element) {
+   *   .on('data', element => {
    *     // doThingsWith(element)
-   * }).on('error', function(err) {
+   *   }).on('error', err => {
    *     console.log(err);
-   * });
+   *   });
    */
   listBooksStream(request, options) {
     options = options || {};
@@ -3383,8 +3279,8 @@ class LibraryServiceClient {
    * });
    *
    * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
-   * client.deleteBook({name: formattedName}).catch(function(err) {
-   *     console.error(err);
+   * client.deleteBook({name: formattedName}).catch(err => {
+   *   console.error(err);
    * });
    */
   deleteBook(request, options, callback) {
@@ -3438,16 +3334,17 @@ class LibraryServiceClient {
    * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
    * var book = {};
    * var request = {
-   *     name: formattedName,
-   *     book: book
+   *   name: formattedName,
+   *   book: book,
    * };
-   * client.updateBook(request).then(function(responses) {
+   * client.updateBook(request)
+   *   .then(responses => {
    *     var response = responses[0];
    *     // doThingsWith(response)
-   * })
-   * .catch(function(err) {
+   *   })
+   *   .catch(err => {
    *     console.error(err);
-   * });
+   *   });
    */
   updateBook(request, options, callback) {
     if (options instanceof Function && callback === undefined) {
@@ -3490,16 +3387,17 @@ class LibraryServiceClient {
    * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
    * var formattedOtherShelfName = client.shelfPath("[SHELF_ID]");
    * var request = {
-   *     name: formattedName,
-   *     otherShelfName: formattedOtherShelfName
+   *   name: formattedName,
+   *   otherShelfName: formattedOtherShelfName,
    * };
-   * client.moveBook(request).then(function(responses) {
+   * client.moveBook(request)
+   *   .then(responses => {
    *     var response = responses[0];
    *     // doThingsWith(response)
-   * })
-   * .catch(function(err) {
+   *   })
+   *   .catch(err => {
    *     console.error(err);
-   * });
+   *   });
    */
   moveBook(request, options, callback) {
     if (options instanceof Function && callback === undefined) {
@@ -3555,39 +3453,40 @@ class LibraryServiceClient {
    * });
    *
    * // Iterate over all elements.
-   * client.listStrings({}).then(function(responses) {
+   * client.listStrings({})
+   *   .then(responses => {
    *     var resources = responses[0];
-   *     for (var i = 0; i < resources.length; ++i) {
-   *         // doThingsWith(resources[i])
+   *     for (let i = 0; i < resources.length; i += 1) {
+   *       // doThingsWith(resources[i])
    *     }
-   * })
-   * .catch(function(err) {
+   *   })
+   *   .catch(err => {
    *     console.error(err);
-   * });
+   *   });
    *
    * // Or obtain the paged response.
    *
    * var options = {autoPaginate: false};
-   * function callback(responses) {
-   *     // The actual resources in a response.
-   *     var resources = responses[0];
-   *     // The next request if the response shows there's more responses.
-   *     var nextRequest = responses[1];
-   *     // The actual response object, if necessary.
-   *     // var rawResponse = responses[2];
-   *     for (var i = 0; i < resources.length; ++i) {
-   *         // doThingsWith(resources[i]);
-   *     }
-   *     if (nextRequest) {
-   *         // Fetch the next page.
-   *         return client.listStrings(nextRequest, options).then(callback);
-   *     }
+   * var callbacl = responses => {
+   *   // The actual resources in a response.
+   *   var resources = responses[0];
+   *   // The next request if the response shows that there are more responses.
+   *   var nextRequest = responses[1];
+   *   // The actual response object, if necessary.
+   *   // var rawResponse = responses[2];
+   *   for (let i = 0; i < resources.length; i += 1) {
+   *     // doThingsWith(resources[i]);
+   *   }
+   *   if (nextRequest) {
+   *     // Fetch the next page.
+   *     return client.listStrings(nextRequest, options).then(callback);
+   *   }
    * }
    * client.listStrings({}, options)
-   *     .then(callback)
-   *     .catch(function(err) {
-   *         console.error(err);
-   *     });
+   *   .then(callback)
+   *   .catch(err => {
+   *     console.error(err);
+   *   });
    */
   listStrings(request, options, callback) {
     if (options instanceof Function && callback === undefined) {
@@ -3637,11 +3536,11 @@ class LibraryServiceClient {
    *
    *
    * client.listStringsStream({})
-   * .on('data', function(element) {
+   *   .on('data', element => {
    *     // doThingsWith(element)
-   * }).on('error', function(err) {
+   *   }).on('error', err => {
    *     console.log(err);
-   * });
+   *   });
    */
   listStringsStream(request, options) {
     options = options || {};
@@ -3682,17 +3581,17 @@ class LibraryServiceClient {
    * var stage = library.v1.types.Comment.Stage.UNSET;
    * var alignment = library.v1.types.SomeMessage2.SomeMessage3.Alignment.CHAR;
    * var commentsElement = {
-   *     comment : comment,
-   *     stage : stage,
-   *     alignment : alignment
+   *   comment: comment,
+   *   stage: stage,
+   *   alignment: alignment,
    * };
    * var comments = [commentsElement];
    * var request = {
-   *     name: formattedName,
-   *     comments: comments
+   *   name: formattedName,
+   *   comments: comments,
    * };
-   * client.addComments(request).catch(function(err) {
-   *     console.error(err);
+   * client.addComments(request).catch(err => {
+   *   console.error(err);
    * });
    */
   addComments(request, options, callback) {
@@ -3732,13 +3631,14 @@ class LibraryServiceClient {
    * });
    *
    * var formattedName = client.archivedBookPath("[ARCHIVE_PATH]", "[BOOK_ID]");
-   * client.getBookFromArchive({name: formattedName}).then(function(responses) {
+   * client.getBookFromArchive({name: formattedName})
+   *   .then(responses => {
    *     var response = responses[0];
    *     // doThingsWith(response)
-   * })
-   * .catch(function(err) {
+   *   })
+   *   .catch(err => {
    *     console.error(err);
-   * });
+   *   });
    */
   getBookFromArchive(request, options, callback) {
     if (options instanceof Function && callback === undefined) {
@@ -3782,16 +3682,17 @@ class LibraryServiceClient {
    * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
    * var formattedAltBookName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
    * var request = {
-   *     name: formattedName,
-   *     altBookName: formattedAltBookName
+   *   name: formattedName,
+   *   altBookName: formattedAltBookName,
    * };
-   * client.getBookFromAnywhere(request).then(function(responses) {
+   * client.getBookFromAnywhere(request)
+   *   .then(responses => {
    *     var response = responses[0];
    *     // doThingsWith(response)
-   * })
-   * .catch(function(err) {
+   *   })
+   *   .catch(err => {
    *     console.error(err);
-   * });
+   *   });
    */
   getBookFromAnywhere(request, options, callback) {
     if (options instanceof Function && callback === undefined) {
@@ -3830,13 +3731,14 @@ class LibraryServiceClient {
    * });
    *
    * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
-   * client.getBookFromAbsolutelyAnywhere({name: formattedName}).then(function(responses) {
+   * client.getBookFromAbsolutelyAnywhere({name: formattedName})
+   *   .then(responses => {
    *     var response = responses[0];
    *     // doThingsWith(response)
-   * })
-   * .catch(function(err) {
+   *   })
+   *   .catch(err => {
    *     console.error(err);
-   * });
+   *   });
    */
   getBookFromAbsolutelyAnywhere(request, options, callback) {
     if (options instanceof Function && callback === undefined) {
@@ -3880,12 +3782,12 @@ class LibraryServiceClient {
    * var indexMapItem = '';
    * var indexMap = {'default_key' : indexMapItem,};
    * var request = {
-   *     name: formattedName,
-   *     indexName: indexName,
-   *     indexMap: indexMap
+   *   name: formattedName,
+   *   indexName: indexName,
+   *   indexMap: indexMap,
    * };
-   * client.updateBookIndex(request).catch(function(err) {
-   *     console.error(err);
+   * client.updateBookIndex(request).catch(err => {
+   *   console.error(err);
    * });
    */
   updateBookIndex(request, options, callback) {
@@ -3919,7 +3821,7 @@ class LibraryServiceClient {
    * });
    *
    *
-   * client.streamShelves({}).on('data', function(response) {
+   * client.streamShelves({}).on('data', response => {
    *   // doThingsWith(response)
    * });
    */
@@ -3954,7 +3856,7 @@ class LibraryServiceClient {
    * });
    *
    * var name = '';
-   * client.streamBooks({name: name}).on('data', function(response) {
+   * client.streamBooks({name: name}).on('data', response => {
    *   // doThingsWith(response)
    * });
    */
@@ -3984,12 +3886,12 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var stream = client.discussBook().on('data', function(response) {
-   *     // doThingsWith(response)
+   * var stream = client.discussBook().on('data', response => {
+   *   // doThingsWith(response)
    * });
    * var name = '';
    * var request = {
-   *     name : name
+   *   name: name,
    * };
    * // Write request objects.
    * stream.write(request);
@@ -4022,16 +3924,16 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var stream = client.monologAboutBook(function(err, response) {
-   *     if (err) {
-   *         console.error(err);
-   *         return;
-   *     }
-   *     // doThingsWith(response)
+   * var stream = client.monologAboutBook((err, response) => {
+   *   if (err) {
+   *     console.error(err);
+   *     return;
+   *   }
+   *   // doThingsWith(response)
    * });
    * var name = '';
    * var request = {
-   *     name : name
+   *   name: name,
    * };
    * // Write request objects.
    * stream.write(request);
@@ -4093,51 +3995,52 @@ class LibraryServiceClient {
    * var names = [namesElement];
    * var shelves = [];
    * var request = {
-   *     names: names,
-   *     shelves: shelves
+   *   names: names,
+   *   shelves: shelves,
    * };
    *
-   * client.findRelatedBooks(request).then(function(responses) {
+   * client.findRelatedBooks(request)
+   *   .then(responses => {
    *     var resources = responses[0];
-   *     for (var i = 0; i < resources.length; ++i) {
-   *         // doThingsWith(resources[i])
+   *     for (let i = 0; i < resources.length; i += 1) {
+   *       // doThingsWith(resources[i])
    *     }
-   * })
-   * .catch(function(err) {
+   *   })
+   *   .catch(err => {
    *     console.error(err);
-   * });
+   *   });
    *
    * // Or obtain the paged response.
    * var namesElement = '';
    * var names = [namesElement];
    * var shelves = [];
    * var request = {
-   *     names: names,
-   *     shelves: shelves
+   *   names: names,
+   *   shelves: shelves,
    * };
    *
    *
    * var options = {autoPaginate: false};
-   * function callback(responses) {
-   *     // The actual resources in a response.
-   *     var resources = responses[0];
-   *     // The next request if the response shows there's more responses.
-   *     var nextRequest = responses[1];
-   *     // The actual response object, if necessary.
-   *     // var rawResponse = responses[2];
-   *     for (var i = 0; i < resources.length; ++i) {
-   *         // doThingsWith(resources[i]);
-   *     }
-   *     if (nextRequest) {
-   *         // Fetch the next page.
-   *         return client.findRelatedBooks(nextRequest, options).then(callback);
-   *     }
+   * var callbacl = responses => {
+   *   // The actual resources in a response.
+   *   var resources = responses[0];
+   *   // The next request if the response shows that there are more responses.
+   *   var nextRequest = responses[1];
+   *   // The actual response object, if necessary.
+   *   // var rawResponse = responses[2];
+   *   for (let i = 0; i < resources.length; i += 1) {
+   *     // doThingsWith(resources[i]);
+   *   }
+   *   if (nextRequest) {
+   *     // Fetch the next page.
+   *     return client.findRelatedBooks(nextRequest, options).then(callback);
+   *   }
    * }
    * client.findRelatedBooks(request, options)
-   *     .then(callback)
-   *     .catch(function(err) {
-   *         console.error(err);
-   *     });
+   *   .then(callback)
+   *   .catch(err => {
+   *     console.error(err);
+   *   });
    */
   findRelatedBooks(request, options, callback) {
     if (options instanceof Function && callback === undefined) {
@@ -4190,15 +4093,15 @@ class LibraryServiceClient {
    * var names = [namesElement];
    * var shelves = [];
    * var request = {
-   *     names: names,
-   *     shelves: shelves
+   *   names: names,
+   *   shelves: shelves,
    * };
    * client.findRelatedBooksStream(request)
-   * .on('data', function(element) {
+   *   .on('data', element => {
    *     // doThingsWith(element)
-   * }).on('error', function(err) {
+   *   }).on('error', err => {
    *     console.log(err);
-   * });
+   *   });
    */
   findRelatedBooksStream(request, options) {
     options = options || {};
@@ -4243,16 +4146,17 @@ class LibraryServiceClient {
    * var formattedResource = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
    * var tag = '';
    * var request = {
-   *     resource: formattedResource,
-   *     tag: tag
+   *   resource: formattedResource,
+   *   tag: tag,
    * };
-   * client.addTag(request).then(function(responses) {
+   * client.addTag(request)
+   *   .then(responses => {
    *     var response = responses[0];
    *     // doThingsWith(response)
-   * })
-   * .catch(function(err) {
+   *   })
+   *   .catch(err => {
    *     console.error(err);
-   * });
+   *   });
    */
   addTag(request, options, callback) {
     if (options instanceof Function && callback === undefined) {
@@ -4297,16 +4201,17 @@ class LibraryServiceClient {
    * var formattedResource = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
    * var label = '';
    * var request = {
-   *     resource: formattedResource,
-   *     label: label
+   *   resource: formattedResource,
+   *   label: label,
    * };
-   * client.addLabel(request).then(function(responses) {
+   * client.addLabel(request)
+   *   .then(responses => {
    *     var response = responses[0];
    *     // doThingsWith(response)
-   * })
-   * .catch(function(err) {
+   *   })
+   *   .catch(err => {
    *     console.error(err);
-   * });
+   *   });
    */
   addLabel(request, options, callback) {
     if (options instanceof Function && callback === undefined) {
@@ -4347,13 +4252,15 @@ class LibraryServiceClient {
    * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
    *
    * // Handle the operation using the promise pattern.
-   * client.getBigBook({name: formattedName}).then(function(responses) {
+   * client.getBigBook({name: formattedName})
+   *   .then(responses => {
    *     var operation = responses[0];
    *     var initialApiResponse = responses[1];
    *
    *     // Operation#promise starts polling for the completion of the LRO.
    *     return operation.promise();
-   * }).then(function(responses) {
+   *   })
+   *   .then(responses => {
    *     // The final result of the operation.
    *     var result = responses[0];
    *
@@ -4362,38 +4269,39 @@ class LibraryServiceClient {
    *
    *     // The response of the api call returning the complete operation.
    *     var finalApiResponse = responses[2];
-   * })
-   * .catch(function(err) {
+   *   })
+   *   .catch(err => {
    *     console.error(err);
-   * });
+   *   });
    *
    * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
    *
    * // Handle the operation using the event emitter pattern.
-   * client.getBigBook({name: formattedName}).then(function(responses) {
+   * client.getBigBook({name: formattedName})
+   *   .then(responses => {
    *     var operation = responses[0];
    *     var initialApiResponse = responses[1];
    *
    *     // Adding a listener for the "complete" event starts polling for the
    *     // completion of the operation.
-   *     operation.on('complete', function(result, metadata, finalApiResponse) {
+   *     operation.on('complete', (result, metadata, finalApiResponse) => {
    *       // doSomethingWith(result);
    *     });
    *
    *     // Adding a listener for the "progress" event causes the callback to be
    *     // called on any change in metadata when the operation is polled.
-   *     operation.on('progress', function(metadata, apiResponse) {
+   *     operation.on('progress', (metadata, apiResponse) => {
    *       // doSomethingWith(metadata)
-   *     })
+   *     });
    *
    *     // Adding a listener for the "error" event handles any errors found during polling.
-   *     operation.on('error', function(err) {
+   *     operation.on('error', err => {
    *       // throw(err);
-   *     })
-   * })
-   * .catch(function(err) {
+   *     });
+   *   })
+   *   .catch(err => {
    *     console.error(err);
-   * });
+   *   });
    */
   getBigBook(request, options, callback) {
     if (options instanceof Function && callback === undefined) {
@@ -4434,13 +4342,15 @@ class LibraryServiceClient {
    * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
    *
    * // Handle the operation using the promise pattern.
-   * client.getBigNothing({name: formattedName}).then(function(responses) {
+   * client.getBigNothing({name: formattedName})
+   *   .then(responses => {
    *     var operation = responses[0];
    *     var initialApiResponse = responses[1];
    *
    *     // Operation#promise starts polling for the completion of the LRO.
    *     return operation.promise();
-   * }).then(function(responses) {
+   *   })
+   *   .then(responses => {
    *     // The final result of the operation.
    *     var result = responses[0];
    *
@@ -4449,38 +4359,39 @@ class LibraryServiceClient {
    *
    *     // The response of the api call returning the complete operation.
    *     var finalApiResponse = responses[2];
-   * })
-   * .catch(function(err) {
+   *   })
+   *   .catch(err => {
    *     console.error(err);
-   * });
+   *   });
    *
    * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
    *
    * // Handle the operation using the event emitter pattern.
-   * client.getBigNothing({name: formattedName}).then(function(responses) {
+   * client.getBigNothing({name: formattedName})
+   *   .then(responses => {
    *     var operation = responses[0];
    *     var initialApiResponse = responses[1];
    *
    *     // Adding a listener for the "complete" event starts polling for the
    *     // completion of the operation.
-   *     operation.on('complete', function(result, metadata, finalApiResponse) {
+   *     operation.on('complete', (result, metadata, finalApiResponse) => {
    *       // doSomethingWith(result);
    *     });
    *
    *     // Adding a listener for the "progress" event causes the callback to be
    *     // called on any change in metadata when the operation is polled.
-   *     operation.on('progress', function(metadata, apiResponse) {
+   *     operation.on('progress', (metadata, apiResponse) => {
    *       // doSomethingWith(metadata)
-   *     })
+   *     });
    *
    *     // Adding a listener for the "error" event handles any errors found during polling.
-   *     operation.on('error', function(err) {
+   *     operation.on('error', err => {
    *       // throw(err);
-   *     })
-   * })
-   * .catch(function(err) {
+   *     });
+   *   })
+   *   .catch(err => {
    *     console.error(err);
-   * });
+   *   });
    */
   getBigNothing(request, options, callback) {
     if (options instanceof Function && callback === undefined) {
@@ -4606,41 +4517,42 @@ class LibraryServiceClient {
    * var requiredRepeatedFixed64 = [];
    * var requiredMap = {};
    * var request = {
-   *     requiredSingularInt32: requiredSingularInt32,
-   *     requiredSingularInt64: requiredSingularInt64,
-   *     requiredSingularFloat: requiredSingularFloat,
-   *     requiredSingularDouble: requiredSingularDouble,
-   *     requiredSingularBool: requiredSingularBool,
-   *     requiredSingularEnum: requiredSingularEnum,
-   *     requiredSingularString: requiredSingularString,
-   *     requiredSingularBytes: requiredSingularBytes,
-   *     requiredSingularMessage: requiredSingularMessage,
-   *     requiredSingularResourceName: requiredSingularResourceName,
-   *     requiredSingularResourceNameOneof: requiredSingularResourceNameOneof,
-   *     requiredSingularFixed32: requiredSingularFixed32,
-   *     requiredSingularFixed64: requiredSingularFixed64,
-   *     requiredRepeatedInt32: requiredRepeatedInt32,
-   *     requiredRepeatedInt64: requiredRepeatedInt64,
-   *     requiredRepeatedFloat: requiredRepeatedFloat,
-   *     requiredRepeatedDouble: requiredRepeatedDouble,
-   *     requiredRepeatedBool: requiredRepeatedBool,
-   *     requiredRepeatedEnum: requiredRepeatedEnum,
-   *     requiredRepeatedString: requiredRepeatedString,
-   *     requiredRepeatedBytes: requiredRepeatedBytes,
-   *     requiredRepeatedMessage: requiredRepeatedMessage,
-   *     requiredRepeatedResourceName: formattedRequiredRepeatedResourceName,
-   *     requiredRepeatedResourceNameOneof: formattedRequiredRepeatedResourceNameOneof,
-   *     requiredRepeatedFixed32: requiredRepeatedFixed32,
-   *     requiredRepeatedFixed64: requiredRepeatedFixed64,
-   *     requiredMap: requiredMap
+   *   requiredSingularInt32: requiredSingularInt32,
+   *   requiredSingularInt64: requiredSingularInt64,
+   *   requiredSingularFloat: requiredSingularFloat,
+   *   requiredSingularDouble: requiredSingularDouble,
+   *   requiredSingularBool: requiredSingularBool,
+   *   requiredSingularEnum: requiredSingularEnum,
+   *   requiredSingularString: requiredSingularString,
+   *   requiredSingularBytes: requiredSingularBytes,
+   *   requiredSingularMessage: requiredSingularMessage,
+   *   requiredSingularResourceName: requiredSingularResourceName,
+   *   requiredSingularResourceNameOneof: requiredSingularResourceNameOneof,
+   *   requiredSingularFixed32: requiredSingularFixed32,
+   *   requiredSingularFixed64: requiredSingularFixed64,
+   *   requiredRepeatedInt32: requiredRepeatedInt32,
+   *   requiredRepeatedInt64: requiredRepeatedInt64,
+   *   requiredRepeatedFloat: requiredRepeatedFloat,
+   *   requiredRepeatedDouble: requiredRepeatedDouble,
+   *   requiredRepeatedBool: requiredRepeatedBool,
+   *   requiredRepeatedEnum: requiredRepeatedEnum,
+   *   requiredRepeatedString: requiredRepeatedString,
+   *   requiredRepeatedBytes: requiredRepeatedBytes,
+   *   requiredRepeatedMessage: requiredRepeatedMessage,
+   *   requiredRepeatedResourceName: formattedRequiredRepeatedResourceName,
+   *   requiredRepeatedResourceNameOneof: formattedRequiredRepeatedResourceNameOneof,
+   *   requiredRepeatedFixed32: requiredRepeatedFixed32,
+   *   requiredRepeatedFixed64: requiredRepeatedFixed64,
+   *   requiredMap: requiredMap,
    * };
-   * client.testOptionalRequiredFlatteningParams(request).then(function(responses) {
+   * client.testOptionalRequiredFlatteningParams(request)
+   *   .then(responses => {
    *     var response = responses[0];
    *     // doThingsWith(response)
-   * })
-   * .catch(function(err) {
+   *   })
+   *   .catch(err => {
    *     console.error(err);
-   * });
+   *   });
    */
   testOptionalRequiredFlatteningParams(request, options, callback) {
     if (options instanceof Function && callback === undefined) {
@@ -4651,6 +4563,118 @@ class LibraryServiceClient {
 
     return this._innerApiCalls.testOptionalRequiredFlatteningParams(request, options, callback);
   };
+
+  // --------------------
+  // -- Path templates --
+  // --------------------
+
+  /**
+   * Return a fully-qualified shelf resource name string.
+   *
+   * @param {String} shelfId
+   * @returns {String}
+   */
+  shelfPath(shelfId) {
+    return this._pathTemplates.shelfPathTemplate.render({
+      shelf_id: shelfId,
+    });
+  }
+
+  /**
+   * Return a fully-qualified book resource name string.
+   *
+   * @param {String} shelfId
+   * @param {String} bookId
+   * @returns {String}
+   */
+  bookPath(shelfId, bookId) {
+    return this._pathTemplates.bookPathTemplate.render({
+      shelf_id: shelfId,
+      book_id: bookId,
+    });
+  }
+
+  /**
+   * Return a fully-qualified return resource name string.
+   *
+   * @param {String} shelf
+   * @param {String} book
+   * @param {String} return_
+   * @returns {String}
+   */
+  returnPath(shelf, book, return_) {
+    return this._pathTemplates.returnPathTemplate.render({
+      shelf: shelf,
+      book: book,
+      return: return_,
+    });
+  }
+
+  /**
+   * Parse the shelfName from a shelf resource.
+   *
+   * @param {String} shelfName
+   *   A fully-qualified path representing a shelf resources.
+   * @returns {String} - A string representing the shelf_id.
+   */
+  matchShelfIdFromShelfName(shelfName) {
+    return shelfPathTemplate.match(shelfName).shelf_id;
+  }
+
+  /**
+   * Parse the bookName from a book resource.
+   *
+   * @param {String} bookName
+   *   A fully-qualified path representing a book resources.
+   * @returns {String} - A string representing the shelf_id.
+   */
+  matchShelfIdFromBookName(bookName) {
+    return bookPathTemplate.match(bookName).shelf_id;
+  }
+
+  /**
+   * Parse the bookName from a book resource.
+   *
+   * @param {String} bookName
+   *   A fully-qualified path representing a book resources.
+   * @returns {String} - A string representing the book_id.
+   */
+  matchBookIdFromBookName(bookName) {
+    return bookPathTemplate.match(bookName).book_id;
+  }
+
+  /**
+   * Parse the returnName from a return resource.
+   *
+   * @param {String} returnName
+   *   A fully-qualified path representing a return resources.
+   * @returns {String} - A string representing the shelf.
+   */
+  matchShelfFromReturnName(returnName) {
+    return returnPathTemplate.match(returnName).shelf;
+  }
+
+  /**
+   * Parse the returnName from a return resource.
+   *
+   * @param {String} returnName
+   *   A fully-qualified path representing a return resources.
+   * @returns {String} - A string representing the book.
+   */
+  matchBookFromReturnName(returnName) {
+    return returnPathTemplate.match(returnName).book;
+  }
+
+  /**
+   * Parse the returnName from a return resource.
+   *
+   * @param {String} returnName
+   *   A fully-qualified path representing a return resources.
+   * @returns {String} - A string representing the return.
+   */
+  matchReturnFromReturnName(returnName) {
+    return returnPathTemplate.match(returnName).return;
+  }
 }
 
 
@@ -4870,7 +4894,7 @@ describe('LibraryServiceClient', function() {
       // Mock request
       var shelf = {};
       var request = {
-          shelf : shelf
+        shelf: shelf,
       };
 
       // Mock response
@@ -4878,9 +4902,9 @@ describe('LibraryServiceClient', function() {
       var theme = 'theme110327241';
       var internalTheme = 'internalTheme792518087';
       var expectedResponse = {
-          name : name,
-          theme : theme,
-          internalTheme : internalTheme
+        name: name,
+        theme: theme,
+        internalTheme: internalTheme,
       };
 
       // Mock Grpc layer
@@ -4899,7 +4923,7 @@ describe('LibraryServiceClient', function() {
       // Mock request
       var shelf = {};
       var request = {
-          shelf : shelf
+        shelf: shelf,
       };
 
       // Mock Grpc layer
@@ -4921,8 +4945,8 @@ describe('LibraryServiceClient', function() {
       var formattedName = client.shelfPath("[SHELF_ID]");
       var options = 'options-1249474914';
       var request = {
-          name : formattedName,
-          options : options
+        name: formattedName,
+        options: options,
       };
 
       // Mock response
@@ -4930,9 +4954,9 @@ describe('LibraryServiceClient', function() {
       var theme = 'theme110327241';
       var internalTheme = 'internalTheme792518087';
       var expectedResponse = {
-          name : name2,
-          theme : theme,
-          internalTheme : internalTheme
+        name: name2,
+        theme: theme,
+        internalTheme: internalTheme,
       };
 
       // Mock Grpc layer
@@ -4952,8 +4976,8 @@ describe('LibraryServiceClient', function() {
       var formattedName = client.shelfPath("[SHELF_ID]");
       var options = 'options-1249474914';
       var request = {
-          name : formattedName,
-          options : options
+        name: formattedName,
+        options: options,
       };
 
       // Mock Grpc layer
@@ -4979,8 +5003,8 @@ describe('LibraryServiceClient', function() {
       var shelvesElement = {};
       var shelves = [shelvesElement];
       var expectedResponse = {
-          nextPageToken : nextPageToken,
-          shelves : shelves
+        nextPageToken: nextPageToken,
+        shelves: shelves,
       };
 
       // Mock Grpc layer
@@ -5020,7 +5044,7 @@ describe('LibraryServiceClient', function() {
       // Mock request
       var formattedName = client.shelfPath("[SHELF_ID]");
       var request = {
-          name : formattedName
+        name: formattedName,
       };
 
       // Mock Grpc layer
@@ -5038,7 +5062,7 @@ describe('LibraryServiceClient', function() {
       // Mock request
       var formattedName = client.shelfPath("[SHELF_ID]");
       var request = {
-          name : formattedName
+        name: formattedName,
       };
 
       // Mock Grpc layer
@@ -5060,8 +5084,8 @@ describe('LibraryServiceClient', function() {
       var formattedName = client.shelfPath("[SHELF_ID]");
       var formattedOtherShelfName = client.shelfPath("[SHELF_ID]");
       var request = {
-          name : formattedName,
-          otherShelfName : formattedOtherShelfName
+        name: formattedName,
+        otherShelfName: formattedOtherShelfName,
       };
 
       // Mock response
@@ -5069,9 +5093,9 @@ describe('LibraryServiceClient', function() {
       var theme = 'theme110327241';
       var internalTheme = 'internalTheme792518087';
       var expectedResponse = {
-          name : name2,
-          theme : theme,
-          internalTheme : internalTheme
+        name: name2,
+        theme: theme,
+        internalTheme: internalTheme,
       };
 
       // Mock Grpc layer
@@ -5091,8 +5115,8 @@ describe('LibraryServiceClient', function() {
       var formattedName = client.shelfPath("[SHELF_ID]");
       var formattedOtherShelfName = client.shelfPath("[SHELF_ID]");
       var request = {
-          name : formattedName,
-          otherShelfName : formattedOtherShelfName
+        name: formattedName,
+        otherShelfName: formattedOtherShelfName,
       };
 
       // Mock Grpc layer
@@ -5114,8 +5138,8 @@ describe('LibraryServiceClient', function() {
       var formattedName = client.shelfPath("[SHELF_ID]");
       var book = {};
       var request = {
-          name : formattedName,
-          book : book
+        name: formattedName,
+        book: book,
       };
 
       // Mock response
@@ -5124,10 +5148,10 @@ describe('LibraryServiceClient', function() {
       var title = 'title110371416';
       var read = true;
       var expectedResponse = {
-          name : name2,
-          author : author,
-          title : title,
-          read : read
+        name: name2,
+        author: author,
+        title: title,
+        read: read,
       };
 
       // Mock Grpc layer
@@ -5147,8 +5171,8 @@ describe('LibraryServiceClient', function() {
       var formattedName = client.shelfPath("[SHELF_ID]");
       var book = {};
       var request = {
-          name : formattedName,
-          book : book
+        name: formattedName,
+        book: book,
       };
 
       // Mock Grpc layer
@@ -5171,19 +5195,19 @@ describe('LibraryServiceClient', function() {
       var books = [];
       var seriesString = 'foobar';
       var seriesUuid = {
-          seriesString : seriesString
+        seriesString: seriesString,
       };
       var request = {
-          shelf : shelf,
-          books : books,
-          seriesUuid : seriesUuid
+        shelf: shelf,
+        books: books,
+        seriesUuid: seriesUuid,
       };
 
       // Mock response
       var bookNamesElement = 'bookNamesElement1491670575';
       var bookNames = [bookNamesElement];
       var expectedResponse = {
-          bookNames : bookNames
+        bookNames: bookNames,
       };
 
       // Mock Grpc layer
@@ -5204,12 +5228,12 @@ describe('LibraryServiceClient', function() {
       var books = [];
       var seriesString = 'foobar';
       var seriesUuid = {
-          seriesString : seriesString
+        seriesString: seriesString,
       };
       var request = {
-          shelf : shelf,
-          books : books,
-          seriesUuid : seriesUuid
+        shelf: shelf,
+        books: books,
+        seriesUuid: seriesUuid,
       };
 
       // Mock Grpc layer
@@ -5230,7 +5254,7 @@ describe('LibraryServiceClient', function() {
       // Mock request
       var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
       var request = {
-          name : formattedName
+        name: formattedName,
       };
 
       // Mock response
@@ -5239,10 +5263,10 @@ describe('LibraryServiceClient', function() {
       var title = 'title110371416';
       var read = true;
       var expectedResponse = {
-          name : name2,
-          author : author,
-          title : title,
-          read : read
+        name: name2,
+        author: author,
+        title: title,
+        read: read,
       };
 
       // Mock Grpc layer
@@ -5261,7 +5285,7 @@ describe('LibraryServiceClient', function() {
       // Mock request
       var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
       var request = {
-          name : formattedName
+        name: formattedName,
       };
 
       // Mock Grpc layer
@@ -5282,7 +5306,7 @@ describe('LibraryServiceClient', function() {
       // Mock request
       var formattedName = client.shelfPath("[SHELF_ID]");
       var request = {
-          name : formattedName
+        name: formattedName,
       };
 
       // Mock response
@@ -5290,8 +5314,8 @@ describe('LibraryServiceClient', function() {
       var booksElement = {};
       var books = [booksElement];
       var expectedResponse = {
-          nextPageToken : nextPageToken,
-          books : books
+        nextPageToken: nextPageToken,
+        books: books,
       };
 
       // Mock Grpc layer
@@ -5313,7 +5337,7 @@ describe('LibraryServiceClient', function() {
       // Mock request
       var formattedName = client.shelfPath("[SHELF_ID]");
       var request = {
-          name : formattedName
+        name: formattedName,
       };
 
       // Mock Grpc layer
@@ -5334,7 +5358,7 @@ describe('LibraryServiceClient', function() {
       // Mock request
       var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
       var request = {
-          name : formattedName
+        name: formattedName,
       };
 
       // Mock Grpc layer
@@ -5352,7 +5376,7 @@ describe('LibraryServiceClient', function() {
       // Mock request
       var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
       var request = {
-          name : formattedName
+        name: formattedName,
       };
 
       // Mock Grpc layer
@@ -5374,8 +5398,8 @@ describe('LibraryServiceClient', function() {
       var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
       var book = {};
       var request = {
-          name : formattedName,
-          book : book
+        name: formattedName,
+        book: book,
       };
 
       // Mock response
@@ -5384,10 +5408,10 @@ describe('LibraryServiceClient', function() {
       var title = 'title110371416';
       var read = true;
       var expectedResponse = {
-          name : name2,
-          author : author,
-          title : title,
-          read : read
+        name: name2,
+        author: author,
+        title: title,
+        read: read,
       };
 
       // Mock Grpc layer
@@ -5407,8 +5431,8 @@ describe('LibraryServiceClient', function() {
       var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
       var book = {};
       var request = {
-          name : formattedName,
-          book : book
+        name: formattedName,
+        book: book,
       };
 
       // Mock Grpc layer
@@ -5430,8 +5454,8 @@ describe('LibraryServiceClient', function() {
       var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
       var formattedOtherShelfName = client.shelfPath("[SHELF_ID]");
       var request = {
-          name : formattedName,
-          otherShelfName : formattedOtherShelfName
+        name: formattedName,
+        otherShelfName: formattedOtherShelfName,
       };
 
       // Mock response
@@ -5440,10 +5464,10 @@ describe('LibraryServiceClient', function() {
       var title = 'title110371416';
       var read = true;
       var expectedResponse = {
-          name : name2,
-          author : author,
-          title : title,
-          read : read
+        name: name2,
+        author: author,
+        title: title,
+        read: read,
       };
 
       // Mock Grpc layer
@@ -5463,8 +5487,8 @@ describe('LibraryServiceClient', function() {
       var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
       var formattedOtherShelfName = client.shelfPath("[SHELF_ID]");
       var request = {
-          name : formattedName,
-          otherShelfName : formattedOtherShelfName
+        name: formattedName,
+        otherShelfName: formattedOtherShelfName,
       };
 
       // Mock Grpc layer
@@ -5490,8 +5514,8 @@ describe('LibraryServiceClient', function() {
       var stringsElement = 'stringsElement474465855';
       var strings = [stringsElement];
       var expectedResponse = {
-          nextPageToken : nextPageToken,
-          strings : strings
+        nextPageToken: nextPageToken,
+        strings: strings,
       };
 
       // Mock Grpc layer
@@ -5534,14 +5558,14 @@ describe('LibraryServiceClient', function() {
       var stage = library.v1.types.Comment.Stage.UNSET;
       var alignment = library.v1.types.SomeMessage2.SomeMessage3.Alignment.CHAR;
       var commentsElement = {
-          comment : comment,
-          stage : stage,
-          alignment : alignment
+        comment: comment,
+        stage: stage,
+        alignment: alignment,
       };
       var comments = [commentsElement];
       var request = {
-          name : formattedName,
-          comments : comments
+        name: formattedName,
+        comments: comments,
       };
 
       // Mock Grpc layer
@@ -5562,14 +5586,14 @@ describe('LibraryServiceClient', function() {
       var stage = library.v1.types.Comment.Stage.UNSET;
       var alignment = library.v1.types.SomeMessage2.SomeMessage3.Alignment.CHAR;
       var commentsElement = {
-          comment : comment,
-          stage : stage,
-          alignment : alignment
+        comment: comment,
+        stage: stage,
+        alignment: alignment,
       };
       var comments = [commentsElement];
       var request = {
-          name : formattedName,
-          comments : comments
+        name: formattedName,
+        comments: comments,
       };
 
       // Mock Grpc layer
@@ -5590,7 +5614,7 @@ describe('LibraryServiceClient', function() {
       // Mock request
       var formattedName = client.archivedBookPath("[ARCHIVE_PATH]", "[BOOK_ID]");
       var request = {
-          name : formattedName
+        name: formattedName,
       };
 
       // Mock response
@@ -5599,10 +5623,10 @@ describe('LibraryServiceClient', function() {
       var title = 'title110371416';
       var read = true;
       var expectedResponse = {
-          name : name2,
-          author : author,
-          title : title,
-          read : read
+        name: name2,
+        author: author,
+        title: title,
+        read: read,
       };
 
       // Mock Grpc layer
@@ -5621,7 +5645,7 @@ describe('LibraryServiceClient', function() {
       // Mock request
       var formattedName = client.archivedBookPath("[ARCHIVE_PATH]", "[BOOK_ID]");
       var request = {
-          name : formattedName
+        name: formattedName,
       };
 
       // Mock Grpc layer
@@ -5643,8 +5667,8 @@ describe('LibraryServiceClient', function() {
       var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
       var formattedAltBookName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
       var request = {
-          name : formattedName,
-          altBookName : formattedAltBookName
+        name: formattedName,
+        altBookName: formattedAltBookName,
       };
 
       // Mock response
@@ -5653,10 +5677,10 @@ describe('LibraryServiceClient', function() {
       var title = 'title110371416';
       var read = true;
       var expectedResponse = {
-          name : name2,
-          author : author,
-          title : title,
-          read : read
+        name: name2,
+        author: author,
+        title: title,
+        read: read,
       };
 
       // Mock Grpc layer
@@ -5676,8 +5700,8 @@ describe('LibraryServiceClient', function() {
       var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
       var formattedAltBookName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
       var request = {
-          name : formattedName,
-          altBookName : formattedAltBookName
+        name: formattedName,
+        altBookName: formattedAltBookName,
       };
 
       // Mock Grpc layer
@@ -5698,7 +5722,7 @@ describe('LibraryServiceClient', function() {
       // Mock request
       var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
       var request = {
-          name : formattedName
+        name: formattedName,
       };
 
       // Mock response
@@ -5707,10 +5731,10 @@ describe('LibraryServiceClient', function() {
       var title = 'title110371416';
       var read = true;
       var expectedResponse = {
-          name : name2,
-          author : author,
-          title : title,
-          read : read
+        name: name2,
+        author: author,
+        title: title,
+        read: read,
       };
 
       // Mock Grpc layer
@@ -5729,7 +5753,7 @@ describe('LibraryServiceClient', function() {
       // Mock request
       var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
       var request = {
-          name : formattedName
+        name: formattedName,
       };
 
       // Mock Grpc layer
@@ -5753,9 +5777,9 @@ describe('LibraryServiceClient', function() {
       var indexMapItem = 'indexMapItem1918721251';
       var indexMap = {'default_key' : indexMapItem,};
       var request = {
-          name : formattedName,
-          indexName : indexName,
-          indexMap : indexMap
+        name: formattedName,
+        indexName: indexName,
+        indexMap: indexMap,
       };
 
       // Mock Grpc layer
@@ -5776,9 +5800,9 @@ describe('LibraryServiceClient', function() {
       var indexMapItem = 'indexMapItem1918721251';
       var indexMap = {'default_key' : indexMapItem,};
       var request = {
-          name : formattedName,
-          indexName : indexName,
-          indexMap : indexMap
+        name: formattedName,
+        indexName: indexName,
+        indexMap: indexMap,
       };
 
       // Mock Grpc layer
@@ -5803,7 +5827,7 @@ describe('LibraryServiceClient', function() {
       var shelvesElement = {};
       var shelves = [shelvesElement];
       var expectedResponse = {
-          shelves : shelves
+        shelves: shelves,
       };
 
       // Mock Grpc layer
@@ -5851,7 +5875,7 @@ describe('LibraryServiceClient', function() {
       // Mock request
       var name = 'name3373707';
       var request = {
-          name : name
+        name: name,
       };
 
       // Mock response
@@ -5860,10 +5884,10 @@ describe('LibraryServiceClient', function() {
       var title = 'title110371416';
       var read = true;
       var expectedResponse = {
-          name : name2,
-          author : author,
-          title : title,
-          read : read
+        name: name2,
+        author: author,
+        title: title,
+        read: read,
       };
 
       // Mock Grpc layer
@@ -5887,7 +5911,7 @@ describe('LibraryServiceClient', function() {
       // Mock request
       var name = 'name3373707';
       var request = {
-          name : name
+        name: name,
       };
 
       // Mock Grpc layer
@@ -5914,15 +5938,15 @@ describe('LibraryServiceClient', function() {
       // Mock request
       var name = 'name3373707';
       var request = {
-          name : name
+        name: name,
       };
 
       // Mock response
       var userName = 'userName339340927';
       var comment = '95';
       var expectedResponse = {
-          userName : userName,
-          comment : comment
+        userName: userName,
+        comment: comment,
       };
 
       // Mock Grpc layer
@@ -5944,7 +5968,7 @@ describe('LibraryServiceClient', function() {
       // Mock request
       var name = 'name3373707';
       var request = {
-          name : name
+        name: name,
       };
 
       // Mock Grpc layer
@@ -5971,8 +5995,8 @@ describe('LibraryServiceClient', function() {
       var names = [namesElement];
       var shelves = [];
       var request = {
-          names : names,
-          shelves : shelves
+        names: names,
+        shelves: shelves,
       };
 
       // Mock response
@@ -5980,8 +6004,8 @@ describe('LibraryServiceClient', function() {
       var namesElement2 = 'namesElement21120252792';
       var names2 = [namesElement2];
       var expectedResponse = {
-          nextPageToken : nextPageToken,
-          names : names2
+        nextPageToken: nextPageToken,
+        names: names2,
       };
 
       // Mock Grpc layer
@@ -6005,8 +6029,8 @@ describe('LibraryServiceClient', function() {
       var names = [namesElement];
       var shelves = [];
       var request = {
-          names : names,
-          shelves : shelves
+        names: names,
+        shelves: shelves,
       };
 
       // Mock Grpc layer
@@ -6028,8 +6052,8 @@ describe('LibraryServiceClient', function() {
       var formattedResource = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
       var tag = 'tag114586';
       var request = {
-          resource : formattedResource,
-          tag : tag
+        resource: formattedResource,
+        tag: tag,
       };
 
       // Mock response
@@ -6052,8 +6076,8 @@ describe('LibraryServiceClient', function() {
       var formattedResource = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
       var tag = 'tag114586';
       var request = {
-          resource : formattedResource,
-          tag : tag
+        resource: formattedResource,
+        tag: tag,
       };
 
       // Mock Grpc layer
@@ -6075,8 +6099,8 @@ describe('LibraryServiceClient', function() {
       var formattedResource = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
       var label = 'label102727412';
       var request = {
-          resource : formattedResource,
-          label : label
+        resource: formattedResource,
+        label: label,
       };
 
       // Mock response
@@ -6099,8 +6123,8 @@ describe('LibraryServiceClient', function() {
       var formattedResource = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
       var label = 'label102727412';
       var request = {
-          resource : formattedResource,
-          label : label
+        resource: formattedResource,
+        label: label,
       };
 
       // Mock Grpc layer
@@ -6121,7 +6145,7 @@ describe('LibraryServiceClient', function() {
       // Mock request
       var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
       var request = {
-          name : formattedName
+        name: formattedName,
       };
 
       // Mock response
@@ -6130,10 +6154,10 @@ describe('LibraryServiceClient', function() {
       var title = 'title110371416';
       var read = true;
       var expectedResponse = {
-          name : name2,
-          author : author,
-          title : title,
-          read : read
+        name: name2,
+        author: author,
+        title: title,
+        read: read,
       };
 
       // Mock Grpc layer
@@ -6156,7 +6180,7 @@ describe('LibraryServiceClient', function() {
       // Mock request
       var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
       var request = {
-          name : formattedName
+        name: formattedName,
       };
 
       // Mock Grpc layer
@@ -6188,7 +6212,7 @@ describe('LibraryServiceClient', function() {
       // Mock request
       var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
       var request = {
-          name : formattedName
+        name: formattedName,
       };
 
       // Mock response
@@ -6214,7 +6238,7 @@ describe('LibraryServiceClient', function() {
       // Mock request
       var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
       var request = {
-          name : formattedName
+        name: formattedName,
       };
 
       // Mock Grpc layer
@@ -6272,33 +6296,33 @@ describe('LibraryServiceClient', function() {
       var requiredRepeatedFixed64 = [];
       var requiredMap = {};
       var request = {
-          requiredSingularInt32 : requiredSingularInt32,
-          requiredSingularInt64 : requiredSingularInt64,
-          requiredSingularFloat : requiredSingularFloat,
-          requiredSingularDouble : requiredSingularDouble,
-          requiredSingularBool : requiredSingularBool,
-          requiredSingularEnum : requiredSingularEnum,
-          requiredSingularString : requiredSingularString,
-          requiredSingularBytes : requiredSingularBytes,
-          requiredSingularMessage : requiredSingularMessage,
-          requiredSingularResourceName : requiredSingularResourceName,
-          requiredSingularResourceNameOneof : requiredSingularResourceNameOneof,
-          requiredSingularFixed32 : requiredSingularFixed32,
-          requiredSingularFixed64 : requiredSingularFixed64,
-          requiredRepeatedInt32 : requiredRepeatedInt32,
-          requiredRepeatedInt64 : requiredRepeatedInt64,
-          requiredRepeatedFloat : requiredRepeatedFloat,
-          requiredRepeatedDouble : requiredRepeatedDouble,
-          requiredRepeatedBool : requiredRepeatedBool,
-          requiredRepeatedEnum : requiredRepeatedEnum,
-          requiredRepeatedString : requiredRepeatedString,
-          requiredRepeatedBytes : requiredRepeatedBytes,
-          requiredRepeatedMessage : requiredRepeatedMessage,
-          requiredRepeatedResourceName : formattedRequiredRepeatedResourceName,
-          requiredRepeatedResourceNameOneof : formattedRequiredRepeatedResourceNameOneof,
-          requiredRepeatedFixed32 : requiredRepeatedFixed32,
-          requiredRepeatedFixed64 : requiredRepeatedFixed64,
-          requiredMap : requiredMap
+        requiredSingularInt32: requiredSingularInt32,
+        requiredSingularInt64: requiredSingularInt64,
+        requiredSingularFloat: requiredSingularFloat,
+        requiredSingularDouble: requiredSingularDouble,
+        requiredSingularBool: requiredSingularBool,
+        requiredSingularEnum: requiredSingularEnum,
+        requiredSingularString: requiredSingularString,
+        requiredSingularBytes: requiredSingularBytes,
+        requiredSingularMessage: requiredSingularMessage,
+        requiredSingularResourceName: requiredSingularResourceName,
+        requiredSingularResourceNameOneof: requiredSingularResourceNameOneof,
+        requiredSingularFixed32: requiredSingularFixed32,
+        requiredSingularFixed64: requiredSingularFixed64,
+        requiredRepeatedInt32: requiredRepeatedInt32,
+        requiredRepeatedInt64: requiredRepeatedInt64,
+        requiredRepeatedFloat: requiredRepeatedFloat,
+        requiredRepeatedDouble: requiredRepeatedDouble,
+        requiredRepeatedBool: requiredRepeatedBool,
+        requiredRepeatedEnum: requiredRepeatedEnum,
+        requiredRepeatedString: requiredRepeatedString,
+        requiredRepeatedBytes: requiredRepeatedBytes,
+        requiredRepeatedMessage: requiredRepeatedMessage,
+        requiredRepeatedResourceName: formattedRequiredRepeatedResourceName,
+        requiredRepeatedResourceNameOneof: formattedRequiredRepeatedResourceNameOneof,
+        requiredRepeatedFixed32: requiredRepeatedFixed32,
+        requiredRepeatedFixed64: requiredRepeatedFixed64,
+        requiredMap: requiredMap,
       };
 
       // Mock response
@@ -6346,33 +6370,33 @@ describe('LibraryServiceClient', function() {
       var requiredRepeatedFixed64 = [];
       var requiredMap = {};
       var request = {
-          requiredSingularInt32 : requiredSingularInt32,
-          requiredSingularInt64 : requiredSingularInt64,
-          requiredSingularFloat : requiredSingularFloat,
-          requiredSingularDouble : requiredSingularDouble,
-          requiredSingularBool : requiredSingularBool,
-          requiredSingularEnum : requiredSingularEnum,
-          requiredSingularString : requiredSingularString,
-          requiredSingularBytes : requiredSingularBytes,
-          requiredSingularMessage : requiredSingularMessage,
-          requiredSingularResourceName : requiredSingularResourceName,
-          requiredSingularResourceNameOneof : requiredSingularResourceNameOneof,
-          requiredSingularFixed32 : requiredSingularFixed32,
-          requiredSingularFixed64 : requiredSingularFixed64,
-          requiredRepeatedInt32 : requiredRepeatedInt32,
-          requiredRepeatedInt64 : requiredRepeatedInt64,
-          requiredRepeatedFloat : requiredRepeatedFloat,
-          requiredRepeatedDouble : requiredRepeatedDouble,
-          requiredRepeatedBool : requiredRepeatedBool,
-          requiredRepeatedEnum : requiredRepeatedEnum,
-          requiredRepeatedString : requiredRepeatedString,
-          requiredRepeatedBytes : requiredRepeatedBytes,
-          requiredRepeatedMessage : requiredRepeatedMessage,
-          requiredRepeatedResourceName : formattedRequiredRepeatedResourceName,
-          requiredRepeatedResourceNameOneof : formattedRequiredRepeatedResourceNameOneof,
-          requiredRepeatedFixed32 : requiredRepeatedFixed32,
-          requiredRepeatedFixed64 : requiredRepeatedFixed64,
-          requiredMap : requiredMap
+        requiredSingularInt32: requiredSingularInt32,
+        requiredSingularInt64: requiredSingularInt64,
+        requiredSingularFloat: requiredSingularFloat,
+        requiredSingularDouble: requiredSingularDouble,
+        requiredSingularBool: requiredSingularBool,
+        requiredSingularEnum: requiredSingularEnum,
+        requiredSingularString: requiredSingularString,
+        requiredSingularBytes: requiredSingularBytes,
+        requiredSingularMessage: requiredSingularMessage,
+        requiredSingularResourceName: requiredSingularResourceName,
+        requiredSingularResourceNameOneof: requiredSingularResourceNameOneof,
+        requiredSingularFixed32: requiredSingularFixed32,
+        requiredSingularFixed64: requiredSingularFixed64,
+        requiredRepeatedInt32: requiredRepeatedInt32,
+        requiredRepeatedInt64: requiredRepeatedInt64,
+        requiredRepeatedFloat: requiredRepeatedFloat,
+        requiredRepeatedDouble: requiredRepeatedDouble,
+        requiredRepeatedBool: requiredRepeatedBool,
+        requiredRepeatedEnum: requiredRepeatedEnum,
+        requiredRepeatedString: requiredRepeatedString,
+        requiredRepeatedBytes: requiredRepeatedBytes,
+        requiredRepeatedMessage: requiredRepeatedMessage,
+        requiredRepeatedResourceName: formattedRequiredRepeatedResourceName,
+        requiredRepeatedResourceNameOneof: formattedRequiredRepeatedResourceNameOneof,
+        requiredRepeatedFixed32: requiredRepeatedFixed32,
+        requiredRepeatedFixed64: requiredRepeatedFixed64,
+        requiredMap: requiredMap,
       };
 
       // Mock Grpc layer
