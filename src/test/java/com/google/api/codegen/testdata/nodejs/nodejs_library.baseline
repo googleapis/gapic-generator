@@ -259,7 +259,7 @@ class LibraryServiceClient {
 
     // Create a `gaxGrpc` object, with any grpc-specific options
     // sent to the client.
-    Object.assign(opts, {scopes: this.constructor.scopes});
+    opts.scopes = this.constructor.scopes;
     var gaxGrpc = gax.grpc(opts);
 
     // Save the auth object to the client, for use by other methods.
@@ -277,6 +277,21 @@ class LibraryServiceClient {
     }
 
 
+    // This API contains "path templates"; forward-slash-separated
+    // identifiers to uniquely identify resources within the API.
+    // Create useful helper objects for these.
+    this._pathTemplates = {
+      shelfPathTemplate: new gax.PathTemplate(
+        'shelves/{shelf_id}'
+      ),
+      bookPathTemplate: new gax.PathTemplate(
+        'shelves/{shelf_id}/books/{book_id}'
+      ),
+      returnPathTemplate: new gax.PathTemplate(
+        'shelves/{shelf}/books/{book}/returns/{return}'
+      ),
+    };
+
     // Some of the methods on this service return "paged" results,
     // (e.g. 50 results at a time, with tokens to get subsequent
     // pages). Denote the keys used for pagination and results.
@@ -286,19 +301,16 @@ class LibraryServiceClient {
         'nextPageToken',
         'shelves'
       ),
-
       listBooks: new gax.PageDescriptor(
         'pageToken',
         'nextPageToken',
         'books'
       ),
-
       listStrings: new gax.PageDescriptor(
         'pageToken',
         'nextPageToken',
         'strings'
       ),
-
       findRelatedBooks: new gax.PageDescriptor(
         'pageToken',
         'nextPageToken',
@@ -310,11 +322,8 @@ class LibraryServiceClient {
     // Provide descriptors for these.
     this._streamDescriptors = {
       streamShelves: new gax.StreamDescriptor(gax.StreamType.SERVER_STREAMING),
-
       streamBooks: new gax.StreamDescriptor(gax.StreamType.SERVER_STREAMING),
-
       discussBook: new gax.StreamDescriptor(gax.StreamType.BIDI_STREAMING),
-
       monologAboutBook: new gax.StreamDescriptor(gax.StreamType.CLIENT_STREAMING),
     };
 
@@ -325,13 +334,11 @@ class LibraryServiceClient {
         'books',
         [
           'edition',
-
           'shelf.name',
         ],
         'bookNames',
         gax.createByteLengthFunction(loadedProtos.google.example.library.v1.Book),
       ),
-
       addComments: new gax.BundleDescriptor(
         'comments',
         [
@@ -379,7 +386,6 @@ class LibraryServiceClient {
         getBigBookResponse.decode.bind(getBigBookResponse),
         getBigBookMetadata.decode.bind(getBigBookMetadata)
       ),
-
       getBigNothing: new gax.LongrunningDescriptor(
         this.operationsClient,
         getBigNothingResponse.decode.bind(getBigNothingResponse),
@@ -511,117 +517,6 @@ class LibraryServiceClient {
     ];
   }
 
-
-// Path templates
-
-var SHELF_PATH_TEMPLATE = new gax.PathTemplate(
-    'shelves/{shelf_id}');
-
-var BOOK_PATH_TEMPLATE = new gax.PathTemplate(
-    'shelves/{shelf_id}/books/{book_id}');
-
-var RETURN_PATH_TEMPLATE = new gax.PathTemplate(
-    'shelves/{shelf}/books/{book}/returns/{return}');
-
-/**
- * Returns a fully-qualified shelf resource name string.
- * @param {String} shelfId
- * @returns {String}
- */
-LibraryServiceClient.prototype.shelfPath = function(shelfId) {
-  return SHELF_PATH_TEMPLATE.render({
-    shelf_id: shelfId
-  });
-};
-
-/**
- * Returns a fully-qualified book resource name string.
- * @param {String} shelfId
- * @param {String} bookId
- * @returns {String}
- */
-LibraryServiceClient.prototype.bookPath = function(shelfId, bookId) {
-  return BOOK_PATH_TEMPLATE.render({
-    shelf_id: shelfId,
-    book_id: bookId
-  });
-};
-
-/**
- * Returns a fully-qualified return resource name string.
- * @param {String} shelf
- * @param {String} book
- * @param {String} return_
- * @returns {String}
- */
-LibraryServiceClient.prototype.returnPath = function(shelf, book, return_) {
-  return RETURN_PATH_TEMPLATE.render({
-    shelf: shelf,
-    book: book,
-    return: return_
-  });
-};
-
-/**
- * Parses the shelfName from a shelf resource.
- * @param {String} shelfName
- *   A fully-qualified path representing a shelf resources.
- * @returns {String} - A string representing the shelf_id.
- */
-LibraryServiceClient.prototype.matchShelfIdFromShelfName = function(shelfName) {
-  return SHELF_PATH_TEMPLATE.match(shelfName).shelf_id;
-};
-
-/**
- * Parses the bookName from a book resource.
- * @param {String} bookName
- *   A fully-qualified path representing a book resources.
- * @returns {String} - A string representing the shelf_id.
- */
-LibraryServiceClient.prototype.matchShelfIdFromBookName = function(bookName) {
-  return BOOK_PATH_TEMPLATE.match(bookName).shelf_id;
-};
-
-/**
- * Parses the bookName from a book resource.
- * @param {String} bookName
- *   A fully-qualified path representing a book resources.
- * @returns {String} - A string representing the book_id.
- */
-LibraryServiceClient.prototype.matchBookIdFromBookName = function(bookName) {
-  return BOOK_PATH_TEMPLATE.match(bookName).book_id;
-};
-
-/**
- * Parses the returnName from a return resource.
- * @param {String} returnName
- *   A fully-qualified path representing a return resources.
- * @returns {String} - A string representing the shelf.
- */
-LibraryServiceClient.prototype.matchShelfFromReturnName = function(returnName) {
-  return RETURN_PATH_TEMPLATE.match(returnName).shelf;
-};
-
-/**
- * Parses the returnName from a return resource.
- * @param {String} returnName
- *   A fully-qualified path representing a return resources.
- * @returns {String} - A string representing the book.
- */
-LibraryServiceClient.prototype.matchBookFromReturnName = function(returnName) {
-  return RETURN_PATH_TEMPLATE.match(returnName).book;
-};
-
-/**
- * Parses the returnName from a return resource.
- * @param {String} returnName
- *   A fully-qualified path representing a return resources.
- * @returns {String} - A string representing the return.
- */
-LibraryServiceClient.prototype.matchReturnFromReturnName = function(returnName) {
-  return RETURN_PATH_TEMPLATE.match(returnName).return;
-};
-
   /**
    * Return the project ID used by this class.
    * @param {function(Error, string)} callback - the callback to
@@ -631,7 +526,122 @@ LibraryServiceClient.prototype.matchReturnFromReturnName = function(returnName) 
     return this.auth.getProjectId(callback);
   }
 
-  // Service calls
+  // --------------------
+  // -- Path templates --
+  // --------------------
+
+  /**
+   * Return a fully-qualified shelf resource name string.
+   *
+   * @param {String} shelfId
+   * @returns {String}
+   */
+  shelfPath(shelfId) {
+    return this._pathTemplates.shelfPathTemplate.render({
+      shelf_id: shelfId,
+    });
+  }
+
+  /**
+   * Return a fully-qualified book resource name string.
+   *
+   * @param {String} shelfId
+   * @param {String} bookId
+   * @returns {String}
+   */
+  bookPath(shelfId, bookId) {
+    return this._pathTemplates.bookPathTemplate.render({
+      shelf_id: shelfId,
+      book_id: bookId,
+    });
+  }
+
+  /**
+   * Return a fully-qualified return resource name string.
+   *
+   * @param {String} shelf
+   * @param {String} book
+   * @param {String} return_
+   * @returns {String}
+   */
+  returnPath(shelf, book, return_) {
+    return this._pathTemplates.returnPathTemplate.render({
+      shelf: shelf,
+      book: book,
+      return: return_,
+    });
+  }
+
+
+  /**
+   * Parse the shelfName from a shelf resource.
+   *
+   * @param {String} shelfName
+   *   A fully-qualified path representing a shelf resources.
+   * @returns {String} - A string representing the shelf_id.
+   */
+  matchShelfIdFromShelfName(shelfName) {
+    return shelfPathTemplate.match(shelfName).shelf_id;
+  }
+
+  /**
+   * Parse the bookName from a book resource.
+   *
+   * @param {String} bookName
+   *   A fully-qualified path representing a book resources.
+   * @returns {String} - A string representing the shelf_id.
+   */
+  matchShelfIdFromBookName(bookName) {
+    return bookPathTemplate.match(bookName).shelf_id;
+  }
+
+  /**
+   * Parse the bookName from a book resource.
+   *
+   * @param {String} bookName
+   *   A fully-qualified path representing a book resources.
+   * @returns {String} - A string representing the book_id.
+   */
+  matchBookIdFromBookName(bookName) {
+    return bookPathTemplate.match(bookName).book_id;
+  }
+
+  /**
+   * Parse the returnName from a return resource.
+   *
+   * @param {String} returnName
+   *   A fully-qualified path representing a return resources.
+   * @returns {String} - A string representing the shelf.
+   */
+  matchShelfFromReturnName(returnName) {
+    return returnPathTemplate.match(returnName).shelf;
+  }
+
+  /**
+   * Parse the returnName from a return resource.
+   *
+   * @param {String} returnName
+   *   A fully-qualified path representing a return resources.
+   * @returns {String} - A string representing the book.
+   */
+  matchBookFromReturnName(returnName) {
+    return returnPathTemplate.match(returnName).book;
+  }
+
+  /**
+   * Parse the returnName from a return resource.
+   *
+   * @param {String} returnName
+   *   A fully-qualified path representing a return resources.
+   * @returns {String} - A string representing the return.
+   */
+  matchReturnFromReturnName(returnName) {
+    return returnPathTemplate.match(returnName).return;
+  }
+
+  // -------------------
+  // -- Service calls --
+  // -------------------
 
   /**
    * Creates a shelf, and returns the new Shelf.

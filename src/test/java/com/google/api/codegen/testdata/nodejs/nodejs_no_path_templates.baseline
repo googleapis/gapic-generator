@@ -58,7 +58,8 @@ $ npm install --save example
   ],
   "dependencies": {
     "google-gax": "^0.14.0",
-    "google-some-other-package-v1": "^0.2.1"
+    "google-some-other-package-v1": "^0.2.1",
+    "lodash.merge": "^4.6.0"
   },
   "devDependencies": {
     "mocha": "^3.2.0",
@@ -118,6 +119,7 @@ module.exports.NoTemplatesApiServiceClient = NoTemplatesApiServiceClient;
 
 const gapicConfig = require('./no_templates_api_service_client_config');
 const gax = require('google-gax');
+const merge = require('lodash.merge');
 const path = require('path');
 
 /**
@@ -135,7 +137,7 @@ class NoTemplatesApiServiceClient {
 
     // Create a `gaxGrpc` object, with any grpc-specific options
     // sent to the client.
-    Object.assign(opts, {scopes: this.constructor.scopes});
+    opts.scopes = this.constructor.scopes;
     var gaxGrpc = gax.grpc(opts);
 
     // Save the auth object to the client, for use by other methods.
@@ -221,8 +223,6 @@ class NoTemplatesApiServiceClient {
     ];
   }
 
-
-
   /**
    * Return the project ID used by this class.
    * @param {function(Error, string)} callback - the callback to
@@ -232,7 +232,9 @@ class NoTemplatesApiServiceClient {
     return this.auth.getProjectId(callback);
   }
 
-  // Service calls
+  // -------------------
+  // -- Service calls --
+  // -------------------
 
   /**
    * Increments something.
@@ -369,3 +371,4 @@ function mockSimpleGrpcMethod(expectedRequest, response, error) {
     }
   };
 }
+
