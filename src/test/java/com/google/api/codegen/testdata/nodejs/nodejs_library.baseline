@@ -252,6 +252,8 @@ const protobuf = require('protobufjs');
  */
 class LibraryServiceClient {
   constructor(opts) {
+    this._descriptors = {};
+
     // Ensure that options include the service address and port.
     opts = Object.assign({
       clientConfig: {},
@@ -278,6 +280,17 @@ class LibraryServiceClient {
       clientHeader.push(`${opts.libName}/${opts.libVersion}`);
     }
 
+    // Load the applicable protos.
+    var protos = merge({},
+      gaxGrpc.loadProto(
+        path.join(__dirname, '..', '..', 'protos'),
+        'library.proto'
+      ),
+      gaxGrpc.loadProto(
+        path.join(__dirname, '..', '..', 'protos'),
+        'tagger.proto'
+      ),
+    );
 
     // This API contains "path templates"; forward-slash-separated
     // identifiers to uniquely identify resources within the API.
@@ -297,7 +310,7 @@ class LibraryServiceClient {
     // Some of the methods on this service return "paged" results,
     // (e.g. 50 results at a time, with tokens to get subsequent
     // pages). Denote the keys used for pagination and results.
-    this._pageDescriptors = {
+    this._descriptors.page = {
       listShelves: new gax.PageDescriptor(
         'pageToken',
         'nextPageToken',
@@ -322,7 +335,7 @@ class LibraryServiceClient {
 
     // Some of the methods on this service provide streaming responses.
     // Provide descriptors for these.
-    this._streamDescriptors = {
+    this._descriptors.stream = {
       streamShelves: new gax.StreamDescriptor(gax.StreamType.SERVER_STREAMING),
       streamBooks: new gax.StreamDescriptor(gax.StreamType.SERVER_STREAMING),
       discussBook: new gax.StreamDescriptor(gax.StreamType.BIDI_STREAMING),
@@ -331,7 +344,7 @@ class LibraryServiceClient {
 
     // Some methods on this API support automatically batching
     // requests; denote this.
-    var batchingDescriptors = {
+    this._descriptors.batching = {
       publishSeries: new gax.BundleDescriptor(
         'books',
         [
@@ -339,7 +352,7 @@ class LibraryServiceClient {
           'shelf.name',
         ],
         'bookNames',
-        gax.createByteLengthFunction(loadedProtos.google.example.library.v1.Book),
+        gax.createByteLengthFunction(protos.google.example.library.v1.Book),
       ),
       addComments: new gax.BundleDescriptor(
         'comments',
@@ -347,7 +360,7 @@ class LibraryServiceClient {
           'name',
         ],
         null,
-        gax.createByteLengthFunction(loadedProtos.google.example.library.v1.Comment),
+        gax.createByteLengthFunction(protos.google.example.library.v1.Comment),
       ),
     };
 
@@ -382,7 +395,7 @@ class LibraryServiceClient {
       'google.example.library.v1.GetBigBookMetadata'
     );
 
-    this.longrunningDescriptors = {
+    this._descriptors.longrunning = {
       getBigBook: new gax.LongrunningDescriptor(
         this.operationsClient,
         getBigBookResponse.decode.bind(getBigBookResponse),
@@ -401,18 +414,6 @@ class LibraryServiceClient {
       gapicConfig,
       opts.clientConfig,
       {'x-goog-api-client': clientHeader.join(' ')},
-    );
-
-    // Load the applicable protos.
-    var protos = merge({},
-      gaxGrpc.loadProto(
-        path.join(__dirname, '..', '..', 'protos'),
-        'library.proto'
-      ),
-      gaxGrpc.loadProto(
-        path.join(__dirname, '..', '..', 'protos'),
-        'tagger.proto'
-      ),
     );
 
     // Set up a dictionary of "inner API calls"; the core implementation
@@ -465,7 +466,7 @@ class LibraryServiceClient {
           return stub[methodName].apply(stub, args);
         }),
         defaults[methodName],
-        PAGE_DESCRIPTORS[methodName] || bundleDescriptors[methodName] || STREAM_DESCRIPTORS[methodName] || self.longrunningDescriptors[methodName]
+        this._descriptors.page[methodName] || this._descriptors.batching[methodName] || this._descriptors.stream[methodName] || this._descriptors.longrunning[methodName]
       );
     }
 
@@ -488,7 +489,7 @@ class LibraryServiceClient {
           return stub[methodName].apply(stub, args);
         }),
         defaults[methodName],
-        PAGE_DESCRIPTORS[methodName] || bundleDescriptors[methodName] || STREAM_DESCRIPTORS[methodName] || self.longrunningDescriptors[methodName]
+        this._descriptors.page[methodName] || this._descriptors.batching[methodName] || this._descriptors.stream[methodName] || this._descriptors.longrunning[methodName]
       );
     }
   }

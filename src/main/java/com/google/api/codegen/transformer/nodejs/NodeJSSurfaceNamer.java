@@ -445,12 +445,12 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   public String getByteLengthFunctionName(TypeRef typeRef) {
     switch (typeRef.getKind()) {
       case TYPE_MESSAGE:
-        return "gax.createByteLengthFunction(loadedProtos."
+        return "gax.createByteLengthFunction(protos."
             + typeRef.getMessageType().getFullName()
             + ")";
       case TYPE_STRING:
       case TYPE_BYTES:
-        return "function(s) { return s.length; }";
+        return "s => s.length";
       default:
         // There is no easy way to say the actual length of the numeric fields.
         // For now throwing an exception.

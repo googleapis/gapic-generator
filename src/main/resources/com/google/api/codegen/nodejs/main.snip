@@ -45,6 +45,8 @@
    */
   class {@xapi.name} {
     constructor(opts) {
+      this._descriptors = {};
+
       // Ensure that options include the service address and port.
       opts = Object.assign({
         clientConfig: {},
@@ -71,6 +73,20 @@
         clientHeader.push(`${opts.libName}/${opts.libVersion}`);
       }
 
+      // Load the applicable protos.
+      var protos = merge({},
+        @join stub : xapi.stubs on BREAK
+          gaxGrpc.loadProto(
+            @if xapi.fileHeader.hasVersion
+              path.join(__dirname, '..', '..', 'protos'),
+              '{@stub.protoFileName}'
+            @else
+              path.join(__dirname, '..', 'protos'),
+              '{@stub.protoFileName}'
+            @end
+          ),
+        @end
+      );
       @if xapi.pathTemplates
 
         // This API contains "path templates"; forward-slash-separated
@@ -89,7 +105,7 @@
         // Some of the methods on this service return "paged" results,
         // (e.g. 50 results at a time, with tokens to get subsequent
         // pages). Denote the keys used for pagination and results.
-        this._pageDescriptors = {
+        this._descriptors.page = {
           @join descriptor : xapi.pageStreamingDescriptors on BREAK
             {@descriptor.methodName}: new gax.PageDescriptor(
               '{@descriptor.requestTokenFieldName}',
@@ -103,7 +119,7 @@
 
         // Some of the methods on this service provide streaming responses.
         // Provide descriptors for these.
-        this._streamDescriptors = {
+        this._descriptors.stream = {
           @join descriptor : xapi.grpcStreamingDescriptors on BREAK
             {@descriptor.methodName}: new gax.StreamDescriptor({@descriptor.streamTypeName}),
           @end
@@ -113,7 +129,7 @@
 
         // Some methods on this API support automatically batching
         // requests; denote this.
-        var batchingDescriptors = {
+        this._descriptors.batching = {
           @join descriptor : xapi.batchingDescriptors on BREAK
             {@descriptor.methodName}: new gax.BundleDescriptor(
               '{@descriptor.batchedFieldName}',
@@ -163,7 +179,7 @@
           );
         @end
 
-        this.longrunningDescriptors = {
+        this._descriptors.longrunning = {
           @join descriptor : xapi.longRunningDescriptors on BREAK
             {@descriptor.methodName}: new gax.LongrunningDescriptor(
               this.operationsClient,
@@ -180,21 +196,6 @@
         gapicConfig,
         opts.clientConfig,
         {'x-goog-api-client': clientHeader.join(' ')},
-      );
-
-      // Load the applicable protos.
-      var protos = merge({},
-        @join stub : xapi.stubs on BREAK
-          gaxGrpc.loadProto(
-            @if xapi.fileHeader.hasVersion
-              path.join(__dirname, '..', '..', 'protos'),
-              '{@stub.protoFileName}'
-            @else
-              path.join(__dirname, '..', 'protos'),
-              '{@stub.protoFileName}'
-            @end
-          ),
-        @end
       );
 
       // Set up a dictionary of "inner API calls"; the core implementation
@@ -214,7 +215,7 @@
         // and create an API call method for each.
         var {@stub.stubMethodsArrayName} = [
           @join method : {@stub.methodNames} on BREAK
-              '{@method}',
+            '{@method}',
           @end
         ];
         for (let methodName of {@stub.stubMethodsArrayName}) {

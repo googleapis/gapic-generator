@@ -180,16 +180,16 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
   private List<String> generateValidDescriptorsNames(GapicInterfaceContext context) {
     ImmutableList.Builder<String> validDescriptorsNames = ImmutableList.builder();
     if (context.getInterfaceConfig().hasPageStreamingMethods()) {
-      validDescriptorsNames.add("PAGE_DESCRIPTORS");
+      validDescriptorsNames.add("this._descriptors.page");
     }
     if (context.getInterfaceConfig().hasBatchingMethods()) {
-      validDescriptorsNames.add("bundleDescriptors");
+      validDescriptorsNames.add("this._descriptors.batching");
     }
     if (context.getInterfaceConfig().hasGrpcStreamingMethods()) {
-      validDescriptorsNames.add("STREAM_DESCRIPTORS");
+      validDescriptorsNames.add("this._descriptors.stream");
     }
     if (context.getInterfaceConfig().hasLongRunningOperations()) {
-      validDescriptorsNames.add("self.longrunningDescriptors");
+      validDescriptorsNames.add("this._descriptors.longrunning");
     }
     return validDescriptorsNames.build();
   }

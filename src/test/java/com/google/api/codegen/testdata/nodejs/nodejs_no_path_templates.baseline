@@ -128,6 +128,8 @@ const path = require('path');
  */
 class NoTemplatesApiServiceClient {
   constructor(opts) {
+    this._descriptors = {};
+
     // Ensure that options include the service address and port.
     opts = Object.assign({
       clientConfig: {},
@@ -154,6 +156,13 @@ class NoTemplatesApiServiceClient {
       clientHeader.push(`${opts.libName}/${opts.libVersion}`);
     }
 
+    // Load the applicable protos.
+    var protos = merge({},
+      gaxGrpc.loadProto(
+        path.join(__dirname, '..', 'protos'),
+        'no_path_templates.proto'
+      ),
+    );
 
     // Put together the default options sent with requests.
     var defaults = gaxGrpc.constructSettings(
@@ -161,14 +170,6 @@ class NoTemplatesApiServiceClient {
       gapicConfig,
       opts.clientConfig,
       {'x-goog-api-client': clientHeader.join(' ')},
-    );
-
-    // Load the applicable protos.
-    var protos = merge({},
-      gaxGrpc.loadProto(
-        path.join(__dirname, '..', 'protos'),
-        'no_path_templates.proto'
-      ),
     );
 
     // Set up a dictionary of "inner API calls"; the core implementation

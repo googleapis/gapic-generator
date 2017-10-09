@@ -138,6 +138,8 @@ const path = require('path');
  */
 class DecrementerServiceClient {
   constructor(opts) {
+    this._descriptors = {};
+
     // Ensure that options include the service address and port.
     opts = Object.assign({
       clientConfig: {},
@@ -164,6 +166,13 @@ class DecrementerServiceClient {
       clientHeader.push(`${opts.libName}/${opts.libVersion}`);
     }
 
+    // Load the applicable protos.
+    var protos = merge({},
+      gaxGrpc.loadProto(
+        path.join(__dirname, '..', '..', 'protos'),
+        'multiple_services.proto'
+      ),
+    );
 
     // Put together the default options sent with requests.
     var defaults = gaxGrpc.constructSettings(
@@ -171,14 +180,6 @@ class DecrementerServiceClient {
       gapicConfig,
       opts.clientConfig,
       {'x-goog-api-client': clientHeader.join(' ')},
-    );
-
-    // Load the applicable protos.
-    var protos = merge({},
-      gaxGrpc.loadProto(
-        path.join(__dirname, '..', '..', 'protos'),
-        'multiple_services.proto'
-      ),
     );
 
     // Set up a dictionary of "inner API calls"; the core implementation
@@ -333,6 +334,8 @@ const path = require('path');
  */
 class IncrementerServiceClient {
   constructor(opts) {
+    this._descriptors = {};
+
     // Ensure that options include the service address and port.
     opts = Object.assign({
       clientConfig: {},
@@ -359,6 +362,13 @@ class IncrementerServiceClient {
       clientHeader.push(`${opts.libName}/${opts.libVersion}`);
     }
 
+    // Load the applicable protos.
+    var protos = merge({},
+      gaxGrpc.loadProto(
+        path.join(__dirname, '..', '..', 'protos'),
+        'multiple_services.proto'
+      ),
+    );
 
     // Put together the default options sent with requests.
     var defaults = gaxGrpc.constructSettings(
@@ -366,14 +376,6 @@ class IncrementerServiceClient {
       gapicConfig,
       opts.clientConfig,
       {'x-goog-api-client': clientHeader.join(' ')},
-    );
-
-    // Load the applicable protos.
-    var protos = merge({},
-      gaxGrpc.loadProto(
-        path.join(__dirname, '..', '..', 'protos'),
-        'multiple_services.proto'
-      ),
     );
 
     // Set up a dictionary of "inner API calls"; the core implementation
