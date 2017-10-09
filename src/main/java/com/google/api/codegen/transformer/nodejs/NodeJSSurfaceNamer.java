@@ -118,7 +118,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   @Override
   public String getPathTemplateName(
       Interface apiInterface, SingleResourceNameConfig resourceNameConfig) {
-    return inittedConstantName(Name.from(resourceNameConfig.getEntityName(), "path", "template"));
+    return publicFieldName(Name.from(resourceNameConfig.getEntityName(), "path", "template"));
   }
 
   @Override

@@ -71,13 +71,26 @@
         clientHeader.push(`${opts.libName}/${opts.libVersion}`);
       }
 
+      @if xapi.pathTemplates
+
+        // This API contains "path templates"; forward-slash-separated
+        // identifiers to uniquely identify resources within the API.
+        // Create useful helper objects for these.
+        this._pathTemplates = {
+          @join pathTemplate : xapi.pathTemplates on BREAK
+            {@pathTemplate.name}: new gax.PathTemplate(
+              '{@pathTemplate.pattern}'
+            ),
+          @end
+        };
+      @end
       @if xapi.hasPageStreamingMethods
 
         // Some of the methods on this service return "paged" results,
         // (e.g. 50 results at a time, with tokens to get subsequent
         // pages). Denote the keys used for pagination and results.
         this._pageDescriptors = {
-          @join descriptor : xapi.pageStreamingDescriptors on BREAK.add(BREAK)
+          @join descriptor : xapi.pageStreamingDescriptors on BREAK
             {@descriptor.methodName}: new gax.PageDescriptor(
               '{@descriptor.requestTokenFieldName}',
               '{@descriptor.responseTokenFieldName}',
@@ -91,7 +104,7 @@
         // Some of the methods on this service provide streaming responses.
         // Provide descriptors for these.
         this._streamDescriptors = {
-          @join descriptor : xapi.grpcStreamingDescriptors on BREAK.add(BREAK)
+          @join descriptor : xapi.grpcStreamingDescriptors on BREAK
             {@descriptor.methodName}: new gax.StreamDescriptor({@descriptor.streamTypeName}),
           @end
         };
@@ -101,11 +114,11 @@
         // Some methods on this API support automatically batching
         // requests; denote this.
         var batchingDescriptors = {
-          @join descriptor : xapi.batchingDescriptors on BREAK.add(BREAK)
+          @join descriptor : xapi.batchingDescriptors on BREAK
             {@descriptor.methodName}: new gax.BundleDescriptor(
               '{@descriptor.batchedFieldName}',
               [
-                @join fieldName : descriptor.discriminatorFieldNames() on BREAK.add(BREAK)
+                @join fieldName : descriptor.discriminatorFieldNames() on BREAK
                   '{@fieldName}',
                 @end
               ],
@@ -151,7 +164,7 @@
         @end
 
         this.longrunningDescriptors = {
-          @join descriptor : xapi.longRunningDescriptors on BREAK.add(BREAK)
+          @join descriptor : xapi.longRunningDescriptors on BREAK
             {@descriptor.methodName}: new gax.LongrunningDescriptor(
               this.operationsClient,
               {@descriptor.methodName}Response.decode.bind({@descriptor.methodName}Response),
@@ -188,8 +201,8 @@
       // of calling the API is handled in `google-gax`, with this code
       // merely providing the destination and request information.
       this._innerApiCalls = {};
+      @join stub : xapi.stubs on BREAK
 
-      @join stub : xapi.stubs on BREAK.add(BREAK)
         // Put together the "service stub" for
         // {@stub.fullyQualifiedType}.
         var {@stub.name} = gaxGrpc.createStub(
@@ -243,13 +256,6 @@
       ];
     }
 
-
-  @if xapi.pathTemplates
-    // Path templates
-
-    {@pathTemplateSection(xapi)}
-  @end
-
     /**
      * Return the project ID used by this class.
      * @@param {function(Error, string)} callback - the callback to
@@ -258,6 +264,10 @@
     getProjectId(callback) {
       return this.auth.getProjectId(callback);
     }
+    @if xapi.pathTemplates
+
+      {@pathTemplateSection(xapi)}
+    @end
 
     {@serviceMethodsSection(xapi)}
   }
@@ -287,11 +297,9 @@
 @end
 
 @private pathTemplateSection(xapi)
-  @join pathTemplate : xapi.pathTemplates on BREAK
-    var {@pathTemplate.name} = new gax.PathTemplate(
-        '{@pathTemplate.pattern}');
-
-  @end
+  // --------------------
+  // -- Path templates --
+  // --------------------
   @join function : xapi.formatResourceFunctions
 
     {@createResourceFunction(function, xapi.name)}
@@ -305,30 +313,31 @@
 
 @private createResourceFunction(function, apiName)
   /**
-   * Returns a fully-qualified {@function.entityName} resource name string.
+   * Return a fully-qualified {@function.entityName} resource name string.
+   *
    @join param : function.resourceIdParams
      * @@param {String} {@param.name}
    @end
    * @@returns {String}
    */
-  {@apiName}.prototype.{@function.name} = \
-  function({@createResourceFunctionParams(function.resourceIdParams)}) {
-    return {@function.pathTemplateName}.render({
+  {@function.name}({@createResourceFunctionParams(function.resourceIdParams)}) {
+    return this._pathTemplates.{@function.pathTemplateName}.render({
       {@createRenderDictionary(function.resourceIdParams)}
     });
-  };
+  }
 @end
 
 @private createMatchFunction(function, apiName)
   /**
-   * Parses the {@function.entityNameParamName} from a {@function.entityName} resource.
+   * Parse the {@function.entityNameParamName} from a {@function.entityName} resource.
+   *
    * @@param {String} {@function.entityNameParamName}
    *   A fully-qualified path representing a {@function.entityName} resources.
    * @@returns {String} - A string representing the {@function.outputResourceId}.
    */
-  {@apiName}.prototype.{@function.name} = function({@function.entityNameParamName}) {
+  {@function.name}({@function.entityNameParamName}) {
     return {@function.pathTemplateName}.match({@function.entityNameParamName}).{@function.outputResourceId};
-  };
+  }
 @end
 
 @private createResourceFunctionParams(resourceIdParams)
@@ -338,13 +347,15 @@
 @end
 
 @private createRenderDictionary(resourceIdParams)
-  @join param: resourceIdParams on {@","}.add(BREAK)
-    {@param.templateKey}: {@param.name}
+  @join param: resourceIdParams on BREAL
+    {@param.templateKey}: {@param.name},
   @end
 @end
 
 @private serviceMethodsSection(xapi)
-  // Service calls
+  // -------------------
+  // -- Service calls --
+  // -------------------
   @join method : xapi.apiMethods
 
     {@flattenedMethod(method)}

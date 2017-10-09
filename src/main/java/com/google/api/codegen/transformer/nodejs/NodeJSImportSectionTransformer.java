@@ -17,7 +17,6 @@ package com.google.api.codegen.transformer.nodejs;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
-import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.ImportSectionTransformer;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.viewmodel.ImportFileView;
