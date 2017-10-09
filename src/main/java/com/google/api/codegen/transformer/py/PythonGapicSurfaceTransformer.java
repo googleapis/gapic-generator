@@ -282,6 +282,7 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
         messageView.lines(namer.getDocLines(message));
         messageView.properties(ImmutableList.<ParamDocView>of());
         messageView.elementDocs(elementDocs);
+        messageView.packageName(message.getFile().getFullName());
         elements.add(messageView.build());
       }
     }

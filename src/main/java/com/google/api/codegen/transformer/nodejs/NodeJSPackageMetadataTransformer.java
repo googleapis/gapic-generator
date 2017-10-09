@@ -222,8 +222,20 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
       dependencies.add(
           PackageDependencyView.create("lodash.merge", VersionBound.create("4.6.0", "")));
     }
-    dependencies.add(PackageDependencyView.create("protobufjs", VersionBound.create("6.8.0", "")));
+    if (hasLongrunning(model, productConfig)) {
+      dependencies.add(
+          PackageDependencyView.create("protobufjs", VersionBound.create("6.8.0", "")));
+    }
     return dependencies.build();
+  }
+
+  private boolean hasLongrunning(ApiModel model, GapicProductConfig productConfig) {
+    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
+      if (productConfig.getInterfaceConfig(apiInterface).hasLongRunningOperations()) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private boolean hasMixinApis(ApiModel model, GapicProductConfig productConfig) {

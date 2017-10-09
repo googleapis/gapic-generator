@@ -57,6 +57,7 @@ public class GrpcElementDocTransformer {
           generateMessagePropertyDocs(
               typeTable, namer, FieldConfig.toFieldTypeIterableFromField(message.getFields())));
       doc.elementDocs(generateElementDocs(typeTable, namer, message));
+      doc.packageName(message.getFile().getFullName());
       messageDocs.add(doc.build());
     }
     return messageDocs.build();

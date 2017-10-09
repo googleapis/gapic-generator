@@ -14,8 +14,6 @@
    {@comments(fileHeader.licenseLines)}
    {@editingInstructions(protoFilename)}
    */
-  /* TODO: introduce line-wrapping so that it never exceeds the limit. */
-  /* jscs: disable maximumLineLength */
   'use strict';
 
   {@importSection(fileHeader.importSection)}
@@ -70,6 +68,10 @@
 
   {@serviceMethodsSection(xapi)}
 
+  /**
+   * @@class
+   * @@param {*} gaxGrpc
+   */
   function {@xapi.name}Builder(gaxGrpc) {
     if (!(this instanceof {@xapi.name }Builder)) {
       return new {@xapi.name}Builder(gaxGrpc);
@@ -99,6 +101,7 @@
     /**
      * Build a new instance of {@@link {@xapi.name}}.
      *
+     * @@method {@xapi.name}Builder#{@xapi.constructorName}
      * @@param {Object=} opts - The optional parameters.
      * @@param {String=} opts.servicePath
      *   The domain name of the API remote host.
@@ -155,7 +158,7 @@
     };
   @end
 
-  /**
+  /*!
    * The scopes needed to make gRPC calls to all of the methods defined in
    * this service.
    */
@@ -450,7 +453,7 @@
    * @@see {@@link https://nodejs.org/api/stream.html}
    *
    {@createParamTypesComment(method.doc.paramDocs)}
-   * @@return {Stream}
+   * @@returns {Stream}
    *   An object stream which emits {@method.doc.pageStreamingResourceTypeName} on 'data' event.
    *
    * @@example
