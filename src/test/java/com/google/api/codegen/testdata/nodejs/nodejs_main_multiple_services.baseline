@@ -31,6 +31,9 @@
 var configData = require('./decrementer_service_client_config');
 var extend = require('extend');
 var gax = require('google-gax');
+var googleProtoFiles = require('google-proto-files');
+var path = require('path');
+var protobuf = require('protobufjs');
 
 var SERVICE_ADDRESS = 'no-path-templates.googleapis.com';
 
@@ -49,7 +52,7 @@ var ALL_SCOPES = [
  *
  * @class
  */
-function DecrementerServiceClient(gaxGrpc, grpcClients, opts) {
+function DecrementerServiceClient(gaxGrpc, loadedProtos, opts) {
   opts = extend({
     servicePath: SERVICE_ADDRESS,
     port: DEFAULT_SERVICE_PORT,
@@ -78,7 +81,7 @@ function DecrementerServiceClient(gaxGrpc, grpcClients, opts) {
 
   this.auth = gaxGrpc.auth;
   var decrementerServiceStub = gaxGrpc.createStub(
-      grpcClients.google.cloud.example.v1.DecrementerService,
+      loadedProtos.google.cloud.example.v1.DecrementerService,
       opts);
   var decrementerServiceStubMethods = [
     'decrement'
@@ -153,11 +156,9 @@ function DecrementerServiceClientBuilder(gaxGrpc) {
     return new DecrementerServiceClientBuilder(gaxGrpc);
   }
 
-  var decrementerServiceClient = gaxGrpc.load([{
-    root: require('google-proto-files')('..'),
-    file: 'multiple_services.proto'
-  }]);
-  extend(this, decrementerServiceClient.google.cloud.example.v1);
+  var decrementerServiceStubProtos = gaxGrpc.loadProto(
+    path.join(__dirname, '..', '..', 'protos'), 'multiple_services.proto');
+  extend(this, decrementerServiceStubProtos.google.cloud.example.v1);
 
 
   /**
@@ -175,7 +176,7 @@ function DecrementerServiceClientBuilder(gaxGrpc) {
    *   {@link gax.constructSettings} for the format.
    */
   this.decrementerServiceClient = function(opts) {
-    return new DecrementerServiceClient(gaxGrpc, decrementerServiceClient, opts);
+    return new DecrementerServiceClient(gaxGrpc, decrementerServiceStubProtos, opts);
   };
   extend(this.decrementerServiceClient, DecrementerServiceClient);
 }
@@ -215,6 +216,9 @@ module.exports.ALL_SCOPES = ALL_SCOPES;
 var configData = require('./incrementer_service_client_config');
 var extend = require('extend');
 var gax = require('google-gax');
+var googleProtoFiles = require('google-proto-files');
+var path = require('path');
+var protobuf = require('protobufjs');
 
 var SERVICE_ADDRESS = 'no-path-templates.googleapis.com';
 
@@ -233,7 +237,7 @@ var ALL_SCOPES = [
  *
  * @class
  */
-function IncrementerServiceClient(gaxGrpc, grpcClients, opts) {
+function IncrementerServiceClient(gaxGrpc, loadedProtos, opts) {
   opts = extend({
     servicePath: SERVICE_ADDRESS,
     port: DEFAULT_SERVICE_PORT,
@@ -262,7 +266,7 @@ function IncrementerServiceClient(gaxGrpc, grpcClients, opts) {
 
   this.auth = gaxGrpc.auth;
   var incrementerServiceStub = gaxGrpc.createStub(
-      grpcClients.google.cloud.example.v1.IncrementerService,
+      loadedProtos.google.cloud.example.v1.IncrementerService,
       opts);
   var incrementerServiceStubMethods = [
     'increment'
@@ -337,11 +341,9 @@ function IncrementerServiceClientBuilder(gaxGrpc) {
     return new IncrementerServiceClientBuilder(gaxGrpc);
   }
 
-  var incrementerServiceClient = gaxGrpc.load([{
-    root: require('google-proto-files')('..'),
-    file: 'multiple_services.proto'
-  }]);
-  extend(this, incrementerServiceClient.google.cloud.example.v1);
+  var incrementerServiceStubProtos = gaxGrpc.loadProto(
+    path.join(__dirname, '..', '..', 'protos'), 'multiple_services.proto');
+  extend(this, incrementerServiceStubProtos.google.cloud.example.v1);
 
 
   /**
@@ -359,7 +361,7 @@ function IncrementerServiceClientBuilder(gaxGrpc) {
    *   {@link gax.constructSettings} for the format.
    */
   this.incrementerServiceClient = function(opts) {
-    return new IncrementerServiceClient(gaxGrpc, incrementerServiceClient, opts);
+    return new IncrementerServiceClient(gaxGrpc, incrementerServiceStubProtos, opts);
   };
   extend(this.incrementerServiceClient, IncrementerServiceClient);
 }

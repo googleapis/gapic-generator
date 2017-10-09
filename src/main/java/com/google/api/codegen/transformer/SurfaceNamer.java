@@ -43,7 +43,6 @@ import com.google.api.codegen.viewmodel.ServiceMethodType;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.EnumType;
 import com.google.api.tools.framework.model.Field;
-import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
@@ -197,7 +196,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /**
    * The name of a variable that holds an instance of the module that contains the implementation of
-   * a particular proto interface. So far it is used by just NodeJS.
+   * a particular proto interface.
    */
   public String getApiWrapperModuleName() {
     return getNotImplementedString("SurfaceNamer.getApiWrapperModuleName");
@@ -245,6 +244,16 @@ public class SurfaceNamer extends NameFormatterDelegator {
   /** The name of the gapic package. */
   public String getGapicPackageName(String configPackageName) {
     return "gapic-" + configPackageName;
+  }
+
+  /** The name of the module for the version of an API. */
+  public String getModuleVersionName() {
+    return getNotImplementedString("SurfaceNamer.getModuleVersionName");
+  }
+
+  /** The name of the module for the service of an API. */
+  public String getModuleServiceName() {
+    return getNotImplementedString("SurfaceNamer.getModuleServiceName");
   }
 
   /////////////////////////////////// Protos methods /////////////////////////////////////////////
@@ -838,14 +847,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
    * particular language.
    */
   public String getGrpcClientTypeName(InterfaceModel apiInterface) {
-    return getNotImplementedString("SurfaceNamer.getGrpcClientTypeName");
-  }
-
-  /**
-   * The type name of the Grpc client class. This needs to match what Grpc generates for the
-   * particular language.
-   */
-  public String getGrpcClientTypeName(Interface apiInterface) {
     return getNotImplementedString("SurfaceNamer.getGrpcClientTypeName");
   }
 

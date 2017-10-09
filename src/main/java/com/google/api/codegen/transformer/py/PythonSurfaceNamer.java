@@ -23,7 +23,6 @@ import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
-import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
@@ -37,12 +36,12 @@ import com.google.api.codegen.transformer.TransformationContext;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.TypeName;
+import com.google.api.codegen.util.VersionMatcher;
 import com.google.api.codegen.util.py.PythonCommentReformatter;
 import com.google.api.codegen.util.py.PythonDocstringUtil;
 import com.google.api.codegen.util.py.PythonNameFormatter;
 import com.google.api.codegen.util.py.PythonTypeTable;
 import com.google.api.tools.framework.model.EnumType;
-import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
@@ -54,7 +53,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /** The SurfaceNamer for Python. */
 public class PythonSurfaceNamer extends SurfaceNamer {
@@ -67,12 +65,6 @@ public class PythonSurfaceNamer extends SurfaceNamer {
         packageName,
         packageName);
   }
-
-  private static final Pattern VERSION_PATTERN =
-      Pattern.compile(
-          "^([vV]\\d+)" // Major version eg: v1
-              + "([pP]\\d+)?" // Point release eg: p2
-              + "(([aA]lpha|[bB]eta)\\d*)?"); //  Release level eg: alpha3
 
   @Override
   public SurfaceNamer cloneWithPackageName(String packageName) {
@@ -113,7 +105,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   @Override
   public String getGapicPackageName(String configPackageName) {
     List<String> parts = Arrays.asList(configPackageName.split("-"));
-    if (VERSION_PATTERN.matcher(parts.get(parts.size() - 1)).matches()) {
+    if (VersionMatcher.isVersion(parts.get(parts.size() - 1))) {
       return Joiner.on("-").join(parts.subList(0, parts.size() - 1));
     }
     return configPackageName;
@@ -246,14 +238,9 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getGrpcClientTypeName(Interface apiInterface) {
-    return getGrpcClientTypeName(new ProtoInterfaceModel(apiInterface));
-  }
-
-  @Override
   public String getGrpcClientTypeName(InterfaceModel apiInterface) {
     String fullName = getModelTypeFormatter().getFullNameFor(apiInterface) + "Stub";
-    return getTypeNameConverter().getTypeName(fullName).getNickname();
+    return getTypeNameConverter().getTypeName(fullName).getFullName();
   }
 
   @Override
@@ -377,7 +364,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getTestPackageName() {
-    return "tests." + getPackageName();
+    return getPackageName();
   }
 
   @Override

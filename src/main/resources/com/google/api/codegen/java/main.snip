@@ -112,7 +112,7 @@
    * <pre>
    * <code>
    * {@xapiClassDoc.settingsClassName} {@xapiClassDoc.settingsVarName} =
-   *     {@xapiClassDoc.settingsClassName}.defaultBuilder()
+   *     {@xapiClassDoc.settingsClassName}.newBuilder()
    *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
    *         .build();
    * {@xapiClassDoc.apiClassName} {@xapiClassDoc.apiVarName} =
@@ -125,8 +125,8 @@
    * <pre>
    * <code>
    * {@xapiClassDoc.settingsClassName} {@xapiClassDoc.settingsVarName} =
-   *     {@xapiClassDoc.settingsClassName}.defaultBuilder()
-             # TODO(andrealin): Use correct transport protocol.
+   *     {@xapiClassDoc.settingsClassName}.newBuilder()
+         # TODO(andrealin): Use correct transport protocol.
    *         .setTransportProvider({@xapiClassDoc.settingsClassName}.defaultGrpcTransportProviderBuilder()
    *             .setChannelProvider({@xapiClassDoc.settingsClassName}.defaultGrpcChannelProviderBuilder()
    *                 .setEndpoint(myEndpoint)
@@ -210,7 +210,7 @@
      * Constructs an instance of {@xapiClass.name} with default settings.
      */
     public static final {@xapiClass.name} create() throws IOException {
-      return create({@xapiClass.settingsClassName}.defaultBuilder().build());
+      return create({@xapiClass.settingsClassName}.newBuilder().build());
     }
     {@""}
   @end
@@ -260,6 +260,7 @@
     return settings;
   }
 
+  @@BetaApi
   public {@xapiClass.stubInterfaceName} getStub() {
     return stub;
   }

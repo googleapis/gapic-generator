@@ -36,7 +36,8 @@ from google.gax import path_template
 import google.gax
 
 from example.gapic import no_templates_api_service_client_config
-from google.cloud.proto.example.v1 import no_path_templates_pb2
+from example.proto import no_path_templates_messages_pb2
+from example.proto import no_path_templates_pb2
 
 
 class NoTemplatesAPIServiceClient(object):
@@ -57,8 +58,6 @@ class NoTemplatesAPIServiceClient(object):
             ssl_credentials=None,
             scopes=None,
             client_config=None,
-            app_name=None,
-            app_version='',
             lib_name=None,
             lib_version='',
             metrics_headers=()):
@@ -69,7 +68,7 @@ class NoTemplatesAPIServiceClient(object):
                 which to make calls.
             credentials (~google.auth.credentials.Credentials): The authorization
                 credentials to attach to requests. These credentials identify this
-                 application to the service.
+                application to the service.
             ssl_credentials (~grpc.ChannelCredentials): A
                 ``ChannelCredentials`` instance for use with an SSL-enabled
                 channel.
@@ -79,10 +78,6 @@ class NoTemplatesAPIServiceClient(object):
                 :func:`google.gax.construct_settings` for the structure of
                 this data. Falls back to the default config if not specified
                 or the specified config is missing data points.
-            app_name (str): The name of the application calling
-                the service. Recommended for analytics purposes.
-            app_version (str): The version of the application calling
-                the service. Recommended for analytics purposes.
             lib_name (str): The API library software used for calling
                 the service. (Unless you are writing an API client itself,
                 leave this as default.)
@@ -93,8 +88,6 @@ class NoTemplatesAPIServiceClient(object):
                 client library metrics. Ultimately serializes to a string
                 (e.g. 'foo/1.2.3 bar/3.14.1'). This argument should be
                 considered private.
-
-        Returns: NoTemplatesAPIServiceClient
         """
         # Unless the calling application specifically requested
         # OAuth scopes, request everything.
@@ -168,5 +161,6 @@ class NoTemplatesAPIServiceClient(object):
         Raises:
             :exc:`google.gax.errors.GaxError` if the RPC is aborted.
         """
-        request = no_path_templates_pb2.IncrementRequest()
+        request = no_path_templates_messages_pb2.IncrementRequest()
         self._increment(request, options)
+

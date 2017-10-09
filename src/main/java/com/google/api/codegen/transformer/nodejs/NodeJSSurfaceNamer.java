@@ -459,7 +459,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   @Override
   public String getByteLengthFunctionName(FieldModel typeRef) {
     if (typeRef.isMessage()) {
-      return "gax.createByteLengthFunction(grpcClients." + typeRef.getTypeFullName() + ")";
+      return "gax.createByteLengthFunction(loadedProtos." + typeRef.getTypeFullName() + ")";
     } else if (typeRef.isString() || typeRef.isBytes()) {
       return "function(s) { return s.length; }";
     } else {

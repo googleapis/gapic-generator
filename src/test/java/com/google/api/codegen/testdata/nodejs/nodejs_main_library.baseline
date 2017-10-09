@@ -31,7 +31,10 @@
 var configData = require('./library_service_client_config');
 var extend = require('extend');
 var gax = require('google-gax');
+var googleProtoFiles = require('google-proto-files');
 var merge = require('lodash.merge');
+var path = require('path');
+var protobuf = require('protobufjs');
 
 var SERVICE_ADDRESS = 'library-example.googleapis.com';
 
@@ -93,7 +96,7 @@ var ALL_SCOPES = [
  *
  * @class
  */
-function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
+function LibraryServiceClient(gaxGrpc, loadedProtos, opts) {
   opts = extend({
     servicePath: SERVICE_ADDRESS,
     port: DEFAULT_SERVICE_PORT,
@@ -120,14 +123,14 @@ function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
         'shelf.name'
       ],
       'bookNames',
-      gax.createByteLengthFunction(grpcClients.google.example.library.v1.Book)),
+      gax.createByteLengthFunction(loadedProtos.google.example.library.v1.Book)),
     addComments: new gax.BundleDescriptor(
       'comments',
       [
         'name'
       ],
       null,
-      gax.createByteLengthFunction(grpcClients.google.example.library.v1.Comment))
+      gax.createByteLengthFunction(loadedProtos.google.example.library.v1.Comment))
   };
 
   this.operationsClient = new gax.lro({
@@ -135,15 +138,28 @@ function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
     grpc: gaxGrpc.grpc
   }).operationsClient(opts);
 
+  var protoFilesRoot = new gax.grpc.GoogleProtoFilesRoot();
+  protoFilesRoot = protobuf.loadSync(
+    path.join(__dirname, '..', '..', 'protos', 'library.proto'),
+    protoFilesRoot);
+  protoFilesRoot = protobuf.loadSync(
+    path.join(__dirname, '..', '..', 'protos', 'tagger.proto'),
+    protoFilesRoot);
+
+  var getBigBookResponse = protoFilesRoot.lookup('google.example.library.v1.Book');
+  var getBigBookMetadata = protoFilesRoot.lookup('google.example.library.v1.GetBigBookMetadata');
+  var getBigNothingResponse = protoFilesRoot.lookup('google.protobuf.Empty');
+  var getBigNothingMetadata = protoFilesRoot.lookup('google.example.library.v1.GetBigBookMetadata');
+
   this.longrunningDescriptors = {
     getBigBook: new gax.LongrunningDescriptor(
       this.operationsClient,
-      grpcClients.google.example.library.v1.Book.decode,
-      grpcClients.google.example.library.v1.GetBigBookMetadata.decode),
+      getBigBookResponse.decode.bind(getBigBookResponse),
+      getBigBookMetadata.decode.bind(getBigBookMetadata)),
     getBigNothing: new gax.LongrunningDescriptor(
       this.operationsClient,
-      grpcClients.google.protobuf.Empty.decode,
-      grpcClients.google.example.library.v1.GetBigBookMetadata.decode)
+      getBigNothingResponse.decode.bind(getBigNothingResponse),
+      getBigNothingMetadata.decode.bind(getBigNothingMetadata))
   };
 
   var defaults = gaxGrpc.constructSettings(
@@ -156,7 +172,7 @@ function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
 
   this.auth = gaxGrpc.auth;
   var libraryServiceStub = gaxGrpc.createStub(
-      grpcClients.google.example.library.v1.LibraryService,
+      loadedProtos.google.example.library.v1.LibraryService,
       opts);
   var libraryServiceStubMethods = [
     'createShelf',
@@ -200,7 +216,7 @@ function LibraryServiceClient(gaxGrpc, grpcClients, opts) {
   });
 
   var labelerStub = gaxGrpc.createStub(
-      grpcClients.google.tagger.v1.Labeler,
+      loadedProtos.google.tagger.v1.Labeler,
       opts);
   var labelerStubMethods = [
     'addLabel'
@@ -2335,22 +2351,18 @@ function LibraryServiceClientBuilder(gaxGrpc) {
     return new LibraryServiceClientBuilder(gaxGrpc);
   }
 
-  var libraryServiceClient = gaxGrpc.load([{
-    root: require('google-proto-files')('..'),
-    file: 'library.proto'
-  }]);
-  extend(this, libraryServiceClient.google.example.library.v1);
+  var libraryServiceStubProtos = gaxGrpc.loadProto(
+    path.join(__dirname, '..', '..', 'protos'), 'library.proto');
+  extend(this, libraryServiceStubProtos.google.example.library.v1);
 
-  var labelerClient = gaxGrpc.load([{
-    root: require('google-proto-files')('..'),
-    file: 'tagger.proto'
-  }]);
-  extend(this, labelerClient.google.tagger.v1);
+  var labelerStubProtos = gaxGrpc.loadProto(
+    path.join(__dirname, '..', '..', 'protos'), 'tagger.proto');
+  extend(this, labelerStubProtos.google.tagger.v1);
 
-  var grpcClients = merge(
+  var protos = merge(
     {},
-    libraryServiceClient,
-    labelerClient
+    libraryServiceStubProtos,
+    labelerStubProtos
   );
 
   /**
@@ -2368,7 +2380,7 @@ function LibraryServiceClientBuilder(gaxGrpc) {
    *   {@link gax.constructSettings} for the format.
    */
   this.libraryServiceClient = function(opts) {
-    return new LibraryServiceClient(gaxGrpc, grpcClients, opts);
+    return new LibraryServiceClient(gaxGrpc, protos, opts);
   };
   extend(this.libraryServiceClient, LibraryServiceClient);
 }

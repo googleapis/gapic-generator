@@ -21,6 +21,8 @@ var gapic = {
   v1: require('./v1')
 };
 var gaxGrpc = require('google-gax').grpc();
+var googleProtoFiles = require('google-proto-files');
+var path = require('path');
 
 const VERSION = require('../package.json').version;
 
@@ -80,15 +82,13 @@ function libraryV1(options) {
 
 var v1Protos = {};
 
-extend(v1Protos, gaxGrpc.load([{
-  root: require('google-proto-files')('..'),
-  file: 'library.proto'
-}]).google.example.library.v1);
+extend(v1Protos, gaxGrpc.loadProto(
+  path.join(__dirname, '..', 'protos'), 'library.proto')
+    .google.example.library.v1);
 
-extend(v1Protos, gaxGrpc.load([{
-  root: require('google-proto-files')('..'),
-  file: 'tagger.proto'
-}]).google.tagger.v1);
+extend(v1Protos, gaxGrpc.loadProto(
+  path.join(__dirname, '..', 'protos'), 'tagger.proto')
+    .google.tagger.v1);
 
 module.exports = libraryV1;
 module.exports.types = v1Protos;

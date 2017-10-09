@@ -774,7 +774,6 @@ public class StaticLangApiMethodTransformer {
 
   private void setStaticLangReturnTypeName(
       MethodContext context, StaticLangApiMethodView.Builder methodViewBuilder) {
-    MethodModel method = context.getMethodModel();
     SurfaceNamer namer = context.getNamer();
     String returnTypeFullName = namer.getStaticLangReturnTypeName(context);
     String returnTypeNickname = context.getTypeTable().getAndSaveNicknameFor(returnTypeFullName);

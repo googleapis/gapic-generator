@@ -19,7 +19,6 @@ import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
-import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.codegen.config.SingleResourceNameConfig;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
@@ -33,7 +32,6 @@ import com.google.api.codegen.util.php.PhpCommentReformatter;
 import com.google.api.codegen.util.php.PhpNameFormatter;
 import com.google.api.codegen.util.php.PhpPackageUtil;
 import com.google.api.codegen.util.php.PhpTypeTable;
-import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.TypeRef;
 import java.util.ArrayList;
 
@@ -88,6 +86,13 @@ public class PhpSurfaceNamer extends SurfaceNamer {
     return publicMethodName(Name.from("get").join(identifier));
   }
 
+  /** The function name to format the entity for the given collection. */
+  @Override
+  public String getFormatFunctionName(
+      InterfaceModel apiInterface, SingleResourceNameConfig resourceNameConfig) {
+    return publicMethodName(Name.from(resourceNameConfig.getEntityName(), "name"));
+  }
+
   @Override
   public String getPathTemplateName(
       InterfaceModel apiInterface, SingleResourceNameConfig resourceNameConfig) {
@@ -126,6 +131,9 @@ public class PhpSurfaceNamer extends SurfaceNamer {
     if (methodConfig.isPageStreaming()) {
       return "\\Google\\GAX\\PagedListResponse";
     }
+    if (methodConfig.isLongRunningOperation()) {
+      return "\\Google\\GAX\\OperationResponse";
+    }
     switch (methodConfig.getGrpcStreamingType()) {
       case NonStreaming:
         return method.getOutputTypeName(methodContext.getTypeTable()).getFullName();
@@ -150,11 +158,6 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   @Override
   public String getApiWrapperClassImplName(InterfaceConfig interfaceConfig) {
     return publicClassName(Name.upperCamel(getInterfaceName(interfaceConfig), "GapicClient"));
-  }
-
-  @Override
-  public String getGrpcClientTypeName(Interface apiInterface) {
-    return getGrpcClientTypeName(new ProtoInterfaceModel(apiInterface));
   }
 
   @Override
@@ -222,5 +225,10 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   @Override
   public boolean methodHasRetrySettings(MethodConfig methodConfig) {
     return !methodConfig.isGrpcStreaming();
+  }
+
+  @Override
+  public boolean methodHasTimeoutSettings(MethodConfig methodConfig) {
+    return methodConfig.isGrpcStreaming();
   }
 }

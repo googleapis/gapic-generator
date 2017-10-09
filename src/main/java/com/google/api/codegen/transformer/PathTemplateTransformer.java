@@ -298,6 +298,7 @@ public class PathTemplateTransformer {
           PathTemplateGetterFunctionView.newBuilder()
               .name(namer.getPathTemplateNameGetter(apiInterface, resourceNameConfig))
               .resourceName(namer.getPathTemplateResourcePhraseName(resourceNameConfig))
+              .entityName(namer.getEntityName(resourceNameConfig))
               .pathTemplateName(namer.getPathTemplateName(apiInterface, resourceNameConfig))
               .pattern(resourceNameConfig.getNamePattern());
 

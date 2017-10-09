@@ -12,27 +12,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.google.api.codegen.util;
 
-package com.google.api.codegen.viewmodel.metadata;
+import java.util.regex.Pattern;
 
-import com.google.auto.value.AutoValue;
+public class VersionMatcher {
+  private static final Pattern VERSION_PATTERN =
+      Pattern.compile(
+          "^([vV]\\d+)" // Major version eg: v1
+              + "([pP_]\\d+)?" // Point release eg: p2
+              + "(([aA]lpha|[bB]eta)\\d*)?"); //  Release level eg: alpha3
 
-@AutoValue
-public abstract class SimpleModuleView implements ModuleView {
-  public abstract String moduleName();
-
-  public static Builder newBuilder() {
-    return new AutoValue_SimpleModuleView.Builder();
-  }
-
-  public String type() {
-    return SimpleModuleView.class.getSimpleName();
-  }
-
-  @AutoValue.Builder
-  public abstract static class Builder {
-    public abstract Builder moduleName(String val);
-
-    public abstract SimpleModuleView build();
+  public static boolean isVersion(String str) {
+    return VERSION_PATTERN.matcher(str).matches();
   }
 }

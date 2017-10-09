@@ -15,10 +15,12 @@
 package com.google.api.codegen.configgen.transformer;
 
 import com.google.api.codegen.configgen.viewmodel.LanguageSettingView;
+import com.google.api.codegen.util.VersionMatcher;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,14 +37,12 @@ public class LanguageTransformer {
   static {
     List<RewriteRule> javaRewriteRules =
         Arrays.asList(new RewriteRule("^google(\\.cloud)?", "com.google.cloud"));
-    List<RewriteRule> pythonRewriteRules =
-        Arrays.asList(new RewriteRule("^google(?!\\.cloud)", "google.cloud.gapic"));
     List<RewriteRule> commonRewriteRules =
         Arrays.asList(new RewriteRule("^google(?!\\.cloud)", "google.cloud"));
     LANGUAGE_FORMATTERS =
         ImmutableMap.<String, LanguageFormatter>builder()
             .put("java", new SimpleLanguageFormatter(".", javaRewriteRules, false))
-            .put("python", new SimpleLanguageFormatter(".", pythonRewriteRules, false))
+            .put("python", new PythonLanguageFormatter(commonRewriteRules))
             .put("go", new GoLanguageFormatter())
             .put("csharp", new SimpleLanguageFormatter(".", null, true))
             .put("ruby", new SimpleLanguageFormatter("::", commonRewriteRules, true))
@@ -159,6 +159,28 @@ public class LanguageTransformer {
         return input;
       }
       return input.replaceAll(pattern, replacement);
+    }
+  }
+
+  private static class PythonLanguageFormatter implements LanguageFormatter {
+    private List<RewriteRule> rewriteRules;
+
+    public PythonLanguageFormatter(List<RewriteRule> rewriteRules) {
+      this.rewriteRules = rewriteRules;
+    }
+
+    @Override
+    public String getFormattedPackageName(String packageName) {
+      for (RewriteRule rule : rewriteRules) {
+        packageName = rule.rewrite(packageName);
+      }
+      List<String> names = Splitter.on(DEFAULT_PACKAGE_SEPARATOR).splitToList(packageName);
+      String lastName = Iterables.getLast(names);
+      if (!VersionMatcher.isVersion(lastName)) {
+        return String.format("%s.gapic", packageName);
+      }
+      String unversionedPackageName = Joiner.on('.').join(names.subList(0, names.size() - 1));
+      return String.format("%s_%s.gapic", unversionedPackageName, lastName);
     }
   }
 }

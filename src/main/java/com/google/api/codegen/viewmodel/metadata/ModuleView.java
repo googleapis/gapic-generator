@@ -15,4 +15,4 @@
 
 package com.google.api.codegen.viewmodel.metadata;
 
-public interface VersionIndexModuleView {}
+public interface ModuleView {}

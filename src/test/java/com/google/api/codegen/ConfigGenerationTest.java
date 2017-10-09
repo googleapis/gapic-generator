@@ -69,4 +69,9 @@ public class ConfigGenerationTest extends ConfigBaselineTestCase {
   public void no_path_templates() throws Exception {
     test("no_path_templates");
   }
+
+  @Test
+  public void longrunning() throws Exception {
+    test("longrunning");
+  }
 }
