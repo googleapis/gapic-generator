@@ -92,9 +92,9 @@ public class ProtoDocumentLinkTest {
   public void testJSCommentReformatter() {
     JSCommentReformatter commentReformatter = new JSCommentReformatter();
     Truth.assertThat(commentReformatter.reformat("[Shelf][google.example.library.v1.Shelf]"))
-        .isEqualTo("{@link Shelf}");
+        .isEqualTo("Shelf");
     Truth.assertThat(commentReformatter.reformat("[$Shelf][google.example.library.v1.Shelf]"))
-        .isEqualTo("{@link $Shelf}");
+        .isEqualTo("$Shelf");
 
     // Cloud link may contain special character '$'
     Truth.assertThat(commentReformatter.reformat("[cloud docs!](/library/example/link)"))
