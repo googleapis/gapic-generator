@@ -41,6 +41,7 @@ import java.util.ArrayList;
 
 /** The SurfaceNamer for PHP. */
 public class PhpSurfaceNamer extends SurfaceNamer {
+
   public PhpSurfaceNamer(String packageName) {
     super(
         new PhpNameFormatter(),
@@ -177,12 +178,12 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getTestPackageName() {
-    return getTestPackageName(getPackageName());
+  public String getTestPackageName(TestKind testKind) {
+    return getTestPackageName(getPackageName(), testKind);
   }
 
   /** Insert "Tests" into the package name after "Google\Cloud" standard prefix */
-  private static String getTestPackageName(String packageName) {
+  private static String getTestPackageName(String packageName, TestKind testKind) {
     final String[] PACKAGE_PREFIX = PhpPackageUtil.getStandardPackagePrefix();
 
     ArrayList<String> packageComponents = new ArrayList<>();
@@ -199,6 +200,14 @@ public class PhpSurfaceNamer extends SurfaceNamer {
       packageComponents.add(packageSplit[i]);
     }
     packageComponents.add("Tests");
+    switch (testKind) {
+      case UNIT:
+        packageComponents.add("Unit");
+        break;
+      case SYSTEM:
+        packageComponents.add("System");
+        break;
+    }
     for (int i = packageStartIndex; i < packageSplit.length; i++) {
       packageComponents.add(packageSplit[i]);
     }
@@ -239,10 +248,5 @@ public class PhpSurfaceNamer extends SurfaceNamer {
       }
     }
     return Joiner.on(". ").join(stringParts);
-  }
-
-  @Override
-  public String localVarName(Name name) {
-    return "$" + super.localVarName(name);
   }
 }

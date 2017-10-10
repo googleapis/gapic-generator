@@ -6,9 +6,9 @@
     "url": "{@metadata.homepage}",
     "description": "{@metadata.fullName} client for PHP",
     "require": {
-      "google/gax": "^{@metadata.gaxVersionBound.lower}",
-      "google/proto-client": "^0.24.0", # TODO: Put this in metadata?
-      "google/protobuf": "^{@metadata.protoVersionBound.lower}",
+      @join packageDep : metadata.dependencies
+          "{@packageDep.name}": "^{@packageDep.versionBound.lower}",
+      @end
       "php" : "^5.5 || ^7.0"
     },
     "require-dev": {
@@ -18,7 +18,9 @@
     "autoload": {
       "psr-4": {
         "Google\\Cloud\\": "src",
-        "Google\\Cloud\\Tests\\": "tests/unit",
+        "Google\\Cloud\\Tests\\": "tests",
+        "Google\\Cloud\\Tests\\System\\": "tests/system",
+        "Google\\Cloud\\Tests\\Unit\\": "tests/unit",
         "": "proto/src"
       }
     },

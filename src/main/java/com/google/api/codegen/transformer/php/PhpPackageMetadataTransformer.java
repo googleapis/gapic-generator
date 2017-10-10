@@ -22,10 +22,9 @@ import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.PackageMetadataNamer;
 import com.google.api.codegen.transformer.PackageMetadataTransformer;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.api.codegen.viewmodel.metadata.PackageDependencyView;
 import com.google.api.tools.framework.model.Model;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /** Responsible for producing package metadata related views for PHP */
 public class PhpPackageMetadataTransformer implements ModelToViewTransformer {
@@ -56,9 +55,17 @@ public class PhpPackageMetadataTransformer implements ModelToViewTransformer {
 
   private ViewModel generateMetadataView(
       Model model, PackageMetadataNamer namer, boolean hasMultipleServices) {
+    List<PackageDependencyView> dependencies = new ArrayList<>();
+    dependencies.add(
+        PackageDependencyView.create(
+            "google/gax", packageConfig.gaxVersionBound(TargetLanguage.PHP)));
+    dependencies.add(
+        PackageDependencyView.create(
+            "google/protobuf", packageConfig.protoVersionBound(TargetLanguage.PHP)));
     return metadataTransformer
         .generateMetadataView(
             packageConfig, model, PACKAGE_FILE, "composer.json", TargetLanguage.PHP)
+        .additionalDependencies(dependencies)
         .hasMultipleServices(hasMultipleServices)
         .identifier(namer.getMetadataIdentifier())
         .build();

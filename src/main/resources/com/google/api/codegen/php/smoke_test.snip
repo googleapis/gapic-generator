@@ -4,6 +4,10 @@
 @snippet generate(smokeTest)
     {@renderFileHeader(smokeTest.fileHeader, simpleGeneratedCodeWarning())}
 
+    /**
+     * @@group {@smokeTest.apiName}
+     * @@group grpc
+     */
     class {@smokeTest.name} extends GeneratedTest
     {
         /**
@@ -12,12 +16,12 @@
         public function {@smokeTest.method.name}()
         {
             @if smokeTest.requireProjectId
-                $projectId = $_ENV["PROJECT_ID"];
+                $projectId = getenv("PROJECT_ID");
             @end
 
             ${@smokeTest.apiMethod.apiVariableName} = new {@smokeTest.apiMethod.apiClassName}();
             {@initCode(smokeTest.apiMethod.initCode, smokeTest.apiMethod.apiVariableName)}
-            {@methodCallSampleCode(smokeTest.apiMethod)}; @# Just call the method.
+            {@methodCallSampleCode(smokeTest.apiMethod)};
         }
     }
 @end

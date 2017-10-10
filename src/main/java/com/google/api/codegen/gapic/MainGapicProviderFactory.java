@@ -323,14 +323,12 @@ public class MainGapicProviderFactory
         providers.add(metadataProvider);
       }
       if (generatorConfig.enableTestGenerator()) {
-        GapicCodePathMapper phpPathMapper =
-            PhpGapicCodePathMapper.newBuilder().setPrefix("tests/unit").build();
         GapicProvider<? extends Object> testProvider =
             ViewModelGapicProvider.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
-                .setModelToViewTransformer(new PhpGapicSurfaceTestTransformer(phpPathMapper))
+                .setModelToViewTransformer(new PhpGapicSurfaceTestTransformer())
                 .build();
         providers.add(testProvider);
       }
