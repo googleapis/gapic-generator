@@ -167,6 +167,8 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.packageVersion(
         packageConfig.generatedPackageVersionBound(TargetLanguage.NODEJS).lower());
 
+    xapiClass.apiVersion(packageConfig.apiVersion());
+
     xapiClass.packageHasMultipleServices(hasMultipleServices);
     xapiClass.packageServiceName(namer.getPackageServiceName(context.getInterface()));
 
