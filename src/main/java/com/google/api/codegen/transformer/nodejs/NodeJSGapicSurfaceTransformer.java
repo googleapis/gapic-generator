@@ -34,6 +34,7 @@ import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.PackageMetadataNamer;
 import com.google.api.codegen.transformer.PageStreamingTransformer;
 import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.ServiceTransformer;
@@ -265,6 +266,9 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private List<ViewModel> generateIndexViews(
       Iterable<Interface> apiInterfaces, GapicProductConfig productConfig) {
+    PackageMetadataNamer packageMetadataNamer =
+        new NodeJSPackageMetadataNamer(
+            productConfig.getPackageName(), productConfig.getDomainLayerLocation());
     ArrayList<ViewModel> indexViews = new ArrayList<>();
     NodeJSSurfaceNamer namer =
         new NodeJSSurfaceNamer(productConfig.getPackageName(), NodeJSUtils.isGcloud(productConfig));
@@ -303,7 +307,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
             .fileHeader(
                 fileHeaderTransformer.generateFileHeader(
                     productConfig, ImportSectionView.newBuilder().build(), namer))
-            .apiShortName(packageConfig.shortName());
+            .packageName(packageMetadataNamer.getMetadataIdentifier());
     if (hasVersion) {
       indexViewbuilder.apiVersion(version);
     }
@@ -326,7 +330,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
               .fileHeader(
                   fileHeaderTransformer.generateFileHeader(
                       productConfig, ImportSectionView.newBuilder().build(), namer))
-              .apiShortName(packageConfig.shortName());
+              .packageName(packageMetadataNamer.getMetadataIdentifier());
       indexViews.add(versionIndexViewBuilder.build());
     }
     return indexViews;

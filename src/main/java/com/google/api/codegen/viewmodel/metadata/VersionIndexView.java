@@ -69,7 +69,7 @@ public abstract class VersionIndexView implements ViewModel {
   public abstract boolean packageHasEnums();
 
   @Nullable
-  public abstract String apiShortName();
+  public abstract String packageName();
 
   public boolean hasMultipleServices() {
     return requireViews().size() > 1;
@@ -116,7 +116,7 @@ public abstract class VersionIndexView implements ViewModel {
 
     public abstract Builder packageHasEnums(boolean val);
 
-    public abstract Builder apiShortName(String val);
+    public abstract Builder packageName(String val);
 
     public abstract VersionIndexView build();
   }
