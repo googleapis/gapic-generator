@@ -1,46 +1,29 @@
 @extends "nodejs/common.snip"
 @extends "nodejs/method_sample.snip"
 
+
 @snippet generate(xapi)
-  {@header(xapi.fileHeader, xapi.protoFilename)}
-
-  {@serviceClass(xapi)}
-@end
-
-@private header(fileHeader, protoFilename)
-  /*
-   {@comments(fileHeader.copyrightLines)}
+  /**
+   {@comments(xapi.fileHeader.copyrightLines)}
    *
-   {@comments(fileHeader.licenseLines)}
+   {@comments(xapi.fileHeader.licenseLines)}
    */
 
+  /*!
+   * @@module {@xapi.name}
+   */
   'use strict';
 
-  {@importSection(fileHeader.importSection)}
-@end
+  {@importSection(xapi.fileHeader.importSection)}
 
-@private importSection(imports)
-  {@importGroup(imports.externalImports)}
-@end
-
-@private importGroup(group)
-  @join import : group
-    # Currently there is only one type per import.
-    # This will need to be refactored if changed.
-    @join type : import.types
-      const {@type.nickname} = require('{@import.moduleName}');
-    @end
-  @end
-@end
-
-
-@private serviceClass(xapi)
   /**
    @if xapi.doc.lines
      {@comments(xapi.doc.lines)}
      *
    @end
    * @@class
+   # FIXME: Figure out how to get the API version here.
+   #* @@memberof {@xapi.apiVersion}
    */
   class {@xapi.name} {
     /**
@@ -302,6 +285,21 @@
 
   module.exports = {@xapi.name};
 
+@end
+
+
+@private importSection(imports)
+  {@importGroup(imports.externalImports)}
+@end
+
+@private importGroup(group)
+  @join import : group
+    # Currently there is only one type per import.
+    # This will need to be refactored if changed.
+    @join type : import.types
+      const {@type.nickname} = require('{@import.moduleName}');
+    @end
+  @end
 @end
 
 @private clientsParamName(stubs)
