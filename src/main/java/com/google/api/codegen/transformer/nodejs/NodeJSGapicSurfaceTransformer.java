@@ -302,7 +302,8 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
             .toolkitVersion(GeneratorVersionProvider.getGeneratorVersion())
             .fileHeader(
                 fileHeaderTransformer.generateFileHeader(
-                    productConfig, ImportSectionView.newBuilder().build(), namer));
+                    productConfig, ImportSectionView.newBuilder().build(), namer))
+            .apiShortName(packageConfig.shortName());
     if (hasVersion) {
       indexViewbuilder.apiVersion(version);
     }
@@ -324,7 +325,8 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
               .toolkitVersion(GeneratorVersionProvider.getGeneratorVersion())
               .fileHeader(
                   fileHeaderTransformer.generateFileHeader(
-                      productConfig, ImportSectionView.newBuilder().build(), namer));
+                      productConfig, ImportSectionView.newBuilder().build(), namer))
+              .apiShortName(packageConfig.shortName());
       indexViews.add(versionIndexViewBuilder.build());
     }
     return indexViews;
