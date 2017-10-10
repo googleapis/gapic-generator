@@ -658,16 +658,17 @@ end
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require "google/gax"
+require "googleauth"
 
 module Library
-  class Credentials < Google::Gax::Credentials
+  class Credentials < Google::Auth::Credentials
     SCOPE = [
       "https://www.googleapis.com/auth/cloud-platform",
       "https://www.googleapis.com/auth/library"
     ].freeze
     PATH_ENV_VARS = %w(LIBRARY_KEYFILE, GOOGLE_CLOUD_KEYFILE, GCLOUD_KEYFILE)
     JSON_ENV_VARS = %w(LIBRARY_KEYFILE_JSON, GOOGLE_CLOUD_KEYFILE_JSON, GCLOUD_KEYFILE_JSON)
+    DEFAULT_PATHS = ["~/.config/gcloud/application_default_credentials.json"]
   end
 end
 ============== file: lib/library/v1.rb ==============
@@ -4168,6 +4169,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency "google-gax", "~> 0.8.0"
   gem.add_dependency "google-some-other-package-v1", "~> 0.2.1"
   gem.add_dependency "googleapis-common-protos", "~> 1.3.1"
+  gem.add_dependency "googleauth", "~> 0.5.1"
 
   gem.add_development_dependency "minitest", "~> 5.10"
   gem.add_development_dependency "rubocop", "<= 0.35.1"
