@@ -22,15 +22,35 @@ import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.php.PhpGapicCodePathMapper;
-import com.google.api.codegen.transformer.*;
+import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
+import com.google.api.codegen.transformer.FileHeaderTransformer;
+import com.google.api.codegen.transformer.GapicInterfaceContext;
+import com.google.api.codegen.transformer.GapicMethodContext;
+import com.google.api.codegen.transformer.InitCodeTransformer;
+import com.google.api.codegen.transformer.MockServiceTransformer;
+import com.google.api.codegen.transformer.ModelToViewTransformer;
+import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.transformer.TestCaseTransformer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.codegen.util.testing.StandardValueProducer;
 import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.codegen.util.testing.ValueProducer;
-import com.google.api.codegen.viewmodel.*;
-import com.google.api.codegen.viewmodel.testing.*;
+import com.google.api.codegen.viewmodel.ClientMethodType;
+import com.google.api.codegen.viewmodel.FileHeaderView;
+import com.google.api.codegen.viewmodel.ImportSectionView;
+import com.google.api.codegen.viewmodel.InitCodeView;
+import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
+import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.api.codegen.viewmodel.testing.ClientTestClassView;
+import com.google.api.codegen.viewmodel.testing.ClientTestFileView;
+import com.google.api.codegen.viewmodel.testing.MockGrpcMethodView;
+import com.google.api.codegen.viewmodel.testing.MockServiceImplFileView;
+import com.google.api.codegen.viewmodel.testing.MockServiceImplView;
+import com.google.api.codegen.viewmodel.testing.SmokeTestClassView;
+import com.google.api.codegen.viewmodel.testing.TestCaseView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
@@ -265,9 +285,6 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
     // TODO: we need to remove testCase after we switch to use apiMethod for smoke test
     TestCaseView testCase = testCaseTransformer.createSmokeTestCaseView(flattenedMethodContext);
     // TODO: old; OptionalArrayMethodView apiMethod = createSmokeTestCaseApiMethodView(methodContext);
-    // apiMethod is created with a new context so types used only by method documentation (ex: an optional FieldMask)
-    // aren't included in the TypeTable by default.
-    //GapicInterfaceContext subContext = createContext(context.getInterface(), context.getProductConfig());
     OptionalArrayMethodView apiMethod = createSmokeTestCaseApiMethodView(flattenedMethodContext);
 
     testClass.apiSettingsClassName(

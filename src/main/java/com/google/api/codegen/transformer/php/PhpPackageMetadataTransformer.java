@@ -24,7 +24,9 @@ import com.google.api.codegen.transformer.PackageMetadataTransformer;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.metadata.PackageDependencyView;
 import com.google.api.tools.framework.model.Model;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /** Responsible for producing package metadata related views for PHP */
 public class PhpPackageMetadataTransformer implements ModelToViewTransformer {

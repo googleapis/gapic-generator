@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer.php;
 
-import com.google.api.client.repackaged.com.google.common.base.Joiner;
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicMethodConfig;
@@ -36,6 +35,7 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.base.Joiner;
 import java.io.File;
 import java.util.ArrayList;
 
