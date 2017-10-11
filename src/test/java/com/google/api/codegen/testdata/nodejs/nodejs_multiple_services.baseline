@@ -168,11 +168,14 @@ class DecrementerServiceClient {
     this._descriptors = {};
 
     // Ensure that options include the service address and port.
-    opts = Object.assign({
-      clientConfig: {},
-      port: this.constructor.port,
-      servicePath: this.constructor.servicePath,
-    }, opts);
+    opts = Object.assign(
+      {
+        clientConfig: {},
+        port: this.constructor.port,
+        servicePath: this.constructor.servicePath,
+      },
+      opts
+    );
 
     // Create a `gaxGrpc` object, with any grpc-specific options
     // sent to the client.
@@ -198,7 +201,7 @@ class DecrementerServiceClient {
       gaxGrpc.loadProto(
         path.join(__dirname, '..', '..', 'protos'),
         'multiple_services.proto'
-      ),
+      )
     );
 
     // Put together the default options sent with requests.
@@ -206,7 +209,7 @@ class DecrementerServiceClient {
       'google.cloud.example.v1.DecrementerService',
       gapicConfig,
       opts.clientConfig,
-      {'x-goog-api-client': clientHeader.join(' ')},
+      {'x-goog-api-client': clientHeader.join(' ')}
     );
 
     // Set up a dictionary of "inner API calls"; the core implementation
@@ -228,10 +231,13 @@ class DecrementerServiceClient {
     ];
     for (let methodName of decrementerServiceStubMethods) {
       this._innerApiCalls[methodName] = gax.createApiCall(
-        decrementerServiceStub.then(stub => function() {
-          var args = Array.prototype.slice.call(arguments, 0);
-          return stub[methodName].apply(stub, args);
-        }),
+        decrementerServiceStub.then(
+          stub =>
+            function() {
+              var args = Array.prototype.slice.call(arguments, 0);
+              return stub[methodName].apply(stub, args);
+            }
+        ),
         defaults[methodName],
         null
       );
@@ -310,7 +316,7 @@ class DecrementerServiceClient {
       request = {};
     }
     return this._innerApiCalls.decrement(request, options, callback);
-  };
+  }
 }
 
 
@@ -391,11 +397,14 @@ class IncrementerServiceClient {
     this._descriptors = {};
 
     // Ensure that options include the service address and port.
-    opts = Object.assign({
-      clientConfig: {},
-      port: this.constructor.port,
-      servicePath: this.constructor.servicePath,
-    }, opts);
+    opts = Object.assign(
+      {
+        clientConfig: {},
+        port: this.constructor.port,
+        servicePath: this.constructor.servicePath,
+      },
+      opts
+    );
 
     // Create a `gaxGrpc` object, with any grpc-specific options
     // sent to the client.
@@ -421,7 +430,7 @@ class IncrementerServiceClient {
       gaxGrpc.loadProto(
         path.join(__dirname, '..', '..', 'protos'),
         'multiple_services.proto'
-      ),
+      )
     );
 
     // Put together the default options sent with requests.
@@ -429,7 +438,7 @@ class IncrementerServiceClient {
       'google.cloud.example.v1.IncrementerService',
       gapicConfig,
       opts.clientConfig,
-      {'x-goog-api-client': clientHeader.join(' ')},
+      {'x-goog-api-client': clientHeader.join(' ')}
     );
 
     // Set up a dictionary of "inner API calls"; the core implementation
@@ -451,10 +460,13 @@ class IncrementerServiceClient {
     ];
     for (let methodName of incrementerServiceStubMethods) {
       this._innerApiCalls[methodName] = gax.createApiCall(
-        incrementerServiceStub.then(stub => function() {
-          var args = Array.prototype.slice.call(arguments, 0);
-          return stub[methodName].apply(stub, args);
-        }),
+        incrementerServiceStub.then(
+          stub =>
+            function() {
+              var args = Array.prototype.slice.call(arguments, 0);
+              return stub[methodName].apply(stub, args);
+            }
+        ),
         defaults[methodName],
         null
       );
@@ -533,7 +545,7 @@ class IncrementerServiceClient {
       request = {};
     }
     return this._innerApiCalls.increment(request, options, callback);
-  };
+  }
 }
 
 
@@ -626,7 +638,11 @@ describe('IncrementerServiceClient', () => {
       var request = {};
 
       // Mock Grpc layer
-      client._innerApiCalls.increment = mockSimpleGrpcMethod(request, null, error);
+      client._innerApiCalls.increment = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
 
       client.increment(request, err => {
         assert(err instanceof Error);
@@ -661,7 +677,11 @@ describe('DecrementerServiceClient', () => {
       var request = {};
 
       // Mock Grpc layer
-      client._innerApiCalls.decrement = mockSimpleGrpcMethod(request, null, error);
+      client._innerApiCalls.decrement = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
 
       client.decrement(request, err => {
         assert(err instanceof Error);
@@ -678,11 +698,9 @@ function mockSimpleGrpcMethod(expectedRequest, response, error) {
     assert.deepStrictEqual(actualRequest, expectedRequest);
     if (error) {
       callback(error);
-    }
-    else if (response) {
+    } else if (response) {
       callback(null, response);
-    }
-    else {
+    } else {
       callback(null);
     }
   };
