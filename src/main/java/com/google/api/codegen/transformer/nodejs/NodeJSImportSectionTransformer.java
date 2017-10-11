@@ -17,7 +17,6 @@ package com.google.api.codegen.transformer.nodejs;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
-import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.ImportSectionTransformer;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.viewmodel.ImportFileView;
@@ -46,12 +45,9 @@ public class NodeJSImportSectionTransformer implements ImportSectionTransformer 
     ImmutableList.Builder<ImportFileView> imports = ImmutableList.builder();
     Interface apiInterface = context.getInterface();
     String configModule = context.getNamer().getClientConfigPath(apiInterface);
-    imports.add(createImport("configData", "./" + configModule));
-    imports.add(createImport("extend", "extend"));
+    imports.add(createImport("gapicConfig", "./" + configModule));
     imports.add(createImport("gax", "google-gax"));
-    if (new GrpcStubTransformer().generateGrpcStubs(context).size() > 1) {
-      imports.add(createImport("merge", "lodash.merge"));
-    }
+    imports.add(createImport("merge", "lodash.merge"));
     imports.add(createImport("path", "path"));
     if (context.getInterfaceConfig().hasLongRunningOperations()) {
       imports.add(createImport("protobuf", "protobufjs"));

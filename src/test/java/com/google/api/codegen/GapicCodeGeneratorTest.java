@@ -38,6 +38,7 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
           .put(MainGapicProviderFactory.NODEJS, MainGapicProviderFactory.NODEJS)
           .put(MainGapicProviderFactory.NODEJS_DOC, MainGapicProviderFactory.NODEJS)
           .put(MainGapicProviderFactory.CSHARP, MainGapicProviderFactory.CSHARP)
+          .put(MainGapicProviderFactory.CLIENT_CONFIG, "clientconfig")
           .build();
 
   private final String apiName;
@@ -134,11 +135,13 @@ public class GapicCodeGeneratorTest extends GapicTestBase2 {
             MainGapicProviderFactory.CSHARP,
             new String[] {"csharp_gapic.yaml", "library_gapic.yaml"},
             "library_pkg.yaml",
+            "library"),
+        GapicTestBase2.createTestConfig(
+            MainGapicProviderFactory.CLIENT_CONFIG,
+            new String[] {"client_gapic.yaml", "library_gapic.yaml"},
+            "library_pkg.yaml",
             "library"));
   }
-
-  // Tests
-  // =====
 
   @Test
   public void library() throws Exception {
