@@ -77,17 +77,17 @@ public class ModelTypeFormatterImpl implements ModelTypeFormatter {
 
   @Override
   public String getFullNameFor(FieldModel type) {
-    return getFullNameFor(type.getProtoTypeRef());
+    return getFullNameFor(((ProtoTypeRef) type.getType()).getProtoType());
   }
 
   @Override
   public String getFullNameForElementType(FieldModel type) {
-    return getFullNameForElementType(type.getProtoTypeRef());
+    return getFullNameForElementType(((ProtoTypeRef) type.getType()).getProtoType());
   }
 
   @Override
   public String getNicknameFor(FieldModel type) {
-    return getNicknameFor(type.getProtoTypeRef());
+    return getNicknameFor(((ProtoTypeRef) type.getType()).getProtoType());
   }
 
   @Override
@@ -97,7 +97,7 @@ public class ModelTypeFormatterImpl implements ModelTypeFormatter {
 
   @Override
   public String renderPrimitiveValue(FieldModel type, String key) {
-    return renderPrimitiveValue(type.getProtoTypeRef(), key);
+    return renderPrimitiveValue(((ProtoTypeRef) type.getType()).getProtoType(), key);
   }
 
   @Override

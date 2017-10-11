@@ -98,7 +98,7 @@ public class ModelTypeTable implements ImportTypeTable, ModelTypeFormatter {
   /** Returns the enum value string */
   @Override
   public String getEnumValue(FieldModel type, String value) {
-    return getEnumValue(type.getProtoTypeRef(), value);
+    return getEnumValue(((ProtoTypeRef) type.getType()).getProtoType(), value);
   }
 
   /** Creates a new ModelTypeTable of the same concrete type, but with an empty import set. */
@@ -287,7 +287,7 @@ public class ModelTypeTable implements ImportTypeTable, ModelTypeFormatter {
   /** Renders the primitive value of the given type. */
   @Override
   public String renderPrimitiveValue(FieldModel type, String key) {
-    return renderPrimitiveValue(type.getProtoTypeRef(), key);
+    return renderPrimitiveValue(((ProtoTypeRef) type.getType()).getProtoType(), key);
   }
 
   /** Returns the imports accumulated so far. */

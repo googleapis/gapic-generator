@@ -338,10 +338,11 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
       if (resourcesType.isMessage()) {
         returnTypeDoc +=
             commentReformatter.getLinkedElementName(
-                resourcesType.getProtoTypeRef().getMessageType());
+                ((ProtoTypeRef) resourcesType.getType()).getProtoType().getMessageType());
       } else if (resourcesType.isEnum()) {
         returnTypeDoc +=
-            commentReformatter.getLinkedElementName(resourcesType.getProtoTypeRef().getEnumType());
+            commentReformatter.getLinkedElementName(
+                ((ProtoTypeRef) resourcesType.getType()).getProtoType().getEnumType());
       } else {
         // Converting to lowercase because "String" is capitalized in NodeJSModelTypeNameConverter.
         returnTypeDoc +=
@@ -398,10 +399,12 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     boolean fieldIsEnum = field.isEnum();
     if (fieldIsMessage) {
       return "This object should have the same structure as "
-          + commentReformatter.getLinkedElementName(field.getProtoTypeRef().getMessageType());
+          + commentReformatter.getLinkedElementName(
+              ((ProtoTypeRef) field.getType()).getProtoType().getMessageType());
     } else if (fieldIsEnum) {
       return "The number should be among the values of "
-          + commentReformatter.getLinkedElementName(field.getProtoTypeRef().getEnumType());
+          + commentReformatter.getLinkedElementName(
+              ((ProtoTypeRef) field.getType()).getProtoType().getEnumType());
     }
     return "";
   }
