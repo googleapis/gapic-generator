@@ -5,7 +5,7 @@
   {@lineComments(apiTest.fileHeader.copyrightLines)}
   //
   {@lineComments(apiTest.fileHeader.licenseLines)}
-  
+
   'use strict';
 
   {@header(apiTest)}
@@ -332,6 +332,7 @@
     @if test.hasReturnValue
       client.{@test.clientMethodName}(request, (err, response) => {
         {@assertError()}
+        assert(typeof response === 'undefined');
         done();
       });
     @else

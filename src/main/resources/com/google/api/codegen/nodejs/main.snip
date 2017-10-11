@@ -11,13 +11,21 @@
 
   {@importSection(xapi.fileHeader.importSection)}
 
+  @if xapi.fileHeader.hasVersion
+    const VERSION = require('../../package.json').version;
+  @else
+    const VERSION = require('../package.json').version;
+  @end
+
   /**
    @if xapi.doc.lines
      {@comments(xapi.doc.lines)}
      *
    @end
    * @@class
-   * @@memberof {@xapi.apiVersion}
+   @if xapi.fileHeader.hasVersion
+     * @@memberof {@xapi.apiVersion}
+   @end
    */
   class {@xapi.name} {
     /**
