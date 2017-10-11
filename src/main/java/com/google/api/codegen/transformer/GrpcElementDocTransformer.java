@@ -84,6 +84,7 @@ public class GrpcElementDocTransformer {
       doc.name(namer.getEnumTypeName(typeTable, enumElement));
       doc.lines(namer.getDocLines(enumElement));
       doc.values(generateEnumValueDocs(namer, enumElement));
+      doc.packageName(enumElement.getFile().getFullName());
       enumDocs.add(doc.build());
     }
     return enumDocs.build();
