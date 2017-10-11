@@ -17,7 +17,7 @@ code wrappers:
 
 1. Invoking directly through a gradle task (see the build.gradle:runCodeGen task).
 2. Invoking a code generation pipeline through
-   [artman]( https://github.com/googleapis/artman/blob/master/USAGE.rst).
+   [artman]( https://github.com/googleapis/artman#usage ).
 
 ## The Google API Code Synchronizer
 
