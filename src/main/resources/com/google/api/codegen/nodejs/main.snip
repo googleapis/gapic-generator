@@ -51,11 +51,14 @@
       this._descriptors = {};
 
       // Ensure that options include the service address and port.
-      opts = Object.assign({
-        clientConfig: {},
-        port: this.constructor.port,
-        servicePath: this.constructor.servicePath,
-      }, opts);
+      opts = Object.assign(
+        {
+          clientConfig: {},
+          port: this.constructor.port,
+          servicePath: this.constructor.servicePath,
+        },
+        opts
+      );
 
       // Create a `gaxGrpc` object, with any grpc-specific options
       // sent to the client.
@@ -78,7 +81,7 @@
 
       // Load the applicable protos.
       var protos = merge({},
-        @join stub : xapi.stubs on BREAK
+        @join stub : xapi.stubs on {@","}.add(BREAK)
           gaxGrpc.loadProto(
             @if xapi.fileHeader.hasVersion
               path.join(__dirname, '..', '..', 'protos'),
@@ -87,7 +90,7 @@
               path.join(__dirname, '..', 'protos'),
               '{@stub.protoFileName}'
             @end
-          ),
+          )
         @end
       );
       @if xapi.pathTemplates
@@ -198,7 +201,7 @@
         '{@xapi.interfaceKey}',
         gapicConfig,
         opts.clientConfig,
-        {'x-goog-api-client': clientHeader.join(' ')},
+        {'x-goog-api-client': clientHeader.join(' ')}
       );
 
       // Set up a dictionary of "inner API calls"; the core implementation
@@ -223,10 +226,13 @@
         ];
         for (let methodName of {@stub.stubMethodsArrayName}) {
           this._innerApiCalls[methodName] = gax.createApiCall(
-            {@stub.name}.then(stub => function() {
-              var args = Array.prototype.slice.call(arguments, 0);
-              return stub[methodName].apply(stub, args);
-            }),
+            {@stub.name}.then(
+              stub =>
+                function() {
+                  var args = Array.prototype.slice.call(arguments, 0);
+                  return stub[methodName].apply(stub, args);
+                }
+            ),
             defaults[methodName],
             {@getDescriptors(xapi)}
           );
@@ -402,7 +408,7 @@
     options = options || {};
     {@maybeHandleRequest(method)}
     return this._innerApiCalls.{@method.name}({@requestObject(method)}options{@callbackParams(method)});
-  };
+  }
   @switch method.type.toString
   @case "PagedOptionalArrayMethod"
 
