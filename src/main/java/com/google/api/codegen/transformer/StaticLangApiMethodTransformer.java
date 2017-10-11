@@ -17,13 +17,7 @@ package com.google.api.codegen.transformer;
 import static com.google.api.codegen.config.ApiSource.PROTO;
 
 import com.google.api.codegen.ServiceMessages;
-import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.FieldModel;
-import com.google.api.codegen.config.InterfaceConfig;
-import com.google.api.codegen.config.MethodConfig;
-import com.google.api.codegen.config.MethodModel;
-import com.google.api.codegen.config.PageStreamingConfig;
-import com.google.api.codegen.config.SingleResourceNameConfig;
+import com.google.api.codegen.config.*;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.util.Name;
@@ -343,11 +337,8 @@ public class StaticLangApiMethodTransformer {
         additionalParams,
         methodViewBuilder);
     methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
-    methodViewBuilder.responseTypeName(
-        context
-            .getMethodConfig()
-            .getLongRunningConfig()
-            .getLongRunningOperationReturnTypeName(context.getTypeTable()));
+    TypeModel returnType = context.getMethodConfig().getLongRunningConfig().getReturnType();
+    methodViewBuilder.responseTypeName(context.getTypeTable().getAndSaveNicknameFor(returnType));
 
     return methodViewBuilder.type(ClientMethodType.OperationRequestObjectMethod).build();
   }
@@ -366,11 +357,8 @@ public class StaticLangApiMethodTransformer {
     methodViewBuilder.callableName(namer.getCallableName(method));
     setFlattenedMethodFields(context, additionalParams, Synchronicity.Sync, methodViewBuilder);
     methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
-    methodViewBuilder.responseTypeName(
-        context
-            .getMethodConfig()
-            .getLongRunningConfig()
-            .getLongRunningOperationReturnTypeName(context.getTypeTable()));
+    TypeModel returnType = context.getMethodConfig().getLongRunningConfig().getReturnType();
+    methodViewBuilder.responseTypeName(context.getTypeTable().getAndSaveNicknameFor(returnType));
 
     return methodViewBuilder.type(ClientMethodType.OperationFlattenedMethod).build();
   }
@@ -402,11 +390,8 @@ public class StaticLangApiMethodTransformer {
     if (requiresOperationMethod) {
       methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
     }
-    methodViewBuilder.responseTypeName(
-        context
-            .getMethodConfig()
-            .getLongRunningConfig()
-            .getLongRunningOperationReturnTypeName(context.getTypeTable()));
+    TypeModel returnType = context.getMethodConfig().getLongRunningConfig().getReturnType();
+    methodViewBuilder.responseTypeName(context.getTypeTable().getAndSaveNicknameFor(returnType));
     methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
 
     return methodViewBuilder.type(type).build();
@@ -442,11 +427,8 @@ public class StaticLangApiMethodTransformer {
     }
     if (context.getMethodConfig().isLongRunningOperation()) {
       // Only for protobuf-based APIs.
-      methodViewBuilder.responseTypeName(
-          context
-              .getMethodConfig()
-              .getLongRunningConfig()
-              .getLongRunningOperationReturnTypeName(context.getTypeTable()));
+      TypeModel returnType = context.getMethodConfig().getLongRunningConfig().getReturnType();
+      methodViewBuilder.responseTypeName(context.getTypeTable().getAndSaveNicknameFor(returnType));
       methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
     } else {
       throw new IllegalArgumentException(
@@ -464,11 +446,8 @@ public class StaticLangApiMethodTransformer {
     methodViewBuilder.name(namer.getOperationCallableMethodName(method));
     methodViewBuilder.exampleName(context.getNamer().getOperationCallableMethodExampleName(method));
     setCallableMethodFields(context, namer.getOperationCallableName(method), methodViewBuilder);
-    methodViewBuilder.responseTypeName(
-        context
-            .getMethodConfig()
-            .getLongRunningConfig()
-            .getLongRunningOperationReturnTypeName(context.getTypeTable()));
+    TypeModel returnType = context.getMethodConfig().getLongRunningConfig().getReturnType();
+    methodViewBuilder.responseTypeName(context.getTypeTable().getAndSaveNicknameFor(returnType));
     methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
 
     return methodViewBuilder.type(ClientMethodType.OperationCallableMethod).build();
@@ -502,7 +481,7 @@ public class StaticLangApiMethodTransformer {
     ServiceMessages messages = new ServiceMessages();
     if (context.getMethodConfig().isLongRunningOperation()) {
       methodViewBuilder.hasReturnValue(
-          !messages.isEmptyType(context.getMethodConfig().getLongRunningConfig().getReturnType()));
+          !context.getMethodConfig().getLongRunningConfig().getReturnType().isEmptyType());
     } else {
       methodViewBuilder.hasReturnValue(method.hasReturnValue());
     }
@@ -902,11 +881,11 @@ public class StaticLangApiMethodTransformer {
   }
 
   private InitCodeContext createInitCodeContext(
-      GapicMethodContext context,
+      MethodContext context,
       Iterable<FieldConfig> fieldConfigs,
       InitCodeOutputType initCodeOutputType) {
     return InitCodeContext.newBuilder()
-        .initObjectType(context.getMethod().getInputType())
+        .initObjectType(context.getMethodModel().getInputType())
         .suggestedName(Name.from("request"))
         .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
         .initValueConfigMap(InitCodeTransformer.createCollectionMap(context))

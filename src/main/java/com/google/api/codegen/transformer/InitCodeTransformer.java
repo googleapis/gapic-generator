@@ -14,11 +14,7 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.ResourceNameConfig;
-import com.google.api.codegen.config.ResourceNameOneofConfig;
-import com.google.api.codegen.config.ResourceNameType;
-import com.google.api.codegen.config.SingleResourceNameConfig;
+import com.google.api.codegen.config.*;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.metacode.InitCodeLineType;
@@ -46,7 +42,6 @@ import com.google.api.codegen.viewmodel.SimpleInitCodeLineView;
 import com.google.api.codegen.viewmodel.SimpleInitValueView;
 import com.google.api.codegen.viewmodel.StructureInitCodeLineView;
 import com.google.api.codegen.viewmodel.testing.ClientTestAssertView;
-import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -128,7 +123,7 @@ public class InitCodeTransformer {
       InitCodeOutputType outputType,
       TestValueGenerator valueGenerator) {
     return InitCodeContext.newBuilder()
-        .initObjectType(context.getMethod().getInputType())
+        .initObjectType(new ProtoTypeRef(context.getMethod().getInputType()))
         .symbolTable(symbolTable)
         .suggestedName(Name.from("request"))
         .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
@@ -142,11 +137,11 @@ public class InitCodeTransformer {
 
   /** Generates assert views for the test of the tested method and its fields. */
   List<ClientTestAssertView> generateRequestAssertViews(
-      GapicMethodContext methodContext, InitCodeContext initContext) {
+      MethodContext methodContext, InitCodeContext initContext) {
     InitCodeNode rootNode =
         InitCodeNode.createTree(
             InitCodeContext.newBuilder()
-                .initObjectType(methodContext.getMethod().getInputType())
+                .initObjectType(methodContext.getMethodModel().getInputType())
                 .initFields(initContext.initFields())
                 .initValueConfigMap(createCollectionMap(methodContext))
                 .suggestedName(Name.from("request"))
@@ -178,14 +173,14 @@ public class InitCodeTransformer {
       boolean isArray = fieldConfig.getField().isRepeated() && !fieldConfig.getField().isMap();
 
       String enumTypeName = null;
-      TypeRef fieldType = fieldItemTree.getType();
+      TypeModel fieldType = fieldItemTree.getType();
       if (fieldType.isEnum() && !fieldType.isRepeated()) {
         enumTypeName = methodContext.getTypeTable().getNicknameFor(fieldType);
       }
 
       String messageTypeName = null;
       if (fieldType.isMessage()) {
-        messageTypeName = methodContext.getTypeTable().getFullNameFor(fieldType.getMessageType());
+        messageTypeName = methodContext.getTypeTable().getFullNameForMessageType(fieldType);
       }
 
       assertViews.add(
@@ -387,17 +382,13 @@ public class InitCodeTransformer {
     surfaceLine.lineType(InitCodeLineType.MapInitLine);
     surfaceLine.identifier(namer.localVarName(item.getIdentifier()));
 
-    surfaceLine.keyTypeName(
-        typeTable.getAndSaveNicknameFor(item.getType().getMapKeyField().getType()));
-    surfaceLine.valueTypeName(
-        typeTable.getAndSaveNicknameFor(item.getType().getMapValueField().getType()));
+    surfaceLine.keyTypeName(typeTable.getAndSaveNicknameFor(item.getType().getMapKeyField()));
+    surfaceLine.valueTypeName(typeTable.getAndSaveNicknameFor(item.getType().getMapValueField()));
 
     List<MapEntryView> entries = new ArrayList<>();
     for (Map.Entry<String, InitCodeNode> entry : item.getChildren().entrySet()) {
       MapEntryView.Builder mapEntry = MapEntryView.newBuilder();
-      mapEntry.key(
-          typeTable.renderPrimitiveValue(
-              item.getType().getMapKeyField().getType(), entry.getKey()));
+      mapEntry.key(typeTable.renderPrimitiveValue(item.getType().getMapKeyField(), entry.getKey()));
       mapEntry.valueString(context.getNamer().localVarName(entry.getValue().getIdentifier()));
       mapEntry.value(generateSurfaceInitCodeLine(context, entry.getValue()));
       entries.add(mapEntry.build());
@@ -600,7 +591,7 @@ public class InitCodeTransformer {
     return allSettings;
   }
 
-  private static String getVariableName(GapicMethodContext context, InitCodeNode item) {
+  private static String getVariableName(MethodContext context, InitCodeNode item) {
     if (!context.getFeatureConfig().useResourceNameFormatOption(item.getFieldConfig())
         && item.getInitValueConfig().hasFormattingConfig()) {
       return context.getNamer().getFormattedVariableName(item.getIdentifier());

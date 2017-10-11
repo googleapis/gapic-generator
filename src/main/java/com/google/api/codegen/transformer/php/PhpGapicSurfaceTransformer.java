@@ -15,15 +15,7 @@
 package com.google.api.codegen.transformer.php;
 
 import com.google.api.codegen.GeneratorVersionProvider;
-import com.google.api.codegen.ServiceMessages;
-import com.google.api.codegen.config.GapicProductConfig;
-import com.google.api.codegen.config.GrpcStreamingConfig;
-import com.google.api.codegen.config.InterfaceModel;
-import com.google.api.codegen.config.LongRunningConfig;
-import com.google.api.codegen.config.MethodModel;
-import com.google.api.codegen.config.ProductServiceConfig;
-import com.google.api.codegen.config.ProtoApiModel;
-import com.google.api.codegen.config.VisibilityConfig;
+import com.google.api.codegen.config.*;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
@@ -45,7 +37,6 @@ import com.google.api.codegen.viewmodel.GrpcStreamingDetailView;
 import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.model.Model;
-import com.google.api.tools.framework.model.TypeRef;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -207,15 +198,15 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     for (MethodModel method : context.getLongRunningMethods()) {
       GapicMethodContext methodContext = context.asDynamicMethodContext(method);
       LongRunningConfig lroConfig = methodContext.getMethodConfig().getLongRunningConfig();
-      TypeRef returnType = lroConfig.getReturnType();
-      TypeRef metadataType = lroConfig.getMetadataType();
+      TypeModel returnType = lroConfig.getReturnType();
+      TypeModel metadataType = lroConfig.getMetadataType();
       result.add(
           LongRunningOperationDetailView.newBuilder()
               .methodName(context.getNamer().getApiMethodName(method, VisibilityConfig.PUBLIC))
               .constructorName("")
               .clientReturnTypeName("")
               .operationPayloadTypeName(context.getImportTypeTable().getFullNameFor(returnType))
-              .isEmptyOperation(ServiceMessages.s_isEmptyType(lroConfig.getReturnType()))
+              .isEmptyOperation(lroConfig.getReturnType().isEmptyType())
               .metadataTypeName(context.getImportTypeTable().getFullNameFor(metadataType))
               .implementsCancel(true)
               .implementsDelete(true)

@@ -22,23 +22,10 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.config.ProtoInterfaceModel;
-import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
-import com.google.api.codegen.transformer.FileHeaderTransformer;
-import com.google.api.codegen.transformer.GapicInterfaceContext;
-import com.google.api.codegen.transformer.GapicMethodContext;
-import com.google.api.codegen.transformer.ImportTypeTable;
-import com.google.api.codegen.transformer.InitCodeTransformer;
-import com.google.api.codegen.transformer.InterfaceContext;
-import com.google.api.codegen.transformer.MockServiceTransformer;
-import com.google.api.codegen.transformer.ModelToViewTransformer;
-import com.google.api.codegen.transformer.ModelTypeTable;
-import com.google.api.codegen.transformer.StandardImportSectionTransformer;
-import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
-import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.transformer.TestCaseTransformer;
+import com.google.api.codegen.transformer.*;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.util.testing.StandardValueProducer;
@@ -132,18 +119,17 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
    * <p>A helper method that creates a partially initialized builder that can be customized and
    * build the smoke test class view later.
    */
-  SmokeTestClassView.Builder createSmokeTestClassViewBuilder(GapicInterfaceContext context) {
+  SmokeTestClassView.Builder createSmokeTestClassViewBuilder(InterfaceContext context) {
     addSmokeTestImports(context);
 
     // TODO(andrealin): The SmokeTestConfig should return a MethodModel, instead of creating one here.
-    MethodModel method =
-        new ProtoMethodModel(context.getInterfaceConfig().getSmokeTestConfig().getMethod());
+    MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
     SurfaceNamer namer = context.getNamer();
 
     FlatteningConfig flatteningGroup =
         testCaseTransformer.getSmokeTestFlatteningGroup(
             context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());
-    GapicMethodContext methodContext = context.asFlattenedMethodContext(method, flatteningGroup);
+    MethodContext methodContext = context.asFlattenedMethodContext(method, flatteningGroup);
 
     SmokeTestClassView.Builder testClass = SmokeTestClassView.newBuilder();
     // TODO: we need to remove testCaseView after we switch to use apiMethodView for smoke test

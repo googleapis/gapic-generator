@@ -14,17 +14,7 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.ServiceMessages;
-import com.google.api.codegen.config.BatchingConfig;
-import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.FieldModel;
-import com.google.api.codegen.config.FlatteningConfig;
-import com.google.api.codegen.config.GrpcStreamingConfig;
-import com.google.api.codegen.config.MethodConfig;
-import com.google.api.codegen.config.MethodModel;
-import com.google.api.codegen.config.PageStreamingConfig;
-import com.google.api.codegen.config.ProtoField;
-import com.google.api.codegen.config.SmokeTestConfig;
+import com.google.api.codegen.config.*;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeLineType;
 import com.google.api.codegen.metacode.InitCodeNode;
@@ -48,8 +38,6 @@ import com.google.api.codegen.viewmodel.testing.GrpcStreamingView;
 import com.google.api.codegen.viewmodel.testing.MockGrpcResponseView;
 import com.google.api.codegen.viewmodel.testing.PageStreamingResponseView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
-import com.google.api.tools.framework.model.Field;
-import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +58,7 @@ public class TestCaseTransformer {
   }
 
   public TestCaseView createTestCaseView(
-      GapicMethodContext methodContext,
+      MethodContext methodContext,
       SymbolTable testNameTable,
       InitCodeContext initCodeContext,
       ClientMethodType clientMethodType) {
@@ -92,9 +80,13 @@ public class TestCaseTransformer {
     } else if (methodConfig.isLongRunningOperation()) {
       clientMethodName = namer.getLroApiMethodName(method, methodConfig.getVisibility());
       responseTypeName =
-          methodConfig.getLongRunningConfig().getLongRunningOperationReturnTypeName(typeTable);
+          methodContext
+              .getTypeTable()
+              .getAndSaveNicknameFor(methodConfig.getLongRunningConfig().getReturnType());
       fullyQualifiedResponseTypeName =
-          methodConfig.getLongRunningConfig().getLongRunningOperationReturnTypeFullName(typeTable);
+          methodContext
+              .getTypeTable()
+              .getFullNameFor(methodConfig.getLongRunningConfig().getReturnType());
     } else if (clientMethodType == ClientMethodType.CallableMethod) {
       clientMethodName = namer.getCallableMethodName(method);
       responseTypeName = method.getAndSaveResponseTypeName(typeTable, namer);
@@ -108,8 +100,7 @@ public class TestCaseTransformer {
     boolean hasRequestParameters = initCode.lines().size() > 0;
     boolean hasReturnValue = !method.isOutputTypeEmpty();
     if (methodConfig.isLongRunningOperation()) {
-      hasReturnValue =
-          !ServiceMessages.s_isEmptyType(methodConfig.getLongRunningConfig().getReturnType());
+      hasReturnValue = !methodConfig.getLongRunningConfig().getReturnType().isEmptyType();
     }
 
     InitCodeContext responseInitCodeContext =
@@ -174,7 +165,7 @@ public class TestCaseTransformer {
   }
 
   private List<PageStreamingResponseView> createPageStreamingResponseViews(
-      GapicMethodContext methodContext) {
+      MethodContext methodContext) {
     MethodConfig methodConfig = methodContext.getMethodConfig();
     SurfaceNamer namer = methodContext.getNamer();
 
@@ -224,7 +215,7 @@ public class TestCaseTransformer {
    * additional objects, which will be initialized with different initial values.
    */
   private List<InitCodeView> createGrpcStreamingInitCodeViews(
-      GapicMethodContext methodContext,
+      MethodContext methodContext,
       InitCodeContext initCodeContext,
       InitCodeView simpleInitCodeView) {
     List<InitCodeView> requestInitCodeList = new ArrayList<>();
@@ -247,15 +238,15 @@ public class TestCaseTransformer {
   }
 
   private InitCodeContext createResponseInitCodeContext(
-      GapicMethodContext context, SymbolTable symbolTable) {
+      MethodContext context, SymbolTable symbolTable) {
     ArrayList<FieldModel> primitiveFields = new ArrayList<>();
-    TypeRef outputType = context.getMethod().getOutputType();
+    TypeModel outputType = context.getMethodModel().getOutputType();
     if (context.getMethodConfig().isLongRunningOperation()) {
       outputType = context.getMethodConfig().getLongRunningConfig().getReturnType();
     }
-    for (Field field : outputType.getMessageType().getFields()) {
+    for (FieldModel field : outputType.getFields()) {
       if (field.getType().isPrimitive() && !field.getType().isRepeated()) {
-        primitiveFields.add(new ProtoField(field));
+        primitiveFields.add(field);
       }
     }
     return InitCodeContext.newBuilder()
@@ -271,7 +262,7 @@ public class TestCaseTransformer {
         .build();
   }
 
-  private Iterable<InitCodeNode> createMockResponseAdditionalSubTrees(GapicMethodContext context) {
+  private Iterable<InitCodeNode> createMockResponseAdditionalSubTrees(MethodContext context) {
     List<InitCodeNode> additionalSubTrees = new ArrayList<>();
     if (context.getMethodConfig().isPageStreaming()) {
       // Initialize one resource element if it is page-streaming.
@@ -304,7 +295,7 @@ public class TestCaseTransformer {
     return additionalSubTrees;
   }
 
-  public TestCaseView createSmokeTestCaseView(GapicMethodContext context) {
+  public TestCaseView createSmokeTestCaseView(MethodContext context) {
     MethodConfig methodConfig = context.getMethodConfig();
     ClientMethodType methodType;
 

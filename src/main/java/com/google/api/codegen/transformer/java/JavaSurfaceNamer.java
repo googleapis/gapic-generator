@@ -15,13 +15,7 @@
 package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.ReleaseLevel;
-import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.FieldModel;
-import com.google.api.codegen.config.InterfaceConfig;
-import com.google.api.codegen.config.InterfaceModel;
-import com.google.api.codegen.config.MethodConfig;
-import com.google.api.codegen.config.MethodModel;
-import com.google.api.codegen.config.ResourceNameType;
+import com.google.api.codegen.config.*;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.MethodContext;
@@ -36,7 +30,6 @@ import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaRenderingUtil;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.codegen.viewmodel.ServiceMethodType;
-import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import java.io.File;
@@ -127,15 +120,15 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   public String getAndSaveOperationResponseTypeName(
       MethodModel method, ImportTypeTable typeTable, MethodConfig methodConfig) {
     String responseTypeName =
-        methodConfig.getLongRunningConfig().getLongRunningOperationReturnTypeFullName(typeTable);
+        typeTable.getFullNameFor(methodConfig.getLongRunningConfig().getReturnType());
     String metadataTypeName =
-        methodConfig.getLongRunningConfig().getLongRunningOperationMetadataTypeFullName(typeTable);
+        typeTable.getFullNameFor(methodConfig.getLongRunningConfig().getMetadataType());
     return typeTable.getAndSaveNicknameForContainer(
         "com.google.api.gax.grpc.OperationFuture", responseTypeName, metadataTypeName);
   }
 
   @Override
-  public String getLongRunningOperationTypeName(ImportTypeTable typeTable, TypeRef type) {
+  public String getLongRunningOperationTypeName(ImportTypeTable typeTable, TypeModel type) {
     return ((ModelTypeTable) typeTable).getAndSaveNicknameForElementType(type);
   }
 

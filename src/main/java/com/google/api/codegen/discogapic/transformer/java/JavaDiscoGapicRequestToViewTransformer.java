@@ -263,7 +263,7 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
     Schema requestBodyDef = ((DiscoveryMethodModel) method).getDiscoMethod().request();
     if (requestBodyDef != null && !Strings.isNullOrEmpty(requestBodyDef.reference())) {
       FieldModel requestBody =
-          new DiscoveryField(requestBodyDef.dereference(), context.getDiscoGapicNamer());
+          DiscoveryField.create(requestBodyDef.dereference(), context.getDiscoGapicNamer());
       requestView.requestBodyType(
           schemaToParamView(
               context,

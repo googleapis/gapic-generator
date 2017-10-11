@@ -63,7 +63,7 @@ public class MethodTransformer {
   private void generateField(MethodModel method, MethodView.Builder methodView) {
     List<String> parameterList = new ArrayList<>();
     List<FieldModel> fieldList = new ArrayList<>();
-    Iterable<FieldModel> inputFields = method.getInputFields();
+    Iterable<? extends FieldModel> inputFields = method.getInputFields();
     for (FieldModel field : inputFields) {
       String fieldName = field.getSimpleName();
       if (field.getOneof() == null
@@ -92,7 +92,8 @@ public class MethodTransformer {
   /** Get the filtered input fields for a model, from a list of candidates. */
   private List<String> filteredInputFields(MethodModel method, List<FieldModel> candidates) {
     List<String> parameterNames = new ArrayList<>();
-    List<FieldModel> parametersForResourceNameMethod = method.getInputFieldsForResourceNameMethod();
+    List<? extends FieldModel> parametersForResourceNameMethod =
+        method.getInputFieldsForResourceNameMethod();
     for (FieldModel field : candidates) {
       if (parametersForResourceNameMethod.contains(field)) {
         parameterNames.add(field.getNameAsParameter());

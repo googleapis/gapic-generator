@@ -19,21 +19,9 @@ import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProtoApiModel;
-import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
-import com.google.api.codegen.transformer.DefaultFeatureConfig;
-import com.google.api.codegen.transformer.FeatureConfig;
-import com.google.api.codegen.transformer.FileHeaderTransformer;
-import com.google.api.codegen.transformer.GapicInterfaceContext;
-import com.google.api.codegen.transformer.GapicMethodContext;
-import com.google.api.codegen.transformer.InitCodeTransformer;
-import com.google.api.codegen.transformer.MockServiceTransformer;
-import com.google.api.codegen.transformer.ModelToViewTransformer;
-import com.google.api.codegen.transformer.ModelTypeTable;
-import com.google.api.codegen.transformer.StaticLangApiMethodTransformer;
-import com.google.api.codegen.transformer.SurfaceNamer;
-import com.google.api.codegen.transformer.TestCaseTransformer;
+import com.google.api.codegen.transformer.*;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.StandardValueProducer;
 import com.google.api.codegen.util.testing.TestValueGenerator;
@@ -175,12 +163,11 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
     return testCaseViews;
   }
 
-  private SmokeTestClassView createSmokeTestClassView(GapicInterfaceContext context) {
+  private SmokeTestClassView createSmokeTestClassView(InterfaceContext context) {
     SurfaceNamer namer = context.getNamer();
 
-    MethodModel method =
-        new ProtoMethodModel(context.getInterfaceConfig().getSmokeTestConfig().getMethod());
-    GapicMethodContext methodContext = context.asRequestMethodContext(method);
+    MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
+    MethodContext methodContext = context.asRequestMethodContext(method);
 
     SmokeTestClassView.Builder testClass = SmokeTestClassView.newBuilder();
     TestCaseView testCaseView = testCaseTransformer.createSmokeTestCaseView(methodContext);

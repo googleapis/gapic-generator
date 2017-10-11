@@ -14,8 +14,7 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.config.FieldModel;
-import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.*;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypedValue;
@@ -70,7 +69,12 @@ public abstract class SchemaTypeNameConverter implements TypeNameConverter {
 
   @Override
   public TypeName getTypeName(FieldModel type) {
-    return getTypeName(type.getDiscoveryField());
+    return getTypeName(((DiscoveryField) type).getDiscoveryField());
+  }
+
+  @Override
+  public TypeName getTypeName(TypeModel type) {
+    return getTypeNameForElementType(((DiscoveryField) type).getDiscoveryField());
   }
 
   @Override
@@ -80,21 +84,21 @@ public abstract class SchemaTypeNameConverter implements TypeNameConverter {
 
   @Override
   public TypeName getTypeNameForElementType(FieldModel type) {
-    return getTypeNameForElementType(type.getDiscoveryField());
+    return getTypeNameForElementType(((DiscoveryField) type).getDiscoveryField());
   }
 
   @Override
   public TypedValue getSnippetZeroValue(FieldModel type) {
-    return getSnippetZeroValue((type.getDiscoveryField()));
+    return getSnippetZeroValue((((DiscoveryField) type).getDiscoveryField()));
   }
 
   @Override
   public TypedValue getImplZeroValue(FieldModel type) {
-    return getImplZeroValue((type.getDiscoveryField()));
+    return getImplZeroValue((((DiscoveryField) type).getDiscoveryField()));
   }
 
   @Override
   public String renderPrimitiveValue(FieldModel type, String value) {
-    return renderPrimitiveValue(type.getDiscoveryField(), value);
+    return renderPrimitiveValue(((DiscoveryField) type).getDiscoveryField(), value);
   }
 }

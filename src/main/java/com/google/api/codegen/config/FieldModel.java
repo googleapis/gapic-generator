@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
@@ -102,10 +101,9 @@ public interface FieldModel {
   // Functions that are specific to the source type.
 
   /* @return the TypeRef of the underlying protobuf Field, if it exists. */
+  @Deprecated
+  // TODO(andrealin): remove uses of this method.
   TypeRef getProtoTypeRef();
-
-  /* @return the underlying Schema, if it exists. */
-  Schema getDiscoveryField();
 
   /* @return the type of this object, formatted as a String. */
   String getKind();
@@ -118,4 +116,6 @@ public interface FieldModel {
    */
   List<String> getPagedResponseResourceMethods(
       FeatureConfig featureConfig, FieldConfig startingFieldConfig, SurfaceNamer namer);
+
+  TypeModel getType();
 }

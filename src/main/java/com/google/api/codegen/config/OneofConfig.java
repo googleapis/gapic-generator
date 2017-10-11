@@ -26,17 +26,22 @@ public abstract class OneofConfig {
 
   public abstract MessageType parentType();
 
-  public abstract Field field();
+  public abstract FieldModel field();
 
   /**
    * Returns oneof config for the field of a given type, or null if the field is not a part of any
    * oneofs
    */
-  public static OneofConfig of(MessageType message, String fieldName) {
+  public static OneofConfig of(TypeModel typeModel, String fieldName) {
+    if (!typeModel.isMessage()) {
+      return null;
+    }
+    MessageType message = ((ProtoTypeRef) typeModel).getProtoType().getMessageType();
     for (Oneof oneof : message.getOneofs()) {
       for (Field field : oneof.getFields()) {
         if (field.getSimpleName().equals(fieldName)) {
-          return new AutoValue_OneofConfig(Name.from(oneof.getName()), message, field);
+          return new AutoValue_OneofConfig(
+              Name.from(oneof.getName()), message, new ProtoField(field));
         }
       }
     }

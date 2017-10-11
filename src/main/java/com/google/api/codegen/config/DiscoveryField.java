@@ -34,20 +34,45 @@ import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 
-/** Created by andrealin on 7/31/17. */
-public class DiscoveryField implements FieldModel {
+/** A field declaration wrapper around a Discovery Schema. */
+public class DiscoveryField implements FieldModel, TypeModel {
+  private final List<DiscoveryField> properties;
   private final Schema schema;
   private final DiscoGapicNamer discoGapicNamer;
 
+  private static Map<Schema, DiscoveryField> allSchemas = new HashMap<>();
+
   /* Create a FieldModel object from a non-null Schema object. */
-  public DiscoveryField(Schema schema, DiscoGapicNamer discoGapicNamer) {
+  private DiscoveryField(Schema schema, DiscoGapicNamer discoGapicNamer) {
     Preconditions.checkNotNull(schema);
     this.schema = schema;
     this.discoGapicNamer = discoGapicNamer;
+
+    ImmutableList.Builder<DiscoveryField> propertiesBuilder = ImmutableList.builder();
+    for (Schema child : schema.properties().values()) {
+      propertiesBuilder.add(DiscoveryField.create(child, discoGapicNamer));
+    }
+    this.properties = propertiesBuilder.build();
+  }
+
+  /* Create a FieldModel object from a non-null Schema object. */
+  public static DiscoveryField create(Schema schema, DiscoGapicNamer discoGapicNamer) {
+    Preconditions.checkNotNull(schema);
+    if (allSchemas.containsKey(schema)) {
+      return allSchemas.get(schema);
+    }
+
+    DiscoveryField discoField = new DiscoveryField(schema, discoGapicNamer);
+    allSchemas.put(schema, discoField);
+    return discoField;
   }
 
   @Override
@@ -56,7 +81,7 @@ public class DiscoveryField implements FieldModel {
     return DISCOVERY;
   }
 
-  @Override
+  /* @return the underlying Discovery Schema. */
   public Schema getDiscoveryField() {
     return schema;
   }
@@ -171,10 +196,10 @@ public class DiscoveryField implements FieldModel {
   @Override
   public TypeName getParentTypeName(ImportTypeTable typeTable) {
     if (schema.parent() instanceof Schema) {
-      DiscoveryField parent = new DiscoveryField((Schema) schema.parent(), discoGapicNamer);
-      return typeTable.getTypeTable().getTypeName(typeTable.getFullNameFor(parent));
+      DiscoveryField parent = DiscoveryField.create((Schema) schema.parent(), discoGapicNamer);
+      return typeTable.getTypeTable().getTypeName(typeTable.getFullNameFor((FieldModel) parent));
     }
-    return typeTable.getTypeTable().getTypeName(typeTable.getFullNameFor(this));
+    return typeTable.getTypeTable().getTypeName(typeTable.getFullNameFor((FieldModel) this));
   }
 
   @Override
@@ -249,5 +274,165 @@ public class DiscoveryField implements FieldModel {
       methodNames.add(0, namer.getFieldGetFunctionName(field));
     }
     return ImmutableList.copyOf(methodNames);
+  }
+
+  @Override
+  public void validateValue(String value) {
+    switch (schema.type()) {
+      case BOOLEAN:
+        String lowerCaseValue = value.toLowerCase();
+        if (lowerCaseValue.equals("true") || lowerCaseValue.equals("false")) {
+          return;
+        }
+        break;
+      case NUMBER:
+        if (Pattern.matches("[+-]?([0-9]*[.])?[0-9]+", value)) {
+          return;
+        }
+        break;
+      case INTEGER:
+        if (Pattern.matches("[+-]?[0-9]+", value)) {
+          return;
+        }
+        break;
+      case STRING:
+        switch (schema.format()) {
+          case INT64:
+          case UINT64:
+            if (Pattern.matches("[+-]?[0-9]+", value)) {
+              return;
+            }
+            break;
+          default:
+            Matcher matcher = Pattern.compile("([^\\\"']*)").matcher(value);
+            if (matcher.matches()) {
+              return;
+            }
+            break;
+        }
+      default:
+        // Throw an exception if a value is unsupported for the given type.
+        throw new IllegalArgumentException(
+            "Tried to assign value for unsupported Schema type "
+                + schema.type()
+                + ", format "
+                + schema.format()
+                + "; value "
+                + value);
+    }
+    throw new IllegalArgumentException(
+        "Could not assign value '"
+            + value
+            + "' to type "
+            + schema.type()
+            + ", format "
+            + schema.format());
+  }
+
+  @Override
+  public List<? extends FieldModel> getFields() {
+    return properties;
+  }
+
+  @Override
+  // Schemas are immutable, so this is just the identity function.
+  public TypeModel makeOptional() {
+    return this;
+  }
+
+  @Override
+  public String getPrimitiveTypeName() {
+    Preconditions.checkArgument(isPrimitiveType());
+    switch (schema.type()) {
+      case INTEGER:
+        switch (schema.format()) {
+          case UINT32:
+            return "uint32";
+          default:
+            return "int32";
+        }
+      case NUMBER:
+        switch (schema.format()) {
+          case FLOAT:
+            return "float";
+          case DOUBLE:
+          default:
+            return "double";
+        }
+      case BOOLEAN:
+        return "boolean";
+      case STRING:
+        if (schema.format() == null) {
+          return "string";
+        }
+        switch (schema.format()) {
+          case BYTE:
+            return "bytes";
+          case INT64:
+            return "sint64";
+          case UINT64:
+            return "uint64";
+          default:
+            return "string";
+        }
+      default:
+        return null;
+    }
+  }
+
+  private boolean isPrimitiveType() {
+    return schema.type().equals(Type.BOOLEAN)
+        || schema.type().equals(Type.INTEGER)
+        || schema.type().equals(Type.NUMBER)
+        || schema.type().equals(Type.STRING);
+  }
+
+  @Override
+  public boolean isBooleanType() {
+    return schema.type().equals(Type.BOOLEAN);
+  }
+
+  @Override
+  public boolean isStringType() {
+    return schema.type().equals(Type.STRING) && schema.format() == null;
+  }
+
+  @Override
+  public boolean isFloatType() {
+    return schema.type().equals(Type.NUMBER) && schema.format().equals(Format.FLOAT);
+  }
+
+  @Override
+  public boolean isBytesType() {
+    return schema.type().equals(Type.STRING) && schema.format().equals(Format.BYTE);
+  }
+
+  @Override
+  public boolean isDoubleType() {
+    return schema.type().equals(Type.NUMBER) && schema.format().equals(Format.DOUBLE);
+  }
+
+  @Override
+  public String getTypeName() {
+    if (isPrimitiveType()) {
+      return getPrimitiveTypeName();
+    }
+    switch (schema.type()) {
+      case ARRAY:
+        return "list";
+      default:
+        return "message";
+    }
+  }
+
+  @Override
+  public TypeModel getType() {
+    return this;
+  }
+
+  @Override
+  public boolean isEmptyType() {
+    // TODO(andrealin): ???
+    return false;
   }
 }

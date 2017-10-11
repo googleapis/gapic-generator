@@ -16,14 +16,7 @@ package com.google.api.codegen.transformer;
 
 import static com.google.api.codegen.config.ApiSource.PROTO;
 
-import com.google.api.codegen.config.ApiSource;
-import com.google.api.codegen.config.FlatteningConfig;
-import com.google.api.codegen.config.GapicInterfaceConfig;
-import com.google.api.codegen.config.GapicMethodConfig;
-import com.google.api.codegen.config.GapicProductConfig;
-import com.google.api.codegen.config.ProtoInterfaceModel;
-import com.google.api.codegen.config.ProtoMethodModel;
-import com.google.api.codegen.config.SingleResourceNameConfig;
+import com.google.api.codegen.config.*;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.auto.value.AutoValue;
@@ -31,6 +24,9 @@ import com.google.auto.value.AutoValue;
 /** The context for transforming a method to a view model object. */
 @AutoValue
 public abstract class GapicMethodContext implements MethodContext {
+
+  private TypeModel typeModel;
+
   public static GapicMethodContext create(
       GapicInterfaceContext surfaceTransformerContext,
       Interface apiInterface,

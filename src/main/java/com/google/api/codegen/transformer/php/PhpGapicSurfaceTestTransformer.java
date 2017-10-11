@@ -243,7 +243,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
           methodContext.getMethodConfig().getRequiredFieldConfigs();
       InitCodeContext initCodeContext =
           InitCodeContext.newBuilder()
-              .initObjectType(methodContext.getMethod().getInputType())
+              .initObjectType(methodContext.getMethodModel().getInputType())
               .suggestedName(Name.from("request"))
               .initFieldConfigStrings(methodContext.getMethodConfig().getSampleCodeInitFields())
               .initValueConfigMap(InitCodeTransformer.createCollectionMap(methodContext))

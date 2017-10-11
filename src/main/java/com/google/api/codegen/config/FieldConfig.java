@@ -101,9 +101,8 @@ public abstract class FieldConfig {
   }
 
   /** Creates a FieldConfig for the given Field with ResourceNameTreatment set to None. */
-  public static FieldConfig createDefaultFieldConfig(Field field) {
-    return FieldConfig.createFieldConfig(
-        new ProtoField(field), ResourceNameTreatment.NONE, null, null);
+  public static FieldConfig createDefaultFieldConfig(FieldModel field) {
+    return FieldConfig.createFieldConfig(field, ResourceNameTreatment.NONE, null, null);
   }
 
   static FieldConfig createMessageFieldConfig(

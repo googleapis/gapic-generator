@@ -14,14 +14,7 @@
  */
 package com.google.api.codegen.transformer.ruby;
 
-import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.FieldModel;
-import com.google.api.codegen.config.InterfaceConfig;
-import com.google.api.codegen.config.InterfaceModel;
-import com.google.api.codegen.config.MethodConfig;
-import com.google.api.codegen.config.MethodModel;
-import com.google.api.codegen.config.SingleResourceNameConfig;
-import com.google.api.codegen.config.VisibilityConfig;
+import com.google.api.codegen.config.*;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.ruby.RubyUtil;
 import com.google.api.codegen.transformer.FeatureConfig;
@@ -80,7 +73,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
 
   /** The function name to set a field having the given type and name. */
   @Override
-  public String getFieldSetFunctionName(TypeRef type, Name identifier) {
+  public String getFieldSetFunctionName(TypeModel type, Name identifier) {
     return getFieldGetFunctionName(type, identifier);
   }
 
@@ -214,7 +207,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getLongRunningOperationTypeName(ImportTypeTable typeTable, TypeRef type) {
+  public String getLongRunningOperationTypeName(ImportTypeTable typeTable, TypeModel type) {
     return ((ModelTypeTable) typeTable).getFullNameFor(type);
   }
 

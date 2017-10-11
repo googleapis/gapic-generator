@@ -14,10 +14,7 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.FieldModel;
-import com.google.api.codegen.config.InterfaceModel;
-import com.google.api.codegen.config.ProtoInterfaceModel;
+import com.google.api.codegen.config.*;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
@@ -72,6 +69,11 @@ public class ModelTypeTable implements ImportTypeTable, ModelTypeFormatter {
   }
 
   @Override
+  public String getFullNameFor(TypeModel type) {
+    return getFullNameFor(((ProtoTypeRef) type).getProtoType());
+  }
+
+  @Override
   public String renderPrimitiveValue(TypeRef type, String value) {
     return typeFormatter.renderPrimitiveValue(type, value);
   }
@@ -86,6 +88,11 @@ public class ModelTypeTable implements ImportTypeTable, ModelTypeFormatter {
       }
     }
     throw new IllegalArgumentException("Unrecognized enum value: " + value);
+  }
+
+  @Override
+  public String getEnumValue(TypeModel type, String value) {
+    return getEnumValue(((ProtoTypeRef) type).getProtoType(), value);
   }
 
   /** Returns the enum value string */
@@ -153,6 +160,11 @@ public class ModelTypeTable implements ImportTypeTable, ModelTypeFormatter {
     return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeName(type));
   }
 
+  @Override
+  public String getAndSaveNicknameFor(TypeModel type) {
+    return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeName(type));
+  }
+
   /*
    * Computes the nickname for the given FieldConfig, and ResourceName. Adds the full name to
    * the import set, and returns the nickname.
@@ -184,6 +196,12 @@ public class ModelTypeTable implements ImportTypeTable, ModelTypeFormatter {
    */
   public String getAndSaveNicknameForElementType(TypeRef type) {
     return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeNameForElementType(type));
+  }
+
+  @Override
+  public String getAndSaveNicknameForElementType(TypeModel type) {
+    TypeRef typeRef = ((ProtoTypeRef) type).getProtoType();
+    return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeNameForElementType(typeRef));
   }
 
   /**
@@ -230,6 +248,28 @@ public class ModelTypeTable implements ImportTypeTable, ModelTypeFormatter {
   @Override
   public String getFullNameFor(FieldModel type) {
     return getFullNameFor(type.getProtoTypeRef());
+  }
+
+  @Override
+  public String getFullNameForMessageType(TypeModel type) {
+    return getFullNameFor(((ProtoTypeRef) type).getProtoType().getMessageType());
+  }
+
+  @Override
+  public String getNicknameFor(TypeModel type) {
+    return getNicknameFor(((ProtoTypeRef) type).getProtoType());
+  }
+
+  @Override
+  public String renderPrimitiveValue(TypeModel type, String key) {
+    return renderPrimitiveValue(((ProtoTypeRef) type).getProtoType(), key);
+  }
+
+  @Override
+  public String getSnippetZeroValueAndSaveNicknameFor(TypeModel type) {
+    return typeNameConverter
+        .getSnippetZeroValue(((ProtoTypeRef) type).getProtoType())
+        .getValueAndSaveTypeNicknameIn(typeTable);
   }
 
   /** Get the full name for the element type of the given type. */

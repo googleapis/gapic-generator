@@ -14,15 +14,7 @@
  */
 package com.google.api.codegen.transformer.csharp;
 
-import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.FieldModel;
-import com.google.api.codegen.config.InterfaceConfig;
-import com.google.api.codegen.config.InterfaceModel;
-import com.google.api.codegen.config.MethodConfig;
-import com.google.api.codegen.config.MethodModel;
-import com.google.api.codegen.config.ResourceNameConfig;
-import com.google.api.codegen.config.ResourceNameType;
-import com.google.api.codegen.config.SingleResourceNameConfig;
+import com.google.api.codegen.config.*;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
@@ -446,7 +438,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFieldSetFunctionName(TypeRef type, Name identifier) {
+  public String getFieldSetFunctionName(TypeModel type, Name identifier) {
     return publicMethodName(identifier);
   }
 
@@ -454,9 +446,9 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   public String getAndSaveOperationResponseTypeName(
       MethodModel method, ImportTypeTable typeTable, MethodConfig methodConfig) {
     String responseTypeName =
-        methodConfig.getLongRunningConfig().getLongRunningOperationReturnTypeFullName(typeTable);
+        typeTable.getFullNameFor(methodConfig.getLongRunningConfig().getReturnType());
     String metaTypeName =
-        methodConfig.getLongRunningConfig().getLongRunningOperationMetadataTypeFullName(typeTable);
+        typeTable.getFullNameFor(methodConfig.getLongRunningConfig().getMetadataType());
     return typeTable.getAndSaveNicknameForContainer(
         "Google.LongRunning.Operation", responseTypeName, metaTypeName);
   }

@@ -18,7 +18,6 @@ import static com.google.api.codegen.config.ApiSource.PROTO;
 import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_BYTES;
 import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_STRING;
 
-import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.ModelTypeNameConverter;
@@ -39,6 +38,7 @@ import javax.annotation.Nullable;
 /** Created by andrealin on 7/31/17. */
 public class ProtoField implements FieldModel {
   private final Field protoField;
+  private final ProtoTypeRef protoTypeRef;
 
   @Override
   /* @return the type of the underlying model resource. */
@@ -50,6 +50,7 @@ public class ProtoField implements FieldModel {
   public ProtoField(Field protoField) {
     Preconditions.checkNotNull(protoField);
     this.protoField = protoField;
+    this.protoTypeRef = new ProtoTypeRef(protoField.getType());
   }
 
   @Override
@@ -160,11 +161,6 @@ public class ProtoField implements FieldModel {
   }
 
   @Override
-  public Schema getDiscoveryField() {
-    throw new IllegalArgumentException("Protobuf model types have no Discovery Field types.");
-  }
-
-  @Override
   public boolean equals(Object o) {
     return o != null
         && o instanceof ProtoField
@@ -232,5 +228,10 @@ public class ProtoField implements FieldModel {
     String resourceFieldGetFunctionName =
         namer.getFieldGetFunctionName(featureConfig, startingFieldConfig);
     return ImmutableList.of(resourceFieldGetFunctionName);
+  }
+
+  @Override
+  public TypeModel getType() {
+    return protoTypeRef;
   }
 }

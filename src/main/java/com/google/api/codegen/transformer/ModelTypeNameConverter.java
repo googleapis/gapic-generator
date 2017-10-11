@@ -14,10 +14,7 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.config.FieldConfig;
-import com.google.api.codegen.config.FieldModel;
-import com.google.api.codegen.config.InterfaceModel;
-import com.google.api.codegen.config.ProtoInterfaceModel;
+import com.google.api.codegen.config.*;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypedValue;
 import com.google.api.tools.framework.model.EnumValue;
@@ -40,6 +37,11 @@ public abstract class ModelTypeNameConverter implements TypeNameConverter {
 
   /** Provides a TypeName for the element type of the given TypeRef. */
   public abstract TypeName getTypeNameForElementType(TypeRef type);
+
+  @Override
+  public TypeName getTypeName(TypeModel type) {
+    return getTypeName(((ProtoTypeRef) type).getProtoType());
+  }
 
   @Override
   /* Provides a TypeName for the given FieldConfig and resource short name. */
