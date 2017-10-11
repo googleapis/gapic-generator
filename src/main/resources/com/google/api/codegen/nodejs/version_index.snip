@@ -6,7 +6,10 @@
   {@lineComments(index.fileHeader.licenseLines)}
 
   /**
-   * @@module {@index.packageName}
+   * @@namespace google
+   * @@namespace google.cloud
+   * @@namespace google.cloud.{@index.localName}
+   * @@namesapce google.cloud.{@index.localName}.{@index.apiVersion}
    */
 
   'use strict';
@@ -18,8 +21,51 @@
     {@index.apiVersion}: require('./{@index.apiVersion}'),
   };
 
+  /**
+   * The `{@index.packageName}` package has the following named exports:
+   *
+   @join client : index.requireViews
+    * `{@client.clientName}` - Reference to {@@link {@index.apiVersion}.@{client.clientName}}
+   @end
+   * - `{@index.apiVersion}` - This is used for selecting or pinning a
+   *   particular backend service version. It exports:
+   @join client : index.requireViews
+    *     - `` - Reference to {@@link {@index.apiVersion}.@{client.clientName}}
+   @end
+   *
+   * @@module {object} {@index.packageName}
+   * @@alias nodejs-{@index.localName}
+   *
+   * @@example <caption>Install the client library with
+   *   <a href="https://www.npmjs.com/">npm</a>:</caption>
+   * npm install --save {@index.packageName}
+   *
+   * @@example <caption>Import the client library:</caption>
+   * const {@index.localName} = require('{@index.packageName}');
+   *
+   * @@example <caption>Create a client:</caption>
+   * var client = new {@index.localName}.{@index.primaryService.clientName}();
+   */
+
+  /**
+   * @@type {object}
+   @join client : index.requireViews
+    * @@property {constructor} {@client.clientName}
+    *   Reference to {@@link {@index.apiVersion}.{@client.clientName}}
+   @end
+   */
   module.exports = gapic.{@index.apiVersion};
+
+  /**
+   * @@type {object}
+   @join client : index.requireViews
+    * @@property {constructor} {@client.clientName}
+    *   Reference to {@@link {@index.apiVersion}.{@client.clientName}}
+   @end
+   */
   module.exports.{@index.apiVersion} = gapic.{@index.apiVersion};
+
+  // Alias `module.exports` as `module.exports.default`, for future-proofing.
   module.exports.default = Object.assign({}, module.exports);
 
 @end
