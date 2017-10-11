@@ -530,7 +530,11 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public boolean isPrimitive(TypeRef type) {
+  public boolean isPrimitive(TypeModel typeModel) {
+    if (!(typeModel instanceof ProtoTypeRef)) {
+      return typeModel.isPrimitive();
+    }
+    TypeRef type = ((ProtoTypeRef) typeModel).getProtoType();
     if (type.isRepeated()) {
       return false;
     }
@@ -557,7 +561,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public boolean isPrimitive(FieldModel type) {
-    return isPrimitive(type.getProtoTypeRef());
+    return isPrimitive(type.getType());
   }
 
   @Override

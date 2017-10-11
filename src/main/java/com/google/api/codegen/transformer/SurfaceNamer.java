@@ -1561,7 +1561,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** Is this type a primitive, according to target language. */
-  public boolean isPrimitive(TypeRef type) {
+  public boolean isPrimitive(TypeModel type) {
     return type.isPrimitive();
   }
 
