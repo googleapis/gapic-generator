@@ -158,8 +158,8 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
     ImportSectionView importSection =
         importSectionTransformer.generateImportSection(context.getModelTypeTable().getImports());
-    PhpSurfaceNamer testPackageNamer =
-        new PhpSurfaceNamer(namer.getTestPackageName(PhpSurfaceNamer.TestKind.UNIT));
+    SurfaceNamer testPackageNamer =
+        namer.cloneWithPackageName(namer.getTestPackageName(SurfaceNamer.TestKind.UNIT));
     FileHeaderView fileHeader =
         fileHeaderTransformer.generateFileHeader(
             context.getProductConfig(), importSection, testPackageNamer);
@@ -245,8 +245,8 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
     ImportSectionView importSection =
         importSectionTransformer.generateImportSection(context.getModelTypeTable().getImports());
-    PhpSurfaceNamer testPackageNamer =
-        new PhpSurfaceNamer(namer.getTestPackageName(SurfaceNamer.TestKind.UNIT));
+    SurfaceNamer testPackageNamer =
+        namer.cloneWithPackageName(namer.getTestPackageName(SurfaceNamer.TestKind.UNIT));
     FileHeaderView fileHeader =
         fileHeaderTransformer.generateFileHeader(
             context.getProductConfig(), importSection, testPackageNamer);
@@ -274,6 +274,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
       GapicInterfaceContext context) {
     addSmokeTestImports(context.getModelTypeTable());
 
+    SurfaceNamer namer = context.getNamer();
     Method method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
     FlatteningConfig flatteningGroup =
         testCaseTransformer.getSmokeTestFlatteningGroup(
@@ -303,8 +304,8 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
     ImportSectionView importSection =
         importSectionTransformer.generateImportSection(context.getModelTypeTable().getImports());
-    PhpSurfaceNamer testPackageNamer =
-        new PhpSurfaceNamer(context.getNamer().getTestPackageName(SurfaceNamer.TestKind.SYSTEM));
+    SurfaceNamer testPackageNamer =
+        namer.cloneWithPackageName(namer.getTestPackageName(SurfaceNamer.TestKind.SYSTEM));
     FileHeaderView fileHeader =
         fileHeaderTransformer.generateFileHeader(
             context.getProductConfig(), importSection, testPackageNamer);
