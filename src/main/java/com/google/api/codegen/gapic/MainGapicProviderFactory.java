@@ -322,6 +322,7 @@ public class MainGapicProviderFactory
         providers.add(clientConfigProvider);
         providers.add(metadataProvider);
       }
+
       if (generatorConfig.enableTestGenerator()) {
         GapicProvider<? extends Object> testProvider =
             ViewModelGapicProvider.newBuilder()
@@ -359,6 +360,23 @@ public class MainGapicProviderFactory
         providers.add(mainProvider);
         providers.add(clientConfigProvider);
 
+        if (id.equals(PYTHON)) {
+          GapicCodePathMapper pythonTestPathMapper =
+              CommonGapicCodePathMapper.newBuilder()
+                  .setPrefix("test")
+                  .setShouldAppendPackage(true)
+                  .build();
+          GapicProvider<? extends Object> testProvider =
+              ViewModelGapicProvider.newBuilder()
+                  .setModel(model)
+                  .setProductConfig(productConfig)
+                  .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+                  .setModelToViewTransformer(
+                      new PythonGapicSurfaceTestTransformer(pythonTestPathMapper, packageConfig))
+                  .build();
+          providers.add(testProvider);
+        }
+
         GapicProvider<? extends Object> metadataProvider =
             ViewModelGapicProvider.newBuilder()
                 .setModel(model)
@@ -367,22 +385,6 @@ public class MainGapicProviderFactory
                 .setModelToViewTransformer(new PythonPackageMetadataTransformer(packageConfig))
                 .build();
         providers.add(metadataProvider);
-      }
-      if (generatorConfig.enableTestGenerator()) {
-        GapicCodePathMapper pythonTestPathMapper =
-            CommonGapicCodePathMapper.newBuilder()
-                .setPrefix("test")
-                .setShouldAppendPackage(true)
-                .build();
-        GapicProvider<? extends Object> testProvider =
-            ViewModelGapicProvider.newBuilder()
-                .setModel(model)
-                .setProductConfig(productConfig)
-                .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
-                .setModelToViewTransformer(
-                    new PythonGapicSurfaceTestTransformer(pythonTestPathMapper, packageConfig))
-                .build();
-        providers.add(testProvider);
       }
 
     } else if (id.equals(RUBY) || id.equals(RUBY_DOC)) {

@@ -284,7 +284,6 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
     SmokeTestClassView.Builder testClass = SmokeTestClassView.newBuilder();
     // TODO: we need to remove testCase after we switch to use apiMethod for smoke test
     TestCaseView testCase = testCaseTransformer.createSmokeTestCaseView(flattenedMethodContext);
-    // TODO: old; OptionalArrayMethodView apiMethod = createSmokeTestCaseApiMethodView(methodContext);
     OptionalArrayMethodView apiMethod = createSmokeTestCaseApiMethodView(flattenedMethodContext);
 
     testClass.apiSettingsClassName(
