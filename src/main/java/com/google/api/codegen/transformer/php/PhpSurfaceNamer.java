@@ -252,6 +252,6 @@ public class PhpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String quoted(String text) {
-    return "\'" + text + "\'";
+    return '\'' + text + '\'';
   }
 }

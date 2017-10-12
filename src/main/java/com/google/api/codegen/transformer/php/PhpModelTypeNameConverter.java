@@ -262,7 +262,7 @@ public class PhpModelTypeNameConverter implements ModelTypeNameConverter {
         return value.toLowerCase();
       case TYPE_STRING:
       case TYPE_BYTES:
-        return "'" + value + "'";
+        return '\'' + value + '\'';
       default:
         // Types that do not need to be modified (e.g. TYPE_INT32) are handled
         // here
