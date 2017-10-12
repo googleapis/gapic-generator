@@ -7,11 +7,10 @@
 @end
 
 @private header(fileHeader)
-  /*
-   {@comments(fileHeader.copyrightLines)}
-   *
-   {@comments(fileHeader.licenseLines)}
-   */
+  {@lineComments(fileHeader.copyrightLines)}
+  //
+  {@lineComments(fileHeader.licenseLines)}
+
   'use strict';
 @end
 
@@ -22,8 +21,8 @@
         throw new Error("Usage: SMOKE_TEST_PROJECT=<project_id> node #{$0}");
       }
       var projectId = process.env.SMOKE_TEST_PROJECT;
-    @end
 
+    @end
     @switch smokeTest.apiMethod.type.toString
     @case "OptionalArrayMethod"
       # The longrunning operation and paged methods need to access the samples directly because
@@ -57,6 +56,7 @@
         $unhandledCase: {@smokeTest.apiMethod.type.toString}$
     @end
   });
+
 @end
 
 @private smokeTestBody(smokeTest, description, sampleCode)

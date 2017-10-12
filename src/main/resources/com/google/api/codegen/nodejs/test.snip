@@ -2,11 +2,10 @@
 @extends "nodejs/common.snip"
 
 @snippet generate(apiTest)
-  /*
-   {@comments(apiTest.fileHeader.copyrightLines)}
-   *
-   {@comments(apiTest.fileHeader.licenseLines)}
-   */
+  {@lineComments(apiTest.fileHeader.copyrightLines)}
+  //
+  {@lineComments(apiTest.fileHeader.licenseLines)}
+
   'use strict';
 
   {@header(apiTest)}
@@ -43,11 +42,9 @@
       assert.deepStrictEqual(actualRequest, expectedRequest);
       if (error) {
         callback(error);
-      }
-      else if (response) {
+      } else if (response) {
         callback(null, response);
-      }
-      else {
+      } else {
         callback(null);
       }
     };
@@ -143,7 +140,10 @@
       @end
       // Mock Grpc layer
       @if test.hasReturnValue
-        client._innerApiCalls.{@test.clientMethodName} = mockSimpleGrpcMethod(request, expectedResponse);
+        client._innerApiCalls.{@test.clientMethodName} = mockSimpleGrpcMethod(
+          request,
+          expectedResponse
+        );
       @else
         client._innerApiCalls.{@test.clientMethodName} = mockSimpleGrpcMethod(request);
       @end
@@ -328,11 +328,16 @@
     {@commonInit(test, testClass, apiTest)}
 
     // Mock Grpc layer
-    client._innerApiCalls.{@test.clientMethodName} = mockSimpleGrpcMethod(request, null, error);
+    client._innerApiCalls.{@test.clientMethodName} = mockSimpleGrpcMethod(
+      request,
+      null,
+      error
+    );
 
     @if test.hasReturnValue
       client.{@test.clientMethodName}(request, (err, response) => {
         {@assertError()}
+        assert(typeof response === 'undefined');
         done();
       });
     @else
