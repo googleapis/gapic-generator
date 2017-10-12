@@ -15,6 +15,8 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.*;
+import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
+import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.transformer.SchemaTypeNameConverter.BoxingBehavior;
 import com.google.api.codegen.util.TypeAlias;
@@ -30,11 +32,22 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
   private SchemaTypeFormatterImpl typeFormatter;
   private TypeTable typeTable;
   private SchemaTypeNameConverter typeNameConverter;
+  private DiscoGapicNamer discoGapicNamer;
 
-  public SchemaTypeTable(TypeTable typeTable, SchemaTypeNameConverter typeNameConverter) {
+  //  private SchemaTypeTable(TypeTable typeTable, SchemaTypeNameConverter typeNameConverter) {
+  //    this.typeFormatter = new SchemaTypeFormatterImpl(typeNameConverter);
+  //    this.typeTable = typeTable;
+  //    this.typeNameConverter = typeNameConverter;
+  //  }
+
+  public SchemaTypeTable(
+      TypeTable typeTable,
+      SchemaTypeNameConverter typeNameConverter,
+      DiscoGapicNamer discoGapicNamer) {
     this.typeFormatter = new SchemaTypeFormatterImpl(typeNameConverter);
     this.typeTable = typeTable;
     this.typeNameConverter = typeNameConverter;
+    this.discoGapicNamer = discoGapicNamer;
   }
 
   @Override
@@ -85,12 +98,13 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
   /** Creates a new SchemaTypeTable of the same concrete type, but with an empty import set. */
   @Override
   public SchemaTypeTable cloneEmpty() {
-    return new SchemaTypeTable(typeTable.cloneEmpty(), typeNameConverter);
+    return new SchemaTypeTable(typeTable.cloneEmpty(), typeNameConverter, discoGapicNamer);
   }
 
   @Override
   public SchemaTypeTable cloneEmpty(String packageName) {
-    return new SchemaTypeTable(typeTable.cloneEmpty(packageName), typeNameConverter);
+    return new SchemaTypeTable(
+        typeTable.cloneEmpty(packageName), typeNameConverter, discoGapicNamer);
   }
 
   /** Compute the nickname for the given fullName and save it in the import set. */
@@ -150,6 +164,10 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
 
   @Override
   public String getFullNameFor(TypeModel type) {
+    if (type instanceof DiscoveryRequestType) {
+      Method method = ((DiscoveryRequestType) type).parentMethod().getDiscoMethod();
+      return discoGapicNamer.getRequestTypeName(method).getFullName();
+    }
     return getFullNameFor(((DiscoveryField) type).getDiscoveryField());
   }
 

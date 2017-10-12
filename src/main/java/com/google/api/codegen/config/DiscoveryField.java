@@ -429,4 +429,9 @@ public class DiscoveryField implements FieldModel, TypeModel {
     // TODO(andrealin): ???
     return false;
   }
+
+  @Override
+  public OneofConfig getOneOfConfig(String fieldName) {
+    return null;
+  }
 }

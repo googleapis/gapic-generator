@@ -97,7 +97,7 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
         DiscoGapicInterfaceContext.createWithoutInterface(
             document,
             productConfig,
-            createTypeTable(productConfig.getPackageName()),
+            createTypeTable(productConfig.getPackageName(), discoGapicNamer),
             discoGapicNamer,
             JavaFeatureConfig.newBuilder().enableStringFormatFunctions(false).build());
 
@@ -237,9 +237,11 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
     typeTable.getAndSaveNicknameFor("javax.annotation.Generated");
   }
 
-  private SchemaTypeTable createTypeTable(String implicitPackageName) {
+  private SchemaTypeTable createTypeTable(
+      String implicitPackageName, DiscoGapicNamer discoGapicNamer) {
     return new SchemaTypeTable(
         new JavaTypeTable(implicitPackageName, IGNORE_JAVA_LANG_CLASH),
-        new JavaSchemaTypeNameConverter(implicitPackageName, nameFormatter));
+        new JavaSchemaTypeNameConverter(implicitPackageName, nameFormatter),
+        discoGapicNamer);
   }
 }

@@ -247,7 +247,7 @@ public class InitCodeNode {
           getChildSuggestedName(suggestedName, lineType, child),
           getChildFieldConfig(context.fieldConfigMap(), fieldConfig, type, child.key));
       if (type.isMessage()) {
-        child.oneofConfig = OneofConfig.of(type, child.key);
+        child.oneofConfig = type.getOneOfConfig(child.getKey());
       }
     }
 

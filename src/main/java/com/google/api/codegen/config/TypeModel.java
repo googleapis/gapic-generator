@@ -61,4 +61,6 @@ public interface TypeModel {
   boolean isDoubleType();
 
   String getTypeName();
+
+  OneofConfig getOneOfConfig(String fieldName);
 }

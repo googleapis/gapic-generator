@@ -15,9 +15,8 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.ServiceMessages;
-import com.google.api.tools.framework.model.EnumValue;
-import com.google.api.tools.framework.model.Field;
-import com.google.api.tools.framework.model.TypeRef;
+import com.google.api.codegen.util.Name;
+import com.google.api.tools.framework.model.*;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos;
@@ -182,5 +181,22 @@ public class ProtoTypeRef implements TypeModel {
   @Override
   public String getTypeName() {
     return typeRef.getKind().toString();
+  }
+
+  /**
+   * Returns oneof config for the field of a given type, or null if the field is not a part of any
+   * oneofs
+   */
+  public OneofConfig getOneOfConfig(String fieldName) {
+    MessageType message = this.getProtoType().getMessageType();
+    for (Oneof oneof : message.getOneofs()) {
+      for (Field field : oneof.getFields()) {
+        if (field.getSimpleName().equals(fieldName)) {
+          return new AutoValue_OneofConfig(
+              Name.from(oneof.getName()), message, new ProtoField(field));
+        }
+      }
+    }
+    return null;
   }
 }

@@ -15,6 +15,8 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.*;
+import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
+import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypedValue;
@@ -22,6 +24,7 @@ import com.google.api.tools.framework.model.EnumValue;
 
 /** SchemaTypeNameConverter maps Schema instances to TypeName instances. */
 public abstract class SchemaTypeNameConverter implements TypeNameConverter {
+  public abstract DiscoGapicNamer getDiscoGapicNamer();
 
   public enum BoxingBehavior {
     // Box primitive types, e.g. Boolean instead of boolean.
@@ -74,6 +77,10 @@ public abstract class SchemaTypeNameConverter implements TypeNameConverter {
 
   @Override
   public TypeName getTypeName(TypeModel type) {
+    if (type instanceof DiscoveryRequestType) {
+      Method method = ((DiscoveryRequestType) type).parentMethod().getDiscoMethod();
+      return getDiscoGapicNamer().getRequestTypeName(method);
+    }
     return getTypeNameForElementType(((DiscoveryField) type).getDiscoveryField());
   }
 

@@ -15,9 +15,7 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.util.Name;
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.MessageType;
-import com.google.api.tools.framework.model.Oneof;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
@@ -27,24 +25,4 @@ public abstract class OneofConfig {
   public abstract MessageType parentType();
 
   public abstract FieldModel field();
-
-  /**
-   * Returns oneof config for the field of a given type, or null if the field is not a part of any
-   * oneofs
-   */
-  public static OneofConfig of(TypeModel typeModel, String fieldName) {
-    if (!typeModel.isMessage()) {
-      return null;
-    }
-    MessageType message = ((ProtoTypeRef) typeModel).getProtoType().getMessageType();
-    for (Oneof oneof : message.getOneofs()) {
-      for (Field field : oneof.getFields()) {
-        if (field.getSimpleName().equals(fieldName)) {
-          return new AutoValue_OneofConfig(
-              Name.from(oneof.getName()), message, new ProtoField(field));
-        }
-      }
-    }
-    return null;
-  }
 }

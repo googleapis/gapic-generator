@@ -14,8 +14,6 @@
  */
 package com.google.api.codegen.transformer;
 
-import static com.google.api.codegen.config.ApiSource.PROTO;
-
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.*;
 import com.google.api.codegen.metacode.InitCodeContext;
@@ -570,27 +568,10 @@ public class StaticLangApiMethodTransformer {
     SurfaceNamer namer = context.getNamer();
     Iterable<FieldConfig> fieldConfigs =
         context.getFlatteningConfig().getFlattenedFieldConfigs().values();
-
-    // TODO(andrealin): refactor InitCodeView/Transformer to be API source agsnostic.
-    InitCodeView initCode = null;
-    switch (context.getApiSource()) {
-      case DISCOVERY:
-        DiscoGapicMethodContext discoGapicMethodContext = (DiscoGapicMethodContext) context;
-        initCode = initCodeTransformer.generateInitCode(discoGapicMethodContext, null);
-        break;
-      case PROTO:
-        GapicMethodContext gapicMethodContext = (GapicMethodContext) context;
-        initCode =
-            initCodeTransformer.generateInitCode(
-                gapicMethodContext.cloneWithEmptyTypeTable(),
-                createInitCodeContext(
-                    gapicMethodContext, fieldConfigs, InitCodeOutputType.FieldList));
-        break;
-      default:
-        throw new IllegalArgumentException("Unhandled ApiSource type.");
-    }
-
-    methodViewBuilder.initCode(initCode);
+    methodViewBuilder.initCode(
+        initCodeTransformer.generateInitCode(
+            context.cloneWithEmptyTypeTable(),
+            createInitCodeContext(context, fieldConfigs, InitCodeOutputType.FieldList)));
     methodViewBuilder.doc(
         ApiMethodDocView.newBuilder()
             .mainDocLines(namer.getDocLines(method, context.getMethodConfig()))
@@ -648,25 +629,13 @@ public class StaticLangApiMethodTransformer {
             .build());
     // TODO(andrealin): refactor InitCodeView/Transformer to be API source agsnostic.
     InitCodeView initCode = null;
-    switch (context.getApiSource()) {
-      case DISCOVERY:
-        DiscoGapicMethodContext discoGapicMethodContext = (DiscoGapicMethodContext) context;
-        initCode = initCodeTransformer.generateInitCode(discoGapicMethodContext, null);
-        break;
-      case PROTO:
-        GapicMethodContext gapicMethodContext = (GapicMethodContext) context;
-        initCode =
-            initCodeTransformer.generateInitCode(
-                context.cloneWithEmptyTypeTable(),
-                createInitCodeContext(
-                    gapicMethodContext,
-                    context.getMethodConfig().getRequiredFieldConfigs(),
-                    InitCodeOutputType.SingleObject));
-        break;
-      default:
-        throw new IllegalArgumentException("Unhandled ApiSource type.");
-    }
-
+    initCode =
+        initCodeTransformer.generateInitCode(
+            context.cloneWithEmptyTypeTable(),
+            createInitCodeContext(
+                context,
+                context.getMethodConfig().getRequiredFieldConfigs(),
+                InitCodeOutputType.SingleObject));
     methodViewBuilder.initCode(initCode);
 
     methodViewBuilder.methodParams(new ArrayList<RequestObjectParamView>());
@@ -695,19 +664,19 @@ public class StaticLangApiMethodTransformer {
             .throwsDocLines(new ArrayList<String>())
             .build());
     // TODO(andrealin): implement initCode for Discovery and remove the ApiSource check and casting.
-    if (context.getApiSource().equals(PROTO)) {
-      methodViewBuilder.initCode(
-          initCodeTransformer.generateInitCode(
-              (GapicMethodContext) context.cloneWithEmptyTypeTable(),
-              createInitCodeContext(
-                  (GapicMethodContext) context,
-                  context.getMethodConfig().getRequiredFieldConfigs(),
-                  InitCodeOutputType.SingleObject)));
-    } else {
-      methodViewBuilder.initCode(
-          initCodeTransformer.generateInitCode(
-              ((DiscoGapicMethodContext) context).cloneWithEmptyTypeTable(), null));
-    }
+    //    if (context.getApiSource().equals(PROTO)) {
+    methodViewBuilder.initCode(
+        initCodeTransformer.generateInitCode(
+            context.cloneWithEmptyTypeTable(),
+            createInitCodeContext(
+                context,
+                context.getMethodConfig().getRequiredFieldConfigs(),
+                InitCodeOutputType.SingleObject)));
+    //    } else {
+    //      methodViewBuilder.initCode(
+    //          initCodeTransformer.generateInitCode(
+    //              ((DiscoGapicMethodContext) context).cloneWithEmptyTypeTable(), null));
+    //    }
 
     methodViewBuilder.methodParams(new ArrayList<RequestObjectParamView>());
     methodViewBuilder.requestObjectParams(new ArrayList<RequestObjectParamView>());

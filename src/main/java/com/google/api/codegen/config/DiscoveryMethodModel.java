@@ -38,9 +38,9 @@ public final class DiscoveryMethodModel implements MethodModel {
   private ImmutableSet<String> IDEMPOTENT_HTTP_METHODS =
       ImmutableSet.of("GET", "HEAD", "PUT", "DELETE");
   private final Method method;
-  private DiscoveryField inputType;
-  private Iterable<DiscoveryField> inputFields;
-  private Iterable<DiscoveryField> outputFields;
+  private DiscoveryRequestType inputType;
+  private List<DiscoveryField> inputFields;
+  private List<DiscoveryField> outputFields;
   private List<DiscoveryField> resourceNameInputFields;
   private final DiscoGapicNamer discoGapicNamer;
 
@@ -49,6 +49,7 @@ public final class DiscoveryMethodModel implements MethodModel {
     Preconditions.checkNotNull(method);
     this.method = method;
     this.discoGapicNamer = discoGapicNamer;
+    this.inputType = DiscoveryRequestType.create(this);
   }
 
   public Method getDiscoMethod() {
@@ -251,7 +252,7 @@ public final class DiscoveryMethodModel implements MethodModel {
   }
 
   @Override
-  public Iterable<DiscoveryField> getInputFields() {
+  public List<DiscoveryField> getInputFields() {
     if (inputFields != null) {
       return inputFields;
     }
@@ -272,7 +273,7 @@ public final class DiscoveryMethodModel implements MethodModel {
    * this method has no response schema.
    */
   @Override
-  public Iterable<DiscoveryField> getOutputFields() {
+  public List<DiscoveryField> getOutputFields() {
     if (outputFields != null) {
       return outputFields;
     }
@@ -314,7 +315,7 @@ public final class DiscoveryMethodModel implements MethodModel {
 
   @Override
   public TypeModel getInputType() {
-    return null;
+    return inputType;
   }
 
   @Override

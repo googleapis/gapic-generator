@@ -33,14 +33,7 @@ import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
 import com.google.api.codegen.discovery.Document;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
-import com.google.api.codegen.transformer.DiscoGapicInterfaceContext;
-import com.google.api.codegen.transformer.FileHeaderTransformer;
-import com.google.api.codegen.transformer.ImportTypeTable;
-import com.google.api.codegen.transformer.MethodContext;
-import com.google.api.codegen.transformer.SchemaTypeTable;
-import com.google.api.codegen.transformer.StandardImportSectionTransformer;
-import com.google.api.codegen.transformer.StaticLangResourceObjectTransformer;
-import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.transformer.*;
 import com.google.api.codegen.transformer.java.JavaSchemaTypeNameConverter;
 import com.google.api.codegen.transformer.java.JavaSurfaceNamer;
 import com.google.api.codegen.util.Name;
@@ -320,9 +313,13 @@ public class JavaDiscoGapicRequestToViewTransformer implements DocumentToViewTra
   }
 
   private SchemaTypeTable createTypeTable(String implicitPackageName) {
+    JavaTypeTable typeTable = new JavaTypeTable(implicitPackageName, IGNORE_JAVA_LANG_CLASH);
+    SchemaTypeNameConverter typeNameConverter =
+        new JavaSchemaTypeNameConverter(implicitPackageName, nameFormatter);
     return new SchemaTypeTable(
-        new JavaTypeTable(implicitPackageName, IGNORE_JAVA_LANG_CLASH),
-        new JavaSchemaTypeNameConverter(implicitPackageName, nameFormatter));
+        typeTable,
+        typeNameConverter,
+        new DiscoGapicNamer(new JavaSurfaceNamer(implicitPackageName, implicitPackageName)));
   }
 
   public enum EscapeName {
