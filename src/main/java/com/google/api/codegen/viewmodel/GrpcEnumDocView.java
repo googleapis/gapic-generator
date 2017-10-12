@@ -25,6 +25,8 @@ public abstract class GrpcEnumDocView implements GrpcElementDocView {
 
   public abstract List<GrpcEnumValueDocView> values();
 
+  public abstract String packageName();
+
   public static Builder newBuilder() {
     return new AutoValue_GrpcEnumDocView.Builder();
   }
@@ -40,6 +42,8 @@ public abstract class GrpcEnumDocView implements GrpcElementDocView {
     public abstract Builder lines(List<String> val);
 
     public abstract Builder values(List<GrpcEnumValueDocView> val);
+
+    public abstract Builder packageName(String val);
 
     public abstract GrpcEnumDocView build();
   }
