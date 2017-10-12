@@ -56,7 +56,7 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
     List<ImportFileView> none = ImmutableList.of();
     ImportSectionView.Builder importSection = ImportSectionView.newBuilder();
     importSection.standardImports(generateTestStandardImports());
-    importSection.externalImports(generateTestExternalImports());
+    importSection.externalImports(generateTestExternalImports(context));
     importSection.appImports(generateTestAppImports(context));
     importSection.serviceImports(none);
     return importSection.build();
@@ -115,8 +115,13 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
     return ImmutableList.of(createImport("minitest/autorun"), createImport("minitest/spec"));
   }
 
-  private List<ImportFileView> generateTestExternalImports() {
-    return ImmutableList.of(createImport("google/gax"));
+  private List<ImportFileView> generateTestExternalImports(GapicInterfaceContext context) {
+    ImmutableList.Builder<ImportFileView> imports = ImmutableList.builder();
+    if (RubyUtil.isLongrunning(context.getNamer().getPackageName())) {
+      imports.add(createImport("googleauth"));
+    }
+    imports.add(createImport("google/gax"));
+    return imports.build();
   }
 
   private List<ImportFileView> generateTestAppImports(GapicInterfaceContext context) {

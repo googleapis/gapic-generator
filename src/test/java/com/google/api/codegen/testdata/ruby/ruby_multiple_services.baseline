@@ -495,6 +495,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency "google-gax", "~> 0.8.0"
   gem.add_dependency "google-some-other-package-v1", "~> 0.2.1"
   gem.add_dependency "googleapis-common-protos", "~> 1.3.1"
+  gem.add_dependency "googleauth", "~> 0.5.1"
 
   gem.add_development_dependency "minitest", "~> 5.10"
   gem.add_development_dependency "rubocop", "<= 0.35.1"
@@ -564,10 +565,10 @@ module Google
       #   The major version of the service to be used. By default :v1
       #   is used.
       # @overload
-      #   @param credentials [Google::Gax::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
+      #   @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
       #     Provides the means for authenticating requests made by the client. This parameter can
       #     be many types.
-      #     A `Google::Gax::Credentials` uses a the properties of its represented keyfile for
+      #     A `Google::Auth::Credentials` uses a the properties of its represented keyfile for
       #     authenticating requests made by this client.
       #     A `String` will be treated as the path to the keyfile to be used for the construction of
       #     credentials for this client.
@@ -609,10 +610,10 @@ module Google
       #   The major version of the service to be used. By default :v1
       #   is used.
       # @overload
-      #   @param credentials [Google::Gax::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
+      #   @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
       #     Provides the means for authenticating requests made by the client. This parameter can
       #     be many types.
-      #     A `Google::Gax::Credentials` uses a the properties of its represented keyfile for
+      #     A `Google::Auth::Credentials` uses a the properties of its represented keyfile for
       #     authenticating requests made by this client.
       #     A `String` will be treated as the path to the keyfile to be used for the construction of
       #     credentials for this client.
@@ -665,15 +666,16 @@ end
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require "google/gax"
+require "googleauth"
 
 module Google
   module Example
-    class Credentials < Google::Gax::Credentials
+    class Credentials < Google::Auth::Credentials
       SCOPE = [
       ].freeze
       PATH_ENV_VARS = %w(MULTIPLE_SERVICES_KEYFILE, GOOGLE_CLOUD_KEYFILE, GCLOUD_KEYFILE)
       JSON_ENV_VARS = %w(MULTIPLE_SERVICES_KEYFILE_JSON, GOOGLE_CLOUD_KEYFILE_JSON, GCLOUD_KEYFILE_JSON)
+      DEFAULT_PATHS = ["~/.config/gcloud/application_default_credentials.json"]
     end
   end
 end
@@ -729,10 +731,10 @@ module Google
 
       module Incrementer
         ##
-        # @param credentials [Google::Gax::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
+        # @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
         #   Provides the means for authenticating requests made by the client. This parameter can
         #   be many types.
-        #   A `Google::Gax::Credentials` uses a the properties of its represented keyfile for
+        #   A `Google::Auth::Credentials` uses a the properties of its represented keyfile for
         #   authenticating requests made by this client.
         #   A `String` will be treated as the path to the keyfile to be used for the construction of
         #   credentials for this client.
@@ -784,10 +786,10 @@ module Google
 
       module Decrementer
         ##
-        # @param credentials [Google::Gax::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
+        # @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
         #   Provides the means for authenticating requests made by the client. This parameter can
         #   be many types.
-        #   A `Google::Gax::Credentials` uses a the properties of its represented keyfile for
+        #   A `Google::Auth::Credentials` uses a the properties of its represented keyfile for
         #   authenticating requests made by this client.
         #   A `String` will be treated as the path to the keyfile to be used for the construction of
         #   credentials for this client.
@@ -894,10 +896,10 @@ module Google
         ALL_SCOPES = [
         ].freeze
 
-        # @param credentials [Google::Gax::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
+        # @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
         #   Provides the means for authenticating requests made by the client. This parameter can
         #   be many types.
-        #   A `Google::Gax::Credentials` uses a the properties of its represented keyfile for
+        #   A `Google::Auth::Credentials` uses a the properties of its represented keyfile for
         #   authenticating requests made by this client.
         #   A `String` will be treated as the path to the keyfile to be used for the construction of
         #   credentials for this client.
@@ -961,7 +963,7 @@ module Google
           if credentials.is_a?(Proc)
             updater_proc = credentials
           end
-          if credentials.is_a?(Google::Gax::Credentials)
+          if credentials.is_a?(Google::Auth::Credentials)
             updater_proc = credentials.updater_proc
           end
 
@@ -1095,10 +1097,10 @@ module Google
         ALL_SCOPES = [
         ].freeze
 
-        # @param credentials [Google::Gax::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
+        # @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
         #   Provides the means for authenticating requests made by the client. This parameter can
         #   be many types.
-        #   A `Google::Gax::Credentials` uses a the properties of its represented keyfile for
+        #   A `Google::Auth::Credentials` uses a the properties of its represented keyfile for
         #   authenticating requests made by this client.
         #   A `String` will be treated as the path to the keyfile to be used for the construction of
         #   credentials for this client.
@@ -1162,7 +1164,7 @@ module Google
           if credentials.is_a?(Proc)
             updater_proc = credentials
           end
-          if credentials.is_a?(Google::Gax::Credentials)
+          if credentials.is_a?(Google::Auth::Credentials)
             updater_proc = credentials.updater_proc
           end
 
