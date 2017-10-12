@@ -239,7 +239,7 @@
             if (self::$pathTemplateMap == null) {
                 self::$pathTemplateMap = [
                     @join function : xapiClass.pathTemplateGetterFunctions
-                        "{@function.entityName}" => self::{@function.name}(),
+                        '{@function.entityName}' => self::{@function.name}(),
                     @end
                 ];
             }
@@ -318,8 +318,8 @@
     private static function getGapicVersion()
     {
         if (!self::$gapicVersionLoaded) {
-            if (file_exists(__DIR__ . "/../VERSION")) {
-              self::$gapicVersion = trim(file_get_contents(__DIR__ . "/../VERSION"));
+            if (file_exists(__DIR__ . '/../VERSION')) {
+              self::$gapicVersion = trim(file_get_contents(__DIR__ . '/../VERSION'));
             } elseif (class_exists(Version::class)) {
               self::$gapicVersion = Version::VERSION;
             }
