@@ -23,7 +23,10 @@ public class JSCommentReformatter implements CommentReformatter {
 
   private CommentTransformer transformer =
       CommentTransformer.newBuilder()
-          .transform(LinkPattern.PROTO.toFormat("{@link $TITLE}"))
+          // TODO(landrito): Fix the linking semantics to follow the packageName.typeName
+          // links like the getLinkedElementName method below. We will probably need to pass this
+          // class something that can lookup the linked proto and converts that to the correct link.
+          .transform(LinkPattern.PROTO.toFormat("$TITLE"))
           .transform(
               LinkPattern.RELATIVE
                   .withUrlPrefix(CommentTransformer.CLOUD_URL_PREFIX)

@@ -184,6 +184,6 @@ public class NodeJSModelTypeNameConverter extends ModelTypeNameConverter {
 
   @Override
   public TypedValue getEnumValue(TypeRef type, EnumValue value) {
-    return TypedValue.create(getTypeName(type), "%s." + value.getSimpleName());
+    return TypedValue.create(getTypeName(type), String.format("'%s'", value.getSimpleName()));
   }
 }

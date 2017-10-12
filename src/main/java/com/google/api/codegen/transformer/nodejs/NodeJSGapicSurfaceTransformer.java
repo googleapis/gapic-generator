@@ -168,6 +168,8 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.packageVersion(
         packageConfig.generatedPackageVersionBound(TargetLanguage.NODEJS).lower());
 
+    xapiClass.apiVersion(packageConfig.apiVersion());
+
     xapiClass.packageHasMultipleServices(hasMultipleServices);
     xapiClass.packageServiceName(namer.getPackageServiceName(context.getInterfaceModel()));
 
@@ -181,16 +183,16 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
   private List<String> generateValidDescriptorsNames(GapicInterfaceContext context) {
     ImmutableList.Builder<String> validDescriptorsNames = ImmutableList.builder();
     if (context.getInterfaceConfig().hasPageStreamingMethods()) {
-      validDescriptorsNames.add("PAGE_DESCRIPTORS");
+      validDescriptorsNames.add("this._descriptors.page");
     }
     if (context.getInterfaceConfig().hasBatchingMethods()) {
-      validDescriptorsNames.add("bundleDescriptors");
+      validDescriptorsNames.add("this._descriptors.batching");
     }
     if (context.getInterfaceConfig().hasGrpcStreamingMethods()) {
-      validDescriptorsNames.add("STREAM_DESCRIPTORS");
+      validDescriptorsNames.add("this._descriptors.stream");
     }
     if (context.getInterfaceConfig().hasLongRunningOperations()) {
-      validDescriptorsNames.add("self.longrunningDescriptors");
+      validDescriptorsNames.add("this._descriptors.longrunning");
     }
     return validDescriptorsNames.build();
   }
@@ -264,6 +266,9 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private List<ViewModel> generateIndexViews(
       Iterable<? extends InterfaceModel> apiInterfaces, GapicProductConfig productConfig) {
+    NodeJSPackageMetadataNamer packageMetadataNamer =
+        new NodeJSPackageMetadataNamer(
+            productConfig.getPackageName(), productConfig.getDomainLayerLocation());
     ArrayList<ViewModel> indexViews = new ArrayList<>();
     NodeJSSurfaceNamer namer =
         new NodeJSSurfaceNamer(productConfig.getPackageName(), NodeJSUtils.isGcloud(productConfig));
@@ -279,8 +284,8 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
       VersionIndexRequireView require =
           VersionIndexRequireView.newBuilder()
               .clientName(
-                  namer.getApiWrapperVariableName(productConfig.getInterfaceConfig(apiInterface)))
-              .serviceName(namer.getPackageServiceName(context.getInterfaceModel()))
+                  namer.getApiWrapperClassName(productConfig.getInterfaceConfig(apiInterface)))
+              .serviceName(namer.getPackageServiceName(apiInterface))
               .localName(localName)
               .doc(
                   serviceTransformer.generateServiceDoc(
@@ -301,7 +306,8 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
             .toolkitVersion(GeneratorVersionProvider.getGeneratorVersion())
             .fileHeader(
                 fileHeaderTransformer.generateFileHeader(
-                    productConfig, ImportSectionView.newBuilder().build(), namer));
+                    productConfig, ImportSectionView.newBuilder().build(), namer))
+            .packageName(packageMetadataNamer.getMetadataIdentifier());
     if (hasVersion) {
       indexViewbuilder.apiVersion(version);
     }
@@ -323,7 +329,9 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
               .toolkitVersion(GeneratorVersionProvider.getGeneratorVersion())
               .fileHeader(
                   fileHeaderTransformer.generateFileHeader(
-                      productConfig, ImportSectionView.newBuilder().build(), namer));
+                      productConfig, ImportSectionView.newBuilder().build(), namer))
+              .packageName(packageMetadataNamer.getMetadataIdentifier())
+              .namespace(packageMetadataNamer.getServiceName());
       indexViews.add(versionIndexViewBuilder.build());
     }
     return indexViews;

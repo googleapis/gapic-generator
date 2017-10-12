@@ -60,7 +60,7 @@ public class JavaNameFormatter implements NameFormatter {
   }
 
   @Override
-  public String varReference(Name name) {
+  public String localVarReference(Name name) {
     return localVarName(name);
   }
 
