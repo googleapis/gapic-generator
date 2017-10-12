@@ -29,7 +29,6 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.tools.framework.model.Oneof;
-import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -220,11 +219,6 @@ public class DiscoveryField implements FieldModel, TypeModel {
   @Override
   public String toString() {
     return String.format("Discovery FieldModel (%s): {%s}", getApiSource(), schema.toString());
-  }
-
-  @Override
-  public TypeRef getProtoTypeRef() {
-    throw new IllegalArgumentException("Discovery model types have no TypeRefs.");
   }
 
   @Override
@@ -426,7 +420,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
   }
 
   @Override
-  public TypeModel getType() {
+  public DiscoveryField getType() {
     return this;
   }
 

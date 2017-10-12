@@ -286,7 +286,8 @@ public class PythonSurfaceNamer extends SurfaceNamer {
     }
 
     if (methodConfig.isPageStreaming()) {
-      TypeRef resourceType = methodConfig.getPageStreaming().getResourcesField().getProtoTypeRef();
+      ProtoField fieldModel = (ProtoField) methodConfig.getPageStreaming().getResourcesField();
+      TypeRef resourceType = fieldModel.getType().getProtoType();
       return ImmutableList.of(
           "A :class:`~google.gax.PageIterator` instance. By default, this",
           "is an iterable of "

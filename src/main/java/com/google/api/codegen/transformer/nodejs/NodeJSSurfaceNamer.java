@@ -346,7 +346,9 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
       } else {
         // Converting to lowercase because "String" is capitalized in NodeJSModelTypeNameConverter.
         returnTypeDoc +=
-            getParamTypeNoCardinality(typeTable, resourcesType.getProtoTypeRef()).toLowerCase();
+            getParamTypeNoCardinality(
+                    typeTable, ((ProtoTypeRef) resourcesType.getType()).getProtoType())
+                .toLowerCase();
       }
     } else if (methodConfig.isLongRunningOperation()) {
       returnTypeDoc =

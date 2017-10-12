@@ -27,7 +27,6 @@ import com.google.api.codegen.util.TypeName;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Oneof;
-import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -105,8 +104,7 @@ public class ProtoField implements FieldModel {
 
   @Override
   public boolean isRequired() {
-    // TODO(andrealin): implement.
-    return false;
+    return protoField.getType().getCardinality().equals(Cardinality.REQUIRED);
   }
 
   @Override
@@ -153,11 +151,6 @@ public class ProtoField implements FieldModel {
   @Override
   public String toString() {
     return String.format("Protobuf FieldModel (%s): {%s}", getApiSource(), protoField.toString());
-  }
-
-  @Override
-  public TypeRef getProtoTypeRef() {
-    return protoField.getType();
   }
 
   @Override
@@ -231,7 +224,7 @@ public class ProtoField implements FieldModel {
   }
 
   @Override
-  public TypeModel getType() {
+  public ProtoTypeRef getType() {
     return protoTypeRef;
   }
 }

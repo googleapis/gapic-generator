@@ -20,7 +20,6 @@ import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.tools.framework.model.Oneof;
-import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -99,11 +98,6 @@ public interface FieldModel {
   String getScopedDocumentation();
 
   // Functions that are specific to the source type.
-
-  /* @return the TypeRef of the underlying protobuf Field, if it exists. */
-  @Deprecated
-  // TODO(andrealin): remove uses of this method.
-  TypeRef getProtoTypeRef();
 
   /* @return the type of this object, formatted as a String. */
   String getKind();

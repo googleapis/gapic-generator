@@ -851,7 +851,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     // TODO(andrealin): Remove the switch statement and getProtoTypeRef().
     switch (type.getApiSource()) {
       case PROTO:
-        return getParamTypeName(typeTable, type.getProtoTypeRef());
+        return getParamTypeName(typeTable, ((ProtoField) type).getType().getProtoType());
       default:
         return getNotImplementedString("SurfaceNamer.getParamTypeName");
     }
@@ -1337,7 +1337,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getTypeNameDoc(ImportTypeTable typeTable, FieldModel type) {
     switch (type.getApiSource()) {
       case PROTO:
-        return getTypeNameDoc(typeTable, type.getProtoTypeRef());
+        return getTypeNameDoc(typeTable, ((ProtoField) type).getType().getProtoType());
       default:
         return getNotImplementedString("SurfaceNamer.getTypeNameDoc");
     }
