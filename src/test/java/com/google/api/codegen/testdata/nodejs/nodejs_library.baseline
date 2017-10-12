@@ -273,6 +273,8 @@ const merge = require('lodash.merge');
 const path = require('path');
 const protobuf = require('protobufjs');
 
+const VERSION = require('../../package.json').version;
+
 /**
  * This API represents a simple digital library.  It lets you manage Shelf
  * resources and Book resources in the library. It defines the following
@@ -343,7 +345,7 @@ class LibraryServiceClient {
       `gl-node/${process.version.node}`,
       `grpc/${gaxGrpc.grpcVersion}`,
       `gax/${gax.version}`,
-      `gapic/${this.version}`,
+      `gapic/${VERSION}`,
     ];
     if (opts.libName && opts.libVersion) {
       clientHeader.push(`${opts.libName}/${opts.libVersion}`);

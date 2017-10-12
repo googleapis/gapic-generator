@@ -11,6 +11,12 @@
 
   {@importSection(xapi.fileHeader.importSection)}
 
+  @if xapi.fileHeader.hasVersion
+    const VERSION = require('../../package.json').version;
+  @else
+    const VERSION = require('../package.json').version;
+  @end
+
   /**
    @if xapi.doc.lines
      {@comments(xapi.doc.lines)}
@@ -70,7 +76,7 @@
         `gl-node/${process.version.node}`,
         `grpc/${gaxGrpc.grpcVersion}`,
         `gax/${gax.version}`,
-        `gapic/${this.version}`,
+        `gapic/${VERSION}`,
       ];
       if (opts.libName && opts.libVersion) {
         clientHeader.push(`${opts.libName}/${opts.libVersion}`);
