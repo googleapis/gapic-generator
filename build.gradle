@@ -44,12 +44,12 @@ apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'signing'
 apply plugin: 'net.ltgt.apt'
 
-sourceCompatibility = 1.7
+sourceCompatibility = 1.8
 
 group = 'com.google.api'
 project.version = file('version.txt').text.trim()
 
-def protoVersion = '3.2.0'
+def protoVersion = '3.4.0'
 
 // Dependencies
 // ------------
@@ -121,6 +121,15 @@ task discoJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) 
   manifest {
     attributes 'Main-Class': 'com.google.api.codegen.DiscoveryFragmentGeneratorTool'
   }
+  from sourceSets.main.output
+  configurations = [ project.configurations.runtime ]
+  exclude 'META-INF/*.SF'
+  exclude 'META-INF/*.DSA'
+  exclude 'META-INF/*.RSA'
+}
+
+task fatJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+  archiveName = "gapic.jar"
   from sourceSets.main.output
   configurations = [ project.configurations.runtime ]
   exclude 'META-INF/*.SF'

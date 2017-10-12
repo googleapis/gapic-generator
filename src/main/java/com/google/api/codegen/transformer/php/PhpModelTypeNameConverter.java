@@ -24,7 +24,10 @@ import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.tools.framework.model.EnumValue;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.ProtoElement;
+import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.base.CharMatcher;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
@@ -32,9 +35,6 @@ public class PhpModelTypeNameConverter extends ModelTypeNameConverter {
 
   /** The maximum depth of nested messages supported by PHP type name determination. */
   private static final int MAX_NESTED_DEPTH = 20;
-
-  /** The option number for the proto option specifying the PHP namespace. */
-  private static final int PHP_NAMESPACE_OPTION_NUMBER = 41;
 
   /** A map from primitive types in proto to PHP counterparts. */
   private static final ImmutableMap<Type, String> PRIMITIVE_TYPE_MAP =
@@ -194,14 +194,27 @@ public class PhpModelTypeNameConverter extends ModelTypeNameConverter {
       return TYPE_NAME_MAP.get(fullName);
     }
     String[] components = fullName.split("\\.");
+    String shortName = components[components.length - 1];
+
     StringBuilder builder = new StringBuilder();
-    for (int index = 0; index < components.length - 1; index++) {
-      builder
-          .append('\\')
-          .append(components[index].substring(0, 1).toUpperCase())
-          .append(components[index].substring(1));
+
+    ProtoElement parentElem = elem.getParent();
+    if (parentElem != null && parentElem instanceof ProtoFile) {
+      ProtoFile protoFile = (ProtoFile) parentElem;
+      String namespace = protoFile.getProto().getOptions().getPhpNamespace();
+      if (Strings.isNullOrEmpty(namespace)) {
+        for (int index = 0; index < components.length - 1; index++) {
+          builder
+              .append('\\')
+              .append(components[index].substring(0, 1).toUpperCase())
+              .append(components[index].substring(1));
+        }
+      } else {
+        builder.append('\\').append(CharMatcher.is('\\').trimFrom(namespace));
+      }
     }
-    builder.append('\\').append(components[components.length - 1]);
+
+    builder.append('\\').append(shortName);
     return builder.toString();
   }
 

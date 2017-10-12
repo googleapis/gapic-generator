@@ -42,6 +42,8 @@ import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.ServiceTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.NamePath;
+import com.google.api.codegen.util.VersionMatcher;
 import com.google.api.codegen.util.py.PythonTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.BatchingDescriptorView;
@@ -63,7 +65,6 @@ import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoContainerElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.List;
@@ -184,7 +185,6 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.templateFileName(XAPI_TEMPLATE_FILENAME);
     xapiClass.outputPath(namer.getSourceFilePath(subPath, name));
 
-    xapiClass.fileHeader(fileHeaderTransformer.generateFileHeader(context));
     xapiClass.protoFilename(context.getInterface().getFile().getSimpleName());
     xapiClass.servicePhraseName(namer.getServicePhraseName(context.getInterfaceModel()));
 
@@ -228,6 +228,7 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.toolkitVersion(GeneratorVersionProvider.getGeneratorVersion());
     xapiClass.gapicPackageName(
         namer.getGapicPackageName(packageConfig.packageName(TargetLanguage.PYTHON)));
+    xapiClass.fileHeader(fileHeaderTransformer.generateFileHeader(context));
 
     return xapiClass.build();
   }
@@ -281,6 +282,7 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
         messageView.lines(namer.getDocLines(message));
         messageView.properties(ImmutableList.<ParamDocView>of());
         messageView.elementDocs(elementDocs);
+        messageView.packageName(message.getFile().getFullName());
         elements.add(messageView.build());
       }
     }
@@ -396,11 +398,15 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private String topLevelEntryPointFileName(SurfaceNamer namer) {
-    String topLevelPath = namer.getTopLevelNamespace().replace(".", File.separator);
-    if (!Strings.isNullOrEmpty(topLevelPath)) {
-      topLevelPath += File.separator;
+    NamePath namePath = NamePath.dotted(namer.getVersionedDirectoryNamespace());
+    String name = namePath.getHead();
+    int lastUnderscoreIndex = name.lastIndexOf("_");
+    if (lastUnderscoreIndex > -1
+        && VersionMatcher.isVersion(name.substring(lastUnderscoreIndex + 1))) {
+      name = name.substring(0, lastUnderscoreIndex);
     }
-    return String.format("%s%s.py", topLevelPath, packageConfig.shortName().toLowerCase());
+    String topLevelPath = namePath.withHead(name).toSlashed();
+    return String.format("%s.py", topLevelPath);
   }
 
   private List<VersionIndexRequireView> topLevelRequireViews(

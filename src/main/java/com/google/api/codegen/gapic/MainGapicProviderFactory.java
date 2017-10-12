@@ -14,14 +14,6 @@
  */
 package com.google.api.codegen.gapic;
 
-import static com.google.api.codegen.config.LanguageStrings.CSHARP;
-import static com.google.api.codegen.config.LanguageStrings.GO;
-import static com.google.api.codegen.config.LanguageStrings.JAVA;
-import static com.google.api.codegen.config.LanguageStrings.NODEJS;
-import static com.google.api.codegen.config.LanguageStrings.PHP;
-import static com.google.api.codegen.config.LanguageStrings.PYTHON;
-import static com.google.api.codegen.config.LanguageStrings.RUBY;
-
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.clientconfig.ClientConfigGapicContext;
@@ -74,8 +66,14 @@ public class MainGapicProviderFactory
     implements GapicProviderFactory<GapicProvider<? extends Object>> {
 
   public static final String CLIENT_CONFIG = "client_config";
+  public static final String CSHARP = "csharp";
+  public static final String GO = "go";
+  public static final String JAVA = "java";
+  public static final String NODEJS = "nodejs";
   public static final String NODEJS_DOC = "nodejs_doc";
-  public static final String PYTHON_DOC = "python_doc";
+  public static final String PHP = "php";
+  public static final String PYTHON = "py";
+  public static final String RUBY = "ruby";
   public static final String RUBY_DOC = "ruby_doc";
 
   private static final ImmutableList<String> JAVA_SAMPLE_APP_STATIC_FILES =
@@ -122,7 +120,8 @@ public class MainGapicProviderFactory
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CSharpRenderingUtil()))
-                .setModelToViewTransformer(new CSharpGapicClientTransformer(pathMapper))
+                .setModelToViewTransformer(
+                    new CSharpGapicClientTransformer(pathMapper, packageConfig))
                 .build();
         providers.add(mainProvider);
 
@@ -335,7 +334,7 @@ public class MainGapicProviderFactory
         providers.add(testProvider);
       }
 
-    } else if (id.equals(PYTHON) || id.equals(PYTHON_DOC)) {
+    } else if (id.equals(PYTHON)) {
       if (generatorConfig.enableSurfaceGenerator()) {
         GapicCodePathMapper pythonPathMapper =
             CommonGapicCodePathMapper.newBuilder().setShouldAppendPackage(true).build();
@@ -433,7 +432,8 @@ public class MainGapicProviderFactory
                   .setModel(model)
                   .setProductConfig(productConfig)
                   .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
-                  .setModelToViewTransformer(new RubyGapicSurfaceDocTransformer(rubyPathMapper))
+                  .setModelToViewTransformer(
+                      new RubyGapicSurfaceDocTransformer(rubyPathMapper, packageConfig))
                   .build();
           providers.add(messageProvider);
         }

@@ -531,8 +531,7 @@ public class JavaSurfaceTransformer {
 
     String name =
         namer.getApiRpcStubClassName(interfaceConfig, productConfig.getTransportProtocol());
-    stubClass.releaseLevelAnnotation(
-        namer.getReleaseAnnotation(packageMetadataConfig.releaseLevel(TargetLanguage.JAVA)));
+    stubClass.releaseLevelAnnotation(namer.getReleaseAnnotation(ReleaseLevel.BETA));
     stubClass.name(name);
     stubClass.parentName(namer.getApiStubInterfaceName(interfaceConfig));
     stubClass.settingsClassName(
@@ -615,6 +614,7 @@ public class JavaSurfaceTransformer {
     InterfaceModel firstInterface = model.getInterfaces(productConfig).iterator().next();
     String outputPath = pathMapper.getOutputPath(firstInterface.getFullName(), productConfig);
     packageInfo.outputPath(outputPath + File.separator + "package-info.java");
+    packageInfo.releaseLevel(productConfig.getReleaseLevel());
 
     return packageInfo.build();
   }

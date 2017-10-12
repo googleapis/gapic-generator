@@ -14,8 +14,6 @@
  */
 package com.google.api.codegen.discogapic;
 
-import static com.google.api.codegen.config.LanguageStrings.JAVA;
-
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.discogapic.transformer.DocumentToViewTransformer;
@@ -35,6 +33,8 @@ import java.util.List;
 import org.apache.commons.lang3.NotImplementedException;
 
 public class MainDiscoGapicProviderFactory implements DiscoGapicProviderFactory {
+
+  public static final String JAVA = "java";
 
   /** Create the DiscoGapicProvider based on the given id */
   public static List<DiscoGapicProvider> defaultCreate(

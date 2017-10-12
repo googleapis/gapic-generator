@@ -1,0 +1,1403 @@
+============== file: .gitignore ==============
+Gemfile.lock
+coverage/*
+doc/*
+pkg/*
+html/*
+jsondoc/*
+
+# Ignore YARD stuffs
+.yardoc
+
+# IDE settings
+.idea
+*.iml
+============== file: .rubocop.yml ==============
+AllCops:
+  Exclude:
+    - "google.gemspec"
+    - "lib/google/longrunning/**/*"
+    - "lib/google/longrunning/**/*"
+    - "Rakefile"
+    - "test/**/*"
+
+Documentation:
+  Enabled: false
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+Style/MethodDefParentheses:
+  EnforcedStyle: require_no_parentheses
+Style/NumericLiterals:
+  Enabled: false
+Style/SpaceAroundOperators:
+  Enabled: false
+Metrics/ClassLength:
+  Enabled: false
+Style/EmptyLines:
+  Enabled: false
+Style/EmptyElse:
+  Enabled: false
+Style/HashSyntax:
+  Exclude:
+    - "lib/google/longrunning/**/*"
+Metrics/LineLength:
+  Exclude:
+    - "lib/google/longrunning/**/*"
+Metrics/CyclomaticComplexity:
+  Max: 10
+Metrics/PerceivedComplexity:
+  Max: 10
+Metrics/AbcSize:
+  Max: 25
+  Exclude:
+    - "lib/google/longrunning/**/*"
+Metrics/MethodLength:
+  Max: 20
+  Exclude:
+    - "lib/google/longrunning/**/*"
+Metrics/ParameterLists:
+  Enabled: false
+Style/RescueModifier:
+  Enabled: false
+Style/ClassVars:
+  Enabled: false
+Style/TrivialAccessors:
+  Enabled: false
+Style/FileName:
+  Enabled: false
+============== file: .yardopts ==============
+--no-private
+--title=Google Long Running Operations API
+--exclude _pb\.rb$
+--markup markdown
+
+./lib/**/*.rb
+-
+README.md
+============== file: Gemfile ==============
+source 'https://rubygems.org'
+
+gemspec
+
+gem "rake", "~> 11.0"
+gem "gcloud-jsondoc",
+    git: "https://github.com/GoogleCloudPlatform/google-cloud-ruby.git",
+    branch: "gcloud-jsondoc"
+
+# TEMP: rainbow (a dependency of rubocop) version 2.2 seems to have a problem,
+# so pinning to 2.1 for now.
+gem "rainbow", "~> 2.1.0"
+============== file: LICENSE ==============
+                            Apache License
+                           Version 2.0, January 2004
+                        http://www.apache.org/licenses/
+
+   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+
+   1. Definitions.
+
+      "License" shall mean the terms and conditions for use, reproduction,
+      and distribution as defined by Sections 1 through 9 of this document.
+
+      "Licensor" shall mean the copyright owner or entity authorized by
+      the copyright owner that is granting the License.
+
+      "Legal Entity" shall mean the union of the acting entity and all
+      other entities that control, are controlled by, or are under common
+      control with that entity. For the purposes of this definition,
+      "control" means (i) the power, direct or indirect, to cause the
+      direction or management of such entity, whether by contract or
+      otherwise, or (ii) ownership of fifty percent (50%) or more of the
+      outstanding shares, or (iii) beneficial ownership of such entity.
+
+      "You" (or "Your") shall mean an individual or Legal Entity
+      exercising permissions granted by this License.
+
+      "Source" form shall mean the preferred form for making modifications,
+      including but not limited to software source code, documentation
+      source, and configuration files.
+
+      "Object" form shall mean any form resulting from mechanical
+      transformation or translation of a Source form, including but
+      not limited to compiled object code, generated documentation,
+      and conversions to other media types.
+
+      "Work" shall mean the work of authorship, whether in Source or
+      Object form, made available under the License, as indicated by a
+      copyright notice that is included in or attached to the work
+      (an example is provided in the Appendix below).
+
+      "Derivative Works" shall mean any work, whether in Source or Object
+      form, that is based on (or derived from) the Work and for which the
+      editorial revisions, annotations, elaborations, or other modifications
+      represent, as a whole, an original work of authorship. For the purposes
+      of this License, Derivative Works shall not include works that remain
+      separable from, or merely link (or bind by name) to the interfaces of,
+      the Work and Derivative Works thereof.
+
+      "Contribution" shall mean any work of authorship, including
+      the original version of the Work and any modifications or additions
+      to that Work or Derivative Works thereof, that is intentionally
+      submitted to Licensor for inclusion in the Work by the copyright owner
+      or by an individual or Legal Entity authorized to submit on behalf of
+      the copyright owner. For the purposes of this definition, "submitted"
+      means any form of electronic, verbal, or written communication sent
+      to the Licensor or its representatives, including but not limited to
+      communication on electronic mailing lists, source code control systems,
+      and issue tracking systems that are managed by, or on behalf of, the
+      Licensor for the purpose of discussing and improving the Work, but
+      excluding communication that is conspicuously marked or otherwise
+      designated in writing by the copyright owner as "Not a Contribution."
+
+      "Contributor" shall mean Licensor and any individual or Legal Entity
+      on behalf of whom a Contribution has been received by Licensor and
+      subsequently incorporated within the Work.
+
+   2. Grant of Copyright License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      copyright license to reproduce, prepare Derivative Works of,
+      publicly display, publicly perform, sublicense, and distribute the
+      Work and such Derivative Works in Source or Object form.
+
+   3. Grant of Patent License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      (except as stated in this section) patent license to make, have made,
+      use, offer to sell, sell, import, and otherwise transfer the Work,
+      where such license applies only to those patent claims licensable
+      by such Contributor that are necessarily infringed by their
+      Contribution(s) alone or by combination of their Contribution(s)
+      with the Work to which such Contribution(s) was submitted. If You
+      institute patent litigation against any entity (including a
+      cross-claim or counterclaim in a lawsuit) alleging that the Work
+      or a Contribution incorporated within the Work constitutes direct
+      or contributory patent infringement, then any patent licenses
+      granted to You under this License for that Work shall terminate
+      as of the date such litigation is filed.
+
+   4. Redistribution. You may reproduce and distribute copies of the
+      Work or Derivative Works thereof in any medium, with or without
+      modifications, and in Source or Object form, provided that You
+      meet the following conditions:
+
+      (a) You must give any other recipients of the Work or
+          Derivative Works a copy of this License; and
+
+      (b) You must cause any modified files to carry prominent notices
+          stating that You changed the files; and
+
+      (c) You must retain, in the Source form of any Derivative Works
+          that You distribute, all copyright, patent, trademark, and
+          attribution notices from the Source form of the Work,
+          excluding those notices that do not pertain to any part of
+          the Derivative Works; and
+
+      (d) If the Work includes a "NOTICE" text file as part of its
+          distribution, then any Derivative Works that You distribute must
+          include a readable copy of the attribution notices contained
+          within such NOTICE file, excluding those notices that do not
+          pertain to any part of the Derivative Works, in at least one
+          of the following places: within a NOTICE text file distributed
+          as part of the Derivative Works; within the Source form or
+          documentation, if provided along with the Derivative Works; or,
+          within a display generated by the Derivative Works, if and
+          wherever such third-party notices normally appear. The contents
+          of the NOTICE file are for informational purposes only and
+          do not modify the License. You may add Your own attribution
+          notices within Derivative Works that You distribute, alongside
+          or as an addendum to the NOTICE text from the Work, provided
+          that such additional attribution notices cannot be construed
+          as modifying the License.
+
+      You may add Your own copyright statement to Your modifications and
+      may provide additional or different license terms and conditions
+      for use, reproduction, or distribution of Your modifications, or
+      for any such Derivative Works as a whole, provided Your use,
+      reproduction, and distribution of the Work otherwise complies with
+      the conditions stated in this License.
+
+   5. Submission of Contributions. Unless You explicitly state otherwise,
+      any Contribution intentionally submitted for inclusion in the Work
+      by You to the Licensor shall be under the terms and conditions of
+      this License, without any additional terms or conditions.
+      Notwithstanding the above, nothing herein shall supersede or modify
+      the terms of any separate license agreement you may have executed
+      with Licensor regarding such Contributions.
+
+   6. Trademarks. This License does not grant permission to use the trade
+      names, trademarks, service marks, or product names of the Licensor,
+      except as required for reasonable and customary use in describing the
+      origin of the Work and reproducing the content of the NOTICE file.
+
+   7. Disclaimer of Warranty. Unless required by applicable law or
+      agreed to in writing, Licensor provides the Work (and each
+      Contributor provides its Contributions) on an "AS IS" BASIS,
+      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+      implied, including, without limitation, any warranties or conditions
+      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
+      PARTICULAR PURPOSE. You are solely responsible for determining the
+      appropriateness of using or redistributing the Work and assume any
+      risks associated with Your exercise of permissions under this License.
+
+   8. Limitation of Liability. In no event and under no legal theory,
+      whether in tort (including negligence), contract, or otherwise,
+      unless required by applicable law (such as deliberate and grossly
+      negligent acts) or agreed to in writing, shall any Contributor be
+      liable to You for damages, including any direct, indirect, special,
+      incidental, or consequential damages of any character arising as a
+      result of this License or out of the use or inability to use the
+      Work (including but not limited to damages for loss of goodwill,
+      work stoppage, computer failure or malfunction, or any and all
+      other commercial damages or losses), even if such Contributor
+      has been advised of the possibility of such damages.
+
+   9. Accepting Warranty or Additional Liability. While redistributing
+      the Work or Derivative Works thereof, You may choose to offer,
+      and charge a fee for, acceptance of support, warranty, indemnity,
+      or other liability obligations and/or rights consistent with this
+      License. However, in accepting such obligations, You may act only
+      on Your own behalf and on Your sole responsibility, not on behalf
+      of any other Contributor, and only if You agree to indemnify,
+      defend, and hold each Contributor harmless for any liability
+      incurred by, or claims asserted against, such Contributor by reason
+      of your accepting any such warranty or additional liability.
+
+   END OF TERMS AND CONDITIONS
+
+   APPENDIX: How to apply the Apache License to your work.
+
+      To apply the Apache License to your work, attach the following
+      boilerplate notice, with the fields enclosed by brackets "[]"
+      replaced with your own identifying information. (Don't include
+      the brackets!)  The text should be enclosed in the appropriate
+      comment syntax for the file format. We also recommend that a
+      file or class name and description of purpose be included on the
+      same "printed page" as the copyright notice for easier
+      identification within third-party archives.
+
+   Copyright [yyyy] [name of copyright owner]
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+============== file: README.md ==============
+# Ruby Client for Google Long Running Operations API ([Alpha](https://github.com/GoogleCloudPlatform/google-cloud-ruby#versioning))
+
+[Google Long Running Operations API][Product Documentation]:
+
+- [Client Library Documentation][]
+- [Product Documentation][]
+
+## Quick Start
+In order to use this library, you first need to go through the following
+steps:
+
+1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
+2. [Enable the Google Long Running Operations API.](https://console.cloud.google.com/apis/api/longrunning)
+3. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
+
+### Installation
+```
+$ gem install google
+```
+
+### Next Steps
+- Read the [Client Library Documentation][] for Google Long Running Operations API
+  to see other available methods on the client.
+- Read the [Google Long Running Operations API Product documentation][Product Documentation]
+  to learn more about the product and see How-to Guides.
+- View this [repository's main README](https://github.com/GoogleCloudPlatform/google-cloud-ruby/blob/master/README.md)
+  to see the full list of Cloud APIs that we cover.
+
+[Client Library Documentation]: https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google/latest/google/longrunning
+[Product Documentation]: https://cloud.google.com/longrunning
+============== file: Rakefile ==============
+# Copyright 2017, Google Inc. All rights reserved.
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#
+#     * Redistributions of source code must retain the above copyright
+# notice, this list of conditions and the following disclaimer.
+#     * Redistributions in binary form must reproduce the above
+# copyright notice, this list of conditions and the following disclaimer
+# in the documentation and/or other materials provided with the
+# distribution.
+#     * Neither the name of Google Inc. nor the names of its
+# contributors may be used to endorse or promote products derived from
+# this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+require "bundler/setup"
+require "bundler/gem_tasks"
+
+require "rubocop/rake_task"
+RuboCop::RakeTask.new
+
+desc "Run tests."
+task :test do
+  $LOAD_PATH.unshift "lib", "test"
+  Dir.glob("test/**/*test.rb")
+    .reject { |file| file.include? "smoke_test" }
+    .each { |file| require_relative file }
+end
+
+namespace :test do
+  desc "Runs tests with coverage."
+  task :coverage do
+    require "simplecov"
+    SimpleCov.start do
+      command_name "google"
+      track_files "lib/**/*.rb"
+      add_filter "test/"
+    end
+
+    Rake::Task["test"].invoke
+  end
+end
+
+# Acceptance tests
+desc "Run the google acceptance tests."
+task :acceptance do
+  puts "The google gem does not have acceptance tests."
+end
+
+namespace :acceptance do
+  task :run do
+    puts "This gem does not have acceptance tests."
+  end
+
+  desc "Run acceptance tests with coverage."
+  task :coverage do
+  end
+
+  desc "Run acceptance cleanup."
+  task :cleanup do
+  end
+end
+
+require "yard"
+require "yard/rake/yardoc_task"
+YARD::Rake::YardocTask.new
+
+desc "Generates JSON output from google .yardoc"
+task :jsondoc => :yard do
+  require "rubygems"
+  require "gcloud/jsondoc"
+
+  registry = YARD::Registry.load! ".yardoc"
+
+  toc_config = {
+    documents: [
+      {
+        type: "toc",
+        title: "Google::Longrunning::DataTypes",
+        modules: [
+          {
+            title: "Google::Longrunning",
+            include: ["google/longrunning"]
+          },
+          {
+            title: "Google::Protobuf",
+            include: ["google/protobuf"]
+          },
+          {
+            title: "Google::Rpc",
+            include: ["google/rpc"]
+          }
+        ]
+      }
+    ]
+  }
+
+  generator = Gcloud::Jsondoc::Generator.new registry,
+                                             "google",
+                                             generate: toc_config
+  rm_rf "jsondoc", verbose: true
+  generator.write_to "jsondoc"
+  cp ["docs/toc.json"], "jsondoc", verbose: true
+end
+
+desc "Run yard-doctest example tests."
+task :doctest do
+  puts "The google gem does not have doctest tests."
+end
+
+desc "Run the CI build"
+task :ci do
+  header "BUILDING google"
+  header "google rubocop", "*"
+  sh "bundle exec rake rubocop"
+  header "google jsondoc", "*"
+  sh "bundle exec rake jsondoc"
+  header "google doctest", "*"
+  sh "bundle exec rake doctest"
+  header "google test", "*"
+  sh "bundle exec rake test"
+end
+
+
+namespace :ci do
+  desc "Run the CI build, with acceptance tests."
+  task :smoke_test do
+    Rake::Task["ci"].invoke
+    header "google acceptance", "*"
+    sh "bundle exec rake acceptance -v"
+  end
+  task :a do
+    # This is a handy shortcut to save typing
+    Rake::Task["ci:acceptance"].invoke
+  end
+end
+
+task :default => :test
+
+def header str, token = "#"
+  line_length = str.length + 8
+  puts ""
+  puts token * line_length
+  puts "#{token * 3} #{str} #{token * 3}"
+  puts token * line_length
+  puts ""
+end
+============== file: google.gemspec ==============
+# -*- ruby -*-
+# encoding: utf-8
+
+Gem::Specification.new do |gem|
+  gem.name          = "google"
+  gem.version       = "0.6.8"
+
+  gem.authors       = ["Google, Inc."]
+  gem.email         = "googleapis-packages@google.com"
+  gem.description   = "google is the official library for Google Long Running Operations API."
+  gem.summary       = "API Client library for Google Long Running Operations API"
+  gem.homepage      = "https://github.com/googleapis/googleapis"
+  gem.license       = "Apache-2.0"
+
+  gem.platform      = Gem::Platform::RUBY
+
+  gem.files         = `git ls-files -- lib/*`.split("\n") +
+                      ["README.md", "LICENSE", ".yardopts"]
+  gem.require_paths = ["lib"]
+
+  gem.required_ruby_version = ">= 2.0.0"
+
+  gem.add_dependency "google-gax", "~> 0.8.0"
+  gem.add_dependency "googleapis-common-protos", "~> 1.3.1"
+
+  gem.add_development_dependency "minitest", "~> 5.10"
+  gem.add_development_dependency "rubocop", "<= 0.35.1"
+  gem.add_development_dependency "simplecov", "~> 0.9"
+end
+
+============== file: lib/google/longrunning.rb ==============
+# Copyright 2017, Google Inc. All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#
+#     * Redistributions of source code must retain the above copyright
+# notice, this list of conditions and the following disclaimer.
+#     * Redistributions in binary form must reproduce the above
+# copyright notice, this list of conditions and the following disclaimer
+# in the documentation and/or other materials provided with the
+# distribution.
+#     * Neither the name of Google Inc. nor the names of its
+# contributors may be used to endorse or promote products derived from
+# this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+require "google/longrunning/operations_client"
+
+module Google
+  # rubocop:disable LineLength
+
+  ##
+  # # Ruby Client for Google Long Running Operations API ([Alpha](https://github.com/GoogleCloudPlatform/google-cloud-ruby#versioning))
+  #
+  # [Google Long Running Operations API][Product Documentation]:
+  #
+  # - [Product Documentation][]
+  #
+  # ## Quick Start
+  # In order to use this library, you first need to go through the following
+  # steps:
+  #
+  # 1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
+  # 2. [Enable the Google Long Running Operations API.](https://console.cloud.google.com/apis/api/longrunning)
+  # 3. [Setup Authentication.](https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/google-cloud/master/guides/authentication)
+  #
+  # ### Next Steps
+  # - Read the [Google Long Running Operations API Product documentation][Product Documentation]
+  #   to learn more about the product and see How-to Guides.
+  # - View this [repository's main README](https://github.com/GoogleCloudPlatform/google-cloud-ruby/blob/master/README.md)
+  #   to see the full list of Cloud APIs that we cover.
+  #
+  # [Product Documentation]: https://cloud.google.com/longrunning
+  #
+  #
+  module Longrunning
+    # rubocop:enable LineLength
+
+    ##
+    # Manages long-running operations with an API service.
+    #
+    # When an API method normally takes long time to complete, it can be designed
+    # to return {Google::Longrunning::Operation Operation} to the client, and the client can use this
+    # interface to receive the real response asynchronously by polling the
+    # operation resource, or pass the operation resource to another API (such as
+    # Google Cloud Pub/Sub API) to receive the response.  Any API service that
+    # returns long-running operations should implement the +Operations+ interface
+    # so developers can have a consistent client experience.
+    #
+    # @param credentials [Google::Gax::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
+    #   Provides the means for authenticating requests made by the client. This parameter can
+    #   be many types.
+    #   A `Google::Gax::Credentials` uses a the properties of its represented keyfile for
+    #   authenticating requests made by this client.
+    #   A `String` will be treated as the path to the keyfile to be used for the construction of
+    #   credentials for this client.
+    #   A `Hash` will be treated as the contents of a keyfile to be used for the construction of
+    #   credentials for this client.
+    #   A `GRPC::Core::Channel` will be used to make calls through.
+    #   A `GRPC::Core::ChannelCredentials` for the setting up the RPC client. The channel credentials
+    #   should already be composed with a `GRPC::Core::CallCredentials` object.
+    #   A `Proc` will be used as an updater_proc for the Grpc channel. The proc transforms the
+    #   metadata for requests, generally, to give OAuth credentials.
+    # @param scopes [Array<String>]
+    #   The OAuth scopes for this service. This parameter is ignored if
+    #   an updater_proc is supplied.
+    # @param client_config [Hash]
+    #   A Hash for call options for each method. See
+    #   Google::Gax#construct_settings for the structure of
+    #   this data. Falls back to the default config if not specified
+    #   or the specified config is missing data points.
+    # @param timeout [Numeric]
+    #   The default timeout, in seconds, for calls made through this client.
+    def self.new \
+        service_path: nil,
+        port: nil,
+        channel: nil,
+        chan_creds: nil,
+        updater_proc: nil,
+        credentials: nil,
+        scopes: nil,
+        client_config: nil,
+        timeout: nil,
+        lib_name: nil,
+        lib_version: nil
+      kwargs = {
+        service_path: service_path,
+        port: port,
+        channel: channel,
+        chan_creds: chan_creds,
+        updater_proc: updater_proc,
+        credentials: credentials,
+        scopes: scopes,
+        client_config: client_config,
+        timeout: timeout,
+        lib_name: lib_name,
+        lib_version: lib_version
+      }.select { |_, v| v != nil }
+      Google::Longrunning::OperationsClient.new(**kwargs)
+    end
+  end
+end
+
+============== file: lib/google/longrunning/operations_client.rb ==============
+# Copyright 2017, Google Inc. All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#
+#     * Redistributions of source code must retain the above copyright
+# notice, this list of conditions and the following disclaimer.
+#     * Redistributions in binary form must reproduce the above
+# copyright notice, this list of conditions and the following disclaimer
+# in the documentation and/or other materials provided with the
+# distribution.
+#     * Neither the name of Google Inc. nor the names of its
+# contributors may be used to endorse or promote products derived from
+# this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+# EDITING INSTRUCTIONS
+# This file was generated from the file
+# https://github.com/googleapis/googleapis/blob/master/longrunning.proto,
+# and updates to that file get reflected here through a refresh process.
+# For the short term, the refresh process will only be runnable by Google
+# engineers.
+#
+# The only allowed edits are to method and file documentation. A 3-way
+# merge preserves those additions if the generated source changes.
+
+require "json"
+require "pathname"
+
+require "google/gax"
+
+require "longrunning_pb"
+
+module Google
+  module Longrunning
+    # Manages long-running operations with an API service.
+    #
+    # When an API method normally takes long time to complete, it can be designed
+    # to return {Google::Longrunning::Operation Operation} to the client, and the client can use this
+    # interface to receive the real response asynchronously by polling the
+    # operation resource, or pass the operation resource to another API (such as
+    # Google Cloud Pub/Sub API) to receive the response.  Any API service that
+    # returns long-running operations should implement the +Operations+ interface
+    # so developers can have a consistent client experience.
+    #
+    # @!attribute [r] operations_stub
+    #   @return [Google::Longrunning::Operations::Stub]
+    class OperationsClient
+      attr_reader :operations_stub
+
+      # The default address of the service.
+      SERVICE_ADDRESS = "longrunning.googleapis.com".freeze
+
+      # The default port of the service.
+      DEFAULT_SERVICE_PORT = 443
+
+      DEFAULT_TIMEOUT = 30
+
+      PAGE_DESCRIPTORS = {
+        "list_operations" => Google::Gax::PageDescriptor.new(
+          "page_token",
+          "next_page_token",
+          "operations")
+      }.freeze
+
+      private_constant :PAGE_DESCRIPTORS
+
+      # The scopes needed to make gRPC calls to all of the methods defined in
+      # this service.
+      ALL_SCOPES = [
+      ].freeze
+
+      # @param credentials [Google::Gax::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
+      #   Provides the means for authenticating requests made by the client. This parameter can
+      #   be many types.
+      #   A `Google::Gax::Credentials` uses a the properties of its represented keyfile for
+      #   authenticating requests made by this client.
+      #   A `String` will be treated as the path to the keyfile to be used for the construction of
+      #   credentials for this client.
+      #   A `Hash` will be treated as the contents of a keyfile to be used for the construction of
+      #   credentials for this client.
+      #   A `GRPC::Core::Channel` will be used to make calls through.
+      #   A `GRPC::Core::ChannelCredentials` for the setting up the RPC client. The channel credentials
+      #   should already be composed with a `GRPC::Core::CallCredentials` object.
+      #   A `Proc` will be used as an updater_proc for the Grpc channel. The proc transforms the
+      #   metadata for requests, generally, to give OAuth credentials.
+      # @param scopes [Array<String>]
+      #   The OAuth scopes for this service. This parameter is ignored if
+      #   an updater_proc is supplied.
+      # @param client_config [Hash]
+      #   A Hash for call options for each method. See
+      #   Google::Gax#construct_settings for the structure of
+      #   this data. Falls back to the default config if not specified
+      #   or the specified config is missing data points.
+      # @param timeout [Numeric]
+      #   The default timeout, in seconds, for calls made through this client.
+      def initialize \
+          service_path: SERVICE_ADDRESS,
+          port: DEFAULT_SERVICE_PORT,
+          channel: nil,
+          chan_creds: nil,
+          updater_proc: nil,
+          credentials: nil,
+          scopes: ALL_SCOPES,
+          client_config: {},
+          timeout: DEFAULT_TIMEOUT,
+          lib_name: nil,
+          lib_version: ""
+        # These require statements are intentionally placed here to initialize
+        # the gRPC module only when it's required.
+        # See https://github.com/googleapis/toolkit/issues/446
+        require "google/gax/grpc"
+        require "longrunning_services_pb"
+
+        if channel || chan_creds || updater_proc
+          warn "The `channel`, `chan_creds`, and `updater_proc` parameters will be removed " \
+            "on 2017/09/08"
+          credentials ||= channel
+          credentials ||= chan_creds
+          credentials ||= updater_proc
+        end
+        if service_path != SERVICE_ADDRESS || port != DEFAULT_SERVICE_PORT
+          warn "`service_path` and `port` parameters are deprecated and will be removed"
+        end
+
+        credentials ||= Google::Gax::Credentials.default
+
+        if credentials.is_a?(String) || credentials.is_a?(Hash)
+          updater_proc = Google::Gax::Credentials.new(credentials).updater_proc
+        end
+        if credentials.is_a?(GRPC::Core::Channel)
+          channel = credentials
+        end
+        if credentials.is_a?(GRPC::Core::ChannelCredentials)
+          chan_creds = credentials
+        end
+        if credentials.is_a?(Proc)
+          updater_proc = credentials
+        end
+        if credentials.is_a?(Google::Gax::Credentials)
+          updater_proc = credentials.updater_proc
+        end
+
+        google_api_client = "gl-ruby/#{RUBY_VERSION}"
+        google_api_client << " #{lib_name}/#{lib_version}" if lib_name
+        google_api_client << " gapic/0.6.8 gax/#{Google::Gax::VERSION}"
+        google_api_client << " grpc/#{GRPC::VERSION}"
+        google_api_client.freeze
+
+        headers = { :"x-goog-api-client" => google_api_client }
+        client_config_file = Pathname.new(__dir__).join(
+          "operations_client_config.json"
+        )
+        defaults = client_config_file.open do |f|
+          Google::Gax.construct_settings(
+            "google.longrunning.Operations",
+            JSON.parse(f.read),
+            client_config,
+            Google::Gax::Grpc::STATUS_CODE_NAMES,
+            timeout,
+            page_descriptors: PAGE_DESCRIPTORS,
+            errors: Google::Gax::Grpc::API_ERRORS,
+            kwargs: headers
+          )
+        end
+        @operations_stub = Google::Gax::Grpc.create_stub(
+          service_path,
+          port,
+          chan_creds: chan_creds,
+          channel: channel,
+          updater_proc: updater_proc,
+          scopes: scopes,
+          &Google::Longrunning::Operations::Stub.method(:new)
+        )
+
+        @get_operation = Google::Gax.create_api_call(
+          @operations_stub.method(:get_operation),
+          defaults["get_operation"]
+        )
+        @list_operations = Google::Gax.create_api_call(
+          @operations_stub.method(:list_operations),
+          defaults["list_operations"]
+        )
+        @cancel_operation = Google::Gax.create_api_call(
+          @operations_stub.method(:cancel_operation),
+          defaults["cancel_operation"]
+        )
+        @delete_operation = Google::Gax.create_api_call(
+          @operations_stub.method(:delete_operation),
+          defaults["delete_operation"]
+        )
+      end
+
+      # Service calls
+
+      # Gets the latest state of a long-running operation.  Clients can use this
+      # method to poll the operation result at intervals as recommended by the API
+      # service.
+      #
+      # @param name [String]
+      #   The name of the operation resource.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @return [Google::Longrunning::Operation]
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "google/longrunning"
+      #
+      #   operations_client = Google::Longrunning.new
+      #   name = ''
+      #   response = operations_client.get_operation(name)
+
+      def get_operation \
+          name,
+          options: nil
+        req = {
+          name: name
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Longrunning::GetOperationRequest)
+        @get_operation.call(req, options)
+      end
+
+      # Lists operations that match the specified filter in the request. If the
+      # server doesn't support this method, it returns +UNIMPLEMENTED+.
+      #
+      # NOTE: the +name+ binding below allows API services to override the binding
+      # to use different resource name schemes, such as +users/*/operations+.
+      #
+      # @param name [String]
+      #   The name of the operation collection.
+      # @param filter [String]
+      #   The standard list filter.
+      # @param page_size [Integer]
+      #   The maximum number of resources contained in the underlying API
+      #   response. If page streaming is performed per-resource, this
+      #   parameter does not affect the return value. If page streaming is
+      #   performed per-page, this determines the maximum number of
+      #   resources in a page.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @return [Google::Gax::PagedEnumerable<Google::Longrunning::Operation>]
+      #   An enumerable of Google::Longrunning::Operation instances.
+      #   See Google::Gax::PagedEnumerable documentation for other
+      #   operations such as per-page iteration or access to the response
+      #   object.
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "google/longrunning"
+      #
+      #   operations_client = Google::Longrunning.new
+      #   name = ''
+      #   filter = ''
+      #
+      #   # Iterate over all results.
+      #   operations_client.list_operations(name, filter).each do |element|
+      #     # Process element.
+      #   end
+      #
+      #   # Or iterate over results one page at a time.
+      #   operations_client.list_operations(name, filter).each_page do |page|
+      #     # Process each page at a time.
+      #     page.each do |element|
+      #       # Process element.
+      #     end
+      #   end
+
+      def list_operations \
+          name,
+          filter,
+          page_size: nil,
+          options: nil
+        req = {
+          name: name,
+          filter: filter,
+          page_size: page_size
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Longrunning::ListOperationsRequest)
+        @list_operations.call(req, options)
+      end
+
+      # Starts asynchronous cancellation on a long-running operation.  The server
+      # makes a best effort to cancel the operation, but success is not
+      # guaranteed.  If the server doesn't support this method, it returns
+      # +google.rpc.Code.UNIMPLEMENTED+.  Clients can use
+      # {Google::Longrunning::Operations::GetOperation Operations::GetOperation} or
+      # other methods to check whether the cancellation succeeded or whether the
+      # operation completed despite cancellation. On successful cancellation,
+      # the operation is not deleted; instead, it becomes an operation with
+      # an {Google::Longrunning::Operation#error Operation#error} value with a {Google::Rpc::Status#code} of 1,
+      # corresponding to +Code.CANCELLED+.
+      #
+      # @param name [String]
+      #   The name of the operation resource to be cancelled.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "google/longrunning"
+      #
+      #   operations_client = Google::Longrunning.new
+      #   name = ''
+      #   operations_client.cancel_operation(name)
+
+      def cancel_operation \
+          name,
+          options: nil
+        req = {
+          name: name
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Longrunning::CancelOperationRequest)
+        @cancel_operation.call(req, options)
+        nil
+      end
+
+      # Deletes a long-running operation. This method indicates that the client is
+      # no longer interested in the operation result. It does not cancel the
+      # operation. If the server doesn't support this method, it returns
+      # +google.rpc.Code.UNIMPLEMENTED+.
+      #
+      # @param name [String]
+      #   The name of the operation resource to be deleted.
+      # @param options [Google::Gax::CallOptions]
+      #   Overrides the default settings for this call, e.g, timeout,
+      #   retries, etc.
+      # @raise [Google::Gax::GaxError] if the RPC is aborted.
+      # @example
+      #   require "google/longrunning"
+      #
+      #   operations_client = Google::Longrunning.new
+      #   name = ''
+      #   operations_client.delete_operation(name)
+
+      def delete_operation \
+          name,
+          options: nil
+        req = {
+          name: name
+        }.delete_if { |_, v| v.nil? }
+        req = Google::Gax::to_proto(req, Google::Longrunning::DeleteOperationRequest)
+        @delete_operation.call(req, options)
+        nil
+      end
+    end
+  end
+end
+
+============== file: lib/google/longrunning/operations_client_config.json ==============
+{
+  "interfaces": {
+    "google.longrunning.Operations": {
+      "retry_codes": {
+        "idempotent": [
+          "DEADLINE_EXCEEDED",
+          "UNAVAILABLE"
+        ],
+        "non_idempotent": []
+      },
+      "retry_params": {
+        "default": {
+          "initial_retry_delay_millis": 100,
+          "retry_delay_multiplier": 1.3,
+          "max_retry_delay_millis": 60000,
+          "initial_rpc_timeout_millis": 90000,
+          "rpc_timeout_multiplier": 1.0,
+          "max_rpc_timeout_millis": 90000,
+          "total_timeout_millis": 600000
+        }
+      },
+      "methods": {
+        "GetOperation": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "idempotent",
+          "retry_params_name": "default"
+        },
+        "ListOperations": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "idempotent",
+          "retry_params_name": "default"
+        },
+        "CancelOperation": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "idempotent",
+          "retry_params_name": "default"
+        },
+        "DeleteOperation": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "idempotent",
+          "retry_params_name": "default"
+        }
+      }
+    }
+  }
+}
+
+============== file: test/google/longrunning/operations_client_test.rb ==============
+# Copyright 2017, Google Inc. All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#
+#     * Redistributions of source code must retain the above copyright
+# notice, this list of conditions and the following disclaimer.
+#     * Redistributions in binary form must reproduce the above
+# copyright notice, this list of conditions and the following disclaimer
+# in the documentation and/or other materials provided with the
+# distribution.
+#     * Neither the name of Google Inc. nor the names of its
+# contributors may be used to endorse or promote products derived from
+# this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+require "minitest/autorun"
+require "minitest/spec"
+
+require "google/gax"
+
+require "google/longrunning"
+require "google/longrunning/operations_client"
+require "longrunning_services_pb"
+
+class CustomTestError < StandardError; end
+
+# Mock for the GRPC::ClientStub class.
+class MockGrpcClientStub
+
+  # @param expected_symbol [Symbol] the symbol of the grpc method to be mocked.
+  # @param mock_method [Proc] The method that is being mocked.
+  def initialize(expected_symbol, mock_method)
+    @expected_symbol = expected_symbol
+    @mock_method = mock_method
+  end
+
+  # This overrides the Object#method method to return the mocked method when the mocked method
+  # is being requested. For methods that aren't being tested, this method returns a proc that
+  # will raise an error when called. This is to assure that only the mocked grpc method is being
+  # called.
+  #
+  # @param symbol [Symbol] The symbol of the method being requested.
+  # @return [Proc] The proc of the requested method. If the requested method is not being mocked
+  #   the proc returned will raise when called.
+  def method(symbol)
+    return @mock_method if symbol == @expected_symbol
+
+    # The requested method is not being tested, raise if it called.
+    proc do
+      raise "The method #{symbol} was unexpectedly called during the " \
+        "test for #{@expected_symbol}."
+    end
+  end
+end
+
+class MockCredentialsClass < Google::Gax::Credentials
+  def initialize(method_name)
+    @method_name = method_name
+  end
+
+  def updater_proc
+    proc do
+      raise "The method `#{@method_name}` was trying to make a grpc request. This should not " \
+          "happen since the grpc layer is being mocked."
+    end
+  end
+end
+
+describe Google::Longrunning::OperationsClient do
+
+  describe 'get_operation' do
+    custom_error = CustomTestError.new "Custom test error for Google::Longrunning::OperationsClient#get_operation."
+
+    it 'invokes get_operation without error' do
+      # Create request parameters
+      name = ''
+
+      # Create expected grpc response
+      name_2 = "name2-1052831874"
+      done = true
+      expected_response = { name: name_2, done: done }
+      expected_response = Google::Gax::to_proto(expected_response, Google::Longrunning::Operation)
+
+      # Mock Grpc layer
+      mock_method = proc do |request|
+        assert_instance_of(Google::Longrunning::GetOperationRequest, request)
+        assert_equal(name, request.name)
+        expected_response
+      end
+      mock_stub = MockGrpcClientStub.new(:get_operation, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("get_operation")
+
+      Google::Longrunning::Operations::Stub.stub(:new, mock_stub) do
+        Google::Gax::Credentials.stub(:default, mock_credentials) do
+          client = Google::Longrunning.new
+
+          # Call method
+          response = client.get_operation(name)
+
+          # Verify the response
+          assert_equal(expected_response, response)
+        end
+      end
+    end
+
+    it 'invokes get_operation with error' do
+      # Create request parameters
+      name = ''
+
+      # Mock Grpc layer
+      mock_method = proc do |request|
+        assert_instance_of(Google::Longrunning::GetOperationRequest, request)
+        assert_equal(name, request.name)
+        raise custom_error
+      end
+      mock_stub = MockGrpcClientStub.new(:get_operation, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("get_operation")
+
+      Google::Longrunning::Operations::Stub.stub(:new, mock_stub) do
+        Google::Gax::Credentials.stub(:default, mock_credentials) do
+          client = Google::Longrunning.new
+
+          # Call method
+          err = assert_raises Google::Gax::GaxError do
+            client.get_operation(name)
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
+        end
+      end
+    end
+  end
+
+  describe 'list_operations' do
+    custom_error = CustomTestError.new "Custom test error for Google::Longrunning::OperationsClient#list_operations."
+
+    it 'invokes list_operations without error' do
+      # Create request parameters
+      name = ''
+      filter = ''
+
+      # Create expected grpc response
+      next_page_token = ""
+      operations_element = {}
+      operations = [operations_element]
+      expected_response = { next_page_token: next_page_token, operations: operations }
+      expected_response = Google::Gax::to_proto(expected_response, Google::Longrunning::ListOperationsResponse)
+
+      # Mock Grpc layer
+      mock_method = proc do |request|
+        assert_instance_of(Google::Longrunning::ListOperationsRequest, request)
+        assert_equal(name, request.name)
+        assert_equal(filter, request.filter)
+        expected_response
+      end
+      mock_stub = MockGrpcClientStub.new(:list_operations, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("list_operations")
+
+      Google::Longrunning::Operations::Stub.stub(:new, mock_stub) do
+        Google::Gax::Credentials.stub(:default, mock_credentials) do
+          client = Google::Longrunning.new
+
+          # Call method
+          response = client.list_operations(name, filter)
+
+          # Verify the response
+          assert(response.instance_of?(Google::Gax::PagedEnumerable))
+          assert_equal(expected_response, response.page.response)
+          assert_nil(response.next_page)
+          assert_equal(expected_response.operations.to_a, response.to_a)
+        end
+      end
+    end
+
+    it 'invokes list_operations with error' do
+      # Create request parameters
+      name = ''
+      filter = ''
+
+      # Mock Grpc layer
+      mock_method = proc do |request|
+        assert_instance_of(Google::Longrunning::ListOperationsRequest, request)
+        assert_equal(name, request.name)
+        assert_equal(filter, request.filter)
+        raise custom_error
+      end
+      mock_stub = MockGrpcClientStub.new(:list_operations, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("list_operations")
+
+      Google::Longrunning::Operations::Stub.stub(:new, mock_stub) do
+        Google::Gax::Credentials.stub(:default, mock_credentials) do
+          client = Google::Longrunning.new
+
+          # Call method
+          err = assert_raises Google::Gax::GaxError do
+            client.list_operations(name, filter)
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
+        end
+      end
+    end
+  end
+
+  describe 'cancel_operation' do
+    custom_error = CustomTestError.new "Custom test error for Google::Longrunning::OperationsClient#cancel_operation."
+
+    it 'invokes cancel_operation without error' do
+      # Create request parameters
+      name = ''
+
+      # Mock Grpc layer
+      mock_method = proc do |request|
+        assert_instance_of(Google::Longrunning::CancelOperationRequest, request)
+        assert_equal(name, request.name)
+        nil
+      end
+      mock_stub = MockGrpcClientStub.new(:cancel_operation, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("cancel_operation")
+
+      Google::Longrunning::Operations::Stub.stub(:new, mock_stub) do
+        Google::Gax::Credentials.stub(:default, mock_credentials) do
+          client = Google::Longrunning.new
+
+          # Call method
+          response = client.cancel_operation(name)
+
+          # Verify the response
+          assert_nil(response)
+        end
+      end
+    end
+
+    it 'invokes cancel_operation with error' do
+      # Create request parameters
+      name = ''
+
+      # Mock Grpc layer
+      mock_method = proc do |request|
+        assert_instance_of(Google::Longrunning::CancelOperationRequest, request)
+        assert_equal(name, request.name)
+        raise custom_error
+      end
+      mock_stub = MockGrpcClientStub.new(:cancel_operation, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("cancel_operation")
+
+      Google::Longrunning::Operations::Stub.stub(:new, mock_stub) do
+        Google::Gax::Credentials.stub(:default, mock_credentials) do
+          client = Google::Longrunning.new
+
+          # Call method
+          err = assert_raises Google::Gax::GaxError do
+            client.cancel_operation(name)
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
+        end
+      end
+    end
+  end
+
+  describe 'delete_operation' do
+    custom_error = CustomTestError.new "Custom test error for Google::Longrunning::OperationsClient#delete_operation."
+
+    it 'invokes delete_operation without error' do
+      # Create request parameters
+      name = ''
+
+      # Mock Grpc layer
+      mock_method = proc do |request|
+        assert_instance_of(Google::Longrunning::DeleteOperationRequest, request)
+        assert_equal(name, request.name)
+        nil
+      end
+      mock_stub = MockGrpcClientStub.new(:delete_operation, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("delete_operation")
+
+      Google::Longrunning::Operations::Stub.stub(:new, mock_stub) do
+        Google::Gax::Credentials.stub(:default, mock_credentials) do
+          client = Google::Longrunning.new
+
+          # Call method
+          response = client.delete_operation(name)
+
+          # Verify the response
+          assert_nil(response)
+        end
+      end
+    end
+
+    it 'invokes delete_operation with error' do
+      # Create request parameters
+      name = ''
+
+      # Mock Grpc layer
+      mock_method = proc do |request|
+        assert_instance_of(Google::Longrunning::DeleteOperationRequest, request)
+        assert_equal(name, request.name)
+        raise custom_error
+      end
+      mock_stub = MockGrpcClientStub.new(:delete_operation, mock_method)
+
+      # Mock auth layer
+      mock_credentials = MockCredentialsClass.new("delete_operation")
+
+      Google::Longrunning::Operations::Stub.stub(:new, mock_stub) do
+        Google::Gax::Credentials.stub(:default, mock_credentials) do
+          client = Google::Longrunning.new
+
+          # Call method
+          err = assert_raises Google::Gax::GaxError do
+            client.delete_operation(name)
+          end
+
+          # Verify the GaxError wrapped the custom error that was raised.
+          assert_match(custom_error.message, err.message)
+        end
+      end
+    end
+  end
+end

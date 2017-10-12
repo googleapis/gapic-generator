@@ -23,10 +23,6 @@ public abstract class StaticLangApiView {
   @Nullable
   public abstract ServiceDocView doc();
 
-  public boolean hasDoc() {
-    return doc() != null;
-  }
-
   @Nullable
   public abstract String releaseLevelAnnotation();
 

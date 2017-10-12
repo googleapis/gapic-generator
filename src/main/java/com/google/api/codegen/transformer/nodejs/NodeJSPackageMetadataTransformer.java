@@ -29,6 +29,7 @@ import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
+import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -90,7 +91,7 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
     NodeJSPackageMetadataNamer namer =
         new NodeJSPackageMetadataNamer(
             productConfig.getPackageName(), productConfig.getDomainLayerLocation());
-    models.addAll(generateMetadataViews(apiModel, namer));
+    models.addAll(generateMetadataViews(apiModel, productConfig, namer));
     models.add(generateReadmeView(apiModel, productConfig, namer));
     return models;
   }
@@ -176,16 +177,20 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
     return apiMethodView.build();
   }
 
-  private List<ViewModel> generateMetadataViews(ApiModel model, NodeJSPackageMetadataNamer namer) {
+  private List<ViewModel> generateMetadataViews(
+      ApiModel model, GapicProductConfig productConfig, NodeJSPackageMetadataNamer namer) {
     ImmutableList.Builder<ViewModel> views = ImmutableList.builder();
     for (String template : TOP_LEVEL_FILES) {
-      views.add(generateMetadataView(model, template, namer));
+      views.add(generateMetadataView(model, productConfig, template, namer));
     }
     return views.build();
   }
 
   private ViewModel generateMetadataView(
-      ApiModel model, String template, NodeJSPackageMetadataNamer namer) {
+      ApiModel model,
+      GapicProductConfig productConfig,
+      String template,
+      NodeJSPackageMetadataNamer namer) {
     String noLeadingNodeDir =
         template.startsWith(NODE_PREFIX) ? template.substring(NODE_PREFIX.length()) : template;
     int extensionIndex = noLeadingNodeDir.lastIndexOf(".");
@@ -198,11 +203,12 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
         .generateMetadataView(packageConfig, model, template, outputPath, TargetLanguage.NODEJS)
         .identifier(namer.getMetadataIdentifier())
         .hasMultipleServices(hasMultipleServices)
-        .additionalDependencies(generateAdditionalDependencies(model))
+        .additionalDependencies(generateAdditionalDependencies(model, productConfig))
         .build();
   }
 
-  private List<PackageDependencyView> generateAdditionalDependencies(ApiModel model) {
+  private List<PackageDependencyView> generateAdditionalDependencies(
+      ApiModel model, GapicProductConfig productConfig) {
     ImmutableList.Builder<PackageDependencyView> dependencies = ImmutableList.builder();
     dependencies.add(
         PackageDependencyView.create(
@@ -212,7 +218,36 @@ public class NodeJSPackageMetadataTransformer implements ModelToViewTransformer 
       dependencies.add(
           PackageDependencyView.create("lodash.union", VersionBound.create("4.6.0", "")));
     }
+    if (hasMixinApis(model, productConfig)) {
+      dependencies.add(
+          PackageDependencyView.create("lodash.merge", VersionBound.create("4.6.0", "")));
+    }
+    if (hasLongrunning(model, productConfig)) {
+      dependencies.add(
+          PackageDependencyView.create("protobufjs", VersionBound.create("6.8.0", "")));
+    }
     return dependencies.build();
+  }
+
+  private boolean hasLongrunning(ApiModel model, GapicProductConfig productConfig) {
+    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
+      if (productConfig.getInterfaceConfig(apiInterface).hasLongRunningOperations()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private boolean hasMixinApis(ApiModel model, GapicProductConfig productConfig) {
+    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
+      if (new GrpcStubTransformer()
+              .generateGrpcStubs(createContext(apiInterface, productConfig))
+              .size()
+          > 1) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private GapicInterfaceContext createContext(

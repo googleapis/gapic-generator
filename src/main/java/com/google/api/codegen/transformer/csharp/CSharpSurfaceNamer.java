@@ -407,8 +407,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getApiWrapperClassImplName(InterfaceConfig interfaceConfig) {
-    return publicClassName(
-        Name.upperCamel(interfaceConfig.getInterfaceModel().getSimpleName(), "ClientImpl"));
+    return publicClassName(Name.upperCamel(getInterfaceName(interfaceConfig), "ClientImpl"));
   }
 
   @Override

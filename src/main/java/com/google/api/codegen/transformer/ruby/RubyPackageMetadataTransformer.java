@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer.ruby;
 
-import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.TargetLanguage;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FlatteningConfig;
@@ -47,7 +46,6 @@ import com.google.api.codegen.viewmodel.metadata.TocContentView;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -191,7 +189,6 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
   private List<ApiMethodView> generateExampleMethods(
       ApiModel model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ApiMethodView> exampleMethods = ImmutableList.builder();
-    InterfaceView interfaceView = new InterfaceView();
     for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
       GapicInterfaceContext context = createContext(apiInterface, productConfig);
       if (context.getInterfaceConfig().getSmokeTestConfig() != null) {
@@ -204,7 +201,7 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
             context.asFlattenedMethodContext(method, flatteningGroup);
         exampleMethods.add(
             createExampleApiMethodView(
-                flattenedMethodContext, Iterables.size(model.getInterfaces(productConfig)) > 1));
+                flattenedMethodContext, model.hasMultipleServices(productConfig)));
       }
     }
     return exampleMethods.build();

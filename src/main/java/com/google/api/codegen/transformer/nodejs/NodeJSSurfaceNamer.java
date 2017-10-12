@@ -289,17 +289,17 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     ImmutableList.Builder<String> returnMessageLines = ImmutableList.builder();
     if (method.getRequestStreaming()) {
       returnMessageLines.add(
-          "@return {Stream} - A writable stream which accepts objects representing",
+          "@returns {Stream} - A writable stream which accepts objects representing",
           "  "
               + commentReformatter.getLinkedElementName(method.getInputType().getMessageType())
               + " for write() method.");
     } else {
       if (isProtobufEmpty(method.getOutputMessage())) {
         returnMessageLines.add(
-            "@return {Promise} - The promise which resolves when API call finishes.");
+            "@returns {Promise} - The promise which resolves when API call finishes.");
       } else {
         returnMessageLines.add(
-            "@return {Promise} - The promise which resolves to an array.",
+            "@returns {Promise} - The promise which resolves to an array.",
             "  The first element of the array is " + returnTypeDoc + ".");
         if (methodConfig.isPageStreaming()) {
           returnMessageLines.add(
@@ -377,13 +377,9 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   @Override
   public String getProtoFileName(ProtoFile file) {
     String filePath = file.getSimpleName().replace(".proto", ".js");
-    if (commentReformatter.isExternalFile(file)) {
-      filePath = filePath.replaceAll("/", "_");
-    } else {
-      int lastSlash = filePath.lastIndexOf('/');
-      if (lastSlash >= 0) {
-        filePath = filePath.substring(lastSlash + 1);
-      }
+    int lastSlash = filePath.lastIndexOf('/');
+    if (lastSlash >= 0) {
+      filePath = filePath.substring(lastSlash + 1);
     }
     return filePath;
   }
@@ -459,7 +455,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   @Override
   public String getByteLengthFunctionName(FieldModel typeRef) {
     if (typeRef.isMessage()) {
-      return "gax.createByteLengthFunction(grpcClients." + typeRef.getTypeFullName() + ")";
+      return "gax.createByteLengthFunction(loadedProtos." + typeRef.getTypeFullName() + ")";
     } else if (typeRef.isString() || typeRef.isBytes()) {
       return "function(s) { return s.length; }";
     } else {

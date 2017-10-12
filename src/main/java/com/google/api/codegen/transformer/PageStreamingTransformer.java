@@ -77,9 +77,9 @@ public class PageStreamingTransformer {
   }
 
   private PageStreamingDescriptorClassView generateDescriptorClass(MethodContext context) {
-    MethodModel method = context.getMethodModel();
     SurfaceNamer namer = context.getNamer();
     ImportTypeTable typeTable = context.getTypeTable();
+    MethodModel method = context.getMethodModel();
     PageStreamingConfig pageStreaming = context.getMethodConfig().getPageStreaming();
 
     PageStreamingDescriptorClassView.Builder desc = PageStreamingDescriptorClassView.newBuilder();
