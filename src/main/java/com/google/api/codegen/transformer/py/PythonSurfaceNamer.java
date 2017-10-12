@@ -380,11 +380,6 @@ public class PythonSurfaceNamer extends SurfaceNamer {
     return sb.toString();
   }
 
-  @Override
-  public String quoted(String text) {
-    return "'" + text + "'";
-  }
-
   /**
    * Somewhat misleadingly named; in the Python case, this converts the ReleaseLevel to a Trove
    * classifier, rather than an annotation.

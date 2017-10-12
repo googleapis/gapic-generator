@@ -48,6 +48,7 @@ import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -499,7 +500,11 @@ public class InitCodeTransformer {
     List<String> formatFunctionArgs = new ArrayList<>();
     for (String entityName : varList) {
       String entityValue =
-          context.getNamer().quoted("[" + Name.from(entityName).toUpperUnderscore() + "]");
+          context
+              .getTypeTable()
+              .renderPrimitiveValue(
+                  TypeRef.of(Type.TYPE_STRING),
+                  "[" + Name.from(entityName).toUpperUnderscore() + "]");
       if (initValueConfig.hasFormattingConfigInitialValues()
           && initValueConfig.getResourceNameBindingValues().containsKey(entityName)) {
         InitValue initValue = initValueConfig.getResourceNameBindingValues().get(entityName);

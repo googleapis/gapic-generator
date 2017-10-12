@@ -1423,11 +1423,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return original;
   }
 
-  /** Converts the given text to a quoted string. */
-  public String quoted(String text) {
-    return "\"" + text + "\"";
-  }
-
   /** Make the given type name able to accept nulls, if it is a primitive type */
   public String makePrimitiveTypeNullable(String typeName, TypeRef type) {
     return typeName;
