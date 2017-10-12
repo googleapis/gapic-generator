@@ -34,7 +34,6 @@ import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.GrpcStubTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
-import com.google.api.codegen.transformer.PackageMetadataNamer;
 import com.google.api.codegen.transformer.PageStreamingTransformer;
 import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.ServiceTransformer;
@@ -266,7 +265,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private List<ViewModel> generateIndexViews(
       Iterable<Interface> apiInterfaces, GapicProductConfig productConfig) {
-    PackageMetadataNamer packageMetadataNamer =
+    NodeJSPackageMetadataNamer packageMetadataNamer =
         new NodeJSPackageMetadataNamer(
             productConfig.getPackageName(), productConfig.getDomainLayerLocation());
     ArrayList<ViewModel> indexViews = new ArrayList<>();
@@ -330,7 +329,8 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
               .fileHeader(
                   fileHeaderTransformer.generateFileHeader(
                       productConfig, ImportSectionView.newBuilder().build(), namer))
-              .packageName(packageMetadataNamer.getMetadataIdentifier());
+              .packageName(packageMetadataNamer.getMetadataIdentifier())
+              .namespace(packageMetadataNamer.getServiceName());
       indexViews.add(versionIndexViewBuilder.build());
     }
     return indexViews;
