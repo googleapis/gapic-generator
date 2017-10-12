@@ -507,6 +507,7 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency "google-gax", "~> 0.8.0"
   gem.add_dependency "googleapis-common-protos", "~> 1.3.1"
+  gem.add_dependency "googleauth", "~> 0.5.1"
 
   gem.add_development_dependency "minitest", "~> 5.10"
   gem.add_development_dependency "rubocop", "<= 0.35.1"
@@ -585,10 +586,10 @@ module Google
     # returns long-running operations should implement the +Operations+ interface
     # so developers can have a consistent client experience.
     #
-    # @param credentials [Google::Gax::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
+    # @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
     #   Provides the means for authenticating requests made by the client. This parameter can
     #   be many types.
-    #   A `Google::Gax::Credentials` uses a the properties of its represented keyfile for
+    #   A `Google::Auth::Credentials` uses a the properties of its represented keyfile for
     #   authenticating requests made by this client.
     #   A `String` will be treated as the path to the keyfile to be used for the construction of
     #   credentials for this client.
@@ -724,10 +725,10 @@ module Google
       ALL_SCOPES = [
       ].freeze
 
-      # @param credentials [Google::Gax::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
+      # @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
       #   Provides the means for authenticating requests made by the client. This parameter can
       #   be many types.
-      #   A `Google::Gax::Credentials` uses a the properties of its represented keyfile for
+      #   A `Google::Auth::Credentials` uses a the properties of its represented keyfile for
       #   authenticating requests made by this client.
       #   A `String` will be treated as the path to the keyfile to be used for the construction of
       #   credentials for this client.
@@ -777,10 +778,10 @@ module Google
           warn "`service_path` and `port` parameters are deprecated and will be removed"
         end
 
-        credentials ||= Google::Gax::Credentials.default
+        credentials ||= Google::Auth::Credentials.default
 
         if credentials.is_a?(String) || credentials.is_a?(Hash)
-          updater_proc = Google::Gax::Credentials.new(credentials).updater_proc
+          updater_proc = Google::Auth::Credentials.new(credentials).updater_proc
         end
         if credentials.is_a?(GRPC::Core::Channel)
           channel = credentials
@@ -791,7 +792,7 @@ module Google
         if credentials.is_a?(Proc)
           updater_proc = credentials
         end
-        if credentials.is_a?(Google::Gax::Credentials)
+        if credentials.is_a?(Google::Auth::Credentials)
           updater_proc = credentials.updater_proc
         end
 
@@ -1081,6 +1082,7 @@ end
 require "minitest/autorun"
 require "minitest/spec"
 
+require "googleauth"
 require "google/gax"
 
 require "google/longrunning"
@@ -1118,7 +1120,7 @@ class MockGrpcClientStub
   end
 end
 
-class MockCredentialsClass < Google::Gax::Credentials
+class MockCredentialsClass < Google::Auth::Credentials
   def initialize(method_name)
     @method_name = method_name
   end
@@ -1158,7 +1160,7 @@ describe Google::Longrunning::OperationsClient do
       mock_credentials = MockCredentialsClass.new("get_operation")
 
       Google::Longrunning::Operations::Stub.stub(:new, mock_stub) do
-        Google::Gax::Credentials.stub(:default, mock_credentials) do
+        Google::Auth::Credentials.stub(:default, mock_credentials) do
           client = Google::Longrunning.new
 
           # Call method
@@ -1186,7 +1188,7 @@ describe Google::Longrunning::OperationsClient do
       mock_credentials = MockCredentialsClass.new("get_operation")
 
       Google::Longrunning::Operations::Stub.stub(:new, mock_stub) do
-        Google::Gax::Credentials.stub(:default, mock_credentials) do
+        Google::Auth::Credentials.stub(:default, mock_credentials) do
           client = Google::Longrunning.new
 
           # Call method
@@ -1229,7 +1231,7 @@ describe Google::Longrunning::OperationsClient do
       mock_credentials = MockCredentialsClass.new("list_operations")
 
       Google::Longrunning::Operations::Stub.stub(:new, mock_stub) do
-        Google::Gax::Credentials.stub(:default, mock_credentials) do
+        Google::Auth::Credentials.stub(:default, mock_credentials) do
           client = Google::Longrunning.new
 
           # Call method
@@ -1262,7 +1264,7 @@ describe Google::Longrunning::OperationsClient do
       mock_credentials = MockCredentialsClass.new("list_operations")
 
       Google::Longrunning::Operations::Stub.stub(:new, mock_stub) do
-        Google::Gax::Credentials.stub(:default, mock_credentials) do
+        Google::Auth::Credentials.stub(:default, mock_credentials) do
           client = Google::Longrunning.new
 
           # Call method
@@ -1296,7 +1298,7 @@ describe Google::Longrunning::OperationsClient do
       mock_credentials = MockCredentialsClass.new("cancel_operation")
 
       Google::Longrunning::Operations::Stub.stub(:new, mock_stub) do
-        Google::Gax::Credentials.stub(:default, mock_credentials) do
+        Google::Auth::Credentials.stub(:default, mock_credentials) do
           client = Google::Longrunning.new
 
           # Call method
@@ -1324,7 +1326,7 @@ describe Google::Longrunning::OperationsClient do
       mock_credentials = MockCredentialsClass.new("cancel_operation")
 
       Google::Longrunning::Operations::Stub.stub(:new, mock_stub) do
-        Google::Gax::Credentials.stub(:default, mock_credentials) do
+        Google::Auth::Credentials.stub(:default, mock_credentials) do
           client = Google::Longrunning.new
 
           # Call method
@@ -1358,7 +1360,7 @@ describe Google::Longrunning::OperationsClient do
       mock_credentials = MockCredentialsClass.new("delete_operation")
 
       Google::Longrunning::Operations::Stub.stub(:new, mock_stub) do
-        Google::Gax::Credentials.stub(:default, mock_credentials) do
+        Google::Auth::Credentials.stub(:default, mock_credentials) do
           client = Google::Longrunning.new
 
           # Call method
@@ -1386,7 +1388,7 @@ describe Google::Longrunning::OperationsClient do
       mock_credentials = MockCredentialsClass.new("delete_operation")
 
       Google::Longrunning::Operations::Stub.stub(:new, mock_stub) do
-        Google::Gax::Credentials.stub(:default, mock_credentials) do
+        Google::Auth::Credentials.stub(:default, mock_credentials) do
           client = Google::Longrunning.new
 
           # Call method

@@ -213,7 +213,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
   @Override
   public String getFullyQualifiedCredentialsClassName() {
     if (RubyUtil.isLongrunning(getPackageName())) {
-      return "Google::Gax::Credentials";
+      return "Google::Auth::Credentials";
     }
     return getTopLevelNamespace() + "::Credentials";
   }
