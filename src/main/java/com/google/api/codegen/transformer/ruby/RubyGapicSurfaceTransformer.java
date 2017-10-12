@@ -73,6 +73,8 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
       ImmutableList.of("GOOGLE_CLOUD_KEYFILE", "GCLOUD_KEYFILE");
   private static final List<String> DEFAULT_JSON_ENV_VARS =
       ImmutableList.of("GOOGLE_CLOUD_KEYFILE_JSON", "GCLOUD_KEYFILE_JSON");
+  private static final List<String> DEFAULT_PATHS =
+      ImmutableList.of("~/.config/gcloud/application_default_credentials.json");
 
   private final GapicCodePathMapper pathMapper;
   private final PackageMetadataConfig packageConfig;
@@ -241,7 +243,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
             .externalImports(
                 ImmutableList.of(
                     ImportFileView.newBuilder()
-                        .moduleName("google/gax")
+                        .moduleName("googleauth")
                         .types(ImmutableList.<ImportTypeView>of())
                         .build()))
             .build();
@@ -284,6 +286,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
     return CredentialsClassView.newBuilder()
         .pathEnvVars(pathEnvVars)
         .jsonEnvVars(jsonEnvVars)
+        .defaultPaths(DEFAULT_PATHS)
         .scopes(productServiceConfig.getAuthScopes(model))
         .build();
   }
