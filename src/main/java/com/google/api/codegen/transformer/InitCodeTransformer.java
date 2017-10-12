@@ -51,7 +51,6 @@ import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Spliterator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -532,10 +531,9 @@ public class InitCodeTransformer {
     Stream<InitCodeNode> stream =
         StreamSupport.stream(childItems.spliterator(), false)
             .filter(
-                initCodeNode ->
+                n ->
                     hasFieldConfig(
-                        context.getMethodConfig().getRequiredFieldConfigs().spliterator(),
-                        initCodeNode.getFieldConfig()));
+                        context.getMethodConfig().getRequiredFieldConfigs(), n.getFieldConfig()));
     return getFieldSettings(context, stream.collect(Collectors.toList()));
   }
 
@@ -544,15 +542,16 @@ public class InitCodeTransformer {
     Stream<InitCodeNode> stream =
         StreamSupport.stream(childItems.spliterator(), false)
             .filter(
-                initCodeNode ->
+                n ->
                     !hasFieldConfig(
-                        context.getMethodConfig().getRequiredFieldConfigs().spliterator(),
-                        initCodeNode.getFieldConfig()));
+                        context.getMethodConfig().getRequiredFieldConfigs(), n.getFieldConfig()));
     return getFieldSettings(context, stream.collect(Collectors.toList()));
   }
 
-  private boolean hasFieldConfig(Spliterator<FieldConfig> spliterator, FieldConfig fieldConfig) {
-    return StreamSupport.stream(spliterator, false).anyMatch(f -> f.equals(fieldConfig));
+  /** Returns true if fieldConfigs contains fieldConfig. */
+  private boolean hasFieldConfig(Iterable<FieldConfig> fieldConfigs, FieldConfig fieldConfig) {
+    return StreamSupport.stream(fieldConfigs.spliterator(), false)
+        .anyMatch(f -> f.equals(fieldConfig));
   }
 
   private List<FieldSettingView> getFieldSettings(

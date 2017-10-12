@@ -177,7 +177,7 @@
 # Render the API method call for page streaming
 @private pagedMethodCallSampleCode(apiMethod)
   client.{@apiMethod.name}(\
-    {@sampleMethodCallArgList(apiMethod.initCode)},{@" "}\
+    {@sampleMethodCallArgListAndComma(apiMethod.initCode)}\
     options=CallOptions(page_token=INITIAL_PAGE))
 @end
 
@@ -189,15 +189,21 @@
 @end
 
 @snippet sampleMethodCallArgList(initCode)
-    @join fieldSetting : initCode.requiredFieldSettings on ", "
-        {@fieldSetting.identifier}
+  @join fieldSetting : initCode.requiredFieldSettings on ", "
+    {@fieldSetting.identifier}
+  @end
+  @if initCode.optionalFieldSettings
+    @if initCode.requiredFieldSettings
+      ,{@" "}
     @end
-    @if initCode.optionalFieldSettings
-        @if initCode.requiredFieldSettings
-            ,{@" "}
-        @end
-        @join fieldSetting : initCode.optionalFieldSettings on ", "
-            {@fieldSetting.fieldName}={@fieldSetting.identifier}
-        @end
+    @join fieldSetting : initCode.optionalFieldSettings on ", "
+      {@fieldSetting.fieldName}={@fieldSetting.identifier}
     @end
+  @end
+@end
+
+@private sampleMethodCallArgListAndComma(initCode)
+  @if initCode.fieldSettings
+    {@sampleMethodCallArgList(initCode)}, {@""}
+  @end
 @end

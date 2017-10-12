@@ -367,10 +367,8 @@ public class PythonSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String injectRandomStringGeneratorCode(String randomString) {
-    randomString =
-        "'"
-            + CommonRenderingUtil.stripQuotes(randomString)
-            + "'"; // "randomString" -> 'randomString'.
+    // "randomString" -> 'randomString'.
+    randomString = '\'' + CommonRenderingUtil.stripQuotes(randomString) + '\'';
     Matcher m = InitFieldConfig.RANDOM_TOKEN_PATTERN.matcher(randomString);
     StringBuffer sb = new StringBuffer();
     List<String> stringParts = new ArrayList<>();

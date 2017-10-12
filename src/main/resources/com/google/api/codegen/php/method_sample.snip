@@ -70,8 +70,8 @@
         // doSomethingWith($element);
     }
 
-    // OR iterate over pages of elements, with the maximum page size set to 5
-    $pagedResponse = {@pageSizeMethodCallSampleCode(apiMethod)};
+    // OR iterate over pages of elements
+    $pagedResponse = {@methodCallSampleCode(apiMethod)};
     foreach ($pagedResponse->iteratePages() as $page) {
         foreach ($page as $element) {
             // doSomethingWith($element);
@@ -172,15 +172,6 @@
 
 @snippet methodCallSampleCode(apiMethod)
     @if apiMethod.isSingularRequestMethod
-        ${@apiMethod.apiVariableName}->{@apiMethod.name}(\
-            {@sampleMethodCallArgList(apiMethod.initCode)})
-    @else
-        ${@apiMethod.apiVariableName}->{@apiMethod.name}()
-    @end
-@end
-
-@private pageSizeMethodCallSampleCode(apiMethod)
-    @if apiMethod.hasRequiredParameters
         ${@apiMethod.apiVariableName}->{@apiMethod.name}(\
             {@sampleMethodCallArgList(apiMethod.initCode)})
     @else
