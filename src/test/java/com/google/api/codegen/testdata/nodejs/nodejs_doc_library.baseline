@@ -170,18 +170,73 @@ describe('LibraryServiceSmokeTest', () => {
 // limitations under the License.
 
 /**
- * @module @google-cloud/library
+ * @namespace google
+ */
+/**
+ * @namespace google.cloud
+ */
+/**
+ * @namespace google.cloud.library
+ */
+/**
+ * @namespace google.cloud.library.v1
  */
 
 'use strict';
 
 // Import the clients for each version supported by this package.
-var gapic = {
+const gapic = Object.freeze({
   v1: require('./v1'),
-};
+});
 
+/**
+ * The `@google-cloud/library` package has the following named exports:
+ *
+ * - `LibraryServiceClient` - Reference to
+ *   {@link v1.LibraryServiceClient}
+ * - `v1` - This is used for selecting or pinning a
+ *   particular backend service version. It exports:
+ *     - `LibraryServiceClient` - Reference to
+ *       {@link v1.LibraryServiceClient}
+ *
+ * @module {object} @google-cloud/library
+ * @alias nodejs-library
+ *
+ * @example <caption>Install the client library with
+ *   <a href="https://www.npmjs.com/">npm</a>:</caption>
+ * npm install --save @google-cloud/library
+ *
+ * @example <caption>Import the client library:</caption>
+ * const library = require('@google-cloud/library');
+ *
+ * @example <caption>Create a client that uses
+ *   <a href="https://goo.gl/64dyYX">Application Default Credentials
+ *   (ADC)</a>:</caption>
+ * let library = new library.LibraryServiceClient();
+ *
+ * @example <caption>Create a client with
+ *   <a href="https://goo.gl/RXp6VL">explicit credentials</a>:</caption>
+ * let library = new library.LibraryServiceClient({
+ *   projectId: 'your-project-id',
+ *   keyFilename: '/path/to/keyfile.json',
+ * });
+ */
+
+/**
+ * @type {object}
+ * @property {constructor} LibraryServiceClient
+ *   Reference to {@link v1.LibraryServiceClient}
+ */
 module.exports = gapic.v1;
+
+/**
+ * @type {object}
+ * @property {constructor} LibraryServiceClient
+ *   Reference to {@link v1.LibraryServiceClient}
+ */
 module.exports.v1 = gapic.v1;
+
+// Alias `module.exports` as `module.exports.default`, for future-proofing.
 module.exports.default = Object.assign({}, module.exports);
 
 ============== file: src/v1/doc/google/example/library/v1/doc_field_mask.js ==============
@@ -2344,7 +2399,8 @@ class LibraryServiceClient {
     }
 
     // Load the applicable protos.
-    var protos = merge({},
+    var protos = merge(
+      {},
       gaxGrpc.loadProto(
         path.join(__dirname, '..', '..', 'protos'),
         'library.proto'
