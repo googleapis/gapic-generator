@@ -140,18 +140,24 @@
 @end
 
 @private methodCallSampleCode(apiMethod)
-  @let fieldSettings = apiMethod.initCode.fieldSettings
-    @if fieldSettings
-      {@apiMethod.apiVariableName}.{@apiMethod.name}\
-        ({@sampleMethodCallArgList(fieldSettings)})
-    @else
-      {@apiMethod.apiVariableName}.{@apiMethod.name}
-    @end
+  @if apiMethod.isSingularRequestMethod
+    {@apiMethod.apiVariableName}->{@apiMethod.name}(\
+      {@sampleMethodCallArgList(apiMethod.initCode)})
+  @else
+    {@apiMethod.apiVariableName}->{@apiMethod.name}
   @end
 @end
 
-@private sampleMethodCallArgList(fieldSettings)
-  @join fieldSetting : fieldSettings on ", "
-    {@fieldSetting.identifier}
-  @end
+@snippet sampleMethodCallArgList(initCode)
+    @join fieldSetting : initCode.requiredFieldSettings on ", "
+        {@fieldSetting.identifier}
+    @end
+    @if initCode.optionalFieldSettings
+        @if initCode.requiredFieldSettings
+            ,{@" "}
+        @end
+        @join fieldSetting : initCode.optionalFieldSettings on ", "
+            {@fieldSetting.fieldName}: {@fieldSetting.identifier}
+        @end
+    @end
 @end

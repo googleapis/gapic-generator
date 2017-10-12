@@ -152,7 +152,7 @@
         self.assertRaises(\
             errors.GaxError, \
             client.{@test.clientMethodName}\
-            {@fieldSettingArgListAfterComma(test.initCode.fieldSettings)})
+            {@fieldSettingArgListAfterComma(test.initCode)})
 @end
 
 @private pagedStreamingTestWithException(test, moduleName)
@@ -258,7 +258,7 @@
 
 @private unaryTestMethodCall(test)
     client.{@test.clientMethodName}(\
-        {@fieldSettingArgList(test.initCode.fieldSettings)})
+        {@sampleMethodCallArgList(test.initCode)})
 @end
 
 @private requestStreamingTestMethodCall(test)
@@ -304,8 +304,8 @@
     self.assertEqual(request, actual_request)
 @end
 
-@private fieldSettingArgListAfterComma(fieldSettings)
-  @if fieldSettings
-    , {@fieldSettingArgList(fieldSettings)}
+@private fieldSettingArgListAfterComma(initCode)
+  @if initCode.fieldSettings
+    , {@sampleMethodCallArgList(initCode)}
   @end
 @end

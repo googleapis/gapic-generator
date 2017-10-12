@@ -29,13 +29,19 @@ $ npm install --save @google-cloud/library
  });
 
  var formattedName = client.bookPath("testShelf-" + Date.now().toString(), projectId);
+ var optionalFoo = '';
  var rating = 'GOOD';
  var book = {
    rating: rating,
  };
+ var updateMask = {};
+ var physicalMask = {};
  var request = {
    name: formattedName,
+   optionalFoo: optionalFoo,
    book: book,
+   updateMask: updateMask,
+   physicalMask: physicalMask,
  };
  client.updateBook(request)
    .then(responses => {
@@ -136,13 +142,19 @@ describe('LibraryServiceSmokeTest', () => {
     });
 
     var formattedName = client.bookPath("testShelf-" + Date.now().toString(), projectId);
+    var optionalFoo = '';
     var rating = 'GOOD';
     var book = {
       rating: rating,
     };
+    var updateMask = {};
+    var physicalMask = {};
     var request = {
       name: formattedName,
+      optionalFoo: optionalFoo,
       book: book,
+      updateMask: updateMask,
+      physicalMask: physicalMask,
     };
     client.updateBook(request)
       .then(responses => {
@@ -1264,6 +1276,8 @@ class LibraryServiceClient {
    *   The book to update with.
    *
    *   This object should have the same structure as [Book]{@link google.example.library.v1.Book}
+   * @param {string=} request.optionalFoo
+   *   An optional foo.
    * @param {Object=} request.updateMask
    *   A field mask to apply, rendered as an HTTP parameter.
    *

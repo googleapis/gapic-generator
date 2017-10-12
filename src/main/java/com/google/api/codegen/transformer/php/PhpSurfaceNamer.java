@@ -230,6 +230,11 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
+  public String quoted(String text) {
+    return "'" + text + "'";
+  }
+
+  @Override
   public String injectRandomStringGeneratorCode(String randomString) {
     String delimiter = ",";
     String[] split =
@@ -243,7 +248,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
         if (token.equals(InitFieldConfig.RANDOM_TOKEN)) {
           stringParts.add("time()");
         } else {
-          stringParts.add("\"" + token + "\"");
+          stringParts.add(quoted(token));
         }
       }
     }

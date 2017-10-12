@@ -214,7 +214,7 @@
         // Mock request
         {@initCode(test.initCode, "client")}
 
-        $serverStream = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
+        $serverStream = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode)});
         $this->assertInstanceOf(ServerStream::class, $serverStream);
 
         $responses = iterator_to_array($serverStream->readAll());
@@ -243,7 +243,7 @@
         // Mock request
         {@initCode(test.initCode, "client")}
 
-        $serverStream = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
+        $serverStream = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode)});
         $results = $serverStream->readAll();
 
         try {
@@ -298,10 +298,10 @@
     {
         {@singleCallTestSetup(test)}
         @if test.hasReturnValue
-            $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
+            $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode)});
             $this->assertEquals($expectedResponse, $response);
         @else
-            $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
+            $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode)});
         @end
         {@singleCallSuccessAsserts(test)}
 
@@ -316,7 +316,7 @@
     public function {@test.name}()
     {
         {@singleCallTestSetup(test)}
-        $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
+        $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode)});
         $this->assertEquals($expectedResponse, $response->getPage()->getResponseObject());
         @join pageStreamingResponseView : test.pageStreamingResponseViews
             ${@pageStreamingResponseView.resourcesVarName} = iterator_to_array($response->{@pageStreamingResponseView.resourcesIterateMethod}());
@@ -350,7 +350,7 @@
 
         @end
         try {
-            $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
+            $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode)});
             // If the $client method call did not throw, fail the test
             $this->fail("Expected an ApiException, but no exception was thrown.");
         } catch (ApiException $ex) {
@@ -409,7 +409,7 @@
           {@initCode(test.initCode, "client")}
 
         @end
-        $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
+        $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode)});
         $this->assertFalse($response->isDone());
         $this->assertNull($response->getResult());
         {@lroCallSuccessAsserts(test)}
@@ -472,7 +472,7 @@
           {@initCode(test.initCode, "client")}
 
         @end
-        $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
+        $response = $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode)});
         $this->assertFalse($response->isDone());
         $this->assertNull($response->getResult());
 

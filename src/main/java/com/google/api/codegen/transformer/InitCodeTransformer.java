@@ -51,6 +51,10 @@ import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Spliterator;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * InitCodeTransformer generates initialization code for a given method and then transforms it to a
@@ -232,6 +236,8 @@ public class InitCodeTransformer {
         .lines(generateSurfaceInitCodeLines(context, orderedItems))
         .topLevelLines(generateSurfaceInitCodeLines(context, argItems))
         .fieldSettings(getFieldSettings(context, argItems))
+        .optionalFieldSettings(getOptionalFieldSettings(context, argItems))
+        .requiredFieldSettings(getRequiredFieldSettings(context, argItems))
         .importSection(importSectionTransformer.generateImportSection(context, orderedItems))
         .versionIndexFileImportName(namer.getVersionIndexFileImportName())
         .topLevelIndexFileImportName(namer.getTopLevelIndexFileImportName())
@@ -307,7 +313,6 @@ public class InitCodeTransformer {
     surfaceLine.typeName(typeName);
     surfaceLine.fullyQualifiedTypeName(typeTable.getFullNameFor(item.getType()));
     surfaceLine.typeConstructor(namer.getTypeConstructor(typeName));
-
     surfaceLine.fieldSettings(getFieldSettings(context, item.getChildren().values()));
 
     return surfaceLine.build();
@@ -520,6 +525,34 @@ public class InitCodeTransformer {
       formatFunctionArgs.add(entityValue);
     }
     return formatFunctionArgs;
+  }
+
+  private List<FieldSettingView> getRequiredFieldSettings(
+      GapicMethodContext context, Iterable<InitCodeNode> childItems) {
+    Stream<InitCodeNode> stream =
+        StreamSupport.stream(childItems.spliterator(), false)
+            .filter(
+                initCodeNode ->
+                    hasFieldConfig(
+                        context.getMethodConfig().getRequiredFieldConfigs().spliterator(),
+                        initCodeNode.getFieldConfig()));
+    return getFieldSettings(context, stream.collect(Collectors.toList()));
+  }
+
+  private List<FieldSettingView> getOptionalFieldSettings(
+      GapicMethodContext context, Iterable<InitCodeNode> childItems) {
+    Stream<InitCodeNode> stream =
+        StreamSupport.stream(childItems.spliterator(), false)
+            .filter(
+                initCodeNode ->
+                    !hasFieldConfig(
+                        context.getMethodConfig().getRequiredFieldConfigs().spliterator(),
+                        initCodeNode.getFieldConfig()));
+    return getFieldSettings(context, stream.collect(Collectors.toList()));
+  }
+
+  private boolean hasFieldConfig(Spliterator<FieldConfig> spliterator, FieldConfig fieldConfig) {
+    return StreamSupport.stream(spliterator, false).anyMatch(f -> f.equals(fieldConfig));
   }
 
   private List<FieldSettingView> getFieldSettings(
