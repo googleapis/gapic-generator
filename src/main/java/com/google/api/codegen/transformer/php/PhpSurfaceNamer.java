@@ -230,11 +230,6 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String quoted(String text) {
-    return "'" + text + "'";
-  }
-
-  @Override
   public String injectRandomStringGeneratorCode(String randomString) {
     String delimiter = ",";
     String[] split =
@@ -253,5 +248,10 @@ public class PhpSurfaceNamer extends SurfaceNamer {
       }
     }
     return Joiner.on(". ").join(stringParts);
+  }
+
+  @Override
+  public String quoted(String text) {
+    return '\'' + text + '\'';
   }
 }
