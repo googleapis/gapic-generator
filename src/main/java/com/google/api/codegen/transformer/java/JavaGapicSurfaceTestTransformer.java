@@ -57,7 +57,7 @@ import java.util.List;
 /** A subclass of ModelToViewTransformer which translates model into API tests in Java. */
 public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
   private static String UNIT_TEST_TEMPLATE_FILE = "java/test.snip";
-  private static String SMOKE_TEST_TEMPLATE_FILE = "java/smoke_sample.snip";
+  private static String SMOKE_TEST_TEMPLATE_FILE = "java/smoke_test.snip";
   private static String MOCK_SERVICE_FILE = "java/mock_service.snip";
   private static String MOCK_SERVICE_IMPL_FILE = "java/mock_service_impl.snip";
 

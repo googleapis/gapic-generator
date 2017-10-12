@@ -94,18 +94,81 @@ $ npm install --save @google-cloud/multiple-services
 // limitations under the License.
 
 /**
- * @module @google-cloud/multiple-services
+ * @namespace google
+ */
+/**
+ * @namespace google.cloud
+ */
+/**
+ * @namespace google.cloud.multiple-services
+ */
+/**
+ * @namespace google.cloud.multiple-services.v1
  */
 
 'use strict';
 
 // Import the clients for each version supported by this package.
-var gapic = {
+const gapic = Object.freeze({
   v1: require('./v1'),
-};
+});
 
+/**
+ * The `@google-cloud/multiple-services` package has the following named exports:
+ *
+ * - `IncrementerServiceClient` - Reference to
+ *   {@link v1.IncrementerServiceClient}
+ * - `DecrementerServiceClient` - Reference to
+ *   {@link v1.DecrementerServiceClient}
+ * - `v1` - This is used for selecting or pinning a
+ *   particular backend service version. It exports:
+ *     - `IncrementerServiceClient` - Reference to
+ *       {@link v1.IncrementerServiceClient}
+ *     - `DecrementerServiceClient` - Reference to
+ *       {@link v1.DecrementerServiceClient}
+ *
+ * @module {object} @google-cloud/multiple-services
+ * @alias nodejs-multiple-services
+ *
+ * @example <caption>Install the client library with
+ *   <a href="https://www.npmjs.com/">npm</a>:</caption>
+ * npm install --save @google-cloud/multiple-services
+ *
+ * @example <caption>Import the client library:</caption>
+ * const multiple-services = require('@google-cloud/multiple-services');
+ *
+ * @example <caption>Create a client that uses
+ *   <a href="https://goo.gl/64dyYX">Application Default Credentials
+ *   (ADC)</a>:</caption>
+ * let multiple-services = new multiple-services.IncrementerServiceClient();
+ *
+ * @example <caption>Create a client with
+ *   <a href="https://goo.gl/RXp6VL">explicit credentials</a>:</caption>
+ * let multiple-services = new multiple-services.IncrementerServiceClient({
+ *   projectId: 'your-project-id',
+ *   keyFilename: '/path/to/keyfile.json',
+ * });
+ */
+
+/**
+ * @type {object}
+ * @property {constructor} IncrementerServiceClient
+ *   Reference to {@link v1.IncrementerServiceClient}
+ * @property {constructor} DecrementerServiceClient
+ *   Reference to {@link v1.DecrementerServiceClient}
+ */
 module.exports = gapic.v1;
+
+/**
+ * @type {object}
+ * @property {constructor} IncrementerServiceClient
+ *   Reference to {@link v1.IncrementerServiceClient}
+ * @property {constructor} DecrementerServiceClient
+ *   Reference to {@link v1.DecrementerServiceClient}
+ */
 module.exports.v1 = gapic.v1;
+
+// Alias `module.exports` as `module.exports.default`, for future-proofing.
 module.exports.default = Object.assign({}, module.exports);
 
 ============== file: src/v1/decrementer_service_client.js ==============
@@ -197,7 +260,8 @@ class DecrementerServiceClient {
     }
 
     // Load the applicable protos.
-    var protos = merge({},
+    var protos = merge(
+      {},
       gaxGrpc.loadProto(
         path.join(__dirname, '..', '..', 'protos'),
         'multiple_services.proto'
@@ -426,7 +490,8 @@ class IncrementerServiceClient {
     }
 
     // Load the applicable protos.
-    var protos = merge({},
+    var protos = merge(
+      {},
       gaxGrpc.loadProto(
         path.join(__dirname, '..', '..', 'protos'),
         'multiple_services.proto'
