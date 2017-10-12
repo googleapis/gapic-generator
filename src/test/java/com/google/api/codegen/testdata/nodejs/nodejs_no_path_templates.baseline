@@ -119,9 +119,10 @@ const gax = require('google-gax');
 const merge = require('lodash.merge');
 const path = require('path');
 
+const VERSION = require('../package.json').version;
+
 /**
  * @class
- * @memberof v1
  */
 class NoTemplatesApiServiceClient {
   /**
@@ -155,11 +156,14 @@ class NoTemplatesApiServiceClient {
     this._descriptors = {};
 
     // Ensure that options include the service address and port.
-    opts = Object.assign({
-      clientConfig: {},
-      port: this.constructor.port,
-      servicePath: this.constructor.servicePath,
-    }, opts);
+    opts = Object.assign(
+      {
+        clientConfig: {},
+        port: this.constructor.port,
+        servicePath: this.constructor.servicePath,
+      },
+      opts
+    );
 
     // Create a `gaxGrpc` object, with any grpc-specific options
     // sent to the client.
@@ -174,18 +178,19 @@ class NoTemplatesApiServiceClient {
       `gl-node/${process.version.node}`,
       `grpc/${gaxGrpc.grpcVersion}`,
       `gax/${gax.version}`,
-      `gapic/${this.version}`,
+      `gapic/${VERSION}`,
     ];
     if (opts.libName && opts.libVersion) {
       clientHeader.push(`${opts.libName}/${opts.libVersion}`);
     }
 
     // Load the applicable protos.
-    var protos = merge({},
+    var protos = merge(
+      {},
       gaxGrpc.loadProto(
         path.join(__dirname, '..', 'protos'),
         'no_path_templates.proto'
-      ),
+      )
     );
 
     // Put together the default options sent with requests.
@@ -193,7 +198,7 @@ class NoTemplatesApiServiceClient {
       'google.cloud.example.v1.NoTemplatesAPIService',
       gapicConfig,
       opts.clientConfig,
-      {'x-goog-api-client': clientHeader.join(' ')},
+      {'x-goog-api-client': clientHeader.join(' ')}
     );
 
     // Set up a dictionary of "inner API calls"; the core implementation
@@ -215,10 +220,13 @@ class NoTemplatesApiServiceClient {
     ];
     for (let methodName of noTemplatesApiServiceStubMethods) {
       this._innerApiCalls[methodName] = gax.createApiCall(
-        noTemplatesApiServiceStub.then(stub => function() {
-          var args = Array.prototype.slice.call(arguments, 0);
-          return stub[methodName].apply(stub, args);
-        }),
+        noTemplatesApiServiceStub.then(
+          stub =>
+            function() {
+              var args = Array.prototype.slice.call(arguments, 0);
+              return stub[methodName].apply(stub, args);
+            }
+        ),
         defaults[methodName],
         null
       );
@@ -302,7 +310,7 @@ class NoTemplatesApiServiceClient {
       request = {};
     }
     return this._innerApiCalls.increment(request, options, callback);
-  };
+  }
 }
 
 
@@ -372,7 +380,11 @@ describe('NoTemplatesApiServiceClient', () => {
       var request = {};
 
       // Mock Grpc layer
-      client._innerApiCalls.increment = mockSimpleGrpcMethod(request, null, error);
+      client._innerApiCalls.increment = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
 
       client.increment(request, err => {
         assert(err instanceof Error);
@@ -389,11 +401,9 @@ function mockSimpleGrpcMethod(expectedRequest, response, error) {
     assert.deepStrictEqual(actualRequest, expectedRequest);
     if (error) {
       callback(error);
-    }
-    else if (response) {
+    } else if (response) {
       callback(null, response);
-    }
-    else {
+    } else {
       callback(null);
     }
   };
