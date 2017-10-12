@@ -9,16 +9,12 @@
 @end
 
 @private licenseSection(fileHeader)
-  /*
-   {@comments(fileHeader.copyrightLines)}
-   *
-   {@comments(fileHeader.licenseLines)}
-   */
+  {@lineComments(fileHeader.copyrightLines)}
+  //
+  {@lineComments(fileHeader.licenseLines)}
 
-  /*
-   * Note: this file is purely for documentation. Any contents are not expected
-   * to be loaded as the JS file.
-   */
+  // Note: this file is purely for documentation. Any contents are not expected
+  // to be loaded as the JS file.
 @end
 
 @private toplevelHeader(elementDoc)
@@ -49,7 +45,7 @@
      {@properties(message)}
    @end
    * @@typedef {@message.name}
-   * @@member {@message.packageName}
+   * @@memberof {@message.packageName}
    * @@see [{@message.fullName} definition in proto format]{@@link {@message.fileUrl}}
    */
   {@header}
@@ -69,6 +65,7 @@
      *
    @end
    * @@enum {number}
+   * @@memberof {@enum.packageName}
    */
   {@header}
     @join value : enum.values() on ",".add(BREAK)
@@ -110,4 +107,3 @@
     {@unhandledCase()}
   @end
 @end
-

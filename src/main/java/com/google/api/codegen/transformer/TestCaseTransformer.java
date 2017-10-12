@@ -326,7 +326,7 @@ public class TestCaseTransformer {
       if (line.lineType() == InitCodeLineType.SimpleInitLine) {
         SimpleInitCodeLineView simpleLine = (SimpleInitCodeLineView) line;
         String projectVarName =
-            namer.localVarName(Name.from(InitFieldConfig.PROJECT_ID_VARIABLE_NAME));
+            namer.localVarReference(Name.from(InitFieldConfig.PROJECT_ID_VARIABLE_NAME));
         if (simpleLine.initValue() instanceof ResourceNameInitValueView) {
           ResourceNameInitValueView initValue = (ResourceNameInitValueView) simpleLine.initValue();
           return initValue.formatArgs().contains(projectVarName);
