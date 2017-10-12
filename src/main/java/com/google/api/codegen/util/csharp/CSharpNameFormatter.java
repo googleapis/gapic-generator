@@ -47,7 +47,7 @@ public class CSharpNameFormatter implements NameFormatter {
   }
 
   @Override
-  public String varReference(Name name) {
+  public String localVarReference(Name name) {
     return name.toLowerCamel();
   }
 
