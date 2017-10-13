@@ -324,7 +324,7 @@ rating = :GOOD
 book = { rating: rating }
 update_mask = {}
 physical_mask = {}
-response = library_service_client->update_book(formatted_name, book, optional_foo: optional_foo, update_mask: update_mask, physical_mask: physical_mask)
+response = library_service_client.update_book(formatted_name, book, optional_foo: optional_foo, update_mask: update_mask, physical_mask: physical_mask)
 ```
 
 ### Next Steps
@@ -567,7 +567,7 @@ require "pathname"
 # book = { rating: rating }
 # update_mask = {}
 # physical_mask = {}
-# response = library_service_client->update_book(formatted_name, book, optional_foo: optional_foo, update_mask: update_mask, physical_mask: physical_mask)
+# response = library_service_client.update_book(formatted_name, book, optional_foo: optional_foo, update_mask: update_mask, physical_mask: physical_mask)
 # ```
 #
 # ### Next Steps
@@ -723,7 +723,7 @@ require "library/v1/library_service_client"
 # book = { rating: rating }
 # update_mask = {}
 # physical_mask = {}
-# response = library_service_client->update_book(formatted_name, book, optional_foo: optional_foo, update_mask: update_mask, physical_mask: physical_mask)
+# response = library_service_client.update_book(formatted_name, book, optional_foo: optional_foo, update_mask: update_mask, physical_mask: physical_mask)
 # ```
 #
 # ### Next Steps
@@ -2305,7 +2305,7 @@ end
 # book = { rating: rating }
 # update_mask = {}
 # physical_mask = {}
-# response = library_service_client->update_book(formatted_name, book, optional_foo: optional_foo, update_mask: update_mask, physical_mask: physical_mask)
+# response = library_service_client.update_book(formatted_name, book, optional_foo: optional_foo, update_mask: update_mask, physical_mask: physical_mask)
 # ```
 #
 # ### Next Steps
@@ -2776,7 +2776,7 @@ module Library
       #
       #   library_service_client = Library::V1.new
       #   shelf = {}
-      #   response = library_service_client->create_shelf(shelf)
+      #   response = library_service_client.create_shelf(shelf)
 
       def create_shelf \
           shelf,
@@ -2812,7 +2812,7 @@ module Library
       #   library_service_client = Library::V1.new
       #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
       #   options_ = ''
-      #   response = library_service_client->get_shelf(formatted_name, options_)
+      #   response = library_service_client.get_shelf(formatted_name, options_)
 
       def get_shelf \
           name,
@@ -2847,12 +2847,12 @@ module Library
       #   library_service_client = Library::V1.new
       #
       #   # Iterate over all results.
-      #   library_service_client->list_shelves().each do |element|
+      #   library_service_client.list_shelves().each do |element|
       #     # Process element.
       #   end
       #
       #   # Or iterate over results one page at a time.
-      #   library_service_client->list_shelves().each_page do |page|
+      #   library_service_client.list_shelves().each_page do |page|
       #     # Process each page at a time.
       #     page.each do |element|
       #       # Process element.
@@ -2877,7 +2877,7 @@ module Library
       #
       #   library_service_client = Library::V1.new
       #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
-      #   library_service_client->delete_shelf(formatted_name)
+      #   library_service_client.delete_shelf(formatted_name)
 
       def delete_shelf \
           name,
@@ -2909,7 +2909,7 @@ module Library
       #   library_service_client = Library::V1.new
       #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
       #   formatted_other_shelf_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
-      #   response = library_service_client->merge_shelves(formatted_name, formatted_other_shelf_name)
+      #   response = library_service_client.merge_shelves(formatted_name, formatted_other_shelf_name)
 
       def merge_shelves \
           name,
@@ -2942,7 +2942,7 @@ module Library
       #   library_service_client = Library::V1.new
       #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
       #   book = {}
-      #   response = library_service_client->create_book(formatted_name, book)
+      #   response = library_service_client.create_book(formatted_name, book)
 
       def create_book \
           name,
@@ -2987,7 +2987,7 @@ module Library
       #   books = []
       #   series_string = "foobar"
       #   series_uuid = { series_string: series_string }
-      #   response = library_service_client->publish_series(shelf, books, series_uuid)
+      #   response = library_service_client.publish_series(shelf, books, series_uuid)
 
       def publish_series \
           shelf,
@@ -3021,7 +3021,7 @@ module Library
       #
       #   library_service_client = Library::V1.new
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
-      #   response = library_service_client->get_book(formatted_name)
+      #   response = library_service_client.get_book(formatted_name)
 
       def get_book \
           name,
@@ -3061,12 +3061,12 @@ module Library
       #   formatted_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
       #
       #   # Iterate over all results.
-      #   library_service_client->list_books(formatted_name).each do |element|
+      #   library_service_client.list_books(formatted_name).each do |element|
       #     # Process element.
       #   end
       #
       #   # Or iterate over results one page at a time.
-      #   library_service_client->list_books(formatted_name).each_page do |page|
+      #   library_service_client.list_books(formatted_name).each_page do |page|
       #     # Process each page at a time.
       #     page.each do |element|
       #       # Process element.
@@ -3100,7 +3100,7 @@ module Library
       #
       #   library_service_client = Library::V1.new
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
-      #   library_service_client->delete_book(formatted_name)
+      #   library_service_client.delete_book(formatted_name)
 
       def delete_book \
           name,
@@ -3142,7 +3142,7 @@ module Library
       #   library_service_client = Library::V1.new
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   book = {}
-      #   response = library_service_client->update_book(formatted_name, book)
+      #   response = library_service_client.update_book(formatted_name, book)
 
       def update_book \
           name,
@@ -3179,7 +3179,7 @@ module Library
       #   library_service_client = Library::V1.new
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   formatted_other_shelf_name = Library::V1::LibraryServiceClient.shelf_path("[SHELF_ID]")
-      #   response = library_service_client->move_book(formatted_name, formatted_other_shelf_name)
+      #   response = library_service_client.move_book(formatted_name, formatted_other_shelf_name)
 
       def move_book \
           name,
@@ -3217,12 +3217,12 @@ module Library
       #   library_service_client = Library::V1.new
       #
       #   # Iterate over all results.
-      #   library_service_client->list_strings().each do |element|
+      #   library_service_client.list_strings().each do |element|
       #     # Process element.
       #   end
       #
       #   # Or iterate over results one page at a time.
-      #   library_service_client->list_strings().each_page do |page|
+      #   library_service_client.list_strings().each_page do |page|
       #     # Process each page at a time.
       #     page.each do |element|
       #       # Process element.
@@ -3265,7 +3265,7 @@ module Library
       #     alignment: alignment
       #   }
       #   comments = [comments_element]
-      #   library_service_client->add_comments(formatted_name, comments)
+      #   library_service_client.add_comments(formatted_name, comments)
 
       def add_comments \
           name,
@@ -3294,7 +3294,7 @@ module Library
       #
       #   library_service_client = Library::V1.new
       #   formatted_name = Library::V1::LibraryServiceClient.archived_book_path("[ARCHIVE_PATH]", "[BOOK_ID]")
-      #   response = library_service_client->get_book_from_archive(formatted_name)
+      #   response = library_service_client.get_book_from_archive(formatted_name)
 
       def get_book_from_archive \
           name,
@@ -3324,7 +3324,7 @@ module Library
       #   library_service_client = Library::V1.new
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   formatted_alt_book_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
-      #   response = library_service_client->get_book_from_anywhere(formatted_name, formatted_alt_book_name)
+      #   response = library_service_client.get_book_from_anywhere(formatted_name, formatted_alt_book_name)
 
       def get_book_from_anywhere \
           name,
@@ -3352,7 +3352,7 @@ module Library
       #
       #   library_service_client = Library::V1.new
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
-      #   response = library_service_client->get_book_from_absolutely_anywhere(formatted_name)
+      #   response = library_service_client.get_book_from_absolutely_anywhere(formatted_name)
 
       def get_book_from_absolutely_anywhere \
           name,
@@ -3384,7 +3384,7 @@ module Library
       #   index_name = "default index"
       #   index_map_item = ''
       #   index_map = { "default_key" => index_map_item }
-      #   library_service_client->update_book_index(formatted_name, index_name, index_map)
+      #   library_service_client.update_book_index(formatted_name, index_name, index_map)
 
       def update_book_index \
           name,
@@ -3415,7 +3415,7 @@ module Library
       #   require "library/v1"
       #
       #   library_service_client = Library::V1.new
-      #   library_service_client->stream_shelves().each do |element|
+      #   library_service_client.stream_shelves().each do |element|
       #     # Process element.
       #   end
 
@@ -3441,7 +3441,7 @@ module Library
       #
       #   library_service_client = Library::V1.new
       #   name = ''
-      #   library_service_client->stream_books(name).each do |element|
+      #   library_service_client.stream_books(name).each do |element|
       #     # Process element.
       #   end
 
@@ -3549,12 +3549,12 @@ module Library
       #   shelves = []
       #
       #   # Iterate over all results.
-      #   library_service_client->find_related_books(names, shelves).each do |element|
+      #   library_service_client.find_related_books(names, shelves).each do |element|
       #     # Process element.
       #   end
       #
       #   # Or iterate over results one page at a time.
-      #   library_service_client->find_related_books(names, shelves).each_page do |page|
+      #   library_service_client.find_related_books(names, shelves).each_page do |page|
       #     # Process each page at a time.
       #     page.each do |element|
       #       # Process element.
@@ -3594,7 +3594,7 @@ module Library
       #   library_service_client = Library::V1.new
       #   formatted_resource = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   tag = ''
-      #   response = library_service_client->add_tag(formatted_resource, tag)
+      #   response = library_service_client.add_tag(formatted_resource, tag)
 
       def add_tag \
           resource,
@@ -3627,7 +3627,7 @@ module Library
       #   library_service_client = Library::V1.new
       #   formatted_resource = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #   label = ''
-      #   response = library_service_client->add_label(formatted_resource, label)
+      #   response = library_service_client.add_label(formatted_resource, label)
 
       def add_label \
           resource,
@@ -3657,7 +3657,7 @@ module Library
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #
       #   # Register a callback during the method call.
-      #   operation = library_service_client->get_big_book(formatted_name) do |op|
+      #   operation = library_service_client.get_big_book(formatted_name) do |op|
       #     raise op.results.message if op.error?
       #     op_results = op.results
       #     # Process the results.
@@ -3717,7 +3717,7 @@ module Library
       #   formatted_name = Library::V1::LibraryServiceClient.book_path("[SHELF_ID]", "[BOOK_ID]")
       #
       #   # Register a callback during the method call.
-      #   operation = library_service_client->get_big_nothing(formatted_name) do |op|
+      #   operation = library_service_client.get_big_nothing(formatted_name) do |op|
       #     raise op.results.message if op.error?
       #     op_results = op.results
       #     # Process the results.
@@ -3861,7 +3861,7 @@ module Library
       #   required_repeated_fixed32 = []
       #   required_repeated_fixed64 = []
       #   required_map = {}
-      #   response = library_service_client->test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, formatted_required_repeated_resource_name, formatted_required_repeated_resource_name_oneof, required_repeated_fixed32, required_repeated_fixed64, required_map)
+      #   response = library_service_client.test_optional_required_flattening_params(required_singular_int32, required_singular_int64, required_singular_float, required_singular_double, required_singular_bool, required_singular_enum, required_singular_string, required_singular_bytes, required_singular_message, required_singular_resource_name, required_singular_resource_name_oneof, required_singular_fixed32, required_singular_fixed64, required_repeated_int32, required_repeated_int64, required_repeated_float, required_repeated_double, required_repeated_bool, required_repeated_enum, required_repeated_string, required_repeated_bytes, required_repeated_message, formatted_required_repeated_resource_name, formatted_required_repeated_resource_name_oneof, required_repeated_fixed32, required_repeated_fixed64, required_map)
 
       def test_optional_required_flattening_params \
           required_singular_int32,
@@ -6614,6 +6614,6 @@ describe "LibraryServiceSmokeTest" do
     book = { rating: rating }
     update_mask = {}
     physical_mask = {}
-    response = library_service_client->update_book(formatted_name, book, optional_foo: optional_foo, update_mask: update_mask, physical_mask: physical_mask)
+    response = library_service_client.update_book(formatted_name, book, optional_foo: optional_foo, update_mask: update_mask, physical_mask: physical_mask)
   end
 end
