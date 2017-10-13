@@ -19,9 +19,6 @@ import com.google.api.codegen.BatchingDescriptorProto;
 import com.google.api.codegen.BatchingSettingsProto;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
-import com.google.api.tools.framework.model.Field;
-import com.google.api.tools.framework.model.FieldSelector;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
@@ -37,26 +34,26 @@ public abstract class BatchingConfig {
    * collector.
    */
   @Nullable
-  public static BatchingConfig createBatching(
-      DiagCollector diagCollector, BatchingConfigProto batchingConfig, Method method) {
+  static BatchingConfig createBatching(
+      DiagCollector diagCollector, BatchingConfigProto batchingConfig, MethodModel method) {
 
     BatchingDescriptorProto batchDescriptor = batchingConfig.getBatchDescriptor();
     String batchedFieldName = batchDescriptor.getBatchedField();
-    Field batchedField = method.getInputType().getMessageType().lookupField(batchedFieldName);
+    FieldModel batchedField;
+    batchedField = method.getInputField(batchedFieldName);
     if (batchedField == null) {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
               "Batched field missing for batch config: method = %s, message type = %s, field = %s",
               method.getFullName(),
-              method.getInputType().getMessageType().getFullName(),
+              method.getInputFullName(),
               batchedFieldName));
     }
 
-    ImmutableList.Builder<FieldSelector> discriminatorsBuilder = ImmutableList.builder();
+    ImmutableList.Builder<GenericFieldSelector> discriminatorsBuilder = ImmutableList.builder();
     for (String discriminatorName : batchDescriptor.getDiscriminatorFieldsList()) {
-      FieldSelector selector =
-          FieldSelector.resolve(method.getInputType().getMessageType(), discriminatorName);
+      GenericFieldSelector selector = method.getInputFieldSelector(discriminatorName);
       if (selector == null) {
         diagCollector.addDiag(
             Diag.error(
@@ -64,18 +61,16 @@ public abstract class BatchingConfig {
                 "Discriminator field missing for batch config: method = %s, message type = %s, "
                     + "field = %s",
                 method.getFullName(),
-                method.getInputType().getMessageType().getFullName(),
+                method.getInputFullName(),
                 discriminatorName));
       }
       discriminatorsBuilder.add(selector);
     }
 
     String subresponseFieldName = batchDescriptor.getSubresponseField();
-    Field subresponseField;
+    FieldModel subresponseField = null;
     if (!subresponseFieldName.isEmpty()) {
-      subresponseField = method.getOutputType().getMessageType().lookupField(subresponseFieldName);
-    } else {
-      subresponseField = null;
+      subresponseField = method.getOutputField(subresponseFieldName);
     }
 
     BatchingSettingsProto batchingSettings = batchingConfig.getThresholds();
@@ -125,12 +120,12 @@ public abstract class BatchingConfig {
 
   public abstract long getDelayThresholdMillis();
 
-  public abstract Field getBatchedField();
+  public abstract FieldModel getBatchedField();
 
-  public abstract ImmutableList<FieldSelector> getDiscriminatorFields();
+  public abstract ImmutableList<GenericFieldSelector> getDiscriminatorFields();
 
   @Nullable
-  public abstract Field getSubresponseField();
+  public abstract FieldModel getSubresponseField();
 
   public boolean hasSubresponseField() {
     return getSubresponseField() != null;
