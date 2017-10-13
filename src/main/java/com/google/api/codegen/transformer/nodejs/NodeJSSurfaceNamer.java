@@ -455,7 +455,9 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   @Override
   public String getByteLengthFunctionName(FieldModel typeRef) {
     if (typeRef.isMessage()) {
-      return "gax.createByteLengthFunction(protos." + typeRef.getTypeFullName() + ")";
+      return "gax.createByteLengthFunction(protoFilesRoot.lookup('"
+          + typeRef.getTypeFullName()
+          + "'))";
     } else if (typeRef.isString() || typeRef.isBytes()) {
       return "s => s.length";
     } else {
