@@ -57,7 +57,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
   private final String packageName;
   private final NameFormatter nameFormatter;
 
-  // Create a SurfaceNamer based on .proto.
+  /** Represents a kind of test. */
+  public enum TestKind {
+    UNIT,
+    SYSTEM
+  }
+
   public SurfaceNamer(
       NameFormatter languageNamer,
       ModelTypeFormatter typeFormatter,
@@ -1372,6 +1377,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
   ////////////////////////////////////////// Test /////////////////////////////////////////////
 
   public String getTestPackageName() {
+    return getNotImplementedString("SurfaceNamer.getTestPackageName");
+  }
+
+  public String getTestPackageName(TestKind testKind) {
     return getNotImplementedString("SurfaceNamer.getTestPackageName");
   }
 

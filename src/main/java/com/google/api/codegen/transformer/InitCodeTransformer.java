@@ -512,7 +512,7 @@ public class InitCodeTransformer {
         InitValue initValue = initValueConfig.getResourceNameBindingValues().get(entityName);
         switch (initValue.getType()) {
           case Variable:
-            entityValue = context.getNamer().localVarName(Name.from(initValue.getValue()));
+            entityValue = context.getNamer().localVarReference(Name.from(initValue.getValue()));
             break;
           case Random:
             entityValue = context.getNamer().injectRandomStringGeneratorCode(initValue.getValue());

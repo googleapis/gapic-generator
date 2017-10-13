@@ -40,6 +40,7 @@ import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.api.codegen.viewmodel.metadata.PackageDependencyView;
 import com.google.api.codegen.viewmodel.metadata.ReadmeMetadataView;
 import com.google.api.codegen.viewmodel.metadata.TocContentView;
 import com.google.api.tools.framework.model.Model;
@@ -157,6 +158,12 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
         .generateMetadataView(
             packageConfig, model, GEMSPEC_FILE, namer.getOutputFileName(), TargetLanguage.RUBY)
         .identifier(namer.getMetadataIdentifier())
+        .additionalDependencies(
+            ImmutableList.of(
+                PackageDependencyView.create(
+                    "googleauth", packageConfig.authVersionBound(TargetLanguage.RUBY)),
+                PackageDependencyView.create(
+                    "google-gax", packageConfig.gaxVersionBound(TargetLanguage.RUBY))))
         .build();
   }
 

@@ -1,23 +1,301 @@
 @extends "nodejs/common.snip"
 @extends "nodejs/method_sample.snip"
 
+
 @snippet generate(xapi)
-  {@header(xapi.fileHeader, xapi.protoFilename)}
+  {@lineComments(xapi.fileHeader.copyrightLines)}
+  //
+  {@lineComments(xapi.fileHeader.licenseLines)}
 
-  {@serviceClass(xapi)}
-@end
-
-@private header(fileHeader, protoFilename)
-  /*
-   {@comments(fileHeader.copyrightLines)}
-   *
-   {@comments(fileHeader.licenseLines)}
-   {@editingInstructions(protoFilename)}
-   */
   'use strict';
 
-  {@importSection(fileHeader.importSection)}
+  {@importSection(xapi.fileHeader.importSection)}
+
+  @if xapi.fileHeader.hasVersion
+    const VERSION = require('../../package.json').version;
+  @else
+    const VERSION = require('../package.json').version;
+  @end
+
+  /**
+   @if xapi.doc.lines
+     {@comments(xapi.doc.lines)}
+     *
+   @end
+   * @@class
+   @if xapi.fileHeader.hasVersion
+     * @@memberof {@xapi.apiVersion}
+   @end
+   */
+  class {@xapi.name} {
+    /**
+     * Construct an instance of {@xapi.name}.
+     *
+     * @@param {object=} options - The configuration object. See the subsequent
+     *   parameters for more details.
+     * @@param {object=} options.credentials - Credentials object.
+     * @@param {string=} options.credentials.client_email
+     * @@param {string=} options.credentials.private_key
+     * @@param {string=} options.email - Account email address. Required when
+     *   usaing a .pem or .p12 keyFilename.
+     * @@param {string=} options.keyFilename - Full path to the a .json, .pem, or
+     *     .p12 key downloaded from the Google Developers Console. If you provide
+     *     a path to a JSON file, the projectId option above is not necessary.
+     *     NOTE: .pem and .p12 require you to specify options.email as well.
+     * @@param {number=} options.port - The port on which to connect to
+     *     the remote host.
+     * @@param {string=} options.projectId - The project ID from the Google
+     *     Developer's Console, e.g. 'grape-spaceship-123'. We will also check
+     *     the environment variable GCLOUD_PROJECT for your project ID. If your
+     *     app is running in an environment which supports
+     *     {@@link https://developers.google.com/identity/protocols/application-default-credentials Application Default Credentials},
+     *     your project ID will be detected automatically.
+     * @@param {function=} options.promise - Custom promise module to use instead
+     *     of native Promises.
+     * @@param {string=} options.servicePath - The domain name of the
+     *     API remote host.
+     */
+    constructor(opts) {
+      this._descriptors = {};
+
+      // Ensure that options include the service address and port.
+      opts = Object.assign(
+        {
+          clientConfig: {},
+          port: this.constructor.port,
+          servicePath: this.constructor.servicePath,
+        },
+        opts
+      );
+
+      // Create a `gaxGrpc` object, with any grpc-specific options
+      // sent to the client.
+      opts.scopes = this.constructor.scopes;
+      var gaxGrpc = gax.grpc(opts);
+
+      // Save the auth object to the client, for use by other methods.
+      this.auth = gaxGrpc.auth;
+
+      // Determine the client header string.
+      var clientHeader = [
+        `gl-node/${process.version.node}`,
+        `grpc/${gaxGrpc.grpcVersion}`,
+        `gax/${gax.version}`,
+        `gapic/${VERSION}`,
+      ];
+      if (opts.libName && opts.libVersion) {
+        clientHeader.push(`${opts.libName}/${opts.libVersion}`);
+      }
+
+      // Load the applicable protos.
+      var protos = merge(
+        {},
+        @join stub : xapi.stubs on {@","}.add(BREAK)
+          gaxGrpc.loadProto(
+            @if xapi.fileHeader.hasVersion
+              path.join(__dirname, '..', '..', 'protos'),
+              '{@stub.protoFileName}'
+            @else
+              path.join(__dirname, '..', 'protos'),
+              '{@stub.protoFileName}'
+            @end
+          )
+        @end
+      );
+      @if xapi.pathTemplates
+
+        // This API contains "path templates"; forward-slash-separated
+        // identifiers to uniquely identify resources within the API.
+        // Create useful helper objects for these.
+        this._pathTemplates = {
+          @join pathTemplate : xapi.pathTemplates on BREAK
+            {@pathTemplate.name}: new gax.PathTemplate(
+              '{@pathTemplate.pattern}'
+            ),
+          @end
+        };
+      @end
+      @if xapi.hasPageStreamingMethods
+
+        // Some of the methods on this service return "paged" results,
+        // (e.g. 50 results at a time, with tokens to get subsequent
+        // pages). Denote the keys used for pagination and results.
+        this._descriptors.page = {
+          @join descriptor : xapi.pageStreamingDescriptors on BREAK
+            {@descriptor.methodName}: new gax.PageDescriptor(
+              '{@descriptor.requestTokenFieldName}',
+              '{@descriptor.responseTokenFieldName}',
+              '{@descriptor.resourcesFieldName}'
+            ),
+          @end
+        };
+      @end
+      @if xapi.hasGrpcStreamingMethods
+
+        // Some of the methods on this service provide streaming responses.
+        // Provide descriptors for these.
+        this._descriptors.stream = {
+          @join descriptor : xapi.grpcStreamingDescriptors on BREAK
+            {@descriptor.methodName}: new gax.StreamDescriptor({@descriptor.streamTypeName}),
+          @end
+        };
+      @end
+      @if xapi.hasBatchingMethods
+
+        // Some methods on this API support automatically batching
+        // requests; denote this.
+        this._descriptors.batching = {
+          @join descriptor : xapi.batchingDescriptors on BREAK
+            {@descriptor.methodName}: new gax.BundleDescriptor(
+              '{@descriptor.batchedFieldName}',
+              [
+                @join fieldName : descriptor.discriminatorFieldNames() on BREAK
+                  '{@fieldName}',
+                @end
+              ],
+              @if descriptor.hasSubresponseField()
+                '{@descriptor.subresponseFieldName}',
+              @else
+                null,
+              @end
+              {@descriptor.byteLengthFunctionName},
+            ),
+          @end
+        };
+      @end
+      @if xapi.hasLongRunningOperations
+
+        // This API contains "long-running operations", which return a
+        // an Operation object that allows for tracking of the operation,
+        // rather than holding a request open.
+        this.operationsClient = new gax.lro({
+          auth: gaxGrpc.auth,
+          grpc: gaxGrpc.grpc,
+        }).operationsClient(opts);
+
+        var protoFilesRoot = new gax.grpc.GoogleProtoFilesRoot();
+        @join stub : xapi.stubs
+          protoFilesRoot = protobuf.loadSync(
+            @if xapi.fileHeader.hasVersion
+              path.join(__dirname, '..', '..', 'protos', '{@stub.protoFileName}'),
+            @else
+              path.join(__dirname, '..', 'protos', '{@stub.protoFileName}'),
+            @end
+            protoFilesRoot
+          );
+        @end
+
+        @join descriptor : xapi.longRunningDescriptors
+          var {@descriptor.methodName}Response = protoFilesRoot.lookup(
+            '{@descriptor.operationPayloadTypeName}'
+          );
+          var {@descriptor.methodName}Metadata = protoFilesRoot.lookup(
+            '{@descriptor.metadataTypeName}'
+          );
+        @end
+
+        this._descriptors.longrunning = {
+          @join descriptor : xapi.longRunningDescriptors on BREAK
+            {@descriptor.methodName}: new gax.LongrunningDescriptor(
+              this.operationsClient,
+              {@descriptor.methodName}Response.decode.bind({@descriptor.methodName}Response),
+              {@descriptor.methodName}Metadata.decode.bind({@descriptor.methodName}Metadata)
+            ),
+          @end
+        };
+      @end
+
+      // Put together the default options sent with requests.
+      var defaults = gaxGrpc.constructSettings(
+        '{@xapi.interfaceKey}',
+        gapicConfig,
+        opts.clientConfig,
+        {'x-goog-api-client': clientHeader.join(' ')}
+      );
+
+      // Set up a dictionary of "inner API calls"; the core implementation
+      // of calling the API is handled in `google-gax`, with this code
+      // merely providing the destination and request information.
+      this._innerApiCalls = {};
+      @join stub : xapi.stubs on BREAK
+
+        // Put together the "service stub" for
+        // {@stub.fullyQualifiedType}.
+        var {@stub.name} = gaxGrpc.createStub(
+          protos.{@stub.fullyQualifiedType},
+          opts
+        );
+
+        // Iterate over each of the methods that the service provides
+        // and create an API call method for each.
+        var {@stub.stubMethodsArrayName} = [
+          @join method : {@stub.methodNames} on BREAK
+            '{@method}',
+          @end
+        ];
+        for (let methodName of {@stub.stubMethodsArrayName}) {
+          this._innerApiCalls[methodName] = gax.createApiCall(
+            {@stub.name}.then(
+              stub =>
+                function() {
+                  var args = Array.prototype.slice.call(arguments, 0);
+                  return stub[methodName].apply(stub, args);
+                }
+            ),
+            defaults[methodName],
+            {@getDescriptors(xapi)}
+          );
+        }
+      @end
+    }
+
+    /**
+     * The DNS address for this API service.
+     */
+    static get servicePath() {
+      return '{@xapi.serviceAddress}';
+    }
+
+    /**
+     * The port for this API service.
+     */
+    static get port() {
+      return {@xapi.servicePort};
+    }
+
+    /**
+     * The scopes needed to make gRPC calls for every method defined
+     * in this service.
+     */
+    static get scopes() {
+      return [
+        @join auth_scope : xapi.authScopes on BREAK
+          '{@auth_scope}',
+        @end
+      ];
+    }
+
+    /**
+     * Return the project ID used by this class.
+     * @@param {function(Error, string)} callback - the callback to
+     *   be called with the current project Id.
+     */
+    getProjectId(callback) {
+      return this.auth.getProjectId(callback);
+    }
+
+    {@serviceMethodsSection(xapi)}
+    @if xapi.pathTemplates
+
+      {@pathTemplateSection(xapi)}
+    @end
+  }
+
+
+  module.exports = {@xapi.name};
+
 @end
+
 
 @private importSection(imports)
   {@importGroup(imports.externalImports)}
@@ -25,102 +303,12 @@
 
 @private importGroup(group)
   @join import : group
-    # Currently there is only one type per import. This will need to be refactored if changed.
+    # Currently there is only one type per import.
+    # This will need to be refactored if changed.
     @join type : import.types
-      var {@type.nickname} = require('{@import.moduleName}');
+      const {@type.nickname} = require('{@import.moduleName}');
     @end
   @end
-@end
-
-@private editingInstructions(protoFileName)
-   *
-   * EDITING INSTRUCTIONS
-   * This file was generated from the file
-   * https://github.com/googleapis/googleapis/blob/master/{@protoFileName},
-   * and updates to that file get reflected here through a refresh process.
-   * For the short term, the refresh process will only be runnable by Google
-   * engineers.
-   *
-   * The only allowed edits are to method and file documentation. A 3-way
-   * merge preserves those additions if the generated source changes.
-@end
-
-
-@private serviceClass(xapi)
-  {@constantSection(xapi)}
-
-  {@constructor(xapi)}
-
-  @if xapi.pathTemplates
-    // Path templates
-
-    {@pathTemplateSection(xapi)}
-  @end
-
-  /**
-   * Get the project ID used by this class.
-   * @@param {function(Error, string)} callback - the callback to be called with
-   *   the current project Id.
-   */
-  {@xapi.name}.prototype.getProjectId = function(callback) {
-    return this.auth.getProjectId(callback);
-  };
-
-  {@serviceMethodsSection(xapi)}
-
-  /**
-   * @@class
-   * @@param {*} gaxGrpc
-   */
-  function {@xapi.name}Builder(gaxGrpc) {
-    if (!(this instanceof {@xapi.name }Builder)) {
-      return new {@xapi.name}Builder(gaxGrpc);
-    }
-
-    @join stub : xapi.stubs on BREAK.add(BREAK)
-      var {@stub.name}Protos = gaxGrpc.loadProto(
-        @if xapi.fileHeader.hasVersion
-          path.join(__dirname, '..', '..', 'protos'), '{@stub.protoFileName}');
-        @else
-          path.join(__dirname, '..', 'protos'), '{@stub.protoFileName}');
-        @end
-      extend(this, {@stub.name}Protos.{@stub.namespace});
-    @end
-
-    @switch xapi.stubs.size.toString
-    @case "1"
-    @default
-      var protos = merge(
-        {},
-        @join stub : xapi.stubs on ", ".add(BREAK)
-          {@stub.name}Protos
-        @end
-      );
-    @end
-
-    /**
-     * Build a new instance of {@@link {@xapi.name}}.
-     *
-     * @@method {@xapi.name}Builder#{@xapi.constructorName}
-     * @@param {Object=} opts - The optional parameters.
-     * @@param {String=} opts.servicePath
-     *   The domain name of the API remote host.
-     * @@param {number=} opts.port
-     *   The port on which to connect to the remote host.
-     * @@param {grpc.ClientCredentials=} opts.sslCreds
-     *   A ClientCredentials for use with an SSL-enabled channel.
-     * @@param {Object=} opts.clientConfig
-     *   The customized config to build the call settings. See
-     *   {@@link gax.constructSettings} for the format.
-     */
-    this.{@xapi.constructorName} = function(opts) {
-      return new {@xapi.name}(gaxGrpc, {@clientsParamName(xapi.stubs)}, opts);
-    };
-    extend(this.{@xapi.constructorName}, {@xapi.name});
-  }
-  module.exports = {@xapi.name}Builder;
-  module.exports.SERVICE_ADDRESS = SERVICE_ADDRESS;
-  module.exports.ALL_SCOPES = ALL_SCOPES;
 @end
 
 @private clientsParamName(stubs)
@@ -130,168 +318,6 @@
     @default
       protos
     @end
-@end
-
-@private constantSection(xapi)
-  var SERVICE_ADDRESS = '{@xapi.serviceAddress}';
-
-  var DEFAULT_SERVICE_PORT = {@xapi.servicePort};
-
-  var CODE_GEN_NAME_VERSION = 'gapic/{@xapi.toolkitVersion}';
-  @if xapi.hasPageStreamingMethods
-
-    var PAGE_DESCRIPTORS = {
-      @join descriptor : xapi.pageStreamingDescriptors on {@", "}.add(BREAK)
-        {@descriptor.methodName}: new gax.PageDescriptor(
-            '{@descriptor.requestTokenFieldName}',
-            '{@descriptor.responseTokenFieldName}',
-            '{@descriptor.resourcesFieldName}')
-      @end
-    };
-  @end
-  @if xapi.hasGrpcStreamingMethods
-
-    var STREAM_DESCRIPTORS = {
-      @join descriptor : xapi.grpcStreamingDescriptors on {@", "}.add(BREAK)
-        {@descriptor.methodName}: new gax.StreamDescriptor({@descriptor.streamTypeName})
-      @end
-    };
-  @end
-
-  /*!
-   * The scopes needed to make gRPC calls to all of the methods defined in
-   * this service.
-   */
-  var ALL_SCOPES = [
-    @join auth_scope : xapi.authScopes on ",".add(BREAK)
-      '{@auth_scope}'
-    @end
-  ];
-@end
-
-@private constructor(xapi)
-  /**
-   @if xapi.doc.lines
-     {@comments(xapi.doc.lines)}
-     *
-   @end
-   *
-   * @@class
-   */
-  function {@xapi.name}(gaxGrpc, loadedProtos, opts) {
-    opts = extend({
-      servicePath: SERVICE_ADDRESS,
-      port: DEFAULT_SERVICE_PORT,
-      clientConfig: {}
-    }, opts);
-
-    var googleApiClient = [
-      'gl-node/' + process.versions.node
-    ];
-    if (opts.libName && opts.libVersion) {
-      googleApiClient.push(opts.libName + '/' + opts.libVersion);
-    }
-    googleApiClient.push(
-      CODE_GEN_NAME_VERSION,
-      'gax/' + gax.version,
-      'grpc/' + gaxGrpc.grpcVersion
-    );
-    @if xapi.hasBatchingMethods
-
-      {@batchingDescriptors(xapi.batchingDescriptors)}
-    @end
-    @if xapi.hasLongRunningOperations
-
-      {@longrunningSetup(xapi.longRunningDescriptors, xapi.stubs, xapi.fileHeader.hasVersion)}
-    @end
-
-    {@constructDefaults(xapi)}
-
-    var self = this;
-
-    this.auth = gaxGrpc.auth;
-    @join stub : xapi.stubs on BREAK.add(BREAK)
-      var {@stub.name} = gaxGrpc.createStub(
-          loadedProtos.{@stub.fullyQualifiedType},
-          opts);
-      var {@stub.stubMethodsArrayName} = [
-        @join method : {@stub.methodNames} on {@","}.add(BREAK)
-            '{@method}'
-        @end
-      ];
-      {@stub.stubMethodsArrayName}.forEach(function(methodName) {
-        self['_' + methodName] = gax.createApiCall(
-          {@stub.name}.then(function({@stub.name}) {
-            return function() {
-              var args = Array.prototype.slice.call(arguments, 0);
-              return {@stub.name}[methodName].apply({@stub.name}, args);
-            };
-          }),
-          defaults[methodName],
-          {@getDescriptors(xapi)});
-      });
-    @end
-  }
-@end
-
-@private batchingDescriptors(descriptors)
-  var bundleDescriptors = {
-    @join descriptor : descriptors on {@", "}.add(BREAK)
-      {@descriptor.methodName}: new gax.BundleDescriptor(
-        '{@descriptor.batchedFieldName}',
-        [
-          @join fieldName : descriptor.discriminatorFieldNames() on {@", "}.add(BREAK)
-            '{@fieldName}'
-          @end
-        ],
-        @if descriptor.hasSubresponseField()
-          '{@descriptor.subresponseFieldName}',
-        @else
-          null,
-        @end
-        {@descriptor.byteLengthFunctionName})
-    @end
-  };
-@end
-
-@private longrunningSetup(descriptors, stubs, hasVersion)
-  this.operationsClient = new gax.lro({
-    auth: gaxGrpc.auth,
-    grpc: gaxGrpc.grpc
-  }).operationsClient(opts);
-
-  var protoFilesRoot = new gax.grpc.GoogleProtoFilesRoot();
-  @join stub : stubs
-    protoFilesRoot = protobuf.loadSync(
-      @if hasVersion
-        path.join(__dirname, '..', '..', 'protos', '{@stub.protoFileName}'),
-      @else
-        path.join(__dirname, '..', 'protos', '{@stub.protoFileName}'),
-      @end
-      protoFilesRoot);
-  @end
-
-  @join descriptor : descriptors
-    var {@descriptor.methodName}Response = protoFilesRoot.lookup('{@descriptor.operationPayloadTypeName}');
-    var {@descriptor.methodName}Metadata = protoFilesRoot.lookup('{@descriptor.metadataTypeName}');
-  @end
-
-  this.longrunningDescriptors = {
-    @join descriptor : descriptors on {@", "}.add(BREAK)
-      {@descriptor.methodName}: new gax.LongrunningDescriptor(
-        this.operationsClient,
-        {@descriptor.methodName}Response.decode.bind({@descriptor.methodName}Response),
-        {@descriptor.methodName}Metadata.decode.bind({@descriptor.methodName}Metadata))
-    @end
-  };
-@end
-
-@private constructDefaults(xapi)
-  var defaults = gaxGrpc.constructSettings(
-      '{@xapi.interfaceKey}',
-      configData,
-      opts.clientConfig,
-      {'x-goog-api-client': googleApiClient.join(' ')});
 @end
 
 @private getDescriptors(xapi)
@@ -305,16 +331,13 @@
 @end
 
 @private pathTemplateSection(xapi)
-  @join pathTemplate : xapi.pathTemplates on BREAK
-    var {@pathTemplate.name} = new gax.PathTemplate(
-        '{@pathTemplate.pattern}');
-
-  @end
+  // --------------------
+  // -- Path templates --
+  // --------------------
   @join function : xapi.formatResourceFunctions
 
     {@createResourceFunction(function, xapi.name)}
   @end
-
   @join function : xapi.parseResourceFunctions
 
     {@createMatchFunction(function, xapi.name)}
@@ -323,30 +346,31 @@
 
 @private createResourceFunction(function, apiName)
   /**
-   * Returns a fully-qualified {@function.entityName} resource name string.
+   * Return a fully-qualified {@function.entityName} resource name string.
+   *
    @join param : function.resourceIdParams
      * @@param {String} {@param.name}
    @end
    * @@returns {String}
    */
-  {@apiName}.prototype.{@function.name} = \
-  function({@createResourceFunctionParams(function.resourceIdParams)}) {
-    return {@function.pathTemplateName}.render({
+  {@function.name}({@createResourceFunctionParams(function.resourceIdParams)}) {
+    return this._pathTemplates.{@function.pathTemplateName}.render({
       {@createRenderDictionary(function.resourceIdParams)}
     });
-  };
+  }
 @end
 
 @private createMatchFunction(function, apiName)
   /**
-   * Parses the {@function.entityNameParamName} from a {@function.entityName} resource.
+   * Parse the {@function.entityNameParamName} from a {@function.entityName} resource.
+   *
    * @@param {String} {@function.entityNameParamName}
    *   A fully-qualified path representing a {@function.entityName} resources.
    * @@returns {String} - A string representing the {@function.outputResourceId}.
    */
-  {@apiName}.prototype.{@function.name} = function({@function.entityNameParamName}) {
+  {@function.name}({@function.entityNameParamName}) {
     return {@function.pathTemplateName}.match({@function.entityNameParamName}).{@function.outputResourceId};
-  };
+  }
 @end
 
 @private createResourceFunctionParams(resourceIdParams)
@@ -356,13 +380,15 @@
 @end
 
 @private createRenderDictionary(resourceIdParams)
-  @join param: resourceIdParams on {@","}.add(BREAK)
-    {@param.templateKey}: {@param.name}
+  @join param: resourceIdParams on BREAK
+    {@param.templateKey}: {@param.name},
   @end
 @end
 
 @private serviceMethodsSection(xapi)
-  // Service calls
+  // -------------------
+  // -- Service calls --
+  // -------------------
   @join method : xapi.apiMethods
 
     {@flattenedMethod(method)}
@@ -380,7 +406,7 @@
 
 @private flattenedMethod(method)
   {@methodComments(method)}
-  {@method.apiClassName}.prototype.{@method.name} = function({@methodRequestParameters(method)}options{@callbackParams(method)}) {
+  {@method.name}({@methodRequestParameters(method)}options{@callbackParams(method)}) {
     @switch method.grpcStreamingType.toString
     @case "ClientStreaming"
       {@handleCallback()}
@@ -388,12 +414,10 @@
       {@handleCallback()}
     @default
     @end
-    if (options === undefined) {
-      options = {};
-    }
+    options = options || {};
     {@maybeHandleRequest(method)}
-    return this._{@method.name}({@requestObject(method)}options{@callbackParams(method)});
-  };
+    return this._innerApiCalls.{@method.name}({@requestObject(method)}options{@callbackParams(method)});
+  }
   @switch method.type.toString
   @case "PagedOptionalArrayMethod"
 
@@ -460,12 +484,14 @@
    *
    {@comments(util.getDocLines(decorateSampleCode(method, sampleCodePageStreaming(method))))}
    */
-  {@method.apiClassName}.prototype.{@method.name}Stream = function({@methodRequestParameters(method)}options) {
-    if (options === undefined) {
-      options = {};
-    }
+  {@method.name}Stream({@methodRequestParameters(method)}options) {
+    options = options || {};
     {@maybeHandleRequest(method)}
-    return PAGE_DESCRIPTORS.{@method.name}.createStream(this._{@method.name}, {@requestObject(method)}options);
+    return this._pageDescriptors.{@method.name}.createStream(
+      this._innerApiCalls.{@method.name},
+      {@requestObject(method)}
+      options
+    );
   };
 @end
 

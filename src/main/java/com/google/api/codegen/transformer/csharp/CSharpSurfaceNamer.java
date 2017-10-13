@@ -14,7 +14,17 @@
  */
 package com.google.api.codegen.transformer.csharp;
 
-import com.google.api.codegen.config.*;
+import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.ProtoTypeRef;
+import com.google.api.codegen.config.ResourceNameConfig;
+import com.google.api.codegen.config.ResourceNameType;
+import com.google.api.codegen.config.SingleResourceNameConfig;
+import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;

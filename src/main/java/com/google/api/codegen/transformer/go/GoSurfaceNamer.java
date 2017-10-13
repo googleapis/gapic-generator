@@ -14,12 +14,20 @@
  */
 package com.google.api.codegen.transformer.go;
 
-import com.google.api.codegen.config.*;
+import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.OneofConfig;
+import com.google.api.codegen.config.SingleResourceNameConfig;
+import com.google.api.codegen.config.TypeModel;
+import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
-import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
@@ -88,7 +96,7 @@ public class GoSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getLongRunningOperationTypeName(ImportTypeTable typeTable, TypeModel type) {
-    return valueType(((ModelTypeTable) typeTable).getAndSaveNicknameFor(type));
+    return valueType(typeTable.getAndSaveNicknameFor(type));
   }
 
   @Override

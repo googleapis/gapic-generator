@@ -14,12 +14,21 @@
  */
 package com.google.api.codegen.transformer.php;
 
-import com.google.api.codegen.config.*;
+import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.SingleResourceNameConfig;
+import com.google.api.codegen.config.TypeModel;
+import com.google.api.codegen.config.VisibilityConfig;
+import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.php.PhpCommentReformatter;
@@ -27,10 +36,13 @@ import com.google.api.codegen.util.php.PhpNameFormatter;
 import com.google.api.codegen.util.php.PhpPackageUtil;
 import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.base.Joiner;
+import java.io.File;
 import java.util.ArrayList;
 
 /** The SurfaceNamer for PHP. */
 public class PhpSurfaceNamer extends SurfaceNamer {
+
   public PhpSurfaceNamer(String packageName) {
     super(
         new PhpNameFormatter(),
@@ -188,12 +200,12 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getTestPackageName() {
-    return getTestPackageName(getPackageName());
+  public String getTestPackageName(TestKind testKind) {
+    return getTestPackageName(getPackageName(), testKind);
   }
 
   /** Insert "Tests" into the package name after "Google\Cloud" standard prefix */
-  private static String getTestPackageName(String packageName) {
+  private static String getTestPackageName(String packageName, TestKind testKind) {
     final String[] PACKAGE_PREFIX = PhpPackageUtil.getStandardPackagePrefix();
 
     ArrayList<String> packageComponents = new ArrayList<>();
@@ -210,6 +222,14 @@ public class PhpSurfaceNamer extends SurfaceNamer {
       packageComponents.add(packageSplit[i]);
     }
     packageComponents.add("Tests");
+    switch (testKind) {
+      case UNIT:
+        packageComponents.add("Unit");
+        break;
+      case SYSTEM:
+        packageComponents.add("System");
+        break;
+    }
     for (int i = packageStartIndex; i < packageSplit.length; i++) {
       packageComponents.add(packageSplit[i]);
     }
@@ -224,5 +244,36 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   @Override
   public boolean methodHasTimeoutSettings(MethodConfig methodConfig) {
     return methodConfig.isGrpcStreaming();
+  }
+
+  @Override
+  public String getSourceFilePath(String path, String className) {
+    return path + File.separator + className + ".php";
+  }
+
+  @Override
+  public String injectRandomStringGeneratorCode(String randomString) {
+    String delimiter = ",";
+    String[] split =
+        CommonRenderingUtil.stripQuotes(randomString)
+            .replace(
+                InitFieldConfig.RANDOM_TOKEN, delimiter + InitFieldConfig.RANDOM_TOKEN + delimiter)
+            .split(delimiter);
+    ArrayList<String> stringParts = new ArrayList<>();
+    for (String token : split) {
+      if (token.length() > 0) {
+        if (token.equals(InitFieldConfig.RANDOM_TOKEN)) {
+          stringParts.add("time()");
+        } else {
+          stringParts.add(quoted(token));
+        }
+      }
+    }
+    return Joiner.on(". ").join(stringParts);
+  }
+
+  @Override
+  public String quoted(String text) {
+    return '\'' + text + '\'';
   }
 }

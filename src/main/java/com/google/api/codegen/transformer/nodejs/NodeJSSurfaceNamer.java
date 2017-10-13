@@ -112,7 +112,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   @Override
   public String getPathTemplateName(
       InterfaceModel apiInterface, SingleResourceNameConfig resourceNameConfig) {
-    return inittedConstantName(Name.from(resourceNameConfig.getEntityName(), "path", "template"));
+    return publicFieldName(Name.from(resourceNameConfig.getEntityName(), "path", "template"));
   }
 
   @Override
@@ -452,9 +452,9 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   @Override
   public String getByteLengthFunctionName(FieldModel typeRef) {
     if (typeRef.isMessage()) {
-      return "gax.createByteLengthFunction(loadedProtos." + typeRef.getTypeFullName() + ")";
+      return "gax.createByteLengthFunction(protos." + typeRef.getTypeFullName() + ")";
     } else if (typeRef.isString() || typeRef.isBytes()) {
-      return "function(s) { return s.length; }";
+      return "s => s.length";
     } else {
       // There is no easy way to say the actual length of the numeric fields.
       // For now throwing an exception.

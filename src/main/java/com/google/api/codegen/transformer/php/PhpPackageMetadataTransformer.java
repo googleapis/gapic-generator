@@ -24,17 +24,19 @@ import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.PackageMetadataNamer;
 import com.google.api.codegen.transformer.PackageMetadataTransformer;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.api.codegen.viewmodel.metadata.PackageDependencyView;
 import com.google.api.tools.framework.model.Model;
+import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /** Responsible for producing package metadata related views for PHP */
 public class PhpPackageMetadataTransformer implements ModelToViewTransformer {
   private static final String PACKAGE_FILE = "php/composer.snip";
 
-  PackageMetadataConfig packageConfig;
-  PackageMetadataTransformer metadataTransformer = new PackageMetadataTransformer();
+  private PackageMetadataConfig packageConfig;
+  private PackageMetadataTransformer metadataTransformer = new PackageMetadataTransformer();
 
   public PhpPackageMetadataTransformer(PackageMetadataConfig packageConfig) {
     this.packageConfig = packageConfig;
@@ -42,13 +44,13 @@ public class PhpPackageMetadataTransformer implements ModelToViewTransformer {
 
   @Override
   public List<String> getTemplateFileNames() {
-    return Arrays.asList(PACKAGE_FILE);
+    return Collections.singletonList(PACKAGE_FILE);
   }
 
   @Override
   public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
     boolean hasMultipleInterfaces = new InterfaceView().hasMultipleServices(model);
-    List<ViewModel> models = new ArrayList<ViewModel>();
+    List<ViewModel> models = new ArrayList<>();
     PhpPackageMetadataNamer namer =
         new PhpPackageMetadataNamer(
             productConfig.getPackageName(), productConfig.getDomainLayerLocation());
@@ -58,9 +60,16 @@ public class PhpPackageMetadataTransformer implements ModelToViewTransformer {
 
   private ViewModel generateMetadataView(
       ApiModel model, PackageMetadataNamer namer, boolean hasMultipleServices) {
+    List<PackageDependencyView> dependencies =
+        ImmutableList.of(
+            PackageDependencyView.create(
+                "google/gax", packageConfig.gaxVersionBound(TargetLanguage.PHP)),
+            PackageDependencyView.create(
+                "google/protobuf", packageConfig.protoVersionBound(TargetLanguage.PHP)));
     return metadataTransformer
         .generateMetadataView(
             packageConfig, model, PACKAGE_FILE, "composer.json", TargetLanguage.PHP)
+        .additionalDependencies(dependencies)
         .hasMultipleServices(hasMultipleServices)
         .identifier(namer.getMetadataIdentifier())
         .build();

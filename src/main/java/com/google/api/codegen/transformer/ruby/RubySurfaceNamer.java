@@ -14,7 +14,15 @@
  */
 package com.google.api.codegen.transformer.ruby;
 
-import com.google.api.codegen.config.*;
+import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.SingleResourceNameConfig;
+import com.google.api.codegen.config.TypeModel;
+import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.ruby.RubyUtil;
 import com.google.api.codegen.transformer.FeatureConfig;
@@ -219,7 +227,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
   @Override
   public String getFullyQualifiedCredentialsClassName() {
     if (RubyUtil.isLongrunning(getPackageName())) {
-      return "Google::Gax::Credentials";
+      return "Google::Auth::Credentials";
     }
     return getTopLevelNamespace() + "::Credentials";
   }

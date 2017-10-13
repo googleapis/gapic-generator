@@ -169,7 +169,7 @@ public class PhpApiMethodParamTransformer implements ApiMethodParamTransformer {
         retrySettingsDocTextBuilder.append(
             String.format(
                 "\nIf specified, then %s is ignored.",
-                context.getNamer().varReference(timeoutMillisName)));
+                context.getNamer().localVarReference(timeoutMillisName)));
       }
       List<String> retrySettingsDocLines =
           context.getNamer().getDocLines(retrySettingsDocTextBuilder.toString());
@@ -190,7 +190,7 @@ public class PhpApiMethodParamTransformer implements ApiMethodParamTransformer {
         timeoutMillisDocTextBuilder.append(
             String.format(
                 " Only used if %s\nis not set.",
-                context.getNamer().varReference(retrySettingsName)));
+                context.getNamer().localVarReference(retrySettingsName)));
       }
       List<String> timeoutMillisDocLines =
           context.getNamer().getDocLines(timeoutMillisDocTextBuilder.toString());
