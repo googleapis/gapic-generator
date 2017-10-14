@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.config.GapicInterfaceConfig;
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.ServiceDocView;
 import com.google.common.collect.ImmutableList;
@@ -22,13 +22,13 @@ import com.google.common.collect.ImmutableList;
 public class ServiceTransformer {
 
   public ServiceDocView generateServiceDoc(
-      GapicInterfaceContext context, ApiMethodView exampleApiMethod) {
+      InterfaceContext context, ApiMethodView exampleApiMethod) {
     SurfaceNamer namer = context.getNamer();
     ServiceDocView.Builder serviceDoc = ServiceDocView.newBuilder();
 
     ImmutableList.Builder<String> docLines = ImmutableList.builder();
-    docLines.addAll(namer.getDocLines(context.getInterface()));
-    GapicInterfaceConfig conf = context.getInterfaceConfig();
+    docLines.addAll(namer.getDocLines(context.getInterfaceDescription()));
+    InterfaceConfig conf = context.getInterfaceConfig();
     if (!conf.getManualDoc().isEmpty()) {
       docLines.add("");
       docLines.addAll(namer.getDocLines(conf.getManualDoc()));
@@ -41,7 +41,7 @@ public class ServiceTransformer {
     serviceDoc.settingsVarName(namer.getApiSettingsVariableName(context.getInterfaceConfig()));
     serviceDoc.settingsClassName(namer.getApiSettingsClassName(context.getInterfaceConfig()));
     serviceDoc.hasDefaultInstance(context.getInterfaceConfig().hasDefaultInstance());
-    serviceDoc.serviceTitle(context.getModel().getServiceConfig().getTitle());
+    serviceDoc.serviceTitle(context.serviceTitle());
     return serviceDoc.build();
   }
 }

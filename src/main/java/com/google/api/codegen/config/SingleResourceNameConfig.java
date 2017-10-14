@@ -58,6 +58,7 @@ public abstract class SingleResourceNameConfig implements ResourceNameConfig {
   public abstract String getEntityName();
 
   @Override
+  @Nullable
   public abstract ProtoFile getAssignedProtoFile();
 
   @Override

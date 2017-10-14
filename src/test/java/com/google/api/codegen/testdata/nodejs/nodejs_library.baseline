@@ -212,11 +212,11 @@ const gapic = Object.freeze({
  * @example <caption>Create a client that uses
  *   <a href="https://goo.gl/64dyYX">Application Default Credentials
  *   (ADC)</a>:</caption>
- * let library = new library.LibraryServiceClient();
+ * let client = new library.LibraryServiceClient();
  *
  * @example <caption>Create a client with
  *   <a href="https://goo.gl/RXp6VL">explicit credentials</a>:</caption>
- * let library = new library.LibraryServiceClient({
+ * let client = new library.LibraryServiceClient({
  *   projectId: 'your-project-id',
  *   keyFilename: '/path/to/keyfile.json',
  * });
@@ -426,6 +426,16 @@ class LibraryServiceClient {
       discussBook: new gax.StreamDescriptor(gax.StreamType.BIDI_STREAMING),
       monologAboutBook: new gax.StreamDescriptor(gax.StreamType.CLIENT_STREAMING),
     };
+    var protoFilesRoot = new gax.grpc.GoogleProtoFilesRoot();
+    protoFilesRoot = protobuf.loadSync(
+      path.join(__dirname, '..', '..', 'protos', 'library.proto'),
+      protoFilesRoot
+    );
+    protoFilesRoot = protobuf.loadSync(
+      path.join(__dirname, '..', '..', 'protos', 'tagger.proto'),
+      protoFilesRoot
+    );
+
 
     // Some methods on this API support automatically batching
     // requests; denote this.
@@ -437,7 +447,7 @@ class LibraryServiceClient {
           'shelf.name',
         ],
         'bookNames',
-        gax.createByteLengthFunction(protos.google.example.library.v1.Book),
+        gax.createByteLengthFunction(protoFilesRoot.lookup('google.example.library.v1.Book')),
       ),
       addComments: new gax.BundleDescriptor(
         'comments',
@@ -445,7 +455,7 @@ class LibraryServiceClient {
           'name',
         ],
         null,
-        gax.createByteLengthFunction(protos.google.example.library.v1.Comment),
+        gax.createByteLengthFunction(protoFilesRoot.lookup('google.example.library.v1.Comment')),
       ),
     };
 
@@ -456,16 +466,6 @@ class LibraryServiceClient {
       auth: gaxGrpc.auth,
       grpc: gaxGrpc.grpc,
     }).operationsClient(opts);
-
-    var protoFilesRoot = new gax.grpc.GoogleProtoFilesRoot();
-    protoFilesRoot = protobuf.loadSync(
-      path.join(__dirname, '..', '..', 'protos', 'library.proto'),
-      protoFilesRoot
-    );
-    protoFilesRoot = protobuf.loadSync(
-      path.join(__dirname, '..', '..', 'protos', 'tagger.proto'),
-      protoFilesRoot
-    );
 
     var getBigBookResponse = protoFilesRoot.lookup(
       'google.example.library.v1.Book'
@@ -706,7 +706,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.shelfPath("[SHELF_ID]");
+   * var formattedName = client.shelfPath('[SHELF_ID]');
    * var options = '';
    * var request = {
    *   name: formattedName,
@@ -857,7 +857,7 @@ class LibraryServiceClient {
     if (request === undefined) {
       request = {};
     }
-    return this._pageDescriptors.listShelves.createStream(
+    return this._descriptors.page.listShelves.createStream(
       this._innerApiCalls.listShelves,
       request,
       options
@@ -887,7 +887,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.shelfPath("[SHELF_ID]");
+   * var formattedName = client.shelfPath('[SHELF_ID]');
    * client.deleteShelf({name: formattedName}).catch(err => {
    *   console.error(err);
    * });
@@ -932,8 +932,8 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.shelfPath("[SHELF_ID]");
-   * var formattedOtherShelfName = client.shelfPath("[SHELF_ID]");
+   * var formattedName = client.shelfPath('[SHELF_ID]');
+   * var formattedOtherShelfName = client.shelfPath('[SHELF_ID]');
    * var request = {
    *   name: formattedName,
    *   otherShelfName: formattedOtherShelfName,
@@ -987,7 +987,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.shelfPath("[SHELF_ID]");
+   * var formattedName = client.shelfPath('[SHELF_ID]');
    * var book = {};
    * var request = {
    *   name: formattedName,
@@ -1108,7 +1108,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    * client.getBook({name: formattedName})
    *   .then(responses => {
    *     var response = responses[0];
@@ -1175,7 +1175,7 @@ class LibraryServiceClient {
    * });
    *
    * // Iterate over all elements.
-   * var formattedName = client.shelfPath("[SHELF_ID]");
+   * var formattedName = client.shelfPath('[SHELF_ID]');
    *
    * client.listBooks({name: formattedName})
    *   .then(responses => {
@@ -1189,7 +1189,7 @@ class LibraryServiceClient {
    *   });
    *
    * // Or obtain the paged response.
-   * var formattedName = client.shelfPath("[SHELF_ID]");
+   * var formattedName = client.shelfPath('[SHELF_ID]');
    *
    *
    * var options = {autoPaginate: false};
@@ -1263,7 +1263,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.shelfPath("[SHELF_ID]");
+   * var formattedName = client.shelfPath('[SHELF_ID]');
    * client.listBooksStream({name: formattedName})
    *   .on('data', element => {
    *     // doThingsWith(element)
@@ -1274,7 +1274,7 @@ class LibraryServiceClient {
   listBooksStream(request, options) {
     options = options || {};
 
-    return this._pageDescriptors.listBooks.createStream(
+    return this._descriptors.page.listBooks.createStream(
       this._innerApiCalls.listBooks,
       request,
       options
@@ -1304,7 +1304,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    * client.deleteBook({name: formattedName}).catch(err => {
    *   console.error(err);
    * });
@@ -1357,7 +1357,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    * var book = {};
    * var request = {
    *   name: formattedName,
@@ -1410,8 +1410,8 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
-   * var formattedOtherShelfName = client.shelfPath("[SHELF_ID]");
+   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * var formattedOtherShelfName = client.shelfPath('[SHELF_ID]');
    * var request = {
    *   name: formattedName,
    *   otherShelfName: formattedOtherShelfName,
@@ -1571,7 +1571,7 @@ class LibraryServiceClient {
   listStringsStream(request, options) {
     options = options || {};
 
-    return this._pageDescriptors.listStrings.createStream(
+    return this._descriptors.page.listStrings.createStream(
       this._innerApiCalls.listStrings,
       request,
       options
@@ -1602,7 +1602,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    * var comment = '';
    * var stage = 'UNSET';
    * var alignment = 'CHAR';
@@ -1656,7 +1656,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.archivedBookPath("[ARCHIVE_PATH]", "[BOOK_ID]");
+   * var formattedName = client.archivedBookPath('[ARCHIVE_PATH]', '[BOOK_ID]');
    * client.getBookFromArchive({name: formattedName})
    *   .then(responses => {
    *     var response = responses[0];
@@ -1705,8 +1705,8 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
-   * var formattedAltBookName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * var formattedAltBookName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    * var request = {
    *   name: formattedName,
    *   altBookName: formattedAltBookName,
@@ -1756,7 +1756,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    * client.getBookFromAbsolutelyAnywhere({name: formattedName})
    *   .then(responses => {
    *     var response = responses[0];
@@ -1803,7 +1803,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    * var indexName = 'default index';
    * var indexMapItem = '';
    * var indexMap = {'default_key' : indexMapItem,};
@@ -2132,7 +2132,7 @@ class LibraryServiceClient {
   findRelatedBooksStream(request, options) {
     options = options || {};
 
-    return this._pageDescriptors.findRelatedBooks.createStream(
+    return this._descriptors.page.findRelatedBooks.createStream(
       this._innerApiCalls.findRelatedBooks,
       request,
       options
@@ -2169,7 +2169,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedResource = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+   * var formattedResource = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    * var tag = '';
    * var request = {
    *   resource: formattedResource,
@@ -2224,7 +2224,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedResource = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+   * var formattedResource = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    * var label = '';
    * var request = {
    *   resource: formattedResource,
@@ -2275,7 +2275,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    *
    * // Handle the operation using the promise pattern.
    * client.getBigBook({name: formattedName})
@@ -2300,7 +2300,7 @@ class LibraryServiceClient {
    *     console.error(err);
    *   });
    *
-   * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    *
    * // Handle the operation using the event emitter pattern.
    * client.getBigBook({name: formattedName})
@@ -2365,7 +2365,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    *
    * // Handle the operation using the promise pattern.
    * client.getBigNothing({name: formattedName})
@@ -2390,7 +2390,7 @@ class LibraryServiceClient {
    *     console.error(err);
    *   });
    *
-   * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    *
    * // Handle the operation using the event emitter pattern.
    * client.getBigNothing({name: formattedName})
@@ -2976,7 +2976,7 @@ describe('LibraryServiceClient', () => {
       var client = new libraryModule.v1.LibraryServiceClient();
 
       // Mock request
-      var formattedName = client.shelfPath("[SHELF_ID]");
+      var formattedName = client.shelfPath('[SHELF_ID]');
       var options = 'options-1249474914';
       var request = {
         name: formattedName,
@@ -3010,7 +3010,7 @@ describe('LibraryServiceClient', () => {
       var client = new libraryModule.v1.LibraryServiceClient();
 
       // Mock request
-      var formattedName = client.shelfPath("[SHELF_ID]");
+      var formattedName = client.shelfPath('[SHELF_ID]');
       var options = 'options-1249474914';
       var request = {
         name: formattedName,
@@ -3089,7 +3089,7 @@ describe('LibraryServiceClient', () => {
       var client = new libraryModule.v1.LibraryServiceClient();
 
       // Mock request
-      var formattedName = client.shelfPath("[SHELF_ID]");
+      var formattedName = client.shelfPath('[SHELF_ID]');
       var request = {
         name: formattedName,
       };
@@ -3107,7 +3107,7 @@ describe('LibraryServiceClient', () => {
       var client = new libraryModule.v1.LibraryServiceClient();
 
       // Mock request
-      var formattedName = client.shelfPath("[SHELF_ID]");
+      var formattedName = client.shelfPath('[SHELF_ID]');
       var request = {
         name: formattedName,
       };
@@ -3132,8 +3132,8 @@ describe('LibraryServiceClient', () => {
       var client = new libraryModule.v1.LibraryServiceClient();
 
       // Mock request
-      var formattedName = client.shelfPath("[SHELF_ID]");
-      var formattedOtherShelfName = client.shelfPath("[SHELF_ID]");
+      var formattedName = client.shelfPath('[SHELF_ID]');
+      var formattedOtherShelfName = client.shelfPath('[SHELF_ID]');
       var request = {
         name: formattedName,
         otherShelfName: formattedOtherShelfName,
@@ -3166,8 +3166,8 @@ describe('LibraryServiceClient', () => {
       var client = new libraryModule.v1.LibraryServiceClient();
 
       // Mock request
-      var formattedName = client.shelfPath("[SHELF_ID]");
-      var formattedOtherShelfName = client.shelfPath("[SHELF_ID]");
+      var formattedName = client.shelfPath('[SHELF_ID]');
+      var formattedOtherShelfName = client.shelfPath('[SHELF_ID]');
       var request = {
         name: formattedName,
         otherShelfName: formattedOtherShelfName,
@@ -3194,7 +3194,7 @@ describe('LibraryServiceClient', () => {
       var client = new libraryModule.v1.LibraryServiceClient();
 
       // Mock request
-      var formattedName = client.shelfPath("[SHELF_ID]");
+      var formattedName = client.shelfPath('[SHELF_ID]');
       var book = {};
       var request = {
         name: formattedName,
@@ -3230,7 +3230,7 @@ describe('LibraryServiceClient', () => {
       var client = new libraryModule.v1.LibraryServiceClient();
 
       // Mock request
-      var formattedName = client.shelfPath("[SHELF_ID]");
+      var formattedName = client.shelfPath('[SHELF_ID]');
       var book = {};
       var request = {
         name: formattedName,
@@ -3327,7 +3327,7 @@ describe('LibraryServiceClient', () => {
       var client = new libraryModule.v1.LibraryServiceClient();
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var request = {
         name: formattedName,
       };
@@ -3361,7 +3361,7 @@ describe('LibraryServiceClient', () => {
       var client = new libraryModule.v1.LibraryServiceClient();
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var request = {
         name: formattedName,
       };
@@ -3387,7 +3387,7 @@ describe('LibraryServiceClient', () => {
       var client = new libraryModule.v1.LibraryServiceClient();
 
       // Mock request
-      var formattedName = client.shelfPath("[SHELF_ID]");
+      var formattedName = client.shelfPath('[SHELF_ID]');
       var request = {
         name: formattedName,
       };
@@ -3418,7 +3418,7 @@ describe('LibraryServiceClient', () => {
       var client = new libraryModule.v1.LibraryServiceClient();
 
       // Mock request
-      var formattedName = client.shelfPath("[SHELF_ID]");
+      var formattedName = client.shelfPath('[SHELF_ID]');
       var request = {
         name: formattedName,
       };
@@ -3444,7 +3444,7 @@ describe('LibraryServiceClient', () => {
       var client = new libraryModule.v1.LibraryServiceClient();
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var request = {
         name: formattedName,
       };
@@ -3462,7 +3462,7 @@ describe('LibraryServiceClient', () => {
       var client = new libraryModule.v1.LibraryServiceClient();
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var request = {
         name: formattedName,
       };
@@ -3487,7 +3487,7 @@ describe('LibraryServiceClient', () => {
       var client = new libraryModule.v1.LibraryServiceClient();
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var book = {};
       var request = {
         name: formattedName,
@@ -3523,7 +3523,7 @@ describe('LibraryServiceClient', () => {
       var client = new libraryModule.v1.LibraryServiceClient();
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var book = {};
       var request = {
         name: formattedName,
@@ -3551,8 +3551,8 @@ describe('LibraryServiceClient', () => {
       var client = new libraryModule.v1.LibraryServiceClient();
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
-      var formattedOtherShelfName = client.shelfPath("[SHELF_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      var formattedOtherShelfName = client.shelfPath('[SHELF_ID]');
       var request = {
         name: formattedName,
         otherShelfName: formattedOtherShelfName,
@@ -3587,8 +3587,8 @@ describe('LibraryServiceClient', () => {
       var client = new libraryModule.v1.LibraryServiceClient();
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
-      var formattedOtherShelfName = client.shelfPath("[SHELF_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      var formattedOtherShelfName = client.shelfPath('[SHELF_ID]');
       var request = {
         name: formattedName,
         otherShelfName: formattedOtherShelfName,
@@ -3666,7 +3666,7 @@ describe('LibraryServiceClient', () => {
       var client = new libraryModule.v1.LibraryServiceClient();
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var comment = '95';
       var stage = 'UNSET';
       var alignment = 'CHAR';
@@ -3694,7 +3694,7 @@ describe('LibraryServiceClient', () => {
       var client = new libraryModule.v1.LibraryServiceClient();
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var comment = '95';
       var stage = 'UNSET';
       var alignment = 'CHAR';
@@ -3729,7 +3729,7 @@ describe('LibraryServiceClient', () => {
       var client = new libraryModule.v1.LibraryServiceClient();
 
       // Mock request
-      var formattedName = client.archivedBookPath("[ARCHIVE_PATH]", "[BOOK_ID]");
+      var formattedName = client.archivedBookPath('[ARCHIVE_PATH]', '[BOOK_ID]');
       var request = {
         name: formattedName,
       };
@@ -3763,7 +3763,7 @@ describe('LibraryServiceClient', () => {
       var client = new libraryModule.v1.LibraryServiceClient();
 
       // Mock request
-      var formattedName = client.archivedBookPath("[ARCHIVE_PATH]", "[BOOK_ID]");
+      var formattedName = client.archivedBookPath('[ARCHIVE_PATH]', '[BOOK_ID]');
       var request = {
         name: formattedName,
       };
@@ -3789,8 +3789,8 @@ describe('LibraryServiceClient', () => {
       var client = new libraryModule.v1.LibraryServiceClient();
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
-      var formattedAltBookName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      var formattedAltBookName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var request = {
         name: formattedName,
         altBookName: formattedAltBookName,
@@ -3825,8 +3825,8 @@ describe('LibraryServiceClient', () => {
       var client = new libraryModule.v1.LibraryServiceClient();
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
-      var formattedAltBookName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      var formattedAltBookName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var request = {
         name: formattedName,
         altBookName: formattedAltBookName,
@@ -3853,7 +3853,7 @@ describe('LibraryServiceClient', () => {
       var client = new libraryModule.v1.LibraryServiceClient();
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var request = {
         name: formattedName,
       };
@@ -3887,7 +3887,7 @@ describe('LibraryServiceClient', () => {
       var client = new libraryModule.v1.LibraryServiceClient();
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var request = {
         name: formattedName,
       };
@@ -3913,7 +3913,7 @@ describe('LibraryServiceClient', () => {
       var client = new libraryModule.v1.LibraryServiceClient();
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var indexName = 'default index';
       var indexMapItem = 'indexMapItem1918721251';
       var indexMap = {'default_key' : indexMapItem,};
@@ -3936,7 +3936,7 @@ describe('LibraryServiceClient', () => {
       var client = new libraryModule.v1.LibraryServiceClient();
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var indexName = 'default index';
       var indexMapItem = 'indexMapItem1918721251';
       var indexMap = {'default_key' : indexMapItem,};
@@ -4199,7 +4199,7 @@ describe('LibraryServiceClient', () => {
       var client = new libraryModule.v1.LibraryServiceClient();
 
       // Mock request
-      var formattedResource = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedResource = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var tag = 'tag114586';
       var request = {
         resource: formattedResource,
@@ -4226,7 +4226,7 @@ describe('LibraryServiceClient', () => {
       var client = new libraryModule.v1.LibraryServiceClient();
 
       // Mock request
-      var formattedResource = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedResource = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var tag = 'tag114586';
       var request = {
         resource: formattedResource,
@@ -4254,7 +4254,7 @@ describe('LibraryServiceClient', () => {
       var client = new libraryModule.v1.LibraryServiceClient();
 
       // Mock request
-      var formattedResource = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedResource = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var label = 'label102727412';
       var request = {
         resource: formattedResource,
@@ -4281,7 +4281,7 @@ describe('LibraryServiceClient', () => {
       var client = new libraryModule.v1.LibraryServiceClient();
 
       // Mock request
-      var formattedResource = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedResource = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var label = 'label102727412';
       var request = {
         resource: formattedResource,
@@ -4309,7 +4309,7 @@ describe('LibraryServiceClient', () => {
       var client = new libraryModule.v1.LibraryServiceClient();
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var request = {
         name: formattedName,
       };
@@ -4344,7 +4344,7 @@ describe('LibraryServiceClient', () => {
       var client = new libraryModule.v1.LibraryServiceClient();
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var request = {
         name: formattedName,
       };
@@ -4376,7 +4376,7 @@ describe('LibraryServiceClient', () => {
       var client = new libraryModule.v1.LibraryServiceClient();
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var request = {
         name: formattedName,
       };
@@ -4402,7 +4402,7 @@ describe('LibraryServiceClient', () => {
       var client = new libraryModule.v1.LibraryServiceClient();
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var request = {
         name: formattedName,
       };

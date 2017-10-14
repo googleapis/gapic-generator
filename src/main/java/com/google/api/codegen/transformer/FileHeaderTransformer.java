@@ -28,7 +28,7 @@ public class FileHeaderTransformer {
     this.importSectionTransformer = importSectionTransformer;
   }
 
-  public FileHeaderView generateFileHeader(GapicInterfaceContext context) {
+  public FileHeaderView generateFileHeader(TransformationContext context) {
     return generateFileHeader(
         context.getProductConfig(),
         importSectionTransformer.generateImportSection(context),

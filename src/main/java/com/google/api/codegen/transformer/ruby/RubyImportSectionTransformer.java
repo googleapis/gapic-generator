@@ -14,18 +14,19 @@
  */
 package com.google.api.codegen.transformer.ruby;
 
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.ruby.RubyUtil;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
-import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.ImportSectionTransformer;
+import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.transformer.TransformationContext;
 import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ImportTypeView;
 import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.Set;
@@ -33,7 +34,9 @@ import java.util.TreeSet;
 
 public class RubyImportSectionTransformer implements ImportSectionTransformer {
   @Override
-  public ImportSectionView generateImportSection(GapicInterfaceContext context) {
+  public ImportSectionView generateImportSection(TransformationContext transformationContext) {
+    // TODO support non-Gapic inputs
+    GapicInterfaceContext context = (GapicInterfaceContext) transformationContext;
     Set<String> importFilenames = generateImportFilenames(context);
     ImportSectionView.Builder importSection = ImportSectionView.newBuilder();
     importSection.standardImports(generateStandardImports());
@@ -45,7 +48,7 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
 
   @Override
   public ImportSectionView generateImportSection(
-      GapicMethodContext context, Iterable<InitCodeNode> specItemNodes) {
+      MethodContext context, Iterable<InitCodeNode> specItemNodes) {
     return new StandardImportSectionTransformer().generateImportSection(context, specItemNodes);
   }
 
@@ -100,8 +103,9 @@ public class RubyImportSectionTransformer implements ImportSectionTransformer {
   private Set<String> generateImportFilenames(GapicInterfaceContext context) {
     Set<String> filenames = new TreeSet<>();
     filenames.add(context.getInterface().getFile().getSimpleName());
-    for (Method method : context.getSupportedMethods()) {
-      Interface targetInterface = context.asRequestMethodContext(method).getTargetInterface();
+    for (MethodModel method : context.getSupportedMethods()) {
+      Interface targetInterface =
+          context.asRequestMethodContext(method).getTargetInterface().getInterface();
       filenames.add(targetInterface.getFile().getSimpleName());
     }
     return filenames;

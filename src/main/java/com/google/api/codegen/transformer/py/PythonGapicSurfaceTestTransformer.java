@@ -14,11 +14,15 @@
  */
 package com.google.api.codegen.transformer.py;
 
-import com.google.api.codegen.InterfaceView;
+import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.ProtoApiModel;
+import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
@@ -50,8 +54,6 @@ import com.google.api.codegen.viewmodel.testing.ClientTestFileView;
 import com.google.api.codegen.viewmodel.testing.MockServiceUsageView;
 import com.google.api.codegen.viewmodel.testing.SmokeTestClassView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
-import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
@@ -92,17 +94,18 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
   @Override
   public List<ViewModel> transform(Model model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ViewModel> models = ImmutableList.builder();
-    models.addAll(createUnitTestViews(model, productConfig));
-    models.addAll(createSmokeTestViews(model, productConfig));
+    ApiModel apiModel = new ProtoApiModel(model);
+    models.addAll(createUnitTestViews(apiModel, productConfig));
+    models.addAll(createSmokeTestViews(apiModel, productConfig));
     return models.build();
   }
 
-  private List<ViewModel> createUnitTestViews(Model model, GapicProductConfig productConfig) {
+  private List<ViewModel> createUnitTestViews(ApiModel model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ViewModel> models = ImmutableList.builder();
     SurfaceNamer surfacePackageNamer = new PythonSurfaceNamer(productConfig.getPackageName());
     SurfaceNamer testPackageNamer =
         new PythonSurfaceNamer(surfacePackageNamer.getTestPackageName());
-    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
       ModelTypeTable typeTable = createTypeTable(surfacePackageNamer.getTestPackageName());
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
@@ -119,7 +122,8 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
               .name(testClassName)
               .apiName(
                   surfacePackageNamer.publicClassName(
-                      Name.upperCamelKeepUpperAcronyms(apiInterface.getSimpleName())))
+                      Name.upperCamelKeepUpperAcronyms(
+                          context.getInterfaceModel().getSimpleName())))
               .testCases(createTestCaseViews(context))
               .apiHasLongRunningMethods(context.getInterfaceConfig().hasLongRunningOperations())
               .missingDefaultServiceAddress(
@@ -159,7 +163,7 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
     for (int i = 0; i < 2; ++i) {
       testCaseViews = ImmutableList.builder();
       SymbolTable testNameTable = new SymbolTable();
-      for (Method method : context.getSupportedMethods()) {
+      for (MethodModel method : context.getSupportedMethods()) {
         GapicMethodContext methodContext = context.asRequestMethodContext(method);
         ClientMethodType clientMethodType = ClientMethodType.OptionalArrayMethod;
         if (methodContext.getMethodConfig().isLongRunningOperation()) {
@@ -180,7 +184,7 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
                 .suggestedName(Name.from("request"))
                 .initFieldConfigStrings(methodContext.getMethodConfig().getSampleCodeInitFields())
                 .initValueConfigMap(InitCodeTransformer.createCollectionMap(methodContext))
-                .initFields(FieldConfig.toFieldIterable(fieldConfigs))
+                .initFields(FieldConfig.toFieldTypeIterable(fieldConfigs))
                 .outputType(initCodeOutputType)
                 .fieldConfigMap(FieldConfig.toFieldConfigMap(fieldConfigs))
                 .valueGenerator(valueGenerator)
@@ -194,12 +198,12 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
     return testCaseViews.build();
   }
 
-  private List<ViewModel> createSmokeTestViews(Model model, GapicProductConfig productConfig) {
+  private List<ViewModel> createSmokeTestViews(ApiModel model, GapicProductConfig productConfig) {
     ImmutableList.Builder<ViewModel> models = ImmutableList.builder();
     SurfaceNamer surfacePackageNamer = new PythonSurfaceNamer(productConfig.getPackageName());
     SurfaceNamer testPackageNamer =
         new PythonSurfaceNamer(surfacePackageNamer.getTestPackageName());
-    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
       ModelTypeTable typeTable = createTypeTable(surfacePackageNamer.getTestPackageName());
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
@@ -221,7 +225,8 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
     String outputPath =
         Joiner.on(File.separator).join("tests", "system", "gapic", version, filename);
 
-    Method method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
+    MethodModel method =
+        new ProtoMethodModel(context.getInterfaceConfig().getSmokeTestConfig().getMethod());
     FlatteningConfig flatteningGroup =
         testCaseTransformer.getSmokeTestFlatteningGroup(
             context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());

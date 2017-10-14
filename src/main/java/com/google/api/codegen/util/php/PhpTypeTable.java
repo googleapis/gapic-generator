@@ -97,6 +97,11 @@ public class PhpTypeTable implements TypeTable {
     return cleanedImports;
   }
 
+  @Override
+  public Map<String, TypeAlias> getAllImports() {
+    return dynamicTypeTable.getAllImports();
+  }
+
   public boolean hasImports() {
     return !getImports().isEmpty();
   }
