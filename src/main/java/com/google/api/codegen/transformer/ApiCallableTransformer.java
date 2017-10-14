@@ -16,9 +16,11 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.DiscoveryMethodModel;
 import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PageStreamingConfig;
+import com.google.api.codegen.config.ProtoField;
 import com.google.api.codegen.config.TransportProtocol;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.discovery.Method;
@@ -26,16 +28,14 @@ import com.google.api.codegen.viewmodel.ApiCallSettingsView;
 import com.google.api.codegen.viewmodel.ApiCallableImplType;
 import com.google.api.codegen.viewmodel.ApiCallableView;
 import com.google.api.codegen.viewmodel.DirectCallableView;
-import com.google.api.codegen.viewmodel.HttpMethodView;
 import com.google.api.codegen.viewmodel.HeaderRequestParamView;
+import com.google.api.codegen.viewmodel.HttpMethodView;
 import com.google.api.codegen.viewmodel.LongRunningOperationDetailView;
 import com.google.api.codegen.viewmodel.RetryCodesDefinitionView;
 import com.google.api.codegen.viewmodel.RetryParamsDefinitionView;
 import com.google.api.codegen.viewmodel.ServiceMethodType;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.MessageType;
-import com.google.api.tools.framework.model.Method;
-import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -352,9 +352,13 @@ public class ApiCallableTransformer {
     return callableBuilder.build();
   }
 
-  private List<HeaderRequestParamView> getHeaderRequestParams(GapicMethodContext context) {
-    GapicMethodConfig methodConfig = context.getMethodConfig();
-    Method method = methodConfig.getMethod();
+  private List<HeaderRequestParamView> getHeaderRequestParams(MethodContext context) {
+    if (!context.getProductConfig().getTransportProtocol().equals(TransportProtocol.GRPC)) {
+      return ImmutableList.of();
+    }
+
+    GapicMethodConfig methodConfig = (GapicMethodConfig) context.getMethodConfig();
+    com.google.api.tools.framework.model.Method method = methodConfig.getMethod();
     SurfaceNamer namer = context.getNamer();
     if (method.getInputType() == null || !method.getInputType().isMessage()) {
       return ImmutableList.of();
@@ -385,7 +389,7 @@ public class ApiCallableTransformer {
                 + "'");
       }
 
-      String matchingFieldGetter = namer.getFieldGetFunctionName(matchingField);
+      String matchingFieldGetter = namer.getFieldGetFunctionName(new ProtoField(matchingField));
       gettersChain.add(matchingFieldGetter);
       if (matchingField.getType() != null && matchingField.getType().isMessage()) {
         subMessageType = matchingField.getType().getMessageType();
