@@ -15,30 +15,28 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.BatchingConfig;
-import com.google.api.codegen.config.GapicMethodConfig;
-import com.google.api.codegen.util.Name;
+import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.GenericFieldSelector;
+import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.viewmodel.BatchingConfigView;
 import com.google.api.codegen.viewmodel.BatchingDescriptorClassView;
 import com.google.api.codegen.viewmodel.BatchingDescriptorView;
 import com.google.api.codegen.viewmodel.BatchingPartitionKeyView;
 import com.google.api.codegen.viewmodel.FieldCopyView;
-import com.google.api.tools.framework.model.Field;
-import com.google.api.tools.framework.model.FieldSelector;
-import com.google.api.tools.framework.model.Method;
-import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
 
 public class BatchingTransformer {
 
-  public List<BatchingDescriptorView> generateDescriptors(GapicInterfaceContext context) {
+  public List<BatchingDescriptorView> generateDescriptors(InterfaceContext context) {
     SurfaceNamer namer = context.getNamer();
     ImmutableList.Builder<BatchingDescriptorView> descriptors = ImmutableList.builder();
-    for (Method method : context.getBatchingMethods()) {
+    for (MethodModel method : context.getBatchingMethods()) {
       BatchingConfig batching = context.getMethodConfig(method).getBatching();
       BatchingDescriptorView.Builder descriptor = BatchingDescriptorView.newBuilder();
-      descriptor.methodName(namer.getMethodKey(method));
+      descriptor.methodName(context.getNamer().getMethodKey(method));
       descriptor.batchedFieldName(namer.getFieldName(batching.getBatchedField()));
       descriptor.discriminatorFieldNames(generateDiscriminatorFieldNames(batching));
 
@@ -47,18 +45,17 @@ public class BatchingTransformer {
       }
 
       descriptor.byteLengthFunctionName(
-          namer.getByteLengthFunctionName(batching.getBatchedField().getType()));
+          namer.getByteLengthFunctionName(batching.getBatchedField()));
       descriptors.add(descriptor.build());
     }
     return descriptors.build();
   }
 
-  public List<BatchingDescriptorClassView> generateDescriptorClasses(
-      GapicInterfaceContext context) {
+  public List<BatchingDescriptorClassView> generateDescriptorClasses(InterfaceContext context) {
     List<BatchingDescriptorClassView> descriptors = new ArrayList<>();
 
-    for (Method method : context.getInterface().getMethods()) {
-      GapicMethodConfig methodConfig = context.getMethodConfig(method);
+    for (MethodModel method : context.getInterfaceConfigMethods()) {
+      MethodConfig methodConfig = context.getMethodConfig(method);
       if (!methodConfig.isBatching()) {
         continue;
       }
@@ -68,7 +65,7 @@ public class BatchingTransformer {
     return descriptors;
   }
 
-  public BatchingConfigView generateBatchingConfig(GapicMethodContext context) {
+  public BatchingConfigView generateBatchingConfig(MethodContext context) {
     BatchingConfig batchingConfig = context.getMethodConfig().getBatching();
     BatchingConfigView.Builder batchingConfigView = BatchingConfigView.newBuilder();
 
@@ -87,78 +84,69 @@ public class BatchingTransformer {
 
   private List<String> generateDiscriminatorFieldNames(BatchingConfig batching) {
     ImmutableList.Builder<String> fieldNames = ImmutableList.builder();
-    for (FieldSelector fieldSelector : batching.getDiscriminatorFields()) {
+    for (GenericFieldSelector fieldSelector : batching.getDiscriminatorFields()) {
       fieldNames.add(fieldSelector.getParamName());
     }
     return fieldNames.build();
   }
 
-  private BatchingDescriptorClassView generateDescriptorClass(GapicMethodContext context) {
+  private BatchingDescriptorClassView generateDescriptorClass(MethodContext context) {
     SurfaceNamer namer = context.getNamer();
-    ModelTypeTable typeTable = context.getTypeTable();
-    Method method = context.getMethod();
+    MethodModel method = context.getMethodModel();
     BatchingConfig batching = context.getMethodConfig().getBatching();
 
-    Field batchedField = batching.getBatchedField();
-    TypeRef batchedType = batchedField.getType();
-    Name batchedTypeName = Name.from(batchedField.getSimpleName());
+    FieldModel batchedField = batching.getBatchedField();
 
-    Field subresponseField = batching.getSubresponseField();
+    FieldModel subresponseField = batching.getSubresponseField();
 
     BatchingDescriptorClassView.Builder desc = BatchingDescriptorClassView.newBuilder();
 
-    desc.name(namer.getBatchingDescriptorConstName(method));
-    desc.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
-    desc.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));
-    desc.batchedFieldTypeName(typeTable.getAndSaveNicknameFor(batchedType));
+    desc.name(context.getNamer().getBatchingDescriptorConstName(context.getMethodModel()));
+    desc.requestTypeName(
+        method.getAndSaveRequestTypeName(context.getTypeTable(), context.getNamer()));
+    desc.responseTypeName(
+        method.getAndSaveResponseTypeName(context.getTypeTable(), context.getNamer()));
+    desc.batchedFieldTypeName(context.getTypeTable().getAndSaveNicknameFor(batchedField));
 
     desc.partitionKeys(generatePartitionKeys(context));
     desc.discriminatorFieldCopies(generateDiscriminatorFieldCopies(context));
 
-    desc.batchedFieldGetFunction(namer.getFieldGetFunctionName(batchedType, batchedTypeName));
-    desc.batchedFieldSetFunction(namer.getFieldSetFunctionName(batchedType, batchedTypeName));
+    desc.batchedFieldGetFunction(namer.getFieldGetFunctionName(batchedField));
+    desc.batchedFieldSetFunction(namer.getFieldSetFunctionName(batchedField));
     desc.batchedFieldCountGetFunction(namer.getFieldCountGetFunctionName(batchedField));
 
     if (subresponseField != null) {
-      TypeRef subresponseType = subresponseField.getType();
-      Name subresponseTypeName = Name.from(subresponseField.getSimpleName());
-      desc.subresponseTypeName(typeTable.getAndSaveNicknameFor(subresponseType));
+      desc.subresponseTypeName(context.getTypeTable().getAndSaveNicknameFor(subresponseField));
       desc.subresponseByIndexGetFunction(namer.getByIndexGetFunctionName(subresponseField));
-      desc.subresponseSetFunction(
-          namer.getFieldSetFunctionName(subresponseType, subresponseTypeName));
+      desc.subresponseSetFunction(namer.getFieldSetFunctionName(subresponseField));
     }
 
     return desc.build();
   }
 
-  private List<BatchingPartitionKeyView> generatePartitionKeys(GapicMethodContext context) {
+  private List<BatchingPartitionKeyView> generatePartitionKeys(MethodContext context) {
     List<BatchingPartitionKeyView> keys = new ArrayList<>();
     BatchingConfig batching = context.getMethodConfig().getBatching();
-    for (FieldSelector fieldSelector : batching.getDiscriminatorFields()) {
-      TypeRef selectedType = fieldSelector.getLastField().getType();
-      Name selectedTypeName = Name.from(fieldSelector.getLastField().getSimpleName());
+    for (GenericFieldSelector fieldSelector : batching.getDiscriminatorFields()) {
+      FieldModel selectedType = fieldSelector.getLastField();
       BatchingPartitionKeyView key =
           BatchingPartitionKeyView.newBuilder()
-              .fieldGetFunction(
-                  context.getNamer().getFieldGetFunctionName(selectedType, selectedTypeName))
+              .fieldGetFunction(context.getNamer().getFieldGetFunctionName(selectedType))
               .build();
       keys.add(key);
     }
     return keys;
   }
 
-  private List<FieldCopyView> generateDiscriminatorFieldCopies(GapicMethodContext context) {
+  private List<FieldCopyView> generateDiscriminatorFieldCopies(MethodContext context) {
     List<FieldCopyView> fieldCopies = new ArrayList<>();
     BatchingConfig batching = context.getMethodConfig().getBatching();
-    for (FieldSelector fieldSelector : batching.getDiscriminatorFields()) {
-      TypeRef selectedType = fieldSelector.getLastField().getType();
-      Name selectedTypeName = Name.from(fieldSelector.getLastField().getSimpleName());
+    for (GenericFieldSelector fieldSelector : batching.getDiscriminatorFields()) {
+      FieldModel selectedType = fieldSelector.getLastField();
       FieldCopyView fieldCopy =
           FieldCopyView.newBuilder()
-              .fieldGetFunction(
-                  context.getNamer().getFieldGetFunctionName(selectedType, selectedTypeName))
-              .fieldSetFunction(
-                  context.getNamer().getFieldSetFunctionName(selectedType, selectedTypeName))
+              .fieldGetFunction(context.getNamer().getFieldGetFunctionName(selectedType))
+              .fieldSetFunction(context.getNamer().getFieldSetFunctionName(selectedType))
               .build();
       fieldCopies.add(fieldCopy);
     }

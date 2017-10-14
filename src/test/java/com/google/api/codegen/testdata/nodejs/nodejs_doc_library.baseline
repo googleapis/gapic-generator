@@ -212,11 +212,11 @@ const gapic = Object.freeze({
  * @example <caption>Create a client that uses
  *   <a href="https://goo.gl/64dyYX">Application Default Credentials
  *   (ADC)</a>:</caption>
- * let library = new library.LibraryServiceClient();
+ * let client = new library.LibraryServiceClient();
  *
  * @example <caption>Create a client with
  *   <a href="https://goo.gl/RXp6VL">explicit credentials</a>:</caption>
- * let library = new library.LibraryServiceClient({
+ * let client = new library.LibraryServiceClient({
  *   projectId: 'your-project-id',
  *   keyFilename: '/path/to/keyfile.json',
  * });
@@ -2460,6 +2460,16 @@ class LibraryServiceClient {
       discussBook: new gax.StreamDescriptor(gax.StreamType.BIDI_STREAMING),
       monologAboutBook: new gax.StreamDescriptor(gax.StreamType.CLIENT_STREAMING),
     };
+    var protoFilesRoot = new gax.grpc.GoogleProtoFilesRoot();
+    protoFilesRoot = protobuf.loadSync(
+      path.join(__dirname, '..', '..', 'protos', 'library.proto'),
+      protoFilesRoot
+    );
+    protoFilesRoot = protobuf.loadSync(
+      path.join(__dirname, '..', '..', 'protos', 'tagger.proto'),
+      protoFilesRoot
+    );
+
 
     // Some methods on this API support automatically batching
     // requests; denote this.
@@ -2471,7 +2481,7 @@ class LibraryServiceClient {
           'shelf.name',
         ],
         'bookNames',
-        gax.createByteLengthFunction(protos.google.example.library.v1.Book),
+        gax.createByteLengthFunction(protoFilesRoot.lookup('google.example.library.v1.Book')),
       ),
       addComments: new gax.BundleDescriptor(
         'comments',
@@ -2479,7 +2489,7 @@ class LibraryServiceClient {
           'name',
         ],
         null,
-        gax.createByteLengthFunction(protos.google.example.library.v1.Comment),
+        gax.createByteLengthFunction(protoFilesRoot.lookup('google.example.library.v1.Comment')),
       ),
     };
 
@@ -2490,16 +2500,6 @@ class LibraryServiceClient {
       auth: gaxGrpc.auth,
       grpc: gaxGrpc.grpc,
     }).operationsClient(opts);
-
-    var protoFilesRoot = new gax.grpc.GoogleProtoFilesRoot();
-    protoFilesRoot = protobuf.loadSync(
-      path.join(__dirname, '..', '..', 'protos', 'library.proto'),
-      protoFilesRoot
-    );
-    protoFilesRoot = protobuf.loadSync(
-      path.join(__dirname, '..', '..', 'protos', 'tagger.proto'),
-      protoFilesRoot
-    );
 
     var getBigBookResponse = protoFilesRoot.lookup(
       'google.example.library.v1.Book'
@@ -2891,7 +2891,7 @@ class LibraryServiceClient {
     if (request === undefined) {
       request = {};
     }
-    return this._pageDescriptors.listShelves.createStream(
+    return this._descriptors.page.listShelves.createStream(
       this._innerApiCalls.listShelves,
       request,
       options
@@ -3308,7 +3308,7 @@ class LibraryServiceClient {
   listBooksStream(request, options) {
     options = options || {};
 
-    return this._pageDescriptors.listBooks.createStream(
+    return this._descriptors.page.listBooks.createStream(
       this._innerApiCalls.listBooks,
       request,
       options
@@ -3605,7 +3605,7 @@ class LibraryServiceClient {
   listStringsStream(request, options) {
     options = options || {};
 
-    return this._pageDescriptors.listStrings.createStream(
+    return this._descriptors.page.listStrings.createStream(
       this._innerApiCalls.listStrings,
       request,
       options
@@ -4166,7 +4166,7 @@ class LibraryServiceClient {
   findRelatedBooksStream(request, options) {
     options = options || {};
 
-    return this._pageDescriptors.findRelatedBooks.createStream(
+    return this._descriptors.page.findRelatedBooks.createStream(
       this._innerApiCalls.findRelatedBooks,
       request,
       options

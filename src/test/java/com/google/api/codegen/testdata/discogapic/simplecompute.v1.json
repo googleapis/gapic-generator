@@ -1,0 +1,578 @@
+{
+ "kind": "discovery#restDescription",
+ "etag": "\"tbys6C40o18GZwyMen5GMkdK-3s/nfOITDD1b2lniiEWhy64AR2b2c4\"",
+ "discoveryVersion": "v1",
+ "id": "compute:v1",
+ "name": "simplecompute",
+ "version": "v1",
+ "revision": "20170118",
+ "title": "Compute Engine API",
+ "description": "Creates and runs virtual machines on Google Cloud Platform.",
+ "ownerDomain": "google.com",
+ "ownerName": "Google",
+ "icons": {
+  "x16": "https://www.google.com/images/icons/product/compute_engine-16.png",
+  "x32": "https://www.google.com/images/icons/product/compute_engine-32.png"
+ },
+ "documentationLink": "https://developers.google.com/compute/docs/reference/latest/",
+ "protocol": "rest",
+ "baseUrl": "https://www.googleapis.com/compute/v1/projects/",
+ "basePath": "/compute/v1/projects/",
+ "rootUrl": "https://www.googleapis.com/",
+ "servicePath": "compute/v1/projects/",
+ "batchPath": "batch",
+ "parameters": {
+  "alt": {
+   "type": "string",
+   "description": "Data format for the response.",
+   "default": "json",
+   "enum": [
+    "json"
+   ],
+   "enumDescriptions": [
+    "Responses with Content-Type of application/json"
+   ],
+   "location": "query"
+  },
+  "fields": {
+   "type": "string",
+   "description": "Selector specifying which fields to include in a partial response.",
+   "location": "query"
+  },
+  "key": {
+   "type": "string",
+   "description": "API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.",
+   "location": "query"
+  },
+  "oauth_token": {
+   "type": "string",
+   "description": "OAuth 2.0 token for the current user.",
+   "location": "query"
+  },
+  "prettyPrint": {
+   "type": "boolean",
+   "description": "Returns response with indentations and line breaks.",
+   "default": "true",
+   "location": "query"
+  },
+  "quotaUser": {
+   "type": "string",
+   "description": "Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters. Overrides userIp if both are provided.",
+   "location": "query"
+  },
+  "userIp": {
+   "type": "string",
+   "description": "IP address of the site where the request originates. Use this if you want to enforce per-user limits.",
+   "location": "query"
+  }
+ },
+ "auth": {
+  "oauth2": {
+   "scopes": {
+    "https://www.googleapis.com/auth/cloud-platform": {
+     "description": "View and manage your data across Google Cloud Platform services"
+    },
+    "https://www.googleapis.com/auth/compute": {
+     "description": "View and manage your Google Compute Engine resources"
+    },
+    "https://www.googleapis.com/auth/compute.readonly": {
+     "description": "View your Google Compute Engine resources"
+    },
+    "https://www.googleapis.com/auth/devstorage.full_control": {
+     "description": "Manage your data and permissions in Google Cloud Storage"
+    },
+    "https://www.googleapis.com/auth/devstorage.read_only": {
+     "description": "View your data in Google Cloud Storage"
+    },
+    "https://www.googleapis.com/auth/devstorage.read_write": {
+     "description": "Manage your data in Google Cloud Storage"
+    }
+   }
+  }
+ },
+ "schemas": {
+  "Address": {
+   "id": "Address",
+   "type": "object",
+   "description": "A reserved address resource.",
+   "properties": {
+    "address": {
+     "type": "string",
+     "description": "The static external IP address represented by this resource. Only IPv4 is supported."
+    },
+    "creationTimestamp": {
+     "type": "string",
+     "description": "[Output Only] Creation timestamp in RFC3339 text format."
+    },
+    "description": {
+     "type": "string",
+     "description": "An optional description of this resource. Provide this property when you create the resource."
+    },
+    "id": {
+     "type": "string",
+     "description": "[Output Only] The unique identifier for the resource. This identifier is defined by the server.",
+     "format": "uint64"
+    },
+    "kind": {
+     "type": "string",
+     "description": "[Output Only] Type of the resource. Always compute#address for addresses.",
+     "default": "compute#address"
+    },
+    "name": {
+     "type": "string",
+     "description": "Name of the resource. Provided by the client when the resource is created. The name must be 1-63 characters long, and comply with RFC1035. Specifically, the name must be 1-63 characters long and match the regular expression [a-z]([-a-z0-9]*[a-z0-9])? which means the first character must be a lowercase letter, and all following characters must be a dash, lowercase letter, or digit, except the last character, which cannot be a dash.",
+     "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+     "annotations": {
+      "required": [
+       "compute.addresses.insert"
+      ]
+     }
+    },
+    "region": {
+     "type": "string",
+     "description": "[Output Only] URL of the region where the regional address resides. This field is not applicable to global addresses."
+    },
+    "selfLink": {
+     "type": "string",
+     "description": "[Output Only] Server-defined URL for the resource."
+    },
+    "status": {
+     "type": "string",
+     "description": "[Output Only] The status of the address, which can be either IN_USE or RESERVED. An address that is RESERVED is currently reserved and available to use. An IN_USE address is currently being used by another resource and is not available.",
+     "enum": [
+      "IN_USE",
+      "RESERVED"
+     ],
+     "enumDescriptions": [
+      "",
+      ""
+     ]
+    },
+    "users": {
+     "type": "array",
+     "description": "[Output Only] The URLs of the resources that are using this address.",
+     "items": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "AddressList": {
+   "id": "AddressList",
+   "type": "object",
+   "description": "Contains a list of addresses.",
+   "properties": {
+    "id": {
+     "type": "string",
+     "description": "[Output Only] The unique identifier for the resource. This identifier is defined by the server."
+    },
+    "items": {
+     "type": "array",
+     "description": "[Output Only] A list of addresses.",
+     "items": {
+      "$ref": "Address"
+     }
+    },
+    "kind": {
+     "type": "string",
+     "description": "[Output Only] Type of resource. Always compute#addressList for lists of addresses.",
+     "default": "compute#addressList"
+    },
+    "nextPageToken": {
+     "type": "string",
+     "description": "[Output Only] This token allows you to get the next page of results for list requests. If the number of results is larger than maxResults, use the nextPageToken as a value for the query parameter pageToken in the next list request. Subsequent list requests will have their own nextPageToken to continue paging through the results."
+    },
+    "selfLink": {
+     "type": "string",
+     "description": "[Output Only] Server-defined URL for the resource."
+    }
+   }
+  },
+  "Operation": {
+   "id": "Operation",
+   "type": "object",
+   "description": "An Operation resource, used to manage asynchronous API requests.",
+   "properties": {
+    "clientOperationId": {
+     "type": "string",
+     "description": "[Output Only] Reserved for future use."
+    },
+    "creationTimestamp": {
+     "type": "string",
+     "description": "[Output Only] Creation timestamp in RFC3339 text format."
+    },
+    "description": {
+     "type": "string",
+     "description": "[Output Only] A textual description of the operation, which is set when the operation is created."
+    },
+    "endTime": {
+     "type": "string",
+     "description": "[Output Only] The time that this operation was completed. This value is in RFC3339 text format."
+    },
+    "error": {
+     "type": "object",
+     "description": "[Output Only] If errors are generated during processing of the operation, this field will be populated.",
+     "properties": {
+      "errors": {
+       "type": "array",
+       "description": "[Output Only] The array of errors encountered while processing this operation.",
+       "items": {
+        "type": "object",
+        "properties": {
+         "code": {
+          "type": "string",
+          "description": "[Output Only] The error type identifier for this error."
+         },
+         "location": {
+          "type": "string",
+          "description": "[Output Only] Indicates the field in the request that caused the error. This property is optional."
+         },
+         "message": {
+          "type": "string",
+          "description": "[Output Only] An optional, human-readable error message."
+         }
+        }
+       }
+      }
+     }
+    },
+    "httpErrorMessage": {
+     "type": "string",
+     "description": "[Output Only] If the operation fails, this field contains the HTTP error message that was returned, such as NOT FOUND."
+    },
+    "httpErrorStatusCode": {
+     "type": "integer",
+     "description": "[Output Only] If the operation fails, this field contains the HTTP error status code that was returned. For example, a 404 means the resource was not found.",
+     "format": "int32"
+    },
+    "id": {
+     "type": "string",
+     "description": "[Output Only] The unique identifier for the resource. This identifier is defined by the server.",
+     "format": "uint64"
+    },
+    "insertTime": {
+     "type": "string",
+     "description": "[Output Only] The time that this operation was requested. This value is in RFC3339 text format."
+    },
+    "kind": {
+     "type": "string",
+     "description": "[Output Only] Type of the resource. Always compute#operation for Operation resources.",
+     "default": "compute#operation"
+    },
+    "name": {
+     "type": "string",
+     "description": "[Output Only] Name of the resource."
+    },
+    "operationType": {
+     "type": "string",
+     "description": "[Output Only] The type of operation, such as insert, update, or delete, and so on."
+    },
+    "progress": {
+     "type": "integer",
+     "description": "[Output Only] An optional progress indicator that ranges from 0 to 100. There is no requirement that this be linear or support any granularity of operations. This should not be used to guess when the operation will be complete. This number should monotonically increase as the operation progresses.",
+     "format": "int32"
+    },
+    "region": {
+     "type": "string",
+     "description": "[Output Only] The URL of the region where the operation resides. Only available when performing regional operations."
+    },
+    "selfLink": {
+     "type": "string",
+     "description": "[Output Only] Server-defined URL for the resource."
+    },
+    "startTime": {
+     "type": "string",
+     "description": "[Output Only] The time that this operation was started by the server. This value is in RFC3339 text format."
+    },
+    "status": {
+     "type": "string",
+     "description": "[Output Only] The status of the operation, which can be one of the following: PENDING, RUNNING, or DONE.",
+     "enum": [
+      "DONE",
+      "PENDING",
+      "RUNNING"
+     ],
+     "enumDescriptions": [
+      "",
+      "",
+      ""
+     ]
+    },
+    "statusMessage": {
+     "type": "string",
+     "description": "[Output Only] An optional textual description of the current status of the operation."
+    },
+    "targetId": {
+     "type": "string",
+     "description": "[Output Only] The unique target ID, which identifies a specific incarnation of the target resource.",
+     "format": "uint64"
+    },
+    "targetLink": {
+     "type": "string",
+     "description": "[Output Only] The URL of the resource that the operation modifies. For operations related to creating a snapshot, this points to the persistent disk that the snapshot was created from."
+    },
+    "user": {
+     "type": "string",
+     "description": "[Output Only] User who requested the operation, for example: user@example.com."
+    },
+    "warnings": {
+     "type": "array",
+     "description": "[Output Only] If warning messages are generated during processing of the operation, this field will be populated.",
+     "items": {
+      "type": "object",
+      "properties": {
+       "code": {
+        "type": "string",
+        "description": "[Output Only] A warning code, if applicable. For example, Compute Engine returns NO_RESULTS_ON_PAGE if there are no results in the response.",
+        "enum": [
+         "CLEANUP_FAILED",
+         "DEPRECATED_RESOURCE_USED",
+         "DISK_SIZE_LARGER_THAN_IMAGE_SIZE",
+         "FIELD_VALUE_OVERRIDEN",
+         "INJECTED_KERNELS_DEPRECATED",
+         "NEXT_HOP_ADDRESS_NOT_ASSIGNED",
+         "NEXT_HOP_CANNOT_IP_FORWARD",
+         "NEXT_HOP_INSTANCE_NOT_FOUND",
+         "NEXT_HOP_INSTANCE_NOT_ON_NETWORK",
+         "NEXT_HOP_NOT_RUNNING",
+         "NOT_CRITICAL_ERROR",
+         "NO_RESULTS_ON_PAGE",
+         "REQUIRED_TOS_AGREEMENT",
+         "RESOURCE_NOT_DELETED",
+         "SINGLE_INSTANCE_PROPERTY_TEMPLATE",
+         "UNREACHABLE"
+        ],
+        "enumDescriptions": [
+         "",
+         "",
+         "",
+         "",
+         "",
+         "",
+         "",
+         "",
+         "",
+         "",
+         "",
+         "",
+         "",
+         "",
+         "",
+         ""
+        ]
+       },
+       "data": {
+        "type": "array",
+        "description": "[Output Only] Metadata about this warning in key: value format. For example:\n\"data\": [ { \"key\": \"scope\", \"value\": \"zones/us-east1-d\" }",
+        "items": {
+         "type": "object",
+         "properties": {
+          "key": {
+           "type": "string",
+           "description": "[Output Only] A key that provides more detail on the warning being returned. For example, for warnings where there are no results in a list request for a particular zone, this key might be scope and the key value might be the zone name. Other examples might be a key indicating a deprecated resource and a suggested replacement, or a warning about invalid network settings (for example, if an instance attempts to perform IP forwarding but is not enabled for IP forwarding)."
+          },
+          "value": {
+           "type": "string",
+           "description": "[Output Only] A warning data value corresponding to the key."
+          }
+         }
+        }
+       },
+       "message": {
+        "type": "string",
+        "description": "[Output Only] A human-readable description of the warning code."
+       }
+      }
+     }
+    },
+    "zone": {
+     "type": "string",
+     "description": "[Output Only] The URL of the zone where the operation resides. Only available when performing per-zone operations."
+    }
+   }
+  }
+ },
+ "resources": {
+  "addresses": {
+   "methods": {
+    "delete": {
+     "id": "compute.addresses.delete",
+     "path": "{project}/regions/{region}/addresses/{address}",
+     "httpMethod": "DELETE",
+     "description": "Deletes the specified address resource.",
+     "parameters": {
+      "address": {
+       "type": "string",
+       "description": "Name of the address resource to delete.",
+       "required": true,
+       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "location": "path"
+      },
+      "project": {
+       "type": "string",
+       "description": "Project ID for this request.",
+       "required": true,
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z0-9](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "location": "path"
+      },
+      "region": {
+       "type": "string",
+       "description": "Name of the region for this request.",
+       "required": true,
+       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "location": "path"
+      }
+     },
+     "parameterOrder": [
+      "project",
+      "region",
+      "address"
+     ],
+     "response": {
+      "$ref": "Operation"
+     },
+     "scopes": [
+      "https://www.googleapis.com/auth/cloud-platform",
+      "https://www.googleapis.com/auth/compute"
+     ]
+    },
+    "get": {
+     "id": "compute.addresses.get",
+     "path": "{project}/regions/{region}/addresses/{address}",
+     "httpMethod": "GET",
+     "description": "Returns the specified address resource.",
+     "parameters": {
+      "address": {
+       "type": "string",
+       "description": "Name of the address resource to return.",
+       "required": true,
+       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "location": "path"
+      },
+      "project": {
+       "type": "string",
+       "description": "Project ID for this request.",
+       "required": true,
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z0-9](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "location": "path"
+      },
+      "region": {
+       "type": "string",
+       "description": "Name of the region for this request.",
+       "required": true,
+       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "location": "path"
+      }
+     },
+     "parameterOrder": [
+      "project",
+      "region",
+      "address"
+     ],
+     "response": {
+      "$ref": "Address"
+     },
+     "scopes": [
+      "https://www.googleapis.com/auth/cloud-platform",
+      "https://www.googleapis.com/auth/compute",
+      "https://www.googleapis.com/auth/compute.readonly"
+     ]
+    },
+    "insert": {
+     "id": "compute.addresses.insert",
+     "path": "{project}/regions/{region}/addresses",
+     "httpMethod": "POST",
+     "description": "Creates an address resource in the specified project using the data included in the request.",
+     "parameters": {
+      "project": {
+       "type": "string",
+       "description": "Project ID for this request.",
+       "required": true,
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z0-9](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "location": "path"
+      },
+      "region": {
+       "type": "string",
+       "description": "Name of the region for this request.",
+       "required": true,
+       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "location": "path"
+      }
+     },
+     "parameterOrder": [
+      "project",
+      "region"
+     ],
+     "request": {
+      "$ref": "Address"
+     },
+     "response": {
+      "$ref": "Operation"
+     },
+     "scopes": [
+      "https://www.googleapis.com/auth/cloud-platform",
+      "https://www.googleapis.com/auth/compute"
+     ]
+    },
+    "list": {
+     "id": "compute.addresses.list",
+     "path": "{project}/regions/{region}/addresses",
+     "httpMethod": "GET",
+     "description": "Retrieves a list of addresses contained within the specified region.",
+     "parameters": {
+      "filter": {
+       "type": "string",
+       "description": "Sets a filter expression for filtering listed resources, in the form filter={expression}. Your {expression} must be in the format: field_name comparison_string literal_string.\n\nThe field_name is the name of the field you want to compare. Only atomic field types are supported (string, number, boolean). The comparison_string must be either eq (equals) or ne (not equals). The literal_string is the string value to filter to. The literal value must be valid for the type of field you are filtering by (string, number, boolean). For string fields, the literal value is interpreted as a regular expression using RE2 syntax. The literal value must match the entire field.\n\nFor example, to filter for instances that do not have a name of example-instance, you would use filter=name ne example-instance.\n\nYou can filter on nested fields. For example, you could filter on instances that have set the scheduling.automaticRestart field to true. Use filtering on nested fields to take advantage of labels to organize and search for results based on label values.\n\nTo filter on multiple expressions, provide each separate expression within parentheses. For example, (scheduling.automaticRestart eq true) (zone eq us-central1-f). Multiple expressions are treated as AND expressions, meaning that resources must match all expressions to pass the filters.",
+       "location": "query"
+      },
+      "maxResults": {
+       "type": "integer",
+       "description": "The maximum number of results per page that should be returned. If the number of available results is larger than maxResults, Compute Engine returns a nextPageToken that can be used to get the next page of results in subsequent list requests.",
+       "default": "500",
+       "format": "uint32",
+       "minimum": "0",
+       "maximum": "500",
+       "location": "query"
+      },
+      "orderBy": {
+       "type": "string",
+       "description": "Sorts list results by a certain order. By default, results are returned in alphanumerical order based on the resource name.\n\nYou can also sort results in descending order based on the creation timestamp using orderBy=\"creationTimestamp desc\". This sorts results based on the creationTimestamp field in reverse chronological order (newest result first). Use this to sort resources like operations so that the newest operation is returned first.\n\nCurrently, only sorting by name or creationTimestamp desc is supported.",
+       "location": "query"
+      },
+      "pageToken": {
+       "type": "string",
+       "description": "Specifies a page token to use. Set pageToken to the nextPageToken returned by a previous list request to get the next page of results.",
+       "location": "query"
+      },
+      "project": {
+       "type": "string",
+       "description": "Project ID for this request.",
+       "required": true,
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z0-9](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "location": "path"
+      },
+      "region": {
+       "type": "string",
+       "description": "Name of the region for this request.",
+       "required": true,
+       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "location": "path"
+      }
+     },
+     "parameterOrder": [
+      "project",
+      "region"
+     ],
+     "response": {
+      "$ref": "AddressList"
+     },
+     "scopes": [
+      "https://www.googleapis.com/auth/cloud-platform",
+      "https://www.googleapis.com/auth/compute",
+      "https://www.googleapis.com/auth/compute.readonly"
+     ]
+    }
+   }
+  }
+ }
+}
