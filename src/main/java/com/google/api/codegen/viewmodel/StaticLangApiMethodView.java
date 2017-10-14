@@ -24,7 +24,8 @@ import javax.annotation.Nullable;
  * type of static api method; the type is maintained as a value of the ClientMethodType enum.
  */
 @AutoValue
-public abstract class StaticLangApiMethodView implements ApiMethodView {
+public abstract class StaticLangApiMethodView
+    implements ApiMethodView, Comparable<StaticLangApiMethodView> {
   public abstract ClientMethodType type();
 
   public abstract String apiClassName();
@@ -154,5 +155,10 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
     public abstract Builder releaseLevelAnnotation(String value);
 
     public abstract StaticLangApiMethodView build();
+  }
+
+  @Override
+  public int compareTo(StaticLangApiMethodView o) {
+    return this.name().compareTo(o.name());
   }
 }

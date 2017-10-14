@@ -19,7 +19,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 @AutoValue
-public abstract class StaticLangGrpcStubView {
+public abstract class StaticLangRpcStubView {
   public abstract ServiceDocView doc();
 
   @Nullable
@@ -41,8 +41,12 @@ public abstract class StaticLangGrpcStubView {
 
   public abstract String parentName();
 
-  public static StaticLangGrpcStubView.Builder newBuilder() {
-    return new AutoValue_StaticLangGrpcStubView.Builder();
+  @Nullable
+  // Base URL for HTTP calls.
+  public abstract String baseUrl();
+
+  public static StaticLangRpcStubView.Builder newBuilder() {
+    return new AutoValue_StaticLangRpcStubView.Builder();
   }
 
   @AutoValue.Builder
@@ -68,6 +72,8 @@ public abstract class StaticLangGrpcStubView {
 
     public abstract Builder parentName(String apiStubInterfaceName);
 
-    public abstract StaticLangGrpcStubView build();
+    public abstract Builder baseUrl(String baseUrl);
+
+    public abstract StaticLangRpcStubView build();
   }
 }

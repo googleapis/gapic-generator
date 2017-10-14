@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.util.java;
 
+import static com.google.api.codegen.util.java.JavaTypeTable.JavaLangResolution.ESCAPE_JAVA_LANG_CLASH;
+
 import com.google.api.codegen.LanguageUtil;
 import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.TypeAlias;
@@ -56,14 +58,25 @@ public class JavaTypeTable implements TypeTable {
           .build();
 
   private final String implicitPackageName;
+  private final JavaLangResolution javaLangResolution;
 
   public JavaTypeTable(String implicitPackageName) {
+    this(implicitPackageName, ESCAPE_JAVA_LANG_CLASH);
+  }
+
+  public JavaTypeTable(String implicitPackageName, JavaLangResolution javaLangResolution) {
     this.implicitPackageName = implicitPackageName;
+    this.javaLangResolution = javaLangResolution;
+  }
+
+  public enum JavaLangResolution {
+    IGNORE_JAVA_LANG_CLASH,
+    ESCAPE_JAVA_LANG_CLASH
   }
 
   @Override
   public TypeTable cloneEmpty() {
-    return new JavaTypeTable(implicitPackageName);
+    return new JavaTypeTable(implicitPackageName, javaLangResolution);
   }
 
   @Override
@@ -141,10 +154,13 @@ public class JavaTypeTable implements TypeTable {
       // Short name already there.
       return imports.get(alias.getFullName()).getNickname();
     }
-    if (usedNicknames.contains(alias.getNickname())
-        || !alias.getFullName().startsWith(JAVA_LANG_TYPE_PREFIX)
-            && isImplicitImport(alias.getNickname())) {
+    if (usedNicknames.contains(alias.getNickname())) {
       // Short name clashes, use long name.
+      return alias.getFullName();
+    } else if (javaLangResolution.equals(ESCAPE_JAVA_LANG_CLASH)
+        && !alias.getFullName().startsWith(JAVA_LANG_TYPE_PREFIX)
+        && isImplicitImport(alias.getNickname())) {
+      // Short name clashes with java.lang; use long name.
       return alias.getFullName();
     }
     imports.put(alias.getFullName(), alias);
@@ -176,20 +192,33 @@ public class JavaTypeTable implements TypeTable {
     return cleanedImports;
   }
 
-  /** Checks whether the simple type name is implicitly imported from java.lang. */
+  @Override
+  public Map<String, TypeAlias> getAllImports() {
+    return new TreeMap<>(imports);
+  }
+
+  /**
+   * Checks whether the simple type name is implicitly imported from java.lang and memoizes the
+   * result.
+   */
   private boolean isImplicitImport(String name) {
     Boolean yes = implicitImports.get(name);
     if (yes != null) {
       return yes;
     }
+    yes = isJavaLangImport(name);
+    implicitImports.put(name, yes);
+    return yes;
+  }
+
+  /** Checks whether the simple type name is implicitly imported from java.lang. */
+  public static boolean isJavaLangImport(String name) {
     // Use reflection to determine whether the name exists in java.lang.
     try {
       Class.forName("java.lang." + name);
-      yes = true;
+      return true;
     } catch (Exception e) {
-      yes = false;
+      return false;
     }
-    implicitImports.put(name, yes);
-    return yes;
   }
 }

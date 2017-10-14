@@ -16,15 +16,14 @@ package com.google.api.codegen.nodejs;
 
 import com.google.api.codegen.config.ProductConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
-import com.google.api.tools.framework.model.ProtoElement;
 import com.google.common.base.Splitter;
 import java.util.List;
 
 public class NodeJSCodePathMapper implements GapicCodePathMapper {
   @Override
-  public String getOutputPath(ProtoElement element, ProductConfig config) {
+  public String getOutputPath(String elementFullName, ProductConfig config) {
     String apiVersion = "";
-    List<String> packages = Splitter.on(".").splitToList(element.getFullName());
+    List<String> packages = Splitter.on(".").splitToList(elementFullName);
     if (packages.size() > 2) {
       String parentName = packages.get(packages.size() - 2);
       if (parentName.matches("v[0-9]+((alpha|beta)[0-9]+)?")) {

@@ -14,6 +14,9 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.ProtoInterfaceModel;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
 
@@ -41,6 +44,13 @@ public class ModelTypeFormatterImpl implements ModelTypeFormatter {
   }
 
   @Override
+  public String getFullNameFor(InterfaceModel interfaceModel) {
+    return typeNameConverter
+        .getTypeName(((ProtoInterfaceModel) interfaceModel).getInterface())
+        .getFullName();
+  }
+
+  @Override
   public String getFullNameForElementType(TypeRef type) {
     return typeNameConverter.getTypeNameForElementType(type).getFullName();
   }
@@ -53,5 +63,25 @@ public class ModelTypeFormatterImpl implements ModelTypeFormatter {
   @Override
   public String renderPrimitiveValue(TypeRef type, String value) {
     return typeNameConverter.renderPrimitiveValue(type, value);
+  }
+
+  @Override
+  public String getFullNameFor(FieldModel type) {
+    return getFullNameFor(type.getProtoTypeRef());
+  }
+
+  @Override
+  public String getFullNameForElementType(FieldModel type) {
+    return getFullNameForElementType(type.getProtoTypeRef());
+  }
+
+  @Override
+  public String getNicknameFor(FieldModel type) {
+    return getNicknameFor(type.getProtoTypeRef());
+  }
+
+  @Override
+  public String renderPrimitiveValue(FieldModel type, String key) {
+    return renderPrimitiveValue(type.getProtoTypeRef(), key);
   }
 }
