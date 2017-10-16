@@ -472,7 +472,7 @@ public class InitCodeTransformer {
             value = context.getNamer().injectRandomStringGeneratorCode(value);
             break;
           case Variable:
-            value = context.getNamer().localVarName(Name.from(value));
+            value = context.getNamer().localVarName(Name.anyLower(value));
             break;
           default:
             throw new IllegalArgumentException("Unhandled init value type");
@@ -506,13 +506,13 @@ public class InitCodeTransformer {
     List<String> formatFunctionArgs = new ArrayList<>();
     for (String entityName : varList) {
       String entityValue =
-          context.getNamer().quoted("[" + Name.from(entityName).toUpperUnderscore() + "]");
+          context.getNamer().quoted("[" + Name.anyLower(entityName).toUpperUnderscore() + "]");
       if (initValueConfig.hasFormattingConfigInitialValues()
           && initValueConfig.getResourceNameBindingValues().containsKey(entityName)) {
         InitValue initValue = initValueConfig.getResourceNameBindingValues().get(entityName);
         switch (initValue.getType()) {
           case Variable:
-            entityValue = context.getNamer().localVarReference(Name.from(initValue.getValue()));
+            entityValue = context.getNamer().localVarReference(Name.anyLower(initValue.getValue()));
             break;
           case Random:
             entityValue = context.getNamer().injectRandomStringGeneratorCode(initValue.getValue());
@@ -542,16 +542,16 @@ public class InitCodeTransformer {
             namer.getResourceNameFieldSetFunctionName(fieldConfig.getMessageFieldConfig()));
       } else {
         fieldSetting.fieldSetFunction(
-            namer.getFieldSetFunctionName(item.getType(), Name.from(item.getKey())));
+            namer.getFieldSetFunctionName(item.getType(), Name.anyLower(item.getKey())));
       }
       fieldSetting.fieldAddFunction(
-          namer.getFieldAddFunctionName(item.getType(), Name.from(item.getKey())));
+          namer.getFieldAddFunctionName(item.getType(), Name.anyLower(item.getKey())));
       fieldSetting.fieldGetFunction(
-          namer.getFieldGetFunctionName(item.getType(), Name.from(item.getKey())));
+          namer.getFieldGetFunctionName(item.getType(), Name.anyLower(item.getKey())));
 
       fieldSetting.identifier(getVariableName(context, item));
       fieldSetting.initCodeLine(generateSurfaceInitCodeLine(context, item));
-      fieldSetting.fieldName(context.getNamer().publicFieldName(Name.from(item.getKey())));
+      fieldSetting.fieldName(context.getNamer().publicFieldName(Name.anyLower(item.getKey())));
 
       fieldSetting.isMap(item.getType().isMap());
       fieldSetting.isArray(!item.getType().isMap() && item.getType().isRepeated());

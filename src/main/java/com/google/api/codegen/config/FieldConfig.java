@@ -162,7 +162,10 @@ public abstract class FieldConfig {
       // messageField uses a oneof containing that type, or when the messageField accepts any
       // resource name.
       ResourceNameType resourceTypeName = messageFieldResourceNameConfig.getResourceNameType();
-      boolean ok = resourceTypeName == ResourceNameType.ANY;
+      boolean ok =
+          resourceTypeName == ResourceNameType.ANY
+              || (resourceTypeName == ResourceNameType.SINGLE
+                  && field.getApiSource().equals(ApiSource.DISCOVERY));
       if (resourceTypeName == ResourceNameType.ONEOF) {
         ResourceNameOneofConfig oneofConfig =
             (ResourceNameOneofConfig) messageFieldResourceNameConfig;
@@ -236,7 +239,8 @@ public abstract class FieldConfig {
   public boolean requiresParamTransformation() {
     return getResourceNameConfig() != null
         && getMessageResourceNameConfig() != null
-        && !getResourceNameConfig().equals(getMessageResourceNameConfig());
+        && !getResourceNameConfig().equals(getMessageResourceNameConfig())
+        && getField().getApiSource() != ApiSource.DISCOVERY;
   }
 
   public boolean requiresParamTransformationFromAny() {

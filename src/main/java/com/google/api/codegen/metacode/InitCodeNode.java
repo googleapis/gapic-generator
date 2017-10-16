@@ -327,7 +327,7 @@ public class InitCodeNode {
       Name parentName, InitCodeLineType parentType, InitCodeNode child) {
     switch (parentType) {
       case StructureInitLine:
-        return Name.from(child.key);
+        return Name.anyLower(child.key);
       case MapInitLine:
         return parentName.join("item");
       case ListInitLine:

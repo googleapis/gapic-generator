@@ -95,12 +95,9 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public String getFullName() {
-    SurfaceNamer surfaceNamer = discoGapicNamer.getLanguageNamer();
-    TypeNameConverter typeNameConverter = surfaceNamer.getTypeNameConverter();
-    return typeNameConverter
-        .getTypeNameInImplicitPackage(
-            surfaceNamer.publicClassName(Name.anyCamel(schema.getIdentifier())))
-        .getFullName();
+    return discoGapicNamer
+        .getLanguageNamer()
+        .publicClassName(DiscoGapicNamer.getSchemaNameAsParameter(schema));
   }
 
   @Override
