@@ -51,7 +51,6 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -271,24 +270,11 @@ public class InitCodeTransformer {
     typeTable.getAndSaveNicknameFor(
         namer.getFullyQualifiedApiWrapperClassName(context.getInterfaceConfig()));
 
-    LinkedHashMap<FieldSettingView, Boolean> fieldSettingsMap = getFieldSettings(context, argItems);
-    List<FieldSettingView> fieldSettings = new ArrayList<>(fieldSettingsMap.keySet());
-    // Collect FieldSettingViews which are optional (value is false) into a list.
+    List<FieldSettingView> fieldSettings = getFieldSettings(context, argItems);
     List<FieldSettingView> optionalFieldSettings =
-        fieldSettingsMap
-            .entrySet()
-            .stream()
-            .filter(e -> !e.getValue())
-            .map(e -> e.getKey())
-            .collect(Collectors.toList());
-    // Collect FieldSettingViews which are required (value is true) into a list.
+        fieldSettings.stream().filter(f -> !f.required()).collect(Collectors.toList());
     List<FieldSettingView> requiredFieldSettings =
-        fieldSettingsMap
-            .entrySet()
-            .stream()
-            .filter(e -> e.getValue())
-            .map(e -> e.getKey())
-            .collect(Collectors.toList());
+        fieldSettings.stream().filter(f -> f.required()).collect(Collectors.toList());
     return InitCodeView.newBuilder()
         .lines(generateSurfaceInitCodeLines(context, orderedItems))
         .topLevelLines(generateSurfaceInitCodeLines(context, argItems))
@@ -370,8 +356,7 @@ public class InitCodeTransformer {
     surfaceLine.typeName(typeName);
     surfaceLine.fullyQualifiedTypeName(typeTable.getFullNameFor(item.getType()));
     surfaceLine.typeConstructor(namer.getTypeConstructor(typeName));
-    surfaceLine.fieldSettings(
-        new ArrayList<>(getFieldSettings(context, item.getChildren().values()).keySet()));
+    surfaceLine.fieldSettings(getFieldSettings(context, item.getChildren().values()));
 
     return surfaceLine.build();
   }
@@ -595,13 +580,10 @@ public class InitCodeTransformer {
         .anyMatch(f -> f.equals(fieldConfig));
   }
 
-  /** Returns an insertion order map of FieldSettingView to whether or not the field is required. */
-  private LinkedHashMap<FieldSettingView, Boolean> getFieldSettings(
+  private List<FieldSettingView> getFieldSettings(
       GapicMethodContext context, Iterable<InitCodeNode> childItems) {
     SurfaceNamer namer = context.getNamer();
-    LinkedHashMap<FieldSettingView, Boolean> allSettings = new LinkedHashMap<>();
-    Iterable<FieldConfig> requiredFieldConfigs =
-        context.getMethodConfig().getRequiredFieldConfigs();
+    List<FieldSettingView> allSettings = new ArrayList<>();
     for (InitCodeNode item : childItems) {
       FieldSettingView.Builder fieldSetting = FieldSettingView.newBuilder();
       FieldConfig fieldConfig = item.getFieldConfig();
@@ -632,7 +614,9 @@ public class InitCodeTransformer {
                 .variantType(namer.getOneofVariantTypeName(item.getOneofConfig()))
                 .build());
       }
-      allSettings.put(fieldSetting.build(), hasFieldConfig(requiredFieldConfigs, fieldConfig));
+      fieldSetting.required(
+          hasFieldConfig(context.getMethodConfig().getRequiredFieldConfigs(), fieldConfig));
+      allSettings.add(fieldSetting.build());
     }
     return allSettings;
   }

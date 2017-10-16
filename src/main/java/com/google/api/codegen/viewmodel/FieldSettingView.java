@@ -45,6 +45,8 @@ public abstract class FieldSettingView {
 
   public abstract String elementTypeName();
 
+  public abstract Boolean required();
+
   public static Builder newBuilder() {
     return new AutoValue_FieldSettingView.Builder();
   }
@@ -70,6 +72,8 @@ public abstract class FieldSettingView {
     public abstract Builder oneofConfig(OneofConfigView val);
 
     public abstract Builder elementTypeName(String val);
+
+    public abstract Builder required(Boolean val);
 
     public abstract FieldSettingView build();
   }
