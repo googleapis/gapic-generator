@@ -52,27 +52,31 @@
 @private grpcMethodCallable(callable)
   private static final {@callable.interfaceTypeName}<{@callable.requestTypeName}, {@callable.responseTypeName}> {@callable.name} =
       GrpcCallableFactory.{@callable.createCallableFunctionName}(
-          io.grpc.MethodDescriptor.create(
-              {@streamingTypeEnum(callable.grpcStreamingType)},
-              "{@callable.fullServiceName}/{@callable.protoMethodName}",
-              io.grpc.protobuf.ProtoUtils.marshaller({@callable.requestTypeName}.getDefaultInstance()),
-              io.grpc.protobuf.ProtoUtils.marshaller({@callable.responseTypeName}.getDefaultInstance())),
-          {@requestParamsExtractor(callable)});
+          @if callable.hasHeaderRequestParams
+            {@methodDescriptor(callable)},
+            {@requestParamsExtractor(callable)});
+          @else
+            {@methodDescriptor(callable)});
+          @end
+@end
+
+@private methodDescriptor(callable)
+  io.grpc.MethodDescriptor.create(
+      {@streamingTypeEnum(callable.grpcStreamingType)},
+      "{@callable.fullServiceName}/{@callable.protoMethodName}",
+      io.grpc.protobuf.ProtoUtils.marshaller({@callable.requestTypeName}.getDefaultInstance()),
+      io.grpc.protobuf.ProtoUtils.marshaller({@callable.responseTypeName}.getDefaultInstance()))
 @end
 
 @private requestParamsExtractor(callable)
-  @if callable.hasHeaderRequestParams
-    new RequestParamsExtractor<{@callable.requestTypeName}>() {
-      @@Override
-      public Map<String, String> extract({@callable.requestTypeName} request) {
-        ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
-        {@requestParamExtractor(callable.headerRequestParams)}
-        return params.build();
-      }
+  new RequestParamsExtractor<{@callable.requestTypeName}>() {
+    @@Override
+    public Map<String, String> extract({@callable.requestTypeName} request) {
+      ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+      {@requestParamExtractor(callable.headerRequestParams)}
+      return params.build();
     }
-  @else
-    EmptyRequestParamsExtractor.<{@callable.requestTypeName}>of()
-  @end
+  }
 @end
 
 @private requestParamExtractor(headerRequestParams)
