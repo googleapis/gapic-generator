@@ -52,11 +52,43 @@
 @private grpcMethodCallable(callable)
   private static final {@callable.interfaceTypeName}<{@callable.requestTypeName}, {@callable.responseTypeName}> {@callable.name} =
       GrpcCallableFactory.{@callable.createCallableFunctionName}(
-          io.grpc.MethodDescriptor.create(
-              {@streamingTypeEnum(callable.grpcStreamingType)},
-              "{@callable.fullServiceName}/{@callable.protoMethodName}",
-              io.grpc.protobuf.ProtoUtils.marshaller({@callable.requestTypeName}.getDefaultInstance()),
-              io.grpc.protobuf.ProtoUtils.marshaller({@callable.responseTypeName}.getDefaultInstance())));
+          @if callable.hasHeaderRequestParams
+            {@methodDescriptor(callable)},
+            {@requestParamsExtractor(callable)});
+          @else
+            {@methodDescriptor(callable)});
+          @end
+@end
+
+@private methodDescriptor(callable)
+  io.grpc.MethodDescriptor.create(
+      {@streamingTypeEnum(callable.grpcStreamingType)},
+      "{@callable.fullServiceName}/{@callable.protoMethodName}",
+      io.grpc.protobuf.ProtoUtils.marshaller({@callable.requestTypeName}.getDefaultInstance()),
+      io.grpc.protobuf.ProtoUtils.marshaller({@callable.responseTypeName}.getDefaultInstance()))
+@end
+
+@private requestParamsExtractor(callable)
+  new RequestParamsExtractor<{@callable.requestTypeName}>() {
+    @@Override
+    public Map<String, String> extract({@callable.requestTypeName} request) {
+      ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+      {@requestParamExtractor(callable.headerRequestParams)}
+      return params.build();
+    }
+  }
+@end
+
+@private requestParamExtractor(headerRequestParams)
+  @join headerRequestParam : @headerRequestParams
+    params.put("{@headerRequestParam.fullyQualifiedName}", String.valueOf(request.{@requestParamGetter(headerRequestParam.gettersChain)}));
+  @end
+@end
+
+@private requestParamGetter(gettersChain)
+  @join getter : gettersChain on "."
+    {@getter}()
+  @end
 @end
 
 @private streamingTypeEnum(streamingType)
