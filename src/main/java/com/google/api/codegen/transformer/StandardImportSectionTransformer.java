@@ -24,13 +24,13 @@ import java.util.Map;
 
 public class StandardImportSectionTransformer implements ImportSectionTransformer {
   @Override
-  public ImportSectionView generateImportSection(GapicInterfaceContext context) {
-    return generateImportSection(context.getTypeTable().getImports());
+  public ImportSectionView generateImportSection(TransformationContext context) {
+    return generateImportSection(context.getImportTypeTable().getImports());
   }
 
   @Override
   public ImportSectionView generateImportSection(
-      GapicMethodContext context, Iterable<InitCodeNode> specItemNodes) {
+      MethodContext context, Iterable<InitCodeNode> specItemNodes) {
     return generateImportSection(context.getTypeTable().getImports());
   }
 

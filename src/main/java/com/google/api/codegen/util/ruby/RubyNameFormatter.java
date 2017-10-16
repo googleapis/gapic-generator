@@ -56,8 +56,8 @@ public class RubyNameFormatter implements NameFormatter {
   }
 
   @Override
-  public String varReference(Name name) {
-    return "@" + name.toLowerUnderscore();
+  public String localVarReference(Name name) {
+    return name.toLowerUnderscore();
   }
 
   @Override

@@ -20,6 +20,7 @@ import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class StaticLangApiView {
+  @Nullable
   public abstract ServiceDocView doc();
 
   @Nullable

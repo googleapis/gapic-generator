@@ -1,0 +1,255 @@
+@extends "java/common.snip"
+@extends "java/method_sample.snip"
+
+@snippet generate(apiFile)
+  {@renderFileHeader(apiFile.fileHeader)}
+
+  @@Generated("by GAPIC")
+  @@BetaApi
+  {@schemaClassDef(apiFile.schema)}
+@end
+
+@private schemaClassDef(schema)
+  public final class {@schema.innerTypeName} implements ApiMessage {
+    {@members(schema)}
+
+    {@constructors(schema)}
+
+    {@populateMapMethod(schema)}
+
+    {@getRequestBodyMethod(schema)}
+
+    {@getters(schema)}
+
+    {@newBuilder(schema)}
+
+    {@builder(schema)}
+
+    {@toString(schema)}
+
+    {@equalsMethod(schema)}
+
+    {@hashCode(schema)}
+  }
+
+@end
+
+@private populateMapMethod(schema)
+  @@Override
+  public Map<String, List<String>> populateFieldsInMap(Set<String> fieldNames) {
+    Map<String, List<String>> fieldMap = new HashMap<>();
+    @join param : schema.properties
+      if (fieldNames.contains("{@param.name}") && {@param.name} != null) {
+        @if param.canRepeat
+          fieldMap.put("{@param.name}", {@param.name});
+        @else
+          fieldMap.put("{@param.name}", Collections.singletonList(String.valueOf({@param.name})));
+        @end
+      }
+    @end
+    return fieldMap;
+  }
+@end
+
+@private getRequestBodyMethod(schema)
+  @@Nullable
+  @@Override
+  @if schema.hasRequestBody()
+    public {@schema.requestBodyType.innerTypeName} getRequestBody() {
+      return {@schema.requestBodyType.name};
+    }
+  @else
+    public ApiMessage getRequestBody() {
+      return null;
+    }
+  @end
+@end
+
+@private members(schema)
+  @join property : schema.properties
+    private final {@property.typeName} {@property.name};
+  @end
+@end
+
+@private toString(schema)
+  @@Override
+  public String toString() {
+    return "{@schema.innerTypeName}{"
+        @join property : schema.properties on " + \", \"".add(BREAK)
+          + "{@property.name}=" + {@property.name}
+        @end
+        + "}";
+  }
+@end
+
+@private equalsMethod(schema)
+  @@Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof {@schema.innerTypeName}) {
+      {@schema.innerTypeName} that = ({@schema.innerTypeName}) o;
+      return
+          @join param : schema.properties on " &&".add(BREAK)
+            Objects.equals(this.{@param.name}, that.{@param.fieldGetFunction}())
+          @end
+          ;
+    }
+    return false;
+  }
+@end
+
+@private hashCode(schema)
+  @@Override
+  public int hashCode() {
+    return Objects.hash(
+      @join properties : schema.properties on ", ".add(BREAK)
+        {@properties.name}
+      @end
+    );
+  }
+@end
+
+@private newBuilder(schema)
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder({@schema.innerTypeName} prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+  }
+
+  public static {@schema.innerTypeName} getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+  }
+  private static final {@schema.innerTypeName} DEFAULT_INSTANCE;
+  static {
+      DEFAULT_INSTANCE = new {@schema.innerTypeName}();
+  }
+@end
+
+@private getters(schema)
+  @join param : schema.properties
+    public {@param.typeName} {@param.fieldGetFunction}() {
+      return {@param.name};
+    }
+
+  @end
+@end
+
+@private constructors(schema)
+  private {@schema.innerTypeName}() {
+    @join param : schema.properties
+      this.{@param.name} = null;
+    @end
+  }
+
+
+  private {@schema.innerTypeName}(
+      @join param : schema.properties on ",".add(BREAK)
+        {@param.typeName} {@param.name}
+      @end
+      ) {
+    @join param : schema.properties
+      this.{@param.name} = {@param.name};
+    @end
+  }
+@end
+
+@private builder(schema)
+  public static class Builder {
+    @join param : schema.properties
+      private {@param.typeName} {@param.name};
+    @end
+
+    Builder() {}
+
+    public Builder mergeFrom({@schema.innerTypeName} other) {
+      if (other == {@schema.innerTypeName}.getDefaultInstance()) return this;
+      @join property : schema.properties
+        if (other.{@property.fieldGetFunction}() != null) {
+          this.{@property.name} = other.{@property.name};
+        }
+      @end
+      return this;
+    }
+
+    Builder({@schema.innerTypeName} source) {
+      @join property : schema.properties
+        this.{@property.name} = source.{@property.name};
+      @end
+    }
+
+    @join property : schema.properties
+      public {@property.typeName} {@property.fieldGetFunction}() {
+        return {@property.name};
+      }
+
+      public Builder {@property.fieldSetFunction}({@property.typeName} {@property.name}) {
+        this.{@property.name} = {@property.name};
+        return this;
+      }
+
+    @end
+
+    public {@schema.innerTypeName} build() {
+      @if schema.hasRequiredProperties
+        String missing = "";
+      @end
+      @join param : schema.properties
+        @if param.isRequired
+          if ({@param.name} == null) {
+            missing += " {@param.name}";
+          }
+        @end
+      @end
+      @if schema.hasRequiredProperties
+        if (!missing.isEmpty()) {
+          throw new IllegalStateException("Missing required properties:" + missing);
+        }
+      @end
+      return new {@schema.innerTypeName}(
+        @join param : schema.properties on ", ".add(BREAK)
+          {@param.name}
+        @end
+      );
+    }
+
+    public Builder clone() {
+      Builder newBuilder = new Builder();
+      @join param : schema.properties
+        newBuilder.{@param.fieldSetFunction}(this.{@param.name});
+      @end
+      return newBuilder;
+    }
+    @join resourceName : schema.resourceNames
+
+      public final Builder {@resourceName.setCallName}({@resourceName.typeName} value) {
+        if (value == null) {
+          return
+              @join field : resourceName.fieldCopyMethods on ".".add(BREAK)
+                {@field.fieldSetFunction}("")
+              @end
+              ;
+        }
+        return
+            @join field : resourceName.fieldCopyMethods on "."
+              {@field.fieldSetFunction}(value.{@field.fieldGetFunction}())
+            @end
+            ;
+      }
+
+      public final {@resourceName.typeName} {@resourceName.nameAsMethodName}() {
+        return {@resourceName.typeName}.create(
+            @join field : resourceName.fieldCopyMethods on ",".add(BREAK)
+              {@field.fieldGetFunction}()
+            @end
+            );
+      }
+    @end
+  }
+@end

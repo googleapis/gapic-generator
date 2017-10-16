@@ -33,6 +33,10 @@ public class NodeJSPackageMetadataNamer extends PackageMetadataNamer {
     this.domainLayerLocation = domainLayerLocation;
   }
 
+  public String getServiceName() {
+    return this.serviceName;
+  }
+
   @Override
   public String getMetadataName() {
     return getNotImplementedString("NodeJSPackageMetadataNamer.getMetadataName");

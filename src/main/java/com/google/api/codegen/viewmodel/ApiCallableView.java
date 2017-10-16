@@ -56,6 +56,9 @@ public abstract class ApiCallableView {
 
   public abstract String grpcDirectCallableName();
 
+  @Nullable
+  public abstract HttpMethodView httpMethod();
+
   public static Builder newBuilder() {
     return new AutoValue_ApiCallableView.Builder()
         .grpcStreamingType(GrpcStreamingType.NonStreaming);
@@ -88,6 +91,8 @@ public abstract class ApiCallableView {
     public abstract Builder grpcClientVarName(String name);
 
     public abstract Builder grpcDirectCallableName(String name);
+
+    public abstract Builder httpMethod(HttpMethodView val);
 
     public abstract ApiCallableView build();
   }

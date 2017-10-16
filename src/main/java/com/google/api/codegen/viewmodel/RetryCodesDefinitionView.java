@@ -17,7 +17,6 @@ package com.google.api.codegen.viewmodel;
 import com.google.api.codegen.viewmodel.RetryParamsDefinitionView.Builder;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableSet;
-import io.grpc.Status.Code;
 import java.util.List;
 import javax.annotation.Nullable;
 
@@ -30,7 +29,7 @@ public abstract class RetryCodesDefinitionView {
 
   public abstract String retryFilterMethodName();
 
-  public abstract ImmutableSet<Code> codes();
+  public abstract ImmutableSet<String> codes();
 
   @Nullable // Used in C#
   public abstract List<String> codeNames();
@@ -47,7 +46,7 @@ public abstract class RetryCodesDefinitionView {
 
     public abstract Builder retryFilterMethodName(String val);
 
-    public abstract Builder codes(ImmutableSet<Code> val);
+    public abstract Builder codes(ImmutableSet<String> val);
 
     public abstract Builder codeNames(List<String> val);
 

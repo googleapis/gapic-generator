@@ -85,6 +85,7 @@ public class LanguageTransformer {
       this.shouldCapitalize = shouldCapitalize;
     }
 
+    @Override
     public String getFormattedPackageName(String packageName) {
       for (RewriteRule rewriteRule : rewriteRules) {
         packageName = rewriteRule.rewrite(packageName);
@@ -135,6 +136,7 @@ public class LanguageTransformer {
   }
 
   private static class NodeJSLanguageFormatter implements LanguageFormatter {
+    @Override
     public String getFormattedPackageName(String packageName) {
       List<String> nameComponents = Splitter.on(DEFAULT_PACKAGE_SEPARATOR).splitToList(packageName);
       return nameComponents.get(nameComponents.size() - 2)

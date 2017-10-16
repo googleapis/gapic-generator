@@ -185,7 +185,7 @@
         try {
             iterator_to_array($results);
             // If the close stream method call did not throw, fail the test
-            $this->fail("Expected an ApiException, but no exception was thrown.");
+            $this->fail('Expected an ApiException, but no exception was thrown.');
         }  catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
@@ -249,7 +249,7 @@
         try {
             iterator_to_array($results);
             // If the close stream method call did not throw, fail the test
-            $this->fail("Expected an ApiException, but no exception was thrown.");
+            $this->fail('Expected an ApiException, but no exception was thrown.');
         }  catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
@@ -283,10 +283,10 @@
     $status->details = 'internal error';
 
     $expectedExceptionMessage = json_encode([
-       "message" => "internal error",
-       "code" => Grpc\STATUS_DATA_LOSS,
-       "status" => "DATA_LOSS",
-       "details" => [],
+       'message' => 'internal error',
+       'code' => Grpc\STATUS_DATA_LOSS,
+       'status' => 'DATA_LOSS',
+       'details' => [],
     ], JSON_PRETTY_PRINT);
 @end
 
@@ -352,7 +352,7 @@
         try {
             $client->{@test.clientMethodName}({@sampleMethodCallArgList(test.initCode.fieldSettings)});
             // If the $client method call did not throw, fail the test
-            $this->fail("Expected an ApiException, but no exception was thrown.");
+            $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($expectedExceptionMessage, $ex->getMessage());
@@ -482,7 +482,7 @@
         try {
             $response->pollUntilComplete();
             // If the pollUntilComplete() method call did not throw, fail the test
-            $this->fail("Expected an ApiException, but no exception was thrown.");
+            $this->fail('Expected an ApiException, but no exception was thrown.');
         } catch (ApiException $ex) {
             $this->assertEquals($status->code, $ex->getCode());
             $this->assertEquals($expectedExceptionMessage, $ex->getMessage());

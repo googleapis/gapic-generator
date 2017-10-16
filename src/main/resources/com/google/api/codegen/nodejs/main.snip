@@ -88,7 +88,8 @@
       }
 
       // Load the applicable protos.
-      var protos = merge({},
+      var protos = merge(
+        {},
         @join stub : xapi.stubs on {@","}.add(BREAK)
           gaxGrpc.loadProto(
             @if xapi.fileHeader.hasVersion
@@ -139,6 +140,20 @@
           @end
         };
       @end
+      @if or(xapi.hasBatchingMethods, xapi.hasLongRunningOperations)
+        var protoFilesRoot = new gax.grpc.GoogleProtoFilesRoot();
+        @join stub : xapi.stubs
+          protoFilesRoot = protobuf.loadSync(
+            @if xapi.fileHeader.hasVersion
+              path.join(__dirname, '..', '..', 'protos', '{@stub.protoFileName}'),
+            @else
+              path.join(__dirname, '..', 'protos', '{@stub.protoFileName}'),
+            @end
+            protoFilesRoot
+          );
+        @end
+
+      @end
       @if xapi.hasBatchingMethods
 
         // Some methods on this API support automatically batching
@@ -171,18 +186,6 @@
           auth: gaxGrpc.auth,
           grpc: gaxGrpc.grpc,
         }).operationsClient(opts);
-
-        var protoFilesRoot = new gax.grpc.GoogleProtoFilesRoot();
-        @join stub : xapi.stubs
-          protoFilesRoot = protobuf.loadSync(
-            @if xapi.fileHeader.hasVersion
-              path.join(__dirname, '..', '..', 'protos', '{@stub.protoFileName}'),
-            @else
-              path.join(__dirname, '..', 'protos', '{@stub.protoFileName}'),
-            @end
-            protoFilesRoot
-          );
-        @end
 
         @join descriptor : xapi.longRunningDescriptors
           var {@descriptor.methodName}Response = protoFilesRoot.lookup(
@@ -486,7 +489,7 @@
   {@method.name}Stream({@methodRequestParameters(method)}options) {
     options = options || {};
     {@maybeHandleRequest(method)}
-    return this._pageDescriptors.{@method.name}.createStream(
+    return this._descriptors.page.{@method.name}.createStream(
       this._innerApiCalls.{@method.name},
       {@requestObject(method)}
       options

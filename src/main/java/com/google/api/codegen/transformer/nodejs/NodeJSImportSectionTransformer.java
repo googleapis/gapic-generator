@@ -14,42 +14,45 @@
  */
 package com.google.api.codegen.transformer.nodejs;
 
+import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
-import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.ImportSectionTransformer;
+import com.google.api.codegen.transformer.InterfaceContext;
+import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
+import com.google.api.codegen.transformer.TransformationContext;
 import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ImportTypeView;
-import com.google.api.tools.framework.model.Interface;
 import com.google.common.collect.ImmutableList;
 import java.util.Collections;
 import java.util.List;
 
 public class NodeJSImportSectionTransformer implements ImportSectionTransformer {
   @Override
-  public ImportSectionView generateImportSection(GapicInterfaceContext context) {
+  public ImportSectionView generateImportSection(TransformationContext context) {
     ImportSectionView.Builder importSection = ImportSectionView.newBuilder();
-    importSection.externalImports(generateExternalImports(context));
+    importSection.externalImports(generateExternalImports((GapicInterfaceContext) context));
     return importSection.build();
   }
 
   @Override
   public ImportSectionView generateImportSection(
-      GapicMethodContext context, Iterable<InitCodeNode> specItemNodes) {
+      MethodContext context, Iterable<InitCodeNode> specItemNodes) {
     return new StandardImportSectionTransformer().generateImportSection(context, specItemNodes);
   }
 
-  private List<ImportFileView> generateExternalImports(GapicInterfaceContext context) {
+  private List<ImportFileView> generateExternalImports(InterfaceContext context) {
     ImmutableList.Builder<ImportFileView> imports = ImmutableList.builder();
-    Interface apiInterface = context.getInterface();
+    InterfaceModel apiInterface = context.getInterfaceModel();
     String configModule = context.getNamer().getClientConfigPath(apiInterface);
     imports.add(createImport("gapicConfig", "./" + configModule));
     imports.add(createImport("gax", "google-gax"));
     imports.add(createImport("merge", "lodash.merge"));
     imports.add(createImport("path", "path"));
-    if (context.getInterfaceConfig().hasLongRunningOperations()) {
+    if (context.getInterfaceConfig().hasLongRunningOperations()
+        || context.getInterfaceConfig().hasBatchingMethods()) {
       imports.add(createImport("protobuf", "protobufjs"));
     }
     return imports.build();
