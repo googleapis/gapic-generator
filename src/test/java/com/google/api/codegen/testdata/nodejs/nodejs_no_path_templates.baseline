@@ -359,7 +359,10 @@ error.code = FAKE_STATUS_CODE;
 describe('NoTemplatesApiServiceClient', () => {
   describe('increment', () => {
     it('invokes increment without error', done => {
-      var client = new exampleModule.NoTemplatesApiServiceClient();
+      var client = new exampleModule.NoTemplatesApiServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var request = {};
@@ -374,7 +377,10 @@ describe('NoTemplatesApiServiceClient', () => {
     });
 
     it('invokes increment with error', done => {
-      var client = new exampleModule.NoTemplatesApiServiceClient();
+      var client = new exampleModule.NoTemplatesApiServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var request = {};
