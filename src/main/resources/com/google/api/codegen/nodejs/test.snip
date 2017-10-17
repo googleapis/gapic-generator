@@ -358,9 +358,15 @@
 
 @private clientInit(testClass, apiTest)
   @if apiTest.fileHeader.hasVersion
-    var client = new {@apiTest.localPackageName}Module.{@apiTest.fileHeader.version}.{@testClass.apiClassName}();
+    var client = new {@apiTest.localPackageName}Module.{@apiTest.fileHeader.version}.{@testClass.apiClassName}({
+      credentials: {client_email: 'bogus', private_key: 'bogus'},
+      projectId: 'bogus',
+    });
   @else
-    var client = new {@apiTest.localPackageName}Module.{@testClass.apiClassName}();
+    var client = new {@apiTest.localPackageName}Module.{@testClass.apiClassName}({
+      credentials: {client_email: 'bogus', private_key: 'bogus'},
+      projectId: 'bogus',
+    });
   @end
 @end
 
