@@ -382,10 +382,20 @@
                 @switch call.grpcStreamingType.toString
                 @case "NonStreaming"
                     {@call.name} = clientHelper.BuildApiCall<{@call.requestTypeName}, {@call.responseTypeName}>(
-                        {@call.grpcClientVarName}.{@call.asyncMethodName}, {@call.grpcClientVarName}.{@call.methodName}, effectiveSettings.{@call.memberName});
+                    @if call.anyHeaderRequestParams
+                        {@""}    {@call.grpcClientVarName}.{@call.asyncMethodName}, {@call.grpcClientVarName}.{@call.methodName}, effectiveSettings.{@call.memberName})
+                        {@""}    .WithCallSettingsOverlay(request => CallSettings.FromHeader("x-goog-request-params", $"{@routingHeader(call.headerRequestParams)}"));
+                    @else
+                        {@""}    {@call.grpcClientVarName}.{@call.asyncMethodName}, {@call.grpcClientVarName}.{@call.methodName}, effectiveSettings.{@call.memberName});
+                    @end
                 @case "ServerStreaming"
                     {@call.name} = clientHelper.BuildApiCall<{@call.requestTypeName}, {@call.responseTypeName}>(
-                        {@call.grpcClientVarName}.{@call.methodName}, effectiveSettings.{@call.memberName});
+                    @if call.anyHeaderRequestParams
+                        {@""}    {@call.grpcClientVarName}.{@call.methodName}, effectiveSettings.{@call.memberName})
+                        {@""}    .WithCallSettingsOverlay(request => CallSettings.FromHeader("x-goog-request-params", $"{@routingHeader(call.headerRequestParams)}"));
+                    @else
+                        {@""}    {@call.grpcClientVarName}.{@call.methodName}, effectiveSettings.{@call.memberName});
+                    @end
                 @case "BidiStreaming"
                     {@call.name} = clientHelper.BuildApiCall<{@call.requestTypeName}, {@call.responseTypeName}>(
                         {@call.grpcClientVarName}.{@call.methodName}, effectiveSettings.{@call.memberName}, effectiveSettings.{@call.methodName}StreamingSettings);
@@ -426,6 +436,20 @@
 
         @end
     }
+@end
+
+# headers: List[HeaderRequestParamView]
+@private routingHeader(headers)
+    @join header : headers on "&"
+        {@header.fullyQualifiedName}={request.{@routingHeaderGetters(header.gettersChain)}}
+    @end
+@end
+
+# getters: List[string]
+@private routingHeaderGetters(getters)
+    @join getter : getters on "."
+        {@getter}
+    @end
 @end
 
 # api: StaticLangApiView, method: StaticLangApiMethodView, isImpl: boolean

@@ -7828,7 +7828,8 @@ namespace Google.Example.Library.V1
             _callMergeShelves = clientHelper.BuildApiCall<MergeShelvesRequest, Shelf>(
                 GrpcClient.MergeShelvesAsync, GrpcClient.MergeShelves, effectiveSettings.MergeShelvesSettings);
             _callCreateBook = clientHelper.BuildApiCall<CreateBookRequest, Book>(
-                GrpcClient.CreateBookAsync, GrpcClient.CreateBook, effectiveSettings.CreateBookSettings);
+                GrpcClient.CreateBookAsync, GrpcClient.CreateBook, effectiveSettings.CreateBookSettings)
+                .WithCallSettingsOverlay(request => CallSettings.FromHeader("x-goog-request-params", $"name={request.Name}&book.read={request.Book.Read}"));
             _callPublishSeries = clientHelper.BuildApiCall<PublishSeriesRequest, PublishSeriesResponse>(
                 GrpcClient.PublishSeriesAsync, GrpcClient.PublishSeries, effectiveSettings.PublishSeriesSettings);
             _callGetBook = clientHelper.BuildApiCall<GetBookRequest, Book>(
