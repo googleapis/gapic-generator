@@ -172,6 +172,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     }
 
     String configSchemaVersion = configProto.getConfigSchemaVersion();
+    // TODO(eoogbe): Move the validation logic to GAPIC config advisor.
     if (Strings.isNullOrEmpty(configSchemaVersion)) {
       model
           .getDiagCollector()
@@ -248,6 +249,7 @@ public abstract class GapicProductConfig implements ProductConfig {
     }
 
     String configSchemaVersion = configProto.getConfigSchemaVersion();
+    // TODO(eoogbe): Move the validation logic to GAPIC config advisor.
     if (Strings.isNullOrEmpty(configSchemaVersion)) {
       diagCollector.addDiag(
           Diag.error(
