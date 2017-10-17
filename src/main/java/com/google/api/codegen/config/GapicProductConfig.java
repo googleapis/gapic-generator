@@ -85,6 +85,13 @@ public abstract class GapicProductConfig implements ProductConfig {
    */
   public abstract ImmutableMap<String, FieldConfig> getDefaultResourceNameFieldConfigMap();
 
+  /**
+   * Returns the version of config schema.
+   *
+   * TODO(eoogbe): Validate the value in GAPIC config advisor.
+   */
+  public abstract String getConfigSchemaVersion();
+
   public GapicProductConfig withPackageName(String packageName) {
     return new AutoValue_GapicProductConfig(
         getInterfaceConfigMap(),
@@ -95,7 +102,8 @@ public abstract class GapicProductConfig implements ProductConfig {
         getCopyrightLines(),
         getLicenseLines(),
         getResourceNameConfigs(),
-        getDefaultResourceNameFieldConfigMap());
+        getDefaultResourceNameFieldConfigMap(),
+        getConfigSchemaVersion());
   }
 
   /**
@@ -153,6 +161,16 @@ public abstract class GapicProductConfig implements ProductConfig {
       throw new RuntimeException(e);
     }
 
+    String configSchemaVersion = configProto.getConfigSchemaVersion();
+    if (Strings.isNullOrEmpty(configSchemaVersion)) {
+      model
+          .getDiagCollector()
+          .addDiag(
+              Diag.error(
+                  SimpleLocation.TOPLEVEL,
+                  "config_schema_version field is required in GAPIC yaml."));
+    }
+
     if (interfaceConfigMap == null || copyrightLines == null || licenseLines == null) {
       return null;
     }
@@ -165,13 +183,15 @@ public abstract class GapicProductConfig implements ProductConfig {
         copyrightLines,
         licenseLines,
         resourceNameConfigs,
-        createResponseFieldConfigMap(messageConfigs, resourceNameConfigs));
+        createResponseFieldConfigMap(messageConfigs, resourceNameConfigs),
+        configSchemaVersion);
   }
 
   /** Creates an GapicProductConfig with no content. Exposed for testing. */
   @VisibleForTesting
   public static GapicProductConfig createDummyInstance() {
-    return createDummyInstance(ImmutableMap.<String, GapicInterfaceConfig>of(), "", "", null);
+    return createDummyInstance(
+        ImmutableMap.<String, GapicInterfaceConfig>of(), "", "", null, "1.0.0");
   }
 
   /** Creates an GapicProductConfig with fixed content. Exposed for testing. */
@@ -181,6 +201,18 @@ public abstract class GapicProductConfig implements ProductConfig {
       String packageName,
       String domainLayerLocation,
       ResourceNameMessageConfigs messageConfigs) {
+    return createDummyInstance(
+        interfaceConfigMap, packageName, domainLayerLocation, messageConfigs, "1.0.0");
+  }
+
+  /** Creates an GapicProductConfig with fixed content. Exposed for testing. */
+  @VisibleForTesting
+  public static GapicProductConfig createDummyInstance(
+      ImmutableMap<String, GapicInterfaceConfig> interfaceConfigMap,
+      String packageName,
+      String domainLayerLocation,
+      ResourceNameMessageConfigs messageConfigs,
+      String configSchemaVersion) {
     return new AutoValue_GapicProductConfig(
         interfaceConfigMap,
         packageName,
@@ -190,8 +222,8 @@ public abstract class GapicProductConfig implements ProductConfig {
         ImmutableList.<String>of(),
         ImmutableList.<String>of(),
         ImmutableMap.<String, ResourceNameConfig>of(),
-        createResponseFieldConfigMap(
-            messageConfigs, ImmutableMap.<String, ResourceNameConfig>of()));
+        createResponseFieldConfigMap(messageConfigs, ImmutableMap.<String, ResourceNameConfig>of()),
+        configSchemaVersion);
   }
 
   private static ImmutableMap<String, GapicInterfaceConfig> createInterfaceConfigMap(
