@@ -77,21 +77,20 @@ $ npm install --save example
 }
 
 ============== file: src/index.js ==============
-/*
- * Copyright 2017, Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2017, Google Inc. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 'use strict';
 
 const NoTemplatesApiServiceClient = require('./no_templates_api_service_client');
@@ -99,21 +98,19 @@ const NoTemplatesApiServiceClient = require('./no_templates_api_service_client')
 module.exports.NoTemplatesApiServiceClient = NoTemplatesApiServiceClient;
 
 ============== file: src/v1/no_templates_api_service_client.js ==============
-/*
- * Copyright 2017, Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2017, Google Inc. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 'use strict';
 
@@ -121,6 +118,8 @@ const gapicConfig = require('./no_templates_api_service_client_config');
 const gax = require('google-gax');
 const merge = require('lodash.merge');
 const path = require('path');
+
+const VERSION = require('../package.json').version;
 
 /**
  * @class
@@ -157,11 +156,14 @@ class NoTemplatesApiServiceClient {
     this._descriptors = {};
 
     // Ensure that options include the service address and port.
-    opts = Object.assign({
-      clientConfig: {},
-      port: this.constructor.port,
-      servicePath: this.constructor.servicePath,
-    }, opts);
+    opts = Object.assign(
+      {
+        clientConfig: {},
+        port: this.constructor.port,
+        servicePath: this.constructor.servicePath,
+      },
+      opts
+    );
 
     // Create a `gaxGrpc` object, with any grpc-specific options
     // sent to the client.
@@ -176,18 +178,19 @@ class NoTemplatesApiServiceClient {
       `gl-node/${process.version.node}`,
       `grpc/${gaxGrpc.grpcVersion}`,
       `gax/${gax.version}`,
-      `gapic/${this.version}`,
+      `gapic/${VERSION}`,
     ];
     if (opts.libName && opts.libVersion) {
       clientHeader.push(`${opts.libName}/${opts.libVersion}`);
     }
 
     // Load the applicable protos.
-    var protos = merge({},
+    var protos = merge(
+      {},
       gaxGrpc.loadProto(
         path.join(__dirname, '..', 'protos'),
         'no_path_templates.proto'
-      ),
+      )
     );
 
     // Put together the default options sent with requests.
@@ -195,7 +198,7 @@ class NoTemplatesApiServiceClient {
       'google.cloud.example.v1.NoTemplatesAPIService',
       gapicConfig,
       opts.clientConfig,
-      {'x-goog-api-client': clientHeader.join(' ')},
+      {'x-goog-api-client': clientHeader.join(' ')}
     );
 
     // Set up a dictionary of "inner API calls"; the core implementation
@@ -217,10 +220,13 @@ class NoTemplatesApiServiceClient {
     ];
     for (let methodName of noTemplatesApiServiceStubMethods) {
       this._innerApiCalls[methodName] = gax.createApiCall(
-        noTemplatesApiServiceStub.then(stub => function() {
-          var args = Array.prototype.slice.call(arguments, 0);
-          return stub[methodName].apply(stub, args);
-        }),
+        noTemplatesApiServiceStub.then(
+          stub =>
+            function() {
+              var args = Array.prototype.slice.call(arguments, 0);
+              return stub[methodName].apply(stub, args);
+            }
+        ),
         defaults[methodName],
         null
       );
@@ -304,7 +310,7 @@ class NoTemplatesApiServiceClient {
       request = {};
     }
     return this._innerApiCalls.increment(request, options, callback);
-  };
+  }
 }
 
 
@@ -326,21 +332,20 @@ module.exports = NoTemplatesApiServiceClient;
 }
 
 ============== file: test/gapic.js ==============
-/*
- * Copyright 2017, Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2017, Google Inc. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 'use strict';
 
 const assert = require('assert');
@@ -354,7 +359,10 @@ error.code = FAKE_STATUS_CODE;
 describe('NoTemplatesApiServiceClient', () => {
   describe('increment', () => {
     it('invokes increment without error', done => {
-      var client = new exampleModule.NoTemplatesApiServiceClient();
+      var client = new exampleModule.NoTemplatesApiServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var request = {};
@@ -369,13 +377,20 @@ describe('NoTemplatesApiServiceClient', () => {
     });
 
     it('invokes increment with error', done => {
-      var client = new exampleModule.NoTemplatesApiServiceClient();
+      var client = new exampleModule.NoTemplatesApiServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var request = {};
 
       // Mock Grpc layer
-      client._innerApiCalls.increment = mockSimpleGrpcMethod(request, null, error);
+      client._innerApiCalls.increment = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
 
       client.increment(request, err => {
         assert(err instanceof Error);
@@ -392,11 +407,9 @@ function mockSimpleGrpcMethod(expectedRequest, response, error) {
     assert.deepStrictEqual(actualRequest, expectedRequest);
     if (error) {
       callback(error);
-    }
-    else if (response) {
+    } else if (response) {
       callback(null, response);
-    }
-    else {
+    } else {
       callback(null);
     }
   };

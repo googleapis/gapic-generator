@@ -85,8 +85,8 @@
   {@methodGetters(xsettingsClass)}
 
   public {@xsettingsClass.stubInterfaceName} createStub() throws IOException {
-    if (getTransportProvider().getTransportName().equals(GrpcTransport.getGrpcTransportName())) {
-      return {@xsettingsClass.grpcStubClassName}.create(this);
+    if (getTransportProvider().getTransportName().equals({@xsettingsClass.rpcTransportName}.{@xsettingsClass.transportNameGetter}())) {
+      return {@xsettingsClass.rpcStubClassName}.create(this);
     } else {
       throw new UnsupportedOperationException(
           "Transport not supported: " + getTransportProvider().getTransportName());
@@ -104,9 +104,22 @@
     /**
      * Returns the default service endpoint.
      */
-    public static String getDefaultEndpoint() {
-      return "{@xsettingsClass.serviceAddress}:{@xsettingsClass.servicePort}";
-    }
+    @if xsettingsClass.useDefaultServicePortInEndpoint
+      public static String getDefaultEndpoint() {
+        return "{@xsettingsClass.serviceAddress}:{@xsettingsClass.servicePort}";
+      }
+    @else
+      public static String getDefaultEndpoint() {
+        return "{@xsettingsClass.serviceAddress}";
+      }
+
+      /**
+       * Returns the default service port.
+       */
+      public static int getDefaultServicePort() {
+        return {@xsettingsClass.servicePort};
+      }
+    @end
 
   @end
 
@@ -132,8 +145,8 @@
   }
 
   /** Returns a builder for the default ChannelProvider for this service. */
-  public static InstantiatingChannelProvider.Builder defaultGrpcChannelProviderBuilder() {
-    return InstantiatingChannelProvider.newBuilder()
+  public static {@xsettingsClass.instantiatingChannelProvider}.Builder {@xsettingsClass.defaultChannelProviderBuilder}() {
+    return {@xsettingsClass.instantiatingChannelProvider}.newBuilder()
         @if xsettingsClass.hasDefaultServiceAddress
             .setEndpoint(getDefaultEndpoint())
         @end
@@ -142,13 +155,13 @@
 
   @if xsettingsClass.hasDefaultServiceAddress
     /** Returns a builder for the default ChannelProvider for this service. */
-    public static GrpcTransportProvider.Builder defaultGrpcTransportProviderBuilder() {
-      return GrpcTransportProvider.newBuilder()
-          .setChannelProvider(defaultGrpcChannelProviderBuilder().build());
+    public static {@xsettingsClass.transportProvider}.Builder {@xsettingsClass.defaultTransportProviderBuilder}() {
+      return {@xsettingsClass.transportProvider}.newBuilder()
+          .setChannelProvider({@xsettingsClass.defaultChannelProviderBuilder}().build());
     }
 
     public static TransportProvider defaultTransportProvider() {
-      return defaultGrpcTransportProviderBuilder().build();
+      return {@xsettingsClass.defaultTransportProviderBuilder}().build();
     }
   @end
 
@@ -334,7 +347,7 @@
           }
           @@Override
           public Iterable<{@desc.resourceTypeName}> extractResources({@desc.responseTypeName} payload) {
-            return payload.{@desc.resourcesFieldGetFunction}();
+            return payload.{@functionChain(desc.resourcesFieldGetFunctions)};
           }
         };
     {@""}
@@ -499,7 +512,7 @@
     @join retryCodesDef : xsettingsClass.retryCodesDefinitions
       definitions.put(
           "{@retryCodesDef.key}",
-          ImmutableSet.copyOf(Lists.<StatusCode>newArrayList({@statusCodes(retryCodesDef.codes)})));
+          ImmutableSet.copyOf(Lists.<StatusCode>newArrayList({@statusCodes(retryCodesDef.codes, xsettingsClass.transportProtocol)})));
     @end
     RETRYABLE_CODE_DEFINITIONS = definitions.build();
   }
@@ -525,9 +538,14 @@
   }
 @end
 
-@private statusCodes(codes)
+@private statusCodes(codes, protocolType)
   @join code : codes on ", "
-    GrpcStatusCode.of(Status.Code.{@code})
+    @switch protocolType
+      @case "GRPC"
+        GrpcStatusCode.of(Status.Code.{@code})
+      @case "HTTP"
+        HttpJsonStatusCode.of(HttpStatus.{@code})
+    @end
   @end
 @end
 

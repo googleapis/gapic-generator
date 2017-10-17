@@ -14,13 +14,14 @@
  */
 package com.google.api.codegen.configgen.viewmodel;
 
+import com.google.api.codegen.ResourceNameTreatment;
 import com.google.auto.value.AutoValue;
 import java.util.List;
 import javax.annotation.Nullable;
 
 /** Represents the method configuration. */
 @AutoValue
-public abstract class MethodView {
+public abstract class MethodView implements Comparable<MethodView> {
   /** The simple name of the method. */
   public abstract String name();
 
@@ -38,6 +39,15 @@ public abstract class MethodView {
 
   /** Turns on or off generation of a method whose sole parameter is a request object. */
   public abstract boolean requestObjectMethod();
+
+  /** The resource name treatment. */
+  @Nullable
+  public abstract ResourceNameTreatment resourceNameTreatment();
+
+  /** True if the pageStreaming property exists. */
+  public boolean hasResourceNameTreatment() {
+    return resourceNameTreatment() != null;
+  }
 
   /** The configuration for paging. */
   @Nullable
@@ -77,6 +87,8 @@ public abstract class MethodView {
 
     public abstract Builder requestObjectMethod(boolean val);
 
+    public abstract Builder resourceNameTreatment(ResourceNameTreatment val);
+
     public abstract Builder pageStreaming(PageStreamingView val);
 
     public abstract Builder retryCodesName(String val);
@@ -88,5 +100,10 @@ public abstract class MethodView {
     public abstract Builder timeoutMillis(String val);
 
     public abstract MethodView build();
+  }
+
+  @Override
+  public int compareTo(MethodView other) {
+    return this.name().compareTo(other.name());
   }
 }

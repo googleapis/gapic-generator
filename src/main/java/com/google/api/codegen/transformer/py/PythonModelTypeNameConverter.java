@@ -33,7 +33,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class PythonModelTypeNameConverter implements ModelTypeNameConverter {
+public class PythonModelTypeNameConverter extends ModelTypeNameConverter {
   private static final String GOOGLE_PREFIX = "google";
 
   private static final String GOOGLE_CLOUD_PREFIX = GOOGLE_PREFIX + ".cloud";

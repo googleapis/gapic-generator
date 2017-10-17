@@ -23,6 +23,10 @@ import com.google.common.collect.ImmutableSet;
 public class JavaNameFormatter implements NameFormatter {
 
   private String wrapIfKeywordOrBuiltIn(String name) {
+    if (name.equals("Object") || name.equals("String")) {
+      throw new IllegalArgumentException(
+          String.format("Name '%s' clashes with java.lang.* namespace", name));
+    }
     if (RESERVED_IDENTIFIER_SET.contains(name)) {
       return name + "_";
     } else {
@@ -56,7 +60,7 @@ public class JavaNameFormatter implements NameFormatter {
   }
 
   @Override
-  public String varReference(Name name) {
+  public String localVarReference(Name name) {
     return localVarName(name);
   }
 

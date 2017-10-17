@@ -140,6 +140,11 @@ public class CSharpTypeTable implements TypeTable {
   }
 
   @Override
+  public Map<String, TypeAlias> getAllImports() {
+    return new TreeMap<>(imports);
+  }
+
+  @Override
   public String getAndSaveNicknameForInnerType(
       String containerFullName, String innerTypeShortName) {
     throw new UnsupportedOperationException("getAndSaveNicknameForInnerType not supported by C#");

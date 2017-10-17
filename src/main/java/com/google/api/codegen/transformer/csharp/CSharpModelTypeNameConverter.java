@@ -32,7 +32,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 import java.util.List;
 
-public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
+public class CSharpModelTypeNameConverter extends ModelTypeNameConverter {
 
   /** A map from primitive types in proto to Java counterparts. */
   private static final ImmutableMap<Type, String> PRIMITIVE_TYPE_MAP =
@@ -248,14 +248,16 @@ public class CSharpModelTypeNameConverter implements ModelTypeNameConverter {
   public TypeName getTypeNameForTypedResourceName(
       FieldConfig fieldConfig, String typedResourceShortName) {
     return getTypeNameForTypedResourceName(
-        fieldConfig, fieldConfig.getField().getType(), typedResourceShortName);
+        fieldConfig, fieldConfig.getField().getProtoTypeRef(), typedResourceShortName);
   }
 
   @Override
   public TypeName getTypeNameForResourceNameElementType(
       FieldConfig fieldConfig, String typedResourceShortName) {
     return getTypeNameForTypedResourceName(
-        fieldConfig, fieldConfig.getField().getType().makeOptional(), typedResourceShortName);
+        fieldConfig,
+        fieldConfig.getField().getProtoTypeRef().makeOptional(),
+        typedResourceShortName);
   }
 
   private TypeName getTypeNameForTypedResourceName(

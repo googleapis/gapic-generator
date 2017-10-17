@@ -79,51 +79,112 @@ $ npm install --save @google-cloud/multiple-services
 }
 
 ============== file: src/index.js ==============
+// Copyright 2017, Google Inc. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 /**
- * Copyright 2017, Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @namespace google
+ */
+/**
+ * @namespace google.cloud
+ */
+/**
+ * @namespace google.cloud.multiple-services
+ */
+/**
+ * @namespace google.cloud.multiple-services.v1
  */
 
 'use strict';
 
-const VERSION = require('../package.json').version;
-
 // Import the clients for each version supported by this package.
-var gapic = {
+const gapic = Object.freeze({
   v1: require('./v1'),
-};
+});
 
+/**
+ * The `@google-cloud/multiple-services` package has the following named exports:
+ *
+ * - `IncrementerServiceClient` - Reference to
+ *   {@link v1.IncrementerServiceClient}
+ * - `DecrementerServiceClient` - Reference to
+ *   {@link v1.DecrementerServiceClient}
+ * - `v1` - This is used for selecting or pinning a
+ *   particular backend service version. It exports:
+ *     - `IncrementerServiceClient` - Reference to
+ *       {@link v1.IncrementerServiceClient}
+ *     - `DecrementerServiceClient` - Reference to
+ *       {@link v1.DecrementerServiceClient}
+ *
+ * @module {object} @google-cloud/multiple-services
+ * @alias nodejs-multiple-services
+ *
+ * @example <caption>Install the client library with
+ *   <a href="https://www.npmjs.com/">npm</a>:</caption>
+ * npm install --save @google-cloud/multiple-services
+ *
+ * @example <caption>Import the client library:</caption>
+ * const multiple-services = require('@google-cloud/multiple-services');
+ *
+ * @example <caption>Create a client that uses
+ *   <a href="https://goo.gl/64dyYX">Application Default Credentials
+ *   (ADC)</a>:</caption>
+ * let client = new multiple-services.IncrementerServiceClient();
+ *
+ * @example <caption>Create a client with
+ *   <a href="https://goo.gl/RXp6VL">explicit credentials</a>:</caption>
+ * let client = new multiple-services.IncrementerServiceClient({
+ *   projectId: 'your-project-id',
+ *   keyFilename: '/path/to/keyfile.json',
+ * });
+ */
+
+/**
+ * @type {object}
+ * @property {constructor} IncrementerServiceClient
+ *   Reference to {@link v1.IncrementerServiceClient}
+ * @property {constructor} DecrementerServiceClient
+ *   Reference to {@link v1.DecrementerServiceClient}
+ */
 module.exports = gapic.v1;
+
+/**
+ * @type {object}
+ * @property {constructor} IncrementerServiceClient
+ *   Reference to {@link v1.IncrementerServiceClient}
+ * @property {constructor} DecrementerServiceClient
+ *   Reference to {@link v1.DecrementerServiceClient}
+ */
 module.exports.v1 = gapic.v1;
+
+// Alias `module.exports` as `module.exports.default`, for future-proofing.
 module.exports.default = Object.assign({}, module.exports);
 
 ============== file: src/v1/decrementer_service_client.js ==============
-/*
- * Copyright 2017, Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2017, Google Inc. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 'use strict';
 
@@ -132,8 +193,11 @@ const gax = require('google-gax');
 const merge = require('lodash.merge');
 const path = require('path');
 
+const VERSION = require('../../package.json').version;
+
 /**
  * @class
+ * @memberof v1
  */
 class DecrementerServiceClient {
   /**
@@ -167,11 +231,14 @@ class DecrementerServiceClient {
     this._descriptors = {};
 
     // Ensure that options include the service address and port.
-    opts = Object.assign({
-      clientConfig: {},
-      port: this.constructor.port,
-      servicePath: this.constructor.servicePath,
-    }, opts);
+    opts = Object.assign(
+      {
+        clientConfig: {},
+        port: this.constructor.port,
+        servicePath: this.constructor.servicePath,
+      },
+      opts
+    );
 
     // Create a `gaxGrpc` object, with any grpc-specific options
     // sent to the client.
@@ -186,18 +253,19 @@ class DecrementerServiceClient {
       `gl-node/${process.version.node}`,
       `grpc/${gaxGrpc.grpcVersion}`,
       `gax/${gax.version}`,
-      `gapic/${this.version}`,
+      `gapic/${VERSION}`,
     ];
     if (opts.libName && opts.libVersion) {
       clientHeader.push(`${opts.libName}/${opts.libVersion}`);
     }
 
     // Load the applicable protos.
-    var protos = merge({},
+    var protos = merge(
+      {},
       gaxGrpc.loadProto(
         path.join(__dirname, '..', '..', 'protos'),
         'multiple_services.proto'
-      ),
+      )
     );
 
     // Put together the default options sent with requests.
@@ -205,7 +273,7 @@ class DecrementerServiceClient {
       'google.cloud.example.v1.DecrementerService',
       gapicConfig,
       opts.clientConfig,
-      {'x-goog-api-client': clientHeader.join(' ')},
+      {'x-goog-api-client': clientHeader.join(' ')}
     );
 
     // Set up a dictionary of "inner API calls"; the core implementation
@@ -227,10 +295,13 @@ class DecrementerServiceClient {
     ];
     for (let methodName of decrementerServiceStubMethods) {
       this._innerApiCalls[methodName] = gax.createApiCall(
-        decrementerServiceStub.then(stub => function() {
-          var args = Array.prototype.slice.call(arguments, 0);
-          return stub[methodName].apply(stub, args);
-        }),
+        decrementerServiceStub.then(
+          stub =>
+            function() {
+              var args = Array.prototype.slice.call(arguments, 0);
+              return stub[methodName].apply(stub, args);
+            }
+        ),
         defaults[methodName],
         null
       );
@@ -309,7 +380,7 @@ class DecrementerServiceClient {
       request = {};
     }
     return this._innerApiCalls.decrement(request, options, callback);
-  };
+  }
 }
 
 
@@ -331,21 +402,19 @@ module.exports = DecrementerServiceClient;
 }
 
 ============== file: src/v1/incrementer_service_client.js ==============
-/*
- * Copyright 2017, Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2017, Google Inc. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 'use strict';
 
@@ -354,8 +423,11 @@ const gax = require('google-gax');
 const merge = require('lodash.merge');
 const path = require('path');
 
+const VERSION = require('../../package.json').version;
+
 /**
  * @class
+ * @memberof v1
  */
 class IncrementerServiceClient {
   /**
@@ -389,11 +461,14 @@ class IncrementerServiceClient {
     this._descriptors = {};
 
     // Ensure that options include the service address and port.
-    opts = Object.assign({
-      clientConfig: {},
-      port: this.constructor.port,
-      servicePath: this.constructor.servicePath,
-    }, opts);
+    opts = Object.assign(
+      {
+        clientConfig: {},
+        port: this.constructor.port,
+        servicePath: this.constructor.servicePath,
+      },
+      opts
+    );
 
     // Create a `gaxGrpc` object, with any grpc-specific options
     // sent to the client.
@@ -408,18 +483,19 @@ class IncrementerServiceClient {
       `gl-node/${process.version.node}`,
       `grpc/${gaxGrpc.grpcVersion}`,
       `gax/${gax.version}`,
-      `gapic/${this.version}`,
+      `gapic/${VERSION}`,
     ];
     if (opts.libName && opts.libVersion) {
       clientHeader.push(`${opts.libName}/${opts.libVersion}`);
     }
 
     // Load the applicable protos.
-    var protos = merge({},
+    var protos = merge(
+      {},
       gaxGrpc.loadProto(
         path.join(__dirname, '..', '..', 'protos'),
         'multiple_services.proto'
-      ),
+      )
     );
 
     // Put together the default options sent with requests.
@@ -427,7 +503,7 @@ class IncrementerServiceClient {
       'google.cloud.example.v1.IncrementerService',
       gapicConfig,
       opts.clientConfig,
-      {'x-goog-api-client': clientHeader.join(' ')},
+      {'x-goog-api-client': clientHeader.join(' ')}
     );
 
     // Set up a dictionary of "inner API calls"; the core implementation
@@ -449,10 +525,13 @@ class IncrementerServiceClient {
     ];
     for (let methodName of incrementerServiceStubMethods) {
       this._innerApiCalls[methodName] = gax.createApiCall(
-        incrementerServiceStub.then(stub => function() {
-          var args = Array.prototype.slice.call(arguments, 0);
-          return stub[methodName].apply(stub, args);
-        }),
+        incrementerServiceStub.then(
+          stub =>
+            function() {
+              var args = Array.prototype.slice.call(arguments, 0);
+              return stub[methodName].apply(stub, args);
+            }
+        ),
         defaults[methodName],
         null
       );
@@ -531,7 +610,7 @@ class IncrementerServiceClient {
       request = {};
     }
     return this._innerApiCalls.increment(request, options, callback);
-  };
+  }
 }
 
 
@@ -553,21 +632,20 @@ module.exports = IncrementerServiceClient;
 }
 
 ============== file: src/v1/index.js ==============
-/*
- * Copyright 2017, Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2017, Google Inc. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 'use strict';
 
 const IncrementerServiceClient = require('./incrementer_service_client');
@@ -577,21 +655,20 @@ module.exports.IncrementerServiceClient = IncrementerServiceClient;
 module.exports.DecrementerServiceClient = DecrementerServiceClient;
 
 ============== file: test/gapic-v1.js ==============
-/*
- * Copyright 2017, Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2017, Google Inc. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 'use strict';
 
 const assert = require('assert');
@@ -605,7 +682,10 @@ error.code = FAKE_STATUS_CODE;
 describe('IncrementerServiceClient', () => {
   describe('increment', () => {
     it('invokes increment without error', done => {
-      var client = new multipleServicesModule.v1.IncrementerServiceClient();
+      var client = new multipleServicesModule.v1.IncrementerServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var request = {};
@@ -620,13 +700,20 @@ describe('IncrementerServiceClient', () => {
     });
 
     it('invokes increment with error', done => {
-      var client = new multipleServicesModule.v1.IncrementerServiceClient();
+      var client = new multipleServicesModule.v1.IncrementerServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var request = {};
 
       // Mock Grpc layer
-      client._innerApiCalls.increment = mockSimpleGrpcMethod(request, null, error);
+      client._innerApiCalls.increment = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
 
       client.increment(request, err => {
         assert(err instanceof Error);
@@ -640,7 +727,10 @@ describe('IncrementerServiceClient', () => {
 describe('DecrementerServiceClient', () => {
   describe('decrement', () => {
     it('invokes decrement without error', done => {
-      var client = new multipleServicesModule.v1.DecrementerServiceClient();
+      var client = new multipleServicesModule.v1.DecrementerServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var request = {};
@@ -655,13 +745,20 @@ describe('DecrementerServiceClient', () => {
     });
 
     it('invokes decrement with error', done => {
-      var client = new multipleServicesModule.v1.DecrementerServiceClient();
+      var client = new multipleServicesModule.v1.DecrementerServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var request = {};
 
       // Mock Grpc layer
-      client._innerApiCalls.decrement = mockSimpleGrpcMethod(request, null, error);
+      client._innerApiCalls.decrement = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
 
       client.decrement(request, err => {
         assert(err instanceof Error);
@@ -678,11 +775,9 @@ function mockSimpleGrpcMethod(expectedRequest, response, error) {
     assert.deepStrictEqual(actualRequest, expectedRequest);
     if (error) {
       callback(error);
-    }
-    else if (response) {
+    } else if (response) {
       callback(null, response);
-    }
-    else {
+    } else {
       callback(null);
     }
   };

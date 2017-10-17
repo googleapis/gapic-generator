@@ -15,8 +15,9 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
-import com.google.api.codegen.viewmodel.ApiCallableView.Builder;
 import com.google.auto.value.AutoValue;
+import java.util.List;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class DirectCallableView {
@@ -36,6 +37,15 @@ public abstract class DirectCallableView {
   public abstract String interfaceTypeName();
 
   public abstract String createCallableFunctionName();
+
+  public abstract List<HeaderRequestParamView> headerRequestParams();
+
+  public boolean hasHeaderRequestParams() {
+    return headerRequestParams() != null && !headerRequestParams().isEmpty();
+  }
+
+  @Nullable
+  public abstract HttpMethodView httpMethod();
 
   public static Builder newBuilder() {
     return new AutoValue_DirectCallableView.Builder()
@@ -60,6 +70,10 @@ public abstract class DirectCallableView {
     public abstract Builder interfaceTypeName(String val);
 
     public abstract Builder createCallableFunctionName(String val);
+
+    public abstract Builder headerRequestParams(List<HeaderRequestParamView> val);
+
+    public abstract Builder httpMethod(HttpMethodView val);
 
     public abstract DirectCallableView build();
   }

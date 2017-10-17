@@ -15,10 +15,10 @@
 package com.google.api.codegen.metacode;
 
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.TestValueGenerator;
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableMap;
@@ -48,7 +48,7 @@ public abstract class InitCodeContext {
    * Contains the fields that require initialization. Must be set if the output type is FieldList.
    */
   @Nullable
-  public abstract Iterable<Field> initFields();
+  public abstract Iterable<FieldModel> initFields();
 
   /** Returns the output type of the init code. Default to SingleObject. */
   public abstract InitCodeOutputType outputType();
@@ -93,7 +93,7 @@ public abstract class InitCodeContext {
 
     public abstract Builder symbolTable(SymbolTable table);
 
-    public abstract Builder initFields(Iterable<Field> fields);
+    public abstract Builder initFields(Iterable<FieldModel> fields);
 
     public abstract Builder outputType(InitCodeOutputType val);
 

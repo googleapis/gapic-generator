@@ -1,23 +1,86 @@
 @extends "nodejs/common.snip"
 
 @snippet generate(index)
+  {@lineComments(index.fileHeader.copyrightLines)}
+  //
+  {@lineComments(index.fileHeader.licenseLines)}
+
   /**
-   {@comments(index.fileHeader.copyrightLines)}
-   *
-   {@comments(index.fileHeader.licenseLines)}
+   * @@namespace google
+   */
+  /**
+   * @@namespace google.cloud
+   */
+  /**
+   * @@namespace google.cloud.{@index.namespace}
+   */
+  /**
+   * @@namespace google.cloud.{@index.namespace}.{@index.apiVersion}
    */
 
   'use strict';
 
-  const VERSION = require('../package.json').version;
-
   // Import the clients for each version supported by this package.
-  var gapic = {
+  const gapic = Object.freeze({
     {@index.apiVersion}: require('./{@index.apiVersion}'),
-  };
+  });
 
+  /**
+   * The `{@index.packageName}` package has the following named exports:
+   *
+   @join client : index.requireViews
+    * - `{@client.clientName}` - Reference to
+    *   {@@link {@index.apiVersion}.{@client.clientName}}
+   @end
+   * - `{@index.apiVersion}` - This is used for selecting or pinning a
+   *   particular backend service version. It exports:
+   @join client : index.requireViews
+    *     - `{@client.clientName}` - Reference to
+    *       {@@link {@index.apiVersion}.{@client.clientName}}
+   @end
+   *
+   * @@module {object} {@index.packageName}
+   * @@alias nodejs-{@index.namespace}
+   *
+   * @@example <caption>Install the client library with
+   *   <a href="https://www.npmjs.com/">npm</a>:</caption>
+   * npm install --save {@index.packageName}
+   *
+   * @@example <caption>Import the client library:</caption>
+   * const {@index.namespace} = require('{@index.packageName}');
+   *
+   * @@example <caption>Create a client that uses
+   *   <a href="https://goo.gl/64dyYX">Application Default Credentials
+   *   (ADC)</a>:</caption>
+   * let client = new {@index.namespace}.{@index.primaryService.clientName}();
+   *
+   * @@example <caption>Create a client with
+   *   <a href="https://goo.gl/RXp6VL">explicit credentials</a>:</caption>
+   * let client = new {@index.namespace}.{@index.primaryService.clientName}({
+   *   projectId: 'your-project-id',
+   *   keyFilename: '/path/to/keyfile.json',
+   * });
+   */
+
+  /**
+   * @@type {object}
+   @join client : index.requireViews
+    * @@property {constructor} {@client.clientName}
+    *   Reference to {@@link {@index.apiVersion}.{@client.clientName}}
+   @end
+   */
   module.exports = gapic.{@index.apiVersion};
+
+  /**
+   * @@type {object}
+   @join client : index.requireViews
+    * @@property {constructor} {@client.clientName}
+    *   Reference to {@@link {@index.apiVersion}.{@client.clientName}}
+   @end
+   */
   module.exports.{@index.apiVersion} = gapic.{@index.apiVersion};
+
+  // Alias `module.exports` as `module.exports.default`, for future-proofing.
   module.exports.default = Object.assign({}, module.exports);
 
 @end

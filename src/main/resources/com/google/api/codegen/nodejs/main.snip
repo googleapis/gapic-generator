@@ -1,46 +1,31 @@
 @extends "nodejs/common.snip"
 @extends "nodejs/method_sample.snip"
 
+
 @snippet generate(xapi)
-  {@header(xapi.fileHeader, xapi.protoFilename)}
-
-  {@serviceClass(xapi)}
-@end
-
-@private header(fileHeader, protoFilename)
-  /*
-   {@comments(fileHeader.copyrightLines)}
-   *
-   {@comments(fileHeader.licenseLines)}
-   */
+  {@lineComments(xapi.fileHeader.copyrightLines)}
+  //
+  {@lineComments(xapi.fileHeader.licenseLines)}
 
   'use strict';
 
-  {@importSection(fileHeader.importSection)}
-@end
+  {@importSection(xapi.fileHeader.importSection)}
 
-@private importSection(imports)
-  {@importGroup(imports.externalImports)}
-@end
-
-@private importGroup(group)
-  @join import : group
-    # Currently there is only one type per import.
-    # This will need to be refactored if changed.
-    @join type : import.types
-      const {@type.nickname} = require('{@import.moduleName}');
-    @end
+  @if xapi.fileHeader.hasVersion
+    const VERSION = require('../../package.json').version;
+  @else
+    const VERSION = require('../package.json').version;
   @end
-@end
 
-
-@private serviceClass(xapi)
   /**
    @if xapi.doc.lines
      {@comments(xapi.doc.lines)}
      *
    @end
    * @@class
+   @if xapi.fileHeader.hasVersion
+     * @@memberof {@xapi.apiVersion}
+   @end
    */
   class {@xapi.name} {
     /**
@@ -74,11 +59,14 @@
       this._descriptors = {};
 
       // Ensure that options include the service address and port.
-      opts = Object.assign({
-        clientConfig: {},
-        port: this.constructor.port,
-        servicePath: this.constructor.servicePath,
-      }, opts);
+      opts = Object.assign(
+        {
+          clientConfig: {},
+          port: this.constructor.port,
+          servicePath: this.constructor.servicePath,
+        },
+        opts
+      );
 
       // Create a `gaxGrpc` object, with any grpc-specific options
       // sent to the client.
@@ -93,15 +81,16 @@
         `gl-node/${process.version.node}`,
         `grpc/${gaxGrpc.grpcVersion}`,
         `gax/${gax.version}`,
-        `gapic/${this.version}`,
+        `gapic/${VERSION}`,
       ];
       if (opts.libName && opts.libVersion) {
         clientHeader.push(`${opts.libName}/${opts.libVersion}`);
       }
 
       // Load the applicable protos.
-      var protos = merge({},
-        @join stub : xapi.stubs on BREAK
+      var protos = merge(
+        {},
+        @join stub : xapi.stubs on {@","}.add(BREAK)
           gaxGrpc.loadProto(
             @if xapi.fileHeader.hasVersion
               path.join(__dirname, '..', '..', 'protos'),
@@ -110,7 +99,7 @@
               path.join(__dirname, '..', 'protos'),
               '{@stub.protoFileName}'
             @end
-          ),
+          )
         @end
       );
       @if xapi.pathTemplates
@@ -151,6 +140,20 @@
           @end
         };
       @end
+      @if or(xapi.hasBatchingMethods, xapi.hasLongRunningOperations)
+        var protoFilesRoot = new gax.grpc.GoogleProtoFilesRoot();
+        @join stub : xapi.stubs
+          protoFilesRoot = protobuf.loadSync(
+            @if xapi.fileHeader.hasVersion
+              path.join(__dirname, '..', '..', 'protos', '{@stub.protoFileName}'),
+            @else
+              path.join(__dirname, '..', 'protos', '{@stub.protoFileName}'),
+            @end
+            protoFilesRoot
+          );
+        @end
+
+      @end
       @if xapi.hasBatchingMethods
 
         // Some methods on this API support automatically batching
@@ -169,7 +172,7 @@
               @else
                 null,
               @end
-              {@descriptor.byteLengthFunctionName},
+              {@descriptor.byteLengthFunctionName}
             ),
           @end
         };
@@ -183,18 +186,6 @@
           auth: gaxGrpc.auth,
           grpc: gaxGrpc.grpc,
         }).operationsClient(opts);
-
-        var protoFilesRoot = new gax.grpc.GoogleProtoFilesRoot();
-        @join stub : xapi.stubs
-          protoFilesRoot = protobuf.loadSync(
-            @if xapi.fileHeader.hasVersion
-              path.join(__dirname, '..', '..', 'protos', '{@stub.protoFileName}'),
-            @else
-              path.join(__dirname, '..', 'protos', '{@stub.protoFileName}'),
-            @end
-            protoFilesRoot
-          );
-        @end
 
         @join descriptor : xapi.longRunningDescriptors
           var {@descriptor.methodName}Response = protoFilesRoot.lookup(
@@ -221,7 +212,7 @@
         '{@xapi.interfaceKey}',
         gapicConfig,
         opts.clientConfig,
-        {'x-goog-api-client': clientHeader.join(' ')},
+        {'x-goog-api-client': clientHeader.join(' ')}
       );
 
       // Set up a dictionary of "inner API calls"; the core implementation
@@ -246,10 +237,13 @@
         ];
         for (let methodName of {@stub.stubMethodsArrayName}) {
           this._innerApiCalls[methodName] = gax.createApiCall(
-            {@stub.name}.then(stub => function() {
-              var args = Array.prototype.slice.call(arguments, 0);
-              return stub[methodName].apply(stub, args);
-            }),
+            {@stub.name}.then(
+              stub =>
+                function() {
+                  var args = Array.prototype.slice.call(arguments, 0);
+                  return stub[methodName].apply(stub, args);
+                }
+            ),
             defaults[methodName],
             {@getDescriptors(xapi)}
           );
@@ -302,6 +296,21 @@
 
   module.exports = {@xapi.name};
 
+@end
+
+
+@private importSection(imports)
+  {@importGroup(imports.externalImports)}
+@end
+
+@private importGroup(group)
+  @join import : group
+    # Currently there is only one type per import.
+    # This will need to be refactored if changed.
+    @join type : import.types
+      const {@type.nickname} = require('{@import.moduleName}');
+    @end
+  @end
 @end
 
 @private clientsParamName(stubs)
@@ -410,7 +419,7 @@
     options = options || {};
     {@maybeHandleRequest(method)}
     return this._innerApiCalls.{@method.name}({@requestObject(method)}options{@callbackParams(method)});
-  };
+  }
   @switch method.type.toString
   @case "PagedOptionalArrayMethod"
 
@@ -480,7 +489,7 @@
   {@method.name}Stream({@methodRequestParameters(method)}options) {
     options = options || {};
     {@maybeHandleRequest(method)}
-    return this._pageDescriptors.{@method.name}.createStream(
+    return this._descriptors.page.{@method.name}.createStream(
       this._innerApiCalls.{@method.name},
       {@requestObject(method)}
       options

@@ -14,9 +14,9 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.viewmodel.GrpcStubView;
-import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,12 +24,12 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class GrpcStubTransformer {
-  public List<GrpcStubView> generateGrpcStubs(GapicInterfaceContext context) {
+  public List<GrpcStubView> generateGrpcStubs(InterfaceContext context) {
     List<GrpcStubView> stubs = new ArrayList<>();
-    Map<String, Interface> interfaces = new TreeMap<>();
-    Map<String, List<Method>> methods = new TreeMap<>();
-    for (Method method : context.getSupportedMethods()) {
-      Interface targetInterface = context.asRequestMethodContext(method).getTargetInterface();
+    Map<String, InterfaceModel> interfaces = new TreeMap<>();
+    Map<String, List<MethodModel>> methods = new TreeMap<>();
+    for (MethodModel method : context.getSupportedMethods()) {
+      InterfaceModel targetInterface = context.asRequestMethodContext(method).getTargetInterface();
       interfaces.put(targetInterface.getFullName(), targetInterface);
       if (methods.containsKey(targetInterface.getFullName())) {
         methods.get(targetInterface.getFullName()).add(method);
@@ -38,16 +38,16 @@ public class GrpcStubTransformer {
       }
     }
 
-    for (Map.Entry<String, Interface> entry : interfaces.entrySet()) {
-      Interface apiInterface = entry.getValue();
+    for (Map.Entry<String, InterfaceModel> entry : interfaces.entrySet()) {
+      InterfaceModel apiInterface = entry.getValue();
       stubs.add(generateGrpcStub(context, apiInterface, methods.get(entry.getKey())));
     }
 
     return stubs;
   }
 
-  public GrpcStubView generateGrpcStub(
-      GapicInterfaceContext context, Interface targetInterface, List<Method> methods) {
+  GrpcStubView generateGrpcStub(
+      InterfaceContext context, InterfaceModel targetInterface, List<MethodModel> methods) {
     SurfaceNamer namer = context.getNamer();
     GrpcStubView.Builder stub = GrpcStubView.newBuilder();
 
@@ -55,13 +55,14 @@ public class GrpcStubTransformer {
     stub.fullyQualifiedType(namer.getFullyQualifiedStubType(targetInterface));
     stub.createStubFunctionName(namer.getCreateStubFunctionName(targetInterface));
     String grpcClientTypeName =
-        namer.getAndSaveNicknameForGrpcClientTypeName(context.getModelTypeTable(), targetInterface);
+        namer.getAndSaveNicknameForGrpcClientTypeName(
+            context.getImportTypeTable(), targetInterface);
     stub.grpcClientTypeName(grpcClientTypeName);
     stub.grpcClientVariableName(namer.getGrpcClientVariableName(targetInterface));
     stub.grpcClientImportName(namer.getGrpcClientImportName(targetInterface));
 
     List<String> methodNames = new ArrayList<>();
-    for (Method method : methods) {
+    for (MethodModel method : methods) {
       methodNames.add(
           namer.getApiMethodName(method, context.getMethodConfig(method).getVisibility()));
     }
@@ -69,7 +70,7 @@ public class GrpcStubTransformer {
 
     stub.stubMethodsArrayName(namer.getStubMethodsArrayName(targetInterface));
     stub.namespace(namer.getNamespace(targetInterface));
-    stub.protoFileName(targetInterface.getFile().getSimpleName());
+    stub.protoFileName(targetInterface.getFileSimpleName());
 
     return stub.build();
   }

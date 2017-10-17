@@ -91,6 +91,11 @@ public class TypeNameTest {
     }
 
     @Override
+    public Map<String, TypeAlias> getAllImports() {
+      return null;
+    }
+
+    @Override
     public NamePath getNamePath(String fullName) {
       return null;
     }

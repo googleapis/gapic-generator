@@ -106,21 +106,20 @@ $ npm install --save @google-cloud/library
 }
 
 ============== file: smoke-test/library_service_smoke_test.js ==============
-/*
- * Copyright 2017, Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2017, Google Inc. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 'use strict';
 
 describe('LibraryServiceSmokeTest', () => {
@@ -154,52 +153,107 @@ describe('LibraryServiceSmokeTest', () => {
       .catch(done);
   });
 });
+
 ============== file: src/index.js ==============
+// Copyright 2017, Google Inc. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 /**
- * Copyright 2017, Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @namespace google
+ */
+/**
+ * @namespace google.cloud
+ */
+/**
+ * @namespace google.cloud.library
+ */
+/**
+ * @namespace google.cloud.library.v1
  */
 
 'use strict';
 
-const VERSION = require('../package.json').version;
-
 // Import the clients for each version supported by this package.
-var gapic = {
+const gapic = Object.freeze({
   v1: require('./v1'),
-};
+});
 
+/**
+ * The `@google-cloud/library` package has the following named exports:
+ *
+ * - `LibraryServiceClient` - Reference to
+ *   {@link v1.LibraryServiceClient}
+ * - `v1` - This is used for selecting or pinning a
+ *   particular backend service version. It exports:
+ *     - `LibraryServiceClient` - Reference to
+ *       {@link v1.LibraryServiceClient}
+ *
+ * @module {object} @google-cloud/library
+ * @alias nodejs-library
+ *
+ * @example <caption>Install the client library with
+ *   <a href="https://www.npmjs.com/">npm</a>:</caption>
+ * npm install --save @google-cloud/library
+ *
+ * @example <caption>Import the client library:</caption>
+ * const library = require('@google-cloud/library');
+ *
+ * @example <caption>Create a client that uses
+ *   <a href="https://goo.gl/64dyYX">Application Default Credentials
+ *   (ADC)</a>:</caption>
+ * let client = new library.LibraryServiceClient();
+ *
+ * @example <caption>Create a client with
+ *   <a href="https://goo.gl/RXp6VL">explicit credentials</a>:</caption>
+ * let client = new library.LibraryServiceClient({
+ *   projectId: 'your-project-id',
+ *   keyFilename: '/path/to/keyfile.json',
+ * });
+ */
+
+/**
+ * @type {object}
+ * @property {constructor} LibraryServiceClient
+ *   Reference to {@link v1.LibraryServiceClient}
+ */
 module.exports = gapic.v1;
+
+/**
+ * @type {object}
+ * @property {constructor} LibraryServiceClient
+ *   Reference to {@link v1.LibraryServiceClient}
+ */
 module.exports.v1 = gapic.v1;
+
+// Alias `module.exports` as `module.exports.default`, for future-proofing.
 module.exports.default = Object.assign({}, module.exports);
 
 ============== file: src/v1/index.js ==============
-/*
- * Copyright 2017, Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2017, Google Inc. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 'use strict';
 
 const LibraryServiceClient = require('./library_service_client');
@@ -207,21 +261,19 @@ const LibraryServiceClient = require('./library_service_client');
 module.exports.LibraryServiceClient = LibraryServiceClient;
 
 ============== file: src/v1/library_service_client.js ==============
-/*
- * Copyright 2017, Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2017, Google Inc. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 'use strict';
 
@@ -231,15 +283,17 @@ const merge = require('lodash.merge');
 const path = require('path');
 const protobuf = require('protobufjs');
 
+const VERSION = require('../../package.json').version;
+
 /**
  * This API represents a simple digital library.  It lets you manage Shelf
  * resources and Book resources in the library. It defines the following
  * resource model:
  *
- * - The API has a collection of {@link Shelf}
+ * - The API has a collection of Shelf
  *   resources, named ``bookShelves/*``
  *
- * - Each Shelf has a collection of {@link Book}
+ * - Each Shelf has a collection of Book
  *   resources, named `bookShelves/*/books/*`
  *
  * Check out [cloud docs!](https://cloud.google.com/library/example/link).
@@ -248,6 +302,7 @@ const protobuf = require('protobufjs');
  * Service comment may include special characters: <>&"`'@.
  *
  * @class
+ * @memberof v1
  */
 class LibraryServiceClient {
   /**
@@ -281,11 +336,14 @@ class LibraryServiceClient {
     this._descriptors = {};
 
     // Ensure that options include the service address and port.
-    opts = Object.assign({
-      clientConfig: {},
-      port: this.constructor.port,
-      servicePath: this.constructor.servicePath,
-    }, opts);
+    opts = Object.assign(
+      {
+        clientConfig: {},
+        port: this.constructor.port,
+        servicePath: this.constructor.servicePath,
+      },
+      opts
+    );
 
     // Create a `gaxGrpc` object, with any grpc-specific options
     // sent to the client.
@@ -300,14 +358,15 @@ class LibraryServiceClient {
       `gl-node/${process.version.node}`,
       `grpc/${gaxGrpc.grpcVersion}`,
       `gax/${gax.version}`,
-      `gapic/${this.version}`,
+      `gapic/${VERSION}`,
     ];
     if (opts.libName && opts.libVersion) {
       clientHeader.push(`${opts.libName}/${opts.libVersion}`);
     }
 
     // Load the applicable protos.
-    var protos = merge({},
+    var protos = merge(
+      {},
       gaxGrpc.loadProto(
         path.join(__dirname, '..', '..', 'protos'),
         'library.proto'
@@ -315,7 +374,7 @@ class LibraryServiceClient {
       gaxGrpc.loadProto(
         path.join(__dirname, '..', '..', 'protos'),
         'tagger.proto'
-      ),
+      )
     );
 
     // This API contains "path templates"; forward-slash-separated
@@ -367,6 +426,16 @@ class LibraryServiceClient {
       discussBook: new gax.StreamDescriptor(gax.StreamType.BIDI_STREAMING),
       monologAboutBook: new gax.StreamDescriptor(gax.StreamType.CLIENT_STREAMING),
     };
+    var protoFilesRoot = new gax.grpc.GoogleProtoFilesRoot();
+    protoFilesRoot = protobuf.loadSync(
+      path.join(__dirname, '..', '..', 'protos', 'library.proto'),
+      protoFilesRoot
+    );
+    protoFilesRoot = protobuf.loadSync(
+      path.join(__dirname, '..', '..', 'protos', 'tagger.proto'),
+      protoFilesRoot
+    );
+
 
     // Some methods on this API support automatically batching
     // requests; denote this.
@@ -378,7 +447,7 @@ class LibraryServiceClient {
           'shelf.name',
         ],
         'bookNames',
-        gax.createByteLengthFunction(protos.google.example.library.v1.Book),
+        gax.createByteLengthFunction(protoFilesRoot.lookup('google.example.library.v1.Book'))
       ),
       addComments: new gax.BundleDescriptor(
         'comments',
@@ -386,7 +455,7 @@ class LibraryServiceClient {
           'name',
         ],
         null,
-        gax.createByteLengthFunction(protos.google.example.library.v1.Comment),
+        gax.createByteLengthFunction(protoFilesRoot.lookup('google.example.library.v1.Comment'))
       ),
     };
 
@@ -397,16 +466,6 @@ class LibraryServiceClient {
       auth: gaxGrpc.auth,
       grpc: gaxGrpc.grpc,
     }).operationsClient(opts);
-
-    var protoFilesRoot = new gax.grpc.GoogleProtoFilesRoot();
-    protoFilesRoot = protobuf.loadSync(
-      path.join(__dirname, '..', '..', 'protos', 'library.proto'),
-      protoFilesRoot
-    );
-    protoFilesRoot = protobuf.loadSync(
-      path.join(__dirname, '..', '..', 'protos', 'tagger.proto'),
-      protoFilesRoot
-    );
 
     var getBigBookResponse = protoFilesRoot.lookup(
       'google.example.library.v1.Book'
@@ -439,7 +498,7 @@ class LibraryServiceClient {
       'google.example.library.v1.LibraryService',
       gapicConfig,
       opts.clientConfig,
-      {'x-goog-api-client': clientHeader.join(' ')},
+      {'x-goog-api-client': clientHeader.join(' ')}
     );
 
     // Set up a dictionary of "inner API calls"; the core implementation
@@ -487,10 +546,13 @@ class LibraryServiceClient {
     ];
     for (let methodName of libraryServiceStubMethods) {
       this._innerApiCalls[methodName] = gax.createApiCall(
-        libraryServiceStub.then(stub => function() {
-          var args = Array.prototype.slice.call(arguments, 0);
-          return stub[methodName].apply(stub, args);
-        }),
+        libraryServiceStub.then(
+          stub =>
+            function() {
+              var args = Array.prototype.slice.call(arguments, 0);
+              return stub[methodName].apply(stub, args);
+            }
+        ),
         defaults[methodName],
         this._descriptors.page[methodName] || this._descriptors.batching[methodName] || this._descriptors.stream[methodName] || this._descriptors.longrunning[methodName]
       );
@@ -510,10 +572,13 @@ class LibraryServiceClient {
     ];
     for (let methodName of labelerStubMethods) {
       this._innerApiCalls[methodName] = gax.createApiCall(
-        labelerStub.then(stub => function() {
-          var args = Array.prototype.slice.call(arguments, 0);
-          return stub[methodName].apply(stub, args);
-        }),
+        labelerStub.then(
+          stub =>
+            function() {
+              var args = Array.prototype.slice.call(arguments, 0);
+              return stub[methodName].apply(stub, args);
+            }
+        ),
         defaults[methodName],
         this._descriptors.page[methodName] || this._descriptors.batching[methodName] || this._descriptors.stream[methodName] || this._descriptors.longrunning[methodName]
       );
@@ -605,7 +670,7 @@ class LibraryServiceClient {
     options = options || {};
 
     return this._innerApiCalls.createShelf(request, options, callback);
-  };
+  }
 
   /**
    * Gets a shelf.
@@ -641,7 +706,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.shelfPath("[SHELF_ID]");
+   * var formattedName = client.shelfPath('[SHELF_ID]');
    * var options = '';
    * var request = {
    *   name: formattedName,
@@ -664,7 +729,7 @@ class LibraryServiceClient {
     options = options || {};
 
     return this._innerApiCalls.getShelf(request, options, callback);
-  };
+  }
 
   /**
    * Lists shelves.
@@ -748,7 +813,7 @@ class LibraryServiceClient {
       request = {};
     }
     return this._innerApiCalls.listShelves(request, options, callback);
-  };
+  }
 
   /**
    * Equivalent to {@link listShelves}, but returns a NodeJS Stream object.
@@ -792,7 +857,7 @@ class LibraryServiceClient {
     if (request === undefined) {
       request = {};
     }
-    return this._pageDescriptors.listShelves.createStream(
+    return this._descriptors.page.listShelves.createStream(
       this._innerApiCalls.listShelves,
       request,
       options
@@ -822,7 +887,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.shelfPath("[SHELF_ID]");
+   * var formattedName = client.shelfPath('[SHELF_ID]');
    * client.deleteShelf({name: formattedName}).catch(err => {
    *   console.error(err);
    * });
@@ -835,7 +900,7 @@ class LibraryServiceClient {
     options = options || {};
 
     return this._innerApiCalls.deleteShelf(request, options, callback);
-  };
+  }
 
   /**
    * Merges two shelves by adding all books from the shelf named
@@ -867,8 +932,8 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.shelfPath("[SHELF_ID]");
-   * var formattedOtherShelfName = client.shelfPath("[SHELF_ID]");
+   * var formattedName = client.shelfPath('[SHELF_ID]');
+   * var formattedOtherShelfName = client.shelfPath('[SHELF_ID]');
    * var request = {
    *   name: formattedName,
    *   otherShelfName: formattedOtherShelfName,
@@ -890,7 +955,7 @@ class LibraryServiceClient {
     options = options || {};
 
     return this._innerApiCalls.mergeShelves(request, options, callback);
-  };
+  }
 
   /**
    * Creates a book.
@@ -922,7 +987,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.shelfPath("[SHELF_ID]");
+   * var formattedName = client.shelfPath('[SHELF_ID]');
    * var book = {};
    * var request = {
    *   name: formattedName,
@@ -945,7 +1010,7 @@ class LibraryServiceClient {
     options = options || {};
 
     return this._innerApiCalls.createBook(request, options, callback);
-  };
+  }
 
   /**
    * Creates a series of books.
@@ -1015,7 +1080,7 @@ class LibraryServiceClient {
     options = options || {};
 
     return this._innerApiCalls.publishSeries(request, options, callback);
-  };
+  }
 
   /**
    * Gets a book.
@@ -1043,7 +1108,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    * client.getBook({name: formattedName})
    *   .then(responses => {
    *     var response = responses[0];
@@ -1061,7 +1126,7 @@ class LibraryServiceClient {
     options = options || {};
 
     return this._innerApiCalls.getBook(request, options, callback);
-  };
+  }
 
   /**
    * Lists books in a shelf.
@@ -1110,7 +1175,7 @@ class LibraryServiceClient {
    * });
    *
    * // Iterate over all elements.
-   * var formattedName = client.shelfPath("[SHELF_ID]");
+   * var formattedName = client.shelfPath('[SHELF_ID]');
    *
    * client.listBooks({name: formattedName})
    *   .then(responses => {
@@ -1124,7 +1189,7 @@ class LibraryServiceClient {
    *   });
    *
    * // Or obtain the paged response.
-   * var formattedName = client.shelfPath("[SHELF_ID]");
+   * var formattedName = client.shelfPath('[SHELF_ID]');
    *
    *
    * var options = {autoPaginate: false};
@@ -1157,7 +1222,7 @@ class LibraryServiceClient {
     options = options || {};
 
     return this._innerApiCalls.listBooks(request, options, callback);
-  };
+  }
 
   /**
    * Equivalent to {@link listBooks}, but returns a NodeJS Stream object.
@@ -1198,7 +1263,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.shelfPath("[SHELF_ID]");
+   * var formattedName = client.shelfPath('[SHELF_ID]');
    * client.listBooksStream({name: formattedName})
    *   .on('data', element => {
    *     // doThingsWith(element)
@@ -1209,7 +1274,7 @@ class LibraryServiceClient {
   listBooksStream(request, options) {
     options = options || {};
 
-    return this._pageDescriptors.listBooks.createStream(
+    return this._descriptors.page.listBooks.createStream(
       this._innerApiCalls.listBooks,
       request,
       options
@@ -1239,7 +1304,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    * client.deleteBook({name: formattedName}).catch(err => {
    *   console.error(err);
    * });
@@ -1252,7 +1317,7 @@ class LibraryServiceClient {
     options = options || {};
 
     return this._innerApiCalls.deleteBook(request, options, callback);
-  };
+  }
 
   /**
    * Updates a book.
@@ -1292,7 +1357,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    * var book = {};
    * var request = {
    *   name: formattedName,
@@ -1315,7 +1380,7 @@ class LibraryServiceClient {
     options = options || {};
 
     return this._innerApiCalls.updateBook(request, options, callback);
-  };
+  }
 
   /**
    * Moves a book to another shelf, and returns the new book.
@@ -1345,8 +1410,8 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
-   * var formattedOtherShelfName = client.shelfPath("[SHELF_ID]");
+   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * var formattedOtherShelfName = client.shelfPath('[SHELF_ID]');
    * var request = {
    *   name: formattedName,
    *   otherShelfName: formattedOtherShelfName,
@@ -1368,7 +1433,7 @@ class LibraryServiceClient {
     options = options || {};
 
     return this._innerApiCalls.moveBook(request, options, callback);
-  };
+  }
 
   /**
    * Lists a primitive resource. To test go page streaming.
@@ -1457,7 +1522,7 @@ class LibraryServiceClient {
     options = options || {};
 
     return this._innerApiCalls.listStrings(request, options, callback);
-  };
+  }
 
   /**
    * Equivalent to {@link listStrings}, but returns a NodeJS Stream object.
@@ -1506,7 +1571,7 @@ class LibraryServiceClient {
   listStringsStream(request, options) {
     options = options || {};
 
-    return this._pageDescriptors.listStrings.createStream(
+    return this._descriptors.page.listStrings.createStream(
       this._innerApiCalls.listStrings,
       request,
       options
@@ -1537,7 +1602,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    * var comment = '';
    * var stage = 'UNSET';
    * var alignment = 'CHAR';
@@ -1563,7 +1628,7 @@ class LibraryServiceClient {
     options = options || {};
 
     return this._innerApiCalls.addComments(request, options, callback);
-  };
+  }
 
   /**
    * Gets a book from an archive.
@@ -1591,7 +1656,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.archivedBookPath("[ARCHIVE_PATH]", "[BOOK_ID]");
+   * var formattedName = client.archivedBookPath('[ARCHIVE_PATH]', '[BOOK_ID]');
    * client.getBookFromArchive({name: formattedName})
    *   .then(responses => {
    *     var response = responses[0];
@@ -1609,7 +1674,7 @@ class LibraryServiceClient {
     options = options || {};
 
     return this._innerApiCalls.getBookFromArchive(request, options, callback);
-  };
+  }
 
   /**
    * Gets a book from a shelf or archive.
@@ -1640,8 +1705,8 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
-   * var formattedAltBookName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * var formattedAltBookName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    * var request = {
    *   name: formattedName,
    *   altBookName: formattedAltBookName,
@@ -1663,7 +1728,7 @@ class LibraryServiceClient {
     options = options || {};
 
     return this._innerApiCalls.getBookFromAnywhere(request, options, callback);
-  };
+  }
 
   /**
    * Test proper OneOf-Any resource name mapping
@@ -1691,7 +1756,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    * client.getBookFromAbsolutelyAnywhere({name: formattedName})
    *   .then(responses => {
    *     var response = responses[0];
@@ -1709,7 +1774,7 @@ class LibraryServiceClient {
     options = options || {};
 
     return this._innerApiCalls.getBookFromAbsolutelyAnywhere(request, options, callback);
-  };
+  }
 
   /**
    * Updates the index of a book.
@@ -1738,7 +1803,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    * var indexName = 'default index';
    * var indexMapItem = '';
    * var indexMap = {'default_key' : indexMapItem,};
@@ -1759,7 +1824,7 @@ class LibraryServiceClient {
     options = options || {};
 
     return this._innerApiCalls.updateBookIndex(request, options, callback);
-  };
+  }
 
   /**
    * Test server streaming
@@ -1792,7 +1857,7 @@ class LibraryServiceClient {
       request = {};
     }
     return this._innerApiCalls.streamShelves(request, options);
-  };
+  }
 
   /**
    * Test server streaming, non-paged responses.
@@ -1825,7 +1890,7 @@ class LibraryServiceClient {
     options = options || {};
 
     return this._innerApiCalls.streamBooks(request, options);
-  };
+  }
 
   /**
    * Test bidi-streaming.
@@ -1861,7 +1926,7 @@ class LibraryServiceClient {
     options = options || {};
 
     return this._innerApiCalls.discussBook(options);
-  };
+  }
 
   /**
    * Test client streaming.
@@ -1907,7 +1972,7 @@ class LibraryServiceClient {
     options = options || {};
 
     return this._innerApiCalls.monologAboutBook(options, callback);
-  };
+  }
 
   /**
    * @param {Object} request
@@ -2011,7 +2076,7 @@ class LibraryServiceClient {
     options = options || {};
 
     return this._innerApiCalls.findRelatedBooks(request, options, callback);
-  };
+  }
 
   /**
    * Equivalent to {@link findRelatedBooks}, but returns a NodeJS Stream object.
@@ -2067,7 +2132,7 @@ class LibraryServiceClient {
   findRelatedBooksStream(request, options) {
     options = options || {};
 
-    return this._pageDescriptors.findRelatedBooks.createStream(
+    return this._descriptors.page.findRelatedBooks.createStream(
       this._innerApiCalls.findRelatedBooks,
       request,
       options
@@ -2104,7 +2169,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedResource = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+   * var formattedResource = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    * var tag = '';
    * var request = {
    *   resource: formattedResource,
@@ -2127,7 +2192,7 @@ class LibraryServiceClient {
     options = options || {};
 
     return this._innerApiCalls.addTag(request, options, callback);
-  };
+  }
 
   /**
    * Adds a label to the entity.
@@ -2159,7 +2224,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedResource = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+   * var formattedResource = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    * var label = '';
    * var request = {
    *   resource: formattedResource,
@@ -2182,7 +2247,7 @@ class LibraryServiceClient {
     options = options || {};
 
     return this._innerApiCalls.addLabel(request, options, callback);
-  };
+  }
 
   /**
    * Test long-running operations
@@ -2210,7 +2275,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    *
    * // Handle the operation using the promise pattern.
    * client.getBigBook({name: formattedName})
@@ -2235,7 +2300,7 @@ class LibraryServiceClient {
    *     console.error(err);
    *   });
    *
-   * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    *
    * // Handle the operation using the event emitter pattern.
    * client.getBigBook({name: formattedName})
@@ -2272,7 +2337,7 @@ class LibraryServiceClient {
     options = options || {};
 
     return this._innerApiCalls.getBigBook(request, options, callback);
-  };
+  }
 
   /**
    * Test long-running operations with empty return type.
@@ -2300,7 +2365,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    *
    * // Handle the operation using the promise pattern.
    * client.getBigNothing({name: formattedName})
@@ -2325,7 +2390,7 @@ class LibraryServiceClient {
    *     console.error(err);
    *   });
    *
-   * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    *
    * // Handle the operation using the event emitter pattern.
    * client.getBigNothing({name: formattedName})
@@ -2362,7 +2427,7 @@ class LibraryServiceClient {
     options = options || {};
 
     return this._innerApiCalls.getBigNothing(request, options, callback);
-  };
+  }
 
   /**
    * Test optional flattening parameters of all types
@@ -2523,7 +2588,7 @@ class LibraryServiceClient {
     options = options || {};
 
     return this._innerApiCalls.testOptionalRequiredFlatteningParams(request, options, callback);
-  };
+  }
 
   // --------------------
   // -- Path templates --
@@ -2822,21 +2887,20 @@ module.exports = LibraryServiceClient;
 }
 
 ============== file: test/gapic-v1.js ==============
-/*
- * Copyright 2017, Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2017, Google Inc. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 'use strict';
 
 const assert = require('assert');
@@ -2851,7 +2915,10 @@ error.code = FAKE_STATUS_CODE;
 describe('LibraryServiceClient', () => {
   describe('createShelf', () => {
     it('invokes createShelf without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var shelf = {};
@@ -2870,7 +2937,10 @@ describe('LibraryServiceClient', () => {
       };
 
       // Mock Grpc layer
-      client._innerApiCalls.createShelf = mockSimpleGrpcMethod(request, expectedResponse);
+      client._innerApiCalls.createShelf = mockSimpleGrpcMethod(
+        request,
+        expectedResponse
+      );
 
       client.createShelf(request, (err, response) => {
         assert.ifError(err);
@@ -2880,7 +2950,10 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes createShelf with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var shelf = {};
@@ -2889,11 +2962,16 @@ describe('LibraryServiceClient', () => {
       };
 
       // Mock Grpc layer
-      client._innerApiCalls.createShelf = mockSimpleGrpcMethod(request, null, error);
+      client._innerApiCalls.createShelf = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
 
       client.createShelf(request, (err, response) => {
         assert(err instanceof Error);
         assert.equal(err.code, FAKE_STATUS_CODE);
+        assert(typeof response === 'undefined');
         done();
       });
     });
@@ -2901,10 +2979,13 @@ describe('LibraryServiceClient', () => {
 
   describe('getShelf', () => {
     it('invokes getShelf without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.shelfPath("[SHELF_ID]");
+      var formattedName = client.shelfPath('[SHELF_ID]');
       var options = 'options-1249474914';
       var request = {
         name: formattedName,
@@ -2922,7 +3003,10 @@ describe('LibraryServiceClient', () => {
       };
 
       // Mock Grpc layer
-      client._innerApiCalls.getShelf = mockSimpleGrpcMethod(request, expectedResponse);
+      client._innerApiCalls.getShelf = mockSimpleGrpcMethod(
+        request,
+        expectedResponse
+      );
 
       client.getShelf(request, (err, response) => {
         assert.ifError(err);
@@ -2932,10 +3016,13 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes getShelf with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.shelfPath("[SHELF_ID]");
+      var formattedName = client.shelfPath('[SHELF_ID]');
       var options = 'options-1249474914';
       var request = {
         name: formattedName,
@@ -2943,11 +3030,16 @@ describe('LibraryServiceClient', () => {
       };
 
       // Mock Grpc layer
-      client._innerApiCalls.getShelf = mockSimpleGrpcMethod(request, null, error);
+      client._innerApiCalls.getShelf = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
 
       client.getShelf(request, (err, response) => {
         assert(err instanceof Error);
         assert.equal(err.code, FAKE_STATUS_CODE);
+        assert(typeof response === 'undefined');
         done();
       });
     });
@@ -2955,7 +3047,10 @@ describe('LibraryServiceClient', () => {
 
   describe('listShelves', () => {
     it('invokes listShelves without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var request = {};
@@ -2983,17 +3078,25 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes listShelves with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var request = {};
 
       // Mock Grpc layer
-      client._innerApiCalls.listShelves = mockSimpleGrpcMethod(request, null, error);
+      client._innerApiCalls.listShelves = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
 
       client.listShelves(request, (err, response) => {
         assert(err instanceof Error);
         assert.equal(err.code, FAKE_STATUS_CODE);
+        assert(typeof response === 'undefined');
         done();
       });
     });
@@ -3001,10 +3104,13 @@ describe('LibraryServiceClient', () => {
 
   describe('deleteShelf', () => {
     it('invokes deleteShelf without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.shelfPath("[SHELF_ID]");
+      var formattedName = client.shelfPath('[SHELF_ID]');
       var request = {
         name: formattedName,
       };
@@ -3019,16 +3125,23 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes deleteShelf with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.shelfPath("[SHELF_ID]");
+      var formattedName = client.shelfPath('[SHELF_ID]');
       var request = {
         name: formattedName,
       };
 
       // Mock Grpc layer
-      client._innerApiCalls.deleteShelf = mockSimpleGrpcMethod(request, null, error);
+      client._innerApiCalls.deleteShelf = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
 
       client.deleteShelf(request, err => {
         assert(err instanceof Error);
@@ -3040,11 +3153,14 @@ describe('LibraryServiceClient', () => {
 
   describe('mergeShelves', () => {
     it('invokes mergeShelves without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.shelfPath("[SHELF_ID]");
-      var formattedOtherShelfName = client.shelfPath("[SHELF_ID]");
+      var formattedName = client.shelfPath('[SHELF_ID]');
+      var formattedOtherShelfName = client.shelfPath('[SHELF_ID]');
       var request = {
         name: formattedName,
         otherShelfName: formattedOtherShelfName,
@@ -3061,7 +3177,10 @@ describe('LibraryServiceClient', () => {
       };
 
       // Mock Grpc layer
-      client._innerApiCalls.mergeShelves = mockSimpleGrpcMethod(request, expectedResponse);
+      client._innerApiCalls.mergeShelves = mockSimpleGrpcMethod(
+        request,
+        expectedResponse
+      );
 
       client.mergeShelves(request, (err, response) => {
         assert.ifError(err);
@@ -3071,22 +3190,30 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes mergeShelves with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.shelfPath("[SHELF_ID]");
-      var formattedOtherShelfName = client.shelfPath("[SHELF_ID]");
+      var formattedName = client.shelfPath('[SHELF_ID]');
+      var formattedOtherShelfName = client.shelfPath('[SHELF_ID]');
       var request = {
         name: formattedName,
         otherShelfName: formattedOtherShelfName,
       };
 
       // Mock Grpc layer
-      client._innerApiCalls.mergeShelves = mockSimpleGrpcMethod(request, null, error);
+      client._innerApiCalls.mergeShelves = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
 
       client.mergeShelves(request, (err, response) => {
         assert(err instanceof Error);
         assert.equal(err.code, FAKE_STATUS_CODE);
+        assert(typeof response === 'undefined');
         done();
       });
     });
@@ -3094,10 +3221,13 @@ describe('LibraryServiceClient', () => {
 
   describe('createBook', () => {
     it('invokes createBook without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.shelfPath("[SHELF_ID]");
+      var formattedName = client.shelfPath('[SHELF_ID]');
       var book = {};
       var request = {
         name: formattedName,
@@ -3117,7 +3247,10 @@ describe('LibraryServiceClient', () => {
       };
 
       // Mock Grpc layer
-      client._innerApiCalls.createBook = mockSimpleGrpcMethod(request, expectedResponse);
+      client._innerApiCalls.createBook = mockSimpleGrpcMethod(
+        request,
+        expectedResponse
+      );
 
       client.createBook(request, (err, response) => {
         assert.ifError(err);
@@ -3127,10 +3260,13 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes createBook with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.shelfPath("[SHELF_ID]");
+      var formattedName = client.shelfPath('[SHELF_ID]');
       var book = {};
       var request = {
         name: formattedName,
@@ -3138,11 +3274,16 @@ describe('LibraryServiceClient', () => {
       };
 
       // Mock Grpc layer
-      client._innerApiCalls.createBook = mockSimpleGrpcMethod(request, null, error);
+      client._innerApiCalls.createBook = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
 
       client.createBook(request, (err, response) => {
         assert(err instanceof Error);
         assert.equal(err.code, FAKE_STATUS_CODE);
+        assert(typeof response === 'undefined');
         done();
       });
     });
@@ -3150,7 +3291,10 @@ describe('LibraryServiceClient', () => {
 
   describe('publishSeries', () => {
     it('invokes publishSeries without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var shelf = {};
@@ -3173,7 +3317,10 @@ describe('LibraryServiceClient', () => {
       };
 
       // Mock Grpc layer
-      client._innerApiCalls.publishSeries = mockSimpleGrpcMethod(request, expectedResponse);
+      client._innerApiCalls.publishSeries = mockSimpleGrpcMethod(
+        request,
+        expectedResponse
+      );
 
       client.publishSeries(request, (err, response) => {
         assert.ifError(err);
@@ -3183,7 +3330,10 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes publishSeries with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var shelf = {};
@@ -3199,11 +3349,16 @@ describe('LibraryServiceClient', () => {
       };
 
       // Mock Grpc layer
-      client._innerApiCalls.publishSeries = mockSimpleGrpcMethod(request, null, error);
+      client._innerApiCalls.publishSeries = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
 
       client.publishSeries(request, (err, response) => {
         assert(err instanceof Error);
         assert.equal(err.code, FAKE_STATUS_CODE);
+        assert(typeof response === 'undefined');
         done();
       });
     });
@@ -3211,10 +3366,13 @@ describe('LibraryServiceClient', () => {
 
   describe('getBook', () => {
     it('invokes getBook without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var request = {
         name: formattedName,
       };
@@ -3232,7 +3390,10 @@ describe('LibraryServiceClient', () => {
       };
 
       // Mock Grpc layer
-      client._innerApiCalls.getBook = mockSimpleGrpcMethod(request, expectedResponse);
+      client._innerApiCalls.getBook = mockSimpleGrpcMethod(
+        request,
+        expectedResponse
+      );
 
       client.getBook(request, (err, response) => {
         assert.ifError(err);
@@ -3242,20 +3403,28 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes getBook with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var request = {
         name: formattedName,
       };
 
       // Mock Grpc layer
-      client._innerApiCalls.getBook = mockSimpleGrpcMethod(request, null, error);
+      client._innerApiCalls.getBook = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
 
       client.getBook(request, (err, response) => {
         assert(err instanceof Error);
         assert.equal(err.code, FAKE_STATUS_CODE);
+        assert(typeof response === 'undefined');
         done();
       });
     });
@@ -3263,10 +3432,13 @@ describe('LibraryServiceClient', () => {
 
   describe('listBooks', () => {
     it('invokes listBooks without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.shelfPath("[SHELF_ID]");
+      var formattedName = client.shelfPath('[SHELF_ID]');
       var request = {
         name: formattedName,
       };
@@ -3294,20 +3466,28 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes listBooks with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.shelfPath("[SHELF_ID]");
+      var formattedName = client.shelfPath('[SHELF_ID]');
       var request = {
         name: formattedName,
       };
 
       // Mock Grpc layer
-      client._innerApiCalls.listBooks = mockSimpleGrpcMethod(request, null, error);
+      client._innerApiCalls.listBooks = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
 
       client.listBooks(request, (err, response) => {
         assert(err instanceof Error);
         assert.equal(err.code, FAKE_STATUS_CODE);
+        assert(typeof response === 'undefined');
         done();
       });
     });
@@ -3315,10 +3495,13 @@ describe('LibraryServiceClient', () => {
 
   describe('deleteBook', () => {
     it('invokes deleteBook without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var request = {
         name: formattedName,
       };
@@ -3333,16 +3516,23 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes deleteBook with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var request = {
         name: formattedName,
       };
 
       // Mock Grpc layer
-      client._innerApiCalls.deleteBook = mockSimpleGrpcMethod(request, null, error);
+      client._innerApiCalls.deleteBook = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
 
       client.deleteBook(request, err => {
         assert(err instanceof Error);
@@ -3354,10 +3544,13 @@ describe('LibraryServiceClient', () => {
 
   describe('updateBook', () => {
     it('invokes updateBook without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var book = {};
       var request = {
         name: formattedName,
@@ -3377,7 +3570,10 @@ describe('LibraryServiceClient', () => {
       };
 
       // Mock Grpc layer
-      client._innerApiCalls.updateBook = mockSimpleGrpcMethod(request, expectedResponse);
+      client._innerApiCalls.updateBook = mockSimpleGrpcMethod(
+        request,
+        expectedResponse
+      );
 
       client.updateBook(request, (err, response) => {
         assert.ifError(err);
@@ -3387,10 +3583,13 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes updateBook with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var book = {};
       var request = {
         name: formattedName,
@@ -3398,11 +3597,16 @@ describe('LibraryServiceClient', () => {
       };
 
       // Mock Grpc layer
-      client._innerApiCalls.updateBook = mockSimpleGrpcMethod(request, null, error);
+      client._innerApiCalls.updateBook = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
 
       client.updateBook(request, (err, response) => {
         assert(err instanceof Error);
         assert.equal(err.code, FAKE_STATUS_CODE);
+        assert(typeof response === 'undefined');
         done();
       });
     });
@@ -3410,11 +3614,14 @@ describe('LibraryServiceClient', () => {
 
   describe('moveBook', () => {
     it('invokes moveBook without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
-      var formattedOtherShelfName = client.shelfPath("[SHELF_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      var formattedOtherShelfName = client.shelfPath('[SHELF_ID]');
       var request = {
         name: formattedName,
         otherShelfName: formattedOtherShelfName,
@@ -3433,7 +3640,10 @@ describe('LibraryServiceClient', () => {
       };
 
       // Mock Grpc layer
-      client._innerApiCalls.moveBook = mockSimpleGrpcMethod(request, expectedResponse);
+      client._innerApiCalls.moveBook = mockSimpleGrpcMethod(
+        request,
+        expectedResponse
+      );
 
       client.moveBook(request, (err, response) => {
         assert.ifError(err);
@@ -3443,22 +3653,30 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes moveBook with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
-      var formattedOtherShelfName = client.shelfPath("[SHELF_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      var formattedOtherShelfName = client.shelfPath('[SHELF_ID]');
       var request = {
         name: formattedName,
         otherShelfName: formattedOtherShelfName,
       };
 
       // Mock Grpc layer
-      client._innerApiCalls.moveBook = mockSimpleGrpcMethod(request, null, error);
+      client._innerApiCalls.moveBook = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
 
       client.moveBook(request, (err, response) => {
         assert(err instanceof Error);
         assert.equal(err.code, FAKE_STATUS_CODE);
+        assert(typeof response === 'undefined');
         done();
       });
     });
@@ -3466,7 +3684,10 @@ describe('LibraryServiceClient', () => {
 
   describe('listStrings', () => {
     it('invokes listStrings without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var request = {};
@@ -3494,17 +3715,25 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes listStrings with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var request = {};
 
       // Mock Grpc layer
-      client._innerApiCalls.listStrings = mockSimpleGrpcMethod(request, null, error);
+      client._innerApiCalls.listStrings = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
 
       client.listStrings(request, (err, response) => {
         assert(err instanceof Error);
         assert.equal(err.code, FAKE_STATUS_CODE);
+        assert(typeof response === 'undefined');
         done();
       });
     });
@@ -3512,10 +3741,13 @@ describe('LibraryServiceClient', () => {
 
   describe('addComments', () => {
     it('invokes addComments without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var comment = '95';
       var stage = 'UNSET';
       var alignment = 'CHAR';
@@ -3540,10 +3772,13 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes addComments with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var comment = '95';
       var stage = 'UNSET';
       var alignment = 'CHAR';
@@ -3559,7 +3794,11 @@ describe('LibraryServiceClient', () => {
       };
 
       // Mock Grpc layer
-      client._innerApiCalls.addComments = mockSimpleGrpcMethod(request, null, error);
+      client._innerApiCalls.addComments = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
 
       client.addComments(request, err => {
         assert(err instanceof Error);
@@ -3571,10 +3810,13 @@ describe('LibraryServiceClient', () => {
 
   describe('getBookFromArchive', () => {
     it('invokes getBookFromArchive without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.archivedBookPath("[ARCHIVE_PATH]", "[BOOK_ID]");
+      var formattedName = client.archivedBookPath('[ARCHIVE_PATH]', '[BOOK_ID]');
       var request = {
         name: formattedName,
       };
@@ -3592,7 +3834,10 @@ describe('LibraryServiceClient', () => {
       };
 
       // Mock Grpc layer
-      client._innerApiCalls.getBookFromArchive = mockSimpleGrpcMethod(request, expectedResponse);
+      client._innerApiCalls.getBookFromArchive = mockSimpleGrpcMethod(
+        request,
+        expectedResponse
+      );
 
       client.getBookFromArchive(request, (err, response) => {
         assert.ifError(err);
@@ -3602,20 +3847,28 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes getBookFromArchive with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.archivedBookPath("[ARCHIVE_PATH]", "[BOOK_ID]");
+      var formattedName = client.archivedBookPath('[ARCHIVE_PATH]', '[BOOK_ID]');
       var request = {
         name: formattedName,
       };
 
       // Mock Grpc layer
-      client._innerApiCalls.getBookFromArchive = mockSimpleGrpcMethod(request, null, error);
+      client._innerApiCalls.getBookFromArchive = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
 
       client.getBookFromArchive(request, (err, response) => {
         assert(err instanceof Error);
         assert.equal(err.code, FAKE_STATUS_CODE);
+        assert(typeof response === 'undefined');
         done();
       });
     });
@@ -3623,11 +3876,14 @@ describe('LibraryServiceClient', () => {
 
   describe('getBookFromAnywhere', () => {
     it('invokes getBookFromAnywhere without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
-      var formattedAltBookName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      var formattedAltBookName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var request = {
         name: formattedName,
         altBookName: formattedAltBookName,
@@ -3646,7 +3902,10 @@ describe('LibraryServiceClient', () => {
       };
 
       // Mock Grpc layer
-      client._innerApiCalls.getBookFromAnywhere = mockSimpleGrpcMethod(request, expectedResponse);
+      client._innerApiCalls.getBookFromAnywhere = mockSimpleGrpcMethod(
+        request,
+        expectedResponse
+      );
 
       client.getBookFromAnywhere(request, (err, response) => {
         assert.ifError(err);
@@ -3656,22 +3915,30 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes getBookFromAnywhere with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
-      var formattedAltBookName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      var formattedAltBookName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var request = {
         name: formattedName,
         altBookName: formattedAltBookName,
       };
 
       // Mock Grpc layer
-      client._innerApiCalls.getBookFromAnywhere = mockSimpleGrpcMethod(request, null, error);
+      client._innerApiCalls.getBookFromAnywhere = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
 
       client.getBookFromAnywhere(request, (err, response) => {
         assert(err instanceof Error);
         assert.equal(err.code, FAKE_STATUS_CODE);
+        assert(typeof response === 'undefined');
         done();
       });
     });
@@ -3679,10 +3946,13 @@ describe('LibraryServiceClient', () => {
 
   describe('getBookFromAbsolutelyAnywhere', () => {
     it('invokes getBookFromAbsolutelyAnywhere without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var request = {
         name: formattedName,
       };
@@ -3700,7 +3970,10 @@ describe('LibraryServiceClient', () => {
       };
 
       // Mock Grpc layer
-      client._innerApiCalls.getBookFromAbsolutelyAnywhere = mockSimpleGrpcMethod(request, expectedResponse);
+      client._innerApiCalls.getBookFromAbsolutelyAnywhere = mockSimpleGrpcMethod(
+        request,
+        expectedResponse
+      );
 
       client.getBookFromAbsolutelyAnywhere(request, (err, response) => {
         assert.ifError(err);
@@ -3710,20 +3983,28 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes getBookFromAbsolutelyAnywhere with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var request = {
         name: formattedName,
       };
 
       // Mock Grpc layer
-      client._innerApiCalls.getBookFromAbsolutelyAnywhere = mockSimpleGrpcMethod(request, null, error);
+      client._innerApiCalls.getBookFromAbsolutelyAnywhere = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
 
       client.getBookFromAbsolutelyAnywhere(request, (err, response) => {
         assert(err instanceof Error);
         assert.equal(err.code, FAKE_STATUS_CODE);
+        assert(typeof response === 'undefined');
         done();
       });
     });
@@ -3731,10 +4012,13 @@ describe('LibraryServiceClient', () => {
 
   describe('updateBookIndex', () => {
     it('invokes updateBookIndex without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var indexName = 'default index';
       var indexMapItem = 'indexMapItem1918721251';
       var indexMap = {'default_key' : indexMapItem,};
@@ -3754,10 +4038,13 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes updateBookIndex with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var indexName = 'default index';
       var indexMapItem = 'indexMapItem1918721251';
       var indexMap = {'default_key' : indexMapItem,};
@@ -3768,7 +4055,11 @@ describe('LibraryServiceClient', () => {
       };
 
       // Mock Grpc layer
-      client._innerApiCalls.updateBookIndex = mockSimpleGrpcMethod(request, null, error);
+      client._innerApiCalls.updateBookIndex = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
 
       client.updateBookIndex(request, err => {
         assert(err instanceof Error);
@@ -3780,7 +4071,10 @@ describe('LibraryServiceClient', () => {
 
   describe('streamShelves', () => {
     it('invokes streamShelves without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var request = {};
@@ -3808,7 +4102,10 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes streamShelves with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var request = {};
@@ -3832,7 +4129,10 @@ describe('LibraryServiceClient', () => {
 
   describe('streamBooks', () => {
     it('invokes streamBooks without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var name = 'name3373707';
@@ -3868,7 +4168,10 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes streamBooks with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var name = 'name3373707';
@@ -3895,7 +4198,10 @@ describe('LibraryServiceClient', () => {
 
   describe('discussBook', () => {
     it('invokes discussBook without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var name = 'name3373707';
@@ -3925,7 +4231,10 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes discussBook with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var name = 'name3373707';
@@ -3950,7 +4259,10 @@ describe('LibraryServiceClient', () => {
 
   describe('findRelatedBooks', () => {
     it('invokes findRelatedBooks without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var namesElement = 'namesElement-249113339';
@@ -3984,7 +4296,10 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes findRelatedBooks with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var namesElement = 'namesElement-249113339';
@@ -3996,11 +4311,16 @@ describe('LibraryServiceClient', () => {
       };
 
       // Mock Grpc layer
-      client._innerApiCalls.findRelatedBooks = mockSimpleGrpcMethod(request, null, error);
+      client._innerApiCalls.findRelatedBooks = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
 
       client.findRelatedBooks(request, (err, response) => {
         assert(err instanceof Error);
         assert.equal(err.code, FAKE_STATUS_CODE);
+        assert(typeof response === 'undefined');
         done();
       });
     });
@@ -4008,10 +4328,13 @@ describe('LibraryServiceClient', () => {
 
   describe('addTag', () => {
     it('invokes addTag without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedResource = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedResource = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var tag = 'tag114586';
       var request = {
         resource: formattedResource,
@@ -4022,7 +4345,10 @@ describe('LibraryServiceClient', () => {
       var expectedResponse = {};
 
       // Mock Grpc layer
-      client._innerApiCalls.addTag = mockSimpleGrpcMethod(request, expectedResponse);
+      client._innerApiCalls.addTag = mockSimpleGrpcMethod(
+        request,
+        expectedResponse
+      );
 
       client.addTag(request, (err, response) => {
         assert.ifError(err);
@@ -4032,10 +4358,13 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes addTag with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedResource = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedResource = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var tag = 'tag114586';
       var request = {
         resource: formattedResource,
@@ -4043,11 +4372,16 @@ describe('LibraryServiceClient', () => {
       };
 
       // Mock Grpc layer
-      client._innerApiCalls.addTag = mockSimpleGrpcMethod(request, null, error);
+      client._innerApiCalls.addTag = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
 
       client.addTag(request, (err, response) => {
         assert(err instanceof Error);
         assert.equal(err.code, FAKE_STATUS_CODE);
+        assert(typeof response === 'undefined');
         done();
       });
     });
@@ -4055,10 +4389,13 @@ describe('LibraryServiceClient', () => {
 
   describe('addLabel', () => {
     it('invokes addLabel without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedResource = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedResource = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var label = 'label102727412';
       var request = {
         resource: formattedResource,
@@ -4069,7 +4406,10 @@ describe('LibraryServiceClient', () => {
       var expectedResponse = {};
 
       // Mock Grpc layer
-      client._innerApiCalls.addLabel = mockSimpleGrpcMethod(request, expectedResponse);
+      client._innerApiCalls.addLabel = mockSimpleGrpcMethod(
+        request,
+        expectedResponse
+      );
 
       client.addLabel(request, (err, response) => {
         assert.ifError(err);
@@ -4079,10 +4419,13 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes addLabel with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedResource = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedResource = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var label = 'label102727412';
       var request = {
         resource: formattedResource,
@@ -4090,11 +4433,16 @@ describe('LibraryServiceClient', () => {
       };
 
       // Mock Grpc layer
-      client._innerApiCalls.addLabel = mockSimpleGrpcMethod(request, null, error);
+      client._innerApiCalls.addLabel = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
 
       client.addLabel(request, (err, response) => {
         assert(err instanceof Error);
         assert.equal(err.code, FAKE_STATUS_CODE);
+        assert(typeof response === 'undefined');
         done();
       });
     });
@@ -4102,10 +4450,13 @@ describe('LibraryServiceClient', () => {
 
   describe('getBigBook', function() {
     it('invokes getBigBook without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var request = {
         name: formattedName,
       };
@@ -4137,10 +4488,13 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes getBigBook with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var request = {
         name: formattedName,
       };
@@ -4161,7 +4515,10 @@ describe('LibraryServiceClient', () => {
     });
 
     it('has longrunning decoder functions', () => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
       assert(client._descriptors.longrunning.getBigBook.responseDecoder instanceof Function);
       assert(client._descriptors.longrunning.getBigBook.metadataDecoder instanceof Function);
     });
@@ -4169,10 +4526,13 @@ describe('LibraryServiceClient', () => {
 
   describe('getBigNothing', function() {
     it('invokes getBigNothing without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var request = {
         name: formattedName,
       };
@@ -4195,10 +4555,13 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes getBigNothing with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var request = {
         name: formattedName,
       };
@@ -4219,7 +4582,10 @@ describe('LibraryServiceClient', () => {
     });
 
     it('has longrunning decoder functions', () => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
       assert(client._descriptors.longrunning.getBigNothing.responseDecoder instanceof Function);
       assert(client._descriptors.longrunning.getBigNothing.metadataDecoder instanceof Function);
     });
@@ -4227,7 +4593,10 @@ describe('LibraryServiceClient', () => {
 
   describe('testOptionalRequiredFlatteningParams', () => {
     it('invokes testOptionalRequiredFlatteningParams without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var requiredSingularInt32 = -72313594;
@@ -4291,7 +4660,10 @@ describe('LibraryServiceClient', () => {
       var expectedResponse = {};
 
       // Mock Grpc layer
-      client._innerApiCalls.testOptionalRequiredFlatteningParams = mockSimpleGrpcMethod(request, expectedResponse);
+      client._innerApiCalls.testOptionalRequiredFlatteningParams = mockSimpleGrpcMethod(
+        request,
+        expectedResponse
+      );
 
       client.testOptionalRequiredFlatteningParams(request, (err, response) => {
         assert.ifError(err);
@@ -4301,7 +4673,10 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes testOptionalRequiredFlatteningParams with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var requiredSingularInt32 = -72313594;
@@ -4362,11 +4737,16 @@ describe('LibraryServiceClient', () => {
       };
 
       // Mock Grpc layer
-      client._innerApiCalls.testOptionalRequiredFlatteningParams = mockSimpleGrpcMethod(request, null, error);
+      client._innerApiCalls.testOptionalRequiredFlatteningParams = mockSimpleGrpcMethod(
+        request,
+        null,
+        error
+      );
 
       client.testOptionalRequiredFlatteningParams(request, (err, response) => {
         assert(err instanceof Error);
         assert.equal(err.code, FAKE_STATUS_CODE);
+        assert(typeof response === 'undefined');
         done();
       });
     });
@@ -4379,11 +4759,9 @@ function mockSimpleGrpcMethod(expectedRequest, response, error) {
     assert.deepStrictEqual(actualRequest, expectedRequest);
     if (error) {
       callback(error);
-    }
-    else if (response) {
+    } else if (response) {
       callback(null, response);
-    }
-    else {
+    } else {
       callback(null);
     }
   };

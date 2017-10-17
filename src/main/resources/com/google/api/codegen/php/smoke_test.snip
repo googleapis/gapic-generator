@@ -1,0 +1,27 @@
+@extends "php/common.snip"
+@extends "php/method_sample.snip"
+
+@snippet generate(smokeTest)
+    {@renderFileHeader(smokeTest.fileHeader, simpleGeneratedCodeWarning())}
+
+    /**
+     * @@group {@smokeTest.apiName}
+     * @@group grpc
+     */
+    class {@smokeTest.name} extends GeneratedTest
+    {
+        /**
+         * @@test
+         */
+        public function {@smokeTest.method.name}()
+        {
+            @if smokeTest.requireProjectId
+                $projectId = getenv('PROJECT_ID');
+            @end
+
+            ${@smokeTest.apiMethod.apiVariableName} = new {@smokeTest.apiMethod.apiClassName}();
+            {@initCode(smokeTest.apiMethod.initCode, smokeTest.apiMethod.apiVariableName)}
+            {@methodCallSampleCode(smokeTest.apiMethod)};
+        }
+    }
+@end
