@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameOneofConfig;
 import com.google.api.codegen.config.ResourceNameType;
@@ -54,6 +55,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -274,7 +276,7 @@ public class InitCodeTransformer {
     List<FieldSettingView> optionalFieldSettings =
         fieldSettings.stream().filter(f -> !f.required()).collect(Collectors.toList());
     List<FieldSettingView> requiredFieldSettings =
-        fieldSettings.stream().filter(f -> f.required()).collect(Collectors.toList());
+        fieldSettings.stream().filter(FieldSettingView::required).collect(Collectors.toList());
     return InitCodeView.newBuilder()
         .lines(generateSurfaceInitCodeLines(context, orderedItems))
         .topLevelLines(generateSurfaceInitCodeLines(context, argItems))
@@ -574,16 +576,14 @@ public class InitCodeTransformer {
     return formatFunctionArgs;
   }
 
-  /** Returns true if fieldConfigs contains fieldConfig. */
-  private boolean hasFieldConfig(Iterable<FieldConfig> fieldConfigs, FieldConfig fieldConfig) {
-    return StreamSupport.stream(fieldConfigs.spliterator(), false)
-        .anyMatch(f -> f.equals(fieldConfig));
-  }
-
   private List<FieldSettingView> getFieldSettings(
       GapicMethodContext context, Iterable<InitCodeNode> childItems) {
     SurfaceNamer namer = context.getNamer();
     List<FieldSettingView> allSettings = new ArrayList<>();
+    Set<String> requiredFieldSimpleNames =
+        StreamSupport.stream(context.getMethodConfig().getRequiredFields().spliterator(), false)
+            .map(FieldModel::getSimpleName)
+            .collect(Collectors.toSet());
     for (InitCodeNode item : childItems) {
       FieldSettingView.Builder fieldSetting = FieldSettingView.newBuilder();
       FieldConfig fieldConfig = item.getFieldConfig();
@@ -615,7 +615,8 @@ public class InitCodeTransformer {
                 .build());
       }
       fieldSetting.required(
-          hasFieldConfig(context.getMethodConfig().getRequiredFieldConfigs(), fieldConfig));
+          fieldConfig != null
+              && requiredFieldSimpleNames.contains(fieldConfig.getField().getSimpleName()));
       allSettings.add(fieldSetting.build());
     }
     return allSettings;
