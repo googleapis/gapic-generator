@@ -5048,10 +5048,13 @@ import com.google.api.gax.grpc.OperationFuture;
 import com.google.api.gax.rpc.BidiStreamingCallable;
 import com.google.api.gax.rpc.ClientContext;
 import com.google.api.gax.rpc.ClientStreamingCallable;
+import com.google.api.gax.rpc.EmptyRequestParamsExtractor;
 import com.google.api.gax.rpc.OperationCallable;
+import com.google.api.gax.rpc.RequestParamsExtractor;
 import com.google.api.gax.rpc.ServerStreamingCallable;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.api.resourcenames.ResourceName;
+import com.google.common.collect.ImmutableMap;
 import com.google.example.library.v1.AddCommentsRequest;
 import com.google.example.library.v1.ArchivedBookName;
 import com.google.example.library.v1.Book;
@@ -5167,7 +5170,16 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
               io.grpc.MethodDescriptor.MethodType.UNARY,
               "google.example.library.v1.LibraryService/CreateBook",
               io.grpc.protobuf.ProtoUtils.marshaller(CreateBookRequest.getDefaultInstance()),
-              io.grpc.protobuf.ProtoUtils.marshaller(Book.getDefaultInstance())));
+              io.grpc.protobuf.ProtoUtils.marshaller(Book.getDefaultInstance())),
+          new RequestParamsExtractor<CreateBookRequest>() {
+            @Override
+            public Map<String, String> extract(CreateBookRequest request) {
+              ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+              params.put("name", String.valueOf(request.getName()));
+              params.put("book.read", String.valueOf(request.getBook().getRead()));
+              return params.build();
+            }
+          });
   private static final UnaryCallable<PublishSeriesRequest, PublishSeriesResponse> directPublishSeriesCallable =
       GrpcCallableFactory.createDirectCallable(
           io.grpc.MethodDescriptor.create(
