@@ -162,8 +162,13 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
     }
 
     Iterable<FieldConfig> requiredFieldConfigs =
-        DiscoGapicMethodConfig.createFieldNameConfigs(
-            DiscoGapicMethodConfig.getRequiredFields(
+        createFieldNameConfigs(
+            diagCollector,
+            messageConfigs,
+            defaultResourceNameTreatment,
+            fieldNamePatterns,
+            resourceNameConfigs,
+            getRequiredFields(
                 diagCollector, methodModel, methodConfigProto.getRequiredFieldsList()));
 
     Iterable<FieldConfig> optionalFieldConfigs =

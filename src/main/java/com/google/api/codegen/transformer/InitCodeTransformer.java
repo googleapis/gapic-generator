@@ -542,16 +542,16 @@ public class InitCodeTransformer {
             namer.getResourceNameFieldSetFunctionName(fieldConfig.getMessageFieldConfig()));
       } else {
         fieldSetting.fieldSetFunction(
-            namer.getFieldSetFunctionName(item.getType(), Name.anyLower(item.getKey())));
+            namer.getFieldSetFunctionName(item.getType(), Name.anyLower(item.getVarName())));
       }
       fieldSetting.fieldAddFunction(
-          namer.getFieldAddFunctionName(item.getType(), Name.anyLower(item.getKey())));
+          namer.getFieldAddFunctionName(item.getType(), Name.anyLower(item.getVarName())));
       fieldSetting.fieldGetFunction(
-          namer.getFieldGetFunctionName(item.getType(), Name.anyLower(item.getKey())));
+          namer.getFieldGetFunctionName(item.getType(), Name.anyLower(item.getVarName())));
 
       fieldSetting.identifier(getVariableName(context, item));
       fieldSetting.initCodeLine(generateSurfaceInitCodeLine(context, item));
-      fieldSetting.fieldName(context.getNamer().publicFieldName(Name.anyLower(item.getKey())));
+      fieldSetting.fieldName(context.getNamer().publicFieldName(Name.anyLower(item.getVarName())));
 
       fieldSetting.isMap(item.getType().isMap());
       fieldSetting.isArray(!item.getType().isMap() && item.getType().isRepeated());

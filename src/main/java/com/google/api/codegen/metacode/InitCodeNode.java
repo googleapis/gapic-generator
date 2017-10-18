@@ -43,6 +43,7 @@ public class InitCodeNode {
   private FieldConfig nodeFieldConfig;
   private Name identifier;
   private OneofConfig oneofConfig;
+  private String varName;
 
   /*
    * Get the key associated with the node. For InitCodeNode objects that are not a root object, they
@@ -51,6 +52,13 @@ public class InitCodeNode {
    */
   public String getKey() {
     return key;
+  }
+
+  /*
+   * Get the variable name, which may be configured differently from the key.
+   */
+  public String getVarName() {
+    return varName == null ? key : varName;
   }
 
   /*
@@ -112,6 +120,10 @@ public class InitCodeNode {
     return new InitCodeNode(key, InitCodeLineType.Unknown, InitValueConfig.create());
   }
 
+  public static InitCodeNode createWithName(String key, String varName) {
+    return new InitCodeNode(key, InitCodeLineType.Unknown, InitValueConfig.create(), varName);
+  }
+
   public static InitCodeNode createWithValue(String key, InitValueConfig initValueConfig) {
     return new InitCodeNode(key, InitCodeLineType.SimpleInitLine, initValueConfig);
   }
@@ -158,10 +170,16 @@ public class InitCodeNode {
   }
 
   private InitCodeNode(String key, InitCodeLineType nodeType, InitValueConfig initValueConfig) {
+    this(key, nodeType, initValueConfig, key);
+  }
+
+  private InitCodeNode(
+      String key, InitCodeLineType nodeType, InitValueConfig initValueConfig, String varName) {
     this.key = key;
     this.lineType = nodeType;
     this.initValueConfig = initValueConfig;
     this.children = new LinkedHashMap<>();
+    this.varName = varName;
   }
 
   private void mergeChild(InitCodeNode newChild) {
@@ -211,7 +229,7 @@ public class InitCodeNode {
         String nameString = field.getSimpleName();
         InitValueConfig initValueConfig = context.initValueConfigMap().get(nameString);
         if (initValueConfig == null) {
-          newSubTrees.add(InitCodeNode.create(nameString));
+          newSubTrees.add(InitCodeNode.createWithName(nameString, field.getNameAsParameter()));
         } else {
           newSubTrees.add(InitCodeNode.createWithValue(nameString, initValueConfig));
         }

@@ -160,7 +160,7 @@ public abstract class FieldConfig {
         && !messageFieldResourceNameConfig.equals(flattenedFieldResourceNameConfig)) {
       // We support the case of the flattenedField using a specific resource name type when the
       // messageField uses a oneof containing that type, or when the messageField accepts any
-      // resource name.
+      // resource name, or for Discovery fields.
       ResourceNameType resourceTypeName = messageFieldResourceNameConfig.getResourceNameType();
       boolean ok =
           resourceTypeName == ResourceNameType.ANY
@@ -266,6 +266,10 @@ public abstract class FieldConfig {
       FieldModel field,
       ResourceNameTreatment treatment,
       ResourceNameConfig resourceNameConfig) {
+    if (field.getApiSource().equals(ApiSource.DISCOVERY)) {
+      // There are no proto messages in Discovery.
+      return;
+    }
     switch (treatment) {
       case NONE:
         break;
