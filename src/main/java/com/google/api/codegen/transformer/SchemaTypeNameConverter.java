@@ -65,6 +65,9 @@ public abstract class SchemaTypeNameConverter implements TypeNameConverter {
   /** Renders the given value if it is a primitive type. */
   public abstract String renderPrimitiveValue(Schema schema, String value);
 
+  /** Renders the value as a string. */
+  public abstract String renderValueAsString(String value);
+
   @Override
   public TypeName getTypeName(InterfaceModel interfaceModel) {
     return new TypeName(interfaceModel.getFullName());

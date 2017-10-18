@@ -104,4 +104,9 @@ public class ModelTypeFormatterImpl implements ModelTypeFormatter {
   public String renderPrimitiveValue(TypeModel type, String key) {
     return renderPrimitiveValue(((ProtoTypeRef) type).getProtoType(), key);
   }
+
+  @Override
+  public String renderValueAsString(String key) {
+    return typeNameConverter.renderValueAsString(key);
+  }
 }

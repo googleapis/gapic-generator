@@ -265,15 +265,10 @@ public class PhpSurfaceNamer extends SurfaceNamer {
         if (token.equals(InitFieldConfig.RANDOM_TOKEN)) {
           stringParts.add("time()");
         } else {
-          stringParts.add(quoted(token));
+          stringParts.add('\'' + token + '\'');
         }
       }
     }
     return Joiner.on(". ").join(stringParts);
-  }
-
-  @Override
-  public String quoted(String text) {
-    return '\'' + text + '\'';
   }
 }

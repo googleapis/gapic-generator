@@ -34,12 +34,6 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
   private SchemaTypeNameConverter typeNameConverter;
   private DiscoGapicNamer discoGapicNamer;
 
-  //  private SchemaTypeTable(TypeTable typeTable, SchemaTypeNameConverter typeNameConverter) {
-  //    this.typeFormatter = new SchemaTypeFormatterImpl(typeNameConverter);
-  //    this.typeTable = typeTable;
-  //    this.typeNameConverter = typeNameConverter;
-  //  }
-
   public SchemaTypeTable(
       TypeTable typeTable,
       SchemaTypeNameConverter typeNameConverter,
@@ -207,6 +201,11 @@ public class SchemaTypeTable implements ImportTypeTable, SchemaTypeFormatter {
   @Override
   public String renderPrimitiveValue(TypeModel type, String key) {
     return renderPrimitiveValue(((DiscoveryField) type).getDiscoveryField(), key);
+  }
+
+  @Override
+  public String renderValueAsString(String key) {
+    return typeNameConverter.renderValueAsString(key);
   }
 
   /**

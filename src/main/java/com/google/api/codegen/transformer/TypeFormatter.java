@@ -54,4 +54,7 @@ public interface TypeFormatter {
 
   /** Renders the primitive value of the given type. */
   String renderPrimitiveValue(TypeModel type, String key);
+
+  /** Renders the value as a string. */
+  String renderValueAsString(String key);
 }

@@ -217,6 +217,11 @@ public class JavaSchemaTypeNameConverter extends SchemaTypeNameConverter {
     throw new IllegalArgumentException("Schema is of unknown type.");
   }
 
+  @Override
+  public String renderValueAsString(String value) {
+    return "\"" + value + "\"";
+  }
+
   /**
    * Returns the Java representation of a zero value for that type, to be used in code sample doc.
    *

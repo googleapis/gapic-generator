@@ -51,7 +51,8 @@ public class NodeJSImportSectionTransformer implements ImportSectionTransformer 
     imports.add(createImport("gax", "google-gax"));
     imports.add(createImport("merge", "lodash.merge"));
     imports.add(createImport("path", "path"));
-    if (context.getInterfaceConfig().hasLongRunningOperations()) {
+    if (context.getInterfaceConfig().hasLongRunningOperations()
+        || context.getInterfaceConfig().hasBatchingMethods()) {
       imports.add(createImport("protobuf", "protobufjs"));
     }
     return imports.build();

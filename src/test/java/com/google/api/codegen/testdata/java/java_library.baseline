@@ -1306,24 +1306,27 @@ public class LibraryClient implements BackgroundResource {
    * <pre><code>
    * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
+   *   String optionalFoo = "";
    *   Book book = Book.newBuilder().build();
    *   FieldMask updateMask = FieldMask.newBuilder().build();
    *   com.google.example.library.v1.FieldMask physicalMask = com.google.example.library.v1.FieldMask.newBuilder().build();
-   *   Book response = libraryClient.updateBook(name, book, updateMask, physicalMask);
+   *   Book response = libraryClient.updateBook(name, optionalFoo, book, updateMask, physicalMask);
    * }
    * </code></pre>
    *
    * @param name The name of the book to update.
+   * @param optionalFoo An optional foo.
    * @param book The book to update with.
    * @param updateMask A field mask to apply, rendered as an HTTP parameter.
    * @param physicalMask To test Python import clash resolution.
    * @throws com.google.api.gax.rpc.ApiException if the remote call fails
    */
-  public final Book updateBook(BookName name, Book book, FieldMask updateMask, com.google.example.library.v1.FieldMask physicalMask) {
+  public final Book updateBook(BookName name, String optionalFoo, Book book, FieldMask updateMask, com.google.example.library.v1.FieldMask physicalMask) {
 
     UpdateBookRequest request =
         UpdateBookRequest.newBuilder()
         .setNameWithBookName(name)
+        .setOptionalFoo(optionalFoo)
         .setBook(book)
         .setUpdateMask(updateMask)
         .setPhysicalMask(physicalMask)
@@ -4906,6 +4909,7 @@ import com.google.example.library.v1.Book;
 import com.google.example.library.v1.Book.Rating;
 import com.google.example.library.v1.BookName;
 import com.google.example.library.v1.UpdateBookRequest;
+import com.google.protobuf.FieldMask;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
@@ -4949,12 +4953,15 @@ public class SampleApp {
   public static void executeNoCatch(String projectId) throws Exception {
     try (LibraryClient client = LibraryClient.create()) {
       BookName name = BookName.create("testShelf-" + System.currentTimeMillis(), projectId);
+      String optionalFoo = "";
       Book.Rating rating = Book.Rating.GOOD;
       Book book = Book.newBuilder()
         .setRating(rating)
         .build();
+      FieldMask updateMask = FieldMask.newBuilder().build();
+      com.google.example.library.v1.FieldMask physicalMask = com.google.example.library.v1.FieldMask.newBuilder().build();
 
-      Book response = client.updateBook(name, book);
+      Book response = client.updateBook(name, optionalFoo, book, updateMask, physicalMask);
       System.out.println(ReflectionToStringBuilder.toString(response, ToStringStyle.MULTI_LINE_STYLE));
     }
   }
@@ -5041,10 +5048,13 @@ import com.google.api.gax.grpc.OperationFuture;
 import com.google.api.gax.rpc.BidiStreamingCallable;
 import com.google.api.gax.rpc.ClientContext;
 import com.google.api.gax.rpc.ClientStreamingCallable;
+import com.google.api.gax.rpc.EmptyRequestParamsExtractor;
 import com.google.api.gax.rpc.OperationCallable;
+import com.google.api.gax.rpc.RequestParamsExtractor;
 import com.google.api.gax.rpc.ServerStreamingCallable;
 import com.google.api.gax.rpc.UnaryCallable;
 import com.google.api.resourcenames.ResourceName;
+import com.google.common.collect.ImmutableMap;
 import com.google.example.library.v1.AddCommentsRequest;
 import com.google.example.library.v1.ArchivedBookName;
 import com.google.example.library.v1.Book;
@@ -5160,7 +5170,16 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
               io.grpc.MethodDescriptor.MethodType.UNARY,
               "google.example.library.v1.LibraryService/CreateBook",
               io.grpc.protobuf.ProtoUtils.marshaller(CreateBookRequest.getDefaultInstance()),
-              io.grpc.protobuf.ProtoUtils.marshaller(Book.getDefaultInstance())));
+              io.grpc.protobuf.ProtoUtils.marshaller(Book.getDefaultInstance())),
+          new RequestParamsExtractor<CreateBookRequest>() {
+            @Override
+            public Map<String, String> extract(CreateBookRequest request) {
+              ImmutableMap.Builder<String, String> params = ImmutableMap.builder();
+              params.put("name", String.valueOf(request.getName()));
+              params.put("book.read", String.valueOf(request.getBook().getRead()));
+              return params.build();
+            }
+          });
   private static final UnaryCallable<PublishSeriesRequest, PublishSeriesResponse> directPublishSeriesCallable =
       GrpcCallableFactory.createDirectCallable(
           io.grpc.MethodDescriptor.create(
@@ -6553,12 +6572,13 @@ public class LibraryClientTest {
     mockLibraryService.addResponse(expectedResponse);
 
     BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
+    String optionalFoo = "optionalFoo1822578535";
     Book book = Book.newBuilder().build();
     FieldMask updateMask = FieldMask.newBuilder().build();
     com.google.example.library.v1.FieldMask physicalMask = com.google.example.library.v1.FieldMask.newBuilder().build();
 
     Book actualResponse =
-        client.updateBook(name, book, updateMask, physicalMask);
+        client.updateBook(name, optionalFoo, book, updateMask, physicalMask);
     Assert.assertEquals(expectedResponse, actualResponse);
 
     List<GeneratedMessageV3> actualRequests = mockLibraryService.getRequests();
@@ -6566,6 +6586,7 @@ public class LibraryClientTest {
     UpdateBookRequest actualRequest = (UpdateBookRequest)actualRequests.get(0);
 
     Assert.assertEquals(name, actualRequest.getNameAsBookName());
+    Assert.assertEquals(optionalFoo, actualRequest.getOptionalFoo());
     Assert.assertEquals(book, actualRequest.getBook());
     Assert.assertEquals(updateMask, actualRequest.getUpdateMask());
     Assert.assertEquals(physicalMask, actualRequest.getPhysicalMask());
@@ -6579,11 +6600,12 @@ public class LibraryClientTest {
 
     try {
       BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
+      String optionalFoo = "optionalFoo1822578535";
       Book book = Book.newBuilder().build();
       FieldMask updateMask = FieldMask.newBuilder().build();
       com.google.example.library.v1.FieldMask physicalMask = com.google.example.library.v1.FieldMask.newBuilder().build();
 
-      client.updateBook(name, book, updateMask, physicalMask);
+      client.updateBook(name, optionalFoo, book, updateMask, physicalMask);
       Assert.fail("No exception raised");
     } catch (InvalidArgumentException e) {
       // Expected exception
@@ -7595,6 +7617,7 @@ import com.google.example.library.v1.Book;
 import com.google.example.library.v1.Book.Rating;
 import com.google.example.library.v1.BookName;
 import com.google.example.library.v1.UpdateBookRequest;
+import com.google.protobuf.FieldMask;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
@@ -7638,12 +7661,15 @@ public class LibrarySmokeTest {
   public static void executeNoCatch(String projectId) throws Exception {
     try (LibraryClient client = LibraryClient.create()) {
       BookName name = BookName.create("testShelf-" + System.currentTimeMillis(), projectId);
+      String optionalFoo = "";
       Book.Rating rating = Book.Rating.GOOD;
       Book book = Book.newBuilder()
         .setRating(rating)
         .build();
+      FieldMask updateMask = FieldMask.newBuilder().build();
+      com.google.example.library.v1.FieldMask physicalMask = com.google.example.library.v1.FieldMask.newBuilder().build();
 
-      Book response = client.updateBook(name, book);
+      Book response = client.updateBook(name, optionalFoo, book, updateMask, physicalMask);
       System.out.println(ReflectionToStringBuilder.toString(response, ToStringStyle.MULTI_LINE_STYLE));
     }
   }

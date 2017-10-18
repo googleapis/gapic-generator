@@ -93,6 +93,11 @@ public class SchemaTypeFormatterImpl implements SchemaTypeFormatter {
     return renderPrimitiveValue(((DiscoveryField) type).getDiscoveryField(), value);
   }
 
+  @Override
+  public String renderValueAsString(String value) {
+    return typeNameConverter.renderValueAsString(value);
+  }
+
   /** Returns the nickname for the given type (without adding the full name to the import set). */
   @Override
   public String getNicknameFor(FieldModel type) {

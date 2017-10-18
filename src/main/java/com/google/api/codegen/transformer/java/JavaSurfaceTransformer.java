@@ -738,8 +738,12 @@ public class JavaSurfaceTransformer {
     typeTable.saveNicknameFor("java.io.IOException");
     typeTable.saveNicknameFor("java.util.ArrayList");
     typeTable.saveNicknameFor("java.util.List");
+    typeTable.saveNicknameFor("java.util.Map");
     typeTable.saveNicknameFor("java.util.concurrent.TimeUnit");
     typeTable.saveNicknameFor("javax.annotation.Generated");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.RequestParamsExtractor");
+    typeTable.saveNicknameFor("com.google.api.gax.rpc.EmptyRequestParamsExtractor");
+    typeTable.saveNicknameFor("com.google.common.collect.ImmutableMap");
 
     InterfaceConfig interfaceConfig = context.getInterfaceConfig();
     if (interfaceConfig.hasGrpcStreamingMethods(

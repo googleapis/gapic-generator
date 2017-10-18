@@ -14,9 +14,13 @@
  */
 package com.google.api.codegen.transformer;
 
-import static com.google.api.codegen.ResourceNameTreatment.NONE;
-
-import com.google.api.codegen.config.*;
+import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.ResourceNameConfig;
+import com.google.api.codegen.config.ResourceNameOneofConfig;
+import com.google.api.codegen.config.ResourceNameType;
+import com.google.api.codegen.config.SingleResourceNameConfig;
+import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.metacode.InitCodeLineType;
@@ -28,7 +32,6 @@ import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.TestValueGenerator;
 import com.google.api.codegen.viewmodel.FieldSettingView;
 import com.google.api.codegen.viewmodel.FormattedInitValueView;
-import com.google.api.codegen.viewmodel.ImportFileView;
 import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.InitCodeLineView;
 import com.google.api.codegen.viewmodel.InitCodeView;
@@ -51,6 +54,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * InitCodeTransformer generates initialization code for a given method and then transforms it to a
@@ -84,16 +90,18 @@ public class InitCodeTransformer {
     // TODO(andrealin): Implementation.
     return InitCodeView.newBuilder()
         .apiFileName("apiFileName")
-        .fieldSettings(new LinkedList<FieldSettingView>())
+        .fieldSettings(new LinkedList<>())
+        .optionalFieldSettings(new ArrayList<>())
+        .requiredFieldSettings(new ArrayList<>())
         .importSection(
             ImportSectionView.newBuilder()
-                .appImports(new LinkedList<ImportFileView>())
-                .externalImports(new LinkedList<ImportFileView>())
-                .serviceImports(new LinkedList<ImportFileView>())
-                .standardImports(new LinkedList<ImportFileView>())
+                .appImports(new LinkedList<>())
+                .externalImports(new LinkedList<>())
+                .serviceImports(new LinkedList<>())
+                .standardImports(new LinkedList<>())
                 .build())
-        .lines(new LinkedList<InitCodeLineView>())
-        .topLevelLines(new LinkedList<InitCodeLineView>())
+        .lines(new LinkedList<>())
+        .topLevelLines(new LinkedList<>())
         .versionIndexFileImportName("versionIndexFileImportName")
         .topLevelIndexFileImportName("topLevelIndexFileImportName")
         .build();
@@ -241,10 +249,17 @@ public class InitCodeTransformer {
     typeTable.getAndSaveNicknameFor(
         namer.getFullyQualifiedApiWrapperClassName(context.getInterfaceConfig()));
 
+    List<FieldSettingView> fieldSettings = getFieldSettings(context, argItems);
+    List<FieldSettingView> optionalFieldSettings =
+        fieldSettings.stream().filter(f -> !f.required()).collect(Collectors.toList());
+    List<FieldSettingView> requiredFieldSettings =
+        fieldSettings.stream().filter(FieldSettingView::required).collect(Collectors.toList());
     return InitCodeView.newBuilder()
         .lines(generateSurfaceInitCodeLines(context, orderedItems))
         .topLevelLines(generateSurfaceInitCodeLines(context, argItems))
-        .fieldSettings(getFieldSettings(context, argItems))
+        .fieldSettings(fieldSettings)
+        .optionalFieldSettings(optionalFieldSettings)
+        .requiredFieldSettings(requiredFieldSettings)
         .importSection(importSectionTransformer.generateImportSection(context, orderedItems))
         .versionIndexFileImportName(namer.getVersionIndexFileImportName())
         .topLevelIndexFileImportName(namer.getTopLevelIndexFileImportName())
@@ -318,7 +333,6 @@ public class InitCodeTransformer {
     surfaceLine.typeName(typeName);
     surfaceLine.fullyQualifiedTypeName(typeTable.getFullNameFor(item.getType()));
     surfaceLine.typeConstructor(namer.getTypeConstructor(typeName));
-
     surfaceLine.fieldSettings(getFieldSettings(context, item.getChildren().values()));
 
     return surfaceLine.build();
@@ -506,7 +520,9 @@ public class InitCodeTransformer {
     List<String> formatFunctionArgs = new ArrayList<>();
     for (String entityName : varList) {
       String entityValue =
-          context.getNamer().quoted("[" + Name.anyLower(entityName).toUpperUnderscore() + "]");
+          context
+              .getTypeTable()
+              .renderValueAsString("[" + Name.anyLower(entityName).toUpperUnderscore() + "]");
       if (initValueConfig.hasFormattingConfigInitialValues()
           && initValueConfig.getResourceNameBindingValues().containsKey(entityName)) {
         InitValue initValue = initValueConfig.getResourceNameBindingValues().get(entityName);
@@ -533,6 +549,10 @@ public class InitCodeTransformer {
       MethodContext context, Iterable<InitCodeNode> childItems) {
     SurfaceNamer namer = context.getNamer();
     List<FieldSettingView> allSettings = new ArrayList<>();
+    Set<String> requiredFieldSimpleNames =
+        StreamSupport.stream(context.getMethodConfig().getRequiredFields().spliterator(), false)
+            .map(FieldModel::getSimpleName)
+            .collect(Collectors.toSet());
     for (InitCodeNode item : childItems) {
       FieldSettingView.Builder fieldSetting = FieldSettingView.newBuilder();
       FieldConfig fieldConfig = item.getFieldConfig();
@@ -563,7 +583,9 @@ public class InitCodeTransformer {
                 .variantType(namer.getOneofVariantTypeName(item.getOneofConfig()))
                 .build());
       }
-
+      fieldSetting.required(
+          fieldConfig != null
+              && requiredFieldSimpleNames.contains(fieldConfig.getField().getSimpleName()));
       allSettings.add(fieldSetting.build());
     }
     return allSettings;

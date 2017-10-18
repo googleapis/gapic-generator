@@ -78,6 +78,11 @@ public class ModelTypeTable implements ImportTypeTable, ModelTypeFormatter {
     return typeFormatter.renderPrimitiveValue(type, value);
   }
 
+  @Override
+  public String renderValueAsString(String key) {
+    return typeNameConverter.renderValueAsString(key);
+  }
+
   /** Returns the enum value string */
   public String getEnumValue(TypeRef type, String value) {
     for (EnumValue enumValue : type.getEnumType().getValues()) {

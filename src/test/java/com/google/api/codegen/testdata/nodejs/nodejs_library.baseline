@@ -29,13 +29,19 @@ $ npm install --save @google-cloud/library
  });
 
  var formattedName = client.bookPath("testShelf-" + Date.now().toString(), projectId);
+ var optionalFoo = '';
  var rating = 'GOOD';
  var book = {
    rating: rating,
  };
+ var updateMask = {};
+ var physicalMask = {};
  var request = {
    name: formattedName,
+   optionalFoo: optionalFoo,
    book: book,
+   updateMask: updateMask,
+   physicalMask: physicalMask,
  };
  client.updateBook(request)
    .then(responses => {
@@ -136,13 +142,19 @@ describe('LibraryServiceSmokeTest', () => {
     });
 
     var formattedName = client.bookPath("testShelf-" + Date.now().toString(), projectId);
+    var optionalFoo = '';
     var rating = 'GOOD';
     var book = {
       rating: rating,
     };
+    var updateMask = {};
+    var physicalMask = {};
     var request = {
       name: formattedName,
+      optionalFoo: optionalFoo,
       book: book,
+      updateMask: updateMask,
+      physicalMask: physicalMask,
     };
     client.updateBook(request)
       .then(responses => {
@@ -447,7 +459,7 @@ class LibraryServiceClient {
           'shelf.name',
         ],
         'bookNames',
-        gax.createByteLengthFunction(protoFilesRoot.lookup('google.example.library.v1.Book')),
+        gax.createByteLengthFunction(protoFilesRoot.lookup('google.example.library.v1.Book'))
       ),
       addComments: new gax.BundleDescriptor(
         'comments',
@@ -455,7 +467,7 @@ class LibraryServiceClient {
           'name',
         ],
         null,
-        gax.createByteLengthFunction(protoFilesRoot.lookup('google.example.library.v1.Comment')),
+        gax.createByteLengthFunction(protoFilesRoot.lookup('google.example.library.v1.Comment'))
       ),
     };
 
@@ -706,7 +718,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.shelfPath("[SHELF_ID]");
+   * var formattedName = client.shelfPath('[SHELF_ID]');
    * var options = '';
    * var request = {
    *   name: formattedName,
@@ -887,7 +899,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.shelfPath("[SHELF_ID]");
+   * var formattedName = client.shelfPath('[SHELF_ID]');
    * client.deleteShelf({name: formattedName}).catch(err => {
    *   console.error(err);
    * });
@@ -932,8 +944,8 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.shelfPath("[SHELF_ID]");
-   * var formattedOtherShelfName = client.shelfPath("[SHELF_ID]");
+   * var formattedName = client.shelfPath('[SHELF_ID]');
+   * var formattedOtherShelfName = client.shelfPath('[SHELF_ID]');
    * var request = {
    *   name: formattedName,
    *   otherShelfName: formattedOtherShelfName,
@@ -987,7 +999,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.shelfPath("[SHELF_ID]");
+   * var formattedName = client.shelfPath('[SHELF_ID]');
    * var book = {};
    * var request = {
    *   name: formattedName,
@@ -1108,7 +1120,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    * client.getBook({name: formattedName})
    *   .then(responses => {
    *     var response = responses[0];
@@ -1175,7 +1187,7 @@ class LibraryServiceClient {
    * });
    *
    * // Iterate over all elements.
-   * var formattedName = client.shelfPath("[SHELF_ID]");
+   * var formattedName = client.shelfPath('[SHELF_ID]');
    *
    * client.listBooks({name: formattedName})
    *   .then(responses => {
@@ -1189,7 +1201,7 @@ class LibraryServiceClient {
    *   });
    *
    * // Or obtain the paged response.
-   * var formattedName = client.shelfPath("[SHELF_ID]");
+   * var formattedName = client.shelfPath('[SHELF_ID]');
    *
    *
    * var options = {autoPaginate: false};
@@ -1263,7 +1275,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.shelfPath("[SHELF_ID]");
+   * var formattedName = client.shelfPath('[SHELF_ID]');
    * client.listBooksStream({name: formattedName})
    *   .on('data', element => {
    *     // doThingsWith(element)
@@ -1304,7 +1316,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    * client.deleteBook({name: formattedName}).catch(err => {
    *   console.error(err);
    * });
@@ -1330,6 +1342,8 @@ class LibraryServiceClient {
    *   The book to update with.
    *
    *   This object should have the same structure as [Book]{@link google.example.library.v1.Book}
+   * @param {string=} request.optionalFoo
+   *   An optional foo.
    * @param {Object=} request.updateMask
    *   A field mask to apply, rendered as an HTTP parameter.
    *
@@ -1357,7 +1371,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    * var book = {};
    * var request = {
    *   name: formattedName,
@@ -1410,8 +1424,8 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
-   * var formattedOtherShelfName = client.shelfPath("[SHELF_ID]");
+   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * var formattedOtherShelfName = client.shelfPath('[SHELF_ID]');
    * var request = {
    *   name: formattedName,
    *   otherShelfName: formattedOtherShelfName,
@@ -1602,7 +1616,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    * var comment = '';
    * var stage = 'UNSET';
    * var alignment = 'CHAR';
@@ -1656,7 +1670,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.archivedBookPath("[ARCHIVE_PATH]", "[BOOK_ID]");
+   * var formattedName = client.archivedBookPath('[ARCHIVE_PATH]', '[BOOK_ID]');
    * client.getBookFromArchive({name: formattedName})
    *   .then(responses => {
    *     var response = responses[0];
@@ -1705,8 +1719,8 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
-   * var formattedAltBookName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+   * var formattedAltBookName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    * var request = {
    *   name: formattedName,
    *   altBookName: formattedAltBookName,
@@ -1756,7 +1770,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    * client.getBookFromAbsolutelyAnywhere({name: formattedName})
    *   .then(responses => {
    *     var response = responses[0];
@@ -1803,7 +1817,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    * var indexName = 'default index';
    * var indexMapItem = '';
    * var indexMap = {'default_key' : indexMapItem,};
@@ -2169,7 +2183,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedResource = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+   * var formattedResource = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    * var tag = '';
    * var request = {
    *   resource: formattedResource,
@@ -2224,7 +2238,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedResource = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+   * var formattedResource = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    * var label = '';
    * var request = {
    *   resource: formattedResource,
@@ -2275,7 +2289,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    *
    * // Handle the operation using the promise pattern.
    * client.getBigBook({name: formattedName})
@@ -2300,7 +2314,7 @@ class LibraryServiceClient {
    *     console.error(err);
    *   });
    *
-   * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    *
    * // Handle the operation using the event emitter pattern.
    * client.getBigBook({name: formattedName})
@@ -2365,7 +2379,7 @@ class LibraryServiceClient {
    *   // optional auth parameters.
    * });
    *
-   * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    *
    * // Handle the operation using the promise pattern.
    * client.getBigNothing({name: formattedName})
@@ -2390,7 +2404,7 @@ class LibraryServiceClient {
    *     console.error(err);
    *   });
    *
-   * var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+   * var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
    *
    * // Handle the operation using the event emitter pattern.
    * client.getBigNothing({name: formattedName})
@@ -2915,7 +2929,10 @@ error.code = FAKE_STATUS_CODE;
 describe('LibraryServiceClient', () => {
   describe('createShelf', () => {
     it('invokes createShelf without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var shelf = {};
@@ -2947,7 +2964,10 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes createShelf with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var shelf = {};
@@ -2973,10 +2993,13 @@ describe('LibraryServiceClient', () => {
 
   describe('getShelf', () => {
     it('invokes getShelf without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.shelfPath("[SHELF_ID]");
+      var formattedName = client.shelfPath('[SHELF_ID]');
       var options = 'options-1249474914';
       var request = {
         name: formattedName,
@@ -3007,10 +3030,13 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes getShelf with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.shelfPath("[SHELF_ID]");
+      var formattedName = client.shelfPath('[SHELF_ID]');
       var options = 'options-1249474914';
       var request = {
         name: formattedName,
@@ -3035,7 +3061,10 @@ describe('LibraryServiceClient', () => {
 
   describe('listShelves', () => {
     it('invokes listShelves without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var request = {};
@@ -3063,7 +3092,10 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes listShelves with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var request = {};
@@ -3086,10 +3118,13 @@ describe('LibraryServiceClient', () => {
 
   describe('deleteShelf', () => {
     it('invokes deleteShelf without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.shelfPath("[SHELF_ID]");
+      var formattedName = client.shelfPath('[SHELF_ID]');
       var request = {
         name: formattedName,
       };
@@ -3104,10 +3139,13 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes deleteShelf with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.shelfPath("[SHELF_ID]");
+      var formattedName = client.shelfPath('[SHELF_ID]');
       var request = {
         name: formattedName,
       };
@@ -3129,11 +3167,14 @@ describe('LibraryServiceClient', () => {
 
   describe('mergeShelves', () => {
     it('invokes mergeShelves without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.shelfPath("[SHELF_ID]");
-      var formattedOtherShelfName = client.shelfPath("[SHELF_ID]");
+      var formattedName = client.shelfPath('[SHELF_ID]');
+      var formattedOtherShelfName = client.shelfPath('[SHELF_ID]');
       var request = {
         name: formattedName,
         otherShelfName: formattedOtherShelfName,
@@ -3163,11 +3204,14 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes mergeShelves with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.shelfPath("[SHELF_ID]");
-      var formattedOtherShelfName = client.shelfPath("[SHELF_ID]");
+      var formattedName = client.shelfPath('[SHELF_ID]');
+      var formattedOtherShelfName = client.shelfPath('[SHELF_ID]');
       var request = {
         name: formattedName,
         otherShelfName: formattedOtherShelfName,
@@ -3191,10 +3235,13 @@ describe('LibraryServiceClient', () => {
 
   describe('createBook', () => {
     it('invokes createBook without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.shelfPath("[SHELF_ID]");
+      var formattedName = client.shelfPath('[SHELF_ID]');
       var book = {};
       var request = {
         name: formattedName,
@@ -3227,10 +3274,13 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes createBook with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.shelfPath("[SHELF_ID]");
+      var formattedName = client.shelfPath('[SHELF_ID]');
       var book = {};
       var request = {
         name: formattedName,
@@ -3255,7 +3305,10 @@ describe('LibraryServiceClient', () => {
 
   describe('publishSeries', () => {
     it('invokes publishSeries without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var shelf = {};
@@ -3291,7 +3344,10 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes publishSeries with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var shelf = {};
@@ -3324,10 +3380,13 @@ describe('LibraryServiceClient', () => {
 
   describe('getBook', () => {
     it('invokes getBook without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var request = {
         name: formattedName,
       };
@@ -3358,10 +3417,13 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes getBook with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var request = {
         name: formattedName,
       };
@@ -3384,10 +3446,13 @@ describe('LibraryServiceClient', () => {
 
   describe('listBooks', () => {
     it('invokes listBooks without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.shelfPath("[SHELF_ID]");
+      var formattedName = client.shelfPath('[SHELF_ID]');
       var request = {
         name: formattedName,
       };
@@ -3415,10 +3480,13 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes listBooks with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.shelfPath("[SHELF_ID]");
+      var formattedName = client.shelfPath('[SHELF_ID]');
       var request = {
         name: formattedName,
       };
@@ -3441,10 +3509,13 @@ describe('LibraryServiceClient', () => {
 
   describe('deleteBook', () => {
     it('invokes deleteBook without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var request = {
         name: formattedName,
       };
@@ -3459,10 +3530,13 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes deleteBook with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var request = {
         name: formattedName,
       };
@@ -3484,10 +3558,13 @@ describe('LibraryServiceClient', () => {
 
   describe('updateBook', () => {
     it('invokes updateBook without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var book = {};
       var request = {
         name: formattedName,
@@ -3520,10 +3597,13 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes updateBook with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var book = {};
       var request = {
         name: formattedName,
@@ -3548,11 +3628,14 @@ describe('LibraryServiceClient', () => {
 
   describe('moveBook', () => {
     it('invokes moveBook without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
-      var formattedOtherShelfName = client.shelfPath("[SHELF_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      var formattedOtherShelfName = client.shelfPath('[SHELF_ID]');
       var request = {
         name: formattedName,
         otherShelfName: formattedOtherShelfName,
@@ -3584,11 +3667,14 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes moveBook with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
-      var formattedOtherShelfName = client.shelfPath("[SHELF_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      var formattedOtherShelfName = client.shelfPath('[SHELF_ID]');
       var request = {
         name: formattedName,
         otherShelfName: formattedOtherShelfName,
@@ -3612,7 +3698,10 @@ describe('LibraryServiceClient', () => {
 
   describe('listStrings', () => {
     it('invokes listStrings without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var request = {};
@@ -3640,7 +3729,10 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes listStrings with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var request = {};
@@ -3663,10 +3755,13 @@ describe('LibraryServiceClient', () => {
 
   describe('addComments', () => {
     it('invokes addComments without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var comment = '95';
       var stage = 'UNSET';
       var alignment = 'CHAR';
@@ -3691,10 +3786,13 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes addComments with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var comment = '95';
       var stage = 'UNSET';
       var alignment = 'CHAR';
@@ -3726,10 +3824,13 @@ describe('LibraryServiceClient', () => {
 
   describe('getBookFromArchive', () => {
     it('invokes getBookFromArchive without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.archivedBookPath("[ARCHIVE_PATH]", "[BOOK_ID]");
+      var formattedName = client.archivedBookPath('[ARCHIVE_PATH]', '[BOOK_ID]');
       var request = {
         name: formattedName,
       };
@@ -3760,10 +3861,13 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes getBookFromArchive with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.archivedBookPath("[ARCHIVE_PATH]", "[BOOK_ID]");
+      var formattedName = client.archivedBookPath('[ARCHIVE_PATH]', '[BOOK_ID]');
       var request = {
         name: formattedName,
       };
@@ -3786,11 +3890,14 @@ describe('LibraryServiceClient', () => {
 
   describe('getBookFromAnywhere', () => {
     it('invokes getBookFromAnywhere without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
-      var formattedAltBookName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      var formattedAltBookName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var request = {
         name: formattedName,
         altBookName: formattedAltBookName,
@@ -3822,11 +3929,14 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes getBookFromAnywhere with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
-      var formattedAltBookName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
+      var formattedAltBookName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var request = {
         name: formattedName,
         altBookName: formattedAltBookName,
@@ -3850,10 +3960,13 @@ describe('LibraryServiceClient', () => {
 
   describe('getBookFromAbsolutelyAnywhere', () => {
     it('invokes getBookFromAbsolutelyAnywhere without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var request = {
         name: formattedName,
       };
@@ -3884,10 +3997,13 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes getBookFromAbsolutelyAnywhere with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var request = {
         name: formattedName,
       };
@@ -3910,10 +4026,13 @@ describe('LibraryServiceClient', () => {
 
   describe('updateBookIndex', () => {
     it('invokes updateBookIndex without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var indexName = 'default index';
       var indexMapItem = 'indexMapItem1918721251';
       var indexMap = {'default_key' : indexMapItem,};
@@ -3933,10 +4052,13 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes updateBookIndex with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var indexName = 'default index';
       var indexMapItem = 'indexMapItem1918721251';
       var indexMap = {'default_key' : indexMapItem,};
@@ -3963,7 +4085,10 @@ describe('LibraryServiceClient', () => {
 
   describe('streamShelves', () => {
     it('invokes streamShelves without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var request = {};
@@ -3991,7 +4116,10 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes streamShelves with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var request = {};
@@ -4015,7 +4143,10 @@ describe('LibraryServiceClient', () => {
 
   describe('streamBooks', () => {
     it('invokes streamBooks without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var name = 'name3373707';
@@ -4051,7 +4182,10 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes streamBooks with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var name = 'name3373707';
@@ -4078,7 +4212,10 @@ describe('LibraryServiceClient', () => {
 
   describe('discussBook', () => {
     it('invokes discussBook without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var name = 'name3373707';
@@ -4108,7 +4245,10 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes discussBook with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var name = 'name3373707';
@@ -4133,7 +4273,10 @@ describe('LibraryServiceClient', () => {
 
   describe('findRelatedBooks', () => {
     it('invokes findRelatedBooks without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var namesElement = 'namesElement-249113339';
@@ -4167,7 +4310,10 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes findRelatedBooks with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var namesElement = 'namesElement-249113339';
@@ -4196,10 +4342,13 @@ describe('LibraryServiceClient', () => {
 
   describe('addTag', () => {
     it('invokes addTag without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedResource = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedResource = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var tag = 'tag114586';
       var request = {
         resource: formattedResource,
@@ -4223,10 +4372,13 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes addTag with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedResource = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedResource = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var tag = 'tag114586';
       var request = {
         resource: formattedResource,
@@ -4251,10 +4403,13 @@ describe('LibraryServiceClient', () => {
 
   describe('addLabel', () => {
     it('invokes addLabel without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedResource = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedResource = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var label = 'label102727412';
       var request = {
         resource: formattedResource,
@@ -4278,10 +4433,13 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes addLabel with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedResource = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedResource = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var label = 'label102727412';
       var request = {
         resource: formattedResource,
@@ -4306,10 +4464,13 @@ describe('LibraryServiceClient', () => {
 
   describe('getBigBook', function() {
     it('invokes getBigBook without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var request = {
         name: formattedName,
       };
@@ -4341,10 +4502,13 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes getBigBook with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var request = {
         name: formattedName,
       };
@@ -4365,7 +4529,10 @@ describe('LibraryServiceClient', () => {
     });
 
     it('has longrunning decoder functions', () => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
       assert(client._descriptors.longrunning.getBigBook.responseDecoder instanceof Function);
       assert(client._descriptors.longrunning.getBigBook.metadataDecoder instanceof Function);
     });
@@ -4373,10 +4540,13 @@ describe('LibraryServiceClient', () => {
 
   describe('getBigNothing', function() {
     it('invokes getBigNothing without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var request = {
         name: formattedName,
       };
@@ -4399,10 +4569,13 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes getBigNothing with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
-      var formattedName = client.bookPath("[SHELF_ID]", "[BOOK_ID]");
+      var formattedName = client.bookPath('[SHELF_ID]', '[BOOK_ID]');
       var request = {
         name: formattedName,
       };
@@ -4423,7 +4596,10 @@ describe('LibraryServiceClient', () => {
     });
 
     it('has longrunning decoder functions', () => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
       assert(client._descriptors.longrunning.getBigNothing.responseDecoder instanceof Function);
       assert(client._descriptors.longrunning.getBigNothing.metadataDecoder instanceof Function);
     });
@@ -4431,7 +4607,10 @@ describe('LibraryServiceClient', () => {
 
   describe('testOptionalRequiredFlatteningParams', () => {
     it('invokes testOptionalRequiredFlatteningParams without error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var requiredSingularInt32 = -72313594;
@@ -4508,7 +4687,10 @@ describe('LibraryServiceClient', () => {
     });
 
     it('invokes testOptionalRequiredFlatteningParams with error', done => {
-      var client = new libraryModule.v1.LibraryServiceClient();
+      var client = new libraryModule.v1.LibraryServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
 
       // Mock request
       var requiredSingularInt32 = -72313594;

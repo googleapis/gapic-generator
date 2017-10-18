@@ -178,8 +178,4 @@ public class Synchronizer extends SimpleFileVisitor<Path> {
     Files.copy(generatedPath, baselinePath, StandardCopyOption.REPLACE_EXISTING);
     return FileVisitResult.CONTINUE;
   }
-
-  private static String quote(String s) {
-    return "\"" + s + "\"";
-  }
 }

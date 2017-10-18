@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.transformer;
 
+import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_STRING;
+
 import com.google.api.codegen.config.*;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypedValue;
@@ -78,6 +80,11 @@ public abstract class ModelTypeNameConverter implements TypeNameConverter {
 
   /** Renders the given value if it is a primitive type. */
   public abstract String renderPrimitiveValue(TypeRef type, String value);
+
+  /** Renders the given value if it is a primitive type. */
+  public String renderValueAsString(String value) {
+    return renderPrimitiveValue(TypeRef.of(TYPE_STRING), value);
+  }
 
   // Overriden interface methods call the overloaded method on the underlying Field object.
 
