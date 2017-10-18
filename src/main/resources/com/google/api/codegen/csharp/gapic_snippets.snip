@@ -1,5 +1,6 @@
 @extends "csharp/common.snip"
 
+# snippets: SnippetsFileView
 @snippet generate(snippets)
     {@renderFileHeader(snippets.fileHeader)}
 
@@ -11,6 +12,7 @@
 @end
 
 @private renderSnippets(snippets)
+    /// <summary>Generated snippets</summary>
     public class {@snippets.name}
     {
         @join snippetMethod : snippets.snippetMethods
@@ -21,6 +23,7 @@
 @end
 
 @private method(snippetMethod)
+    /// <summary>Snippet for {@snippetMethod.method.name}</summary>
     @switch snippetMethod.method.type.toString
     @case "FlattenedMethod"
         {@flattenedMethodSync(snippetMethod)}
