@@ -627,8 +627,7 @@ public class StaticLangApiMethodTransformer {
                 namer.getReturnDocLines(context.getSurfaceInterfaceContext(), context, sync))
             .build());
     // TODO(andrealin): refactor InitCodeView/Transformer to be API source agsnostic.
-    InitCodeView initCode = null;
-    initCode =
+    InitCodeView initCode =
         initCodeTransformer.generateInitCode(
             context.cloneWithEmptyTypeTable(),
             createInitCodeContext(
