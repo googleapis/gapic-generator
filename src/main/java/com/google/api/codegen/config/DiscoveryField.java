@@ -214,18 +214,6 @@ public class DiscoveryField implements FieldModel, TypeModel {
   }
 
   @Override
-  public String toString() {
-    return String.format("Discovery FieldModel (%s): {%s}", getApiSource(), schema.toString());
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    return o != null
-        && o instanceof DiscoveryField
-        && ((DiscoveryField) o).schema.equals(this.schema);
-  }
-
-  @Override
   /* @Get the description of the element scoped to the visibility as currently set in the model. */
   public String getScopedDocumentation() {
     return schema.description();
@@ -423,12 +411,28 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public boolean isEmptyType() {
-    // TODO(andrealin): ???
     return false;
   }
 
   @Override
   public OneofConfig getOneOfConfig(String fieldName) {
     return null;
+  }
+
+  @Override
+  public int hashCode() {
+    return 5 + 31 * schema.hashCode();
+  }
+
+  @Override
+  public String toString() {
+    return String.format("Discovery FieldModel (%s): {%s}", getApiSource(), schema.toString());
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    return o != null
+        && o instanceof DiscoveryField
+        && ((DiscoveryField) o).schema.equals(this.schema);
   }
 }

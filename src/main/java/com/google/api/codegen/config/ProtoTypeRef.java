@@ -27,6 +27,7 @@ import java.util.regex.Pattern;
 /** A type declaration wrapper around TypeRef. */
 public class ProtoTypeRef implements TypeModel {
   private final TypeRef typeRef;
+  private List<ProtoField> fields;
 
   /* Create a MethodModel object from a non-null Method object. */
   public ProtoTypeRef(TypeRef typeRef) {
@@ -134,13 +135,17 @@ public class ProtoTypeRef implements TypeModel {
   }
 
   @Override
-  public List<FieldModel> getFields() {
-    ImmutableList.Builder<FieldModel> fields = ImmutableList.builder();
-    // TODO(andrealin): memoize this.
+  public List<? extends FieldModel> getFields() {
+    if (this.fields != null) {
+      return this.fields;
+    }
+    ImmutableList.Builder<ProtoField> fields = ImmutableList.builder();
     for (Field field : typeRef.getMessageType().getFields()) {
       fields.add(new ProtoField(field));
     }
-    return fields.build();
+
+    this.fields = fields.build();
+    return this.fields;
   }
 
   @Override
@@ -198,5 +203,20 @@ public class ProtoTypeRef implements TypeModel {
       }
     }
     return null;
+  }
+
+  @Override
+  public int hashCode() {
+    return 5 + 31 * typeRef.hashCode();
+  }
+
+  @Override
+  public String toString() {
+    return String.format("Protobuf FieldModel (%s): {%s}", typeRef.toString());
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    return o != null && o instanceof ProtoField && ((ProtoTypeRef) o).typeRef.equals(this.typeRef);
   }
 }

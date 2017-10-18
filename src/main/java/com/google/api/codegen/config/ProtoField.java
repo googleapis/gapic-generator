@@ -149,18 +149,6 @@ public class ProtoField implements FieldModel {
   }
 
   @Override
-  public String toString() {
-    return String.format("Protobuf FieldModel (%s): {%s}", getApiSource(), protoField.toString());
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    return o != null
-        && o instanceof ProtoField
-        && ((ProtoField) o).protoField.equals(this.protoField);
-  }
-
-  @Override
   public String getScopedDocumentation() {
     return DocumentationUtil.getScopedDescription(protoField);
   }
@@ -226,5 +214,22 @@ public class ProtoField implements FieldModel {
   @Override
   public ProtoTypeRef getType() {
     return protoTypeRef;
+  }
+
+  @Override
+  public int hashCode() {
+    return 5 + 31 * protoField.hashCode();
+  }
+
+  @Override
+  public String toString() {
+    return String.format("Protobuf FieldModel (%s): {%s}", getApiSource(), protoField.toString());
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    return o != null
+        && o instanceof ProtoField
+        && ((ProtoField) o).protoField.equals(this.protoField);
   }
 }
