@@ -319,9 +319,12 @@ require "library"
 
 library_service_client = Library.new
 formatted_name = Library::V1::LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)
+optional_foo = ''
 rating = :GOOD
 book = { rating: rating }
-response = library_service_client.update_book(formatted_name, book)
+update_mask = {}
+physical_mask = {}
+response = library_service_client.update_book(formatted_name, book, optional_foo: optional_foo, update_mask: update_mask, physical_mask: physical_mask)
 ```
 
 ### Next Steps
@@ -559,9 +562,12 @@ require "pathname"
 #
 # library_service_client = Library.new
 # formatted_name = Library::V1::LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)
+# optional_foo = ''
 # rating = :GOOD
 # book = { rating: rating }
-# response = library_service_client.update_book(formatted_name, book)
+# update_mask = {}
+# physical_mask = {}
+# response = library_service_client.update_book(formatted_name, book, optional_foo: optional_foo, update_mask: update_mask, physical_mask: physical_mask)
 # ```
 #
 # ### Next Steps
@@ -712,9 +718,12 @@ require "library/v1/library_service_client"
 #
 # library_service_client = Library::V1.new
 # formatted_name = Library::V1::LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)
+# optional_foo = ''
 # rating = :GOOD
 # book = { rating: rating }
-# response = library_service_client.update_book(formatted_name, book)
+# update_mask = {}
+# physical_mask = {}
+# response = library_service_client.update_book(formatted_name, book, optional_foo: optional_foo, update_mask: update_mask, physical_mask: physical_mask)
 # ```
 #
 # ### Next Steps
@@ -1981,6 +1990,9 @@ module Google
         # @!attribute [rw] name
         #   @return [String]
         #     The name of the book to update.
+        # @!attribute [rw] optional_foo
+        #   @return [String]
+        #     An optional foo.
         # @!attribute [rw] book
         #   @return [Google::Example::Library::V1::Book]
         #     The book to update with.
@@ -2288,9 +2300,12 @@ end
 #
 # library_service_client = Library.new
 # formatted_name = Library::V1::LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)
+# optional_foo = ''
 # rating = :GOOD
 # book = { rating: rating }
-# response = library_service_client.update_book(formatted_name, book)
+# update_mask = {}
+# physical_mask = {}
+# response = library_service_client.update_book(formatted_name, book, optional_foo: optional_foo, update_mask: update_mask, physical_mask: physical_mask)
 # ```
 #
 # ### Next Steps
@@ -3106,6 +3121,8 @@ module Library
       #   The book to update with.
       #   A hash of the same form as `Google::Example::Library::V1::Book`
       #   can also be provided.
+      # @param optional_foo [String]
+      #   An optional foo.
       # @param update_mask [Google::Protobuf::FieldMask | Hash]
       #   A field mask to apply, rendered as an HTTP parameter.
       #   A hash of the same form as `Google::Protobuf::FieldMask`
@@ -3130,12 +3147,14 @@ module Library
       def update_book \
           name,
           book,
+          optional_foo: nil,
           update_mask: nil,
           physical_mask: nil,
           options: nil
         req = {
           name: name,
           book: book,
+          optional_foo: optional_foo,
           update_mask: update_mask,
           physical_mask: physical_mask
         }.delete_if { |_, v| v.nil? }
@@ -6590,8 +6609,11 @@ describe "LibraryServiceSmokeTest" do
 
     library_service_client = Library.new
     formatted_name = Library::V1::LibraryServiceClient.book_path("testShelf-" + Time.new.to_i.to_s, project_id)
+    optional_foo = ''
     rating = :GOOD
     book = { rating: rating }
-    response = library_service_client.update_book(formatted_name, book)
+    update_mask = {}
+    physical_mask = {}
+    response = library_service_client.update_book(formatted_name, book, optional_foo: optional_foo, update_mask: update_mask, physical_mask: physical_mask)
   end
 end

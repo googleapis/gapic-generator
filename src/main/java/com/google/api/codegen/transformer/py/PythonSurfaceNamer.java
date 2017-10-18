@@ -33,6 +33,7 @@ import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.Synchronicity;
 import com.google.api.codegen.transformer.TransformationContext;
+import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.TypeName;
@@ -382,6 +383,8 @@ public class PythonSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String injectRandomStringGeneratorCode(String randomString) {
+    // "randomString" -> 'randomString'.
+    randomString = '\'' + CommonRenderingUtil.stripQuotes(randomString) + '\'';
     Matcher m = InitFieldConfig.RANDOM_TOKEN_PATTERN.matcher(randomString);
     StringBuffer sb = new StringBuffer();
     List<String> stringParts = new ArrayList<>();

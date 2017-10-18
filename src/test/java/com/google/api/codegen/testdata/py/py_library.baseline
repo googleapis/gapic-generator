@@ -1746,6 +1746,7 @@ class LibraryServiceClient(object):
             self,
             name,
             book,
+            optional_foo=None,
             update_mask=None,
             physical_mask=None,
             options=None):
@@ -1767,6 +1768,7 @@ class LibraryServiceClient(object):
             book (Union[dict, ~google.cloud.example.library_v1.types.Book]): The book to update with.
                 If a dict is provided, it must be of the same form as the protobuf
                 message :class:`~google.cloud.example.library_v1.types.Book`
+            optional_foo (str): An optional foo.
             update_mask (Union[dict, ~google.cloud.example.library_v1.types.FieldMask]): A field mask to apply, rendered as an HTTP parameter.
                 If a dict is provided, it must be of the same form as the protobuf
                 message :class:`~google.cloud.example.library_v1.types.FieldMask`
@@ -1786,6 +1788,7 @@ class LibraryServiceClient(object):
         request = library_pb2.UpdateBookRequest(
             name=name,
             book=book,
+            optional_foo=optional_foo,
             update_mask=update_mask,
             physical_mask=physical_mask)
         return self._update_book(request, options)
@@ -3039,10 +3042,13 @@ class TestSystemLibraryService(unittest.TestCase):
         project_id = os.environ['PROJECT_ID']
 
         client = library_v1.LibraryServiceClient()
-        name = client.book_path("testShelf-{0}".format(time.time()), project_id)
+        name = client.book_path('testShelf-{0}'.format(time.time()), project_id)
+        optional_foo = ''
         rating = enums.Book.Rating.GOOD
         book = {'rating': rating}
-        response = client.update_book(name, book)
+        update_mask = {}
+        physical_mask = {}
+        response = client.update_book(name, book, optional_foo=optional_foo, update_mask=update_mask, physical_mask=physical_mask)
 ============== file: tests/unit/gapic/v1/test_library_service_client_v1.py ==============
 # Copyright 2017, Google Inc. All rights reserved.
 #
