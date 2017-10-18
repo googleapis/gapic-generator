@@ -34,7 +34,7 @@ import com.google.common.collect.ImmutableSet;
 import java.util.List;
 import javax.annotation.Nullable;
 
-/** Created by andrealin on 7/31/17. */
+/** A field declaration wrapper around a proto Field. */
 public class ProtoField implements FieldModel {
   private final Field protoField;
   private final ProtoTypeRef protoTypeRef;

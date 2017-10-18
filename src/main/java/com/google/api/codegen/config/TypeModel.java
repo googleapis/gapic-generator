@@ -16,7 +16,12 @@ package com.google.api.codegen.config;
 
 import java.util.List;
 
-/** Created by andrealin on 10/10/17. */
+/**
+ * Wrapper class around the protobuf TypeRef class and the Discovery-doc Schema class.
+ *
+ * <p>This class abstracts the format (protobuf, discovery, etc) of the source from a type
+ * definition.
+ */
 public interface TypeModel {
   /* @return if the underlying resource is a map type. */
   boolean isMap();

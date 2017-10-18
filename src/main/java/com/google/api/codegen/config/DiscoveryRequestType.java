@@ -17,12 +17,11 @@ package com.google.api.codegen.config;
 import com.google.auto.value.AutoValue;
 import java.util.List;
 
-/** Created by andrealin on 10/11/17. */
+/** A type declaration wrapper around a Discovery request message type. */
 @AutoValue
 public abstract class DiscoveryRequestType implements TypeModel {
 
   public static DiscoveryRequestType create(DiscoveryMethodModel method) {
-    //    String requestTypeName
     return newBuilder().typeName("message").parentMethod(method).build();
   }
 
@@ -76,10 +75,7 @@ public abstract class DiscoveryRequestType implements TypeModel {
   public abstract boolean isEmptyType();
 
   @Override
-  public void validateValue(String value) {
-    // TODO(andrealin): Does anything need to be done here?
-    return;
-  }
+  public void validateValue(String value) {}
 
   @Override
   public List<? extends FieldModel> getFields() {

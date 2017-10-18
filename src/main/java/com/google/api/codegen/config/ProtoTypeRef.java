@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/** Created by andrealin on 10/10/17. */
+/** A type declaration wrapper around TypeRef. */
 public class ProtoTypeRef implements TypeModel {
   private final TypeRef typeRef;
 
