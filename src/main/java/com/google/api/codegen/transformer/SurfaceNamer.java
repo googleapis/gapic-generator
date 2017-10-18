@@ -266,7 +266,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
-  // TODO(andrealin): Remove this method.
   /** The function name to set a field having the given type and name. */
   public String getFieldSetFunctionName(TypeModel type, Name identifier) {
     if (type.isMap()) {

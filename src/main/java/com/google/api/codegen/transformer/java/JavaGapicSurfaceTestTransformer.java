@@ -122,7 +122,6 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
   SmokeTestClassView.Builder createSmokeTestClassViewBuilder(InterfaceContext context) {
     addSmokeTestImports(context);
 
-    // TODO(andrealin): The SmokeTestConfig should return a MethodModel, instead of creating one here.
     MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
     SurfaceNamer namer = context.getNamer();
 
