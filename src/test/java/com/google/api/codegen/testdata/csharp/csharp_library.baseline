@@ -2420,6 +2420,9 @@ namespace Google.Example.Library.V1
         /// <param name="name">
         /// The name of the book to update.
         /// </param>
+        /// <param name="optionalFoo">
+        /// An optional foo.
+        /// </param>
         /// <param name="book">
         /// The book to update with.
         /// </param>
@@ -2437,6 +2440,7 @@ namespace Google.Example.Library.V1
         /// </returns>
         public virtual Task<Book> UpdateBookAsync(
             BookName name,
+            string optionalFoo,
             Book book,
             FieldMask updateMask,
             FieldMask physicalMask,
@@ -2444,6 +2448,7 @@ namespace Google.Example.Library.V1
                 new UpdateBookRequest
                 {
                     BookName = GaxPreconditions.CheckNotNull(name, nameof(name)),
+                    OptionalFoo = optionalFoo ?? "", // Optional
                     Book = GaxPreconditions.CheckNotNull(book, nameof(book)),
                     UpdateMask = updateMask, // Optional
                     PhysicalMask = physicalMask, // Optional
@@ -2455,6 +2460,9 @@ namespace Google.Example.Library.V1
         /// </summary>
         /// <param name="name">
         /// The name of the book to update.
+        /// </param>
+        /// <param name="optionalFoo">
+        /// An optional foo.
         /// </param>
         /// <param name="book">
         /// The book to update with.
@@ -2473,11 +2481,13 @@ namespace Google.Example.Library.V1
         /// </returns>
         public virtual Task<Book> UpdateBookAsync(
             BookName name,
+            string optionalFoo,
             Book book,
             FieldMask updateMask,
             FieldMask physicalMask,
             CancellationToken cancellationToken) => UpdateBookAsync(
                 name,
+                optionalFoo,
                 book,
                 updateMask,
                 physicalMask,
@@ -2488,6 +2498,9 @@ namespace Google.Example.Library.V1
         /// </summary>
         /// <param name="name">
         /// The name of the book to update.
+        /// </param>
+        /// <param name="optionalFoo">
+        /// An optional foo.
         /// </param>
         /// <param name="book">
         /// The book to update with.
@@ -2506,6 +2519,7 @@ namespace Google.Example.Library.V1
         /// </returns>
         public virtual Book UpdateBook(
             BookName name,
+            string optionalFoo,
             Book book,
             FieldMask updateMask,
             FieldMask physicalMask,
@@ -2513,6 +2527,7 @@ namespace Google.Example.Library.V1
                 new UpdateBookRequest
                 {
                     BookName = GaxPreconditions.CheckNotNull(name, nameof(name)),
+                    OptionalFoo = optionalFoo ?? "", // Optional
                     Book = GaxPreconditions.CheckNotNull(book, nameof(book)),
                     UpdateMask = updateMask, // Optional
                     PhysicalMask = physicalMask, // Optional
@@ -7377,33 +7392,35 @@ namespace Google.Example.Library.V1.Snippets
         /// <summary>Snippet for UpdateBookAsync</summary>
         public async Task UpdateBookAsync2()
         {
-            // Snippet: UpdateBookAsync(BookName,Book,FieldMask,FieldMask,CallSettings)
-            // Additional: UpdateBookAsync(BookName,Book,FieldMask,FieldMask,CancellationToken)
+            // Snippet: UpdateBookAsync(BookName,string,Book,FieldMask,FieldMask,CallSettings)
+            // Additional: UpdateBookAsync(BookName,string,Book,FieldMask,FieldMask,CancellationToken)
             // Create client
             LibraryServiceClient libraryServiceClient = await LibraryServiceClient.CreateAsync();
             // Initialize request argument(s)
             BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
+            string optionalFoo = "";
             Book book = new Book();
             FieldMask updateMask = new FieldMask();
             FieldMask physicalMask = new FieldMask();
             // Make the request
-            Book response = await libraryServiceClient.UpdateBookAsync(name, book, updateMask, physicalMask);
+            Book response = await libraryServiceClient.UpdateBookAsync(name, optionalFoo, book, updateMask, physicalMask);
             // End snippet
         }
 
         /// <summary>Snippet for UpdateBook</summary>
         public void UpdateBook2()
         {
-            // Snippet: UpdateBook(BookName,Book,FieldMask,FieldMask,CallSettings)
+            // Snippet: UpdateBook(BookName,string,Book,FieldMask,FieldMask,CallSettings)
             // Create client
             LibraryServiceClient libraryServiceClient = LibraryServiceClient.Create();
             // Initialize request argument(s)
             BookName name = new BookName("[SHELF_ID]", "[BOOK_ID]");
+            string optionalFoo = "";
             Book book = new Book();
             FieldMask updateMask = new FieldMask();
             FieldMask physicalMask = new FieldMask();
             // Make the request
-            Book response = libraryServiceClient.UpdateBook(name, book, updateMask, physicalMask);
+            Book response = libraryServiceClient.UpdateBook(name, optionalFoo, book, updateMask, physicalMask);
             // End snippet
         }
 

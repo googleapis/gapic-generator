@@ -70,8 +70,8 @@
         // doSomethingWith($element);
     }
 
-    // OR iterate over pages of elements, with the maximum page size set to 5
-    $pagedResponse = {@pageSizeMethodCallSampleCode(apiMethod)};
+    // OR iterate over pages of elements
+    $pagedResponse = {@methodCallSampleCode(apiMethod)};
     foreach ($pagedResponse->iteratePages() as $page) {
         foreach ($page as $element) {
             // doSomethingWith($element);
@@ -173,24 +173,31 @@
 @snippet methodCallSampleCode(apiMethod)
     @if apiMethod.isSingularRequestMethod
         ${@apiMethod.apiVariableName}->{@apiMethod.name}(\
-            {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)})
+            {@sampleMethodCallArgList(apiMethod.initCode)})
     @else
         ${@apiMethod.apiVariableName}->{@apiMethod.name}()
     @end
 @end
 
-@private pageSizeMethodCallSampleCode(apiMethod)
-    @if apiMethod.hasRequiredParameters
-        ${@apiMethod.apiVariableName}->{@apiMethod.name}(\
-            {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)}, ['pageSize' => 5])
-    @else
-        ${@apiMethod.apiVariableName}->{@apiMethod.name}(['pageSize' => 5])
+@snippet sampleMethodCallArgList(initCode)
+    @join fieldSetting : initCode.requiredFieldSettings on ", "
+        ${@fieldSetting.identifier}
+    @end
+    @if initCode.optionalFieldSettings
+        @if initCode.requiredFieldSettings
+            ,{@" "}
+        @end
+        {@optionalField(initCode.optionalFieldSettings)}
     @end
 @end
 
-@snippet sampleMethodCallArgList(fieldSettings)
+@snippet optionalField(fieldSettings)
+    [{@optionalFieldEntries(fieldSettings)}]
+@end
+
+@snippet optionalFieldEntries(fieldSettings)
     @join fieldSetting : fieldSettings on ", "
-        ${@fieldSetting.identifier}
+        '{@fieldSetting.fieldName}' => ${@fieldSetting.identifier}
     @end
 @end
 
@@ -233,8 +240,8 @@
 @end
 
 @private keyVarList(mapEntries)
-    @join mapEntry : mapEntries
-        {@mapEntry.key} => ${@mapEntry.valueString},
+    @join mapEntry : mapEntries on ","
+        {@mapEntry.key} => ${@mapEntry.valueString}
     @end
 @end
 
