@@ -93,7 +93,7 @@ public class JavaDiscoGapicSchemaToViewTransformer implements DocumentToViewTran
             productConfig,
             createTypeTable(productConfig.getPackageName(), discoGapicNamer),
             discoGapicNamer,
-            JavaFeatureConfig.newBuilder().enableStringFormatFunctions(false).build());
+            JavaFeatureConfig.newBuilder().enableStringFormatFunctions(true).build());
 
     // Escape any schema's field names that are Java keywords.
 

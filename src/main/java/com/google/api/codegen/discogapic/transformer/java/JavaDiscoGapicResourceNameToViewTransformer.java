@@ -99,7 +99,7 @@ public class JavaDiscoGapicResourceNameToViewTransformer implements DocumentToVi
             productConfig,
             createTypeTable(productConfig.getPackageName(), discoGapicNamer),
             discoGapicNamer,
-            JavaFeatureConfig.newBuilder().enableStringFormatFunctions(false).build());
+            JavaFeatureConfig.newBuilder().enableStringFormatFunctions(true).build());
 
     // Keep track of which name patterns have been generated to avoid duplicate classes.
     Set<String> namePatterns = new HashSet<>();

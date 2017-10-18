@@ -89,7 +89,7 @@ public class JavaDiscoGapicSurfaceTransformer
         apiInterface, productConfig, namer, importTypeTable, enableStringFormatFunctions);
   }
 
-  public static DiscoGapicInterfaceContext newInterfaceContext(
+  static DiscoGapicInterfaceContext newInterfaceContext(
       InterfaceModel apiInterface,
       GapicProductConfig productConfig,
       SurfaceNamer namer,
