@@ -626,7 +626,6 @@ public class StaticLangApiMethodTransformer {
             .returnsDocLines(
                 namer.getReturnDocLines(context.getSurfaceInterfaceContext(), context, sync))
             .build());
-    // TODO(andrealin): refactor InitCodeView/Transformer to be API source agsnostic.
     InitCodeView initCode =
         initCodeTransformer.generateInitCode(
             context.cloneWithEmptyTypeTable(),
@@ -661,8 +660,6 @@ public class StaticLangApiMethodTransformer {
             .paramDocs(new ArrayList<ParamDocView>())
             .throwsDocLines(new ArrayList<String>())
             .build());
-    // TODO(andrealin): implement initCode for Discovery and remove the ApiSource check and casting.
-    //    if (context.getApiSource().equals(PROTO)) {
     methodViewBuilder.initCode(
         initCodeTransformer.generateInitCode(
             context.cloneWithEmptyTypeTable(),
@@ -670,11 +667,6 @@ public class StaticLangApiMethodTransformer {
                 context,
                 context.getMethodConfig().getRequiredFieldConfigs(),
                 InitCodeOutputType.SingleObject)));
-    //    } else {
-    //      methodViewBuilder.initCode(
-    //          initCodeTransformer.generateInitCode(
-    //              ((DiscoGapicMethodContext) context).cloneWithEmptyTypeTable(), null));
-    //    }
 
     methodViewBuilder.methodParams(new ArrayList<RequestObjectParamView>());
     methodViewBuilder.requestObjectParams(new ArrayList<RequestObjectParamView>());
