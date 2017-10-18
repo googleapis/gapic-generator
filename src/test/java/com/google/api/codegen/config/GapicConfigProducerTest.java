@@ -35,14 +35,14 @@ public class GapicConfigProducerTest {
   @Test
   public void missingConfigSchemaVersion() {
     TestDataLocator locator = TestDataLocator.create(GapicConfigProducerTest.class);
+    locator.addTestDataSource(CodegenTestUtil.class, "testsrc");
     model =
         CodegenTestUtil.readModel(
-            locator, tempDir, new String[] {"library.proto"}, new String[] {"library.yaml"});
+            locator, tempDir, new String[] {"myproto.proto"}, new String[] {"myproto.yaml"});
 
     ConfigProto configProto =
         CodegenTestUtil.readConfig(
-            model.getDiagCollector(), locator, new String[] {"library_gapic.yaml"});
-
+            model.getDiagCollector(), locator, new String[] {"missing_config_schema_version.yaml"});
     productConfig = GapicProductConfig.create(model, configProto);
     Diag expectedError =
         Diag.error(
