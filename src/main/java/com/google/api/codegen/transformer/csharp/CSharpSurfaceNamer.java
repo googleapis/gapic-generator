@@ -365,14 +365,16 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
       return "GrpcClient";
     } else {
       List<String> reroutes = Splitter.on('.').splitToList(reroute);
-      return Name.anyCamel("grpc", reroutes.get(reroutes.size() - 1), "client").toLowerCamel();
+      return Name.anyCamelKeepUpperAcronyms("grpc", reroutes.get(reroutes.size() - 1), "client")
+          .toLowerCamel();
     }
   }
 
   @Override
   public String getReroutedGrpcMethodName(MethodConfig methodConfig) {
     List<String> reroutes = Splitter.on('.').splitToList(methodConfig.getRerouteToGrpcInterface());
-    return Name.anyCamel("create", reroutes.get(reroutes.size() - 1), "client").toUpperCamel();
+    return Name.anyCamelKeepUpperAcronyms("create", reroutes.get(reroutes.size() - 1), "client")
+        .toUpperCamel();
   }
 
   @Override
@@ -386,12 +388,12 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
     }
     String rerouteLast = reroutes.get(reroutes.size() - 1);
     String name =
-        Name.anyCamel(rerouteLast).toUpperCamel()
+        Name.anyCamelKeepUpperAcronyms(rerouteLast).toUpperCamel()
             + "+"
-            + Name.anyCamel(rerouteLast, "client").toUpperCamel();
+            + Name.anyCamelKeepUpperAcronyms(rerouteLast, "client").toUpperCamel();
     List<String> names = new ArrayList<>();
     for (String reroute : reroutes) {
-      names.add(Name.anyCamel(reroute).toUpperCamel());
+      names.add(Name.anyCamelKeepUpperAcronyms(reroute).toUpperCamel());
     }
     String prefix = Joiner.on(".").join(names.subList(0, names.size() - 1));
     String fullName = prefix + "." + name;
