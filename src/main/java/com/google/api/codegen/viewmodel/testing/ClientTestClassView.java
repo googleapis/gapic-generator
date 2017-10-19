@@ -50,6 +50,9 @@ public abstract class ClientTestClassView {
   public abstract String apiVersion();
 
   @Nullable
+  public abstract String mockCredentialsClassName();
+
+  @Nullable
   public abstract String fullyQualifiedCredentialsClassName();
 
   @Nullable
@@ -86,6 +89,8 @@ public abstract class ClientTestClassView {
     public abstract Builder missingDefaultServiceScopes(boolean val);
 
     public abstract Builder apiVersion(String val);
+
+    public abstract Builder mockCredentialsClassName(String val);
 
     public abstract Builder fullyQualifiedCredentialsClassName(String val);
 
