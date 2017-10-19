@@ -34,7 +34,7 @@ import com.google.common.collect.ImmutableSet;
 import java.util.List;
 import javax.annotation.Nullable;
 
-/** A field declaration wrapper around a proto Field. */
+/** A field declaration wrapper around a protobuf Field. */
 public class ProtoField implements FieldModel {
   private final Field protoField;
   private final ProtoTypeRef protoTypeRef;
