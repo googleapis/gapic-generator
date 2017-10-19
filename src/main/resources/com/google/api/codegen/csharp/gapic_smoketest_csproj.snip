@@ -1,0 +1,22 @@
+# packageMetadata: PackageMetadataView
+@snippet generate(packageMetadata)
+  <?xml version="1.0" encoding="utf-8"?>
+  <Project Sdk="Microsoft.NET.Sdk">
+  
+    <PropertyGroup>
+      <TargetFramework>netcoreapp2.0</TargetFramework>
+      <OutputType>Exe</OutputType>
+      <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+  
+    <ItemGroup>
+        <PackageReference Include="Google.Api.Gax.Grpc" Version="{@packageMetadata.gaxGrpcVersionBound.lower}" />
+        <PackageReference Include="Grpc.Core" Version="{@packageMetadata.grpcVersionBound.lower}" />
+        @join dep : packageMetadata.dependencies
+          # dep: PackageDependencyView
+          <PackageReference Include="{@dep.name}" Version="{@dep.versionBound.lower}" />
+        @end
+    </ItemGroup>
+  
+  </Project>
+@end
