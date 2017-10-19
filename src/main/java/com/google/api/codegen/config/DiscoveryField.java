@@ -65,14 +65,12 @@ public class DiscoveryField implements FieldModel, TypeModel {
   /* Create a FieldModel object from a non-null Schema object. */
   public static DiscoveryField create(Schema schema, DiscoGapicNamer discoGapicNamer) {
     Preconditions.checkNotNull(schema);
-    // TODO(andrealin): remove this line.
-    Preconditions.checkNotNull(discoGapicNamer);
-    if (allSchemas.containsKey(schema)) {
-      return allSchemas.get(schema);
-    }
+    //    if (allSchemas.containsKey(schema)) {
+    //      return allSchemas.get(schema);
+    //    }
 
     DiscoveryField discoField = new DiscoveryField(schema, discoGapicNamer);
-    allSchemas.put(schema, discoField);
+    //    allSchemas.put(schema, discoField);
     return discoField;
   }
 
