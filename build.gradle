@@ -116,18 +116,6 @@ dependencies {
     libraries.toolsFxTesting
 }
 
-task discoJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
-  archiveName = "discoGen-${version}.jar"
-  manifest {
-    attributes 'Main-Class': 'com.google.api.codegen.DiscoveryFragmentGeneratorTool'
-  }
-  from sourceSets.main.output
-  configurations = [ project.configurations.runtime ]
-  exclude 'META-INF/*.SF'
-  exclude 'META-INF/*.DSA'
-  exclude 'META-INF/*.RSA'
-}
-
 task fatJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
   archiveName = "gapic.jar"
   from sourceSets.main.output
@@ -457,24 +445,6 @@ task runConfigGen(type: JavaExec) {
 task runGrpcMetadataGen(type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
   main = 'com.google.api.codegen.grpcmetadatagen.GrpcMetadataGeneratorTool'
-  if (project.hasProperty('clargs')) {
-    args = clargs.split(',').toList()
-  }
-}
-
-// Task to run DiscoveryFragmentGeneratorTool
-// =================================================================
-task runDiscoGen(type: JavaExec) {
-  classpath = sourceSets.main.runtimeClasspath
-  main = 'com.google.api.codegen.DiscoveryFragmentGeneratorTool'
-  if (project.hasProperty('clargs')) {
-    args = clargs.split(',').toList()
-  }
-}
-
-task runDiscoBatch(type: JavaExec) {
-  classpath = sourceSets.main.runtimeClasspath
-  main = 'com.google.api.codegen.DiscoveryFragmentGeneratorBatch'
   if (project.hasProperty('clargs')) {
     args = clargs.split(',').toList()
   }
