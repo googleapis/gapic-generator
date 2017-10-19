@@ -33,10 +33,8 @@ import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
@@ -46,8 +44,6 @@ public class DiscoveryField implements FieldModel, TypeModel {
   private final List<DiscoveryField> properties;
   private final Schema schema;
   private final DiscoGapicNamer discoGapicNamer;
-
-  private static Map<Schema, DiscoveryField> allSchemas = new HashMap<>();
 
   /* Create a FieldModel object from a non-null Schema object. */
   private DiscoveryField(Schema schema, DiscoGapicNamer discoGapicNamer) {
@@ -65,12 +61,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
   /* Create a FieldModel object from a non-null Schema object. */
   public static DiscoveryField create(Schema schema, DiscoGapicNamer discoGapicNamer) {
     Preconditions.checkNotNull(schema);
-    //    if (allSchemas.containsKey(schema)) {
-    //      return allSchemas.get(schema);
-    //    }
-
     DiscoveryField discoField = new DiscoveryField(schema, discoGapicNamer);
-    //    allSchemas.put(schema, discoField);
     return discoField;
   }
 
