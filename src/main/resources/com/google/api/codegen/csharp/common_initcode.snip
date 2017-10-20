@@ -1,0 +1,95 @@
+@extends "csharp/common.snip"
+
+@snippet topLevelInitCode(initCodeSpec)
+    @join line : initCodeSpec.topLevelLines
+        {@initCode(TRUE, line)};
+    @end
+@end
+
+# includeAssignment: Boolean, line: InitCodeLineView
+@private initCode(includeAssignment, line)
+    @switch line.lineType.toString
+    @case "StructureInitLine"
+        # line: StructureInitCodeLineView
+        @if includeAssignment
+            {@line.typeName} {@line.identifier} = new {@line.typeName}
+        @else
+            new {@line.typeName}
+        @end
+
+        {
+            @join fieldSetting : line.fieldSettings
+                {@fieldSetting.fieldSetFunction} = {@initCode(FALSE, fieldSetting.initCodeLine)},
+            @end
+        }
+    @case "ListInitLine"
+        @if includeAssignment
+            IEnumerable<{@line.elementTypeName}> {@line.identifier} = new[]
+
+        @end
+        {
+            @join child : line.elements
+                {@initCode(FALSE, child)},
+            @end
+        }
+    @case "MapInitLine"
+        @if includeAssignment
+            IDictionary<{@line.keyTypeName}, {@line.valueTypeName}> {@line.identifier} = \
+                new Dictionary<{@line.keyTypeName}, {@line.valueTypeName}>
+
+        @end
+        {
+            @join mapEntry : line.initEntries
+                { {@mapEntry.key}, {@initCode(FALSE, mapEntry.value)} },
+            @end
+        }
+    @case "SimpleInitLine"
+        @if includeAssignment
+            {@line.typeName} {@line.identifier} = {@renderInitValue(line.initValue, FALSE)}
+        @else
+            {@renderInitValue(line.initValue, TRUE)}
+        @end
+    @default
+        $unhandledCase: {@line.lineType.toString}$
+    @end
+@end
+
+#initValue: InitValueView, isObjectInitializer: Boolean
+@private renderInitValue(initValue, isObjectInitializer)
+    @switch initValue.type
+    @case "SimpleInitValueView"
+        @if isObjectInitializer
+            @if initValue.isRepeatedDefaultFalse
+                { }
+            @else
+                {@initValue.initialValue}
+            @end
+        @else
+            {@initValue.initialValue}
+        @end
+    @case "FormattedInitValueView"
+        new {@initValue.formatFunctionName}({@argList(initValue.formatArgs)}).ToString()
+    @case "ResourceNameInitValueView"
+        {@renderResourceName(initValue)}
+    @case "ResourceNameOneofInitValueView"
+        {@initValue.resourceOneofTypeName}.From({@renderResourceName(initValue.specificResourceNameView)})
+    @case "RepeatedResourceNameInitValueView"
+        @if isObjectInitializer
+            { }
+        @else
+            new List<{@initValue.resourceTypeName}>()
+        @end
+    @default
+        $unhandledCase: {@initValue.type}$
+    @end
+@end
+
+@private renderResourceName(initValue)
+    new {@initValue.resourceTypeName}({@formatResourceNameArgs(initValue.formatArgs)})
+@end
+
+@private formatResourceNameArgs(args)
+    @join arg : args on ", "
+        {@arg}
+    @end
+@end
