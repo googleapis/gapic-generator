@@ -43,6 +43,7 @@ import com.google.api.codegen.viewmodel.ServiceMethodType;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.EnumType;
 import com.google.api.tools.framework.model.Field;
+import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
@@ -1087,6 +1088,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   public String getStreamTypeName(GrpcStreamingConfig.GrpcStreamingType type) {
     return getNotImplementedString("SurfaceNamer.getStreamTypeName");
+  }
+
+  public String getMockCredentialsClassName(Interface anInterface) {
+    return getNotImplementedString("SurfaceNamer.getMockCredentialsClassName");
   }
 
   public String getFullyQualifiedCredentialsClassName() {
