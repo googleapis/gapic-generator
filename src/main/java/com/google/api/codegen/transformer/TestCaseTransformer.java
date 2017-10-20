@@ -81,6 +81,7 @@ public class TestCaseTransformer {
 
     String clientMethodName;
     String responseTypeName;
+    String callerResponseTypeName;
     String fullyQualifiedResponseTypeName =
         methodContext.getMethodModel().getOutputTypeName(typeTable).getFullName();
 
@@ -89,18 +90,24 @@ public class TestCaseTransformer {
       responseTypeName =
           namer.getAndSavePagedResponseTypeName(
               methodContext, methodConfig.getPageStreaming().getResourcesFieldConfig());
+      callerResponseTypeName =
+          namer.getAndSaveCallerPagedResponseTypeName(
+              methodContext, methodConfig.getPageStreaming().getResourcesFieldConfig());
     } else if (methodConfig.isLongRunningOperation()) {
       clientMethodName = namer.getLroApiMethodName(method, methodConfig.getVisibility());
       responseTypeName =
           methodConfig.getLongRunningConfig().getLongRunningOperationReturnTypeName(typeTable);
+      callerResponseTypeName = responseTypeName;
       fullyQualifiedResponseTypeName =
           methodConfig.getLongRunningConfig().getLongRunningOperationReturnTypeFullName(typeTable);
     } else if (clientMethodType == ClientMethodType.CallableMethod) {
       clientMethodName = namer.getCallableMethodName(method);
       responseTypeName = method.getAndSaveResponseTypeName(typeTable, namer);
+      callerResponseTypeName = responseTypeName;
     } else {
       clientMethodName = namer.getApiMethodName(method, methodConfig.getVisibility());
       responseTypeName = method.getAndSaveResponseTypeName(typeTable, namer);
+      callerResponseTypeName = responseTypeName;
     }
 
     InitCodeView initCode = initCodeTransformer.generateInitCode(methodContext, initCodeContext);
@@ -157,6 +164,7 @@ public class TestCaseTransformer {
         .grpcStreamingView(grpcStreamingView)
         .requestTypeName(method.getAndSaveRequestTypeName(typeTable, namer))
         .responseTypeName(responseTypeName)
+        .callerResponseTypeName(callerResponseTypeName)
         .fullyQualifiedRequestTypeName(method.getInputTypeName(typeTable).getFullName())
         .fullyQualifiedResponseTypeName(fullyQualifiedResponseTypeName)
         .serviceConstructorName(

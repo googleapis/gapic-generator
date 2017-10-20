@@ -27,6 +27,7 @@ import com.google.api.codegen.php.PhpGapicCodePathMapper;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.transformer.csharp.CSharpGapicClientTransformer;
 import com.google.api.codegen.transformer.csharp.CSharpGapicSnippetsTransformer;
+import com.google.api.codegen.transformer.csharp.CSharpGapicTestTransformer;
 import com.google.api.codegen.transformer.go.GoGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.go.GoGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.java.JavaGapicMetadataTransformer;
@@ -56,6 +57,7 @@ import com.google.api.codegen.util.ruby.RubyNameFormatter;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.ImmutableList;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -109,10 +111,11 @@ public class MainGapicProviderFactory
               .build();
       providers.add(provider);
     } else if (id.equals(CSHARP)) {
+      String packageName = productConfig.getPackageName();
       if (generatorConfig.enableSurfaceGenerator()) {
         GapicCodePathMapper pathMapper =
             CommonGapicCodePathMapper.newBuilder()
-                .setPrefix("")
+                .setPrefix(packageName + File.separator + packageName)
                 .setPackageFilePathNameFormatter(new CSharpNameFormatter())
                 .build();
         GapicProvider<? extends Object> mainProvider =
@@ -124,15 +127,35 @@ public class MainGapicProviderFactory
                     new CSharpGapicClientTransformer(pathMapper, packageConfig))
                 .build();
         providers.add(mainProvider);
-
+        GapicCodePathMapper snippetPathMapper =
+            CommonGapicCodePathMapper.newBuilder()
+                .setPrefix(packageName + File.separator + packageName + ".Snippets")
+                .setPackageFilePathNameFormatter(new CSharpNameFormatter())
+                .build();
         GapicProvider<? extends Object> snippetProvider =
             ViewModelGapicProvider.newBuilder()
                 .setModel(model)
                 .setProductConfig(productConfig)
                 .setSnippetSetRunner(new CommonSnippetSetRunner(new CSharpRenderingUtil()))
-                .setModelToViewTransformer(new CSharpGapicSnippetsTransformer(pathMapper))
+                .setModelToViewTransformer(new CSharpGapicSnippetsTransformer(snippetPathMapper))
                 .build();
         providers.add(snippetProvider);
+      }
+      if (generatorConfig.enableTestGenerator()) {
+        GapicCodePathMapper smokeTestPathMapper =
+            CommonGapicCodePathMapper.newBuilder()
+                .setPrefix(packageName + File.separator + packageName + ".SmokeTests")
+                .setPackageFilePathNameFormatter(new CSharpNameFormatter())
+                .build();
+        GapicProvider<? extends Object> smokeTestProvider =
+            ViewModelGapicProvider.newBuilder()
+                .setModel(model)
+                .setProductConfig(productConfig)
+                .setSnippetSetRunner(new CommonSnippetSetRunner(new CSharpRenderingUtil()))
+                .setModelToViewTransformer(
+                    new CSharpGapicTestTransformer(smokeTestPathMapper, packageConfig))
+                .build();
+        providers.add(smokeTestProvider);
       }
 
     } else if (id.equals(GO)) {
