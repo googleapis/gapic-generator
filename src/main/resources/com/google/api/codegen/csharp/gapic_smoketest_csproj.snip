@@ -1,5 +1,5 @@
-# packageMetadata: PackageMetadataView
-@snippet generate(packageMetadata)
+# smoke: SmokeTestClassView
+@snippet generate(smoke)
   <?xml version="1.0" encoding="utf-8"?>
   <Project Sdk="Microsoft.NET.Sdk">
   
@@ -10,13 +10,9 @@
     </PropertyGroup>
   
     <ItemGroup>
-        <PackageReference Include="Google.Api.Gax.Grpc" Version="{@packageMetadata.gaxGrpcVersionBound.lower}" />
-        <PackageReference Include="Grpc.Core" Version="{@packageMetadata.grpcVersionBound.lower}" />
-        @join dep : packageMetadata.dependencies
-          # dep: PackageDependencyView
-          <PackageReference Include="{@dep.name}" Version="{@dep.versionBound.lower}" />
-        @end
+        <ProjectReference Include="../{@smoke.fileHeader.packageName}/{@smoke.fileHeader.packageName}.csproj" />
     </ItemGroup>
   
   </Project>
+
 @end
