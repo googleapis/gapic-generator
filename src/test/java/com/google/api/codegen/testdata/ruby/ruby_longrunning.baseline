@@ -1120,7 +1120,7 @@ class MockGrpcClientStub
   end
 end
 
-class MockCredentialsClass < Google::Auth::Credentials
+class MockOperationsCredentials < Google::Auth::Credentials
   def initialize(method_name)
     @method_name = method_name
   end
@@ -1157,7 +1157,7 @@ describe Google::Longrunning::OperationsClient do
       mock_stub = MockGrpcClientStub.new(:get_operation, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("get_operation")
+      mock_credentials = MockOperationsCredentials.new("get_operation")
 
       Google::Longrunning::Operations::Stub.stub(:new, mock_stub) do
         Google::Auth::Credentials.stub(:default, mock_credentials) do
@@ -1185,7 +1185,7 @@ describe Google::Longrunning::OperationsClient do
       mock_stub = MockGrpcClientStub.new(:get_operation, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("get_operation")
+      mock_credentials = MockOperationsCredentials.new("get_operation")
 
       Google::Longrunning::Operations::Stub.stub(:new, mock_stub) do
         Google::Auth::Credentials.stub(:default, mock_credentials) do
@@ -1228,7 +1228,7 @@ describe Google::Longrunning::OperationsClient do
       mock_stub = MockGrpcClientStub.new(:list_operations, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("list_operations")
+      mock_credentials = MockOperationsCredentials.new("list_operations")
 
       Google::Longrunning::Operations::Stub.stub(:new, mock_stub) do
         Google::Auth::Credentials.stub(:default, mock_credentials) do
@@ -1261,7 +1261,7 @@ describe Google::Longrunning::OperationsClient do
       mock_stub = MockGrpcClientStub.new(:list_operations, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("list_operations")
+      mock_credentials = MockOperationsCredentials.new("list_operations")
 
       Google::Longrunning::Operations::Stub.stub(:new, mock_stub) do
         Google::Auth::Credentials.stub(:default, mock_credentials) do
@@ -1295,7 +1295,7 @@ describe Google::Longrunning::OperationsClient do
       mock_stub = MockGrpcClientStub.new(:cancel_operation, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("cancel_operation")
+      mock_credentials = MockOperationsCredentials.new("cancel_operation")
 
       Google::Longrunning::Operations::Stub.stub(:new, mock_stub) do
         Google::Auth::Credentials.stub(:default, mock_credentials) do
@@ -1323,7 +1323,7 @@ describe Google::Longrunning::OperationsClient do
       mock_stub = MockGrpcClientStub.new(:cancel_operation, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("cancel_operation")
+      mock_credentials = MockOperationsCredentials.new("cancel_operation")
 
       Google::Longrunning::Operations::Stub.stub(:new, mock_stub) do
         Google::Auth::Credentials.stub(:default, mock_credentials) do
@@ -1357,7 +1357,7 @@ describe Google::Longrunning::OperationsClient do
       mock_stub = MockGrpcClientStub.new(:delete_operation, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("delete_operation")
+      mock_credentials = MockOperationsCredentials.new("delete_operation")
 
       Google::Longrunning::Operations::Stub.stub(:new, mock_stub) do
         Google::Auth::Credentials.stub(:default, mock_credentials) do
@@ -1385,7 +1385,7 @@ describe Google::Longrunning::OperationsClient do
       mock_stub = MockGrpcClientStub.new(:delete_operation, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("delete_operation")
+      mock_credentials = MockOperationsCredentials.new("delete_operation")
 
       Google::Longrunning::Operations::Stub.stub(:new, mock_stub) do
         Google::Auth::Credentials.stub(:default, mock_credentials) do
