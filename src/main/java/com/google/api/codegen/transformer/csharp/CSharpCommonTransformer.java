@@ -21,12 +21,19 @@ import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.InterfaceContext;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.ParamWithSimpleDoc;
+import com.google.api.codegen.util.csharp.CSharpTypeTable;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class CSharpCommonTransformer {
+
+  public ModelTypeTable createTypeTable(String implicitPackageName) {
+    return new ModelTypeTable(
+        new CSharpTypeTable(implicitPackageName),
+        new CSharpModelTypeNameConverter(implicitPackageName));
+  }
 
   public void addCommonImports(GapicInterfaceContext context) {
     ModelTypeTable typeTable = context.getImportTypeTable();
