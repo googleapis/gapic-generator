@@ -61,8 +61,7 @@ public class DiscoveryField implements FieldModel, TypeModel {
   /* Create a FieldModel object from a non-null Schema object. */
   public static DiscoveryField create(Schema schema, DiscoGapicNamer discoGapicNamer) {
     Preconditions.checkNotNull(schema);
-    DiscoveryField discoField = new DiscoveryField(schema, discoGapicNamer);
-    return discoField;
+    return new DiscoveryField(schema, discoGapicNamer);
   }
 
   @Override
