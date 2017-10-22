@@ -172,9 +172,13 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
                 diagCollector, methodModel, methodConfigProto.getRequiredFieldsList()));
 
     Iterable<FieldConfig> optionalFieldConfigs =
-        DiscoGapicMethodConfig.createFieldNameConfigs(
-            DiscoGapicMethodConfig.getOptionalFields(
-                methodModel, methodConfigProto.getRequiredFieldsList()));
+        createFieldNameConfigs(
+            diagCollector,
+            messageConfigs,
+            defaultResourceNameTreatment,
+            fieldNamePatterns,
+            resourceNameConfigs,
+            getOptionalFields(methodModel, methodConfigProto.getRequiredFieldsList()));
 
     List<String> sampleCodeInitFields = new ArrayList<>();
     sampleCodeInitFields.addAll(methodConfigProto.getRequiredFieldsList());
@@ -217,14 +221,6 @@ public abstract class DiscoGapicMethodConfig extends MethodConfig {
           releaseLevel,
           longRunningConfig);
     }
-  }
-
-  private static Iterable<FieldConfig> createFieldNameConfigs(Iterable<FieldModel> fields) {
-    ImmutableList.Builder<FieldConfig> fieldConfigsBuilder = ImmutableList.builder();
-    for (FieldModel field : fields) {
-      fieldConfigsBuilder.add(FieldConfig.createFieldConfig(field));
-    }
-    return fieldConfigsBuilder.build();
   }
 
   @Override
