@@ -401,7 +401,9 @@ public class DiscoveryField implements FieldModel, TypeModel {
 
   @Override
   public boolean isEmptyType() {
-    return false;
+    return schema.getIdentifier().equals("Empty")
+        && schema.type().equals(Type.OBJECT)
+        && (schema.properties() == null || schema.properties().size() == 0);
   }
 
   @Override
