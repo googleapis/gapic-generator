@@ -1299,7 +1299,7 @@ class MockGrpcClientStub
   end
 end
 
-class MockCredentialsClass < Google::Example::Credentials
+class MockDecrementerServiceCredentials < Google::Example::Credentials
   def initialize(method_name)
     @method_name = method_name
   end
@@ -1326,7 +1326,7 @@ describe Google::Example::V1::DecrementerServiceClient do
       mock_stub = MockGrpcClientStub.new(:decrement, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("decrement")
+      mock_credentials = MockDecrementerServiceCredentials.new("decrement")
 
       Google::Cloud::Example::V1::DecrementerService::Stub.stub(:new, mock_stub) do
         Google::Example::Credentials.stub(:default, mock_credentials) do
@@ -1349,7 +1349,7 @@ describe Google::Example::V1::DecrementerServiceClient do
       mock_stub = MockGrpcClientStub.new(:decrement, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("decrement")
+      mock_credentials = MockDecrementerServiceCredentials.new("decrement")
 
       Google::Cloud::Example::V1::DecrementerService::Stub.stub(:new, mock_stub) do
         Google::Example::Credentials.stub(:default, mock_credentials) do
@@ -1422,7 +1422,7 @@ class MockGrpcClientStub
   end
 end
 
-class MockCredentialsClass < Google::Example::Credentials
+class MockIncrementerServiceCredentials < Google::Example::Credentials
   def initialize(method_name)
     @method_name = method_name
   end
@@ -1449,7 +1449,7 @@ describe Google::Example::V1::IncrementerServiceClient do
       mock_stub = MockGrpcClientStub.new(:increment, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("increment")
+      mock_credentials = MockIncrementerServiceCredentials.new("increment")
 
       Google::Cloud::Example::V1::IncrementerService::Stub.stub(:new, mock_stub) do
         Google::Example::Credentials.stub(:default, mock_credentials) do
@@ -1472,7 +1472,7 @@ describe Google::Example::V1::IncrementerServiceClient do
       mock_stub = MockGrpcClientStub.new(:increment, mock_method)
 
       # Mock auth layer
-      mock_credentials = MockCredentialsClass.new("increment")
+      mock_credentials = MockIncrementerServiceCredentials.new("increment")
 
       Google::Cloud::Example::V1::IncrementerService::Stub.stub(:new, mock_stub) do
         Google::Example::Credentials.stub(:default, mock_credentials) do

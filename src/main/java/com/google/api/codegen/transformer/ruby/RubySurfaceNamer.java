@@ -41,6 +41,7 @@ import com.google.api.codegen.util.VersionMatcher;
 import com.google.api.codegen.util.ruby.RubyCommentReformatter;
 import com.google.api.codegen.util.ruby.RubyNameFormatter;
 import com.google.api.codegen.util.ruby.RubyTypeTable;
+import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Joiner;
@@ -222,6 +223,11 @@ public class RubySurfaceNamer extends SurfaceNamer {
   @Override
   public String getRequestTypeName(ImportTypeTable typeTable, TypeRef type) {
     return ((ModelTypeTable) typeTable).getFullNameFor(type);
+  }
+
+  @Override
+  public String getMockCredentialsClassName(Interface anInterface) {
+    return String.format("Mock%sCredentials", anInterface.getSimpleName());
   }
 
   @Override

@@ -266,7 +266,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     }
     ImmutableList.Builder<String> callbackLines = ImmutableList.builder();
     callbackLines.add(
-        "@param {" + callbackType + "=} callback",
+        "@param {" + callbackType + "} [callback]",
         "  The function which will be called with the result of the API call.");
     if (!isProtobufEmpty(method.getOutputMessage())) {
       callbackLines.add("", "  The second parameter to the callback is " + returnTypeDoc + ".");
