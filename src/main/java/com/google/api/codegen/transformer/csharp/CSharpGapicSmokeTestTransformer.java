@@ -17,7 +17,6 @@ package com.google.api.codegen.transformer.csharp;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
-import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.config.SmokeTestConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
@@ -25,7 +24,6 @@ import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
-import com.google.api.codegen.transformer.PackageMetadataTransformer;
 import com.google.api.codegen.transformer.StandardImportSectionTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.TestCaseTransformer;
@@ -41,25 +39,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class CSharpGapicTestTransformer implements ModelToViewTransformer {
+public class CSharpGapicSmokeTestTransformer implements ModelToViewTransformer {
 
   private static final String SMOKETEST_SNIPPETS_TEMPLATE_FILENAME = "csharp/gapic_smoketest.snip";
   private static final String SMOKETEST_CSPROJ_TEMPLATE_FILENAME =
       "csharp/gapic_smoketest_csproj.snip";
 
   private final GapicCodePathMapper pathMapper;
-  private final PackageMetadataConfig packageMetadataConfig;
   private final FileHeaderTransformer fileHeaderTransformer =
       new FileHeaderTransformer(new StandardImportSectionTransformer());
   private final ValueProducer valueProducer = new StandardValueProducer();
   private final TestCaseTransformer testCaseTransformer = new TestCaseTransformer(valueProducer);
   private final CSharpCommonTransformer csharpCommonTransformer = new CSharpCommonTransformer();
-  private final PackageMetadataTransformer metadataTransformer = new PackageMetadataTransformer();
 
-  public CSharpGapicTestTransformer(
-      GapicCodePathMapper pathMapper, PackageMetadataConfig packageMetadataConfig) {
+  public CSharpGapicSmokeTestTransformer(GapicCodePathMapper pathMapper) {
     this.pathMapper = pathMapper;
-    this.packageMetadataConfig = packageMetadataConfig;
   }
 
   @Override
