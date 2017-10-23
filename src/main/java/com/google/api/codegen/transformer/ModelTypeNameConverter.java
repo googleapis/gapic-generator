@@ -14,8 +14,6 @@
  */
 package com.google.api.codegen.transformer;
 
-import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_STRING;
-
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.InterfaceModel;
@@ -28,6 +26,7 @@ import com.google.api.codegen.util.TypedValue;
 import com.google.api.tools.framework.model.EnumValue;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 /** ModelTypeNameConverter maps TypeRef instances to TypeName instances. */
 public abstract class ModelTypeNameConverter implements TypeNameConverter {
@@ -89,7 +88,7 @@ public abstract class ModelTypeNameConverter implements TypeNameConverter {
 
   /** Renders the given value if it is a primitive type. */
   public String renderValueAsString(String value) {
-    return renderPrimitiveValue(TypeRef.of(TYPE_STRING), value);
+    return renderPrimitiveValue(TypeRef.of(Type.TYPE_STRING), value);
   }
 
   // Overriden interface methods call the overloaded method on the underlying Field object.
