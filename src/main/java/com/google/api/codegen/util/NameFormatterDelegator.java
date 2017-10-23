@@ -56,8 +56,8 @@ public abstract class NameFormatterDelegator implements NameFormatter {
   }
 
   @Override
-  public String varReference(Name name) {
-    return formatter.varReference(name);
+  public String localVarReference(Name name) {
+    return formatter.localVarReference(name);
   }
 
   @Override

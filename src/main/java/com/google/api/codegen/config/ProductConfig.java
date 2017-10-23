@@ -24,4 +24,6 @@ public interface ProductConfig {
   ImmutableList<String> getCopyrightLines();
 
   ImmutableList<String> getLicenseLines();
+
+  InterfaceConfig getInterfaceConfig(InterfaceModel interfaceModel);
 }

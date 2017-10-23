@@ -21,17 +21,23 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Function;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 
 /** FieldConfig represents a configuration for a Field, derived from the GAPIC config. */
 @AutoValue
 public abstract class FieldConfig {
-  public abstract Field getField();
+  public abstract FieldModel getField();
 
+  /** The list of fields that must be traversed to reach the field in getField(). */
+  public abstract List<FieldModel> getFieldPath();
+
+  @Nullable
   public abstract ResourceNameTreatment getResourceNameTreatment();
 
   @Nullable
@@ -55,7 +61,21 @@ public abstract class FieldConfig {
   }
 
   private static FieldConfig createFieldConfig(
-      Field field,
+      FieldModel field,
+      ResourceNameTreatment resourceNameTreatment,
+      ResourceNameConfig resourceNameConfig,
+      ResourceNameConfig messageResourceNameConfig) {
+    return createFieldConfig(
+        field,
+        ImmutableList.of(field),
+        resourceNameTreatment,
+        resourceNameConfig,
+        messageResourceNameConfig);
+  }
+
+  private static FieldConfig createFieldConfig(
+      FieldModel field,
+      List<FieldModel> fieldPath,
       ResourceNameTreatment resourceNameTreatment,
       ResourceNameConfig resourceNameConfig,
       ResourceNameConfig messageResourceNameConfig) {
@@ -69,18 +89,27 @@ public abstract class FieldConfig {
           "FieldConfig may not contain a ResourceNameConfig of type " + ResourceNameType.FIXED);
     }
     return new AutoValue_FieldConfig(
-        field, resourceNameTreatment, resourceNameConfig, messageResourceNameConfig);
+        field, fieldPath, resourceNameTreatment, resourceNameConfig, messageResourceNameConfig);
+  }
+
+  static FieldConfig createFieldConfig(FieldModel field) {
+    return FieldConfig.createFieldConfig(field, ResourceNameTreatment.NONE, null, null);
+  }
+
+  static FieldConfig createFieldConfig(FieldModel field, List<FieldModel> fieldPath) {
+    return FieldConfig.createFieldConfig(field, fieldPath, ResourceNameTreatment.NONE, null, null);
   }
 
   /** Creates a FieldConfig for the given Field with ResourceNameTreatment set to None. */
   public static FieldConfig createDefaultFieldConfig(Field field) {
-    return FieldConfig.createFieldConfig(field, ResourceNameTreatment.NONE, null, null);
+    return FieldConfig.createFieldConfig(
+        new ProtoField(field), ResourceNameTreatment.NONE, null, null);
   }
 
-  public static FieldConfig createMessageFieldConfig(
+  static FieldConfig createMessageFieldConfig(
       ResourceNameMessageConfigs messageConfigs,
       Map<String, ResourceNameConfig> resourceNameConfigs,
-      Field field,
+      FieldModel field,
       ResourceNameTreatment defaultResourceNameTreatment) {
     return createFieldConfig(
         null,
@@ -98,7 +127,7 @@ public abstract class FieldConfig {
       ResourceNameMessageConfigs messageConfigs,
       Map<String, String> fieldNamePatterns,
       Map<String, ResourceNameConfig> resourceNameConfigs,
-      Field field,
+      FieldModel field,
       ResourceNameTreatment treatment,
       ResourceNameTreatment defaultResourceNameTreatment) {
     String messageFieldEntityName = null;
@@ -192,10 +221,6 @@ public abstract class FieldConfig {
     return null;
   }
 
-  public boolean hasEntityName() {
-    return getEntityName() != null;
-  }
-
   public boolean useResourceNameType() {
     return getResourceNameTreatment() == ResourceNameTreatment.STATIC_TYPES;
   }
@@ -235,7 +260,7 @@ public abstract class FieldConfig {
    */
   public static void validate(
       ResourceNameMessageConfigs messageConfigs,
-      Field field,
+      FieldModel field,
       ResourceNameTreatment treatment,
       ResourceNameConfig resourceNameConfig) {
     switch (treatment) {
@@ -264,11 +289,20 @@ public abstract class FieldConfig {
     }
   }
 
-  private static Function<FieldConfig, Field> selectFieldFunction() {
-    return new Function<FieldConfig, Field>() {
+  private static Function<FieldConfig, FieldModel> selectFieldFunction() {
+    return new Function<FieldConfig, FieldModel>() {
       @Override
-      public Field apply(FieldConfig fieldConfig) {
+      public FieldModel apply(FieldConfig fieldConfig) {
         return fieldConfig.getField();
+      }
+    };
+  }
+
+  private static Function<Field, FieldModel> createFieldTypeFunction() {
+    return new Function<Field, FieldModel>() {
+      @Override
+      public FieldModel apply(Field field) {
+        return new ProtoField(field);
       }
     };
   }
@@ -282,8 +316,12 @@ public abstract class FieldConfig {
     };
   }
 
-  public static Iterable<Field> toFieldIterable(Iterable<FieldConfig> fieldConfigs) {
+  public static Iterable<FieldModel> toFieldTypeIterable(Iterable<FieldConfig> fieldConfigs) {
     return Iterables.transform(fieldConfigs, selectFieldFunction());
+  }
+
+  public static Iterable<FieldModel> toFieldTypeIterableFromField(Iterable<Field> fieldConfigs) {
+    return Iterables.transform(fieldConfigs, createFieldTypeFunction());
   }
 
   public static ImmutableMap<String, FieldConfig> toFieldConfigMap(

@@ -26,7 +26,7 @@ import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
-public class NodeJSModelTypeNameConverter implements ModelTypeNameConverter {
+public class NodeJSModelTypeNameConverter extends ModelTypeNameConverter {
 
   /** A map from primitive types in proto to NodeJS counterparts. */
   private static final ImmutableMap<Type, String> PRIMITIVE_TYPE_MAP =
@@ -184,6 +184,6 @@ public class NodeJSModelTypeNameConverter implements ModelTypeNameConverter {
 
   @Override
   public TypedValue getEnumValue(TypeRef type, EnumValue value) {
-    return TypedValue.create(getTypeName(type), "%s." + value.getSimpleName());
+    return TypedValue.create(getTypeName(type), String.format("'%s'", value.getSimpleName()));
   }
 }

@@ -15,12 +15,17 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.TargetLanguage;
+import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.VersionBound;
 import com.google.api.codegen.viewmodel.metadata.PackageDependencyView;
 import com.google.api.codegen.viewmodel.metadata.PackageMetadataView;
-import com.google.api.tools.framework.model.Model;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /** Constructs a partial ViewModel for producing package metadata related views */
 public class PackageMetadataTransformer {
@@ -31,7 +36,7 @@ public class PackageMetadataTransformer {
    */
   public PackageMetadataView.Builder generateMetadataView(
       PackageMetadataConfig packageConfig,
-      Model model,
+      ApiModel model,
       String template,
       String outputPath,
       TargetLanguage language) {
@@ -44,7 +49,7 @@ public class PackageMetadataTransformer {
    */
   public PackageMetadataView.Builder generateMetadataView(
       PackageMetadataConfig packageConfig,
-      Model model,
+      ApiModel model,
       String template,
       String outputPath,
       TargetLanguage language,
@@ -52,7 +57,7 @@ public class PackageMetadataTransformer {
     // Note that internally, this is overridable in the service config, but the component is not
     // available externally. See:
     //   https://github.com/googleapis/toolkit/issues/933
-    String discoveryApiName = model.getServiceConfig().getName();
+    String discoveryApiName = model.getServiceName();
     int dotIndex = discoveryApiName.indexOf(".");
     if (dotIndex > 0) {
       discoveryApiName = discoveryApiName.substring(0, dotIndex).replace("-", "_");
@@ -100,7 +105,7 @@ public class PackageMetadataTransformer {
         .email(packageConfig.email())
         .homepage(packageConfig.homepage())
         .licenseName(packageConfig.licenseName())
-        .fullName(model.getServiceConfig().getTitle())
+        .fullName(model.getTitle())
         .discoveryApiName(discoveryApiName)
         .hasMultipleServices(false);
   }

@@ -169,6 +169,7 @@
 
     @if xapiClass.hasLongRunningOperations
       @@operations_client = Google::Longrunning::OperationsClient.new(
+        service_path: service_path,
         credentials: credentials,
         scopes: scopes,
         client_config: client_config,
@@ -190,7 +191,7 @@
     if credentials.is_a?(Proc)
       updater_proc = credentials
     end
-    if credentials.is_a?(Google::Gax::Credentials)
+    if credentials.is_a?(Google::Auth::Credentials)
       updater_proc = credentials.updater_proc
     end
 

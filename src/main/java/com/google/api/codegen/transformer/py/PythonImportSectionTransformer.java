@@ -15,14 +15,17 @@
 package com.google.api.codegen.transformer.py;
 
 import com.google.api.codegen.InterfaceView;
-import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.ImportSectionTransformer;
+import com.google.api.codegen.transformer.InterfaceContext;
+import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
+import com.google.api.codegen.transformer.TransformationContext;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.py.PythonTypeTable;
 import com.google.api.codegen.viewmodel.ImportFileView;
@@ -46,19 +49,20 @@ import java.util.TreeSet;
 
 public class PythonImportSectionTransformer implements ImportSectionTransformer {
   @Override
-  public ImportSectionView generateImportSection(GapicInterfaceContext context) {
+  public ImportSectionView generateImportSection(TransformationContext context) {
+    InterfaceContext interfaceContext = (InterfaceContext) context;
     return ImportSectionView.newBuilder()
         .standardImports(generateFileHeaderStandardImports())
-        .externalImports(generateFileHeaderExternalImports(context))
-        .appImports(generateMainAppImports(context))
+        .externalImports(generateFileHeaderExternalImports(interfaceContext))
+        .appImports(generateMainAppImports(interfaceContext))
         .build();
   }
 
   @Override
   public ImportSectionView generateImportSection(
-      GapicMethodContext context, Iterable<InitCodeNode> specItemNodes) {
+      MethodContext context, Iterable<InitCodeNode> specItemNodes) {
     return ImportSectionView.newBuilder()
-        .appImports(generateInitCodeAppImports(context, specItemNodes))
+        .appImports(generateInitCodeAppImports(((GapicMethodContext) context), specItemNodes))
         .build();
   }
 
@@ -94,7 +98,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
         createImport("platform"));
   }
 
-  private List<ImportFileView> generateFileHeaderExternalImports(GapicInterfaceContext context) {
+  private List<ImportFileView> generateFileHeaderExternalImports(InterfaceContext context) {
     List<ImportFileView> imports = new ArrayList<>();
     imports.add(createImport("google.gax"));
     imports.add(createImport("google.gax", "api_callable"));
@@ -105,10 +109,10 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
       imports.add(createImport("google.gapic.longrunning", "operations_client"));
     }
 
-    for (GapicMethodConfig methodConfig : context.getInterfaceConfig().getMethodConfigs()) {
+    for (MethodConfig methodConfig : context.getInterfaceConfig().getMethodConfigs()) {
       // Add the import for gax.utils.oneof if and only if there is at
       // least one "one of" argument set.
-      if (!Iterables.isEmpty(methodConfig.getOneofs())) {
+      if (!Iterables.isEmpty(methodConfig.getOneofNames(context.getNamer()))) {
         imports.add(createImport("google.gax.utils", "oneof"));
         break;
       }
@@ -118,12 +122,13 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
     return imports;
   }
 
-  private List<ImportFileView> generateMainAppImports(GapicInterfaceContext context) {
+  private List<ImportFileView> generateMainAppImports(InterfaceContext context) {
     List<ImportFileView> imports =
-        generateFileHeaderAppImports(context.getModelTypeTable().getImports());
+        generateFileHeaderAppImports(context.getImportTypeTable().getImports());
     SurfaceNamer namer = context.getNamer();
     imports.add(
-        createImport(namer.getPackageName(), namer.getClientConfigName(context.getInterface())));
+        createImport(
+            namer.getPackageName(), namer.getClientConfigName(context.getInterfaceModel())));
 
     Collections.sort(imports, importFileViewComparator());
     return imports;
@@ -212,7 +217,8 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
 
   private List<ImportFileView> generateTestAppImports(GapicInterfaceContext context) {
     Set<ImportFileView> appImports = new TreeSet<>(importFileViewComparator());
-    for (Map.Entry<String, TypeAlias> entry : context.getModelTypeTable().getImports().entrySet()) {
+    for (Map.Entry<String, TypeAlias> entry :
+        context.getImportTypeTable().getImports().entrySet()) {
       String fullName = entry.getKey();
       if (fullName.startsWith(context.getNamer().getTestPackageName() + ".enums")) {
         appImports.add(createImport(context.getNamer().getVersionedDirectoryNamespace(), "enums"));

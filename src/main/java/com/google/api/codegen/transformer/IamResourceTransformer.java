@@ -14,23 +14,25 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.IamResourceView;
-import com.google.api.tools.framework.model.Field;
-import com.google.api.tools.framework.model.MessageType;
-import com.google.api.tools.framework.model.TypeRef;
 import java.util.ArrayList;
 import java.util.List;
 
 public class IamResourceTransformer {
-  public List<IamResourceView> generateIamResources(GapicInterfaceContext context) {
+  public List<IamResourceView> generateIamResources(InterfaceContext context) {
     List<IamResourceView> resources = new ArrayList<>();
-    for (Field field :
-        context.getProductConfig().getInterfaceConfig(context.getInterface()).getIamResources()) {
+    for (FieldModel field :
+        context
+            .getProductConfig()
+            .getInterfaceConfig(context.getInterfaceModel())
+            .getIamResources()) {
       String resourceTypeName =
           context
-              .getModelTypeTable()
-              .getAndSaveNicknameFor(TypeRef.of((MessageType) field.getParent()));
+              .getImportTypeTable()
+              .getAndSaveNicknameFor(
+                  field.getParentTypeName(context.getImportTypeTable()).getFullName());
       resources.add(
           IamResourceView.builder()
               .resourceGetterFunctionName(
@@ -39,7 +41,7 @@ public class IamResourceTransformer {
               .exampleName(
                   context
                       .getNamer()
-                      .getIamResourceGetterFunctionExampleName(context.getInterface(), field))
+                      .getIamResourceGetterFunctionExampleName(context.getInterfaceModel(), field))
               .fieldName(context.getNamer().publicFieldName(Name.from(field.getSimpleName())))
               .resourceTypeName(resourceTypeName)
               .resourceConstructorName(context.getNamer().getTypeConstructor(resourceTypeName))

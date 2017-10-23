@@ -44,7 +44,7 @@ apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'signing'
 apply plugin: 'net.ltgt.apt'
 
-sourceCompatibility = 1.7
+sourceCompatibility = 1.8
 
 group = 'com.google.api'
 project.version = file('version.txt').text.trim()
@@ -83,7 +83,6 @@ ext {
 
     // JSON
     jackson: 'com.fasterxml.jackson.core:jackson-databind:2.9.0',
-    jacksonGuava: 'com.fasterxml.jackson.datatype:jackson-datatype-guava:2.9.0',
 
     // Formatter
     javaFomatter: 'com.google.googlejavaformat:google-java-format:1.1'
@@ -102,7 +101,6 @@ dependencies {
     libraries.commonsLang,
     libraries.gax,
     libraries.jackson,
-    libraries.jacksonGuava,
     libraries.javaFomatter,
     libraries.jsr305,
     libraries.protobuf,
@@ -114,18 +112,6 @@ dependencies {
   testCompile libraries.junit,
     libraries.truth,
     libraries.toolsFxTesting
-}
-
-task discoJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
-  archiveName = "discoGen-${version}.jar"
-  manifest {
-    attributes 'Main-Class': 'com.google.api.codegen.DiscoveryFragmentGeneratorTool'
-  }
-  from sourceSets.main.output
-  configurations = [ project.configurations.runtime ]
-  exclude 'META-INF/*.SF'
-  exclude 'META-INF/*.DSA'
-  exclude 'META-INF/*.RSA'
 }
 
 task fatJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
@@ -457,24 +443,6 @@ task runConfigGen(type: JavaExec) {
 task runGrpcMetadataGen(type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
   main = 'com.google.api.codegen.grpcmetadatagen.GrpcMetadataGeneratorTool'
-  if (project.hasProperty('clargs')) {
-    args = clargs.split(',').toList()
-  }
-}
-
-// Task to run DiscoveryFragmentGeneratorTool
-// =================================================================
-task runDiscoGen(type: JavaExec) {
-  classpath = sourceSets.main.runtimeClasspath
-  main = 'com.google.api.codegen.DiscoveryFragmentGeneratorTool'
-  if (project.hasProperty('clargs')) {
-    args = clargs.split(',').toList()
-  }
-}
-
-task runDiscoBatch(type: JavaExec) {
-  classpath = sourceSets.main.runtimeClasspath
-  main = 'com.google.api.codegen.DiscoveryFragmentGeneratorBatch'
   if (project.hasProperty('clargs')) {
     args = clargs.split(',').toList()
   }

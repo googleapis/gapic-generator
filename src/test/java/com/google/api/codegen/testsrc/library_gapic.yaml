@@ -82,7 +82,7 @@ interfaces:
       - name%shelf_id="testShelf-$RANDOM"
       - name%book_id=$PROJECT_ID
       - book.rating=GOOD
-    flattening_group_name: update_book_1
+    flattening_group_name: update_book_2
   experimental_features:
     iam_resources:
     - type: google.example.library.v1.Book
@@ -189,6 +189,9 @@ interfaces:
     resource_name_treatment: NONE
     field_name_patterns:
       name: shelf
+    header_request_params:
+    - name
+    - book.read
   - name: PublishSeries
     flattening:
       groups:
@@ -280,8 +283,10 @@ interfaces:
         parameters:
         - name
         - book
-      - parameters:
+      - flattening_group_name: update_book_2
+        parameters:
         - name
+        - optional_foo
         - book
         - update_mask
         - physical_mask

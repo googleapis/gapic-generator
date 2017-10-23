@@ -15,8 +15,22 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.ServiceMessages;
-import com.google.api.codegen.config.*;
-import com.google.api.codegen.metacode.*;
+import com.google.api.codegen.config.BatchingConfig;
+import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.FlatteningConfig;
+import com.google.api.codegen.config.GrpcStreamingConfig;
+import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.PageStreamingConfig;
+import com.google.api.codegen.config.ProtoField;
+import com.google.api.codegen.config.SmokeTestConfig;
+import com.google.api.codegen.metacode.InitCodeContext;
+import com.google.api.codegen.metacode.InitCodeLineType;
+import com.google.api.codegen.metacode.InitCodeNode;
+import com.google.api.codegen.metacode.InitFieldConfig;
+import com.google.api.codegen.metacode.InitValue;
+import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.codegen.util.testing.TestValueGenerator;
@@ -35,7 +49,6 @@ import com.google.api.codegen.viewmodel.testing.MockGrpcResponseView;
 import com.google.api.codegen.viewmodel.testing.PageStreamingResponseView;
 import com.google.api.codegen.viewmodel.testing.TestCaseView;
 import com.google.api.tools.framework.model.Field;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
@@ -61,43 +74,46 @@ public class TestCaseTransformer {
       SymbolTable testNameTable,
       InitCodeContext initCodeContext,
       ClientMethodType clientMethodType) {
-    Method method = methodContext.getMethod();
-    GapicMethodConfig methodConfig = methodContext.getMethodConfig();
+    MethodModel method = methodContext.getMethodModel();
+    MethodConfig methodConfig = methodContext.getMethodConfig();
     SurfaceNamer namer = methodContext.getNamer();
+    ImportTypeTable typeTable = methodContext.getTypeTable();
 
     String clientMethodName;
     String responseTypeName;
+    String callerResponseTypeName;
     String fullyQualifiedResponseTypeName =
-        methodContext.getTypeTable().getFullNameFor(method.getOutputType());
+        methodContext.getMethodModel().getOutputTypeName(typeTable).getFullName();
+
     if (methodConfig.isPageStreaming()) {
       clientMethodName = namer.getApiMethodName(method, methodConfig.getVisibility());
       responseTypeName =
           namer.getAndSavePagedResponseTypeName(
-              method,
-              methodContext.getTypeTable(),
-              methodConfig.getPageStreaming().getResourcesFieldConfig());
+              methodContext, methodConfig.getPageStreaming().getResourcesFieldConfig());
+      callerResponseTypeName =
+          namer.getAndSaveCallerPagedResponseTypeName(
+              methodContext, methodConfig.getPageStreaming().getResourcesFieldConfig());
     } else if (methodConfig.isLongRunningOperation()) {
       clientMethodName = namer.getLroApiMethodName(method, methodConfig.getVisibility());
       responseTypeName =
-          methodContext
-              .getTypeTable()
-              .getAndSaveNicknameFor(methodConfig.getLongRunningConfig().getReturnType());
+          methodConfig.getLongRunningConfig().getLongRunningOperationReturnTypeName(typeTable);
+      callerResponseTypeName = responseTypeName;
       fullyQualifiedResponseTypeName =
-          methodContext
-              .getTypeTable()
-              .getFullNameFor(methodConfig.getLongRunningConfig().getReturnType());
+          methodConfig.getLongRunningConfig().getLongRunningOperationReturnTypeFullName(typeTable);
     } else if (clientMethodType == ClientMethodType.CallableMethod) {
       clientMethodName = namer.getCallableMethodName(method);
-      responseTypeName = methodContext.getTypeTable().getAndSaveNicknameFor(method.getOutputType());
+      responseTypeName = method.getAndSaveResponseTypeName(typeTable, namer);
+      callerResponseTypeName = responseTypeName;
     } else {
       clientMethodName = namer.getApiMethodName(method, methodConfig.getVisibility());
-      responseTypeName = methodContext.getTypeTable().getAndSaveNicknameFor(method.getOutputType());
+      responseTypeName = method.getAndSaveResponseTypeName(typeTable, namer);
+      callerResponseTypeName = responseTypeName;
     }
 
     InitCodeView initCode = initCodeTransformer.generateInitCode(methodContext, initCodeContext);
 
     boolean hasRequestParameters = initCode.lines().size() > 0;
-    boolean hasReturnValue = !ServiceMessages.s_isEmptyType(method.getOutputType());
+    boolean hasReturnValue = !method.isOutputTypeEmpty();
     if (methodConfig.isLongRunningOperation()) {
       hasReturnValue =
           !ServiceMessages.s_isEmptyType(methodConfig.getLongRunningConfig().getReturnType());
@@ -113,12 +129,12 @@ public class TestCaseTransformer {
       String resourceTypeName = null;
       String resourcesFieldGetterName = null;
       if (methodConfig.getGrpcStreaming().hasResourceField()) {
-        Field resourcesField = methodConfig.getGrpcStreaming().getResourcesField();
+        FieldModel resourcesField = methodConfig.getGrpcStreaming().getResourcesField();
         resourceTypeName =
-            methodContext.getTypeTable().getAndSaveNicknameForElementType(resourcesField.getType());
+            methodContext.getTypeTable().getAndSaveNicknameForElementType(resourcesField);
         resourcesFieldGetterName =
             namer.getFieldGetFunctionName(
-                resourcesField.getType(), Name.from(resourcesField.getSimpleName()));
+                resourcesField, Name.from(resourcesField.getSimpleName()));
       }
 
       grpcStreamingView =
@@ -146,18 +162,18 @@ public class TestCaseTransformer {
         .nameWithException(namer.getExceptionTestCaseName(testNameTable, method))
         .pageStreamingResponseViews(createPageStreamingResponseViews(methodContext))
         .grpcStreamingView(grpcStreamingView)
-        .requestTypeName(methodContext.getTypeTable().getAndSaveNicknameFor(method.getInputType()))
+        .requestTypeName(method.getAndSaveRequestTypeName(typeTable, namer))
         .responseTypeName(responseTypeName)
-        .fullyQualifiedRequestTypeName(
-            methodContext.getTypeTable().getFullNameFor(method.getInputType()))
+        .callerResponseTypeName(callerResponseTypeName)
+        .fullyQualifiedRequestTypeName(method.getInputTypeName(typeTable).getFullName())
         .fullyQualifiedResponseTypeName(fullyQualifiedResponseTypeName)
         .serviceConstructorName(
-            namer.getApiWrapperClassConstructorName(methodContext.getInterface()))
+            namer.getApiWrapperClassConstructorName(methodContext.getInterfaceModel()))
         .fullyQualifiedServiceClassName(
             namer.getFullyQualifiedApiWrapperClassName(methodContext.getInterfaceConfig()))
         .fullyQualifiedAliasedServiceClassName(
             namer.getTopLevelAliasedApiClassName(
-                methodContext.getInterfaceConfig(), packageHasMultipleServices))
+                (methodContext.getInterfaceConfig()), packageHasMultipleServices))
         .clientMethodName(clientMethodName)
         .mockGrpcStubTypeName(namer.getMockGrpcServiceImplName(methodContext.getTargetInterface()))
         .createStubFunctionName(namer.getCreateStubFunctionName(methodContext.getTargetInterface()))
@@ -167,7 +183,7 @@ public class TestCaseTransformer {
 
   private List<PageStreamingResponseView> createPageStreamingResponseViews(
       GapicMethodContext methodContext) {
-    GapicMethodConfig methodConfig = methodContext.getMethodConfig();
+    MethodConfig methodConfig = methodContext.getMethodConfig();
     SurfaceNamer namer = methodContext.getNamer();
 
     List<PageStreamingResponseView> pageStreamingResponseViews =
@@ -178,12 +194,10 @@ public class TestCaseTransformer {
     }
 
     FieldConfig resourcesFieldConfig = methodConfig.getPageStreaming().getResourcesFieldConfig();
-    Field resourcesField = resourcesFieldConfig.getField();
+    FieldModel resourcesField = resourcesFieldConfig.getField();
     String resourceTypeName =
-        methodContext.getTypeTable().getAndSaveNicknameForElementType(resourcesField.getType());
-    String resourcesFieldGetterName =
-        namer.getFieldGetFunctionName(
-            resourcesField.getType(), Name.from(resourcesField.getSimpleName()));
+        methodContext.getTypeTable().getAndSaveNicknameForElementType(resourcesField);
+    String resourcesFieldGetterName = namer.getFieldGetFunctionName(resourcesField);
     pageStreamingResponseViews.add(
         PageStreamingResponseView.newBuilder()
             .resourceTypeName(resourceTypeName)
@@ -229,27 +243,27 @@ public class TestCaseTransformer {
   }
 
   private MockGrpcResponseView createMockResponseView(
-      GapicMethodContext methodContext, InitCodeContext responseInitCodeContext) {
+      MethodContext methodContext, InitCodeContext responseInitCodeContext) {
 
     InitCodeView initCodeView =
         initCodeTransformer.generateInitCode(methodContext, responseInitCodeContext);
     String typeName =
         methodContext
-            .getTypeTable()
-            .getAndSaveNicknameFor(methodContext.getMethod().getOutputType());
+            .getMethodModel()
+            .getAndSaveResponseTypeName(methodContext.getTypeTable(), methodContext.getNamer());
     return MockGrpcResponseView.newBuilder().typeName(typeName).initCode(initCodeView).build();
   }
 
   private InitCodeContext createResponseInitCodeContext(
       GapicMethodContext context, SymbolTable symbolTable) {
-    ArrayList<Field> primitiveFields = new ArrayList<>();
+    ArrayList<FieldModel> primitiveFields = new ArrayList<>();
     TypeRef outputType = context.getMethod().getOutputType();
     if (context.getMethodConfig().isLongRunningOperation()) {
       outputType = context.getMethodConfig().getLongRunningConfig().getReturnType();
     }
     for (Field field : outputType.getMessageType().getFields()) {
       if (field.getType().isPrimitive() && !field.getType().isRepeated()) {
-        primitiveFields.add(field);
+        primitiveFields.add(new ProtoField(field));
       }
     }
     return InitCodeContext.newBuilder()
@@ -299,7 +313,7 @@ public class TestCaseTransformer {
   }
 
   public TestCaseView createSmokeTestCaseView(GapicMethodContext context) {
-    GapicMethodConfig methodConfig = context.getMethodConfig();
+    MethodConfig methodConfig = context.getMethodConfig();
     ClientMethodType methodType;
 
     if (methodConfig.isPageStreaming()) {
@@ -326,7 +340,7 @@ public class TestCaseTransformer {
       if (line.lineType() == InitCodeLineType.SimpleInitLine) {
         SimpleInitCodeLineView simpleLine = (SimpleInitCodeLineView) line;
         String projectVarName =
-            namer.localVarName(Name.from(InitFieldConfig.PROJECT_ID_VARIABLE_NAME));
+            namer.localVarReference(Name.from(InitFieldConfig.PROJECT_ID_VARIABLE_NAME));
         if (simpleLine.initValue() instanceof ResourceNameInitValueView) {
           ResourceNameInitValueView initValue = (ResourceNameInitValueView) simpleLine.initValue();
           return initValue.formatArgs().contains(projectVarName);
@@ -347,7 +361,7 @@ public class TestCaseTransformer {
     return false;
   }
 
-  public InitCodeContext createSmokeTestInitContext(GapicMethodContext context) {
+  public InitCodeContext createSmokeTestInitContext(MethodContext context) {
     SmokeTestConfig testConfig = context.getInterfaceConfig().getSmokeTestConfig();
     InitCodeContext.InitCodeOutputType outputType;
     ImmutableMap<String, FieldConfig> fieldConfigMap;
@@ -383,7 +397,7 @@ public class TestCaseTransformer {
   }
 
   public FlatteningConfig getSmokeTestFlatteningGroup(
-      GapicMethodConfig methodConfig, SmokeTestConfig smokeTestConfig) {
+      MethodConfig methodConfig, SmokeTestConfig smokeTestConfig) {
     for (FlatteningConfig flatteningGroup : methodConfig.getFlatteningConfigs()) {
       if (flatteningGroup.getFlatteningName().equals(smokeTestConfig.getFlatteningName())) {
         return flatteningGroup;

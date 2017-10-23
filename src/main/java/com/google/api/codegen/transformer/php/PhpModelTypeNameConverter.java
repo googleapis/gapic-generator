@@ -31,7 +31,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
-public class PhpModelTypeNameConverter implements ModelTypeNameConverter {
+public class PhpModelTypeNameConverter extends ModelTypeNameConverter {
 
   /** The maximum depth of nested messages supported by PHP type name determination. */
   private static final int MAX_NESTED_DEPTH = 20;
@@ -72,8 +72,8 @@ public class PhpModelTypeNameConverter implements ModelTypeNameConverter {
           .put(Type.TYPE_SINT32, "0")
           .put(Type.TYPE_FIXED32, "0")
           .put(Type.TYPE_SFIXED32, "0")
-          .put(Type.TYPE_STRING, "\"\"")
-          .put(Type.TYPE_BYTES, "\"\"")
+          .put(Type.TYPE_STRING, "\'\'")
+          .put(Type.TYPE_BYTES, "\'\'")
           .build();
 
   /** A map from protobuf message type names to PHP types for special case messages. */
@@ -262,7 +262,7 @@ public class PhpModelTypeNameConverter implements ModelTypeNameConverter {
         return value.toLowerCase();
       case TYPE_STRING:
       case TYPE_BYTES:
-        return "\"" + value + "\"";
+        return '\'' + value + '\'';
       default:
         // Types that do not need to be modified (e.g. TYPE_INT32) are handled
         // here

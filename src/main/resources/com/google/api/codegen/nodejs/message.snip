@@ -4,25 +4,17 @@
   {@licenseSection(doc.fileHeader)}
 
   @join elementDoc : doc.elementDocs on BREAK.add(BREAK)
-    @if doc.isExternalFile
-      {@documentExternalElement(elementDoc)}
-    @else
-      {@documentElement(elementDoc, toplevelHeader(elementDoc), semicolon())}
-    @end
+    {@documentElement(elementDoc, toplevelHeader(elementDoc), semicolon())}
   @end
 @end
 
 @private licenseSection(fileHeader)
-  /*
-   {@comments(fileHeader.copyrightLines)}
-   *
-   {@comments(fileHeader.licenseLines)}
-   */
+  {@lineComments(fileHeader.copyrightLines)}
+  //
+  {@lineComments(fileHeader.licenseLines)}
 
-  /*
-   * Note: this file is purely for documentation. Any contents are not expected
-   * to be loaded as the JS file.
-   */
+  // Note: this file is purely for documentation. Any contents are not expected
+  // to be loaded as the JS file.
 @end
 
 @private toplevelHeader(elementDoc)
@@ -52,7 +44,8 @@
    @if properties(message)
      {@properties(message)}
    @end
-   * @@class
+   * @@typedef {@message.name}
+   * @@memberof {@message.packageName}
    * @@see [{@message.fullName} definition in proto format]{@@link {@message.fileUrl}}
    */
   {@header}
@@ -72,6 +65,7 @@
      *
    @end
    * @@enum {number}
+   * @@memberof {@enum.packageName}
    */
   {@header}
     @join value : enum.values() on ",".add(BREAK)
@@ -80,25 +74,11 @@
         /**
          {@comments(value.lines)}
          */
-      
+
       @end
       {@value.name}: {@value.number}
     @end
   }{@footer}
-@end
-
-@private documentExternalMessage(message)
-  /**
-   @if message.lines
-     {@comments(message.lines)}
-     *
-   @end
-   * @@external "{@message.fullName}"
-   @if properties(message)
-     {@properties(message)}
-   @end
-   * @@see [{@message.fullName} definition in proto format]{@@link {@message.fileUrl}}
-   */
 @end
 
 @private properties(message)
@@ -123,16 +103,6 @@
     {@documentMessage(doc, header, footer)}
   @case "GrpcEnumDocView"
     {@documentEnum(doc, header, footer)}
-  @default
-    {@unhandledCase()}
-  @end
-@end
-
-@private documentExternalElement(doc)
-  @switch doc.type
-  @case "GrpcMessageDocView"
-    {@documentExternalMessage(doc)}
-  @case "GrpcEnumDocView"
   @default
     {@unhandledCase()}
   @end

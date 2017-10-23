@@ -29,6 +29,7 @@ import com.google.api.codegen.viewmodel.ImportSectionView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
 
@@ -70,7 +71,6 @@ public class NodeJSGapicSurfaceDocTransformer implements ModelToViewTransformer 
         fileHeaderTransformer.generateFileHeader(
             productConfig, ImportSectionView.newBuilder().build(), namer));
     doc.elementDocs(grpcElementDocTransformer.generateElementDocs(typeTable, namer, file));
-    doc.isExternalFile(commentReformatter.isExternalFile(file));
     return doc.build();
   }
 
@@ -78,6 +78,12 @@ public class NodeJSGapicSurfaceDocTransformer implements ModelToViewTransformer 
     String version = namer.getApiWrapperModuleVersion();
     boolean hasVersion = version != null && !version.isEmpty();
     String path = hasVersion ? "src/" + version + "/doc/" : "src/doc/";
-    return path + "doc_" + namer.getProtoFileName(file);
+    String packageDirPath = file.getFullName().replace('.', '/');
+    if (!Strings.isNullOrEmpty(packageDirPath)) {
+      packageDirPath += "/";
+    } else {
+      packageDirPath = "";
+    }
+    return path + packageDirPath + "doc_" + namer.getProtoFileName(file);
   }
 }

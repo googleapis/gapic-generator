@@ -59,6 +59,9 @@ public abstract class SmokeTestClassView implements ViewModel {
   public abstract String outputPath();
 
   @Nullable
+  public abstract String apiName();
+
+  @Nullable
   public abstract String apiVersion();
 
   public static Builder newBuilder() {
@@ -87,6 +90,8 @@ public abstract class SmokeTestClassView implements ViewModel {
     public abstract Builder method(TestCaseView val);
 
     public abstract Builder requireProjectId(boolean val);
+
+    public abstract Builder apiName(String val);
 
     public abstract Builder apiVersion(String val);
 

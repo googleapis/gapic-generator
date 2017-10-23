@@ -36,9 +36,7 @@ public class LanguageTransformer {
 
   static {
     List<RewriteRule> javaRewriteRules =
-        Arrays.asList(
-            new RewriteRule("^google(\\.cloud)?", "com.google.cloud"),
-            new RewriteRule("(.v[^.]+)$", ".spi$1"));
+        Arrays.asList(new RewriteRule("^google(\\.cloud)?", "com.google.cloud"));
     List<RewriteRule> commonRewriteRules =
         Arrays.asList(new RewriteRule("^google(?!\\.cloud)", "google.cloud"));
     LANGUAGE_FORMATTERS =
@@ -87,6 +85,7 @@ public class LanguageTransformer {
       this.shouldCapitalize = shouldCapitalize;
     }
 
+    @Override
     public String getFormattedPackageName(String packageName) {
       for (RewriteRule rewriteRule : rewriteRules) {
         packageName = rewriteRule.rewrite(packageName);
@@ -137,6 +136,7 @@ public class LanguageTransformer {
   }
 
   private static class NodeJSLanguageFormatter implements LanguageFormatter {
+    @Override
     public String getFormattedPackageName(String packageName) {
       List<String> nameComponents = Splitter.on(DEFAULT_PACKAGE_SEPARATOR).splitToList(packageName);
       return nameComponents.get(nameComponents.size() - 2)

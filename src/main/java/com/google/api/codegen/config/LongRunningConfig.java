@@ -15,6 +15,8 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.LongRunningConfigProto;
+import com.google.api.codegen.transformer.ImportTypeTable;
+import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Model;
@@ -153,5 +155,18 @@ public abstract class LongRunningConfig {
           maxPollDelay,
           totalPollTimeout);
     }
+  }
+
+  public String getLongRunningOperationReturnTypeName(ImportTypeTable typeTable) {
+    // TODO(andrealin): Support Discovery
+    return ((ModelTypeTable) typeTable).getAndSaveNicknameFor(getReturnType());
+  }
+
+  public String getLongRunningOperationReturnTypeFullName(ImportTypeTable typeTable) {
+    return ((ModelTypeTable) typeTable).getFullNameFor(getReturnType());
+  }
+
+  public String getLongRunningOperationMetadataTypeFullName(ImportTypeTable typeTable) {
+    return ((ModelTypeTable) typeTable).getFullNameFor(getMetadataType());
   }
 }

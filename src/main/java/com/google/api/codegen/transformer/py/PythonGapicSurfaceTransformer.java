@@ -17,10 +17,14 @@ package com.google.api.codegen.transformer.py;
 import com.google.api.codegen.GeneratorVersionProvider;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.TargetLanguage;
+import com.google.api.codegen.config.ApiModel;
+import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.GapicMethodConfig;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
-import com.google.api.codegen.config.ProductServiceConfig;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
 import com.google.api.codegen.transformer.DynamicLangApiMethodTransformer;
@@ -38,6 +42,8 @@ import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.ServiceTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.NamePath;
+import com.google.api.codegen.util.VersionMatcher;
 import com.google.api.codegen.util.py.PythonTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.BatchingDescriptorView;
@@ -53,15 +59,12 @@ import com.google.api.codegen.viewmodel.PathTemplateGetterFunctionView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexRequireView;
 import com.google.api.codegen.viewmodel.metadata.VersionIndexView;
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoContainerElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
 import java.util.List;
@@ -122,8 +125,9 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
             new PythonModelTypeNameConverter(productConfig.getPackageName()));
     SurfaceNamer namer = new PythonSurfaceNamer(productConfig.getPackageName());
     FeatureConfig featureConfig = new DefaultFeatureConfig();
+    ProtoApiModel apiModel = new ProtoApiModel(model);
     ImmutableList.Builder<ViewModel> serviceSurfaces = ImmutableList.builder();
-    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+    for (InterfaceModel apiInterface : apiModel.getInterfaces(productConfig)) {
       GapicInterfaceContext context =
           GapicInterfaceContext.create(
               apiInterface, productConfig, modelTypeTable, namer, featureConfig);
@@ -140,12 +144,12 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
   private void addApiImports(GapicInterfaceContext context) {
     for (TypeRef type : context.getInterface().getModel().getSymbolTable().getDeclaredTypes()) {
       if (type.isEnum() && type.getEnumType().isReachable()) {
-        context.getModelTypeTable().getAndSaveNicknameFor(type);
+        context.getImportTypeTable().getAndSaveNicknameFor(type);
         break;
       }
     }
 
-    for (Method method : context.getSupportedMethods()) {
+    for (MethodModel method : context.getSupportedMethods()) {
       addMethodImports(context.asDynamicMethodContext(method));
     }
   }
@@ -163,15 +167,17 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
     addFieldsImports(typeTable, methodConfig.getOptionalFields());
   }
 
-  private void addFieldsImports(ModelTypeTable typeTable, Iterable<Field> fields) {
-    for (Field field : fields) {
-      typeTable.getAndSaveNicknameFor(field.getType());
+  private void addFieldsImports(ModelTypeTable typeTable, Iterable<FieldModel> fields) {
+    for (FieldModel field : fields) {
+      typeTable.getAndSaveNicknameFor(field);
     }
   }
 
   private ViewModel generateApiClass(GapicInterfaceContext context) {
     SurfaceNamer namer = context.getNamer();
-    String subPath = pathMapper.getOutputPath(context.getInterface(), context.getProductConfig());
+    String subPath =
+        pathMapper.getOutputPath(
+            context.getInterfaceModel().getFullName(), context.getProductConfig());
     String name = namer.getApiWrapperClassName(context.getInterfaceConfig());
     List<ApiMethodView> methods = generateApiMethods(context);
 
@@ -180,18 +186,17 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.outputPath(namer.getSourceFilePath(subPath, name));
 
     xapiClass.protoFilename(context.getInterface().getFile().getSimpleName());
-    xapiClass.servicePhraseName(namer.getServicePhraseName(context.getInterface()));
+    xapiClass.servicePhraseName(namer.getServicePhraseName(context.getInterfaceModel()));
 
     xapiClass.name(name);
     xapiClass.doc(serviceTransformer.generateServiceDoc(context, methods.get(0)));
     xapiClass.stubs(grpcStubTransformer.generateGrpcStubs(context));
 
-    ProductServiceConfig productServiceConfig = new ProductServiceConfig();
-    xapiClass.serviceAddress(
-        productServiceConfig.getServiceAddress(context.getInterface().getModel()));
-    xapiClass.servicePort(productServiceConfig.getServicePort());
-    xapiClass.serviceTitle(productServiceConfig.getTitle(context.getInterface().getModel()));
-    xapiClass.authScopes(productServiceConfig.getAuthScopes(context.getInterface().getModel()));
+    ApiModel model = context.getApiModel();
+    xapiClass.serviceAddress(model.getServiceAddress());
+    xapiClass.servicePort(model.getServicePort());
+    xapiClass.serviceTitle(model.getTitle());
+    xapiClass.authScopes(model.getAuthScopes());
     xapiClass.hasDefaultServiceAddress(context.getInterfaceConfig().hasDefaultServiceAddress());
     xapiClass.hasDefaultServiceScopes(context.getInterfaceConfig().hasDefaultServiceScopes());
 
@@ -212,11 +217,11 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
 
     xapiClass.methodKeys(ImmutableList.<String>of());
     xapiClass.interfaceKey(context.getInterface().getFullName());
-    xapiClass.clientConfigPath(namer.getClientConfigPath(context.getInterface()));
-    xapiClass.clientConfigName(namer.getClientConfigName(context.getInterface()));
+    xapiClass.clientConfigPath(namer.getClientConfigPath(context.getInterfaceModel()));
+    xapiClass.clientConfigName(namer.getClientConfigName(context.getInterfaceModel()));
     xapiClass.grpcClientTypeName(
         namer.getAndSaveNicknameForGrpcClientTypeName(
-            context.getModelTypeTable(), context.getInterface()));
+            context.getImportTypeTable(), context.getInterfaceModel()));
 
     xapiClass.apiMethods(methods);
 
@@ -231,7 +236,7 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
   private List<ApiMethodView> generateApiMethods(GapicInterfaceContext context) {
     ImmutableList.Builder<ApiMethodView> apiMethods = ImmutableList.builder();
 
-    for (Method method : context.getSupportedMethods()) {
+    for (MethodModel method : context.getSupportedMethods()) {
       apiMethods.add(apiMethodTransformer.generateMethod(context.asDynamicMethodContext(method)));
     }
 
@@ -277,6 +282,7 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
         messageView.lines(namer.getDocLines(message));
         messageView.properties(ImmutableList.<ParamDocView>of());
         messageView.elementDocs(elementDocs);
+        messageView.packageName(message.getFile().getFullName());
         elements.add(messageView.build());
       }
     }
@@ -392,11 +398,15 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private String topLevelEntryPointFileName(SurfaceNamer namer) {
-    String topLevelPath = namer.getTopLevelNamespace().replace(".", File.separator);
-    if (!Strings.isNullOrEmpty(topLevelPath)) {
-      topLevelPath += File.separator;
+    NamePath namePath = NamePath.dotted(namer.getVersionedDirectoryNamespace());
+    String name = namePath.getHead();
+    int lastUnderscoreIndex = name.lastIndexOf("_");
+    if (lastUnderscoreIndex > -1
+        && VersionMatcher.isVersion(name.substring(lastUnderscoreIndex + 1))) {
+      name = name.substring(0, lastUnderscoreIndex);
     }
-    return String.format("%s%s.py", topLevelPath, packageConfig.shortName().toLowerCase());
+    String topLevelPath = namePath.withHead(name).toSlashed();
+    return String.format("%s.py", topLevelPath);
   }
 
   private List<VersionIndexRequireView> topLevelRequireViews(

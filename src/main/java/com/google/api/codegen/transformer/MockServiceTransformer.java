@@ -14,16 +14,15 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.InterfaceView;
-import com.google.api.codegen.config.GapicInterfaceConfig;
-import com.google.api.codegen.config.GapicMethodConfig;
+import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.InterfaceConfig;
+import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.viewmodel.testing.MockGrpcMethodView;
 import com.google.api.codegen.viewmodel.testing.MockServiceUsageView;
-import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
-import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Strings;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -32,44 +31,45 @@ import java.util.Map;
 
 /** MockServiceTransformer contains helper methods useful for creating mock views. */
 public class MockServiceTransformer {
-  public List<Interface> getGrpcInterfacesToMock(Model model, GapicProductConfig productConfig) {
-    Map<String, Interface> interfaces = new LinkedHashMap<>();
+  public List<InterfaceModel> getGrpcInterfacesToMock(
+      ApiModel model, GapicProductConfig productConfig) {
+    Map<String, InterfaceModel> interfaces = new LinkedHashMap<>();
 
-    for (Interface apiInterface : new InterfaceView().getElementIterable(model)) {
+    for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
       if (!apiInterface.isReachable()) {
         continue;
       }
       interfaces.putAll(getGrpcInterfacesForService(model, productConfig, apiInterface));
     }
 
-    return new ArrayList<Interface>(interfaces.values());
+    return new ArrayList(interfaces.values());
   }
 
-  public Map<String, Interface> getGrpcInterfacesForService(
-      Model model, GapicProductConfig productConfig, Interface apiInterface) {
-    Map<String, Interface> interfaces = new LinkedHashMap<>();
+  public Map<String, InterfaceModel> getGrpcInterfacesForService(
+      ApiModel model, GapicProductConfig productConfig, InterfaceModel apiInterface) {
+    Map<String, InterfaceModel> interfaces = new LinkedHashMap<>();
     interfaces.put(apiInterface.getFullName(), apiInterface);
-    GapicInterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
-    for (GapicMethodConfig methodConfig : interfaceConfig.getMethodConfigs()) {
+    InterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
+    for (MethodConfig methodConfig : interfaceConfig.getMethodConfigs()) {
       String reroute = methodConfig.getRerouteToGrpcInterface();
       if (!Strings.isNullOrEmpty(reroute)) {
-        Interface targetInterface = model.getSymbolTable().lookupInterface(reroute);
+        InterfaceModel targetInterface = model.getInterface(reroute);
         interfaces.put(reroute, targetInterface);
       }
     }
     return interfaces;
   }
 
-  public List<MockGrpcMethodView> createMockGrpcMethodViews(GapicInterfaceContext context) {
-    List<Method> methods = context.getInterface().getMethods();
+  public List<MockGrpcMethodView> createMockGrpcMethodViews(InterfaceContext context) {
+    List<MethodModel> methods = context.getInterfaceMethods();
     ArrayList<MockGrpcMethodView> mocks = new ArrayList<>(methods.size());
-    for (Method method : methods) {
-      GapicMethodContext methodContext = context.asRequestMethodContext(method);
+    for (MethodModel method : methods) {
+      MethodContext methodContext = context.asRequestMethodContext(method);
       String requestTypeName =
-          methodContext.getTypeTable().getAndSaveNicknameFor(method.getInputType());
+          method.getAndSaveRequestTypeName(methodContext.getTypeTable(), methodContext.getNamer());
       String responseTypeName =
-          methodContext.getTypeTable().getAndSaveNicknameFor(method.getOutputType());
-      GapicMethodConfig methodConfig = methodContext.getMethodConfig();
+          method.getAndSaveResponseTypeName(methodContext.getTypeTable(), methodContext.getNamer());
+      MethodConfig methodConfig = methodContext.getMethodConfig();
       mocks.add(
           MockGrpcMethodView.newBuilder()
               .name(methodContext.getNamer().getApiMethodName(method, VisibilityConfig.PUBLIC))
@@ -83,10 +83,10 @@ public class MockServiceTransformer {
   }
 
   public List<MockServiceUsageView> createMockServices(
-      SurfaceNamer namer, Model model, GapicProductConfig productConfig) {
+      SurfaceNamer namer, ApiModel model, GapicProductConfig productConfig) {
     List<MockServiceUsageView> mockServices = new ArrayList<>();
 
-    for (Interface apiInterface : getGrpcInterfacesToMock(model, productConfig)) {
+    for (InterfaceModel apiInterface : getGrpcInterfacesToMock(model, productConfig)) {
       MockServiceUsageView mockService =
           MockServiceUsageView.newBuilder()
               .className(namer.getMockServiceClassName(apiInterface))
