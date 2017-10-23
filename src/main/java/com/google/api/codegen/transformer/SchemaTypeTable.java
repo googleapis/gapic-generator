@@ -14,7 +14,12 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.config.*;
+import com.google.api.codegen.config.DiscoveryField;
+import com.google.api.codegen.config.DiscoveryRequestType;
+import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
 import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;

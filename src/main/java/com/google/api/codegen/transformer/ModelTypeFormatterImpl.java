@@ -14,7 +14,12 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.config.*;
+import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.ProtoField;
+import com.google.api.codegen.config.ProtoInterfaceModel;
+import com.google.api.codegen.config.ProtoTypeRef;
+import com.google.api.codegen.config.TypeModel;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
 

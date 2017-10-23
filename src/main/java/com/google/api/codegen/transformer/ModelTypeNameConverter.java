@@ -16,7 +16,13 @@ package com.google.api.codegen.transformer;
 
 import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type.TYPE_STRING;
 
-import com.google.api.codegen.config.*;
+import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.ProtoField;
+import com.google.api.codegen.config.ProtoInterfaceModel;
+import com.google.api.codegen.config.ProtoTypeRef;
+import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypedValue;
 import com.google.api.tools.framework.model.EnumValue;

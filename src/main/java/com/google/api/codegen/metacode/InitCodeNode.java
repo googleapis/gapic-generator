@@ -14,7 +14,11 @@
  */
 package com.google.api.codegen.metacode;
 
-import com.google.api.codegen.config.*;
+import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.OneofConfig;
+import com.google.api.codegen.config.ProtoTypeRef;
+import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;

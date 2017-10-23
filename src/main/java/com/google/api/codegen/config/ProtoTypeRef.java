@@ -16,7 +16,11 @@ package com.google.api.codegen.config;
 
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.util.Name;
-import com.google.api.tools.framework.model.*;
+import com.google.api.tools.framework.model.EnumValue;
+import com.google.api.tools.framework.model.Field;
+import com.google.api.tools.framework.model.MessageType;
+import com.google.api.tools.framework.model.Oneof;
+import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.DescriptorProtos;

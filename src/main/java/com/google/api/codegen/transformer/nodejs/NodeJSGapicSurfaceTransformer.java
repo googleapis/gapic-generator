@@ -16,7 +16,16 @@ package com.google.api.codegen.transformer.nodejs;
 
 import com.google.api.codegen.GeneratorVersionProvider;
 import com.google.api.codegen.TargetLanguage;
-import com.google.api.codegen.config.*;
+import com.google.api.codegen.config.ApiModel;
+import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.GrpcStreamingConfig;
+import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.LongRunningConfig;
+import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.ProtoApiModel;
+import com.google.api.codegen.config.TypeModel;
+import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.nodejs.NodeJSUtils;
 import com.google.api.codegen.transformer.BatchingTransformer;
