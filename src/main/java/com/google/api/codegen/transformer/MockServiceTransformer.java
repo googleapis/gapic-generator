@@ -42,7 +42,7 @@ public class MockServiceTransformer {
       interfaces.putAll(getGrpcInterfacesForService(model, productConfig, apiInterface));
     }
 
-    return new ArrayList(interfaces.values());
+    return new ArrayList<>(interfaces.values());
   }
 
   public Map<String, InterfaceModel> getGrpcInterfacesForService(

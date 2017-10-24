@@ -156,7 +156,7 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
 
     xapiClass.methodKeys(ImmutableList.<String>of());
     xapiClass.interfaceKey(context.getInterface().getFullName());
-    xapiClass.clientConfigPath(namer.getClientConfigPath(context.getInterfaceModel()));
+    xapiClass.clientConfigPath(namer.getClientConfigPath(context.getInterfaceConfig()));
     xapiClass.grpcClientTypeName(
         namer.getAndSaveNicknameForGrpcClientTypeName(
             context.getImportTypeTable(), context.getInterfaceModel()));
@@ -171,10 +171,11 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.apiVersion(packageConfig.apiVersion());
 
     xapiClass.packageHasMultipleServices(hasMultipleServices);
-    xapiClass.packageServiceName(namer.getPackageServiceName(context.getInterfaceModel()));
+    xapiClass.packageServiceName(namer.getPackageServiceName(context.getInterfaceConfig()));
 
     xapiClass.validDescriptorsNames(generateValidDescriptorsNames(context));
-    xapiClass.constructorName(namer.getApiWrapperClassConstructorName(context.getInterfaceModel()));
+    xapiClass.constructorName(
+        namer.getApiWrapperClassConstructorName(context.getInterfaceConfig()));
     xapiClass.isGcloud(NodeJSUtils.isGcloud(context.getProductConfig()));
 
     return xapiClass.build();
@@ -285,12 +286,12 @@ public class NodeJSGapicSurfaceTransformer implements ModelToViewTransformer {
           VersionIndexRequireView.newBuilder()
               .clientName(
                   namer.getApiWrapperClassName(productConfig.getInterfaceConfig(apiInterface)))
-              .serviceName(namer.getPackageServiceName(apiInterface))
+              .serviceName(namer.getPackageServiceName(context.getInterfaceConfig()))
               .localName(localName)
               .doc(
                   serviceTransformer.generateServiceDoc(
                       context, generateApiMethods(context, packageHasMultipleServices).get(0)))
-              .fileName(namer.getClientFileName(context.getInterfaceModel()))
+              .fileName(namer.getClientFileName(context.getInterfaceConfig()))
               .build();
       requireViews.add(require);
     }

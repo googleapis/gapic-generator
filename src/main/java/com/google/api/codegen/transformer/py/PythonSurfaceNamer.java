@@ -73,13 +73,16 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getServicePhraseName(InterfaceModel apiInterface) {
-    return apiInterface.getParentFullName() + " " + apiInterface.getSimpleName() + " API";
+  public String getServicePhraseName(InterfaceConfig interfaceConfig) {
+    return interfaceConfig.getInterfaceModel().getParentFullName()
+        + " "
+        + interfaceConfig.getInterfaceModel().getSimpleName()
+        + " API";
   }
 
   @Override
-  public String getApiWrapperClassConstructorName(InterfaceModel apiInterface) {
-    return getApiWrapperClassName(apiInterface.getSimpleName());
+  public String getApiWrapperClassConstructorName(InterfaceConfig interfaceConfig) {
+    return getApiWrapperClassName(interfaceConfig.getInterfaceModel().getSimpleName());
   }
 
   @Override
@@ -221,14 +224,14 @@ public class PythonSurfaceNamer extends SurfaceNamer {
 
   @Override
   public String getPathTemplateName(
-      InterfaceModel apiInterface, SingleResourceNameConfig resourceNameConfig) {
+      InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
     return "_"
         + inittedConstantName(Name.from(resourceNameConfig.getEntityName(), "path", "template"));
   }
 
   @Override
   public String getFormatFunctionName(
-      InterfaceModel apiInterface, SingleResourceNameConfig resourceNameConfig) {
+      InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
     return staticFunctionName(Name.from(resourceNameConfig.getEntityName(), "path"));
   }
 
@@ -245,13 +248,14 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getClientConfigPath(InterfaceModel apiInterface) {
-    return String.format("%s.%s", getPackageName(), getClientConfigName(apiInterface));
+  public String getClientConfigPath(InterfaceConfig interfaceConfig) {
+    return String.format("%s.%s", getPackageName(), getClientConfigName(interfaceConfig));
   }
 
   @Override
-  public String getClientConfigName(InterfaceModel apiInterface) {
-    return classFileNameBase(Name.upperCamel(apiInterface.getSimpleName()).join("client_config"));
+  public String getClientConfigName(InterfaceConfig interfaceConfig) {
+    return classFileNameBase(
+        Name.upperCamel(interfaceConfig.getInterfaceModel().getSimpleName()).join("client_config"));
   }
 
   @Override

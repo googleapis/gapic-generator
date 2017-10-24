@@ -186,7 +186,7 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.outputPath(namer.getSourceFilePath(subPath, name));
 
     xapiClass.protoFilename(context.getInterface().getFile().getSimpleName());
-    xapiClass.servicePhraseName(namer.getServicePhraseName(context.getInterfaceModel()));
+    xapiClass.servicePhraseName(namer.getServicePhraseName(context.getInterfaceConfig()));
 
     xapiClass.name(name);
     xapiClass.doc(serviceTransformer.generateServiceDoc(context, methods.get(0)));
@@ -217,8 +217,8 @@ public class PythonGapicSurfaceTransformer implements ModelToViewTransformer {
 
     xapiClass.methodKeys(ImmutableList.<String>of());
     xapiClass.interfaceKey(context.getInterface().getFullName());
-    xapiClass.clientConfigPath(namer.getClientConfigPath(context.getInterfaceModel()));
-    xapiClass.clientConfigName(namer.getClientConfigName(context.getInterfaceModel()));
+    xapiClass.clientConfigPath(namer.getClientConfigPath(context.getInterfaceConfig()));
+    xapiClass.clientConfigName(namer.getClientConfigName(context.getInterfaceConfig()));
     xapiClass.grpcClientTypeName(
         namer.getAndSaveNicknameForGrpcClientTypeName(
             context.getImportTypeTable(), context.getInterfaceModel()));

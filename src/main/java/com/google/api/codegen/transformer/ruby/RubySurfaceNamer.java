@@ -69,8 +69,9 @@ public class RubySurfaceNamer extends SurfaceNamer {
 
   /** The name of the class that implements snippets for a particular proto interface. */
   @Override
-  public String getApiSnippetsClassName(InterfaceModel apiInterface) {
-    return publicClassName(Name.upperCamel(apiInterface.getSimpleName(), "ClientSnippets"));
+  public String getApiSnippetsClassName(InterfaceConfig interfaceConfig) {
+    return publicClassName(
+        Name.upperCamel(interfaceConfig.getInterfaceModel().getSimpleName(), "ClientSnippets"));
   }
 
   /** The function name to set a field. */
@@ -88,7 +89,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
   /** The function name to format the entity for the given collection. */
   @Override
   public String getFormatFunctionName(
-      InterfaceModel apiInterface, SingleResourceNameConfig resourceNameConfig) {
+      InterfaceConfig interfaceConfig, SingleResourceNameConfig resourceNameConfig) {
     return staticFunctionName(Name.from(resourceNameConfig.getEntityName(), "path"));
   }
 
@@ -99,8 +100,10 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getClientConfigPath(InterfaceModel apiInterface) {
-    return Name.upperCamel(apiInterface.getSimpleName()).join("client_config").toLowerUnderscore()
+  public String getClientConfigPath(InterfaceConfig interfaceConfig) {
+    return Name.upperCamel(interfaceConfig.getInterfaceModel().getSimpleName())
+            .join("client_config")
+            .toLowerUnderscore()
         + ".json";
   }
 
@@ -297,7 +300,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
       return getVersionAliasedApiClassName(interfaceConfig, packageHasMultipleServices);
     }
     return packageHasMultipleServices
-        ? getTopLevelNamespace() + "::" + getPackageServiceName(interfaceConfig.getInterfaceModel())
+        ? getTopLevelNamespace() + "::" + getPackageServiceName(interfaceConfig)
         : getTopLevelNamespace();
   }
 
@@ -305,7 +308,7 @@ public class RubySurfaceNamer extends SurfaceNamer {
   public String getVersionAliasedApiClassName(
       InterfaceConfig interfaceConfig, boolean packageHasMultipleServices) {
     return packageHasMultipleServices
-        ? getPackageName() + "::" + getPackageServiceName(interfaceConfig.getInterfaceModel())
+        ? getPackageName() + "::" + getPackageServiceName(interfaceConfig)
         : getPackageName();
   }
 
@@ -428,7 +431,8 @@ public class RubySurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getPackageServiceName(InterfaceModel apiInterface) {
-    return publicClassName(getReducedServiceName(apiInterface.getSimpleName()));
+  public String getPackageServiceName(InterfaceConfig interfaceConfig) {
+    return publicClassName(
+        getReducedServiceName(interfaceConfig.getInterfaceModel().getSimpleName()));
   }
 }

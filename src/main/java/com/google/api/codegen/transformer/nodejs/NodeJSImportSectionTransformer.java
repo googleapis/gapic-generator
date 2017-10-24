@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer.nodejs;
 
+import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
@@ -46,7 +47,8 @@ public class NodeJSImportSectionTransformer implements ImportSectionTransformer 
   private List<ImportFileView> generateExternalImports(InterfaceContext context) {
     ImmutableList.Builder<ImportFileView> imports = ImmutableList.builder();
     InterfaceModel apiInterface = context.getInterfaceModel();
-    String configModule = context.getNamer().getClientConfigPath(apiInterface);
+    InterfaceConfig interfaceConfig = context.getInterfaceConfig();
+    String configModule = context.getNamer().getClientConfigPath(interfaceConfig);
     imports.add(createImport("gapicConfig", "./" + configModule));
     imports.add(createImport("gax", "google-gax"));
     imports.add(createImport("merge", "lodash.merge"));
