@@ -201,7 +201,9 @@ public abstract class GapicInterfaceConfig implements InterfaceConfig {
       InterfaceConfigProto interfaceConfigProto) {
     if (interfaceConfigProto.hasSmokeTest()) {
       return SmokeTestConfig.createSmokeTestConfig(
-          apiInterface, interfaceConfigProto.getSmokeTest(), diagCollector);
+          new ProtoInterfaceModel(apiInterface),
+          interfaceConfigProto.getSmokeTest(),
+          diagCollector);
     } else {
       return null;
     }

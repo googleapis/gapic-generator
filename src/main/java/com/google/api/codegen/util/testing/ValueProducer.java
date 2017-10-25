@@ -14,10 +14,10 @@
  */
 package com.google.api.codegen.util.testing;
 
+import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.util.Name;
-import com.google.api.tools.framework.model.TypeRef;
 
 /** A utility interface used by TestValueGenerator. */
 public interface ValueProducer {
-  public String produce(TypeRef typeRef, Name identifier);
+  String produce(TypeModel typeRef, Name identifier);
 }

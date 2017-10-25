@@ -58,6 +58,12 @@ public interface MethodModel {
   /* @return the description of this method. */
   String getDescription();
 
+  /* @return the type of the input field. */
+  TypeModel getInputType();
+
+  /* @return the type of the input field. */
+  TypeModel getOutputType();
+
   /* @return theTypeName for the output type. Save it in the table. */
   TypeName getOutputTypeName(ImportTypeTable typeTable);
 
@@ -85,13 +91,13 @@ public interface MethodModel {
 
   boolean hasReturnValue();
 
-  Iterable<FieldModel> getInputFields();
+  Iterable<? extends FieldModel> getInputFields();
 
-  List<FieldModel> getInputFieldsForResourceNameMethod();
+  List<? extends FieldModel> getInputFieldsForResourceNameMethod();
 
-  Iterable<FieldModel> getOutputFields();
+  Iterable<? extends FieldModel> getOutputFields();
 
-  Iterable<FieldModel> getResourceNameInputFields();
+  Iterable<? extends FieldModel> getResourceNameInputFields();
 
   boolean isIdempotent();
 

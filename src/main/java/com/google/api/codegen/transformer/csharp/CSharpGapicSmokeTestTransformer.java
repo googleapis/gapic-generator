@@ -17,7 +17,7 @@ package com.google.api.codegen.transformer.csharp;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.FlatteningConfig;
 import com.google.api.codegen.config.GapicProductConfig;
-import com.google.api.codegen.config.ProtoMethodModel;
+import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.SmokeTestConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
@@ -119,7 +119,7 @@ public class CSharpGapicSmokeTestTransformer implements ModelToViewTransformer {
     if (smokeTestConfig == null) {
       return null;
     }
-    ProtoMethodModel method = new ProtoMethodModel(smokeTestConfig.getMethod());
+    MethodModel method = smokeTestConfig.getMethod();
     FlatteningConfig flatteningGroup =
         testCaseTransformer.getSmokeTestFlatteningGroup(
             context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());

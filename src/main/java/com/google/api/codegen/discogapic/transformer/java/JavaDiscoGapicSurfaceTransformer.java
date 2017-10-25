@@ -89,7 +89,7 @@ public class JavaDiscoGapicSurfaceTransformer
         apiInterface, productConfig, namer, importTypeTable, enableStringFormatFunctions);
   }
 
-  public static DiscoGapicInterfaceContext newInterfaceContext(
+  static DiscoGapicInterfaceContext newInterfaceContext(
       InterfaceModel apiInterface,
       GapicProductConfig productConfig,
       SurfaceNamer namer,
@@ -109,7 +109,8 @@ public class JavaDiscoGapicSurfaceTransformer
   public SchemaTypeTable createTypeTable(String implicitPackageName) {
     return new SchemaTypeTable(
         new JavaTypeTable(implicitPackageName),
-        new JavaSchemaTypeNameConverter(implicitPackageName, nameFormatter));
+        new JavaSchemaTypeNameConverter(implicitPackageName, nameFormatter),
+        new DiscoGapicNamer(new JavaSurfaceNamer(implicitPackageName, implicitPackageName)));
   }
 
   @Override
