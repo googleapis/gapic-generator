@@ -264,12 +264,8 @@ class CustomException(Exception):
             {@initCode(test.initCode)}
 
         @end
-        try:
+        with pytest.raises(CustomException):
             {@unaryTestMethodCall(test)}
-            @# Should not get here
-            assert false
-        except CustomException:
-            pass
 @end
 
 @private pagedStreamingTestWithException(test, moduleName)
@@ -284,12 +280,8 @@ class CustomException(Exception):
 
         @end
         paged_list_response = {@unaryTestMethodCall(test)}
-        try:
+        with pytest.raises(CustomException):
             list(paged_list_response)
-            @# Should not get here
-            assert false
-        except CustomException:
-            pass
 @end
 
 @private requestStreamingTestWithException(test, moduleName)
@@ -307,12 +299,8 @@ class CustomException(Exception):
         request = {@test.requestTypeName}(**request)
         requests = [request]
 
-        try:
+        with pytest.raises(CustomException):
             {@requestStreamingTestMethodCall(test)}
-            @# Should not get here
-            assert false
-        except CustomException:
-            pass
 @end
 
 @private operationTestCase(test, moduleName)

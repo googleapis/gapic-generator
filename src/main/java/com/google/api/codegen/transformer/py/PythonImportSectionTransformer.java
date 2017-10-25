@@ -183,7 +183,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
   }
 
   private List<ImportFileView> generateTestStandardImports() {
-    return ImmutableList.of();
+    return ImmutableList.of(createImport("pytest"));
   }
 
   private List<ImportFileView> generateSmokeTestStandardImports(boolean requireProjectId) {
@@ -191,7 +191,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
     if (requireProjectId) {
       imports.add(createImport("os"));
     }
-    imports.add(createImport("time"), createImport("unittest"));
+    imports.add(createImport("time"));
     return imports.build();
   }
 

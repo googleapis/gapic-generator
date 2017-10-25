@@ -1076,6 +1076,8 @@ setup(
 
 """Unit tests."""
 
+import pytest
+
 from example.proto import no_path_templates_messages_pb2
 from google.protobuf import empty_pb2
 import example
@@ -1137,10 +1139,6 @@ class TestNoTemplatesAPIServiceClient(object):
         client = example.NoTemplatesAPIServiceClient(
              channel=channel)
 
-        try:
+        with pytest.raises(CustomException):
             client.increment()
-            # Should not get here
-            assert false
-        except CustomException:
-            pass
 
