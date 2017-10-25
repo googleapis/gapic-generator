@@ -41,6 +41,7 @@ import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Api;
+import java.io.File;
 import java.util.List;
 
 public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer {
@@ -93,7 +94,7 @@ public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer {
             new ProtoApiModel(file.getModel()),
             productConfig,
             namer,
-            isSourceApiInterfaceFile(file),
+            isSourceApiInterfaceFile(file) ? file : null,
             false));
     return doc.build();
   }
@@ -107,7 +108,7 @@ public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer {
         fileHeaderTransformer.generateFileHeader(
             productConfig, ImportSectionView.newBuilder().build(), namer));
     doc.elementDocs(ImmutableList.<GrpcElementDocView>of());
-    doc.modules(generateModuleViews(model, productConfig, namer, false, true));
+    doc.modules(generateModuleViews(model, productConfig, namer, null, true));
     return doc.build();
   }
 
@@ -127,12 +128,12 @@ public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer {
       ApiModel model,
       GapicProductConfig productConfig,
       SurfaceNamer namer,
-      boolean hasToc,
+      ProtoFile file,
       boolean hasOverview) {
     ImmutableList.Builder<ModuleView> moduleViews = ImmutableList.builder();
     for (String moduleName : namer.getApiModules()) {
-      if (moduleName.equals(namer.getModuleVersionName()) && hasToc) {
-        moduleViews.add(generateTocModuleView(model, productConfig, namer, moduleName));
+      if (moduleName.equals(namer.getModuleVersionName()) && file != null) {
+        moduleViews.add(generateTocModuleView(model, file, productConfig, namer, moduleName));
       } else if (moduleName.equals(namer.getModuleServiceName()) && hasOverview) {
         moduleViews.add(generateOverviewView(model, productConfig));
       } else {
@@ -143,23 +144,27 @@ public class RubyGapicSurfaceDocTransformer implements ModelToViewTransformer {
   }
 
   private TocModuleView generateTocModuleView(
-      ApiModel model, GapicProductConfig productConfig, SurfaceNamer namer, String moduleName) {
+      ApiModel model,
+      ProtoFile file,
+      GapicProductConfig productConfig,
+      SurfaceNamer namer,
+      String moduleName) {
     RubyPackageMetadataTransformer metadataTransformer =
         new RubyPackageMetadataTransformer(packageConfig);
     RubyPackageMetadataNamer packageNamer =
         new RubyPackageMetadataNamer(productConfig.getPackageName());
-    String version = packageConfig.apiVersion();
+    String packageFilePath = file.getFullName().replace(".", File.separator);
     ImmutableList.Builder<TocContentView> tocContents = ImmutableList.builder();
     for (InterfaceModel apiInterface : model.getInterfaces(productConfig)) {
       GapicInterfaceConfig interfaceConfig = productConfig.getInterfaceConfig(apiInterface);
       tocContents.add(
           metadataTransformer.generateTocContent(
-              model, packageNamer, version, namer.getApiWrapperClassName(interfaceConfig)));
+              model, packageNamer, packageFilePath, namer.getApiWrapperClassName(interfaceConfig)));
     }
 
     tocContents.add(
         metadataTransformer.generateDataTypeTocContent(
-            productConfig.getPackageName(), packageNamer, version));
+            productConfig.getPackageName(), packageNamer, packageFilePath));
 
     return TocModuleView.newBuilder()
         .moduleName(moduleName)

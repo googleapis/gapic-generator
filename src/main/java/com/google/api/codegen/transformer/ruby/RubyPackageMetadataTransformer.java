@@ -126,28 +126,28 @@ public class RubyPackageMetadataTransformer implements ModelToViewTransformer {
   }
 
   public TocContentView generateTocContent(
-      ApiModel model, RubyPackageMetadataNamer namer, String version, String clientName) {
+      ApiModel model, RubyPackageMetadataNamer namer, String packageFilePath, String clientName) {
     String description = model.getDocumentationSummary();
     description = description.replace("\n", " ").trim();
-    return generateTocContent(description, namer, version, clientName);
+    return generateTocContent(description, namer, packageFilePath, clientName);
   }
 
   public TocContentView generateDataTypeTocContent(
-      String apiModule, RubyPackageMetadataNamer namer, String version) {
-    return generateTocContent("Data types for " + apiModule, namer, version, "Data Types");
+      String apiModule, RubyPackageMetadataNamer namer, String packageFilePath) {
+    return generateTocContent("Data types for " + apiModule, namer, packageFilePath, "Data Types");
   }
 
   private TocContentView generateTocContent(
-      String description, RubyPackageMetadataNamer namer, String version, String clientName) {
+      String description,
+      RubyPackageMetadataNamer namer,
+      String packageFilePath,
+      String clientName) {
     return TocContentView.newBuilder()
         .name(clientName)
         .description(description)
         .link(
             GITHUB_DOC_HOST
-                + String.format(
-                    LIB_DOC_PATH, namer.getMetadataIdentifier(), packageConfig.protoPath())
-                + '/'
-                + version
+                + String.format(LIB_DOC_PATH, namer.getMetadataIdentifier(), packageFilePath)
                 + '/'
                 + clientName.replace(" ", "").toLowerCase())
         .build();
