@@ -1563,6 +1563,18 @@ class LibraryServiceClient(object):
         request = library_pb2.CreateBookRequest(
             name=name,
             book=book)
+
+        metadata = [
+            (b'x-google-request-params',
+             b'name={}&book.read={}'.format(name, book.read))]
+
+        if options is None:
+            options = google.gax.CallOptions(metadata=metadata)
+        elif 'metadata' not in options.kwargs:
+            options.kwargs['metadata'] = metadata
+        else:
+            options.kwargs['metadata'].extend(metadata)
+
         return self._create_book(request, options)
 
     def publish_series(

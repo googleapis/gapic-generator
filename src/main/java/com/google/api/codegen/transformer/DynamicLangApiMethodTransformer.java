@@ -41,6 +41,8 @@ public class DynamicLangApiMethodTransformer {
   private final ApiMethodParamTransformer apiMethodParamTransformer;
   private final InitCodeTransformer initCodeTransformer;
   private final LongRunningTransformer lroTransformer = new LongRunningTransformer();
+  private final HeaderRequestParamTransformer headerRequestParamTransformer =
+      new HeaderRequestParamTransformer();
 
   public DynamicLangApiMethodTransformer(ApiMethodParamTransformer apiMethodParamTransformer) {
     this(apiMethodParamTransformer, new InitCodeTransformer());
@@ -135,6 +137,8 @@ public class DynamicLangApiMethodTransformer {
             : null);
 
     apiMethod.oneofParams(context.getMethodConfig().getOneofNames(namer));
+    apiMethod.headerRequestParams(
+        headerRequestParamTransformer.generateHeaderRequestParams(context));
 
     return apiMethod.build();
   }

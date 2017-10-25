@@ -338,6 +338,21 @@
                     request = {@apiMethod.requestTypeName}()
                 @end
             @end
+
+            @if apiMethod.headerRequestParams
+
+                metadata = [
+                    (b'x-google-request-params',
+                     {@routingHeader(apiMethod.headerRequestParams)})]
+
+                if options is None:
+                    options = google.gax.CallOptions(metadata=metadata)
+                elif 'metadata' not in options.kwargs:
+                    options.kwargs['metadata'] = metadata
+                else:
+                    options.kwargs['metadata'].extend(metadata)
+
+            @end
         @end
         {@callLine(apiMethod)}
 @end
@@ -368,5 +383,27 @@
 @private requestObjectParams(params)
     @join param : params on ",".add(BREAK)
         {@param.keyName}={@param.name}
+    @end
+@end
+
+@private routingHeader(params)
+  b'{@routingHeaderFmtStr(params)}'.format({@routingHeaderFmtArgs(params)})
+@end
+
+@private routingHeaderFmtStr(params)
+    @join param : params on "&"
+        {@param.fullyQualifiedName}={}
+    @end
+@end
+
+@private routingHeaderFmtArgs(params)
+    @join param : params on ", "
+        {@routingHeaderGetters(param.gettersChain)}
+    @end
+@end
+
+@private routingHeaderGetters(getters)
+    @join getter : getters on "."
+        {@getter}
     @end
 @end
