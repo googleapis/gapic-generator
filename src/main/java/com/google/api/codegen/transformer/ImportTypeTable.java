@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
+import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeTable;
 import java.util.Map;
@@ -61,6 +62,15 @@ public interface ImportTypeTable extends TypeFormatter {
    */
   String getAndSaveNicknameFor(FieldModel type);
 
+  /**
+   * Computes the nickname for the given type, adds the full name to the import set, and returns the
+   * nickname.
+   */
+  String getAndSaveNicknameFor(TypeModel type);
+
+  /** Returns the enum value string. */
+  String getEnumValue(TypeModel type, String value);
+
   /*
    * Computes the nickname for the given FieldConfig, and ResourceName. Adds the full name to
    * the import set, and returns the nickname.
@@ -83,6 +93,14 @@ public interface ImportTypeTable extends TypeFormatter {
    */
   String getAndSaveNicknameForElementType(FieldModel type);
 
+  /**
+   * This function will compute the nickname for the element type, add the full name to the import
+   * set, and then return the nickname. If the given type is repeated, then the element type is the
+   * contained type; if the type is not a repeated type, then the element type is the boxed form of
+   * the type.
+   */
+  String getAndSaveNicknameForElementType(TypeModel type);
+
   String getAndSaveNicknameForContainer(String containerFullName, String... elementFullNames);
 
   /**
@@ -90,6 +108,12 @@ public interface ImportTypeTable extends TypeFormatter {
    * zero value for that type.
    */
   String getSnippetZeroValueAndSaveNicknameFor(FieldModel type);
+
+  /**
+   * If the given type is not implicitly imported, the add it to the import set, then return the
+   * zero value for that type.
+   */
+  String getSnippetZeroValueAndSaveNicknameFor(TypeModel type);
 
   String getImplZeroValueAndSaveNicknameFor(FieldModel type);
 

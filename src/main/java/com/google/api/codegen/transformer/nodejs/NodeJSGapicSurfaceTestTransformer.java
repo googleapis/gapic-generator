@@ -24,7 +24,6 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProtoApiModel;
-import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.nodejs.NodeJSUtils;
@@ -184,7 +183,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
           methodContext.getMethodConfig().getRequiredFieldConfigs();
       InitCodeContext initCodeContext =
           InitCodeContext.newBuilder()
-              .initObjectType(methodContext.getMethod().getInputType())
+              .initObjectType(methodContext.getMethodModel().getInputType())
               .suggestedName(Name.from("request"))
               .initFieldConfigStrings(methodContext.getMethodConfig().getSampleCodeInitFields())
               .initValueConfigMap(InitCodeTransformer.createCollectionMap(methodContext))
@@ -232,8 +231,7 @@ public class NodeJSGapicSurfaceTestTransformer implements ModelToViewTransformer
     SurfaceNamer namer = context.getNamer();
     String name = namer.getSmokeTestClassName(context.getInterfaceConfig());
 
-    ProtoMethodModel method =
-        new ProtoMethodModel(context.getInterfaceConfig().getSmokeTestConfig().getMethod());
+    MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
     FlatteningConfig flatteningGroup =
         testCaseTransformer.getSmokeTestFlatteningGroup(
             context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());

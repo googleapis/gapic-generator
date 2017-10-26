@@ -107,7 +107,7 @@ public abstract class ResourceNameMessageConfigs {
       }
       for (Schema property : method.parameters().values()) {
         if (messageConfig.getEntityNameForField(property.getIdentifier()) != null) {
-          fieldsByMessage.put(fullName, new DiscoveryField(property, discoGapicNamer));
+          fieldsByMessage.put(fullName, DiscoveryField.create(property, discoGapicNamer));
         }
       }
     }

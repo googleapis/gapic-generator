@@ -22,7 +22,9 @@ import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProtoField;
+import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.config.SingleResourceNameConfig;
+import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.FeatureConfig;
@@ -109,7 +111,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFieldSetFunctionName(TypeRef type, Name identifier) {
+  public String getFieldSetFunctionName(TypeModel type, Name identifier) {
     if (type.isMap() || type.isRepeated()) {
       return publicMethodName(Name.from("add").join(identifier));
     } else {
@@ -264,7 +266,7 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     }
     ImmutableList.Builder<String> callbackLines = ImmutableList.builder();
     callbackLines.add(
-        "@param {" + callbackType + "=} callback",
+        "@param {" + callbackType + "} [callback]",
         "  The function which will be called with the result of the API call.");
     if (!isProtobufEmpty(method.getOutputMessage())) {
       callbackLines.add("", "  The second parameter to the callback is " + returnTypeDoc + ".");
@@ -346,14 +348,17 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
       if (resourcesType.isMessage()) {
         returnTypeDoc +=
             commentReformatter.getLinkedElementName(
-                resourcesType.getProtoTypeRef().getMessageType());
+                ((ProtoTypeRef) resourcesType.getType()).getProtoType().getMessageType());
       } else if (resourcesType.isEnum()) {
         returnTypeDoc +=
-            commentReformatter.getLinkedElementName(resourcesType.getProtoTypeRef().getEnumType());
+            commentReformatter.getLinkedElementName(
+                ((ProtoTypeRef) resourcesType.getType()).getProtoType().getEnumType());
       } else {
         // Converting to lowercase because "String" is capitalized in NodeJSModelTypeNameConverter.
         returnTypeDoc +=
-            getParamTypeNoCardinality(typeTable, resourcesType.getProtoTypeRef()).toLowerCase();
+            getParamTypeNoCardinality(
+                    typeTable, ((ProtoTypeRef) resourcesType.getType()).getProtoType())
+                .toLowerCase();
       }
     } else if (methodConfig.isLongRunningOperation()) {
       returnTypeDoc =
@@ -406,10 +411,12 @@ public class NodeJSSurfaceNamer extends SurfaceNamer {
     boolean fieldIsEnum = field.isEnum();
     if (fieldIsMessage) {
       return "This object should have the same structure as "
-          + commentReformatter.getLinkedElementName(field.getProtoTypeRef().getMessageType());
+          + commentReformatter.getLinkedElementName(
+              ((ProtoTypeRef) field.getType()).getProtoType().getMessageType());
     } else if (fieldIsEnum) {
       return "The number should be among the values of "
-          + commentReformatter.getLinkedElementName(field.getProtoTypeRef().getEnumType());
+          + commentReformatter.getLinkedElementName(
+              ((ProtoTypeRef) field.getType()).getProtoType().getEnumType());
     }
     return "";
   }

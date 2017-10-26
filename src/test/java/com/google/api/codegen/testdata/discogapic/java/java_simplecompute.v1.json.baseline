@@ -3109,7 +3109,9 @@ public final class DeleteAddressHttpRequest implements ApiMessage {
             ;
       }
       return
-          setAddress(value.getAddress()).        setProject(value.getProject()).        setRegion(value.getRegion())
+          setAddress(value.getAddress()).
+          setProject(value.getProject()).
+          setRegion(value.getRegion())
           ;
     }
 
@@ -3575,7 +3577,9 @@ public final class GetAddressHttpRequest implements ApiMessage {
             ;
       }
       return
-          setAddress(value.getAddress()).        setProject(value.getProject()).        setRegion(value.getRegion())
+          setAddress(value.getAddress()).
+          setProject(value.getProject()).
+          setRegion(value.getRegion())
           ;
     }
 
@@ -4038,7 +4042,8 @@ public final class InsertAddressHttpRequest implements ApiMessage {
             ;
       }
       return
-          setProject(value.getProject()).        setRegion(value.getRegion())
+          setProject(value.getProject()).
+          setRegion(value.getRegion())
           ;
     }
 
@@ -4584,7 +4589,8 @@ public final class ListAddressesHttpRequest implements ApiMessage {
             ;
       }
       return
-          setProject(value.getProject()).        setRegion(value.getRegion())
+          setProject(value.getProject()).
+          setRegion(value.getRegion())
           ;
     }
 
@@ -4703,8 +4709,8 @@ import javax.annotation.Generated;
  * <pre>
  * <code>
  * try (AddressClient addressClient = AddressClient.create()) {
- *
- *   Operation response = addressClient.deleteAddress();
+ *   AddressName address = AddressName.create("[PROJECT]", "[REGION]", "[ADDRESS]");
+ *   Operation response = addressClient.deleteAddress(address);
  * }
  * </code>
  * </pre>
@@ -4755,8 +4761,8 @@ import javax.annotation.Generated;
  * <code>
  * AddressSettings addressSettings =
  *     AddressSettings.newBuilder()
- *         .setTransportProvider(AddressSettings.defaultGrpcTransportProviderBuilder()
- *             .setChannelProvider(AddressSettings.defaultGrpcChannelProviderBuilder()
+ *         .setTransportProvider(AddressSettings.defaultHttpJsonTransportProviderBuilder()
+ *             .setChannelProvider(AddressSettings.defaultHttpJsonChannelProviderBuilder()
  *                 .setEndpoint(myEndpoint)
  *                 .build())
  *             .build())
@@ -4830,8 +4836,8 @@ public class AddressClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
-   *
-   *   Operation response = addressClient.deleteAddress();
+   *   AddressName address = AddressName.create("[PROJECT]", "[REGION]", "[ADDRESS]");
+   *   Operation response = addressClient.deleteAddress(address);
    * }
    * </code></pre>
    *
@@ -4855,8 +4861,11 @@ public class AddressClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
-   *
-   *   Operation response = addressClient.deleteAddress();
+   *   AddressName address = AddressName.create("[PROJECT]", "[REGION]", "[ADDRESS]");
+   *   DeleteAddressHttpRequest request = DeleteAddressHttpRequest.newBuilder()
+   *     .setAddressWithAddressName(address)
+   *     .build();
+   *   Operation response = addressClient.deleteAddress(request);
    * }
    * </code></pre>
    *
@@ -4875,8 +4884,11 @@ public class AddressClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
-   *
-   *   ApiFuture&lt;Operation&gt; future = addressClient.deleteAddressCallable().futureCall();
+   *   AddressName address = AddressName.create("[PROJECT]", "[REGION]", "[ADDRESS]");
+   *   DeleteAddressHttpRequest request = DeleteAddressHttpRequest.newBuilder()
+   *     .setAddressWithAddressName(address)
+   *     .build();
+   *   ApiFuture&lt;Operation&gt; future = addressClient.deleteAddressCallable().futureCall(request);
    *   // Do something
    *   Operation response = future.get();
    * }
@@ -4894,8 +4906,8 @@ public class AddressClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
-   *
-   *   Address response = addressClient.getAddress();
+   *   AddressName address = AddressName.create("[PROJECT]", "[REGION]", "[ADDRESS]");
+   *   Address response = addressClient.getAddress(address);
    * }
    * </code></pre>
    *
@@ -4919,8 +4931,11 @@ public class AddressClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
-   *
-   *   Address response = addressClient.getAddress();
+   *   AddressName address = AddressName.create("[PROJECT]", "[REGION]", "[ADDRESS]");
+   *   GetAddressHttpRequest request = GetAddressHttpRequest.newBuilder()
+   *     .setAddressWithAddressName(address)
+   *     .build();
+   *   Address response = addressClient.getAddress(request);
    * }
    * </code></pre>
    *
@@ -4939,8 +4954,11 @@ public class AddressClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
-   *
-   *   ApiFuture&lt;Address&gt; future = addressClient.getAddressCallable().futureCall();
+   *   AddressName address = AddressName.create("[PROJECT]", "[REGION]", "[ADDRESS]");
+   *   GetAddressHttpRequest request = GetAddressHttpRequest.newBuilder()
+   *     .setAddressWithAddressName(address)
+   *     .build();
+   *   ApiFuture&lt;Address&gt; future = addressClient.getAddressCallable().futureCall(request);
    *   // Do something
    *   Address response = future.get();
    * }
@@ -4958,8 +4976,9 @@ public class AddressClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
-   *
-   *   Operation response = addressClient.insertAddress();
+   *   RegionName region = RegionName.create("[PROJECT]", "[REGION]");
+   *   Address address = Address.newBuilder().build();
+   *   Operation response = addressClient.insertAddress(region, address);
    * }
    * </code></pre>
    *
@@ -4985,8 +5004,13 @@ public class AddressClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
-   *
-   *   Operation response = addressClient.insertAddress();
+   *   RegionName region = RegionName.create("[PROJECT]", "[REGION]");
+   *   Address address = Address.newBuilder().build();
+   *   InsertAddressHttpRequest request = InsertAddressHttpRequest.newBuilder()
+   *     .setRegionWithRegionName(region)
+   *     .setAddressResource(address)
+   *     .build();
+   *   Operation response = addressClient.insertAddress(request);
    * }
    * </code></pre>
    *
@@ -5005,8 +5029,13 @@ public class AddressClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
-   *
-   *   ApiFuture&lt;Operation&gt; future = addressClient.insertAddressCallable().futureCall();
+   *   RegionName region = RegionName.create("[PROJECT]", "[REGION]");
+   *   Address address = Address.newBuilder().build();
+   *   InsertAddressHttpRequest request = InsertAddressHttpRequest.newBuilder()
+   *     .setRegionWithRegionName(region)
+   *     .setAddressResource(address)
+   *     .build();
+   *   ApiFuture&lt;Operation&gt; future = addressClient.insertAddressCallable().futureCall(request);
    *   // Do something
    *   Operation response = future.get();
    * }
@@ -5024,8 +5053,8 @@ public class AddressClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
-   *
-   *   for (Address element : addressClient.listAddresses().iterateAll()) {
+   *   RegionName region = RegionName.create("[PROJECT]", "[REGION]");
+   *   for (Address element : addressClient.listAddresses(region).iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -5050,8 +5079,11 @@ public class AddressClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
-   *
-   *   for (Address element : addressClient.listAddresses().iterateAll()) {
+   *   RegionName region = RegionName.create("[PROJECT]", "[REGION]");
+   *   ListAddressesHttpRequest request = ListAddressesHttpRequest.newBuilder()
+   *     .setRegionWithRegionName(region)
+   *     .build();
+   *   for (Address element : addressClient.listAddresses(request).iterateAll()) {
    *     // doThingsWith(element);
    *   }
    * }
@@ -5073,8 +5105,11 @@ public class AddressClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
-   *
-   *   ApiFuture&lt;ListAddressesPagedResponse&gt; future = addressClient.listAddressesPagedCallable().futureCall();
+   *   RegionName region = RegionName.create("[PROJECT]", "[REGION]");
+   *   ListAddressesHttpRequest request = ListAddressesHttpRequest.newBuilder()
+   *     .setRegionWithRegionName(region)
+   *     .build();
+   *   ApiFuture&lt;ListAddressesPagedResponse&gt; future = addressClient.listAddressesPagedCallable().futureCall(request);
    *   // Do something
    *   for (Address element : future.get().iterateAll()) {
    *     // doThingsWith(element);
@@ -5094,9 +5129,12 @@ public class AddressClient implements BackgroundResource {
    * Sample code:
    * <pre><code>
    * try (AddressClient addressClient = AddressClient.create()) {
-   *
+   *   RegionName region = RegionName.create("[PROJECT]", "[REGION]");
+   *   ListAddressesHttpRequest request = ListAddressesHttpRequest.newBuilder()
+   *     .setRegionWithRegionName(region)
+   *     .build();
    *   while (true) {
-   *     AddressList response = addressClient.listAddressesCallable().call();
+   *     AddressList response = addressClient.listAddressesCallable().call(request);
    *     for (Address element : response.getItems()) {
    *       // doThingsWith(element);
    *     }
@@ -5844,7 +5882,7 @@ public class HttpJsonAddressStub extends AddressStub {
   }
 
   public static final HttpJsonAddressStub create(ClientContext clientContext) throws IOException {
-    return new HttpJsonAddressStub(AddressSettings.defaultBuilder().build(), clientContext);
+    return new HttpJsonAddressStub(AddressSettings.newBuilder().build(), clientContext);
   }
 
   /**
@@ -6087,8 +6125,8 @@ public class PagedResponseWrappers {
  * <pre>
  * <code>
  * try (AddressClient addressClient = AddressClient.create()) {
- *
- *   Operation response = addressClient.deleteAddress();
+ *   AddressName address = AddressName.create("[PROJECT]", "[REGION]", "[ADDRESS]");
+ *   Operation response = addressClient.deleteAddress(address);
  * }
  * </code>
  * </pre>

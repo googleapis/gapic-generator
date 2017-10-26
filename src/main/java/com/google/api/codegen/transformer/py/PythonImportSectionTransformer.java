@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer.py;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.MethodConfig;
+import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.metacode.InitCodeNode;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
@@ -165,7 +166,7 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
       GapicMethodContext context, Iterable<InitCodeNode> specItemNodes) {
     Set<ImportFileView> protoImports = new TreeSet<>(importFileViewComparator());
     for (InitCodeNode item : specItemNodes) {
-      TypeRef type = item.getType();
+      TypeModel type = item.getType();
       // Exclude map entry types
       // Exclude message types since the samples show the use of dicts rather than protobufs.
       if (type.isEnum()) {

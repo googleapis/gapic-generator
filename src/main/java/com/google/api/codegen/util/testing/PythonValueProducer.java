@@ -14,15 +14,15 @@
  */
 package com.google.api.codegen.util.testing;
 
+import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.util.Name;
-import com.google.api.tools.framework.model.TypeRef;
 
 /**
  * A utility class used by the Python test generator which populates values for primitive fields.
  */
 public class PythonValueProducer extends StandardValueProducer {
   @Override
-  public String produce(TypeRef typeRef, Name identifier) {
+  public String produce(TypeModel typeRef, Name identifier) {
     String value = super.produce(typeRef, identifier);
     if (value.equals("true")) {
       return "True";

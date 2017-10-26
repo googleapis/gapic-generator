@@ -19,7 +19,6 @@ import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.ProtoApiModel;
-import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.transformer.DefaultFeatureConfig;
@@ -28,6 +27,8 @@ import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GapicInterfaceContext;
 import com.google.api.codegen.transformer.GapicMethodContext;
 import com.google.api.codegen.transformer.InitCodeTransformer;
+import com.google.api.codegen.transformer.InterfaceContext;
+import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.MockServiceTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
@@ -175,12 +176,11 @@ public class GoGapicSurfaceTestTransformer implements ModelToViewTransformer {
     return testCaseViews;
   }
 
-  private SmokeTestClassView createSmokeTestClassView(GapicInterfaceContext context) {
+  private SmokeTestClassView createSmokeTestClassView(InterfaceContext context) {
     SurfaceNamer namer = context.getNamer();
 
-    MethodModel method =
-        new ProtoMethodModel(context.getInterfaceConfig().getSmokeTestConfig().getMethod());
-    GapicMethodContext methodContext = context.asRequestMethodContext(method);
+    MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
+    MethodContext methodContext = context.asRequestMethodContext(method);
 
     SmokeTestClassView.Builder testClass = SmokeTestClassView.newBuilder();
     TestCaseView testCaseView = testCaseTransformer.createSmokeTestCaseView(methodContext);

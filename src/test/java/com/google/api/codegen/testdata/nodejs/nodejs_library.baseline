@@ -214,21 +214,17 @@ const gapic = Object.freeze({
  * @module {object} @google-cloud/library
  * @alias nodejs-library
  *
- * @example <caption>Install the client library with
- *   <a href="https://www.npmjs.com/">npm</a>:</caption>
+ * @example <caption>Install the client library with <a href="https://www.npmjs.com/">npm</a>:</caption>
  * npm install --save @google-cloud/library
  *
  * @example <caption>Import the client library:</caption>
  * const library = require('@google-cloud/library');
  *
- * @example <caption>Create a client that uses
- *   <a href="https://goo.gl/64dyYX">Application Default Credentials
- *   (ADC)</a>:</caption>
- * let client = new library.LibraryServiceClient();
+ * @example <caption>Create a client that uses <a href="https://goo.gl/64dyYX">Application Default Credentials (ADC)</a>:</caption>
+ * const client = new library.LibraryServiceClient();
  *
- * @example <caption>Create a client with
- *   <a href="https://goo.gl/RXp6VL">explicit credentials</a>:</caption>
- * let client = new library.LibraryServiceClient({
+ * @example <caption>Create a client with <a href="https://goo.gl/RXp6VL">explicit credentials</a>:</caption>
+ * const client = new library.LibraryServiceClient({
  *   projectId: 'your-project-id',
  *   keyFilename: '/path/to/keyfile.json',
  * });
@@ -320,28 +316,28 @@ class LibraryServiceClient {
   /**
    * Construct an instance of LibraryServiceClient.
    *
-   * @param {object=} options - The configuration object. See the subsequent
+   * @param {object} [options] - The configuration object. See the subsequent
    *   parameters for more details.
-   * @param {object=} options.credentials - Credentials object.
-   * @param {string=} options.credentials.client_email
-   * @param {string=} options.credentials.private_key
-   * @param {string=} options.email - Account email address. Required when
+   * @param {object} [options.credentials] - Credentials object.
+   * @param {string} [options.credentials.client_email]
+   * @param {string} [options.credentials.private_key]
+   * @param {string} [options.email] - Account email address. Required when
    *   usaing a .pem or .p12 keyFilename.
-   * @param {string=} options.keyFilename - Full path to the a .json, .pem, or
+   * @param {string} [options.keyFilename] - Full path to the a .json, .pem, or
    *     .p12 key downloaded from the Google Developers Console. If you provide
    *     a path to a JSON file, the projectId option above is not necessary.
    *     NOTE: .pem and .p12 require you to specify options.email as well.
-   * @param {number=} options.port - The port on which to connect to
+   * @param {number} [options.port] - The port on which to connect to
    *     the remote host.
-   * @param {string=} options.projectId - The project ID from the Google
+   * @param {string} [options.projectId] - The project ID from the Google
    *     Developer's Console, e.g. 'grape-spaceship-123'. We will also check
    *     the environment variable GCLOUD_PROJECT for your project ID. If your
    *     app is running in an environment which supports
    *     {@link https://developers.google.com/identity/protocols/application-default-credentials Application Default Credentials},
    *     your project ID will be detected automatically.
-   * @param {function=} options.promise - Custom promise module to use instead
+   * @param {function} [options.promise] - Custom promise module to use instead
    *     of native Promises.
-   * @param {string=} options.servicePath - The domain name of the
+   * @param {string} [options.servicePath] - The domain name of the
    *     API remote host.
    */
   constructor(opts) {
@@ -645,10 +641,10 @@ class LibraryServiceClient {
    *   The shelf to create.
    *
    *   This object should have the same structure as [Shelf]{@link google.example.library.v1.Shelf}
-   * @param {Object=} options
+   * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
-   * @param {function(?Error, ?Object)=} callback
+   * @param {function(?Error, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
    *   The second parameter to the callback is an object representing [Shelf]{@link google.example.library.v1.Shelf}.
@@ -693,16 +689,16 @@ class LibraryServiceClient {
    *   The name of the shelf to retrieve.
    * @param {string} request.options
    *   To test 'options' parameter name conflict.
-   * @param {Object=} request.message
+   * @param {Object} [request.message]
    *   Field to verify that message-type query parameter gets flattened.
    *
    *   This object should have the same structure as [SomeMessage]{@link google.example.library.v1.SomeMessage}
-   * @param {Object=} request.stringBuilder
+   * @param {Object} [request.stringBuilder]
    *   This object should have the same structure as [StringBuilder]{@link google.example.library.v1.StringBuilder}
-   * @param {Object=} options
+   * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
-   * @param {function(?Error, ?Object)=} callback
+   * @param {function(?Error, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
    *   The second parameter to the callback is an object representing [Shelf]{@link google.example.library.v1.Shelf}.
@@ -746,12 +742,12 @@ class LibraryServiceClient {
   /**
    * Lists shelves.
    *
-   * @param {Object=} request
+   * @param {Object} [request]
    *   The request object that will be sent.
-   * @param {Object=} options
+   * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
-   * @param {function(?Error, ?Array, ?Object, ?Object)=} callback
+   * @param {function(?Error, ?Array, ?Object, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
    *   The second parameter to the callback is Array of [Shelf]{@link google.example.library.v1.Shelf}.
@@ -840,9 +836,9 @@ class LibraryServiceClient {
    *
    * @see {@link https://nodejs.org/api/stream.html}
    *
-   * @param {Object=} request
+   * @param {Object} [request]
    *   The request object that will be sent.
-   * @param {Object=} options
+   * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
    * @returns {Stream}
@@ -883,10 +879,10 @@ class LibraryServiceClient {
    *   The request object that will be sent.
    * @param {string} request.name
    *   The name of the shelf to delete.
-   * @param {Object=} options
+   * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
-   * @param {function(?Error)=} callback
+   * @param {function(?Error)} [callback]
    *   The function which will be called with the result of the API call.
    * @returns {Promise} - The promise which resolves when API call finishes.
    *   The promise has a method named "cancel" which cancels the ongoing API call.
@@ -925,10 +921,10 @@ class LibraryServiceClient {
    *   The name of the shelf we're adding books to.
    * @param {string} request.otherShelfName
    *   The name of the shelf we're removing books from and deleting.
-   * @param {Object=} options
+   * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
-   * @param {function(?Error, ?Object)=} callback
+   * @param {function(?Error, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
    *   The second parameter to the callback is an object representing [Shelf]{@link google.example.library.v1.Shelf}.
@@ -980,10 +976,10 @@ class LibraryServiceClient {
    *   The book to create.
    *
    *   This object should have the same structure as [Book]{@link google.example.library.v1.Book}
-   * @param {Object=} options
+   * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
-   * @param {function(?Error, ?Object)=} callback
+   * @param {function(?Error, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
    *   The second parameter to the callback is an object representing [Book]{@link google.example.library.v1.Book}.
@@ -1041,14 +1037,14 @@ class LibraryServiceClient {
    *   Uniquely identifies the series to the publishing house.
    *
    *   This object should have the same structure as [SeriesUuid]{@link google.example.library.v1.SeriesUuid}
-   * @param {number=} request.edition
+   * @param {number} [request.edition]
    *   The edition of the series
-   * @param {boolean=} request.reviewCopy
+   * @param {boolean} [request.reviewCopy]
    *   If the book is in a pre-publish state
-   * @param {Object=} options
+   * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
-   * @param {function(?Error, ?Object)=} callback
+   * @param {function(?Error, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
    *   The second parameter to the callback is an object representing [PublishSeriesResponse]{@link google.example.library.v1.PublishSeriesResponse}.
@@ -1101,10 +1097,10 @@ class LibraryServiceClient {
    *   The request object that will be sent.
    * @param {string} request.name
    *   The name of the book to retrieve.
-   * @param {Object=} options
+   * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
-   * @param {function(?Error, ?Object)=} callback
+   * @param {function(?Error, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
    *   The second parameter to the callback is an object representing [Book]{@link google.example.library.v1.Book}.
@@ -1147,18 +1143,18 @@ class LibraryServiceClient {
    *   The request object that will be sent.
    * @param {string} request.name
    *   The name of the shelf whose books we'd like to list.
-   * @param {number=} request.pageSize
+   * @param {number} [request.pageSize]
    *   The maximum number of resources contained in the underlying API
    *   response. If page streaming is performed per-resource, this
    *   parameter does not affect the return value. If page streaming is
    *   performed per-page, this determines the maximum number of
    *   resources in a page.
-   * @param {string=} request.filter
+   * @param {string} [request.filter]
    *   To test python built-in wrapping.
-   * @param {Object=} options
+   * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
-   * @param {function(?Error, ?Array, ?Object, ?Object)=} callback
+   * @param {function(?Error, ?Array, ?Object, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
    *   The second parameter to the callback is Array of [Book]{@link google.example.library.v1.Book}.
@@ -1253,15 +1249,15 @@ class LibraryServiceClient {
    *   The request object that will be sent.
    * @param {string} request.name
    *   The name of the shelf whose books we'd like to list.
-   * @param {number=} request.pageSize
+   * @param {number} [request.pageSize]
    *   The maximum number of resources contained in the underlying API
    *   response. If page streaming is performed per-resource, this
    *   parameter does not affect the return value. If page streaming is
    *   performed per-page, this determines the maximum number of
    *   resources in a page.
-   * @param {string=} request.filter
+   * @param {string} [request.filter]
    *   To test python built-in wrapping.
-   * @param {Object=} options
+   * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
    * @returns {Stream}
@@ -1300,10 +1296,10 @@ class LibraryServiceClient {
    *   The request object that will be sent.
    * @param {string} request.name
    *   The name of the book to delete.
-   * @param {Object=} options
+   * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
-   * @param {function(?Error)=} callback
+   * @param {function(?Error)} [callback]
    *   The function which will be called with the result of the API call.
    * @returns {Promise} - The promise which resolves when API call finishes.
    *   The promise has a method named "cancel" which cancels the ongoing API call.
@@ -1342,20 +1338,20 @@ class LibraryServiceClient {
    *   The book to update with.
    *
    *   This object should have the same structure as [Book]{@link google.example.library.v1.Book}
-   * @param {string=} request.optionalFoo
+   * @param {string} [request.optionalFoo]
    *   An optional foo.
-   * @param {Object=} request.updateMask
+   * @param {Object} [request.updateMask]
    *   A field mask to apply, rendered as an HTTP parameter.
    *
    *   This object should have the same structure as [FieldMask]{@link google.protobuf.FieldMask}
-   * @param {Object=} request.physicalMask
+   * @param {Object} [request.physicalMask]
    *   To test Python import clash resolution.
    *
    *   This object should have the same structure as [FieldMask]{@link google.example.library.v1.FieldMask}
-   * @param {Object=} options
+   * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
-   * @param {function(?Error, ?Object)=} callback
+   * @param {function(?Error, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
    *   The second parameter to the callback is an object representing [Book]{@link google.example.library.v1.Book}.
@@ -1405,10 +1401,10 @@ class LibraryServiceClient {
    *   The name of the book to move.
    * @param {string} request.otherShelfName
    *   The name of the destination shelf.
-   * @param {Object=} options
+   * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
-   * @param {function(?Error, ?Object)=} callback
+   * @param {function(?Error, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
    *   The second parameter to the callback is an object representing [Book]{@link google.example.library.v1.Book}.
@@ -1454,17 +1450,17 @@ class LibraryServiceClient {
    *
    * @param {Object} request
    *   The request object that will be sent.
-   * @param {string=} request.name
-   * @param {number=} request.pageSize
+   * @param {string} [request.name]
+   * @param {number} [request.pageSize]
    *   The maximum number of resources contained in the underlying API
    *   response. If page streaming is performed per-resource, this
    *   parameter does not affect the return value. If page streaming is
    *   performed per-page, this determines the maximum number of
    *   resources in a page.
-   * @param {Object=} options
+   * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
-   * @param {function(?Error, ?Array, ?Object, ?Object)=} callback
+   * @param {function(?Error, ?Array, ?Object, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
    *   The second parameter to the callback is Array of string.
@@ -1553,14 +1549,14 @@ class LibraryServiceClient {
    *
    * @param {Object} request
    *   The request object that will be sent.
-   * @param {string=} request.name
-   * @param {number=} request.pageSize
+   * @param {string} [request.name]
+   * @param {number} [request.pageSize]
    *   The maximum number of resources contained in the underlying API
    *   response. If page streaming is performed per-resource, this
    *   parameter does not affect the return value. If page streaming is
    *   performed per-page, this determines the maximum number of
    *   resources in a page.
-   * @param {Object=} options
+   * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
    * @returns {Stream}
@@ -1600,10 +1596,10 @@ class LibraryServiceClient {
    * @param {string} request.name
    * @param {Object[]} request.comments
    *   This object should have the same structure as [Comment]{@link google.example.library.v1.Comment}
-   * @param {Object=} options
+   * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
-   * @param {function(?Error)=} callback
+   * @param {function(?Error)} [callback]
    *   The function which will be called with the result of the API call.
    * @returns {Promise} - The promise which resolves when API call finishes.
    *   The promise has a method named "cancel" which cancels the ongoing API call.
@@ -1651,10 +1647,10 @@ class LibraryServiceClient {
    *   The request object that will be sent.
    * @param {string} request.name
    *   The name of the book to retrieve.
-   * @param {Object=} options
+   * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
-   * @param {function(?Error, ?Object)=} callback
+   * @param {function(?Error, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
    *   The second parameter to the callback is an object representing [BookFromArchive]{@link google.example.library.v1.BookFromArchive}.
@@ -1700,10 +1696,10 @@ class LibraryServiceClient {
    * @param {string} request.altBookName
    *   An alternate book name, used to test restricting flattened field to a
    *   single resource name type in a oneof.
-   * @param {Object=} options
+   * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
-   * @param {function(?Error, ?Object)=} callback
+   * @param {function(?Error, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
    *   The second parameter to the callback is an object representing [BookFromAnywhere]{@link google.example.library.v1.BookFromAnywhere}.
@@ -1751,10 +1747,10 @@ class LibraryServiceClient {
    *   The request object that will be sent.
    * @param {string} request.name
    *   The name of the book to retrieve.
-   * @param {Object=} options
+   * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
-   * @param {function(?Error, ?Object)=} callback
+   * @param {function(?Error, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
    *   The second parameter to the callback is an object representing [BookFromAnywhere]{@link google.example.library.v1.BookFromAnywhere}.
@@ -1801,10 +1797,10 @@ class LibraryServiceClient {
    *   The name of the index for the book
    * @param {Object.<string, string>} request.indexMap
    *   The index to update the book with
-   * @param {Object=} options
+   * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
-   * @param {function(?Error)=} callback
+   * @param {function(?Error)} [callback]
    *   The function which will be called with the result of the API call.
    * @returns {Promise} - The promise which resolves when API call finishes.
    *   The promise has a method named "cancel" which cancels the ongoing API call.
@@ -1844,9 +1840,9 @@ class LibraryServiceClient {
    * Test server streaming
    * gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
    *
-   * @param {Object=} request
+   * @param {Object} [request]
    *   The request object that will be sent.
-   * @param {Object=} options
+   * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
    * @returns {Stream}
@@ -1881,7 +1877,7 @@ class LibraryServiceClient {
    *   The request object that will be sent.
    * @param {string} request.name
    *   The name of the shelf whose books we'd like to list.
-   * @param {Object=} options
+   * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
    * @returns {Stream}
@@ -1910,7 +1906,7 @@ class LibraryServiceClient {
    * Test bidi-streaming.
    * gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
    *
-   * @param {Object=} options
+   * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
    * @returns {Stream}
@@ -1946,10 +1942,10 @@ class LibraryServiceClient {
    * Test client streaming.
    * gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
    *
-   * @param {Object=} options
+   * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
-   * @param {function(?Error, ?Object)=} callback
+   * @param {function(?Error, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
    *   The second parameter to the callback is an object representing [Comment]{@link google.example.library.v1.Comment}.
@@ -1993,16 +1989,16 @@ class LibraryServiceClient {
    *   The request object that will be sent.
    * @param {string[]} request.names
    * @param {string[]} request.shelves
-   * @param {number=} request.pageSize
+   * @param {number} [request.pageSize]
    *   The maximum number of resources contained in the underlying API
    *   response. If page streaming is performed per-resource, this
    *   parameter does not affect the return value. If page streaming is
    *   performed per-page, this determines the maximum number of
    *   resources in a page.
-   * @param {Object=} options
+   * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
-   * @param {function(?Error, ?Array, ?Object, ?Object)=} callback
+   * @param {function(?Error, ?Array, ?Object, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
    *   The second parameter to the callback is Array of string.
@@ -2109,13 +2105,13 @@ class LibraryServiceClient {
    *   The request object that will be sent.
    * @param {string[]} request.names
    * @param {string[]} request.shelves
-   * @param {number=} request.pageSize
+   * @param {number} [request.pageSize]
    *   The maximum number of resources contained in the underlying API
    *   response. If page streaming is performed per-resource, this
    *   parameter does not affect the return value. If page streaming is
    *   performed per-page, this determines the maximum number of
    *   resources in a page.
-   * @param {Object=} options
+   * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
    * @returns {Stream}
@@ -2164,10 +2160,10 @@ class LibraryServiceClient {
    *   projects/{project}/zones/{zone}/disks/{disk}.
    * @param {string} request.tag
    *   REQUIRED: The tag to add.
-   * @param {Object=} options
+   * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
-   * @param {function(?Error, ?Object)=} callback
+   * @param {function(?Error, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
    *   The second parameter to the callback is an object representing [AddTagResponse]{@link google.tagger.v1.AddTagResponse}.
@@ -2219,10 +2215,10 @@ class LibraryServiceClient {
    *   projects/{project}/zones/{zone}/disks/{disk}.
    * @param {string} request.label
    *   REQUIRED: The label to add.
-   * @param {Object=} options
+   * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
-   * @param {function(?Error, ?Object)=} callback
+   * @param {function(?Error, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
    *   The second parameter to the callback is an object representing [AddLabelResponse]{@link google.tagger.v1.AddLabelResponse}.
@@ -2270,10 +2266,10 @@ class LibraryServiceClient {
    *   The request object that will be sent.
    * @param {string} request.name
    *   The name of the book to retrieve.
-   * @param {Object=} options
+   * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
-   * @param {function(?Error, ?Object)=} callback
+   * @param {function(?Error, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
    *   The second parameter to the callback is a [gax.Operation]{@link https://googleapis.github.io/gax-nodejs/Operation} object.
@@ -2360,10 +2356,10 @@ class LibraryServiceClient {
    *   The request object that will be sent.
    * @param {string} request.name
    *   The name of the book to retrieve.
-   * @param {Object=} options
+   * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
-   * @param {function(?Error, ?Object)=} callback
+   * @param {function(?Error, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
    *   The second parameter to the callback is a [gax.Operation]{@link https://googleapis.github.io/gax-nodejs/Operation} object.
@@ -2479,41 +2475,41 @@ class LibraryServiceClient {
    * @param {number[]} request.requiredRepeatedFixed32
    * @param {number[]} request.requiredRepeatedFixed64
    * @param {Object.<number, string>} request.requiredMap
-   * @param {number=} request.optionalSingularInt32
-   * @param {number=} request.optionalSingularInt64
-   * @param {number=} request.optionalSingularFloat
-   * @param {number=} request.optionalSingularDouble
-   * @param {boolean=} request.optionalSingularBool
-   * @param {number=} request.optionalSingularEnum
+   * @param {number} [request.optionalSingularInt32]
+   * @param {number} [request.optionalSingularInt64]
+   * @param {number} [request.optionalSingularFloat]
+   * @param {number} [request.optionalSingularDouble]
+   * @param {boolean} [request.optionalSingularBool]
+   * @param {number} [request.optionalSingularEnum]
    *   The number should be among the values of [InnerEnum]{@link google.example.library.v1.InnerEnum}
-   * @param {string=} request.optionalSingularString
-   * @param {string=} request.optionalSingularBytes
-   * @param {Object=} request.optionalSingularMessage
+   * @param {string} [request.optionalSingularString]
+   * @param {string} [request.optionalSingularBytes]
+   * @param {Object} [request.optionalSingularMessage]
    *   This object should have the same structure as [InnerMessage]{@link google.example.library.v1.InnerMessage}
-   * @param {string=} request.optionalSingularResourceName
-   * @param {string=} request.optionalSingularResourceNameOneof
-   * @param {number=} request.optionalSingularFixed32
-   * @param {number=} request.optionalSingularFixed64
-   * @param {number[]=} request.optionalRepeatedInt32
-   * @param {number[]=} request.optionalRepeatedInt64
-   * @param {number[]=} request.optionalRepeatedFloat
-   * @param {number[]=} request.optionalRepeatedDouble
-   * @param {boolean[]=} request.optionalRepeatedBool
-   * @param {number[]=} request.optionalRepeatedEnum
+   * @param {string} [request.optionalSingularResourceName]
+   * @param {string} [request.optionalSingularResourceNameOneof]
+   * @param {number} [request.optionalSingularFixed32]
+   * @param {number} [request.optionalSingularFixed64]
+   * @param {number[]} [request.optionalRepeatedInt32]
+   * @param {number[]} [request.optionalRepeatedInt64]
+   * @param {number[]} [request.optionalRepeatedFloat]
+   * @param {number[]} [request.optionalRepeatedDouble]
+   * @param {boolean[]} [request.optionalRepeatedBool]
+   * @param {number[]} [request.optionalRepeatedEnum]
    *   The number should be among the values of [InnerEnum]{@link google.example.library.v1.InnerEnum}
-   * @param {string[]=} request.optionalRepeatedString
-   * @param {string[]=} request.optionalRepeatedBytes
-   * @param {Object[]=} request.optionalRepeatedMessage
+   * @param {string[]} [request.optionalRepeatedString]
+   * @param {string[]} [request.optionalRepeatedBytes]
+   * @param {Object[]} [request.optionalRepeatedMessage]
    *   This object should have the same structure as [InnerMessage]{@link google.example.library.v1.InnerMessage}
-   * @param {string[]=} request.optionalRepeatedResourceName
-   * @param {string[]=} request.optionalRepeatedResourceNameOneof
-   * @param {number[]=} request.optionalRepeatedFixed32
-   * @param {number[]=} request.optionalRepeatedFixed64
-   * @param {Object.<number, string>=} request.optionalMap
-   * @param {Object=} options
+   * @param {string[]} [request.optionalRepeatedResourceName]
+   * @param {string[]} [request.optionalRepeatedResourceNameOneof]
+   * @param {number[]} [request.optionalRepeatedFixed32]
+   * @param {number[]} [request.optionalRepeatedFixed64]
+   * @param {Object.<number, string>} [request.optionalMap]
+   * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the details.
-   * @param {function(?Error, ?Object)=} callback
+   * @param {function(?Error, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
    *   The second parameter to the callback is an object representing [TestOptionalRequiredFlatteningParamsResponse]{@link google.example.library.v1.TestOptionalRequiredFlatteningParamsResponse}.
@@ -2658,7 +2654,9 @@ class LibraryServiceClient {
    * @returns {String} - A string representing the shelf_id.
    */
   matchShelfIdFromShelfName(shelfName) {
-    return shelfPathTemplate.match(shelfName).shelf_id;
+    return this._pathTemplates.shelfPathTemplate
+      .match(shelfName)
+      .shelf_id;
   }
 
   /**
@@ -2669,7 +2667,9 @@ class LibraryServiceClient {
    * @returns {String} - A string representing the shelf_id.
    */
   matchShelfIdFromBookName(bookName) {
-    return bookPathTemplate.match(bookName).shelf_id;
+    return this._pathTemplates.bookPathTemplate
+      .match(bookName)
+      .shelf_id;
   }
 
   /**
@@ -2680,7 +2680,9 @@ class LibraryServiceClient {
    * @returns {String} - A string representing the book_id.
    */
   matchBookIdFromBookName(bookName) {
-    return bookPathTemplate.match(bookName).book_id;
+    return this._pathTemplates.bookPathTemplate
+      .match(bookName)
+      .book_id;
   }
 
   /**
@@ -2691,7 +2693,9 @@ class LibraryServiceClient {
    * @returns {String} - A string representing the shelf.
    */
   matchShelfFromReturnName(returnName) {
-    return returnPathTemplate.match(returnName).shelf;
+    return this._pathTemplates.returnPathTemplate
+      .match(returnName)
+      .shelf;
   }
 
   /**
@@ -2702,7 +2706,9 @@ class LibraryServiceClient {
    * @returns {String} - A string representing the book.
    */
   matchBookFromReturnName(returnName) {
-    return returnPathTemplate.match(returnName).book;
+    return this._pathTemplates.returnPathTemplate
+      .match(returnName)
+      .book;
   }
 
   /**
@@ -2713,7 +2719,9 @@ class LibraryServiceClient {
    * @returns {String} - A string representing the return.
    */
   matchReturnFromReturnName(returnName) {
-    return returnPathTemplate.match(returnName).return;
+    return this._pathTemplates.returnPathTemplate
+      .match(returnName)
+      .return;
   }
 }
 

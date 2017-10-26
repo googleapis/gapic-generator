@@ -38,9 +38,10 @@ public final class DiscoveryMethodModel implements MethodModel {
   private ImmutableSet<String> IDEMPOTENT_HTTP_METHODS =
       ImmutableSet.of("GET", "HEAD", "PUT", "DELETE");
   private final Method method;
-  private Iterable<FieldModel> inputFields;
-  private Iterable<FieldModel> outputFields;
-  private List<FieldModel> resourceNameInputFields;
+  private DiscoveryRequestType inputType;
+  private List<DiscoveryField> inputFields;
+  private List<DiscoveryField> outputFields;
+  private List<DiscoveryField> resourceNameInputFields;
   private final DiscoGapicNamer discoGapicNamer;
 
   /* Create a DiscoveryMethodModel from a non-null Discovery Method object. */
@@ -48,6 +49,7 @@ public final class DiscoveryMethodModel implements MethodModel {
     Preconditions.checkNotNull(method);
     this.method = method;
     this.discoGapicNamer = discoGapicNamer;
+    this.inputType = DiscoveryRequestType.create(this);
   }
 
   public Method getDiscoMethod() {
@@ -69,23 +71,23 @@ public final class DiscoveryMethodModel implements MethodModel {
    * with name fieldName, if it exists.
    */
   @Override
-  public FieldModel getInputField(String fieldName) {
+  public DiscoveryField getInputField(String fieldName) {
     Schema targetSchema = method.parameters().get(fieldName);
     if (targetSchema != null) {
-      return new DiscoveryField(targetSchema, discoGapicNamer);
+      return DiscoveryField.create(targetSchema, discoGapicNamer);
     }
     if (method.request() != null
         && !Strings.isNullOrEmpty(method.request().reference())
         && DiscoGapicNamer.getSchemaNameAsParameter(method.request().dereference())
             .toLowerCamel()
             .equals(fieldName)) {
-      return new DiscoveryField(method.request().dereference(), discoGapicNamer);
+      return DiscoveryField.create(method.request().dereference(), discoGapicNamer);
     }
     return null;
   }
 
   @Override
-  public FieldModel getOutputField(String fieldName) {
+  public DiscoveryField getOutputField(String fieldName) {
     return null;
   }
 
@@ -213,13 +215,13 @@ public final class DiscoveryMethodModel implements MethodModel {
   }
 
   @Override
-  public List<FieldModel> getResourceNameInputFields() {
+  public List<DiscoveryField> getResourceNameInputFields() {
     if (resourceNameInputFields != null) {
       return resourceNameInputFields;
     }
 
-    ImmutableList.Builder<FieldModel> params = ImmutableList.builder();
-    for (FieldModel field : inputFields) {
+    ImmutableList.Builder<DiscoveryField> params = ImmutableList.builder();
+    for (DiscoveryField field : inputFields) {
       if (field.getDiscoveryField().isPathParam()) {
         params.add(field);
       }
@@ -229,9 +231,9 @@ public final class DiscoveryMethodModel implements MethodModel {
   }
 
   @Override
-  public List<FieldModel> getInputFieldsForResourceNameMethod() {
-    List<FieldModel> fields = new LinkedList<>();
-    for (FieldModel field : getInputFields()) {
+  public List<DiscoveryField> getInputFieldsForResourceNameMethod() {
+    List<DiscoveryField> fields = new LinkedList<>();
+    for (DiscoveryField field : getInputFields()) {
       if (!getResourceNameInputFields().contains(field)) {
         // Only add fields that aren't part of the ResourceName.
         fields.add(field);
@@ -240,7 +242,7 @@ public final class DiscoveryMethodModel implements MethodModel {
 
     // Add the field that represents the ResourceName.
     String resourceName = DiscoGapicNamer.getResourceIdentifier(method.flatPath()).toLowerCamel();
-    for (FieldModel field : getInputFields()) {
+    for (DiscoveryField field : getInputFields()) {
       if (field.asName().toLowerCamel().equals(resourceName)) {
         fields.add(field);
         break;
@@ -250,17 +252,17 @@ public final class DiscoveryMethodModel implements MethodModel {
   }
 
   @Override
-  public Iterable<FieldModel> getInputFields() {
+  public List<DiscoveryField> getInputFields() {
     if (inputFields != null) {
       return inputFields;
     }
 
-    ImmutableList.Builder<FieldModel> fieldsBuilder = ImmutableList.builder();
+    ImmutableList.Builder<DiscoveryField> fieldsBuilder = ImmutableList.builder();
     for (Schema field : method.parameters().values()) {
-      fieldsBuilder.add(new DiscoveryField(field, discoGapicNamer));
+      fieldsBuilder.add(DiscoveryField.create(field, discoGapicNamer));
     }
     if (method.request() != null && !Strings.isNullOrEmpty(method.request().reference())) {
-      fieldsBuilder.add(new DiscoveryField(method.request().dereference(), discoGapicNamer));
+      fieldsBuilder.add(DiscoveryField.create(method.request().dereference(), discoGapicNamer));
     }
     inputFields = fieldsBuilder.build();
     return inputFields;
@@ -271,14 +273,14 @@ public final class DiscoveryMethodModel implements MethodModel {
    * this method has no response schema.
    */
   @Override
-  public Iterable<FieldModel> getOutputFields() {
+  public List<DiscoveryField> getOutputFields() {
     if (outputFields != null) {
       return outputFields;
     }
 
-    ImmutableList.Builder<FieldModel> outputField = new Builder<>();
+    ImmutableList.Builder<DiscoveryField> outputField = new Builder<>();
     if (method.response() != null && !Strings.isNullOrEmpty(method.response().reference())) {
-      FieldModel fieldModel = new DiscoveryField(method.response().dereference(), null);
+      DiscoveryField fieldModel = DiscoveryField.create(method.response().dereference(), null);
       outputField.add(fieldModel);
     }
     outputFields = outputField.build();
@@ -309,5 +311,15 @@ public final class DiscoveryMethodModel implements MethodModel {
       }
     }
     return resources;
+  }
+
+  @Override
+  public TypeModel getInputType() {
+    return inputType;
+  }
+
+  @Override
+  public TypeModel getOutputType() {
+    return null;
   }
 }

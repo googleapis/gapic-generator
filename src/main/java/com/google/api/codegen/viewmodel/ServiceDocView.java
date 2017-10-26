@@ -49,6 +49,10 @@ public abstract class ServiceDocView {
     return lines().subList(1, lines().size());
   }
 
+  public abstract String defaultTransportProviderBuilder();
+
+  public abstract String defaultChannelProviderBuilder();
+
   @AutoValue.Builder
   public abstract static class Builder {
     public abstract Builder lines(List<String> val);
@@ -66,6 +70,10 @@ public abstract class ServiceDocView {
     public abstract Builder hasDefaultInstance(boolean hasDefaultInstance);
 
     public abstract Builder serviceTitle(String val);
+
+    public abstract Builder defaultTransportProviderBuilder(String val);
+
+    public abstract Builder defaultChannelProviderBuilder(String val);
 
     public abstract ServiceDocView build();
   }
