@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer.go;
 
-import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicProductConfig;
@@ -92,7 +91,6 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   private final IamResourceTransformer iamResourceTransformer = new IamResourceTransformer();
   private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
   private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
-  private final ServiceMessages serviceMessages = new ServiceMessages();
   private final ServiceTransformer serviceTransformer = new ServiceTransformer();
 
   private final GapicCodePathMapper pathMapper;
@@ -175,8 +173,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
         pageStreamingTransformer.generateDescriptorClasses(context)) {
       iterators.put(desc.typeName(), desc);
     }
-    view.pageStreamingDescriptorClasses(
-        new ArrayList<PageStreamingDescriptorClassView>(iterators.values()));
+    view.pageStreamingDescriptorClasses(new ArrayList<>(iterators.values()));
 
     // Same with long running operations.
     Map<String, LongRunningOperationDetailView> lros = new TreeMap<>();
@@ -186,7 +183,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
         lros.put(lro.clientReturnTypeName(), lro);
       }
     }
-    view.lroDetailViews(new ArrayList<LongRunningOperationDetailView>(lros.values()));
+    view.lroDetailViews(new ArrayList<>(lros.values()));
 
     view.serviceAddress(context.getApiModel().getServiceAddress());
     view.servicePort(model.getServicePort());

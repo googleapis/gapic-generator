@@ -489,6 +489,7 @@ public class StaticLangApiMethodTransformer {
     } else {
       methodViewBuilder.hasReturnValue(method.hasReturnValue());
     }
+    methodViewBuilder.headerRequestParams(ApiCallableTransformer.getHeaderRequestParams(context));
   }
 
   protected void setServiceResponseTypeName(

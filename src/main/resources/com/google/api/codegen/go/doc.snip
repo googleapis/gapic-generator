@@ -21,11 +21,13 @@
         "google.golang.org/grpc/metadata"
     )
 
-    func insertXGoog(ctx context.Context, val []string) context.Context {
-        md, _ := metadata.FromOutgoingContext(ctx)
-        md = md.Copy()
-        md["x-goog-api-client"] = val
-        return metadata.NewOutgoingContext(ctx, md)
+    func insertMetadata(ctx context.Context, md map[string][]string) context.Context {
+        out, _ := metadata.FromOutgoingContext(ctx)
+        out = out.Copy()
+        for k, v := range md {
+            out[k] = v
+        }
+        return metadata.NewOutgoingContext(ctx, out)
     }
 
     // DefaultAuthScopes reports the default set of authentication scopes to use with this package.

@@ -191,7 +191,7 @@
 
 @private simpleMethod(view, method)
     func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.serviceRequestTypeName}, opts ...gax.CallOption) ({@method.responseTypeName}, error) {
-        {@mergeMetadata()}
+        {@mergeMetadata(method)}
         opts = {@mergeOptions(method.settingsGetterName)}
         var resp {@method.serviceResponseTypeName}
         err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
@@ -208,7 +208,7 @@
 
 @private lroMethod(view, method)
     func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.serviceRequestTypeName}, opts ...gax.CallOption) (*{@method.operationMethod.clientReturnTypeName}, error) {
-        {@mergeMetadata()}
+        {@mergeMetadata(method)}
         opts = {@mergeOptions(method.settingsGetterName)}
         var resp {@method.serviceResponseTypeName}
         err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
@@ -229,7 +229,7 @@
 # The function is not accept a request, but otherwise the same with simpleMethod.
 @private noRequestStreamMethod(view, method)
     func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, opts ...gax.CallOption) ({@method.responseTypeName}, error) {
-        {@mergeMetadata()}
+        {@mergeMetadata(method)}
         opts = {@mergeOptions(method.settingsGetterName)}
         var resp {@method.serviceResponseTypeName}
         err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
@@ -246,7 +246,7 @@
 
 @private emptyReturnMethod(view, method)
     func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.serviceRequestTypeName}, opts ...gax.CallOption) error {
-        {@mergeMetadata()}
+        {@mergeMetadata(method)}
         opts = {@mergeOptions(method.settingsGetterName)}
         err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
             var err error
@@ -259,7 +259,7 @@
 
 @private pageStreamingMethod(view, method)
     func (c *{@view.clientTypeName}) {@method.name}(ctx context.Context, req {@method.serviceRequestTypeName}, opts ...gax.CallOption) *{@method.responseTypeName} {
-        {@mergeMetadata()}
+        {@mergeMetadata(method)}
         opts = {@mergeOptions(method.settingsGetterName)}
         it := &{@method.responseTypeName}{}
         it.InternalFetch = func(pageSize int, pageToken string) ([]{@method.listMethod.resourceTypeName}, string, error) {
@@ -455,8 +455,27 @@
     @end
 @end
 
-@private mergeMetadata()
-    ctx = insertXGoog(ctx, c.xGoogHeader)
+@private requestParamGetter(gettersChain)
+    @join getter : gettersChain on "."
+        Get{@getter}()
+    @end
+@end
+
+@private mergeMetadata(method)
+    @if method.headerRequestParams
+        vals = []string{}
+        @join headerRequestParam : method.headerRequestParams
+            vals = append(vals, fmt.Sprintf("%s=%v", "{@headerRequestParam.fullyQualifiedName}", req.{@requestParamGetter(headerRequestParam.gettersChain)}))
+        @end
+
+    @end
+    md := map[string][]string{
+        "x-goog-api-client": c.xGoogHeader,
+        @if method.headerRequestParams
+            "x-goog-request-params": vals,
+        @end
+    }
+    ctx = insertMetadata(ctx, md)
 @end
 
 @private mergeOptions(getterName)
