@@ -100,9 +100,9 @@ import (
     "google.golang.org/grpc/metadata"
 )
 
-func insertMetadata(ctx context.Context, md metadata.MD) context.Context {
+func insertMetadata(ctx context.Context, mds ...metadata.MD) context.Context {
     out, _ := metadata.FromOutgoingContext(ctx)
-    out = metadata.Join(out, md)
+    out = metadata.Join(append([]metadata.MD{out}, mds...)...)
     return metadata.NewOutgoingContext(ctx, out)
 }
 
@@ -460,12 +460,11 @@ func (c *Client) MergeShelves(ctx context.Context, req *librarypb.MergeShelvesRe
 
 // CreateBook creates a book.
 func (c *Client) CreateBook(ctx context.Context, req *librarypb.CreateBookRequest, opts ...gax.CallOption) (*librarypb.Book, error) {
-    ctx = insertMetadata(ctx, c.Metadata)
     md := metadata.Pairs(
         "x-goog-request-params", fmt.Sprintf("%s=%v", "name", req.GetName())
         "x-goog-request-params", fmt.Sprintf("%s=%v", "book.read", req.GetBook().GetRead())
     )
-    ctx = insertMetadata(ctx, md)
+    ctx = insertMetadata(ctx, c.Metadata, md)
     opts = append(c.CallOptions.CreateBook[0:len(c.CallOptions.CreateBook):len(c.CallOptions.CreateBook)], opts...)
     var resp *librarypb.Book
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {

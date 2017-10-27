@@ -462,14 +462,15 @@
 @end
 
 @private mergeMetadata(method)
-    ctx = insertMetadata(ctx, c.Metadata)
     @if method.headerRequestParams
         md := metadata.Pairs(
             @join headerRequestParam : method.headerRequestParams
                 "x-goog-request-params", fmt.Sprintf("%s=%v", "{@headerRequestParam.fullyQualifiedName}", req.{@requestParamGetter(headerRequestParam.gettersChain)})
             @end
         )
-        ctx = insertMetadata(ctx, md)
+        ctx = insertMetadata(ctx, c.Metadata, md)
+    @else
+        ctx = insertMetadata(ctx, c.Metadata)
     @end
 @end
 
