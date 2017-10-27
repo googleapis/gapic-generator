@@ -23,7 +23,9 @@ import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.ProtoField;
 import com.google.api.codegen.config.SingleResourceNameConfig;
+import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.config.VisibilityConfig;
 import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
@@ -153,7 +155,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getLongRunningOperationTypeName(ImportTypeTable typeTable, TypeRef type) {
+  public String getLongRunningOperationTypeName(ImportTypeTable typeTable, TypeModel type) {
     return ((ModelTypeTable) typeTable).getAndSaveNicknameFor(type);
   }
 
@@ -295,7 +297,8 @@ public class PythonSurfaceNamer extends SurfaceNamer {
     }
 
     if (methodConfig.isPageStreaming()) {
-      TypeRef resourceType = methodConfig.getPageStreaming().getResourcesField().getProtoTypeRef();
+      ProtoField fieldModel = (ProtoField) methodConfig.getPageStreaming().getResourcesField();
+      TypeRef resourceType = fieldModel.getType().getProtoType();
       return ImmutableList.of(
           "A :class:`~google.gax.PageIterator` instance. By default, this",
           "is an iterable of "
@@ -341,7 +344,7 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFieldGetFunctionName(TypeRef type, Name identifier) {
+  public String getFieldGetFunctionName(TypeModel type, Name identifier) {
     return publicFieldName(identifier);
   }
 

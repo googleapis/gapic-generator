@@ -148,7 +148,8 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.protoFilename(context.getInterface().getFile().getSimpleName());
 
     xapiClass.name(name);
-    xapiClass.doc(serviceTransformer.generateServiceDoc(context, methods.get(0)));
+    xapiClass.doc(
+        serviceTransformer.generateServiceDoc(context, methods.get(0), context.getProductConfig()));
     xapiClass.stubs(grpcStubTransformer.generateGrpcStubs(context));
 
     ApiModel model = context.getApiModel();
@@ -218,7 +219,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
               .serviceName(namer.getPackageServiceName(context.getInterfaceModel()))
               .doc(
                   serviceTransformer.generateServiceDoc(
-                      context, generateApiMethods(context).get(0)))
+                      context, generateApiMethods(context).get(0), productConfig))
               .build());
     }
 
@@ -315,7 +316,7 @@ public class RubyGapicSurfaceTransformer implements ModelToViewTransformer {
               .topLevelNamespace(topLevelNamespace)
               .doc(
                   serviceTransformer.generateServiceDoc(
-                      context, generateApiMethods(context).get(0)))
+                      context, generateApiMethods(context).get(0), productConfig))
               .build());
     }
 

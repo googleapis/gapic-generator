@@ -15,8 +15,6 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.LongRunningConfigProto;
-import com.google.api.codegen.transformer.ImportTypeTable;
-import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Model;
@@ -31,10 +29,10 @@ import org.threeten.bp.Duration;
 public abstract class LongRunningConfig {
 
   /** Returns the message type returned from a completed operation. */
-  public abstract TypeRef getReturnType();
+  public abstract TypeModel getReturnType();
 
   /** Returns the message type for the metadata field of an operation. */
-  public abstract TypeRef getMetadataType();
+  public abstract TypeModel getMetadataType();
 
   /** Reports whether or not the service implements delete. */
   public abstract boolean implementsDelete();
@@ -146,8 +144,8 @@ public abstract class LongRunningConfig {
       return null;
     } else {
       return new AutoValue_LongRunningConfig(
-          returnType,
-          metadataType,
+          new ProtoTypeRef(returnType),
+          new ProtoTypeRef(metadataType),
           longRunningConfigProto.getImplementsDelete(),
           longRunningConfigProto.getImplementsCancel(),
           initialPollDelay,
@@ -155,18 +153,5 @@ public abstract class LongRunningConfig {
           maxPollDelay,
           totalPollTimeout);
     }
-  }
-
-  public String getLongRunningOperationReturnTypeName(ImportTypeTable typeTable) {
-    // TODO(andrealin): Support Discovery
-    return ((ModelTypeTable) typeTable).getAndSaveNicknameFor(getReturnType());
-  }
-
-  public String getLongRunningOperationReturnTypeFullName(ImportTypeTable typeTable) {
-    return ((ModelTypeTable) typeTable).getFullNameFor(getReturnType());
-  }
-
-  public String getLongRunningOperationMetadataTypeFullName(ImportTypeTable typeTable) {
-    return ((ModelTypeTable) typeTable).getFullNameFor(getMetadataType());
   }
 }

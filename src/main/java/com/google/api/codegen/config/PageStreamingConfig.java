@@ -205,9 +205,9 @@ public abstract class PageStreamingConfig {
       return null;
     }
     return new AutoValue_PageStreamingConfig(
-        new DiscoveryField(requestTokenField, discoGapicNamer),
-        new DiscoveryField(pageSizeField, discoGapicNamer),
-        new DiscoveryField(responseTokenField, discoGapicNamer),
+        DiscoveryField.create(requestTokenField, discoGapicNamer),
+        DiscoveryField.create(pageSizeField, discoGapicNamer),
+        DiscoveryField.create(responseTokenField, discoGapicNamer),
         resourcesFieldConfig);
   }
 
@@ -217,19 +217,19 @@ public abstract class PageStreamingConfig {
     for (Schema property : responseField.properties().values()) {
       // Assume the List response has exactly one Array property.
       if (property.type().equals(Type.ARRAY)) {
-        resourcesFieldPath.add(new DiscoveryField(property, namer));
+        resourcesFieldPath.add(DiscoveryField.create(property, namer));
         break;
       } else if (property.additionalProperties() != null
           && !Strings.isNullOrEmpty(property.additionalProperties().reference())) {
         Schema additionalProperties = property.additionalProperties().dereference();
         if (additionalProperties.type().equals(Type.ARRAY)) {
-          resourcesFieldPath.add(new DiscoveryField(additionalProperties, namer));
+          resourcesFieldPath.add(DiscoveryField.create(additionalProperties, namer));
           break;
         }
         for (Schema subProperty : additionalProperties.properties().values()) {
           if (subProperty.type().equals(Type.ARRAY)) {
-            resourcesFieldPath.add(new DiscoveryField(property, namer));
-            resourcesFieldPath.add(new DiscoveryField(subProperty, namer));
+            resourcesFieldPath.add(DiscoveryField.create(property, namer));
+            resourcesFieldPath.add(DiscoveryField.create(subProperty, namer));
             break;
           }
         }

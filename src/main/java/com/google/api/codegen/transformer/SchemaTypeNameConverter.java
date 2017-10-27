@@ -14,8 +14,13 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.config.DiscoveryField;
+import com.google.api.codegen.config.DiscoveryRequestType;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.TypeModel;
+import com.google.api.codegen.discogapic.transformer.DiscoGapicNamer;
+import com.google.api.codegen.discovery.Method;
 import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypedValue;
@@ -23,6 +28,7 @@ import com.google.api.tools.framework.model.EnumValue;
 
 /** SchemaTypeNameConverter maps Schema instances to TypeName instances. */
 public abstract class SchemaTypeNameConverter implements TypeNameConverter {
+  public abstract DiscoGapicNamer getDiscoGapicNamer();
 
   public enum BoxingBehavior {
     // Box primitive types, e.g. Boolean instead of boolean.
@@ -63,6 +69,9 @@ public abstract class SchemaTypeNameConverter implements TypeNameConverter {
   /** Renders the given value if it is a primitive type. */
   public abstract String renderPrimitiveValue(Schema schema, String value);
 
+  /** Renders the value as a string. */
+  public abstract String renderValueAsString(String value);
+
   @Override
   public TypeName getTypeName(InterfaceModel interfaceModel) {
     return new TypeName(interfaceModel.getFullName());
@@ -70,7 +79,16 @@ public abstract class SchemaTypeNameConverter implements TypeNameConverter {
 
   @Override
   public TypeName getTypeName(FieldModel type) {
-    return getTypeName(type.getDiscoveryField());
+    return getTypeName(((DiscoveryField) type).getDiscoveryField());
+  }
+
+  @Override
+  public TypeName getTypeName(TypeModel type) {
+    if (type instanceof DiscoveryRequestType) {
+      Method method = ((DiscoveryRequestType) type).parentMethod().getDiscoMethod();
+      return getDiscoGapicNamer().getRequestTypeName(method);
+    }
+    return getTypeNameForElementType(((DiscoveryField) type).getDiscoveryField());
   }
 
   @Override
@@ -80,21 +98,21 @@ public abstract class SchemaTypeNameConverter implements TypeNameConverter {
 
   @Override
   public TypeName getTypeNameForElementType(FieldModel type) {
-    return getTypeNameForElementType(type.getDiscoveryField());
+    return getTypeNameForElementType(((DiscoveryField) type).getDiscoveryField());
   }
 
   @Override
   public TypedValue getSnippetZeroValue(FieldModel type) {
-    return getSnippetZeroValue((type.getDiscoveryField()));
+    return getSnippetZeroValue((((DiscoveryField) type).getDiscoveryField()));
   }
 
   @Override
   public TypedValue getImplZeroValue(FieldModel type) {
-    return getImplZeroValue((type.getDiscoveryField()));
+    return getImplZeroValue((((DiscoveryField) type).getDiscoveryField()));
   }
 
   @Override
   public String renderPrimitiveValue(FieldModel type, String value) {
-    return renderPrimitiveValue(type.getDiscoveryField(), value);
+    return renderPrimitiveValue(((DiscoveryField) type).getDiscoveryField(), value);
   }
 }

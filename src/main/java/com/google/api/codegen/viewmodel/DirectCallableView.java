@@ -26,6 +26,8 @@ public abstract class DirectCallableView {
 
   public abstract String responseTypeName();
 
+  public abstract boolean hasResponse();
+
   public abstract GrpcStreamingType grpcStreamingType();
 
   public abstract String name();
@@ -58,6 +60,8 @@ public abstract class DirectCallableView {
     public abstract Builder requestTypeName(String name);
 
     public abstract Builder responseTypeName(String name);
+
+    public abstract Builder hasResponse(boolean val);
 
     public abstract Builder grpcStreamingType(GrpcStreamingType val);
 
