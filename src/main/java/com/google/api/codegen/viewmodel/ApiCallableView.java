@@ -16,6 +16,7 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
 import com.google.auto.value.AutoValue;
+import java.util.List;
 import javax.annotation.Nullable;
 
 @AutoValue
@@ -57,6 +58,13 @@ public abstract class ApiCallableView {
   public abstract String grpcDirectCallableName();
 
   @Nullable
+  public abstract List<HeaderRequestParamView> headerRequestParams();
+
+  public boolean anyHeaderRequestParams() {
+    return headerRequestParams() != null && headerRequestParams().size() > 0;
+  }
+
+  @Nullable
   public abstract HttpMethodView httpMethod();
 
   public static Builder newBuilder() {
@@ -91,6 +99,8 @@ public abstract class ApiCallableView {
     public abstract Builder grpcClientVarName(String name);
 
     public abstract Builder grpcDirectCallableName(String name);
+
+    public abstract Builder headerRequestParams(List<HeaderRequestParamView> val);
 
     public abstract Builder httpMethod(HttpMethodView val);
 
