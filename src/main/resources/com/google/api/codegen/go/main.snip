@@ -461,13 +461,24 @@
     @end
 @end
 
+@private headerRequestParamString(headerRequestParams) horizontal on EMPTY
+    # This if block prevents a space from being printed after '"'.
+    @if TRUE
+        fmt.Sprintf("
+    @end
+    @join headerRequestParam : headerRequestParams on "&"
+        %s=%v
+    @end
+    ",
+    @join headerRequestParam : headerRequestParams on ", "
+        "{@headerRequestParam.fullyQualifiedName}", req.{@requestParamGetter(headerRequestParam.gettersChain)}
+    @end
+    )
+@end
+
 @private mergeMetadata(method)
     @if method.headerRequestParams
-        md := metadata.Pairs(
-            @join headerRequestParam : method.headerRequestParams
-                "x-goog-request-params", fmt.Sprintf("%s=%v", "{@headerRequestParam.fullyQualifiedName}", req.{@requestParamGetter(headerRequestParam.gettersChain)})
-            @end
-        )
+        md := metadata.Pairs("x-goog-request-params", {@headerRequestParamString(method.headerRequestParams)})
         ctx = insertMetadata(ctx, c.Metadata, md)
     @else
         ctx = insertMetadata(ctx, c.Metadata)
