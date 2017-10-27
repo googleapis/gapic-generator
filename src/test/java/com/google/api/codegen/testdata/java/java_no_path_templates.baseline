@@ -38,7 +38,7 @@ import javax.annotation.Generated;
  *
  * <pre>
  * <code>
- * try (NoTemplatesApiServiceClient noTemplatesApiServiceClient = NoTemplatesApiServiceClient.create()) {
+ * try (NoTemplatesApiServiceClient noTemplatesApiServiceClient = NoTemplatesApiServiceClient.of()) {
  *   IncrementRequest request = IncrementRequest.newBuilder().build();
  *   noTemplatesApiServiceClient.increment(request);
  * }
@@ -70,7 +70,7 @@ import javax.annotation.Generated;
  * returned.
  *
  * <p>This class can be customized by passing in a custom instance of NoTemplatesApiServiceSettings to
- * create(). For example:
+ * of(). For example:
  *
  * To customize credentials:
  *
@@ -79,21 +79,6 @@ import javax.annotation.Generated;
  * NoTemplatesApiServiceSettings noTemplatesApiServiceSettings =
  *     NoTemplatesApiServiceSettings.newBuilder()
  *         .setCredentialsProvider(FixedCredentialsProvider.of(myCredentials))
- *         .build();
- * NoTemplatesApiServiceClient noTemplatesApiServiceClient =
- *     NoTemplatesApiServiceClient.of(noTemplatesApiServiceSettings);
- * </code>
- * </pre>
- *
- * To customize the endpoint:
- *
- * <pre>
- * <code>
- * NoTemplatesApiServiceSettings noTemplatesApiServiceSettings =
- *     NoTemplatesApiServiceSettings.newBuilder()
- *         .setTransportChannelProvider(NoTemplatesApiServiceSettings.defaultGrpcTransportProviderBuilder()
- *             .setEndpoint(myEndpoint)
- *             .build())
  *         .build();
  * NoTemplatesApiServiceClient noTemplatesApiServiceClient =
  *     NoTemplatesApiServiceClient.of(noTemplatesApiServiceSettings);
@@ -185,7 +170,7 @@ public class NoTemplatesApiServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (NoTemplatesApiServiceClient noTemplatesApiServiceClient = NoTemplatesApiServiceClient.create()) {
+   * try (NoTemplatesApiServiceClient noTemplatesApiServiceClient = NoTemplatesApiServiceClient.of()) {
    *   IncrementRequest request = IncrementRequest.newBuilder().build();
    *   noTemplatesApiServiceClient.increment(request);
    * }
@@ -209,7 +194,7 @@ public class NoTemplatesApiServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (NoTemplatesApiServiceClient noTemplatesApiServiceClient = NoTemplatesApiServiceClient.create()) {
+   * try (NoTemplatesApiServiceClient noTemplatesApiServiceClient = NoTemplatesApiServiceClient.of()) {
    *   IncrementRequest request = IncrementRequest.newBuilder().build();
    *   ApiFuture&lt;Void&gt; future = noTemplatesApiServiceClient.incrementCallable().futureCall(request);
    *   // Do something
@@ -646,7 +631,7 @@ public class GrpcNoTemplatesApiServiceStub extends NoTemplatesApiServiceStub {
   }
 
   public static final GrpcNoTemplatesApiServiceStub of(NoTemplatesApiServiceSettings settings) throws IOException {
-    return new GrpcNoTemplatesApiServiceStub(settings, ClientContext.create(settings));
+    return new GrpcNoTemplatesApiServiceStub(settings, ClientContext.of(settings));
   }
 
   public static final GrpcNoTemplatesApiServiceStub of(ClientContext clientContext) throws IOException {
@@ -945,7 +930,7 @@ public class NoTemplatesApiServiceClientTest {
         .setTransportChannelProvider(serviceHelper.createChannelProvider())
         .setCredentialsProvider(new NoCredentialsProvider())
         .build();
-    client = NoTemplatesApiServiceClient.create(settings);
+    client = NoTemplatesApiServiceClient.of(settings);
   }
 
   @After

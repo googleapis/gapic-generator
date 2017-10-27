@@ -142,7 +142,7 @@
   }
 
   public static final {@stubClass.name} of({@stubClass.settingsClassName} settings) throws IOException {
-    return new {@stubClass.name}(settings, ClientContext.create(settings));
+    return new {@stubClass.name}(settings, ClientContext.of(settings));
   }
 
   public static final {@stubClass.name} of(ClientContext clientContext) throws IOException {
@@ -156,7 +156,7 @@
    */
   protected {@stubClass.name}({@stubClass.settingsClassName} settings, ClientContext clientContext) throws IOException {
     @if stubClass.hasLongRunningOperations
-      this.operationsStub = GrpcOperationsStub.create(clientContext);
+      this.operationsStub = GrpcOperationsStub.of(clientContext);
     @end
 
     @join methodDescriptor : stubClass.methodDescriptors
