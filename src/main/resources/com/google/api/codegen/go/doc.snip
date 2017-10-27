@@ -21,12 +21,9 @@
         "google.golang.org/grpc/metadata"
     )
 
-    func insertMetadata(ctx context.Context, md map[string][]string) context.Context {
+    func insertMetadata(ctx context.Context, md metadata.MD) context.Context {
         out, _ := metadata.FromOutgoingContext(ctx)
-        out = out.Copy()
-        for k, v := range md {
-            out[k] = v
-        }
+        out = metadata.Join(out, md)
         return metadata.NewOutgoingContext(ctx, out)
     }
 

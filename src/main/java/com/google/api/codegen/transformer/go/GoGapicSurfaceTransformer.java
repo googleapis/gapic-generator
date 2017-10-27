@@ -158,6 +158,10 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     List<StaticLangApiMethodView> apiMethods =
         generateApiMethods(context, context.getSupportedMethods());
     view.apiMethods(apiMethods);
+    // If any methods have header request params, "fmt" is needed for `fmt.Sprintf` calls.
+    if (apiMethods.stream().anyMatch(m -> !m.headerRequestParams().isEmpty())) {
+      context.getImportTypeTable().saveNicknameFor("fmt;;;");
+    }
 
     view.iamResources(iamResourceTransformer.generateIamResources(context));
     if (!((GapicInterfaceConfig) productConfig.getInterfaceConfig(apiInterface.getFullName()))
@@ -329,6 +333,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("github.com/googleapis/gax-go;gax;;");
     typeTable.saveNicknameFor("google.golang.org/api/option;;;");
     typeTable.saveNicknameFor("google.golang.org/api/transport;;;");
+    typeTable.saveNicknameFor("google.golang.org/grpc/metadata;;;");
     typeTable.getImports().remove(EMPTY_PROTO_PKG);
     addContextImports(context, ImportContext.CLIENT, methods);
   }

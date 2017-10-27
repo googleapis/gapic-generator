@@ -100,12 +100,9 @@ import (
     "google.golang.org/grpc/metadata"
 )
 
-func insertMetadata(ctx context.Context, md map[string][]string) context.Context {
+func insertMetadata(ctx context.Context, md metadata.MD) context.Context {
     out, _ := metadata.FromOutgoingContext(ctx)
-    out = out.Copy()
-    for k, v := range md {
-        out[k] = v
-    }
+    out = metadata.Join(out, md)
     return metadata.NewOutgoingContext(ctx, out)
 }
 
@@ -136,6 +133,7 @@ func DefaultAuthScopes() []string {
 package library
 
 import (
+    "fmt"
     "math"
     "time"
 
@@ -153,6 +151,7 @@ import (
     taggerpb "google.golang.org/genproto/googleapis/tagger/v1"
     "google.golang.org/grpc"
     "google.golang.org/grpc/codes"
+    "google.golang.org/grpc/metadata"
 )
 
 // CallOptions contains the retry settings for each method of Client.
@@ -257,7 +256,7 @@ type Client struct {
     CallOptions *CallOptions
 
     // The metadata to be sent with each request.
-    xGoogHeader []string
+    Metadata metadata.MD
 }
 
 // NewClient creates a new library service client.
@@ -322,7 +321,7 @@ func (c *Client) Close() error {
 func (c *Client) SetGoogleClientInfo(keyval ...string) {
     kv := append([]string{"gl-go", version.Go()}, keyval...)
     kv = append(kv, "gapic", version.Repo, "gax", gax.Version, "grpc", grpc.Version)
-    c.xGoogHeader = []string{gax.XGoogHeader(kv...)}
+    c.Metadata = metadata.Pairs("x-goog-api-client", gax.XGoogHeader(kv...))
 }
 
 // ShelfPath returns the path for the shelf resource.
@@ -364,10 +363,7 @@ func (c *Client) BookIAM(book *librarypb.Book) *iam.Handle {
 // CreateShelf creates a shelf, and returns the new Shelf.
 // RPC method comment may include special characters: <>&"`'@.
 func (c *Client) CreateShelf(ctx context.Context, req *librarypb.CreateShelfRequest, opts ...gax.CallOption) (*librarypb.Shelf, error) {
-    md := map[string][]string{
-        "x-goog-api-client": c.xGoogHeader,
-    }
-    ctx = insertMetadata(ctx, md)
+    ctx = insertMetadata(ctx, c.Metadata)
     opts = append(c.CallOptions.CreateShelf[0:len(c.CallOptions.CreateShelf):len(c.CallOptions.CreateShelf)], opts...)
     var resp *librarypb.Shelf
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
@@ -383,10 +379,7 @@ func (c *Client) CreateShelf(ctx context.Context, req *librarypb.CreateShelfRequ
 
 // GetShelf gets a shelf.
 func (c *Client) GetShelf(ctx context.Context, req *librarypb.GetShelfRequest, opts ...gax.CallOption) (*librarypb.Shelf, error) {
-    md := map[string][]string{
-        "x-goog-api-client": c.xGoogHeader,
-    }
-    ctx = insertMetadata(ctx, md)
+    ctx = insertMetadata(ctx, c.Metadata)
     opts = append(c.CallOptions.GetShelf[0:len(c.CallOptions.GetShelf):len(c.CallOptions.GetShelf)], opts...)
     var resp *librarypb.Shelf
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
@@ -402,10 +395,7 @@ func (c *Client) GetShelf(ctx context.Context, req *librarypb.GetShelfRequest, o
 
 // ListShelves lists shelves.
 func (c *Client) ListShelves(ctx context.Context, req *librarypb.ListShelvesRequest, opts ...gax.CallOption) *ShelfIterator {
-    md := map[string][]string{
-        "x-goog-api-client": c.xGoogHeader,
-    }
-    ctx = insertMetadata(ctx, md)
+    ctx = insertMetadata(ctx, c.Metadata)
     opts = append(c.CallOptions.ListShelves[0:len(c.CallOptions.ListShelves):len(c.CallOptions.ListShelves)], opts...)
     it := &ShelfIterator{}
     it.InternalFetch = func(pageSize int, pageToken string) ([]*librarypb.Shelf, string, error) {
@@ -440,10 +430,7 @@ func (c *Client) ListShelves(ctx context.Context, req *librarypb.ListShelvesRequ
 
 // DeleteShelf deletes a shelf.
 func (c *Client) DeleteShelf(ctx context.Context, req *librarypb.DeleteShelfRequest, opts ...gax.CallOption) error {
-    md := map[string][]string{
-        "x-goog-api-client": c.xGoogHeader,
-    }
-    ctx = insertMetadata(ctx, md)
+    ctx = insertMetadata(ctx, c.Metadata)
     opts = append(c.CallOptions.DeleteShelf[0:len(c.CallOptions.DeleteShelf):len(c.CallOptions.DeleteShelf)], opts...)
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
         var err error
@@ -457,10 +444,7 @@ func (c *Client) DeleteShelf(ctx context.Context, req *librarypb.DeleteShelfRequ
 // other_shelf_name to shelf name, and deletes
 // other_shelf_name. Returns the updated shelf.
 func (c *Client) MergeShelves(ctx context.Context, req *librarypb.MergeShelvesRequest, opts ...gax.CallOption) (*librarypb.Shelf, error) {
-    md := map[string][]string{
-        "x-goog-api-client": c.xGoogHeader,
-    }
-    ctx = insertMetadata(ctx, md)
+    ctx = insertMetadata(ctx, c.Metadata)
     opts = append(c.CallOptions.MergeShelves[0:len(c.CallOptions.MergeShelves):len(c.CallOptions.MergeShelves)], opts...)
     var resp *librarypb.Shelf
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
@@ -476,13 +460,11 @@ func (c *Client) MergeShelves(ctx context.Context, req *librarypb.MergeShelvesRe
 
 // CreateBook creates a book.
 func (c *Client) CreateBook(ctx context.Context, req *librarypb.CreateBookRequest, opts ...gax.CallOption) (*librarypb.Book, error) {
-    vals = []string{}
-    vals = append(vals, fmt.Sprintf("%s=%v", "name", req.GetName()))
-    vals = append(vals, fmt.Sprintf("%s=%v", "book.read", req.GetBook().GetRead()))
-    md := map[string][]string{
-        "x-goog-api-client": c.xGoogHeader,
-        "x-goog-request-params": vals,
-    }
+    ctx = insertMetadata(ctx, c.Metadata)
+    md := metadata.Pairs(
+        "x-goog-request-params", fmt.Sprintf("%s=%v", "name", req.GetName())
+        "x-goog-request-params", fmt.Sprintf("%s=%v", "book.read", req.GetBook().GetRead())
+    )
     ctx = insertMetadata(ctx, md)
     opts = append(c.CallOptions.CreateBook[0:len(c.CallOptions.CreateBook):len(c.CallOptions.CreateBook)], opts...)
     var resp *librarypb.Book
@@ -499,10 +481,7 @@ func (c *Client) CreateBook(ctx context.Context, req *librarypb.CreateBookReques
 
 // PublishSeries creates a series of books.
 func (c *Client) PublishSeries(ctx context.Context, req *librarypb.PublishSeriesRequest, opts ...gax.CallOption) (*librarypb.PublishSeriesResponse, error) {
-    md := map[string][]string{
-        "x-goog-api-client": c.xGoogHeader,
-    }
-    ctx = insertMetadata(ctx, md)
+    ctx = insertMetadata(ctx, c.Metadata)
     opts = append(c.CallOptions.PublishSeries[0:len(c.CallOptions.PublishSeries):len(c.CallOptions.PublishSeries)], opts...)
     var resp *librarypb.PublishSeriesResponse
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
@@ -518,10 +497,7 @@ func (c *Client) PublishSeries(ctx context.Context, req *librarypb.PublishSeries
 
 // GetBook gets a book.
 func (c *Client) GetBook(ctx context.Context, req *librarypb.GetBookRequest, opts ...gax.CallOption) (*librarypb.Book, error) {
-    md := map[string][]string{
-        "x-goog-api-client": c.xGoogHeader,
-    }
-    ctx = insertMetadata(ctx, md)
+    ctx = insertMetadata(ctx, c.Metadata)
     opts = append(c.CallOptions.GetBook[0:len(c.CallOptions.GetBook):len(c.CallOptions.GetBook)], opts...)
     var resp *librarypb.Book
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
@@ -537,10 +513,7 @@ func (c *Client) GetBook(ctx context.Context, req *librarypb.GetBookRequest, opt
 
 // ListBooks lists books in a shelf.
 func (c *Client) ListBooks(ctx context.Context, req *librarypb.ListBooksRequest, opts ...gax.CallOption) *BookIterator {
-    md := map[string][]string{
-        "x-goog-api-client": c.xGoogHeader,
-    }
-    ctx = insertMetadata(ctx, md)
+    ctx = insertMetadata(ctx, c.Metadata)
     opts = append(c.CallOptions.ListBooks[0:len(c.CallOptions.ListBooks):len(c.CallOptions.ListBooks)], opts...)
     it := &BookIterator{}
     it.InternalFetch = func(pageSize int, pageToken string) ([]*librarypb.Book, string, error) {
@@ -575,10 +548,7 @@ func (c *Client) ListBooks(ctx context.Context, req *librarypb.ListBooksRequest,
 
 // DeleteBook deletes a book.
 func (c *Client) DeleteBook(ctx context.Context, req *librarypb.DeleteBookRequest, opts ...gax.CallOption) error {
-    md := map[string][]string{
-        "x-goog-api-client": c.xGoogHeader,
-    }
-    ctx = insertMetadata(ctx, md)
+    ctx = insertMetadata(ctx, c.Metadata)
     opts = append(c.CallOptions.DeleteBook[0:len(c.CallOptions.DeleteBook):len(c.CallOptions.DeleteBook)], opts...)
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
         var err error
@@ -590,10 +560,7 @@ func (c *Client) DeleteBook(ctx context.Context, req *librarypb.DeleteBookReques
 
 // UpdateBook updates a book.
 func (c *Client) UpdateBook(ctx context.Context, req *librarypb.UpdateBookRequest, opts ...gax.CallOption) (*librarypb.Book, error) {
-    md := map[string][]string{
-        "x-goog-api-client": c.xGoogHeader,
-    }
-    ctx = insertMetadata(ctx, md)
+    ctx = insertMetadata(ctx, c.Metadata)
     opts = append(c.CallOptions.UpdateBook[0:len(c.CallOptions.UpdateBook):len(c.CallOptions.UpdateBook)], opts...)
     var resp *librarypb.Book
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
@@ -609,10 +576,7 @@ func (c *Client) UpdateBook(ctx context.Context, req *librarypb.UpdateBookReques
 
 // MoveBook moves a book to another shelf, and returns the new book.
 func (c *Client) MoveBook(ctx context.Context, req *librarypb.MoveBookRequest, opts ...gax.CallOption) (*librarypb.Book, error) {
-    md := map[string][]string{
-        "x-goog-api-client": c.xGoogHeader,
-    }
-    ctx = insertMetadata(ctx, md)
+    ctx = insertMetadata(ctx, c.Metadata)
     opts = append(c.CallOptions.MoveBook[0:len(c.CallOptions.MoveBook):len(c.CallOptions.MoveBook)], opts...)
     var resp *librarypb.Book
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
@@ -628,10 +592,7 @@ func (c *Client) MoveBook(ctx context.Context, req *librarypb.MoveBookRequest, o
 
 // ListStrings lists a primitive resource. To test go page streaming.
 func (c *Client) ListStrings(ctx context.Context, req *librarypb.ListStringsRequest, opts ...gax.CallOption) *StringIterator {
-    md := map[string][]string{
-        "x-goog-api-client": c.xGoogHeader,
-    }
-    ctx = insertMetadata(ctx, md)
+    ctx = insertMetadata(ctx, c.Metadata)
     opts = append(c.CallOptions.ListStrings[0:len(c.CallOptions.ListStrings):len(c.CallOptions.ListStrings)], opts...)
     it := &StringIterator{}
     it.InternalFetch = func(pageSize int, pageToken string) ([]string, string, error) {
@@ -666,10 +627,7 @@ func (c *Client) ListStrings(ctx context.Context, req *librarypb.ListStringsRequ
 
 // AddComments adds comments to a book
 func (c *Client) AddComments(ctx context.Context, req *librarypb.AddCommentsRequest, opts ...gax.CallOption) error {
-    md := map[string][]string{
-        "x-goog-api-client": c.xGoogHeader,
-    }
-    ctx = insertMetadata(ctx, md)
+    ctx = insertMetadata(ctx, c.Metadata)
     opts = append(c.CallOptions.AddComments[0:len(c.CallOptions.AddComments):len(c.CallOptions.AddComments)], opts...)
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
         var err error
@@ -681,10 +639,7 @@ func (c *Client) AddComments(ctx context.Context, req *librarypb.AddCommentsRequ
 
 // GetBookFromArchive gets a book from an archive.
 func (c *Client) GetBookFromArchive(ctx context.Context, req *librarypb.GetBookFromArchiveRequest, opts ...gax.CallOption) (*librarypb.BookFromArchive, error) {
-    md := map[string][]string{
-        "x-goog-api-client": c.xGoogHeader,
-    }
-    ctx = insertMetadata(ctx, md)
+    ctx = insertMetadata(ctx, c.Metadata)
     opts = append(c.CallOptions.GetBookFromArchive[0:len(c.CallOptions.GetBookFromArchive):len(c.CallOptions.GetBookFromArchive)], opts...)
     var resp *librarypb.BookFromArchive
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
@@ -700,10 +655,7 @@ func (c *Client) GetBookFromArchive(ctx context.Context, req *librarypb.GetBookF
 
 // GetBookFromAnywhere gets a book from a shelf or archive.
 func (c *Client) GetBookFromAnywhere(ctx context.Context, req *librarypb.GetBookFromAnywhereRequest, opts ...gax.CallOption) (*librarypb.BookFromAnywhere, error) {
-    md := map[string][]string{
-        "x-goog-api-client": c.xGoogHeader,
-    }
-    ctx = insertMetadata(ctx, md)
+    ctx = insertMetadata(ctx, c.Metadata)
     opts = append(c.CallOptions.GetBookFromAnywhere[0:len(c.CallOptions.GetBookFromAnywhere):len(c.CallOptions.GetBookFromAnywhere)], opts...)
     var resp *librarypb.BookFromAnywhere
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
@@ -719,10 +671,7 @@ func (c *Client) GetBookFromAnywhere(ctx context.Context, req *librarypb.GetBook
 
 // GetBookFromAbsolutelyAnywhere test proper OneOf-Any resource name mapping
 func (c *Client) GetBookFromAbsolutelyAnywhere(ctx context.Context, req *librarypb.GetBookFromAbsolutelyAnywhereRequest, opts ...gax.CallOption) (*librarypb.BookFromAnywhere, error) {
-    md := map[string][]string{
-        "x-goog-api-client": c.xGoogHeader,
-    }
-    ctx = insertMetadata(ctx, md)
+    ctx = insertMetadata(ctx, c.Metadata)
     opts = append(c.CallOptions.GetBookFromAbsolutelyAnywhere[0:len(c.CallOptions.GetBookFromAbsolutelyAnywhere):len(c.CallOptions.GetBookFromAbsolutelyAnywhere)], opts...)
     var resp *librarypb.BookFromAnywhere
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
@@ -738,10 +687,7 @@ func (c *Client) GetBookFromAbsolutelyAnywhere(ctx context.Context, req *library
 
 // UpdateBookIndex updates the index of a book.
 func (c *Client) UpdateBookIndex(ctx context.Context, req *librarypb.UpdateBookIndexRequest, opts ...gax.CallOption) error {
-    md := map[string][]string{
-        "x-goog-api-client": c.xGoogHeader,
-    }
-    ctx = insertMetadata(ctx, md)
+    ctx = insertMetadata(ctx, c.Metadata)
     opts = append(c.CallOptions.UpdateBookIndex[0:len(c.CallOptions.UpdateBookIndex):len(c.CallOptions.UpdateBookIndex)], opts...)
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
         var err error
@@ -754,10 +700,7 @@ func (c *Client) UpdateBookIndex(ctx context.Context, req *librarypb.UpdateBookI
 // StreamShelves test server streaming
 // gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
 func (c *Client) StreamShelves(ctx context.Context, req *librarypb.StreamShelvesRequest, opts ...gax.CallOption) (librarypb.LibraryService_StreamShelvesClient, error) {
-    md := map[string][]string{
-        "x-goog-api-client": c.xGoogHeader,
-    }
-    ctx = insertMetadata(ctx, md)
+    ctx = insertMetadata(ctx, c.Metadata)
     opts = append(c.CallOptions.StreamShelves[0:len(c.CallOptions.StreamShelves):len(c.CallOptions.StreamShelves)], opts...)
     var resp librarypb.LibraryService_StreamShelvesClient
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
@@ -774,10 +717,7 @@ func (c *Client) StreamShelves(ctx context.Context, req *librarypb.StreamShelves
 // StreamBooks test server streaming, non-paged responses.
 // gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
 func (c *Client) StreamBooks(ctx context.Context, req *librarypb.StreamBooksRequest, opts ...gax.CallOption) (librarypb.LibraryService_StreamBooksClient, error) {
-    md := map[string][]string{
-        "x-goog-api-client": c.xGoogHeader,
-    }
-    ctx = insertMetadata(ctx, md)
+    ctx = insertMetadata(ctx, c.Metadata)
     opts = append(c.CallOptions.StreamBooks[0:len(c.CallOptions.StreamBooks):len(c.CallOptions.StreamBooks)], opts...)
     var resp librarypb.LibraryService_StreamBooksClient
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
@@ -794,10 +734,7 @@ func (c *Client) StreamBooks(ctx context.Context, req *librarypb.StreamBooksRequ
 // DiscussBook test bidi-streaming.
 // gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
 func (c *Client) DiscussBook(ctx context.Context, opts ...gax.CallOption) (librarypb.LibraryService_DiscussBookClient, error) {
-    md := map[string][]string{
-        "x-goog-api-client": c.xGoogHeader,
-    }
-    ctx = insertMetadata(ctx, md)
+    ctx = insertMetadata(ctx, c.Metadata)
     opts = append(c.CallOptions.DiscussBook[0:len(c.CallOptions.DiscussBook):len(c.CallOptions.DiscussBook)], opts...)
     var resp librarypb.LibraryService_DiscussBookClient
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
@@ -814,10 +751,7 @@ func (c *Client) DiscussBook(ctx context.Context, opts ...gax.CallOption) (libra
 // MonologAboutBook test client streaming.
 // gRPC streaming methods don't have an HTTP equivalent and don't need to have the google.api.http option.
 func (c *Client) MonologAboutBook(ctx context.Context, opts ...gax.CallOption) (librarypb.LibraryService_MonologAboutBookClient, error) {
-    md := map[string][]string{
-        "x-goog-api-client": c.xGoogHeader,
-    }
-    ctx = insertMetadata(ctx, md)
+    ctx = insertMetadata(ctx, c.Metadata)
     opts = append(c.CallOptions.MonologAboutBook[0:len(c.CallOptions.MonologAboutBook):len(c.CallOptions.MonologAboutBook)], opts...)
     var resp librarypb.LibraryService_MonologAboutBookClient
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
@@ -833,10 +767,7 @@ func (c *Client) MonologAboutBook(ctx context.Context, opts ...gax.CallOption) (
 
 // FindRelatedBooks
 func (c *Client) FindRelatedBooks(ctx context.Context, req *librarypb.FindRelatedBooksRequest, opts ...gax.CallOption) *StringIterator {
-    md := map[string][]string{
-        "x-goog-api-client": c.xGoogHeader,
-    }
-    ctx = insertMetadata(ctx, md)
+    ctx = insertMetadata(ctx, c.Metadata)
     opts = append(c.CallOptions.FindRelatedBooks[0:len(c.CallOptions.FindRelatedBooks):len(c.CallOptions.FindRelatedBooks)], opts...)
     it := &StringIterator{}
     it.InternalFetch = func(pageSize int, pageToken string) ([]string, string, error) {
@@ -871,10 +802,7 @@ func (c *Client) FindRelatedBooks(ctx context.Context, req *librarypb.FindRelate
 
 // addLabel adds a label to the entity.
 func (c *Client) addLabel(ctx context.Context, req *taggerpb.AddLabelRequest, opts ...gax.CallOption) (*taggerpb.AddLabelResponse, error) {
-    md := map[string][]string{
-        "x-goog-api-client": c.xGoogHeader,
-    }
-    ctx = insertMetadata(ctx, md)
+    ctx = insertMetadata(ctx, c.Metadata)
     opts = append(c.CallOptions.AddLabel[0:len(c.CallOptions.AddLabel):len(c.CallOptions.AddLabel)], opts...)
     var resp *taggerpb.AddLabelResponse
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
@@ -890,10 +818,7 @@ func (c *Client) addLabel(ctx context.Context, req *taggerpb.AddLabelRequest, op
 
 // GetBigBook test long-running operations
 func (c *Client) GetBigBook(ctx context.Context, req *librarypb.GetBookRequest, opts ...gax.CallOption) (*GetBigBookOperation, error) {
-    md := map[string][]string{
-        "x-goog-api-client": c.xGoogHeader,
-    }
-    ctx = insertMetadata(ctx, md)
+    ctx = insertMetadata(ctx, c.Metadata)
     opts = append(c.CallOptions.GetBigBook[0:len(c.CallOptions.GetBigBook):len(c.CallOptions.GetBigBook)], opts...)
     var resp *longrunningpb.Operation
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
@@ -911,10 +836,7 @@ func (c *Client) GetBigBook(ctx context.Context, req *librarypb.GetBookRequest, 
 
 // GetBigNothing test long-running operations with empty return type.
 func (c *Client) GetBigNothing(ctx context.Context, req *librarypb.GetBookRequest, opts ...gax.CallOption) (*GetBigNothingOperation, error) {
-    md := map[string][]string{
-        "x-goog-api-client": c.xGoogHeader,
-    }
-    ctx = insertMetadata(ctx, md)
+    ctx = insertMetadata(ctx, c.Metadata)
     opts = append(c.CallOptions.GetBigNothing[0:len(c.CallOptions.GetBigNothing):len(c.CallOptions.GetBigNothing)], opts...)
     var resp *longrunningpb.Operation
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {
@@ -932,10 +854,7 @@ func (c *Client) GetBigNothing(ctx context.Context, req *librarypb.GetBookReques
 
 // TestOptionalRequiredFlatteningParams test optional flattening parameters of all types
 func (c *Client) TestOptionalRequiredFlatteningParams(ctx context.Context, req *librarypb.TestOptionalRequiredFlatteningParamsRequest, opts ...gax.CallOption) (*librarypb.TestOptionalRequiredFlatteningParamsResponse, error) {
-    md := map[string][]string{
-        "x-goog-api-client": c.xGoogHeader,
-    }
-    ctx = insertMetadata(ctx, md)
+    ctx = insertMetadata(ctx, c.Metadata)
     opts = append(c.CallOptions.TestOptionalRequiredFlatteningParams[0:len(c.CallOptions.TestOptionalRequiredFlatteningParams):len(c.CallOptions.TestOptionalRequiredFlatteningParams)], opts...)
     var resp *librarypb.TestOptionalRequiredFlatteningParamsResponse
     err := gax.Invoke(ctx, func(ctx context.Context, settings gax.CallSettings) error {

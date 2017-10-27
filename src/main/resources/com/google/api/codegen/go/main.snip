@@ -69,7 +69,7 @@
         CallOptions *{@view.callOptionsTypeName}
 
         // The metadata to be sent with each request.
-        xGoogHeader []string
+        Metadata metadata.MD
     }
 
     // {@view.clientConstructorName} creates a new {@view.servicePhraseName} client.
@@ -124,7 +124,7 @@
     func (c *{@view.clientTypeName}) {@setClientInfoFunc(view)}(keyval ...string) {
         kv := append([]string{"gl-go", version.Go()}, keyval...)
         kv = append(kv, "gapic", version.Repo, "gax", gax.Version, "grpc", grpc.Version)
-        c.xGoogHeader = []string{gax.XGoogHeader(kv...)}
+        c.Metadata = metadata.Pairs("x-goog-api-client", gax.XGoogHeader(kv...))
     }
 
     @join getter : view.pathTemplateGetters
@@ -462,20 +462,15 @@
 @end
 
 @private mergeMetadata(method)
+    ctx = insertMetadata(ctx, c.Metadata)
     @if method.headerRequestParams
-        vals = []string{}
-        @join headerRequestParam : method.headerRequestParams
-            vals = append(vals, fmt.Sprintf("%s=%v", "{@headerRequestParam.fullyQualifiedName}", req.{@requestParamGetter(headerRequestParam.gettersChain)}))
-        @end
-
+        md := metadata.Pairs(
+            @join headerRequestParam : method.headerRequestParams
+                "x-goog-request-params", fmt.Sprintf("%s=%v", "{@headerRequestParam.fullyQualifiedName}", req.{@requestParamGetter(headerRequestParam.gettersChain)})
+            @end
+        )
+        ctx = insertMetadata(ctx, md)
     @end
-    md := map[string][]string{
-        "x-goog-api-client": c.xGoogHeader,
-        @if method.headerRequestParams
-            "x-goog-request-params": vals,
-        @end
-    }
-    ctx = insertMetadata(ctx, md)
 @end
 
 @private mergeOptions(getterName)
