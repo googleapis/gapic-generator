@@ -116,6 +116,7 @@ public class ApiCallableTransformer {
     apiCallableBuilder.memberName(namer.getSettingsMemberName(method));
     apiCallableBuilder.settingsFunctionName(namer.getSettingsFunctionName(method));
     apiCallableBuilder.grpcClientVarName(namer.getReroutedGrpcClientVarName(methodConfig));
+    apiCallableBuilder.headerRequestParams(getHeaderRequestParams(context));
 
     setCommonApiCallableFields(context, apiCallableBuilder);
 
