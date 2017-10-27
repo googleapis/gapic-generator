@@ -102,7 +102,12 @@ import (
 
 func insertMetadata(ctx context.Context, mds ...metadata.MD) context.Context {
     out, _ := metadata.FromOutgoingContext(ctx)
-    out = metadata.Join(append([]metadata.MD{out}, mds...)...)
+    out = out.Copy()
+    for _, md := range mds {
+        for k, v := range md {
+            out[k] = append(out[k], v...)
+        }
+    }
     return metadata.NewOutgoingContext(ctx, out)
 }
 
