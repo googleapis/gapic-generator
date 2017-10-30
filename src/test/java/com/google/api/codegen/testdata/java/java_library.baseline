@@ -380,10 +380,7 @@ public class LibraryClient implements BackgroundResource {
 
   /**
    * Constructs an instance of LibraryClient with default settings.
-   *
-   * @deprecated Use of() instead.
    */
-  @Deprecated
   public static final LibraryClient of() throws IOException {
     return of(LibrarySettings.newBuilder().build());
   }
@@ -6202,7 +6199,7 @@ public class LibraryClientTest {
     serviceHelper.reset();
     LibrarySettings settings = LibrarySettings.newBuilder()
         .setTransportChannelProvider(serviceHelper.createChannelProvider())
-        .setCredentialsProvider(new NoCredentialsProvider())
+        .setCredentialsProvider(NoCredentialsProvider.of())
         .build();
     client = LibraryClient.of(settings);
   }
