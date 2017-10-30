@@ -354,7 +354,7 @@ public class ApiCallableTransformer {
     return callableBuilder.build();
   }
 
-  private List<HeaderRequestParamView> getHeaderRequestParams(MethodContext context) {
+  public static List<HeaderRequestParamView> getHeaderRequestParams(MethodContext context) {
     if (!context.getProductConfig().getTransportProtocol().equals(TransportProtocol.GRPC)) {
       return ImmutableList.of();
     }
@@ -374,7 +374,7 @@ public class ApiCallableTransformer {
     return headerRequestParams.build();
   }
 
-  private HeaderRequestParamView getHeaderRequestParam(
+  private static HeaderRequestParamView getHeaderRequestParam(
       String headerRequestParam, MessageType inputMessageType, SurfaceNamer namer) {
     String[] fieldNameTokens = headerRequestParam.split("\\.");
     ImmutableList.Builder<String> gettersChain = ImmutableList.builder();
