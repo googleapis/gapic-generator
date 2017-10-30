@@ -87,14 +87,14 @@ public abstract class LongRunningConfig {
           Diag.error(
               SimpleLocation.TOPLEVEL,
               "Metadata type not found for long running config: '%s'",
-              longRunningConfigProto.getReturnType()));
+              longRunningConfigProto.getMetadataType()));
       error = true;
     } else if (!metadataType.isMessage()) {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
               "Metadata type for long running config is not a message: '%s'",
-              longRunningConfigProto.getReturnType()));
+              longRunningConfigProto.getMetadataType()));
       error = true;
     }
 
