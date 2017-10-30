@@ -14,8 +14,6 @@
  */
 package com.google.api.codegen.transformer;
 
-import static com.google.api.codegen.config.ApiSource.PROTO;
-
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
@@ -24,6 +22,7 @@ import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PageStreamingConfig;
 import com.google.api.codegen.config.SingleResourceNameConfig;
+import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.util.Name;
@@ -343,11 +342,8 @@ public class StaticLangApiMethodTransformer {
         additionalParams,
         methodViewBuilder);
     methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
-    methodViewBuilder.responseTypeName(
-        context
-            .getMethodConfig()
-            .getLongRunningConfig()
-            .getLongRunningOperationReturnTypeName(context.getTypeTable()));
+    TypeModel returnType = context.getMethodConfig().getLongRunningConfig().getReturnType();
+    methodViewBuilder.responseTypeName(context.getTypeTable().getAndSaveNicknameFor(returnType));
 
     return methodViewBuilder.type(ClientMethodType.OperationRequestObjectMethod).build();
   }
@@ -366,12 +362,8 @@ public class StaticLangApiMethodTransformer {
     methodViewBuilder.callableName(namer.getCallableName(method));
     setFlattenedMethodFields(context, additionalParams, Synchronicity.Sync, methodViewBuilder);
     methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
-    methodViewBuilder.responseTypeName(
-        context
-            .getMethodConfig()
-            .getLongRunningConfig()
-            .getLongRunningOperationReturnTypeName(context.getTypeTable()));
-
+    TypeModel returnType = context.getMethodConfig().getLongRunningConfig().getReturnType();
+    methodViewBuilder.responseTypeName(context.getTypeTable().getAndSaveNicknameFor(returnType));
     return methodViewBuilder.type(ClientMethodType.OperationFlattenedMethod).build();
   }
 
@@ -402,11 +394,8 @@ public class StaticLangApiMethodTransformer {
     if (requiresOperationMethod) {
       methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
     }
-    methodViewBuilder.responseTypeName(
-        context
-            .getMethodConfig()
-            .getLongRunningConfig()
-            .getLongRunningOperationReturnTypeName(context.getTypeTable()));
+    TypeModel returnType = context.getMethodConfig().getLongRunningConfig().getReturnType();
+    methodViewBuilder.responseTypeName(context.getTypeTable().getAndSaveNicknameFor(returnType));
     methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
 
     return methodViewBuilder.type(type).build();
@@ -442,11 +431,8 @@ public class StaticLangApiMethodTransformer {
     }
     if (context.getMethodConfig().isLongRunningOperation()) {
       // Only for protobuf-based APIs.
-      methodViewBuilder.responseTypeName(
-          context
-              .getMethodConfig()
-              .getLongRunningConfig()
-              .getLongRunningOperationReturnTypeName(context.getTypeTable()));
+      TypeModel returnType = context.getMethodConfig().getLongRunningConfig().getReturnType();
+      methodViewBuilder.responseTypeName(context.getTypeTable().getAndSaveNicknameFor(returnType));
       methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
     } else {
       throw new IllegalArgumentException(
@@ -464,11 +450,8 @@ public class StaticLangApiMethodTransformer {
     methodViewBuilder.name(namer.getOperationCallableMethodName(method));
     methodViewBuilder.exampleName(context.getNamer().getOperationCallableMethodExampleName(method));
     setCallableMethodFields(context, namer.getOperationCallableName(method), methodViewBuilder);
-    methodViewBuilder.responseTypeName(
-        context
-            .getMethodConfig()
-            .getLongRunningConfig()
-            .getLongRunningOperationReturnTypeName(context.getTypeTable()));
+    TypeModel returnType = context.getMethodConfig().getLongRunningConfig().getReturnType();
+    methodViewBuilder.responseTypeName(context.getTypeTable().getAndSaveNicknameFor(returnType));
     methodViewBuilder.operationMethod(lroTransformer.generateDetailView(context));
 
     return methodViewBuilder.type(ClientMethodType.OperationCallableMethod).build();
@@ -502,7 +485,7 @@ public class StaticLangApiMethodTransformer {
     ServiceMessages messages = new ServiceMessages();
     if (context.getMethodConfig().isLongRunningOperation()) {
       methodViewBuilder.hasReturnValue(
-          !messages.isEmptyType(context.getMethodConfig().getLongRunningConfig().getReturnType()));
+          !context.getMethodConfig().getLongRunningConfig().getReturnType().isEmptyType());
     } else {
       methodViewBuilder.hasReturnValue(method.hasReturnValue());
     }
@@ -591,27 +574,10 @@ public class StaticLangApiMethodTransformer {
     SurfaceNamer namer = context.getNamer();
     Iterable<FieldConfig> fieldConfigs =
         context.getFlatteningConfig().getFlattenedFieldConfigs().values();
-
-    // TODO(andrealin): refactor InitCodeView/Transformer to be API source agsnostic.
-    InitCodeView initCode = null;
-    switch (context.getApiSource()) {
-      case DISCOVERY:
-        DiscoGapicMethodContext discoGapicMethodContext = (DiscoGapicMethodContext) context;
-        initCode = initCodeTransformer.generateInitCode(discoGapicMethodContext, null);
-        break;
-      case PROTO:
-        GapicMethodContext gapicMethodContext = (GapicMethodContext) context;
-        initCode =
-            initCodeTransformer.generateInitCode(
-                gapicMethodContext.cloneWithEmptyTypeTable(),
-                createInitCodeContext(
-                    gapicMethodContext, fieldConfigs, InitCodeOutputType.FieldList));
-        break;
-      default:
-        throw new IllegalArgumentException("Unhandled ApiSource type.");
-    }
-
-    methodViewBuilder.initCode(initCode);
+    methodViewBuilder.initCode(
+        initCodeTransformer.generateInitCode(
+            context.cloneWithEmptyTypeTable(),
+            createInitCodeContext(context, fieldConfigs, InitCodeOutputType.FieldList)));
     methodViewBuilder.doc(
         ApiMethodDocView.newBuilder()
             .mainDocLines(namer.getDocLines(method, context.getMethodConfig()))
@@ -667,27 +633,13 @@ public class StaticLangApiMethodTransformer {
             .returnsDocLines(
                 namer.getReturnDocLines(context.getSurfaceInterfaceContext(), context, sync))
             .build());
-    // TODO(andrealin): refactor InitCodeView/Transformer to be API source agsnostic.
-    InitCodeView initCode = null;
-    switch (context.getApiSource()) {
-      case DISCOVERY:
-        DiscoGapicMethodContext discoGapicMethodContext = (DiscoGapicMethodContext) context;
-        initCode = initCodeTransformer.generateInitCode(discoGapicMethodContext, null);
-        break;
-      case PROTO:
-        GapicMethodContext gapicMethodContext = (GapicMethodContext) context;
-        initCode =
-            initCodeTransformer.generateInitCode(
-                context.cloneWithEmptyTypeTable(),
-                createInitCodeContext(
-                    gapicMethodContext,
-                    context.getMethodConfig().getRequiredFieldConfigs(),
-                    InitCodeOutputType.SingleObject));
-        break;
-      default:
-        throw new IllegalArgumentException("Unhandled ApiSource type.");
-    }
-
+    InitCodeView initCode =
+        initCodeTransformer.generateInitCode(
+            context.cloneWithEmptyTypeTable(),
+            createInitCodeContext(
+                context,
+                context.getMethodConfig().getRequiredFieldConfigs(),
+                InitCodeOutputType.SingleObject));
     methodViewBuilder.initCode(initCode);
 
     methodViewBuilder.methodParams(new ArrayList<RequestObjectParamView>());
@@ -715,20 +667,13 @@ public class StaticLangApiMethodTransformer {
             .paramDocs(new ArrayList<ParamDocView>())
             .throwsDocLines(new ArrayList<String>())
             .build());
-    // TODO(andrealin): implement initCode for Discovery and remove the ApiSource check and casting.
-    if (context.getApiSource().equals(PROTO)) {
-      methodViewBuilder.initCode(
-          initCodeTransformer.generateInitCode(
-              (GapicMethodContext) context.cloneWithEmptyTypeTable(),
-              createInitCodeContext(
-                  (GapicMethodContext) context,
-                  context.getMethodConfig().getRequiredFieldConfigs(),
-                  InitCodeOutputType.SingleObject)));
-    } else {
-      methodViewBuilder.initCode(
-          initCodeTransformer.generateInitCode(
-              ((DiscoGapicMethodContext) context).cloneWithEmptyTypeTable(), null));
-    }
+    methodViewBuilder.initCode(
+        initCodeTransformer.generateInitCode(
+            context.cloneWithEmptyTypeTable(),
+            createInitCodeContext(
+                context,
+                context.getMethodConfig().getRequiredFieldConfigs(),
+                InitCodeOutputType.SingleObject)));
 
     methodViewBuilder.methodParams(new ArrayList<RequestObjectParamView>());
     methodViewBuilder.requestObjectParams(new ArrayList<RequestObjectParamView>());
@@ -902,11 +847,11 @@ public class StaticLangApiMethodTransformer {
   }
 
   private InitCodeContext createInitCodeContext(
-      GapicMethodContext context,
+      MethodContext context,
       Iterable<FieldConfig> fieldConfigs,
       InitCodeOutputType initCodeOutputType) {
     return InitCodeContext.newBuilder()
-        .initObjectType(context.getMethod().getInputType())
+        .initObjectType(context.getMethodModel().getInputType())
         .suggestedName(Name.from("request"))
         .initFieldConfigStrings(context.getMethodConfig().getSampleCodeInitFields())
         .initValueConfigMap(InitCodeTransformer.createCollectionMap(context))

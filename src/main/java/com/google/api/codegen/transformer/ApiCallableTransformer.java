@@ -117,6 +117,7 @@ public class ApiCallableTransformer {
     apiCallableBuilder.memberName(namer.getSettingsMemberName(method));
     apiCallableBuilder.settingsFunctionName(namer.getSettingsFunctionName(method));
     apiCallableBuilder.grpcClientVarName(namer.getReroutedGrpcClientVarName(methodConfig));
+    apiCallableBuilder.headerRequestParams(getHeaderRequestParams(context));
 
     setCommonApiCallableFields(context, apiCallableBuilder);
 
@@ -341,6 +342,7 @@ public class ApiCallableTransformer {
         method.getAndSaveRequestTypeName(typeTable, context.getNamer()));
     callableBuilder.responseTypeName(
         method.getAndSaveResponseTypeName(typeTable, context.getNamer()));
+    callableBuilder.hasResponse(method.hasReturnValue());
     callableBuilder.name(namer.getDirectCallableName(method));
     callableBuilder.protoMethodName(method.getSimpleName());
     callableBuilder.fullServiceName(context.getTargetInterface().getFullName());

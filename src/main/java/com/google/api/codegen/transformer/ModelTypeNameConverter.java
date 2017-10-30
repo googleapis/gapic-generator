@@ -17,12 +17,16 @@ package com.google.api.codegen.transformer;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FieldModel;
 import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.ProtoField;
 import com.google.api.codegen.config.ProtoInterfaceModel;
+import com.google.api.codegen.config.ProtoTypeRef;
+import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypedValue;
 import com.google.api.tools.framework.model.EnumValue;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 /** ModelTypeNameConverter maps TypeRef instances to TypeName instances. */
 public abstract class ModelTypeNameConverter implements TypeNameConverter {
@@ -40,6 +44,11 @@ public abstract class ModelTypeNameConverter implements TypeNameConverter {
 
   /** Provides a TypeName for the element type of the given TypeRef. */
   public abstract TypeName getTypeNameForElementType(TypeRef type);
+
+  @Override
+  public TypeName getTypeName(TypeModel type) {
+    return getTypeName(((ProtoTypeRef) type).getProtoType());
+  }
 
   @Override
   /* Provides a TypeName for the given FieldConfig and resource short name. */
@@ -77,24 +86,29 @@ public abstract class ModelTypeNameConverter implements TypeNameConverter {
   /** Renders the given value if it is a primitive type. */
   public abstract String renderPrimitiveValue(TypeRef type, String value);
 
+  /** Renders the given value if it is a primitive type. */
+  public String renderValueAsString(String value) {
+    return renderPrimitiveValue(TypeRef.of(Type.TYPE_STRING), value);
+  }
+
   // Overriden interface methods call the overloaded method on the underlying Field object.
 
   /** Provides a TypeName for the given FieldModel. */
   @Override
   public TypeName getTypeName(FieldModel type) {
-    return getTypeName(type.getProtoTypeRef());
+    return getTypeName((((ProtoField) type).getType().getProtoType()));
   }
 
   /** Provides a TypedValue for the given enum FieldModel. */
   @Override
   public TypedValue getEnumValue(FieldModel type, EnumValue value) {
-    return getEnumValue(type.getProtoTypeRef(), value);
+    return getEnumValue((((ProtoField) type).getType().getProtoType()), value);
   }
 
   /** Provides a TypeName for the element type of the given FieldModel. */
   @Override
   public TypeName getTypeNameForElementType(FieldModel type) {
-    return getTypeNameForElementType(type.getProtoTypeRef());
+    return getTypeNameForElementType((((ProtoField) type).getType().getProtoType()));
   }
 
   /**
@@ -103,7 +117,7 @@ public abstract class ModelTypeNameConverter implements TypeNameConverter {
    */
   @Override
   public TypedValue getSnippetZeroValue(FieldModel type) {
-    return getSnippetZeroValue(type.getProtoTypeRef());
+    return getSnippetZeroValue((((ProtoField) type).getType().getProtoType()));
   }
 
   /**
@@ -113,12 +127,12 @@ public abstract class ModelTypeNameConverter implements TypeNameConverter {
    */
   @Override
   public TypedValue getImplZeroValue(FieldModel type) {
-    return getImplZeroValue(type.getProtoTypeRef());
+    return getImplZeroValue((((ProtoField) type).getType().getProtoType()));
   }
 
   /** Renders the given value if it is a primitive type. */
   @Override
   public String renderPrimitiveValue(FieldModel type, String value) {
-    return renderPrimitiveValue(type.getProtoTypeRef(), value);
+    return renderPrimitiveValue((((ProtoField) type).getType().getProtoType()), value);
   }
 }

@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.metacode;
 
+import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.SymbolTable;
 import com.google.api.tools.framework.model.Interface;
@@ -63,7 +64,7 @@ public class SampleInitCodeTest {
   private InitCodeContext.Builder getContextBuilder() {
     return InitCodeContext.newBuilder()
         .symbolTable(new SymbolTable())
-        .initObjectType(method.getInputType())
+        .initObjectType(new ProtoTypeRef(method.getInputType()))
         .suggestedName(Name.from("request"));
   }
 

@@ -14,8 +14,13 @@
  */
 package com.google.api.codegen.transformer.php;
 
-import com.google.api.codegen.config.*;
+import com.google.api.codegen.config.FieldConfig;
+import com.google.api.codegen.config.FlatteningConfig;
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.GrpcStreamingConfig.GrpcStreamingType;
+import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
 import com.google.api.codegen.php.PhpGapicCodePathMapper;
@@ -198,7 +203,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
           methodContext.getMethodConfig().getRequiredFieldConfigs();
       InitCodeContext initCodeContext =
           InitCodeContext.newBuilder()
-              .initObjectType(methodContext.getMethod().getInputType())
+              .initObjectType(methodContext.getMethodModel().getInputType())
               .suggestedName(Name.from("request"))
               .initFieldConfigStrings(methodContext.getMethodConfig().getSampleCodeInitFields())
               .initValueConfigMap(InitCodeTransformer.createCollectionMap(methodContext))
@@ -275,8 +280,7 @@ public class PhpGapicSurfaceTestTransformer implements ModelToViewTransformer {
     addSmokeTestImports(context.getImportTypeTable());
 
     SurfaceNamer namer = context.getNamer();
-    ProtoMethodModel method =
-        new ProtoMethodModel(context.getInterfaceConfig().getSmokeTestConfig().getMethod());
+    MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
     FlatteningConfig flatteningGroup =
         testCaseTransformer.getSmokeTestFlatteningGroup(
             context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());

@@ -22,7 +22,6 @@ import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
 import com.google.api.codegen.config.ProtoApiModel;
-import com.google.api.codegen.config.ProtoMethodModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.metacode.InitCodeContext;
 import com.google.api.codegen.metacode.InitCodeContext.InitCodeOutputType;
@@ -180,7 +179,7 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
                 : InitCodeOutputType.FieldList;
         InitCodeContext initCodeContext =
             InitCodeContext.newBuilder()
-                .initObjectType(methodContext.getMethod().getInputType())
+                .initObjectType(methodContext.getMethodModel().getInputType())
                 .suggestedName(Name.from("request"))
                 .initFieldConfigStrings(methodContext.getMethodConfig().getSampleCodeInitFields())
                 .initValueConfigMap(InitCodeTransformer.createCollectionMap(methodContext))
@@ -225,8 +224,7 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
     String outputPath =
         Joiner.on(File.separator).join("tests", "system", "gapic", version, filename);
 
-    MethodModel method =
-        new ProtoMethodModel(context.getInterfaceConfig().getSmokeTestConfig().getMethod());
+    MethodModel method = context.getInterfaceConfig().getSmokeTestConfig().getMethod();
     FlatteningConfig flatteningGroup =
         testCaseTransformer.getSmokeTestFlatteningGroup(
             context.getMethodConfig(method), context.getInterfaceConfig().getSmokeTestConfig());

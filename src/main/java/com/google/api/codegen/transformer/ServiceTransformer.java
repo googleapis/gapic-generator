@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.config.GapicProductConfig;
 import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.ServiceDocView;
@@ -22,7 +23,7 @@ import com.google.common.collect.ImmutableList;
 public class ServiceTransformer {
 
   public ServiceDocView generateServiceDoc(
-      InterfaceContext context, ApiMethodView exampleApiMethod) {
+      InterfaceContext context, ApiMethodView exampleApiMethod, GapicProductConfig productConfig) {
     SurfaceNamer namer = context.getNamer();
     ServiceDocView.Builder serviceDoc = ServiceDocView.newBuilder();
 
@@ -42,6 +43,10 @@ public class ServiceTransformer {
     serviceDoc.settingsClassName(namer.getApiSettingsClassName(context.getInterfaceConfig()));
     serviceDoc.hasDefaultInstance(context.getInterfaceConfig().hasDefaultInstance());
     serviceDoc.serviceTitle(context.serviceTitle());
+    serviceDoc.defaultTransportProviderBuilder(
+        namer.getDefaultTransportProviderBuilder(productConfig.getTransportProtocol()));
+    serviceDoc.defaultChannelProviderBuilder(
+        namer.getDefaultChannelProviderBuilder(productConfig.getTransportProtocol()));
     return serviceDoc.build();
   }
 }

@@ -20,15 +20,19 @@ import com.google.api.codegen.config.InterfaceConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodConfig;
 import com.google.api.codegen.config.MethodModel;
+import com.google.api.codegen.config.ProtoTypeRef;
 import com.google.api.codegen.config.ResourceNameConfig;
 import com.google.api.codegen.config.ResourceNameType;
 import com.google.api.codegen.config.SingleResourceNameConfig;
+import com.google.api.codegen.config.TypeModel;
+import com.google.api.codegen.metacode.InitFieldConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.MethodContext;
 import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.Synchronicity;
 import com.google.api.codegen.transformer.TransformationContext;
+import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeNameConverter;
@@ -154,6 +158,31 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   @Override
   public String getFullyQualifiedApiWrapperClassName(InterfaceConfig interfaceConfig) {
     return getPackageName() + "." + getApiWrapperClassName(interfaceConfig);
+  }
+
+  @Override
+  public String injectRandomStringGeneratorCode(String randomString) {
+    String delimiter = ",";
+    String[] split =
+        CommonRenderingUtil.stripQuotes(randomString)
+            .replace(
+                InitFieldConfig.RANDOM_TOKEN, delimiter + InitFieldConfig.RANDOM_TOKEN + delimiter)
+            .split(delimiter);
+    StringBuilder result = new StringBuilder();
+    result.append('"');
+    boolean requireInterpolation = false;
+    for (String token : split) {
+      if (token.length() > 0) {
+        if (token.equals(InitFieldConfig.RANDOM_TOKEN)) {
+          requireInterpolation = true;
+          result.append("{Guid.NewGuid()}");
+        } else {
+          result.append(token);
+        }
+      }
+    }
+    result.append('"');
+    return requireInterpolation ? "$" + result.toString() : result.toString();
   }
 
   @Override
@@ -448,7 +477,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFieldSetFunctionName(TypeRef type, Name identifier) {
+  public String getFieldSetFunctionName(TypeModel type, Name identifier) {
     return publicMethodName(identifier);
   }
 
@@ -456,9 +485,9 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   public String getAndSaveOperationResponseTypeName(
       MethodModel method, ImportTypeTable typeTable, MethodConfig methodConfig) {
     String responseTypeName =
-        methodConfig.getLongRunningConfig().getLongRunningOperationReturnTypeFullName(typeTable);
+        typeTable.getFullNameFor(methodConfig.getLongRunningConfig().getReturnType());
     String metaTypeName =
-        methodConfig.getLongRunningConfig().getLongRunningOperationMetadataTypeFullName(typeTable);
+        typeTable.getFullNameFor(methodConfig.getLongRunningConfig().getMetadataType());
     return typeTable.getAndSaveNicknameForContainer(
         "Google.LongRunning.Operation", responseTypeName, metaTypeName);
   }
@@ -540,7 +569,11 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public boolean isPrimitive(TypeRef type) {
+  public boolean isPrimitive(TypeModel typeModel) {
+    if (!(typeModel instanceof ProtoTypeRef)) {
+      return typeModel.isPrimitive();
+    }
+    TypeRef type = ((ProtoTypeRef) typeModel).getProtoType();
     if (type.isRepeated()) {
       return false;
     }
@@ -567,7 +600,7 @@ public class CSharpSurfaceNamer extends SurfaceNamer {
 
   @Override
   public boolean isPrimitive(FieldModel type) {
-    return isPrimitive(type.getProtoTypeRef());
+    return isPrimitive(type.getType());
   }
 
   @Override
