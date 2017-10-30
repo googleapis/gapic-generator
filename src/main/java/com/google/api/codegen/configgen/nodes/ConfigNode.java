@@ -14,16 +14,37 @@
  */
 package com.google.api.codegen.configgen.nodes;
 
+/**
+ * Represents an element of sytax in a gapic config.
+ *
+ * <p>Linked to the node that follows it to preserving ordering when inserting between nodes.
+ *
+ * <p>Some implementations have a child node.
+ */
 public interface ConfigNode {
+  /**
+   * Returns the text value of this node.
+   *
+   * <p>Implementations may be blank.
+   */
   String getText();
 
+  /** Returns the next linked node. */
   ConfigNode getNext();
 
+  /** Returns the child or NullConfigNode if the node does not have a child. */
   ConfigNode getChild();
 
+  /**
+   * Sets the child node. Should return itself for chaining.
+   *
+   * <p>Implementation may be empty.
+   */
   ConfigNode setChild(ConfigNode child);
 
+  /** Inserts next as the node following this one. Should return itself for chaining. */
   ConfigNode insertNext(ConfigNode next);
 
+  /** Returns true if the node is not NullConfigNode. */
   boolean isPresent();
 }

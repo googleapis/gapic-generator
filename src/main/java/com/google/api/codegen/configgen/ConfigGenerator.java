@@ -23,8 +23,10 @@ import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 
+/** Generates the text of the gapic yaml file from a ConfigNode representation. */
 public class ConfigGenerator extends NodeVisitor {
-  private static final int MAX_WIDTH = 78;
+  private static final int MAX_LINE_WIDTH = 78;
+  private static final int TAB_WIDTH = 2;
   private final int indent;
   private final StringBuilder configBuilder = new StringBuilder();
 
@@ -43,7 +45,7 @@ public class ConfigGenerator extends NodeVisitor {
       configBuilder
           .append(node.getText())
           .append(":")
-          .append(visitFieldValue(indent + 2, node.getChild()));
+          .append(visitFieldValue(indent + TAB_WIDTH, node.getChild()));
     }
   }
 
@@ -60,7 +62,10 @@ public class ConfigGenerator extends NodeVisitor {
       } else if (line.trim().startsWith("# ")) {
         appendIndent().append(CharMatcher.whitespace().trimTrailingFrom(line));
       } else {
-        configBuilder.append(Strings.repeat(" ", indent - 2)).append("- ").append(line.trim());
+        configBuilder
+            .append(Strings.repeat(" ", indent - TAB_WIDTH))
+            .append("- ")
+            .append(line.trim());
         isFirst = false;
       }
       configBuilder.append(System.lineSeparator());
@@ -77,7 +82,7 @@ public class ConfigGenerator extends NodeVisitor {
       return;
     }
 
-    int maxWidth = MAX_WIDTH - indent;
+    int maxWidth = MAX_LINE_WIDTH - indent;
     for (String line : Splitter.on("\n").split(comment)) {
       while (line.length() > maxWidth) {
         int split = lineWrapIndex(line, maxWidth);

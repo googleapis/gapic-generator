@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.configgen.nodes;
 
+/** Base class for the ConfigNode types. */
 public abstract class BaseConfigNode implements ConfigNode {
   private final String text;
   private ConfigNode next;

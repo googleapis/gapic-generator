@@ -19,6 +19,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import com.google.api.codegen.configgen.nodes.metadata.Comment;
 import com.google.api.codegen.configgen.nodes.metadata.NullComment;
 
+/** Represents a key-value pair in a gapic config. */
 public class FieldConfigNode extends BaseConfigNode {
   private ConfigNode child;
   private Comment comment;
@@ -38,7 +39,7 @@ public class FieldConfigNode extends BaseConfigNode {
 
   @Override
   public FieldConfigNode setChild(ConfigNode child) {
-    checkArgument(this != child, "Cannot set child to this node");
+    checkArgument(this != child, "Cannot set node to be its own child");
     this.child = child;
     return this;
   }

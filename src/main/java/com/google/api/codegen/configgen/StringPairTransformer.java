@@ -17,6 +17,7 @@ package com.google.api.codegen.configgen;
 import com.google.api.codegen.configgen.nodes.FieldConfigNode;
 import com.google.api.codegen.configgen.nodes.ScalarConfigNode;
 
+/** Transforms a key-value String pair into a FieldConfigNode. */
 public class StringPairTransformer {
   public static FieldConfigNode generateStringPair(String key, String value) {
     return new FieldConfigNode(key).setChild(new ScalarConfigNode(value));

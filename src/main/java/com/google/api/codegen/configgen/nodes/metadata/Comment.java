@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.configgen.nodes.metadata;
 
+/** Represents comment metadata for a ConfigNode. */
 public interface Comment {
+  /** Generates the String representation of this. */
   String generate();
 }

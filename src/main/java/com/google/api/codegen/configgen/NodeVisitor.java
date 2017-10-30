@@ -19,6 +19,12 @@ import com.google.api.codegen.configgen.nodes.NullConfigNode;
 import com.google.api.tools.framework.util.Accepts;
 import com.google.api.tools.framework.util.GenericVisitor;
 
+/**
+ * Base class for ConfigNode visitors, using GenericVisitor.
+ *
+ * <p>Implements the accept methods necessary to traverse a sequence of nodes. Child traversal is
+ * dependent on the concrete visitor.
+ */
 public abstract class NodeVisitor extends GenericVisitor<ConfigNode> {
   protected NodeVisitor() {
     super(ConfigNode.class);

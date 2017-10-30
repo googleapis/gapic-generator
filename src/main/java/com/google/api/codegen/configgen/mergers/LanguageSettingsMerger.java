@@ -14,13 +14,13 @@
  */
 package com.google.api.codegen.configgen.mergers;
 
-import com.google.api.codegen.configgen.ConfigHelper;
 import com.google.api.codegen.configgen.ListTransformer;
 import com.google.api.codegen.configgen.nodes.ConfigNode;
 import com.google.api.codegen.configgen.nodes.FieldConfigNode;
 import com.google.api.codegen.configgen.nodes.ScalarConfigNode;
 import com.google.api.codegen.configgen.nodes.metadata.DefaultComment;
 import com.google.api.codegen.util.VersionMatcher;
+import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Joiner;
@@ -35,10 +35,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+/** Merges the language_settings property from a Model into a ConfigNode. */
 public class LanguageSettingsMerger {
   private static final String DEFAULT_PACKAGE_SEPARATOR = ".";
 
-  public static final Map<String, LanguageFormatter> LANGUAGE_FORMATTERS;
+  private static final Map<String, LanguageFormatter> LANGUAGE_FORMATTERS;
 
   static {
     List<RewriteRule> javaRewriteRules =
@@ -57,9 +58,8 @@ public class LanguageSettingsMerger {
             .build();
   }
 
-  public ConfigNode mergeLanguageSettings(
-      Model model, ConfigNode configNode, ConfigNode prevNode, ConfigHelper helper) {
-    final String packageName = getPackageName(model, helper);
+  public ConfigNode mergeLanguageSettings(Model model, ConfigNode configNode, ConfigNode prevNode) {
+    final String packageName = getPackageName(model);
     if (packageName == null) {
       return null;
     }
@@ -83,7 +83,7 @@ public class LanguageSettingsMerger {
         .setComment(new DefaultComment("The settings of generated code in a specific language."));
   }
 
-  private String getPackageName(Model model, ConfigHelper helper) {
+  private String getPackageName(Model model) {
     if (model.getServiceConfig().getApisCount() > 0) {
       Api api = model.getServiceConfig().getApis(0);
       Interface apiInterface = model.getSymbolTable().lookupInterface(api.getName());
@@ -92,7 +92,7 @@ public class LanguageSettingsMerger {
       }
     }
 
-    helper.error(model.getLocation(), "No interface found");
+    model.getDiagCollector().addDiag(Diag.error(model.getLocation(), "No interface found"));
     return null;
   }
 

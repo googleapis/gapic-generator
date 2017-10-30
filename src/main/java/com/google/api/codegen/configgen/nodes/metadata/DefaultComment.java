@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.configgen.nodes.metadata;
 
+/** Base comment to be wrapped by decorators. Outputs its String. */
 public class DefaultComment implements Comment {
 
   private final String comment;

@@ -19,6 +19,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import com.google.api.codegen.configgen.nodes.metadata.Comment;
 import com.google.api.codegen.configgen.nodes.metadata.NullComment;
 
+/** Represents an item in a list of a gapic config. */
 public class ListItemConfigNode extends BaseConfigNode {
   private ConfigNode child;
   private Comment comment;
@@ -38,7 +39,7 @@ public class ListItemConfigNode extends BaseConfigNode {
 
   @Override
   public ListItemConfigNode setChild(ConfigNode child) {
-    checkArgument(this != child, "Cannot set child to this node");
+    checkArgument(this != child, "Cannot set node to be its own child");
     this.child = child;
     return this;
   }

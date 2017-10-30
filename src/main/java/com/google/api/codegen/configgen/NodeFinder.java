@@ -19,6 +19,7 @@ import com.google.common.collect.Iterables;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+/** Utilities for finding and traversing ConfigNodes. */
 public class NodeFinder {
   public static ConfigNode getLastChild(ConfigNode parentNode) {
     return Iterables.getLast(getChildren(parentNode));

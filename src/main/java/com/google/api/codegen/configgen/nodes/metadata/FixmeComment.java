@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.configgen.nodes.metadata;
 
+/** Comment decorator that adds a FIXME heading. */
 public class FixmeComment implements Comment {
   private final Comment comment;
 

@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.configgen.nodes;
 
+/** Implements the Null Object Pattern for ConfigNode. */
 public class NullConfigNode implements ConfigNode {
   @Override
   public String getText() {

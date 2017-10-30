@@ -15,7 +15,6 @@
 package com.google.api.codegen.configgen.mergers;
 
 import com.google.api.codegen.configgen.CollectionPattern;
-import com.google.api.codegen.configgen.ConfigHelper;
 import com.google.api.codegen.configgen.ListTransformer;
 import com.google.api.codegen.configgen.NodeFinder;
 import com.google.api.codegen.configgen.StringPairTransformer;
@@ -34,12 +33,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/** Merges the methods property from a Model into a ConfigNode. */
 public class MethodMerger {
   private static final ImmutableSet<String> IGNORED_FIELDS =
       ImmutableSet.of("page_token", "page_size");
 
   // Do not apply flattening if the parameter count exceeds the threshold.
-  // TODO(shinfan): Investigate a more intelligent way to handle this.
+  // TODO(garrettjones): Investigate a more intelligent way to handle this.
   private static final int FLATTENING_THRESHOLD = 4;
 
   private static final int REQUEST_OBJECT_METHOD_THRESHOLD = 1;
@@ -47,12 +47,13 @@ public class MethodMerger {
   private static final String METHODS_COMMENT =
       "A list of method configurations.\n"
           + "Common properties:\n\n"
-          + "  name - The simple name of the method.\n"
-          + "    flattening - Specifies the configuration for parameter flattening.\n"
+          + "  name - The simple name of the method.\n\n"
+          + "  flattening - Specifies the configuration for parameter flattening.\n"
           + "    Describes the parameter groups for which a generator should produce method "
           + "overloads which allow a client to directly pass request message fields as method "
           + "parameters. This information may or may not be used, depending on the target "
-          + "language. Consists of groups, which each represent a list of parameters to be "
+          + "language.\n"
+          + "    Consists of groups, which each represent a list of parameters to be "
           + "flattened. Each parameter listed must be a field of the request message.\n\n"
           + "  required_fields - Fields that are always required for a request to be valid.\n\n"
           + "  request_object_method - Turns on or off the generation of a method whose sole "
@@ -85,39 +86,33 @@ public class MethodMerger {
   private final PageStreamingMerger pageStreamingMerger = new PageStreamingMerger();
 
   public void generateMethodsNode(
-      ConfigNode parentNode,
-      Interface apiInterface,
-      Map<String, String> collectionNameMap,
-      ConfigHelper helper) {
+      ConfigNode parentNode, Interface apiInterface, Map<String, String> collectionNameMap) {
     FieldConfigNode methodsNode =
         new FieldConfigNode("methods").setComment(new DefaultComment(METHODS_COMMENT));
     NodeFinder.getLastChild(parentNode).insertNext(methodsNode);
-    generateMethodsValueNode(methodsNode, apiInterface, collectionNameMap, helper);
+    generateMethodsValueNode(methodsNode, apiInterface, collectionNameMap);
   }
 
   private ConfigNode generateMethodsValueNode(
-      ConfigNode parentNode,
-      Interface apiInterface,
-      final Map<String, String> collectionNameMap,
-      final ConfigHelper helper) {
+      ConfigNode parentNode, Interface apiInterface, final Map<String, String> collectionNameMap) {
     return ListTransformer.generateList(
         apiInterface.getReachableMethods(),
         parentNode,
         new ListTransformer.ElementTransformer<Method>() {
           @Override
           public ConfigNode generateElement(Method method) {
-            return generateMethodNode(method, collectionNameMap, helper);
+            return generateMethodNode(method, collectionNameMap);
           }
         });
   }
 
   private ListItemConfigNode generateMethodNode(
-      Method method, Map<String, String> collectionNameMap, ConfigHelper helper) {
+      Method method, Map<String, String> collectionNameMap) {
     ListItemConfigNode methodNode = new ListItemConfigNode();
     ConfigNode nameNode = StringPairTransformer.generateStringPair("name", method.getSimpleName());
     methodNode.setChild(nameNode);
     ConfigNode prevNode = generateField(nameNode, method);
-    prevNode = pageStreamingMerger.generatePageStreamingNode(prevNode, method, helper);
+    prevNode = pageStreamingMerger.generatePageStreamingNode(prevNode, method);
     prevNode = retryMerger.generateRetryNamesNode(prevNode, method);
     prevNode = generateFieldNamePatterns(prevNode, method, collectionNameMap);
     ConfigNode timeoutMillisNode =

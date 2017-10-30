@@ -28,6 +28,7 @@ import com.google.common.collect.ImmutableList;
 import io.grpc.Status;
 import java.util.List;
 
+/** Merges retry properties from a Model into a ConfigNode. */
 public class RetryMerger {
   private static final String RETRY_CODES_IDEMPOTENT_NAME = "idempotent";
   private static final String RETRY_CODES_NON_IDEMPOTENT_NAME = "non_idempotent";
