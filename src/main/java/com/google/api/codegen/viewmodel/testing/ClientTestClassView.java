@@ -39,29 +39,6 @@ public abstract class ClientTestClassView {
 
   public abstract boolean apiHasLongRunningMethods();
 
-  /**
-   * Indicates that the api has a method that makes a unary request and returns a unary response.
-   */
-  public abstract boolean apiHasUnaryUnaryMethod();
-
-  /**
-   * Indicates that the api has a method that makes a unary request and returns a streaming
-   * response.
-   */
-  public abstract boolean apiHasUnaryStreamingMethod();
-
-  /**
-   * Indicates that the api has a method that makes a streaming request and returns a unary
-   * response.
-   */
-  public abstract boolean apiHasStreamingUnaryMethod();
-
-  /**
-   * Indicates that the api has a method that makes a streaming request and returns a streaming
-   * response.
-   */
-  public abstract boolean apiHasStreamingStreamingMethod();
-
   @Nullable
   public abstract String packageServiceName();
 
@@ -82,11 +59,7 @@ public abstract class ClientTestClassView {
   public abstract List<ClientInitParamView> clientInitOptionalParams();
 
   public static Builder newBuilder() {
-    return new AutoValue_ClientTestClassView.Builder()
-        .apiHasUnaryUnaryMethod(false)
-        .apiHasUnaryStreamingMethod(false)
-        .apiHasStreamingUnaryMethod(false)
-        .apiHasStreamingStreamingMethod(false);
+    return new AutoValue_ClientTestClassView.Builder();
   }
 
   @AutoValue.Builder
@@ -107,14 +80,6 @@ public abstract class ClientTestClassView {
     public abstract Builder testCases(List<TestCaseView> val);
 
     public abstract Builder apiHasLongRunningMethods(boolean val);
-
-    public abstract Builder apiHasUnaryUnaryMethod(boolean val);
-
-    public abstract Builder apiHasUnaryStreamingMethod(boolean val);
-
-    public abstract Builder apiHasStreamingUnaryMethod(boolean val);
-
-    public abstract Builder apiHasStreamingStreamingMethod(boolean val);
 
     /** The name of the property of the api export that exports this service. Used in Node.js. */
     public abstract Builder packageServiceName(String val);

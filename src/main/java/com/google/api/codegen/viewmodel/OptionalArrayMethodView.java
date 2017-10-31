@@ -73,9 +73,6 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
   @Nullable
   public abstract LongRunningOperationDetailView longRunningView();
 
-  @Nullable
-  public abstract PageStreamingDescriptorView pageStreamingView();
-
   public boolean isLongRunningOperation() {
     return longRunningView() != null;
   }
@@ -160,8 +157,6 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
     public abstract Builder stubName(String val);
 
     public abstract Builder longRunningView(LongRunningOperationDetailView val);
-
-    public abstract Builder pageStreamingView(PageStreamingDescriptorView val);
 
     public abstract Builder isSingularRequestMethod(boolean val);
 

@@ -54,20 +54,16 @@ public class PythonApiMethodParamTransformer implements ApiMethodParamTransforme
         DynamicLangDefaultableParamView.Builder param =
             DynamicLangDefaultableParamView.newBuilder();
         param.name(context.getNamer().getVariableName(field));
-        param.defaultValue("None");
+        if (field.isRepeated() || field.isMessage() || field.isEnum() || field.getOneof() != null) {
+          param.defaultValue("None");
+        } else {
+          param.defaultValue(context.getTypeTable().getSnippetZeroValueAndSaveNicknameFor(field));
+        }
         methodParams.add(param.build());
       }
     }
     methodParams.add(
-        DynamicLangDefaultableParamView.newBuilder()
-            .name("retry")
-            .defaultValue("google.api_core.gapic_v1.method.DEFAULT")
-            .build());
-    methodParams.add(
-        DynamicLangDefaultableParamView.newBuilder()
-            .name("timeout")
-            .defaultValue("google.api_core.gapic_v1.method.DEFAULT")
-            .build());
+        DynamicLangDefaultableParamView.newBuilder().name("options").defaultValue("None").build());
     return methodParams.build();
   }
 
@@ -80,7 +76,7 @@ public class PythonApiMethodParamTransformer implements ApiMethodParamTransforme
       docs.addAll(generateMethodParamDocs(context, context.getMethodConfig().getRequiredFields()));
       docs.addAll(generateMethodParamDocs(context, context.getMethodConfig().getOptionalFields()));
     }
-    docs.addAll(generateOptionsParamDocs());
+    docs.add(generateOptionsParamDoc());
     return docs.build();
   }
 
@@ -159,24 +155,13 @@ public class PythonApiMethodParamTransformer implements ApiMethodParamTransforme
         && field.equals(methodConfig.getPageStreaming().getRequestTokenField());
   }
 
-  private List<ParamDocView> generateOptionsParamDocs() {
-    SimpleParamDocView.Builder retryParamDoc = SimpleParamDocView.newBuilder();
-    retryParamDoc.paramName("retry");
-    retryParamDoc.typeName("Optional[google.api_core.retry.Retry]");
-    retryParamDoc.lines(
+  private ParamDocView generateOptionsParamDoc() {
+    SimpleParamDocView.Builder paramDoc = SimpleParamDocView.newBuilder();
+    paramDoc.paramName("options");
+    paramDoc.typeName("~google.gax.CallOptions");
+    paramDoc.lines(
         ImmutableList.of(
-            " A retry object used",
-            "to retry requests. If ``None`` is specified, requests will not",
-            "be retried."));
-
-    SimpleParamDocView.Builder timeoutParamDoc = SimpleParamDocView.newBuilder();
-    timeoutParamDoc.paramName("timeout");
-    timeoutParamDoc.typeName("Optional[float]");
-    timeoutParamDoc.lines(
-        ImmutableList.of(
-            "The amount of time, in seconds, to wait",
-            "for the request to complete. Note that if ``retry`` is",
-            "specified, the timeout applies to each individual attempt."));
-    return ImmutableList.<ParamDocView>of(retryParamDoc.build(), timeoutParamDoc.build());
+            "Overrides the default", "settings for this call, e.g, timeout, retries etc."));
+    return paramDoc.build();
   }
 }

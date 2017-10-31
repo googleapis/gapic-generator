@@ -17,9 +17,7 @@ package com.google.api.codegen.transformer.py;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.FieldConfig;
 import com.google.api.codegen.config.FlatteningConfig;
-import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicProductConfig;
-import com.google.api.codegen.config.GrpcStreamingConfig;
 import com.google.api.codegen.config.InterfaceModel;
 import com.google.api.codegen.config.MethodModel;
 import com.google.api.codegen.config.PackageMetadataConfig;
@@ -127,10 +125,6 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
                           context.getInterfaceModel().getSimpleName())))
               .testCases(createTestCaseViews(context))
               .apiHasLongRunningMethods(context.getInterfaceConfig().hasLongRunningOperations())
-              .apiHasUnaryUnaryMethod(hasUnaryUnary(context.getInterfaceConfig()))
-              .apiHasUnaryStreamingMethod(hasUnaryStreaming(context.getInterfaceConfig()))
-              .apiHasStreamingUnaryMethod(hasStreamingUnary(context.getInterfaceConfig()))
-              .apiHasStreamingStreamingMethod(hasStreamingStreaming(context.getInterfaceConfig()))
               .missingDefaultServiceAddress(
                   !context.getInterfaceConfig().hasDefaultServiceAddress())
               .missingDefaultServiceScopes(!context.getInterfaceConfig().hasDefaultServiceScopes())
@@ -155,46 +149,6 @@ public class PythonGapicSurfaceTestTransformer implements ModelToViewTransformer
               .build());
     }
     return models.build();
-  }
-
-  private boolean hasUnaryUnary(GapicInterfaceConfig interfaceConfig) {
-    return interfaceConfig
-        .getMethodConfigs()
-        .stream()
-        .anyMatch(method -> !method.isGrpcStreaming());
-  }
-
-  private boolean hasUnaryStreaming(GapicInterfaceConfig interfaceConfig) {
-    return interfaceConfig
-        .getMethodConfigs()
-        .stream()
-        .anyMatch(
-            method ->
-                method.isGrpcStreaming()
-                    && method.getGrpcStreaming().getType()
-                        == GrpcStreamingConfig.GrpcStreamingType.ServerStreaming);
-  }
-
-  private boolean hasStreamingUnary(GapicInterfaceConfig interfaceConfig) {
-    return interfaceConfig
-        .getMethodConfigs()
-        .stream()
-        .anyMatch(
-            method ->
-                method.isGrpcStreaming()
-                    && method.getGrpcStreaming().getType()
-                        == GrpcStreamingConfig.GrpcStreamingType.ClientStreaming);
-  }
-
-  private boolean hasStreamingStreaming(GapicInterfaceConfig interfaceConfig) {
-    return interfaceConfig
-        .getMethodConfigs()
-        .stream()
-        .anyMatch(
-            method ->
-                method.isGrpcStreaming()
-                    && method.getGrpcStreaming().getType()
-                        == GrpcStreamingConfig.GrpcStreamingType.BidiStreaming);
   }
 
   private List<TestCaseView> createTestCaseViews(GapicInterfaceContext context) {
