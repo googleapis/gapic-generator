@@ -259,9 +259,13 @@ public class PythonSurfaceNamer extends SurfaceNamer {
   @Override
   public List<String> getThrowsDocLines(MethodConfig methodConfig) {
     ImmutableList.Builder<String> lines = ImmutableList.builder();
-    lines.add(":exc:`google.gax.errors.GaxError` if the RPC is aborted.");
+    lines.add(
+        "google.api_core.exceptions.GoogleAPICallError: If the request",
+        "        failed for any reason.",
+        "google.api_core.exceptions.RetryError: If the request failed due",
+        "        to a retryable error and retry attempts failed.");
     if (hasParams(methodConfig)) {
-      lines.add(":exc:`ValueError` if the parameters are invalid.");
+      lines.add("ValueError: If the parameters are invalid.");
     }
     return lines.build();
   }

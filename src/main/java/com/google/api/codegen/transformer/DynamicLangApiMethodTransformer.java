@@ -41,6 +41,7 @@ public class DynamicLangApiMethodTransformer {
   private final ApiMethodParamTransformer apiMethodParamTransformer;
   private final InitCodeTransformer initCodeTransformer;
   private final LongRunningTransformer lroTransformer = new LongRunningTransformer();
+  private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
 
   public DynamicLangApiMethodTransformer(ApiMethodParamTransformer apiMethodParamTransformer) {
     this(apiMethodParamTransformer, new InitCodeTransformer());
@@ -65,6 +66,9 @@ public class DynamicLangApiMethodTransformer {
 
     if (context.getMethodConfig().isPageStreaming()) {
       apiMethod.type(ClientMethodType.PagedOptionalArrayMethod);
+      apiMethod.pageStreamingView(
+          pageStreamingTransformer.generateDescriptor(
+              context.getSurfaceInterfaceContext(), method));
     } else {
       apiMethod.type(ClientMethodType.OptionalArrayMethod);
     }

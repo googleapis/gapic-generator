@@ -29,37 +29,40 @@ import java.util.List;
 /** PageStreamingTransformer generates view objects for page streaming from a service model. */
 public class PageStreamingTransformer {
 
+  public PageStreamingDescriptorView generateDescriptor(
+      InterfaceContext context, MethodModel method) {
+    MethodConfig methodConfig = context.getMethodConfig(method);
+    PageStreamingConfig pageStreaming = methodConfig.getPageStreaming();
+
+    PageStreamingDescriptorView.Builder descriptor = PageStreamingDescriptorView.newBuilder();
+    descriptor.varName(context.getNamer().getPageStreamingDescriptorName(method));
+    descriptor.requestTokenFieldName(context.getNamer().getRequestTokenFieldName(pageStreaming));
+    descriptor.requestTokenGetMethodName(
+        context.getNamer().getFieldGetFunctionName(pageStreaming.getRequestTokenField()));
+    descriptor.requestTokenSetMethodName(
+        context.getNamer().getFieldSetFunctionName(pageStreaming.getRequestTokenField()));
+    if (pageStreaming.hasPageSizeField()) {
+      descriptor.requestPageSizeFieldName(context.getNamer().getPageSizeFieldName(pageStreaming));
+      descriptor.requestPageSizeGetMethodName(
+          context.getNamer().getFieldGetFunctionName(pageStreaming.getPageSizeField()));
+      descriptor.requestPageSizeSetMethodName(
+          context.getNamer().getFieldSetFunctionName(pageStreaming.getPageSizeField()));
+    }
+    descriptor.responseTokenFieldName(context.getNamer().getResponseTokenFieldName(pageStreaming));
+    descriptor.responseTokenGetMethodName(
+        context.getNamer().getFieldGetFunctionName(pageStreaming.getResponseTokenField()));
+    descriptor.resourcesFieldName(context.getNamer().getResourcesFieldName(pageStreaming));
+    descriptor.resourcesGetMethodName(
+        context.getNamer().getFieldGetFunctionName(pageStreaming.getResourcesField()));
+    descriptor.methodName(context.getNamer().getMethodKey(method));
+    return descriptor.build();
+  }
+
   public List<PageStreamingDescriptorView> generateDescriptors(InterfaceContext context) {
     List<PageStreamingDescriptorView> descriptors = new ArrayList<>();
 
     for (MethodModel method : context.getPageStreamingMethods()) {
-      MethodConfig methodConfig = context.getMethodConfig(method);
-      PageStreamingConfig pageStreaming = methodConfig.getPageStreaming();
-
-      PageStreamingDescriptorView.Builder descriptor = PageStreamingDescriptorView.newBuilder();
-      descriptor.varName(context.getNamer().getPageStreamingDescriptorName(method));
-      descriptor.requestTokenFieldName(context.getNamer().getRequestTokenFieldName(pageStreaming));
-      descriptor.requestTokenGetMethodName(
-          context.getNamer().getFieldGetFunctionName(pageStreaming.getRequestTokenField()));
-      descriptor.requestTokenSetMethodName(
-          context.getNamer().getFieldSetFunctionName(pageStreaming.getRequestTokenField()));
-      if (pageStreaming.hasPageSizeField()) {
-        descriptor.requestPageSizeFieldName(context.getNamer().getPageSizeFieldName(pageStreaming));
-        descriptor.requestPageSizeGetMethodName(
-            context.getNamer().getFieldGetFunctionName(pageStreaming.getPageSizeField()));
-        descriptor.requestPageSizeSetMethodName(
-            context.getNamer().getFieldSetFunctionName(pageStreaming.getPageSizeField()));
-      }
-      descriptor.responseTokenFieldName(
-          context.getNamer().getResponseTokenFieldName(pageStreaming));
-      descriptor.responseTokenGetMethodName(
-          context.getNamer().getFieldGetFunctionName(pageStreaming.getResponseTokenField()));
-      descriptor.resourcesFieldName(context.getNamer().getResourcesFieldName(pageStreaming));
-      descriptor.resourcesGetMethodName(
-          context.getNamer().getFieldGetFunctionName(pageStreaming.getResourcesField()));
-      descriptor.methodName(context.getNamer().getMethodKey(method));
-
-      descriptors.add(descriptor.build());
+      descriptors.add(generateDescriptor(context, method));
     }
 
     return descriptors;
