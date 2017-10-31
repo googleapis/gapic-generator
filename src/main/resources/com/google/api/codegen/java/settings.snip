@@ -88,7 +88,7 @@
     if (getTransportChannelProvider()
         .getTransportName()
         .equals({@xsettingsClass.rpcTransportName}.{@xsettingsClass.transportNameGetter}())) {
-      return {@xsettingsClass.rpcStubClassName}.of(this);
+      return {@xsettingsClass.rpcStubClassName}.create(this);
     } else {
       throw new UnsupportedOperationException(
           "Transport not supported: " + getTransportChannelProvider().getTransportName());
@@ -366,7 +366,7 @@
               ApiCallContext context,
               ApiFuture<{@factory.responseTypeName}> futureResponse) {
             PageContext<{@factory.requestTypeName}, {@factory.responseTypeName}, {@factory.resourceTypeName}> pageContext =
-                PageContext.of(callable, {@factory.pageStreamingDescriptorName}, request, context);
+                PageContext.create(callable, {@factory.pageStreamingDescriptorName}, request, context);
             return {@factory.pagedListResponseTypeName}.createAsync(pageContext, futureResponse);
           }
         };
@@ -631,10 +631,10 @@
                   .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
                   .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"))
                   .build())
-          .setResponseTransformer(ProtoOperationTransformers.ResponseTransformer.of({@settings.operationMethod.operationPayloadTypeName}.class))
-          .setMetadataTransformer(ProtoOperationTransformers.MetadataTransformer.of({@settings.operationMethod.metadataTypeName}.class))
+          .setResponseTransformer(ProtoOperationTransformers.ResponseTransformer.create({@settings.operationMethod.operationPayloadTypeName}.class))
+          .setMetadataTransformer(ProtoOperationTransformers.MetadataTransformer.create({@settings.operationMethod.metadataTypeName}.class))
           .setPollingAlgorithm(
-              OperationTimedPollAlgorithm.of(
+              OperationTimedPollAlgorithm.create(
                   RetrySettings.newBuilder()
                      .setInitialRetryDelay(Duration.ofMillis({@settings.operationMethod.initialPollDelay}L))
                      .setRetryDelayMultiplier({@settings.operationMethod.pollDelayMultiplier})

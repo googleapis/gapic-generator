@@ -297,7 +297,7 @@ import javax.annotation.Generated;
  *
  * <pre>
  * <code>
- * try (LibraryClient libraryClient = LibraryClient.of()) {
+ * try (LibraryClient libraryClient = LibraryClient.create()) {
  *   Shelf shelf = Shelf.newBuilder().build();
  *   Shelf response = libraryClient.createShelf(shelf);
  * }
@@ -329,7 +329,7 @@ import javax.annotation.Generated;
  * returned.
  *
  * <p>This class can be customized by passing in a custom instance of LibrarySettings to
- * of(). For example:
+ * create(). For example:
  *
  * To customize credentials:
  *
@@ -337,10 +337,10 @@ import javax.annotation.Generated;
  * <code>
  * LibrarySettings librarySettings =
  *     LibrarySettings.newBuilder()
- *         .setCredentialsProvider(FixedCredentialsProvider.of(myCredentials))
+ *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
  *         .build();
  * LibraryClient libraryClient =
- *     LibraryClient.of(librarySettings);
+ *     LibraryClient.create(librarySettings);
  * </code>
  * </pre>
  *
@@ -355,7 +355,7 @@ import javax.annotation.Generated;
  *             .build())
  *         .build();
  * LibraryClient libraryClient =
- *     LibraryClient.of(librarySettings);
+ *     LibraryClient.create(librarySettings);
  * </code>
  * </pre>
  */
@@ -369,50 +369,17 @@ public class LibraryClient implements BackgroundResource {
 
   /**
    * Constructs an instance of LibraryClient with default settings.
-   *
-   * @deprecated Use of() instead.
    */
-  @Deprecated
   public static final LibraryClient create() throws IOException {
-    return of();
-  }
-
-
-  /**
-   * Constructs an instance of LibraryClient with default settings.
-   */
-  public static final LibraryClient of() throws IOException {
-    return of(LibrarySettings.newBuilder().build());
+    return create(LibrarySettings.newBuilder().build());
   }
 
   /**
    * Constructs an instance of LibraryClient, using the given settings.
    * The channels are created based on the settings passed in, or defaults for any
    * settings that are not set.
-   *
-   * @deprecated Use of(LibrarySettings) instead.
    */
-  @Deprecated
   public static final LibraryClient create(LibrarySettings settings) throws IOException {
-    return of(settings);
-  }
-
-  /**
-   * Constructs an instance of LibraryClient, using the given stub for making calls. This is for
-   * advanced usage - prefer to use LibrarySettings}.
-   * @deprecated Use of(LibraryServiceStub) instead.
-   */
-  @Deprecated
-  public static final LibraryClient create(LibraryServiceStub stub) {
-    return of(stub);
-  }
-
-  /**
-   * Constructs an instance of LibraryClient, using the given settings.
-   * The channels are created based on the settings passed in, or defaults for any
-   * settings that are not set.
-   */
-  public static final LibraryClient of(LibrarySettings settings) throws IOException {
     return new LibraryClient(settings);
   }
 
@@ -421,7 +388,7 @@ public class LibraryClient implements BackgroundResource {
    * advanced usage - prefer to use LibrarySettings}.
    */
   @BetaApi
-  public static final LibraryClient of(LibraryServiceStub stub) {
+  public static final LibraryClient create(LibraryServiceStub stub) {
     return new LibraryClient(stub);
   }
 
@@ -433,13 +400,13 @@ public class LibraryClient implements BackgroundResource {
   protected LibraryClient(LibrarySettings settings) throws IOException {
     this.settings = settings;
     this.stub = settings.createStub();
-    this.operationsClient = OperationsClient.of(this.stub.getOperationsStub());
+    this.operationsClient = OperationsClient.create(this.stub.getOperationsStub());
   }
 
   protected LibraryClient(LibraryServiceStub stub) {
     this.settings = null;
     this.stub = stub;
-    this.operationsClient = OperationsClient.of(this.stub.getOperationsStub());
+    this.operationsClient = OperationsClient.create(this.stub.getOperationsStub());
   }
 
   public final LibrarySettings getSettings() {
@@ -466,7 +433,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   Shelf shelf = Shelf.newBuilder().build();
    *   Shelf response = libraryClient.createShelf(shelf);
    * }
@@ -491,7 +458,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   Shelf shelf = Shelf.newBuilder().build();
    *   CreateShelfRequest request = CreateShelfRequest.newBuilder()
    *     .setShelf(shelf)
@@ -514,7 +481,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   Shelf shelf = Shelf.newBuilder().build();
    *   CreateShelfRequest request = CreateShelfRequest.newBuilder()
    *     .setShelf(shelf)
@@ -535,7 +502,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.create("[SHELF_ID]");
    *   Shelf response = libraryClient.getShelf(name);
    * }
@@ -559,7 +526,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   String formattedName = ShelfName.create("[SHELF_ID]").toString();
    *   SomeMessage message = SomeMessage.newBuilder().build();
    *   Shelf response = libraryClient.getShelf(formattedName, message);
@@ -586,7 +553,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   String formattedName = ShelfName.create("[SHELF_ID]").toString();
    *   SomeMessage message = SomeMessage.newBuilder().build();
    *   com.google.example.library.v1.StringBuilder stringBuilder = com.google.example.library.v1.StringBuilder.newBuilder().build();
@@ -616,7 +583,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   String formattedName = ShelfName.create("[SHELF_ID]").toString();
    *   String options = "";
    *   GetShelfRequest request = GetShelfRequest.newBuilder()
@@ -640,7 +607,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   String formattedName = ShelfName.create("[SHELF_ID]").toString();
    *   String options = "";
    *   GetShelfRequest request = GetShelfRequest.newBuilder()
@@ -663,7 +630,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *
    *   for (Shelf element : libraryClient.listShelves().iterateAll()) {
    *     // doThingsWith(element);
@@ -686,7 +653,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ListShelvesRequest request = ListShelvesRequest.newBuilder().build();
    *   for (Shelf element : libraryClient.listShelves(request).iterateAll()) {
    *     // doThingsWith(element);
@@ -708,7 +675,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ListShelvesRequest request = ListShelvesRequest.newBuilder().build();
    *   ApiFuture&lt;ListShelvesPagedResponse&gt; future = libraryClient.listShelvesPagedCallable().futureCall(request);
    *   // Do something
@@ -728,7 +695,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ListShelvesRequest request = ListShelvesRequest.newBuilder().build();
    *   while (true) {
    *     ListShelvesResponse response = libraryClient.listShelvesCallable().call(request);
@@ -755,7 +722,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.create("[SHELF_ID]");
    *   libraryClient.deleteShelf(name);
    * }
@@ -779,7 +746,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.create("[SHELF_ID]");
    *   DeleteShelfRequest request = DeleteShelfRequest.newBuilder()
    *     .setNameWithShelfName(name)
@@ -801,7 +768,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.create("[SHELF_ID]");
    *   DeleteShelfRequest request = DeleteShelfRequest.newBuilder()
    *     .setNameWithShelfName(name)
@@ -824,7 +791,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.create("[SHELF_ID]");
    *   ShelfName otherShelfName = ShelfName.create("[SHELF_ID]");
    *   Shelf response = libraryClient.mergeShelves(name, otherShelfName);
@@ -853,7 +820,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.create("[SHELF_ID]");
    *   ShelfName otherShelfName = ShelfName.create("[SHELF_ID]");
    *   MergeShelvesRequest request = MergeShelvesRequest.newBuilder()
@@ -879,7 +846,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.create("[SHELF_ID]");
    *   ShelfName otherShelfName = ShelfName.create("[SHELF_ID]");
    *   MergeShelvesRequest request = MergeShelvesRequest.newBuilder()
@@ -902,7 +869,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   String formattedName = ShelfName.create("[SHELF_ID]").toString();
    *   Book book = Book.newBuilder().build();
    *   Book response = libraryClient.createBook(formattedName, book);
@@ -929,7 +896,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   String formattedName = ShelfName.create("[SHELF_ID]").toString();
    *   Book book = Book.newBuilder().build();
    *   CreateBookRequest request = CreateBookRequest.newBuilder()
@@ -953,7 +920,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   String formattedName = ShelfName.create("[SHELF_ID]").toString();
    *   Book book = Book.newBuilder().build();
    *   CreateBookRequest request = CreateBookRequest.newBuilder()
@@ -976,7 +943,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   Shelf shelf = Shelf.newBuilder().build();
    *   List&lt;Book&gt; books = new ArrayList&lt;&gt;();
    *   int edition = 0;
@@ -1012,7 +979,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   Shelf shelf = Shelf.newBuilder().build();
    *   List&lt;Book&gt; books = new ArrayList&lt;&gt;();
    *   String seriesString = "foobar";
@@ -1041,7 +1008,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   Shelf shelf = Shelf.newBuilder().build();
    *   List&lt;Book&gt; books = new ArrayList&lt;&gt;();
    *   String seriesString = "foobar";
@@ -1069,7 +1036,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   Book response = libraryClient.getBook(name);
    * }
@@ -1093,7 +1060,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setNameWithBookName(name)
@@ -1115,7 +1082,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setNameWithBookName(name)
@@ -1136,7 +1103,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.create("[SHELF_ID]");
    *   String filter = "";
    *   for (Book element : libraryClient.listBooks(name, filter).iterateAll()) {
@@ -1164,7 +1131,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.create("[SHELF_ID]");
    *   ListBooksRequest request = ListBooksRequest.newBuilder()
    *     .setNameWithShelfName(name)
@@ -1189,7 +1156,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.create("[SHELF_ID]");
    *   ListBooksRequest request = ListBooksRequest.newBuilder()
    *     .setNameWithShelfName(name)
@@ -1212,7 +1179,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ShelfName name = ShelfName.create("[SHELF_ID]");
    *   ListBooksRequest request = ListBooksRequest.newBuilder()
    *     .setNameWithShelfName(name)
@@ -1242,7 +1209,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   libraryClient.deleteBook(name);
    * }
@@ -1266,7 +1233,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   DeleteBookRequest request = DeleteBookRequest.newBuilder()
    *     .setNameWithBookName(name)
@@ -1288,7 +1255,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   DeleteBookRequest request = DeleteBookRequest.newBuilder()
    *     .setNameWithBookName(name)
@@ -1309,7 +1276,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   Book book = Book.newBuilder().build();
    *   Book response = libraryClient.updateBook(name, book);
@@ -1336,7 +1303,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   String optionalFoo = "";
    *   Book book = Book.newBuilder().build();
@@ -1372,7 +1339,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   Book book = Book.newBuilder().build();
    *   UpdateBookRequest request = UpdateBookRequest.newBuilder()
@@ -1396,7 +1363,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   Book book = Book.newBuilder().build();
    *   UpdateBookRequest request = UpdateBookRequest.newBuilder()
@@ -1419,7 +1386,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   ShelfName otherShelfName = ShelfName.create("[SHELF_ID]");
    *   Book response = libraryClient.moveBook(name, otherShelfName);
@@ -1446,7 +1413,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   ShelfName otherShelfName = ShelfName.create("[SHELF_ID]");
    *   MoveBookRequest request = MoveBookRequest.newBuilder()
@@ -1470,7 +1437,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   ShelfName otherShelfName = ShelfName.create("[SHELF_ID]");
    *   MoveBookRequest request = MoveBookRequest.newBuilder()
@@ -1493,7 +1460,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *
    *   for (ResourceName element : libraryClient.listStrings().iterateAllAsResourceName()) {
    *     // doThingsWith(element);
@@ -1516,7 +1483,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ResourceName name = ShelfName.create("[SHELF_ID]");
    *   for (ResourceName element : libraryClient.listStrings(name).iterateAllAsResourceName()) {
    *     // doThingsWith(element);
@@ -1541,7 +1508,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ListStringsRequest request = ListStringsRequest.newBuilder().build();
    *   for (ResourceName element : libraryClient.listStrings(request).iterateAllAsResourceName()) {
    *     // doThingsWith(element);
@@ -1563,7 +1530,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ListStringsRequest request = ListStringsRequest.newBuilder().build();
    *   ApiFuture&lt;ListStringsPagedResponse&gt; future = libraryClient.listStringsPagedCallable().futureCall(request);
    *   // Do something
@@ -1583,7 +1550,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ListStringsRequest request = ListStringsRequest.newBuilder().build();
    *   while (true) {
    *     ListStringsResponse response = libraryClient.listStringsCallable().call(request);
@@ -1610,7 +1577,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   String formattedName = BookName.create("[SHELF_ID]", "[BOOK_ID]").toString();
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment.Stage stage = Comment.Stage.UNSET;
@@ -1645,7 +1612,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   String formattedName = BookName.create("[SHELF_ID]", "[BOOK_ID]").toString();
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment.Stage stage = Comment.Stage.UNSET;
@@ -1677,7 +1644,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   String formattedName = BookName.create("[SHELF_ID]", "[BOOK_ID]").toString();
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment.Stage stage = Comment.Stage.UNSET;
@@ -1708,7 +1675,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ArchivedBookName name = ArchivedBookName.create("[ARCHIVE_PATH]", "[BOOK_ID]");
    *   BookFromArchive response = libraryClient.getBookFromArchive(name);
    * }
@@ -1732,7 +1699,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ArchivedBookName name = ArchivedBookName.create("[ARCHIVE_PATH]", "[BOOK_ID]");
    *   GetBookFromArchiveRequest request = GetBookFromArchiveRequest.newBuilder()
    *     .setNameWithArchivedBookName(name)
@@ -1754,7 +1721,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ArchivedBookName name = ArchivedBookName.create("[ARCHIVE_PATH]", "[BOOK_ID]");
    *   GetBookFromArchiveRequest request = GetBookFromArchiveRequest.newBuilder()
    *     .setNameWithArchivedBookName(name)
@@ -1775,7 +1742,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookNameOneof name = BookNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
    *   BookName altBookName = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   BookFromAnywhere response = libraryClient.getBookFromAnywhere(name, altBookName);
@@ -1803,7 +1770,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookNameOneof name = BookNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
    *   BookNameOneof altBookName = BookNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
    *   GetBookFromAnywhereRequest request = GetBookFromAnywhereRequest.newBuilder()
@@ -1827,7 +1794,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookNameOneof name = BookNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
    *   BookNameOneof altBookName = BookNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
    *   GetBookFromAnywhereRequest request = GetBookFromAnywhereRequest.newBuilder()
@@ -1850,7 +1817,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookNameOneof name = BookNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
    *   BookFromAnywhere response = libraryClient.getBookFromAbsolutelyAnywhere(name);
    * }
@@ -1874,7 +1841,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ResourceName name = BookNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
    *   GetBookFromAbsolutelyAnywhereRequest request = GetBookFromAbsolutelyAnywhereRequest.newBuilder()
    *     .setNameWithResourceName(name)
@@ -1896,7 +1863,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ResourceName name = BookNameOneof.from(BookName.create("[SHELF_ID]", "[BOOK_ID]"));
    *   GetBookFromAbsolutelyAnywhereRequest request = GetBookFromAbsolutelyAnywhereRequest.newBuilder()
    *     .setNameWithResourceName(name)
@@ -1917,7 +1884,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   String indexName = "default index";
    *   String indexMapItem = "";
@@ -1949,7 +1916,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   String indexName = "default index";
    *   String indexMapItem = "";
@@ -1977,7 +1944,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   String indexName = "default index";
    *   String indexMapItem = "";
@@ -2005,7 +1972,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ApiStreamObserver&lt;StreamShelvesResponse&gt; responseObserver =
    *       new ApiStreamObserver&lt;StreamShelvesResponse&gt;() {
    *         {@literal @}Override
@@ -2041,7 +2008,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ApiStreamObserver&lt;Book&gt; responseObserver =
    *       new ApiStreamObserver&lt;Book&gt;() {
    *         {@literal @}Override
@@ -2080,7 +2047,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ApiStreamObserver&lt;Comment&gt; responseObserver =
    *       new ApiStreamObserver&lt;Comment&gt;() {
    *         {@literal @}Override
@@ -2120,7 +2087,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   ApiStreamObserver&lt;Comment&gt; responseObserver =
    *       new ApiStreamObserver&lt;Comment&gt;() {
    *         {@literal @}Override
@@ -2159,7 +2126,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookName namesElement = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   List&lt;BookName&gt; names = Arrays.asList(namesElement);
    *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
@@ -2188,7 +2155,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookName namesElement = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   List&lt;BookName&gt; names = Arrays.asList(namesElement);
    *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
@@ -2216,7 +2183,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookName namesElement = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   List&lt;BookName&gt; names = Arrays.asList(namesElement);
    *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
@@ -2242,7 +2209,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookName namesElement = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   List&lt;BookName&gt; names = Arrays.asList(namesElement);
    *   List&lt;ShelfName&gt; shelves = new ArrayList&lt;&gt;();
@@ -2275,7 +2242,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   String formattedResource = BookName.create("[SHELF_ID]", "[BOOK_ID]").toString();
    *   String tag = "";
    *   AddTagResponse response = libraryClient.addTag(formattedResource, tag);
@@ -2304,7 +2271,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   String formattedResource = BookName.create("[SHELF_ID]", "[BOOK_ID]").toString();
    *   String tag = "";
    *   AddTagRequest request = AddTagRequest.newBuilder()
@@ -2328,7 +2295,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   String formattedResource = BookName.create("[SHELF_ID]", "[BOOK_ID]").toString();
    *   String tag = "";
    *   AddTagRequest request = AddTagRequest.newBuilder()
@@ -2351,7 +2318,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   String formattedResource = BookName.create("[SHELF_ID]", "[BOOK_ID]").toString();
    *   String label = "";
    *   AddLabelResponse response = libraryClient.addLabel(formattedResource, label);
@@ -2381,7 +2348,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   String formattedResource = BookName.create("[SHELF_ID]", "[BOOK_ID]").toString();
    *   String label = "";
    *   AddLabelRequest request = AddLabelRequest.newBuilder()
@@ -2406,7 +2373,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   String formattedResource = BookName.create("[SHELF_ID]", "[BOOK_ID]").toString();
    *   String label = "";
    *   AddLabelRequest request = AddLabelRequest.newBuilder()
@@ -2430,7 +2397,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   Book response = libraryClient.getBigBookAsync(name).get();
    * }
@@ -2454,7 +2421,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setNameWithBookName(name)
@@ -2476,7 +2443,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setNameWithBookName(name)
@@ -2497,7 +2464,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setNameWithBookName(name)
@@ -2518,7 +2485,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   Empty response = libraryClient.getBigNothingAsync(name).get();
    * }
@@ -2542,7 +2509,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setNameWithBookName(name)
@@ -2564,7 +2531,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setNameWithBookName(name)
@@ -2585,7 +2552,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   BookName name = BookName.create("[SHELF_ID]", "[BOOK_ID]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setNameWithBookName(name)
@@ -2606,7 +2573,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *
    *   TestOptionalRequiredFlatteningParamsResponse response = libraryClient.testOptionalRequiredFlatteningParams();
    * }
@@ -2628,7 +2595,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   int requiredSingularInt32 = 0;
    *   long requiredSingularInt64 = 0L;
    *   float requiredSingularFloat = 0.0F;
@@ -2811,7 +2778,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   int requiredSingularInt32 = 0;
    *   long requiredSingularInt64 = 0L;
    *   float requiredSingularFloat = 0.0F;
@@ -2885,7 +2852,7 @@ public class LibraryClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryClient libraryClient = LibraryClient.of()) {
+   * try (LibraryClient libraryClient = LibraryClient.create()) {
    *   int requiredSingularInt32 = 0;
    *   long requiredSingularInt64 = 0L;
    *   float requiredSingularFloat = 0.0F;
@@ -3397,7 +3364,7 @@ public class LibrarySettings extends ClientSettings {
     if (getTransportChannelProvider()
         .getTransportName()
         .equals(GrpcTransportChannel.getGrpcTransportName())) {
-      return GrpcLibraryServiceStub.of(this);
+      return GrpcLibraryServiceStub.create(this);
     } else {
       throw new UnsupportedOperationException(
           "Transport not supported: " + getTransportChannelProvider().getTransportName());
@@ -3682,7 +3649,7 @@ public class LibrarySettings extends ClientSettings {
             ApiCallContext context,
             ApiFuture<ListShelvesResponse> futureResponse) {
           PageContext<ListShelvesRequest, ListShelvesResponse, Shelf> pageContext =
-              PageContext.of(callable, LIST_SHELVES_PAGE_STR_DESC, request, context);
+              PageContext.create(callable, LIST_SHELVES_PAGE_STR_DESC, request, context);
           return ListShelvesPagedResponse.createAsync(pageContext, futureResponse);
         }
       };
@@ -3696,7 +3663,7 @@ public class LibrarySettings extends ClientSettings {
             ApiCallContext context,
             ApiFuture<ListBooksResponse> futureResponse) {
           PageContext<ListBooksRequest, ListBooksResponse, Book> pageContext =
-              PageContext.of(callable, LIST_BOOKS_PAGE_STR_DESC, request, context);
+              PageContext.create(callable, LIST_BOOKS_PAGE_STR_DESC, request, context);
           return ListBooksPagedResponse.createAsync(pageContext, futureResponse);
         }
       };
@@ -3710,7 +3677,7 @@ public class LibrarySettings extends ClientSettings {
             ApiCallContext context,
             ApiFuture<ListStringsResponse> futureResponse) {
           PageContext<ListStringsRequest, ListStringsResponse, String> pageContext =
-              PageContext.of(callable, LIST_STRINGS_PAGE_STR_DESC, request, context);
+              PageContext.create(callable, LIST_STRINGS_PAGE_STR_DESC, request, context);
           return ListStringsPagedResponse.createAsync(pageContext, futureResponse);
         }
       };
@@ -3724,7 +3691,7 @@ public class LibrarySettings extends ClientSettings {
             ApiCallContext context,
             ApiFuture<FindRelatedBooksResponse> futureResponse) {
           PageContext<FindRelatedBooksRequest, FindRelatedBooksResponse, String> pageContext =
-              PageContext.of(callable, FIND_RELATED_BOOKS_PAGE_STR_DESC, request, context);
+              PageContext.create(callable, FIND_RELATED_BOOKS_PAGE_STR_DESC, request, context);
           return FindRelatedBooksPagedResponse.createAsync(pageContext, futureResponse);
         }
       };
@@ -4156,10 +4123,10 @@ public class LibrarySettings extends ClientSettings {
                   .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
                   .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"))
                   .build())
-          .setResponseTransformer(ProtoOperationTransformers.ResponseTransformer.of(Book.class))
-          .setMetadataTransformer(ProtoOperationTransformers.MetadataTransformer.of(GetBigBookMetadata.class))
+          .setResponseTransformer(ProtoOperationTransformers.ResponseTransformer.create(Book.class))
+          .setMetadataTransformer(ProtoOperationTransformers.MetadataTransformer.create(GetBigBookMetadata.class))
           .setPollingAlgorithm(
-              OperationTimedPollAlgorithm.of(
+              OperationTimedPollAlgorithm.create(
                   RetrySettings.newBuilder()
                      .setInitialRetryDelay(Duration.ofMillis(3000L))
                      .setRetryDelayMultiplier(1.3)
@@ -4176,10 +4143,10 @@ public class LibrarySettings extends ClientSettings {
                   .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
                   .setRetrySettings(RETRY_PARAM_DEFINITIONS.get("default"))
                   .build())
-          .setResponseTransformer(ProtoOperationTransformers.ResponseTransformer.of(Empty.class))
-          .setMetadataTransformer(ProtoOperationTransformers.MetadataTransformer.of(GetBigBookMetadata.class))
+          .setResponseTransformer(ProtoOperationTransformers.ResponseTransformer.create(Empty.class))
+          .setMetadataTransformer(ProtoOperationTransformers.MetadataTransformer.create(GetBigBookMetadata.class))
           .setPollingAlgorithm(
-              OperationTimedPollAlgorithm.of(
+              OperationTimedPollAlgorithm.create(
                   RetrySettings.newBuilder()
                      .setInitialRetryDelay(Duration.ofMillis(3000L))
                      .setRetryDelayMultiplier(1.3)
@@ -5045,7 +5012,7 @@ public class SampleApp {
     }
   }
   public static void executeNoCatch(String projectId) throws Exception {
-    try (LibraryClient client = LibraryClient.of()) {
+    try (LibraryClient client = LibraryClient.create()) {
       BookName name = BookName.create("testShelf-" + System.currentTimeMillis(), projectId);
       String optionalFoo = "";
       Book.Rating rating = Book.Rating.GOOD;
@@ -5106,7 +5073,7 @@ public class SampleApp {
  * Sample for LibraryClient:
  * <pre>
  * <code>
- * try (LibraryClient libraryClient = LibraryClient.of()) {
+ * try (LibraryClient libraryClient = LibraryClient.create()) {
  *   Shelf shelf = Shelf.newBuilder().build();
  *   Shelf response = libraryClient.createShelf(shelf);
  * }
@@ -5465,23 +5432,11 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
   private final UnaryCallable<TestOptionalRequiredFlatteningParamsRequest, TestOptionalRequiredFlatteningParamsResponse> testOptionalRequiredFlatteningParamsCallable;
 
 
-  /** @deprecated Use of(LibrarySettings) instead. */
-  @Deprecated
   public static final GrpcLibraryServiceStub create(LibrarySettings settings) throws IOException {
-    return of(settings);
+    return new GrpcLibraryServiceStub(settings, ClientContext.create(settings));
   }
 
-  /** @deprecated Use of(ClientContext) instead. */
-  @Deprecated
   public static final GrpcLibraryServiceStub create(ClientContext clientContext) throws IOException {
-    return of(clientContext);
-  }
-
-  public static final GrpcLibraryServiceStub of(LibrarySettings settings) throws IOException {
-    return new GrpcLibraryServiceStub(settings, ClientContext.of(settings));
-  }
-
-  public static final GrpcLibraryServiceStub of(ClientContext clientContext) throws IOException {
     return new GrpcLibraryServiceStub(LibrarySettings.newBuilder().build(), clientContext);
   }
 
@@ -5491,7 +5446,7 @@ public class GrpcLibraryServiceStub extends LibraryServiceStub {
    * factory methods should be preferred.
    */
   protected GrpcLibraryServiceStub(LibrarySettings settings, ClientContext clientContext) throws IOException {
-    this.operationsStub = GrpcOperationsStub.of(clientContext);
+    this.operationsStub = GrpcOperationsStub.create(clientContext);
 
     GrpcCallSettings<CreateShelfRequest, Shelf> createShelfTransportSettings =
         GrpcCallSettings.<CreateShelfRequest, Shelf>newBuilder()
@@ -6199,9 +6154,9 @@ public class LibraryClientTest {
     serviceHelper.reset();
     LibrarySettings settings = LibrarySettings.newBuilder()
         .setTransportChannelProvider(serviceHelper.createChannelProvider())
-        .setCredentialsProvider(NoCredentialsProvider.of())
+        .setCredentialsProvider(NoCredentialsProvider.create())
         .build();
-    client = LibraryClient.of(settings);
+    client = LibraryClient.create(settings);
   }
 
   @After
@@ -7880,7 +7835,7 @@ public class LibrarySmokeTest {
     }
   }
   public static void executeNoCatch(String projectId) throws Exception {
-    try (LibraryClient client = LibraryClient.of()) {
+    try (LibraryClient client = LibraryClient.create()) {
       BookName name = BookName.create("testShelf-" + System.currentTimeMillis(), projectId);
       String optionalFoo = "";
       Book.Rating rating = Book.Rating.GOOD;

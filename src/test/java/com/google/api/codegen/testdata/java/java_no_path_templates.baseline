@@ -38,7 +38,7 @@ import javax.annotation.Generated;
  *
  * <pre>
  * <code>
- * try (NoTemplatesApiServiceClient noTemplatesApiServiceClient = NoTemplatesApiServiceClient.of()) {
+ * try (NoTemplatesApiServiceClient noTemplatesApiServiceClient = NoTemplatesApiServiceClient.create()) {
  *   IncrementRequest request = IncrementRequest.newBuilder().build();
  *   noTemplatesApiServiceClient.increment(request);
  * }
@@ -70,7 +70,7 @@ import javax.annotation.Generated;
  * returned.
  *
  * <p>This class can be customized by passing in a custom instance of NoTemplatesApiServiceSettings to
- * of(). For example:
+ * create(). For example:
  *
  * To customize credentials:
  *
@@ -78,10 +78,10 @@ import javax.annotation.Generated;
  * <code>
  * NoTemplatesApiServiceSettings noTemplatesApiServiceSettings =
  *     NoTemplatesApiServiceSettings.newBuilder()
- *         .setCredentialsProvider(FixedCredentialsProvider.of(myCredentials))
+ *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
  *         .build();
  * NoTemplatesApiServiceClient noTemplatesApiServiceClient =
- *     NoTemplatesApiServiceClient.of(noTemplatesApiServiceSettings);
+ *     NoTemplatesApiServiceClient.create(noTemplatesApiServiceSettings);
  * </code>
  * </pre>
  */
@@ -98,30 +98,8 @@ public class NoTemplatesApiServiceClient implements BackgroundResource {
    * Constructs an instance of NoTemplatesApiServiceClient, using the given settings.
    * The channels are created based on the settings passed in, or defaults for any
    * settings that are not set.
-   *
-   * @deprecated Use of(NoTemplatesApiServiceSettings) instead.
    */
-  @Deprecated
   public static final NoTemplatesApiServiceClient create(NoTemplatesApiServiceSettings settings) throws IOException {
-    return of(settings);
-  }
-
-  /**
-   * Constructs an instance of NoTemplatesApiServiceClient, using the given stub for making calls. This is for
-   * advanced usage - prefer to use NoTemplatesApiServiceSettings}.
-   * @deprecated Use of(NoTemplatesApiServiceStub) instead.
-   */
-  @Deprecated
-  public static final NoTemplatesApiServiceClient create(NoTemplatesApiServiceStub stub) {
-    return of(stub);
-  }
-
-  /**
-   * Constructs an instance of NoTemplatesApiServiceClient, using the given settings.
-   * The channels are created based on the settings passed in, or defaults for any
-   * settings that are not set.
-   */
-  public static final NoTemplatesApiServiceClient of(NoTemplatesApiServiceSettings settings) throws IOException {
     return new NoTemplatesApiServiceClient(settings);
   }
 
@@ -130,7 +108,7 @@ public class NoTemplatesApiServiceClient implements BackgroundResource {
    * advanced usage - prefer to use NoTemplatesApiServiceSettings}.
    */
   @BetaApi
-  public static final NoTemplatesApiServiceClient of(NoTemplatesApiServiceStub stub) {
+  public static final NoTemplatesApiServiceClient create(NoTemplatesApiServiceStub stub) {
     return new NoTemplatesApiServiceClient(stub);
   }
 
@@ -170,7 +148,7 @@ public class NoTemplatesApiServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (NoTemplatesApiServiceClient noTemplatesApiServiceClient = NoTemplatesApiServiceClient.of()) {
+   * try (NoTemplatesApiServiceClient noTemplatesApiServiceClient = NoTemplatesApiServiceClient.create()) {
    *   IncrementRequest request = IncrementRequest.newBuilder().build();
    *   noTemplatesApiServiceClient.increment(request);
    * }
@@ -194,7 +172,7 @@ public class NoTemplatesApiServiceClient implements BackgroundResource {
    *
    * Sample code:
    * <pre><code>
-   * try (NoTemplatesApiServiceClient noTemplatesApiServiceClient = NoTemplatesApiServiceClient.of()) {
+   * try (NoTemplatesApiServiceClient noTemplatesApiServiceClient = NoTemplatesApiServiceClient.create()) {
    *   IncrementRequest request = IncrementRequest.newBuilder().build();
    *   ApiFuture&lt;Void&gt; future = noTemplatesApiServiceClient.incrementCallable().futureCall(request);
    *   // Do something
@@ -321,7 +299,7 @@ public class NoTemplatesApiServiceSettings extends ClientSettings {
     if (getTransportChannelProvider()
         .getTransportName()
         .equals(GrpcTransportChannel.getGrpcTransportName())) {
-      return GrpcNoTemplatesApiServiceStub.of(this);
+      return GrpcNoTemplatesApiServiceStub.create(this);
     } else {
       throw new UnsupportedOperationException(
           "Transport not supported: " + getTransportChannelProvider().getTransportName());
@@ -618,23 +596,11 @@ public class GrpcNoTemplatesApiServiceStub extends NoTemplatesApiServiceStub {
   private final UnaryCallable<IncrementRequest, Empty> incrementCallable;
 
 
-  /** @deprecated Use of(NoTemplatesApiServiceSettings) instead. */
-  @Deprecated
   public static final GrpcNoTemplatesApiServiceStub create(NoTemplatesApiServiceSettings settings) throws IOException {
-    return of(settings);
+    return new GrpcNoTemplatesApiServiceStub(settings, ClientContext.create(settings));
   }
 
-  /** @deprecated Use of(ClientContext) instead. */
-  @Deprecated
   public static final GrpcNoTemplatesApiServiceStub create(ClientContext clientContext) throws IOException {
-    return of(clientContext);
-  }
-
-  public static final GrpcNoTemplatesApiServiceStub of(NoTemplatesApiServiceSettings settings) throws IOException {
-    return new GrpcNoTemplatesApiServiceStub(settings, ClientContext.of(settings));
-  }
-
-  public static final GrpcNoTemplatesApiServiceStub of(ClientContext clientContext) throws IOException {
     return new GrpcNoTemplatesApiServiceStub(NoTemplatesApiServiceSettings.newBuilder().build(), clientContext);
   }
 
@@ -928,9 +894,9 @@ public class NoTemplatesApiServiceClientTest {
     serviceHelper.reset();
     NoTemplatesApiServiceSettings settings = NoTemplatesApiServiceSettings.newBuilder()
         .setTransportChannelProvider(serviceHelper.createChannelProvider())
-        .setCredentialsProvider(NoCredentialsProvider.of())
+        .setCredentialsProvider(NoCredentialsProvider.create())
         .build();
-    client = NoTemplatesApiServiceClient.of(settings);
+    client = NoTemplatesApiServiceClient.create(settings);
   }
 
   @After

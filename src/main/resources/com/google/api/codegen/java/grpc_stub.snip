@@ -129,23 +129,11 @@
 
 @private constructors(stubClass)
 
-  /** @@deprecated Use of({@stubClass.settingsClassName}) instead. */
-  @@Deprecated
   public static final {@stubClass.name} create({@stubClass.settingsClassName} settings) throws IOException {
-    return of(settings);
+    return new {@stubClass.name}(settings, ClientContext.create(settings));
   }
 
-  /** @@deprecated Use of(ClientContext) instead. */
-  @@Deprecated
   public static final {@stubClass.name} create(ClientContext clientContext) throws IOException {
-    return of(clientContext);
-  }
-
-  public static final {@stubClass.name} of({@stubClass.settingsClassName} settings) throws IOException {
-    return new {@stubClass.name}(settings, ClientContext.of(settings));
-  }
-
-  public static final {@stubClass.name} of(ClientContext clientContext) throws IOException {
     return new {@stubClass.name}({@stubClass.settingsClassName}.newBuilder().build(), clientContext);
   }
 
@@ -156,7 +144,7 @@
    */
   protected {@stubClass.name}({@stubClass.settingsClassName} settings, ClientContext clientContext) throws IOException {
     @if stubClass.hasLongRunningOperations
-      this.operationsStub = GrpcOperationsStub.of(clientContext);
+      this.operationsStub = GrpcOperationsStub.create(clientContext);
     @end
 
     @join methodDescriptor : stubClass.methodDescriptors

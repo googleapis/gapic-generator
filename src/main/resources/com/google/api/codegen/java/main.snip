@@ -105,7 +105,7 @@
    * returned.
    *
    * <p>This class can be customized by passing in a custom instance of {@xapiClassDoc.settingsClassName} to
-   * of(). For example:
+   * create(). For example:
    *
    * To customize credentials:
    *
@@ -113,10 +113,10 @@
    * <code>
    * {@xapiClassDoc.settingsClassName} {@xapiClassDoc.settingsVarName} =
    *     {@xapiClassDoc.settingsClassName}.newBuilder()
-   *         .setCredentialsProvider(FixedCredentialsProvider.of(myCredentials))
+   *         .setCredentialsProvider(FixedCredentialsProvider.create(myCredentials))
    *         .build();
    * {@xapiClassDoc.apiClassName} {@xapiClassDoc.apiVarName} =
-   *     {@xapiClassDoc.apiClassName}.of({@xapiClassDoc.settingsVarName});
+   *     {@xapiClassDoc.apiClassName}.create({@xapiClassDoc.settingsVarName});
    * </code>
    * </pre>
   @if xapiClassDoc.hasDefaultInstance
@@ -132,7 +132,7 @@
      *             .build())
      *         .build();
      * {@xapiClassDoc.apiClassName} {@xapiClassDoc.apiVarName} =
-     *     {@xapiClassDoc.apiClassName}.of({@xapiClassDoc.settingsVarName});
+     *     {@xapiClassDoc.apiClassName}.create({@xapiClassDoc.settingsVarName});
      * </code>
      * </pre>
   @end
@@ -207,20 +207,9 @@
   @if xapiClass.hasDefaultInstance
     /**
      * Constructs an instance of {@xapiClass.name} with default settings.
-     *
-     * @@deprecated Use of() instead.
      */
-    @@Deprecated
     public static final {@xapiClass.name} create() throws IOException {
-      return of();
-    }
-    {@""}
-
-    /**
-     * Constructs an instance of {@xapiClass.name} with default settings.
-     */
-    public static final {@xapiClass.name} of() throws IOException {
-      return of({@xapiClass.settingsClassName}.newBuilder().build());
+      return create({@xapiClass.settingsClassName}.newBuilder().build());
     }
     {@""}
   @end
@@ -229,30 +218,8 @@
    * Constructs an instance of {@xapiClass.name}, using the given settings.
    * The channels are created based on the settings passed in, or defaults for any
    * settings that are not set.
-   *
-   * @@deprecated Use of({@xapiClass.settingsClassName}) instead.
    */
-  @@Deprecated
   public static final {@xapiClass.name} create({@xapiClass.settingsClassName} settings) throws IOException {
-    return of(settings);
-  }
-
-  /**
-   * Constructs an instance of {@xapiClass.name}, using the given stub for making calls. This is for
-   * advanced usage - prefer to use {@xapiClass.settingsClassName}}.
-   * @@deprecated Use of({@xapiClass.stubInterfaceName}) instead.
-   */
-  @@Deprecated
-  public static final {@xapiClass.name} create({@xapiClass.stubInterfaceName} stub) {
-    return of(stub);
-  }
-
-  /**
-   * Constructs an instance of {@xapiClass.name}, using the given settings.
-   * The channels are created based on the settings passed in, or defaults for any
-   * settings that are not set.
-   */
-  public static final {@xapiClass.name} of({@xapiClass.settingsClassName} settings) throws IOException {
     return new {@xapiClass.name}(settings);
   }
 
@@ -261,7 +228,7 @@
    * advanced usage - prefer to use {@xapiClass.settingsClassName}}.
    */
   @@BetaApi
-  public static final {@xapiClass.name} of({@xapiClass.stubInterfaceName} stub) {
+  public static final {@xapiClass.name} create({@xapiClass.stubInterfaceName} stub) {
     return new {@xapiClass.name}(stub);
   }
 
@@ -274,7 +241,7 @@
     this.settings = settings;
     this.stub = settings.createStub();
     @if xapiClass.hasLongRunningOperations
-      this.operationsClient = OperationsClient.of(this.stub.getOperationsStub());
+      this.operationsClient = OperationsClient.create(this.stub.getOperationsStub());
     @end
   }
 
@@ -282,7 +249,7 @@
     this.settings = null;
     this.stub = stub;
     @if xapiClass.hasLongRunningOperations
-      this.operationsClient = OperationsClient.of(this.stub.getOperationsStub());
+      this.operationsClient = OperationsClient.create(this.stub.getOperationsStub());
     @end
   }
   {@""}
