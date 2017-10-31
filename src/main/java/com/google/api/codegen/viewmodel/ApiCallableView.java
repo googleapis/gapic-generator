@@ -71,13 +71,6 @@ public abstract class ApiCallableView {
   }
 
   @Nullable
-  public abstract List<HeaderRequestParamView> headerRequestParams();
-
-  public boolean anyHeaderRequestParams() {
-    return headerRequestParams() != null && headerRequestParams().size() > 0;
-  }
-
-  @Nullable
   public abstract HttpMethodView httpMethod();
 
   public static Builder newBuilder() {
@@ -114,8 +107,6 @@ public abstract class ApiCallableView {
     public abstract Builder methodDescriptorName(String name);
 
     public abstract Builder transportSettingsVar(String val);
-
-    public abstract Builder headerRequestParams(List<HeaderRequestParamView> val);
 
     public abstract Builder headerRequestParams(List<HeaderRequestParamView> val);
 
