@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,6 +71,13 @@ public abstract class ApiCallableView {
   }
 
   @Nullable
+  public abstract List<HeaderRequestParamView> headerRequestParams();
+
+  public boolean anyHeaderRequestParams() {
+    return headerRequestParams() != null && headerRequestParams().size() > 0;
+  }
+
+  @Nullable
   public abstract HttpMethodView httpMethod();
 
   public static Builder newBuilder() {
@@ -107,6 +114,8 @@ public abstract class ApiCallableView {
     public abstract Builder methodDescriptorName(String name);
 
     public abstract Builder transportSettingsVar(String val);
+
+    public abstract Builder headerRequestParams(List<HeaderRequestParamView> val);
 
     public abstract Builder headerRequestParams(List<HeaderRequestParamView> val);
 

@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.transformer.go;
 
-import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.config.ApiModel;
 import com.google.api.codegen.config.GapicInterfaceConfig;
 import com.google.api.codegen.config.GapicProductConfig;
@@ -92,7 +91,6 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
   private final IamResourceTransformer iamResourceTransformer = new IamResourceTransformer();
   private final PageStreamingTransformer pageStreamingTransformer = new PageStreamingTransformer();
   private final PathTemplateTransformer pathTemplateTransformer = new PathTemplateTransformer();
-  private final ServiceMessages serviceMessages = new ServiceMessages();
   private final ServiceTransformer serviceTransformer = new ServiceTransformer();
 
   private final GapicCodePathMapper pathMapper;
@@ -160,6 +158,10 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     List<StaticLangApiMethodView> apiMethods =
         generateApiMethods(context, context.getSupportedMethods());
     view.apiMethods(apiMethods);
+    // If any methods have header request params, "fmt" is needed for `fmt.Sprintf` calls.
+    if (apiMethods.stream().anyMatch(m -> !m.headerRequestParams().isEmpty())) {
+      context.getImportTypeTable().saveNicknameFor("fmt;;;");
+    }
 
     view.iamResources(iamResourceTransformer.generateIamResources(context));
     if (!((GapicInterfaceConfig) productConfig.getInterfaceConfig(apiInterface.getFullName()))
@@ -175,8 +177,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
         pageStreamingTransformer.generateDescriptorClasses(context)) {
       iterators.put(desc.typeName(), desc);
     }
-    view.pageStreamingDescriptorClasses(
-        new ArrayList<PageStreamingDescriptorClassView>(iterators.values()));
+    view.pageStreamingDescriptorClasses(new ArrayList<>(iterators.values()));
 
     // Same with long running operations.
     Map<String, LongRunningOperationDetailView> lros = new TreeMap<>();
@@ -186,7 +187,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
         lros.put(lro.clientReturnTypeName(), lro);
       }
     }
-    view.lroDetailViews(new ArrayList<LongRunningOperationDetailView>(lros.values()));
+    view.lroDetailViews(new ArrayList<>(lros.values()));
 
     view.serviceAddress(context.getApiModel().getServiceAddress());
     view.servicePort(model.getServicePort());
@@ -332,6 +333,7 @@ public class GoGapicSurfaceTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("github.com/googleapis/gax-go;gax;;");
     typeTable.saveNicknameFor("google.golang.org/api/option;;;");
     typeTable.saveNicknameFor("google.golang.org/api/transport;;;");
+    typeTable.saveNicknameFor("google.golang.org/grpc/metadata;;;");
     typeTable.getImports().remove(EMPTY_PROTO_PKG);
     addContextImports(context, ImportContext.CLIENT, methods);
   }

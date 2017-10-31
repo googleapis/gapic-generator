@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -387,7 +387,7 @@ public class ApiCallableTransformer {
     return methodDescriptorBuilder.build();
   }
 
-  private List<HeaderRequestParamView> getHeaderRequestParams(MethodContext context) {
+  public static List<HeaderRequestParamView> getHeaderRequestParams(MethodContext context) {
     if (!context.getProductConfig().getTransportProtocol().equals(TransportProtocol.GRPC)) {
       return ImmutableList.of();
     }
@@ -407,7 +407,7 @@ public class ApiCallableTransformer {
     return headerRequestParams.build();
   }
 
-  private HeaderRequestParamView getHeaderRequestParam(
+  private static HeaderRequestParamView getHeaderRequestParam(
       String headerRequestParam, MessageType inputMessageType, SurfaceNamer namer) {
     String[] fieldNameTokens = headerRequestParam.split("\\.");
     ImmutableList.Builder<String> gettersChain = ImmutableList.builder();

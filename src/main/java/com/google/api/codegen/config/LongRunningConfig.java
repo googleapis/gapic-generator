@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -87,14 +87,14 @@ public abstract class LongRunningConfig {
           Diag.error(
               SimpleLocation.TOPLEVEL,
               "Metadata type not found for long running config: '%s'",
-              longRunningConfigProto.getReturnType()));
+              longRunningConfigProto.getMetadataType()));
       error = true;
     } else if (!metadataType.isMessage()) {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
               "Metadata type for long running config is not a message: '%s'",
-              longRunningConfigProto.getReturnType()));
+              longRunningConfigProto.getMetadataType()));
       error = true;
     }
 
