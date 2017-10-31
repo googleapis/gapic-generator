@@ -14,14 +14,12 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.discovery.Schema;
 import com.google.api.codegen.transformer.FeatureConfig;
 import com.google.api.codegen.transformer.ImportTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.tools.framework.model.Oneof;
-import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -101,12 +99,6 @@ public interface FieldModel {
 
   // Functions that are specific to the source type.
 
-  /* @return the TypeRef of the underlying protobuf Field, if it exists. */
-  TypeRef getProtoTypeRef();
-
-  /* @return the underlying Schema, if it exists. */
-  Schema getDiscoveryField();
-
   /* @return the type of this object, formatted as a String. */
   String getKind();
 
@@ -118,4 +110,6 @@ public interface FieldModel {
    */
   List<String> getPagedResponseResourceMethods(
       FeatureConfig featureConfig, FieldConfig startingFieldConfig, SurfaceNamer namer);
+
+  TypeModel getType();
 }

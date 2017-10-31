@@ -14,8 +14,8 @@
  */
 package com.google.api.codegen.util.testing;
 
+import com.google.api.codegen.config.TypeModel;
 import com.google.api.codegen.util.Name;
-import com.google.api.tools.framework.model.TypeRef;
 import java.util.HashMap;
 
 /**
@@ -32,7 +32,7 @@ public class TestValueGenerator {
     this.producer = producer;
   }
 
-  public String getAndStoreValue(TypeRef type, Name identifier) {
+  public String getAndStoreValue(TypeModel type, Name identifier) {
     if (!valueTable.containsKey(identifier)) {
       String value = producer.produce(type, identifier);
       while (type.getPrimitiveTypeName() != "bool" && valueTable.containsValue(value)) {

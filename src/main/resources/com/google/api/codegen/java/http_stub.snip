@@ -56,7 +56,9 @@
           ApiMethodDescriptor.<{@callable.requestTypeName}, {@callable.responseTypeName}>newBuilder()
               .setMethodName("{@callable.httpMethod.fullMethodName}")
               .setRequestInstance({@callable.requestTypeName}.getDefaultInstance())
-              .setResponseInstance({@callable.responseTypeName}.getDefaultInstance())
+              @if callable.hasResponse
+                .setResponseInstance({@callable.responseTypeName}.getDefaultInstance())
+              @end
               .setEndpointPathTemplate("{@callable.httpMethod.pathTemplate}")
               .setPathParams({@paramsInMethodDescriptor(callable.httpMethod.pathParams)})
               .setQueryParams({@paramsInMethodDescriptor(callable.httpMethod.queryParams)})
@@ -122,7 +124,7 @@
   }
 
   public static final {@stubClass.name} create(ClientContext clientContext) throws IOException {
-    return new {@stubClass.name}({@stubClass.settingsClassName}.defaultBuilder().build(), clientContext);
+    return new {@stubClass.name}({@stubClass.settingsClassName}.newBuilder().build(), clientContext);
   }
 
   /**

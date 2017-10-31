@@ -107,7 +107,7 @@ public class PhpApiMethodParamTransformer implements ApiMethodParamTransformer {
         // For enums, we alter the param type to int, and document where to find the relevant
         // const values
         String typeNameSingular =
-            context.getTypeTable().getFullNameFor(field.getProtoTypeRef().makeOptional());
+            context.getTypeTable().getFullNameFor(field.getType().makeOptional());
         if (field.isRepeated()) {
           paramDoc.typeName("int[]");
         } else {

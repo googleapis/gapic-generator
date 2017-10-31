@@ -15,7 +15,12 @@
 package com.google.api.codegen.transformer.ruby;
 
 import com.google.api.codegen.ProtoFileView;
-import com.google.api.codegen.config.*;
+import com.google.api.codegen.config.ApiModel;
+import com.google.api.codegen.config.GapicInterfaceConfig;
+import com.google.api.codegen.config.GapicProductConfig;
+import com.google.api.codegen.config.InterfaceModel;
+import com.google.api.codegen.config.PackageMetadataConfig;
+import com.google.api.codegen.config.ProtoApiModel;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.FileHeaderTransformer;
 import com.google.api.codegen.transformer.GrpcElementDocTransformer;
