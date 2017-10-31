@@ -117,6 +117,7 @@ public class ApiCallableTransformer {
     apiCallableBuilder.memberName(namer.getSettingsMemberName(method));
     apiCallableBuilder.settingsFunctionName(namer.getSettingsFunctionName(method));
     apiCallableBuilder.grpcClientVarName(namer.getReroutedGrpcClientVarName(methodConfig));
+    apiCallableBuilder.headerRequestParams(getHeaderRequestParams(context));
 
     setCommonApiCallableFields(context, apiCallableBuilder);
 
@@ -353,7 +354,7 @@ public class ApiCallableTransformer {
     return callableBuilder.build();
   }
 
-  private List<HeaderRequestParamView> getHeaderRequestParams(MethodContext context) {
+  public static List<HeaderRequestParamView> getHeaderRequestParams(MethodContext context) {
     if (!context.getProductConfig().getTransportProtocol().equals(TransportProtocol.GRPC)) {
       return ImmutableList.of();
     }
@@ -373,7 +374,7 @@ public class ApiCallableTransformer {
     return headerRequestParams.build();
   }
 
-  private HeaderRequestParamView getHeaderRequestParam(
+  private static HeaderRequestParamView getHeaderRequestParam(
       String headerRequestParam, MessageType inputMessageType, SurfaceNamer namer) {
     String[] fieldNameTokens = headerRequestParam.split("\\.");
     ImmutableList.Builder<String> gettersChain = ImmutableList.builder();

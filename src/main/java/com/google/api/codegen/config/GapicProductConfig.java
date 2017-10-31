@@ -92,6 +92,13 @@ public abstract class GapicProductConfig implements ProductConfig {
    */
   public abstract ImmutableMap<String, FieldConfig> getDefaultResourceNameFieldConfigMap();
 
+  /**
+   * Returns the version of config schema.
+   *
+   * <p>TODO(eoogbe): Validate the value in GAPIC config advisor.
+   */
+  public abstract String getConfigSchemaVersion();
+
   public GapicProductConfig withPackageName(String packageName) {
     return new AutoValue_GapicProductConfig(
         getInterfaceConfigMap(),
@@ -103,7 +110,8 @@ public abstract class GapicProductConfig implements ProductConfig {
         getLicenseLines(),
         getResourceNameConfigs(),
         getTransportProtocol(),
-        getDefaultResourceNameFieldConfigMap());
+        getDefaultResourceNameFieldConfigMap(),
+        getConfigSchemaVersion());
   }
 
   /**
@@ -163,6 +171,17 @@ public abstract class GapicProductConfig implements ProductConfig {
       throw new RuntimeException(e);
     }
 
+    String configSchemaVersion = configProto.getConfigSchemaVersion();
+    // TODO(eoogbe): Move the validation logic to GAPIC config advisor.
+    if (Strings.isNullOrEmpty(configSchemaVersion)) {
+      model
+          .getDiagCollector()
+          .addDiag(
+              Diag.error(
+                  SimpleLocation.TOPLEVEL,
+                  "config_schema_version field is required in GAPIC yaml."));
+    }
+
     if (interfaceConfigMap == null || copyrightLines == null || licenseLines == null) {
       return null;
     }
@@ -176,7 +195,8 @@ public abstract class GapicProductConfig implements ProductConfig {
         licenseLines,
         resourceNameConfigs,
         transportProtocol,
-        createResponseFieldConfigMap(messageConfigs, resourceNameConfigs));
+        createResponseFieldConfigMap(messageConfigs, resourceNameConfigs),
+        configSchemaVersion);
   }
 
   public static GapicProductConfig create(
@@ -228,6 +248,14 @@ public abstract class GapicProductConfig implements ProductConfig {
       throw new RuntimeException(e);
     }
 
+    String configSchemaVersion = configProto.getConfigSchemaVersion();
+    // TODO(eoogbe): Move the validation logic to GAPIC config advisor.
+    if (Strings.isNullOrEmpty(configSchemaVersion)) {
+      diagCollector.addDiag(
+          Diag.error(
+              SimpleLocation.TOPLEVEL, "config_schema_version field is required in GAPIC yaml."));
+    }
+
     return new AutoValue_GapicProductConfig(
         interfaceConfigMap,
         settings.getPackageName(),
@@ -238,13 +266,14 @@ public abstract class GapicProductConfig implements ProductConfig {
         licenseLines,
         resourceNameConfigs,
         transportProtocol,
-        createResponseFieldConfigMap(messageConfigs, resourceNameConfigs));
+        createResponseFieldConfigMap(messageConfigs, resourceNameConfigs),
+        configSchemaVersion);
   }
 
   /** Creates an GapicProductConfig with no content. Exposed for testing. */
   @VisibleForTesting
   public static GapicProductConfig createDummyInstance() {
-    return createDummyInstance(ImmutableMap.<String, InterfaceConfig>of(), "", "", null);
+    return createDummyInstance(ImmutableMap.<String, InterfaceConfig>of(), "", "", null, "1.0.0");
   }
 
   /** Creates an GapicProductConfig with fixed content. Exposed for testing. */
@@ -254,6 +283,18 @@ public abstract class GapicProductConfig implements ProductConfig {
       String packageName,
       String domainLayerLocation,
       ResourceNameMessageConfigs messageConfigs) {
+    return createDummyInstance(
+        interfaceConfigMap, packageName, domainLayerLocation, messageConfigs, "1.0.0");
+  }
+
+  /** Creates an GapicProductConfig with fixed content. Exposed for testing. */
+  @VisibleForTesting
+  public static GapicProductConfig createDummyInstance(
+      ImmutableMap<String, InterfaceConfig> interfaceConfigMap,
+      String packageName,
+      String domainLayerLocation,
+      ResourceNameMessageConfigs messageConfigs,
+      String configSchemaVersion) {
     return new AutoValue_GapicProductConfig(
         interfaceConfigMap,
         packageName,
@@ -265,8 +306,8 @@ public abstract class GapicProductConfig implements ProductConfig {
         ImmutableMap.<String, ResourceNameConfig>of(),
         // Default to gRPC.
         TransportProtocol.GRPC,
-        createResponseFieldConfigMap(
-            messageConfigs, ImmutableMap.<String, ResourceNameConfig>of()));
+        createResponseFieldConfigMap(messageConfigs, ImmutableMap.<String, ResourceNameConfig>of()),
+        configSchemaVersion);
   }
 
   private static ImmutableMap<String, InterfaceConfig> createInterfaceConfigMap(
