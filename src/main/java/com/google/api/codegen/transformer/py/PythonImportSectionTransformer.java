@@ -110,6 +110,10 @@ public class PythonImportSectionTransformer implements ImportSectionTransformer 
     }
 
     if (context.getInterfaceConfig().hasPageStreamingMethods()) {
+      imports.add(createImport("google.api_core.page_iterator"));
+    }
+
+    if (!context.getInterfaceConfig().getSingleResourceNameConfigs().isEmpty()) {
       imports.add(createImport("google.api_core.path_template"));
     }
 
