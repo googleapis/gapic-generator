@@ -1,4 +1,4 @@
-/* Copyright 2016 Google Inc
+/* Copyright 2016 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -255,7 +255,6 @@ public class CSharpGapicClientTransformer implements ModelToViewTransformer {
     for (ApiCallableView call : apiCallableTransformer.generateStaticLangApiCallables(context)) {
       if (call.type() == ApiCallableImplType.SimpleApiCallable
           || call.type() == ApiCallableImplType.BatchingApiCallable
-          || call.type() == ApiCallableImplType.InitialOperationApiCallable
           || call.type() == ApiCallableImplType.BidiStreamingApiCallable
           || call.type() == ApiCallableImplType.ServerStreamingApiCallable) {
         callables.add(call);

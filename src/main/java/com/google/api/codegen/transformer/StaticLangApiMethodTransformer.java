@@ -1,4 +1,4 @@
-/* Copyright 2017 Google Inc
+/* Copyright 2017 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,6 +56,8 @@ public class StaticLangApiMethodTransformer {
   private final LongRunningTransformer lroTransformer = new LongRunningTransformer();
   private final StaticLangResourceObjectTransformer resourceObjectTransformer =
       new StaticLangResourceObjectTransformer();
+  private final HeaderRequestParamTransformer headerRequestParamTransformer =
+      new HeaderRequestParamTransformer();
 
   public StaticLangApiMethodView generatePagedFlattenedMethod(MethodContext context) {
     return generatePagedFlattenedMethod(context, Collections.<ParamWithSimpleDoc>emptyList());
@@ -489,6 +491,8 @@ public class StaticLangApiMethodTransformer {
     } else {
       methodViewBuilder.hasReturnValue(method.hasReturnValue());
     }
+    methodViewBuilder.headerRequestParams(
+        headerRequestParamTransformer.generateHeaderRequestParams(context));
   }
 
   protected void setServiceResponseTypeName(
@@ -690,8 +694,6 @@ public class StaticLangApiMethodTransformer {
       callableImplType = ApiCallableImplType.of(methodConfig.getGrpcStreamingType());
     } else if (methodConfig.isBatching()) {
       callableImplType = ApiCallableImplType.BatchingApiCallable;
-    } else if (methodConfig.isLongRunningOperation()) {
-      callableImplType = ApiCallableImplType.InitialOperationApiCallable;
     }
 
     methodViewBuilder.callableMethod(

@@ -12,12 +12,12 @@ jsondoc/*
 # IDE settings
 .idea
 *.iml
+
 ============== file: .rubocop.yml ==============
 AllCops:
   Exclude:
     - "library.gemspec"
-    - "lib/google/library/**/*"
-    - "lib/library/v1/**/*"
+    - "lib/google/**/*"
     - "Rakefile"
     - "test/**/*"
 
@@ -66,6 +66,7 @@ Style/TrivialAccessors:
   Enabled: false
 Style/FileName:
   Enabled: false
+
 ============== file: .yardopts ==============
 --no-private
 --title=Google Example Library API
@@ -75,8 +76,9 @@ Style/FileName:
 ./lib/**/*.rb
 -
 README.md
+
 ============== file: Gemfile ==============
-source 'https://rubygems.org'
+source "https://rubygems.org"
 
 gemspec
 
@@ -85,9 +87,14 @@ gem "gcloud-jsondoc",
     git: "https://github.com/GoogleCloudPlatform/google-cloud-ruby.git",
     branch: "gcloud-jsondoc"
 
+# WORKAROUND: builds are having problems since the release of 3.0.0
+# pin to the last known good version
+gem "public_suffix", "~> 2.0"
+
 # TEMP: rainbow (a dependency of rubocop) version 2.2 seems to have a problem,
 # so pinning to 2.1 for now.
 gem "rainbow", "~> 2.1.0"
+
 ============== file: LICENSE ==============
                             Apache License
                            Version 2.0, January 2004
@@ -337,8 +344,9 @@ response = library_service_client.update_book(formatted_name, book, optional_foo
 
 [Client Library Documentation]: https://googlecloudplatform.github.io/google-cloud-ruby/#/docs/library/latest/google/library
 [Product Documentation]: https://cloud.google.com/library
+
 ============== file: Rakefile ==============
-# Copyright 2017, Google Inc. All rights reserved.
+# Copyright 2017, Google LLC All rights reserved.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -486,14 +494,14 @@ end
 
 namespace :ci do
   desc "Run the CI build, with smoke_tests."
-  task :smoke_test do
+  task :acceptance do
     Rake::Task["ci"].invoke
     header "library smoke_test", "*"
     sh "bundle exec rake smoke_test -v"
   end
   task :a do
     # This is a handy shortcut to save typing
-    Rake::Task["ci:smoke_test"].invoke
+    Rake::Task["ci:acceptance"].invoke
   end
 end
 
@@ -520,8 +528,9 @@ def header str, token = "#"
   puts token * line_length
   puts ""
 end
+
 ============== file: lib/library.rb ==============
-# Copyright 2017, Google Inc. All rights reserved.
+# Copyright 2017, Google LLC All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -609,7 +618,7 @@ module Library
   # @param version [Symbol, String]
   #   The major version of the service to be used. By default :v1
   #   is used.
-  # @overload
+  # @overload new(version:, credentials:, scopes:, client_config:, timeout:)
   #   @param credentials [Google::Auth::Credentials, String, Hash, GRPC::Core::Channel, GRPC::Core::ChannelCredentials, Proc]
   #     Provides the means for authenticating requests made by the client. This parameter can
   #     be many types.
@@ -650,7 +659,7 @@ module Library
 end
 
 ============== file: lib/library/credentials.rb ==============
-# Copyright 2017, Google Inc. All rights reserved.
+# Copyright 2017, Google LLC All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -677,8 +686,9 @@ module Library
     DEFAULT_PATHS = ["~/.config/gcloud/application_default_credentials.json"]
   end
 end
+
 ============== file: lib/library/v1.rb ==============
-# Copyright 2017, Google Inc. All rights reserved.
+# Copyright 2017, Google LLC All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -810,7 +820,7 @@ module Library
 end
 
 ============== file: lib/library/v1/library_service_client.rb ==============
-# Copyright 2017, Google Inc. All rights reserved.
+# Copyright 2017, Google LLC All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -2624,7 +2634,7 @@ Gem::Specification.new do |gem|
   gem.name          = "library"
   gem.version       = "0.6.8"
 
-  gem.authors       = ["Google, Inc."]
+  gem.authors       = ["Google LLC"]
   gem.email         = "googleapis-packages@google.com"
   gem.description   = "library is the official library for Google Example Library API."
   gem.summary       = "API Client library for Google Example Library API"
@@ -2650,7 +2660,7 @@ Gem::Specification.new do |gem|
 end
 
 ============== file: test/library/v1/library_service_client_test.rb ==============
-# Copyright 2017, Google Inc. All rights reserved.
+# Copyright 2017, Google LLC All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -5033,7 +5043,7 @@ describe Library::V1::LibraryServiceClient do
   end
 end
 ============== file: test/library/v1/library_service_smoke_test.rb ==============
-# Copyright 2017, Google Inc. All rights reserved.
+# Copyright 2017, Google LLC All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.

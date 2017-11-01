@@ -119,23 +119,23 @@
    *     {@xapiClassDoc.apiClassName}.create({@xapiClassDoc.settingsVarName});
    * </code>
    * </pre>
-   *
-   * To customize the endpoint:
-   *
-   * <pre>
-   * <code>
-   * {@xapiClassDoc.settingsClassName} {@xapiClassDoc.settingsVarName} =
-   *     {@xapiClassDoc.settingsClassName}.newBuilder()
-   *         .setTransportProvider({@xapiClassDoc.settingsClassName}.{@xapiClassDoc.defaultTransportProviderBuilder}()
-   *             .setChannelProvider({@xapiClassDoc.settingsClassName}.{@xapiClassDoc.defaultChannelProviderBuilder}()
-   *                 .setEndpoint(myEndpoint)
-   *                 .build())
-   *             .build())
-   *         .build();
-   * {@xapiClassDoc.apiClassName} {@xapiClassDoc.apiVarName} =
-   *     {@xapiClassDoc.apiClassName}.create({@xapiClassDoc.settingsVarName});
-   * </code>
-   * </pre>
+  @if xapiClassDoc.hasDefaultInstance
+    {@""} *
+     * To customize the endpoint:
+     *
+     * <pre>
+     * <code>
+     * {@xapiClassDoc.settingsClassName} {@xapiClassDoc.settingsVarName} =
+     *     {@xapiClassDoc.settingsClassName}.newBuilder()
+     *         .setTransportChannelProvider({@xapiClassDoc.settingsClassName}.{@xapiClassDoc.defaultTransportProviderBuilder}()
+     *             .setEndpoint(myEndpoint)
+     *             .build())
+     *         .build();
+     * {@xapiClassDoc.apiClassName} {@xapiClassDoc.apiVarName} =
+     *     {@xapiClassDoc.apiClassName}.create({@xapiClassDoc.settingsVarName});
+     * </code>
+     * </pre>
+  @end
    */
 @end
 
@@ -227,6 +227,7 @@
    * Constructs an instance of {@xapiClass.name}, using the given stub for making calls. This is for
    * advanced usage - prefer to use {@xapiClass.settingsClassName}}.
    */
+  @@BetaApi
   public static final {@xapiClass.name} create({@xapiClass.stubInterfaceName} stub) {
     return new {@xapiClass.name}(stub);
   }
@@ -471,7 +472,7 @@
 
   @end
   {@apiMethod.visibility} final OperationFuture<{@apiMethod.responseTypeName}, \
-      {@apiMethod.operationMethod.metadataTypeName}, Operation> {@apiMethod.name}(\
+      {@apiMethod.operationMethod.metadataTypeName}> {@apiMethod.name}(\
       {@paramList(apiMethod.methodParams)}) {
     {@flattenedRequestBuildingCode(apiMethod)}
     return {@apiMethod.name}(request);
@@ -487,7 +488,7 @@
 
   @end
   {@apiMethod.requestObjectMethod.accessModifier} final OperationFuture<\
-      {@apiMethod.responseTypeName}, {@apiMethod.operationMethod.metadataTypeName}, Operation> \
+      {@apiMethod.responseTypeName}, {@apiMethod.operationMethod.metadataTypeName}> \
       {@apiMethod.name}({@apiMethod.serviceRequestTypeName} request) {
     return {@apiMethod.requestObjectMethod.callableMethodName}().futureCall(request);
   }
@@ -502,7 +503,7 @@
 
   @end
   {@apiMethod.visibility} final OperationCallable<{@apiMethod.serviceRequestTypeName}, \
-      {@apiMethod.responseTypeName}, {@apiMethod.operationMethod.metadataTypeName}, Operation> \
+      {@apiMethod.responseTypeName}, {@apiMethod.operationMethod.metadataTypeName}> \
       {@apiMethod.name}() {
     return stub.{@apiMethod.callableMethod.callableName}();
   }
